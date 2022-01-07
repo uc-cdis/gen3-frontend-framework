@@ -1,7 +1,7 @@
 {
-  "name": "gen3_frontend",
+  "name": "gen3-frontend-framework",
   "version": "1.0.0",
-  "description": "",
+  "description": "Prototype of the Gen3 Frontend Framework",
   "main": "index.js",
   "private": true,
   "workspaces": [
@@ -22,15 +22,12 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "@babel/preset-react": "^7.14.5",
-    "babel-loader": "^8.2.3",
-    "html-webpack-plugin": "^5.5.0",
+
     "eslint": "^7.30.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "prettier": "^2.3.2"
   }
 }
