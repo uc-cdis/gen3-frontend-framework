@@ -1,0 +1,14 @@
+.footer__icon {
+    margin-left: 40px;
+    line-height: 100px;
+}
+
+.footer__icon:first-child {
+    margin-left: 0;
+}
+
+.footer__img {
+    height: 60px;
+    display: inline;
+    vertical-align: middle;
+}
