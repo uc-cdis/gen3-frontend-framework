@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { aggMetadataApi } from "../features/metadata/query";
+import { aggMetadataApi } from "../features/metadata/metadataSlice";
 
 export const coreStore = configureStore({
     reducer: {
