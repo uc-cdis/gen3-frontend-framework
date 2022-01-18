@@ -1,8 +1,6 @@
-import React from "react";
-import { useRouter } from 'next/router'
-import { Link } from '@mui/material';
-import dictIcons from '../../img/icons'
-import IconComponent from '../IconComponent'
+import React, { PropsWithChildren,ReactNode } from "react";
+import HoverLink from "./HoverLink";
+import { Icon } from '@iconify/react'
 
 
 export interface NavigationButtonProps {
@@ -15,10 +13,10 @@ export interface NavigationButtonProps {
 const NavigationButton: React.FC<NavigationButtonProps> = ({ icon, tooltip, href, name }: NavigationButtonProps) => {
     return (
         <a className="content-center" href={href} >
-            <div className="flex flex-col flex-nowrap p-2 border-l-1 border-gray-400 justify-items-center font-heading opacity-80">
-                <IconComponent height="27px" iconName={icon} dictIcons={dictIcons} />
+        <div className="flex flex-col flex-nowrap p-2 items-center font-heading opacity-80 border-b-3 border-b-transparent hover:border-blue-800">
+            <Icon height="27" icon={icon}/>
                 <p className="content-center pt-2">{name}</p>
-            </div>
+        </div>
         </a>
     )
 }
@@ -31,16 +29,23 @@ export interface NavigationProps {
 const NavigationBar: React.FC<NavigationProps> = ({ title, items }: NavigationProps) => {
     const { basePath } = useRouter();
     return (
-        <div className="flex flex-row bg-gray-100 gap-x-4">
-            <div className="flex flex-row items-center align-middle font-heading ml-6">
-                <Link href={`${basePath}/`} underline="none" color="inherit">{title}</Link>
-            </div>
-            <div className="flex-grow">{/* middle section of header */}</div>
-            <div className="flex flex-row pr-8">
-                {items.map((x, index) => {
+            <div className="flex flex-row bg-gray-100 gap-x-4">
+                <div className="flex flex-row items-center align-middle font-heading ml-6">
+                    {title}
+                </div>
+                <div className="flex-grow">{/* middle section of header */}</div>
+                <div className="flex flex-row pr-8  ">
+                    { items.map((x, index) => {
                     return (
-                        <div key={`${x.name}-${index}`}>
-                            <NavigationButton icon={x.icon} tooltip={x.tooltip} href={x.href} name={x.name} />
+                        <div key={`${x.name}-${index}`} className="has-tooltip relative" >
+                            <div
+                                className="tooltip p-5 m-5 w-64 bg-white border-gray-400 border border-solid rounded text-center align-content-center">
+                                {x.tooltip}
+                            </div>
+                            <div className="border-l-1 border-gray-400 opacity-80">
+                            <NavigationButton icon = {x.icon} tooltip={x.tooltip} href={x.href} name={x.name} />
+
+                            </div>
                         </div>)
                 })
                 }

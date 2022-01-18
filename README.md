@@ -1,4 +1,4 @@
-# G** Frontend Framework
+# CTDS Frontend Framework
 
 ## Installation
 
