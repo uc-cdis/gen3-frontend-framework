@@ -19,9 +19,9 @@ const data = [
 ];
 
 interface BarChartProps {
-    title?: String,
-    subTitle?: String,
-    note?: Array<String>,
+    title?: string,
+    subTitle?: string,
+    note?: Array<string>,
 }
 
 
@@ -58,7 +58,7 @@ const LandingBarChart: React.FC<BarChartProps> = ({
                         flexDirection: "column",
                         alignItems: "center"
                     }}>
-                        {note.map((e) => <Typography>{e}</Typography>)}
+                        {note.map((e, index) => <Typography key={index}>{e}</Typography>)}
                     </div>
                 )
                 : null}

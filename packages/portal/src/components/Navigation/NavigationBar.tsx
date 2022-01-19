@@ -1,6 +1,5 @@
-import React, { PropsWithChildren, ReactNode } from "react";
+import React from "react";
 import dictIcons from '../../img/icons'
-import HoverLink from "./HoverLink";
 import IconComponent from '../IconComponent'
 
 
@@ -15,10 +14,8 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({ icon, tooltip, href
     return (
         <a className="content-center" href={href} >
             <div className="flex flex-col flex-nowrap p-2 border-l-1 border-gray-400 justify-items-center font-heading opacity-80">
-
                 <IconComponent height="27px" iconName={icon} dictIcons={dictIcons} />
                 <p className="content-center pt-2">{name}</p>
-
             </div>
         </a>
     )

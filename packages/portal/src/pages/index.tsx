@@ -1,8 +1,9 @@
-import {GetStaticProps, NextPage} from "next";
+import { GetStaticProps } from "next";
 
 import fs from 'fs';
 import Header from "../components/Navigation/Header";
 import Footer from "../components/Navigation/Footer";
+// if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
 import LandingPage from "./landing"
 interface Props {
@@ -10,14 +11,13 @@ interface Props {
     top: Record<any, any>
 }
 
-const IndexPage = ({top, navigation} : Props) => {
+const IndexPage = ({ top, navigation }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} nav={navigation} />
             <div className="flex flex-row  justify-items-center">
-                {/* <div className="prose-2xl mx-auto"> */}
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                <LandingPage />
+                    <LandingPage />
                 </div>
             </div>
             <Footer />
@@ -25,7 +25,7 @@ const IndexPage = ({top, navigation} : Props) => {
     )
 };
 
-export const getStaticProps:GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
 
     try {
         const file_data = fs.readFileSync('config/navigation.json', 'utf8')

@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from 'chart.js/auto';
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 
 const data = {
     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],

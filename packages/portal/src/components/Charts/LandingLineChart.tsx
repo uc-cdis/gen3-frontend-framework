@@ -36,9 +36,9 @@ const data = [
 ];
 
 interface LineChartProps {
-    title?: String,
-    subTitle?: String,
-    note?: Array<String>,
+    title?: string,
+    subTitle?: string,
+    note?: Array<string>,
 }
 
 
@@ -75,7 +75,7 @@ const LandingLineChart: React.FC<LineChartProps> = ({
                 flexDirection: "column",
                 alignItems: "center"
             }}>
-              {note.map((e) => <Typography>{e}</Typography>)}
+              {note.map((e, index) => <Typography key={index}>{e}</Typography>)}
             </div>
           )
           : null}

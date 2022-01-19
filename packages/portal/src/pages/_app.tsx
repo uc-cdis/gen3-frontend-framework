@@ -6,12 +6,6 @@ import store from "../app/store";
 import '../styles/globals.css';
 
 
-interface Props {
-    navigation: Record<any, any>;
-    top: Record<any, any>
-}
-
-
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     return (
