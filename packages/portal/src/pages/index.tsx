@@ -3,7 +3,8 @@ import {GetStaticProps, NextPage} from "next";
 import fs from 'fs';
 import Header from "../components/Navigation/Header";
 import Footer from "../components/Navigation/Footer";
-import LandingPageMDX from "../../content/landing.mdx"
+// import LandingPageMDX from "../../content/landing.mdx"
+import LandingPage from "./landing"
 interface Props {
     navigation: Record<any, any>;
     top: Record<any, any>
@@ -14,8 +15,9 @@ const IndexPage = ({top, navigation} : Props) => {
         <div className="flex flex-col">
             <Header top={top} nav={navigation} />
             <div className="flex flex-row  justify-items-center">
-                <div className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-2xl mx-auto">
-                <LandingPageMDX />
+                {/* <div className="prose-2xl mx-auto"> */}
+                <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
+                <LandingPage />
                 </div>
             </div>
             <Footer />
