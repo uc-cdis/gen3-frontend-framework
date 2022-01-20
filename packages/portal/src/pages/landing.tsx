@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
+import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import LandingBarChart from '../components/Charts/LandingBarChart';
 import LandingLineChart from '../components/Charts/LandingLineChart';
+import StasticComponent from '../components/StasticComponent';
 
 const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -68,7 +64,17 @@ export default function LandingPage() {
                     </Item>
                 </Grid>
                 <Grid item xs={4}>
-                    <Item>xs=4</Item>
+                        <StasticComponent
+                        title={'Studies'}
+                        stasticData={[
+                            { name: 'Total Studies', value: 601 },
+                            { name: 'Young Adults', value: 68 },
+                            { name: 'Medication Treatment', value: 65 },
+                            { name: 'Overdose', value: 59 },
+                            { name: 'Practice', value: 44 },
+                            { name: 'Mental Health', value: 37 }
+                        ]}
+                        />
                 </Grid>
                 <Grid item xs={4}>
                     <Item>
