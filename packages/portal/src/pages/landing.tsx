@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import LandingBarChart from '../components/Charts/LandingBarChart';
 import LandingLineChart from '../components/Charts/LandingLineChart';
-import StasticComponent from '../components/StasticComponent';
+import StatisticComponent from '../components/StatisticComponent';
 
 const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -19,14 +19,14 @@ export default function LandingPage() {
                 <Item>
                     <Typography component="div">
                         The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to
-                        speed scientific solutions to stem the national opiod public health crisis. Almost every NIH Institute and Center
+                        speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center
                         is accelerating research to address this public health emergency from all angles.
                     </Typography>
                 </Item>
                 <Stack spacing={2}>
                     <Item>See here an overview of the HEAL platform</Item>
                     <Item>
-                        <Button variant="contained" className="bg-blue-800">Get Started</Button>
+                        <Button variant="contained" className="bg-blue-800">About HEAL</Button>
                     </Item>
                 </Stack>
             </Stack>
@@ -39,7 +39,7 @@ export default function LandingPage() {
                 </Item>
                 <Stack direction={"row"} justifyContent={"center"} spacing={2}>
                     <Item>
-                        <Button variant="contained" className="bg-sky-500">Researsh</Button>
+                        <Button variant="contained" className="bg-sky-500">Research</Button>
                     </Item>
                     <Item>
                         <Button variant="contained" className="bg-sky-500">Treatment</Button>
@@ -64,9 +64,9 @@ export default function LandingPage() {
                     </Item>
                 </Grid>
                 <Grid item xs={4}>
-                        <StasticComponent
+                        <StatisticComponent
                         title={'Studies'}
-                        stasticData={[
+                        statisticData={[
                             { name: 'Total Studies', value: 601 },
                             { name: 'Young Adults', value: 68 },
                             { name: 'Medication Treatment', value: 65 },

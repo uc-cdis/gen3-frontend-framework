@@ -1,10 +1,10 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import StasticCard, { StasticCardProp } from './StasticCard';
+import StatisticCard, { StatisticCardProp } from './StatisticCard';
 
-interface StasticComponentProp {
+interface StatisticComponentProp {
     title: string,
-    stasticData: Array<StasticCardProp>
+    statisticData: Array<StatisticCardProp>
 }
 
 const Item = styled('div')(({ theme }) => ({
@@ -13,7 +13,7 @@ const Item = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary
 }));
 
-const StasticComponent = ({ title, stasticData }: StasticComponentProp) => (
+const StatisticComponent = ({ title, statisticData }: StatisticComponentProp) => (
     <Box sx={{ flexGrow: 1, borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
         <div className="grid w-full h-full bg-gray-300">
             <Typography align='center'>
@@ -21,10 +21,10 @@ const StasticComponent = ({ title, stasticData }: StasticComponentProp) => (
             </Typography>
             </div>
         <Grid container spacing={0}>
-            {stasticData.map((data, index) => (
-                <Grid item xs={4}>
+            {statisticData.map((data, index) => (
+                <Grid key={index} item xs={4}>
                     <Item className="grid w-full h-full">
-                        <StasticCard key={index} name={data.name} value={data.value} />
+                        <StatisticCard name={data.name} value={data.value} />
                     </Item>
                 </Grid>
             ))}
@@ -32,4 +32,4 @@ const StasticComponent = ({ title, stasticData }: StasticComponentProp) => (
     </Box>
 );
 
-export default StasticComponent;
+export default StatisticComponent;
