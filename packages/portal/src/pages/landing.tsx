@@ -4,6 +4,7 @@ import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import LandingBarChart from '../components/Charts/LandingBarChart';
 import LandingLineChart from '../components/Charts/LandingLineChart';
 import StatisticComponent from '../components/StatisticComponent';
+import TableComponent from '../components/TableComponent';
 
 const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -53,7 +54,7 @@ export default function LandingPage() {
                 </Stack>
             </Stack>
             <Divider variant="middle" className="not-prose" />
-            <Grid container spacing={2}>
+            <Grid container justifyContent="space-evenly" spacing={2}>
                 <Grid item xs={4}>
                     <Item>
                         <LandingBarChart
@@ -64,7 +65,7 @@ export default function LandingPage() {
                     </Item>
                 </Grid>
                 <Grid item xs={4}>
-                        <StatisticComponent
+                    <StatisticComponent
                         title={'Studies'}
                         statisticData={[
                             { name: 'Total Studies', value: 601 },
@@ -74,7 +75,7 @@ export default function LandingPage() {
                             { name: 'Practice', value: 44 },
                             { name: 'Mental Health', value: 37 }
                         ]}
-                        />
+                    />
                 </Grid>
                 <Grid item xs={4}>
                     <Item>
@@ -84,6 +85,44 @@ export default function LandingPage() {
                             note={['* CDC Wonder https://wonder.cdc.gov/']}
                         />
                     </Item>
+                </Grid>
+                <Grid item xs={4}>
+                    <TableComponent
+                        title={'Newly Available Data'}
+                        columns={[
+                            { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
+                            { field: 'investigator', headerName: 'Investigator', flex: 1, align: "center", headerAlign: "center" },
+                            { field: 'repository', headerName: 'Repository', flex: 1, align: "center", headerAlign: "center" },
+                        ]}
+                        rows={[
+                            { id: 1, title: 'Title 1', investigator: 'John Smith', repository: 'ICPSR' },
+                            { id: 2, title: 'Title 2', investigator: 'Mary Jones', repository: 'MPS' },
+                            { id: 3, title: 'Title 3', investigator: 'Brian David', repository: 'JCOIN' },
+                            { id: 4, title: 'Title 4', investigator: 'John Johnson', repository: 'ICPSR' },
+                            { id: 5, title: 'Title 5', investigator: 'Kevin Carlson', repository: 'Clinicaltrials' },
+                            { id: 6, title: 'Title 6', investigator: 'Casey Andrews', repository: 'JCOIN' },
+                            { id: 7, title: 'Title 7', investigator: 'Bob Morris', repository: 'ICPSR' },
+                        ]}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <TableComponent
+                        title={'Clinical Trials'}
+                        columns={[
+                            { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
+                            { field: 'dcc', headerName: 'DCC', flex: 1, align: "center", headerAlign: "center" },
+                            { field: 'state', headerName: 'State', flex: 1, align: "center", headerAlign: "center" },
+                        ]}
+                        rows={[
+                            { id: 1, title: 'Title 1', dcc: 'PRISM', state: 'IL' },
+                            { id: 2, title: 'Title 2', dcc: 'Prevention', state: 'IA' },
+                            { id: 3, title: 'Title 3', dcc: 'HOPE', state: 'WI' },
+                            { id: 4, title: 'Title 4', dcc: 'BACPAC', state: 'MA' },
+                            { id: 5, title: 'Title 5', dcc: 'HOPE', state: 'FL' },
+                            { id: 6, title: 'Title 6', dcc: 'Prevention', state: 'MN' },
+                            { id: 7, title: 'Title 7', dcc: 'PRISM', state: 'NC' },
+                        ]}
+                    />
                 </Grid>
             </Grid>
         </Box>

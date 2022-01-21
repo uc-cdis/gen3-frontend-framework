@@ -1,5 +1,6 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import BorderComponent from './BorderComponent';
 import StatisticCard, { StatisticCardProp } from './StatisticCard';
 
 interface StatisticComponentProp {
@@ -14,12 +15,7 @@ const Item = styled('div')(({ theme }) => ({
 }));
 
 const StatisticComponent = ({ title, statisticData }: StatisticComponentProp) => (
-    <Box sx={{ flexGrow: 1, borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
-        <div className="grid w-full h-full bg-gray-300">
-            <Typography align='center'>
-                {title}
-            </Typography>
-            </div>
+    <BorderComponent title={title} >
         <Grid container spacing={0}>
             {statisticData.map((data, index) => (
                 <Grid key={index} item xs={4}>
@@ -29,7 +25,7 @@ const StatisticComponent = ({ title, statisticData }: StatisticComponentProp) =>
                 </Grid>
             ))}
         </Grid>
-    </Box>
+    </BorderComponent>
 );
 
 export default StatisticComponent;
