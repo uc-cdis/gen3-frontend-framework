@@ -92,7 +92,11 @@ export default function LandingPage() {
                         columns={[
                             { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
                             { field: 'investigator', headerName: 'Investigator', flex: 1, align: "center", headerAlign: "center" },
-                            { field: 'repository', headerName: 'Repository', flex: 1, align: "center", headerAlign: "center" },
+                            {
+                                field: 'repository', headerName: 'Repository', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
+                                    <Button href="/">{params.value}</Button>
+                                ),
+                            },
                         ]}
                         rows={[
                             { id: 1, title: 'Title 1', investigator: 'John Smith', repository: 'ICPSR' },
@@ -109,7 +113,11 @@ export default function LandingPage() {
                     <TableComponent
                         title={'Clinical Trials'}
                         columns={[
-                            { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
+                            {
+                                field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
+                                    <Button href="/">{params.value}</Button>
+                                ),
+                            },
                             { field: 'dcc', headerName: 'DCC', flex: 1, align: "center", headerAlign: "center" },
                             { field: 'state', headerName: 'State', flex: 1, align: "center", headerAlign: "center" },
                         ]}

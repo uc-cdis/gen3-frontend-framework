@@ -11,12 +11,13 @@ interface TableComponentProp {
 
 const TableComponent = ({ title, rows, columns }: TableComponentProp) => (
     <BorderComponent title={title} >
-        <Box height={350}>
+        <Box height={300}>
             <DataGrid
                 rows={rows}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
+                disableColumnMenu
             />
         </Box>
     </BorderComponent>
