@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
-import LandingBarChart from '../components/Charts/LandingBarChart';
-import LandingLineChart from '../components/Charts/LandingLineChart';
-import StatisticComponent from '../components/StatisticComponent';
-import TableComponent from '../components/TableComponent';
+import LandingBarChart from '../Charts/LandingBarChart';
+import LandingLineChart from '../Charts/LandingLineChart';
+import StatisticComponent from '../StatisticComponent';
+import TableComponent from '../TableComponent';
 
 const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -13,7 +13,7 @@ const Item = styled('div')(({ theme }) => ({
     color: theme.palette.text.secondary
 }));
 
-export default function LandingPage() {
+export default function LandingPageContent() {
     return (
         <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
             <Stack spacing={2}>
