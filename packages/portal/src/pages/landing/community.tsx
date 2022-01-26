@@ -10,13 +10,13 @@ interface Props {
     rolesPages: Record<any, any>
 }
 
-const ResearchPage = ({ top, navigation, rolesPages }: Props) => {
+const CommunityPage = ({ top, navigation, rolesPages }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} nav={navigation} />
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                    <RolesPageContent rolesPages={rolesPages} rolePageKey={'Research'} />
+                    <RolesPageContent rolesPages={rolesPages} rolePageKey={'Community and Support'} />
                 </div>
             </div>
             <Footer />
@@ -50,4 +50,4 @@ export const getStaticProps: GetStaticProps = async () => {
     }
 }
 
-export default ResearchPage;
+export default CommunityPage;
