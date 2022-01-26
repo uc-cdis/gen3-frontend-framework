@@ -24,7 +24,7 @@
                 "icon": "/icons/rolesPages/download.png",
                 "title": "Download Data",
                 "content": [
-                    "Several of the studies listed on the Discovery page provide datasets that may be downloaded for analysis. Users may download data files one at a time through the web or may use a transfer client to facilitate downloading many files or very large files. More information about downloading files is available here. "
+                    "Several of the studies listed on the Discovery page provide datasets that may be downloaded for analysis. Users may download data files one at a time through the web or may use a transfer client to facilitate downloading many files or very large files. More information about downloading files is available here."
                 ]
             },
             {
@@ -147,6 +147,28 @@
     },
     "Policy Related": {
         "link": "/landing/policy",
-        "content": []
+        "content": [
+            {
+                "icon": "/icons/rolesPages/state.png",
+                "title": "Look for Data by State",
+                "content": [
+                    "Policies and state laws are key to maximize the benefits of new implementations from public health departments addressing the opioid crisis and thus have a significant impact on the lives of those struggling with chronic pain or substance use disorders. As an example, the prescription drug monitoring program (PDMP) is an electronic database that tracks controlled substance prescriptions in a state to improve opioid prescribing, inform clinical practice, and protect patients at risk. Such implementations will be most effective if states effectuate policies that require providers to a state PDMP prior to prescribing certain controlled substances. The HEAL Platform shares research about new and innovative implementations and other useful datasets that inform evidence-based decisions on state policies. Click here to find datasets that may inform policy updates by filtering datasets by U.S. state."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/new.png",
+                "title": "New Data",
+                "content": [
+                    "The HEAL Platform frequently shares new and state-of-the-art research regarding treatment, prevention, intervention, overdose, recovery, and criminal justice populations. New data will help advance laws and policies to support public health and safety measures, which ultimately leads to more education, stigma reduction, more safety net measures, and one step closer mitigating the public health crisis around opioid addiction and chronic pain. Discover the latest policy-related datasets here."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/effectiveness.png",
+                "title": "Effectiveness",
+                "content": [
+                    "249 million prescriptions for opioids were written by healthcare providers in 2013. After studies have found that patients prescribed higher opioid dosages are at higher risk of overdose death, the CDC advised providers to calculate and prescribe the lowest effective dose. The HEAL Platform will help policy makers and public health departments stay informed on newest clinical trials about effectiveness of substance use disorder treatments and therapies. Click here to find out about datasets regarding effectiveness."
+                ]
+            }
+        ]
     }
 }
