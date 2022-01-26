@@ -3,20 +3,20 @@ import { GetStaticProps } from "next";
 import fs from 'fs';
 import Header from "../../components/Navigation/Header";
 import Footer from "../../components/Navigation/Footer";
-import ResearchPageContent from "../../components/Contents/RolesPageContent"
+import RolesPageContent from "../../components/Contents/RolesPageContent"
 interface Props {
     navigation: Record<any, any>;
     top: Record<any, any>;
     rolesPages: Record<any, any>
 }
 
-const ResearchPage = ({ top, navigation, rolesPages }: Props) => {
+const TreatmentPage = ({ top, navigation, rolesPages }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} nav={navigation} />
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                    <ResearchPageContent rolesPages={rolesPages} rolePageKey={'Research'} />
+                    <RolesPageContent rolesPages={rolesPages} rolePageKey={'Treatment'} />
                 </div>
             </div>
             <Footer />
@@ -50,4 +50,4 @@ export const getStaticProps: GetStaticProps = async () => {
     }
 }
 
-export default ResearchPage;
+export default TreatmentPage;

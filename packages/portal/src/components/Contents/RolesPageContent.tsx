@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import { Stack, Box, Button, Grid, Typography } from '@mui/material';
+import { Stack, Box, Grid, Typography } from '@mui/material';
 import RoleInfoCard from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
-export interface ResearchPageContentProp {
+export interface RolesPageContentProp {
     rolesPages: Record<any, any>;
     rolePageKey: string;
 }
@@ -17,7 +17,7 @@ const Item = styled('div')(({ theme }) => ({
     height: "100%"
 }));
 
-const ResearchPageContent = ({ rolesPages, rolePageKey }: ResearchPageContentProp) => (
+const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => (
     <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
         {Object.keys(rolesPages).length > 0 ? (
             <Stack spacing={2} className='mb-6'>
@@ -48,4 +48,4 @@ const ResearchPageContent = ({ rolesPages, rolePageKey }: ResearchPageContentPro
     </Box>
 );
 
-export default ResearchPageContent;
+export default RolesPageContent;
