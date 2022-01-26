@@ -3,22 +3,20 @@ import { GetStaticProps } from "next";
 import fs from 'fs';
 import Header from "../../components/Navigation/Header";
 import Footer from "../../components/Navigation/Footer";
-// if we want to use MDX
-// import LandingPageMDX from "../../content/landing.mdx"
-import LandingPageContent from "../../components/Contents/LandingPageContent"
+import ResearchPageContent from "../../components/Contents/ResearchPageContent"
 interface Props {
     navigation: Record<any, any>;
     top: Record<any, any>;
     rolesPages: Record<any, any>
 }
 
-const LandingPage = ({ top, navigation, rolesPages }: Props) => {
+const ResearchPage = ({ top, navigation, rolesPages }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} nav={navigation} />
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                    <LandingPageContent rolesPages={rolesPages} />
+                    <ResearchPageContent rolesPages={rolesPages} rolePageKey={'Research'} />
                 </div>
             </div>
             <Footer />
@@ -52,4 +50,4 @@ export const getStaticProps: GetStaticProps = async () => {
     }
 }
 
-export default LandingPage;
+export default ResearchPage;

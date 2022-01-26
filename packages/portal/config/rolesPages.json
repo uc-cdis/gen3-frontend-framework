@@ -1,0 +1,87 @@
+{
+    "Research": {
+        "link": "/landing/research",
+        "content": [
+            {
+                "icon": "/icons/landingPages/brain.png",
+                "tooltip": "https://pubmed.ncbi.nlm.nih.gov/",
+                "title": "Data on Opioid Use Disorder",
+                "content": [
+                    "Opioid dependence is a very common drug disorder affecting 40.5 million people with a worldwide, and in 2020 opioids were involved in 60,710 overdose deaths in the US.",
+                    "Data from studies funded by HEAL are available here, including studies of new strategies and medications to prevent and treat opioid use disorder."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/pain.png",
+                "title": "Data on Chronic Pain",
+                "tooltip": "Manchikanti L, Helm S 2nd, Fellows B, et al. Opioid epidemic in the United States. Pain Physician. 2012 Jul;15(3 Suppl):ES9-38. PMID: 22786464.",
+                "content": [
+                    "More than 50 million Americans suffer from chronic pain and half of those struggle with daily pain and lack effective non-opioid alternatives for pain management. The NIH HEAL Initiative has put into place a series of highly focused studies that will expedite the development of therapies to treat chronic pain.",
+                    "Click here to discover studies on understanding, managing, and treating chronic pain."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/download.png",
+                "title": "Download Data",
+                "content": [
+                    "Several of the studies listed on the Discovery page provide datasets that may be downloaded for analysis. Users may download data files one at a time through the web or may use a transfer client to facilitate downloading many files or very large files. More information about downloading files is available here. "
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/repository.png",
+                "title": "Repositories",
+                "content": [
+                    "As part of the NIH HEAL initiative, the HEAL Platform securely exposes data stored on multiple HEAL-approved repositories that are traditionally a part of a larger institution established for research, data archiving, and to serve data users of that organization. For more information, see here."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/database.png",
+                "title": "Access to Datasets",
+                "content": [
+                    "While many datasets on the HEAL Platform are available for public use pending simple authentication, some datasets require further authorization to attain access. Please see here to learn more about gaining access to restricted datasets."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/analyze-local.png",
+                "title": "Analyze Data You Have Downloaded",
+                "content": [
+                    "The HEAL Platform provides data that are organized, formatted and documented in a way to facilitate use of commonly used analytic software and techniques. The Platform also provides opportunities for you to share your results through the Platform, and can feature any publications arising from your analyses on the Publications Page. Click here to read more."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/browse.png",
+                "title": "Browse Example Analyses",
+                "content": [
+                    "Browse under the “Example Analysis” tab for recent examples and tutorial analysis notebooks that leverage datasets on the HEAL Platform in Python and R to learn how to analyze and visualize data or let them become the starting point of your own custom analysis. The notebooks are rendered in static html on the “Example Analyses” tab but can be also found in the workspaces in interactive mode. The list will be regularly updated with new and exciting tutorial data analysis notebooks, as more datasets are published and brought together in novel ways on the HEAL Platform. Read further here."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/analyze-workspace.png",
+                "title": "Analyzing Data in a Workspace",
+                "content": [
+                    "The HEAL platform offers a secure and cost-effective cloud-computing environment for analyzing data by yourself or together with others. Workspaces provide direct access to datasets, as well as common software tools including RStudio, Stata, and Python within a Jupyter Notebook interface.More information on workspaces is available here.",
+                    "NIH-funded researchers may take advantage of the NIH Science and Technology Research Infrastructure for Discovery, Experimentation, and Sustainability (STRIDES) credit. Click here to request NIH STRIDES credit for the use of our workspaces."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/share.png",
+                "title": "Share Your Results",
+                "content": [
+                    "Researchers analyzing data obtained through the HEAL Platform are encouraged to share their results with the community so others may learn from and build on what they have done. Share notebooks you create in a workspace automatically with researchers around the globe using GitHub."
+                ]
+            }
+        ]
+    },
+    "Treatment": {
+        "link": "/landing/research",
+        "content": []
+    },
+    "Community and Support": {
+        "link": "/landing/research",
+        "content": []
+    },
+    "Policy Related": {
+        "link": "/landing/research",
+        "content": []
+    }
+}
