@@ -73,15 +73,48 @@
         ]
     },
     "Treatment": {
-        "link": "/landing/research",
-        "content": []
+        "link": "/landing/treatment",
+        "content": [
+            {
+                "icon": "/icons/landingPages/brain.png",
+                "tooltip": "https://pubmed.ncbi.nlm.nih.gov/",
+                "title": "Data on Opioid Use Disorder",
+                "content": [
+                    "Opioid dependence is a very common drug disorder affecting 40.5 million people with a worldwide, and in 2020 opioids were involved in 60,710 overdose deaths in the US.",
+                    "Data from studies funded by HEAL are available here, including studies of new strategies and medications to prevent and treat opioid use disorder."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/pain.png",
+                "title": "Data on Chronic Pain",
+                "tooltip": "Manchikanti L, Helm S 2nd, Fellows B, et al. Opioid epidemic in the United States. Pain Physician. 2012 Jul;15(3 Suppl):ES9-38. PMID: 22786464.",
+                "content": [
+                    "More than 50 million Americans suffer from chronic pain and half of those struggle with daily pain and lack effective non-opioid alternatives for pain management. The NIH HEAL Initiative has put into place a series of highly focused studies that will expedite the development of therapies to treat chronic pain.",
+                    "Click here to discover studies on understanding, managing, and treating chronic pain."
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/download.png",
+                "title": "Search for Data",
+                "content": [
+                    "Several of the studies listed on the Discovery page provide datasets that may be downloaded for analysis. Users may download data files one at a time through the web or may use a transfer client to facilitate downloading many files or very large files. More information about downloading files is available here. "
+                ]
+            },
+            {
+                "icon": "/icons/landingPages/repository.png",
+                "title": "Repositories",
+                "content": [
+                    "As part of the NIH HEAL initiative, the HEAL Platform securely exposes data stored on multiple HEAL-approved repositories that are traditionally a part of a larger institution established for research, data archiving, and to serve data users of that organization. For more information, see here."
+                ]
+            }
+        ]
     },
     "Community and Support": {
-        "link": "/landing/research",
+        "link": "/landing/community",
         "content": []
     },
     "Policy Related": {
-        "link": "/landing/research",
+        "link": "/landing/policy",
         "content": []
     }
 }

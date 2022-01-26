@@ -5,6 +5,7 @@ import LandingBarChart from '../Charts/LandingBarChart';
 import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
 import TableComponent from '../TableComponent';
+import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
 export interface LandingPageContentProp {
     rolesPages: Record<any, any>
@@ -43,13 +44,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => (
                             What are you interested in
                         </Typography>
                     </Item>
-                    <Stack direction={"row"} justifyContent={"center"} spacing={2}>
-                        {Object.entries(rolesPages).map(entry => (
-                            <Item key={entry[0]}>
-                                <Button variant="contained" className="bg-sky-500" href={entry[1].link || '#'}>{entry[0]}</Button>
-                            </Item>
-                        ))}
-                    </Stack>
+                    <NavigationButtonGroup rolesPages={rolesPages} />
                 </Stack>
                 <Divider variant="middle" className="not-prose" />
             </div>

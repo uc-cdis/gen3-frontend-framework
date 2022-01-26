@@ -11,18 +11,21 @@ export interface RoleInfoCardProp {
 }
 
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (
-    <Card className='h-full' elevation={0} sx={{borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
+    <Card className='h-full' elevation={0} sx={{ borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
         <CardHeader
             action={(tooltip) ? (
                 <Tooltip title={tooltip} placement="top" arrow>
                     <IconButton>
                         <HelpIcon />
                     </IconButton>
-                </Tooltip>) : null
+                </Tooltip>)
+                : <IconButton disabled className='!text-transparent'>
+                    <HelpIcon />
+                </IconButton>
             }
         />
         <CardContent>
-            {icon ? <Image src={icon} alt={icon} width={60} height={60}/> : null}
+            {icon ? <Image src={icon} alt={icon} width={60} height={60} /> : null}
             <Typography className="not-prose underline" >{title}</Typography>
             {content.map((element, index) => (
                 <Typography className="not-prose" key={index} variant='body2'>{element}</Typography>

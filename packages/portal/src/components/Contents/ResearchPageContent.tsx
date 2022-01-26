@@ -2,6 +2,7 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, Grid, Typography } from '@mui/material';
 import RoleInfoCard from "../RoleInfoCard"
+import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
 export interface ResearchPageContentProp {
     rolesPages: Record<any, any>;
@@ -25,13 +26,7 @@ const ResearchPageContent = ({ rolesPages, rolePageKey }: ResearchPageContentPro
                         What are you interested in
                     </Typography>
                 </Item>
-                <Stack direction={"row"} justifyContent={"center"} spacing={2}>
-                    {Object.entries(rolesPages).map(entry => (
-                        <Item key={entry[0]}>
-                            <Button variant="contained" className="bg-sky-500" href={entry[1].link || '#'}>{entry[0]}</Button>
-                        </Item>
-                    ))}
-                </Stack>
+                <NavigationButtonGroup rolesPages={rolesPages} />
             </Stack>
         ) : null}
         {(rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
