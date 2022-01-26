@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from '@mui/material';
 import dictIcons from '../../img/icons'
 import IconComponent from '../IconComponent'
 
@@ -30,7 +31,7 @@ const NavigationBar: React.FC<NavigationProps> = ({ title, items }: NavigationPr
     return (
         <div className="flex flex-row bg-gray-100 gap-x-4">
             <div className="flex flex-row items-center align-middle font-heading ml-6">
-                {title}
+                <Link href="/" underline="none" color="inherit">{title}</Link>
             </div>
             <div className="flex-grow">{/* middle section of header */}</div>
             <div className="flex flex-row pr-8">
