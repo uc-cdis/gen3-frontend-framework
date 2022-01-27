@@ -1,38 +1,6 @@
 @tailwind base;
 @tailwind components;
 
-.tooltip_new {
-    position:relative; /* making the .tooltip span a container for the tooltip text */
-    border-bottom:1px dashed #000; /* little indicater to indicate it's hoverable */
-}
-
-.tooltip_new:before {
-    content: attr(data-text); /* here's the magic */
-    position:absolute;
-
-    /* vertically center */
-    top:50%;
-    transform:translateY(-50%);
-
-    /* move to right */
-    top:100%;
-    margin-left:15px; /* and add a small left margin */
-
-    /* basic styles */
-    width:200px;
-    padding:10px;
-    border-radius:10px;
-    background:#000;
-    color: #fff;
-    text-align:center;
-
-    display:none; /* hide by default */
-}
-
-.tooltip_new:hover:before {
-    display:block;
-}
-
 .tooltip {
     position: relative;
     display: inline-block;
@@ -43,8 +11,19 @@
     position: absolute;
     z-index: 1000;
     top: 90%;
-    transform:translateX(-80%);
-    margin-left: auto;
+    vertical-align: middle;
+    transform:translateX(-75%);
+}
+
+.has-tooltip .tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: 35%;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent gray transparent;
 }
 
 .has-tooltip .tooltip::after {
@@ -52,14 +31,34 @@
     position: absolute;
     bottom: 100%;
     left: 50%;
-    margin-left: 40%;
+    margin-left: 35%;
+    transform:translateY(1px);
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent black transparent;
+    border-color: transparent transparent white transparent;
 }
 
 .has-tooltip:hover .tooltip {
     visibility: visible;
+}
+
+.h3-typo {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .02rem;
+}
+
+.body-typo {
+    font-size: 0.875rem;
+    font-weight: normal;
+    line-height: 1.6em;
+    letter-spacing: 0.02rem;
+}
+
+.navbutton-type {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .02rem;
 }
 
 
