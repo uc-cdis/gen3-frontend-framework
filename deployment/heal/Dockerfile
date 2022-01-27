@@ -1,3 +1,5 @@
+# docker build -t heal -f deployment/heal/
+
 FROM quay.io/cdis/ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -21,7 +23,7 @@ RUN apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@7 \
+    && npm install -g npm@8 \
     && npm config set maxsockets 5
 
 RUN mkdir -p /gen3
@@ -30,4 +32,4 @@ WORKDIR /gen3
 
 RUN npm install
 
-CMD npm run dev
+CMD packages/portal/dockerrun.sh

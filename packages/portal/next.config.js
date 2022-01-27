@@ -19,7 +19,7 @@ const nextConfig = {
 
         return config
     },
-    basePath: "/landing"
+    basePath: "/ff"
 };
 
 module.exports = withPlugins([
