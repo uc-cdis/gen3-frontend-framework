@@ -8,30 +8,30 @@ const data = [
   {
     year: '2000',
     heroin: 1,
-    heroinPerdiction: [1, 1],
+    heroinPrediction: [1, 1],
     methadone: 2,
-    methadonePerdiction: [2, 2],
+    methadonePrediction: [2, 2],
   },
   {
     year: '2005',
     heroin: 5,
-    heroinPerdiction: [3, 6],
+    heroinPrediction: [3, 6],
     methadone: 4,
-    methadonePerdiction: [4, 4],
+    methadonePrediction: [4, 4],
   },
   {
     year: '2010',
     heroin: 10,
-    heroinPerdiction: [8, 13],
+    heroinPrediction: [8, 13],
     methadone: 6,
-    methadonePerdiction: [6, 8],
+    methadonePrediction: [6, 8],
   },
   {
     year: '2015',
     heroin: 14,
-    heroinPerdiction: [10, 20],
+    heroinPrediction: [10, 20],
     methadone: 14,
-    methadonePerdiction: [13, 15],
+    methadonePrediction: [13, 15],
   },
 ];
 
@@ -63,9 +63,9 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             <YAxis />
             <Legend />
             <Line type='linear' dataKey='heroin' stroke='#f70000' />
-            <Area type='linear' dataKey='heroinPerdiction' stroke='none' fill='#ff968f' fillOpacity='0.85' />
+            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#ff968f' fillOpacity='0.85' />
             <Line type='linear' dataKey='methadone' stroke='#0303ff' />
-            <Area type='linear' dataKey='methadonePerdiction' stroke='none' fill='#039eff' fillOpacity='0.85' />
+            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#039eff' fillOpacity='0.85' />
           </ComposedChart>
         </ResponsiveContainer>
         {(note.length > 0)

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 
-export interface StasticCardProp {
+export interface StatisticCardProp {
     name: string,
     value: number,
 }
 
-const StasticCard = ({ name, value }: StasticCardProp) => (
+const StatisticCard = ({ name, value }: StatisticCardProp) => (
     <Card elevation={0}>
         <CardContent>
             <Typography variant="h5" component="div">
@@ -20,4 +20,4 @@ const StasticCard = ({ name, value }: StasticCardProp) => (
 );
 
 
-export default StasticCard;
+export default StatisticCard;
