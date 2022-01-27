@@ -10,8 +10,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ top, nav }: HeaderProps) => {
     return (
         <div className="w-100">
-            <TopBar topItems={top.topItems}></TopBar>
-            <NavigationBar title={nav.title} items={nav.items} ></NavigationBar>
+            <TopBar topItems={top.items}></TopBar>
+            <NavigationBar logo={nav.logo} title={nav.title} items={nav.items} ></NavigationBar>
         </div>
     );
 };
