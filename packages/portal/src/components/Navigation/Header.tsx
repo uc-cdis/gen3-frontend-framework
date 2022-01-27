@@ -1,13 +1,13 @@
-import React, { PropsWithChildren,ReactNode } from "react";
-import TopBar, {TopBarProps}  from "./TopBar";
-import NavigationBar, {NavigationProps} from "./NavigationBar";
+import React from "react";
+import TopBar from "./TopBar";
+import NavigationBar from "./NavigationBar";
 
 interface HeaderProps {
-    readonly top: Record<any,any>
-    readonly nav:  Record<any,any>
+    readonly top: Record<any, any>
+    readonly nav: Record<any, any>
 }
 
-const Header: React.FC<HeaderProps> = ({ top, nav} : HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ top, nav }: HeaderProps) => {
     return (
         <div className="w-100">
             <TopBar topItems={top.topItems}></TopBar>

@@ -1,11 +1,13 @@
 const mdx = require('@mdx-js/mdx')
 const plugin = require('tailwindcss/plugin');
+const colors = require('tailwindcss/colors')
 
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx,md,mdx}'],
   theme: {
     extend: {
       colors : {
+        ...colors,
         "coal" : {
           DEFAULT: "#4A4A4A",
         }

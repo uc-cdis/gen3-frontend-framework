@@ -4,7 +4,7 @@ export interface TopBarProps {
     readonly topItems: [Record<string, any>];
 }
 
-const TopBar: React.FC<TopBarProps> = ({ topItems }: TopBarProps) => {
+const TopBar: React.FC<TopBarProps> = () => {
     return (
         <div className='w-100'>
             <header className='top-bar__header'>
@@ -16,5 +16,3 @@ const TopBar: React.FC<TopBarProps> = ({ topItems }: TopBarProps) => {
 };
 
 export default TopBar;
-
-

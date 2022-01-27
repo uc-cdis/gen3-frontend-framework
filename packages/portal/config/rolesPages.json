@@ -1,0 +1,174 @@
+{
+    "Research": {
+        "link": "/landing/research",
+        "content": [
+            {
+                "icon": "/icons/rolesPages/brain.png",
+                "tooltip": "https://pubmed.ncbi.nlm.nih.gov/",
+                "title": "Data on Opioid Use Disorder",
+                "content": [
+                    "Opioid dependence is a very common drug disorder affecting 40.5 million people with a worldwide, and in 2020 opioids were involved in 60,710 overdose deaths in the US.",
+                    "Data from studies funded by HEAL are available here, including studies of new strategies and medications to prevent and treat opioid use disorder."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/pain.png",
+                "title": "Data on Chronic Pain",
+                "tooltip": "Manchikanti L, Helm S 2nd, Fellows B, et al. Opioid epidemic in the United States. Pain Physician. 2012 Jul;15(3 Suppl):ES9-38. PMID: 22786464.",
+                "content": [
+                    "More than 50 million Americans suffer from chronic pain and half of those struggle with daily pain and lack effective non-opioid alternatives for pain management. The NIH HEAL Initiative has put into place a series of highly focused studies that will expedite the development of therapies to treat chronic pain.",
+                    "Click here to discover studies on understanding, managing, and treating chronic pain."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/download.png",
+                "title": "Download Data",
+                "content": [
+                    "Several of the studies listed on the Discovery page provide datasets that may be downloaded for analysis. Users may download data files one at a time through the web or may use a transfer client to facilitate downloading many files or very large files. More information about downloading files is available here."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/repository.png",
+                "title": "Repositories",
+                "content": [
+                    "As part of the NIH HEAL initiative, the HEAL Platform securely exposes data stored on multiple HEAL-approved repositories that are traditionally a part of a larger institution established for research, data archiving, and to serve data users of that organization. For more information, see here."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/database.png",
+                "title": "Access to Datasets",
+                "content": [
+                    "While many datasets on the HEAL Platform are available for public use pending simple authentication, some datasets require further authorization to attain access. Please see here to learn more about gaining access to restricted datasets."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/analyze-local.png",
+                "title": "Analyze Data You Have Downloaded",
+                "content": [
+                    "The HEAL Platform provides data that are organized, formatted and documented in a way to facilitate use of commonly used analytic software and techniques. The Platform also provides opportunities for you to share your results through the Platform, and can feature any publications arising from your analyses on the Publications Page. Click here to read more."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/browse.png",
+                "title": "Browse Example Analyses",
+                "content": [
+                    "Browse under the “Example Analysis” tab for recent examples and tutorial analysis notebooks that leverage datasets on the HEAL Platform in Python and R to learn how to analyze and visualize data or let them become the starting point of your own custom analysis. The notebooks are rendered in static html on the “Example Analyses” tab but can be also found in the workspaces in interactive mode. The list will be regularly updated with new and exciting tutorial data analysis notebooks, as more datasets are published and brought together in novel ways on the HEAL Platform. Read further here."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/analyze-workspace.png",
+                "title": "Analyzing Data in a Workspace",
+                "content": [
+                    "The HEAL platform offers a secure and cost-effective cloud-computing environment for analyzing data by yourself or together with others. Workspaces provide direct access to datasets, as well as common software tools including RStudio, Stata, and Python within a Jupyter Notebook interface.More information on workspaces is available here.",
+                    "NIH-funded researchers may take advantage of the NIH Science and Technology Research Infrastructure for Discovery, Experimentation, and Sustainability (STRIDES) credit. Click here to request NIH STRIDES credit for the use of our workspaces."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/share.png",
+                "title": "Share Your Results",
+                "content": [
+                    "Researchers analyzing data obtained through the HEAL Platform are encouraged to share their results with the community so others may learn from and build on what they have done. Share notebooks you create in a workspace automatically with researchers around the globe using GitHub."
+                ]
+            }
+        ]
+    },
+    "Treatment": {
+        "link": "/landing/treatment",
+        "content": [
+            {
+                "icon": "/icons/rolesPages/medication.png",
+                "title": "Novel Medications",
+                "content": [
+                    "The NIH HEAL Initiative is accelerating research for novel medications, treatment options, and devices to treat all aspects of the opioid addiction cycle such as chronic use, withdrawal symptoms, craving, relapse, and overdose. Novel medications include new formulations of existing medications to treat Opioid Use Disorder (OUD), intervention for respiratory depression, implant medications to treat relapse, and anti-opioid vaccines*. Click here to discover new datasets on Novel Medications."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/therapy.png",
+                "title": "Therapies",
+                "content": [
+                    "The NIH HEAL Initiative is accelerating research for novel medications, treatment options, and devices to treat all aspects of the opioid addiction cycle such as chronic use, withdrawal symptoms, craving, relapse, and overdose. Novel medications include new formulations of existing medications to treat Opioid Use Disorder (OUD), intervention for respiratory depression, implant medications to treat relapse, and anti-opioid vaccines*. Click here to discover new datasets on Novel Medications."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/behavior.png",
+                "title": "Behavioral Health",
+                "content": [
+                    "Increasing access to Integrated Behavioral Health treatment remains crucial among the OUD treatment landscape, particularly after reports have shown that the number of mental health patients has increased by 40.5% between 2016 and 2020*. Integrated Behavioral Health involves a team of providers, physicians, nurse practitioners, clinicians, psychiatrists, counselors, community health workers, home visitors, and others to form a safety net for the patients*. Click here to discover datasets related to Behavioral Health."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/diagnose.png",
+                "title": "Diagnosing Opioid Use Disorders",
+                "content": [
+                    "In 2017, an estimated 1.7 million people in the United States suffered from substance use disorders related to prescription opioid pain relievers, and 652,000 suffered from a heroin use disorder (not mutually exclusive)*. To confirm a diagnosis of OUD, at least two items described in the “Diagnostic and Statistical Manual of Mental Disorders-DSM”* published by the American Psychiatric Association have to be observed within a 12-month period. Click here to find more on how the HEAL Initiative accelerates research to find new methods for diagnosing chronic pain related conditions, innovative medications and technologies to treat and reduce the cases of opioid use disorders, and explore new studies addressing these issues here."
+                ]
+            }
+        ]
+    },
+    "Community and Support": {
+        "link": "/landing/community",
+        "content": [
+            {
+                "icon": "/icons/rolesPages/model.png",
+                "title": "Studies of Support Models",
+                "content": [
+                    "Technology has opened a new frontier in treating mental health and substance use disorders by developing new apps to manage medications or teach coping skills. The pioneering BRIGHTEN study* has for example shown that the modern technology can both deliver treatment interventions and conduct a randomized controlled trial (RCT). Read here about how the HEAL Initiative is funding research on new strategies to prevent and treat opioid addiction and click here to discover related datasets on the Discovery Page."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/mental.png",
+                "title": "Mental Health and Opioid Use Disorder",
+                "content": [
+                    "Mental health and substance use disorders affect people from all walks of life and all age groups. These illnesses are common, recurrent, and often serious, but they are treatable, and many people do recover. The coexistence of both a mental health and a substance use disorder is referred to as co-occurring disorders*. Click here to see which datasets are available on the HEAL Platform about Mental Health and Opioid Use Disorder."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/chronic.png",
+                "title": "Chronic Pain Associated Conditions",
+                "content": [
+                    "Pain is expressed when nerve impulses alert the brain about tissue damage, which can be aggravated by psychological and social factors. Chronic pain is defined as pain that persists longer than normal healing time* and has been linked to numerous physical conditions such as lower back pain, arthritis, headache, multiple sclerosis, fibromyalgia, but also to mental conditions such as depression and anxiety*. Thus, chronic pain patients are often treated medically, physically, and emotionally. Click here to discover data on the HEAL Platform that are related to chronic pain associated conditions, such as clinical, preclinical and translational research in pain management, novel medications, and new prevention strategies."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/intervention.png",
+                "title": "Community Based Intervention",
+                "content": [
+                    "Accelerating action in research, evaluation, and practice of effective community-based prevention could bring a measure of relief for those who struggle with Substance Use Disorders in their daily life. Community-level interventions include public education, clinician-patient partnerships, and community-based medication disposal programs*. In addition, Opioid Use Disorders are remarkably common among the criminal justice population*. Therefore, the Justice Community Opioid Innovation Network (JCOIN), funded by the NIH HEAL Initiative, will study approaches to increase high-quality care for people with opioid misuse and OUD in justice settings. JCOIN will test strategies to expand effective treatment and care in partnership with local and state justice systems and community-based treatment providers. Click here to read more about JCOIN and here about studies related to community based interventions."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/group.png",
+                "title": "Engaging Community Groups",
+                "content": [
+                    "Implementing changes to counteract the opioid crisis needs to not only happen on the research and policy-level; research needs to translate into practice as making an impact on the lives of people with OUD happens at the community-level. Community organizations, social service organization leaders, and local supporters may be interested in the following: where are the nearest health centers? Who is coordinating care for women and children? What are best practices and regional approaches? Where can I find primary care providers and peer support specialists for evidence-based Opioid Use Disorder care plans and treatment solutions? Click here to learn how the HEAL Platform can help guide you."
+                ]
+            }
+        ]
+    },
+    "Policy Related": {
+        "link": "/landing/policy",
+        "content": [
+            {
+                "icon": "/icons/rolesPages/state.png",
+                "title": "Look for Data by State",
+                "content": [
+                    "Policies and state laws are key to maximize the benefits of new implementations from public health departments addressing the opioid crisis and thus have a significant impact on the lives of those struggling with chronic pain or substance use disorders. As an example, the prescription drug monitoring program (PDMP) is an electronic database that tracks controlled substance prescriptions in a state to improve opioid prescribing, inform clinical practice, and protect patients at risk. Such implementations will be most effective if states effectuate policies that require providers to a state PDMP prior to prescribing certain controlled substances. The HEAL Platform shares research about new and innovative implementations and other useful datasets that inform evidence-based decisions on state policies. Click here to find datasets that may inform policy updates by filtering datasets by U.S. state."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/new.png",
+                "title": "New Data",
+                "content": [
+                    "The HEAL Platform frequently shares new and state-of-the-art research regarding treatment, prevention, intervention, overdose, recovery, and criminal justice populations. New data will help advance laws and policies to support public health and safety measures, which ultimately leads to more education, stigma reduction, more safety net measures, and one step closer mitigating the public health crisis around opioid addiction and chronic pain. Discover the latest policy-related datasets here."
+                ]
+            },
+            {
+                "icon": "/icons/rolesPages/effectiveness.png",
+                "title": "Effectiveness",
+                "content": [
+                    "249 million prescriptions for opioids were written by healthcare providers in 2013. After studies have found that patients prescribed higher opioid dosages are at higher risk of overdose death, the CDC advised providers to calculate and prescribe the lowest effective dose. The HEAL Platform will help policy makers and public health departments stay informed on newest clinical trials about effectiveness of substance use disorder treatments and therapies. Click here to find out about datasets regarding effectiveness."
+                ]
+            }
+        ]
+    }
+}
