@@ -103,3 +103,13 @@ For example,
 `npm run test:int` will run integration tests.
 
 `npm run test:all` will run both unit and integration tests.
+
+### Deployment
+
+<details>
+  <summary>HEAL</summary>
+
+    docker build -t heal -f deployment/heal/Dockerfile .
+    docker run -p 3000:3000 -it heal`
+
+</details>
