@@ -20,7 +20,6 @@ const IndexPage = ({ top, navigation }: Props) => {
     )
 };
 
-// should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getServerSideProps: GetServerSideProps = async () => {
     return {
         redirect: {
