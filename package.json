@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "lerna run --parallel build",
+    "compile": "lerna run --parallel compile",
     "dev": "lerna run --parallel dev",
     "start": "lerna run --parallel start",
     "test": "echo \"Error: no test specified\" && exit 1"
