@@ -106,10 +106,8 @@ For example,
 
 ### Deployment
 
-<details>
-  <summary>HEAL</summary>
+`docker build -t frontend .` will build a container with all available packages built
 
-    docker build -t heal -f deployment/heal/Dockerfile .
-    docker run -p 3000:3000 -it heal`
+`docker run -p 3000:3000 -it frontend` will run the container from above.
 
-</details>
+The container can be viewed at `localhost:3000/ff`
