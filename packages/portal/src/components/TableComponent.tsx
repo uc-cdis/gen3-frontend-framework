@@ -5,7 +5,7 @@ import BorderComponent from './BorderComponent';
 
 interface TableComponentProp {
     title: string,
-    rows: Array<Object>,
+    rows: Array<any>,
     columns: Array<GridColDef>,
 }
 
