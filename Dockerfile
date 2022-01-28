@@ -26,13 +26,19 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /gen3
 COPY . /gen3
-WORKDIR /gen3
 
+WORKDIR /gen3/packages/core
 RUN npm install
-RUN npm run package-install
-RUN npm run compile
+RUN npm compile
 
-RUN npm install
-RUN npm run build
 
-CMD npm run start
+# # root packages
+# RUN npm install
+# RUN npm run package-install
+# RUN npm run compile
+
+# RUN rm -rf node_modules/ package-lock.json
+# RUN npm install @gen3/core
+# RUN npm run build
+
+# CMD npm run start
