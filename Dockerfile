@@ -1,6 +1,3 @@
-# docker build -t heal -f deployment/heal/Dockerfile .
-# docker run -p 3000:3000 -it heal
-
 FROM quay.io/cdis/ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,11 +26,9 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /gen3
 COPY . /gen3
-# RUN mv /gen3/packages/portal/dockerrun.sh /gen3
 WORKDIR /gen3
 
 RUN npm install
-
-# CMD /gen3/dockerrun.sh
 RUN npm run build
+
 CMD npm run start
