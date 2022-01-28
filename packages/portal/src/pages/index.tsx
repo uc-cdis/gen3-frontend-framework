@@ -1,9 +1,7 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
-import fs from 'fs';
 import Header from "../components/Navigation/Header";
 import Footer from "../components/Navigation/Footer";
-import { tabScrollButtonClasses } from "@mui/material";
 interface Props {
     navigation: Record<any, any>;
     top: Record<any, any>
@@ -23,11 +21,11 @@ const IndexPage = ({ top, navigation }: Props) => {
 };
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
     return {
         redirect: {
             destination: '/landing',
-            permanent: true
+            permanent: false
           }
     }
 }
