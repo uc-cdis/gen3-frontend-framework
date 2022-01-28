@@ -29,6 +29,10 @@ COPY . /gen3
 WORKDIR /gen3
 
 RUN npm install
+RUN npm run package-install
+RUN npm run compile
+
+RUN npm install
 RUN npm run build
 
 CMD npm run start
