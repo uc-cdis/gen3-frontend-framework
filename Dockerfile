@@ -1,3 +1,6 @@
+# docker build -t ff .
+# docker run -p 3000:3000 -it ff
+
 FROM quay.io/cdis/ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -26,24 +29,10 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /gen3
 COPY . /gen3
-
 WORKDIR /gen3/
+
 RUN npm install
-# RUN npm run package-install
 RUN npm run compile
 RUN npm run build
-# RUN npm run lerna exec --scope core npm install && npm run compile && npm run build
-# WORKDIR /gen3/packages/core
-# RUN npm install
-# RUN npm run compile
-# RUN npm run build
-
-# WORKDIR /gen3/
-# root packages
-# RUN npm install
-
-# WORKDIR /gen3/portal
-# RUN npm install
-# RUN npm run build
 
 CMD npm run start
