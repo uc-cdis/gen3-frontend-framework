@@ -19,7 +19,7 @@ const nextConfig = {
 
         return config
     },
-    basePath: "/ff"
+    basePath: process.env.BASE_PATH || ""
 };
 
 module.exports = withPlugins([

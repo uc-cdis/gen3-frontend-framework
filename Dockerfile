@@ -35,4 +35,6 @@ RUN npm install
 RUN npm run compile
 RUN npm run build
 
+ENV BASE_PATH="/ff"
+
 CMD npm run start
