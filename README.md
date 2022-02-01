@@ -103,3 +103,13 @@ For example,
 `npm run test:int` will run integration tests.
 
 `npm run test:all` will run both unit and integration tests.
+
+### Deployment
+
+`docker build -t frontend .` will build a container with all available packages built
+
+`docker run -p 3000:3000 -it frontend` will run the container from above.
+
+The container can be viewed at `localhost:3000{BASE_PATH | /}`
+
+Note that the base path is configurable with the `BASE_PATH` environment variable. It is left empty by default when running locally
