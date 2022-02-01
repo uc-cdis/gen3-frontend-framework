@@ -110,4 +110,6 @@ For example,
 
 `docker run -p 3000:3000 -it frontend` will run the container from above.
 
-The container can be viewed at `localhost:3000/ff`
+The container can be viewed at `localhost:3000{BASE_PATH | /ff}`
+
+Note that the base path is configurable with the `BASE_PATH` environment variable. It is set to `/ff` in the container, but left empty by default when running locally
