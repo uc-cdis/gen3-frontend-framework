@@ -31,7 +31,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => (
             <Stack spacing={2}>
                 <Item>See here an overview of the HEAL platform</Item>
                 <Item>
-                    <Button variant="contained" className="bg-blue-800">About HEAL</Button>
+                    <Button variant="contained" href="/landing/about-heal" className="bg-blue-800">About HEAL</Button>
                 </Item>
             </Stack>
         </Stack>

@@ -24,12 +24,12 @@ const dictIcons = {
   workspace: (height, customedStyles) => (
     <IcoWorkspace height={height} style={{ ...customedStyles }} />
   ),
-  uchicago: (height, customedStyles) => (
-    <IcoSignature
-      height={height}
-      style={{ ...customedStyles }}
-    />
-  ),
+  // uchicago: (height, customedStyles) => (
+  //   <IcoSignature
+  //     height={height}
+  //     style={{ ...customedStyles }}
+  //   />
+  // ),
 };
 
 export default dictIcons;

@@ -1,0 +1,50 @@
+{
+    "topImages": [
+        {
+            "src": "/images/normal_u1.png",
+            "alt": "infographic1"
+        },
+        {
+            "src": "/images/normal_u2.png",
+            "alt": "infographic2"
+        },
+        {
+            "src": "/images/normal_u3.png",
+            "alt": "infographic3"
+        }
+    ],
+    "leftDropdowns": [
+        {
+            "title": "BROWSE",
+            "content": [
+                "Browse studies and data related to a question you have",
+                "Keep up to date on cutting edge research going on now, before the data is even collected"
+            ]
+        },
+        {
+            "title": "FIND",
+            "content": [
+                "Information regarding addiction and different studies available",
+                "Policy (go here)",
+                "Computational Space (go here)",
+                "More information regarding the platform"
+            ]
+        }
+    ],
+    "rightDropdowns": [
+        {
+            "title": "CAPABILITIES",
+            "content": [
+                "Example questions you may want to ask/answer on the HEAL Platform",
+                "Tutorial Notebooks: Example analyses a data analyst might perform using data on the HP"
+            ]
+        },
+        {
+            "title": "HELP",
+            "content": [
+                "Documentation",
+                "For more help, contact us at heal-support@datacommons.io"
+            ]
+        }
+    ]
+}
