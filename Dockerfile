@@ -24,14 +24,13 @@ RUN apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@8 \
-    && npm config set maxsockets 5
+    && npm install -g npm@8
 
 RUN mkdir -p /gen3
 COPY . /gen3
 WORKDIR /gen3/
 
-RUN npm install
+RUN npm ci
 RUN npm run compile
 RUN npm run build
 
