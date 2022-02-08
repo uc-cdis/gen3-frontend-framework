@@ -5,9 +5,9 @@ FROM quay.io/cdis/ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
+ARG BASE_PATH
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libssl1.1 \
     libgnutls30 \
@@ -32,6 +32,5 @@ WORKDIR /gen3/
 
 RUN npm ci
 RUN npm run compile
-RUN npm run build
 
-CMD npm run start
+CMD bash ./start.sh

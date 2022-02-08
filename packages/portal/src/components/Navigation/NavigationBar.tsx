@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from 'next/router'
 import { Link } from '@mui/material';
 import dictIcons from '../../img/icons'
 import IconComponent from '../IconComponent'
@@ -28,10 +29,11 @@ export interface NavigationProps {
 }
 
 const NavigationBar: React.FC<NavigationProps> = ({ title, items }: NavigationProps) => {
+    const { basePath } = useRouter();
     return (
         <div className="flex flex-row bg-gray-100 gap-x-4">
             <div className="flex flex-row items-center align-middle font-heading ml-6">
-                <Link href="/" underline="none" color="inherit">{title}</Link>
+                <Link href={`${basePath}/`} underline="none" color="inherit">{title}</Link>
             </div>
             <div className="flex-grow">{/* middle section of header */}</div>
             <div className="flex flex-row pr-8">

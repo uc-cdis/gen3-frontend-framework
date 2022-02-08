@@ -15,16 +15,17 @@ const Item = styled('div')(({ theme }) => ({
 }));
 
 const NavigationButtonGroup = ({ rolesPages }: NavigationButtonGroupProp) => {
-    const router = useRouter()
+    const { asPath, basePath } = useRouter();
     return (
-    <Stack direction={"row"} justifyContent={"center"} spacing={2}>
-        {Object.entries(rolesPages).map(entry => (
-            <Item key={entry[0]
-            }>
-                <Button variant="contained" className={(router.asPath === entry[1].link) ? "bg-rose-500" : "bg-sky-500"} href={entry[1].link || '#'}>{entry[0]}</Button>
-            </Item>
-        ))}
-    </Stack>
-)};
+        <Stack direction={"row"} justifyContent={"center"} spacing={2}>
+            {Object.entries(rolesPages).map(entry => (
+                <Item key={entry[0]
+                }>
+                    <Button variant="contained" className={(asPath === entry[1].link) ? "bg-rose-500" : "bg-sky-500"} href={`${basePath}${entry[1].link}` || `${basePath}/#`}>{entry[0]}</Button>
+                </Item>
+            ))}
+        </Stack>
+    )
+};
 
 export default NavigationButtonGroup;
