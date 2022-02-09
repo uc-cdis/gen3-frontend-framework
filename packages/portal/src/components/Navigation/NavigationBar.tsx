@@ -56,7 +56,6 @@ const NavigationBar: React.FC<NavigationProps> = ({ logo = undefined, title = un
                 <div className="border-l-1 border-gray-400 opacity-80"/>
                 </div>
             </div>
-        </div>
     );
 };
 

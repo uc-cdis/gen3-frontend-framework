@@ -27,7 +27,7 @@ export interface TopBarProps {
     readonly topItems: [Record<string, any>];
 }
 
-const TopBar: React.FC<TopBarProps> = () => {
+const TopBar: React.FC<TopBarProps> = ( { topItems} : TopBarProps) => {
     return (
         <div >
             <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-heal-secondary'>
