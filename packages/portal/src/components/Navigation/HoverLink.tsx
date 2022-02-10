@@ -5,20 +5,20 @@ interface ClassProps {
     readonly className?: string;
 }
 
-interface HoverLinkProps extends ClassProps{
+interface HoverLinkProps extends ClassProps {
     readonly href: string;
 }
 
-const HoverLink: React.FC<HoverLinkProps> = ({  className,
-                                                 href,
-                                                 children,
-                                             }: PropsWithChildren<HoverLinkProps>) => {
+const HoverLink: React.FC<HoverLinkProps> = ({ className,
+    href,
+    children,
+}: PropsWithChildren<HoverLinkProps>) => {
     return (
-        <span className = {className}>
-      <Link href={href}  passHref={true}>
-          {children}
-      </Link>
-    </span>
+        <span className={className}>
+            <Link href={href} passHref>
+                {children}
+            </Link>
+        </span>
     );
 };
 

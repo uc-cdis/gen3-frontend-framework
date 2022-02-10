@@ -1,6 +1,7 @@
 import React from "react";
 import HoverLink from "./HoverLink";
 import Image from 'next/image'
+import { useRouter } from "next/router";
 import { Icon } from '@iconify/react'
 
 export interface NavigationButtonProps {
@@ -34,11 +35,13 @@ export interface NavigationProps {
 }
 
 const NavigationBar: React.FC<NavigationProps> = ({ logo = undefined, title = undefined, items} : NavigationProps) => {
+    const { basePath } = useRouter();
+
     return (
             <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
                 <div className="flex flex-row items-center align-middle font-sans font-bold tracking-wide text-xl font-sans ml-[20px] mr-[20px]">
                     {logo && <HoverLink href={"/"}>
-                        <Image className="pr-[6px] pt-4" height={50} width={82}  src={logo} alt={logo}/>
+                        <Image className="pr-[6px] pt-4" height={50} width={82}  src={`${basePath}${logo}`} alt={logo}/>
                     </HoverLink >  }
                     {(logo && title ) && <div className="border-solid border-gen3-smoke border-l-1 ml-[2px]  mr-[7px] h-[64px] w-1 "/> }
                     <HoverLink className="font-montserrat h3-typo pt-[4px] text-gen3-coal hover:text-gen3-black hover:border-gen3-highlight_orange hover:border-b-3" href={"/"}>{`${title}`}</HoverLink>
