@@ -1,9 +1,7 @@
 import React from "react";
-import { useRouter } from 'next/router'
-import { Link } from '@mui/material';
-import dictIcons from '../../img/icons'
-import IconComponent from '../IconComponent'
-
+import HoverLink from "./HoverLink";
+import Image from 'next/image'
+import { Icon } from '@iconify/react'
 
 export interface NavigationButtonProps {
     readonly icon: string;
@@ -12,41 +10,53 @@ export interface NavigationButtonProps {
     readonly name: string;
 }
 
-const NavigationButton: React.FC<NavigationButtonProps> = ({ icon, tooltip, href, name }: NavigationButtonProps) => {
+const NavigationButton: React.FC<NavigationButtonProps> = ({tooltip, icon, href, name} : NavigationButtonProps ) => {
     return (
+        <div className="has-tooltip relative h-[80px]">
         <a className="content-center" href={href} >
-            <div className="flex flex-col flex-nowrap p-2 border-l-1 border-gray-400 justify-items-center font-heading opacity-80">
-                <IconComponent height="27px" iconName={icon} dictIcons={dictIcons} />
-                <p className="content-center pt-2">{name}</p>
-            </div>
+        <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-heal-primary opacity-80 hover:opacity-100">
+            <Icon height="27px" icon={icon} className="mt-[2px] ml-[4px]"/>
+            <p className="content-center pt-1.5 font-montserrat body-typo">{name}</p>
+        </div>
         </a>
+            <div
+                className="opacity-100 tooltip p-5 m-5 w-64 bg-white border-gray-400 border border-solid rounded text-left text-gen3-gray text-opacity-80 align-content-center">
+                {tooltip}
+            </div>
+        </div>
     )
 }
 
 export interface NavigationProps {
-    readonly title: string;
+    readonly logo?:string;
+    readonly title?:string;
     readonly items: [NavigationButtonProps];
 }
 
-const NavigationBar: React.FC<NavigationProps> = ({ title, items }: NavigationProps) => {
-    const { basePath } = useRouter();
+const NavigationBar: React.FC<NavigationProps> = ({ logo = undefined, title = undefined, items} : NavigationProps) => {
     return (
-        <div className="flex flex-row bg-gray-100 gap-x-4">
-            <div className="flex flex-row items-center align-middle font-heading ml-6">
-                <Link href={`${basePath}/`} underline="none" color="inherit">{title}</Link>
-            </div>
-            <div className="flex-grow">{/* middle section of header */}</div>
-            <div className="flex flex-row pr-8">
-                {items.map((x, index) => {
+            <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
+                <div className="flex flex-row items-center align-middle font-sans font-bold tracking-wide text-xl font-sans ml-[20px] mr-[20px]">
+                    {logo && <HoverLink href={"/"}>
+                        <Image className="pr-[6px] pt-4" height={50} width={82}  src={logo} alt={logo}/>
+                    </HoverLink >  }
+                    {(logo && title ) && <div className="border-solid border-gen3-smoke border-l-1 ml-[2px]  mr-[7px] h-[64px] w-1 "/> }
+                    <HoverLink className="font-montserrat h3-typo pt-[4px] text-gen3-coal hover:text-gen3-black hover:border-gen3-highlight_orange hover:border-b-3" href={"/"}>{`${title}`}</HoverLink>
+                </div>
+                <div className="flex-grow">{/* middle section of header */}</div>
+                <div className="flex flex-row pl-[30px] pr-[20px] ">
+                    { items.map((x, index) => {
                     return (
-                        <div key={`${x.name}-${index}`}>
-                            <NavigationButton icon={x.icon} tooltip={x.tooltip} href={x.href} name={x.name} />
+                        <div key={`${x.name}-${index}`} >
+                            <div className="border-l-1 border-gen3-smoke">
+                            <NavigationButton tooltip={x.tooltip} icon = {x.icon} href={x.href} name={x.name} />
+                            </div>
                         </div>)
                 })
                 }
-                <div className="border-l-1 border-gray-400 opacity-80" />
+                <div className="border-l-1 border-gray-400 opacity-80"/>
+                </div>
             </div>
-        </div>
     );
 };
 

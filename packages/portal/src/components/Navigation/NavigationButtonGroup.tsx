@@ -2,9 +2,10 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Stack, Button } from '@mui/material';
 import { useRouter } from 'next/router'
+import { RoleContentEntry } from "../Contents/RolesPageContent";
 
 export interface NavigationButtonGroupProp {
-    rolesPages: Record<any, any>
+    rolesPages: Record<string, RoleContentEntry>;
 }
 
 const Item = styled('div')(({ theme }) => ({

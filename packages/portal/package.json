@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev --port 3003",
     "build": "next build",
     "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build_icons": "node --trace-warnings src/tools/build_icon_bundle.mjs --inpath=config/icons --outpath=config/icons"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,8 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.15.0",
     "@emotion/styled": "^11.6.0",
-    "@gen3/core": "file:../core",
+    "@iconify/types": "^1.0.12",
+    "@mdx-js/loader": "^1.6.22",
     "@mdx-js/mdx": "^1.6.22",
     "@mui/icons-material": "^5.3.1",
     "@mui/material": "^5.2.8",
@@ -32,6 +34,7 @@
     "next": "^12.0.7",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.4",
+    "rc-tooltip": "^5.1.1",
     "react": "^17.0.2",
     "react-chartjs-2": "^4.0.0",
     "react-dom": "^17.0.2",
@@ -42,12 +45,15 @@
     "recharts": "^2.1.8",
     "sharp": "^0.30.0",
     "styled-components": "^5.3.3",
-    "typeface-montserrat": "^1.1.13"
+    "typeface-montserrat": "^1.1.13",
+    "typeface-source-sans-pro": "^1.1.13"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@next/eslint-plugin-next": "^12.0.8",
+    "@iconify/react": "^3.1.2",
+    "@iconify/tools": "^2.0.3",
     "@svgr/webpack": "^6.1.2",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.4.0",

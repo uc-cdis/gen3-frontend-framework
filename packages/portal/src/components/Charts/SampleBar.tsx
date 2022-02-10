@@ -33,6 +33,7 @@ export const SampleBar:React.FC<unknown> = () => {
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (ctx) {
+
             chartRef.current = new Chart(ctx, {
                 type: "bar",
                 data: data,

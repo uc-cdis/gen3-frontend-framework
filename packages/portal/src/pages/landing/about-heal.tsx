@@ -1,22 +1,21 @@
 import { GetStaticProps } from "next";
 
 import fs from 'fs';
-import Header from "../../components/Navigation/Header";
+import Header, { HeaderProps } from "../../components/Navigation/Header";
 import Footer from "../../components/Navigation/Footer";
-import AboutHEALPageContent from "../../components/Contents/AboutHEALPageContent"
 
-interface Props {
-    navigation: Record<any, any>;
-    top: Record<any, any>;
-    topImages: Record<any, any>;
-    leftDropdowns: Record<any, any>;
-    rightDropdowns: Record<any, any>;
+import AboutHEALPageContent, { ImageEntry, DropdownEntry } from "../../components/Contents/AboutHEALPageContent"
+
+interface Props extends HeaderProps{
+    topImages: ReadonlyArray<ImageEntry>;
+    leftDropdowns: ReadonlyArray<DropdownEntry>;
+    rightDropdowns: ReadonlyArray<DropdownEntry>;
 }
 
 const PolicyPage = ({ top, navigation, topImages, leftDropdowns, rightDropdowns }: Props) => {
     return (
         <div className="flex flex-col">
-            <Header top={top} nav={navigation} />
+            <Header top={top} navigation={navigation} />
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
                     <AboutHEALPageContent topImages={topImages} leftDropdowns={leftDropdowns} rightDropdowns={rightDropdowns} />

@@ -7,7 +7,7 @@ export interface RoleInfoCardProp {
     icon?: string,
     tooltip?: string,
     title: string,
-    content: Array<string>,
+    content: ReadonlyArray<string>,
 }
 
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (

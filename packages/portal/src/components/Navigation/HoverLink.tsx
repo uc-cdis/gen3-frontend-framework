@@ -1,17 +1,21 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 
-interface HoverLinkProps {
+interface ClassProps {
+    readonly className?: string;
+}
+
+interface HoverLinkProps extends ClassProps{
     readonly href: string;
 }
 
-const HoverLink: React.FC<HoverLinkProps> = ({
+const HoverLink: React.FC<HoverLinkProps> = ({  className,
                                                  href,
                                                  children,
                                              }: PropsWithChildren<HoverLinkProps>) => {
     return (
-        <span className="hover:bg-blue-800">
-      <Link href={href}>
+        <span className = {className}>
+      <Link href={href}  passHref={true}>
           {children}
       </Link>
     </span>

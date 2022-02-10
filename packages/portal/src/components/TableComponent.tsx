@@ -3,6 +3,8 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 import BorderComponent from './BorderComponent';
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 interface TableComponentProp {
     title: string,
     rows: Array<any>,
