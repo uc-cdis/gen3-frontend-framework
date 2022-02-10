@@ -30,7 +30,6 @@ RUN mkdir -p /gen3
 COPY . /gen3
 WORKDIR /gen3/
 
-RUN npm install -D @swc/cli @swc/core @next/swc-linux-x64-gnu --workspace=packages/portal
 RUN npm ci
 RUN npm run compile
 
