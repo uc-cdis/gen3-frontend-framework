@@ -2,11 +2,17 @@ import * as React from 'react';
 import { useRouter } from 'next/router'
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Grid, Typography } from '@mui/material';
-import RoleInfoCard from "../RoleInfoCard"
+import RoleInfoCard, {RoleInfoCardProp} from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
+
+export interface RoleContentEntry {
+    readonly content: ReadonlyArray<RoleInfoCardProp>;
+    readonly link:string;
+}
+
 export interface RolesPageContentProp {
-    rolesPages: Record<any, any>;
+    rolesPages: Record<string, RoleContentEntry>;
     rolePageKey: string;
 }
 
@@ -35,7 +41,7 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
             ) : null}
             {(rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
                 <Grid container justifyContent="space-evenly" spacing={2}>
-                    {rolesPages[rolePageKey].content.map((entry: { icon: string | undefined; tooltip: string | undefined; title: string; content: string[]; }) => (
+                    {rolesPages[rolePageKey].content.map((entry: RoleInfoCardProp) => (
                         <Grid item key={entry.title} xs={4}>
                             <Item className='h-full'>
                                 <RoleInfoCard

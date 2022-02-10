@@ -1,20 +1,14 @@
 import { PropsWithChildren } from "react";
-import Link from 'next/link';
 import {GetStaticProps} from "next";
 import fs from "fs";
-import Header from "./Navigation/Header";
-import LandingPageMDX from "../../content/landing.mdx";
+import Header, { HeaderProps } from "./Navigation/Header";
 import Footer from "./Navigation/Footer";
 
-interface Props {
-    navigation: Record<any, any>;
-    top: Record<any, any>
-}
 
- const PageLayout = ({navigation, top, children } : PropsWithChildren<Props>) =>  {
+ const PageLayout = ({navigation, top, children } : PropsWithChildren<HeaderProps>) =>  {
     return (
         <div className="flex flex-col">
-            <Header top={top} nav={navigation} />
+            <Header top={top} navigation={navigation} />
             { children }
             <Footer />
         </div>

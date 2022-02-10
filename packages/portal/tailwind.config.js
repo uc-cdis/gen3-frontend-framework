@@ -24,7 +24,7 @@ module.exports = {
             mint: "#26D9B1",
             coal: "#4A4A4A",
             cloud: "#F5F5F5",
-            gray: "#525252",
+            gray: "#606060",
             lightgray: "#9B9B9B",
             smoke: "#D1D1D1",
             silver: "#E7E7E7",

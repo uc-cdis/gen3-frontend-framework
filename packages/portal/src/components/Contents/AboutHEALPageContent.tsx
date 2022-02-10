@@ -4,10 +4,20 @@ import { styled } from '@mui/material/styles';
 import { Stack, Box, Grid, Typography, Card, CardMedia, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+export interface ImageEntry {
+    readonly src: string;
+    readonly alt: string;
+}
+
+export interface DropdownEntry {
+    readonly title: string;
+    readonly content: ReadonlyArray<string>;
+}
+
 export interface AboutHEALPageContentProp {
-    topImages: Record<any, any>;
-    leftDropdowns: Record<any, any>;
-    rightDropdowns: Record<any, any>;
+    topImages: ReadonlyArray<ImageEntry>;
+    leftDropdowns: ReadonlyArray<DropdownEntry>;
+    rightDropdowns: ReadonlyArray<DropdownEntry>;
 }
 
 const Item = styled('div')(({ theme }) => ({
@@ -53,7 +63,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                 <Item className="w-full max-w-[35%]">
                     {(leftDropdowns && leftDropdowns.length > 0) ? (
                         <Grid container justifyContent="space-evenly" spacing={2}>
-                            {leftDropdowns.map((entry: { title: string | undefined; content: string[]; }) => (
+                            {leftDropdowns.map((entry ) => (
                                 <Grid item key={entry.title} xs={6}>
                                     <Item className='h-full'>
                                         <Accordion className='h-full' defaultExpanded>
@@ -104,7 +114,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                 <Item className="w-full max-w-[35%]">
                     {(rightDropdowns && rightDropdowns.length > 0) ? (
                         <Grid container justifyContent="space-evenly" spacing={2}>
-                            {rightDropdowns.map((entry: { title: string | undefined; content: string[]; }) => (
+                            {rightDropdowns.map((entry) => (
                                 <Grid item key={entry.title} xs={6}>
                                     <Item className='h-full'>
                                         <Accordion className='h-full' defaultExpanded>

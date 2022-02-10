@@ -9,7 +9,6 @@ import icons from "../../config/icons/gen3.json"
 import "@iconify/types";
 
 
-
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     addCollection(icons);
     return (

@@ -7,9 +7,10 @@ import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
 import TableComponent from '../TableComponent';
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
+import { RoleContentEntry } from "./RolesPageContent";
 
 export interface LandingPageContentProp {
-    rolesPages: Record<any, any>
+    rolesPages: Record<string, RoleContentEntry>
 }
 
 const Item = styled('div')(({ theme }) => ({

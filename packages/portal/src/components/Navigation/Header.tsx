@@ -1,17 +1,17 @@
 import React from "react";
-import TopBar from "./TopBar";
-import NavigationBar from "./NavigationBar";
+import TopBar, {TopBarProps} from "./TopBar";
+import NavigationBar, { NavigationProps } from "./NavigationBar";
 
-interface HeaderProps {
-    readonly top: Record<any, any>
-    readonly nav: Record<any, any>
+export interface HeaderProps {
+    readonly top: TopBarProps;
+    readonly navigation: NavigationProps;
 }
 
-const Header: React.FC<HeaderProps> = ({ top, nav }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ top, navigation }: HeaderProps) => {
     return (
         <div className="w-100">
-            <TopBar topItems={top.items}></TopBar>
-            <NavigationBar logo={nav.logo} title={nav.title} items={nav.items} ></NavigationBar>
+            <TopBar items={top.items} />
+            <NavigationBar logo={navigation.logo} title={navigation.title} items={navigation.items} />
         </div>
     );
 };
