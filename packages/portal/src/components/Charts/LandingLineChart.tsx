@@ -55,8 +55,8 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             flexDirection: "column",
             alignItems: "center"
         }}>
-        {(title) ? <Typography>{title}</Typography> : null}
-        {(subTitle) ? <Typography variant="body2">{subTitle}</Typography> : null}
+        {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
+        {(subTitle) ? <Typography className='font-montserrat' variant="body2">{subTitle}</Typography> : null}
         <ResponsiveContainer>
           <ComposedChart data={data}>
             <XAxis dataKey='year' />
@@ -75,7 +75,7 @@ const LandingLineChart: React.FC<LineChartProps> = ({
                 flexDirection: "column",
                 alignItems: "center"
             }}>
-              {note.map((e, index) => <Typography key={index}>{e}</Typography>)}
+              {note.map((e, index) => <Typography className='font-montserrat' key={index}>{e}</Typography>)}
             </div>
           )
           : null}

@@ -17,10 +17,8 @@ export interface RolesPageContentProp {
 }
 
 const Item = styled('div')(({ theme }) => ({
-    ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
     height: "100%"
 }));
 
@@ -32,7 +30,7 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
             {Object.keys(rolesPages).length > 0 ? (
                 <Stack spacing={2} className='mb-6'>
                     <Item>
-                        <Typography variant="h6" component="div">
+                        <Typography className='font-montserrat' variant="h6" component="div">
                             What are you interested in
                         </Typography>
                     </Item>

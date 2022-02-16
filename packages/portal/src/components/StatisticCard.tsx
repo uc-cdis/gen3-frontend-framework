@@ -9,10 +9,10 @@ export interface StatisticCardProp {
 const StatisticCard = ({ name, value }: StatisticCardProp) => (
     <Card elevation={0}>
         <CardContent>
-            <Typography variant="h5" component="div">
+            <Typography className='font-montserrat' variant="h5" component="div">
                 {value}
             </Typography>
-            <Typography className="not-prose" sx={{ mb: 1.5 }} color="text.secondary">
+            <Typography className="font-montserrat not-prose" sx={{ mb: 1.5 }} color="text.secondary">
                 {name}
             </Typography>
         </CardContent>

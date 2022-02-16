@@ -9,9 +9,7 @@ interface StatisticComponentProp {
 }
 
 const Item = styled('div')(({ theme }) => ({
-    ...theme.typography.body2,
     textAlign: 'center',
-    color: theme.palette.text.secondary
 }));
 
 const StatisticComponent = ({ title, statisticData }: StatisticComponentProp) => (
