@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import { styled } from '@mui/material/styles';
 import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import LandingBarChart from '../Charts/LandingBarChart';
@@ -14,10 +15,8 @@ export interface LandingPageContentProp {
 }
 
 const Item = styled('div')(({ theme }) => ({
-    ...theme.typography.body2,
+    ...theme.typography.body1,
     padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary
 }));
 
 
@@ -26,27 +25,38 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
 
     return (
         <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
-            <Stack spacing={2}>
-                <Item>
-                    <Typography component="div">
-                        The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to
-                        speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center
-                        is accelerating research to address this public health emergency from all angles.
-                    </Typography>
+            <Stack direction="row" spacing={2} justifyContent="space-evenly">
+                <Item className='block max-w-[40%]'>
+                    <Stack className='h-full' spacing={2} justifyContent="center">
+                        <Typography className="font-montserrat" variant="h4" component="div">
+                            HEAL Platform
+                        </Typography>
+                        <Typography className="font-montserrat" component="div">
+                            The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to
+                            speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center
+                            is accelerating research to address this public health emergency from all angles.
+                        </Typography>
+                        <Item>
+                            <Button variant="contained" href={`${basePath}/landing/about-heal`} className="heal-btn">About HEAL</Button>
+                        </Item>
+                    </Stack>
                 </Item>
-                <Stack spacing={2}>
-                    <Item>See here an overview of the HEAL platform</Item>
-                    <Item>
-                        <Button variant="contained" href={`${basePath}/landing/about-heal`} className="bg-blue-800">About HEAL</Button>
-                    </Item>
-                </Stack>
+                <Item className='block max-w-[40%]'>
+                    <Image
+                        src={`${basePath}/images/HEAL_Initiative.jpeg`}
+                        alt="HEAL initiative"
+                        width={1260}
+                        height={630}
+                        layout='intrinsic'
+                    />
+                </Item>
             </Stack>
             <Divider variant="middle" className="not-prose" />
             {Object.keys(rolesPages).length > 0 ? (
                 <div>
                     <Stack spacing={2}>
-                        <Item>
-                            <Typography variant="h6" component="div">
+                        <Item className='text-center'>
+                            <Typography className="font-montserrat" variant="h6" component="div">
                                 What are you interested in
                             </Typography>
                         </Item>
