@@ -36,7 +36,8 @@ const LandingBarChart: React.FC<BarChartProps> = ({
             height: "300px",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            textAlign: "center"
         }}>
             {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
             {(subTitle) ? <Typography className='font-montserrat' variant="body2">{subTitle}</Typography> : null}
