@@ -30,7 +30,7 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
             {Object.keys(rolesPages).length > 0 ? (
                 <Stack spacing={2} className='mb-6'>
                     <Item>
-                        <Typography className='font-montserrat' variant="h6" component="div">
+                        <Typography className='font-montserrat' variant="h4" component="div">
                             What are you interested in
                         </Typography>
                     </Item>

@@ -53,7 +53,8 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             height: "300px",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            textAlign: "center"
         }}>
         {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
         {(subTitle) ? <Typography className='font-montserrat' variant="body2">{subTitle}</Typography> : null}
@@ -62,10 +63,10 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             <XAxis dataKey='year' />
             <YAxis />
             <Legend />
-            <Line type='linear' dataKey='heroin' stroke='#f70000' />
-            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#ff968f' fillOpacity='0.85' />
-            <Line type='linear' dataKey='methadone' stroke='#0303ff' />
-            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#039eff' fillOpacity='0.85' />
+            <Line type='linear' dataKey='heroin' stroke='#982568' />
+            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#dabeca' fillOpacity='0.8' />
+            <Line type='linear' dataKey='methadone' stroke='#e07c3e' />
+            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#f5d8c3' fillOpacity='0.8' />
           </ComposedChart>
         </ResponsiveContainer>
         {(note.length > 0)

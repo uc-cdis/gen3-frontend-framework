@@ -56,7 +56,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 <div>
                     <Stack spacing={2}>
                         <Item className='text-center'>
-                            <Typography className="font-montserrat" variant="h6" component="div">
+                            <Typography className="font-montserrat" variant="h4" component="div">
                                 What are you interested in
                             </Typography>
                         </Item>
@@ -69,8 +69,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 <Grid item xs={4}>
                     <Item>
                         <LandingBarChart
-                            title={'Results generated with HEAL data'}
-                            subTitle={'Annual National Opioid Overdoses and Suicides'}
+                            title={'Annual National Opioid Overdoses and Suicides'}
+                            subTitle={'Data from*'}
                             note={['* CDC Wonder https://wonder.cdc.gov/']}
                         />
                     </Item>
@@ -91,8 +91,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 <Grid item xs={4}>
                     <Item>
                         <LandingLineChart
-                            title={'Results generated with HEAL data'}
-                            subTitle={'Age-adjusted rates of drug overdose death involving opioids by type of opioid: United States'}
+                            title={'Age-adjusted rates of drug overdose death involving opioids by type of opioid: United States'}
+                            subTitle={'Data from*'}
                             note={['* CDC Wonder https://wonder.cdc.gov/']}
                         />
                     </Item>
@@ -129,7 +129,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                     <Button href="/">{params.value}</Button>
                                 ),
                             },
-                            { field: 'dcc', headerName: 'DCC', flex: 1, align: "center", headerAlign: "center" },
+                            { field: 'dcc', headerName: 'Coordination Center', flex: 1, align: "center", headerAlign: "center" },
                             { field: 'state', headerName: 'State', flex: 1, align: "center", headerAlign: "center" },
                         ]}
                         rows={[
