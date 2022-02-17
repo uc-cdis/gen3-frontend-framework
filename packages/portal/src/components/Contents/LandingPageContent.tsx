@@ -104,7 +104,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
                             { field: 'investigator', headerName: 'Investigator', flex: 1, align: "center", headerAlign: "center" },
                             {
-                                field: 'repository', headerName: 'Repository', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
+                                field: 'repository', headerName: 'Repository Name', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
                                     <Button href="/">{params.value}</Button>
                                 ),
                             },
