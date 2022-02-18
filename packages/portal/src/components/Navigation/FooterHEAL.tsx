@@ -15,7 +15,7 @@ const FooterHEAL: React.FC<FooterHEALProps> = ({ links }: FooterHEALProps) => {
     const { basePath } = useRouter();
 
     return (
-        <div className="flex flex-col bg-heal-dark_gray h-full p-4 h-24 gap-x-8">
+        <div className="flex flex-col bg-heal-dark_gray h-full p-4">
             <div className="flex flex-row justify-start align-middle">
                 <div className="mr-8">
                     <Image src={`${basePath}/icons/gen3.png`} layout="fixed" width="120px" height="60px" />
@@ -23,7 +23,7 @@ const FooterHEAL: React.FC<FooterHEALProps> = ({ links }: FooterHEALProps) => {
                 <Image src={`${basePath}/icons/createdby.png`} layout="fixed" width="180px" height="60px" />
             </div>
             {(links && links.length > 0) ? (
-              <div className="flex flex-row justify-center align-middle text-tiny text-white font-montserrat">
+              <div className="flex flex-row justify-center m-1 align-middle text-tiny text-white font-montserrat">
                 {
                   links.map((link, i) => (
                     <React.Fragment key={link.href}>

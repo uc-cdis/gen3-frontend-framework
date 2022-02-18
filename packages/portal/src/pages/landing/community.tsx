@@ -2,15 +2,16 @@ import { GetStaticProps } from "next";
 
 import fs from 'fs';
 import Header, {HeaderProps} from "../../components/Navigation/Header";
-import Footer from "../../components/Navigation/Footer";
+import FooterHEAL, { FooterHEALProps } from "../../components/Navigation/FooterHEAL";
 import RolesPageContent  from "../../components/Contents/RolesPageContent"
 import { RoleContentEntry } from "../../components/Contents/RolesPageContent";
 
 interface Props extends HeaderProps {
     rolesPages: Record<string, RoleContentEntry>
+    footer: FooterHEALProps
 }
 
-const CommunityPage = ({ top, navigation, rolesPages }: Props) => {
+const CommunityPage = ({ top, navigation, rolesPages, footer }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} navigation={navigation} />
@@ -19,7 +20,7 @@ const CommunityPage = ({ top, navigation, rolesPages }: Props) => {
                     <RolesPageContent rolesPages={rolesPages} rolePageKey={'Community and Support'} />
                 </div>
             </div>
-            <Footer />
+            <FooterHEAL links={footer.links} />
         </div>
     )
 };
@@ -29,13 +30,16 @@ export const getStaticProps: GetStaticProps = async () => {
     try {
         const file_data = fs.readFileSync('config/navigation.json', 'utf8')
         const json_data = JSON.parse(file_data)
+        const footer_file_data = fs.readFileSync('config/footer.json', 'utf8')
+        const footer_json_data = JSON.parse(footer_file_data)
         const roles_file_data = fs.readFileSync('config/rolesPages.json', 'utf8')
         const roles_json_data = JSON.parse(roles_file_data)
         return {
             props: {
                 navigation: json_data['navigation'],
                 top: json_data['topBar'],
-                rolesPages: roles_json_data
+                rolesPages: roles_json_data,
+                footer: footer_json_data
             }
         }
     } catch (err) {
@@ -45,7 +49,8 @@ export const getStaticProps: GetStaticProps = async () => {
         props: {
             navigation: {},
             top: {},
-            rolesPages: {}
+            rolesPages: {},
+            footer: {}
         }
     }
 }
