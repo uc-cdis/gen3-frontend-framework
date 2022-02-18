@@ -8,7 +8,16 @@ module.exports = {
       colors: {
         "heal": {
           primary: "#99286B",
-          secondary: "#402264"
+          secondary: "#402264",
+          purple: "#532565",
+          magenta: "#982568",
+          red: "#981F32",
+          coral: "#BF362E",
+          orange: "#E07C3E",
+          dark_gray: "#373A3C",
+          medium_gray: "#818A91",
+          light_gray: "#DDDDDD",
+          blue: "#0044B3"
         },
         "gen3": {
           base_blue: "#3283C8",
@@ -36,6 +45,9 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
         sans: ["Source Sans Pro", "sans-serif"],
+      },
+      fontSize: {
+        tiny: "0.625rem"
       },
       borderWidth: {
         DEFAULT: '1px',
@@ -92,6 +104,12 @@ module.exports = {
           backgroundColor: '#532565',
           '&:hover': {
             backgroundColor: '#532565'
+          },
+        },
+        '.heal-link-footer': {
+          color: '#FFFFFF',
+          '&:hover': {
+            color: '#c0b3c5'
           },
         },
       })
