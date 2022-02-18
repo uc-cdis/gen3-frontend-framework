@@ -47,7 +47,7 @@ const LandingBarChart: React.FC<BarChartProps> = ({
                     <YAxis />
                     <Legend />
                     <Bar
-                        fill='#c0b3c5'
+                        fill='#818a91'
                         dataKey='death'
                     />
                 </BarChart>

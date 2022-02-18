@@ -63,10 +63,10 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             <XAxis dataKey='year' />
             <YAxis />
             <Legend />
-            <Line type='linear' dataKey='heroin' stroke='#982568' />
-            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#dabeca' fillOpacity='0.8' />
-            <Line type='linear' dataKey='methadone' stroke='#e07c3e' />
-            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#f5d8c3' fillOpacity='0.8' />
+            <Line type='linear' dataKey='heroin' stroke='#46025D' />
+            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#A55082' fillOpacity='0.6' />
+            <Line type='linear' dataKey='methadone' stroke='#BA2800' />
+            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#F56942' fillOpacity='0.8' />
           </ComposedChart>
         </ResponsiveContainer>
         {(note.length > 0)
