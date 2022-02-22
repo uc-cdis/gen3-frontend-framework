@@ -20,6 +20,7 @@ const TableComponent = ({ title, rows, columns }: TableComponentProp) => (
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableColumnMenu
+                sx={{fontFamily: "Montserrat, sans-serif"}}
             />
         </Box>
     </BorderComponent>

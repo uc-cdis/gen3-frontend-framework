@@ -53,19 +53,20 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             height: "300px",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            textAlign: "center"
         }}>
-        {(title) ? <Typography>{title}</Typography> : null}
-        {(subTitle) ? <Typography variant="body2">{subTitle}</Typography> : null}
+        {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
+        {(subTitle) ? <Typography className='font-montserrat' variant="caption">{subTitle}</Typography> : null}
         <ResponsiveContainer>
           <ComposedChart data={data}>
             <XAxis dataKey='year' />
             <YAxis />
             <Legend />
-            <Line type='linear' dataKey='heroin' stroke='#f70000' />
-            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#ff968f' fillOpacity='0.85' />
-            <Line type='linear' dataKey='methadone' stroke='#0303ff' />
-            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#039eff' fillOpacity='0.85' />
+            <Line type='linear' dataKey='heroin' stroke='#46025D' />
+            <Area type='linear' dataKey='heroinPrediction' stroke='none' fill='#A55082' fillOpacity='0.6' />
+            <Line type='linear' dataKey='methadone' stroke='#BA2800' />
+            <Area type='linear' dataKey='methadonePrediction' stroke='none' fill='#F56942' fillOpacity='0.8' />
           </ComposedChart>
         </ResponsiveContainer>
         {(note.length > 0)
@@ -75,7 +76,7 @@ const LandingLineChart: React.FC<LineChartProps> = ({
                 flexDirection: "column",
                 alignItems: "center"
             }}>
-              {note.map((e, index) => <Typography key={index}>{e}</Typography>)}
+              {note.map((e, index) => <Typography className='font-montserrat' variant="caption" key={index}>{e}</Typography>)}
             </div>
           )
           : null}

@@ -51,7 +51,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                     ))}
                 </Grid>
             ) : null}
-            <Typography className='text-center' variant="body2" gutterBottom>
+            <Typography className='text-center font-montserrat' variant="body2" gutterBottom>
                 HEAL leverages data from <Link href="https://clinicaltrials.gov/" target="_blank" rel="noreferrer" >clinicaltrials.gov</Link> see <Link href="https://healdata.org/" target="_blank" rel="noreferrer" >here</Link> new studies available on the platform
             </Typography>
             <Stack
@@ -72,12 +72,12 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                                                 aria-controls={entry.title}
                                                 id={entry.title}
                                             >
-                                                <Typography>{entry.title}</Typography>
+                                                <Typography className='font-montserrat'>{entry.title}</Typography>
                                             </AccordionSummary>
                                             {entry.content.length > 0 ?
                                                 <AccordionDetails>
                                                     {entry.content.map(contentLine => (
-                                                        <Typography key={contentLine} className='text-left break-words' variant="body2">- {contentLine}</Typography>
+                                                        <Typography key={contentLine} className='text-left break-words font-montserrat' variant="body2">- {contentLine}</Typography>
                                                     ))}
                                                 </AccordionDetails>
                                                 : null}
@@ -95,13 +95,13 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                         alignItems="center"
                         spacing={2}
                     >
-                        <Typography className='text-center' variant="h4" gutterBottom component="div">
+                        <Typography className='text-center font-montserrat' variant="h4" gutterBottom component="div">
                             What is HEAL
                         </Typography>
-                        <Typography className='text-center' variant="body1" gutterBottom component="div">
+                        <Typography className='text-center font-montserrat' variant="body1" gutterBottom component="div">
                             The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center is accelerating research to address this public health emergency from all angles.
                         </Typography>
-                        <Typography className='text-center' variant="body1" component="div">
+                        <Typography className='text-center font-montserrat' variant="body1" component="div">
                             The initiative is funding hundreds of projects nationwide.
                             Researchers are taking a variety of approaches to tackles the opioid epidemic through:
                             <ul className="list-disc text-left">
@@ -123,12 +123,12 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                                                 aria-controls={entry.title}
                                                 id={entry.title}
                                             >
-                                                <Typography>{entry.title}</Typography>
+                                                <Typography className='font-montserrat'>{entry.title}</Typography>
                                             </AccordionSummary>
                                             {entry.content.length > 0 ?
                                                 <AccordionDetails>
                                                     {entry.content.map(contentLine => (
-                                                        <Typography key={contentLine} className='text-left break-words' variant="body2">- {contentLine}</Typography>
+                                                        <Typography key={contentLine} className='text-left break-words font-montserrat' variant="body2">- {contentLine}</Typography>
                                                     ))}
                                                 </AccordionDetails>
                                                 : null}

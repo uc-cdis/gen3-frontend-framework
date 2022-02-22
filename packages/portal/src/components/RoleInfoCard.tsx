@@ -26,9 +26,9 @@ const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardP
         />
         <CardContent>
             {icon ? <Image src={icon} alt={icon} width={60} height={60} /> : null}
-            <Typography className="not-prose underline" >{title}</Typography>
+            <Typography className="not-prose underline font-montserrat" >{title}</Typography>
             {content.map((element, index) => (
-                <Typography className="not-prose" key={index} variant='body2'>{element}</Typography>
+                <Typography className="not-prose font-montserrat" key={index} variant='body2'>{element}</Typography>
             ))}
         </CardContent>
     </Card>

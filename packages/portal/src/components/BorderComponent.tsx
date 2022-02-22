@@ -8,7 +8,7 @@ interface BorderComponentProp {
 const BorderComponent = ({ title, children }: BorderComponentProp) => (
     <Box sx={{ flexGrow: 1, borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
         <div className="grid w-full h-full bg-gray-300">
-            <Typography align='center'>
+            <Typography className='font-montserrat' align='center'>
                 {title}
             </Typography>
         </div>

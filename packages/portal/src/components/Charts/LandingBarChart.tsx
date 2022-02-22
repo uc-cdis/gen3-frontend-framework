@@ -36,17 +36,18 @@ const LandingBarChart: React.FC<BarChartProps> = ({
             height: "300px",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            textAlign: "center"
         }}>
-            {(title) ? <Typography>{title}</Typography> : null}
-            {(subTitle) ? <Typography variant="body2">{subTitle}</Typography> : null}
+            {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
+            {(subTitle) ? <Typography className='font-montserrat' variant="caption">{subTitle}</Typography> : null}
             <ResponsiveContainer>
                 <BarChart data={data}>
                     <XAxis dataKey='year' />
                     <YAxis />
                     <Legend />
                     <Bar
-                        fill='#8884d8'
+                        fill='#818a91'
                         dataKey='death'
                     />
                 </BarChart>
@@ -58,7 +59,7 @@ const LandingBarChart: React.FC<BarChartProps> = ({
                         flexDirection: "column",
                         alignItems: "center"
                     }}>
-                        {note.map((e, index) => <Typography key={index}>{e}</Typography>)}
+                        {note.map((e, index) => <Typography className='font-montserrat' variant="caption" key={index}>{e}</Typography>)}
                     </div>
                 )
                 : null}
