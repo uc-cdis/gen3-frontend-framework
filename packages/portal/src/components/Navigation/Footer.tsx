@@ -2,7 +2,16 @@ import React from 'react';
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-const Footer: React.FC<unknown> = () => {
+export interface FooterLinksProp {
+    text: string;
+    href: string;
+}
+
+export interface FooterProps {
+    readonly links?: ReadonlyArray<FooterLinksProp>;
+}
+
+const Footer: React.FC<FooterProps> = ({ links = []} : FooterProps) => {
     const { basePath } = useRouter();
 
     return (

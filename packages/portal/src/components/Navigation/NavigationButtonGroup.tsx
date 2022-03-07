@@ -22,7 +22,7 @@ const NavigationButtonGroup = ({ rolesPages }: NavigationButtonGroupProp) => {
             {Object.entries(rolesPages).map(entry => (
                 <Item key={entry[0]
                 }>
-                    <Button variant="contained" className={(asPath === entry[1].link) ? "heal-btn" : "heal-btn heal-btn-purple"} href={`${basePath}${entry[1].link}` || `${basePath}/#`}>{entry[0]}</Button>
+                    <Button variant="contained" className={(asPath === entry[1].link) ? "heal-btn" : "heal-btn heal-btn-purple"} href={`${basePath}${entry[1].link}` || `${basePath}/#`}>{entry[1].title ? entry[1].title : entry[0]}</Button>
                 </Item>
             ))}
         </Stack>
