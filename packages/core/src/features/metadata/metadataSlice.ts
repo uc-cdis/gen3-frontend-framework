@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export interface Metadata {
-    readonly entries:Array<Record<any, any>>
+    readonly entries:Array<Record<string, unknown>>
 }
 
 
