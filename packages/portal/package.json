@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev --port 3003",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1",
