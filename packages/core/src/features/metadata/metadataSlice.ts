@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import {  fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { coreCreateApi} from "../../store/hooks";
 
 export interface Metadata {
     readonly entries:Array<Record<string, unknown>>
@@ -6,10 +7,12 @@ export interface Metadata {
 
 
 // Define a service using a base URL and expected endpoints
-export const aggMetadataApi = createApi({
+export const aggMetadataApi = coreCreateApi({
     reducerPath: 'aggMetadataApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8000/aggregate' }),
+    // @ts-ignore
     endpoints: (builder) => ({
+        // @ts-ignore
         getMetadata: builder.query<Metadata, string>({
             query: () => `metadata`,
         }),
