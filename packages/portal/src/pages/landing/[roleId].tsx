@@ -3,7 +3,7 @@ import ContentSource from "../../lib/content/";
 import { useRouter } from 'next/router'
 
 import {HeaderProps} from "../../components/Navigation/Header";
-import FooterHEAL, {FooterHEALProps, FooterLinksProp} from "../../components/Navigation/FooterHEAL";
+import FooterHEAL, { FooterLinksProp} from "../../components/Navigation/FooterHEAL";
 import NavPageLayout from "../../components/Navigation/NavPageLayout";
 import RolesPageContent, {RoleContentEntry} from "../../components/Contents/RolesPageContent"
 
@@ -41,7 +41,7 @@ export const  getStaticPaths = async ( )  => {
 }
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps = async ( { params } ) => {
+export const getStaticProps: GetStaticProps = async ( ) => {
     try {
         const json_data = await ContentSource.get("config/navigation.json")
         const footer_json_data = await ContentSource.get('config/footer.json')
