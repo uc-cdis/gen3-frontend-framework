@@ -5,15 +5,20 @@ import '../styles/globals.css';
 import { addCollection } from '@iconify/react';
 import icons from "../../config/icons/gen3.json"
 import "@iconify/types";
+import Tina from '../../.tina/components/TinaDynamicProvider.js'
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     addCollection(icons);
     return (
+      <Tina>
         <CoreProvider>
             <StyledEngineProvider injectFirst>
-                <Component {...pageProps} />
+
+               <Component {...pageProps} />
+
             </StyledEngineProvider>
         </CoreProvider>
+      </Tina>
     );
 };
 

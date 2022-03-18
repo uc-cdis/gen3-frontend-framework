@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "tinacms server:start -c \"NODE_OPTIONS='--inspect' next dev\"",
+    "build": "tinacms server:start -c \"next build\"",
+    "start": "tinacms server:start -c \"next start\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build_icons": "node --trace-warnings src/tools/build_icon_bundle.mjs --inpath=config/icons --outpath=config/icons"
   },
@@ -23,6 +23,7 @@
     "@mui/x-data-grid": "^5.2.2",
     "@next/mdx": "^12.1.0",
     "@reduxjs/toolkit": "^1.8.0",
+    "@tinacms/cli": "^0.60.8",
     "@types/mdx": "^2.0.1",
     "@types/recharts": "^1.8.23",
     "chart.js": "^3.7.0",
@@ -43,6 +44,7 @@
     "recharts": "^2.1.8",
     "sharp": "^0.30.0",
     "styled-components": "^5.3.3",
+    "tinacms": "^0.66.8",
     "typeface-montserrat": "^1.1.13",
     "typeface-source-sans-pro": "^1.1.13"
   },
