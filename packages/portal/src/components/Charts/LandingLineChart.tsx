@@ -2,7 +2,7 @@ import React from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Legend, XAxis, YAxis,
 } from 'recharts';
-import Typography from '@mui/material/Typography';
+import { Text } from '@mantine/core';
 
 const data = [
   {
@@ -56,8 +56,8 @@ const LandingLineChart: React.FC<LineChartProps> = ({
             alignItems: "center",
             textAlign: "center"
         }}>
-        {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
-        {(subTitle) ? <Typography className='font-montserrat' variant="caption">{subTitle}</Typography> : null}
+        {(title) ? <Text className='font-montserrat'>{title}</Text> : null}
+        {(subTitle) ? <Text className='font-montserrat' size="xs" >{subTitle}</Text> : null}
         <ResponsiveContainer>
           <ComposedChart data={data}>
             <XAxis dataKey='year' />
@@ -76,7 +76,7 @@ const LandingLineChart: React.FC<LineChartProps> = ({
                 flexDirection: "column",
                 alignItems: "center"
             }}>
-              {note.map((e, index) => <Typography className='font-montserrat' variant="caption" key={index}>{e}</Typography>)}
+              {note.map((e, index) => <Text className='font-montserrat' size="xs" key={index}>{e}</Text>)}
             </div>
           )
           : null}
