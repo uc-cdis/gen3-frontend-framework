@@ -32,22 +32,3 @@ export const useCoreSelector: TypedUseSelectorHook<CoreState> =
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
 export const useCoreStore = createStoreHook(CoreContext);
-
-// This is untested. Need to verify that it work in single- and multi-store/provider contexts.
-// export const coreConnect = <
-//   TStateProps = {},
-//   TOwnProps = {},
-//   TDispatchProps = {},
-//   TMergedProps = {},
-//   State = CoreState
-// >(
-//   mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State>,
-//   mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps>,
-//   mergeProps: MergeProps<TStateProps, TDispatchProps, TOwnProps, TMergedProps>,
-//   options?: Options<State, TStateProps, TOwnProps, TMergedProps>
-// ) => {
-//   return connect(mapStateToProps, mapDispatchToProps, mergeProps, {
-//     ...options,
-//     context: CoreContext,
-//   });
-// };

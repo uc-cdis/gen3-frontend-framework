@@ -11,7 +11,7 @@ export interface RoleInfoCardProp {
 }
 
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (
-    <Card className='h-full' elevation={0} sx={{ borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
+    <Card className='h-full border-6' elevation={0} sx={{  borderColor: "grey", borderRadius: "4px" }}>
         <CardHeader
             action={(tooltip) ? (
                 <Tooltip title={tooltip} placement="top" arrow>

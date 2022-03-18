@@ -1,4 +1,4 @@
-const mdx = require('@mdx-js/mdx')
+
 const plugin = require('tailwindcss/plugin')
 
 module.exports = {

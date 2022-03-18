@@ -1,5 +1,6 @@
 {
-    "Research": {
+    "research": {
+        "title": "Research",
         "link": "/landing/research",
         "content": [
             {
@@ -72,7 +73,8 @@
             }
         ]
     },
-    "Treatment": {
+    "treatment": {
+        "title": "Treatment",
         "link": "/landing/treatment",
         "content": [
             {
@@ -105,7 +107,8 @@
             }
         ]
     },
-    "Community and Support": {
+    "community": {
+        "title": "Community and Support",
         "link": "/landing/community",
         "content": [
             {
@@ -145,7 +148,8 @@
             }
         ]
     },
-    "Policy Related": {
+    "policy": {
+        "title" : "Policy Related",
         "link": "/landing/policy",
         "content": [
             {

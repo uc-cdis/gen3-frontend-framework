@@ -3,10 +3,9 @@ import { aggMetadataApi } from "../features/metadata/metadataSlice";
 
 export const coreStore = configureStore({
     reducer: {
-        [aggMetadataApi.reducerPath]: aggMetadataApi.reducer,
+        aggMDS: aggMetadataApi.reducer,
     },
 })
 
 export type CoreDispatch = typeof coreStore.dispatch;
 export type CoreState = ReturnType<typeof coreStore.getState>
-

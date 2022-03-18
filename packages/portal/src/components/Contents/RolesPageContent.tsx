@@ -9,6 +9,7 @@ import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 export interface RoleContentEntry {
     readonly content: ReadonlyArray<RoleInfoCardProp>;
     readonly link:string;
+    readonly title?:string;
 }
 
 export interface RolesPageContentProp {

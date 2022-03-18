@@ -8,7 +8,7 @@ interface StatisticComponentProp {
     statisticData: Array<StatisticCardProp>
 }
 
-const Item = styled('div')(({ theme }) => ({
+const Item = styled('div')(() => ({
     textAlign: 'center',
 }));
 
