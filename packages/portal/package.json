@@ -44,7 +44,7 @@
     "react-redux": "^7.2.6",
     "recharts": "^2.1.8",
     "sharp": "^0.30.0",
-    "styled-components": "^5.3.3",
+    "tailwind-styled-components": "^2.1.4",
     "typeface-montserrat": "^1.1.13",
     "typeface-source-sans-pro": "^1.1.13"
   },

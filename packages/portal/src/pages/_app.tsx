@@ -13,6 +13,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             <StyledEngineProvider injectFirst>
                 <Component {...pageProps} />
             </StyledEngineProvider>
+
         </CoreProvider>
     );
 };

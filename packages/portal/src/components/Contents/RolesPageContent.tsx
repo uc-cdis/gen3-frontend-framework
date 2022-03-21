@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { useRouter } from 'next/router'
- import { styled } from '@mui/material/styles';
-// import { Stack, Box, Grid, Typography } from '@mui/material';
+import tw from "tailwind-styled-components"
 import { Box, Grid, Group, Text, Title } from '@mantine/core';
 import RoleInfoCard, {RoleInfoCardProp} from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
@@ -18,13 +17,7 @@ export interface RolesPageContentProp {
     rolePageKey: string;
 }
 
-const Item<T> = styled('div')(({ theme }) => ({
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    height: "100%"
-}));
-
-const Item:React.FC<ChildPr, any>
+const Item = tw.div`h-100 text-center p-1`
 
 const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => {
     const { basePath } = useRouter();
