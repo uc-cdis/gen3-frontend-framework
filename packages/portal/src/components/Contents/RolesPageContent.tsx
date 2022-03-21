@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { useRouter } from 'next/router'
  import { styled } from '@mui/material/styles';
 // import { Stack, Box, Grid, Typography } from '@mui/material';
-import { Box, Grid, Text, Title } from '@mantine/core';
+import { Box, Grid, Group, Text, Title } from '@mantine/core';
 import RoleInfoCard, {RoleInfoCardProp} from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
@@ -32,14 +32,14 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
     return (
         <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
             {Object.keys(rolesPages).length > 0 ? (
-                <Stack spacing={2} className='mb-6'>
+                <Group spacing={2} className='mb-6'>
                     <Item>
                         <Title order={4} className='font-montserrat'>
                             What are you interested in
                         </Title>
                     </Item>
                     <NavigationButtonGroup rolesPages={rolesPages} />
-                </Stack>
+                </Group>
             ) : null}
             {(rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
                 <Grid spacing={2}>

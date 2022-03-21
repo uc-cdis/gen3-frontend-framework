@@ -1,4 +1,3 @@
-// import { Box, Typography } from '@mui/material';
 import { Box, Text } from '@mantine/core';
 interface BorderComponentProp {
     title: string,
