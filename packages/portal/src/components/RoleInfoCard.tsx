@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
+//import { Card, CardContent, CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
+import { Card, CardContent, CardHeader, Typography, Tooltip, Button, Title } from '@mantine/core';
 import HelpIcon from '@mui/icons-material/Help';
 import Image from 'next/image'
 
@@ -11,26 +12,23 @@ export interface RoleInfoCardProp {
 }
 
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (
-    <Card className='h-full border-6' elevation={0} sx={{  borderColor: "grey", borderRadius: "4px" }}>
-        <CardHeader
+    <Card className='h-full border-6' shadow="sm" sx={{  borderColor: "grey", borderRadius: "4px" }}>
+        <Card.Section>
             action={(tooltip) ? (
                 <Tooltip title={tooltip} placement="top" arrow>
-                    <IconButton>
-                        <HelpIcon />
-                    </IconButton>
+                    <Button leftIcon={<HelpIcon />} />
                 </Tooltip>)
-                : <IconButton disabled className='!text-transparent'>
-                    <HelpIcon />
-                </IconButton>
+                : <Button disabled className='!text-transparent'> leftIcon={<HelpIcon />} />
+
             }
-        />
-        <CardContent>
+            </Card.Section>
+        <Card.Section>
             {icon ? <Image src={icon} alt={icon} width={60} height={60} /> : null}
-            <Typography className="not-prose underline font-montserrat" >{title}</Typography>
+            <Title className="not-prose underline font-montserrat" >{title}</Title>
             {content.map((element, index) => (
-                <Typography className="not-prose font-montserrat" key={index} variant='body2'>{element}</Typography>
+                <Text className="not-prose font-montserrat" key={index}>{element}</Text>
             ))}
-        </CardContent>
+        </Card.Section>
     </Card>
 );
 
