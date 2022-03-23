@@ -17,7 +17,7 @@ export interface RolesPageContentProp {
     rolePageKey: string;
 }
 
-const Item = tw.div`h-100 text-center p-1`
+const Item = tw.div`h-100 text-center p-2`
 
 const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => {
     const { basePath } = useRouter();
@@ -25,17 +25,17 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
     return (
         <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
             {Object.keys(rolesPages).length > 0 ? (
-                <Group spacing={2} className='mb-6'>
+                <Group position="center" direction="column" spacing="xl" className='my-5'>
                     <Item>
-                        <Title order={4} className='font-montserrat'>
+                        <Text className="pt-6 font-montserrat subpixel-antialiased text-[2.125rem] text-base font-[400] leading-[1.235] tracking-[.00735em]" >
                             What are you interested in
-                        </Title>
+                        </Text>
                     </Item>
                     <NavigationButtonGroup rolesPages={rolesPages} />
                 </Group>
             ) : null}
             {(rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
-                <Grid spacing={2}>
+                <Grid className="mx-6" gutter="xl" >
                     {rolesPages[rolePageKey].content.map((entry: RoleInfoCardProp) => (
                         <Grid.Col key={entry.title} xs={4}>
                             <Item className='h-full'>
