@@ -6,12 +6,12 @@ export interface StatisticCardProp {
 }
 
 const StatisticCard = ({ name, value }: StatisticCardProp) => (
-    <Card elevation={0}>
-        <Card.Section>
-            <title className='font-montserrat' order="5" >
+    <Card className="p-1 mb-6" >
+        <Card.Section className="m-1" >
+            <Text className='prose font-montserrat text-black text-2xl p-2 m-2'  >
                 {value}
-            </title>
-            <Text className="font-montserrat not-prose" sx={{ mb: 1.5 }} color="text.secondary">
+            </Text>
+            <Text className='prose font-montserrat ' size="md">
                 {name}
             </Text>
         </Card.Section>

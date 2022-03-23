@@ -1,6 +1,5 @@
 import React from 'react';
-//import { Card, CardContent, CardHeader, Typography, Tooltip, IconButton } from '@mui/material';
-import { Card, CardContent, CardHeader, Typography, Tooltip, Button, Title } from '@mantine/core';
+import {Button, Card, Tooltip, Title, Text} from '@mantine/core';
 import HelpIcon from '@mui/icons-material/Help';
 import Image from 'next/image'
 
@@ -12,14 +11,14 @@ export interface RoleInfoCardProp {
 }
 
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (
-    <Card className='h-full border-6' shadow="sm" sx={{  borderColor: "grey", borderRadius: "4px" }}>
+    <Card className='h-full border-6 rounded' shadow="sm" sx={{borderColor: "grey"}}>
         <Card.Section>
-            action={(tooltip) ? (
+            {tooltip?
                 <Tooltip title={tooltip} placement="top" arrow>
-                    <Button leftIcon={<HelpIcon />} />
-                </Tooltip>)
-                : <Button disabled className='!text-transparent'> leftIcon={<HelpIcon />} />
-
+                    <Button leftIcon={<HelpIcon/>}/>
+                </Tooltip>
+            :
+            <Button disabled className='!text-transparent' />
             }
             </Card.Section>
         <Card.Section>
