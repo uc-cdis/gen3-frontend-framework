@@ -5,7 +5,7 @@ interface BorderComponentProp {
 }
 
 const BorderComponent = ({ title, children }: BorderComponentProp) => (
-    <Box className="flex-grow border border-gray-300 rounded" >
+    <Box className="border-3 border-gray-300 rounded" >
         <div className="grid w-full h-full bg-gray-300">
             <Text className='prose font-montserrat m-4 text-black' align='center' weight={400}>
                 {title}

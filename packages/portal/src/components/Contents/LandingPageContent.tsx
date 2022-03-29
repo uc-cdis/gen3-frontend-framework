@@ -8,6 +8,7 @@ import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
 import { NavigationButton } from '../Navigation/NavigationButton'
 import TableComponent from '../TableComponent';
+import TableComponent2 from '../TableComponent2';
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 import { RoleContentEntry } from './RolesPageContent';
 
@@ -24,6 +25,8 @@ const Divider = tw.div`
         w-100
         my-16
 `
+
+const TableHeaderStyle = "prose font-montserrat text-black text-sm font-medium text-center";
 
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
@@ -158,6 +161,39 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         ]}
                     />
                 </Grid.Col>
+
+                <Grid.Col span={4} className="ml-24 " >
+                    <TableComponent2
+                        title={'Clinical Trials'}
+                        columns={[
+                            {
+                                accessor: 'title',
+                                Header: 'Title',
+                                className: `${TableHeaderStyle}`,
+                                Cell: (params) => (
+                                    <Button variant="filled"
+                                            classNames={{
+                                                filled:"hover:bg-gen3-smoke",
+                                                inner: "text-gen3-base_blue"
+                                            }}
+                                            href="/">{params.value}</Button>
+                                ),
+                            },
+                            { accessor: 'dcc', Header: 'Coordination Center', className: `${TableHeaderStyle}`},
+                            { accessor: 'state', Header: 'State', className: `${TableHeaderStyle}`},
+                        ]}
+                        rows={[
+                            { id: 1, title: 'Title 1', dcc: 'PRISM', state: 'IL' },
+                            { id: 2, title: 'Title 2', dcc: 'Prevention', state: 'IA' },
+                            { id: 3, title: 'Title 3', dcc: 'HOPE', state: 'WI' },
+                            { id: 4, title: 'Title 4', dcc: 'BACPAC', state: 'MA' },
+                            { id: 5, title: 'Title 5', dcc: 'HOPE', state: 'FL' },
+                            { id: 6, title: 'Title 6', dcc: 'Prevention', state: 'MN' },
+                            { id: 7, title: 'Title 7', dcc: 'PRISM', state: 'NC' },
+                        ]}
+                    />
+                </Grid.Col>
+
             </Grid>
         </Box>
     );

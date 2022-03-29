@@ -42,6 +42,7 @@
     "react-modal": "^3.14.4",
     "react-plotly.js": "^2.5.1",
     "react-redux": "^7.2.6",
+    "react-table": "^7.7.0",
     "recharts": "^2.1.8",
     "sharp": "^0.30.0",
     "tailwind-styled-components": "^2.1.4",

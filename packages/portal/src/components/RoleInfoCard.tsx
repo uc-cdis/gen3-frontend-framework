@@ -10,21 +10,27 @@ export interface RoleInfoCardProp {
     content: ReadonlyArray<string>,
 }
 
+const wordWrap = (text: string,width=24) => {
+    const re = new RegExp("([\\w\\s]{" + (width - 2) + ",}?\\w)\\s?\\b", "g")
+    return text.replace(re,"$1\n")
+}
+
+
 const RoleInfoCard = ({ icon = "", tooltip = "", title, content }: RoleInfoCardProp) => (
-    <Card className='h-full border-6 rounded b' shadow="sm" sx={{borderColor: "#e5e7eb"}}>
+    <Card className='h-full border-6 rounded b' shadow="none" sx={{borderColor: "#e5e7eb"}}>
         <Card.Section className="flex flex-row justify-end p-5 pb-0 w-100" >
             {tooltip?
-                <Tooltip label={tooltip}
+                <Tooltip label={wordWrap(tooltip)}
                          position="top"
                          placement="center"
                          wrapLines
-                         width={260}
+                         width="auto"
                          transition="fade"
                          transitionDuration={200}
                          withArrow
                          classNames={{
                              arrow: "bg-gen3-gray",
-                             body: "bg-gen3-gray"
+                             body: "bg-gen3-gray text-xs break-normal "
                          }}
                 >
                     <HelpIcon className="opacity-50"/>

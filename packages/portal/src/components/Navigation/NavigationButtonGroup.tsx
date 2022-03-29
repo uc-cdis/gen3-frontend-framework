@@ -23,10 +23,11 @@ const NavigationButtonGroup = ({ rolesPages }: NavigationButtonGroupProp) => {
             {Object.entries(rolesPages).map(entry => (
                 <Item key={entry[0]
                 }>
-                    <NavigationButton component="a" $selected={asPath === entry[1].link}
-                               href={`${basePath}${entry[1].link}` || `${basePath}/#`}>
-                        {entry[1].title ? entry[1].title : entry[0]}
-                    </NavigationButton>
+                    <Link href={`${basePath}${entry[1].link}` || `${basePath}/#`}>
+                        <NavigationButton component="a" $selected={asPath === entry[1].link} >
+                            {entry[1].title ? entry[1].title : entry[0]}
+                        </NavigationButton>
+                    </Link>
                 </Item>
             ))}
         </Group>
