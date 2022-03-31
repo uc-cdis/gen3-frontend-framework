@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import Link from 'next/link';
 import { Box, Button, Grid, Group, Text, Title } from '@mantine/core';
 import tw from "tailwind-styled-components"
 import LandingBarChart from '../Charts/LandingBarChart';
@@ -8,7 +9,7 @@ import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
 import { NavigationButton } from '../Navigation/NavigationButton'
 import TableComponent from '../TableComponent';
-import TableComponent2 from '../TableComponent2';
+//import TableComponent2 from '../TableComponent2';
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 import { RoleContentEntry } from './RolesPageContent';
 
@@ -26,10 +27,11 @@ const Divider = tw.div`
         my-16
 `
 
-const TableHeaderStyle = "prose font-montserrat text-black text-sm font-medium text-center";
+
 
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
+    const TableHeaderStyle = "font-montserrat text-black text-sm font-medium text-center";
 
     return (
         <Box className="flex-grow p-[40px] h-100">
@@ -45,7 +47,9 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             is accelerating research to address this public health emergency from all angles.
                         </Text>
                         <Item className="pl-2">
-                            <NavigationButton $selected={true}>About HEAL</NavigationButton>
+                            <Link href={`${basePath}/landing/about-heal`}>
+                                <NavigationButton $selected={true}>About HEAL</NavigationButton>
+                            </Link>
                         </Item>
                     </Group>
                 </Item>
@@ -73,7 +77,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                     <Divider/>
                 </div>
             ) : null}
-            <Grid justify="center" spacing={2}>
+            <Grid justify="center">
                 <Grid.Col span={4}>
                     <Item>
                         <LandingBarChart
@@ -109,16 +113,17 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                     <TableComponent
                         title={'Newly Available Data'}
                         columns={[
-                            { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
-                            { field: 'investigator', headerName: 'Investigator', flex: 1, align: "center", headerAlign: "center" },
+                            { accessor: 'title', Header: 'Title', className: `${TableHeaderStyle}`, },
+                            { accessor: 'investigator', Header: 'Investigator',className: `${TableHeaderStyle}`, },
                             {
-                                field: 'repository', headerName: 'Repository Name', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
+                                accessor: 'repository', Header: 'Repository Name', className: `${TableHeaderStyle}`,
+                                Cell: (params) => (
                                     <Button variant="filled"
                                             classNames={{
                                                 filled:"hover:bg-gen3-smoke",
                                                 inner: "text-gen3-base_blue"
                                             }}
-                                            href="/">{params.value}</Button>
+                                           >{params.value}</Button>
                                 ),
                             },
                         ]}
@@ -133,37 +138,9 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         ]}
                     />
                 </Grid.Col>
-                <Grid.Col span={4} className="ml-24 " >
-                    <TableComponent
-                        title={'Clinical Trials'}
-                        columns={[
-                            {
-                                field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
-                                    <Button variant="filled"
-                                            classNames={{
-                                                filled:"hover:bg-gen3-smoke",
-                                                inner: "text-gen3-base_blue"
-                                            }}
-                                            href="/">{params.value}</Button>
-                                ),
-                            },
-                            { field: 'dcc', headerName: 'Coordination Center', flex: 1, align: "center", headerAlign: "center" },
-                            { field: 'state', headerName: 'State', flex: 1, align: "center", headerAlign: "center" },
-                        ]}
-                        rows={[
-                            { id: 1, title: 'Title 1', dcc: 'PRISM', state: 'IL' },
-                            { id: 2, title: 'Title 2', dcc: 'Prevention', state: 'IA' },
-                            { id: 3, title: 'Title 3', dcc: 'HOPE', state: 'WI' },
-                            { id: 4, title: 'Title 4', dcc: 'BACPAC', state: 'MA' },
-                            { id: 5, title: 'Title 5', dcc: 'HOPE', state: 'FL' },
-                            { id: 6, title: 'Title 6', dcc: 'Prevention', state: 'MN' },
-                            { id: 7, title: 'Title 7', dcc: 'PRISM', state: 'NC' },
-                        ]}
-                    />
-                </Grid.Col>
 
-                <Grid.Col span={4} className="ml-24 " >
-                    <TableComponent2
+                <Grid.Col span={4} className="ml-24" >
+                    <TableComponent
                         title={'Clinical Trials'}
                         columns={[
                             {
@@ -176,7 +153,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                                 filled:"hover:bg-gen3-smoke",
                                                 inner: "text-gen3-base_blue"
                                             }}
-                                            href="/">{params.value}</Button>
+                                            >{params.value}</Button>
                                 ),
                             },
                             { accessor: 'dcc', Header: 'Coordination Center', className: `${TableHeaderStyle}`},

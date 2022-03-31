@@ -42,7 +42,7 @@ const LandingBarChart: React.FC<BarChartProps> = ({
             {(title) ? <Text className='font-montserrat'>{title}</Text> : null}
             {(subTitle) ? <Text className='font-montserrat'  size="xs">{subTitle}</Text> : null}
             <ResponsiveContainer>
-                <BarChart data={data}>
+                <BarChart data={data}  className='font-montserrat text-sm' >
                     <XAxis dataKey='year' />
                     <YAxis />
                     <Legend />

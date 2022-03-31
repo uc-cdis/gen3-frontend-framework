@@ -1,26 +1,23 @@
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import SimpleTable from './Tables/SimpleTable';
 import { Box } from '@mui/material';
 import BorderComponent from './BorderComponent';
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 interface TableComponentProp {
     title: string,
-    rows: Array<any>,
-    columns: Array<GridColDef>,
+    rows: ReadonlyArray<Record<string, unknown>>,
+    columns: Array<Record<string, unknown>>,
 }
 
 const TableComponent = ({ title, rows, columns }: TableComponentProp) => (
     <BorderComponent title={title} >
-        <Box height={300}>
-            <DataGrid
-                rows={rows}
+        <Box style={{ height: 300}} >
+            <SimpleTable
+                data={rows}
                 columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableColumnMenu
-                sx={{fontFamily: "Montserrat, sans-serif"}}
+                itemsPerPage={5}
+                justify="center"
             />
         </Box>
     </BorderComponent>
