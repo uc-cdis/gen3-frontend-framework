@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import tw from "tailwind-styled-components"
-import { Stack, Group, Box, Image, Grid, Text, Card, Accordion, Title } from '@mantine/core';
+import { Stack,Box, Image, Grid, Text, Card, Accordion } from '@mantine/core';
 
 export interface ImageEntry {
     readonly src: string;
@@ -111,6 +110,10 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                                                 aria-controls={entry.title}
                                                 id={entry.title}
                                                 label={entry.title}
+                                                classNames={{
+                                                    item: "border-0",
+                                                    label: "font-montserrat opacity-60"
+                                                }}
                                             >
                                             {entry.content.length > 0 ?
                                                     entry.content.map(contentLine => (

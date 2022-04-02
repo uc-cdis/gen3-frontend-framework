@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { useRouter } from 'next/router'
 import tw from "tailwind-styled-components"
-import { Box, Grid, Group, Text, Title } from '@mantine/core';
+import { Box, Grid, Group, Text } from '@mantine/core';
 import RoleInfoCard, {RoleInfoCardProp} from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 

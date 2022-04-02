@@ -1,13 +1,12 @@
 import * as React from 'react';
-import SimpleTable from './Tables/SimpleTable';
-import { Box } from '@mui/material';
+import SimpleTable, { StyledColumn } from './Tables/SimpleTable';
+import { Box } from '@mantine/core';
 import BorderComponent from './BorderComponent';
-
 
 interface TableComponentProp {
     title: string,
-    rows: ReadonlyArray<Record<string, unknown>>,
-    columns: Array<Record<string, unknown>>,
+    rows: ReadonlyArray<object>,
+    columns: ReadonlyArray<StyledColumn>,
 }
 
 const TableComponent = ({ title, rows, columns }: TableComponentProp) => (

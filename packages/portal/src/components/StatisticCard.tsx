@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Text, Title } from '@mantine/core';
+import { Card, Text } from '@mantine/core';
 export interface StatisticCardProp {
     name: string,
     value: number,

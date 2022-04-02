@@ -2,14 +2,13 @@ import * as React from 'react';
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Link from 'next/link';
-import { Box, Button, Grid, Group, Text, Title } from '@mantine/core';
+import { Box, Button, Grid, Group, Text } from '@mantine/core';
 import tw from "tailwind-styled-components"
 import LandingBarChart from '../Charts/LandingBarChart';
 import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
 import { NavigationButton } from '../Navigation/NavigationButton'
 import TableComponent from '../TableComponent';
-//import TableComponent2 from '../TableComponent2';
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 import { RoleContentEntry } from './RolesPageContent';
 
@@ -26,9 +25,6 @@ const Divider = tw.div`
         w-100
         my-16
 `
-
-
-
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
     const TableHeaderStyle = "font-montserrat text-black text-sm font-medium text-center";
@@ -47,7 +43,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             is accelerating research to address this public health emergency from all angles.
                         </Text>
                         <Item className="pl-2">
-                            <Link href={`${basePath}/landing/about-heal`}>
+                            <Link href={`${basePath}/landing/about-heal`} passHref>
                                 <NavigationButton $selected={true}>About HEAL</NavigationButton>
                             </Link>
                         </Item>
@@ -117,7 +113,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             { accessor: 'investigator', Header: 'Investigator',className: `${TableHeaderStyle}`, },
                             {
                                 accessor: 'repository', Header: 'Repository Name', className: `${TableHeaderStyle}`,
-                                Cell: (params) => (
+                                Cell: (params : Record<string, object>) => (
                                     <Button variant="filled"
                                             classNames={{
                                                 filled:"hover:bg-gen3-smoke",
@@ -147,7 +143,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                 accessor: 'title',
                                 Header: 'Title',
                                 className: `${TableHeaderStyle}`,
-                                Cell: (params) => (
+                                Cell: (params : Record<string, object>) => (
                                     <Button variant="filled"
                                             classNames={{
                                                 filled:"hover:bg-gen3-smoke",

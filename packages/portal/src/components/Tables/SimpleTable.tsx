@@ -1,6 +1,5 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import {usePagination, useSortBy, useTable} from "react-table";
-import {Paper, Stack, ActionIcon, Select, Table, Text, NumberInput, Group } from "@mantine/core";
+import {usePagination, useSortBy, useTable, Column} from "react-table";
+import { ActionIcon, Table, Text,} from "@mantine/core";
 import {
     FaSort as SortIcon
 } from "react-icons/fa";
@@ -10,41 +9,19 @@ import {
 } from "react-icons/md";
 import TableScrollbar from "./TableScrollar";
 
+export type StyledColumn = Column<object> & {
+    readonly className?:string;
+}
+
 interface TableProps {
-    readonly columns: any;
-    readonly data: any;
+    readonly columns: ReadonlyArray<StyledColumn>;
+    readonly data: ReadonlyArray<object>;
     readonly itemsPerPage?: number;
     readonly justify?: "left" | "center" | "right";
 }
 
-const useStickyHeader = (defaultSticky = false) => {
-    const [isSticky, setIsSticky] = useState(defaultSticky);
-    const tableRef = useRef(null);
-
-    const handleScroll = useCallback(({ top, bottom }) => {
-        if (top <= 0 && bottom > 2 * 68) {
-            !isSticky && setIsSticky(true);
-        } else {
-            isSticky && setIsSticky(false);
-        }
-    }, [isSticky]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            handleScroll(tableRef.current.getBoundingClientRect());
-        };
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, [handleScroll]);
-
-    return { tableRef, isSticky };
-};
 
 const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TableProps) => {
-    // @ts-ignore
     const {
         getTableProps,
         getTableBodyProps,
@@ -53,16 +30,14 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
         page,
         canPreviousPage,
         canNextPage,
-        pageCount,
         nextPage,
         previousPage,
-        setPageSize,
-        state: {pageIndex, pageSize}
+        state : { pageIndex, pageSize  }
     } = useTable(
         {
             columns,
             data,
-            initialState: {pageIndex: 0, pageSize: itemsPerPage.toString()}
+            initialState: {pageIndex: 0, pageSize: itemsPerPage}
         },
         useSortBy,
         usePagination
@@ -70,17 +45,17 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
 
     return (
         <div className="flex flex-col h-full" >
-            <TableScrollbar rows={5}>
+            <TableScrollbar props={{rows: 5}}>
             <Table {...getTableProps()}  horizontalSpacing="xs" >
                 <thead   >
-                {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()} className="bg-white" >
-                        {headerGroup.headers.map((column) => (
+                {headerGroups.map((headerGroup, idx) => (
+                    <tr {...headerGroup.getHeaderGroupProps()} className="bg-white"  key={idx}>
+                        {headerGroup.headers.map((column, idx) => (
                             <th {...column.getHeaderProps(
                                 column.getSortByToggleProps())
-                            } className="p-0">
+                            } className="p-0" key={idx}>
 
-                                <div className={`p-0  ${column.className}`}>
+                                <div className={`p-0`}>
                                     <span className="c">{column.render("Header")}</span>
                                     <span
                                         style={{
@@ -100,13 +75,13 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
                 </thead>
 
                 <tbody {...getTableBodyProps()}>
-                {page.map((row, i) => {
+                {page.map((row, idx) => {
                     prepareRow(row);
                     return (
-                        <tr {...row.getRowProps()} className={`text-${justify}`} >
-                            {row.cells.map((cell) => {
+                        <tr {...row.getRowProps()} className={`text-${justify}`} key={idx}>
+                            {row.cells.map((cell, idx) => {
                                 return (
-                                    <td  {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                                    <td  {...cell.getCellProps()} key={idx}>{cell.render("Cell")}</td>
                                 );
                             })}
                         </tr>

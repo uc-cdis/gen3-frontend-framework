@@ -1,13 +1,13 @@
 // Copyright 2017, 2019, 2020, 2021 Olivier Elshocht <olivier.elshocht@gmail.com>
 // Created 2017-01-11
-
-import React from 'react';
+import React  from  'react';
 import PropTypes from 'prop-types';
 
 
 const propTypes = {
     height: PropTypes.string.isRequired,
-    rows: PropTypes.number,
+    rows: PropTypes.number.isRequired,
+    children: PropTypes.element,
 };
 
 const defaultProps = {

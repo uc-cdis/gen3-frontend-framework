@@ -10,10 +10,6 @@ export interface NavigationButtonGroupProp {
     rolesPages: Record<string, RoleContentEntry>;
 }
 
-interface ButtonProps {
-    $selected: boolean
-}
-
 const Item = tw.div`px-2`
 
 const NavigationButtonGroup = ({ rolesPages }: NavigationButtonGroupProp) => {
@@ -23,11 +19,14 @@ const NavigationButtonGroup = ({ rolesPages }: NavigationButtonGroupProp) => {
             {Object.entries(rolesPages).map(entry => (
                 <Item key={entry[0]
                 }>
-                    <Link href={`${basePath}${entry[1].link}` || `${basePath}/#`}>
+                    <Link href={`${basePath}${entry[1].link}` || `${basePath}/#`} passHref>
                         <NavigationButton component="a" $selected={asPath === entry[1].link} >
                             {entry[1].title ? entry[1].title : entry[0]}
                         </NavigationButton>
                     </Link>
+
+
+
                 </Item>
             ))}
         </Group>
