@@ -58,7 +58,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                                         <Accordion iconPosition="right" initialItem={0}
                                         classNames={{
                                             item: "border-0",
-                                            label: "font-montserrat opacity-60"
+                                            label: "font-montserrat opacity-60 overflow-visible"
                                         }}>
                                             <Accordion.Item
                                                 aria-controls={entry.title}
@@ -112,7 +112,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                                                 label={entry.title}
                                                 classNames={{
                                                     item: "border-0",
-                                                    label: "font-montserrat opacity-60"
+                                                    label: "font-montserrat opacity-60 overflow-visible"
                                                 }}
                                             >
                                             {entry.content.length > 0 ?
