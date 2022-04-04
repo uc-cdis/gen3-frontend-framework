@@ -18,9 +18,7 @@ const LandingPage = ({ top, navigation, rolesPages, footer }: Props) => {
         <div className="flex flex-col">
             <Header top={top} navigation={navigation} />
             <div className="flex flex-row justify-items-center">
-                <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                    <LandingPageContent rolesPages={rolesPages} />
-                </div>
+                <LandingPageContent rolesPages={rolesPages} />
             </div>
             <FooterHEAL links={footer.links} />
         </div>

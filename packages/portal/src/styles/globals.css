@@ -1,7 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 @tailwind base;
 @tailwind components;
+
+@import "~@fontsource/montserrat/index.css";
+@import "~@fontsource/montserrat/600.css";
+@import "~@fontsource/montserrat/700.css";
+@import "~@fontsource/montserrat/400-italic.css";
+@import "~@fontsource/montserrat/700-italic.css";
+
+@import "~@fontsource/source-sans-pro/index.css";
 
 .tooltip {
     position: relative;
@@ -62,7 +68,11 @@
     font-weight: 700;
     letter-spacing: .02rem;
 }
-
+@layer base {
+    html {
+        @apply font-montserrat;
+    }
+}
 
 @tailwind utilities;
 @tailwind variants;
