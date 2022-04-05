@@ -45,7 +45,7 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
 
     return (
         <div className="flex flex-col h-full" >
-            <TableScrollbar props={{rows: 5}}>
+            <TableScrollbar rows={5}>
             <Table {...getTableProps()}  horizontalSpacing="xs" >
                 <thead   >
                 {headerGroups.map((headerGroup, idx) => (
