@@ -7,7 +7,7 @@ import {
     MdArrowForwardIos as ArrowForward,
     MdArrowBackIos as ArrowBackward,
 } from "react-icons/md";
-import TableScrollbar from "./TableScrollar";
+import TableScrollbar from "./TableScrollbar";
 
 export type StyledColumn = Column<object> & {
     readonly className?:string;
