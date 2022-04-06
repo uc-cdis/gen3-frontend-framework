@@ -1,16 +1,17 @@
-import {AnyAction, Store} from "@reduxjs/toolkit";
-import React from "react";
-import {
-    createDispatchHook,
-    createSelectorHook,
-    createStoreHook,
-    ReactReduxContextValue,
-    TypedUseSelectorHook,
-} from "react-redux";
-import { CoreDispatch, CoreState } from "./store";
-import {buildCreateApi, coreModule, reactHooksModule} from "@reduxjs/toolkit/dist/query/react";
 
-// From here down is react-related code. If we wanted to create a UI-agnotic core,
+ import React from "react";
+ import {
+     createDispatchHook,
+     createSelectorHook,
+     createStoreHook,
+     ReactReduxContextValue,
+     TypedUseSelectorHook
+ } from "react-redux";
+ import {Store} from "@reduxjs/toolkit";
+ import { CoreDispatch } from "./store";
+ import { CoreState } from "./reducers";
+
+ // From here down is react-related code. If we wanted to create a UI-agnotic core,
 // we could need to move the following code and the provider into a new workspace,
 // such as core-react.
 
@@ -24,26 +25,11 @@ import {buildCreateApi, coreModule, reactHooksModule} from "@reduxjs/toolkit/dis
  */
 
 export const CoreContext = React.createContext(
-  undefined as unknown as ReactReduxContextValue<CoreState, AnyAction>,
+    undefined as unknown as ReactReduxContextValue<CoreState>,
 );
 
-/*
- * custom react-redux hooks that use the core store
- */
+ export const useCoreSelector: TypedUseSelectorHook<CoreState> = createSelectorHook(CoreContext);
 
-export const useCoreSelector: TypedUseSelectorHook<CoreState> =
-  createSelectorHook(CoreContext);
-// @ts-ignore
-export const useCoreDispatch: () => CoreDispatch =
-  createDispatchHook(CoreContext);
+ export const useCoreDispatch: () => CoreDispatch = createDispatchHook(CoreContext);
 
-export const useCoreStore : () => Store<any, AnyAction > = createStoreHook(CoreContext);
-
-// @ts-ignore
-export const coreCreateApi = buildCreateApi(
-    coreModule(),
-    reactHooksModule({
-      useSelector: useCoreSelector,
-        useStore: useCoreStore,
-      useDispatch: useCoreDispatch })
-)
+ export const useCoreStore : () => Store = createStoreHook(CoreContext);

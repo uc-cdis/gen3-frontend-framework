@@ -1,14 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { aggMetadataApi } from "../features/metadata/metadataSlice";
+import {configureStore,} from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { rootReducer } from "./reducers";
 
 
 export const coreStore = configureStore({
-    reducer: {
-        [aggMetadataApi.reducerPath]: aggMetadataApi.reducer,
-    },
+    reducer: rootReducer,
 })
 
-// @ts-ignore
+setupListeners(coreStore.dispatch)
+
 export type CoreDispatch = typeof coreStore.dispatch;
-// @ts-ignore
-export type CoreState = ReturnType<typeof coreStore.getState>

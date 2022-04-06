@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "tsc",
+    "clean": "rimraf dist",
     "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "build:watch": "npm run compile && npm run build -- --watch",
