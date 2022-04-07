@@ -2,6 +2,9 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
+
 import { Title, Button } from '@mantine/core';
 
 import { MdFormatQuote, MdOutlineBarChart, MdGroup, MdCloudDownload, MdOutlineSearch } from 'react-icons/md';
@@ -87,8 +90,33 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                     </li>
                 ))}
                 </ul>
-                <div className=''>
-                    carousel :(
+                <div className='mx-20'>
+                    <style>{'.carousel > .control-dots {left:-25%;} .carousel > .control-dots > .dot {height:20px;width:20px;}'}</style>
+                    <Carousel showStatus={false}>
+                        <div className='flex h-[500px]'>
+                            <div className='text-white bg-gradient-to-b from-[#6999C3] to-[#293762] basis-1/2'>
+                                <Title  className='!my-[50px]' order={3}>Press and Data Releases</Title>
+                                <div className=''>
+                                    Browse latest news, research <br/>discoveries, and updates on the <br/>HEAL Platform.
+                                </div>
+                                <Button className='mt-10 bg-[#26375A] ' radius="md" size='lg'>Learn more &gt;&gt;</Button>
+                            </div>
+                            <div className='basis-1/2'>
+                                Table 1 Here
+                            </div>
+                        </div>
+                        <div className='flex h-[500px]'>
+                            <div className='text-white bg-gradient-to-b from-[#6999C3] to-[#293762] basis-1/2'>
+                                <Title  className='!my-[50px]' order={3}>Recently Added Data</Title>
+                                <div className=''>
+                                    Find recently uploaded data files<br/> and studies to help find new<br/> treatments for pain and addiction.
+                                </div>
+                            </div>
+                            <div className='basis-1/2'>
+                                Table 2 Here
+                            </div>
+                        </div>
+                    </Carousel>
                 </div>
             </div>
             <hr className='border'/>
