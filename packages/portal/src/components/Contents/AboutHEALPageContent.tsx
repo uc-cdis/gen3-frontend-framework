@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useRouter } from 'next/router'
-import { styled } from '@mui/material/styles';
-import { Stack, Box, Grid, Typography, Card, CardMedia, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useRouter } from 'next/router';
+import tw from "tailwind-styled-components"
+import { Stack,Box, Image, Grid, Text, Card, Accordion } from '@mantine/core';
 
 export interface ImageEntry {
     readonly src: string;
@@ -20,126 +19,116 @@ export interface AboutHEALPageContentProp {
     rightDropdowns: ReadonlyArray<DropdownEntry>;
 }
 
-const Item = styled('div')(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    height: "100%"
-}));
+const Item = tw.div`h-100 text-center`;
+
+const Link = tw.a`text-heal-blue hover:underline`;
 
 const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: AboutHEALPageContentProp) => {
     const { basePath } = useRouter();
 
     return (
-        <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
+        <Box className="flex-grow p-4 h-100" >
             {(topImages && topImages.length > 0) ? (
-                <Grid container justifyContent="space-evenly" spacing={2}>
+                <Grid >
                     {topImages.map((entry: { src: string | undefined; alt: string | undefined }) => (
-                        <Grid item key={entry.alt} xs={4}>
-                            <Item className='h-full'>
-                                <Card className='h-full' elevation={0} sx={{ border: "none" }}>
-                                    <CardMedia
-                                        component="img"
-                                        height="180"
-                                        image={`${basePath}${entry.src}`}
-                                        alt={entry.alt}
-                                    />
+                        <Grid.Col key={entry.alt} xs={4}>
+                            <Item >
+                                <Card className='h-full border-0 '>
+                                    <Card.Section>
+                                       <Image  fit="contain"   src={`${basePath}${entry.src}`} alt={entry.alt}/>
+                                    </Card.Section>
                                 </Card>
                             </Item>
-                        </Grid>
+                        </Grid.Col>
                     ))}
                 </Grid>
             ) : null}
-            <Typography className='text-center font-montserrat' variant="body2" gutterBottom>
-                HEAL leverages data from <Link href="https://clinicaltrials.gov/" target="_blank" rel="noreferrer" >clinicaltrials.gov</Link> see <Link href="https://healdata.org/" target="_blank" rel="noreferrer" >here</Link> new studies available on the platform
-            </Typography>
-            <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={{ xs: 1, sm: 2, md: 4 }}
-                justifyContent="space-between"
-                alignItems="center"
-            >
+            <div className='w-100 flex flex-row justify-center font-montserrat text-sm py-2' >
+               <p>
+                   HEAL leverages data from <Link href="https://clinicaltrials.gov/" target="_blank" rel="noreferrer" >clinicaltrials.gov</Link> see <Link href="https://healdata.org/" target="_blank" rel="noreferrer" >here</Link> new studies available on the platform
+               </p>
+            </div>
+            <div className="flex flex-row flex-grow">
                 <Item className="w-full max-w-[35%]">
                     {(leftDropdowns && leftDropdowns.length > 0) ? (
-                        <Grid container justifyContent="space-evenly" spacing={2}>
+                        <Grid >
                             {leftDropdowns.map((entry ) => (
-                                <Grid item key={entry.title} xs={6}>
-                                    <Item className='h-full'>
-                                        <Accordion className='h-full' defaultExpanded>
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
+                                <Grid.Col key={entry.title} span={6}>
+                                    <Card className='h-full' shadow="md"  p="xs">
+                                        <Accordion iconPosition="right" initialItem={0}
+                                        classNames={{
+                                            item: "border-0",
+                                            label: "font-montserrat opacity-60 overflow-visible"
+                                        }}>
+                                            <Accordion.Item
                                                 aria-controls={entry.title}
                                                 id={entry.title}
+                                                label={entry.title}
                                             >
-                                                <Typography className='font-montserrat'>{entry.title}</Typography>
-                                            </AccordionSummary>
+
                                             {entry.content.length > 0 ?
-                                                <AccordionDetails>
-                                                    {entry.content.map(contentLine => (
-                                                        <Typography key={contentLine} className='text-left break-words font-montserrat' variant="body2">- {contentLine}</Typography>
-                                                    ))}
-                                                </AccordionDetails>
+                                                    entry.content.map(contentLine => (
+                                                        <Text key={contentLine} className=' text-sm text-left break-words font-montserrat py-3' >- {contentLine}</Text>
+                                                    ))
                                                 : null}
+                                            </Accordion.Item>z
                                         </Accordion>
-                                    </Item>
-                                </Grid>
+                                    </Card>
+                                </Grid.Col>
                             ))}
                         </Grid>
                     ) : null}
                 </Item>
                 <Item className="w-full max-w-[30%]">
-                    <Stack
-                        direction="column"
-                        justifyContent="flex-start"
-                        alignItems="center"
+                    <Stack className="px-4"
                         spacing={2}
                     >
-                        <Typography className='text-center font-montserrat' variant="h4" gutterBottom component="div">
+                        <div className='text-center opacity-60 font-montserrat text-4xl text-medium font-normal py-4 ' >
                             What is HEAL
-                        </Typography>
-                        <Typography className='text-center font-montserrat' variant="body1" gutterBottom component="div">
+                        </div>
+                        <Text className='text-center font-montserrat opacity-60 py-2  ' >
                             The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center is accelerating research to address this public health emergency from all angles.
-                        </Typography>
-                        <Typography className='text-center font-montserrat' variant="body1" component="div">
+                        </Text>
+                        <Text className='text-center font-montserrat opacity-60 py-2  ' >
                             The initiative is funding hundreds of projects nationwide.
                             Researchers are taking a variety of approaches to tackles the opioid epidemic through:
                             <ul className="list-disc text-left">
                                 <li>Understanding, managing, and treating pain</li>
                                 <li>Improving treatment for opioid misuse and addiction</li>
                             </ul>
-                        </Typography>
+                        </Text>
                     </Stack>
                 </Item>
                 <Item className="w-full max-w-[35%]">
                     {(rightDropdowns && rightDropdowns.length > 0) ? (
-                        <Grid container justifyContent="space-evenly" spacing={2}>
+                        <Grid>
                             {rightDropdowns.map((entry) => (
-                                <Grid item key={entry.title} xs={6}>
-                                    <Item className='h-full'>
-                                        <Accordion className='h-full' defaultExpanded>
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
+                                <Grid.Col key={entry.title} xs={6}>
+                                    <Card className='h-full' shadow="md">
+                                        <Accordion className='h-full' iconPosition="right" initialItem={0}>
+                                            <Accordion.Item
                                                 aria-controls={entry.title}
                                                 id={entry.title}
+                                                label={entry.title}
+                                                classNames={{
+                                                    item: "border-0",
+                                                    label: "font-montserrat opacity-60 overflow-visible"
+                                                }}
                                             >
-                                                <Typography className='font-montserrat'>{entry.title}</Typography>
-                                            </AccordionSummary>
                                             {entry.content.length > 0 ?
-                                                <AccordionDetails>
-                                                    {entry.content.map(contentLine => (
-                                                        <Typography key={contentLine} className='text-left break-words font-montserrat' variant="body2">- {contentLine}</Typography>
-                                                    ))}
-                                                </AccordionDetails>
+                                                    entry.content.map(contentLine => (
+                                                        <Text key={contentLine} className='prose text-sm  text-left break-words font-montserrat' >- {contentLine}</Text>
+                                                    ))
                                                 : null}
+                                            </Accordion.Item>
                                         </Accordion>
-                                    </Item>
-                                </Grid>
+                                    </Card>
+                                </Grid.Col>
                             ))}
                         </Grid>
                     ) : null}
                 </Item>
-            </Stack>
+            </div>
         </Box>
     );
 }

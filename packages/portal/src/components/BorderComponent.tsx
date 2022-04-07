@@ -1,16 +1,15 @@
-import { Box, Typography } from '@mui/material';
-
+import { Box, Text } from '@mantine/core';
 interface BorderComponentProp {
     title: string,
     children?: React.ReactNode;
 }
 
 const BorderComponent = ({ title, children }: BorderComponentProp) => (
-    <Box sx={{ flexGrow: 1, borderWidth: "1px", borderColor: "grey", borderRadius: "4px" }}>
+    <Box className="border-3 border-gray-300 rounded" >
         <div className="grid w-full h-full bg-gray-300">
-            <Typography className='font-montserrat' align='center'>
+            <Text className='prose font-montserrat m-4 text-black' align='center' weight={400}>
                 {title}
-            </Typography>
+            </Text>
         </div>
         {children}
     </Box>
