@@ -19,7 +19,6 @@ export interface LandingPageContentProp {
 
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
-    const TableHeaderStyle = "font-montserrat text-black text-sm font-medium text-center";
 
     return (
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl my-10 text-heal-dark_gray'>
@@ -28,8 +27,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 <div className='basis-1/2'>
                     <div className=''>
                         <p className='!mt-0'>
-                            The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to
-                            speed scientific solutions to stem the national opioid public health crisis.
+                            The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis.
                         </p>
                         <Button className='heal-btn'>HEAL Platform</Button>
                     </div>
@@ -92,7 +90,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 </ul>
                 <div className='mx-20'>
                     <style>{'.carousel > .control-dots {left:-25%;} .carousel > .control-dots > .dot {height:20px;width:20px;}'}</style>
-                    <Carousel showStatus={false}>
+                    <Carousel showStatus={false} showThumbs={false}>
                         <div className='flex h-[500px]'>
                             <div className='text-white bg-gradient-to-b from-[#6999C3] to-[#293762] basis-1/2'>
                                 <Title  className='!my-[50px]' order={3}>Press and Data Releases</Title>
@@ -163,7 +161,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                 {label:'Trial Meta Analysis', fontSize: 8, bgcolor: '#500E4D', w:41,t:374,l:315},
                                 {label:'PK', fontSize: 14, bgcolor: '#6F1549', w:80,t:322,l:431}
                             ].map(({label, fontSize, bgcolor, w, t, l}, index) => (
-                                <li  key={index} style={{
+                                <li key={index} style={{
                                     fontSize: fontSize,
                                     lineHeight: '1em',
                                     backgroundColor: bgcolor,
@@ -186,7 +184,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                 <Button className='heal-btn heal-btn-rev'>Learn how we curate datasets.</Button>
             </div>
             <div className='bg-heal-light_purple p-20 text-center mt-20'>
-                <div className='text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2'/>We are determine to put an end to our nation’s opioid crisis.<MdFormatQuote title='quotation mark' className='inline text-5xl mt-2'/></div>
+                <div className='text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2'/>We are determine to put an end to our nation&apos;s opioid crisis.<MdFormatQuote title='quotation mark' className='inline text-5xl mt-2'/></div>
                 <div className=''>DR. FRANICS Collins, Ph.D., former director of the NIH</div>
             </div>
         </div>
