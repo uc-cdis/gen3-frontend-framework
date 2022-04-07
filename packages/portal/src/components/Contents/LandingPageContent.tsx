@@ -17,9 +17,9 @@ export interface LandingPageContentProp {
     rolesPages: Record<string, RoleContentEntry>
 }
 
-
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
+    const TableHeaderStyle = "font-montserrat text-black text-sm font-medium text-center";
 
     return (
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl my-10 text-heal-dark_gray'>
