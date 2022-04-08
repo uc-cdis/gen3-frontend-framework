@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from "react";
 import { useRouter } from 'next/router'
-import { styled } from '@mui/material/styles';
-import { Stack, Box, Grid, Typography } from '@mui/material';
+import tw from "tailwind-styled-components"
+import { Box, Grid, Group, Text } from '@mantine/core';
 import RoleInfoCard, {RoleInfoCardProp} from "../RoleInfoCard"
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
 
@@ -17,11 +17,7 @@ export interface RolesPageContentProp {
     rolePageKey: string;
 }
 
-const Item = styled('div')(({ theme }) => ({
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    height: "100%"
-}));
+const Item = tw.div`h-100 text-center p-2`
 
 const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => {
     const { basePath } = useRouter();
@@ -29,19 +25,19 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
     return (
         <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
             {Object.keys(rolesPages).length > 0 ? (
-                <Stack spacing={2} className='mb-6'>
+                <Group position="center" direction="column" spacing="xl" className='my-5'>
                     <Item>
-                        <Typography className='font-montserrat' variant="h4" component="div">
+                        <Text className="pt-6 font-montserrat subpixel-antialiased text-[2.125rem] text-base font-[400] leading-[1.235] tracking-[.00735em]" >
                             What are you interested in
-                        </Typography>
+                        </Text>
                     </Item>
                     <NavigationButtonGroup rolesPages={rolesPages} />
-                </Stack>
+                </Group>
             ) : null}
             {(rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
-                <Grid container justifyContent="space-evenly" spacing={2}>
+                <Grid className="mx-6" gutter="xl" >
                     {rolesPages[rolePageKey].content.map((entry: RoleInfoCardProp) => (
-                        <Grid item key={entry.title} xs={4}>
+                        <Grid.Col key={entry.title} xs={4}>
                             <Item className='h-full'>
                                 <RoleInfoCard
                                     icon={`${basePath}${entry.icon}`}
@@ -50,7 +46,7 @@ const RolesPageContent = ({ rolesPages, rolePageKey }: RolesPageContentProp) => 
                                     content={entry.content}
                                 />
                             </Item>
-                        </Grid>
+                        </Grid.Col>
                     ))}
                 </Grid>
             ) : null}

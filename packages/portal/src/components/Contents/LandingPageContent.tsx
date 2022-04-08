@@ -1,45 +1,53 @@
 import * as React from 'react';
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { styled } from '@mui/material/styles';
-import { Stack, Box, Button, Divider, Grid, Typography } from '@mui/material';
+import Link from 'next/link';
+import { Box, Button, Grid, Group, Text } from '@mantine/core';
+import tw from "tailwind-styled-components"
 import LandingBarChart from '../Charts/LandingBarChart';
 import LandingLineChart from '../Charts/LandingLineChart';
 import StatisticComponent from '../StatisticComponent';
+import { NavigationButton } from '../Navigation/NavigationButton'
 import TableComponent from '../TableComponent';
 import NavigationButtonGroup from '../Navigation/NavigationButtonGroup';
-import { RoleContentEntry } from "./RolesPageContent";
+import { RoleContentEntry } from './RolesPageContent';
 
 export interface LandingPageContentProp {
     rolesPages: Record<string, RoleContentEntry>
 }
 
-const Item = styled('div')(({ theme }) => ({
-    ...theme.typography.body1,
-    padding: theme.spacing(1),
-}));
-
-
+const Item = tw.div`font-montserrat`
+const Divider = tw.div`
+        flex
+        flex-row
+        items-center
+        border
+        w-100
+        my-16
+`
 const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
     const { basePath } = useRouter();
+    const TableHeaderStyle = "font-montserrat text-black text-sm font-medium text-center";
 
     return (
-        <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
-            <Stack direction="row" spacing={2} justifyContent="space-evenly">
-                <Item className='block max-w-[40%]'>
-                    <Stack className='h-full' spacing={2} justifyContent="center">
-                        <Typography className="font-montserrat" variant="h4" component="div">
+        <Box className="flex-grow p-[40px] h-100">
+            <Group direction="row" position="center"  className="gap-x-36" >
+                <Item className='block max-w-[38%]'>
+                    <Group className='h-full'  direction="column"  spacing="lg" position="left">
+                        <Text className="font-montserrat subpixel-antialiased text-[2.125rem] text-base font-[400] leading-[1.235] tracking-[.00735em]" >
                             HEAL Platform
-                        </Typography>
-                        <Typography className="font-montserrat" component="div">
+                        </Text>
+                        <Text className="prose font-montserrat font-[500] subpixel-antialiased" >
                             The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to
                             speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center
                             is accelerating research to address this public health emergency from all angles.
-                        </Typography>
-                        <Item>
-                            <Button variant="contained" href={`${basePath}/landing/about-heal`} className="heal-btn">About HEAL</Button>
+                        </Text>
+                        <Item className="pl-2">
+                            <Link href={`${basePath}/landing/about-heal`} passHref>
+                                <NavigationButton $selected={true}>About HEAL</NavigationButton>
+                            </Link>
                         </Item>
-                    </Stack>
+                    </Group>
                 </Item>
                 <Item className='block max-w-[40%]'>
                     <Image
@@ -50,23 +58,23 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         layout='intrinsic'
                     />
                 </Item>
-            </Stack>
-            <Divider variant="middle" className="not-prose" />
+            </Group>
+            <Divider />
             {Object.keys(rolesPages).length > 0 ? (
                 <div>
-                    <Stack spacing={2}>
+                    <Group direction="column"  position="center">
                         <Item className='text-center'>
-                            <Typography className="font-montserrat" variant="h4" component="div">
+                            <Text className="my-3 font-montserrat subpixel-antialiased text-[2.125rem] text-base font-[400] leading-[1.235] tracking-[.00735em]" >
                                 What are you interested in
-                            </Typography>
+                            </Text>
                         </Item>
                         <NavigationButtonGroup rolesPages={rolesPages} />
-                    </Stack>
-                    <Divider variant="middle" className="not-prose" />
+                    </Group>
+                    <Divider/>
                 </div>
             ) : null}
-            <Grid container justifyContent="space-evenly" spacing={2}>
-                <Grid item xs={4}>
+            <Grid justify="center">
+                <Grid.Col span={4}>
                     <Item>
                         <LandingBarChart
                             title={'Annual National Opioid Overdoses and Suicides'}
@@ -74,8 +82,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             note={['* CDC Wonder https://wonder.cdc.gov/']}
                         />
                     </Item>
-                </Grid>
-                <Grid item xs={4}>
+                </Grid.Col>
+                <Grid.Col span={4}>
                     <StatisticComponent
                         title={'Studies'}
                         statisticData={[
@@ -87,8 +95,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             { name: 'Mental Health', value: 37 }
                         ]}
                     />
-                </Grid>
-                <Grid item xs={4}>
+                </Grid.Col>
+                <Grid.Col span={4}>
                     <Item>
                         <LandingLineChart
                             title={'Age-adjusted rates of drug overdose death involving opioids by type of opioid: United States'}
@@ -96,16 +104,22 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             note={['* CDC Wonder https://wonder.cdc.gov/']}
                         />
                     </Item>
-                </Grid>
-                <Grid item xs={4}>
+                </Grid.Col>
+                <Grid.Col span={4}>
                     <TableComponent
                         title={'Newly Available Data'}
                         columns={[
-                            { field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center" },
-                            { field: 'investigator', headerName: 'Investigator', flex: 1, align: "center", headerAlign: "center" },
+                            { accessor: 'title', Header: 'Title', className: `${TableHeaderStyle}`, },
+                            { accessor: 'investigator', Header: 'Investigator',className: `${TableHeaderStyle}`, },
                             {
-                                field: 'repository', headerName: 'Repository Name', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
-                                    <Button href="/">{params.value}</Button>
+                                accessor: 'repository', Header: 'Repository Name', className: `${TableHeaderStyle}`,
+                                Cell: (params : Record<string, object>) => (
+                                    <Button variant="filled"
+                                            classNames={{
+                                                filled:"hover:bg-gen3-smoke",
+                                                inner: "text-gen3-base_blue"
+                                            }}
+                                           >{params.value}</Button>
                                 ),
                             },
                         ]}
@@ -119,18 +133,27 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             { id: 7, title: 'Title 7', investigator: 'Bob Morris', repository: 'ICPSR' },
                         ]}
                     />
-                </Grid>
-                <Grid item xs={4}>
+                </Grid.Col>
+
+                <Grid.Col span={4} className="ml-24" >
                     <TableComponent
                         title={'Clinical Trials'}
                         columns={[
                             {
-                                field: 'title', headerName: 'Title', flex: 1, align: "center", headerAlign: "center", renderCell: (params) => (
-                                    <Button href="/">{params.value}</Button>
+                                accessor: 'title',
+                                Header: 'Title',
+                                className: `${TableHeaderStyle}`,
+                                Cell: (params : Record<string, object>) => (
+                                    <Button variant="filled"
+                                            classNames={{
+                                                filled:"hover:bg-gen3-smoke",
+                                                inner: "text-gen3-base_blue"
+                                            }}
+                                            >{params.value}</Button>
                                 ),
                             },
-                            { field: 'dcc', headerName: 'Coordination Center', flex: 1, align: "center", headerAlign: "center" },
-                            { field: 'state', headerName: 'State', flex: 1, align: "center", headerAlign: "center" },
+                            { accessor: 'dcc', Header: 'Coordination Center', className: `${TableHeaderStyle}`},
+                            { accessor: 'state', Header: 'State', className: `${TableHeaderStyle}`},
                         ]}
                         rows={[
                             { id: 1, title: 'Title 1', dcc: 'PRISM', state: 'IL' },
@@ -142,7 +165,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                             { id: 7, title: 'Title 7', dcc: 'PRISM', state: 'NC' },
                         ]}
                     />
-                </Grid>
+                </Grid.Col>
+
             </Grid>
         </Box>
     );

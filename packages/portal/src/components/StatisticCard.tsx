@@ -1,21 +1,20 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
-
+import { Card, Text } from '@mantine/core';
 export interface StatisticCardProp {
     name: string,
     value: number,
 }
 
 const StatisticCard = ({ name, value }: StatisticCardProp) => (
-    <Card elevation={0}>
-        <CardContent>
-            <Typography className='font-montserrat' variant="h5" component="div">
+    <Card className="p-1 mb-6" >
+        <Card.Section className="m-1" >
+            <Text className='prose font-montserrat text-black text-2xl p-2 m-2'  >
                 {value}
-            </Typography>
-            <Typography className="font-montserrat not-prose" sx={{ mb: 1.5 }} color="text.secondary">
+            </Text>
+            <Text className='prose font-montserrat ' size="md">
                 {name}
-            </Typography>
-        </CardContent>
+            </Text>
+        </Card.Section>
     </Card>
 );
 
