@@ -5,9 +5,10 @@ on: push
 jobs:
   ci:
     name: Build Image and Push to Quay
-    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@mfshao-patch-1
     with:
       OVERRIDE_REPO_NAME: "frontend-framework"
+      USE_QUAY_ONLY: true
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
