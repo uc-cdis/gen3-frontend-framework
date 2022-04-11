@@ -12,6 +12,7 @@ import { FaGraduationCap } from 'react-icons/fa';
 
 
 import { RoleContentEntry } from "./RolesPageContent";
+import SimpleTable from "../Tables/SimpleTable"
 
 export interface LandingPageContentProp {
     rolesPages: Record<string, RoleContentEntry>
@@ -100,7 +101,43 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                 <Button className='mt-10 bg-[#26375A] ' radius="md" size='lg'>Learn more &gt;&gt;</Button>
                             </div>
                             <div className='basis-1/2'>
-                                Table 1 Here
+                                <SimpleTable
+                                    columns={
+                                        [{
+                                            Header: 'DATE',
+                                            accessor: 'col1',
+                                          },
+                                          {
+                                            Header: 'RELEASE NOTES',
+                                            accessor: 'col2',
+                                          }]}
+                                    data={[
+                                        {
+                                          col1: 'Thur Feb 17 2022',
+                                          col2: 'HEAL Platform goes LIVE!',
+                                        },
+                                        {
+                                          col1: 'Thur Feb 16 2022',
+                                          col2: 'New data release 4.5.0.: BACPAC study; Teds-D 2024, n-SSATS 2024. More Info.',
+                                        },
+                                        {
+                                          col1: 'whateveThur Feb 17 2022',
+                                          col2: 'HEAL Platform goes DOWN!',
+                                        },
+                                        {
+                                          col1: 'whateveThur Feb 17 2022',
+                                          col2: 'HEAL Platform Investigator meeting on 03/09/2022. More Info.',
+                                        },
+                                        {
+                                          col1: 'whateveThur Feb 20 2022',
+                                          col2: 'test',
+                                        }
+                                      ]}
+                                    itemsPerPage={4}
+                                    tableStyle={{
+                                      headTr:'bg-heal-dark_gray',
+                                      th: '!text-white'
+                                    }}/>
                             </div>
                         </div>
                         <div className='flex h-[500px]'>
@@ -111,7 +148,98 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                                 </div>
                             </div>
                             <div className='basis-1/2'>
-                                Table 2 Here
+                            <SimpleTable
+                                    columns={
+                                        [{
+                                            Header: 'TITLE',
+                                            accessor: 'col1',
+                                          },
+                                          {
+                                            Header: 'AFFILIATION',
+                                            accessor: 'col2',
+                                          },
+                                          {
+                                            Header: 'REPOSITORY',
+                                            accessor: 'col3',
+                                          }]}
+                                    data={[
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John Hopkins',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'Purdue University',
+                                          col3: 'ClinicalTrials.gov',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'ClinicalTrials.gov',
+                                          col3: 'ICPSR',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'University of Chicago',
+                                          col3: 'MPS',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                        {
+                                          col1: 'This is the title',
+                                          col2: 'John',
+                                          col3: 'JCOIN',
+                                        },
+                                      ]}
+                                    itemsPerPage={4}/>
                             </div>
                         </div>
                     </Carousel>

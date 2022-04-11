@@ -18,10 +18,19 @@ interface TableProps {
     readonly data: ReadonlyArray<object>;
     readonly itemsPerPage?: number;
     readonly justify?: "left" | "center" | "right";
+    readonly tableStyle?: {
+        readonly container?: string;
+        readonly table?: string;
+        readonly thead?: string;
+        readonly headTr?: string;
+        readonly th?: string;
+        readonly tbody?: string;
+        readonly td?: string;
+    }
 }
 
 
-const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TableProps) => {
+const SimpleTable = ({columns, data, itemsPerPage=5, justify="left", tableStyle } : TableProps) => {
     const {
         getTableProps,
         getTableBodyProps,
@@ -44,17 +53,16 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
     );
 
     return (
-        <div className="flex flex-col h-full" >
+        <div className={`flex flex-col h-full ${tableStyle?.container || ''}`}>
             <TableScrollbar rows={5}>
-            <Table {...getTableProps()}  horizontalSpacing="xs" >
-                <thead   >
+            <Table {...getTableProps()}  horizontalSpacing="xs" className={tableStyle?.table} >
+                <thead className={tableStyle?.thead} >
                 {headerGroups.map((headerGroup, idx) => (
-                    <tr {...headerGroup.getHeaderGroupProps()} className="bg-white"  key={idx}>
+                    <tr {...headerGroup.getHeaderGroupProps()} key={idx} className={tableStyle?.headTr}>
                         {headerGroup.headers.map((column, idx) => (
                             <th {...column.getHeaderProps(
                                 column.getSortByToggleProps())
-                            } className="p-0" key={idx}>
-
+                            } className={`p-0 ${tableStyle?.th || ''}`} key={idx}>
                                 <div className={`p-0`}>
                                     <span className="c">{column.render("Header")}</span>
                                     <span
@@ -74,14 +82,14 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
                 ))}
                 </thead>
 
-                <tbody {...getTableBodyProps()}>
+                <tbody {...getTableBodyProps()} className={tableStyle?.tbody}>
                 {page.map((row, idx) => {
                     prepareRow(row);
                     return (
                         <tr {...row.getRowProps()} className={`text-${justify}`} key={idx}>
                             {row.cells.map((cell, idx) => {
                                 return (
-                                    <td  {...cell.getCellProps()} key={idx}>{cell.render("Cell")}</td>
+                                    <td  {...cell.getCellProps()} key={idx} className={tableStyle?.td}>{cell.render("Cell")}</td>
                                 );
                             })}
                         </tr>
