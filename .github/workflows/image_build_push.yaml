@@ -5,7 +5,7 @@ on: push
 jobs:
   ci:
     name: Build Image and Push to Quay
-    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@mfshao-patch-1
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
       OVERRIDE_REPO_NAME: "frontend-framework"
       USE_QUAY_ONLY: true
