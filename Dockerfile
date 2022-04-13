@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@8
+    && npm install -g npm@8.5
 
 RUN mkdir -p /gen3
 COPY . /gen3
