@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { useRouter } from 'next/router';
 import tw from "tailwind-styled-components"
-import { Stack,Box, Image, Grid, Text, Card, Accordion } from '@mantine/core';
+import { Title, Image } from '@mantine/core';
+
+import { MdArrowForward } from 'react-icons/md';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 export interface ImageEntry {
     readonly src: string;
@@ -19,117 +22,90 @@ export interface AboutHEALPageContentProp {
     rightDropdowns: ReadonlyArray<DropdownEntry>;
 }
 
-const Item = tw.div`h-100 text-center`;
-
-const Link = tw.a`text-heal-blue hover:underline`;
+const Link = tw.a`text-heal-blue
+    text-3xl
+    font-bold
+    inline-block
+    w-max
+    p-6
+    border
+    shadow-lg
+    hover:underline
+    hover:border-heal-medium_gray`;
 
 const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: AboutHEALPageContentProp) => {
     const { basePath } = useRouter();
-
+    //not using propeties at this time, but will leave them for the future when we hopfully make this more of a template
     return (
-        <Box className="flex-grow p-4 h-100" >
-            {(topImages && topImages.length > 0) ? (
-                <Grid >
-                    {topImages.map((entry: { src: string | undefined; alt: string | undefined }) => (
-                        <Grid.Col key={entry.alt} xs={4}>
-                            <Item >
-                                <Card className='h-full border-0 '>
-                                    <Card.Section>
-                                       <Image  fit="contain"   src={`${basePath}${entry.src}`} alt={entry.alt}/>
-                                    </Card.Section>
-                                </Card>
-                            </Item>
-                        </Grid.Col>
-                    ))}
-                </Grid>
-            ) : null}
-            <div className='w-100 flex flex-row justify-center font-montserrat text-sm py-2' >
-               <p>
-                   HEAL leverages data from <Link href="https://clinicaltrials.gov/" target="_blank" rel="noreferrer" >clinicaltrials.gov</Link> see <Link href="https://healdata.org/" target="_blank" rel="noreferrer" >here</Link> new studies available on the platform
-               </p>
-            </div>
-            <div className="flex flex-row flex-grow">
-                <Item className="w-full max-w-[35%]">
-                    {(leftDropdowns && leftDropdowns.length > 0) ? (
-                        <Grid >
-                            {leftDropdowns.map((entry ) => (
-                                <Grid.Col key={entry.title} span={6}>
-                                    <Card className='h-full' shadow="md"  p="xs">
-                                        <Accordion iconPosition="right" initialItem={0}
-                                        classNames={{
-                                            item: "border-0",
-                                            label: "font-montserrat opacity-60 overflow-visible"
-                                        }}>
-                                            <Accordion.Item
-                                                aria-controls={entry.title}
-                                                id={entry.title}
-                                                label={entry.title}
-                                            >
+        <div className="flex-grow p-4 h-100" >
+            <Title className='' order={1}>About the Data Platform</Title>
+            <div className='mx-10 w-3/4'>
+                <p className=''>The HEAL Platform is a cloud-based and multifunctional web interface that provides a secure environment for <strong>discovery and analysis of NIH HEAL results and data.</strong></p>
 
-                                            {entry.content.length > 0 ?
-                                                    entry.content.map(contentLine => (
-                                                        <Text key={contentLine} className=' text-sm text-left break-words font-montserrat py-3' >- {contentLine}</Text>
-                                                    ))
-                                                : null}
-                                            </Accordion.Item>z
-                                        </Accordion>
-                                    </Card>
-                                </Grid.Col>
-                            ))}
-                        </Grid>
-                    ) : null}
-                </Item>
-                <Item className="w-full max-w-[30%]">
-                    <Stack className="px-4"
-                        spacing={2}
-                    >
-                        <div className='text-center opacity-60 font-montserrat text-4xl text-medium font-normal py-4 ' >
-                            What is HEAL
-                        </div>
-                        <Text className='text-center font-montserrat opacity-60 py-2  ' >
-                            The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center is accelerating research to address this public health emergency from all angles.
-                        </Text>
-                        <Text className='text-center font-montserrat opacity-60 py-2  ' >
-                            The initiative is funding hundreds of projects nationwide.
-                            Researchers are taking a variety of approaches to tackles the opioid epidemic through:
-                            <ul className="list-disc text-left">
-                                <li>Understanding, managing, and treating pain</li>
-                                <li>Improving treatment for opioid misuse and addiction</li>
-                            </ul>
-                        </Text>
-                    </Stack>
-                </Item>
-                <Item className="w-full max-w-[35%]">
-                    {(rightDropdowns && rightDropdowns.length > 0) ? (
-                        <Grid>
-                            {rightDropdowns.map((entry) => (
-                                <Grid.Col key={entry.title} xs={6}>
-                                    <Card className='h-full' shadow="md">
-                                        <Accordion className='h-full' iconPosition="right" initialItem={0}>
-                                            <Accordion.Item
-                                                aria-controls={entry.title}
-                                                id={entry.title}
-                                                label={entry.title}
-                                                classNames={{
-                                                    item: "border-0",
-                                                    label: "font-montserrat opacity-60 overflow-visible"
-                                                }}
-                                            >
-                                            {entry.content.length > 0 ?
-                                                    entry.content.map(contentLine => (
-                                                        <Text key={contentLine} className='prose text-sm  text-left break-words font-montserrat' >- {contentLine}</Text>
-                                                    ))
-                                                : null}
-                                            </Accordion.Item>
-                                        </Accordion>
-                                    </Card>
-                                </Grid.Col>
-                            ))}
-                        </Grid>
-                    ) : null}
-                </Item>
+                <p className='text-center'>
+                    <Link href='/discovery'><MdArrowForward className='inline-block mb-1' title='Forward Arrow'/>Discover datasets</Link>
+                </p>
+
+                <p className=''>The HEAL Platform is designed to serve users with a <strong>variety of objectives, backgrounds, and specialties.</strong></p>
+
+                <p className='text-center'>
+                    <Link href='//heal.nih.gov/research'><MdArrowForward className='inline-block mb-1' title='Forward Arrow'/>Learn about HEAL research at heal.nih.gov</Link>
+                </p>
+
+                <p className=''>The HEAL Platform represents a dynamic Data Ecosystem that aggregates and hosts <strong>data from multiple secure repositories.</strong></p>
+
+                <p className='text-center'>
+                    <Image classNames={{
+                        root: 'w-1/4 inline-block',
+                        figure: '!m-0',
+                        image: '!m-0'
+                        }} src="/images/heal_bubble.png" alt="Heal Platform circle surrounded by smaller non legible circles" />
+                </p>
+
+                <p className=''>The HEAL platform offers a secure and <strong>cost-effective cloud-computing environment for data analysis,</strong> empowering collaborative research and development of new analytical tools.</p>
+
+                <p className='text-center'>
+                    <Link href='/workspace'><MdArrowForward className='inline-block mb-1' title='Forward Arrow'/>Explore our workspaces</Link>
+                </p>
             </div>
-        </Box>
+            <Title className='' order={2}>For Data Submitters</Title>
+            <div className='mx-10 w-3/4'>
+                <p className=''>All data that is made available on the HEAL Platform is part of the NIH infrastructure that underlies the HEAL Public Access and Data Sharing Policy.</p>
+
+                <p className='text-center'>
+                    <Link href=''><MdArrowForward className='inline-block mb-1' title='Forward Arrow'/>Read the HEAL Public Access and Data Sharing Policy</Link>
+                </p>
+
+                <p className=''>Data submitters should contact the following resources to get further guidance and how-to guides:</p>
+
+                <ul>
+                {[
+                    ['healdatafair.org', '//www.healdatafair.org/'],
+                    ['NIH HEAL Initiative', '//heal.nih.gov/data/heal-data-ecosystem'],
+                ].map(([text, link], index) => (
+                    <li key={index} className='!m-0'>
+                        <a className='font-bold text-heal-blue hover:underline' href={link} target='_blank' rel='noreferrer'>
+                            <FaExternalLinkAlt className='inline-block pb-1 pr-1' title='External Link'/>
+                            {text}
+                        </a>
+                    </li>
+                ))}
+                </ul>
+            </div>
+            <Title className='' order={2}>HEAL Platform is powered by</Title>
+            <div className='mx-10 w-3/4'>
+                <p className=''>The HEAL Platform is powered by the <strong>Gen3</strong> Data Commons Software Stack developed by the <a className='font-bold text-heal-blue hover:underline' href="//ctds.uchicago.edu/" target="_blank"  rel='noreferrer'>Center for Translational Data Science</a> at the University of Chicago.</p>
+                <p className='text-center'>
+                    <a href='//gen3.org/' target='_blank' rel='noreferrer'>
+                        <Image classNames={{
+                            root: 'w-1/6 inline-block',
+                            figure: '!m-0',
+                            image: '!m-0'
+                            }} src="/icons/gen3blue.png" alt="GEN3" />
+                    </a>
+                </p>
+            </div>
+        </div>
     );
 }
 
