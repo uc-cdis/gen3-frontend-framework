@@ -23,7 +23,7 @@ const TopIconButton:React.FC<NameAndIcon> = ({ name, icon = undefined } : NameAn
 const AccountTopButton = () => {
     return (
         <div className="flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white" role='button'>
-            {"Login"}
+            {"Login"} <Icon height="1.25rem" icon={"mdi:login-variant"} />
         </div>
     );
 }
