@@ -36,7 +36,7 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         <p>
                             The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid and pain public health crisis.
                         </p>
-                        <Button className='heal-btn'>NIH HEAL Inititative</Button>
+                        <Button className='heal-btn'>NIH HEAL Initiative</Button>
                     </div>
                 </div>
                 <div className='basis-1/2'>
