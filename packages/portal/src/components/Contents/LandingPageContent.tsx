@@ -3,16 +3,14 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
 
-import { Title, Button } from '@mantine/core';
+import { Title } from '@mantine/core';
 
-import { MdFormatQuote, MdOutlineBarChart, MdGroup, MdCloudDownload, MdOutlineSearch } from 'react-icons/md';
-import { FaGraduationCap } from 'react-icons/fa';
+import { MdFormatQuote } from 'react-icons/md';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 
 import { RoleContentEntry } from "./RolesPageContent";
-import SimpleTable from "../Tables/SimpleTable"
 
 export interface LandingPageContentProp {
     rolesPages: Record<string, RoleContentEntry>
@@ -30,13 +28,13 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         <p className='!mt-0'>
                             The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis.
                         </p>
-                        <Button className='heal-btn'>HEAL Platform</Button>
+                        <a className='heal-btn' href='/landing/about-heal'>HEAL Platform</a>
                     </div>
                     <div className=''>
                         <p>
                             The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid and pain public health crisis.
                         </p>
-                        <Button className='heal-btn'>NIH HEAL Inititative</Button>
+                        <a className='heal-btn' href='//heal.nih.gov' target='_blank' rel="noreferrer">                            <FaExternalLinkAlt className='inline-block pb-1 pr-1' title='External Link'/> NIH HEAL Inititative</a>
                     </div>
                 </div>
                 <div className='basis-1/2'>
@@ -51,201 +49,8 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
             </div>
             <div className='bg-heal-light_purple p-20 text-center mt-20'>
                 <div className='text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2'/>Data is both a product of research, and also an engine for new discovery. <MdFormatQuote title='quotation mark' className='inline text-5xl mt-2'/></div>
-                <div className=''>DR. REBECCA G. Baker, Ph.D., director of the NIH HEAL Initiative</div>
+                <div className=''>REBECCA G. Baker, Ph.D., director of the NIH HEAL Initiative</div>
             </div>
-            <div className='text-center'>
-                <Title  className='' order={3}>What can you expect to do on the HEAL Platform?</Title>
-                <ul className='flex  gap-4 mx-20 !p-0'>
-                {[
-                    [MdOutlineSearch, 'Search datasets from HEAL research.', 'Discover'],
-                    [MdCloudDownload, 'Download datasets in two clicks.', 'Download'],
-                    [MdOutlineBarChart, 'Export and analyze datasets on the fly.', 'Analyze'],
-                    [MdGroup, 'Explore how to get involved with the community.', 'Community'],
-                    [FaGraduationCap, 'Learn about new findings in HEAL research.', 'Learn'],
-                ].map(([icon, bodyText, btnText], index) => (
-                    <li key={index} className='border basis-1/5 shadow-lg !p-5'>
-                        {React.createElement(icon, {title:`${btnText} icon`, className:'inline-block text-7xl text-heal-magenta'}) }
-                        <p className='block text-gen3-titanium leading-6 h-20'>{bodyText}</p>
-                        <Button className='heal-btn heal-btn-rev'>{btnText}</Button>
-                    </li>
-                ))}
-                </ul>
-            </div>
-            <hr className='border'/>
-            <div className='text-center'>
-                <Title  className='' order={3}>HEAL Platform Studies and Updates</Title>
-                <ul className='flex  gap-4 mx-20 !p-0'>
-                {[
-                    [645, 'Studies'],
-                    [68, 'Medication Treatment'],
-                    [65, 'Young Adult'],
-                    [59, 'Overdose'],
-                    [44, 'Practice'],
-                    [37, 'Mental Health'],
-                ].map(([numberOfStudies, studyTitle], index) => (
-                    <li key={index} className='!p-5 basis-1/6'>
-                        <div className='text-heal-magenta text-3xl font-bold'>{numberOfStudies}</div>
-                        <div className='leading-6 mt-2'>{studyTitle}</div>
-                    </li>
-                ))}
-                </ul>
-                <div className='mx-20'>
-                    <style>{'.carousel > .control-dots {left:-25%;} .carousel > .control-dots > .dot {height:20px;width:20px;}'}</style>
-                    <Carousel showStatus={false} showThumbs={false}>
-                        <div className='flex h-[500px]'>
-                            <div className='text-white bg-gradient-to-b from-[#6999C3] to-[#293762] basis-1/2'>
-                                <Title  className='!my-[50px]' order={3}>Press and Data Releases</Title>
-                                <div className=''>
-                                    Browse latest news, research <br/>discoveries, and updates on the <br/>HEAL Platform.
-                                </div>
-                                <Button className='mt-10 bg-[#26375A] ' radius="md" size='lg'>Learn more &gt;&gt;</Button>
-                            </div>
-                            <div className='basis-1/2'>
-                                <SimpleTable
-                                    columns={
-                                        [{
-                                            Header: 'DATE',
-                                            accessor: 'col1',
-                                          },
-                                          {
-                                            Header: 'RELEASE NOTES',
-                                            accessor: 'col2',
-                                          }]}
-                                    data={[
-                                        {
-                                          col1: 'Thur Feb 17 2022',
-                                          col2: 'HEAL Platform goes LIVE!',
-                                        },
-                                        {
-                                          col1: 'Thur Feb 16 2022',
-                                          col2: 'New data release 4.5.0.: BACPAC study; Teds-D 2024, n-SSATS 2024. More Info.',
-                                        },
-                                        {
-                                          col1: 'whateveThur Feb 17 2022',
-                                          col2: 'HEAL Platform goes DOWN!',
-                                        },
-                                        {
-                                          col1: 'whateveThur Feb 17 2022',
-                                          col2: 'HEAL Platform Investigator meeting on 03/09/2022. More Info.',
-                                        },
-                                        {
-                                          col1: 'whateveThur Feb 20 2022',
-                                          col2: 'test',
-                                        }
-                                      ]}
-                                    itemsPerPage={4}
-                                    tableStyle={{
-                                      headTr:'bg-heal-dark_gray',
-                                      th: '!text-white'
-                                    }}/>
-                            </div>
-                        </div>
-                        <div className='flex h-[500px]'>
-                            <div className='text-white bg-gradient-to-b from-[#6999C3] to-[#293762] basis-1/2'>
-                                <Title  className='!my-[50px]' order={3}>Recently Added Data</Title>
-                                <div className=''>
-                                    Find recently uploaded data files<br/> and studies to help find new<br/> treatments for pain and addiction.
-                                </div>
-                            </div>
-                            <div className='basis-1/2'>
-                            <SimpleTable
-                                    columns={
-                                        [{
-                                            Header: 'TITLE',
-                                            accessor: 'col1',
-                                          },
-                                          {
-                                            Header: 'AFFILIATION',
-                                            accessor: 'col2',
-                                          },
-                                          {
-                                            Header: 'REPOSITORY',
-                                            accessor: 'col3',
-                                          }]}
-                                    data={[
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John Hopkins',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'Purdue University',
-                                          col3: 'ClinicalTrials.gov',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'ClinicalTrials.gov',
-                                          col3: 'ICPSR',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'University of Chicago',
-                                          col3: 'MPS',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                        {
-                                          col1: 'This is the title',
-                                          col2: 'John',
-                                          col3: 'JCOIN',
-                                        },
-                                      ]}
-                                    itemsPerPage={4}/>
-                            </div>
-                        </div>
-                    </Carousel>
-                </div>
-            </div>
-            <hr className='border'/>
             <div className='text-center'>
                 <Title  className='' order={3}>What data is stored on the HEAL Platform?</Title>
                 <div className='flex gap-56 mx-56'>
@@ -309,11 +114,6 @@ const LandingPageContent = ({ rolesPages }: LandingPageContentProp) => {
                         </ul>
                     </div>
                 </div>
-                <Button className='heal-btn heal-btn-rev'>Learn how we curate datasets.</Button>
-            </div>
-            <div className='bg-heal-light_purple p-20 text-center mt-20'>
-                <div className='text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2'/>We are determine to put an end to our nation&apos;s opioid crisis.<MdFormatQuote title='quotation mark' className='inline text-5xl mt-2'/></div>
-                <div className=''>DR. FRANICS Collins, Ph.D., former director of the NIH</div>
             </div>
         </div>
     );
