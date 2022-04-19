@@ -21,7 +21,6 @@ export interface FooterProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) => {
     const { basePath } = useRouter();
-    console.log(columnLinks)
     return <>
         <div className="bg-heal-dark_gray p-4">
             <div className="flex flex-row">
@@ -61,7 +60,6 @@ const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) 
                     }
                 </div>
             </div>
-
 
             {(bottomLinks && bottomLinks.length > 0) ? (
               <div className="pt-[10px] m-1 align-middle text-xs text-white font-montserrat">

@@ -31,7 +31,7 @@ const ContactPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
                     <Text className='prose text-black text-2xl p-8'>
                         For general inquiries and questions about funding, contact the NIH-HEAL office at
                         <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="mailto:HEALquestion@od.nih.gov">
-                            <FaEnvelope className="pr-1 pt-2"/>About Gen3 Projects
+                            <FaEnvelope className="pr-1 pt-2"/>HEALquestion@od.nih.gov
                         </a>
                     </Text>
                     <Text className='prose text-heal-primary text-3xl p-8 font-bold'>
