@@ -16,9 +16,7 @@ const LandingPage = ({ headerProps, footerProps, rolesPages }: Props) => {
     return (
         <NavPageLayout {...{footerProps, headerProps}}>
             <div className="flex flex-row justify-items-center">
-                <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
-                    <LandingPageContent rolesPages={rolesPages} />
-                </div>
+                <LandingPageContent rolesPages={rolesPages} />
             </div>
         </NavPageLayout>
     )
