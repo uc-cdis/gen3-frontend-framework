@@ -1,5 +1,65 @@
 {
-    "links": [
+    "columnLinks": [
+        {
+            "heading": "Contact",
+            "items": [
+                {
+                    "text": "About Us",
+                    "href": "/landing/about-us"
+                },
+                {
+                    "text": "Contact",
+                    "href": "/landing/contact"
+                },
+                {
+                    "text": "Impressum"
+                }
+            ]
+        },
+        {
+            "heading": "Help",
+            "items": [
+                {
+                    "text": "User Guides"
+                },
+                {
+                    "text": "Tutorials"
+                },
+                {
+                    "text": "FAQ"
+                }
+            ]
+        },
+        {
+            "heading": "Platform",
+            "items": [
+                {
+                    "text": "Workspaces"
+                },
+                {
+                    "text": "Discovery"
+                },
+                {
+                    "text": "Profile"
+                }
+            ]
+        },
+        {
+            "heading": "Share",
+            "items": [
+                {
+                    "text": "Twitter"
+                },
+                {
+                    "text": "ResearchGate"
+                },
+                {
+                    "text": "PubMed"
+                }
+            ]
+        }
+    ],
+    "bottomLinks": [
         {
             "text": "HEAL Initiative",
             "href": "https://heal.nih.gov/"
