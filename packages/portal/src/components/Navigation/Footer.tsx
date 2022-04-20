@@ -11,7 +11,8 @@ export interface FooterProps {
     readonly links?: ReadonlyArray<FooterLinksProp>;
 }
 
-const Footer: React.FC<FooterProps> = ({ links = []} : FooterProps) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Footer: React.FC<FooterProps> = () => {
     const { basePath } = useRouter();
 
     return (

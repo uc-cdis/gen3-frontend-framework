@@ -2,7 +2,7 @@ import React from 'react';
 import {
     ResponsiveContainer, BarChart, Bar, Legend, XAxis, YAxis,
 } from 'recharts';
-import Typography from '@mui/material/Typography';
+import { Text } from '@mantine/core';
 
 // TODO: pass data in props
 const data = [
@@ -39,10 +39,10 @@ const LandingBarChart: React.FC<BarChartProps> = ({
             alignItems: "center",
             textAlign: "center"
         }}>
-            {(title) ? <Typography className='font-montserrat'>{title}</Typography> : null}
-            {(subTitle) ? <Typography className='font-montserrat' variant="caption">{subTitle}</Typography> : null}
+            {(title) ? <Text className='font-montserrat'>{title}</Text> : null}
+            {(subTitle) ? <Text className='font-montserrat'  size="xs">{subTitle}</Text> : null}
             <ResponsiveContainer>
-                <BarChart data={data}>
+                <BarChart data={data}  className='font-montserrat text-sm' >
                     <XAxis dataKey='year' />
                     <YAxis />
                     <Legend />
@@ -59,7 +59,7 @@ const LandingBarChart: React.FC<BarChartProps> = ({
                         flexDirection: "column",
                         alignItems: "center"
                     }}>
-                        {note.map((e, index) => <Typography className='font-montserrat' variant="caption" key={index}>{e}</Typography>)}
+                        {note.map((e, index) => <Text className='font-montserrat' size="xs" key={index}>{e}</Text>)}
                     </div>
                 )
                 : null}

@@ -33,7 +33,8 @@
     "items": [
       {
         "href": "https://healdata.org/dashboard/Public/documentation/index.html",
-        "name": "HEAL Documentation"
+        "name": "Help and Guidance",
+        "icon": "bx:radio-circle-marked"
       }
     ]
   }
