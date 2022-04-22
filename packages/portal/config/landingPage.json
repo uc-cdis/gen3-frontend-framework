@@ -14,7 +14,7 @@
                     },
                     {
                         "link": {
-                            "href": "/landing/discovery",
+                            "href": "discovery",
                             "text": "Explore HEAL Data"
                         }
                     },
@@ -49,13 +49,13 @@
                         "icon": "MdOutlineSearch",
                         "bodyText": "Search datasets from HEAL research.",
                         "btnText": "Discover",
-                        "link": "/discovery"
+                        "link": "discovery"
                     },
                     {
                         "icon": "MdOutlineBarChart",
                         "bodyText": "Explore Tutorials and Example Analysis.",
                         "btnText": "Analyze",
-                        "link": "/resource-browser"
+                        "link": "resource-browser"
                     },
                     {
                         "icon": "MdGroup",
