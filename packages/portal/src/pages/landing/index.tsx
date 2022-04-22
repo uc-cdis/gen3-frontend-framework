@@ -5,20 +5,19 @@ import Header, { HeaderProps } from "../../components/Navigation/Header";
 import FooterHEAL, { FooterHEALProps } from "../../components/Navigation/FooterHEAL";
 // if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
-import LandingPageContent from "../../components/Contents/LandingPageContent"
-import { RoleContentEntry } from "../../components/Contents/RolesPageContent";
+import LandingPageContent, { LandingPageProps } from "../../components/Contents/LandingPageContent"
 
 interface Props extends HeaderProps {
-    rolesPages: Record<string, RoleContentEntry>
-    footer: FooterHEALProps
+    footer: FooterHEALProps,
+    landingPage: LandingPageProps
 }
 
-const LandingPage = ({ top, navigation, rolesPages, footer }: Props) => {
+const LandingPage = ({ top, navigation, footer, landingPage }: Props) => {
     return (
         <div className="flex flex-col">
             <Header top={top} navigation={navigation} />
             <div className="flex flex-row justify-items-center">
-                <LandingPageContent rolesPages={rolesPages} />
+                <LandingPageContent content={landingPage} />
             </div>
             <FooterHEAL links={footer.links} />
         </div>
@@ -32,14 +31,15 @@ export const getStaticProps: GetStaticProps = async () => {
         const json_data = JSON.parse(file_data)
         const footer_file_data = fs.readFileSync('config/footer.json', 'utf8')
         const footer_json_data = JSON.parse(footer_file_data)
-        const roles_file_data = fs.readFileSync('config/rolesPages.json', 'utf8')
-        const roles_json_data = JSON.parse(roles_file_data)
+
+        const landingPage_data = fs.readFileSync('config/landingPage.json', 'utf8');
+        const json_landingPage_data = JSON.parse(landingPage_data);
         return {
             props: {
                 navigation: json_data['navigation'],
                 top: json_data['topBar'],
-                rolesPages: roles_json_data,
-                footer: footer_json_data
+                footer: footer_json_data,
+                landingPage: json_landingPage_data
             }
         }
     } catch (err) {
@@ -49,8 +49,8 @@ export const getStaticProps: GetStaticProps = async () => {
         props: {
             navigation: {},
             top: {},
-            rolesPages: {},
-            footer: {}
+            footer: {},
+            landingPage: {}
         }
     }
 }
