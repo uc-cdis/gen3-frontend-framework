@@ -1,0 +1,82 @@
+{
+    "body": [
+        {
+            "title": {
+                "text": "HEAL Platform",
+                "level": 2
+            }
+        },
+        {
+            "splitarea": {
+                "left": [
+                    {
+                        "text": "The <strong>HEAL Platform</strong> is a cloud-based web interface that provides a secure environment for discovery and analysis of NIH HEAL <strong>results and data.</strong>"
+                    },
+                    {
+                        "link": {
+                            "href": "discovery",
+                            "text": "Explore HEAL Data"
+                        }
+                    },
+                    {
+                        "text": "The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid and pain public health crisis."
+                    },
+                    {
+                        "link": {
+                            "href": "//heal.nih.gov",
+                            "text": "Learn More"
+                        }
+                    }
+                ],
+                "right": [
+                    {
+                        "image": {
+                            "src": "/images/HEAL_Initiative.jpeg",
+                            "alt": "HEAL initiative"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "break": "standard"
+        },
+        {
+            "cardsArea": {
+                "title": "What can you expect to do on the HEAL Platform?",
+                "cards": [
+                    {
+                        "icon": "MdOutlineSearch",
+                        "bodyText": "Search datasets from HEAL research.",
+                        "btnText": "Discover",
+                        "link": "discovery"
+                    },
+                    {
+                        "icon": "MdOutlineBarChart",
+                        "bodyText": "Explore Tutorials and Example Analysis.",
+                        "btnText": "Analyze",
+                        "link": "resource-browser"
+                    },
+                    {
+                        "icon": "MdGroup",
+                        "bodyText": "Explore how to get involved with the community.",
+                        "btnText": "Community",
+                        "link": "/landing/community"
+                    },
+                    {
+                        "icon": "FaGraduationCap",
+                        "bodyText": "Learn about new findings in HEAL research.",
+                        "btnText": "Learn",
+                        "link": "/landing/learn"
+                    }
+                ]
+            }
+        },
+        {
+            "quoteArea": {
+                "quote": "What can you expect to do on the HEAL Platform?",
+                "author": "REBECCA G. Baker, Ph.D., Director of the NIH HEAL Initiative"
+            }
+        }
+    ]
+}
