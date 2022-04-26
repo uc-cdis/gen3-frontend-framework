@@ -61,6 +61,7 @@ const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) 
                 </div>
             </div>
 
+
             {(bottomLinks && bottomLinks.length > 0) ? (
               <div className="pt-[10px] m-1 align-middle text-xs text-white font-montserrat">
                 {
