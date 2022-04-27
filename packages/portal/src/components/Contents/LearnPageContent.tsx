@@ -2,6 +2,9 @@ import React from "react";
 import { useRouter } from 'next/router'
 import tw from "tailwind-styled-components"
 import { Box, Grid, Group, Text } from '@mantine/core';
+import RoleInfoCard from "../RoleInfoCard";
+import Link from "next/link";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 export interface LearnPageConfig {
     readonly title: string;
@@ -10,43 +13,38 @@ export interface LearnPageConfig {
         content: string,
         link?: string
     }>;
-    readonly content: ReadonlyArray<{title: string, linkText: string, link: string}>;
+    readonly content: ReadonlyArray<{title: string, linkText: string, content: string, link: string}>;
 }
 
 const Item = tw.div`h-100 text-center p-2`
 
 const LearnPageContent = ({title, introduction, content}: LearnPageConfig) => {
-    const { basePath } = useRouter();
-    // console.log(title, introduction, content);
+
     return (
-        <>
-            <h1>{title}</h1>
-            <Box sx={{ flexGrow: 1, padding: 5, height: '100%' }}>
-                {
-                    <Grid className="mx-6" gutter="xl" >
-                        {
-                            // rolesPages.content.forEach
-                        }
-                    </Grid>
-                //     (rolesPages[rolePageKey] && rolesPages[rolePageKey].content && rolesPages[rolePageKey].content.length > 0) ? (
-                //     <Grid className="mx-6" gutter="xl" >
-                //         {rolesPages[rolePageKey].content.map((entry: RoleInfoCardProp) => (
-                //             <Grid.Col key={entry.title} xs={4}>
-                //                 <Item className='h-full'>
-                //                     <RoleInfoCard
-                //                         icon={`${basePath}${entry.icon}`}
-                //                         tooltip={entry.tooltip}
-                //                         title={entry.title}
-                //                         content={entry.content}
-                //                     />
-                //                 </Item>
-                //             </Grid.Col>
-                //         ))}
-                //     </Grid>
-                // ) : null} */
-                }
-            </Box>
-        </>
+        <Grid gutter={40} columns={20} justify="flex-start">
+            <Grid.Col span={20}>
+                <Text className="text-5xl font-medium text-heal-primary mt-5 text-center">{title}</Text>
+            </Grid.Col>
+            {
+                content.map(
+                    ({title, content, linkText, link}) => (
+                        <Grid.Col span={4} className='border shadow-lg p-5 m-10 flex flex-col justify-between justify-items-end'>
+                            <Text className="font-bold text-xl text-heal-secondary">{title}</Text>
+                            <Text className=" mb-3">{content}</Text>
+                            <div className="flex flex-row justify-center">
+                            <a href={link} className='heal-btn  w-[60%]' target='_blank' rel="noreferrer">
+                                <span className="flex flex-row">
+                                    <FaExternalLinkAlt className="mr-2"/>
+                                    {linkText}
+                                </span>
+                            </a>
+                            </div>
+                        </Grid.Col>
+                    )
+                )
+            }
+        </Grid>
+
     );
 }
 

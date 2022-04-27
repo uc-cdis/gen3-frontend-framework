@@ -34,35 +34,6 @@ export const getStaticProps: GetStaticProps = async () => {
             landingPage
         }
     }
-// =======
-//     try {
-//         const file_data = fs.readFileSync('config/navigation.json', 'utf8')
-//         const json_data = JSON.parse(file_data)
-//         const footer_file_data = fs.readFileSync('config/footer.json', 'utf8')
-//         const footer_json_data = JSON.parse(footer_file_data)
-
-//         const landingPage_data = fs.readFileSync('config/landingPage.json', 'utf8');
-//         const json_landingPage_data = JSON.parse(landingPage_data);
-//         return {
-//             props: {
-//                 navigation: json_data['navigation'],
-//                 top: json_data['topBar'],
-//                 footer: footer_json_data,
-//                 landingPage: json_landingPage_data
-//             }
-//         }
-//     } catch (err) {
-//         console.error(err)
-//     }
-//     return {
-//         props: {
-//             navigation: {},
-//             top: {},
-//             footer: {},
-//             landingPage: {}
-// >>>>>>> feat/landingPage
-//         }
-//     }
 }
 
 export default LandingPage;
