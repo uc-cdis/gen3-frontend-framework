@@ -58,20 +58,20 @@ export interface LandingPageProps {
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
     const { basePath } = useRouter();
     return (
-        <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl my-10 text-heal-dark_gray'>
-            {content?.body?.map((component, index)=>{
+        <div className='sm:mt-8 2xl:mt-10 text-heal-dark_gray'>
+            {content?.body?.map((component, index) => {
                 if (component.title) {
-                    return <Title key={index} className='mx-20' order={component.title.level}>{component.title.text}</Title>;
+                    return <Title key={index} className='mb-5 mx-20' order={component.title.level}>{component.title.text}</Title>;
                 }
                 if (component.splitarea) {
-                    const splitareaJsx = (area:leftRightProps[]) => area.map((obj, index)=>{
+                    const splitareaJsx = (area: leftRightProps[]) => area.map((obj, index) => {
                         if (obj.text) {
-                            return <p key={index} className='!mt-0' dangerouslySetInnerHTML={{__html: obj.text}}/>;
+                            return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
                         }
                         if (obj.link) {
                             // if external link
                             if (obj.link.href.indexOf('//') > -1) {
-                                return <a key={index} className='heal-btn mb-5' href={obj.link.href} target='_blank' rel="noreferrer">                            <FaExternalLinkAlt className='inline-block pb-1 pr-1' title='External Link'/> {obj.link.text}</a>
+                                return <a key={index} className='heal-btn mb-5' href={obj.link.href} target='_blank' rel="noreferrer">                            <FaExternalLinkAlt className='inline-block pb-1 pr-1' title='External Link' /> {obj.link.text}</a>
                             } else if (obj.link.href.charAt(0) === '/') {
                                 return <Link key={index} href={obj.link.href}>
                                     <a className='heal-btn mb-5'>
@@ -85,14 +85,16 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                             </a>;
                         }
                         if (obj.image) {
-                            return <Image
-                                key={index}
-                                src={`${basePath}${obj.image.src}`}
-                                alt={obj.image.alt}
-                                width={1260}
-                                height={630}
-                                layout='intrinsic'
-                            />;
+                            return (
+                                <div key={index} className='h-full relative'>
+                                    <Image
+                                        src={`${basePath}${obj.image.src}`}
+                                        alt={obj.image.alt}
+                                        layout='fill'
+                                        objectFit='contain'
+                                    />
+                                </div>
+                            );
                         }
                     });
                     return <div key={index} className='flex mx-20'>
@@ -105,7 +107,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     </div>;
                 }
                 if (component.break) {
-                    return <hr key={index} className='border'/>
+                    return <hr key={index} className='border sm:my-10 2xl:my-12 ' />
                 }
                 if (component.cardsArea) {
                     const allowedIcons = {
@@ -115,26 +117,26 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                         MdGroup: MdGroup,
                     }
                     return <div key={index} className='text-center'>
-                        <Title  className='' order={3}>{component.cardsArea.title}</Title>
+                        <Title className='my-5' order={3}>{component.cardsArea.title}</Title>
                         <ul className='gap-4 mx-20 !p-0'>
                             {component.cardsArea.cards.map((card, index) => (
-                            <li key={index} className='border shadow-lg !p-5 w-1/5 inline-block mx-5 align-top'>
-                                {React.createElement(allowedIcons[card.icon], {title:`${card.btnText} icon`, className:'inline-block text-7xl text-heal-magenta'}) }
-                                <p className='block text-gen3-titanium leading-6 h-20'>{card.bodyText}</p>
-                                {//temp for linking back to base path
-                                card.link.charAt(0) === '/' ?
-                                    <Link href={`${card.link}`}><a className='heal-btn heal-btn-rev'>{card.btnText}</a></Link>
-                                :
-                                    <a className='heal-btn heal-btn-rev' href={`/${card.link}`}>{card.btnText}</a>
-                                }
-                            </li>
+                                <li key={index} className='border shadow-lg !p-5 w-1/5 inline-block mx-5 align-top'>
+                                    {React.createElement(allowedIcons[card.icon], { title: `${card.btnText} icon`, className: 'inline-block text-7xl text-heal-magenta' })}
+                                    <p className='block text-gen3-titanium leading-6 h-20'>{card.bodyText}</p>
+                                    {//temp for linking back to base path
+                                        card.link.charAt(0) === '/' ?
+                                            <Link href={`${card.link}`}><a className='heal-btn heal-btn-rev'>{card.btnText}</a></Link>
+                                            :
+                                            <a className='heal-btn heal-btn-rev' href={`/${card.link}`}>{card.btnText}</a>
+                                    }
+                                </li>
                             ))}
                         </ul>
                     </div>;
                 }
                 if (component.quoteArea) {
-                    return <div key={index} className='bg-heal-light_purple p-20 text-center mt-20'>
-                        <div className='text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2'/>{component.quoteArea.quote}<MdFormatQuote title='quotation mark' className='inline text-5xl mt-2'/></div>
+                    return <div key={index} className='bg-heal-light_purple sm:p-16 2xl:p-20 text-center sm:mt-16 2xl:mt-20'>
+                        <div className='sm:text-3xl 2xl:text-4xl'><MdFormatQuote title='quotation mark' className='inline rotate-180 text-5xl mb-2' />{component.quoteArea.quote}<MdFormatQuote title='quotation mark' className='inline text-5xl mt-2' /></div>
                         <div>{component.quoteArea.author}</div>
                     </div>
                 }
