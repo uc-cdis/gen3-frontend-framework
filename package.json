@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "lint": "eslint .",
     "build": "lerna run build",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
@@ -21,13 +22,14 @@
     "classnames": "^2.3.1",
     "isomorphic-fetch": "^3.0.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-responsive-carousel": "^3.2.23"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.0",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
-    "eslint": "^7.30.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
