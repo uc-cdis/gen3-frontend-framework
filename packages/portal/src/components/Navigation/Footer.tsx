@@ -45,7 +45,12 @@ const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) 
                                                     key: i
                                                 };
                                                 if (href) {
-                                                    return <span {...attrs}><Link href={href}>{text}</Link></span>
+                                                    if (href.startsWith("/")) {
+                                                        return <span {...attrs}><Link href={href}>{text}</Link></span>
+                                                    }
+                                                    else {
+                                                        return <a href={href}><span {...attrs}>{text}</span></a>
+                                                    }
                                                 }
                                                 else {
                                                     return <span {...attrs}>{text}</span>

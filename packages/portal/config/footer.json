@@ -10,9 +10,6 @@
                 {
                     "text": "Contact",
                     "href": "/landing/contact"
-                },
-                {
-                    "text": "Impressum"
                 }
             ]
         },
@@ -20,13 +17,16 @@
             "heading": "Help",
             "items": [
                 {
-                    "text": "User Guides"
+                    "text": "User Guides",
+                    "href": "https://healdata.org/dashboard/Public/documentation/index.html"
                 },
                 {
-                    "text": "Tutorials"
+                    "text": "Tutorials",
+                    "href": "https://healdata.org/dashboard/Public/documentation/index.html#Tutorials"
                 },
                 {
-                    "text": "FAQ"
+                    "text": "FAQ",
+                    "href": "https://healdata.org/dashboard/Public/documentation/index.html#FAQ"
                 }
             ]
         },
@@ -34,27 +34,16 @@
             "heading": "Platform",
             "items": [
                 {
-                    "text": "Workspaces"
+                    "text": "Workspaces",
+                    "href": "https://healdata.org/workspace"
                 },
                 {
-                    "text": "Discovery"
+                    "text": "Discovery",
+                    "href": "https://healdata.org/discovery"
                 },
                 {
-                    "text": "Profile"
-                }
-            ]
-        },
-        {
-            "heading": "Share",
-            "items": [
-                {
-                    "text": "Twitter"
-                },
-                {
-                    "text": "ResearchGate"
-                },
-                {
-                    "text": "PubMed"
+                    "text": "Profile",
+                    "href": "https://healdata.org/identity"
                 }
             ]
         }
