@@ -39,7 +39,7 @@ const TopBar: React.FC<TopBarProps> = ( { items } : TopBarProps) => {
                 <nav className='flex flex-row items-center align-middle font-montserrat'>
                     {
                         items.map((x) => {
-                           return ( <a className="flex flex-row" href={x.href} key={x.href}>
+                           return ( <a className="flex flex-row" href={`https://${process.env.PORTAL_BASENAME}${x.href}`} key={x.href}>
                                    <TopIconButton name={x.name} icon={x.icon}/>
                                    <div className="pr-2 ml-1  border-r-2 border-solid h-6 "/>
                             </a>

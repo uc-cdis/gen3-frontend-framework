@@ -10,7 +10,7 @@ interface BottomLinks {
 
 interface ColumnLinks {
     heading: string;
-    items: ReadonlyArray<{text: string; href?: string;}>;
+    items: ReadonlyArray<{text: string; href?: string; linkType: "gen3ff" | "portal" | undefined}>;
 }
 
 export interface FooterProps {
@@ -39,14 +39,17 @@ const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) 
                                     <h1 className="font-bold text-xl text-white font-montserrat">{heading}</h1>
                                     {
                                         (items || []).map(
-                                            ({text, href}, i) => {
+                                            ({text, href, linkType}, i) => {
                                                 const attrs = {
                                                     className: `${href && "heal-link-footer"} font-medium text-sm p-[2px] text-white font-montserrat`,
                                                     key: i
                                                 };
                                                 if (href) {
-                                                    if (href.startsWith("/")) {
+                                                    if (linkType === "gen3ff") {
                                                         return <span {...attrs}><Link href={href}>{text}</Link></span>
+                                                    }
+                                                    else if (linkType === "portal"){
+                                                        return <a href={`https://${process.env.PORTAL_BASENAME}${href}`}><span {...attrs}>{text}</span></a>
                                                     }
                                                     else {
                                                         return <a href={href}><span {...attrs}>{text}</span></a>

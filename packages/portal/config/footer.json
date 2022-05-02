@@ -5,11 +5,13 @@
             "items": [
                 {
                     "text": "About Us",
-                    "href": "/landing/about-us"
+                    "href": "/landing/about-us",
+                    "linkType": "gen3ff"
                 },
                 {
                     "text": "Contact",
-                    "href": "/landing/contact"
+                    "href": "/landing/contact",
+                    "linkType": "gen3ff"
                 }
             ]
         },
@@ -35,15 +37,18 @@
             "items": [
                 {
                     "text": "Workspaces",
-                    "href": "https://healdata.org/workspace"
+                    "href": "/workspace",
+                    "linkType": "portal"
                 },
                 {
                     "text": "Discovery",
-                    "href": "https://healdata.org/discovery"
+                    "href": "/discovery",
+                    "linkType": "portal"
                 },
                 {
                     "text": "Profile",
-                    "href": "https://healdata.org/identity"
+                    "href": "/identity",
+                    "linkType": "portal"
                 }
             ]
         }

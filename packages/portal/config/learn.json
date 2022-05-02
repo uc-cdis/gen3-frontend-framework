@@ -1,18 +1,23 @@
 {
     "title": "Learn",
-    "route": "learn",
     "introduction": [
         {
             "type": "text",
             "content": "The NIH HEAL Initiative is organized into seven research focus areas. Within those focuse areas, several NIH Institutes and Centers are leading dozens of research progrrams to find scientific solutions to the opioid crisis."
         },
         {
-            "type": "link",
+            "type": "break"
+        },
+        {
+            "type": "break"
+        },
+        {
+            "type": "outboundLink",
             "content": "NIH HEAL Initiative research plan",
             "link": "https://heal.nih.gov/about/research-plan"
         },
         {
-            "type": "link",
+            "type": "outboundLink",
             "content": "Research Publications",
             "link": "https://heal.nih.gov/research/publications"
         }
