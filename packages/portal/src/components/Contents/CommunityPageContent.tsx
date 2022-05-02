@@ -23,7 +23,7 @@ const CommunityPageContent = ({title, introduction, sections}: CommunityPageConf
                     {' > '}
                 <span className="text-heal-primary">&nbsp;{title}</span>
             </div>
-            <div className="text-md px-10">
+            <div className="text-md pl-10">
                 <Text className="font-bold text-4xl text-gen3-coal font-montserrat pb-8">{title}</Text>
                 <div className="pl-5">
                     <MultiPartText parts={introduction}/>

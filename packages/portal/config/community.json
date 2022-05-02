@@ -22,7 +22,7 @@
     "sections": [
         {
             "title": "Prevention",
-            "introduction": "One of HEAL's primary initiatives is to prevent Opioid USe Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
+            "introduction": "One of HEAL's primary initiatives is to prevent Opioid Use Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
             "cards": [
                 {
                     "title": "Center for Disease Control (CDC)",
@@ -50,7 +50,7 @@
             "cards": [
                 {
                     "title": "Substance Abuse and Mental Health Service Administration (SAMHSA)",
-                    "content": "A confidential and anonymous source of information for persons seeking treatment frcilities for substance abuse.",
+                    "content": "A confidential and anonymous source of information for persons seeking treatment facilities for substance abuse.",
                     "linkText": "Visit Site",
                     "link": ""
                 },
@@ -62,7 +62,7 @@
                 },
                 {
                     "title": "Food and Drug Administration (FDA)",
-                    "content": "A resource providing information about current treatments nd the development of new therapies.",
+                    "content": "A resource providing information about current treatments and the development of new therapies.",
                     "linkText": "Visit Site",
                     "link": ""
                 },
@@ -80,7 +80,7 @@
             "cards": [
                 {
                     "title": "Health and Human Services (HHS)",
-                    "content": "General informatio, including the national helpline and a link to the NSDUH Annual National Report.",
+                    "content": "General information, including the national helpline and a link to the NSDUH Annual National Report.",
                     "linkText": "Visit Site",
                     "link": ""
                 },
