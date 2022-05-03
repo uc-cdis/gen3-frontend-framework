@@ -27,19 +27,19 @@ const AboutUsPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
                     </Text>
                     <Text className='prose text-black text-2xl p-8'>
                         We believe in <span className="font-bold">Open Data, Open Source and Open Infrastructure.</span>
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="https://gen3.org/" target="_blank" rel="noreferrer">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="https://gen3.org/" target="_blank" rel="noreferrer">
                             <FaExternalLinkAlt className="pr-1 pt-2"/>About Gen3
                         </a>
                     </Text>
                     <Text className='prose text-black text-2xl p-8'>
                         Check out other <span className="font-bold">Data Platforms powered by Gen3:</span>
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="https://gen3.org/powered-by-gen3/" target="_blank" rel="noreferrer">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="https://gen3.org/powered-by-gen3/" target="_blank" rel="noreferrer">
                             <FaExternalLinkAlt className="pr-1 pt-2"/>About Gen3 Projects
                         </a>
                     </Text>
                     <Text className='prose text-black text-2xl p-8'>
                         Check out our <span className="font-bold">Software Stack on GitHub:</span>
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="https://github.com/search?q=topic%3Agen3+org%3Auc-cdis&type=Repositories" target="_blank" rel="noreferrer">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="https://github.com/search?q=topic%3Agen3+org%3Auc-cdis&type=Repositories" target="_blank" rel="noreferrer">
                             <FaExternalLinkAlt className="pr-1 pt-2"/>Gen3 on GitHub
                         </a>
                     </Text>

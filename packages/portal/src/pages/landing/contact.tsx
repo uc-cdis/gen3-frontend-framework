@@ -18,19 +18,19 @@ const ContactPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
                     <h1 className="font-bold text-4xl text-gen3-coal font-montserrat pb-4">Contact</h1>
                     <Text className='prose text-black text-2xl p-8'>
                     For technical questions about the HEAL Platform, contact our Platform Team from CTDS-Gen3 at
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="mailto:heal-support@datacommons.io">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="mailto:heal-support@datacommons.io">
                             <FaEnvelope className="pr-1 pt-2"/> heal-support@datacommons.io
                         </a>
                     </Text>
                     <Text className='prose text-black text-2xl p-8'>
                         For data-related questions, contact the data stewards from RENCI/RTI via
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="http://bit.ly/HEALStewardsConnect">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="http://bit.ly/HEALStewardsConnect">
                             <FaExternalLinkAlt className="pr-1 pt-2"/> the HEAL Stewards contact form
                         </a>
                     </Text>
                     <Text className='prose text-black text-2xl p-8'>
                         For general inquiries and questions about funding, contact the NIH-HEAL office at
-                        <a className="text-gen3-base_blue flex flex-row align-center no-underline font-bold" href="mailto:HEALquestion@od.nih.gov">
+                        <a className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold" href="mailto:HEALquestion@od.nih.gov">
                             <FaEnvelope className="pr-1 pt-2"/>HEALquestion@od.nih.gov
                         </a>
                     </Text>
