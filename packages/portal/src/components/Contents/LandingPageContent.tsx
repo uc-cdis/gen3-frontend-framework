@@ -9,7 +9,8 @@ import { Title, TitleOrder } from '@mantine/core';
 
 import { IconType } from 'react-icons';
 import { MdFormatQuote, MdOutlineSearch, MdOutlineBarChart, MdGroup } from 'react-icons/md';
-import { FaExternalLinkAlt, FaGraduationCap } from 'react-icons/fa';
+import { FaGraduationCap } from 'react-icons/fa';
+import Gen3Link from '../Gen3Link';
 
 export interface LandingPageContentProp {
     content: LandingPageProps
@@ -21,6 +22,7 @@ export interface leftRightProps {
     readonly link?: {
         readonly href: string;
         readonly text: string;
+        readonly linkType?: string;
     };
     readonly image?: {
         readonly src: string;
@@ -45,7 +47,8 @@ export interface LandingPageProps {
                 readonly icon: keyof IconType;
                 readonly bodyText: string;
                 readonly btnText: string;
-                readonly link: string;
+                readonly href: string;
+                readonly linkType?: string;
             }>;
         };
         readonly quoteArea?: {
@@ -69,20 +72,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                             return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
                         }
                         if (obj.link) {
-                            // if external link
-                            if (obj.link.href.indexOf('//') > -1) {
-                                return <a key={index} className='heal-btn mb-5' href={obj.link.href} target='_blank' rel="noreferrer">                            <FaExternalLinkAlt className='inline-block pb-1 pr-1' title='External Link' /> {obj.link.text}</a>
-                            } else if (obj.link.href.charAt(0) === '/') {
-                                return <Link key={index} href={obj.link.href}>
-                                    <a className='heal-btn mb-5'>
-                                        {obj.link.text}
-                                    </a>
-                                </Link>;
-                            }
-                            //temp for linking back to base path also remove above else if
-                            return <a key={index} href={`/${obj.link.href}`} className='heal-btn mb-5'>
-                                {obj.link.text}
-                            </a>;
+                            return <div className='heal-btn mb-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>
                         }
                         if (obj.image) {
                             return (
@@ -123,12 +113,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                                 <li key={index} className='border shadow-lg !p-5 w-1/5 inline-block mx-5 align-top'>
                                     {React.createElement(allowedIcons[card.icon], { title: `${card.btnText} icon`, className: 'inline-block text-7xl text-heal-magenta' })}
                                     <p className='block text-gen3-titanium leading-6 h-20'>{card.bodyText}</p>
-                                    {//temp for linking back to base path
-                                        card.link.charAt(0) === '/' ?
-                                            <Link href={`${card.link}`}><a className='heal-btn heal-btn-rev'>{card.btnText}</a></Link>
-                                            :
-                                            <a className='heal-btn heal-btn-rev' href={`/${card.link}`}>{card.btnText}</a>
-                                    }
+                                    <Gen3Link className='heal-btn heal-btn-rev' href={card.href} linkType={card.linkType} text={card.btnText} />
                                 </li>
                             ))}
                         </ul>

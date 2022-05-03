@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Link from 'next/link';
+import Gen3Link from '../Gen3Link';
 
 interface BottomLinks {
     text: string;
@@ -45,15 +45,7 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps
                                                     key: i
                                                 };
                                                 if (href) {
-                                                    if (linkType === "gen3ff") {
-                                                        return <span {...attrs}><Link href={href}>{text}</Link></span>
-                                                    }
-                                                    else if (linkType === "portal"){
-                                                        return <a {...attrs} href={`${(process.env.PORTAL_BASENAME && process.env.PORTAL_BASENAME !== '/') ? process.env.PORTAL_BASENAME : ''}${href}`}>{text}</a>
-                                                    }
-                                                    else {
-                                                        return <a {...attrs} href={href}>{text}</a>
-                                                    }
+                                                    return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text}/></div>
                                                 }
                                                 else {
                                                     return <span {...attrs}>{text}</span>

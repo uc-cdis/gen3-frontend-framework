@@ -14,7 +14,8 @@
                     },
                     {
                         "link": {
-                            "href": "discovery",
+                            "href": "/discovery",
+                            "linkType": "portal",
                             "text": "Explore HEAL Data"
                         }
                     },
@@ -23,7 +24,7 @@
                     },
                     {
                         "link": {
-                            "href": "//heal.nih.gov",
+                            "href": "https://heal.nih.gov/",
                             "text": "Learn More"
                         }
                     }
@@ -49,25 +50,29 @@
                         "icon": "MdOutlineSearch",
                         "bodyText": "Search datasets from HEAL research.",
                         "btnText": "Discover",
-                        "link": "discovery"
+                        "href": "/discovery",
+                        "linkType": "portal"
                     },
                     {
                         "icon": "MdOutlineBarChart",
                         "bodyText": "Explore Tutorials and Example Analysis.",
                         "btnText": "Analyze",
-                        "link": "resource-browser"
+                        "href": "/resource-browser",
+                        "linkType": "portal"
                     },
                     {
                         "icon": "MdGroup",
                         "bodyText": "Explore how to get involved with the community.",
                         "btnText": "Community",
-                        "link": "/landing/community"
+                        "href": "/landing/community",
+                        "linkType": "gen3ff"
                     },
                     {
                         "icon": "FaGraduationCap",
                         "bodyText": "Learn about new findings in HEAL research.",
                         "btnText": "Learn",
-                        "link": "/landing/learn"
+                        "href": "/landing/learn",
+                        "linkType": "gen3ff"
                     }
                 ]
             }
