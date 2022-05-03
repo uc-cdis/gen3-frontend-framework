@@ -14,7 +14,7 @@ export interface NavigationButtonProps {
 const NavigationButton: React.FC<NavigationButtonProps> = ({tooltip, icon, href, name} : NavigationButtonProps ) => {
     return (
         <div className="has-tooltip relative h-[80px]">
-        <a className="content-center" href={`https://${process.env.PORTAL_BASENAME}${href}`} >
+        <a className="content-center" href={`${(process.env.PORTAL_BASENAME && process.env.PORTAL_BASENAME !== '/') ? process.env.PORTAL_BASENAME : ''}${href}`} >
         <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-heal-primary opacity-80 hover:opacity-100">
             <Icon height="27px" icon={icon} className="mt-[2px] ml-[4px]"/>
             <p className="content-center pt-1.5 font-montserrat body-typo">{name}</p>

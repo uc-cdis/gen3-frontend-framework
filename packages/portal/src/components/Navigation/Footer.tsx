@@ -48,8 +48,8 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps
                                                     if (linkType === "gen3ff") {
                                                         return <span {...attrs}><Link href={href}>{text}</Link></span>
                                                     }
-                                                    else if (linkType === "portal") {
-                                                        return <a  {...attrs} href={`https://${process.env.PORTAL_BASENAME}${href}`}>{text}</a>
+                                                    else if (linkType === "portal"){
+                                                        return <a {...attrs} href={`${(process.env.PORTAL_BASENAME && process.env.PORTAL_BASENAME !== '/') ? process.env.PORTAL_BASENAME : ''}${href}`}>{text}</a>
                                                     }
                                                     else {
                                                         return <a {...attrs} href={href}>{text}</a>
