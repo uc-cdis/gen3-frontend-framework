@@ -49,10 +49,10 @@ const Footer: React.FC<FooterProps> = ({bottomLinks, columnLinks}: FooterProps) 
                                                         return <span {...attrs}><Link href={href}>{text}</Link></span>
                                                     }
                                                     else if (linkType === "portal"){
-                                                        return <a href={`https://${process.env.PORTAL_BASENAME}${href}`}><span {...attrs}>{text}</span></a>
+                                                        return <a {...attrs} href={`${(process.env.PORTAL_BASENAME && process.env.PORTAL_BASENAME !== '/') ? process.env.PORTAL_BASENAME : ''}${href}`}>{text}</a>
                                                     }
                                                     else {
-                                                        return <a href={href}><span {...attrs}>{text}</span></a>
+                                                        return <a {...attrs} href={href}>{text}</a>
                                                     }
                                                 }
                                                 else {
