@@ -6,6 +6,7 @@ FROM quay.io/cdis/ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG BASE_PATH
+ARG PORTAL_BASENAME
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \

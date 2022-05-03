@@ -16,8 +16,9 @@ const MultiPartText = ({parts}: MultiPartTextProps) => {
     return <>
         {
             parts.map(
-                ({type, content, link}) => {
+                ({type, content, link}, i) => {
                     return {
+                        "key": i,
                         "text": <span className="text-xl">{content}</span>,
                         "boldText": <span className="text-xl font-bold">{content}</span>,
                         "link": <a className="text-gen3-base_blue no-underline font-bold" href={link}> {content}</a>,
