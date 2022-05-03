@@ -5,25 +5,25 @@
     "items": [
       {
         "icon": "gen3:query",
-        "href": "https://healdata.org/discovery",
+        "href": "/discovery",
         "name": "Discovery",
         "tooltip": "Use free-text search and tags to rapidly find relevant studies, discover new datasets across multiple resources, and easily export selected data files to the analysis workspace."
       },
       {
         "icon": "gen3:workspace",
-        "href": "https://healdata.org/workspace",
+        "href": "/workspace",
         "name": "Workspace",
         "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
       },
       {
         "name": "Example Analysis",
-        "href": "https://healdata.org/resource-browser",
+        "href": "/resource-browser",
         "icon": "gen3:bar-chart",
         "tooltip": "Learn how to use Jupyter Notebooks to explore and visualize data available on the HEAL platform by running a static tutorial notebook, or use one of these examples as a launching point for your own custom analysis."
       },
       {
         "icon": "gen3:profile",
-        "href": "https://healdata.org/identity",
+        "href": "/identity",
         "name": "Profile",
         "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
       }
@@ -32,7 +32,7 @@
   "topBar": {
     "items": [
       {
-        "href": "https://healdata.org/dashboard/Public/documentation/index.html",
+        "href": "/dashboard/Public/documentation/index.html",
         "name": "Help and Guidance",
         "icon": "bx:radio-circle-marked"
       }

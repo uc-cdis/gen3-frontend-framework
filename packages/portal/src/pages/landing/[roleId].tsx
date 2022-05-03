@@ -2,23 +2,19 @@ import {GetStaticProps} from "next";
 import ContentSource from "../../lib/content/";
 import { useRouter } from 'next/router'
 
-import {HeaderProps} from "../../components/Navigation/Header";
-import FooterHEAL, { FooterLinksProp} from "../../components/Navigation/FooterHEAL";
-import NavPageLayout from "../../components/Navigation/NavPageLayout";
+import NavPageLayout, { NavPageLayoutProps } from "../../components/Navigation/NavPageLayout";
 import RolesPageContent, {RoleContentEntry} from "../../components/Contents/RolesPageContent"
+import { getNavPageLayoutPropsFromConfig } from "../../common/staticProps";
 
-interface Props extends HeaderProps {
+interface PolicyPageProps extends NavPageLayoutProps {
     rolesPages: Record<string, RoleContentEntry>
-    links: ReadonlyArray<FooterLinksProp>;
 }
 
-const PolicyPage = ({top, navigation, rolesPages, links}: Props) => {
+const PolicyPage = ({headerProps, footerProps, rolesPages}: PolicyPageProps) => {
     const router = useRouter()
     const { roleId } = router.query
     return (
-        <NavPageLayout top={top}
-                       navigation={navigation}
-                       footer={<FooterHEAL links={links}/>}>
+        <NavPageLayout {...{headerProps, footerProps}}>
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
                     <RolesPageContent rolesPages={rolesPages} rolePageKey={roleId as string}/>
@@ -41,28 +37,13 @@ export const  getStaticPaths = async ( )  => {
 }
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps = async ( ) => {
-    try {
-        const json_data = await ContentSource.get("config/navigation.json")
-        const footer_json_data = await ContentSource.get('config/footer.json')
-        const roles_json_data = await ContentSource.get('config/rolesPages.json')
-        return {
-            props: {
-                navigation: json_data['navigation'],
-                top: json_data['topBar'],
-                rolesPages: roles_json_data,
-                footer: footer_json_data
-            }
-        }
-    } catch (err) {
-        console.error(err)
-    }
+export const getStaticProps: GetStaticProps<PolicyPageProps> = async ( ) => {
+    const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
+    const rolesPages = await ContentSource.get<RoleContentEntry>('config/rolesPages.json') as unknown as Record<string, RoleContentEntry>;
     return {
         props: {
-            navigation: {},
-            top: {},
-            rolesPages: {},
-            footer: {}
+            ...navPageLayoutProps,
+            rolesPages
         }
     }
 }

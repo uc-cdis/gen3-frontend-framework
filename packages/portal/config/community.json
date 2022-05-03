@@ -1,0 +1,126 @@
+{
+    "title": "Community and Support",
+    "introduction": [
+        {
+            "type": "text",
+            "content": "The primary goal of the "
+        },
+        {
+            "type": "boldText",
+            "content": "HEAL Data Platform "
+        },
+        {
+            "type": "text",
+            "content": "is to provide users with a secure environment where informative analysis can be performed, but there are other resources that may be helpful in other ways. Below are a list of some of these resources and a description of the ways the may be helpful to those interested in the "
+        },
+        {
+            "type": "outboundLink",
+            "content": "NIH HEAL Initiative.",
+            "link": "https://heal.nih.gov/about/research-plan"
+        }
+    ],
+    "sections": [
+        {
+            "title": "Prevention",
+            "introduction": "One of HEAL's primary initiatives is to prevent Opioid Use Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
+            "cards": [
+                {
+                    "title": "Center for Disease Control (CDC)",
+                    "content": "A resource with information about reducing exposure to opioids and preventing opioid use disorder.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/opioids/overdoseprevention/opioid-use-disorder.html"
+                },
+                {
+                    "title": "Health and Human Services (HHS)",
+                    "content": "A list of links to prevention programs and tools",
+                    "linkText": "Visit Site",
+                    "link": "https://www.hhs.gov/opioids/prevention/prevention-programs-tools/index.html"
+                },
+                {
+                    "title": "U.S. Department of Education",
+                    "content": "Information regarding the ways in which the opioid crisis is being addressed in public schools.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.ed.gov/opioids/"
+                }
+            ]
+        },
+        {
+            "title": "Treatment",
+            "introduction": "Another major goal for HEAL is to improve and increase the treatment options available for patients with Opioid Use Disorder. Below are several links to resources that might help you learn more about the treatment options currently available.",
+            "cards": [
+                {
+                    "title": "Substance Abuse and Mental Health Service Administration (SAMHSA)",
+                    "content": "A confidential and anonymous source of information for persons seeking treatment facilities for substance abuse.",
+                    "linkText": "Visit Site",
+                    "link": "https://findtreatment.samhsa.gov/ "
+                },
+                {
+                    "title": "Center for Disease Control (CDC)",
+                    "content": "A resource ensuring the best information is being shared and understood to prevent overdose deaths.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/opioids/overdoseprevention/help-resources.html#:~:text=Find%20Substance%20Abuse%20Treatment,Behavioral%20Health%20Treatment%20Services%20Locator%20"
+                },
+                {
+                    "title": "Food and Drug Administration (FDA)",
+                    "content": "A resource providing information about current treatments and the development of new therapies.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.fda.gov/drugs/information-drug-class/opioid-medications"
+                },
+                {
+                    "title": "Centers for Medicare and Medicaid Services (CMS)",
+                    "content": "A description of the Opioid Treatment Programs (OTPs) covered by Medicare and Medicaid.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/Opioid-Treatment-Program"
+                }
+            ]
+        },
+        {
+            "title": "Support",
+            "introduction": "HEAL is sponsoring several studies focused on improving the support system for those affected by Opioid Use Disorder. Below are links to government resources that may be helpful to anyone looking for general support.",
+            "cards": [
+                {
+                    "title": "Health and Human Services (HHS)",
+                    "content": "General information, including the national helpline and a link to the NSDUH Annual National Report.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.hhs.gov/opioids/"
+                },
+                {
+                    "title": "Health Resources & Service Administration",
+                    "content": "Information about the Opioid-Impacted Family Support Program and eligibility criteria.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.hrsa.gov/grants/find-funding/hrsa-20-014"
+                },
+                {
+                    "title": "Center for Disease Control (CDC)",
+                    "content": "A variety of helpful guides and information pages with the goal of supporting patients and clinicians.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/opioids/patients/materials.html"
+                },
+                {
+                    "title": "Centers for Medicare and Medicaid Services (CMS)",
+                    "content": "Links to the SUPPORT act and supporting information about this legislation.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cms.gov/outreach-education/partner-resources/pain-management-partners"
+                },
+                {
+                    "title": "National Institute on Aging (NIA)",
+                    "content": "Information and resources regarding acute and chronic pain.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.nia.nih.gov/health/pain-you-can-get-help"
+                },
+                {
+                    "title": "U.S. Department of Veteran Affairs",
+                    "content": "Information and resources regarding pain in the veteran population.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.research.va.gov/topics/pain.cfm"
+                },
+                {
+                    "title": "HEALing Communities Across America",
+                    "content": "Communities and scientists join forces to save lives from opioid use disorder.",
+                    "linkText": "Visit Site",
+                    "link": "https://heal.nih.gov/news/stories/HEALing-Communities"
+                }
+            ]
+        }
+    ]
+}

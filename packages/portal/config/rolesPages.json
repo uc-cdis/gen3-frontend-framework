@@ -107,47 +107,6 @@
             }
         ]
     },
-    "community": {
-        "title": "Community and Support",
-        "link": "/landing/community",
-        "content": [
-            {
-                "icon": "/icons/rolesPages/model.png",
-                "title": "Studies of Support Models",
-                "content": [
-                    "Technology has opened a new frontier in treating mental health and substance use disorders by developing new apps to manage medications or teach coping skills. The pioneering BRIGHTEN study* has for example shown that the modern technology can both deliver treatment interventions and conduct a randomized controlled trial (RCT). Read here about how the HEAL Initiative is funding research on new strategies to prevent and treat opioid addiction and click here to discover related datasets on the Discovery Page."
-                ]
-            },
-            {
-                "icon": "/icons/rolesPages/mental.png",
-                "title": "Mental Health and Opioid Use Disorder",
-                "content": [
-                    "Mental health and substance use disorders affect people from all walks of life and all age groups. These illnesses are common, recurrent, and often serious, but they are treatable, and many people do recover. The coexistence of both a mental health and a substance use disorder is referred to as co-occurring disorders*. Click here to see which datasets are available on the HEAL Platform about Mental Health and Opioid Use Disorder."
-                ]
-            },
-            {
-                "icon": "/icons/rolesPages/chronic.png",
-                "title": "Chronic Pain Associated Conditions",
-                "content": [
-                    "Pain is expressed when nerve impulses alert the brain about tissue damage, which can be aggravated by psychological and social factors. Chronic pain is defined as pain that persists longer than normal healing time* and has been linked to numerous physical conditions such as lower back pain, arthritis, headache, multiple sclerosis, fibromyalgia, but also to mental conditions such as depression and anxiety*. Thus, chronic pain patients are often treated medically, physically, and emotionally. Click here to discover data on the HEAL Platform that are related to chronic pain associated conditions, such as clinical, preclinical and translational research in pain management, novel medications, and new prevention strategies."
-                ]
-            },
-            {
-                "icon": "/icons/rolesPages/intervention.png",
-                "title": "Community Based Intervention",
-                "content": [
-                    "Accelerating action in research, evaluation, and practice of effective community-based prevention could bring a measure of relief for those who struggle with Substance Use Disorders in their daily life. Community-level interventions include public education, clinician-patient partnerships, and community-based medication disposal programs*. In addition, Opioid Use Disorders are remarkably common among the criminal justice population*. Therefore, the Justice Community Opioid Innovation Network (JCOIN), funded by the NIH HEAL Initiative, will study approaches to increase high-quality care for people with opioid misuse and OUD in justice settings. JCOIN will test strategies to expand effective treatment and care in partnership with local and state justice systems and community-based treatment providers. Click here to read more about JCOIN and here about studies related to community based interventions."
-                ]
-            },
-            {
-                "icon": "/icons/rolesPages/group.png",
-                "title": "Engaging Community Groups",
-                "content": [
-                    "Implementing changes to counteract the opioid crisis needs to not only happen on the research and policy-level; research needs to translate into practice as making an impact on the lives of people with OUD happens at the community-level. Community organizations, social service organization leaders, and local supporters may be interested in the following: where are the nearest health centers? Who is coordinating care for women and children? What are best practices and regional approaches? Where can I find primary care providers and peer support specialists for evidence-based Opioid Use Disorder care plans and treatment solutions? Click here to learn how the HEAL Platform can help guide you."
-                ]
-            }
-        ]
-    },
     "policy": {
         "title" : "Policy Related",
         "link": "/landing/policy",

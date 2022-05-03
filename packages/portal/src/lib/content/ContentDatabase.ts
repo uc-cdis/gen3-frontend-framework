@@ -16,7 +16,7 @@ export class ContentDatabase {
         this.store = config.store
     }
 
-    public async get<T extends Record<string, undefined>>(filepath: string): Promise<T> {
+    public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
         return this.store.get(filepath);
     }
 }
