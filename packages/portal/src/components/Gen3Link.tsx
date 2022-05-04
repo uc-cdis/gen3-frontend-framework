@@ -19,7 +19,7 @@ const Gen3Link: React.FC<Gen3LinkProps> = ({ className,
     text,
     showExternalIcon = false
 }: PropsWithChildren<Gen3LinkProps>) => {
-    const portalBasename = (process.env.PORTAL_BASENAME && process.env.PORTAL_BASENAME !== '/') ? process.env.PORTAL_BASENAME : ''
+    const portalBasename = (process.env.NEXT_PUBLIC_PORTAL_BASENAME && process.env.NEXT_PUBLIC_PORTAL_BASENAME !== '/') ? process.env.NEXT_PUBLIC_PORTAL_BASENAME : ''
     if (linkType === "gen3ff") {
         return (
             <span className={className}>
