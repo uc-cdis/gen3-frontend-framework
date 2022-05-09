@@ -20,15 +20,15 @@
             "items": [
                 {
                     "text": "User Guides",
-                    "href": "https://healdata.org/dashboard/Public/documentation/index.html"
+                    "href": "/dashboard/Public/documentation/index.html"
                 },
                 {
                     "text": "Tutorials",
-                    "href": "https://healdata.org/dashboard/Public/documentation/index.html#Tutorials"
+                    "href": "/dashboard/Public/documentation/index.html#Tutorials"
                 },
                 {
                     "text": "FAQ",
-                    "href": "https://healdata.org/dashboard/Public/documentation/index.html#FAQ"
+                    "href": "/dashboard/Public/documentation/index.html#FAQ"
                 }
             ]
         },

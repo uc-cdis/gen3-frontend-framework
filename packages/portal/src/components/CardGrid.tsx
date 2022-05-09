@@ -20,7 +20,7 @@ const CardGrid = ({content}: CardGridProps) => {
                             <Text className="mb-3">{content}</Text>
                             <div className="flex flex-row justify-center">
                             <a href={link} className="heal-btn mb-3 w-[80%]" target="_blank" rel="noreferrer">
-                                <span className="flex flex-row">
+                                <span className="flex flex-row items-baseline">
                                     <FaExternalLinkAlt className="mr-2"/>
                                     {linkText}
                                 </span>
