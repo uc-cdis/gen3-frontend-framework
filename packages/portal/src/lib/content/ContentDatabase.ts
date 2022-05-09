@@ -1,4 +1,4 @@
-import { ContentSource } from "./types";
+import { ContentSource } from './types';
 
 /**
  *  The Content management "datastore" which is an abstracted interface to
@@ -13,10 +13,10 @@ export class ContentDatabase {
     public store: ContentSource
 
     constructor(public config: CreateDatabase) {
-        this.store = config.store
+      this.store = config.store;
     }
 
     public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
-        return this.store.get(filepath);
+      return this.store.get(filepath);
     }
 }

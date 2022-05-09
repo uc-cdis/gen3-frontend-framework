@@ -1,13 +1,13 @@
-import { AnyAction } from "@reduxjs/toolkit";
-import React from "react";
+import { AnyAction } from '@reduxjs/toolkit';
+import React from 'react';
 import {
   createDispatchHook,
   createSelectorHook,
   createStoreHook,
   ReactReduxContextValue,
   TypedUseSelectorHook,
-} from "react-redux";
-import { CoreDispatch, CoreState } from "./store";
+} from 'react-redux';
+import { CoreDispatch, CoreState } from './store';
 
 // From here down is react-related code. If we wanted to create a UI-agnotic core,
 // we could need to move the following code and the provider into a new workspace,
