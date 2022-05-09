@@ -1,11 +1,11 @@
-import {FilesystemContent} from "./filesystem";
-import {ContentDatabase} from "./ContentDatabase";
+import {FilesystemContent} from './filesystem';
+import {ContentDatabase} from './ContentDatabase';
 
-const ContentRoot = "";
+const ContentRoot = '';
 
 const setup = () => {
-    const config = { store: new FilesystemContent({ rootPath: ContentRoot})}
-    return new ContentDatabase(config)
+  const config = { store: new FilesystemContent({ rootPath: ContentRoot})};
+  return new ContentDatabase(config);
 };
 
 const ContentSource = setup();

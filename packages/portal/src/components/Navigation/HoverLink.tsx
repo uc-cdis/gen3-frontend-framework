@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { PropsWithChildren } from "react";
+import Link from 'next/link';
+import { PropsWithChildren } from 'react';
 
 interface ClassProps {
     readonly className?: string;
@@ -10,16 +10,16 @@ interface HoverLinkProps extends ClassProps {
 }
 
 const HoverLink: React.FC<HoverLinkProps> = ({ className,
-    href,
-    children,
+  href,
+  children,
 }: PropsWithChildren<HoverLinkProps>) => {
-    return (
-        <span className={className}>
-            <Link href={href} passHref>
-                {children}
-            </Link>
-        </span>
-    );
+  return (
+    <span className={className}>
+      <Link href={href} passHref>
+        {children}
+      </Link>
+    </span>
+  );
 };
 
 export default HoverLink;
