@@ -1,4 +1,12 @@
-import { UnknownJson } from "../../dataAccess";
+import { Gen3Response } from "../../dataAccess";
+
+export interface FetchRequest {
+    readonly hostname: string;
+    readonly endpoint: string;
+    readonly method: "GET" | "POST";
+    readonly body?: object;
+    readonly headers: Record<string,string>;
+}
 
 export interface Gen3FenceRequest {
     readonly hostname: string;
@@ -7,9 +15,9 @@ export interface Gen3FenceRequest {
     readonly body?: object;
 }
 
-export interface Gen3FenceResponce<H = UnknownJson> {
-    readonly data: H;
-}
+
+
+export type Gen3FenceResponse<H> = Gen3Response<H>;
 
 export interface FetchError <T> {
     readonly url: string;
@@ -18,7 +26,6 @@ export interface FetchError <T> {
     readonly text: string;
     readonly request?: T;
 }
-
 
 export const buildFetchError = async <T>(
     res: Response,
@@ -50,34 +57,44 @@ export interface Gen3LoginProvider {
 
 export interface Gen3FenceUserProviders {
     readonly default_provider: Gen3LoginProvider;
-    readonly providers?: ReadonlyArray<Gen3LoginProvider>;
+    readonly providers: Array<Gen3LoginProvider>;
 }
 
 /**
  * The base call to Gen3 fence which support both GET and POST methods.
  * This can be used to build other fence related commands.
  * @param hostname
- * @param endpoint
+ * @param csrftoken
  */
 export const fetchLogin = async (
     hostname: string,
-    endpoint = "login/"
-) : Promise<Gen3FenceResponce<Gen3FenceUserProviders>> => {
-    return fetchFence({ hostname: hostname, endpoint: endpoint, method:"GET"});
+    csrftoken: string | undefined
+) : Promise<Gen3FenceResponse<Gen3FenceUserProviders>> => {
+
+    const headers = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-csrf-token': csrftoken ? csrftoken : '',
+      }
+
+    return fetchFence<Gen3FenceUserProviders>({
+        hostname: hostname,
+        endpoint: "login/",
+        method:"GET",
+        headers : headers
+    });
 }
 
 export const fetchFence = async<T> (
-    request: Gen3FenceRequest,
-): Promise<Gen3FenceResponce<T>> => {
-    const res = await fetch(`${request.hostname}/user/${request.endpoint}`, {
+    request: FetchRequest,
+): Promise<Gen3FenceResponse<T>> => {
+    const res = await fetch(`${request.hostname}`, {
         method: request.method,
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: request.headers,
         body: request.method === "POST" ? JSON.stringify(request.body) : null,
     });
     if (res.ok)
-        return res.json();
+        return { data: await res.json() }
 
     throw await buildFetchError(res, request);
 }

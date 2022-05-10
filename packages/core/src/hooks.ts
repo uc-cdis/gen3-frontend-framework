@@ -1,5 +1,4 @@
-
- import React from "react";
+import React from "react";
  import {
      createDispatchHook,
      createSelectorHook,
@@ -7,7 +6,7 @@
      ReactReduxContextValue,
      TypedUseSelectorHook
  } from "react-redux";
- import {Store} from "@reduxjs/toolkit";
+ import {  Store } from "@reduxjs/toolkit";
  import { CoreDispatch } from "./store";
  import { CoreState } from "./reducers";
 

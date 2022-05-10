@@ -1,15 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { fetchLogin,Gen3FenceResponce, Gen3FenceUserProviders  } from "./fenceApi";
+import { castDraft } from "immer";
+import { fetchLogin } from "./fenceApi";
+import type { Gen3FenceResponse, Gen3FenceUserProviders } from "./fenceApi";
 import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
+import { selectCSRFToken} from "./csrfSlice";
 
 export const fetchLoginProviders = createAsyncThunk<
-    Gen3FenceResponce<Gen3FenceUserProviders>,
+    Gen3FenceResponse<Gen3FenceUserProviders>,
     string,
     { dispatch: CoreDispatch; state: CoreState }
-    >("fence/user/login", async (hostname: string) => {
-        return await fetchLogin(hostname);
+    >("fence/user/login", async (hostname: string, thunkAPI) => {
+        const csrfToken = selectCSRFToken(thunkAPI.getState());
+        console.log(csrfToken);
+        return await fetchLogin(hostname, csrfToken);
     }
     );
 
@@ -21,7 +26,7 @@ export interface Gen3LoginProviderState extends Gen3FenceUserProviders {
 
 const initialState: Gen3LoginProviderState = {
     default_provider: { idp:"", desc: "", id: "", name:"", url:"", secondary: false, urls: []},
-    providers: undefined,
+    providers: [],
     status: "uninitialized",
     error: undefined
 };
@@ -34,8 +39,14 @@ const slice = createSlice({
         builder
             .addCase(fetchLoginProviders.fulfilled, (state, action) => {
                 const response = action.payload;
-                state.default_provider = response.data.default_provider;
-                state.status = "fulfilled";
+                if (response.errors) {
+                    state = castDraft(initialState);
+                    state.status = "rejected";
+                    state.error = response.errors.filters;
+                }
+
+                state = { ...response.data, status: "fulfilled" };
+                return state;
             })
             .addCase(fetchLoginProviders.pending, (state ) => {
                 state.status =  "pending";
