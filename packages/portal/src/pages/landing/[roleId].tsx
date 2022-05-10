@@ -3,7 +3,7 @@ import ContentSource from "../../lib/content/";
 import { useRouter } from 'next/router'
 
 import {HeaderProps} from "../../components/Navigation/Header";
-import FooterHEAL, { FooterLinksProp} from "../../components/Navigation/FooterHEAL";
+import Footer, { FooterLinksProp} from "../../components/Navigation/Footer";
 import NavPageLayout from "../../components/Navigation/NavPageLayout";
 import RolesPageContent, {RoleContentEntry} from "../../components/Contents/RolesPageContent"
 
@@ -18,7 +18,7 @@ const PolicyPage = ({top, navigation, rolesPages, links}: Props) => {
     return (
         <NavPageLayout top={top}
                        navigation={navigation}
-                       footer={<FooterHEAL links={links}/>}>
+                       footer={<Footer links={links}/>}>
             <div className="flex flex-row  justify-items-center">
                 <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
                     <RolesPageContent rolesPages={rolesPages} rolePageKey={roleId as string}/>

@@ -13,7 +13,6 @@ interface Props extends HeaderProps {
 }
 
 const LoginPage = ({ top, navigation, footer }: Props) => {
-  const router = useRouter();
 
   useCSRFToken(siteConfig.hostname)
   const handleLoginSelected = (url: string) => {

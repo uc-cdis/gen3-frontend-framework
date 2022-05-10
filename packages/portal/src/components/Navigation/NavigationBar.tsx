@@ -15,8 +15,8 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({tooltip, icon, href,
     return (
         <div className="has-tooltip relative h-[80px]">
         <a className="content-center" href={href} >
-        <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-heal-primary opacity-80 hover:opacity-100">
-            <Icon height="27px" icon={icon} className="mt-[2px] ml-[4px]"/>
+        <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-gen3-primary opacity-80 hover:opacity-100">
+            <Icon height="22px" icon={icon} className="mt-[2px] ml-[4px]"/>
             <p className="content-center pt-1.5 font-montserrat body-typo">{name}</p>
         </div>
         </a>
@@ -41,7 +41,7 @@ const NavigationBar: React.FC<NavigationProps> = ({ logo = undefined, title = un
             <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
                 <div className="flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
                     {logo && <HoverLink href={"/"}>
-                        <Image className="pr-[6px] pt-4" height={50} width={82}  src={`${basePath}${logo}`} alt={logo}/>
+                        <Image className="pr-[6px] pt-4" height={44} width={82}  src={`${basePath}${logo}`} alt={logo}/>
                     </HoverLink >  }
                     {(logo && title ) && <div className="border-solid border-gen3-smoke border-l-1 ml-[2px] mr-[7px] h-[64px] w-1 "/> }
                     <HoverLink className="font-montserrat h3-typo pt-[4px] text-gen3-coal hover:text-gen3-black hover:border-gen3-highlight_orange hover:border-b-3" href={"/"}>{`${title}`}</HoverLink>

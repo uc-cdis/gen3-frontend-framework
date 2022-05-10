@@ -22,7 +22,9 @@ module.exports = {
         "gen3": {
           base_blue: "#3283C8",
           base_blue_light: "#05B8EE",
+          base_blue_lightest: "#366b91",
           lime: "#7EC500",
+          teal: "#00c5be",
           iris: "#AD91FF",
           rose: "#E74C3C",
           bee: "#F4B940",

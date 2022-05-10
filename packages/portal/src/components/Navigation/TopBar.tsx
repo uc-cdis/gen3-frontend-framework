@@ -35,7 +35,7 @@ export interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ( { items } : TopBarProps) => {
     return (
         <div >
-            <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-heal-purple'>
+            <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-gen3-base_blue'>
                 <nav className='flex flex-row items-center align-middle font-montserrat'>
                     {
                         items.map((x) => {

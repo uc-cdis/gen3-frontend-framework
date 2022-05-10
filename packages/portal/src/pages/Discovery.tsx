@@ -4,6 +4,7 @@ import fs from "fs";
 import Header, { HeaderProps } from "../components/Navigation/Header";
 
 import Discovery from "../components/Discovery/Discovery";
+import DiscoveryStats from "../components/Discovery/DiscoveryStats";
 
 interface Props extends HeaderProps {
   footer: FooterHEALProps
@@ -16,6 +17,7 @@ const DiscoveryPage = ({ top, navigation, footer }: Props) => {
       <Header top={top} navigation={navigation} />
       <div className="flex flex-row justify-items-center">
         <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
+          <DiscoveryStats />
           <Discovery />
         </div>
       </div>
@@ -57,4 +59,4 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 }
 
-export default Discovery;
+export default DiscoveryPage;

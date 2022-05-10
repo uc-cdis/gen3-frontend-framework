@@ -28,11 +28,12 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
         headerGroups,
         prepareRow,
         page,
+        pageCount,
         canPreviousPage,
         canNextPage,
         nextPage,
         previousPage,
-        state : { pageIndex, pageSize  }
+        state : { pageIndex, pageSize }
     } = useTable(
         {
             columns,
@@ -45,26 +46,22 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
 
     return (
         <div className="flex flex-col h-full" >
-            <TableScrollbar rows={5}>
+            <TableScrollbar rows={itemsPerPage*2}>
             <Table {...getTableProps()}  horizontalSpacing="xs" >
                 <thead   >
                 {headerGroups.map((headerGroup, idx) => (
                     <tr {...headerGroup.getHeaderGroupProps()} className="bg-white"  key={idx}>
                         {headerGroup.headers.map((column, idx) => (
-                            <th {...column.getHeaderProps(
-                                column.getSortByToggleProps())
-                            } className="p-0" key={idx}>
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())} className={column.className} key={idx}>
 
                                 <div className={`p-0`}>
                                     <span className="c">{column.render("Header")}</span>
-                                    <span
-                                        style={{
-                                            marginBottom: "-.20em",
-                                            marginLeft: "8px",
-                                            marginTop: ".20em"
-                                        }}
-                                    >
-                                        {column.isSorted ? <SortIcon/> : ""}
+                                  <span>
+                                      {column.isSorted
+                                        ? column.isSortedDesc
+                                          ? ' 🔽'
+                                          : ' 🔼'
+                                        : ''}
                                     </span>
                                 </div>
 
@@ -78,7 +75,7 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify="left" } : TablePro
                 {page.map((row, idx) => {
                     prepareRow(row);
                     return (
-                        <tr {...row.getRowProps()} className={`text-${justify}`} key={idx}>
+                        <tr {...row.getRowProps()} className={`text-${justify} ${idx % 2 ? "bg-gen3-silver" : "bg-gen3-white"}`  } key={idx}>
                             {row.cells.map((cell, idx) => {
                                 return (
                                     <td  {...cell.getCellProps()} key={idx}>{cell.render("Cell")}</td>

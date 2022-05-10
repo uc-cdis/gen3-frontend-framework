@@ -6,7 +6,7 @@ interface NavigationButtonProps extends ButtonProps<'a'> {
 }
 
 export const NavigationButton = tw(Button)<NavigationButtonProps>`
-        ${(p:NavigationButtonProps) => (p.$selected ? "bg-heal-magenta" : "bg-heal-purple")}
+        ${(p:NavigationButtonProps) => (p.$selected ? "bg-gen3-base_blue_light" : "bg-gen3-base_blue")}
         subpixel-antialiased
         shadow
         rounded-lg
@@ -15,7 +15,7 @@ export const NavigationButton = tw(Button)<NavigationButtonProps>`
         font-medium
         text-[#FFFFF]
         transition
-        hover:bg-heal-purple
+        hover:bg-gen3-base_blue_lightest
         hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
         hover:border-white
         hover:underline

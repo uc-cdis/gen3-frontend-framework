@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 
 import fs from 'fs';
 import Header, { HeaderProps } from "../../components/Navigation/Header";
-import FooterHEAL, { FooterHEALProps } from "../../components/Navigation/FooterHEAL";
+import Footer, { FooterHEALProps } from "../../components/Navigation/Footer";
 // if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
 import LandingPageContent from "../../components/Contents/LandingPageContent"
@@ -22,7 +22,7 @@ const LandingPage = ({ top, navigation, rolesPages, footer }: Props) => {
                     <LandingPageContent rolesPages={rolesPages} />
                 </div>
             </div>
-            <FooterHEAL links={footer.links} />
+            <Footer links={footer.links} />
         </div>
     )
 };

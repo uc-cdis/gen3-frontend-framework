@@ -1,4 +1,4 @@
-import { CoreProvider, CSRFProvider, useCSRFToken } from "@gen3/core";
+import { CoreProvider } from "@gen3/core";
 import type { AppProps } from "next/app";
 import '../styles/globals.css';
 import { addCollection } from '@iconify/react';
