@@ -64,7 +64,7 @@
                         "icon": "MdGroup",
                         "bodyText": "Explore helpful resources for Prevention, Treatment and Support related to Opioid Use Disorder.",
                         "btnText": "Resources",
-                        "href": "/landing/community",
+                        "href": "/landing/resource",
                         "linkType": "gen3ff"
                     },
                     {

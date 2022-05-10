@@ -107,11 +107,11 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           };
           return <div key={index} className='text-center'>
             <Title className='my-5' order={3}>{component.cardsArea.title}</Title>
-            <ul className='gap-4 mx-20 !p-0'>
+            <ul className='gap-4 mx-20 !p-0 flex'>
               {component.cardsArea.cards.map((card, index) => (
-                <li key={index} className='border shadow-lg !p-5 w-1/5 inline-block mx-5 align-top'>
+                <li key={index} className='border shadow-lg !p-5 w-1/5 flex flex-col justify-between items-center mx-5'>
                   {React.createElement(allowedIcons[card.icon], { title: `${card.btnText} icon`, className: 'inline-block text-7xl text-heal-magenta' })}
-                  <p className='block text-gen3-titanium leading-6 h-20'>{card.bodyText}</p>
+                  <p className='block text-gen3-titanium leading-6 mb-2'>{card.bodyText}</p>
                   <Gen3Link className='heal-btn heal-btn-rev' href={card.href} linkType={card.linkType} text={card.btnText} />
                 </li>
               ))}
