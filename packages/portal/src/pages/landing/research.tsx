@@ -1,21 +1,21 @@
 import {GetStaticProps} from 'next';
-import ContentSource from '../../lib/content/';
+import ContentSource from '../../lib/content';
 
 import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
-import CommunityPageContent, {CommunityPageConfig} from '../../components/Contents/CommunityPageContent';
+import ResearchPageContent, {ResearchPageConfig} from '../../components/Contents/ResearchPageContent';
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 
-interface CommunityPageProps extends NavPageLayoutProps {
-    communityPageConfig: CommunityPageConfig
+interface ResearchPageProps extends NavPageLayoutProps {
+    researchPageConfig: ResearchPageConfig
 }
 
-const CommunityPage = ({headerProps, footerProps, communityPageConfig}: CommunityPageProps) => {
+const ResearchPage = ({headerProps, footerProps, researchPageConfig}: ResearchPageProps) => {
 
   return (
     <NavPageLayout {...{headerProps, footerProps}}>
       <div className='flex flex-row  justify-items-center'>
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-          <CommunityPageContent {...communityPageConfig}/>
+          <ResearchPageContent {...researchPageConfig}/>
         </div>
       </div>
     </NavPageLayout>
@@ -24,15 +24,15 @@ const CommunityPage = ({headerProps, footerProps, communityPageConfig}: Communit
 
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps<CommunityPageProps> = async ( ) => {
+export const getStaticProps: GetStaticProps<ResearchPageProps> = async ( ) => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const communityPageConfig = await ContentSource.get('config/community.json') as unknown as CommunityPageConfig;
+  const researchPageConfig = await ContentSource.get('config/research.json') as unknown as ResearchPageConfig;
   return {
     props: {
       ...navPageLayoutProps,
-      communityPageConfig
+      researchPageConfig
     }
   };
 };
 
-export default CommunityPage;
+export default ResearchPage;
