@@ -1,5 +1,5 @@
 {
-    "title": "Community and Support",
+    "title": "Resources",
     "introduction": [
         {
             "type": "text",
@@ -25,7 +25,7 @@
             "introduction": "One of HEAL's primary initiatives is to prevent Opioid Use Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
             "cards": [
                 {
-                    "title": "Center for Disease Control (CDC)",
+                    "title": "Centers for Disease Control and Prevention (CDC)",
                     "content": "A resource with information about reducing exposure to opioids and preventing opioid use disorder.",
                     "linkText": "Visit Site",
                     "link": "https://www.cdc.gov/opioids/overdoseprevention/opioid-use-disorder.html"
@@ -55,7 +55,7 @@
                     "link": "https://findtreatment.samhsa.gov/ "
                 },
                 {
-                    "title": "Center for Disease Control (CDC)",
+                    "title": "Centers for Disease Control and Prevention (CDC)",
                     "content": "A resource ensuring the best information is being shared and understood to prevent overdose deaths.",
                     "linkText": "Visit Site",
                     "link": "https://www.cdc.gov/opioids/overdoseprevention/help-resources.html#:~:text=Find%20Substance%20Abuse%20Treatment,Behavioral%20Health%20Treatment%20Services%20Locator%20"
@@ -91,7 +91,7 @@
                     "link": "https://www.hrsa.gov/grants/find-funding/hrsa-20-014"
                 },
                 {
-                    "title": "Center for Disease Control (CDC)",
+                    "title": "Centers for Disease Control and Prevention (CDC)",
                     "content": "A variety of helpful guides and information pages with the goal of supporting patients and clinicians.",
                     "linkText": "Visit Site",
                     "link": "https://www.cdc.gov/opioids/patients/materials.html"
