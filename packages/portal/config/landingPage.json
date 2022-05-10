@@ -62,15 +62,15 @@
                     },
                     {
                         "icon": "MdGroup",
-                        "bodyText": "Explore how to get involved with the community.",
-                        "btnText": "Community",
+                        "bodyText": "Explore helpful resources for Prevention, Treatment and Support related to Opioid Use Disorder.",
+                        "btnText": "Resources",
                         "href": "/landing/community",
                         "linkType": "gen3ff"
                     },
                     {
                         "icon": "FaGraduationCap",
-                        "bodyText": "Learn about new findings in HEAL research.",
-                        "btnText": "Learn",
+                        "bodyText": "Learn more about the HEAL Initiative Research Plan and Research Focus Areas.",
+                        "btnText": "Research",
                         "href": "/landing/learn",
                         "linkType": "gen3ff"
                     }
