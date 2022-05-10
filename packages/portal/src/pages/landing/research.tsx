@@ -1,21 +1,21 @@
 import {GetStaticProps} from 'next';
-import ContentSource from '../../lib/content/';
+import ContentSource from '../../lib/content';
 
 import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
-import LearnPageContent, {LearnPageConfig} from '../../components/Contents/LearnPageContent';
+import ResearchPageContent, {ResearchPageConfig} from '../../components/Contents/ResearchPageContent';
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 
-interface LearnPageProps extends NavPageLayoutProps {
-    learnPageConfig: LearnPageConfig
+interface ResearchPageProps extends NavPageLayoutProps {
+    researchPageConfig: ResearchPageConfig
 }
 
-const LearnPage = ({headerProps, footerProps, learnPageConfig}: LearnPageProps) => {
+const ResearchPage = ({headerProps, footerProps, researchPageConfig}: ResearchPageProps) => {
 
   return (
     <NavPageLayout {...{headerProps, footerProps}}>
       <div className='flex flex-row  justify-items-center'>
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-          <LearnPageContent {...learnPageConfig}/>
+          <ResearchPageContent {...researchPageConfig}/>
         </div>
       </div>
     </NavPageLayout>
@@ -24,15 +24,15 @@ const LearnPage = ({headerProps, footerProps, learnPageConfig}: LearnPageProps) 
 
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps<LearnPageProps> = async ( ) => {
+export const getStaticProps: GetStaticProps<ResearchPageProps> = async ( ) => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const learnPageConfig = await ContentSource.get('config/learn.json') as unknown as LearnPageConfig;
+  const researchPageConfig = await ContentSource.get('config/research.json') as unknown as ResearchPageConfig;
   return {
     props: {
       ...navPageLayoutProps,
-      learnPageConfig
+      researchPageConfig
     }
   };
 };
 
-export default LearnPage;
+export default ResearchPage;

@@ -4,13 +4,13 @@ import { Text } from '@mantine/core';
 import CardGrid, { CardGridItem } from '../CardGrid';
 import MultiPartText, { MultiPartTextPart } from '../MultiPartText';
 
-export interface LearnPageConfig {
+export interface ResearchPageConfig {
     readonly title: string;
     readonly introduction: ReadonlyArray<MultiPartTextPart>;
     content: ReadonlyArray<CardGridItem>;
 }
 
-const LearnPageContent = ({title, introduction, content}: LearnPageConfig) => {
+const ResearchPageContent = ({title, introduction, content}: ResearchPageConfig) => {
   return (
     <React.Fragment>
       <div className='py-10 text-sm px-20'>
@@ -27,4 +27,4 @@ const LearnPageContent = ({title, introduction, content}: LearnPageConfig) => {
   );
 };
 
-export default LearnPageContent;
+export default ResearchPageContent;

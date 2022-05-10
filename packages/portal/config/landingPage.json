@@ -71,7 +71,7 @@
                         "icon": "FaGraduationCap",
                         "bodyText": "Learn more about the HEAL Initiative Research Plan and Research Focus Areas.",
                         "btnText": "Research",
-                        "href": "/landing/learn",
+                        "href": "/landing/research",
                         "linkType": "gen3ff"
                     }
                 ]
