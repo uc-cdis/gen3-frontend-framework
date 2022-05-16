@@ -1,6 +1,7 @@
-import React from "react";
-import { Icon } from "@iconify/react";
-import Link from "next/link";
+import React from 'react';
+import { Icon } from '@iconify/react';
+import Link from 'next/link';
+import { checkCookies} from 'cookies-next';
 
 export interface NameAndIcon {
   readonly name: string;
@@ -17,26 +18,48 @@ const TopIconButton: React.FC<NameAndIcon> = ({
 }: NameAndIcon) => {
   return (
     <div
-      className="flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white "
-      role="button"
+      className='flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white '
+      role='button'
     >
-      {icon ? <Icon icon={icon} className="text-gen3-white" /> : null}
-      <p className="body-typo text-gen3-white"> {name} </p>
+      {icon ? <Icon icon={icon} className='text-gen3-white' /> : null}
+      <p className='body-typo text-gen3-white'> {name} </p>
     </div>
   );
 };
 
-const AccountTopButton = () => {
+const AccountLoginButton = () => {
   return (
-    <Link href={"/login"} passHref>
+    <Link href={'/login'} passHref>
       <div
         className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
-        role="button"
+        role='button'
       >
-        {"Login"} <Icon height="1.25rem" icon={"mdi:login-variant"} />
+        {'Login'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
       </div>
     </Link>
   );
+};
+
+const AccountLogoutButton = () => {
+  return (
+    <Link href={'/logoff?next=/landing'} passHref>
+      <div
+        className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
+        role='button'
+      >
+        {'Logoff'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
+      </div>
+    </Link>
+  );
+};
+
+const AccountTopButton = () => {
+  const access_token = checkCookies('access_token');
+
+  return (
+    access_token !== undefined ? <AccountLoginButton /> : <AccountLogoutButton />
+  );
+
 };
 
 export interface TopBarProps {
@@ -46,13 +69,13 @@ export interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ({ items }: TopBarProps) => {
   return (
     <div>
-      <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-heal-secondary">
-        <nav className="flex flex-row items-center align-middle font-montserrat">
+      <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-heal-secondary'>
+        <nav className='flex flex-row items-center align-middle font-montserrat'>
           {items.map((x) => {
             return (
-              <a className="flex flex-row" href={`${x.href}`} key={x.href}>
+              <a className='flex flex-row' href={`${x.href}`} key={x.href}>
                 <TopIconButton name={x.name} icon={x.icon} />
-                <div className="pr-2 ml-1  border-r-2 border-solid h-6 " />
+                <div className='pr-2 ml-1  border-r-2 border-solid h-6 ' />
               </a>
             );
           })}
