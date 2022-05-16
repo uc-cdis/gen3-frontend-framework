@@ -49,7 +49,7 @@ export interface LandingPageProps {
                 readonly href: string;
                 readonly linkType?: string;
             }>;
-        };
+        };g
         readonly quoteArea?: {
             readonly quote: string;
             readonly author: string;
