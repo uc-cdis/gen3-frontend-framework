@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
-import Link from 'next/link';
 import { checkCookies} from 'cookies-next';
 
 export interface NameAndIcon {
@@ -29,33 +28,34 @@ const TopIconButton: React.FC<NameAndIcon> = ({
 
 const AccountLoginButton = () => {
   return (
-    <Link href={'/login'} passHref>
+    <a href={'/login'}>
       <div
         className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
         role='button'
       >
         {'Login'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
       </div>
-    </Link>
+    </a>
   );
 };
 
 const AccountLogoutButton = () => {
   return (
-    <Link href={'/logoff?next=/landing'} passHref>
+    <a href={'/logoff?next=/landing'}>
       <div
         className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
         role='button'
       >
         {'Logoff'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
       </div>
-    </Link>
+    </a>
   );
 };
 
 const AccountTopButton = () => {
   const access_token = checkCookies('access_token');
 
+  console.log('access_token: ', access_token);
   return (
     access_token !== undefined ? <AccountLoginButton /> : <AccountLogoutButton />
   );
