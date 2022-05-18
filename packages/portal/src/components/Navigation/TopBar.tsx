@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { checkCookies} from 'cookies-next';
+import { useCookie } from 'next-cookie'
 
 export interface NameAndIcon {
   readonly name: string;
@@ -52,19 +52,10 @@ const AccountLogoutButton = () => {
   );
 };
 
-const  getCookie = (name:string) => {
-  const cookie:Record<string, string> = {};
-  document.cookie.split(';').forEach(function(el) {
-    const [k,v] = el.split('=');
-    cookie[k.trim()] = v;
-  });
-  return cookie[name];
-};
-
 const AccountTopButton = () => {
-  const access_token = getCookie('access_token');
-
-  console.log('access_token: ', access_token);
+  const cookie = useCookie();
+  const [access_token] = useState(cookie.get('access_token'))
+  console.log('access_token:', access_token);
   return (
     access_token !== undefined ? <AccountLoginButton /> : <AccountLogoutButton />
   );
