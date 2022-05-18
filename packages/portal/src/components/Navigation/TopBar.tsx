@@ -54,12 +54,11 @@ const AccountLogoutButton = () => {
 
 const AccountTopButton = () => {
   const cookie = useCookie();
-  const [access_token] = useState(cookie.get('access_token'));
-  console.log('access_token:', access_token);
+  const [accessToken, setAccessToken ] = useState(cookie.get('access_token'));
+  console.log('access_token:', accessToken.name);
   return (
-    access_token !== undefined || access_token === '' ? <AccountLoginButton /> : <AccountLogoutButton />
+    accessToken !== undefined || accessToken === '' ? <AccountLoginButton /> : <AccountLogoutButton />
   );
-
 };
 
 export interface TopBarProps {
