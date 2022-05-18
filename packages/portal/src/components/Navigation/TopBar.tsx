@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useCookie } from 'next-cookie'
+import { useCookie } from 'next-cookie';
 
 export interface NameAndIcon {
   readonly name: string;
