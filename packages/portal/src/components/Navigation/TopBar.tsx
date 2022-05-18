@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { useCookie } from 'next-cookie';
 
 export interface NameAndIcon {
   readonly name: string;
@@ -26,40 +25,8 @@ const TopIconButton: React.FC<NameAndIcon> = ({
   );
 };
 
-const AccountLoginButton = () => {
-  return (
-    <a href={'/login'}>
-      <div
-        className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
-        role='button'
-      >
-        {'Login'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
-      </div>
-    </a>
-  );
-};
+const AccountTopButton = () => <span className='py-4 px-12' />;
 
-const AccountLogoutButton = () => {
-  return (
-    <a href={'/logoff?next=/ff/landing'}>
-      <div
-        className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
-        role='button'
-      >
-        {'Logoff'} <Icon height='1.25rem' icon={'mdi:login-variant'} />
-      </div>
-    </a>
-  );
-};
-
-const AccountTopButton = () => {
-  const cookie = useCookie();
-  const [accessToken, setAccessToken ] = useState(cookie.get('access_token'));
-  console.log('access_token:', accessToken);
-  return (
-    accessToken === undefined ? <AccountLoginButton /> : <AccountLogoutButton />
-  );
-};
 
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
