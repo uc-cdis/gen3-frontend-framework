@@ -52,8 +52,17 @@ const AccountLogoutButton = () => {
   );
 };
 
+const  getCookie = (name:string) => {
+  const cookie:Record<string, string> = {};
+  document.cookie.split(';').forEach(function(el) {
+    const [k,v] = el.split('=');
+    cookie[k.trim()] = v;
+  });
+  return cookie[name];
+};
+
 const AccountTopButton = () => {
-  const access_token = checkCookies('access_token');
+  const access_token = getCookie('access_token');
 
   console.log('access_token: ', access_token);
   return (
