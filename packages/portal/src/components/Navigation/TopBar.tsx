@@ -55,9 +55,9 @@ const AccountLogoutButton = () => {
 const AccountTopButton = () => {
   const cookie = useCookie();
   const [accessToken, setAccessToken ] = useState(cookie.get('access_token'));
-  console.log('access_token:', accessToken.name);
+  console.log('access_token:', accessToken);
   return (
-    accessToken !== undefined || accessToken === '' ? <AccountLoginButton /> : <AccountLogoutButton />
+    accessToken === undefined ? <AccountLoginButton /> : <AccountLogoutButton />
   );
 };
 
