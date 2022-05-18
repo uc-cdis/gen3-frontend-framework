@@ -41,7 +41,7 @@ const AccountLoginButton = () => {
 
 const AccountLogoutButton = () => {
   return (
-    <a href={'/logoff?next=/landing'}>
+    <a href={'/logoff?next=/ff/landing'}>
       <div
         className='flex flex-row mx-6 items-center align-middle text-gen3-white text-sm hover:border-b-1 hover:border-gen3-white'
         role='button'
@@ -57,7 +57,7 @@ const AccountTopButton = () => {
   const [access_token] = useState(cookie.get('access_token'));
   console.log('access_token:', access_token);
   return (
-    access_token !== undefined ? <AccountLoginButton /> : <AccountLogoutButton />
+    access_token !== undefined || access_token === '' ? <AccountLoginButton /> : <AccountLogoutButton />
   );
 
 };
