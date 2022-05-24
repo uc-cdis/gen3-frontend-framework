@@ -20,6 +20,7 @@ export interface FooterProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps) => {
+  console.log(bottomLinks, columnLinks)
   const { basePath } = useRouter();
   return <React.Fragment>
     <div className='bg-heal-dark_gray p-4'>

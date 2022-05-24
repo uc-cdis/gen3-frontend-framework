@@ -16,10 +16,10 @@ const CardGrid = ({content}: CardGridProps) => {
         content.map(
           ({title, content, linkText, link}, i) => (
             <Grid.Col key={i} span={4} className='border shadow-lg p-5 m-10 flex flex-col justify-between justify-items-end'>
-              <Text className='font-bold text-xl text-heal-secondary'>{title}</Text>
-              <Text className='mb-3'>{content}</Text>
+              <Text className='font-bold text-2xl text-heal-secondary'>{title}</Text>
+              <Text className='mb-3 block text-gen3-titanium text-xl leading-6'>{content}</Text>
               <div className='flex flex-row justify-center'>
-                <a href={link} className='heal-btn mb-3 w-[80%]' target='_blank' rel='noreferrer'>
+                <a href={link} className='heal-btn heal-btn-rev mb-3 w-[80%]' target='_blank' rel='noreferrer'>
                   <span className='flex flex-row items-baseline'>
                     <FaExternalLinkAlt className='mr-2'/>
                     {linkText}
