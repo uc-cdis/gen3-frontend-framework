@@ -1,7 +1,6 @@
 import { GetStaticProps } from 'next';
 
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
-import ContentSource from '../../lib/content';
 import Footer, { FooterProps } from '../../components/Navigation/Footer';
 
 const StandaloneFooterPage = (props: FooterProps) => {
