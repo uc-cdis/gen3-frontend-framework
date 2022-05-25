@@ -2,11 +2,11 @@ import { Grid, Text } from '@mantine/core';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
 export interface CardGridProps {
-    content: ReadonlyArray<CardGridItem>
+  content: ReadonlyArray<CardGridItem>
 }
 
 export interface CardGridItem {
-    title: string, linkText: string, content: string, link: string
+  title: string, linkText: string, content: string, link: string
 }
 
 const CardGrid = ({content}: CardGridProps) => {
