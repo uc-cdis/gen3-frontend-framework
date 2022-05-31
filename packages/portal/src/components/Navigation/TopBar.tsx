@@ -41,12 +41,10 @@ const TopBar: React.FC<TopBarProps> = ({ items }: TopBarProps) => {
             return (
               <a className='flex flex-row' href={`${x.href}`} key={x.href}>
                 <TopIconButton name={x.name} icon={x.icon} />
-                <div className='pr-2 ml-1  border-r-2 border-solid h-6 ' />
+                <div className='pr-2 ml-1  border-solid h-6 ' />
               </a>
             );
           })}
-
-          <AccountTopButton />
         </nav>
       </header>
     </div>
