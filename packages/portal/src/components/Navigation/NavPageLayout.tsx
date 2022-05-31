@@ -1,18 +1,22 @@
-import React, { PropsWithChildren, ReactNode } from "react";
-import Header, { HeaderProps } from "./Header";
+import React, { PropsWithChildren } from 'react';
+import Footer, { FooterProps } from './Footer';
+import Header, { HeaderProps } from './Header';
 
-interface NavPageLayoutProps extends HeaderProps {
-    footer: ReactNode;
+export interface NavPageLayoutProps {
+    headerProps: HeaderProps
+    footerProps: FooterProps;
 }
- const NavPageLayout: React.FC<NavPageLayoutProps> = ({ top, navigation, footer, children,
-                                                }: PropsWithChildren<NavPageLayoutProps>) => {
-    return (
-        <div className="flex flex-col">
-            <Header top={top} navigation={navigation }/>
-            <main className="flex-grow">{children}</main>
-            {footer }
-        </div>
-    );
+
+const NavPageLayout: React.FC<NavPageLayoutProps> = (
+  { headerProps, footerProps, children }: PropsWithChildren<NavPageLayoutProps>
+) => {
+  return (
+    <div className='flex flex-col h-[100vh]'>
+      <Header {...headerProps}/>
+      <main className='flex-grow'>{children}</main>
+      <Footer {...footerProps}/>
+    </div>
+  );
 };
 
 export default NavPageLayout;

@@ -1,5 +1,59 @@
 {
-    "links": [
+    "columnLinks": [
+        {
+            "heading": "Contact",
+            "items": [
+                {
+                    "text": "About Us",
+                    "href": "/landing/about-us",
+                    "linkType": "gen3ff"
+                },
+                {
+                    "text": "Contact",
+                    "href": "/landing/contact",
+                    "linkType": "gen3ff"
+                }
+            ]
+        },
+        {
+            "heading": "Help",
+            "items": [
+                {
+                    "text": "User Guides",
+                    "href": "/dashboard/Public/documentation/index.html"
+                },
+                {
+                    "text": "Tutorials",
+                    "href": "/dashboard/Public/documentation/index.html#Tutorials"
+                },
+                {
+                    "text": "FAQ",
+                    "href": "/dashboard/Public/documentation/index.html#FAQ"
+                }
+            ]
+        },
+        {
+            "heading": "Platform",
+            "items": [
+                {
+                    "text": "Workspaces",
+                    "href": "/workspace",
+                    "linkType": "portal"
+                },
+                {
+                    "text": "Discovery",
+                    "href": "/discovery",
+                    "linkType": "portal"
+                },
+                {
+                    "text": "Profile",
+                    "href": "/identity",
+                    "linkType": "portal"
+                }
+            ]
+        }
+    ],
+    "bottomLinks": [
         {
             "text": "HEAL Initiative",
             "href": "https://heal.nih.gov/"

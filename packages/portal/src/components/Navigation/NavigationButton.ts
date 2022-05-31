@@ -1,4 +1,4 @@
-import tw from "tailwind-styled-components"
+import tw from 'tailwind-styled-components';
 import { Button, ButtonProps } from '@mantine/core';
 
 interface NavigationButtonProps extends ButtonProps<'a'> {
@@ -6,7 +6,7 @@ interface NavigationButtonProps extends ButtonProps<'a'> {
 }
 
 export const NavigationButton = tw(Button)<NavigationButtonProps>`
-        ${(p:NavigationButtonProps) => (p.$selected ? "bg-heal-magenta" : "bg-heal-purple")}
+        ${(p) => (p.$selected ? 'bg-heal-magenta' : 'bg-heal-purple')}
         subpixel-antialiased
         shadow
         rounded-lg
@@ -19,4 +19,4 @@ export const NavigationButton = tw(Button)<NavigationButtonProps>`
         hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
         hover:border-white
         hover:underline
-`
+`;
