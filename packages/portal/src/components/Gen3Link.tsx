@@ -23,12 +23,12 @@ const Gen3Link: React.FC<Gen3LinkProps> = ({ className,
   if (linkType === 'gen3ff') {
     return (
       <span className={className}>
-        <Link href={href}>{text}</Link>
+        <Link href={href}><a target='_parent'>{text}</a></Link>
       </span>
     );
   }
   else if (linkType === 'portal') {
-    return <a className={className} href={`${portalBasename}${href}`}>{text}</a>;
+    return <a className={className} href={`${portalBasename}${href}`} target='_parent'>{text}</a>;
   }
   // external link
   return (<a className={className} href={href} target='_blank' rel='noreferrer'>
