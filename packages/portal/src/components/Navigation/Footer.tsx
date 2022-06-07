@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import Gen3Link from '../Gen3Link';
 
 interface BottomLinks {
-    text: string;
-    href: string;
+  text: string;
+  href: string;
 }
 
 interface ColumnLinks {
