@@ -17,9 +17,6 @@
             "type": "outboundLink",
             "content": "NIH HEAL Initiative®",
             "link": "https://heal.nih.gov/about/research-plan"
-        },
-        {
-            "type": "registered"
         }
     ],
     "sections": [
