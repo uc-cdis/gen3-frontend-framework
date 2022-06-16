@@ -87,7 +87,7 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
                             What is HEAL
             </div>
             <Text className='text-center font-montserrat opacity-60 py-2  ' >
-                            The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative<sup>&reg;</sup>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center is accelerating research to address this public health emergency from all angles.
+                            The Helping to End Addiction Long-term Initiative, or NIH HEAL Initiative&reg;, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid public health crisis. Almost every NIH Institute and Center is accelerating research to address this public health emergency from all angles.
             </Text>
             <Text className='text-center font-montserrat opacity-60 py-2  ' >
                             The initiative is funding hundreds of projects nationwide.
