@@ -11,7 +11,7 @@
         },
         {
             "type": "text",
-            "content": "is to provide users with a secure environment where informative analysis can be performed, but there are other resources that may be helpful in other ways. Below are a list of some of these resources and a description of the ways the may be helpful to those interested in the "
+            "content": "is to facilitate discovery of HEAL-generated and other relevant datasets, and provide users with a secure environment where informative analysis can be performed. The Platform has compiled several external resources that may be broadly helpful to many interested in the "
         },
         {
             "type": "outboundLink",
@@ -22,7 +22,6 @@
     "sections": [
         {
             "title": "Prevention",
-            "introduction": "One of HEAL's primary initiatives is to prevent Opioid Use Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
             "cards": [
                 {
                     "title": "Centers for Disease Control and Prevention (CDC)",
@@ -46,7 +45,6 @@
         },
         {
             "title": "Treatment",
-            "introduction": "Another major goal for HEAL is to improve and increase the treatment options available for patients with Opioid Use Disorder. Below are several links to resources that might help you learn more about the treatment options currently available.",
             "cards": [
                 {
                     "title": "Substance Abuse and Mental Health Service Administration (SAMHSA)",
@@ -76,7 +74,6 @@
         },
         {
             "title": "Support",
-            "introduction": "HEAL is sponsoring several studies focused on improving the support system for those affected by Opioid Use Disorder. Below are links to government resources that may be helpful to anyone looking for general support.",
             "cards": [
                 {
                     "title": "Health and Human Services (HHS)",
