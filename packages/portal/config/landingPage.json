@@ -65,14 +65,14 @@
                         "bodyText": "View responses to some of the frequently asked questions (FAQs) posed by users, including links to relevant resources.  FAQs are periodically updated.",
                         "btnText": "FAQs",
                         "href": "/dashboard/Public/documentation/index.html#FAQ",
-                        "linkType": "portal"
+                        "linkType": "gen3ff"
                     },
                     {
                         "icon": "FaVideo",
                         "bodyText": "Watch tutorial videos to learn how to interact with the HEAL Platform.",
                         "btnText": "Tutorials",
                         "href": "/dashboard/Public/documentation/index.html#Tutorials",
-                        "linkType": "portal"
+                        "linkType": "gen3ff"
                     },
                     {
                         "icon": "MdGroup",
