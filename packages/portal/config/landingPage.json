@@ -61,17 +61,24 @@
                         "linkType": "portal"
                     },
                     {
+                        "icon": "FaRegQuestionCircle",
+                        "bodyText": "View answers to frequently asked questions.",
+                        "btnText": "FAQs",
+                        "href": "/dashboard/Public/documentation/index.html#FAQ",
+                        "linkType": "gen3ff"
+                    },
+                    {
+                        "icon": "FaVideo",
+                        "bodyText": "Watch tutorial videos to learn how to interact with the HEAL Platform.",
+                        "btnText": "Tutorials",
+                        "href": "/dashboard/Public/documentation/index.html#Tutorials",
+                        "linkType": "gen3ff"
+                    },
+                    {
                         "icon": "MdGroup",
                         "bodyText": "Explore helpful resources for Prevention, Treatment and Support related to Opioid Use Disorder.",
                         "btnText": "Resources",
                         "href": "/landing/resource",
-                        "linkType": "gen3ff"
-                    },
-                    {
-                        "icon": "FaGraduationCap",
-                        "bodyText": "Learn more about the HEAL Initiative Research Plan and Research Focus Areas.",
-                        "btnText": "Research",
-                        "href": "/landing/research",
                         "linkType": "gen3ff"
                     }
                 ]

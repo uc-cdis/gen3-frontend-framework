@@ -8,7 +8,7 @@ import { Title, TitleOrder } from '@mantine/core';
 
 import { IconType } from 'react-icons';
 import { MdFormatQuote, MdOutlineSearch, MdOutlineBarChart, MdGroup } from 'react-icons/md';
-import { FaGraduationCap } from 'react-icons/fa';
+import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../Gen3Link';
 
 export interface LandingPageContentProp {
@@ -101,6 +101,8 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
         if (component.cardsArea) {
           const allowedIcons = {
             FaGraduationCap: FaGraduationCap,
+            FaRegQuestionCircle: FaRegQuestionCircle,
+            FaVideo: FaVideo,
             MdOutlineSearch: MdOutlineSearch,
             MdOutlineBarChart: MdOutlineBarChart,
             MdGroup: MdGroup,
