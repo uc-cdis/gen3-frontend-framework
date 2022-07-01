@@ -62,7 +62,7 @@
                     },
                     {
                         "icon": "FaRegQuestionCircle",
-                        "bodyText": "View responses to some of the frequently asked questions (FAQs) posed by users, including links to relevant resources.  FAQs are periodically updated.",
+                        "bodyText": "View answers to frequently asked questions.",
                         "btnText": "FAQs",
                         "href": "/dashboard/Public/documentation/index.html#FAQ",
                         "linkType": "gen3ff"
