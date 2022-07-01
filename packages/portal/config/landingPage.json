@@ -61,14 +61,14 @@
                         "linkType": "portal"
                     },
                     {
-                        "icon": "FaGraduationCap",
+                        "icon": "FaRegQuestionCircle",
                         "bodyText": "View responses to some of the frequently asked questions (FAQs) posed by users, including links to relevant resources.  FAQs are periodically updated.",
                         "btnText": "FAQs",
                         "href": "/dashboard/Public/documentation/index.html#FAQ",
                         "linkType": "portal"
                     },
                     {
-                        "icon": "FaGraduationCap",
+                        "icon": "FaVideo",
                         "bodyText": "Watch tutorial videos to learn how to interact with the HEAL Platform.",
                         "btnText": "Tutorials",
                         "href": "/dashboard/Public/documentation/index.html#Tutorials",
