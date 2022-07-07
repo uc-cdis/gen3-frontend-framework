@@ -21,6 +21,41 @@
     ],
     "sections": [
         {
+            "title": "Pain Management",
+            "cards": [
+                {
+                    "title": "Centers for Disease Control and Prevention (CDC)",
+                    "content": "Methods for and advice on managing pain without opioids.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/drugoverdose/featured-topics/pain-management.html"
+                },
+                {
+                    "title": "Health and Human Services (HHS)",
+                    "content": "Best practices for managing acute and chronic pain.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.hhs.gov/opioids/prevention/pain-management-options/index.html"
+                },
+                {
+                    "title": "National Center for Complementary and Integrated Health (NCCIH)",
+                    "content": "Information about complementary and integrative health approaches to pain management.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.nccih.nih.gov/health/pain"
+                },
+                {
+                    "title": "U.S. Department of Veteran Affairs",
+                    "content": "Many different pain management resources for veterans and the general public.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.va.gov/painmanagement/"
+                },
+                {
+                    "title": "U.S. Medicare Services",
+                    "content": "Information about drugs and treatments covered by Medicare.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.medicare.gov/coverage/pain-management"
+                }
+            ]
+        },
+        {
             "title": "Prevention",
             "cards": [
                 {
