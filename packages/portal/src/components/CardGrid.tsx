@@ -21,7 +21,7 @@ const CardGrid = ({content}: CardGridProps) => {
                 <Text className='mb-3 block text-gen3-titanium text-xl leading-6'>{content}</Text>
                 <div className='flex flex-row justify-center'>
                   <a href={link} className='heal-btn heal-btn-rev mb-3 w-[80%]' target='_blank' rel='noreferrer'>
-                    <span className='flex flex-row items-baseline'>
+                    <span className='flex flex-row items-baseline justify-center'>
                       <FaExternalLinkAlt className='mr-2'/>
                       {linkText}
                     </span>
