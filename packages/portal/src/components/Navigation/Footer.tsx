@@ -21,7 +21,7 @@ export interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps) => {
   const { basePath } = useRouter();
   return <React.Fragment>
-    <div className='bg-heal-dark_gray px-8 py-4'>
+    <div id='footer' className='bg-heal-dark_gray px-8 py-4'>
       <div className='flex flex-row items-center justify-between'>
         <div className='flex flex-row items-center'>
           <div className='flex flex-col mr-8 h-[100px] justify-between'>
