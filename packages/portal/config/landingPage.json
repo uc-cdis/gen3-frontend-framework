@@ -64,14 +64,14 @@
                         "icon": "FaRegQuestionCircle",
                         "bodyText": "View answers to frequently asked questions.",
                         "btnText": "FAQs",
-                        "href": "/dashboard/Public/documentation/index.html#FAQ",
+                        "href": "/documentation/faqs",
                         "linkType": "gen3ff"
                     },
                     {
                         "icon": "FaVideo",
                         "bodyText": "Watch tutorial videos to learn how to interact with the HEAL Platform.",
                         "btnText": "Tutorials",
-                        "href": "/dashboard/Public/documentation/index.html#Tutorials",
+                        "href": "/documentation/platform_tutorial_videos",
                         "linkType": "gen3ff"
                     },
                     {
