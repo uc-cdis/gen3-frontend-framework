@@ -32,7 +32,7 @@
   "topBar": {
     "items": [
       {
-        "href": "/dashboard/Public/documentation/index.html",
+        "href": "/documentation",
         "name": "Help and Guidance",
         "icon": "bx:radio-circle-marked"
       }
