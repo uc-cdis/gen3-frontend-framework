@@ -20,15 +20,18 @@
             "items": [
                 {
                     "text": "User Guides",
-                    "href": "/dashboard/Public/documentation/index.html"
+                    "href": "https://heal.github.io/platform-documentation/",
+                    "linkType": "external"
                 },
                 {
                     "text": "Tutorials",
-                    "href": "/dashboard/Public/documentation/index.html#Tutorials"
+                    "href": "https://heal.github.io/platform-documentation/platform_tutorial_videos/",
+                    "linkType": "external"
                 },
                 {
                     "text": "FAQ",
-                    "href": "/dashboard/Public/documentation/index.html#FAQ"
+                    "href": "https://heal.github.io/platform-documentation/faqs/",
+                    "linkType": "external"
                 }
             ]
         },
