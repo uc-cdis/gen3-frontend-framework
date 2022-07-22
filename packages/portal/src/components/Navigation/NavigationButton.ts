@@ -6,7 +6,6 @@ interface NavigationButtonProps extends ButtonProps<'a'> {
 }
 
 export const NavigationButton = tw(Button)<NavigationButtonProps>`
-        ${(p) => (p.$selected ? 'bg-heal-magenta' : 'bg-heal-purple')}
         subpixel-antialiased
         shadow
         rounded-lg
