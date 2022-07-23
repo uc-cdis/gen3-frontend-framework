@@ -1,6 +1,5 @@
 import { CoreProvider } from '@gen3/core';
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
 import '../styles/globals.css';
 import { addCollection } from '@iconify/react';
 import icons from '../../config/icons/gen3.json';
