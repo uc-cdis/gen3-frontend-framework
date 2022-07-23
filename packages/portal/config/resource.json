@@ -82,6 +82,12 @@
             "title": "Treatment",
             "cards": [
                 {
+                    "title": "Centers for Disease Control and Prevention (CDC)",
+                    "content": "Linking People with Opioid Use Disorder to Medication Treatment: A Technical Package of Policy, Programs, and Practices",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/drugoverdose/pdf/pubs/Linkage-to-Care_Edited-PDF_508-3-15-2022.pdf"
+                }, 
+                {
                     "title": "Substance Abuse and Mental Health Service Administration (SAMHSA)",
                     "content": "A confidential and anonymous source of information for persons seeking treatment facilities for substance abuse.",
                     "linkText": "Visit Site",
