@@ -71,7 +71,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
             }
             if (obj.link) {
-              return <div className='heal-btn mb-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
+              return <div className='heal-btn mb-5 mr-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
             }
             if (obj.image) {
               return (
