@@ -10,7 +10,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <CoreProvider>
       <Component {...pageProps} />
-
     </CoreProvider>
   );
 };
