@@ -20,6 +20,13 @@
                         }
                     },
                     {
+                        "link": {
+                            "href": "/documentation/study-registration",
+                            "linkType": "gen3ff",
+                            "text": "Register Your Study"
+                        }
+                    },
+                    {
                         "text": "The Helping to End Addiction Long-term Initiative, or <strong>NIH HEAL Initiative&reg;</strong>, is an aggressive, trans-agency effort to speed scientific solutions to stem the national opioid and pain public health crises."
                     },
                     {
