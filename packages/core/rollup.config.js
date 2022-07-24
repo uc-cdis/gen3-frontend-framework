@@ -8,8 +8,13 @@ const globals = {
   react: 'React',
   'react-redux': 'reactRedux',
   '@reduxjs/toolkit': 'toolkit',
-  '@reduxjs/toolkit/dist/query': 'query',
+  '@reduxjs/toolkit/query': 'query',
+  '@reduxjs/toolkit/query/react': 'react',
+  '@reduxjs/toolkit/dist/query/react': 'react',
+  redux: 'redux',
   uuid: 'uuid',
+  lodash: 'lodash',
+  immer: 'immer',
 };
 
 const config = [

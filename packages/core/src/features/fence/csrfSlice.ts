@@ -1,17 +1,17 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { castDraft } from "immer";
-import { fetchCSRF } from "./csrfApi";
-import type { CSRFToken } from "./csrfApi";
-import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus, Gen3Response } from "../../dataAccess";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { castDraft } from 'immer';
+import { fetchCSRF } from './csrfApi';
+import type { CSRFToken } from './csrfApi';
+import { CoreDataSelectorResponse, createUseCoreDataHook, DataStatus, Gen3Response } from '../../dataAccess';
+import { CoreDispatch } from '../../store';
+import { CoreState } from '../../reducers';
 
 export const fetchCSRFToken = createAsyncThunk<
   Gen3Response<string>,
   string,
   { dispatch: CoreDispatch; state: CoreState }
-  >("gen3/csrf", async (hostname: string) => await fetchCSRF(hostname)
-);
+  >('gen3/csrf', async (hostname: string) => await fetchCSRF(hostname)
+  );
 
 
 export interface CSRFTokenState extends CSRFToken {
@@ -20,13 +20,13 @@ export interface CSRFTokenState extends CSRFToken {
 }
 
 const initialState : CSRFTokenState  = {
-  csrfToken: "",
-  status: "uninitialized"
-}
+  csrfToken: '',
+  status: 'uninitialized'
+};
 
 
 const slice = createSlice({
-  name: "csrfToken",
+  name: 'csrfToken',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -35,21 +35,21 @@ const slice = createSlice({
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
-          state.status = "rejected";
+          state.status = 'rejected';
           state.error = response.errors.filters;
         }
         state = {
           csrfToken: response.data,
-          status: "fulfilled"
+          status: 'fulfilled'
         };
         return state;
       })
       .addCase(fetchCSRFToken.pending, (state ) => {
-        state.status =  "pending";
+        state.status =  'pending';
       })
       .addCase(fetchCSRFToken.rejected, (state) => {
-          state.status =  "rejected";
-        }
+        state.status =  'rejected';
+      }
       );
   },
 });

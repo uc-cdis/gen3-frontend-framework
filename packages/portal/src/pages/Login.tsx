@@ -4,7 +4,7 @@ import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
 import siteConfig from '../../config/siteConfig.json';
 import { useCSRFToken } from '@gen3/core';
 import { LandingPageProps } from '../components/Contents/LandingPageContent';
-import LoginProvidersPanel from "../components/Login/LoginProvidersPanel";
+import LoginProvidersPanel from '../components/Login/LoginProvidersPanel';
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;

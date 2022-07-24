@@ -1,3 +1,4 @@
 {
-  "hostname": "healdata.org"
+  "hostname": "healdata.org",
+  "commons" : "midrc"
 }
