@@ -21,7 +21,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({tooltip, icon, href,
         </div>
       </a>
       <div
-        className='opacity-100 tooltip p-5 m-5 w-64 bg-white border-gray-400 border border-solid rounded text-left text-gen3-gray text-opacity-80 align-content-center'>
+        className='opacity-100 tooltip p-2.5 m-5 w-60 bg-white border-gray-400 border border-solid rounded text-left align-content-center text-gen3-titanium'>
         {tooltip}
       </div>
     </div>

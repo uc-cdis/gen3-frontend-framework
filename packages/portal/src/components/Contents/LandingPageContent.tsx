@@ -8,7 +8,7 @@ import { Title, TitleOrder } from '@mantine/core';
 
 import { IconType } from 'react-icons';
 import { MdFormatQuote, MdOutlineSearch, MdOutlineBarChart, MdGroup } from 'react-icons/md';
-import { FaGraduationCap } from 'react-icons/fa';
+import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../Gen3Link';
 
 export interface LandingPageContentProp {
@@ -71,7 +71,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
             }
             if (obj.link) {
-              return <div className='heal-btn mb-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
+              return <div className='heal-btn mb-5 mr-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
             }
             if (obj.image) {
               return (
@@ -101,6 +101,8 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
         if (component.cardsArea) {
           const allowedIcons = {
             FaGraduationCap: FaGraduationCap,
+            FaRegQuestionCircle: FaRegQuestionCircle,
+            FaVideo: FaVideo,
             MdOutlineSearch: MdOutlineSearch,
             MdOutlineBarChart: MdOutlineBarChart,
             MdGroup: MdGroup,

@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import Gen3Link from '../Gen3Link';
 
 interface BottomLinks {
-    text: string;
-    href: string;
+  text: string;
+  href: string;
 }
 
 interface ColumnLinks {
@@ -64,37 +64,40 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }
                         else {
                           return <span {...attrs}>{text}</span>;
                         }
-                      }
-                    )
-                  }
-                </div>
+                      )
+                    }
+                  </div>
+                )
               )
             )
           }
         </div>
       </div>
 
-
-      {(bottomLinks && bottomLinks.length > 0) ? (
-        <div className='pt-[10px] m-1 align-middle text-xs text-white font-montserrat'>
-          {
-            bottomLinks.map((link, i) => (
-              <React.Fragment key={link.href}>
-                <a
-                  href={link.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='heal-link-footer'
-                >
-                  {link.text ? link.text : link.href}
-                </a>
-                {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
-              </React.Fragment>
-            ))
+            }
+          </div>
+          {(bottomLinks && bottomLinks.length > 0) ? (
+            <div className='pt-[4px] m-1 text-right text-xs text-white font-montserrat'>
+              {
+                bottomLinks.map((link, i) => (
+                  <React.Fragment key={link.href}>
+                    <a
+                      href={link.href}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='heal-link-footer'
+                    >
+                      {link.text ? link.text : link.href}
+                    </a>
+                    {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
+                  </React.Fragment>
+                ))
+              }
+            </div>
+          ) : null
           }
         </div>
-      ) : null
-      }
+      </div>
     </div>
   </React.Fragment>;
 };

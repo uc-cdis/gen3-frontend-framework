@@ -20,15 +20,15 @@
             "items": [
                 {
                     "text": "User Guides",
-                    "href": "/dashboard/Public/documentation/index.html"
+                    "href": "/documentation"
                 },
                 {
                     "text": "Tutorials",
-                    "href": "/dashboard/Public/documentation/index.html#Tutorials"
+                    "href": "/documentation/platform_tutorial_videos"
                 },
                 {
                     "text": "FAQ",
-                    "href": "/dashboard/Public/documentation/index.html#FAQ"
+                    "href": "/documentation/faqs"
                 }
             ]
         },
@@ -55,7 +55,7 @@
     ],
     "bottomLinks": [
         {
-            "text": "HEAL Initiative",
+            "text": "NIH HEAL Initiative",
             "href": "https://heal.nih.gov/"
         },
         {
