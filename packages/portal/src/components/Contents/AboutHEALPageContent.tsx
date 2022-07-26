@@ -55,23 +55,24 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
               {leftDropdowns.map((entry ) => (
                 <Grid.Col key={entry.title} span={6}>
                   <Card className='h-full' shadow='md'  p='xs'>
-                    <Accordion iconPosition='right' initialItem={0}
+                    <Accordion  defaultValue={leftDropdowns[0].title}
                       classNames={{
                         item: 'border-0',
                         label: 'font-montserrat opacity-60 overflow-visible'
                       }}>
                       <Accordion.Item
                         aria-controls={entry.title}
-                        id={entry.title}
-                        label={entry.title}
+                        value={entry.title}
                       >
-
-                        {entry.content.length > 0 ?
-                          entry.content.map(contentLine => (
-                            <Text key={contentLine} className=' text-sm text-left break-words font-montserrat py-3' >- {contentLine}</Text>
-                          ))
-                          : null}
-                      </Accordion.Item>z
+                        <Accordion.Control>{entry.title}</Accordion.Control>
+                        <Accordion.Panel>
+                          {entry.content.length > 0 ?
+                            entry.content.map(contentLine => (
+                              <Text key={contentLine} className=' text-sm text-left break-words font-montserrat py-3' >- {contentLine}</Text>
+                            ))
+                            : null}
+                        </Accordion.Panel>
+                      </Accordion.Item>
                     </Accordion>
                   </Card>
                 </Grid.Col>
@@ -105,21 +106,24 @@ const AboutHEALPageContent = ({ topImages, leftDropdowns, rightDropdowns }: Abou
               {rightDropdowns.map((entry) => (
                 <Grid.Col key={entry.title} xs={6}>
                   <Card className='h-full' shadow='md'>
-                    <Accordion className='h-full' iconPosition='right' initialItem={0}>
+                    <Accordion className='h-full'  defaultValue={rightDropdowns[0].title}>
                       <Accordion.Item
                         aria-controls={entry.title}
-                        id={entry.title}
-                        label={entry.title}
-                        classNames={{
-                          item: 'border-0',
-                          label: 'font-montserrat opacity-60 overflow-visible'
-                        }}
+                        value={entry.title}
                       >
-                        {entry.content.length > 0 ?
-                          entry.content.map(contentLine => (
-                            <Text key={contentLine} className='prose text-sm  text-left break-words font-montserrat' >- {contentLine}</Text>
-                          ))
-                          : null}
+                        <Accordion.Control
+                          classNames={{
+                            item: 'border-0',
+                            label: 'font-montserrat opacity-60 overflow-visible'
+                          }}
+                        >{entry.title}</Accordion.Control>
+                        <Accordion.Panel>
+                          {entry.content.length > 0 ?
+                            entry.content.map(contentLine => (
+                              <Text key={contentLine} className='prose text-sm  text-left break-words font-montserrat' >- {contentLine}</Text>
+                            ))
+                            : null}
+                        </Accordion.Panel>
                       </Accordion.Item>
                     </Accordion>
                   </Card>

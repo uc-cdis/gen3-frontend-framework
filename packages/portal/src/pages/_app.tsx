@@ -10,9 +10,9 @@ import React from 'react';
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   addCollection(icons);
   return (
-      <CoreProvider>
-        <Component { ...pageProps} />
-      </CoreProvider>
+    <CoreProvider>
+      <Component { ...pageProps} />
+    </CoreProvider>
   );
 };
 

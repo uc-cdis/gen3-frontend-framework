@@ -43,8 +43,8 @@ const TopBar: React.FC<TopBarProps> = ({ items }: TopBarProps) => {
                 <TopIconButton name={x.name} icon={x.icon}/>
                 <div className='pr-2 mr-4  border-r-2 border-solid h-6 '/>
               </a>
-            );
-          })}
+              );
+            })}
         </nav>
       </header>
     </div>

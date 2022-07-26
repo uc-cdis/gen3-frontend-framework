@@ -109,7 +109,7 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify='left', tableStyle 
             onClick={() => previousPage()}
             disabled={!canPreviousPage}
             classNames={{
-              default: 'bg-white hover:bg-gen3-blue disabled:bg-white disabled:text-gen3-smoke',
+              root: 'bg-white hover:bg-gen3-blue disabled:bg-white disabled:text-gen3-smoke',
             }}
           >
             <ArrowBackward />
@@ -117,8 +117,9 @@ const SimpleTable = ({columns, data, itemsPerPage=5, justify='left', tableStyle 
           <ActionIcon  radius='md'
             onClick={() => nextPage()}
             disabled={!canNextPage}
+            variant='filled'
             classNames={{
-              filled: 'text-gen3-gray hover:bg-gen3-blue disabled:text-gen3-smoke',
+              root: 'text-gen3-gray hover:bg-gen3-blue disabled:text-gen3-smoke',
             }}
           >
             <ArrowForward />

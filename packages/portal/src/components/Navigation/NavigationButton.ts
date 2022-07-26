@@ -1,9 +1,7 @@
 import tw from 'tailwind-styled-components';
 import { Button, ButtonProps } from '@mantine/core';
 
-interface NavigationButtonProps extends ButtonProps<'a'> {
-        $selected?: boolean
-}
+type NavigationButtonProps = ButtonProps & React.ComponentPropsWithoutRef<'a'> & {  $selected?: boolean };
 
 export const NavigationButton = tw(Button)<NavigationButtonProps>`
         subpixel-antialiased

@@ -1,5 +1,5 @@
-import { Badge, LoadingOverlay } from "@mantine/core";
-import { useGetTagsQuery} from "@gen3/core";
+import { Badge } from '@mantine/core';
+import { useGetTagsQuery} from '@gen3/core';
 
 interface TagCloudProps {
   tagSelector?: (_:string) => void;
@@ -7,18 +7,17 @@ interface TagCloudProps {
 
 const TagCloud: React.FC<TagCloudProps> = ({ tagSelector = () => null} : TagCloudProps) => {
 
-  const { data, isLoading } = useGetTagsQuery("")
+  const { data, isLoading } = useGetTagsQuery('');
 
   console.log(data);
   if (isLoading) {
-    return <div>Is Loading</div>
+    return <div>Is Loading</div>;
   }
   return (
     <div>
-
-      { data?.map((x) => <Badge key={`tag-${x}`}>{x}</Badge>) }
+      Coming Soon
     </div>
-  )
-}
+  );
+};
 
 export default TagCloud;
