@@ -59,46 +59,41 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }
                           key: i
                         };
                         if (href) {
-                          return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text}/></div>;
-                        }
-                        else {
+                          return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text} /></div>;
+                        } else {
                           return <span {...attrs}>{text}</span>;
                         }
-                      )
-                    }
-                  </div>
-                )
+                      }
+                    )
+                  }
+                </div>
               )
             )
           }
         </div>
       </div>
 
-            }
-          </div>
-          {(bottomLinks && bottomLinks.length > 0) ? (
-            <div className='pt-[4px] m-1 text-right text-xs text-white font-montserrat'>
-              {
-                bottomLinks.map((link, i) => (
-                  <React.Fragment key={link.href}>
-                    <a
-                      href={link.href}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='heal-link-footer'
-                    >
-                      {link.text ? link.text : link.href}
-                    </a>
-                    {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
-                  </React.Fragment>
-                ))
-              }
-            </div>
-          ) : null
-          }
-        </div>
-      </div>
     </div>
+    {(bottomLinks && bottomLinks.length > 0) ? (
+      <div className='pt-[4px] m-1 text-right text-xs text-white font-montserrat'>
+        {
+          bottomLinks.map((link, i) => (
+            <React.Fragment key={link.href}>
+              <a
+                href={link.href}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='heal-link-footer'
+              >
+                {link.text ? link.text : link.href}
+              </a>
+              {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
+            </React.Fragment>
+          ))
+        }
+      </div>
+    ) : null
+    }
   </React.Fragment>;
 };
 
