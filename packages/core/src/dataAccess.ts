@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useCoreDispatch, useCoreSelector } from './hooks';
 import { CoreState } from './reducers';
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 
 export type UnknownJson = Record<string, unknown>;
 

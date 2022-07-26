@@ -1,0 +1,50 @@
+{
+  "navigation": {
+    "logo": "/icons/midrc-logo.png",
+    "title" : "",
+    "href" : "/",
+    "items": [
+      {
+        "icon": "gen3:exploration",
+        "href": "/explorer",
+        "name": "Discovery",
+        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
+        "icon": "gen3:dictionary",
+        "href": "/DD",
+        "name": "Dictionary",
+        "tooltip": "The MIDRC Data Commons employs a data model to power queries and data submissions. Study the dictionary to send GraphQL queries or format your data submissions."
+      }
+    ]
+  },
+  "topBar": {
+    "items": [
+      {
+        "href": "https://www.midrc.org/",
+        "name": "About"
+      },
+      {
+        "href": "https://www.midrc.org/s/Gen3-MIDRC-QRG20210831.pdf",
+        "name": "Quick Start Guide"
+      },
+      {
+        "href": "https://gen3.org/resources/user/",
+        "name": "Documentation"
+      },
+      {
+        "href": "https://www.hhs.gov/vulnerability-disclosure-policy/index.html",
+        "name": "HHS Responsible Disclosure"
+      },
+      {
+        "icon": "upload",
+        "href": "/submission",
+        "name": "Submit Data"
+      },
+      {
+        "href": "midrc-support@datacommons.io",
+        "name": "Email Support"
+      }
+    ]
+  }
+}

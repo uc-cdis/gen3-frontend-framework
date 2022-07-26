@@ -10,7 +10,7 @@ const withMDX = require('@next/mdx')({
 
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config, options) => {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       issuer:

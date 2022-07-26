@@ -6,11 +6,21 @@ export interface Metadata {
     readonly entries:Array<Record<string, unknown>>
 }
 
+export interface CrosswalkInfo {
+  readonly from: string;
+  readonly to: string;
+}
+
+export interface CrosswalkArray {
+  readonly mapping : ReadonlyArray<CrosswalkInfo>
+}
+
+
 // Define a service using a base URL and expected endpoints
-export const aggMetadataApi = coreCreateApi({
-  reducerPath: 'aggMetadataApi',
+export const metadataApi = coreCreateApi({
+  reducerPath: 'metadataApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.GEN3_HOSTNAME}/mds/` }),
+    baseUrl: `https://brh.data-commons.org/mds/` }),
   endpoints: (builder) => ({
     getMetadata: builder.query<Metadata, string>({
       query: () => 'aggregate/metadata',
@@ -18,11 +28,22 @@ export const aggMetadataApi = coreCreateApi({
     getTags: builder.query<Metadata, string>({
       query: () => 'tags',
     }),
+    getData: builder.query<Metadata, string>({
+      query: (params) => ( { url: `metadata?${params}`} )
+    }),
+    getCrosswalkData: builder.query<CrosswalkArray, string>({
+      query: (params) => ( { url: `metadata?${params}`} ),
+      transformResponse: (response: Record<string, any> ) => {
+        return { mapping :  Object.values(response).map((x): CrosswalkInfo => {
+          return { from: x.ids.midrc_id, to: x.ids.rand_id };
+        })};
+      }
+    }),
   }),
 });
 
 
-export const { useGetMetadataQuery, useGetTagsQuery } = aggMetadataApi;
-export const aggReducerPath:string = aggMetadataApi.reducerPath;
-export const aggReducer: Reducer =  aggMetadataApi.reducer as Reducer;
-export const aggReducerMiddleware = aggMetadataApi.middleware as Middleware;
+export const { useGetMetadataQuery, useGetTagsQuery, useGetDataQuery, useGetCrosswalkDataQuery } = metadataApi;
+export const mdsReducerPath:string = metadataApi.reducerPath;
+export const mdsReducer: Reducer =  metadataApi.reducer as Reducer;
+export const mdsReducerMiddleware = metadataApi.middleware as Middleware;

@@ -13,24 +13,38 @@ interface ColumnLinks {
     items: ReadonlyArray<{ text: string; href?: string; linkType: 'gen3ff' | 'portal' | undefined }>;
 }
 
+interface FooterLogo {
+  readonly logo: string;
+  readonly width: string | number;
+  readonly height: string | number;
+}
+
 export interface FooterProps {
     readonly bottomLinks?: ReadonlyArray<BottomLinks>;
     readonly columnLinks?: ReadonlyArray<ColumnLinks>;
+    readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps) => {
+const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }: FooterProps) => {
   const { basePath } = useRouter();
   return <React.Fragment>
     <div className='bg-heal-dark_gray p-4'>
       <div className='flex flex-row'>
-        <div className='flex flex-col mr-8 h-[100px] justify-between'>
-          <Image src={`${basePath}/icons/gen3.png`} layout='fixed' width='80px' height='40px' />
-          <Image src={`${basePath}/icons/createdby.png`} layout='fixed' width='120px' height='40px' />
-        </div>
-        <div className='flex flex-col mr-8 h-[100px] justify-between'>
-          <Image src={`${basePath}/icons/logo.png`} layout='fixed' height='100px' width='164px' />
-        </div>
+        {
+          (footerLogos || [[]]).map((col, index) => {
+            return (
+              <div key={`footer-col-${index}`} className={`flex flex-col mr-8 ${col.length>1 ? 'justify-between' : ''}`}>
+                {
+                  col.map((logo) =>
+                    <Image key={`${basePath}/icons/${logo.logo}`}
+                      src={`${basePath}/icons/${logo.logo}`}
+                      layout='fixed' width={logo.width} height={logo.height} />
+                  )}
+              </div>
+            );
+          })
+        }
         <div className='flex flex-row w-[100%] pl-10 pt-3'>
           {
             (columnLinks || []).map(
@@ -56,7 +70,6 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps
                 </div>
               )
             )
-
           }
         </div>
       </div>

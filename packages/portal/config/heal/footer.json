@@ -62,5 +62,26 @@
             "text": "HHS Responsible Disclosure Form",
             "href": "https://hhs.responsibledisclosure.com/hc/en-us"
         }
+    ],
+    "footerLogos" : [
+        [
+            {
+                "logo": "gen3.png",
+                "width" : "80px",
+                "height" : "40px"
+            },
+            {
+                "logo": "createdby.png",
+                "width" : "120px",
+                "height" : "40px"
+            }
+        ],
+        [
+            {
+                "logo": "logo.png",
+                "width" : "100px",
+                "height" : "164px"
+            }
+        ]
     ]
 }

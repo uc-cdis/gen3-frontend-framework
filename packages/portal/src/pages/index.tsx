@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next';
-
 import Header, { HeaderProps } from '../components/Navigation/Header';
 import Footer from '../components/Navigation/Footer';
 
@@ -20,7 +19,7 @@ const IndexPage = ({ top, navigation }: HeaderProps) => {
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {
-      destination: '/landing',
+      destination: '/Crosswalk',
       permanent: false
     }
   };

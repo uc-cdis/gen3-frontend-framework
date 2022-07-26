@@ -1,6 +1,5 @@
 import FooterHEAL, { FooterProps } from '../components/Navigation/Footer';
 import { GetStaticProps } from 'next';
-import fs from 'fs';
 import Header, { HeaderProps } from '../components/Navigation/Header';
 
 import Discovery from '../components/Discovery/Discovery';
