@@ -15,8 +15,8 @@
   "dependencies": {
     "@gen3/core": "file:../core",
     "@iconify/types": "^1.0.12",
-    "@mantine/core": "^4.2.12",
-    "@mantine/hooks": "^4.2.12",
+    "@mantine/core": "^5.0.0",
+    "@mantine/hooks": "^5.0.0",
     "@mdx-js/loader": "^2.1.2",
     "@mdx-js/mdx": "^2.1.2",
     "@next/mdx": "^12.1.6",

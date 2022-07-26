@@ -36,12 +36,12 @@ const TopBar: React.FC<TopBarProps> = ( { items } : TopBarProps) => {
   return (
     <div >
       <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-heal-purple'>
-        <nav className='flex flex-row items-center align-middle font-montserrat'>
+        <nav className='flex flex-row items-center align-middle font-sans'>
           {
             items.map((x) => {
               return ( <a className='flex flex-row' href={`${x.href}`} key={x.href}>
                 <TopIconButton name={x.name} icon={x.icon}/>
-                <div className='pr-2 ml-1  border-r-2 border-solid h-6 '/>
+                <div className='pr-2 mr-4  border-r-2 border-solid h-6 '/>
               </a>
               );
             })

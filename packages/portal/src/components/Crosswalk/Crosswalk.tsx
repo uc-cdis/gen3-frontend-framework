@@ -1,7 +1,22 @@
 import React, {useState, useEffect } from 'react';
 import { Group, Stack, Button, Textarea, Text } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { useGetCrosswalkDataQuery, CrosswalkInfo } from "@gen3/core";
+import { useGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
+
+const MIN_ROWS = 18;
+
+const downloadData = (data:string) => {
+  const json = JSON.stringify(data);
+  const blob = new Blob([json],{type:'application/text'});
+  const href = URL.createObjectURL(blob); // Create a downloadable link
+  const link = document.createElement('a');
+  link.href = href;
+  link.download = 'crosswalk_data.csv';
+  document.body.appendChild(link);   // This can any part of your website
+  link.click();
+  document.body.removeChild(link);
+};
+
 
 export const Crosswalk = (): JSX.Element => {
   const [ query, setQuery ]  = useState<string>('');
@@ -27,14 +42,12 @@ export const Crosswalk = (): JSX.Element => {
   };
 
   const onSubmit = () => {
-    const ids = midrcIds.split(/,|\r?\n|\r|\n/g).map((x) => `ids.midrc_id=${x}`).join("&");
+    const ids = midrcIds.split(/,|\r?\n|\r|\n/g).map((x) => `ids.midrc_id=${x}`).join('&');
     setQuery(`_guid_type=petal_crosswalk&data=True&${ids}`);
-    console.log(ids);
-
   };
 
   return (
-    <Group className='w-100 h-100 p-4 mt-4'>
+    <Group grow className='w-100 h-100 p-4 mt-4'>
       <Stack >
         <Group>
           <Text>Enter your MIDRC IDs</Text>
@@ -47,27 +60,31 @@ export const Crosswalk = (): JSX.Element => {
           size='md'
           required
           value={midrcIds}
-          minRows={24}
+          minRows={MIN_ROWS}
           onChange={(event) => updateIdQuery(event.currentTarget.value)}
         />
       </Stack>
 
-      <Stack >
+      <Stack  >
         <Group>
           <Text>Matching N3C IDs</Text>
           <Group position='right'>
             <Button variant='outline' size='xs'
-                    color={clipboard.copied ? 'teal' : 'blue'}
-                    onClick={() => clipboard.copy(data.mapping.map((x) => x.to))}
-                    disabled={crosswalkIds.length == 0} >Copy</Button>
-            <Button variant='outline' size='xs'disabled={crosswalkIds.length == 0} >Download</Button>
+              color={clipboard.copied ? 'teal' : 'blue'}
+              onClick={() => { if (data) clipboard.copy(data.mapping.map((x) => x.to));}}
+              disabled={crosswalkIds.length == 0} >Copy</Button>
+            <Button variant='outline' size='xs'
+              onClick={() => { if (data)  downloadData(data.mapping.map((x) => x.to).join(','));}}
+              disabled={crosswalkIds.length == 0}
+
+            >Download</Button>
           </Group>
         </Group>
         <Textarea
           placeholder='Results...'
           radius='md'
-          size='md' value={crosswalkIds}
-          minRows={24}
+          size='md' value={crosswalkIds} readOnly={true}
+          minRows={MIN_ROWS}
         />
       </Stack>
     </Group>
