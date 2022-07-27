@@ -17,17 +17,26 @@ const downloadData = (data:string) => {
   document.body.removeChild(link);
 };
 
+interface CrosswalkProps {
+  readonly fromTitle: string;
+  readonly toTitle: string;
+  readonly guidField:string;
+  readonly fromField: string;
+  readonly toField: string;
+}
 
-export const Crosswalk = (): JSX.Element => {
+export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidField, fromField, toField  } : CrosswalkProps): JSX.Element => {
   const [ query, setQuery ]  = useState<string>('');
-  const [ midrcIds, setMidrcIds ]  = useState<string>('');
-  const { data, isSuccess} = useGetCrosswalkDataQuery(query, { skip: query === '' } );
+  const [ sourceIds, setSourceIds ]  = useState<string>('');
+  const { data, isSuccess} = useGetCrosswalkDataQuery(
+    { ids: query,  fields : { from: fromField, to:toField }} , { skip: query === '' } );
   const [ crosswalkIds, setCrosswalkIds ]  = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
   const updateIdQuery = (values:string) => {
-    setMidrcIds(values);
+    setSourceIds(values);
   };
+
 
   useEffect(() => {
     if (isSuccess) {
@@ -36,30 +45,30 @@ export const Crosswalk = (): JSX.Element => {
   }, [data, isSuccess]);
 
   const clear = () => {
-    setMidrcIds('');
+    setSourceIds('');
     setCrosswalkIds('');
     setQuery('');
   };
 
   const onSubmit = () => {
-    const ids = midrcIds.split(/,|\r?\n|\r|\n/g).map((x) => `ids.midrc_id=${x}`).join('&');
-    setQuery(`_guid_type=petal_crosswalk&data=True&${ids}`);
+    const ids = sourceIds.split(/,|\r?\n|\r|\n/g).map((x) => `ids.${fromField}=${x}`).join('&');
+    setQuery(`_guid_type=${guidField}&data=True&${ids}`);
   };
 
   return (
     <Group grow className='w-100 h-100 p-4 mt-4'>
       <Stack >
         <Group>
-          <Text>Enter your MIDRC IDs</Text>
-          <Button variant='outline' size='xs' disabled={midrcIds.length == 0} onClick={() => onSubmit() }>Submit</Button>
-          <Button variant='outline' size='xs' disabled={midrcIds.length == 0} onClick={() => clear()}>Clear</Button>
+          <Text>{fromTitle}</Text>
+          <Button variant='outline' size='xs' disabled={sourceIds.length == 0} onClick={() => onSubmit() }>Submit</Button>
+          <Button variant='outline' size='xs' disabled={sourceIds.length == 0} onClick={() => clear()}>Clear</Button>
         </Group>
         <Textarea
           placeholder='IDs...'
           radius='md'
           size='md'
           required
-          value={midrcIds}
+          value={sourceIds}
           minRows={MIN_ROWS}
           onChange={(event) => updateIdQuery(event.currentTarget.value)}
         />
@@ -67,7 +76,7 @@ export const Crosswalk = (): JSX.Element => {
 
       <Stack  >
         <Group>
-          <Text>Matching N3C IDs</Text>
+          <Text>{toTitle}</Text>
           <Group position='right'>
             <Button variant='outline' size='xs'
               color={clipboard.copied ? 'teal' : 'blue'}

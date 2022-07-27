@@ -7,7 +7,11 @@ const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
     <div className='flex flex-col'>
       <NavPageLayout  {...{ headerProps, footerProps }} >
-        <Crosswalk />
+        <Crosswalk
+          fromTitle='Enter your BDCat Ids'
+          toTitle='Matching MIDRC IDs' guidField='petal_crosswalk'
+          fromField='bdcat_id' toField='midrc_id'
+        />
       </NavPageLayout>
     </div>
   );
