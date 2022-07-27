@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "logo": "/icons/midrc-logo.png",
+    "logo": "/src/img/logo.png",
     "title" : "",
     "href" : "/",
     "items": [
