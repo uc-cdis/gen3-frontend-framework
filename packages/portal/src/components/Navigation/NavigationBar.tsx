@@ -39,6 +39,7 @@ export interface NavigationProps {
 const NavigationBar: React.FC<NavigationProps> = ({ logo = undefined, title = undefined, logoWidth=199, logoHeight=64, items} : NavigationProps) => {
   const { basePath } = useRouter();
 
+  console.log("basePath:",basePath);
   return (
     <div className='flex flex-row border-b-1 bg-gen3-white border-gen3-smoke'>
       <div className='flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]'>
