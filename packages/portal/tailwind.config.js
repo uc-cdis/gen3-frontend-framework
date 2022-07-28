@@ -21,6 +21,9 @@ module.exports = {
           light_gray: '#DDDDDD',
           blue: '#0044B3'
         },
+        'midrc' : {
+          secondary: '#421C52'
+        },
         'gen3': {
           base_blue: '#3283C8',
           base_blue_light: '#05B8EE',

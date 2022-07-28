@@ -6,11 +6,9 @@ import { useGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
 const MIN_ROWS = 18;
 
 const downloadData = (data:string) => {
-  const json = JSON.stringify(data);
-  const blob = new Blob([json],{type:'application/text'});
-  const href = URL.createObjectURL(blob); // Create a downloadable link
+  const csvData = encodeURI(`data:text/csv;charset=utf-8,${data}`);
   const link = document.createElement('a');
-  link.href = href;
+  link.href = csvData;
   link.download = 'crosswalk_data.csv';
   document.body.appendChild(link);   // This can any part of your website
   link.click();
@@ -83,7 +81,7 @@ export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidF
               onClick={() => { if (data) clipboard.copy(data.mapping.map((x) => x.to));}}
               disabled={crosswalkIds.length == 0} >Copy</Button>
             <Button variant='outline' size='xs'
-              onClick={() => { if (data)  downloadData(data.mapping.map((x) => x.to).join(','));}}
+              onClick={() => { if (data)  downloadData(data.mapping.map((x) => `${x.from},${x.to}`).join('\n'));}}
               disabled={crosswalkIds.length == 0}
 
             >Download</Button>

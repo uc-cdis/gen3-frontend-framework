@@ -29,7 +29,7 @@ export interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }: FooterProps) => {
   const { basePath } = useRouter();
   return <React.Fragment>
-    <div className='bg-heal-dark_gray p-4'>
+    <div className='bg-midrc-secondary p-4'>
       <div className='flex flex-row'>
         {
           (footerLogos || [[]]).map((col, index) => {
@@ -53,10 +53,10 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }
                   <h1 className='font-bold text-xl text-white font-montserrat'>{heading}</h1>
                   {
                     (items || []).map(
-                      ({ text, href, linkType }, i) => {
+                      ({ text, href, linkType }, j) => {
                         const attrs = {
                           className: `${href && 'heal-link-footer'} font-medium text-sm p-[2px] text-white font-montserrat`,
-                          key: i
+                          key: j
                         };
                         if (href) {
                           return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text} /></div>;

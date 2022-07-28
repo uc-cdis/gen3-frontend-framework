@@ -9,8 +9,8 @@ const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
       <NavPageLayout  {...{ headerProps, footerProps }} >
         <Crosswalk
           fromTitle='Enter your MIDRC Ids'
-          toTitle='Matching N3C IDs' guidField='petal_crosswalk'
-          fromField='midrc_id' toField='rand_id'
+          toTitle='Matching N3C IDs' guidField='n3c_crosswalk'
+          fromField='midrc_id' toField='n3c_id'
         />
       </NavPageLayout>
     </div>
