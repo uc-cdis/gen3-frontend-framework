@@ -2,7 +2,7 @@ import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
-import json from "@rollup/plugin-json";
+import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 const globals = {
