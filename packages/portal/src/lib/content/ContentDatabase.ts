@@ -10,13 +10,13 @@ export interface CreateDatabase {
 }
 
 export class ContentDatabase {
-    public store: ContentSource
+  public store: ContentSource;
 
-    constructor(public config: CreateDatabase) {
-      this.store = config.store;
-    }
+  constructor(public config: CreateDatabase) {
+    this.store = config.store;
+  }
 
-    public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
-      return this.store.get(filepath);
-    }
+  public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
+    return this.store.get(filepath);
+  }
 }

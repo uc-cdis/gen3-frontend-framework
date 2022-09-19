@@ -15,12 +15,19 @@ export interface CrosswalkArray {
   readonly mapping : ReadonlyArray<CrosswalkInfo>
 }
 
+interface CrossWalkParams {
+  readonly ids: string;
+  readonly fields: {
+    from: string;
+    to: string;
+  }
+}
 
 // Define a service using a base URL and expected endpoints
 export const metadataApi = coreCreateApi({
   reducerPath: 'metadataApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `https://brh.data-commons.org/mds/` }),
+    baseUrl: 'https://brh.data-commons.org/mds/' }),
   endpoints: (builder) => ({
     getMetadata: builder.query<Metadata, string>({
       query: () => 'aggregate/metadata',
@@ -31,11 +38,11 @@ export const metadataApi = coreCreateApi({
     getData: builder.query<Metadata, string>({
       query: (params) => ( { url: `metadata?${params}`} )
     }),
-    getCrosswalkData: builder.query<CrosswalkArray, string>({
-      query: (params) => ( { url: `metadata?${params}`} ),
-      transformResponse: (response: Record<string, any> ) => {
+    getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
+      query: (params) => ( { url: `metadata?${params.ids}`} ),
+      transformResponse: (response: Record<string, any>, _meta, params ) => {
         return { mapping :  Object.values(response).map((x): CrosswalkInfo => {
-          return { from: x.ids.midrc_id, to: x.ids.rand_id };
+          return { from: x.ids[params.fields.from], to: x.ids[params.fields.to] };
         })};
       }
     }),

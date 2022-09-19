@@ -11,18 +11,52 @@
         },
         {
             "type": "text",
-            "content": "is to provide users with a secure environment where informative analysis can be performed, but there are other resources that may be helpful in other ways. Below are a list of some of these resources and a description of the ways the may be helpful to those interested in the "
+            "content": "is to facilitate discovery of HEAL-generated and other relevant datasets, and provide users with a secure environment where informative analysis can be performed. The Platform has compiled several external resources that may be broadly helpful to many interested in the "
         },
         {
             "type": "outboundLink",
-            "content": "NIH HEAL Initiative.",
+            "content": "NIH HEAL Initiative®",
             "link": "https://heal.nih.gov/about/research-plan"
         }
     ],
     "sections": [
         {
+            "title": "Pain Management",
+            "cards": [
+                {
+                    "title": "Centers for Disease Control and Prevention (CDC)",
+                    "content": "Methods for and advice on managing pain without opioids.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/drugoverdose/featured-topics/pain-management.html"
+                },
+                {
+                    "title": "Health and Human Services (HHS)",
+                    "content": "Best practices for managing acute and chronic pain.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.hhs.gov/opioids/prevention/pain-management-options/index.html"
+                },
+                {
+                    "title": "National Center for Complementary and Integrated Health (NCCIH)",
+                    "content": "Information about complementary and integrative health approaches to pain management.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.nccih.nih.gov/health/pain"
+                },
+                {
+                    "title": "U.S. Department of Veteran Affairs",
+                    "content": "Many different pain management resources for veterans and the general public.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.va.gov/painmanagement/"
+                },
+                {
+                    "title": "U.S. Medicare Services",
+                    "content": "Information about drugs and treatments covered by Medicare.",
+                    "linkText": "Visit Site",
+                    "link": "https://www.medicare.gov/coverage/pain-management"
+                }
+            ]
+        },
+        {
             "title": "Prevention",
-            "introduction": "One of HEAL's primary initiatives is to prevent Opioid Use Disorder by bringing awareness to the community. Below are links to other groups working to prevent OUD.",
             "cards": [
                 {
                     "title": "Centers for Disease Control and Prevention (CDC)",
@@ -46,8 +80,13 @@
         },
         {
             "title": "Treatment",
-            "introduction": "Another major goal for HEAL is to improve and increase the treatment options available for patients with Opioid Use Disorder. Below are several links to resources that might help you learn more about the treatment options currently available.",
             "cards": [
+                {
+                    "title": "Centers for Disease Control and Prevention (CDC)",
+                    "content": "Linking People with Opioid Use Disorder to Medication Treatment: A Technical Package of Policy, Programs, and Practices",
+                    "linkText": "Visit Site",
+                    "link": "https://www.cdc.gov/drugoverdose/pdf/pubs/Linkage-to-Care_Edited-PDF_508-3-15-2022.pdf"
+                }, 
                 {
                     "title": "Substance Abuse and Mental Health Service Administration (SAMHSA)",
                     "content": "A confidential and anonymous source of information for persons seeking treatment facilities for substance abuse.",
@@ -76,7 +115,6 @@
         },
         {
             "title": "Support",
-            "introduction": "HEAL is sponsoring several studies focused on improving the support system for those affected by Opioid Use Disorder. Below are links to government resources that may be helpful to anyone looking for general support.",
             "cards": [
                 {
                     "title": "Health and Human Services (HHS)",

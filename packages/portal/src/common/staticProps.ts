@@ -6,7 +6,7 @@ import { TopBarProps } from '../components/Navigation/TopBar';
 import ContentSource from '../lib/content';
 
 export const getNavPageLayoutPropsFromConfig = async (): Promise<NavPageLayoutProps> => {
-  const config = await ContentSource.get(`config/siteConfig.json`);
+  const config = await ContentSource.get('config/siteConfig.json');
   const navigationConfigJSON = await ContentSource.get(`config/${config.commons}/navigation.json`);
   const {topBar, navigation} = navigationConfigJSON;
   const headerProps: HeaderProps = {

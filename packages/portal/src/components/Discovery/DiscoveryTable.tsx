@@ -1,5 +1,5 @@
-import React from "react";
-import SimpleTable, { StyledColumn } from "../Tables/SimpleTable";
+import React from 'react';
+import SimpleTable, { StyledColumn } from '../Tables/SimpleTable';
 
 export interface DiscoveryTableProps {
   readonly columns: ReadonlyArray<StyledColumn>;
@@ -9,7 +9,7 @@ export interface DiscoveryTableProps {
 const DiscoveryTable: React.FC<DiscoveryTableProps> = ({columns, data} : DiscoveryTableProps) => {
   return (
     <SimpleTable columns={columns} data={data} />
-  )
-}
+  );
+};
 
 export default DiscoveryTable;

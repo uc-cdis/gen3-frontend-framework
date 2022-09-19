@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import Gen3Link from '../Gen3Link';
 
 interface BottomLinks {
-    text: string;
-    href: string;
+  text: string;
+  href: string;
 }
 
 interface ColumnLinks {
@@ -29,7 +29,7 @@ export interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }: FooterProps) => {
   const { basePath } = useRouter();
   return <React.Fragment>
-    <div className='bg-heal-dark_gray p-4'>
+    <div className='bg-midrc-secondary p-4'>
       <div className='flex flex-row'>
         {
           (footerLogos || [[]]).map((col, index) => {
@@ -53,15 +53,14 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }
                   <h1 className='font-bold text-xl text-white font-montserrat'>{heading}</h1>
                   {
                     (items || []).map(
-                      ({ text, href, linkType }, i) => {
+                      ({ text, href, linkType }, j) => {
                         const attrs = {
                           className: `${href && 'heal-link-footer'} font-medium text-sm p-[2px] text-white font-montserrat`,
-                          key: i
+                          key: j
                         };
                         if (href) {
-                          return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text}/></div>;
-                        }
-                        else {
+                          return <div {...attrs}><Gen3Link href={href} linkType={linkType} text={text} /></div>;
+                        } else {
                           return <span {...attrs}>{text}</span>;
                         }
                       }
@@ -74,28 +73,27 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks, footerLogos }
         </div>
       </div>
 
-
-      {(bottomLinks && bottomLinks.length > 0) ? (
-        <div className='pt-[10px] m-1 align-middle text-xs text-white font-montserrat'>
-          {
-            bottomLinks.map((link, i) => (
-              <React.Fragment key={link.href}>
-                <a
-                  href={link.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='heal-link-footer'
-                >
-                  {link.text ? link.text : link.href}
-                </a>
-                {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
-              </React.Fragment>
-            ))
-          }
-        </div>
-      ) : null
-      }
     </div>
+    {(bottomLinks && bottomLinks.length > 0) ? (
+      <div className='pt-[4px] m-1 text-right text-xs text-white font-montserrat'>
+        {
+          bottomLinks.map((link, i) => (
+            <React.Fragment key={link.href}>
+              <a
+                href={link.href}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='heal-link-footer'
+              >
+                {link.text ? link.text : link.href}
+              </a>
+              {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
+            </React.Fragment>
+          ))
+        }
+      </div>
+    ) : null
+    }
   </React.Fragment>;
 };
 
