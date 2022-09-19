@@ -11,7 +11,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   addCollection(icons);
   return (
     <CoreProvider>
-      <Component { ...pageProps} />
+      <Component {...pageProps} />
     </CoreProvider>
   );
 };
