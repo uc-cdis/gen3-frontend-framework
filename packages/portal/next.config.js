@@ -1,4 +1,5 @@
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {
@@ -33,6 +34,6 @@ module.exports = (_phase, { defaultConfig }) => {
   delete defaultConfig.experimental.outputFileTracingRoot;
   delete defaultConfig.i18n;
 
-  const plugins = [withMDX]
-  return plugins.reduce((acc, plugin) => plugin(acc), { ...defaultConfig, ...nextConfig })
-}
+  const plugins = [withMDX];
+  return plugins.reduce((acc, plugin) => plugin(acc), { ...defaultConfig, ...nextConfig });
+};

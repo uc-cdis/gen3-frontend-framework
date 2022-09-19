@@ -6,8 +6,8 @@ import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavP
 
 const N3C = {
   guidField: 'n3c_crosswalk',
-  fromFields : [ { field: 'midrc_id', label: "MIDRC" } ],
-  toFields : [{ field: 'n3c_id', label: "N3C" } ]
+  fromFields : [ { field: 'midrc_id', label: 'MIDRC' } ],
+  toFields : [{ field: 'n3c_id', label: 'N3C' } ]
 };
 
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {

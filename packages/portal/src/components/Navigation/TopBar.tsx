@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
 
 export interface NameAndIcon {
@@ -13,8 +13,8 @@ export interface TopIconButtonProps extends NameAndIcon {
 
 const TopIconButton: React.FC<NameAndIcon> = ({
   name,
-                                                leftIcon = undefined,
-                                                rightIcon = undefined,
+  leftIcon = undefined,
+  rightIcon = undefined,
 }: NameAndIcon) => {
   return (
     <div
@@ -30,7 +30,6 @@ const TopIconButton: React.FC<NameAndIcon> = ({
 
 const AccountTopButton = () => <span className='py-4 px-12' />;
 
-
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
 }
@@ -43,7 +42,11 @@ const TopBar: React.FC<TopBarProps> = ({ items }: TopBarProps) => {
           {items.map((x) => {
             return (
               <a className='flex flex-row' href={`${x.href}`} key={x.href}>
-                <TopIconButton name={x.name} leftIcon={x.leftIcon}  rightIcon={x.rightIcon}  />
+                <TopIconButton
+                  name={x.name}
+                  leftIcon={x.leftIcon}
+                  rightIcon={x.rightIcon}
+                />
                 <div className='pr-2 ml-1  border-solid h-6 ' />
               </a>
             );
