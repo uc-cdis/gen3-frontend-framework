@@ -15,19 +15,26 @@ const downloadData = (data:string) => {
   document.body.removeChild(link);
 };
 
+interface IndexType {
+  field: string;
+  label: string;
+}
+
 interface CrosswalkProps {
   readonly fromTitle: string;
   readonly toTitle: string;
   readonly guidField:string;
-  readonly fromField: string;
-  readonly toField: string;
+  readonly fromFields: ReadonlyArray<IndexType>;
+  readonly toFields: ReadonlyArray<IndexType>;
 }
 
-export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidField, fromField, toField  } : CrosswalkProps): JSX.Element => {
+export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidField, fromFields, toFields  } : CrosswalkProps): JSX.Element => {
   const [ query, setQuery ]  = useState<string>('');
+  const [ fromField, setFromField] = useState(fromFields.length > 0 ? fromFields[0] : { field: '', label: 'Not Available' });
+  const [ toField, setToField] = useState(fromFields.length > 0 ? fromFields[0] : { field: '', label: 'Not Available' });
   const [ sourceIds, setSourceIds ]  = useState<string>('');
   const { data, isSuccess} = useGetCrosswalkDataQuery(
-    { ids: query,  fields : { from: fromField, to:toField }} , { skip: query === '' } );
+    { ids: query,  fields : { from: fromField.field, to:toField.field }} , { skip: query === '' } );
   const [ crosswalkIds, setCrosswalkIds ]  = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
