@@ -1,0 +1,16 @@
+{
+  "footerRightLogos" : [
+    [
+      {
+        "logo": "gen3.png",
+        "width" : "132px",
+        "height" : "60px"
+      },
+      {
+        "logo": "createdby.png",
+        "width" : "170px",
+        "height" : "60px"
+      }
+      ]
+    ]
+}

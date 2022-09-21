@@ -3,14 +3,20 @@ import Crosswalk from '../components/Crosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
 import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
 
+const Petal = {
+  guidField: 'petal_crosswalk',
+  fromFields : [ { field: 'bdcat_id', label: 'BDCat Ids' } ],
+  toFields : [{ field: 'midrc_id', label: 'MIDRC Ids' } ]
+};
+
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
     <div className='flex flex-col'>
       <NavPageLayout  {...{ headerProps, footerProps }} >
         <Crosswalk
           fromTitle='Enter your BDCat Ids'
-          toTitle='Matching MIDRC IDs' guidField='petal_crosswalk'
-          fromField='bdcat_id' toField='midrc_id'
+          toTitle='Matching MIDRC IDs' guidField={Petal.guidField}
+          fromFields={Petal.fromFields} toFields={Petal.toFields}
         />
       </NavPageLayout>
     </div>

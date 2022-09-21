@@ -25,8 +25,8 @@ module.exports = {
           secondary: '#421C52'
         },
         'gen3': {
-          base_blue: '#3283C8',
-          base_blue_light: '#05B8EE',
+          secondary: '#3283C8',
+          primary: '#05B8EE',
           lime: '#7EC500',
           iris: '#AD91FF',
           rose: '#E74C3C',
