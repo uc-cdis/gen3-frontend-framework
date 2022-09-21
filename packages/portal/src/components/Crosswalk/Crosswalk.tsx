@@ -1,51 +1,55 @@
-import React, {useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Group, Stack, Button, Textarea, Text } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { useGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
+import { useGetCrosswalkDataQuery, CrosswalkInfo, usePrevious } from '@gen3/core';
 
 const MIN_ROWS = 18;
 
-const downloadData = (data:string) => {
+const downloadData = (data: string) => {
   const csvData = encodeURI(`data:text/csv;charset=utf-8,${data}`);
   const link = document.createElement('a');
   link.href = csvData;
   link.download = 'crosswalk_data.csv';
-  document.body.appendChild(link);   // This can any part of your website
+  document.body.appendChild(link); // This can any part of your website
   link.click();
   document.body.removeChild(link);
 };
 
-interface IndexType {
-  field: string;
-  label: string;
-}
-
-interface CrosswalkProps {
+export interface CrosswalkProps {
   readonly fromTitle: string;
   readonly toTitle: string;
-  readonly guidField:string;
-  readonly fromFields: ReadonlyArray<IndexType>;
-  readonly toFields: ReadonlyArray<IndexType>;
+  readonly guidField: string;
+  readonly fromField: string;
+  readonly toField: string;
 }
 
-export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidField, fromFields, toFields  } : CrosswalkProps): JSX.Element => {
-  const [ query, setQuery ]  = useState<string>('');
-  const [ fromField, setFromField] = useState(fromFields.length > 0 ? fromFields[0] : { field: '', label: 'Not Available' });
-  const [ toField, setToField] = useState(fromFields.length > 0 ? fromFields[0] : { field: '', label: 'Not Available' });
-  const [ sourceIds, setSourceIds ]  = useState<string>('');
-  const { data, isSuccess} = useGetCrosswalkDataQuery(
-    { ids: query,  fields : { from: fromField.field, to:toField.field }} , { skip: query === '' } );
-  const [ crosswalkIds, setCrosswalkIds ]  = useState<string>('');
+export const Crosswalk: React.FC<CrosswalkProps> = ({
+  fromTitle,
+  toTitle,
+  guidField,
+  fromField,
+  toField,
+}: CrosswalkProps): JSX.Element => {
+  const [query, setQuery] = useState<string>('');
+  const [sourceIds, setSourceIds] = useState<string>('');
+  const { data, isSuccess } = useGetCrosswalkDataQuery(
+    { ids: query, fields: { from: fromField, to: toField } },
+    { skip: query === '' },
+  );
+  const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
-  const updateIdQuery = (values:string) => {
+  const previousField = usePrevious(fromField);
+
+  const updateIdQuery = (values: string) => {
     setSourceIds(values);
   };
 
-
   useEffect(() => {
     if (isSuccess) {
-      setCrosswalkIds(data.mapping.map((cw:CrosswalkInfo) => cw.to ).join('\n'));
+      setCrosswalkIds(
+        data.mapping.map((cw: CrosswalkInfo) => cw.to).join('\n'),
+      );
     }
   }, [data, isSuccess]);
 
@@ -55,18 +59,40 @@ export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidF
     setQuery('');
   };
 
+  useEffect(() => {
+    if (previousField != fromField)
+      clear();
+  }, [previousField,fromField]);
+
   const onSubmit = () => {
-    const ids = sourceIds.split(/,|\r?\n|\r|\n/g).map((x) => `ids.${fromField}=${x}`).join('&');
+    const ids = sourceIds
+      .split(/,|\r?\n|\r|\n/g)
+      .map((x) => `ids.${fromField}=${x}`)
+      .join('&');
     setQuery(`_guid_type=${guidField}&data=True&${ids}`);
   };
 
   return (
     <Group grow className='w-100 h-100 p-4 mt-4'>
-      <Stack >
+      <Stack>
         <Group>
           <Text>{fromTitle}</Text>
-          <Button variant='outline' size='xs' disabled={sourceIds.length == 0} onClick={() => onSubmit() }>Submit</Button>
-          <Button variant='outline' size='xs' disabled={sourceIds.length == 0} onClick={() => clear()}>Clear</Button>
+          <Button
+            variant='outline'
+            size='xs'
+            disabled={sourceIds.length == 0}
+            onClick={() => onSubmit()}
+          >
+            Submit
+          </Button>
+          <Button
+            variant='outline'
+            size='xs'
+            disabled={sourceIds.length == 0}
+            onClick={() => clear()}
+          >
+            Clear
+          </Button>
         </Group>
         <Textarea
           placeholder='IDs...'
@@ -79,25 +105,42 @@ export const Crosswalk : React.FC<CrosswalkProps> = ( {fromTitle, toTitle, guidF
         />
       </Stack>
 
-      <Stack  >
+      <Stack>
         <Group>
           <Text>{toTitle}</Text>
           <Group position='right'>
-            <Button variant='outline' size='xs'
+            <Button
+              variant='outline'
+              size='xs'
               color={clipboard.copied ? 'teal' : 'blue'}
-              onClick={() => { if (data) clipboard.copy(data.mapping.map((x) => x.to));}}
-              disabled={crosswalkIds.length == 0} >Copy</Button>
-            <Button variant='outline' size='xs'
-              onClick={() => { if (data)  downloadData(data.mapping.map((x) => `${x.from},${x.to}`).join('\n'));}}
+              onClick={() => {
+                if (data) clipboard.copy(data.mapping.map((x) => x.to));
+              }}
               disabled={crosswalkIds.length == 0}
-
-            >Download</Button>
+            >
+              Copy
+            </Button>
+            <Button
+              variant='outline'
+              size='xs'
+              onClick={() => {
+                if (data)
+                  downloadData(
+                    data.mapping.map((x) => `${x.from},${x.to}`).join('\n'),
+                  );
+              }}
+              disabled={crosswalkIds.length == 0}
+            >
+              Download
+            </Button>
           </Group>
         </Group>
         <Textarea
           placeholder='Results...'
           radius='md'
-          size='md' value={crosswalkIds} readOnly={true}
+          size='md'
+          value={crosswalkIds}
+          readOnly={true}
           minRows={MIN_ROWS}
         />
       </Stack>

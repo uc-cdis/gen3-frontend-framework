@@ -39,7 +39,6 @@ export const metadataApi = coreCreateApi({
       query: (params) => ( { url: `metadata?${params}`} )
     }),
     getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
-
       query: (params) => ( { url: `metadata?${params.ids}`} ),
       transformResponse: (response: Record<string, any>, _meta, params ) => {
         return { mapping :  Object.values(response).map((x): CrosswalkInfo => {
