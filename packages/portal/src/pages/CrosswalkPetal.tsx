@@ -5,8 +5,8 @@ import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavP
 
 const Petal = {
   guidField: 'petal_crosswalk',
-  fromFields : [ { field: 'bdcat_id', label: 'BDCat Ids' } ],
-  toFields : [{ field: 'midrc_id', label: 'MIDRC Ids' } ]
+  fromField : 'bdcat_id',
+  toField: 'midrc_id'
 };
 
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
@@ -16,7 +16,7 @@ const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         <Crosswalk
           fromTitle='Enter your BDCat Ids'
           toTitle='Matching MIDRC IDs' guidField={Petal.guidField}
-          fromFields={Petal.fromFields} toFields={Petal.toFields}
+          fromField={Petal.fromField} toField={Petal.toField}
         />
       </NavPageLayout>
     </div>

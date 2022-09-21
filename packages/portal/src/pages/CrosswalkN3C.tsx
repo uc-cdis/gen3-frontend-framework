@@ -6,8 +6,8 @@ import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavP
 
 const N3C = {
   guidField: 'n3c_crosswalk',
-  fromFields : [ { field: 'midrc_id', label: 'MIDRC' } ],
-  toFields : [{ field: 'n3c_id', label: 'N3C' } ]
+  fromField :'midrc_id',
+  toField: 'n3c_id'
 };
 
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
@@ -17,7 +17,7 @@ const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         <Crosswalk
           fromTitle='Enter your MIDRC Ids'
           toTitle='Matching N3C IDs' guidField={N3C.guidField}
-          fromFields={N3C.fromFields} toFields={N3C.toFields}
+          fromField={N3C.fromField} toField={N3C.toField}
         />
       </NavPageLayout>
     </div>
