@@ -15,6 +15,7 @@
     "noImplicitReturns": true,
     "strict": true,
     "target": "esnext",
+    "resolveJsonModule": true,
     "lib": ["dom", "esnext"]
   }
 }
