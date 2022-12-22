@@ -1,5 +1,6 @@
 import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -29,7 +30,7 @@ const config = [
         file: 'dist/index.min.js',
         format: 'iife',
         name: 'gen3Core',
-        plugins: [terser()],
+        plugins: [terser(),],
         globals,
       },
       {
@@ -58,15 +59,15 @@ const config = [
       typescript(),
       json(),
       babel({
-        presets: ['@babel/preset-react'],
+        presets: ['@babel/preset-react',],
         babelHelpers: 'runtime',
       }),
     ],
   },
   {
     input: './dist/dts/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts()],
+    output: [{ file: 'dist/index.d.ts', format: 'es', },],
+    plugins: [dts(),],
   },
 ];
 

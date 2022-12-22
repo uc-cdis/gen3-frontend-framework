@@ -1,6 +1,11 @@
 {
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/**/*.spec.ts*"],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/**/*.spec.ts*"
+  ],
   "compilerOptions": {
     "outDir": "dist/dts",
     "jsx": "react",
@@ -16,6 +21,9 @@
     "strict": true,
     "target": "esnext",
     "resolveJsonModule": true,
-    "lib": ["dom", "esnext"]
+    "lib": [
+      "dom",
+      "esnext"
+    ]
   }
 }
