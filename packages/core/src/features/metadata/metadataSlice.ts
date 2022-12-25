@@ -52,5 +52,5 @@ export const metadataApi = coreCreateApi({
 
 export const { useGetMetadataQuery, useGetTagsQuery, useGetDataQuery, useGetCrosswalkDataQuery } = metadataApi;
 export const mdsReducerPath:string = metadataApi.reducerPath;
-export const mdsReducer: Reducer =  metadataApi.reducer as Reducer;
+export const mdsReducer: Reducer = metadataApi.reducer as Reducer;
 export const mdsReducerMiddleware = metadataApi.middleware as Middleware;

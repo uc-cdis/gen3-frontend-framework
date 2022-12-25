@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Group, Stack, Button, Textarea, Text } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { useGetCrosswalkDataQuery, CrosswalkInfo, usePrevious } from '@gen3/core';
+import {
+  useGetCrosswalkDataQuery,
+  CrosswalkInfo,
+  usePrevious,
+} from '@gen3/core';
 
 const MIN_ROWS = 18;
 
@@ -60,9 +64,8 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
   };
 
   useEffect(() => {
-    if (previousField != fromField)
-      clear();
-  }, [previousField,fromField]);
+    if (previousField != fromField) clear();
+  }, [previousField, fromField]);
 
   const onSubmit = () => {
     const ids = sourceIds
@@ -114,7 +117,10 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
               size='xs'
               color={clipboard.copied ? 'teal' : 'blue'}
               onClick={() => {
-                if (data) clipboard.copy(data.mapping.map((x) => x.to));
+                if (data)
+                  clipboard.copy(
+                    data.mapping.map((x: Record<string, unknown>) => x.to),
+                  );
               }}
               disabled={crosswalkIds.length == 0}
             >
@@ -126,7 +132,9 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
               onClick={() => {
                 if (data)
                   downloadData(
-                    data.mapping.map((x) => `${x.from},${x.to}`).join('\n'),
+                    data.mapping
+                      .map((x: Record<string, unknown>) => `${x.from},${x.to}`)
+                      .join('\n'),
                   );
               }}
               disabled={crosswalkIds.length == 0}

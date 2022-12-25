@@ -24,6 +24,12 @@
     "lib": [
       "dom",
       "esnext"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/core/*": [
+        "src/core/*"
+      ]
+    }
   }
 }
