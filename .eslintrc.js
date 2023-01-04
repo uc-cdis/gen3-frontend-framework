@@ -32,7 +32,7 @@ module.exports = {
     ],
     quotes: [
       'error',
-      'single',
+      'double',
     ],
     'jsx-quotes': [
       'error',
