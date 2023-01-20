@@ -1,12 +1,11 @@
-import  { mdsReducer, mdsReducerPath} from './features/metadata/metadataSlice';
-import {combineReducers} from '@reduxjs/toolkit';
-import { loginProvidersReducer } from './features/fence';
-import { csrfTokenReducer } from './features/fence';
+import  { mdsReducer, mdsReducerPath} from "./features/metadata/metadataSlice";
+import {combineReducers} from "@reduxjs/toolkit";
+import { loginProvidersReducer, csrfReducerPath, csrfReducer } from "./features/fence";
 
 export const rootReducer = combineReducers( {
   [mdsReducerPath]: mdsReducer,
+  [csrfReducerPath]: csrfReducer,
   fence: loginProvidersReducer,
-  csrf: csrfTokenReducer,
 });
 
 export type CoreState = ReturnType<typeof rootReducer>;

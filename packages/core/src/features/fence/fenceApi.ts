@@ -1,9 +1,9 @@
-import { Gen3Response } from '../../dataAccess';
+import { Gen3Response } from "../../dataAccess";
 
 export interface FetchRequest {
     readonly hostname: string;
     readonly endpoint: string;
-    readonly method: 'GET' | 'POST';
+    readonly method: "GET" | "POST";
     readonly body?: object;
     readonly headers: Record<string,string>;
 }
@@ -11,7 +11,7 @@ export interface FetchRequest {
 export interface Gen3FenceRequest {
     readonly hostname: string;
     readonly endpoint: string;
-    readonly method: 'GET' | 'POST';
+    readonly method: "GET" | "POST";
     readonly body?: object;
 }
 
@@ -72,15 +72,15 @@ export const fetchLogin = async (
 ) : Promise<Gen3FenceResponse<Gen3FenceUserProviders>> => {
 
   const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'x-csrf-token': csrftoken ? csrftoken : '',
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "x-csrf-token": csrftoken ? csrftoken : "",
   };
 
   return fetchFence<Gen3FenceUserProviders>({
     hostname: hostname,
-    endpoint: 'login/',
-    method:'GET',
+    endpoint: "login/",
+    method:"GET",
     headers : headers
   });
 };
@@ -91,7 +91,7 @@ export const fetchFence = async<T> (
   const res = await fetch(`${request.hostname}`, {
     method: request.method,
     headers: request.headers,
-    body: request.method === 'POST' ? JSON.stringify(request.body) : null,
+    body: request.method === "POST" ? JSON.stringify(request.body) : null,
   });
   if (res.ok)
     return { data: await res.json() };

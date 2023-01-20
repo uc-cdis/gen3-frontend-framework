@@ -1,3 +1,4 @@
+"use strict";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withMDX = require('@next/mdx')({
@@ -8,19 +9,19 @@ const withMDX = require('@next/mdx')({
   }
 });
 
+
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['mdx', 'tsx'],
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
-      issuer:
-                { and: [/\.(js|ts)x?$/] },
+      issuer: { and: [/\.(js|ts)x?$/] },
       use: ['@svgr/webpack']
     });
     return config;
   },
-  basePath: process.env.BASE_PATH || ''
+  basePath: process.env.BASE_PATH || ""
 };
 
 module.exports = (_phase, { defaultConfig }) => {

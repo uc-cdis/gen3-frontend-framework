@@ -1,8 +1,7 @@
 import { GetStaticProps } from 'next';
 import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import siteConfig from '../../config/siteConfig.json';
-import { useCSRFToken } from '@gen3/core';
+import { useGetCSRFQuery } from "@gen3/core";
 import { LandingPageProps } from '../components/Contents/LandingPageContent';
 import LoginProvidersPanel from '../components/Login/LoginProvidersPanel';
 
@@ -12,7 +11,6 @@ interface Props extends NavPageLayoutProps {
 
 const LoginPage = ({ headerProps, footerProps }: Props) => {
 
-  useCSRFToken(siteConfig.hostname);
   const handleLoginSelected = (url: string) => {
     console.log(url);
   };

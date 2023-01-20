@@ -2,6 +2,9 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../api";
 import { Reducer, Middleware } from "@reduxjs/toolkit";
 
+
+
+
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
 }

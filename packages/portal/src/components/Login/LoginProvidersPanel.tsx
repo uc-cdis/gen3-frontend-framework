@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, LoadingOverlay, Select, Stack } from '@mantine/core';
-import { useCSRFToken, useFenceProviders } from '@gen3/core';
+import { useGetCSRFQuery, useFenceProviders } from '@gen3/core';
 import type { Gen3LoginProvider, NameUrl } from '@gen3/core';
 
 interface LoginPanelProps {
@@ -10,13 +10,13 @@ interface LoginPanelProps {
 
 const LoginProvidersPanel: React.FC<LoginPanelProps> = ({ handleLoginSelected }: LoginPanelProps) => {
 
-  const { data: csrfToken, isSuccess: haveCSRFToken } = useCSRFToken('https://healdata.org');
-  const { data, isSuccess } = useFenceProviders('https://healdata.org/user/login', !csrfToken ? '' : csrfToken);
+  const { data: csrfToken, isSuccess: haveCSRFToken } = useGetCSRFQuery();
+  const { data, isSuccess } = useFenceProviders('https://localhost/user/login', !csrfToken ? '' : csrfToken);
 
   if (!haveCSRFToken) return <LoadingOverlay visible={!haveCSRFToken} />;
   if (!isSuccess) return <LoadingOverlay visible={!isSuccess} />;
   if (data) {
-    console.log('render');
+
     return (
       <div>
         <Stack>

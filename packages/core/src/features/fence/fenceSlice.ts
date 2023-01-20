@@ -11,7 +11,7 @@ export const fetchLoginProviders = createAsyncThunk<
     Gen3FenceResponse<Gen3FenceUserProviders>,
     string,
     { dispatch: CoreDispatch; state: CoreState }
-    >('fence/user/login', async (hostname: string, thunkAPI) => {
+    >("fence/user/login", async (hostname: string, thunkAPI) => {
       const csrfToken = selectCSRFToken(thunkAPI.getState());
       return await fetchLogin(hostname, csrfToken);
     }

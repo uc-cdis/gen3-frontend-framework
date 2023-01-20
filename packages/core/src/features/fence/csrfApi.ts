@@ -1,26 +1,34 @@
-import { buildFetchError  } from './fenceApi';
-import type { Gen3Response } from '../../dataAccess';
+import { GEN3_API } from "../../constants";
+import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
+import { coreCreateApi } from "../../api";
+import { Middleware, Reducer } from "@reduxjs/toolkit";
 
 export interface CSRFToken {
   readonly csrfToken: string;
 }
 
 
-export const fetchCSRF = async (
-  hostname: string,
-): Promise<Gen3Response<string>> => {
-  const res = await fetch(`https://${hostname}/_status`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (res.status < 200 || res.status > 210) {
-    throw await buildFetchError(res, 'fetchCSRF' );
-  }
-  const info = await res.json();
-  if (!info.csrf) {
-    throw await buildFetchError(res, 'Retrieved empty CSRF token');
-  }
-  return { data: info.csrf };
-};
+export const csrfAPI = coreCreateApi({
+  reducerPath: "csrfAPI",
+  baseQuery: fetchBaseQuery({
+    baseUrl:`${GEN3_API}`,
+  }),
+  endpoints: (builder) => ({
+    getCSRF: builder.query<CSRFToken, void>({
+      query: () => "/_status",
+      transformResponse: (response: Record<string,any>, _meta)  => {
+        return {
+          csrfToken: response["csrf"]
+        };
+      }
+    }),
+  }),
+});
+
+export const {
+  useGetCSRFQuery,
+} = csrfAPI;
+
+export const csrfReducerPath: string = csrfAPI.reducerPath;
+export const csrfReducer: Reducer = csrfAPI.reducer as Reducer;
+export const csrfReducerMiddleware = csrfAPI.middleware as Middleware;
