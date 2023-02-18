@@ -1,22 +1,15 @@
-import { GEN3_API } from "../../constants";
-import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { coreCreateApi } from "../../api";
-import { Middleware, Reducer } from "@reduxjs/toolkit";
+import { gen3Api } from "../gen3/gen3Api";
+import { CoreState } from "../../reducers";
 
 export interface CSRFToken {
   readonly csrfToken: string;
 }
 
-
-export const csrfAPI = coreCreateApi({
-  reducerPath: "csrfAPI",
-  baseQuery: fetchBaseQuery({
-    baseUrl:`${GEN3_API}`,
-  }),
+export const csrfApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => "/_status",
-      transformResponse: (response: Record<string,any>, _meta)  => {
+      query: () => "_status",
+      transformResponse: (response: Record<string, any>, _meta)  => {
         return {
           csrfToken: response["csrf"]
         };
@@ -27,8 +20,6 @@ export const csrfAPI = coreCreateApi({
 
 export const {
   useGetCSRFQuery,
-} = csrfAPI;
+} = csrfApi;
 
-export const csrfReducerPath: string = csrfAPI.reducerPath;
-export const csrfReducer: Reducer = csrfAPI.reducer as Reducer;
-export const csrfReducerMiddleware = csrfAPI.middleware as Middleware;
+export const selectCSRFToken = (state: CoreState): string => state.endpoint.csrfToken.csrfToken;

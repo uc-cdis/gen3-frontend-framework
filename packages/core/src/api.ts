@@ -1,5 +1,5 @@
-import { buildCreateApi, coreModule, reactHooksModule } from '@reduxjs/toolkit/dist/query/react';
-import { useCoreSelector, useCoreStore, useCoreDispatch } from './hooks';
+import { buildCreateApi, coreModule, reactHooksModule } from "@reduxjs/toolkit/dist/query/react";
+import { useCoreSelector, useCoreStore, useCoreDispatch } from "./hooks";
 
 
 export const coreCreateApi = buildCreateApi(
@@ -7,12 +7,8 @@ export const coreCreateApi = buildCreateApi(
   reactHooksModule({
 
     // TODO properly type the next two declarations.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    useSelector: useCoreSelector,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    useStore: useCoreStore,
+    useSelector: useCoreSelector as any,
+    useStore: useCoreStore as any,
     useDispatch: useCoreDispatch,
   }),
 );

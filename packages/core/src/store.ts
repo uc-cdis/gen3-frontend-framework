@@ -1,13 +1,13 @@
 import {configureStore,} from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { rootReducer } from "./reducers";
-import {mdsReducerMiddleware } from "./features/metadata/metadataSlice";
-import { csrfReducerMiddleware } from "./features/fence";
+import {gen3ServicesReducerMiddleware } from "./features/gen3/gen3Api";
+import { mdsReducerMiddleware } from "./features/metadata/metadataSlice";
 
 export const coreStore = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(mdsReducerMiddleware, csrfReducerMiddleware),
+    getDefaultMiddleware().concat(gen3ServicesReducerMiddleware, mdsReducerMiddleware ),
 
 });
 

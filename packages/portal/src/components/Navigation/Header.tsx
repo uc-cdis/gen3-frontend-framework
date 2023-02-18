@@ -1,6 +1,6 @@
-import React from 'react';
-import TopBar, {TopBarProps} from './TopBar';
-import NavigationBar, { NavigationProps } from './NavigationBar';
+import React from "react";
+import TopBar, {TopBarProps} from "./TopBar";
+import NavigationBar, { NavigationProps } from "./NavigationBar";
 
 export interface HeaderProps {
     readonly top: TopBarProps;

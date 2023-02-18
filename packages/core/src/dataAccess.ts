@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useCoreDispatch, useCoreSelector } from './hooks';
-import { CoreState } from './reducers';
-import { isEqual } from 'lodash';
+import { useEffect, useRef } from "react";
+import { useCoreDispatch, useCoreSelector } from "./hooks";
+import { CoreState } from "./reducers";
+import { isEqual } from "lodash";
 
 export type UnknownJson = Record<string, unknown>;
 
-export type DataStatus = 'uninitialized' | 'pending' | 'fulfilled' | 'rejected';
+export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
 
 export interface Gen3Response<H = UnknownJson> {
     readonly data: H;
@@ -22,9 +22,9 @@ export interface UseCoreDataResponse<T> {
     readonly isError: boolean;
 }
 
-export interface CoreDataSelectorResponse<T> {
+export interface CoreDataSelectorResponse<T, S = DataStatus> {
     readonly data?: T;
-    readonly status: DataStatus;
+    readonly status: S;
     readonly error?: string;
 }
 
@@ -36,7 +36,7 @@ export interface FetchDataActionCreator<P, A> {
     (...params: P[]): A;
 }
 
-export interface UserCoreDataHook<P, T> {
+export interface UseCoreDataHook<P, T> {
     (...params: P[]): UseCoreDataResponse<T>;
 }
 
@@ -51,32 +51,32 @@ export const usePrevious = <T>(value: T) : T | undefined  => {
 export const createUseCoreDataHook = <P, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
   dataSelector: CoreDataSelector<T>,
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
+): UseCoreDataHook<P, T> => {
+  return (...params: P[]) => {
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
     const prevParams = usePrevious<P[]>(params);
 
     useEffect(() => {
-      if (status === 'uninitialized' || !isEqual(prevParams, params)) {
+      if (status === "uninitialized" || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is
         // not compatible with thunk actions. hence, the `as any` cast. ;(
-                coreDispatch(action as any); // eslint-disable-line
+        coreDispatch(action as any); // eslint-disable-line
       }
     }, [status, coreDispatch, action, params, prevParams]);
 
     return {
       data,
       error,
-      isUninitialized: status === 'uninitialized',
-      isFetching: status === 'pending',
-      isSuccess: status === 'fulfilled',
-      isError: status === 'rejected',
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
     };
   };
 };
 
 export interface CoreDataValueSelector<T> {
-    (state: CoreState): T;
+  (state: CoreState): T;
 }

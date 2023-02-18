@@ -1,0 +1,33 @@
+import { buildFetchError, FetchRequest } from "../fence";
+import { Gen3Response } from "../../dataAccess";
+
+export const headers = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
+
+
+/**
+ * The base call to Gen3 API which support both GET and POST methods and include credentials.
+ * @param request - the request object to be sent to the API endpoint
+ * @returns the response from the API endpoint
+ */
+export const fetchWithCredentials = async <T>(
+  request: FetchRequest,
+): Promise<Gen3Response<T>> => {
+  const res = await fetch(`${request.hostname}`, {
+    method: request.method,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      ...(request.csrfToken && { "x-csrf-token": request.csrfToken}),
+      ...request.headers,
+    },
+    body: request.method === "POST" ? JSON.stringify(request.body) : null,
+  });
+  if (res.ok) {
+    return { data: await res.json() };
+  }
+
+  throw await buildFetchError(res, request);
+};

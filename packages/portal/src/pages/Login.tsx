@@ -1,18 +1,20 @@
 import { GetStaticProps } from 'next';
+import { useRouter } from "next/router";
 import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import { useGetCSRFQuery } from "@gen3/core";
 import { LandingPageProps } from '../components/Contents/LandingPageContent';
 import LoginProvidersPanel from '../components/Login/LoginProvidersPanel';
+import { User } from  '../components/Login/User';
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
 }
 
 const LoginPage = ({ headerProps, footerProps }: Props) => {
+  const router = useRouter();
 
-  const handleLoginSelected = (url: string) => {
-    console.log(url);
+  const handleLoginSelected = async (url: string) => {
+    router.push(url + "?redirect=https://localhost/Login").catch((e) => alert(e));
   };
 
   return (
@@ -23,6 +25,7 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
             <LoginProvidersPanel referenceURL='/' handleLoginSelected={handleLoginSelected} />
           </div>
         </div>
+        <User></User>
       </NavPageLayout>
     </div>
   );
