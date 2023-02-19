@@ -1,6 +1,7 @@
 
 import { CoreDataSelectorResponse } from "../../dataAccess";
 import { CoreState } from "../../reducers";
+import { useCoreSelector} from "../../hooks";
 
 export const selectCSRFToken = (
   state: CoreState,
@@ -16,4 +17,16 @@ export const selectCSRFTokenData = (
     status: state.csrf.status,
     error: state.csrf.error,
   };
+};
+
+export const selectHeaderWithCSRF = (state: CoreState) => {
+  return {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "x-csrf-token": state.csrfToken,
+  };
+}
+
+export const useCSRFToken = (): string => {
+  return useCoreSelector((state) => selectCSRFToken(state));
 };

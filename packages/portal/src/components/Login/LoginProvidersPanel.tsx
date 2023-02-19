@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, LoadingOverlay, Select, Stack } from "@mantine/core";
-import { useFenceProviders } from "@gen3/core";
+import { useGetLoginProvidersQuery } from "@gen3/core";
 import type { Gen3LoginProvider, NameUrl } from "@gen3/core";
 
 interface LoginPanelProps {
@@ -10,10 +10,8 @@ interface LoginPanelProps {
 
 const LoginProvidersPanel: React.FC<LoginPanelProps> = ({ handleLoginSelected }: LoginPanelProps) => {
 
- // const { data: csrfToken, isSuccess: haveCSRFToken } = useGetCSRFQuery();
-  const { data, isSuccess } = useFenceProviders("https://localhost/user/login");
+  const { data, isSuccess } = useGetLoginProvidersQuery();
 
-  //if (!haveCSRFToken) return <LoadingOverlay visible={!haveCSRFToken} />;
   if (!isSuccess) return <LoadingOverlay visible={!isSuccess} />;
   if (data) {
 
@@ -22,9 +20,9 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({ handleLoginSelected }:
         <Stack>
           <Button className='bg-heal-purple'
             onClick={() => handleLoginSelected(data.default_provider.url)}>{data.default_provider.name}</Button>
-          {data.providers.map((x: Gen3LoginProvider) => {
-              if (x.name === data.default_provider.name)
-                return null;
+          {data?.providers.map((x: Gen3LoginProvider) => {
+            if (x.name === data.default_provider.name)
+              return null;
               if (x.urls.length == 1)
                 return (<Button key={x.name} className='bg-heal-purple'
                                 onClick={() => handleLoginSelected(x.urls[0].url)}> {x.name} </Button>);

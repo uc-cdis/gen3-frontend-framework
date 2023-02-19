@@ -1,19 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  fetchFence,
-  Gen3FenceResponse, selectCSRFToken,
-} from "../fence";
+import { fetchFence, Gen3FenceResponse, selectCSRFToken } from "../fence";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { castDraft } from "immer";
 import { GEN3_DOMAIN } from "../../constants";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
-
-
+import { useCoreDispatch, useCoreSelector } from "../../hooks";
+import { useEffect } from "react";
+import { isEqual } from "lodash";
 
 export type Gen3User = {
   username?: string;
@@ -22,7 +19,6 @@ export type Gen3User = {
   avatar?: string;
   id?: string;
 };
-
 
 interface Gen3FenceUserResponse {
   data: Gen3User;
@@ -37,13 +33,13 @@ export interface UseGen3UserResponse<T> {
   readonly isError: boolean;
 }
 
-
 export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3FenceUserResponse>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("fence/user/user", async (_1, thunkAPI) => {
   const csrfToken = selectCSRFToken(thunkAPI.getState());
+  console.log("fetchUserState", csrfToken);
   return await fetchFence({
     hostname: `${GEN3_DOMAIN}/`,
     endpoint: "/user/user",
@@ -52,16 +48,16 @@ export const fetchUserState = createAsyncThunk<
       Accept: "application/json",
       "Content-Type": "application/json",
       ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
-    }
+    },
   });
 });
 
-export type UserStatus = "authenticated" | "unauthenticated" | "rejected"
+export type UserStatus = "authenticated" | "unauthenticated" | "rejected";
+
 export interface Gen3UserState extends Gen3User {
   readonly status: DataStatus;
   readonly userStatus: UserStatus;
   readonly error?: string;
-
 }
 
 const initialState: Gen3UserState = {
@@ -76,22 +72,27 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserState.fulfilled, (state, action) => {
+      .addCase(fetchUserState.fulfilled, (_, action) => {
         const response = action.payload;
         if (response.errors) {
-          state = castDraft(initialState);
-          state.status = "rejected";
-          state.error = response.errors.filters;
+          return {
+            status: "rejected",
+            userStatus: "unauthenticated",
+            error: response.errors.filters,
+          };
         }
 
-        state = { ...response.data, status: "fulfilled", userStatus:"authenticated" };
-        return state;
+        return {
+          ...response.data,
+          status: "fulfilled",
+          userStatus: "authenticated",
+        };
       })
-      .addCase(fetchUserState.pending, (state) => {
-        state.status = "pending";
+      .addCase(fetchUserState.pending, () => {
+        return { status: "pending", userStatus: "unauthenticated" };
       })
-      .addCase(fetchUserState.rejected, (state) => {
-        state.status = "rejected";
+      .addCase(fetchUserState.rejected, () => {
+        return { status: "rejected", userStatus: "unauthenticated" };
       });
   },
 });
@@ -108,11 +109,28 @@ export const selectUserData = (
   };
 };
 
-export const selectUser = (
-  state: CoreState,
-): Gen3UserState => state.user;
+export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
-export const useUser = createUseCoreDataHook(
-  fetchUserState,
-  selectUserData,
-);
+export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
+
+export const useGetUser = () => {
+  const coreDispatch = useCoreDispatch();
+  const { data, status, error } = useCoreSelector(selectUserData);
+
+  useEffect(() => {
+    if (status === "uninitialized") {
+      // createDispatchHook types forces the input to AnyAction, which is
+      // not compatible with thunk actions. hence, the `as any` cast. ;(
+      coreDispatch(fetchUserState); // eslint-disable-line
+    }
+  }, [status, coreDispatch]);
+
+  return {
+    data,
+    error,
+    isUninitialized: status === "uninitialized",
+    isFetching: status === "pending",
+    isSuccess: status === "fulfilled",
+    isError: status === "rejected",
+  };
+};
