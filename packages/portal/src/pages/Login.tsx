@@ -1,10 +1,12 @@
-import { GetStaticProps } from 'next';
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
-import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import { LandingPageProps } from '../components/Contents/LandingPageContent';
-import LoginProvidersPanel from '../components/Login/LoginProvidersPanel';
-import { User } from  '../components/Login/User';
+import NavPageLayout, {
+  NavPageLayoutProps,
+} from "../components/Navigation/NavPageLayout";
+import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
+import { LandingPageProps } from "../components/Contents/LandingPageContent";
+import LoginProvidersPanel from "../components/Login/LoginProvidersPanel";
+import { User } from "../components/Login/User";
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
@@ -14,15 +16,20 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
   const router = useRouter();
 
   const handleLoginSelected = async (url: string) => {
-    router.push(url + "?redirect=https://localhost/Login").catch((e) => alert(e));
+    router
+      .push(url + "?redirect=https://localhost/Login")
+      .catch((e) => alert(e));
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <NavPageLayout {...{ headerProps, footerProps }}>
-        <div className='flex flex-row justify-items-center'>
-          <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-            <LoginProvidersPanel referenceURL='/' handleLoginSelected={handleLoginSelected} />
+        <div className="flex flex-row justify-items-center">
+          <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
+            <LoginProvidersPanel
+              referenceURL='/'
+              handleLoginSelected={handleLoginSelected}
+            />
           </div>
         </div>
         <User></User>
@@ -39,6 +46,5 @@ export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async () => {
     },
   };
 };
-
 
 export default LoginPage;

@@ -18,20 +18,16 @@ export function useSession<R extends boolean>(options?: UseSessionOptions<R>) {
   const value: SessionContextValue<R> = useContext(SessionContext);
   if (!value && process.env.NODE_ENV !== "production") {
     throw new Error(
-      "[next-auth]: `useSession` must be wrapped in a <SessionProvider />"
+      "[gen3]: `useSession` must be wrapped in a <SessionProvider />"
     );
   }
 
   const { required, onUnauthenticated } = options ?? {};
-
   const requiredAndNotLoading = required && value.status === "unauthenticated";
 
   useEffect(() => {
     if (requiredAndNotLoading) {
-      const url = `/api/auth/signin?${new URLSearchParams({
-        error: "SessionRequired",
-        callbackUrl: window.location.href,
-      })}`;
+      const url = "/";
       if (onUnauthenticated) onUnauthenticated();
       else window.location.href = url;
     }

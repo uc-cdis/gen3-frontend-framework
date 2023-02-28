@@ -1,13 +1,13 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { coreCreateApi } from "../../api";
 import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { GEN3_API } from "../../constants";
+import { GEN3_DOMAIN } from "../../constants";
 
 
 export const gen3Api = coreCreateApi({
   reducerPath: "gen3Services",
   baseQuery: fetchBaseQuery({
-    baseUrl: GEN3_API,
+    baseUrl: `${GEN3_DOMAIN}`,
     prepareHeaders: (headers ) => {
       headers.set("Access-Control-Allow-Origin", "*")
       return headers;

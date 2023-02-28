@@ -8,39 +8,39 @@ export type UnknownJson = Record<string, unknown>;
 export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
 
 export interface Gen3Response<H = UnknownJson> {
-    readonly data: H;
-    readonly warnings?: Record<string, string>;
-    readonly errors?: Record<string, string>;
+  readonly data: H;
+  readonly warnings?: Record<string, string>;
+  readonly errors?: Record<string, string>;
 }
 
 export interface UseCoreDataResponse<T> {
-    readonly data?: T;
-    readonly error?: string;
-    readonly isUninitialized: boolean;
-    readonly isFetching: boolean;
-    readonly isSuccess: boolean;
-    readonly isError: boolean;
+  readonly data?: T;
+  readonly error?: string;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
 }
 
 export interface CoreDataSelectorResponse<T, S = DataStatus> {
-    readonly data?: T;
-    readonly status: S;
-    readonly error?: string;
+  readonly data?: T;
+  readonly status: S;
+  readonly error?: string;
 }
 
 export interface CoreDataSelector<T> {
-    (state: CoreState): CoreDataSelectorResponse<T>;
+  (state: CoreState): CoreDataSelectorResponse<T>;
 }
 
 export interface FetchDataActionCreator<P, A> {
-    (...params: P[]): A;
+  (...params: P[]): A;
 }
 
 export interface UseCoreDataHook<P, T> {
-    (...params: P[]): UseCoreDataResponse<T>;
+  (...params: P[]): UseCoreDataResponse<T>;
 }
 
-export const usePrevious = <T>(value: T) : T | undefined  => {
+export const usePrevious = <T>(value: T): T | undefined => {
   const ref = useRef<T>();
   useEffect(() => {
     ref.current = value;

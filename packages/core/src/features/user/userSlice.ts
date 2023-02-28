@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchFence, Gen3FenceResponse, selectCSRFToken } from "../fence";
+import { fetchFence, Gen3FenceResponse } from "../fence";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GEN3_DOMAIN } from "../../constants";
@@ -10,7 +10,6 @@ import {
 } from "../../dataAccess";
 import { useCoreDispatch, useCoreSelector } from "../../hooks";
 import { useEffect } from "react";
-import { isEqual } from "lodash";
 
 export type Gen3User = {
   username?: string;
@@ -37,17 +36,14 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3FenceUserResponse>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("fence/user/user", async (_1, thunkAPI) => {
-  const csrfToken = selectCSRFToken(thunkAPI.getState());
-  console.log("fetchUserState", csrfToken);
+>("fence/user", async (_1 ) => {
   return await fetchFence({
-    hostname: `${GEN3_DOMAIN}/`,
+    hostname: `${GEN3_DOMAIN}`,
     endpoint: "/user/user",
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
-      ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
+      "Content-Type": "application/json"
     },
   });
 });
@@ -117,11 +113,12 @@ export const useGetUser = () => {
   const coreDispatch = useCoreDispatch();
   const { data, status, error } = useCoreSelector(selectUserData);
 
+
   useEffect(() => {
     if (status === "uninitialized") {
       // createDispatchHook types forces the input to AnyAction, which is
       // not compatible with thunk actions. hence, the `as any` cast. ;(
-      coreDispatch(fetchUserState); // eslint-disable-line
+      coreDispatch(fetchUserState());
     }
   }, [status, coreDispatch]);
 

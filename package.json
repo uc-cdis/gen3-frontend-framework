@@ -14,7 +14,9 @@
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
     "start": "lerna run --parallel start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test --workspaces",
+    "test:int": "npm run test:int --workspaces",
+    "test:all": "npm run test:all --workspaces"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +37,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "lerna": "^6.1.0",
     "prettier": "^2.7.1",
-    "terser-webpack-plugin": "^5.3.3"
+    "terser-webpack-plugin": "^5.3.3",
+    "ts-node": "^10.9.1"
   }
 }

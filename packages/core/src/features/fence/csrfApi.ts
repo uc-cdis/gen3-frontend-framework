@@ -1,5 +1,4 @@
 import { gen3Api } from "../gen3/gen3Api";
-import { CoreState } from "../../reducers";
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -11,7 +10,7 @@ export const csrfApi = gen3Api.injectEndpoints({
       query: () => "_status",
       transformResponse: (response: Record<string, any>, _meta)  => {
         return {
-          csrfToken: response["csrf"]
+          csrfToken: response["csrfToken"]
         };
       }
     }),
@@ -21,5 +20,6 @@ export const csrfApi = gen3Api.injectEndpoints({
 export const {
   useGetCSRFQuery,
 } = csrfApi;
+;
 
-export const selectCSRFToken = (state: CoreState): string => state.endpoint.csrfToken.csrfToken;
+// export const selectCSRFToken = csrfApi.endpoints.getCSRF.select();
