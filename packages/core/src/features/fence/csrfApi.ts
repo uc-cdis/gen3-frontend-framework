@@ -21,5 +21,3 @@ export const {
   useGetCSRFQuery,
 } = csrfApi;
 ;
-
-// export const selectCSRFToken = csrfApi.endpoints.getCSRF.select();

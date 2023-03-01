@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, LoadingOverlay, Select, Stack } from "@mantine/core";
+import { Box, Button, LoadingOverlay, Select, Stack } from "@mantine/core";
 import { useGetLoginProvidersQuery } from "@gen3/core";
 import type { Gen3LoginProvider, NameUrl } from "@gen3/core";
 
@@ -16,10 +16,11 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
   if (!isSuccess) return <LoadingOverlay visible={!isSuccess} />;
   if (data) {
     return (
-      <div>
+
+      <Box sx={{ maxWidth: 300 }} >
         <Stack>
           <Button
-            className="bg-heal-purple"
+            color="accent.7"
             onClick={() => handleLoginSelected(data.default_provider.url)}
           >
             {data.default_provider.name}
@@ -58,7 +59,7 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
             }
           })}
         </Stack>
-      </div>
+      </Box>
     );
   }
   return null;

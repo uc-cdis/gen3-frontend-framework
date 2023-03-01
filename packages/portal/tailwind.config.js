@@ -1,9 +1,17 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/** @type {import('tailwindcss').Config} */
+
+// eslint-disable-next-line  @typescript-eslint/no-var-requires
 
 const plugin = require("tailwindcss/plugin");
+const themer = require( "./src/utils/theme.json" );
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx,md,mdx}"],
+  important: "#__next",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/features/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
@@ -46,6 +54,7 @@ module.exports = {
           titanium: "#707070",
           obsidian: "#757575",
         },
+        ...themer,
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],

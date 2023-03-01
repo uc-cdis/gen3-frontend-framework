@@ -10,7 +10,8 @@
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
     "test:all": "jest",
-    "build_icons": "node --trace-warnings src/tools/build_icon_bundle.mjs --inpath=config/icons --outpath=config/icons"
+    "build_icons": "node --trace-warnings src/tools/build_icon_bundle.mjs --inpath=config/icons --outpath=config/icons",
+    "build:colors": "tsc src/tools/buildColors/buildColors.ts"
   },
   "keywords": [],
   "author": "",
@@ -29,8 +30,6 @@
     "@types/mdx": "^2.0.3",
     "@types/recharts": "^1.8.23",
     "chart.js": "^4.0.1",
-    "color": "^4.2.3",
-    "csurf": "^1.11.0",
     "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "html-webpack-plugin": "^5.5.0",

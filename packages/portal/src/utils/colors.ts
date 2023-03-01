@@ -1,4 +1,5 @@
-import tinycolor, { Instance } from "tinycolor2";
+import tinycolor, { type Instance } from "tinycolor2";
+
 
 const DEFAULT_NUM_DARK_COLORS = 4;
 const DEFAULT_NUM_LIGHT_COLORS = 4;
@@ -10,7 +11,7 @@ const CONTRAST_RANGE = ["#111111", "#FEFEFE"];
 const mix = (startColor: Instance, mixinColor: Instance, weight: number) => {
   if (!mixinColor || !mixinColor.isValid()) {
     throw new Error(
-      'Argument to "mix" was not a Color instance, but rather an instance of ' +
+      "Argument to \"mix\" was not a Color instance, but rather an instance of " +
         typeof mixinColor,
     );
   }
@@ -48,11 +49,10 @@ export const getColorsList = (
     if (mainColor.isValid()) {
       colorsList.push(
         mix(
-          tinycolor(givenColor).saturate(
+          givenColor.saturate(
             ((step + 1) / colorsAmount) * (saturation / 100),
           ),
-
-          tinycolor(mixColor),
+          mixColor,
           ((colorsShiftAmount / 100) * (step + 1)) / colorsAmount,
         ),
       );
@@ -76,7 +76,7 @@ const colorType = [
   "max",
 ];
 
-export const createColorPallet = (
+export const create10ColorPallet = (
   mainColor: string,
 ): Record<string, string> => {
   const darkColors = getColorsList(
@@ -112,7 +112,7 @@ export const createColorPallet = (
   };
 };
 
-export const createAccessibleContrast = (
+export const create10ColorAccessibleContrast = (
   pallet: Record<string, string>,
 ): Record<string, string> => {
   return Object.entries(pallet).reduce((results, [colorName, value]) => {
