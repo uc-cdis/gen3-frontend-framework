@@ -8,7 +8,7 @@ export const csrfApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getCSRF: builder.query<CSRFToken, void>({
       query: () => "_status",
-      transformResponse: (response: Record<string, any>, _meta)  => {
+      transformResponse: (response: Record<string, string>, _meta) => {
         return {
           csrfToken: response["csrfToken"]
         };

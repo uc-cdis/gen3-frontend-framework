@@ -1,6 +1,7 @@
-import { useUser, useGetUser } from "./userSlice";
+import { useUser, useUserAuth, resetUserState } from "./userSlice";
 
 export {
   useUser,
-  useGetUser,
+  useUserAuth,
+  resetUserState
 };

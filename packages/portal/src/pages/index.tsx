@@ -19,7 +19,7 @@ const IndexPage = ({ top, navigation }: HeaderProps) => {
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {
-      destination: '/CrosswalkFull',
+      destination: '/Discovery',
       permanent: false
     }
   };

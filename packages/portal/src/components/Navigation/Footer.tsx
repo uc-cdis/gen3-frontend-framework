@@ -1,7 +1,7 @@
-import React from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import Gen3Link from '../Gen3Link';
+import React from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import Gen3Link from "../Gen3Link";
 
 interface BottomLinks {
   text: string;
@@ -13,7 +13,7 @@ interface ColumnLinks {
   items: ReadonlyArray<{
     text: string;
     href?: string;
-    linkType: 'gen3ff' | 'portal' | undefined;
+    linkType: "gen3ff" | "portal" | undefined;
   }>;
 }
 
@@ -40,21 +40,21 @@ const Footer: React.FC<FooterProps> = ({
   const { basePath } = useRouter();
   return (
     <React.Fragment>
-      <div className='bg-gen3-coal text-color-white p-4'>
-        <div className='flex flex-row justify-end'>
+      <div className="bg-gen3-coal text-color-white p-4">
+        <div className="flex flex-row justify-end">
           {(footerLogos || [[]]).map((col, index) => {
             return (
               <div
                 key={`footer-col-${index}`}
                 className={`flex flex-row gap-x-3 mr-8 ${
-                  col.length > 1 ? 'justify-between' : ''
+                  col.length > 1 ? "justify-between" : ""
                 }`}
               >
                 {col.map((logo) => (
                   <Image
                     key={`${basePath}/icons/${logo.logo}`}
                     src={`${basePath}/icons/${logo.logo}`}
-                    layout='fixed'
+                    layout="fixed"
                     width={logo.width}
                     height={logo.height}
                   />
@@ -62,16 +62,16 @@ const Footer: React.FC<FooterProps> = ({
               </div>
             );
           })}
-          <div className='flex flex-row w-[100%] pl-10 pt-3'>
+          <div className="flex flex-row w-[100%] pl-10 pt-3">
             {(columnLinks || []).map(({ heading, items }, i) => (
-              <div className='flex flex-col pl-10' key={i}>
-                <h1 className='font-bold text-xl text-white font-montserrat'>
+              <div className="flex flex-col pl-10" key={i}>
+                <h1 className="font-bold text-xl text-white font-montserrat">
                   {heading}
                 </h1>
                 {(items || []).map(({ text, href, linkType }, j) => {
                   const attrs = {
                     className: `${
-                      href && 'heal-link-footer'
+                      href && "heal-link-footer"
                     } font-medium text-sm p-[2px] text-white font-montserrat`,
                     key: j,
                   };
@@ -94,14 +94,14 @@ const Footer: React.FC<FooterProps> = ({
             <div
               key={`footer-col-${index}`}
               className={`flex flex-row gap-x-6 mr-8 ${
-                col.length > 1 ? 'justify-end' : ''
+                col.length > 1 ? "justify-end" : ""
               }`}
             >
               {col.map((logo) => (
                 <Image
                   key={`${basePath}/icons/${logo.logo}`}
                   src={`${basePath}/icons/${logo.logo}`}
-                  layout='fixed'
+                  layout="fixed"
                   width={logo.width}
                   height={logo.height}
                 />
@@ -111,18 +111,18 @@ const Footer: React.FC<FooterProps> = ({
         })}
       </div>
       {bottomLinks && bottomLinks.length > 0 ? (
-        <div className='pt-[4px] m-1 text-right text-xs text-white font-montserrat'>
+        <div className="pt-[4px] m-1 text-right text-xs text-white font-montserrat">
           {bottomLinks.map((link, i) => (
             <React.Fragment key={link.href}>
               <a
                 href={link.href}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='heal-link-footer'
+                target="_blank"
+                rel="noopener noreferrer"
+                className="heal-link-footer"
               >
                 {link.text ? link.text : link.href}
               </a>
-              {i !== bottomLinks.length - 1 && <span className='mx-1'>|</span>}
+              {i !== bottomLinks.length - 1 && <span className="mx-1">|</span>}
             </React.Fragment>
           ))}
         </div>

@@ -1,8 +1,8 @@
 {
   "navigation": {
     "logo": "/icons/gen3-dark.svg",
-    "title" : "",
-    "href" : "/",
+    "title": "",
+    "href": "/",
     "items": [
       {
         "icon": "gen3:query",
@@ -59,6 +59,7 @@
         "href": "https://gen3.org/resources/user/",
         "name": "Documentation"
       }
-    ]
+    ],
+    "showLogin": true
   }
 }

@@ -1,22 +1,20 @@
-import FooterHEAL, { FooterProps } from '../components/Navigation/Footer';
 import { GetStaticProps } from 'next';
-import Header, { HeaderProps } from '../components/Navigation/Header';
-
-import Discovery from '../components/Discovery/Discovery';
-import { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
+import ProtectedContent from '../components/Login/ProtectedContent';
+import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
 
-const DiscoveryPage =({ top, navigation }: HeaderProps) => {
+const DiscoveryPage =({ headerProps, footerProps }: NavPageLayoutProps) => {
 
+  console.log("headerProps", headerProps);
   return (
-    <div className='flex flex-col'>
-      <Header top={top} navigation={navigation} />
+    <NavPageLayout  {...{ headerProps, footerProps }} >
       <div className='flex flex-row justify-items-center'>
+        <ProtectedContent />
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
           Coming Soon
         </div>
       </div>
-    </div>
+    </NavPageLayout>
   );
 };
 
@@ -29,4 +27,4 @@ export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async ( ) => {
   };
 };
 
-export default Discovery;
+export default DiscoveryPage;

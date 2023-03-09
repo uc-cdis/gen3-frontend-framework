@@ -1,7 +1,7 @@
-import { useGetUser } from "@gen3/core";
+import { useUserAuth } from "@gen3/core";
 
 export const User = () => {
-  const { data } = useGetUser();
+  const { data } = useUserAuth();
   return (
     <div>
       <h1> User </h1>

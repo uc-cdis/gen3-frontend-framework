@@ -13,6 +13,7 @@ import { useEffect } from "react";
 
 export type Gen3User = {
   username?: string;
+  email?: string;
   expiredAt?: number;
   accessToken?: string;
   avatar?: string;
@@ -28,6 +29,7 @@ export interface UseGen3UserResponse<T> {
   readonly error?: string;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
+  readonly isSuccess: boolean;
   readonly isAuthenticated: boolean;
   readonly isError: boolean;
 }
@@ -36,19 +38,20 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3FenceUserResponse>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("fence/user", async (_1 ) => {
+>("fence/user", async () => {
   return await fetchFence({
     hostname: `${GEN3_DOMAIN}`,
     endpoint: "/user/user",
     method: "GET",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      credentials: "include",
     },
   });
 });
 
-export type UserStatus = "authenticated" | "unauthenticated" | "rejected";
+export type UserStatus = "authenticated" | "unauthenticated" | "pending"
 
 export interface Gen3UserState extends Gen3User {
   readonly status: DataStatus;
@@ -65,7 +68,9 @@ const initialState: Gen3UserState = {
 const slice = createSlice({
   name: "fence/user",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUserState: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserState.fulfilled, (_, action) => {
@@ -95,6 +100,8 @@ const slice = createSlice({
 
 export const userReducer = slice.reducer;
 
+export const { resetUserState } = slice.actions;
+
 export const selectUserData = (
   state: CoreState,
 ): CoreDataSelectorResponse<Gen3User> => {
@@ -107,17 +114,16 @@ export const selectUserData = (
 
 export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
+export const selectUserState = (state: CoreState): UserStatus => state.user.userStatus;
+
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
-export const useGetUser = () => {
+export const useUserAuth = () : UseGen3UserResponse<Gen3User> => {
   const coreDispatch = useCoreDispatch();
   const { data, status, error } = useCoreSelector(selectUserData);
 
-
   useEffect(() => {
-    if (status === "uninitialized") {
-      // createDispatchHook types forces the input to AnyAction, which is
-      // not compatible with thunk actions. hence, the `as any` cast. ;(
+    if (status === "uninitialized") { // TODO: need to determine what other states require dispatch
       coreDispatch(fetchUserState());
     }
   }, [status, coreDispatch]);
@@ -129,5 +135,6 @@ export const useGetUser = () => {
     isFetching: status === "pending",
     isSuccess: status === "fulfilled",
     isError: status === "rejected",
+    isAuthenticated: status === "fulfilled",
   };
 };

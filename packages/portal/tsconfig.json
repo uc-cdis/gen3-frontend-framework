@@ -18,12 +18,23 @@
       "esnext"
     ],
     "resolveJsonModule": true,
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "baseUrl": ".",
+  "paths": {
+    "@/components/*": ["src/components/*"],
   },
   "include": [
     "next-env.d.ts",
+    "src/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts",
   ],
   "exclude": [
     "node_modules"

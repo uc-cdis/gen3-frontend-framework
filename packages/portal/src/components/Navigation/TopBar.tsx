@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
+import { LoginButton } from "../Login/LoginButton";
 
 export interface NameAndIcon {
   readonly name: string;
@@ -32,25 +33,27 @@ const AccountTopButton = () => <span className='py-4 px-12' />;
 
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
+  readonly showLogin?: boolean;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ items }: TopBarProps) => {
+const TopBar: React.FC<TopBarProps> = ({ items, showLogin = false }: TopBarProps) => {
   return (
     <div>
-      <header className='flex flex-row justify-end items-center align-middle w-100 h-10 bg-gen3-secondary'>
-        <nav className='flex flex-row items-center align-middle font-montserrat'>
+      <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-gen3-secondary">
+        <nav className="flex flex-row items-center align-middle font-montserrat">
           {items.map((x) => {
             return (
-              <a className='flex flex-row' href={`${x.href}`} key={x.href}>
+              <a className="flex flex-row" href={`${x.href}`} key={x.href}>
                 <TopIconButton
                   name={x.name}
                   leftIcon={x.leftIcon}
                   rightIcon={x.rightIcon}
                 />
-                <div className='pr-2 ml-1  border-solid h-6 ' />
+                <div className="pr-2 ml-1  border-solid h-6 " />
               </a>
             );
           })}
+          {showLogin ? <LoginButton/> : null}
         </nav>
       </header>
     </div>
