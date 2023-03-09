@@ -43,6 +43,16 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
+        'utility': {
+          info: '#F4B940',
+          warning: '',
+          error: '',
+          contrast: {
+            info: '#000000',
+            warning: '',
+            error: '',
+          }
+        },
       },
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
