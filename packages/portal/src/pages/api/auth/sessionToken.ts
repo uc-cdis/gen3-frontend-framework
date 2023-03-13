@@ -1,20 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getCookies, getCookie, setCookie, deleteCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import { decodeJwt, JWTPayload } from "jose";
 
-export interface JWTUser {
-  name: string;
-  is_admin: boolean;
-}
-
-export interface JWTTokenData {
-  issued?: number;
-  expires?: number;
-  user?: JWTUser;
-  status: "not present" | "issued";
-}
-
-export const isExpired = (value: number) => Date.now() - value > 0;
+export const isExpired = (value: number) => value - Date.now() > 0;
 
 export interface JWTPayloadAndUser extends JWTPayload {
   context: Record<string, string>;
@@ -25,13 +13,11 @@ export interface JWTPayloadAndUser extends JWTPayload {
  * @param req
  * @param res
  */
-export default async function handler(
+export default async function (
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   const access_token = getCookie("access_token", { req, res });
-  getCookies({ req, res });
-
   if (access_token && typeof access_token === "string") {
     const decodedAccessToken = (await decodeJwt(
       access_token,
@@ -40,7 +26,7 @@ export default async function handler(
       issued: decodedAccessToken.iat,
       expires: decodedAccessToken.exp,
       user: decodedAccessToken.context.user,
-      status: "issued",
+      status: decodedAccessToken.exp ? isExpired(decodedAccessToken.exp) ? "expired" : "issued" : "invalid",
     });
   }
 

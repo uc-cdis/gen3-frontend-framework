@@ -27,16 +27,22 @@
   },
   "baseUrl": ".",
   "paths": {
-    "@/components/*": ["src/components/*"],
+    "@/components/*": [
+      "src/components/*"
+    ],
+    "@/lib/*": [
+      "src/lib/*"
+    ],
+    "@/utils/*": [
+      "src/utils/*"
+    ]
   },
   "include": [
     "next-env.d.ts",
     "src/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

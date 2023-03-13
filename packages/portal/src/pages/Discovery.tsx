@@ -1,19 +1,33 @@
 import { GetStaticProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
 import ProtectedContent from '../components/Login/ProtectedContent';
+
 import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
+import { useSession } from "../lib/session/session";
+import { useSessionToken } from "../lib/session/hooks";
+
 
 const DiscoveryPage =({ headerProps, footerProps }: NavPageLayoutProps) => {
 
-  console.log("headerProps", headerProps);
+  const { user, userStatus } = useSession( { required: true} );
+  // const tokenStatus = useSessionToken();
+  console.log("DiscoveryPage user", userStatus)
   return (
+
     <NavPageLayout  {...{ headerProps, footerProps }} >
+      {  userStatus === "authenticated" ? (
       <div className='flex flex-row justify-items-center'>
-        <ProtectedContent />
+
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
           Coming Soon
         </div>
-      </div>
+
+      </div>)
+       : (
+        <div className='flex flex-row justify-items-center'>
+            Private
+        </div>)
+      }
     </NavPageLayout>
   );
 };

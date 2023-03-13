@@ -1,36 +1,33 @@
 import React from "react";
-import { useUserAuth } from "@gen3/core";
-import { getCookie } from 'cookies-next';
+import { useSession } from "../../lib/session/session";
+import { useRouter } from "next/router";
 
-export const getSessionStatus = () => {
+interface ProtectedContentProps {
+  children: JSX.Element;
+}
+const ProtectedContent = ({ children }: ProtectedContentProps) => {
+  const router = useRouter();
+ const  handleOnUnauthenticated = () => {
+    router.push("/login");
+  }
 
-
-  const accessToken = getCookie("csrftoken");
-  const access_token = getCookie("access_token");
-  console.log("csrftoken", accessToken);
-  console.log("access_token", access_token);
-};
-
-
-const ProtectedContent = () => {
-  const { data: user, isAuthenticated } = useUserAuth();
-
-  getSessionStatus();
+  const { user, userStatus } = useSession( { required: true , onUnauthenticated: () => handleOnUnauthenticated() } );
 
   return (
     <div>
       <div>
-        {user && isAuthenticated ? (
+        {user && userStatus === "authenticated" ? (
           <React.Fragment>
             <p>
               You are signed in as {user.email} and can access this protected
               content.
             </p>
+            {children}
           </React.Fragment>
         ) : (
           <React.Fragment>
             <p>
-              You are not signed in and cannot access this protected content.
+              You are not signed in and cannot access this protected content. Please sign in.
             </p>
           </React.Fragment>
         )}

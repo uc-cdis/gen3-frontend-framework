@@ -1,13 +1,12 @@
-import React, {
-  createContext,
-  useEffect,
-  useContext,
-  useState,
-  useMemo,
-} from "react";
-import { now } from "../../utils";
+import React, { useEffect, useContext, useState, useMemo } from "react";
+import { useRouter } from "next/router";
 import { Session, SessionProviderProps } from "./types";
+import { useSessionToken } from "./hooks";
+import { isUserOnPage } from "./utils";
+import { useCoreSelector, selectUser, CoreState } from "@gen3/core";
 
+const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
+const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
@@ -30,19 +29,18 @@ function useOnline() {
   return isOnline;
 }
 
-export type SessionContextValue<R extends boolean = false> = R extends true
-  ?
-      | { data: Session; status: "authenticated" }
-      | { data: null; status: "loading" }
-  :
-      | { data: Session; status: "authenticated" }
-      | { data: null; status: "unauthenticated" | "loading" };
+const SessionContext = React.createContext<Session | undefined>(undefined);
 
-const SessionContext = React.createContext<SessionContextValue | undefined>(
-  undefined,
-);
-
-export const useSession = () => {
+export interface UseSessionOptions {
+  required?: boolean;
+  /** Defaults to `signIn` */
+  onUnauthenticated?: () => void;
+}
+export const useSession = ({
+  required = false,
+  onUnauthenticated,
+}: UseSessionOptions) => {
+  const router = useRouter();
   const value = useContext(SessionContext);
   if (!value) {
     throw new Error(
@@ -50,58 +48,117 @@ export const useSession = () => {
     );
   }
 
-  const requiredAndNotLoading = value.status === "unauthenticated";
-
-  // useEffect(() => {
-  //   if (requiredAndNotLoading) {
-  //       router.push(`${GEN3_DOMAIN}/Login`);
-  //   }
-  // }, [requiredAndNotLoading]);
-
-  if (requiredAndNotLoading) {
-    return { data: value.data, status: "loading" } as const;
+  if (required && value.userStatus === "unauthenticated") {
+    if (onUnauthenticated) {
+      onUnauthenticated();
+    } else {
+      if (typeof window === "undefined")
+        // route not available on SSR
+        return value;
+      router.push("/Login");
+    }
   }
 
   return value;
 };
 
+const logoutUser = () => {
+  if (typeof window === "undefined") return; // skip if this pages if on the server
+  const router = useRouter();
+  router.push("/user/logout");
+};
+
+const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
+
 export const SessionProvider = ({
   children,
   session,
-  refetchInterval = 0,
-  refetchOnWindowFocus = true,
+  updateSessionTime = 0,
+  inactiveTimeLimit = 30,
+  workspaceInactivityTimeLimit = 0,
+  logoutInactiveUsers = false,
 }: SessionProviderProps) => {
-  const [data, setData] = useState<Session | null>(session ?? null);
-  const [status, setStatus] = useState<
-    "authenticated" | "unauthenticated" | "loading"
-  >(session ? "authenticated" : "loading");
+  const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
+    useState(Date.now());
+
+  const [
+    mostRecentSessionRefreshTimestamp,
+    setMostRecentSessionRefreshTimestamp,
+  ] = useState(Date.now());
+
+  const { data: user, loginStatus } = useCoreSelector((state: CoreState) =>
+    selectUser(state),
+  );
+  const tokenStatus = useSessionToken();
+  const [sessionValue, setSessionValue] = useState<Session>(
+    session ?? {
+      ...tokenStatus,
+      userStatus: loginStatus,
+      user: user,
+    },
+  );
+
+  const inactiveTimeLimitMilliseconds =
+    MinutesToMilliseconds(inactiveTimeLimit);
+  const updateSessionTimeMilliseconds =
+    MinutesToMilliseconds(updateSessionTime);
+  const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
+    workspaceInactivityTimeLimit,
+  );
+  const updateSessionIntervalMilliseconds =
+    MinutesToMilliseconds(updateSessionTime);
+
+  const updateUserActivity = () => {
+    setMostRecentActivityTimestamp(Date.now());
+  };
+
+  const updateSession = () => {
+    if (loginStatus != "authenticated") return; // no need to update session if user is not logged in
+    if (isUserOnPage("login") /* || this.popupShown */) return;
+
+    const timeSinceLastSessionUpdate =
+      Date.now() - mostRecentSessionRefreshTimestamp;
+    if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) return;
+
+    if (logoutInactiveUsers) {
+      if (
+        mostRecentActivityTimestamp >= inactiveTimeLimitMilliseconds &&
+        !isUserOnPage("workspace")
+      ) {
+        logoutUser();
+        return;
+      }
+      if (
+        mostRecentActivityTimestamp >=
+          workspaceInactivityTimeLimitMilliseconds &&
+        isUserOnPage("workspace")
+      ) {
+        logoutUser();
+        return;
+      }
+    }
+  };
 
   /**
-   * If session was `null`, there was an attempt to fetch it,
-   * but it failed, but we still treat it as a valid initial value.
+   * Update session value every updateSessionInterval seconds
    */
-  const hasInitialSession = session !== undefined;
-  /*
-   * If there was no initial session, we need to wait for the first fetch
-   */
-  const [loading, setLoading] = useState(!hasInitialSession);
+  useEffect(() => {
+    if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
+    const interval = setInterval(() => {
+      updateSession();
+    }, updateSessionIntervalMilliseconds);
 
-  const isOnline = useOnline();
+    return () => clearInterval(interval);
+  });
 
-  const lastSync = hasInitialSession ? now() : 0;
-
-  const value = useMemo(
-    () =>
-      ({
-        data: session,
-        status: loading
-          ? "loading"
-          : session
-          ? "authenticated"
-          : "unauthenticated",
-      } as SessionContextValue),
-    [session, loading],
-  );
+  const value: Session = useMemo(() => {
+    console.log("updated session value", tokenStatus);
+    return {
+      ...tokenStatus,
+      userStatus: loginStatus,
+      user: user,
+    };
+  }, [loginStatus, tokenStatus, user]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

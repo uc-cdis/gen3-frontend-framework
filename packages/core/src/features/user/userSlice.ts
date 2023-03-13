@@ -14,8 +14,6 @@ import { useEffect } from "react";
 export type Gen3User = {
   username?: string;
   email?: string;
-  expiredAt?: number;
-  accessToken?: string;
   avatar?: string;
   id?: string;
 };
@@ -24,9 +22,10 @@ interface Gen3FenceUserResponse {
   data: Gen3User;
 }
 
-export interface UseGen3UserResponse<T> {
+export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
   readonly error?: string;
+  readonly loginStatus: LoginStatus;
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
   readonly isSuccess: boolean;
@@ -51,17 +50,17 @@ export const fetchUserState = createAsyncThunk<
   });
 });
 
-export type UserStatus = "authenticated" | "unauthenticated" | "pending"
+export type LoginStatus = "authenticated" | "unauthenticated" | "pending";
 
 export interface Gen3UserState extends Gen3User {
   readonly status: DataStatus;
-  readonly userStatus: UserStatus;
+  readonly loginStatus: LoginStatus;
   readonly error?: string;
 }
 
 const initialState: Gen3UserState = {
   status: "uninitialized",
-  userStatus: "unauthenticated",
+  loginStatus: "unauthenticated",
   error: undefined,
 };
 
@@ -78,7 +77,7 @@ const slice = createSlice({
         if (response.errors) {
           return {
             status: "rejected",
-            userStatus: "unauthenticated",
+            loginStatus: "unauthenticated",
             error: response.errors.filters,
           };
         }
@@ -86,14 +85,14 @@ const slice = createSlice({
         return {
           ...response.data,
           status: "fulfilled",
-          userStatus: "authenticated",
+          loginStatus: "authenticated",
         };
       })
       .addCase(fetchUserState.pending, () => {
-        return { status: "pending", userStatus: "unauthenticated" };
+        return { status: "pending", loginStatus: "unauthenticated" };
       })
       .addCase(fetchUserState.rejected, () => {
-        return { status: "rejected", userStatus: "unauthenticated" };
+        return { status: "rejected", loginStatus: "unauthenticated" };
       });
   },
 });
@@ -102,35 +101,49 @@ export const userReducer = slice.reducer;
 
 export const { resetUserState } = slice.actions;
 
+export interface Gen3USerSelectorResponse<T>
+  extends CoreDataSelectorResponse<T> {
+  readonly loginStatus: LoginStatus;
+}
+
 export const selectUserData = (
   state: CoreState,
-): CoreDataSelectorResponse<Gen3User> => {
+): Gen3USerSelectorResponse<Gen3User> => {
   return {
     data: state.user,
     status: state.user.status,
+    loginStatus: state.user.loginStatus,
     error: state.user.error,
   };
 };
 
 export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
-export const selectUserState = (state: CoreState): UserStatus => state.user.userStatus;
+export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
+  state.user.loginStatus;
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
-export const useUserAuth = () : UseGen3UserResponse<Gen3User> => {
+/**
+ * Hook to return get the authenticated state of the user and if logged in,
+ * the user's profile and access data.
+ * Note that if fetchUserState gets called, the user's session is renewed.
+ */
+export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
   const coreDispatch = useCoreDispatch();
-  const { data, status, error } = useCoreSelector(selectUserData);
+  const { data, status, loginStatus, error } = useCoreSelector(selectUserData);
 
   useEffect(() => {
-    if (status === "uninitialized") { // TODO: need to determine what other states require dispatch
+    if (status === "uninitialized" || renew) {
+      // TODO: need to determine what other states require dispatch
       coreDispatch(fetchUserState());
     }
-  }, [status, coreDispatch]);
+  }, [status, coreDispatch, renew]);
 
   return {
     data,
     error,
+    loginStatus,
     isUninitialized: status === "uninitialized",
     isFetching: status === "pending",
     isSuccess: status === "fulfilled",

@@ -15,6 +15,7 @@ export const LoginButton = () => {
   };
 
   const { data: userInfo, isAuthenticated } = useUserAuth();
+
   return (
     <Button onClick={() => handleSelected(isAuthenticated)} variant="filled" rightIcon={isAuthenticated ?? <LoginIcon />}>
       {!isAuthenticated ? "Login" : userInfo?.email}
