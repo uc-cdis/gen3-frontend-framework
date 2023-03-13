@@ -1,6 +1,6 @@
 [{
-    "message": "HEAL Raffle Winners [View the winners of the 2023 Annual NIH HEAL Investigator Meeting raffle!](https://www.healdatafair.org/)",
-    "level": "INFO",
+    "message": "**HEAL Study-Level Metadata Raffle** [View the winners of the 2023 NIH HEAL Investigator Meeting raffle!](https://www.healdatafair.org/)",
+    "level": "WARNING",
     "dismissible": true,
     "id": 0
 }]

@@ -44,12 +44,12 @@ module.exports = {
           obsidian: '#757575',
         },
         'utility': {
-          info: '#F4B940',
-          warning: '',
+          info: '',
+          warning: '#F4B940',
           error: '',
           contrast: {
-            info: '#000000',
-            warning: '',
+            info: '',
+            warning: '#000000',
             error: '',
           }
         },

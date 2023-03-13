@@ -2,6 +2,7 @@ import {
   FaQuestion as InfoIcon,
   FaExclamation as WarningIcon,
   FaExclamationTriangle as ErrorIcon,
+  FaExternalLinkAlt,
 } from 'react-icons/fa';
 import Markdown from 'react-markdown';
 
@@ -55,6 +56,7 @@ export const Banner: React.FC<BannerProps> = ({
               a: ({ children, ...props }) => (
                 <a className='underline' {...props}>
                   {children}
+                  <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>
                 </a>
               ),
             }}
