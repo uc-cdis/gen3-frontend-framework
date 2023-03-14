@@ -1,10 +1,6 @@
 import React from "react";
 import { Gen3User, LoginStatus } from "@gen3/core";
 
-export interface JWTUser {
-  email: string;
-  is_admin?: boolean;
-}
 
 export type JWTSessionStatus =
   | "not present"
@@ -17,10 +13,6 @@ export interface AuthTokenData {
   issued?: number;
   expires?: number;
   status: JWTSessionStatus;
-}
-
-export interface UseSessionOptions<R extends boolean> {
-  required: R;
 }
 
 export interface Session extends Record<string, unknown>, AuthTokenData {

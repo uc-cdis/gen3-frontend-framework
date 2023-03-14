@@ -16,50 +16,48 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
   if (!isSuccess) return <LoadingOverlay visible={!isSuccess} />;
   if (data) {
     return (
-
-      <Box>
-        <Stack className="w-1/2 bg-red-500">
-          <Button
-            color="accent.7"
-            onClick={() => handleLoginSelected(data.default_provider.url)}
-          >
-            {data.default_provider.name}
-          </Button>
-          {data?.providers.map((x: Gen3LoginProvider) => {
-            if (x.name === data.default_provider.name) return null;
-            if (x.urls.length == 1)
-              return (
+      <Stack align="center">
+        <Button
+          className="text-primary-contrast"
+          color="primary"
+          onClick={() => handleLoginSelected(data.default_provider.url)}
+        >
+          {data.default_provider.name}
+        </Button>
+        {data?.providers.map((x: Gen3LoginProvider) => {
+          if (x.name === data.default_provider.name) return null;
+          if (x.urls.length == 1)
+            return (
+              <Button
+                key={x.name}
+                className="bg-heal-purple"
+                onClick={() => handleLoginSelected(x.urls[0].url)}
+              >
+                {" "}
+                {x.name}{" "}
+              </Button>
+            );
+          else {
+            const selectData = x.urls.map((item: NameUrl) => ({
+              value: item.url,
+              label: item.name,
+            }));
+            return (
+              <div className="flex flex-col" key={`${x.name}-login-item`}>
+                <Select data={selectData} />
                 <Button
                   key={x.name}
                   className="bg-heal-purple"
                   onClick={() => handleLoginSelected(x.urls[0].url)}
                 >
                   {" "}
-                  {x.name}{" "}
+                  {x.name}
                 </Button>
-              );
-            else {
-              const selectData = x.urls.map((item: NameUrl) => ({
-                value: item.url,
-                label: item.name,
-              }));
-              return (
-                <div className="flex flex-col" key={`${x.name}-login-item`}>
-                  <Select data={selectData} />
-                  <Button
-                    key={x.name}
-                    className="bg-heal-purple"
-                    onClick={() => handleLoginSelected(x.urls[0].url)}
-                  >
-                    {" "}
-                    {x.name}
-                  </Button>
-                </div>
-              );
-            }
-          })}
-        </Stack>
-      </Box>
+              </div>
+            );
+          }
+        })}
+      </Stack>
     );
   }
   return null;
