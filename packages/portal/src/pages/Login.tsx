@@ -7,6 +7,7 @@ import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
 import { LandingPageProps } from "../components/Contents/LandingPageContent";
 import LoginProvidersPanel from "../components/Login/LoginProvidersPanel";
 import { User } from "../components/Login/User";
+import { TexturedSidePanel } from "../components/Login/TexturedSidePanel";
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
@@ -24,15 +25,16 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
   return (
     <div className="flex flex-col">
       <NavPageLayout {...{ headerProps, footerProps }}>
-        <div className="flex flex-row justify-items-center">
-          <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
+        <div className="flex flex-row justify-between">
+          <TexturedSidePanel />
+          <div className="justify-center grow sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
             <LoginProvidersPanel
-              referenceURL='/'
+              referenceURL="/"
               handleLoginSelected={handleLoginSelected}
             />
           </div>
+          <TexturedSidePanel />
         </div>
-        <User></User>
       </NavPageLayout>
     </div>
   );

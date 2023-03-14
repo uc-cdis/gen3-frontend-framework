@@ -1,9 +1,10 @@
 import React, { useEffect, useContext, useState, useMemo } from "react";
-import { useRouter } from "next/router";
+import { useRouter, NextRouter } from "next/router";
 import { Session, SessionProviderProps } from "./types";
 import { useSessionToken } from "./hooks";
 import { isUserOnPage } from "./utils";
-import { useCoreSelector, selectUser, CoreState } from "@gen3/core";
+import { useCoreSelector, selectUser, CoreState, CoreDispatch, useCoreDispatch, GEN3_DOMAIN } from "@gen3/core";
+import { fetchUserState } from "@gen3/core";
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
@@ -62,10 +63,9 @@ export const useSession = ({
   return value;
 };
 
-const logoutUser = () => {
+const logoutUser = (router : NextRouter ) => {
   if (typeof window === "undefined") return; // skip if this pages if on the server
-  const router = useRouter();
-  router.push("/user/logout");
+  router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`)
 };
 
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
@@ -73,11 +73,13 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 export const SessionProvider = ({
   children,
   session,
-  updateSessionTime = 0,
+  updateSessionTime = 60,
   inactiveTimeLimit = 30,
   workspaceInactivityTimeLimit = 0,
-  logoutInactiveUsers = false,
+  logoutInactiveUsers = true,
 }: SessionProviderProps) => {
+  const router = useRouter();
+  const coreDispatch = useCoreDispatch();
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -86,8 +88,8 @@ export const SessionProvider = ({
     setMostRecentSessionRefreshTimestamp,
   ] = useState(Date.now());
 
-  const { data: user, loginStatus } = useCoreSelector((state: CoreState) =>
-    selectUser(state),
+  const { data : user, loginStatus } = useCoreSelector((state: CoreState) =>
+    selectUser(state)
   );
   const tokenStatus = useSessionToken();
   const [sessionValue, setSessionValue] = useState<Session>(
@@ -108,11 +110,9 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  const updateUserActivity = () => {
-    setMostRecentActivityTimestamp(Date.now());
-  };
 
-  const updateSession = () => {
+
+  const updateSession = (dispatch: CoreDispatch ) => {
     if (loginStatus != "authenticated") return; // no need to update session if user is not logged in
     if (isUserOnPage("login") /* || this.popupShown */) return;
 
@@ -125,7 +125,7 @@ export const SessionProvider = ({
         mostRecentActivityTimestamp >= inactiveTimeLimitMilliseconds &&
         !isUserOnPage("workspace")
       ) {
-        logoutUser();
+        logoutUser(router);
         return;
       }
       if (
@@ -133,22 +133,50 @@ export const SessionProvider = ({
           workspaceInactivityTimeLimitMilliseconds &&
         isUserOnPage("workspace")
       ) {
-        logoutUser();
+        logoutUser(router);
         return;
       }
     }
+    // fetching a userState will renew the session
+    refreshSession(dispatch);
+
   };
+
+  const refreshSession = (dispatch: CoreDispatch) => {
+    const timeSinceLastSessionUpdate = Date.now() - mostRecentSessionRefreshTimestamp;
+    // don't hit Fence to refresh tokens too frequently
+    if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
+      return;
+    }
+
+    // hitting Fence endpoint refreshes token
+    setMostRecentSessionRefreshTimestamp(Date.now());
+    dispatch(fetchUserState());
+  }
 
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
+
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
+
+    const updateUserActivity = () => {
+      setMostRecentActivityTimestamp(Date.now());
+    };
+
+    window.addEventListener('mousedown', () => updateUserActivity() );
+    window.addEventListener('keypress', () => updateUserActivity() );
+
     const interval = setInterval(() => {
-      updateSession();
+      updateSession(coreDispatch);
     }, updateSessionIntervalMilliseconds);
 
-    return () => clearInterval(interval);
+    return () => {
+      window.removeEventListener('mousedown', updateUserActivity );
+      window.removeEventListener('keypress', updateUserActivity );
+      clearInterval(interval);
+    }
   });
 
   const value: Session = useMemo(() => {

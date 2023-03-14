@@ -17,8 +17,8 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
   if (data) {
     return (
 
-      <Box sx={{ maxWidth: 300 }} >
-        <Stack>
+      <Box>
+        <Stack className="w-1/2 bg-red-500">
           <Button
             color="accent.7"
             onClick={() => handleLoginSelected(data.default_provider.url)}

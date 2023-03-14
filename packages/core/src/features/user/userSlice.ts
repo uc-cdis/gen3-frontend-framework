@@ -18,10 +18,6 @@ export type Gen3User = {
   id?: string;
 };
 
-interface Gen3FenceUserResponse {
-  data: Gen3User;
-}
-
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
   readonly error?: string;
@@ -34,7 +30,7 @@ export interface Gen3UserLoginResponse<T> {
 }
 
 export const fetchUserState = createAsyncThunk<
-  Gen3FenceResponse<Gen3FenceUserResponse>,
+  Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("fence/user", async () => {
@@ -52,7 +48,8 @@ export const fetchUserState = createAsyncThunk<
 
 export type LoginStatus = "authenticated" | "unauthenticated" | "pending";
 
-export interface Gen3UserState extends Gen3User {
+export interface Gen3UserState {
+  readonly data?: Gen3User;
   readonly status: DataStatus;
   readonly loginStatus: LoginStatus;
   readonly error?: string;
@@ -83,7 +80,7 @@ const slice = createSlice({
         }
 
         return {
-          ...response.data,
+          data: { ...response.data },
           status: "fulfilled",
           loginStatus: "authenticated",
         };
@@ -110,7 +107,7 @@ export const selectUserData = (
   state: CoreState,
 ): Gen3USerSelectorResponse<Gen3User> => {
   return {
-    data: state.user,
+    data: state.user.data,
     status: state.user.status,
     loginStatus: state.user.loginStatus,
     error: state.user.error,
@@ -141,7 +138,7 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
   }, [status, coreDispatch, renew]);
 
   return {
-    data,
+    data: data,
     error,
     loginStatus,
     isUninitialized: status === "uninitialized",
