@@ -17,12 +17,14 @@ const backgroundColor = {
   INFO: 'bg-utility-info',
   WARNING: 'bg-utility-warning',
   ERROR: 'bg-utility-error',
+  MESSAGE: 'bg-utility-warning',
 };
 
 const textColor = {
   INFO: 'text-utility-contrast-info',
   WARNING: 'text-utility-contrast-warning',
   ERROR: 'text-utility-contrast-error',
+  MESSAGE: 'text-utility-contrast-warning',
 };
 
 const icon = {
@@ -54,7 +56,7 @@ export const Banner: React.FC<BannerProps> = ({
             components={{
               // eslint-disable-next-line react/prop-types
               a: ({ children, ...props }) => (
-                <a className='underline' {...props}>
+                <a className='underline' {...props} target='_blank' rel='noreferrer'>
                   {children}
                   <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>
                 </a>
