@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import ConfigurableCrosswalk from '../components/Crosswalk/ConfigurableCrosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
+import NavPageLayout, { NavPageLayoutProps } from '../../../components/src/Navigation/NavPageLayout';
 
 const CrosswalkConfig = {
 

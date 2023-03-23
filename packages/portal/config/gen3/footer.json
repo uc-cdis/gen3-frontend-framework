@@ -4,12 +4,14 @@
       {
         "logo": "gen3.png",
         "width": 132,
-        "height": 60
+        "height": 60,
+        "description": "Gen3 Logo"
       },
       {
         "logo": "createdby.png",
         "width": 170,
-        "height": 60
+        "height": 60,
+        "description": "Created by CTDS"
       }
       ]
     ]

@@ -1,3 +1,4 @@
+import React from "react";
 import { UnstyledButton } from "@mantine/core";
 import { useRouter } from "next/router";
 import { MdLogin as LoginIcon } from "react-icons/md";
@@ -14,13 +15,13 @@ export const LoginButton = () => {
       await router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
   };
 
-  const { data: userInfo, isAuthenticated } = useUserAuth();
+  const { isAuthenticated } = useUserAuth();
 
   return (
     <UnstyledButton className="mx-2 "
       onClick={() => handleSelected(isAuthenticated)}>
       <div className="flex items-center hover:border-b-1 border-white text-primary-contrast font-medium font-heading ">
-            {!isAuthenticated ? "Login" : "Logout"}
+        {!isAuthenticated ? "Login" : "Logout"}
         <LoginIcon className="pl-1" size={"1.75rem"}/>
       </div>
     </UnstyledButton>

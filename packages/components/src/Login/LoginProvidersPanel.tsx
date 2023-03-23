@@ -4,12 +4,11 @@ import { useGetLoginProvidersQuery } from "@gen3/core";
 import type { Gen3LoginProvider, NameUrl } from "@gen3/core";
 
 interface LoginPanelProps {
-  readonly referenceURL: string;
   readonly redirectURL?: string;
   readonly handleLoginSelected: (_: string, _2?: string) => void;
 }
 
-const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
+const LoginProvidersPanel = ({
   handleLoginSelected,
   redirectURL,
 }: LoginPanelProps) => {
@@ -33,7 +32,7 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
               return (
                 <Button
                   key={x.name}
-                  className="bg-heal-purple"
+                  color="primary"
                   onClick={() =>
                     handleLoginSelected(x.urls[0].url, redirectURL)
                   }
@@ -52,7 +51,7 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
                   <Select data={selectData} />
                   <Button
                     key={x.name}
-                    className="bg-heal-purple"
+                    color="primary"
                     onClick={() =>
                       handleLoginSelected(x.urls[0].url, redirectURL)
                     }
@@ -68,7 +67,7 @@ const LoginProvidersPanel: React.FC<LoginPanelProps> = ({
       </Box>
     );
   }
-  return null;
+  return false;
 };
 
 export default LoginProvidersPanel;

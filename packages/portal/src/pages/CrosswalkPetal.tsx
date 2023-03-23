@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import Crosswalk from '../components/Crosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
+import NavPageLayout, { NavPageLayoutProps } from '../../../components/src/Navigation/NavPageLayout';
 
 const Petal = {
   guidField: 'petal_crosswalk',

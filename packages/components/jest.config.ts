@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: "node",
   globalSetup: "<rootDir>/setupTests.ts",
   moduleNameMapper: {
-    "^@/core/(.*)$": "<rootDir>/src/$1",
+    "^@/components/(.*)$": "<rootDir>/src/components/$1",
   },
   modulePaths: ["<rootDir>"],
 };

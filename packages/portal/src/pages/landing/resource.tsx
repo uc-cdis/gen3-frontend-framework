@@ -1,7 +1,7 @@
 import {GetStaticProps} from 'next';
 import ContentSource from '../../lib/content';
 
-import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
+import NavPageLayout, { NavPageLayoutProps } from '../../../../components/src/Navigation/NavPageLayout';
 import ResourcePageContent, {ResourcePageConfig} from '../../components/Contents/ResourcePageContent';
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 

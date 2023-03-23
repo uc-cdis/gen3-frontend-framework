@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Gen3Link from "../Gen3Link";
+import Gen3Link from "./Gen3Link";
 
 interface BottomLinks {
   text: string;
@@ -19,8 +19,9 @@ interface ColumnLinks {
 
 interface FooterLogo {
   readonly logo: string;
-  readonly width: string | number;
-  readonly height: string | number;
+  readonly description: string;
+  readonly width: number;
+  readonly height: number;
 }
 
 export interface FooterProps {
@@ -57,6 +58,7 @@ const Footer: React.FC<FooterProps> = ({
                     layout="fixed"
                     width={logo.width}
                     height={logo.height}
+                    alt={logo.description}
                   />
                 ))}
               </div>
@@ -77,12 +79,12 @@ const Footer: React.FC<FooterProps> = ({
                   };
                   if (href) {
                     return (
-                      <div {...attrs}>
+                      <div {...attrs} key={href}>
                         <Gen3Link href={href} linkType={linkType} text={text} />
                       </div>
                     );
                   } else {
-                    return <span {...attrs}>{text}</span>;
+                    return <span {...attrs} key={href}>{text}</span>;
                   }
                 })}
               </div>
@@ -104,6 +106,7 @@ const Footer: React.FC<FooterProps> = ({
                   layout="fixed"
                   width={logo.width}
                   height={logo.height}
+                  alt={logo.description}
                 />
               ))}
             </div>

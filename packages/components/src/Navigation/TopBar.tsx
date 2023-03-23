@@ -1,5 +1,5 @@
-import React from 'react';
-import { Icon } from '@iconify/react';
+import React from "react";
+import { Icon } from "@iconify/react";
 import { LoginButton } from "../Login/LoginButton";
 
 export interface NameAndIcon {
@@ -19,24 +19,25 @@ const TopIconButton: React.FC<NameAndIcon> = ({
 }: NameAndIcon) => {
   return (
     <div
-      className='flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white '
-      role='button'
+      className="flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white "
+      role="button"
     >
-      {leftIcon ? <Icon icon={leftIcon} className='text-gen3-white' /> : null}
-      <p className='body-typo text-gen3-white p-2'> {name} </p>
-      {rightIcon ? <Icon icon={rightIcon} className='text-gen3-white' /> : null}
+      {leftIcon ? <Icon icon={leftIcon} className="text-gen3-white" /> : null}
+      <p className="body-typo text-gen3-white p-2"> {name} </p>
+      {rightIcon ? <Icon icon={rightIcon} className="text-gen3-white" /> : null}
     </div>
   );
 };
-
-const AccountTopButton = () => <span className='py-4 px-12' />;
 
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
   readonly showLogin?: boolean;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ items, showLogin = false }: TopBarProps) => {
+const TopBar: React.FC<TopBarProps> = ({
+  items,
+  showLogin = false,
+}: TopBarProps) => {
   return (
     <div>
       <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-gen3-secondary">
@@ -53,7 +54,7 @@ const TopBar: React.FC<TopBarProps> = ({ items, showLogin = false }: TopBarProps
               </a>
             );
           })}
-          {showLogin ? <LoginButton/> : null}
+          {showLogin ? <LoginButton /> : null}
         </nav>
       </header>
     </div>

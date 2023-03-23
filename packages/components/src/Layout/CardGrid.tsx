@@ -1,3 +1,4 @@
+import React  from "react";
 import { Grid, Text } from "@mantine/core";
 import { FaExternalLinkAlt } from "react-icons/fa";
 

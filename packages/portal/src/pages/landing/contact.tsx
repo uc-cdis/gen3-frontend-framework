@@ -1,5 +1,5 @@
 import {GetStaticProps} from 'next';
-import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
+import NavPageLayout, { NavPageLayoutProps } from '../../../../components/src/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 import Link from 'next/link';
 import { Text } from '@mantine/core';

@@ -3,12 +3,15 @@
     "src/**/*"
   ],
   "exclude": [
+    "../../node_modules/",
     "node_modules",
-    "src/**/*.spec.ts*"
+    "src/**/*.spec.ts*",
   ],
   "compilerOptions": {
     "outDir": "dist/dts",
+    "target": "es6",
     "jsx": "react",
+    "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "declaration": true,
@@ -16,11 +19,8 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
+    "skipLibCheck": true,
     "strict": true,
-    "target": "esnext",
-    "resolveJsonModule": true,
     "lib": [
       "dom",
       "esnext"
@@ -28,7 +28,7 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": [
-        "components/*"
+        "src/*"
       ]
     }
   }

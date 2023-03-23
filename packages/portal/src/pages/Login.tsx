@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { showNotification } from "@mantine/notifications";
 import NavPageLayout, {
   NavPageLayoutProps,
-} from "../components/Navigation/NavPageLayout";
+} from "../../../components/src/Navigation/NavPageLayout";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
 import { LandingPageProps } from "../components/Contents/LandingPageContent";
-import LoginProvidersPanel from "../components/Login/LoginProvidersPanel";
-import { TexturedSidePanel } from "../components/Login/TexturedSidePanel";
+import LoginProvidersPanel from "../../../components/src/Login/LoginProvidersPanel";
+import { TexturedSidePanel } from "../../../components/src/Login/TexturedSidePanel";
 
 
 interface Props extends NavPageLayoutProps {

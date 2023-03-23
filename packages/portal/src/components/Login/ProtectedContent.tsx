@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "../../lib/session/session";
+import { useSession } from "@/lib/session/session";
 import { Center, LoadingOverlay, Paper, Text } from "@mantine/core";
 
 interface ProtectedContentProps {
@@ -22,7 +22,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
 
   if (status !== "issued") {
     // not logged in
-    if (pending) return (<LoadingOverlay visible={pending} />);
+    if (pending) return <LoadingOverlay visible={pending} />;
     else
       return (
         <React.Fragment>

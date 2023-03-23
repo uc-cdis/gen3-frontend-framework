@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
