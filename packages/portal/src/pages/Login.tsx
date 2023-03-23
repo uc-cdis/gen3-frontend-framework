@@ -1,13 +1,14 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import { showNotification } from "@mantine/notifications";
 import NavPageLayout, {
   NavPageLayoutProps,
 } from "../components/Navigation/NavPageLayout";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
 import { LandingPageProps } from "../components/Contents/LandingPageContent";
 import LoginProvidersPanel from "../components/Login/LoginProvidersPanel";
-import { User } from "../components/Login/User";
 import { TexturedSidePanel } from "../components/Login/TexturedSidePanel";
+
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
@@ -16,10 +17,21 @@ interface Props extends NavPageLayoutProps {
 const LoginPage = ({ headerProps, footerProps }: Props) => {
   const router = useRouter();
 
-  const handleLoginSelected = async (url: string) => {
+  const {
+    query: { redirect},
+  } = router;
+
+
+  const handleLoginSelected = async (url: string, redirect?:string) => {
+    console.log("redirect", redirect);
     router
-      .push(url + "?redirect=https://localhost/Login")
-      .catch((e) => alert(e));
+      .push(url + (redirect ? `?redirect=${redirect}` : '?redirect=https://localhost/'))
+      .catch((e) => {
+        showNotification({
+          title: 'Login Error',
+          message: `error logging in ${e.message}`,
+        })
+      });
   };
 
   return (
@@ -31,6 +43,7 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
             <LoginProvidersPanel
               referenceURL="/"
               handleLoginSelected={handleLoginSelected}
+              redirectURL={redirect as string | undefined}
             />
           </div>
           <TexturedSidePanel />

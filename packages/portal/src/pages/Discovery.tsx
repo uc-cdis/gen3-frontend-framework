@@ -1,44 +1,41 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from "next";
 import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
 import ProtectedContent from '../components/Login/ProtectedContent';
-
 import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
-import { useSession } from "../lib/session/session";
-import { useSessionToken } from "../lib/session/hooks";
+import { getAuthSession } from "../lib/session/hooks";
+import type { Session} from "../lib/session/types";
 
 
-const DiscoveryPage =({ headerProps, footerProps }: NavPageLayoutProps) => {
+interface DiscoveryPageProps extends NavPageLayoutProps {
+  href: string;
+  session?: Session | null;
+}
 
-  const { user, userStatus } = useSession( { required: true} );
-  // const tokenStatus = useSessionToken();
-  console.log("DiscoveryPage user", userStatus)
+const DiscoveryPage =({ headerProps, footerProps, href, session }: DiscoveryPageProps) => {
+
+  console.log("DiscoveryPage", session) ;
   return (
-
     <NavPageLayout  {...{ headerProps, footerProps }} >
-      {  userStatus === "authenticated" ? (
-      <div className='flex flex-row justify-items-center'>
-
-        <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-          Coming Soon
+      <ProtectedContent referer={href}>
+        <div className="flex flex-row justify-between">
+          Coming soon
         </div>
-
-      </div>)
-       : (
-        <div className='flex flex-row justify-items-center'>
-            Private
-        </div>)
-      }
+      </ProtectedContent>
     </NavPageLayout>
   );
 };
 
-// should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async ( ) => {
+
+// change to app NextJS app rounting once fence is out of beta
+
+export const getServerSideProps: GetServerSideProps<NavPageLayoutProps> = async (context) => {
   return {
     props: {
-      ...(await getNavPageLayoutPropsFromConfig())
+      ...(await getNavPageLayoutPropsFromConfig()),
+      href: context.resolvedUrl,
+      session: await getAuthSession(context.req)
     }
   };
-};
+}
 
 export default DiscoveryPage;

@@ -24,6 +24,7 @@ const CrosswalkConfig = {
 };
 
 const CrosswalkFullPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
+  console.log("rendering CrosswalkFullPage",(typeof window === "undefined") ? "server" : "client"   );
   return (
     <div className='flex flex-col'>
       <NavPageLayout  {...{ headerProps, footerProps }} >

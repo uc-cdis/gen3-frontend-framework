@@ -1,8 +1,9 @@
 import React from "react";
-import HoverLink from "./HoverLink";
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Icon } from "@iconify/react";
+import HoverLink from "./HoverLink";
 
 export interface NavigationButtonProps {
   readonly icon: string;
@@ -19,7 +20,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
 }: NavigationButtonProps) => {
   return (
     <div className="has-tooltip relative h-[80px]">
-      <a
+      <Link
         className="content-center"
         href={`${
           process.env.NEXT_PUBLIC_PORTAL_BASENAME &&
@@ -34,7 +35,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
             {name}
           </p>
         </div>
-      </a>
+      </Link>
       <div className="opacity-100 tooltip p-2.5 m-5 w-60 bg-white border-gray-400 border border-solid rounded text-left align-content-center text-gen3-titanium">
         {tooltip}
       </div>

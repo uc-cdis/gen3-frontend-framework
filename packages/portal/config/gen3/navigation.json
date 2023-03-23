@@ -6,7 +6,7 @@
     "items": [
       {
         "icon": "gen3:query",
-        "href": "/discovery",
+        "href": "/Discovery",
         "name": "Discovery",
         "tooltip": "Use free-text search and tags to rapidly find relevant studies."
       },
@@ -42,7 +42,7 @@
       },
       {
         "icon": "gen3:profile",
-        "href": "/identity",
+        "href": "/Profile",
         "name": "Profile",
         "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
       }

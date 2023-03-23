@@ -15,9 +15,10 @@ export interface AuthTokenData {
   status: JWTSessionStatus;
 }
 
-export interface Session extends Record<string, unknown>, AuthTokenData {
-  userStatus: LoginStatus;
+export interface Session extends AuthTokenData {
+  userStatus?: LoginStatus;
   user?: Gen3User;
+  pending: boolean;
 }
 
 export interface SessionProviderProps {
