@@ -1,5 +1,6 @@
-import Discovery from "./Discovery/Discovery";
-import TagCloud from "./Discovery/TagCloud";
-import Footer from "./Navigation/Footer";
-
-export { Footer, Discovery, TagCloud };
+export * from "./Discovery";
+export * from "./Layout";
+export * from "./Login";
+export * from "./Navigation";
+export * from "./Text";
+export * from "./Profile";

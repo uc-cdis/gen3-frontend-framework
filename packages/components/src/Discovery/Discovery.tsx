@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const Discovery = () => {
   return (
     <div className="flex flex-col">

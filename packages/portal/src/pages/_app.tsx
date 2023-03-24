@@ -11,8 +11,8 @@ import { MantineProvider,
 import { coreStore, csrfApi } from "@gen3/core";
 import tailwindConfig from "../../tailwind.config";
 import { TenStringArray } from "../utils/types";
-import { SessionProvider } from "../lib/session/session";
-import { NotificationsProvider } from '@mantine/notifications';
+import { SessionProvider } from "@/lib/session/session";
+import { Notifications } from '@mantine/notifications';
 
 export const initStore = async () => {
   coreStore.dispatch(csrfApi.endpoints.getCSRF.initiate());
@@ -62,19 +62,18 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           primaryColor: "primary",
           primaryShade: { light: 4, dark: 7 },
           breakpoints: {
-            xs: 500,
-            sm: 800,
-            md: 1000,
-            lg: 1275,
-            xl: 1800,
+            xs: "500",
+            sm: "800",
+            md: "1000",
+            lg: "1275",
+            xl: "1800",
           },
         }}
       >
-        <NotificationsProvider>
+        <Notifications />
         <SessionProvider session={pageProps.session}>
           <Component {...pageProps} />
         </SessionProvider>
-        </NotificationsProvider>
       </MantineProvider>
     </CoreProvider>
   );

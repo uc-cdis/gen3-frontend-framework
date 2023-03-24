@@ -1,34 +1,35 @@
-import { GetStaticProps } from 'next';
-import Crosswalk from '../components/Crosswalk';
-import { getNavPageLayoutPropsFromConfig } from '../common/staticProps';
-import NavPageLayout, { NavPageLayoutProps } from '../../../components/src/Navigation/NavPageLayout';
-
+import { GetStaticProps } from "next";
+import Crosswalk from "../components/Crosswalk";
+import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
+import { NavPageLayout, NavPageLayoutProps } from "@gen3/components";
 
 const N3C = {
-  guidField: 'n3c_crosswalk',
-  fromField :'midrc_id',
-  toField: 'n3c_id'
+  guidField: "n3c_crosswalk",
+  fromField: "midrc_id",
+  toField: "n3c_id",
 };
 
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
-    <div className='flex flex-col'>
-      <NavPageLayout  {...{ headerProps, footerProps }} >
+    <div className="flex flex-col">
+      <NavPageLayout {...{ headerProps, footerProps }}>
         <Crosswalk
-          fromTitle='Enter your MIDRC Ids'
-          toTitle='Matching N3C IDs' guidField={N3C.guidField}
-          fromField={N3C.fromField} toField={N3C.toField}
+          fromTitle="Enter your MIDRC Ids"
+          toTitle="Matching N3C IDs"
+          guidField={N3C.guidField}
+          fromField={N3C.fromField}
+          toField={N3C.toField}
         />
       </NavPageLayout>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async ( ) => {
+export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async () => {
   return {
     props: {
-      ...(await getNavPageLayoutPropsFromConfig())
-    }
+      ...(await getNavPageLayoutPropsFromConfig()),
+    },
   };
 };
 

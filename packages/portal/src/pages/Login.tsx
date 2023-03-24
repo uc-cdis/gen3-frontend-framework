@@ -1,14 +1,14 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { showNotification } from "@mantine/notifications";
-import NavPageLayout, {
+import {
+  NavPageLayout,
   NavPageLayoutProps,
-} from "../../../components/src/Navigation/NavPageLayout";
+  TexturedSidePanel,
+  LoginProvidersPanel,
+} from "@gen3/components";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
-import { LandingPageProps } from "../components/Contents/LandingPageContent";
-import LoginProvidersPanel from "../../../components/src/Login/LoginProvidersPanel";
-import { TexturedSidePanel } from "../../../components/src/Login/TexturedSidePanel";
-
+import { LandingPageProps } from "@/components/Contents/LandingPageContent";
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
@@ -18,19 +18,21 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
   const router = useRouter();
 
   const {
-    query: { redirect},
+    query: { redirect },
   } = router;
 
-
-  const handleLoginSelected = async (url: string, redirect?:string) => {
+  const handleLoginSelected = async (url: string, redirect?: string) => {
     console.log("redirect", redirect);
     router
-      .push(url + (redirect ? `?redirect=${redirect}` : '?redirect=https://localhost/'))
+      .push(
+        url +
+          (redirect ? `?redirect=${redirect}` : "?redirect=https://localhost/"),
+      )
       .catch((e) => {
         showNotification({
-          title: 'Login Error',
+          title: "Login Error",
           message: `error logging in ${e.message}`,
-        })
+        });
       });
   };
 
@@ -41,7 +43,6 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
           <TexturedSidePanel />
           <div className="justify-center grow sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
             <LoginProvidersPanel
-              referenceURL="/"
               handleLoginSelected={handleLoginSelected}
               redirectURL={redirect as string | undefined}
             />

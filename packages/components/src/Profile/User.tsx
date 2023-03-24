@@ -2,10 +2,9 @@ import React from "react";
 import { useUserAuth } from "@gen3/core";
 import { Avatar, Card, Group, LoadingOverlay, Text } from "@mantine/core";
 
-export const User = () => {
+const User = () => {
   const { data: userData, isFetching } = useUserAuth();
 
-  console.log("userData", userData);
   return (
     <div>
       <LoadingOverlay visible={isFetching} />
@@ -18,3 +17,5 @@ export const User = () => {
     </div>
   );
 };
+
+export default User;

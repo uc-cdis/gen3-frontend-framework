@@ -5,7 +5,7 @@ import { MdLogin as LoginIcon } from "react-icons/md";
 import { useUserAuth, GEN3_DOMAIN } from "@gen3/core";
 
 
-export const LoginButton = () => {
+const LoginButton = () => {
   const router = useRouter();
 
   const handleSelected = async (isAuthenticated: boolean) => {
@@ -27,3 +27,5 @@ export const LoginButton = () => {
     </UnstyledButton>
   );
 };
+
+export default LoginButton;

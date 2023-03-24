@@ -3,7 +3,7 @@ import { Button, ButtonProps } from '@mantine/core';
 
 type NavigationButtonProps = ButtonProps & React.ComponentPropsWithoutRef<'a'> & {  $selected?: boolean };
 
-export const NavigationButton = tw(Button)<NavigationButtonProps>`
+const NavigationButton = tw(Button)<NavigationButtonProps>`
         subpixel-antialiased
         shadow
         rounded-lg
@@ -17,3 +17,5 @@ export const NavigationButton = tw(Button)<NavigationButtonProps>`
         hover:border-white
         hover:underline
 `;
+
+export default NavigationButton;
