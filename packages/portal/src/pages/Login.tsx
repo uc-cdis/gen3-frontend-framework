@@ -4,11 +4,10 @@ import { showNotification } from "@mantine/notifications";
 import {
   NavPageLayout,
   NavPageLayoutProps,
-
-  LoginProvidersPanel,
-} from "@gen3/components";
+} from "@/components/Navigation";
+import LoginProvidersPanel from "@/components/Login/LoginProvidersPanel";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
-import { LandingPageProps } from "@/components/Contents/LandingPageContent";
+import { LandingPageProps } from "@/components/Content/LandingPageContent";
 import  TexturedSidePanel  from "@/components/Layout/TexturedSidePanel";
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;

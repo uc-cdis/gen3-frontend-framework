@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
-import ProtectedContent from "../components/Login/ProtectedContent";
-import { NavPageLayout,  NavPageLayoutProps } from "@gen3/components";
+import ProtectedContent from "@/components/Protected/ProtectedContent";
+import { NavPageLayout,  NavPageLayoutProps } from "@/components/Navigation";
 import { getAuthSession } from "@/lib/session/hooks";
 import type { Session } from "@/lib/session/types";
 

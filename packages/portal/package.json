@@ -21,7 +21,6 @@
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
     "@gen3/core": "0.1.0",
-    "@gen3/components": "0.1.0",
     "@iconify/types": "^2.0.0",
     "@mantine/core": "^6.0.4",
     "@mantine/hooks": "^6.0.4",

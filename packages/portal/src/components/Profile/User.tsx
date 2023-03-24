@@ -6,7 +6,7 @@ const User = () => {
   const { data: userData, isFetching } = useUserAuth();
 
   return (
-    <div>
+    <div className="w-full h-full">
       <LoadingOverlay visible={isFetching} />
       <Card shadow="sm" radius="md" withBorder>
         <Group position="apart" mt="md" mb="xs">

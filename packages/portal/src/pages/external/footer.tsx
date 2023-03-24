@@ -1,21 +1,18 @@
-import { GetStaticProps } from 'next';
-import React from 'react';
-import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
-import Footer, { FooterProps } from '../../../../components/src/Navigation/Footer';
+import { GetStaticProps } from "next";
+import React from "react";
+import { getNavPageLayoutPropsFromConfig } from "../../common/staticProps";
+import Footer, { FooterProps } from "../../components/Navigation/Footer";
 
 const StandaloneFooterPage = (props: FooterProps) => {
-  return (
-    <Footer {...props}/>
-  );
+  return <Footer {...props} />;
 };
 
-
 export const getStaticProps: GetStaticProps = async () => {
-  const {footerProps} = await getNavPageLayoutPropsFromConfig();
+  const { footerProps } = await getNavPageLayoutPropsFromConfig();
   return {
     props: {
-      ...footerProps
-    }
+      ...footerProps,
+    },
   };
 };
 

@@ -1,8 +1,8 @@
-import { FooterProps } from '../../../components/src/Navigation/Footer';
-import { HeaderProps } from '../../../components/src/Navigation/Header';
-import { NavigationProps } from '../../../components/src/Navigation/NavigationBar';
-import { NavPageLayoutProps } from '../../../components/src/Navigation/NavPageLayout';
-import { TopBarProps } from '../../../components/src/Navigation/TopBar';
+import { FooterProps } from '../components/Navigation/Footer';
+import { HeaderProps } from '../components/Navigation/Header';
+import { NavigationProps } from '../components/Navigation/NavigationBar';
+import { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
+import { TopBarProps } from '../components/Navigation/TopBar';
 import ContentSource from '../lib/content';
 
 export const getNavPageLayoutPropsFromConfig = async (): Promise<NavPageLayoutProps> => {

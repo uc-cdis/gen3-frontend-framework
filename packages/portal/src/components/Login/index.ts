@@ -4,5 +4,4 @@ import LoginProvidersPanel from "./LoginProvidersPanel";
 export {
   LoginButton,
   LoginProvidersPanel,
-
 };

@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import NavPageLayout, {
   NavPageLayoutProps,
-} from "../../../../components/src/Navigation/NavPageLayout";
+} from "../../components/Navigation/NavPageLayout";
 import { getNavPageLayoutPropsFromConfig } from "../../common/staticProps";
 import Link from "next/link";
 import Image from "next/image";
