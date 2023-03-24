@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Gen3Link from "./Gen3Link";
-
 interface BottomLinks {
   text: string;
   href: string;
@@ -41,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({
   const { basePath } = useRouter();
   return (
     <React.Fragment>
-      <div className="bg-gen3-coal text-color-white p-4">
+      <div className="bg-primary-lighter text-white p-4">
         <div className="flex flex-row justify-end">
           {(footerLogos || [[]]).map((col, index) => {
             return (

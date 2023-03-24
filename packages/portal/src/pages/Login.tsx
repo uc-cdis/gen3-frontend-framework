@@ -4,12 +4,12 @@ import { showNotification } from "@mantine/notifications";
 import {
   NavPageLayout,
   NavPageLayoutProps,
-  TexturedSidePanel,
+
   LoginProvidersPanel,
 } from "@gen3/components";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
 import { LandingPageProps } from "@/components/Contents/LandingPageContent";
-
+import  TexturedSidePanel  from "@/components/Layout/TexturedSidePanel";
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
 }
@@ -22,7 +22,6 @@ const LoginPage = ({ headerProps, footerProps }: Props) => {
   } = router;
 
   const handleLoginSelected = async (url: string, redirect?: string) => {
-    console.log("redirect", redirect);
     router
       .push(
         url +

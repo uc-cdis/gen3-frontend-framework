@@ -1,9 +1,9 @@
-import babel from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import dts from "rollup-plugin-dts";
 import json from "@rollup/plugin-json";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import postcss from "rollup-plugin-postcss";
+import styles from "rollup-plugin-styles";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -17,8 +17,11 @@ const globals = {
   "next/router": "next/router",
   "@mantine/core": "mantine/core",
   "@gen3/core": "gen3/core",
+  "@iconify/react": "iconify/react",
   "react-icons/fa": "react-icons/fa",
-  "tailwind-styled-components": "tailwind-styled-components",
+  "react-icons/md": "react-icons/md",
+  "mantine-react-table ": "mantine-react-table",
+  "tailwind-styled-components": "tw",
 };
 
 const config = [
@@ -49,8 +52,8 @@ const config = [
       },
     ],
     external: [
+      "react",
       "lodash",
-      "uuid",
       "tailwind-styled-components",
       "next/image",
       "next/link",
@@ -58,18 +61,28 @@ const config = [
       "@mantine/core",
       "@gen3/core",
       "react-icons/fa",
+      "react-icons/md",
+      "@iconify/react",
+      "mantine-react-table",
     ],
     plugins: [
-      peerDepsExternal(),
       typescript({
         sourceMap: !production,
         inlineSources: !production,
       }),
       json(),
-      babel({
-        presets: ["@babel/preset-react"],
-        babelHelpers: "runtime",
+      postcss({
+        config: {
+          path: './postcss.config.js',
+        },
+        modules: true,
+        extensions: ['.css'],
+        minimize: true,
+        inject: {
+          insertAt: 'top',
+        },
       }),
+      styles(),
     ],
   },
   {

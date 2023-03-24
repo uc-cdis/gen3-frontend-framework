@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "@iconify/react";
-import { LoginButton } from "../Login/LoginButton";
+import LoginButton  from "../Login/LoginButton";
 
 export interface NameAndIcon {
   readonly name: string;

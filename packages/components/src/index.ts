@@ -1,3 +1,5 @@
+import "../style/globals.css";
+
 export * from "./Discovery";
 export * from "./Layout";
 export * from "./Login";
