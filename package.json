@@ -1,7 +1,7 @@
 {
   "name": "gen3-frontend-framework",
   "version": "0.1.0",
-  "description": "Prototype of the Gen3 Frontend Framework",
+  "description": "Early version of the  Gen3 Frontend Framework",
   "main": "index.js",
   "private": true,
   "workspaces": [
@@ -20,7 +20,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "@types/jest": "^29.4.0",
     "classnames": "^2.3.1",

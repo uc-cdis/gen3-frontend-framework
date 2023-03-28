@@ -8,12 +8,14 @@ const User = () => {
   return (
     <div className="w-full h-full">
       <LoadingOverlay visible={isFetching} />
+      <div className="flex flex-row justify-end">
       <Card shadow="sm" radius="md" withBorder>
         <Group position="apart" mt="md" mb="xs">
+          <Avatar radius="xl" color="accent.6" ></Avatar>
           <Text weight={500}>{userData?.username}</Text>
-          <Avatar color="accent.2" radius="xl"></Avatar>
         </Group>
       </Card>
+      </div>
     </div>
   );
 };

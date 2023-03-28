@@ -1,42 +1,37 @@
 import { GetServerSideProps } from "next";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
-import ProtectedContent from "@/components/Protected/ProtectedContent";
-import { NavPageLayout,  NavPageLayoutProps } from "@/components/Navigation";
-import { getAuthSession } from "@/lib/session/hooks";
-import type { Session } from "@/lib/session/types";
+import ContentSource from "../lib/content";
+import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
+import Discovery, { DiscoveryProps } from "@/components/Discovery/Discovery";
 
-interface DiscoveryPageProps extends NavPageLayoutProps {
-  href: string;
-  session?: Session | null;
-}
+type DiscoveryPageProps = NavPageLayoutProps & DiscoveryProps;
 
 const DiscoveryPage = ({
   headerProps,
   footerProps,
-  href,
-  session,
+  columns,
+  dataURL,
 }: DiscoveryPageProps) => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <ProtectedContent referer={href}>
-        <div className="flex flex-row justify-between">Coming soon</div>
-      </ProtectedContent>
+      <Discovery columns={columns} dataURL={dataURL} />
     </NavPageLayout>
   );
 };
 
-// change to app NextJS app rounting once fence is out of beta
-
+// change to app NextJS app rounting once this NetxtJS feature is released.
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
-  const session = await getAuthSession(context.req);
-  console.log("session", session);
+  const config = await ContentSource.get("config/siteConfig.json");
+  const discoveryProps: DiscoveryProps = await ContentSource.get(
+    `config/${config.commons}/discovery.json`,
+  );
+
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      href: context.resolvedUrl,
-      session: session,
+      ...discoveryProps,
     },
   };
 };

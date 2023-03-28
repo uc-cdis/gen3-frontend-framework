@@ -1,4 +1,3 @@
-import babel from '@rollup/plugin-babel';
 import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
@@ -25,6 +24,7 @@ const config = [
       {
         file: 'dist/index.js',
         format: 'cjs',
+        globals,
       },
       {
         file: 'dist/index.min.js',
@@ -43,25 +43,14 @@ const config = [
         file: 'dist/index.esm.js',
         format: 'esm',
         name: 'gen3Core',
+        globals,
       },
     ],
-    external: [
-      'lodash',
-      'uuid',
-      'immer',
-      'isomorphic-fetch',
-      'redux',
-      'redux-toolkit',
-      'react-cookie',
-    ],
+    external: Object.keys(globals),
     plugins: [
       peerDepsExternal(),
       typescript(),
       json(),
-      babel({
-        presets: ['@babel/preset-react',],
-        babelHelpers: 'runtime',
-      }),
     ],
   },
   {

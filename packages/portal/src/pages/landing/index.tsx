@@ -24,7 +24,8 @@ const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const landingPage = await ContentSource.get('config/landingPage.json');
+  const config = await ContentSource.get("config/siteConfig.json");
+  const landingPage = await ContentSource.get(`config/${config.commons}/landingPage.json`);
   return {
     props: {
       ...navPageLayoutProps,

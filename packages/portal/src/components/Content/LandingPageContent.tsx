@@ -3,10 +3,9 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-
 import { Title, TitleOrder } from "@mantine/core";
-
 import { IconType } from "react-icons";
+
 import {
   MdFormatQuote,
   MdOutlineSearch,
@@ -14,7 +13,7 @@ import {
   MdGroup,
 } from "react-icons/md";
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from "react-icons/fa";
-import Gen3Link from "packages/components/src/Navigation/Gen3Link";
+import Gen3Link from "@/components/Navigation/Gen3Link";
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -172,18 +171,19 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           return (
             <div
               key={index}
-              className="bg-heal-light_purple sm:p-16 2xl:p-20 text-center sm:mt-16 2xl:mt-20"
+              className="bg-secondary-lightest sm:p-16 2xl:p-20 text-center sm:mt-16 2xl:mt-20"
             >
               <div className="sm:text-3xl 2xl:text-4xl">
+                {component.quoteArea.author ?
                 <MdFormatQuote
                   title="quotation mark"
                   className="inline rotate-180 text-5xl mb-2"
-                />
+                /> : null}
                 {component.quoteArea.quote}
-                <MdFormatQuote
+                {component.quoteArea.author ? <MdFormatQuote
                   title="quotation mark"
                   className="inline text-5xl mt-2"
-                />
+                /> : null}
               </div>
               <div>{component.quoteArea.author}</div>
             </div>

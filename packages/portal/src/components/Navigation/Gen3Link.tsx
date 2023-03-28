@@ -30,7 +30,7 @@ const Gen3Link: React.FC<Gen3LinkProps> = ({
     return (
       <span className={className}>
         <Link href={href}>
-          <a target="_parent">{text}</a>
+          {text}
         </Link>
       </span>
     );

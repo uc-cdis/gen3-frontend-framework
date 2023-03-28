@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import LoginButton  from "../Login/LoginButton";
+import LoginAccountButton from "../Login/LoginAccountButton";
 
 export interface NameAndIcon {
   readonly name: string;
@@ -23,7 +24,7 @@ const TopIconButton: React.FC<NameAndIcon> = ({
       role="button"
     >
       {leftIcon ? <Icon icon={leftIcon} className="text-gen3-white" /> : null}
-      <p className="body-typo text-gen3-white p-2"> {name} </p>
+      <p className="font-content text-white p-2"> {name} </p>
       {rightIcon ? <Icon icon={rightIcon} className="text-gen3-white" /> : null}
     </div>
   );
@@ -54,6 +55,7 @@ const TopBar: React.FC<TopBarProps> = ({
               </a>
             );
           })}
+          {showLogin ? <LoginAccountButton /> : null}
           {showLogin ? <LoginButton /> : null}
         </nav>
       </header>

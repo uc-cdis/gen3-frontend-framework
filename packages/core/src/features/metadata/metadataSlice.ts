@@ -1,8 +1,8 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { coreCreateApi } from "../../api";
 import { Reducer, Middleware } from "@reduxjs/toolkit";
-
-
+import { GEN3_DOMAIN, GEN3_API } from "../../constants";
+import { JSONObject } from "../../types";
 
 
 export interface Metadata {
@@ -26,15 +26,32 @@ interface CrossWalkParams {
   };
 }
 
+interface MetadataResponse {
+  data: Array<JSONObject>;
+  hits: number;
+}
+
 // Define a service using a base URL and expected endpoints
 export const metadataApi = coreCreateApi({
   reducerPath: "metadataApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://brh.data-commons.org/mds/",
+    // baseUrl: "https://brh.data-commons.org/mds/",
+    baseUrl: `${GEN3_DOMAIN}${GEN3_API}/`,
   }),
   endpoints: (builder) => ({
-    getMetadata: builder.query<Metadata, string>({
-      query: () => "aggregate/metadata",
+    getMetadata: builder.query<MetadataResponse, { url?: string, studyKey: string, pageSize:number, offset:number }>({ // TODO: add pagination
+      query: ({ url, offset, pageSize }) => {
+        if (url) {
+          return `${url}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
+        }
+        return "aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}";
+      },
+      transformResponse: (response: Record<string, any>, _meta, params ) => {
+        return {
+          data: response.results.map((x: JSONObject) => (Object.values(x)?.at(0) as JSONObject)[params.studyKey]),
+          hits: response.pagination.hits
+        };
+      },
     }),
     getTags: builder.query<Metadata, string>({
       query: () => "tags",

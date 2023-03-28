@@ -1,8 +1,10 @@
 {
   "navigation": {
-    "logo": "/icons/gen3-dark.svg",
-    "title": "",
-    "href": "/",
+    "logo": {
+    "src": "/icons/gen3-dark.svg",
+      "height":128,
+    "href": "/"
+  },
     "items": [
       {
         "icon": "gen3:query",

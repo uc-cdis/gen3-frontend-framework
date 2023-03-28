@@ -1,13 +1,13 @@
-import tw from "tailwind-styled-components";
+import { Box } from "@mantine/core";
 
-const TexturedSidePanel = tw.div`
-bg-primary-light
-flex
-p-4
-gap-4
-h-screen
-w-min-48
-justify-center
-sticky`;
+interface TexturedSidePanelProps {
+  readonly url?: string;
+}
+const TexturedSidePanel = ({url} : TexturedSidePanelProps) => {
+  return (<Box
+    styles={{ backgroundImage: url } }
+    className="bg-primary-light flex p-4g ap-4 h-screen w-min-48 justify-center sticky">
+  </Box>);
+}
 
 export default TexturedSidePanel;

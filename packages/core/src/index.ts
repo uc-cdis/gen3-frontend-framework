@@ -6,6 +6,8 @@ import {
   Gen3User,
   selectUser,
   fetchUserState,
+  selectUserAuthenticationStatus,
+  selectUserData
 } from "./features/user";
 import { CoreState } from "./reducers";
 
@@ -21,9 +23,11 @@ export {
   useUser,
   useUserAuth,
   selectUser,
+  selectUserData,
   fetchUserState,
   LoginStatus,
   CoreState,
   Gen3User,
+  selectUserAuthenticationStatus,
   GEN3_DOMAIN,
 };

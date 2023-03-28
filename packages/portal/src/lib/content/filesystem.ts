@@ -15,4 +15,5 @@ export class FilesystemContent implements ContentSource {
       throw new Error(`Cannot process ${filepath}`);
     }
   }
+
 }

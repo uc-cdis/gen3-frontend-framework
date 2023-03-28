@@ -120,26 +120,34 @@ export const userReducer = slice.reducer;
 
 export const { resetUserState } = slice.actions;
 
-export interface Gen3USerSelectorResponse<T>
+export interface Gen3UserSelectorResponse<T>
   extends CoreDataSelectorResponse<T> {
   readonly loginStatus: LoginStatus;
+  readonly isAuthenticated: boolean;
 }
 
 export const selectUserData = (
   state: CoreState,
-): Gen3USerSelectorResponse<Gen3User> => {
+): Gen3UserSelectorResponse<Gen3User> => {
   return {
     data: state.user.data,
     status: state.user.status,
     loginStatus: state.user.loginStatus,
     error: state.user.error,
+    isAuthenticated: state.user.loginStatus === "authenticated",
   };
 };
+
+export interface Gen3AuthenticationStatus {
+  readonly isAuthenticated: boolean;
+}
 
 export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
 export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
   state.user.loginStatus;
+
+export const selectUserAuthenticationStatus = ( state: CoreState ) : Gen3AuthenticationStatus => { return { isAuthenticated: state.user.loginStatus === "authenticated"} };
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 

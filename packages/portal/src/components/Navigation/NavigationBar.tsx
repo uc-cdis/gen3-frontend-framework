@@ -29,7 +29,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
             : ""
         }${href}`}
       >
-        <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-heal-primary opacity-80 hover:opacity-100">
+        <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:accent opacity-80 hover:opacity-100">
           <Icon height="27px" icon={icon} className="mt-[2px] ml-[4px]" />
           <p className="content-center pt-1.5 font-montserrat body-typo">
             {name}
@@ -43,19 +43,51 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
   );
 };
 
-export interface NavigationProps {
-  readonly logo?: string;
+interface NavigationBarLogo {
+  readonly src: string;
   readonly title?: string;
-  readonly logoWidth?: number; // TODO: refactor this into configuration
-  readonly logoHeight?: number;
+  readonly description: string;
+  readonly width?: number;
+  readonly height?: number;
+
+  readonly basePath?: string;
+}
+
+const NavigationLogo = ({
+  src,
+  title,
+  description,
+  basePath = "",
+}: NavigationBarLogo) => {
+  return (
+    <div className="relative flex flex-row h-full items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
+      <HoverLink className="w-32 h-full" href={"/"}>
+        <Image
+          className="pr-3 object-contain"
+          fill
+          src={`${basePath}${src}`}
+          alt={description}
+        />
+      </HoverLink>
+      {title && (
+        <div className="border-solid border-base-darker border-l-1 ml-1 mr-3 h-32 w-1 ">
+          <HoverLink
+            className="font-montserrat h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3"
+            href={"/"}
+          ></HoverLink>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export interface NavigationProps {
+  readonly logo?: NavigationBarLogo;
   readonly items: [NavigationButtonProps];
 }
 
 const NavigationBar: React.FC<NavigationProps> = ({
   logo = undefined,
-  title = undefined,
-  logoWidth = 199,
-  logoHeight = 64,
   items,
 }: NavigationProps) => {
   const { basePath } = useRouter();
@@ -63,24 +95,7 @@ const NavigationBar: React.FC<NavigationProps> = ({
   return (
     <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
       <div className="flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
-        {logo && (
-          <HoverLink href={"/"}>
-            <Image
-              className="pr-[6px] pt-4"
-              width={logoWidth}
-              height={logoHeight}
-              src={`${basePath}${logo}`}
-              alt={logo}
-            />
-          </HoverLink>
-        )}
-        {logo && title && (
-          <div className="border-solid border-gen3-smoke border-l-1 ml-[2px] mr-[7px] h-[64px] w-1 " />
-        )}
-        <HoverLink
-          className="font-montserrat h3-typo pt-[4px] text-gen3-coal hover:text-gen3-black hover:border-gen3-highlight_orange hover:border-b-3"
-          href={"/"}
-        >{`${title}`}</HoverLink>
+        {logo && <NavigationLogo {...{ ...logo, basePath }} />}
       </div>
       <div className="flex-grow">{/* middle section of header */}</div>
       <div className="flex flex-row pl-[30px] pr-[20px] ">
