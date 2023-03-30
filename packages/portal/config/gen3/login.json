@@ -12,7 +12,7 @@
   "bottomContent": [
     {
       "text": "If you have any questions about access or the registration process, please contact gen3@datacommons.io.",
-      "className": "text-center text-lg"
+      "className": "text-center text-sm"
     }
   ]
 }

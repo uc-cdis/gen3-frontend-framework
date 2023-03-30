@@ -39,7 +39,7 @@ const LoginPanel = ({
   return (
     <div className="flex flex-row justify-between">
       <TexturedSidePanel />
-      <div className="mt-32 justify-center grow sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
+      <div className="mt-24 justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-180">
         {topContent?.map((content, index) => (
           <TextContent {...content} key={index} />
         ))}

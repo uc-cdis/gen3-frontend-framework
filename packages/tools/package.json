@@ -1,0 +1,28 @@
+{
+  "name": "tools",
+  "version": "0.1.0",
+  "description": "tools for processing portal content",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf src/buildColors/dist src/bundleIcons/dist",
+    "build": "rollup --config rollup.config.js"
+  },
+  "author": "Craig Barnes",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "tinycolor2": "^1.6.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^24.5.2",
+    "jest": "^27.3.1",
+    "rollup-plugin-executable": "^1.6.3",
+    "typescript": "^5.0.2"
+  }
+}

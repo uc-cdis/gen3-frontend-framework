@@ -26,7 +26,7 @@ const colors = Object.fromEntries(
   )
 );
 
-const getCache = (): EmotionCache => {
+const getEmotionCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
     typeof document !== "undefined"
@@ -46,7 +46,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
-        emotionCache={getCache()}
+        emotionCache={getEmotionCache()}
         theme={{
           fontFamily: "Montserrat, Noto Sans, sans-serif",
           colors: {

@@ -2,5 +2,6 @@
   "primary": "#532565",
   "secondary": "#982568",
   "accent": "#E07C3E",
-  "base": "#ffffff"
+  "base": "#ffffff",
+  "ink": "#111111",
 }
