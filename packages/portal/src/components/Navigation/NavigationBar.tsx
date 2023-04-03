@@ -84,6 +84,8 @@ const NavigationLogo = ({
 export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
   readonly items: [NavigationButtonProps];
+
+  readonly title?: string;
 }
 
 const NavigationBar: React.FC<NavigationProps> = ({

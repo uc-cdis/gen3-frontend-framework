@@ -37,6 +37,7 @@
     "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "html-webpack-plugin": "^5.5.0",
+    "jose": "^4.13.1",
     "js-cookie": "^3.0.1",
     "mantine-react-table": "^0.9.5",
     "next": "^13.2.4",

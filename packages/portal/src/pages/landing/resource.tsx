@@ -26,7 +26,8 @@ const ResourcePage = ({headerProps, footerProps, resourcePageConfig}: ResourcePa
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps<ResourcePageProps> = async ( ) => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const resourcePageConfig = await ContentSource.get('config/resource.json') as unknown as ResourcePageConfig;
+  const config = await ContentSource.get("config/siteConfig.json");
+  const resourcePageConfig = await ContentSource.get(`config/${config.commons}/resource.json`) as unknown as ResourcePageConfig;
   return {
     props: {
       ...navPageLayoutProps,

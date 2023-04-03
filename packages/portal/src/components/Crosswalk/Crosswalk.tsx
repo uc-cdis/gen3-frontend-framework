@@ -119,7 +119,7 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
               onClick={() => {
                 if (data)
                   clipboard.copy(
-                    data.mapping.map((x: Record<string, unknown>) => x.to),
+                    data.mapping.map((x: CrosswalkInfo) => x.to),
                   );
               }}
               disabled={crosswalkIds.length == 0}
@@ -133,7 +133,7 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
                 if (data)
                   downloadData(
                     data.mapping
-                      .map((x: Record<string, unknown>) => `${x.from},${x.to}`)
+                      .map((x: CrosswalkInfo) => `${x.from},${x.to}`)
                       .join('\n'),
                   );
               }}
