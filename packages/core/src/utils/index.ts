@@ -7,4 +7,4 @@ import {
 
 export {
   isObject, isString, isNotDefined, isArray,
-}
+};

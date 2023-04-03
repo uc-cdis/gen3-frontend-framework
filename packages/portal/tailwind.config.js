@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-
-// eslint-disable-next-line  @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const plugin = require("tailwindcss/plugin");
 const themer = require( "./src/utils/theme.json" );
