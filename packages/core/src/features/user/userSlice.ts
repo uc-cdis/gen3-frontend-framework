@@ -34,11 +34,9 @@ interface UserProfile {
   sub: string;
   idp: string;
   azp: string[];
-
-};
+}
 
 export type Gen3User = Partial<UserProfile>;
-
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
@@ -147,7 +145,11 @@ export const selectUser = (state: CoreState): Gen3UserState => state.user;
 export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
   state.user.loginStatus;
 
-export const selectUserAuthenticationStatus = ( state: CoreState ) : Gen3AuthenticationStatus => { return { isAuthenticated: state.user.loginStatus === "authenticated"} };
+export const selectUserAuthenticationStatus = (
+  state: CoreState,
+): Gen3AuthenticationStatus => {
+  return { isAuthenticated: state.user.loginStatus === "authenticated" };
+};
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
