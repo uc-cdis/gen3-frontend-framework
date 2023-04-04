@@ -20,12 +20,11 @@ RUN npm install --location=global lerna
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/portal/package.json ./packages/portal/
-RUN apk add --no-cache --virtual .gyp \
+RUN apk add \
         python3 \
         make \
         g++ \
-    && npm ci \
-    && apk del .gyp
+    && npm ci
 COPY ./packages ./packages
 
 RUN lerna run --scope @gen3/core compile
