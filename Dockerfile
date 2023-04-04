@@ -9,7 +9,8 @@ WORKDIR /app
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
-
+ARG BASE_PATH
+ARG NEXT_PUBLIC_PORTAL_BASENAME
 ARG BUILD_SHORT_SHA
 ENV NEXT_PUBLIC_BUILD_SHORT_SHA=$BUILD_SHORT_SHA
 
@@ -19,7 +20,12 @@ RUN npm install --location=global lerna
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/portal/package.json ./packages/portal/
-RUN npm ci
+RUN apk add --no-cache --virtual .gyp \
+        python3 \
+        make \
+        g++ \
+    && npm ci \
+    && apk del .gyp
 COPY ./packages ./packages
 
 RUN lerna run --scope @gen3/core compile
