@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const plugin = require("tailwindcss/plugin");
-const themer = require( "./src/utils/theme.json" );
+const themer = require("./config/theme.json");
 
 module.exports = {
   important: "#__next",
