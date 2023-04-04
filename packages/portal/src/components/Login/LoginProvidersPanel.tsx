@@ -12,7 +12,7 @@ const LoginProvidersPanel = ({
   handleLoginSelected,
   redirectURL,
 }: LoginPanelProps) => {
-  const { data, isSuccess } = useGetLoginProvidersQuery();
+  const { data, isSuccess } = useGetLoginProvidersQuery( { url: "https://healdata.org/"});
 
   if (!isSuccess) {
     return <LoadingOverlay visible={!isSuccess} />;
