@@ -14,6 +14,7 @@
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
     "start": "lerna run --parallel start",
+    "build:start": "npm run build && npm run start",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces"

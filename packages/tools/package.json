@@ -8,7 +8,8 @@
     "lint": "eslint --ext .js,.ts src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf src/buildColors/dist src/bundleIcons/dist",
-    "build": "rollup --config rollup.config.js"
+    "buildTools": "rollup --config rollup.config.js",
+    "build": "echo \"no build. skipping\" && exit 0"
   },
   "author": "Craig Barnes",
   "license": "Apache-2.0",
