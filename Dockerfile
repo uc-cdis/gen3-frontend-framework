@@ -32,8 +32,4 @@ COPY . /gen3
 WORKDIR /gen3/
 
 RUN npm ci
-RUN npm run build
-
-ENV NODE_ENV=production
-
-CMD ["npm", "run", "start"]
+CMD bash ./start.sh
