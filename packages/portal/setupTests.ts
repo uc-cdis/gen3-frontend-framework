@@ -17,7 +17,7 @@ jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
 
-jest.mock("next/config", () => () => ({
+jest.mock("next/conf.d", () => () => ({
   publicRuntimeConfig: {
     basePath: "/v2",
   },

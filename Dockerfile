@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 
-FROM quay.io/cdis/ubuntu:20.04
+FROM quay.io/cdis/ubuntu:20.04 as build
 
 ARG NODE_VERSION=16
 
@@ -47,5 +47,5 @@ RUN lerna run --scope @gen3/core compile
 RUN lerna run --scope @gen3/core build
 RUN lerna run --scope portal build
 
-ENV NODE_ENV=production
+
 CMD ["npm", "run", "start"]
