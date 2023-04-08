@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "Gen3 Portal Application",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 80",
     "dev:inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 80",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
