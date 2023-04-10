@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchFence, Gen3FenceResponse } from "../fence";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import { FENCE_URL } from "../../constants";
+import { GEN3_DOMAIN } from "../../constants";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -55,7 +55,7 @@ export const fetchUserState = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >("fence/user", async () => {
   return await fetchFence({
-    hostname: `${FENCE_URL}`,
+    hostname: `${GEN3_DOMAIN}`,
     endpoint: "/user/user",
     method: "GET",
     headers: {

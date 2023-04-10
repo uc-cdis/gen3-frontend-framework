@@ -23,8 +23,8 @@ export interface Gen3FenceLoginProviders {
 
 export const loginProvidersApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    getLoginProviders: builder.query<Gen3FenceLoginProviders, { url?: string }>({
-      query: ({ url }) => `${url !== undefined ? url : ""}user/login`
+    getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
+      query: () => "user/login"
     }),
   }),
 });
