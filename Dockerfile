@@ -47,5 +47,5 @@ RUN lerna run --scope @gen3/core compile
 RUN lerna run --scope @gen3/core build
 RUN lerna run --scope portal build
 
-
+ENV PORT=80
 CMD ["npm", "run", "start"]
