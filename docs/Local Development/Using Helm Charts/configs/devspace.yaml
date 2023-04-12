@@ -45,3 +45,7 @@ dev:
     resources:
       requests:
         cpu: 0.9
+    patches:
+      - op: replace
+        path: spec.enableServiceLinks
+        value: false
