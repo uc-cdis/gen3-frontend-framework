@@ -1,0 +1,30 @@
+global:
+  dev: true
+  hostname: localhost
+  # set this to gen3ff if you want to use the frontend framework as the root
+  # set to portal if you want to use data-portal as the root. in this case the ff will be at /ff
+  frontendRoot: gen3ff
+fence:
+  FENCE_CONFIG:
+    OPENID_CONNECT:
+      google:
+        client_id: <add google client id>
+        client_secret: <add google client secret>
+
+wts:
+  enabled: false
+
+portal:
+  enabled: false
+
+peregrine:
+  enabled: false
+
+frontend-framework:
+  enabled: true
+
+argo-wrapper:
+  enabled: false
+
+hatchery:
+  enabled: true

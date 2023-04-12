@@ -1,0 +1,47 @@
+version: v2beta1
+vars:
+  GEN3FF_SRC_ROOT:
+    source: env
+    default: ../gen3-frontend-framework
+
+deployments:
+  dev:
+    helm:
+      chart:
+        name: gen3-chart
+        path: ./helm/gen3
+      values:
+        service:
+          port: 80
+      valuesFiles:
+      - values.yaml
+      - user.yaml
+dev:
+  frontend-framework:
+    imageSelector: quay.io/cdis/frontend-framework
+    command: [ "npm" ]
+    args: [ "run", "dev" ]
+    resources:
+      requests:
+        cpu: 0.9
+        memory: 512Mi
+    sync:
+      # Map the local path "./" (= local working directory / project root) to the container path "/gen3"
+      - path: ${GEN3FF_SRC_ROOT}:/gen3
+        printLogs: true
+        excludePaths:
+          - node_modules/
+          - packages/core/dist/
+          - packages/core/node_modules/
+          - packages/portal/.next
+          - portal/node_modules/
+          - tools/node_modules/
+          - .git/
+
+  # restart revproxy to pick up the new service. This is a hack as I don't another way to do it.
+  revproxy:
+    labelSelector:
+      app.kubernetes.io/name: revproxy
+    resources:
+      requests:
+        cpu: 0.9
