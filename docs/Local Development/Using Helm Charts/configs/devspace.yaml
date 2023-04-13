@@ -5,7 +5,7 @@ vars:
     default: ../gen3-frontend-framework
 
 deployments:
-  dev:
+  gen3:
     helm:
       chart:
         name: gen3-chart
@@ -23,8 +23,21 @@ dev:
     args: [ "run", "dev" ]
     resources:
       requests:
-        cpu: 0.9
-        memory: 512Mi
+        cpu: 3.0
+        memory: 1024Mi
+    env: # override this if only running the gen3ff
+      - name: NEXT_PUBLIC_PORTAL_BASENAME
+        value: /
+    patches:
+      - op: replace
+        path: spec.containers[0].readinessProbe.initialDelaySeconds
+        value: 120
+      - op: replace
+        path: spec.containers[0].readinessProbe.periodSeconds
+        value: 120
+      - op: replace
+        path: spec.containers[0].readinessProbe.timeoutSeconds
+        value: 120
     sync:
       # Map the local path "./" (= local working directory / project root) to the container path "/gen3"
       - path: ${GEN3FF_SRC_ROOT}:/gen3
@@ -37,15 +50,3 @@ dev:
           - portal/node_modules/
           - tools/node_modules/
           - .git/
-
-  # restart revproxy to pick up the new service. This is a hack as I don't another way to do it.
-  revproxy:
-    labelSelector:
-      app.kubernetes.io/name: revproxy
-    resources:
-      requests:
-        cpu: 0.9
-    patches:
-      - op: replace
-        path: spec.enableServiceLinks
-        value: false
