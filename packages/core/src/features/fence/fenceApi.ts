@@ -60,7 +60,7 @@ export interface FetchError<T> {
   readonly request?: T;
 }
 
-export const buildFetchError = async <T>(
+const buildFetchError = async <T>(
   res: Response,
   request?: T,
 ): Promise<FetchError<T>> => {

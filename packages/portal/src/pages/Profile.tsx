@@ -5,7 +5,8 @@ import { LandingPageProps } from "@/components/Content/LandingPageContent";
 import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
 import User from "@/components/Profile/User";
 import ProtectedContent from "@/components/Protected/ProtectedContent";
-import { getAuthSession } from "@/lib/session/hooks";
+import Credentials from "@/components/Profile/Credentials";
+import { Divider } from "@mantine/core";
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
@@ -16,8 +17,12 @@ const ProfilePage = ({ headerProps, footerProps }: Props) => {
     <div className="flex flex-col">
       <NavPageLayout {...{ headerProps, footerProps }}>
         <ProtectedContent>
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-col">
+          <div className="flex justify-between">
             <User />
+            </div>
+            <Divider label="Credentials"/>
+            <Credentials />
           </div>
         </ProtectedContent>
       </NavPageLayout>
