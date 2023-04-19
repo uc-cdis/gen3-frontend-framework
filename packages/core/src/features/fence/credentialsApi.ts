@@ -30,7 +30,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken,
+          "x-csrf-token": csrfToken,
         },
         body: {
           scope: ["user", "data"],

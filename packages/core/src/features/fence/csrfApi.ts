@@ -12,7 +12,7 @@ export const csrfApi = gen3Api.injectEndpoints({
       query: () => "_status",
       transformResponse: (response: JSONObject) : CSRFToken  => {
         console.log("response", response);
-        return { csrfToken: response["csrfToken"] as string};
+        return { csrfToken: response["csrf"] as string};
 
         },
     }),
@@ -27,5 +27,5 @@ export const selectCSRFTokenData = csrfApi.endpoints.getCSRF.select();
 
 export const selectCSRFToken = createSelector(
     selectCSRFTokenData,
-    token => token.data?.csrfToken
+    token => token?.data?.csrfToken,
 );

@@ -1,33 +1,35 @@
 import React from "react";
 import { Button, Card, Stack } from "@mantine/core";
-import { useSelector } from "react-redux";
+
 import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   selectCSRFToken,
+  useCoreSelector
 } from "@gen3/core";
 
 const Credentials = () => {
-  const csrfToken = useSelector(state => selectCSRFToken(state));
+  const csrfToken = useCoreSelector(selectCSRFToken);
   const { data: credentials, isLoading } = useGetCredentialsQuery();
-  console.log("csrfToken", csrfToken);
   const [addNewCredential, { isLoading: isNewLoading }] =
-    useAddNewCredentialMutation(csrfToken);
+    useAddNewCredentialMutation();
   return (
     <React.Fragment>
       <Stack>
-        {isLoading || isNewLoading ? (
+        {isLoading  ? (
           <Card>Loading...</Card>
         ) : (
-          credentials?.jtis.map((c: any) => {
-            <Card>
+          credentials?.map((c: any) => {
+            return (
+            <Card key={c.jti}>
               <h3>{c.jti}</h3>
-            </Card>;
+            </Card>
+          )
           })
         )}
         <Button
           onClick={() => {
-            addNewCredential();
+            addNewCredential(csrfToken);
           }}
         >
           Add
