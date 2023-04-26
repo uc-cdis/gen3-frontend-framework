@@ -10,22 +10,18 @@ export const csrfApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getCSRF: builder.query<CSRFToken, void>({
       query: () => "_status",
-      transformResponse: (response: JSONObject) : CSRFToken  => {
-        console.log("response", response);
-        return { csrfToken: response["csrf"] as string};
-
-        },
+      transformResponse: (response: JSONObject): CSRFToken => {
+        return { csrfToken: response["csrf"] as string };
+      },
     }),
   }),
 });
 
-export const {
-  useGetCSRFQuery,
-} = csrfApi;
+export const { useGetCSRFQuery } = csrfApi;
 
 export const selectCSRFTokenData = csrfApi.endpoints.getCSRF.select();
 
 export const selectCSRFToken = createSelector(
-    selectCSRFTokenData,
-    token => token?.data?.csrfToken,
+  selectCSRFTokenData,
+  (token) => token?.data?.csrfToken,
 );

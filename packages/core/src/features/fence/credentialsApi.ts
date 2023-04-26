@@ -2,7 +2,7 @@ import { gen3Api } from "../gen3/gen3Api";
 
 export interface APIKey {
   readonly jti: string;
-  readonly exp: string;
+  readonly exp: number;
 }
 export interface Gen3FenceCredentials {
   readonly jtis: ReadonlyArray<APIKey>;
@@ -12,6 +12,11 @@ export interface Gen3FenceCredentials {
 const credentialsWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ["Credentials"],
 });
+
+interface DeleteCredentialParams {
+  readonly csrfToken: string;
+  readonly id: string;
+}
 
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
@@ -25,7 +30,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
       providesTags: ["Credentials"],
     }),
     addNewCredential: builder.mutation({
-      query: (csrfToken:string) => ({
+      query: (csrfToken: string) => ({
         url: "user/credentials/api",
         method: "POST",
         headers: {
@@ -38,8 +43,22 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
       }),
       invalidatesTags: ["Credentials"],
     }),
+    removeCredential: builder.mutation<void, DeleteCredentialParams>({
+      query: ({ csrfToken, id }) => ({
+        url: `user/credentials/api/${id}`,
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
+        },
+      }),
+      invalidatesTags: ["Credentials"],
+    }),
   }),
 });
 
-export const { useGetCredentialsQuery, useAddNewCredentialMutation } =
-  credentialsApi;
+export const {
+  useGetCredentialsQuery,
+  useAddNewCredentialMutation,
+  useRemoveCredentialMutation,
+} = credentialsApi;

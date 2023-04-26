@@ -10,7 +10,6 @@ export {
 };
 
 /**
- * @param {number} seconds
  * @returns {string} formatted time
  */
 export function now(): number {
@@ -25,4 +24,8 @@ export function hashCode(str: string) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
   return hash;
+}
+// convert unix timestamp to date time string
+export function unixTimeToString(unixTime: number): string {
+    return new Date(unixTime * 1000).toLocaleString();
 }

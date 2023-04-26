@@ -25,7 +25,8 @@
       "@/components/*": ["src/components/*"],
       "@/features/*": ["src/features/*"],
       "@/lib/*": ["src/lib/*"],
-      "@/types/*": ["src/types/*"]
+      "@/types/*": ["src/types/*"],
+        "@/utils/*": ["src/utils/*"],
     }
   },
   "include": [

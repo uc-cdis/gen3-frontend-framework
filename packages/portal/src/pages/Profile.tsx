@@ -1,5 +1,5 @@
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
 import { LandingPageProps } from "@/components/Content/LandingPageContent";
 import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
@@ -21,7 +21,9 @@ const ProfilePage = ({ headerProps, footerProps }: Props) => {
           <div className="flex justify-between">
             <User />
             </div>
-            <Divider label="Credentials"/>
+            <Divider  size="xl" label="Credentials"
+                      labelProps={{ size:"xl"}}
+            />
             <Credentials />
           </div>
         </ProtectedContent>
@@ -32,7 +34,7 @@ const ProfilePage = ({ headerProps, footerProps }: Props) => {
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async (context) => {
+> = async () => {
 
   return {
     props: {

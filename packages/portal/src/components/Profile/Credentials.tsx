@@ -5,35 +5,34 @@ import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   selectCSRFToken,
-  useCoreSelector
+  useCoreSelector,
 } from "@gen3/core";
+
+import CredentialsTable from "@/components/Profile/CredentialsTable";
 
 const Credentials = () => {
   const csrfToken = useCoreSelector(selectCSRFToken);
-  const { data: credentials, isLoading } = useGetCredentialsQuery();
+  const { isLoading } = useGetCredentialsQuery();
   const [addNewCredential, { isLoading: isNewLoading }] =
     useAddNewCredentialMutation();
+
   return (
     <React.Fragment>
-      <Stack>
-        {isLoading  ? (
+      <Stack className="w-1/2 p-2">
+        {isLoading || isNewLoading ? (
           <Card>Loading...</Card>
         ) : (
-          credentials?.map((c: any) => {
-            return (
-            <Card key={c.jti}>
-              <h3>{c.jti}</h3>
-            </Card>
-          )
-          })
+          <CredentialsTable />
         )}
-        <Button
-          onClick={() => {
-            addNewCredential(csrfToken);
-          }}
-        >
-          Add
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            onClick={() => {
+              if (csrfToken) addNewCredential(csrfToken);
+            }}
+          >
+            Add Credentials
+          </Button>
+        </div>
       </Stack>
     </React.Fragment>
   );
