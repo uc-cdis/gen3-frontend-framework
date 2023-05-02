@@ -6,12 +6,13 @@ import {
   useAddNewCredentialMutation,
   selectCSRFToken,
   useCoreSelector,
+  CoreState,
 } from "@gen3/core";
 
 import CredentialsTable from "@/components/Profile/CredentialsTable";
 
 const Credentials = () => {
-  const csrfToken = useCoreSelector(selectCSRFToken);
+  const csrfToken = useCoreSelector((state : CoreState) => selectCSRFToken(state))
   const { isLoading } = useGetCredentialsQuery();
   const [addNewCredential, { isLoading: isNewLoading }] =
     useAddNewCredentialMutation();

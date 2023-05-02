@@ -3,7 +3,6 @@ import {
   createDispatchHook,
   createSelectorHook,
   createStoreHook,
-  useSelector,
   ReactReduxContextValue,
   TypedUseSelectorHook,
 } from "react-redux";
@@ -29,8 +28,6 @@ export const CoreContext = React.createContext(
 
 export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);
-
-export const useApiSelector: TypedUseSelectorHook<CoreState> = useSelector;
 
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
