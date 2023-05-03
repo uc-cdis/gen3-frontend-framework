@@ -1,0 +1,3 @@
+.DS_Store
+node_modules
+pacakges/portal/.next/cache/*
