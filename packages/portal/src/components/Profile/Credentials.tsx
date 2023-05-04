@@ -6,13 +6,13 @@ import {
   useAddNewCredentialMutation,
   selectCSRFToken,
   useCoreSelector,
-  CoreState,
+  CoreState, useGetCSRFQuery,
 } from "@gen3/core";
 
 import CredentialsTable from "@/components/Profile/CredentialsTable";
 
 const Credentials = () => {
-  const csrfToken = useCoreSelector((state : CoreState) => selectCSRFToken(state))
+  const { data: csrfToken } = useGetCSRFQuery();
   const { isLoading } = useGetCredentialsQuery();
   const [addNewCredential, { isLoading: isNewLoading }] =
     useAddNewCredentialMutation();
@@ -28,7 +28,7 @@ const Credentials = () => {
         <div className="flex justify-center">
           <Button
             onClick={() => {
-              if (csrfToken) addNewCredential(csrfToken);
+              if (csrfToken) addNewCredential(csrfToken.csrfToken);
             }}
           >
             Add Credentials

@@ -3,6 +3,7 @@ import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import { swc } from 'rollup-plugin-swc3';
 
 const globals = {
   react: 'React',
@@ -49,9 +50,19 @@ const config = [
     external: Object.keys(globals),
     plugins: [
       peerDepsExternal(),
-      typescript(),
       json(),
+      swc({
+        // All options are optional
+        include: /\.[mc]?[jt]sx?$/, // default
+        exclude: /node_modules/, // default
+        tsconfig: 'tsconfig.json', // default
+        // tsconfig: false, // You can also prevent `rollup-plugin-swc` from reading tsconfig.json, see below
+        // And add your swc configuration here!
+        // "filename" will be ignored since it is handled by rollup
+        jsc: {}
+      }),
     ],
+
   },
   {
     input: './dist/dts/index.d.ts',

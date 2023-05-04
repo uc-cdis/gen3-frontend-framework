@@ -19,7 +19,9 @@ const DiscoveryPage = ({
   );
 };
 
-// change to app NextJS app rounting once this NetxtJS feature is released.
+// change to app NextJS app routing once this NextJS feature is released.
+// NextJS 13 will support app routing, which will allow us to use the same
+// page for all pages, and pass in the props for each page.
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
