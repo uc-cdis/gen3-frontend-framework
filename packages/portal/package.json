@@ -89,6 +89,16 @@
     "style-loader": "^3.3.2",
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.3",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "@rollup/plugin-json": "^5.0.2",
+    "@rollup/plugin-terser": "^0.1.0",
+    "@types/estree": "^1.0.0",
+    "@types/isomorphic-fetch": "^0.0.36",
+    "@types/lodash": "^4.14.191",
+    "@types/uuid": "^9.0.0",
+    "eslint": "^8.36.0",
+    "rollup": "^3.20.1",
+    "rollup-plugin-dts": "^5.0.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4"
   }
 }

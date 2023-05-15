@@ -11,10 +11,7 @@
   "scripts": {
     "compile": "tsc",
     "clean": "rimraf dist",
-    "dev:swc": "npm build:swc -w",
-    "build": "rm -rf dist && npm build:swc && npm types",
-    "build:swc": "swc src -d dist",
-    "types": "tsc --emitDeclarationOnly",
+    "build": "rollup --config rollup.config.mjs",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
     "build:watch": "npm run compile && npm run build -- --watch",
     "test": "jest unit",
@@ -32,11 +29,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.18.6",
-    "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-terser": "^0.1.0",
-    "@rollup/plugin-typescript": "^10.0.1",
     "@types/estree": "^1.0.0",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/lodash": "^4.14.191",
