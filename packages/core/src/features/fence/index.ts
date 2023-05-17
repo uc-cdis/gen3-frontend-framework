@@ -2,6 +2,8 @@ import {
   type FetchError,
   type FetchRequest,
   type Gen3FenceResponse,
+  type Gen3LoginProvider,
+  type NameUrl,
   fetchFence,
   useGetLoginProvidersQuery,
 } from "./fenceApi";
@@ -25,6 +27,8 @@ export {
   type FetchRequest,
   type APIKey,
   type Gen3FenceCredentials,
+  type Gen3LoginProvider,
+  type NameUrl,
   fetchFence,
   useGetCSRFQuery,
   useGetCredentialsQuery,

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
+import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
 import ContentSource from "../lib/content";
 import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
 import Discovery, { DiscoveryProps } from "@/components/Discovery/Discovery";

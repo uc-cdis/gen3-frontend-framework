@@ -3,7 +3,7 @@ import ContentSource from '../../lib/content';
 
 import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
 import ResourcePageContent, {ResourcePageConfig} from '../../components/Content/ResourcePageContent';
-import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
 
 interface ResourcePageProps extends NavPageLayoutProps {
     resourcePageConfig: ResourcePageConfig

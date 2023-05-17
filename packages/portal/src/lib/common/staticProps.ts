@@ -1,9 +1,9 @@
-import { FooterProps } from '../components/Navigation/Footer';
-import { HeaderProps } from '../components/Navigation/Header';
-import { NavigationProps } from '../components/Navigation/NavigationBar';
-import { NavPageLayoutProps } from '../components/Navigation/NavPageLayout';
-import { TopBarProps } from '../components/Navigation/TopBar';
-import ContentSource from '../lib/content';
+import { FooterProps } from '@/components/Navigation/Footer';
+import { HeaderProps } from '@/components/Navigation/Header';
+import { NavigationProps } from '@/components/Navigation/NavigationBar';
+import { NavPageLayoutProps } from '@/components/Navigation/NavPageLayout';
+import { TopBarProps } from '@/components/Navigation/TopBar';
+import ContentSource from '../content';
 import { JSONObject } from "@gen3/core";
 
 export const getNavPageLayoutPropsFromConfig = async (): Promise<NavPageLayoutProps> => {

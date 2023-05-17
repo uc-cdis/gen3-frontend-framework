@@ -1,34 +1,39 @@
 import { Button, Table } from "@mantine/core";
 import {
-    useGetCredentialsQuery,
-    Gen3FenceCredentials,
-    useRemoveCredentialMutation, useCoreSelector, selectCSRFToken
+  useGetCredentialsQuery,
+  useRemoveCredentialMutation,
+  APIKey,
+  useGetCSRFQuery,
 } from "@gen3/core";
 import { unixTimeToString } from "@/utils/index";
 import { MdDelete as DeleteIcon } from "react-icons/md";
 
 const CredentialsTable = () => {
-    const csrfToken = useCoreSelector(selectCSRFToken);
+  const { data: csrfToken } = useGetCSRFQuery();
   const { data: credentials } = useGetCredentialsQuery();
-    const [removeCredential] =
-        useRemoveCredentialMutation();
+  const [removeCredential] = useRemoveCredentialMutation();
 
-  const rows = credentials?.map((c: Gen3FenceCredentials) => (
-    <tr key={c.jti}>
-      <td>{c.jti}</td>
-      <td>{unixTimeToString(c.exp)}</td>
-      <td>
-          <Button leftIcon={<DeleteIcon />} onClick={
-                () => removeCredential( {
-                    csrfToken: csrfToken,
-                    id: c.jti,
+  const rows = credentials
+    ? credentials.map((c: APIKey) => (
+        <tr key={c.jti}>
+          <td>{c.jti}</td>
+          <td>{unixTimeToString(c.exp)}</td>
+          <td>
+            <Button
+              leftIcon={<DeleteIcon />}
+              onClick={() =>
+                removeCredential({
+                  csrfToken: csrfToken?.csrfToken ?? "",
+                  id: c.jti,
                 })
-          }>
+              }
+            >
               Delete
-          </Button>
-      </td>
-    </tr>
-  ));
+            </Button>
+          </td>
+        </tr>
+      ))
+    : [];
 
   return (
     <Table striped highlightOnHover withBorder>

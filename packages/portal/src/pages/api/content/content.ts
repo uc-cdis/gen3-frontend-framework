@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getNavPageLayoutPropsFromConfig } from "../../../common/staticProps";
+import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
 
 export default async function (
   req: NextApiRequest,

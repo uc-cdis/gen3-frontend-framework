@@ -3,7 +3,7 @@ import { GetStaticProps } from 'next';
 // if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
 import LandingPageContent, { LandingPageProps } from '../../components/Content/LandingPageContent';
-import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
 

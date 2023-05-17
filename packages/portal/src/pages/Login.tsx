@@ -3,7 +3,7 @@ import {
   NavPageLayout,
   NavPageLayoutProps,
 } from "@/components/Navigation";
-import { getNavPageLayoutPropsFromConfig } from "../common/staticProps";
+import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
 import ContentSource from "@/lib/content";
 import LoginPanel, { LoginPanelProps } from "@/components/Login/LoginPanel";
 

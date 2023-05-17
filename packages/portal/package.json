@@ -1,5 +1,5 @@
 {
-  "name": "portal",
+  "name": "@gen3/portal",
   "version": "0.1.0",
   "description": "Gen3 Portal Application",
   "scripts": {
@@ -12,7 +12,8 @@
     "test:int": "echo No integrations tests yet",
     "test:all": "jest",
     "build_icons": "node --trace-warnings src/tools/build_icon_bundle.mjs --inpath=config/icons --outpath=config/icons",
-    "build:colors": "tsc src/tools/buildColors/buildColors.ts"
+    "build:colors": "tsc src/tools/buildColors/buildColors.ts",
+    "buildpkg": "rollup --config rollup.config.mjs"
   },
   "keywords": [],
   "author": "",
