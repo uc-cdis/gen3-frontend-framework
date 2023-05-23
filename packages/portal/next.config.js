@@ -10,7 +10,7 @@ const withMDX = require('@next/mdx')({
 
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config, options) => {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       issuer:
@@ -20,7 +20,20 @@ const nextConfig = {
 
     return config;
   },
-  basePath: process.env.BASE_PATH || ''
+  basePath: process.env.BASE_PATH || '',
+  async headers() {
+    return [
+      {
+        source: '/(.*)?', // Matches all pages
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          }
+        ]
+      }
+    ];
+  }
 };
 
 module.exports = withPlugins([
