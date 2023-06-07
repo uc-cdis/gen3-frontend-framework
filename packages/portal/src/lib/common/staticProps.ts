@@ -1,10 +1,6 @@
-import { FooterProps } from '@/components/Navigation/Footer';
-import { HeaderProps } from '@/components/Navigation/Header';
-import { NavigationProps } from '@/components/Navigation/NavigationBar';
-import { NavPageLayoutProps } from '@/components/Navigation/NavPageLayout';
-import { TopBarProps } from '@/components/Navigation/TopBar';
+import {FooterProps, HeaderProps, NavigationProps, NavPageLayoutProps, TopBarProps} from '@/components/Navigation';
 import ContentSource from '../content';
-import { JSONObject } from "@gen3/core";
+import {JSONObject} from "@gen3/core";
 
 export const getNavPageLayoutPropsFromConfig = async (): Promise<NavPageLayoutProps> => {
   const config = await ContentSource.get('config/siteConfig.json');

@@ -85,14 +85,14 @@ module.exports = {
     }),
     plugin(function ({ addVariant }) {
       // add mantine.dev variants
-      addVariant("data-checked", "&[data-checked]");
-      addVariant("data-active", "&[data-active]");
-      addVariant("data-selected", "&[data-selected]");
-      addVariant("data-hovered", "&[data-hovered]");
-      addVariant("data-disabled", "&[data-disabled]");
-      addVariant("data-in-range", "&[data-in-range]");
-      addVariant("data-first-in-range", "&[data-first-in-range]");
-      addVariant("data-last-in-range", "&[data-last-in-range]");
+      addVariant("api-checked", "&[api-checked]");
+      addVariant("api-active", "&[api-active]");
+      addVariant("api-selected", "&[api-selected]");
+      addVariant("api-hovered", "&[api-hovered]");
+      addVariant("api-disabled", "&[api-disabled]");
+      addVariant("api-in-range", "&[api-in-range]");
+      addVariant("api-first-in-range", "&[api-first-in-range]");
+      addVariant("api-last-in-range", "&[api-last-in-range]");
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {

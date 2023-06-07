@@ -7,10 +7,10 @@ import "@iconify/types";
 import React from "react";
 import { MantineProvider,
   createEmotionCache,
-  EmotionCache,} from "@mantine/core";
+  EmotionCache} from "@mantine/core";
 import { coreStore, csrfApi } from "@gen3/core";
 import tailwindConfig from "../../tailwind.config";
-import { TenStringArray } from "../utils/types";
+import { TenStringArray } from "@/utils/types";
 import { SessionProvider } from "@/lib/session/session";
 import { Notifications } from '@mantine/notifications';
 
@@ -31,7 +31,7 @@ const getEmotionCache = (): EmotionCache => {
   const insertionPoint =
     typeof document !== "undefined"
       ? document.querySelectorAll<HTMLElement>(
-        'style[data-emotion="css-global"]',
+        'style[api-emotion="css-global"]',
       )?.[-1]
       : undefined;
 

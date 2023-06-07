@@ -155,7 +155,7 @@ export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
 /**
  * Hook to return get the authenticated state of the user and if logged in,
- * the user's profile and access data.
+ * the user's profile and access api.
  * Note that if fetchUserState gets called, the user's session is renewed.
  */
 export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {

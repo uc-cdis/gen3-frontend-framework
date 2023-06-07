@@ -10,9 +10,13 @@ const withMDX = require("@next/mdx")({
 });
 
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: process.env.BASE_PATH || "",
+  experimental: {
+    serverActions: true,
+  }
 };
 
 module.exports = withMDX(nextConfig);

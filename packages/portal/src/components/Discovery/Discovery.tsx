@@ -16,7 +16,6 @@ interface ColumnDefiniton {
 export interface DiscoveryProps {
   readonly columns: Array<ColumnDefiniton>;
   readonly dataURL?: string; // Override the default MDS URL
-
   readonly studyKey?: string; // Override the default MDS key
 }
 const Discovery = ({ columns, dataURL, studyKey }: DiscoveryProps) => {
@@ -31,9 +30,11 @@ const Discovery = ({ columns, dataURL, studyKey }: DiscoveryProps) => {
     offset: pagination.pageIndex * pagination.pageSize,
   });
 
+
   return (
     <div className="flex flex-col items-center p-2 m-2">
       <div className="flex flex-col w-full">
+
         <MantineReactTable
           columns={columns}
           data={data?.data ?? []}

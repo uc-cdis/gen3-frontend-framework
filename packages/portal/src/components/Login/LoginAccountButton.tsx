@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { UnstyledButton } from "@mantine/core";
 import { useRouter } from "next/router";

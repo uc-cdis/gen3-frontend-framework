@@ -1,34 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import Gen3Link from "./Gen3Link";
-interface BottomLinks {
-  text: string;
-  href: string;
-}
-
-interface ColumnLinks {
-  heading: string;
-  items: ReadonlyArray<{
-    text: string;
-    href?: string;
-    linkType: "gen3ff" | "portal" | undefined;
-  }>;
-}
-
-interface FooterLogo {
-  readonly logo: string;
-  readonly description: string;
-  readonly width: number;
-  readonly height: number;
-}
-
-export interface FooterProps {
-  readonly bottomLinks?: ReadonlyArray<BottomLinks>;
-  readonly columnLinks?: ReadonlyArray<ColumnLinks>;
-  readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-  readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-}
+import {FooterProps} from "@/components/Navigation/types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Footer: React.FC<FooterProps> = ({
@@ -37,7 +10,6 @@ const Footer: React.FC<FooterProps> = ({
   footerLogos,
   footerRightLogos,
 }: FooterProps) => {
-  const { basePath } = useRouter();
   return (
     <React.Fragment>
       <div className="bg-primary-lighter text-white p-4">
@@ -52,8 +24,8 @@ const Footer: React.FC<FooterProps> = ({
               >
                 {col.map((logo) => (
                   <Image
-                    key={`${basePath}/icons/${logo.logo}`}
-                    src={`${basePath}/icons/${logo.logo}`}
+                    key={`icons/${logo.logo}`}
+                    src={`icons/${logo.logo}`}
                     layout="fixed"
                     width={logo.width}
                     height={logo.height}
@@ -100,8 +72,8 @@ const Footer: React.FC<FooterProps> = ({
             >
               {col.map((logo) => (
                 <Image
-                  key={`${basePath}/icons/${logo.logo}`}
-                  src={`${basePath}/icons/${logo.logo}`}
+                  key={`/icons/${logo.logo}`}
+                  src={`/icons/${logo.logo}`}
                   layout="fixed"
                   width={logo.width}
                   height={logo.height}

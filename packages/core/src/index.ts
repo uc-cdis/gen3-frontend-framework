@@ -1,4 +1,4 @@
-import { GEN3_DOMAIN } from "./constants";
+import { GEN3_DOMAIN } from './constants';
 import {
   useUser,
   useUserAuth,
@@ -7,17 +7,18 @@ import {
   selectUser,
   fetchUserState,
   selectUserAuthenticationStatus,
-  selectUserData
-} from "./features/user";
-import { type CoreState } from "./reducers";
+  selectUserData,
+} from './features/user';
+import { type CoreState } from './reducers';
 
-export * from "./types";
-export * from "./store";
-export * from "./hooks";
-export * from "./dataAccess";
-export * from "./provider";
-export * from "./features/metadata/metadataSlice";
-export * from "./features/fence";
+export * from './types';
+export * from './store';
+export * from './hooks';
+export * from './dataAccess';
+export * from './provider';
+export * from './features/metadata/metadataSlice';
+export * from './features/fence';
+export { gen3Api } from './features/gen3';
 
 export {
   useUser,

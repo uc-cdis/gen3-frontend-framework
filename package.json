@@ -6,7 +6,8 @@
   "private": true,
   "workspaces": [
     "packages/core",
-    "packages/portal"
+    "packages/portal",
+    "packages/crosswalk"
   ],
   "scripts": {
     "lint": "eslint .",

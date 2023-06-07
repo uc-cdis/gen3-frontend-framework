@@ -1,0 +1,6 @@
+src
+node_modules
+__tests__
+rollup.config.js
+tsconfig.*
+.swcrc

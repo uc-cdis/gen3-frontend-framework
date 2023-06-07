@@ -1,7 +1,8 @@
 import { GetStaticProps } from "next";
 import React from "react";
 import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
-import Footer, { FooterProps } from "../../components/Navigation/Footer";
+import Footer from "../../components/Navigation/Footer";
+import {FooterProps} from "@/components/Navigation";
 
 const StandaloneFooterPage = (props: FooterProps) => {
   return <Footer {...props} />;

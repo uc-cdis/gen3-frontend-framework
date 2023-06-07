@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Icon } from "@iconify/react";
 import LoginButton  from "../Login/LoginButton";

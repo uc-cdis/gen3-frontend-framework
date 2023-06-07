@@ -1,17 +1,20 @@
 // import all components and then export them
-import Footer, { type FooterProps } from "./Footer";
+import Footer from "./Footer";
 import Gen3Link from "./Gen3Link";
 import Header, { type HeaderProps } from "./Header";
 import HoverLink from "./HoverLink";
-import NavigationBar, { type NavigationProps } from "./NavigationBar";
+import NavigationBar from "./NavigationBar";
 import NavigationButton from "./NavigationButton";
 import NavPageLayout, { type NavPageLayoutProps } from "./NavPageLayout";
+import {type TopBarProps} from "@/components/Navigation/TopBar";
+import {FooterProps, NavigationProps} from "@/components/Navigation/types";
 
 export {
   type FooterProps,
   type HeaderProps,
   type NavigationProps,
   type NavPageLayoutProps,
+    type TopBarProps,
   Footer,
   Gen3Link,
   Header,

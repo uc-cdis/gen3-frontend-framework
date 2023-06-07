@@ -1,6 +1,7 @@
 import React from "react";
 import TopBar, { TopBarProps } from "./TopBar";
-import NavigationBar, { NavigationProps } from "./NavigationBar";
+import NavigationBar from "./NavigationBar";
+import {NavigationProps} from "@/components/Navigation/types";
 
 export interface HeaderProps {
   readonly top: TopBarProps;

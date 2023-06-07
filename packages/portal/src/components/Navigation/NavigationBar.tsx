@@ -1,16 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { Icon } from "@iconify/react";
+import {Icon} from "@iconify/react";
 import HoverLink from "./HoverLink";
-
-export interface NavigationButtonProps {
-  readonly icon: string;
-  readonly tooltip: string;
-  readonly href: string;
-  readonly name: string;
-}
+import {NavigationBarLogo, NavigationButtonProps, NavigationProps} from "@/components/Navigation/types";
 
 const NavigationButton: React.FC<NavigationButtonProps> = ({
   tooltip,
@@ -43,16 +36,6 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
   );
 };
 
-interface NavigationBarLogo {
-  readonly src: string;
-  readonly title?: string;
-  readonly description: string;
-  readonly width?: number;
-  readonly height?: number;
-
-  readonly basePath?: string;
-}
-
 const NavigationLogo = ({
   src,
   title,
@@ -81,23 +64,15 @@ const NavigationLogo = ({
   );
 };
 
-export interface NavigationProps {
-  readonly logo?: NavigationBarLogo;
-  readonly items: [NavigationButtonProps];
-
-  readonly title?: string;
-}
-
 const NavigationBar: React.FC<NavigationProps> = ({
   logo = undefined,
   items,
 }: NavigationProps) => {
-  const { basePath } = useRouter();
 
   return (
     <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
       <div className="flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
-        {logo && <NavigationLogo {...{ ...logo, basePath }} />}
+        {logo && <NavigationLogo {...{ ...logo }} />}
       </div>
       <div className="flex-grow">{/* middle section of header */}</div>
       <div className="flex flex-row pl-[30px] pr-[20px] ">
