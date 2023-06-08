@@ -40,13 +40,13 @@
   },
   "overrides": {
     "gauge": {
-      "ansi-regex": "3.0.1",
+      "ansi-regex": "^3.0.1",
       "strip-ansi": {
-        "ansi-regex": "3.0.1"
+        "ansi-regex": "^3.0.1"
       }
     },
     "pretty-format": {
-      "ansi-regex": "5.0.1"
+      "ansi-regex": "^5.0.1"
     }
   }
 }
