@@ -72,8 +72,8 @@ const Footer: React.FC<FooterProps> = ({
             >
               {col.map((logo) => (
                 <Image
-                  key={`/icons/${logo.logo}`}
-                  src={`/icons/${logo.logo}`}
+                  key={`icons/${logo.logo}`}
+                  src={`icons/${logo.logo}`}
                   layout="fixed"
                   width={logo.width}
                   height={logo.height}

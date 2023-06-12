@@ -29,7 +29,7 @@
     "build": "rollup --config rollup.config.mjs",
     "copy-tailwind": "mkdir -p dist && cp src/tailwind.cjs dist/tailwind.cjs",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
-    "build:swc": "copy-tailwind && swc src -d dist"
+    "build:swc": "npm run copy-tailwind && swc src -d dist"
   },
   "bugs": {
     "url": "https://github.com/uc-cdis/gen3-frontend-framework/issues"

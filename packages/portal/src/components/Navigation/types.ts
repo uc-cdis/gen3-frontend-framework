@@ -19,7 +19,7 @@ interface FooterLogo {
     readonly height: number;
 }
 
-export interface FooterProps {
+ export interface FooterProps {
     readonly bottomLinks?: ReadonlyArray<BottomLinks>;
     readonly columnLinks?: ReadonlyArray<ColumnLinks>;
     readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
@@ -39,13 +39,11 @@ export interface NavigationBarLogo {
     readonly description: string;
     readonly width?: number;
     readonly height?: number;
-
     readonly basePath?: string;
 }
 
 export interface NavigationProps {
     readonly logo?: NavigationBarLogo;
     readonly items: [NavigationButtonProps];
-
     readonly title?: string;
 }

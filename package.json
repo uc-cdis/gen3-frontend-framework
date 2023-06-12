@@ -1,7 +1,7 @@
 {
   "name": "gen3-frontend-framework",
   "version": "0.1.0",
-  "description": "Early version of the  Gen3 Frontend Framework",
+  "description": "Early version of the Gen3 Frontend Framework",
   "main": "index.js",
   "private": true,
   "workspaces": [
@@ -32,7 +32,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-carousel": "^3.2.23",
-    "ts-jest": "^29.0.5",
+
     "url-join": "^5.0.0"
   },
   "devDependencies": {
@@ -48,6 +48,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "jest-canvas-mock": "^2.4.0",
     "jest-environment-jsdom": "^29.4.3",
+    "ts-jest": "^29.0.5",
     "lerna": "^6.1.0",
     "prettier": "^2.7.1",
     "terser-webpack-plugin": "^5.3.3",

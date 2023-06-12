@@ -2,19 +2,23 @@ import { GetStaticProps } from 'next';
 
 // if we want to use MDX
 // import LandingPageMDX from "../../content/landing.mdx"
-import LandingPageContent, { LandingPageProps } from '../../components/Content/LandingPageContent';
+import LandingPageContent, {
+  LandingPageProps,
+} from '../../components/Content/LandingPageContent';
 import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
 import ContentSource from '../../lib/content';
-import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
+import NavPageLayout, {
+  NavPageLayoutProps,
+} from '../../components/Navigation/NavPageLayout';
 
 interface Props extends NavPageLayoutProps {
-    landingPage: LandingPageProps
+  landingPage: LandingPageProps;
 }
 
 const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
   return (
-    <NavPageLayout {...{footerProps, headerProps}}>
-      <div className='flex flex-row justify-items-center'>
+    <NavPageLayout {...{ footerProps, headerProps }}>
+      <div className="flex flex-row justify-items-center">
         <LandingPageContent content={landingPage} />
       </div>
     </NavPageLayout>
@@ -24,13 +28,15 @@ const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const config = await ContentSource.get("config/siteConfig.json");
-  const landingPage = await ContentSource.get(`config/${config.commons}/landingPage.json`);
+  const config = await ContentSource.get('config/siteConfig.json');
+  const landingPage = await ContentSource.get(
+    `config/${config.commons}/landingPage.json`,
+  );
   return {
     props: {
       ...navPageLayoutProps,
-      landingPage
-    }
+      landingPage,
+    },
   };
 };
 

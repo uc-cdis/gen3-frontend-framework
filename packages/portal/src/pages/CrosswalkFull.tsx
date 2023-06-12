@@ -1,24 +1,24 @@
-import { GetStaticProps } from "next";
-import ConfigurableCrosswalk from "../components/Crosswalk/ConfigurableCrosswalk";
-import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
-import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
+import { GetStaticProps } from 'next';
+import ConfigurableCrosswalk from '../components/Crosswalk/ConfigurableCrosswalk';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import { NavPageLayout, NavPageLayoutProps } from '@/components/Navigation';
 
 const CrosswalkConfig = {
   N3C: {
-    title: "MIDRC to N3C",
-    guidField: "n3c_crosswalk",
-    fromTitle: "Enter your MIDRC Ids",
-    toTitle: "Matching N3C IDs",
-    fromField: "midrc_id",
-    toField: "n3c_id",
+    title: 'MIDRC to N3C',
+    guidField: 'n3c_crosswalk',
+    fromTitle: 'Enter your MIDRC Ids',
+    toTitle: 'Matching N3C IDs',
+    fromField: 'midrc_id',
+    toField: 'n3c_id',
   },
   Petal: {
-    title: "BDCat to MIDRC",
-    guidField: "petal_crosswalk",
-    fromTitle: "Enter your BDCat Ids",
-    toTitle: "Matching MIDRC IDs",
-    fromField: "bdcat_id",
-    toField: "midrc_id",
+    title: 'BDCat to MIDRC',
+    guidField: 'petal_crosswalk',
+    fromTitle: 'Enter your BDCat Ids',
+    toTitle: 'Matching MIDRC IDs',
+    fromField: 'bdcat_id',
+    toField: 'midrc_id',
   },
 };
 
@@ -27,8 +27,8 @@ const CrosswalkFullPage = ({
   footerProps,
 }: NavPageLayoutProps) => {
   console.log(
-    "rendering CrosswalkFullPage",
-    typeof window === "undefined" ? "server" : "client",
+    'rendering CrosswalkFullPage',
+    typeof window === 'undefined' ? 'server' : 'client',
   );
   return (
     <div className="flex flex-col">

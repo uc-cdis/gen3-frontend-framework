@@ -1,4 +1,3 @@
-
 export type TenStringArray = [
   string?,
   string?,

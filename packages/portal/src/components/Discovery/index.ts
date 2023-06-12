@@ -1,6 +1,4 @@
-import Discovery from "./Discovery";
-import TagCloud from "./TagCloud";
+import Discovery from './Discovery';
+import TagCloud from './TagCloud';
 
-export {
-  Discovery, TagCloud
-}
+export { Discovery, TagCloud };

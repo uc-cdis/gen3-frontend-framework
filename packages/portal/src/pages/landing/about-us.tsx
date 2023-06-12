@@ -1,13 +1,13 @@
-import { GetStaticProps } from "next";
+import { GetStaticProps } from 'next';
 import NavPageLayout, {
   NavPageLayoutProps,
-} from "../../components/Navigation/NavPageLayout";
-import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { Text } from "@mantine/core";
-import { FaExternalLinkAlt } from "react-icons/fa";
+} from '../../components/Navigation/NavPageLayout';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { Text } from '@mantine/core';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   const { basePath } = useRouter();
@@ -16,15 +16,15 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
       <div className="flex flex-row justify-center h-full">
         <div className="flex flex-col justify-evenly pb-10 text-xl max-w-10">
           <div className="pb-10 pt-10 text-sm">
-            <Link href={"/"}>Home&nbsp;</Link>
-            {" > "}
+            <Link href={'/'}>Home&nbsp;</Link>
+            {' > '}
             <span className="text-heal-primary">&nbsp;About Us</span>
           </div>
           <h1 className="font-bold text-4xl text-gen3-coal font-montserrat pb-4">
             About Us
           </h1>
           <Text className="prose text-black text-2xl p-8">
-            The HEAL Platform is powered by the{" "}
+            The HEAL Platform is powered by the{' '}
             <span className="font-bold">Gen3</span> Data Commons Software Stack
             developed by the&nbsp;
             <a
@@ -38,7 +38,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
             &nbsp;at the University of Chicago.
           </Text>
           <Text className="prose text-black text-2xl p-8">
-            We believe in{" "}
+            We believe in{' '}
             <span className="font-bold">
               Open Data, Open Source and Open Infrastructure.
             </span>
@@ -53,7 +53,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
             </a>
           </Text>
           <Text className="prose text-black text-2xl p-8">
-            Check out other{" "}
+            Check out other{' '}
             <span className="font-bold">Data Platforms powered by Gen3:</span>
             <a
               className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold"
@@ -66,7 +66,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
             </a>
           </Text>
           <Text className="prose text-black text-2xl p-8">
-            Check out our{" "}
+            Check out our{' '}
             <span className="font-bold">Software Stack on GitHub:</span>
             <a
               className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold"

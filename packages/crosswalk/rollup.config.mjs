@@ -13,7 +13,7 @@ const globals = {
 
 const config = [
   {
-    input: "src/index.ts",
+    input: "src/index.tsx",
     output: [
       {
         file: "dist/index.js",

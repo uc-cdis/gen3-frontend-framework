@@ -1,12 +1,12 @@
-import { GetStaticProps } from "next";
-import Crosswalk from "../components/Crosswalk";
-import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
-import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
+import { GetStaticProps } from 'next';
+import Crosswalk from '../components/Crosswalk';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import { NavPageLayout, NavPageLayoutProps } from '@/components/Navigation';
 
 const N3C = {
-  guidField: "n3c_crosswalk",
-  fromField: "midrc_id",
-  toField: "n3c_id",
+  guidField: 'n3c_crosswalk',
+  fromField: 'midrc_id',
+  toField: 'n3c_id',
 };
 
 const CrosswalkPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {

@@ -5,16 +5,23 @@
     "jsx": "preserve",
     "moduleResolution": "node",
     "strict": true,
-    "noEmit": true,
     "allowJs": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "resolveJsonModule": true,
-    "incremental": true,
+    // "noUnusedLocals": true, // TODO: enable
+    // "noUnusedParameters": true,
+    // "noImplicitReturns": true,
+    "declaration": true,
+    "declarationDir": "dist/dts",
     "plugins": [
       {
         "name": "next"
@@ -22,12 +29,29 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/features/*": ["src/features/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/types/*": ["src/types/*"],
-        "@/utils/*": ["src/utils/*"],
-    }
+      "@/components/*": [
+        "src/components/*"
+      ],
+      "@/features/*": [
+        "src/features/*"
+      ],
+      "@/lib/*": [
+        "src/lib/*"
+      ],
+      "@/types/*": [
+        "src/types/*"
+      ],
+      "@/utils/*": [
+        "src/utils/*"
+      ],
+      "@/pages/*": [
+        "src/pages/*"
+      ],
+      "@/styles/*": [
+        "src/styles/*"
+      ]
+    },
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
@@ -36,5 +60,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

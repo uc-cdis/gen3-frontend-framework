@@ -1,19 +1,12 @@
+import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
 
-import {
-  create10ColorPallet,
-  create10ColorAccessibleContrast,
-} from "./colors";
-
-export {
-  create10ColorPallet,
-  create10ColorAccessibleContrast,
-};
+export { create10ColorPallet, create10ColorAccessibleContrast };
 
 /**
  * @returns {string} formatted time
  */
 export function now(): number {
-  return Math.floor(Date.now() / 1000)
+  return Math.floor(Date.now() / 1000);
 }
 
 // hash function for a string
@@ -27,5 +20,5 @@ export function hashCode(str: string) {
 }
 // convert unix timestamp to date time string
 export function unixTimeToString(unixTime: number): string {
-    return new Date(unixTime * 1000).toLocaleString();
+  return new Date(unixTime * 1000).toLocaleString();
 }
