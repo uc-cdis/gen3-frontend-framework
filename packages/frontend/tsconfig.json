@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowJs": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "incremental": true,
+    // "noUnusedLocals": true, // TODO: enable
+    // "noUnusedParameters": true,
+    // "noImplicitReturns": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+  //  "baseUrl": ".",
+//    "paths": {
+//      "@/components/*": [
+//        "src/components/*"
+//      ],
+//      "@/features/*": [
+//        "src/features/*"
+//      ],
+//      "@/lib/*": [
+//        "src/lib/*"
+//      ],
+//      "@/types/*": [
+//        "src/types/*"
+//      ],
+//      "@/utils/*": [
+//        "src/utils/*"
+//      ],
+//      "@/pages/*": [
+//        "src/pages/*"
+//      ],
+//      "@/styles/*": [
+//        "src/styles/*"
+//      ]
+//    },
+
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/pages/_app.tsx"
+  ]
+}
