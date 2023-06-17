@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 import { addCollection } from '@iconify/react';
 import icons from '../../config/icons/gen3.json';
+import '@iconify/types';
 import React from 'react';
 import {
   MantineProvider,
@@ -10,17 +11,16 @@ import {
   EmotionCache,
 } from '@mantine/core';
 import { coreStore, csrfApi } from '@gen3/core';
-// @ts-ignore
 import tailwindConfig from '../../tailwind.config.js';
-import { TenStringArray } from '../utils/types';
-import { SessionProvider } from '../lib/session/session';
+import { TenStringArray } from '@/utils/types';
+import { SessionProvider } from '@/lib/session/session';
 import { Notifications } from '@mantine/notifications';
 
 export const initStore = async () => {
   coreStore.dispatch(csrfApi.endpoints.getCSRF.initiate());
 };
 
-const defaultTailwindColorTheme = tailwindConfig.theme.extend.colors as Record<string, any>;
+const defaultTailwindColorTheme = tailwindConfig.theme.extend.colors;
 
 const colors = Object.fromEntries(
   Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
@@ -34,7 +34,7 @@ const getEmotionCache = (): EmotionCache => {
   const insertionPoint =
     typeof document !== 'undefined'
       ? document.querySelectorAll<HTMLElement>(
-          'styles[api-emotion="css-global"]',
+          'style[api-emotion="css-global"]',
         )?.[-1]
       : undefined;
 
