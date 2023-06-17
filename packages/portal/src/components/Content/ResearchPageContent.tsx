@@ -1,10 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import { Text } from "@mantine/core";
-import CardGrid, { CardGridItem } from "@/components/Layout/CardGrid";
+import CardGrid, { CardGridItem } from "../Layout/CardGrid";
 import MultiPartText, {
   MultiPartTextPart,
-} from "@/components/Text/MultiPartText";
+} from "../Text/MultiPartText";
 
 export interface ResearchPageConfig {
   readonly title: string;

@@ -1,2 +1,2 @@
-export { default } from  '@gen3/portal/DiscoveryPage';
-export { getStaticProps } from '@gen3/portal/pages/Discovery/data';
+export { DiscoveryPage as default } from  '@gen3/portal';
+export { getServerSideProps } from '@gen3/portal';

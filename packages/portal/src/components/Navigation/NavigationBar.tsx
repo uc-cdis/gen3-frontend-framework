@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {Icon} from "@iconify/react";
 import HoverLink from "./HoverLink";
-import {NavigationBarLogo, NavigationButtonProps, NavigationProps} from "@/components/Navigation/types";
+import {NavigationBarLogo, NavigationButtonProps, NavigationProps} from "./types";
 
 const NavigationButton: React.FC<NavigationButtonProps> = ({
   tooltip,

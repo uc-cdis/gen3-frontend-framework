@@ -1,32 +1,32 @@
-import React, { useEffect, useContext, useState, useMemo } from "react";
-import { useRouter, NextRouter } from "next/router";
-import { Session, SessionProviderProps } from "./types";
-import { isUserOnPage } from "./utils";
+import React, { useEffect, useContext, useState, useMemo } from 'react';
+import { useRouter, NextRouter } from 'next/router';
+import { Session, SessionProviderProps } from './types';
+import { isUserOnPage } from './utils';
 import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
   GEN3_DOMAIN,
-} from "@gen3/core";
+} from '@gen3/core';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : false,
+    typeof navigator !== 'undefined' ? navigator.onLine : false,
   );
 
   const setOnline = () => setIsOnline(true);
   const setOffline = () => setIsOnline(false);
 
   useEffect(() => {
-    window.addEventListener("online", setOnline);
-    window.addEventListener("offline", setOffline);
+    window.addEventListener('online', setOnline);
+    window.addEventListener('offline', setOffline);
 
     return () => {
-      window.removeEventListener("online", setOnline);
-      window.removeEventListener("offline", setOffline);
+      window.removeEventListener('online', setOnline);
+      window.removeEventListener('offline', setOffline);
     };
   }, []);
 
@@ -37,12 +37,12 @@ const SessionContext = React.createContext<Session | undefined>(undefined);
 
 const getSession = async () => {
   try {
-    const res = await fetch("/api/auth/sessionToken");
+    const res = await fetch('/api/auth/sessionToken');
     if (res.status === 200) {
       return await res.json();
     }
   } catch (error) {
-    return { status: "error" };
+    return { status: 'error' };
   }
 };
 
@@ -54,18 +54,18 @@ export const useSession = (
   const session = useContext(SessionContext);
   if (!session) {
     throw new Error(
-      "[gen3]: `useSession` must be wrapped in a <SessionProvider />",
+      '[gen3]: `useSession` must be wrapped in a <SessionProvider />',
     );
   }
 
-  if (required && !session.pending && session.status !== "issued") {
+  if (required && !session.pending && session.status !== 'issued') {
     if (onUnauthenticated) {
       onUnauthenticated();
     } else {
-      if (typeof window === "undefined")
+      if (typeof window === 'undefined')
         // route not available on SSR
         return session;
-      router.push("/Login");
+      router.push('/Login');
     }
   }
 
@@ -73,7 +73,7 @@ export const useSession = (
 };
 
 const logoutUser = (router: NextRouter) => {
-  if (typeof window === "undefined") return; // skip if this pages if on the server
+  if (typeof window === 'undefined') return; // skip if this pages if on the server
   router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
 };
 
@@ -91,9 +91,9 @@ export const SessionProvider = ({
   const coreDispatch = useCoreDispatch();
   const [sessionInfo, setSessionInfo] = useState(
     session ??
-    ({
-      status: "not present",
-    } as Session),
+      ({
+        status: 'not present',
+      } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
@@ -115,22 +115,22 @@ export const SessionProvider = ({
     MinutesToMilliseconds(updateSessionTime);
 
   const checkAndRefrestSession = (dispatch: CoreDispatch) => {
-    if (sessionInfo.status != "issued") return; // no need to update session if user is not logged in
-    if (isUserOnPage("Login") /* || this.popupShown */) return;
+    if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
+    if (isUserOnPage('Login') /* || this.popupShown */) return;
 
     const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
 
     if (logoutInactiveUsers) {
       if (
         timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-        !isUserOnPage("workspace")
+        !isUserOnPage('workspace')
       ) {
         logoutUser(router);
         return;
       }
       if (
         timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-        isUserOnPage("workspace")
+        isUserOnPage('workspace')
       ) {
         logoutUser(router);
         return;
@@ -171,8 +171,8 @@ export const SessionProvider = ({
       setMostRecentActivityTimestamp(Date.now());
     };
 
-    window.addEventListener("mousedown", updateUserActivity);
-    window.addEventListener("keypress", updateUserActivity);
+    window.addEventListener('mousedown', updateUserActivity);
+    window.addEventListener('keypress', updateUserActivity);
 
     const interval = setInterval(() => {
       checkAndRefrestSession(coreDispatch);
@@ -181,8 +181,8 @@ export const SessionProvider = ({
     updateSession();
 
     return () => {
-      window.removeEventListener("mousedown", updateUserActivity);
-      window.removeEventListener("keypress", updateUserActivity);
+      window.removeEventListener('mousedown', updateUserActivity);
+      window.removeEventListener('keypress', updateUserActivity);
       clearInterval(interval);
     };
   }, []);

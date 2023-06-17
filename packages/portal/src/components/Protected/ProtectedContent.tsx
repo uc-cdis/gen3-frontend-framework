@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "@/lib/session/session";
+import { useSession } from "../../lib/session/session";
 import { Center, LoadingOverlay, Paper, Text } from "@mantine/core";
 
 interface ProtectedContentProps {

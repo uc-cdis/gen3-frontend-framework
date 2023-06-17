@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import Footer from './Footer';
 import Header, { HeaderProps } from './Header';
-import {FooterProps} from "@/components/Navigation/types";
+import {FooterProps} from "./types";
 
 export interface NavPageLayoutProps {
     headerProps: HeaderProps

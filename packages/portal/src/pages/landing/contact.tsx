@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import NavPageLayout, {
   NavPageLayoutProps,
 } from '../../components/Navigation/NavPageLayout';
-import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import Link from 'next/link';
 import { Text } from '@mantine/core';
 import { FaEnvelope, FaExternalLinkAlt } from 'react-icons/fa';

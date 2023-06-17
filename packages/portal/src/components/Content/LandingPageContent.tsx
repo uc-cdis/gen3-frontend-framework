@@ -13,7 +13,7 @@ import {
   MdGroup,
 } from "react-icons/md";
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from "react-icons/fa";
-import Gen3Link from "@/components/Navigation/Gen3Link";
+import Gen3Link from "../Navigation/Gen3Link";
 
 export interface LandingPageContentProp {
   content: LandingPageProps;

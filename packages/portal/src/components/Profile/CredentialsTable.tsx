@@ -5,7 +5,7 @@ import {
   APIKey,
   useGetCSRFQuery,
 } from "@gen3/core";
-import { unixTimeToString } from "@/utils/index";
+import { unixTimeToString } from "../../utils/index";
 import { MdDelete as DeleteIcon } from "react-icons/md";
 
 const CredentialsTable = () => {

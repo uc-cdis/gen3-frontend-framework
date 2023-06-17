@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Gen3Link from "./Gen3Link";
-import {FooterProps} from "@/components/Navigation/types";
+import {FooterProps} from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Footer: React.FC<FooterProps> = ({
@@ -25,7 +25,7 @@ const Footer: React.FC<FooterProps> = ({
                 {col.map((logo) => (
                   <Image
                     key={`icons/${logo.logo}`}
-                    src={`icons/${logo.logo}`}
+                    src={`/icons/${logo.logo}`}
                     layout="fixed"
                     width={logo.width}
                     height={logo.height}
@@ -73,7 +73,7 @@ const Footer: React.FC<FooterProps> = ({
               {col.map((logo) => (
                 <Image
                   key={`icons/${logo.logo}`}
-                  src={`icons/${logo.logo}`}
+                  src={`/icons/${logo.logo}`}
                   layout="fixed"
                   width={logo.width}
                   height={logo.height}

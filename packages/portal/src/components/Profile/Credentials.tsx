@@ -9,7 +9,7 @@ import {
   CoreState, useGetCSRFQuery,
 } from "@gen3/core";
 
-import CredentialsTable from "@/components/Profile/CredentialsTable";
+import CredentialsTable from "./CredentialsTable";
 
 const Credentials = () => {
   const { data: csrfToken } = useGetCSRFQuery();

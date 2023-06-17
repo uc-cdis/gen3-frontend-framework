@@ -1,4 +1,4 @@
-import {FooterProps, HeaderProps, NavigationProps, NavPageLayoutProps, TopBarProps} from '@/components/Navigation';
+import {FooterProps, HeaderProps, NavigationProps, NavPageLayoutProps, TopBarProps} from '../../components/Navigation';
 import ContentSource from '../content';
 import {JSONObject} from "@gen3/core";
 

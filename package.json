@@ -1,13 +1,10 @@
 {
   "name": "gen3-frontend-framework",
   "version": "0.1.0",
-  "description": "Early version of the Gen3 Frontend Framework",
-  "main": "index.js",
+  "description": "The Gen3 Gen3 Frontend Framework mono repo for development",
   "private": true,
   "workspaces": [
-    "packages/core",
-    "packages/portal",
-    "packages/crosswalk"
+    "packages/*"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -32,7 +29,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-carousel": "^3.2.23",
-
     "url-join": "^5.0.0"
   },
   "devDependencies": {
@@ -52,6 +48,7 @@
     "lerna": "^6.1.0",
     "prettier": "^2.7.1",
     "terser-webpack-plugin": "^5.3.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "5.0.2"
   }
 }

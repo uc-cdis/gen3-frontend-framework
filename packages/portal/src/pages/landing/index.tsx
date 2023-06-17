@@ -5,7 +5,7 @@ import { GetStaticProps } from 'next';
 import LandingPageContent, {
   LandingPageProps,
 } from '../../components/Content/LandingPageContent';
-import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import NavPageLayout, {
   NavPageLayoutProps,

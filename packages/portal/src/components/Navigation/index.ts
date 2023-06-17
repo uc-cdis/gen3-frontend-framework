@@ -6,8 +6,8 @@ import HoverLink from "./HoverLink";
 import NavigationBar from "./NavigationBar";
 import NavigationButton from "./NavigationButton";
 import NavPageLayout, { type NavPageLayoutProps } from "./NavPageLayout";
-import { type TopBarProps} from "@/components/Navigation/TopBar";
-import {type FooterProps, type NavigationProps} from "@/components/Navigation/types";
+import { type TopBarProps} from "./TopBar";
+import {type FooterProps, type NavigationProps} from "./types";
 
 export {
    type FooterProps,

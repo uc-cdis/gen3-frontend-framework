@@ -14,7 +14,7 @@ const TagCloud: React.FC<TagCloudProps> = () => {
   }
   return (
     <div>
-      <Badge>Comming Soon</Badge>
+      <Badge>Coming Soon</Badge>
     </div>
   );
 };
