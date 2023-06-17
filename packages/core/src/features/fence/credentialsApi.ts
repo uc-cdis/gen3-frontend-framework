@@ -1,4 +1,4 @@
-import { gen3Api } from "../gen3/gen3Api";
+import { gen3Api } from '../gen3';
 
 export interface APIKey {
   readonly jti: string;
@@ -10,7 +10,7 @@ export interface Gen3FenceCredentials {
 
 // extending the gen3API to add a tag to the endpoints
 const credentialsWithTags = gen3Api.enhanceEndpoints({
-  addTagTypes: ["Credentials"],
+  addTagTypes: ['Credentials'],
 });
 
 interface DeleteCredentialParams {
@@ -21,38 +21,38 @@ interface DeleteCredentialParams {
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
-      query: () => "user/credentials/api",
+      query: () => 'user/credentials/api',
       transformResponse: (
         response: Gen3FenceCredentials,
-      ): ReadonlyArray<APIKey> => response["jtis"], // the response is a JSON object with a single key,
+      ): ReadonlyArray<APIKey> => response['jtis'], // the response is a JSON object with a single key,
       // "jtis", which is an array of API keys
       // no need to transform the response, since the API returns the correct format
-      providesTags: ["Credentials"],
+      providesTags: ['Credentials'],
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: "user/credentials/api",
-        method: "POST",
+        url: 'user/credentials/api',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-csrf-token": csrfToken,
+          'Content-Type': 'application/json',
+          'x-csrf-token': csrfToken,
         },
         body: {
-          scope: ["user", "data"],
+          scope: ['user', 'data'],
         },
       }),
-      invalidatesTags: ["Credentials"],
+      invalidatesTags: ['Credentials'],
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
         url: `user/credentials/api/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
-          "x-csrf-token": csrfToken,
+          'Content-Type': 'application/json',
+          'x-csrf-token': csrfToken,
         },
       }),
-      invalidatesTags: ["Credentials"],
+      invalidatesTags: ['Credentials'],
     }),
   }),
 });

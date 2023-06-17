@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
-import { useCoreDispatch, useCoreSelector } from "./hooks";
-import { CoreState } from "./reducers";
-import { isEqual } from "lodash";
+import { useEffect, useRef } from 'react';
+import { useCoreDispatch, useCoreSelector } from './hooks';
+import { CoreState } from './reducers';
+import { isEqual } from 'lodash';
 
 export type UnknownJson = Record<string, unknown>;
 
-export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
+export type DataStatus = 'uninitialized' | 'pending' | 'fulfilled' | 'rejected';
 
 export interface Gen3Response<H = UnknownJson> {
   readonly data: H;
@@ -59,7 +59,7 @@ export const createUseCoreDataHook = <P, A, T>(
     const prevParams = usePrevious<P[]>(params);
 
     useEffect(() => {
-      if (status === "uninitialized" || !isEqual(prevParams, params)) {
+      if (status === 'uninitialized' || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is
         // not compatible with thunk actions. hence, the `as any` cast. ;(
         coreDispatch(action as any); // eslint-disable-line
@@ -69,10 +69,10 @@ export const createUseCoreDataHook = <P, A, T>(
     return {
       data,
       error,
-      isUninitialized: status === "uninitialized",
-      isFetching: status === "pending",
-      isSuccess: status === "fulfilled",
-      isError: status === "rejected",
+      isUninitialized: status === 'uninitialized',
+      isFetching: status === 'pending',
+      isSuccess: status === 'fulfilled',
+      isError: status === 'rejected',
     };
   };
 };

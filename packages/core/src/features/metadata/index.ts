@@ -3,7 +3,7 @@ import {
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
-} from "./metadataSlice";
+} from './metadataSlice';
 
 export {
   useGetMetadataQuery,

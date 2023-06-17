@@ -1,9 +1,8 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { coreCreateApi } from "../../api";
-import { Reducer, Middleware } from "@reduxjs/toolkit";
-import { GEN3_DOMAIN, GEN3_API } from "../../constants";
-import { JSONObject } from "../../types";
-
+import { coreCreateApi } from '../../api';
+import { Reducer, Middleware } from '@reduxjs/toolkit';
+import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { GEN3_DOMAIN, GEN3_API } from '../../constants';
+import { JSONObject } from '../../types';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -33,28 +32,35 @@ interface MetadataResponse {
 
 // Define a service using a base URL and expected endpoints
 export const metadataApi = coreCreateApi({
-  reducerPath: "metadataApi",
+  reducerPath: 'metadataApi',
   baseQuery: fetchBaseQuery({
     // baseUrl: "https://brh.data-commons.org/mds/",
     baseUrl: `${GEN3_DOMAIN}${GEN3_API}/`,
   }),
   endpoints: (builder) => ({
-    getMetadata: builder.query<MetadataResponse, { url?: string, studyKey: string, pageSize:number, offset:number }>({ // TODO: add pagination
+    getMetadata: builder.query<
+      MetadataResponse,
+      { url?: string; studyKey: string; pageSize: number; offset: number }
+    >({
+      // TODO: add pagination
       query: ({ url, offset, pageSize }) => {
         if (url) {
           return `${url}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
         }
-        return "aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}";
+        return 'aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}';
       },
-      transformResponse: (response: Record<string, any>, _meta, params ) => {
+      transformResponse: (response: Record<string, any>, _meta, params) => {
         return {
-          data: response.results.map((x: JSONObject) => (Object.values(x)?.at(0) as JSONObject)[params.studyKey]),
-          hits: response.pagination.hits
+          data: response.results.map(
+            (x: JSONObject) =>
+              (Object.values(x)?.at(0) as JSONObject)[params.studyKey],
+          ),
+          hits: response.pagination.hits,
         };
       },
     }),
     getTags: builder.query<Metadata, string>({
-      query: () => "tags",
+      query: () => 'tags',
     }),
     getData: builder.query<Metadata, string>({
       query: (params) => ({ url: `metadata?${params}` }),
