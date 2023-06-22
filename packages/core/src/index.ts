@@ -18,6 +18,7 @@ export * from './dataAccess';
 export * from './provider';
 export * from './features/metadata/metadataSlice';
 export * from './features/fence';
+export * from './features/gen3Apps';
 export { gen3Api } from './features/gen3';
 
 export {

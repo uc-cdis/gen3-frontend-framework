@@ -1,2 +1,4 @@
-export { DiscoveryPage as default } from  '@gen3/portal';
-export { getServerSideProps } from '@gen3/portal';
+import { default as DiscoveryPage } from '@gen3/frontend/pages/Discovery/Discovery';
+export { getServerSideProps } from '@gen3/frontend/pages/Discovery/data';
+
+export default DiscoveryPage;

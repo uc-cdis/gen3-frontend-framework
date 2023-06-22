@@ -4,6 +4,7 @@ import {JSONObject} from "@gen3/core";
 
 export const getNavPageLayoutPropsFromConfig = async (): Promise<NavPageLayoutProps> => {
   const config = await ContentSource.get('config/siteConfig.json');
+  console.log("getNavPageLayoutPropsFromConfig config", config);  // DEBUG
   const navigationConfigJSON = await ContentSource.get(`config/${config.commons}/navigation.json`);
   const {topBar, navigation} = navigationConfigJSON;
   const headerProps: HeaderProps = {

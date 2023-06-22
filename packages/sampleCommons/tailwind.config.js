@@ -5,11 +5,15 @@ const plugin = require('tailwindcss/plugin');
 const themer = require('./config/theme.json');
 
 module.exports = {
+  presets: [
+    require('@gen3/frontend/tailwind'),
+  ],
   important: '#__next',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
+    '../../node_modules/@gen3/frontend/**/*.js',
   ],
   theme: {
     extend: {

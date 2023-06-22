@@ -15,6 +15,7 @@ const globals = {
   uuid: 'uuid',
   lodash: 'lodash',
   immer: 'immer',
+  'react-cookie': 'reactCookie',
 };
 
 const config = [

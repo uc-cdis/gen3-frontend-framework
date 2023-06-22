@@ -1,0 +1,26 @@
+{
+  "name": "my-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@gen3/core": "0.1.0",
+    "@gen3/frontend": "0.1.13"
+  },
+  "devDependencies" : {
+    "tailwindcss": "^3.2.4",
+    "ts-jest": "^29.0.3"
+  },
+  "peerDependencies": {
+    "@types/react": "^18.2.0",
+    "next": "13.4.4",
+    "react": "^18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.0.2"
+  }
+}

@@ -18,7 +18,7 @@
     "copy-style": "mkdir -p dist/styles && cp src/styles/* dist/styles/",
     "build:clean": "npm run clean && npm run build:swc && npm run types",
     "build:pkg": "rollup --config rollup.config.mjs",
-    "build:swc": "npm run copy-tailwind && npm run copy-style && swc src -d dist"
+    "build:swc": "npm run copy-tailwind && swc src -d dist"
   },
   "keywords": [],
   "author": "",

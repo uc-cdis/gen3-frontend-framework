@@ -18,3 +18,16 @@ export interface RegisteredIcons {
     width: number;
     height: number;
 }
+
+export interface Gen3AppPlugin {
+    name: string;
+    package: string;
+    register?: () => void;
+}
+
+export interface Gen3CommonsConfiguration {
+    commons_url: string;
+    icons: RegisteredIcons;
+    colors: Record<string, string>;
+    plugins: ReadonlyArray<Gen3AppPlugin>;
+}

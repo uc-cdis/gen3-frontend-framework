@@ -41,6 +41,10 @@ const getEmotionCache = (): EmotionCache => {
   return createEmotionCache({ key: 'mantine', insertionPoint });
 };
 
+import { registerSitePlugins } from '../../config/registerSitePlugins';
+
+//registerSitePlugins()
+
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   addCollection(icons);
   initStore();

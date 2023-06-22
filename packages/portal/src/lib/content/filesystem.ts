@@ -2,9 +2,13 @@ import { ContentSource } from './types';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * A filesystem content source
+ */
 export class FilesystemContent implements ContentSource {
   rootPath: string;
   constructor({ rootPath }: { rootPath?: string }) {
+    console.log("FilesystemContent constructor rootPath", rootPath);  // DEBUG
     this.rootPath = rootPath || '';
   }
 
