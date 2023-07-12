@@ -76,21 +76,21 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
   };
 
   return (
-    <Group grow className='w-100 h-100 p-4 mt-4'>
+    <Group grow className="w-100 h-100 p-4 mt-4">
       <Stack>
         <Group>
           <Text>{fromTitle}</Text>
           <Button
-            variant='outline'
-            size='xs'
+            variant="outline"
+            size="xs"
             disabled={sourceIds.length == 0}
             onClick={() => onSubmit()}
           >
             Submit
           </Button>
           <Button
-            variant='outline'
-            size='xs'
+            variant="outline"
+            size="xs"
             disabled={sourceIds.length == 0}
             onClick={() => clear()}
           >
@@ -98,9 +98,9 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
           </Button>
         </Group>
         <Textarea
-          placeholder='IDs...'
-          radius='md'
-          size='md'
+          placeholder="IDs..."
+          radius="md"
+          size="md"
           required
           value={sourceIds}
           minRows={MIN_ROWS}
@@ -111,24 +111,22 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
       <Stack>
         <Group>
           <Text>{toTitle}</Text>
-          <Group position='right'>
+          <Group position="right">
             <Button
-              variant='outline'
-              size='xs'
+              variant="outline"
+              size="xs"
               color={clipboard.copied ? 'teal' : 'blue'}
               onClick={() => {
                 if (data)
-                  clipboard.copy(
-                    data.mapping.map((x: CrosswalkInfo) => x.to),
-                  );
+                  clipboard.copy(data.mapping.map((x: CrosswalkInfo) => x.to));
               }}
               disabled={crosswalkIds.length == 0}
             >
               Copy
             </Button>
             <Button
-              variant='outline'
-              size='xs'
+              variant="outline"
+              size="xs"
               onClick={() => {
                 if (data)
                   downloadData(
@@ -144,9 +142,9 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
           </Group>
         </Group>
         <Textarea
-          placeholder='Results...'
-          radius='md'
-          size='md'
+          placeholder="Results..."
+          radius="md"
+          size="md"
           value={crosswalkIds}
           readOnly={true}
           minRows={MIN_ROWS}

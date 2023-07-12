@@ -1,19 +1,19 @@
-import * as React from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
+import * as React from 'react';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Title, TitleOrder } from "@mantine/core";
-import { IconType } from "react-icons";
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
+import { Title, TitleOrder } from '@mantine/core';
+import { IconType } from 'react-icons';
 
 import {
   MdFormatQuote,
   MdOutlineSearch,
   MdOutlineBarChart,
   MdGroup,
-} from "react-icons/md";
-import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from "react-icons/fa";
-import Gen3Link from "../Navigation/Gen3Link";
+} from 'react-icons/md';
+import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
+import Gen3Link from '../Navigation/Gen3Link';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -150,7 +150,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                   >
                     {React.createElement(allowedIcons[card.icon], {
                       title: `${card.btnText} icon`,
-                      className: "inline-block text-7xl text-heal-magenta",
+                      className: 'inline-block text-7xl text-heal-magenta',
                     })}
                     <p className="block text-gen3-titanium leading-6 mb-2">
                       {card.bodyText}
@@ -174,16 +174,19 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               className="bg-secondary-lightest sm:p-16 2xl:p-20 text-center sm:mt-16 2xl:mt-20"
             >
               <div className="sm:text-3xl 2xl:text-4xl">
-                {component.quoteArea.author ?
-                <MdFormatQuote
-                  title="quotation mark"
-                  className="inline rotate-180 text-5xl mb-2"
-                /> : null}
+                {component.quoteArea.author ? (
+                  <MdFormatQuote
+                    title="quotation mark"
+                    className="inline rotate-180 text-5xl mb-2"
+                  />
+                ) : null}
                 {component.quoteArea.quote}
-                {component.quoteArea.author ? <MdFormatQuote
-                  title="quotation mark"
-                  className="inline text-5xl mt-2"
-                /> : null}
+                {component.quoteArea.author ? (
+                  <MdFormatQuote
+                    title="quotation mark"
+                    className="inline text-5xl mt-2"
+                  />
+                ) : null}
               </div>
               <div>{component.quoteArea.author}</div>
             </div>

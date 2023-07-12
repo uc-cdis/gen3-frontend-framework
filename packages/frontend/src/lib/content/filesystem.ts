@@ -8,12 +8,15 @@ export class FilesystemContent implements ContentSource {
     this.rootPath = rootPath || '';
   }
 
-  public async get<T extends Record<string, undefined> >(filepath: string): Promise<T> {
+  public async get<T extends Record<string, undefined>>(
+    filepath: string,
+  ): Promise<T> {
     try {
-      return await JSON.parse(fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf-8'));
+      return await JSON.parse(
+        fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf-8'),
+      );
     } catch (err) {
       throw new Error(`Cannot process ${filepath}`);
     }
   }
-
 }

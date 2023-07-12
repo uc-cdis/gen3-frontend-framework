@@ -1,4 +1,3 @@
-
 /**
  * A registry for the Gen3 Apps.
  */
@@ -14,4 +13,4 @@ export const lookupGen3App = (id: string): React.ReactNode => {
 
 export const computeGen3AppId = (name: string, version: string): string => {
   return `${name}@${version}`;
-}
+};

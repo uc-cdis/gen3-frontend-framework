@@ -1,7 +1,4 @@
-import LoginButton from "./LoginButton";
-import LoginProvidersPanel from "./LoginProvidersPanel";
+import LoginButton from './LoginButton';
+import LoginProvidersPanel from './LoginProvidersPanel';
 
-export {
-  LoginButton,
-  LoginProvidersPanel,
-};
+export { LoginButton, LoginProvidersPanel };

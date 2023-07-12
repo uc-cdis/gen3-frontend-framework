@@ -31,7 +31,7 @@ const config = [
         file: 'dist/index.min.js',
         format: 'iife',
         name: 'gen3Core',
-        plugins: [terser(),],
+        plugins: [terser()],
         globals,
       },
       {
@@ -59,15 +59,14 @@ const config = [
         // tsconfig: false, // You can also prevent `rollup-plugin-swc` from reading tsconfig.json, see below
         // And add your swc configuration here!
         // "filename" will be ignored since it is handled by rollup
-        jsc: {}
+        jsc: {},
       }),
     ],
-
   },
   {
     input: './dist/dts/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'es', },],
-    plugins: [dts(),],
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts()],
   },
 ];
 

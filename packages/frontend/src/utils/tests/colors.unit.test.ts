@@ -1,4 +1,7 @@
-import { create10ColorPallet, create10ColorAccessibleContrast } from '../colors';
+import {
+  create10ColorPallet,
+  create10ColorAccessibleContrast,
+} from '../colors';
 
 // unit test for createColorPallet
 describe('createColorPallet', () => {

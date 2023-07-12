@@ -1,3 +1,3 @@
-import MultiPartText from "./MultiPartText";
+import MultiPartText from './MultiPartText';
 
 export { MultiPartText };

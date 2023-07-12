@@ -1,8 +1,8 @@
-import { GetServerSideProps } from "next";
-import { getNavPageLayoutPropsFromConfig } from "@/lib/common/staticProps";
-import ContentSource from "../lib/content";
-import { NavPageLayout, NavPageLayoutProps } from "@/components/Navigation";
-import Discovery, { DiscoveryProps } from "@/components/Discovery/Discovery";
+import { GetServerSideProps } from 'next';
+import { getNavPageLayoutPropsFromConfig } from '@/lib/common/staticProps';
+import ContentSource from '../lib/content';
+import { NavPageLayout, NavPageLayoutProps } from '@/components/Navigation';
+import Discovery, { DiscoveryProps } from '@/components/Discovery/Discovery';
 
 type DiscoveryPageProps = NavPageLayoutProps & DiscoveryProps;
 
@@ -25,12 +25,12 @@ const DiscoveryPage = ({
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
-  const config = await ContentSource.get("config/siteConfig.json");
+  const config = await ContentSource.get('config/siteConfig.json');
   const discoveryProps: DiscoveryProps = await ContentSource.get(
     `config/${config.commons}/discovery.json`,
   );
 
-  console.log("discoveryProps", discoveryProps);
+  console.log('discoveryProps', discoveryProps);
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),

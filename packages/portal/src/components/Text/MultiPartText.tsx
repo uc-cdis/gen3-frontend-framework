@@ -1,13 +1,13 @@
-import { Text } from "@mantine/core";
-import React from "react";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { Text } from '@mantine/core';
+import React from 'react';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 export interface MultiPartTextProps {
   readonly parts: ReadonlyArray<MultiPartTextPart>;
 }
 
 export interface MultiPartTextPart {
-  type: "text" | "link" | "bold" | "break";
+  type: 'text' | 'link' | 'bold' | 'break';
   content?: string;
   link?: string;
   linkType: string;
@@ -34,7 +34,7 @@ const MultiPartText = ({ parts }: MultiPartTextProps) => {
               href={link}
               key={i}
             >
-              {" "}
+              {' '}
               {content}
             </a>
           ),

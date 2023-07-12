@@ -6,7 +6,7 @@ import { ContentSource } from './types';
  */
 
 export interface CreateDatabase {
-    store: ContentSource;
+  store: ContentSource;
 }
 
 export class ContentDatabase {
@@ -16,7 +16,9 @@ export class ContentDatabase {
     this.store = config.store;
   }
 
-  public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
+  public async get<T extends Record<string, any>>(
+    filepath: string,
+  ): Promise<T> {
     return this.store.get(filepath);
   }
 }

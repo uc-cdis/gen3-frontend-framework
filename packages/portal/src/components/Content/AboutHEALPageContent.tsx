@@ -1,7 +1,7 @@
-import * as React from "react";
-import { useRouter } from "next/router";
-import tw from "tailwind-styled-components";
-import { Stack, Box, Image, Grid, Text, Card, Accordion } from "@mantine/core";
+import * as React from 'react';
+import { useRouter } from 'next/router';
+import tw from 'tailwind-styled-components';
+import { Stack, Box, Image, Grid, Text, Card, Accordion } from '@mantine/core';
 
 export interface ImageEntry {
   readonly src: string;
@@ -55,18 +55,18 @@ const AboutHEALPageContent = ({
       ) : null}
       <div className="w-100 flex flex-row justify-center font-montserrat text-sm py-2">
         <p>
-          HEAL leverages data from{" "}
+          HEAL leverages data from{' '}
           <Link
             href="https://clinicaltrials.gov/"
             target="_blank"
             rel="noreferrer"
           >
             clinicaltrials.gov
-          </Link>{" "}
-          see{" "}
+          </Link>{' '}
+          see{' '}
           <Link href="https://healdata.org/" target="_blank" rel="noreferrer">
             here
-          </Link>{" "}
+          </Link>{' '}
           new studies available on the platform
         </p>
       </div>
@@ -80,8 +80,8 @@ const AboutHEALPageContent = ({
                     <Accordion
                       defaultValue={leftDropdowns[0].title}
                       classNames={{
-                        item: "border-0",
-                        label: "font-montserrat opacity-60 overflow-visible",
+                        item: 'border-0',
+                        label: 'font-montserrat opacity-60 overflow-visible',
                       }}
                     >
                       <Accordion.Item
@@ -92,13 +92,13 @@ const AboutHEALPageContent = ({
                         <Accordion.Panel>
                           {entry.content.length > 0
                             ? entry.content.map((contentLine) => (
-                                <Text
-                                  key={contentLine}
-                                  className=" text-sm text-left break-words font-montserrat py-3"
-                                >
+                              <Text
+                                key={contentLine}
+                                className=" text-sm text-left break-words font-montserrat py-3"
+                              >
                                   - {contentLine}
-                                </Text>
-                              ))
+                              </Text>
+                            ))
                             : null}
                         </Accordion.Panel>
                       </Accordion.Item>
@@ -148,9 +148,9 @@ const AboutHEALPageContent = ({
                       >
                         <Accordion.Control
                           classNames={{
-                            item: "border-0",
+                            item: 'border-0',
                             label:
-                              "font-montserrat opacity-60 overflow-visible",
+                              'font-montserrat opacity-60 overflow-visible',
                           }}
                         >
                           {entry.title}
@@ -158,13 +158,13 @@ const AboutHEALPageContent = ({
                         <Accordion.Panel>
                           {entry.content.length > 0
                             ? entry.content.map((contentLine) => (
-                                <Text
-                                  key={contentLine}
-                                  className="prose text-sm  text-left break-words font-montserrat"
-                                >
+                              <Text
+                                key={contentLine}
+                                className="prose text-sm  text-left break-words font-montserrat"
+                              >
                                   - {contentLine}
-                                </Text>
-                              ))
+                              </Text>
+                            ))
                             : null}
                         </Accordion.Panel>
                       </Accordion.Item>

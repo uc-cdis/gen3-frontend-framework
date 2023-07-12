@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import plugin from 'tailwindcss/plugin';
 
-export const TailwindConfig =( themer : any )  => {
+export const TailwindConfig = (themer: any) => {
   return {
     important: '#__next',
     content: [
@@ -82,8 +82,13 @@ export const TailwindConfig =( themer : any )  => {
       require('@tailwindcss/forms')({
         strategy: 'class',
       }),
-      plugin(function({ addVariant }: {
-        addVariant: (_1: string, _2: string | string[] | (() => string) | (() => string)[]) => void
+      plugin(function ({
+        addVariant,
+      }: {
+        addVariant: (
+          _1: string,
+          _2: string | string[] | (() => string) | (() => string)[],
+        ) => void;
       }) {
         // add mantine.dev variants
         addVariant('api-checked', '&[api-checked]');
@@ -95,7 +100,7 @@ export const TailwindConfig =( themer : any )  => {
         addVariant('api-first-in-range', '&[api-first-in-range]');
         addVariant('api-last-in-range', '&[api-last-in-range]');
       }),
-      plugin(function({ addUtilities }: { addUtilities: (_1: any) => void }) {
+      plugin(function ({ addUtilities }: { addUtilities: (_1: any) => void }) {
         const newUtilities = {
           '.nextImageFillFix': {
             width: 'auto !important',
@@ -105,7 +110,11 @@ export const TailwindConfig =( themer : any )  => {
         };
         addUtilities(newUtilities);
       }),
-      plugin(function({ addComponents }: { addComponents: (_1: any) => void }) {
+      plugin(function ({
+        addComponents,
+      }: {
+        addComponents: (_1: any) => void;
+      }) {
         addComponents({
           '.heal-btn': {
             display: 'inline-block',
@@ -153,4 +162,4 @@ export const TailwindConfig =( themer : any )  => {
       }),
     ],
   };
-}
+};

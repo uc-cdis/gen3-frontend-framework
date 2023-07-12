@@ -3,7 +3,7 @@ export const isNotDefined = (x: unknown): x is undefined => {
 };
 
 export const isObject = (x: unknown): x is Record<string, unknown> => {
-  return typeof x === "object";
+  return typeof x === 'object';
 };
 
 export const isArray = (x: unknown): x is ReadonlyArray<unknown> => {
@@ -11,5 +11,5 @@ export const isArray = (x: unknown): x is ReadonlyArray<unknown> => {
 };
 
 export const isString = (x: unknown): x is string => {
-  return typeof x === "string";
+  return typeof x === 'string';
 };

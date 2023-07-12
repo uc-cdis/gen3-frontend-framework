@@ -11,7 +11,7 @@ that edit to the Gen3 frontend framework source code are immediately visible.
 The first set is seting up the Gen3 Helm Charts.
 Follow the instructions in [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm) for setting up the Gen3 Helm Charts.
 
-Currently, the frontend-framwork chart is not in the master branch, so you need to use the `feat/gen3ff` branch.
+Currently, the frontend-framework chart is not in the master branch, so you need to use the `feat/gen3ff` branch.
 The means you need to clone the repo and checkout the branch:
 ```
 git clone https://github.com/uc-cdis/gen3-helm.git
@@ -30,7 +30,7 @@ Next update the dependencies:
 helm dependency build helm/gen3
 helm dependency update helm/gen3
 ```
-Do **not** follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md)
+Do **NOT** follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md)
 to start the services, as they will be run in the next step.
 
 ### Install devspace

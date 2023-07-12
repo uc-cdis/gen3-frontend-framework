@@ -1,12 +1,12 @@
 @tailwind base;
 @tailwind components;
 
-@import "~@fontsource/montserrat/700.css";
-@import "~@fontsource/montserrat/400-italic.css";
-@import "~@fontsource/montserrat/index.css";
-@import "~@fontsource/montserrat/600.css";
-@import "~@fontsource/montserrat/700-italic.css";
-@import "~@fontsource/source-sans-pro/index.css";
+@import '~@fontsource/montserrat/700.css';
+@import '~@fontsource/montserrat/400-italic.css';
+@import '~@fontsource/montserrat/index.css';
+@import '~@fontsource/montserrat/600.css';
+@import '~@fontsource/montserrat/700-italic.css';
+@import '~@fontsource/source-sans-pro/index.css';
 
 .tooltip {
   position: relative;
@@ -27,7 +27,7 @@
 }
 
 .has-tooltip .tooltip::before {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -38,7 +38,7 @@
 }
 
 .has-tooltip .tooltip::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 100%;
   left: 50%;

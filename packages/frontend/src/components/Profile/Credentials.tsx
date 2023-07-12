@@ -1,15 +1,16 @@
-import React from "react";
-import { Button, Card, Stack } from "@mantine/core";
+import React from 'react';
+import { Button, Card, Stack } from '@mantine/core';
 
 import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   selectCSRFToken,
   useCoreSelector,
-  CoreState, useGetCSRFQuery,
-} from "@gen3/core";
+  CoreState,
+  useGetCSRFQuery,
+} from '@gen3/core';
 
-import CredentialsTable from "./CredentialsTable";
+import CredentialsTable from './CredentialsTable';
 
 const Credentials = () => {
   const { data: csrfToken } = useGetCSRFQuery();

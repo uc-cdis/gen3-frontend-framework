@@ -8,7 +8,7 @@ import {
   fetchUserState,
   selectUserData,
   selectUserAuthenticationStatus,
-} from "./userSlice";
+} from './userSlice';
 
 export {
   useUser,

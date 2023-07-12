@@ -5,7 +5,7 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import tailwindcss from 'tailwindcss';
 
 import { default as tailwindConfig } from './tailwind.config.cjs';
-import postcss from "rollup-plugin-postcss";
+import postcss from 'rollup-plugin-postcss';
 import { swc } from 'rollup-plugin-swc3';
 
 const globals = {
@@ -37,7 +37,7 @@ const config = [
         format: 'iife',
         name: 'gen3Portal',
         sourcemap: true,
-        plugins: [terser(),],
+        plugins: [terser()],
         globals,
       },
       {
@@ -74,17 +74,15 @@ const config = [
         include: /\.[mc]?[jt]sx?$/,
         exclude: /node_modules/,
         tsconfig: 'tsconfig.json',
-        jsc: {}
+        jsc: {},
       }),
     ],
-
   },
   {
     input: './dist/dts/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'es', },],
-    plugins: [dts(),postcss()],
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts(), postcss()],
   },
 ];
-
 
 export default config;

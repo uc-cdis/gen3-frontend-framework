@@ -39,8 +39,12 @@ export const getGen3AppId = (name: string, version: string): string => {
   return uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 };
 
-export const createGen3App = ({ App, name, version, requiredEntityTypes } : CreateGen3AppOptions): React.ReactNode => {
-
+export const createGen3App = ({
+  App,
+  name,
+  version,
+  requiredEntityTypes,
+}: CreateGen3AppOptions): React.ReactNode => {
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
@@ -171,9 +175,12 @@ export interface CreateGen3AppWithOwnStoreOptions<
   readonly context: any;
 }
 
-export const createGen3AppWithOwnStore = <A extends Action = AnyAction, S = any>(
-  options: CreateGen3AppWithOwnStoreOptions<A, S>,
-): React.ReactNode => {
+export const createGen3AppWithOwnStore = <
+  A extends Action = AnyAction,
+  S = any,
+>(
+    options: CreateGen3AppWithOwnStoreOptions<A, S>,
+  ): React.ReactNode => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
 
@@ -186,7 +193,7 @@ export const createGen3AppWithOwnStore = <A extends Action = AnyAction, S = any>
   // this will be used to build page3
   // click app link
 
-  const Gen3AppWrapper = () : React.ReactNode => {
+  const Gen3AppWrapper = (): React.ReactNode => {
     useEffect(() => {
       document.title = `GEN3 - ${name}`;
     });

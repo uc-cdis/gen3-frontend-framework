@@ -1,13 +1,12 @@
-import React from "react";
-import { Gen3User, LoginStatus } from "@gen3/core";
-
+import React from 'react';
+import { Gen3User, LoginStatus } from '@gen3/core';
 
 export type JWTSessionStatus =
-  | "not present"
-  | "issued"
-  | "expired"
-  | "invalid"
-  | "error";
+  | 'not present'
+  | 'issued'
+  | 'expired'
+  | 'invalid'
+  | 'error';
 
 export interface AuthTokenData {
   issued?: number;

@@ -6,20 +6,20 @@ import {
   type NameUrl,
   fetchFence,
   useGetLoginProvidersQuery,
-} from "./fenceApi";
+} from './fenceApi';
 import {
   useGetCSRFQuery,
   csrfApi,
   selectCSRFToken,
   selectCSRFTokenData,
-} from "./csrfApi";
+} from './csrfApi';
 import {
   type APIKey,
   type Gen3FenceCredentials,
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
-} from "./credentialsApi";
+} from './credentialsApi';
 
 export {
   type Gen3FenceResponse,

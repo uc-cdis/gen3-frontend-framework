@@ -6,8 +6,7 @@ import { ContentSource, Gen3CommonsConfiguration } from './types';
  */
 
 export interface CreateDatabase {
-    store: ContentSource;
-
+  store: ContentSource;
 }
 
 export class ContentDatabase {
@@ -21,8 +20,7 @@ export class ContentDatabase {
    * loads a resource from the content store
    * @param path: key, filename or url
    */
-  public async get<T extends Record<string, any>>(path: string) : Promise<T>{
+  public async get<T extends Record<string, any>>(path: string): Promise<T> {
     return await this.store.get(path);
   }
-
 }

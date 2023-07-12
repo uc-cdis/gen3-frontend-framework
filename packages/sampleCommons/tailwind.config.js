@@ -5,9 +5,7 @@ const plugin = require('tailwindcss/plugin');
 const themer = require('./config/theme.json');
 
 module.exports = {
-  presets: [
-    require('@gen3/frontend/tailwind'),
-  ],
+  presets: [require('@gen3/frontend/tailwind')],
   important: '#__next',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',

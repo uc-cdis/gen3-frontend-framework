@@ -37,8 +37,8 @@ const getEmotionCache = (): EmotionCache => {
   const insertionPoint =
     typeof document !== 'undefined'
       ? document.querySelectorAll<HTMLElement>(
-          'style[api-emotion="css-global"]',
-        )?.[-1]
+        'style[api-emotion="css-global"]',
+      )?.[-1]
       : undefined;
 
   return createEmotionCache({ key: 'mantine', insertionPoint });

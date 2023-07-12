@@ -1,10 +1,8 @@
-import React from "react";
-import Link from "next/link";
-import { Text } from "@mantine/core";
-import CardGrid, { CardGridItem } from "..//Layout/CardGrid";
-import MultiPartText, {
-  MultiPartTextPart,
-} from "../Text/MultiPartText";
+import React from 'react';
+import Link from 'next/link';
+import { Text } from '@mantine/core';
+import CardGrid, { CardGridItem } from '..//Layout/CardGrid';
+import MultiPartText, { MultiPartTextPart } from '../Text/MultiPartText';
 
 export interface ResourcePageConfig {
   readonly title: string;
@@ -24,8 +22,8 @@ const ResourcePageContent = ({
   return (
     <React.Fragment>
       <div className="py-10 text-sm px-10">
-        <Link href={"/"}>Home&nbsp;</Link>
-        {" > "}
+        <Link href={'/'}>Home&nbsp;</Link>
+        {' > '}
         <span className="text-heal-primary">&nbsp;{title}</span>
       </div>
       <div className="text-md pl-10">

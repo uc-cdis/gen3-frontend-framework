@@ -1,5 +1,9 @@
 import { gen3Api } from '@gen3/core';
-import { CrosswalkArray, CrosswalkInfo, CrosswalkParams } from '../Crosswalk/types';
+import {
+  CrosswalkArray,
+  CrosswalkInfo,
+  CrosswalkParams,
+} from '../Crosswalk/types';
 
 export const crosswalkAPI = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,6 +23,4 @@ export const crosswalkAPI = gen3Api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetCrosswalkDataQuery
-} = crosswalkAPI;
+export const { useGetCrosswalkDataQuery } = crosswalkAPI;

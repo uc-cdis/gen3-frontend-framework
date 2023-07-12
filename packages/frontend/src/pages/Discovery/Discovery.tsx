@@ -1,5 +1,7 @@
 import { NavPageLayout, NavPageLayoutProps } from '../../components/Navigation';
-import Discovery, { DiscoveryProps } from '../../components/Discovery/Discovery';
+import Discovery, {
+  DiscoveryProps,
+} from '../../components/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
 
 const DiscoveryPage = ({
@@ -7,13 +9,12 @@ const DiscoveryPage = ({
   footerProps,
   columns,
   dataURL,
-}: DiscoveryPageProps) : JSX.Element => {
+}: DiscoveryPageProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <Discovery columns={columns} dataURL={dataURL} />
     </NavPageLayout>
   );
 };
-
 
 export default DiscoveryPage;

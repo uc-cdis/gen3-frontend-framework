@@ -51,8 +51,6 @@ const Discovery = ({ columns, dataURL, studyKey }: DiscoveryProps) => {
     <div className="flex flex-col items-center p-2 m-2">
       <div className="flex flex-col w-full">
         {
-          // @ts-ignore
-
           <MantineReactTable
             columns={columns}
             data={data?.data ?? []}

@@ -1,6 +1,6 @@
-import React  from "react";
-import { Grid, Text } from "@mantine/core";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import React from 'react';
+import { Grid, Text } from '@mantine/core';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 export interface CardGridProps {
   content: ReadonlyArray<CardGridItem>;

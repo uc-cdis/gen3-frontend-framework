@@ -1,7 +1,6 @@
 import React from 'react';
 import ConfigurableCrosswalk from './ConfigurableCrosswalk';
 
-
 const CrosswalkConfig = {
   N3C: {
     title: 'MIDRC to N3C',
@@ -21,10 +20,8 @@ const CrosswalkConfig = {
   },
 };
 
-const CrosswalkApp  = () => {
-  return (
-    <ConfigurableCrosswalk converters={CrosswalkConfig } />
-  );
+const CrosswalkApp = () => {
+  return <ConfigurableCrosswalk converters={CrosswalkConfig} />;
 };
 
 export default CrosswalkApp;

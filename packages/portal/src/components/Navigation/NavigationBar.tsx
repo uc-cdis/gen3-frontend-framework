@@ -1,9 +1,13 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {Icon} from "@iconify/react";
-import HoverLink from "./HoverLink";
-import {NavigationBarLogo, NavigationButtonProps, NavigationProps} from "./types";
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Icon } from '@iconify/react';
+import HoverLink from './HoverLink';
+import {
+  NavigationBarLogo,
+  NavigationButtonProps,
+  NavigationProps,
+} from './types';
 
 const NavigationButton: React.FC<NavigationButtonProps> = ({
   tooltip,
@@ -17,9 +21,9 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
         className="content-center"
         href={`${
           process.env.NEXT_PUBLIC_PORTAL_BASENAME &&
-          process.env.NEXT_PUBLIC_PORTAL_BASENAME !== "/"
+          process.env.NEXT_PUBLIC_PORTAL_BASENAME !== '/'
             ? process.env.NEXT_PUBLIC_PORTAL_BASENAME
-            : ""
+            : ''
         }${href}`}
       >
         <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:accent opacity-80 hover:opacity-100">
@@ -40,11 +44,11 @@ const NavigationLogo = ({
   src,
   title,
   description,
-  basePath = "",
+  basePath = '',
 }: NavigationBarLogo) => {
   return (
     <div className="relative flex flex-row h-full items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
-      <HoverLink className="w-32 h-full" href={"/"}>
+      <HoverLink className="w-32 h-full" href={'/'}>
         <Image
           className="pr-3 object-contain"
           fill
@@ -56,7 +60,7 @@ const NavigationLogo = ({
         <div className="border-solid border-base-darker border-l-1 ml-1 mr-3 h-32 w-1 ">
           <HoverLink
             className="font-montserrat h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3"
-            href={"/"}
+            href={'/'}
           ></HoverLink>
         </div>
       )}
@@ -68,7 +72,6 @@ const NavigationBar: React.FC<NavigationProps> = ({
   logo = undefined,
   items,
 }: NavigationProps) => {
-
   return (
     <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
       <div className="flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">

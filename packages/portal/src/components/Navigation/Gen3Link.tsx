@@ -1,7 +1,7 @@
-import React from "react";
-import Link from "next/link";
-import { PropsWithChildren } from "react";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import React from 'react';
+import Link from 'next/link';
+import { PropsWithChildren } from 'react';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 interface ClassProps {
   readonly className?: string;
@@ -23,18 +23,16 @@ const Gen3Link: React.FC<Gen3LinkProps> = ({
 }: PropsWithChildren<Gen3LinkProps>) => {
   const portalBasename =
     process.env.NEXT_PUBLIC_PORTAL_BASENAME &&
-    process.env.NEXT_PUBLIC_PORTAL_BASENAME !== "/"
+    process.env.NEXT_PUBLIC_PORTAL_BASENAME !== '/'
       ? process.env.NEXT_PUBLIC_PORTAL_BASENAME
-      : "";
-  if (linkType === "gen3ff") {
+      : '';
+  if (linkType === 'gen3ff') {
     return (
       <span className={className}>
-        <Link href={href}>
-          {text}
-        </Link>
+        <Link href={href}>{text}</Link>
       </span>
     );
-  } else if (linkType === "portal") {
+  } else if (linkType === 'portal') {
     return (
       <a
         className={className}

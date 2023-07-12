@@ -1,7 +1,7 @@
-import React from "react";
-import { UnstyledButton } from "@mantine/core";
-import { useRouter } from "next/router";
-import { GEN3_DOMAIN, useCoreSelector, selectUserData } from "@gen3/core";
+import React from 'react';
+import { UnstyledButton } from '@mantine/core';
+import { useRouter } from 'next/router';
+import { GEN3_DOMAIN, useCoreSelector, selectUserData } from '@gen3/core';
 
 const LoginAccountButton = () => {
   const router = useRouter();

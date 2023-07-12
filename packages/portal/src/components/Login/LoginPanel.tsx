@@ -1,11 +1,11 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { showNotification } from "@mantine/notifications";
-import TexturedSidePanel from "../../components/Layout/TexturedSidePanel";
-import LoginProvidersPanel from "../../components/Login/LoginProvidersPanel";
+import React from 'react';
+import { useRouter } from 'next/router';
+import { showNotification } from '@mantine/notifications';
+import TexturedSidePanel from '../../components/Layout/TexturedSidePanel';
+import LoginProvidersPanel from '../../components/Login/LoginProvidersPanel';
 import TextContent, {
   TextContentProps,
-} from "../../components/Content/TextContent";
+} from '../../components/Content/TextContent';
 
 export interface LoginPanelProps {
   readonly sideTexture?: string;
@@ -26,11 +26,11 @@ const LoginPanel = ({
     router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : "?redirect=https://localhost/"),
+          (redirect ? `?redirect=${redirect}` : '?redirect=https://localhost/'),
       )
       .catch((e) => {
         showNotification({
-          title: "Login Error",
+          title: 'Login Error',
           message: `error logging in ${e.message}`,
         });
       });
@@ -57,6 +57,5 @@ const LoginPanel = ({
     </div>
   );
 };
-
 
 export default LoginPanel;

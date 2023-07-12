@@ -24,7 +24,6 @@
   "author": "",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "type": "module",
   "exports": {
     ".": "./dist/index.js",
     "./*": [
@@ -100,7 +99,6 @@
     "html-webpack-plugin": "^5.5.0",
     "@iconify/react": "^4.0.1",
     "@iconify/tools": "^2.1.2",
-    "@next/eslint-plugin-next": "^13.4.4",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@svgr/webpack": "^8.0.1",

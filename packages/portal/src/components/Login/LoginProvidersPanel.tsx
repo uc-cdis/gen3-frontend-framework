@@ -1,7 +1,7 @@
-import React from "react";
-import { Box, Button, LoadingOverlay, Select, Stack } from "@mantine/core";
-import { useGetLoginProvidersQuery } from "@gen3/core";
-import type { Gen3LoginProvider, NameUrl } from "@gen3/core";
+import React from 'react';
+import { Box, Button, LoadingOverlay, Select, Stack } from '@mantine/core';
+import { useGetLoginProvidersQuery } from '@gen3/core';
+import type { Gen3LoginProvider, NameUrl } from '@gen3/core';
 
 interface LoginPanelProps {
   readonly redirectURL?: string;
@@ -36,8 +36,8 @@ const LoginProvidersPanel = ({
                 color="primary"
                 onClick={() => handleLoginSelected(x.urls[0].url, redirectURL)}
               >
-                {" "}
-                {x.name}{" "}
+                {' '}
+                {x.name}{' '}
               </Button>
             );
           else {
@@ -55,7 +55,7 @@ const LoginProvidersPanel = ({
                     handleLoginSelected(x.urls[0].url, redirectURL)
                   }
                 >
-                  {" "}
+                  {' '}
                   {x.name}
                 </Button>
               </div>

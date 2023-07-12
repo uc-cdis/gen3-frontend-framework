@@ -1,7 +1,7 @@
-import React from "react";
-import Image from "next/image";
-import Gen3Link from "./Gen3Link";
-import {FooterProps} from "./types";
+import React from 'react';
+import Image from 'next/image';
+import Gen3Link from './Gen3Link';
+import { FooterProps } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Footer: React.FC<FooterProps> = ({
@@ -19,7 +19,7 @@ const Footer: React.FC<FooterProps> = ({
               <div
                 key={`footer-col-${index}`}
                 className={`flex flex-row gap-x-3 mr-8 ${
-                  col.length > 1 ? "justify-between" : ""
+                  col.length > 1 ? 'justify-between' : ''
                 }`}
               >
                 {col.map((logo) => (
@@ -44,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({
                 {(items || []).map(({ text, href, linkType }, j) => {
                   const attrs = {
                     className: `${
-                      href && "heal-link-footer"
+                      href && 'heal-link-footer'
                     } font-medium text-sm p-[2px] text-white font-montserrat`,
                     key: j,
                   };
@@ -55,7 +55,11 @@ const Footer: React.FC<FooterProps> = ({
                       </div>
                     );
                   } else {
-                    return <span {...attrs} key={href}>{text}</span>;
+                    return (
+                      <span {...attrs} key={href}>
+                        {text}
+                      </span>
+                    );
                   }
                 })}
               </div>
@@ -67,7 +71,7 @@ const Footer: React.FC<FooterProps> = ({
             <div
               key={`footer-col-${index}`}
               className={`flex flex-row gap-x-6 mr-8 ${
-                col.length > 1 ? "justify-end" : ""
+                col.length > 1 ? 'justify-end' : ''
               }`}
             >
               {col.map((logo) => (
