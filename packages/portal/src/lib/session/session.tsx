@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useState, useMemo, PropsWithChildren } from 'react';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
@@ -79,14 +79,14 @@ const logoutUser = (router: NextRouter) => {
 
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
-export const SessionProvider = ({
+export const SessionProvider : React.FC<PropsWithChildren<SessionProviderProps>> = ({
   children,
   session,
   updateSessionTime = 0.3,
   inactiveTimeLimit = 2,
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
-}: SessionProviderProps) => {
+}: PropsWithChildren<SessionProviderProps>) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
   const [sessionInfo, setSessionInfo] = useState(

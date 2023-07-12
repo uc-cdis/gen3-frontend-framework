@@ -28,10 +28,10 @@ interface Gen3ProviderProps {
   icons: RegisteredIcons;
 }
 
-const Gen3Provider: React.FC<Gen3ProviderProps> = ({
+const Gen3Provider : React.FC<PropsWithChildren<Gen3ProviderProps>> = ({
+  children,
   colors,
   icons,
-  children,
 }: PropsWithChildren<Gen3ProviderProps>) => {
   useEffect(() => {
     addCollection(icons);

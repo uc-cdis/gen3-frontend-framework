@@ -38,6 +38,7 @@ RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
 RUN npm install --location=global lerna@6.6.1
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
+COPY ./packages/crosswalk/package.json ./packages/crosswalk/
 COPY ./packages/tools/package.json ./packages/tools/
 COPY ./packages/portal/package.json ./packages/portal/
 RUN npm ci
@@ -45,7 +46,8 @@ COPY ./packages ./packages
 
 RUN lerna run --scope @gen3/core compile
 RUN lerna run --scope @gen3/core build
-RUN lerna run --scope portal build
+RUN lerna run --scope @gen3/crosswalk build:clean
+RUN lerna run --scope @gen3/portal build
 
 ENV PORT=80
 CMD ["npm", "run", "start"]

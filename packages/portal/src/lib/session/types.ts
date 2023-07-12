@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Gen3User, LoginStatus } from '@gen3/core';
 
 export type JWTSessionStatus =
@@ -21,7 +21,7 @@ export interface Session extends AuthTokenData {
 }
 
 export interface SessionProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   session?: Session;
   /**
    * A time interval (in minutes) after which the session will be re-fetched.

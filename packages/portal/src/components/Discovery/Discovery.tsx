@@ -47,10 +47,13 @@ const Discovery = ({ columns, dataURL, studyKey }: DiscoveryProps) => {
     );
   };
 
+
   return (
     <div className="flex flex-col items-center p-2 m-2">
       <div className="flex flex-col w-full">
         {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           <MantineReactTable
             columns={columns}
             data={data?.data ?? []}
