@@ -35,7 +35,7 @@ WORKDIR /gen3
 
 
 RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-RUN npm install --location=global lerna
+RUN npm install --location=global lerna@6.6.1
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
