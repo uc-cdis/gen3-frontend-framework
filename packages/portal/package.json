@@ -42,7 +42,7 @@
     "react-redux": "^7.2.8",
     "react-table": "^7.7.0",
     "recharts": "^2.1.8",
-    "sharp": "^0.30.0",
+    "sharp": "^0.32.1",
     "tailwind-styled-components": "^2.1.4"
   },
   "devDependencies": {
