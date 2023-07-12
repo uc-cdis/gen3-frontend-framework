@@ -34,6 +34,10 @@ export interface CreateGen3AppOptions {
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
 }
 
+export const getGen3AppId = (name: string, version: string): string => {
+  const nameVersion = `${name}::${version}`;
+  return uuidv5(nameVersion, GEN3_APP_NAMESPACE);
+};
 
 export const createGen3App = ({ App, name, version, requiredEntityTypes } : CreateGen3AppOptions): React.ReactNode => {
 

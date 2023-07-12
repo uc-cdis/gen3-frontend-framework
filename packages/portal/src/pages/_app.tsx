@@ -15,12 +15,15 @@ import tailwindConfig from '../../tailwind.config.js';
 import { TenStringArray } from '@/utils/types';
 import { SessionProvider } from '@/lib/session/session';
 import { Notifications } from '@mantine/notifications';
+import { registerSitePlugins } from '../../config/registerSitePlugins';
 
 export const initStore = async () => {
   coreStore.dispatch(csrfApi.endpoints.getCSRF.initiate());
 };
 
 const defaultTailwindColorTheme = tailwindConfig.theme.extend.colors;
+
+registerSitePlugins();
 
 const colors = Object.fromEntries(
   Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
@@ -40,10 +43,6 @@ const getEmotionCache = (): EmotionCache => {
 
   return createEmotionCache({ key: 'mantine', insertionPoint });
 };
-
-import { registerSitePlugins } from '../../config/registerSitePlugins';
-
-//registerSitePlugins()
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   addCollection(icons);

@@ -9,6 +9,7 @@ export interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ top, navigation }: HeaderProps) => {
+  console.log('Header', top, navigation);
   return (
     <div className="w-100">
       <TopBar items={top.items} showLogin={top?.showLogin} />

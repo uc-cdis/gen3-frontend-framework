@@ -1,4 +1,5 @@
-import ConfigurableCrosswalk from "./ConfigurableCrosswalk";
+import React from 'react';
+import ConfigurableCrosswalk from './ConfigurableCrosswalk';
 
 
 const CrosswalkConfig = {
