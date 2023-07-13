@@ -1,4 +1,14 @@
-import { useUser, useUserAuth, resetUserState, LoginStatus, Gen3User, selectUser, fetchUserState, selectUserData, selectUserAuthenticationStatus } from "./userSlice";
+import {
+  useUser,
+  useUserAuth,
+  resetUserState,
+  type LoginStatus,
+  type Gen3User,
+  selectUser,
+  fetchUserState,
+  selectUserData,
+  selectUserAuthenticationStatus,
+} from './userSlice';
 
 export {
   useUser,
@@ -8,7 +18,6 @@ export {
   selectUserData,
   selectUserAuthenticationStatus,
   fetchUserState,
-  Gen3User,
-  LoginStatus,
-
+  type Gen3User,
+  type LoginStatus,
 };

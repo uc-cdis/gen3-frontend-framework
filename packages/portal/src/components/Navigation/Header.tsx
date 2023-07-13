@@ -1,6 +1,7 @@
-import React from "react";
-import TopBar, { TopBarProps } from "./TopBar";
-import NavigationBar, { NavigationProps } from "./NavigationBar";
+import React from 'react';
+import TopBar, { TopBarProps } from './TopBar';
+import NavigationBar from './NavigationBar';
+import { NavigationProps } from './types';
 
 export interface HeaderProps {
   readonly top: TopBarProps;
@@ -8,6 +9,7 @@ export interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ top, navigation }: HeaderProps) => {
+  console.log('Header', top, navigation);
   return (
     <div className="w-100">
       <TopBar items={top.items} showLogin={top?.showLogin} />

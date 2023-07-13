@@ -1,0 +1,25 @@
+{
+  "columns": [
+    {
+      "header": "STUDY NAME",
+      "accessorKey": "short_name"
+    },
+    {
+      "header": "FULL NAME",
+      "accessorKey": "full_name"
+    },
+    {
+      "header": "NUMBER OF SUBJECTS",
+      "accessorKey": "_subjects_count"
+    },
+    {
+      "header": "ID NUMBER",
+      "accessorKey": "study_id"
+    },
+    {
+      "header": "DATA COMMONS",
+      "accessorKey": "commons_name"
+    }
+  ],
+  "dataURL":"https://brh.data-commons.org/mds"
+}

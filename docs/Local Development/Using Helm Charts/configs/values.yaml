@@ -2,7 +2,7 @@ global:
   dev: true
   hostname: localhost
   # set this to gen3ff if you want to use the frontend framework as the root
-  # set to portal if you want to use data-portal as the root. in this case the ff will be at /ff
+  # set to portal if you want to use api-portal as the root. in this case the ff will be at /ff
   frontendRoot: gen3ff
 fence:
   FENCE_CONFIG:

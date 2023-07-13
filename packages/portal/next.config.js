@@ -1,7 +1,9 @@
-"use strict";
+'use strict';
+
+require('./src/lib/server/plugins.js');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const withMDX = require("@next/mdx")({
+const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {
     remarkPlugins: [],
@@ -10,9 +12,10 @@ const withMDX = require("@next/mdx")({
 });
 
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  basePath: process.env.BASE_PATH || "",
+  basePath: process.env.BASE_PATH || '',
 };
 
 module.exports = withMDX(nextConfig);

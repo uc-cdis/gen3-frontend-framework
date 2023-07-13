@@ -1,23 +1,23 @@
-import { promises as fs } from "fs";
-import { importDirectory } from "@iconify/tools/lib/import/directory";
-import { cleanupSVG } from "@iconify/tools/lib/svg/cleanup";
-import { runSVGO } from "@iconify/tools/lib/optimise/svgo";
-import { isEmptyColor, parseColors } from "@iconify/tools/lib/colors/parse";
+import { promises as fs } from 'fs';
+import { importDirectory } from '@iconify/tools/lib/import/directory';
+import { cleanupSVG } from '@iconify/tools/lib/svg/cleanup';
+import { runSVGO } from '@iconify/tools/lib/optimise/svgo';
+import { isEmptyColor, parseColors } from '@iconify/tools/lib/colors/parse';
 
 const getArgs = (defaults = {}) => {
   const args = defaults;
 
   process.argv.slice(2, process.argv.length).forEach((arg) => {
     // long arg
-    if (arg.slice(0, 2) === "--") {
-      const longArg = arg.split("=");
+    if (arg.slice(0, 2) === '--') {
+      const longArg = arg.split('=');
       const longArgFlag = longArg[0].slice(2, longArg[0].length);
       const longArgValue = longArg.length > 1 ? longArg[1] : true;
       args[longArgFlag] = longArgValue;
     }
     // flags
-    else if (arg[0] === "-") {
-      const flags = arg.slice(1, arg.length).split("");
+    else if (arg[0] === '-') {
+      const flags = arg.slice(1, arg.length).split('');
       flags.forEach((flag) => {
         args[flag] = true;
       });
@@ -26,7 +26,7 @@ const getArgs = (defaults = {}) => {
   return args;
 };
 
-const build = async (inpath, outpath, prefix = "gen3") => {
+const build = async (inpath, outpath, prefix = 'gen3') => {
   // Import icons
   console.log(inpath, outpath, prefix);
   const iconSet = await importDirectory(inpath, {
@@ -35,7 +35,7 @@ const build = async (inpath, outpath, prefix = "gen3") => {
 
   // Validate, clean up, fix palette and optimise
   await iconSet.forEach(async (name, type) => {
-    if (type !== "icon") {
+    if (type !== 'icon') {
       return;
     }
 
@@ -50,9 +50,9 @@ const build = async (inpath, outpath, prefix = "gen3") => {
     try {
       await cleanupSVG(svg);
       await parseColors(svg, {
-        defaultColor: "currentColor",
+        defaultColor: 'currentColor',
         callback: (attr, colorStr, color) => {
-          return !color || isEmptyColor(color) ? colorStr : "currentColor";
+          return !color || isEmptyColor(color) ? colorStr : 'currentColor';
         },
       });
       await runSVGO(svg);
@@ -68,11 +68,11 @@ const build = async (inpath, outpath, prefix = "gen3") => {
   });
 
   // Export as IconifyJSON
-  const exported = JSON.stringify(iconSet.export(), null, "\t") + "\n";
+  const exported = JSON.stringify(iconSet.export(), null, '\t') + '\n';
 
   // Save to file
-  await fs.writeFile(`${outpath}/${iconSet.prefix}.json`, exported, "utf8");
+  await fs.writeFile(`${outpath}/${iconSet.prefix}.json`, exported, 'utf8');
 };
 
-const { inpath, outpath, prefix } = getArgs({ prefix: "gen3" });
+const { inpath, outpath, prefix } = getArgs({ prefix: 'gen3' });
 build(inpath, outpath, prefix);

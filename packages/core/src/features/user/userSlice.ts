@@ -1,15 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchFence, Gen3FenceResponse } from "../fence";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import { GEN3_DOMAIN } from "../../constants";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchFence, Gen3FenceResponse } from '../fence';
+import { CoreDispatch } from '../../store';
+import { CoreState } from '../../reducers';
+import { GEN3_DOMAIN } from '../../constants';
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
-} from "../../dataAccess";
-import { useCoreDispatch, useCoreSelector } from "../../hooks";
-import { useEffect } from "react";
+} from '../../dataAccess';
+import { useCoreDispatch, useCoreSelector } from '../../hooks';
+import { useEffect } from 'react';
 
 interface UserProfile {
   id: number;
@@ -53,20 +53,20 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->("fence/user", async () => {
+>('fence/user', async () => {
   return await fetchFence({
     hostname: `${GEN3_DOMAIN}`,
-    endpoint: "/user/user",
-    method: "GET",
+    endpoint: '/user/user',
+    method: 'GET',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      credentials: "include",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      credentials: 'include',
     },
   });
 });
 
-export type LoginStatus = "authenticated" | "unauthenticated" | "pending";
+export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
 
 export interface Gen3UserState {
   readonly data?: Gen3User;
@@ -76,13 +76,13 @@ export interface Gen3UserState {
 }
 
 const initialState: Gen3UserState = {
-  status: "uninitialized",
-  loginStatus: "unauthenticated",
+  status: 'uninitialized',
+  loginStatus: 'unauthenticated',
   error: undefined,
 };
 
 const slice = createSlice({
-  name: "fence/user",
+  name: 'fence/user',
   initialState,
   reducers: {
     resetUserState: () => initialState,
@@ -93,23 +93,23 @@ const slice = createSlice({
         const response = action.payload;
         if (response.errors) {
           return {
-            status: "rejected",
-            loginStatus: "unauthenticated",
+            status: 'rejected',
+            loginStatus: 'unauthenticated',
             error: response.errors.filters,
           };
         }
 
         return {
           data: { ...response.data },
-          status: "fulfilled",
-          loginStatus: "authenticated",
+          status: 'fulfilled',
+          loginStatus: 'authenticated',
         };
       })
       .addCase(fetchUserState.pending, () => {
-        return { status: "pending", loginStatus: "unauthenticated" };
+        return { status: 'pending', loginStatus: 'unauthenticated' };
       })
       .addCase(fetchUserState.rejected, () => {
-        return { status: "rejected", loginStatus: "unauthenticated" };
+        return { status: 'rejected', loginStatus: 'unauthenticated' };
       });
   },
 });
@@ -132,7 +132,7 @@ export const selectUserData = (
     status: state.user.status,
     loginStatus: state.user.loginStatus,
     error: state.user.error,
-    isAuthenticated: state.user.loginStatus === "authenticated",
+    isAuthenticated: state.user.loginStatus === 'authenticated',
   };
 };
 
@@ -148,14 +148,14 @@ export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
 export const selectUserAuthenticationStatus = (
   state: CoreState,
 ): Gen3AuthenticationStatus => {
-  return { isAuthenticated: state.user.loginStatus === "authenticated" };
+  return { isAuthenticated: state.user.loginStatus === 'authenticated' };
 };
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
 /**
  * Hook to return get the authenticated state of the user and if logged in,
- * the user's profile and access data.
+ * the user's profile and access api.
  * Note that if fetchUserState gets called, the user's session is renewed.
  */
 export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
@@ -163,7 +163,7 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
   const { data, status, loginStatus, error } = useCoreSelector(selectUserData);
 
   useEffect(() => {
-    if (status === "uninitialized" || renew) {
+    if (status === 'uninitialized' || renew) {
       // TODO: need to determine what other states require dispatch
       coreDispatch(fetchUserState());
     }
@@ -173,10 +173,10 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
     data: data,
     error,
     loginStatus,
-    isUninitialized: status === "uninitialized",
-    isFetching: status === "pending",
-    isSuccess: status === "fulfilled",
-    isError: status === "rejected",
-    isAuthenticated: status === "fulfilled",
+    isUninitialized: status === 'uninitialized',
+    isFetching: status === 'pending',
+    isSuccess: status === 'fulfilled',
+    isError: status === 'rejected',
+    isAuthenticated: status === 'fulfilled',
   };
 };

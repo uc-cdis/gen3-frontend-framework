@@ -1,18 +1,16 @@
-import React from "react";
-import { Button, Card, Stack } from "@mantine/core";
+import React from 'react';
+import { Button, Card, Stack } from '@mantine/core';
 
 import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
-  selectCSRFToken,
-  useCoreSelector,
-  CoreState,
-} from "@gen3/core";
+  useGetCSRFQuery,
+} from '@gen3/core';
 
-import CredentialsTable from "@/components/Profile/CredentialsTable";
+import CredentialsTable from './CredentialsTable';
 
 const Credentials = () => {
-  const csrfToken = useCoreSelector((state : CoreState) => selectCSRFToken(state))
+  const { data: csrfToken } = useGetCSRFQuery();
   const { isLoading } = useGetCredentialsQuery();
   const [addNewCredential, { isLoading: isNewLoading }] =
     useAddNewCredentialMutation();
@@ -28,7 +26,7 @@ const Credentials = () => {
         <div className="flex justify-center">
           <Button
             onClick={() => {
-              if (csrfToken) addNewCredential(csrfToken);
+              if (csrfToken) addNewCredential(csrfToken.csrfToken);
             }}
           >
             Add Credentials

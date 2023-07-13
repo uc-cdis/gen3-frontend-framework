@@ -1,5 +1,5 @@
-import { gen3Api } from "../gen3/gen3Api";
-import { Gen3Response } from "../../dataAccess";
+import { gen3Api } from '../gen3/gen3Api';
+import { Gen3Response } from '../../dataAccess';
 
 export interface NameUrl {
   readonly name: string;
@@ -24,20 +24,17 @@ export interface Gen3FenceLoginProviders {
 export const loginProvidersApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
-      query: () => "user/login"
+      query: () => 'user/login',
     }),
   }),
 });
 
-export const {
-  useGetLoginProvidersQuery,
-} = loginProvidersApi;
-
+export const { useGetLoginProvidersQuery } = loginProvidersApi;
 
 export interface FetchRequest {
   readonly hostname: string;
   readonly endpoint: string;
-  readonly method: "GET" | "POST";
+  readonly method: 'GET' | 'POST';
   readonly body?: object;
   readonly headers?: Record<string, string>;
   readonly csrfToken?: string;
@@ -46,7 +43,7 @@ export interface FetchRequest {
 export interface Gen3FenceRequest {
   readonly hostname: string;
   readonly endpoint: string;
-  readonly method: "GET" | "POST";
+  readonly method: 'GET' | 'POST';
   readonly body?: object;
 }
 
@@ -73,14 +70,13 @@ const buildFetchError = async <T>(
   };
 };
 
-
 export const fetchFence = async <T>(
   request: FetchRequest,
 ): Promise<Gen3FenceResponse<T>> => {
   const res = await fetch(`${request.hostname}${request.endpoint}`, {
     method: request.method,
     headers: request.headers,
-    body: "POST" === request.method ? JSON.stringify(request.body) : null,
+    body: 'POST' === request.method ? JSON.stringify(request.body) : null,
   });
   if (res.ok) return { data: await res.json() };
 

@@ -1,4 +1,4 @@
-import { ContentSource } from './types';
+import { ContentSource, Gen3CommonsConfiguration } from './types';
 
 /**
  *  The Content management "datastore" which is an abstracted interface to
@@ -6,7 +6,7 @@ import { ContentSource } from './types';
  */
 
 export interface CreateDatabase {
-    store: ContentSource;
+  store: ContentSource;
 }
 
 export class ContentDatabase {
@@ -16,7 +16,11 @@ export class ContentDatabase {
     this.store = config.store;
   }
 
-  public async get<T extends Record<string, any>>(filepath: string): Promise<T> {
-    return this.store.get(filepath);
+  /**
+   * loads a resource from the content store
+   * @param path: key, filename or url
+   */
+  public async get<T extends Record<string, any>>(path: string): Promise<T> {
+    return await this.store.get(path);
   }
 }
