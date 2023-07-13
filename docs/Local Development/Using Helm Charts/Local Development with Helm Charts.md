@@ -89,6 +89,9 @@ This will start the services in the cluster and sync your local changes to the r
 if all goes well you should be able to go to http://localhost/landing. It might take a
 while the first time as the frontend-framework is compiling.
 
+If successful you should see the Gen3 landing page:
+![img.png](images/landing.png)
+
 #### Test Edits
 You can test if edit to the Gen3 frontend-framework.  Go to `packages/portal/config/gen3/landingPage.json` change anything
 for example change `"text": "Gen3 Data Platform"` to `"text": "My Gen3 Data Platform"`,
