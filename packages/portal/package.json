@@ -5,7 +5,6 @@
   "scripts": {
     "compile": "tsc",
     "clean": "rimraf dist",
-    "dev": "next dev",
     "dev:inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",

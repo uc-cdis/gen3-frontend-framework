@@ -1,3 +1,4 @@
 {
-  "commons": "gen3"
+  "commons": "gen3",
+  "mdsURL" : "https://healdata.org/mds"
 }

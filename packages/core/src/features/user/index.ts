@@ -2,12 +2,13 @@ import {
   useUser,
   useUserAuth,
   resetUserState,
+  fetchUserState,
+  isAuthenticated,
+  selectUser,
+  selectUserData,
+  selectUserLoginStatus,
   type LoginStatus,
   type Gen3User,
-  selectUser,
-  fetchUserState,
-  selectUserData,
-  selectUserAuthenticationStatus,
 } from './userSlice';
 
 export {
@@ -16,8 +17,9 @@ export {
   resetUserState,
   selectUser,
   selectUserData,
-  selectUserAuthenticationStatus,
+  selectUserLoginStatus,
   fetchUserState,
+  isAuthenticated,
   type Gen3User,
   type LoginStatus,
 };

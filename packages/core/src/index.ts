@@ -2,11 +2,11 @@ import { GEN3_DOMAIN } from './constants';
 import {
   useUser,
   useUserAuth,
+  isAuthenticated,
   type LoginStatus,
   type Gen3User,
   selectUser,
   fetchUserState,
-  selectUserAuthenticationStatus,
   selectUserData,
 } from './features/user';
 import { type CoreState } from './reducers';
@@ -27,9 +27,9 @@ export {
   selectUser,
   selectUserData,
   fetchUserState,
+  isAuthenticated,
   type LoginStatus,
   type CoreState,
   type Gen3User,
-  selectUserAuthenticationStatus,
   GEN3_DOMAIN,
 };

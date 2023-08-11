@@ -1,18 +1,20 @@
-import { NavPageLayout, NavPageLayoutProps } from '../../components/Navigation';
-import Discovery, {
-  DiscoveryProps,
-} from '../../components/Discovery/Discovery';
+import { NavPageLayout } from '../../components/Navigation';
+import Discovery from '../../components/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
+import { registerDiscoveryDefaultCellRenderers } from '../../components/Discovery';
 
 const DiscoveryPage = ({
   headerProps,
   footerProps,
-  columns,
-  dataURL,
+  discoveryConfig,
+  mdsURL,
 }: DiscoveryPageProps): JSX.Element => {
+
+  registerDiscoveryDefaultCellRenderers();
+
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <Discovery columns={columns} dataURL={dataURL} />
+      <Discovery discoveryConfig={discoveryConfig} mdsURL={mdsURL} />
     </NavPageLayout>
   );
 };
