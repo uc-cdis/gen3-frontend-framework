@@ -4,4 +4,5 @@ export { getServerSideProps } from '@gen3/frontend/pages/Discovery/data';
 
 registerDiscoveryCustomCellRenderers();
 
+
 export default DiscoveryPage;

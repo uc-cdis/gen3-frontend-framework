@@ -1,21 +1,11 @@
-import { MRT_Cell } from 'mantine-react-table';
 import { isArray } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { useContext } from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
-import { TagCategory } from "../types";
-
-export interface CellRenderFunctionProps {
-  cell: MRT_Cell<any>;
-}
-
-// TODO Tighten up the typing here
-export type CellRendererFunction = (
-  props: CellRenderFunctionProps,
-  ...args: any[]
-) => ReactElement;
+import { DiscoveryConfigContext } from '../DiscoveryConfigProvider';
+import { CellRendererFunction, CellRenderFunctionProps } from './types';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -109,29 +99,37 @@ const RenderParagraphsCell = ({ cell }: CellRenderFunctionProps) => {
   );
 };
 
+// TODO This is likely to be replaced by a more general tag component
+interface TagData {
+  name: string;
+  category: string;
+}
+
 const RenderTagsCell = ({ cell }: CellRenderFunctionProps) => {
+  const config = useContext(DiscoveryConfigContext);
   const content = cell.getValue() as any;
   return (
     <div>
-
-      {content.map(({ name, category } : TagCategory) => {
-    const color = getTagColor(category, config);
-    return (
-      <Badge
-        key={name}
-        role='button'
-        tabIndex={0}
-        className='discovery-header__tag-btn discovery-tag discovery-tag--selected'
-        aria-label={name}
-        style={{
-          backgroundColor: color,
-          borderColor: color,
-        }}
-      >
-        {name}
-      </Badge>
-    )};
-  </div>)
+      {content.map(({ name, category }: TagData) => {
+        const color = getTagColor(category, config.tagCategories);
+        return (
+          <Badge
+            key={name}
+            role="button"
+            tabIndex={0}
+            className="discovery-header__tag-btn discovery-tag discovery-tag--selected"
+            aria-label={name}
+            style={{
+              backgroundColor: color,
+              borderColor: color,
+            }}
+          >
+            {name}
+          </Badge>
+        );
+      })}
+    </div>
+  );
 };
 
 export const Gen3DiscoveryStandardCellRenderers = {
@@ -148,12 +146,14 @@ export const Gen3DiscoveryStandardCellRenderers = {
   paragraphs: {
     default: RenderParagraphsCell,
   },
+  tags: {
+    default: RenderTagsCell,
+  },
   link: {
     default: RenderLinkCell,
   },
 };
 
-// TODO Figure this out
 export const registerDiscoveryDefaultCellRenderers = () => {
   DiscoveryCellRendererFactory.registerCellRendererCatalog(
     Gen3DiscoveryStandardCellRenderers,

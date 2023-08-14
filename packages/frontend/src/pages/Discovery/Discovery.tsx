@@ -1,7 +1,13 @@
 import { NavPageLayout } from '../../components/Navigation';
 import Discovery from '../../components/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
-import { registerDiscoveryDefaultCellRenderers } from '../../components/Discovery';
+import {
+  registerDiscoveryDefaultCellRenderers,
+  registerDiscoveryDefaultStudyPreviewRenderers
+} from '../../components/Discovery';
+
+registerDiscoveryDefaultCellRenderers();
+registerDiscoveryDefaultStudyPreviewRenderers();
 
 const DiscoveryPage = ({
   headerProps,
@@ -9,8 +15,6 @@ const DiscoveryPage = ({
   discoveryConfig,
   mdsURL,
 }: DiscoveryPageProps): JSX.Element => {
-
-  registerDiscoveryDefaultCellRenderers();
 
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>

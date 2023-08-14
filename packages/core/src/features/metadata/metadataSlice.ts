@@ -25,24 +25,32 @@ interface CrossWalkParams {
   };
 }
 
-interface MetadataResponse {
+export interface MetadataResponse {
   data: Array<JSONObject>;
   hits: number;
+}
+
+export interface MetadataPaginationParams {
+  pageSize: number;
+  offset: number;
+}
+
+export interface MetadataRequestParams extends MetadataPaginationParams {
+  url?: string;
+  guidType: string;
 }
 
 // Define a service using a base URL and expected endpoints
 export const metadataApi = coreCreateApi({
   reducerPath: 'metadataApi',
   baseQuery: fetchBaseQuery({
-    // baseUrl: "https://brh.data-commons.org/mds/",
     baseUrl: `${GEN3_DOMAIN}${GEN3_API}/`,
   }),
   endpoints: (builder) => ({
-    getMetadata: builder.query<
+    getAggMDS: builder.query<
       MetadataResponse,
-      { url?: string; studyKey: string; pageSize: number; offset: number }
+      MetadataRequestParams
     >({
-      // TODO: add pagination
       query: ({ url, offset, pageSize }) => {
         if (url) {
           return `${url}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
@@ -53,7 +61,25 @@ export const metadataApi = coreCreateApi({
         return {
           data: response.results.map(
             (x: JSONObject) =>
-              (Object.values(x)?.at(0) as JSONObject)[params.studyKey],
+              (Object.values(x)?.at(0) as JSONObject)[params.guidType],
+          ),
+          hits: response.pagination.hits,
+        };
+      },
+    }),
+    getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
+      query: ({ url, guidType, offset, pageSize }) => {
+        if (url) {
+          return `${url}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
+        } else {
+          return `metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
+        }
+      },
+      transformResponse: (response: Record<string, any>, _meta, params) => {
+        return {
+          data: response.results.map(
+            (x: JSONObject) =>
+              (Object.values(x)?.at(0) as JSONObject)[params.guidType],
           ),
           hits: response.pagination.hits,
         };
@@ -82,7 +108,8 @@ export const metadataApi = coreCreateApi({
 });
 
 export const {
-  useGetMetadataQuery,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,

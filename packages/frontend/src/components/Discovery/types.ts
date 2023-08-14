@@ -1,3 +1,6 @@
+import { JSONObject, type MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
+
+export type DiscoveryTableDataHook = (arg: MetadataPaginationParams) => ReturnType<typeof useGetAggMDSQuery>;
 
 export interface AdvancedSearchFilters {
   enabled: boolean;
@@ -15,19 +18,27 @@ export interface TagCategory {
   display: boolean;
 }
 
+export type DiscoveryContentTypes = 'string' | 'number' | 'date' | 'array' | 'link' | 'boolean' | 'paragraphs';
+
 export interface StudyColumn {
   name: string;
   field: string;
-  contentType?: 'string' | 'number' | 'date' | 'array' | 'link';
+  contentType?: DiscoveryContentTypes
   cellRenderFunction?: string;
-  params?: Record<string, unknown>;
+  params?: JSONObject;
   errorIfNotAvailable?: boolean;
   valueIfNotAvailable?: string | number;
 }
 
-interface StudyPreviewField extends StudyColumn {
+export interface StudyPreviewField  {
+  name: string;
+  field: string;
+  contentType?: DiscoveryContentTypes
   includeName: boolean;
-  includeIfNotAvailable: boolean,
+  includeIfNotAvailable: boolean;
+  valueIfNotAvailable?: string;
+  detailRenderer?: string;
+  params?: Record<string, unknown>;
 }
 
 interface StudyTabField {
@@ -40,7 +51,6 @@ interface StudyTabField {
 interface StudyTabGroup {
   header: string;
   fields: StudyTabField[];
-
 }
 
 interface StudyDetailTab {
@@ -64,6 +74,6 @@ export interface DiscoveryConfig extends Record<string, any> {
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
-  studyPreviewField: StudyPreviewField;
+  studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
 }

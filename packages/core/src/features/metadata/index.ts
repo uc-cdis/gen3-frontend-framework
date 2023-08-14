@@ -1,13 +1,21 @@
 import {
-  useGetMetadataQuery,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
+  type MetadataPaginationParams,
+  type MetadataRequestParams,
+  type MetadataResponse,
 } from './metadataSlice';
 
 export {
-  useGetMetadataQuery,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
+  type MetadataPaginationParams,
+  type MetadataRequestParams,
+  type MetadataResponse,
 };
