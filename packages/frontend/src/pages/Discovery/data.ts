@@ -12,8 +12,6 @@ export const getServerSideProps: GetServerSideProps<
     `config/${config.commons}/discovery.json`,
   );
 
-  console.log("Props: ", discoveryProps);
-
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),

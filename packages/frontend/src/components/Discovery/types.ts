@@ -30,6 +30,13 @@ export interface StudyColumn {
   valueIfNotAvailable?: string | number;
 }
 
+export interface MinimalFieldMapping {
+    authzField: string;
+    tagsListFieldName: string;
+    dataAvailabilityField: string;
+    uid: string;
+}
+
 export interface StudyPreviewField  {
   name: string;
   field: string;
@@ -41,14 +48,14 @@ export interface StudyPreviewField  {
   params?: Record<string, unknown>;
 }
 
-interface StudyTabField {
+export interface StudyTabField {
   type: string;
   sourceField: string;
   label?: string;
   default?: string;
 }
 
-interface StudyTabGroup {
+export interface StudyTabGroup {
   header: string;
   fields: StudyTabField[];
 }
@@ -76,4 +83,5 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
+  minimalFieldMapping?: MinimalFieldMapping;
 }

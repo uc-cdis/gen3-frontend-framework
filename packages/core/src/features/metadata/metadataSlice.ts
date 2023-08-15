@@ -81,7 +81,7 @@ export const metadataApi = coreCreateApi({
             (x: JSONObject) =>
               (Object.values(x)?.at(0) as JSONObject)[params.guidType],
           ),
-          hits: response.pagination.hits,
+          hits: -1,
         };
       },
     }),

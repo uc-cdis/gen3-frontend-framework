@@ -17,7 +17,6 @@ export const initStore = async () => {
 };
 
 
-
 const colors = Object.fromEntries(
   Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
     key,

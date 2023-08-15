@@ -5,22 +5,17 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { useGetAggMDSQuery, MetadataPaginationParams } from '@gen3/core';
 import { jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { DiscoveryConfigContext } from './DiscoveryConfigProvider';
 import { DiscoveryTableDataHook } from './types';
 
-
-
 export interface DiscoveryTableConfig {
-  dataHook: DiscoveryTableDataHook
+  dataHook: DiscoveryTableDataHook;
 }
 
-const DiscoveryTable = ({
-  dataHook,
-}: DiscoveryTableConfig) => {
+const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
   const config = useContext(DiscoveryConfigContext);
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -54,7 +49,7 @@ const DiscoveryTable = ({
               columnDef?.cellRenderFunction ?? 'default',
               columnDef?.params,
             )
-          : DiscoveryTableCellRenderer('string', 'default', columnDef?.params,),
+          : DiscoveryTableCellRenderer('string', 'default', columnDef?.params),
       };
     });
   }, [config]);
@@ -87,11 +82,7 @@ const DiscoveryTable = ({
     layoutMode: 'semantic',
   });
 
-  return (
-    <div className="w-100 bg-red">
-      <MantineReactTable table={table} />
-    </div>
-  );
+  return <MantineReactTable table={table} />;
 };
 
 export default DiscoveryTable;

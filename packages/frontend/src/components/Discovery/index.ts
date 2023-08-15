@@ -8,6 +8,7 @@ import {
 } from './TableRenderers/types';
 import { registerDiscoveryDefaultStudyPreviewRenderers } from './TableRenderers/RowRenderers';
 import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
+import { DiscoveryRowRendererFactory } from './TableRenderers/RowRendererFactory';
 import { type DiscoveryConfig } from './types';
 
 export {
@@ -16,6 +17,7 @@ export {
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
   DiscoveryCellRendererFactory,
+  DiscoveryRowRendererFactory,
   type CellRenderFunctionProps,
   type DiscoveryConfig,
 };
