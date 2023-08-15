@@ -60,12 +60,12 @@ export interface StudyTabGroup {
   fields: StudyTabField[];
 }
 
-interface StudyDetailTab {
+export interface StudyDetailTab {
   tabName: string;
   groups: StudyTabGroup[];
 }
 
-interface StudyDetailView {
+export interface StudyDetailView {
   headerField: string;
   tabs: StudyDetailTab[];
 }
