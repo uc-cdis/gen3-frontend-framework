@@ -9,6 +9,7 @@ import {
 import { registerDiscoveryDefaultStudyPreviewRenderers } from './TableRenderers/RowRenderers';
 import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
 import { DiscoveryRowRendererFactory } from './TableRenderers/RowRendererFactory';
+import DiscoveryConfigProvider, { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
 import { type DiscoveryConfig } from './types';
 
 export {
@@ -20,4 +21,6 @@ export {
   DiscoveryRowRendererFactory,
   type CellRenderFunctionProps,
   type DiscoveryConfig,
+  DiscoveryConfigProvider,
+  useDiscoveryConfigContext,
 };

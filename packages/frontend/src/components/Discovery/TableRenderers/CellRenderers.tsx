@@ -4,8 +4,9 @@ import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
-import { DiscoveryConfigContext } from '../DiscoveryConfigProvider';
+import { useDiscoveryConfigContext } from '../DiscoveryConfigProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
+import { JSONObject } from '@gen3/core';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -106,8 +107,8 @@ interface TagData {
 }
 
 const RenderTagsCell = ({ cell }: CellRenderFunctionProps) => {
-  const config = useContext(DiscoveryConfigContext);
   const content = cell.getValue() as any;
+  const { discoveryConfig: config } = useDiscoveryConfigContext();
   return (
     <div>
       {content.map(({ name, category }: TagData) => {

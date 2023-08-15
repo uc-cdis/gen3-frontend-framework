@@ -1,33 +1,38 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import {
   MantineReactTable,
   type MRT_PaginationState,
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
+import { useDisclosure } from '@mantine/hooks';
+import { Drawer } from '@mantine/core';
 import { jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
-import { DiscoveryConfigContext } from './DiscoveryConfigProvider';
+import { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
 import { DiscoveryTableDataHook } from './types';
+import StudyDetailsPanel from "./StudyDetails/StudyDetailsPanel";
 
 export interface DiscoveryTableConfig {
   dataHook: DiscoveryTableDataHook;
 }
 
 const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
-  const config = useContext(DiscoveryConfigContext);
+  const { discoveryConfig: config, studyDetails } = useDiscoveryConfigContext();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-  // const { data, isLoading, isFetching, isError } = useGetAggMDSQuery({
-  //   url: dataURL,
-  //   guidType: studyKey,
-  //   pageSize: pagination.pageSize,
-  //   offset: pagination.pageIndex * pagination.pageSize,
-  // });
+
+  useEffect(() => {
+    if (studyDetails) {
+      open();
+    }
+  }, [studyDetails, open]);
+
   const { data, isLoading, isFetching, isError } = dataHook({
     pageSize: pagination.pageSize,
     offset: pagination.pageIndex * pagination.pageSize,
@@ -82,7 +87,20 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
     layoutMode: 'semantic',
   });
 
-  return <MantineReactTable table={table} />;
+  return (
+    <React.Fragment>
+      <Drawer
+        opened={opened}
+        onClose={close}
+        position="left"
+        title="Details Panel"
+        overlayProps={{ opacity: 0.5, blur: 4 }}
+      >
+        <StudyDetailsPanel data={studyDetails ?? {}} studyConfig={config.detailView}/>
+      </Drawer>
+      <MantineReactTable table={table} />
+    </React.Fragment>
+  );
 };
 
 export default DiscoveryTable;
