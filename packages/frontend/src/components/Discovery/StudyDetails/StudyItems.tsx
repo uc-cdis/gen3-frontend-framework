@@ -10,11 +10,15 @@ import {
   StudyTabTagField,
 } from '../types';
 import { RenderTagsCell } from '../TableRenderers/CellRenderers';
-import { StudyFieldRendererFactory } from "./RendererFactory";
+import {
+  StudyFieldRendererFactory,
+  FieldRendererFunction,
+  FieldRendererFunctionMap,
+} from './RendererFactory';
 
 const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
 
-const blockTextField = (text: string ) => (
+const blockTextField = (text: string, _ = undefined) => (
   <div className={discoveryFieldStyle}>{text}</div>
 );
 
@@ -22,7 +26,7 @@ const label = (text: string) => <b className={discoveryFieldStyle}>{text}</b>;
 
 const textField = (text: string) => <span>{text}</span>;
 
-const linkField = (text: string) => (
+const linkField = (text: string, _ = undefined) => (
   <Link href={text} target="_blank" rel="noreferrer">
     {text}
   </Link>
@@ -43,18 +47,12 @@ const labeledMultipleLinkField = (labelText: string, linksText: string[]) =>
     <div>
       {[
         // labeled first field
-        <div
-          className={discoveryFieldStyle}
-          key={labelText}
-        >
+        <div className={discoveryFieldStyle} key={labelText}>
           {label(labelText)} {linkField(linksText[0])}
         </div>,
         // unlabeled subsequent fields
         ...linksText.slice(1).map((linkText, i) => (
-          <div
-            className={discoveryFieldStyle}
-            key={`${linkText}-${i}`}
-          >
+          <div className={discoveryFieldStyle} key={`${linkText}-${i}`}>
             <div /> {linkField(linkText)}
           </div>
         )),
@@ -74,15 +72,15 @@ const labeledSingleTextField = (labelText: string, fieldText: string) => (
 );
 
 const labeledMultipleTextField = (
-  labelText: string,
-  fieldsText: string[],
+  labelText?: string,
+  fieldsText?: string[],
 ): ReactElement =>
-  fieldsText.length ? (
+  fieldsText?.length ? (
     <div>
       {[
         // labeled first field
         <div className={discoveryFieldStyle} key={`study-details-${labelText}`}>
-          {label(labelText)} {textField(fieldsText[0])}
+          {label(labelText ?? '')} {textField(fieldsText[0])}
         </div>,
         // unlabeled subsequent fields
         ...fieldsText.slice(1).map((text, i) => (
@@ -96,20 +94,15 @@ const labeledMultipleTextField = (
     <React.Fragment />
   );
 
-const accessDescriptor = (_:string|undefined, resource: DiscoveryResource) => {
+const accessDescriptor = (
+  _: string | undefined,
+  resource: DiscoveryResource,
+) => {
   if (resource[accessibleFieldName] === AccessLevel.ACCESSIBLE) {
-    return (
-      <Alert color="green">
-        You have access to this study.
-      </Alert>
-    );
+    return <Alert color="green">You have access to this study.</Alert>;
   }
   if (resource[accessibleFieldName] === AccessLevel.UNACCESSIBLE) {
-    return (
-      <Alert color="red">
-        You do not have access to this study.
-      </Alert>
-    );
+    return <Alert color="red">You do not have access to this study.</Alert>;
   }
   return (
     <Alert color="yellow">
@@ -133,15 +126,20 @@ const formatResourceValuesWhenNestedArray = (
 const renderDetailTags = (
   fieldConfig: StudyTabTagField,
   resource: DiscoveryResource,
-) => {
+): ReactElement => {
   if (fieldConfig.type === 'tags') {
     const tags = fieldConfig.categories
       ? (resource.tags || []).filter((tag) =>
           fieldConfig.categories?.includes(tag.category),
         )
       : resource.tags;
-    return <div key={`detail-tag-${fieldConfig.sourceField}`}>{RenderTagsCell({ value: tags })}</div>;
+    return (
+      <div key={`detail-tag-${fieldConfig.sourceField}`}>
+        {RenderTagsCell({ value: tags })}
+      </div>
+    );
   }
+  return <React.Fragment />;
 };
 
 export const createFieldRendererElement = (
@@ -150,6 +148,10 @@ export const createFieldRendererElement = (
 ) => {
   let resourceFieldValue =
     field.sourceField && JSONPath({ json: resource, path: field.sourceField });
+  const studyFieldRenderer = StudyFieldRendererFactory.getRenderer(
+    field.type,
+    'default',
+  );
   if (
     resourceFieldValue &&
     resourceFieldValue.length > 0 &&
@@ -157,44 +159,32 @@ export const createFieldRendererElement = (
   ) {
     resourceFieldValue =
       formatResourceValuesWhenNestedArray(resourceFieldValue);
-
-    switch (field.type) {
-      case 'text': {
-        return labeledSingleTextField(field.label, resourceFieldValue);
-      }
-      case 'link': {
-        return labeledSingleLinkField(field.label, resourceFieldValue);
-      }
-      case 'textList': {
-        return labeledMultipleTextField(field.label, resourceFieldValue);
-      }
-      case 'linkList': {
-        return labeledMultipleLinkField(field.label, resourceFieldValue);
-      }
-      case 'block': {
-        return blockTextField(field.label, resourceFieldValue);
-      }
-    }
+    return studyFieldRenderer(field.label, resourceFieldValue);
   } else {
     switch (field.type) {
       case 'accessDescriptor': {
-        return accessDescriptor(field.label, resource);
+        return studyFieldRenderer(field.label, resource);
       }
       case 'tags': {
-        return renderDetailTags(field, resource);
+        return studyFieldRenderer(field, resource);
       }
     }
   }
 };
 
-const DefaultGen3StudyDetailsFieldsRenderers = {
-  text: { default: labeledSingleTextField },
-  link: { default: linkField },
-  textList: { default: labeledMultipleTextField },
-  linkList: { default: labeledMultipleTextField },
-  block: { default: blockTextField },
-  accessDescriptor: { default: accessDescriptor },
-  tags: { default: renderDetailTags },
+const DefaultGen3StudyDetailsFieldsRenderers: Record<
+  string,
+  FieldRendererFunctionMap
+> = {
+  text: { default: labeledSingleTextField as FieldRendererFunction },
+  link: { default: linkField as FieldRendererFunction },
+  textList: { default: labeledMultipleTextField as FieldRendererFunction },
+  linkList: { default: labeledMultipleTextField as FieldRendererFunction },
+  block: { default: blockTextField as FieldRendererFunction },
+  accessDescriptor: { default: accessDescriptor as FieldRendererFunction },
+  tags: { default: renderDetailTags as FieldRendererFunction },
 };
 
-StudyFieldRendererFactory.registerFieldRendererCatalog({ DefaultGen3StudyDetailsFieldsRenderers})
+StudyFieldRendererFactory.registerFieldRendererCatalog(
+  DefaultGen3StudyDetailsFieldsRenderers,
+);

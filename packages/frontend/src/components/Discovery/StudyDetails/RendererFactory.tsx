@@ -1,25 +1,16 @@
 import React, { ReactElement } from 'react';
-import { DiscoveryResource } from '../types';
-
-interface StudyRenderFunctionProps {
-  label?: string;
-  field?: string|string[]|DiscoveryResource;
-}
+import { DiscoveryResource, StudyTabTagField } from '../types';
 
 export type FieldRendererFunction = (
-  props: StudyRenderFunctionProps,
-) => ReactElement;
+  _1?: string | StudyTabTagField,
+  _2?: string | string[] | DiscoveryResource,
+) => JSX.Element;
 
-const defaultStudyFieldRenderer = ({
-  label,
-  field
-}: StudyRenderFunctionProps): ReactElement => {
+const defaultStudyFieldRenderer = (): ReactElement => {
   return <span>Field</span>;
 };
 
-export interface FieldRendererFunctionMap {
-  [key: string]: FieldRendererFunction;
-}
+export type FieldRendererFunctionMap = Record<string, FieldRendererFunction>;
 
 export class StudyFieldRendererFactory {
   private static instance: StudyFieldRendererFactory;
@@ -53,12 +44,14 @@ export class StudyFieldRendererFactory {
     func: FieldRendererFunction,
   ): void {
     if (
-      StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type] === undefined
+      StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type] ===
+      undefined
     ) {
       StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type] = {};
     }
-    StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type][functionName] =
-      func;
+    StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type][
+      functionName
+    ] = func;
   }
 
   static registerFieldRendererCatalog(
