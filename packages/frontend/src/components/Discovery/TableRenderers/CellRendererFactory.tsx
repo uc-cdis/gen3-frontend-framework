@@ -4,9 +4,8 @@ import { JSONObject } from '@gen3/core';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 
 const defaultCellRenderer = ({
-  cell,
+  value,
 }: CellRenderFunctionProps): ReactElement => {
-  const value = cell.getValue() as never;
   return <Text>{value}</Text>;
 };
 
@@ -75,7 +74,6 @@ export class DiscoveryCellRendererFactory {
  * Retrieve the cell renderer function for the given type and function name
  * @param type
  * @param functionName
- * @param config
  * @param params
  */
 export const DiscoveryTableCellRenderer = (

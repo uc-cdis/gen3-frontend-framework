@@ -11,12 +11,12 @@ interface DiscoveryConfigProviderValue {
 const DiscoveryConfigContext  = createContext<DiscoveryConfigProviderValue>(
   {
     discoveryConfig: {} as DiscoveryConfig,
-    setStudyDetails: () => {},
-    studyDetails: undefined
-});
+    setStudyDetails: () => null,
+    studyDetails: undefined,
+  });
 
 const useDiscoveryConfigContext = () => {
-  const context = React.useContext(DiscoveryConfigContext)
+  const context = React.useContext(DiscoveryConfigContext);
   if (context === undefined) {
     throw Error('RadioGroupItem must be used inside of a RadioGroup, ' + 'otherwise it will not function correctly.')
   }

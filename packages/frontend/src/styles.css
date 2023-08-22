@@ -1,0 +1,12 @@
+
+@layer components {
+  .discovery-subheading {
+    @apply px-0 py-10 border-r-2 primary
+  }
+  .discovery-fieldlabel {
+    @apply pr-1
+  }
+  .discovery-field {
+    @apply flex px-0.5 justify-between whitespace-pre-wrap
+  }
+}

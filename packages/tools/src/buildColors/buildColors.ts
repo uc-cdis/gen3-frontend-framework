@@ -28,6 +28,11 @@ const main = () => {
         short: 'a',
         default: '#E07C3E',
       },
+      base: {
+        type: 'string',
+        short: 'b',
+        default: '#E07C3E',
+      },
       out: {
         type: 'string',
         short: 'o',
@@ -42,6 +47,7 @@ const main = () => {
     const primaryPallet = create10ColorPallet(themeColors.primary);
     const secondaryPallet = create10ColorPallet(themeColors.secondary);
     const accentPallet = create10ColorPallet(themeColors.accent);
+    const basePallet = create10ColorPallet(themeColors.base);
 
     const theme = {
       primary: primaryPallet,
@@ -50,6 +56,8 @@ const main = () => {
       'secondary-contrast': create10ColorAccessibleContrast(secondaryPallet),
       accent: secondaryPallet,
       'accent-contrast': create10ColorAccessibleContrast(accentPallet),
+      base: secondaryPallet,
+      'base-contrast': create10ColorAccessibleContrast(basePallet),
     };
 
     writeFileSync(

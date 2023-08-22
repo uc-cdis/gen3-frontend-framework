@@ -1,22 +1,30 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   MantineReactTable,
+  MRT_Cell,
   type MRT_PaginationState,
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
-import { Drawer } from '@mantine/core';
+
 import { jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
 import { DiscoveryTableDataHook } from './types';
-import StudyDetailsPanel from "./StudyDetails/StudyDetailsPanel";
+import StudyDetails from './StudyDetails/StudyDetails';
+import { CellRendererFunction } from './TableRenderers/types';
+
 
 export interface DiscoveryTableConfig {
   dataHook: DiscoveryTableDataHook;
 }
+
+const extractCellValue =
+  (func: CellRendererFunction) =>
+  ({ cell }: { cell: MRT_Cell }) =>
+    func({ value: cell.getValue() as never, cell });
 
 const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
   const { discoveryConfig: config, studyDetails } = useDiscoveryConfigContext();
@@ -27,11 +35,7 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
     pageSize: 10,
   });
 
-  useEffect(() => {
-    if (studyDetails) {
-      open();
-    }
-  }, [studyDetails, open]);
+
 
   const { data, isLoading, isFetching, isError } = dataHook({
     pageSize: pagination.pageSize,
@@ -49,12 +53,20 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
         header: columnDef.name,
         accessorFn: jsonPathAccessor(columnDef.field),
         Cell: columnDef?.contentType
-          ? DiscoveryTableCellRenderer(
-              columnDef?.contentType,
-              columnDef?.cellRenderFunction ?? 'default',
-              columnDef?.params,
+          ? extractCellValue(
+              DiscoveryTableCellRenderer(
+                columnDef?.contentType,
+                columnDef?.cellRenderFunction ?? 'default',
+                columnDef?.params,
+              ),
             )
-          : DiscoveryTableCellRenderer('string', 'default', columnDef?.params),
+          : extractCellValue(
+              DiscoveryTableCellRenderer(
+                'string',
+                'default',
+                columnDef?.params,
+              ),
+            ),
       };
     });
   }, [config]);
@@ -69,6 +81,12 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onHoveredRowChange: (row) => {
+      console.log('hovered: ', row);
+    },
+    onHoveredColumnChange: (column) => {
+      console.log('hovered: ', column);
+    },
     rowCount: data?.hits ?? 0,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
@@ -85,19 +103,21 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
       },
     },
     layoutMode: 'semantic',
+    mantineTableHeadCellProps: {
+      sx: (theme) =>  { return {
+        backgroundColor: theme.colors.secondary[9],
+        textAlign: 'center',
+        padding: theme.spacing.md,
+        fontWeight: 'bold',
+        fontSize: theme.fontSizes.xl,
+        textTransform: 'uppercase',
+      };}
+    },
   });
 
   return (
     <React.Fragment>
-      <Drawer
-        opened={opened}
-        onClose={close}
-        position="left"
-        title="Details Panel"
-        overlayProps={{ opacity: 0.5, blur: 4 }}
-      >
-        <StudyDetailsPanel data={studyDetails ?? {}} studyConfig={config.detailView}/>
-      </Drawer>
+      <StudyDetails />
       <MantineReactTable table={table} />
     </React.Fragment>
   );

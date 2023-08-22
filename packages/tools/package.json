@@ -1,5 +1,5 @@
 {
-  "name": "tools",
+  "name": "@gen3/toolsff",
   "version": "0.1.0",
   "description": "tools for processing portal content",
   "main": "index.js",

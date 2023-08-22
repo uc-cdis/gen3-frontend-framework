@@ -1,18 +1,17 @@
 import { isArray } from 'lodash';
-import React, { useContext } from 'react';
+import React  from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
 import { useDiscoveryConfigContext } from '../DiscoveryConfigProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
-import { JSONObject } from '@gen3/core';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
-  cell,
+  value
 }: CellRenderFunctionProps) => {
-  const value = cell.getValue();
+
   if (isArray(value)) {
     return (
       <div className="w-64 flex flex-wrap gap-0.5">
@@ -21,7 +20,7 @@ export const RenderArrayCell: CellRendererFunction = ({
             variant="outline"
             classNames={{ root: 'basis-1/3' }}
             color="accent-light"
-            key={`${cell.id}-value-${index}`}
+            key={`${x}-value-${index}`}
           >
             {x}
           </Badge>
@@ -33,9 +32,9 @@ export const RenderArrayCell: CellRendererFunction = ({
 };
 
 export const RenderArrayCellNegativePositive = ({
-  cell,
+  value,
+  cell
 }: CellRenderFunctionProps) => {
-  const value = cell.getValue();
   if (isArray(value)) {
     return (
       <div className="w-64 flex flex-wrap gap-0.5">
@@ -44,7 +43,7 @@ export const RenderArrayCellNegativePositive = ({
             variant="filled"
             color={x === 'Positive' ? 'green' : 'gray'}
             classNames={{ root: 'basis-1/3' }}
-            key={`${cell.id}-value-${index}`}
+            key={`${cell?.id ?? 'cell'}-value-${index}`}
           >
             {x}
           </Badge>
@@ -56,8 +55,8 @@ export const RenderArrayCellNegativePositive = ({
   return <span>{value as any}</span>;
 };
 
-export const RenderLinkCell = ({ cell }: CellRenderFunctionProps) => {
-  const content = cell.getValue() as string;
+export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
+  const content = value  as string;
   return (
     <Link
       href={content}
@@ -70,13 +69,13 @@ export const RenderLinkCell = ({ cell }: CellRenderFunctionProps) => {
   );
 };
 
-const RenderStringCell = ({ cell }: CellRenderFunctionProps) => {
-  const content = cell.getValue() as string | string[];
+const RenderStringCell = ({ value }: CellRenderFunctionProps) => {
+  const content = value as string | string[];
   return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
 };
 
-const RenderNumberCell = ({ cell }: CellRenderFunctionProps) => {
-  const content = cell.getValue() as number | number[];
+const RenderNumberCell = ({ value }: CellRenderFunctionProps) => {
+  const content = value as number | number[];
   return (
     <Text>
       {isArray(content)
@@ -86,8 +85,8 @@ const RenderNumberCell = ({ cell }: CellRenderFunctionProps) => {
   );
 };
 
-const RenderParagraphsCell = ({ cell }: CellRenderFunctionProps) => {
-  const content = cell.getValue() as string | string[];
+const RenderParagraphsCell = ({ value }: CellRenderFunctionProps) => {
+  const content = value as string | string[];
   return (
     <React.Fragment>
       {isArray(content)
@@ -106,8 +105,8 @@ interface TagData {
   category: string;
 }
 
-const RenderTagsCell = ({ cell }: CellRenderFunctionProps) => {
-  const content = cell.getValue() as any;
+export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
+  const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryConfigContext();
   return (
     <div>
@@ -118,7 +117,6 @@ const RenderTagsCell = ({ cell }: CellRenderFunctionProps) => {
             key={name}
             role="button"
             tabIndex={0}
-            className="discovery-header__tag-btn discovery-tag discovery-tag--selected"
             aria-label={name}
             style={{
               backgroundColor: color,

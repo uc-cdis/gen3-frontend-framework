@@ -6,6 +6,7 @@ import {
   type MRT_Row,
 } from 'mantine-react-table';
 import { Box, Text } from '@mantine/core';
+import DemoModal from '../Modals/DemoModal';
 
 interface ColumnDefiniton {
   header: string;
@@ -50,7 +51,9 @@ const Discovery = ({ columns, dataURL, studyKey }: DiscoveryProps) => {
 
   return (
     <div className="flex flex-col items-center p-2 m-2">
-      <div className="flex flex-col w-full">
+      <DemoModal />
+      <div className="w-full">
+
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

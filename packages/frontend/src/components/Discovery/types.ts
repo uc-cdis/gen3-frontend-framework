@@ -11,8 +11,12 @@ export interface AdvancedSearchFilters {
   }[];
 }
 
-export interface TagCategory {
+export interface TagInfo {
   name: string;
+  category: string;
+}
+
+export interface TagCategory extends TagInfo{
   displayName: string;
   color: string;
   display: boolean;
@@ -51,13 +55,17 @@ export interface StudyPreviewField  {
 export interface StudyTabField {
   type: string;
   sourceField: string;
-  label?: string;
+  label: string;
   default?: string;
+}
+
+export interface StudyTabTagField extends StudyTabField{
+  categories?: string[];
 }
 
 export interface StudyTabGroup {
   header: string;
-  fields: StudyTabField[];
+  fields: Array<StudyTabField | StudyTabTagField> ;
 }
 
 export interface StudyDetailTab {
@@ -84,4 +92,20 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
   minimalFieldMapping?: MinimalFieldMapping;
+}
+
+export const accessibleFieldName = '__accessible';
+const ARBORIST_READ_PRIV = 'read';
+
+export enum AccessLevel {
+  ACCESSIBLE = 1,
+  UNACCESSIBLE = 2,
+  PENDING = 3,
+  NOT_AVAILABLE = 4,
+  OTHER = 5,
+}
+
+export interface DiscoveryResource extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined>{
+  [accessibleFieldName]: AccessLevel;
+  tags?: Array<TagInfo>;
 }

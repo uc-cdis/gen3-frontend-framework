@@ -2,7 +2,7 @@ import {
   DiscoveryCellRendererFactory,
   CellRenderFunctionProps,
 } from '@gen3/frontend';
-import { Badge, Text } from '@mantine/core';
+import { Badge } from '@mantine/core';
 import React from 'react';
 import {
   MdOutlineCheckCircle as CheckCircleOutlined,
@@ -14,8 +14,8 @@ import { isArray } from 'lodash';
  * Custom cell renderer for the linked study column for HEAL
  * @param cell
  */
-export const LinkedStudyCell = ({ cell }: CellRenderFunctionProps) => {
-  const value = cell.getValue() as boolean;
+export const LinkedStudyCell = ({ value: cellValue }: CellRenderFunctionProps) => {
+  const value = cellValue as boolean;
   return value ? (
     <Badge variant="outline" leftSection={<CheckCircleOutlined />} color="green">
       Linked
@@ -27,8 +27,8 @@ export const LinkedStudyCell = ({ cell }: CellRenderFunctionProps) => {
   );
 };
 
-const WrappedStringCell = ({ cell }: CellRenderFunctionProps, params :any[0]) => {
-  const content = cell.getValue() as string | string[];
+const WrappedStringCell = ({ value }: CellRenderFunctionProps, params :any[0]) => {
+  const content = value as string | string[];
   return (
     <div className="w-40">
       <span className="break-words whitespace-break-spaces text-md">{isArray(content) ? content.join(', ') : content}</span>

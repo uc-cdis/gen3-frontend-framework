@@ -11,6 +11,7 @@ import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFacto
 import { DiscoveryRowRendererFactory } from './TableRenderers/RowRendererFactory';
 import DiscoveryConfigProvider, { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
 import { type DiscoveryConfig } from './types';
+import StudyGroup from './StudyDetails/StudyGroup';
 
 export {
   Discovery,
@@ -23,4 +24,5 @@ export {
   type DiscoveryConfig,
   DiscoveryConfigProvider,
   useDiscoveryConfigContext,
+  StudyGroup
 };

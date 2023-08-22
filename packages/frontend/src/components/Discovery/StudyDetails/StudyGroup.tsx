@@ -1,7 +1,7 @@
 import { StudyTabGroup } from '../types';
 import { Text } from '@mantine/core';
-import { JSONPath } from 'jsonpath-plus';
 import { JSONObject } from '@gen3/core';
+import { createFieldRendererElement }  from './StudyItems';
 
 interface StudyTabGroupProps extends StudyTabGroup {
   readonly data: JSONObject;
@@ -9,16 +9,15 @@ interface StudyTabGroupProps extends StudyTabGroup {
 
 const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
   return (
-    <div className="flex flex-col">
-      <div className="bg-secondary w-full p-4">
-        <Text>{header}</Text>
+    <div className=" flexflex-col">
+      <div className="bg-accent-lightest w-full p-1 mb-4">
+        <Text color="primary">{header}</Text>
+      </div>
+      <div className="
+      +0p-4">
         {fields.map((field) => {
-          console.log('StudyGroup', field);
           return (
-            <div key={field.sourceField} className="flex">
-              <Text>{field.label}</Text>
-              <Text>{JSONPath({ json: data, path: field.sourceField }) ?? field.default ?? '...'}</Text>
-            </div>
+            createFieldRendererElement(field, data as any)
           );
         })}
       </div>

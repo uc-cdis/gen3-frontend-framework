@@ -3,7 +3,7 @@
   "module": {
     "type": "es6"
   },
-  "exclude": [".*\\.stories\\..*$", "postcss.config.cjs", "tailwind.config.cjs"],
+  "exclude": [".*\\.stories\\..*$", "postcss.config.cjs"],
   "jsc": {
     "target": "esnext",
     "loose": true,

@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactElement, useContext } from 'react';
+import React, { ReactElement } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import { Box, Text } from '@mantine/core';
 import {
@@ -31,7 +31,6 @@ const HEALRowRenderer = (
         width: '100%',
       }}
       onClick={() => {
-        console.log('clicked');
         setStudyDetails(row.original);
       }}
     >

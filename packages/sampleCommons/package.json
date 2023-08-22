@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev"
+    "dev": "next dev",
+    "buildColors": "tsc ../tools/src/buildColors/buildColors.ts --themeFile=config/gen3/colors.json --outDir=config/theme.json"
   },
   "dependencies": {
     "@gen3/core": "0.1.0",
@@ -12,7 +13,8 @@
   },
   "devDependencies" : {
     "tailwindcss": "^3.2.4",
-    "ts-jest": "^29.0.3"
+    "ts-jest": "^29.0.3",
+    "@gen3/toolsff": "0.1.0"
   },
   "peerDependencies": {
     "@types/react": "^18.2.0",

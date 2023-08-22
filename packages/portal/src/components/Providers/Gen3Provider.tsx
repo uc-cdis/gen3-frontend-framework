@@ -42,6 +42,7 @@ const Gen3Provider : React.FC<PropsWithChildren<Gen3ProviderProps>> = ({
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
+        withCSSVariables
         emotionCache={getEmotionCache()}
         theme={{
           fontFamily: 'Montserrat, Noto Sans, sans-serif',
@@ -57,6 +58,12 @@ const Gen3Provider : React.FC<PropsWithChildren<Gen3ProviderProps>> = ({
             lg: '1275',
             xl: '1800',
           },
+          components: { Drawer: {
+            defaultProps: {
+              target: "#__next",
+              zIndex: 1000,
+            },
+          }},
         }}
       >
         <Notifications />
