@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "next lint",
     "dev": "next dev",
-    "buildColors": "tsc ../tools/src/buildColors/buildColors.ts --themeFile=config/gen3/colors.json --outDir=config/theme.json"
+    "buildColors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/"
   },
   "dependencies": {
     "@gen3/core": "0.1.0",

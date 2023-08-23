@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
@@ -41,7 +41,11 @@ const main = () => {
     },
   });
 
-  if (themeFile) {
+
+    if (!existsSync(themeFile)) {
+      console.log("No themefile found. Please provide a themefile with '-t'.")
+      return;
+    }
     const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
     const themeColors = JSON.parse(themeData);
     const primaryPallet = create10ColorPallet(themeColors.primary);
@@ -64,7 +68,7 @@ const main = () => {
       join(out ?? './', 'theme.json'),
       JSON.stringify(theme, null, 2),
     );
-  }
+
 };
 
 main();
