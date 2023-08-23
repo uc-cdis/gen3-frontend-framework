@@ -79,5 +79,5 @@ export const DiscoveryDetailsRenderer = (
     return defaultStudyFieldRenderer;
   }
   const func = StudyFieldRendererFactory.getRenderer(type, functionName);
-  return (props): ReactElement => func(props);
+  return (arg1, arg2): ReactElement => func(arg1, arg2);
 };

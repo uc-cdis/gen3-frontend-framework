@@ -4,15 +4,15 @@ import { JSONObject } from "@gen3/core";
 
 interface DiscoveryConfigProviderValue {
   discoveryConfig: DiscoveryConfig;
-  setStudyDetails: React.Dispatch<React.SetStateAction<JSONObject | undefined>>;
-  studyDetails?: JSONObject ;
+  setStudyDetails: React.Dispatch<React.SetStateAction<JSONObject>>;
+  studyDetails: JSONObject ;
 }
 
 const DiscoveryConfigContext  = createContext<DiscoveryConfigProviderValue>(
   {
     discoveryConfig: {} as DiscoveryConfig,
     setStudyDetails: () => null,
-    studyDetails: undefined,
+    studyDetails: { } as JSONObject,
   });
 
 const useDiscoveryConfigContext = () => {
@@ -21,11 +21,11 @@ const useDiscoveryConfigContext = () => {
     throw Error('RadioGroupItem must be used inside of a RadioGroup, ' + 'otherwise it will not function correctly.')
   }
   return context;
-}
+};
 
 
 const DiscoveryConfigProvider = ({ children, discoveryConfig }: { children: React.ReactNode, discoveryConfig: DiscoveryConfig }) => {
-  const [studyDetails, setStudyDetails] = React.useState<JSONObject|undefined>(undefined);
+  const [studyDetails, setStudyDetails] = React.useState<JSONObject>({});
   return (
     <DiscoveryConfigContext.Provider value={{discoveryConfig, setStudyDetails, studyDetails}}>
       {children}
