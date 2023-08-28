@@ -1,4 +1,3 @@
-import { mdsReducer, mdsReducerPath } from './features/metadata/metadataSlice';
 import {
   gen3ServicesReducer,
   gen3ServicesReducerPath,
@@ -8,7 +7,6 @@ import { userReducer } from './features/user/userSlice';
 import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 
 export const rootReducer = combineReducers({
-  [mdsReducerPath]: mdsReducer,
   [gen3ServicesReducerPath]: gen3ServicesReducer,
   user: userReducer,
   gen3Apps: gen3AppReducer,

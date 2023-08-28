@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import ConfigurableCrosswalk from '../components/Crosswalk/ConfigurableCrosswalk';
+import ConfigurableCrosswalk from '../features/Crosswalk/ConfigurableCrosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
 import { NavPageLayout, NavPageLayoutProps } from '../components/Navigation';
 

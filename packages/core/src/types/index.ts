@@ -1,11 +1,12 @@
-type JSONValue =
+import { ReactElement } from 'react';
+
+export type JSONValue =
   | string
   | number
   | boolean
-  | null
   | JSONValue[]
   | { [key: string]: JSONValue }
-  | JSX.Element;
+  | ReactElement;
 
 export interface JSONObject {
   [k: string]: JSONValue;

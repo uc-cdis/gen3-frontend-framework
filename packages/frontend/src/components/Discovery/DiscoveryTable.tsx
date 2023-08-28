@@ -1,49 +1,49 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
-  type MRT_PaginationState,
   type MRT_SortingState,
+  type MRT_PaginationState,
   useMantineReactTable,
+
 } from 'mantine-react-table';
-import { useDisclosure } from '@mantine/hooks';
 
 import { jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
-import { DiscoveryTableDataHook } from './types';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
+import { MetadataResponse } from "@gen3/core";
+import { OnChangeFn, PaginationState } from "@tanstack/table-core";
+import { SortingState } from "@tanstack/table-core/src/features/Sorting";
 
 
-export interface DiscoveryTableConfig {
-  dataHook: DiscoveryTableDataHook;
-}
+
 
 const extractCellValue =
   (func: CellRendererFunction) =>
   ({ cell }: { cell: MRT_Cell }) =>
     func({ value: cell.getValue() as never, cell });
 
-const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
-  const { discoveryConfig: config, studyDetails } = useDiscoveryConfigContext();
-  const [opened, { open, close }] = useDisclosure(false);
+interface DiscoveryTableConfig {
+  data: MetadataResponse;
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
+  pagination: MRT_PaginationState;
+  sorting: MRT_SortingState;
+  setPagination: OnChangeFn<PaginationState>;
+  setSorting: OnChangeFn<SortingState>;
 
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+}
 
 
+const DiscoveryTable = ({ data, isError, isLoading, isFetching, setSorting, setPagination, pagination, sorting }: DiscoveryTableConfig) => {
+  const { discoveryConfig: config} = useDiscoveryConfigContext();
 
-  const { data, isLoading, isFetching, isError } = dataHook({
-    pageSize: pagination.pageSize,
-    offset: pagination.pageIndex * pagination.pageSize,
-  });
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
+  console.log("DiscoveryTable.tsx: data: ", data);
   const cols = useMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef) => {
@@ -81,12 +81,6 @@ const DiscoveryTable = ({ dataHook }: DiscoveryTableConfig) => {
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
-    onHoveredRowChange: (row) => {
-      console.log('hovered: ', row);
-    },
-    onHoveredColumnChange: (column) => {
-      console.log('hovered: ', column);
-    },
     rowCount: data?.hits ?? 0,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)

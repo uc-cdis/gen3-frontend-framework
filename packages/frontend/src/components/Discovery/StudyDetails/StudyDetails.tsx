@@ -15,7 +15,7 @@ const StudyDetails = () => {
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
       typeof studyId == 'string' ?? 'unknown')}`;
-    permalink = `${window.location.origin}${pagePath}`;
+    permalink = `/${pagePath}`;
   }
 
   useEffect(() => {

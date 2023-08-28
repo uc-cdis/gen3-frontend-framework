@@ -19,6 +19,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "target": "esnext",
     "resolveJsonModule": true,
     "lib": [

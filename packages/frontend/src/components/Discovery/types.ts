@@ -1,14 +1,20 @@
-import { JSONObject, type MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
+import { JSONObject, JSONValue, type MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
 
 export type DiscoveryTableDataHook = (arg: MetadataPaginationParams) => ReturnType<typeof useGetAggMDSQuery>;
+
+export interface KeyValueSearchFilter {
+  key: string;
+  keyDisplayName?: string
+  valueDisplayNames?: {
+    [value: string]: string
+  }
+}
 
 export interface AdvancedSearchFilters {
   enabled: boolean;
   field: string;
   displayName: string;
-  filters: {
-    key: string;
-  }[];
+  filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
 export interface TagInfo {
@@ -16,7 +22,12 @@ export interface TagInfo {
   category: string;
 }
 
-export interface TagCategory extends TagInfo{
+export interface SearchKV {
+  key: string;
+  value: any;
+}
+
+export interface TagCategory extends TagInfo {
   displayName: string;
   color: string;
   display: boolean;
@@ -27,7 +38,7 @@ export type DiscoveryContentTypes = 'string' | 'number' | 'date' | 'array' | 'li
 export interface StudyColumn {
   name: string;
   field: string;
-  contentType?: DiscoveryContentTypes
+  contentType?: DiscoveryContentTypes;
   cellRenderFunction?: string;
   params?: JSONObject;
   errorIfNotAvailable?: boolean;
@@ -35,16 +46,16 @@ export interface StudyColumn {
 }
 
 export interface MinimalFieldMapping {
-    authzField: string;
-    tagsListFieldName: string;
-    dataAvailabilityField: string;
-    uid: string;
+  authzField: string;
+  tagsListFieldName: string;
+  dataAvailabilityField: string;
+  uid: string;
 }
 
-export interface StudyPreviewField  {
+export interface StudyPreviewField {
   name: string;
   field: string;
-  contentType?: DiscoveryContentTypes
+  contentType?: DiscoveryContentTypes;
   includeName: boolean;
   includeIfNotAvailable: boolean;
   valueIfNotAvailable?: string;
@@ -59,13 +70,13 @@ export interface StudyTabField {
   default?: string;
 }
 
-export interface StudyTabTagField extends StudyTabField{
+export interface StudyTabTagField extends StudyTabField {
   categories?: string[];
 }
 
 export interface StudyTabGroup {
   header: string;
-  fields: Array<StudyTabField | StudyTabTagField> ;
+  fields: Array<StudyTabField | StudyTabTagField>;
 }
 
 export interface StudyDetailTab {
@@ -83,9 +94,17 @@ interface DiscoveryTableConfig {
   expandingRowRenderFunction?: string;
 }
 
+interface DiscoveryPageTitle {
+  enabled: boolean;
+  text: string;
+}
+
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
-  advSearchFilters: AdvancedSearchFilters;
+  features: {
+    advSearchFilters: AdvancedSearchFilters;
+    pageTitle: DiscoveryPageTitle;
+  }
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
@@ -105,7 +124,7 @@ export enum AccessLevel {
   OTHER = 5,
 }
 
-export interface DiscoveryResource extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined>{
+export interface DiscoveryResource extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined> {
   [accessibleFieldName]: AccessLevel;
   tags?: Array<TagInfo>;
 }

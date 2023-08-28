@@ -3,6 +3,7 @@ import { Gen3Provider, TenStringArray } from '@gen3/frontend';
 import colorTheme from '../../config/theme.json';
 import icons from '../../config/icons/gen3.json';
 import '../styles/globals.css';
+import 'graphiql/graphiql.min.css';
 
 const colors = Object.fromEntries(
   Object.entries(colorTheme).map(([key, values]) => [

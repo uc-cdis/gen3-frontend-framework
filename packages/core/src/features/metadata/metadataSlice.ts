@@ -1,8 +1,5 @@
-import { coreCreateApi } from '../../api';
-import { Reducer, Middleware } from '@reduxjs/toolkit';
-import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { GEN3_DOMAIN, GEN3_API } from '../../constants';
 import { JSONObject } from '../../types';
+import { gen3Api } from '../gen3';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -41,11 +38,7 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
 }
 
 // Define a service using a base URL and expected endpoints
-export const metadataApi = coreCreateApi({
-  reducerPath: 'metadataApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${GEN3_DOMAIN}${GEN3_API}/`,
-  }),
+export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAggMDS: builder.query<
       MetadataResponse,
@@ -114,6 +107,3 @@ export const {
   useGetDataQuery,
   useGetCrosswalkDataQuery,
 } = metadataApi;
-export const mdsReducerPath: string = metadataApi.reducerPath;
-export const mdsReducer: Reducer = metadataApi.reducer as Reducer;
-export const mdsReducerMiddleware = metadataApi.middleware as Middleware;

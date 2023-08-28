@@ -1,4 +1,4 @@
-import { GEN3_DOMAIN } from './constants';
+import { GEN3_API, GEN3_DOMAIN } from './constants';
 import {
   useUser,
   useUserAuth,
@@ -19,6 +19,7 @@ export * from './provider';
 export * from './features/metadata/metadataSlice';
 export * from './features/fence';
 export * from './features/gen3Apps';
+export * from './features/graphQL';
 export { gen3Api } from './features/gen3';
 
 export {
@@ -32,4 +33,5 @@ export {
   type CoreState,
   type Gen3User,
   GEN3_DOMAIN,
+  GEN3_API
 };

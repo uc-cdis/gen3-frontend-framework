@@ -13,12 +13,11 @@ const DiscoveryPage = ({
   headerProps,
   footerProps,
   discoveryConfig,
-  mdsURL,
 }: DiscoveryPageProps): JSX.Element => {
 
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <Discovery discoveryConfig={discoveryConfig} mdsURL={mdsURL} />
+      <Discovery discoveryConfig={discoveryConfig} />
     </NavPageLayout>
   );
 };
