@@ -1,14 +1,15 @@
 import { NavPageLayout } from '../../components/Navigation';
-import GqlQueryEditor from '../../features/Query/GqlQueryEditor';
+import QueryPanel from '../../features/Query/QueryPanel';
 import { QueryPageLayoutProps } from './types';
 
 const QueryPage = ({
   headerProps,
   footerProps,
+  queryProps,
 } : QueryPageLayoutProps ): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <GqlQueryEditor />
+      <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint}/>
     </NavPageLayout>
   );
 };

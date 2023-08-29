@@ -65,6 +65,8 @@
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
     "@gen3/core": "0.1.0",
+    "@graphiql/plugin-explorer": "^0.3.4",
+    "@graphiql/react": "^0.19.3",
     "@iconify/types": "^2.0.0",
     "@mantine/core": "^6.0.4",
     "@mantine/hooks": "^6.0.4",
