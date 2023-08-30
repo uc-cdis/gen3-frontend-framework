@@ -22,9 +22,18 @@ export const { useGetCSRFQuery } = csrfApi;
 
 export const selectCSRFTokenData = csrfApi.endpoints.getCSRF.select();
 
-const passThroughTheState = (state: CoreState) => state;
+const passThroughTheState = (state: CoreState) => state.gen3Services;
 
 export const selectCSRFToken = createSelector(
   [selectCSRFTokenData, passThroughTheState],
   (state) => state?.data?.csrfToken,
+);
+
+export const selectHeadersWithCSRFToken = createSelector(
+  [selectCSRFToken, passThroughTheState],
+  (csrfToken) => ({
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+  })
 );

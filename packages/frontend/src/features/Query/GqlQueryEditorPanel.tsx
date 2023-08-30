@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import {
   Fetcher,
-  FetcherOpts,
-  FetcherParams,
-  FetcherReturnType,
 } from '@graphiql/toolkit';
 
-import { GEN3_API, useGraphQLQuery } from '@gen3/core';
+import { GEN3_API, } from '@gen3/core';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import {
   EditorContextProvider,
@@ -16,26 +13,23 @@ import {
   ResponseEditor,
   SchemaContextProvider,
 } from '@graphiql/react';
-import { GqlQueryEditorProps } from "./types";
+import { GqlQueryEditorProps } from './types';
 
-const useGraphGLQueryReturningFetcher = (
-  graphQLParams: FetcherParams,
-  opts?: FetcherOpts,
-): FetcherReturnType => {
-  const { data, isError, isFetching, isSuccess } = useGraphQLQuery({
-    query: graphQLParams.query,
-    variables: graphQLParams.variables,
-  });
-  return data ?? {};
-};
+// const useGraphGLQueryReturningFetcher = (
+//   graphQLParams: FetcherParams,
+//   opts?: FetcherOpts,
+// ): FetcherReturnType => {
+//   const { data, isError, isFetching, isSuccess } = useGraphQLQuery({
+//     query: graphQLParams.query,
+//     variables: graphQLParams.variables,
+//   });
+//   return data ?? {};
+// };
 
-const GqlQueryEditorPanel = ({ graphQLEndpoint }: GqlQueryEditorProps) => {
+const GqlQueryEditorPanel : React.FC<GqlQueryEditorProps> = ({ graphQLEndpoint }: GqlQueryEditorProps) => {
   const [query, setQuery] = useState('');
-  //  const [variable, setVariables] = useState<JSONObject>({});
+//  const [variables, setVariables] = useState"(""");
 
-  // const fetcher = createGraphiQLFetcher({
-  //   url: 'https://my.graphql.api/graphql',
-  // });
 
   const fetcher: Fetcher = async (graphQLParams) => {
     const data = await fetch(graphQLEndpoint || `${GEN3_API}/graphql`, {
@@ -49,10 +43,10 @@ const GqlQueryEditorPanel = ({ graphQLEndpoint }: GqlQueryEditorProps) => {
     return data.json().catch(() => data.text());
   };
 
-  const explorer = explorerPlugin({
-    query: query,
-    onEdit: setQuery,
+  const explorer = explorerPlugin( {
+    showAttribution: true,
   });
+
 
   return (
     <div className="flex h-full">
@@ -60,7 +54,7 @@ const GqlQueryEditorPanel = ({ graphQLEndpoint }: GqlQueryEditorProps) => {
         <SchemaContextProvider fetcher={fetcher}>
           <PluginContextProvider plugins={[explorer]}>
             <ExecutionContextProvider fetcher={fetcher}>
-              <div className="graphiql-container">
+              <div className="graphiql-container flex w-100">
                 <QueryEditor />
                 <ResponseEditor />
               </div>

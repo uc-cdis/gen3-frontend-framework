@@ -12,6 +12,7 @@ import {
   csrfApi,
   selectCSRFToken,
   selectCSRFTokenData,
+  selectHeadersWithCSRFToken,
 } from './csrfApi';
 import {
   type APIKey,
@@ -38,4 +39,5 @@ export {
   useGetLoginProvidersQuery,
   selectCSRFToken,
   selectCSRFTokenData,
+  selectHeadersWithCSRFToken,
 };
