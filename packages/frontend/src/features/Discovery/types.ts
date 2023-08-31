@@ -90,6 +90,7 @@ export interface StudyDetailView {
 }
 
 interface DiscoveryTableConfig {
+  selectableRows?: boolean;
   expandingRows?: boolean;
   expandingRowRenderFunction?: string;
 }

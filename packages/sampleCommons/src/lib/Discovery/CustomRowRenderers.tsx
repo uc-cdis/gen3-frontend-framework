@@ -6,7 +6,7 @@ import {
   StudyPreviewField,
   RowRenderFunctionProps,
   DiscoveryRowRendererFactory,
-  useDiscoveryConfigContext
+  useDiscoveryContext
 } from '@gen3/frontend';
 
 const HEALRowRenderer = (
@@ -14,7 +14,7 @@ const HEALRowRenderer = (
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
 
-  const { discoveryConfig: config, setStudyDetails } = useDiscoveryConfigContext();
+  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
 
   if (!studyPreviewConfig) {
     return <React.Fragment></React.Fragment>;

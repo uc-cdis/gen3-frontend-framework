@@ -25,7 +25,7 @@ export interface CollapsableSidebarProps extends DefaultProps, React.ComponentPr
 }
 
 const defaultProps: Partial<CollapsableSidebarProps> = {
-  transitionDuration: 200,
+  transitionDuration: undefined,
   transitionTimingFunction: 'ease',
   animateOpacity: true,
 };

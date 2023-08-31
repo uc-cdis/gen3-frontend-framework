@@ -1,12 +1,12 @@
 import { Button, CopyButton, Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import React, { useEffect } from 'react';
-import { useDiscoveryConfigContext } from '../DiscoveryConfigProvider';
+import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 
 const StudyDetails = () => {
-  const { discoveryConfig: config, studyDetails } = useDiscoveryConfigContext();
+  const { discoveryConfig: config, studyDetails } = useDiscoveryContext();
   const [opened, { open, close }] = useDisclosure(false);
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   let permalink = 'Discovery/notfound';
@@ -19,7 +19,7 @@ const StudyDetails = () => {
   }
 
   useEffect(() => {
-    if (studyDetails) {
+    if (Object.keys(studyDetails).length > 0 ) {
       open();
     }
   }, [studyDetails, open]);

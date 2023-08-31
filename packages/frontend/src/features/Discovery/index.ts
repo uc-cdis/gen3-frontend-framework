@@ -9,7 +9,7 @@ import {
 import { registerDiscoveryDefaultStudyPreviewRenderers } from './TableRenderers/RowRenderers';
 import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
 import { DiscoveryRowRendererFactory } from './TableRenderers/RowRendererFactory';
-import DiscoveryConfigProvider, { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
+import DiscoveryConfigProvider, { useDiscoveryContext } from './DiscoveryProvider';
 import { type DiscoveryConfig } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
 
@@ -23,6 +23,6 @@ export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,
   DiscoveryConfigProvider,
-  useDiscoveryConfigContext,
+  useDiscoveryContext,
   StudyGroup
 };

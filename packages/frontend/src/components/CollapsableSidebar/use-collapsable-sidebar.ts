@@ -11,7 +11,7 @@ function getAutoWidthDuration(width: number | string) {
 }
 
 export function getElementWidth(
-  el: React.RefObject<HTMLElement> | { current?: { scrollWidth: number } }
+  el: React.RefObject<HTMLElement> | { current?: { scrollWidth: number } },
 ) {
   return el?.current ? el.current.scrollWidth : 'auto';
 }
@@ -30,15 +30,17 @@ interface GetCollapseProps {
   style?: React.CSSProperties;
   onTransitionEnd?: (e: TransitionEvent) => void;
   refKey?: string;
-  ref?: React.MutableRefObject<HTMLDivElement> | ((node: HTMLDivElement) => void);
+  ref?:
+    | React.MutableRefObject<HTMLDivElement>
+    | ((node: HTMLDivElement) => void);
 }
 
 export function useCollapsableSidebar({
-                              transitionDuration,
-                              transitionTimingFunction = 'ease',
-                              onTransitionEnd = () => Object,
-                              opened,
-                            }: UseCollapse): (props: GetCollapseProps) => Record<string, any> {
+  transitionDuration,
+  transitionTimingFunction = 'ease',
+  onTransitionEnd = () => Object,
+  opened,
+}: UseCollapse): (props: GetCollapseProps) => Record<string, any> {
   const el = useRef<HTMLElement | null>(null);
   const collapsedWidth = 0;
   const collapsedStyles = {
@@ -46,8 +48,12 @@ export function useCollapsableSidebar({
     width: 0,
     overflow: 'hidden',
   };
-  const [styles, setStylesRaw] = useState<React.CSSProperties>(opened ? {} : collapsedStyles);
-  const setStyles = (newStyles: object | ((oldStyles: object) => object)): void => {
+  const [styles, setStylesRaw] = useState<React.CSSProperties>(
+    opened ? {} : collapsedStyles,
+  );
+  const setStyles = (
+    newStyles: object | ((oldStyles: object) => object),
+  ): void => {
     flushSync(() => setStylesRaw(newStyles));
   };
 
@@ -59,6 +65,7 @@ export function useCollapsableSidebar({
     transition: string;
   } {
     const _duration = transitionDuration || getAutoWidthDuration(width);
+    console.log("getTransitionStyles", _duration);
     return {
       transition: `width ${_duration}ms ${transitionTimingFunction}`,
     };
@@ -66,19 +73,29 @@ export function useCollapsableSidebar({
 
   useDidUpdate(() => {
     if (opened) {
-      raf && raf(() => {
-        mergeStyles({ willChange: 'width', display: 'block', overflow: 'hidden' });
+      raf &&
+        raf(() => {
+          mergeStyles({
+            willChange: 'width',
+            display: 'block',
+            overflow: 'hidden',
+          });
+          raf(() => {
+            const width = getElementWidth(el);
+            mergeStyles({ ...getTransitionStyles(width), width });
+          });
+        });
+    } else {
+      raf &&
         raf(() => {
           const width = getElementWidth(el);
-          mergeStyles({ ...getTransitionStyles(width), width });
+          mergeStyles({
+            ...getTransitionStyles(width),
+            willChange: 'width',
+            width,
+          });
+          raf(() => mergeStyles({ width: collapsedWidth, overflow: 'hidden' }));
         });
-      });
-    } else {
-      raf && raf(() => {
-        const width = getElementWidth(el);
-        mergeStyles({ ...getTransitionStyles(width), willChange: 'width', width });
-        raf(() => mergeStyles({ width: collapsedWidth, overflow: 'hidden' }));
-      });
     }
   }, [opened]);
 
@@ -103,7 +120,11 @@ export function useCollapsableSidebar({
     }
   };
 
-  function getCollapseProps({ style = {}, refKey = 'ref', ...rest }: GetCollapseProps = {}) {
+  function getCollapseProps({
+    style = {},
+    refKey = 'ref',
+    ...rest
+  }: GetCollapseProps = {}) {
     const theirRef: any = rest[refKey];
     return {
       'aria-hidden': !opened,

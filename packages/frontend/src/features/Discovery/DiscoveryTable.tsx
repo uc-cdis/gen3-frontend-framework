@@ -5,28 +5,24 @@ import {
   type MRT_SortingState,
   type MRT_PaginationState,
   useMantineReactTable,
-
 } from 'mantine-react-table';
 
 import { jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
-import { useDiscoveryConfigContext } from './DiscoveryConfigProvider';
+import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
-import { MetadataResponse } from "@gen3/core";
-import { OnChangeFn, PaginationState } from "@tanstack/table-core";
-import { SortingState } from "@tanstack/table-core/src/features/Sorting";
-
-
-
+import { MetadataResponse } from '@gen3/core';
+import { OnChangeFn, PaginationState } from '@tanstack/table-core';
+import { SortingState } from '@tanstack/table-core/src/features/Sorting';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
   ({ cell }: { cell: MRT_Cell }) =>
     func({ value: cell.getValue() as never, cell });
 
-interface DiscoveryTableConfig {
+interface DiscoveryTableProps {
   data: MetadataResponse;
   isLoading: boolean;
   isFetching: boolean;
@@ -35,15 +31,20 @@ interface DiscoveryTableConfig {
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
-
 }
 
+const DiscoveryTable = ({
+  data,
+  isError,
+  isLoading,
+  isFetching,
+  setSorting,
+  setPagination,
+  pagination,
+  sorting,
+}: DiscoveryTableProps) => {
+  const { discoveryConfig: config } = useDiscoveryContext();
 
-const DiscoveryTable = ({ data, isError, isLoading, isFetching, setSorting, setPagination, pagination, sorting }: DiscoveryTableConfig) => {
-  const { discoveryConfig: config} = useDiscoveryConfigContext();
-
-
-  console.log("DiscoveryTable.tsx: data: ", data);
   const cols = useMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef) => {
@@ -81,6 +82,7 @@ const DiscoveryTable = ({ data, isError, isLoading, isFetching, setSorting, setP
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    enableRowSelection: config.tableConfig?.selectableRows ?? false,
     rowCount: data?.hits ?? 0,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
@@ -91,21 +93,23 @@ const DiscoveryTable = ({ data, isError, isLoading, isFetching, setSorting, setP
       sorting,
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: true,
+      expanded: config.tableConfig?.selectableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },
     },
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
-      sx: (theme) =>  { return {
-        backgroundColor: theme.colors.secondary[9],
-        textAlign: 'center',
-        padding: theme.spacing.md,
-        fontWeight: 'bold',
-        fontSize: theme.fontSizes.xl,
-        textTransform: 'uppercase',
-      };}
+      sx: (theme) => {
+        return {
+          backgroundColor: theme.colors.secondary[9],
+          textAlign: 'center',
+          padding: theme.spacing.md,
+          fontWeight: 'bold',
+          fontSize: theme.fontSizes.xl,
+          textTransform: 'uppercase',
+        };
+      },
     },
   });
 

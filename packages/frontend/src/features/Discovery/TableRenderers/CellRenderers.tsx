@@ -4,7 +4,7 @@ import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
-import { useDiscoveryConfigContext } from '../DiscoveryConfigProvider';
+import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 
 // TODO need to type this
@@ -107,7 +107,7 @@ interface TagData {
 
 export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
   const content = value as TagData[];
-  const { discoveryConfig: config } = useDiscoveryConfigContext();
+  const { discoveryConfig: config } = useDiscoveryContext();
   return (
     <div>
       {content.map(({ name, category }: TagData) => {

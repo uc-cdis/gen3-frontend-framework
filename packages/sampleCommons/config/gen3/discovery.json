@@ -1,5 +1,8 @@
 {
   "discoveryConfig": {
+    "tableConfig" : {
+      "selectableRows": true
+    },
     "features": {
       "advSearchFilters": {
         "enabled": true,
