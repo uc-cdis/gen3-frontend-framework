@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@mantine/core';
-import { CollapsableSidebar } from '../../CollapsableSidebar';
+import { CollapsableSidebar } from '../../../components/CollapsableSidebar';
 import AdvancedSearch, { AdvancedSearchProps } from './AdvancedSearch';
 
 const AdvancedSearchPanel = (props: AdvancedSearchProps) => {

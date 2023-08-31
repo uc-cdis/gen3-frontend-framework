@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
 import TexturedSidePanel from '../../components/Layout/TexturedSidePanel';
-import LoginProvidersPanel from '../../components/Login/LoginProvidersPanel';
+import LoginProvidersPanel from './LoginProvidersPanel';
 import TextContent, {
   TextContentProps,
 } from '../../components/Content/TextContent';

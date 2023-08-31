@@ -1,10 +1,10 @@
-import { NavPageLayout } from '../../components/Navigation';
-import Discovery from '../../components/Discovery/Discovery';
+import { NavPageLayout } from '../../features/Navigation';
+import Discovery from '../../features/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
 import {
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers
-} from '../../components/Discovery';
+} from '../../features/Discovery';
 
 registerDiscoveryDefaultCellRenderers();
 registerDiscoveryDefaultStudyPreviewRenderers();

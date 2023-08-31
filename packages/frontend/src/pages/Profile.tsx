@@ -2,7 +2,7 @@
 import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
 import { LandingPageProps } from '../components/Content/LandingPageContent';
-import { NavPageLayout, NavPageLayoutProps } from '../components/Navigation';
+import { NavPageLayout, NavPageLayoutProps } from '../features/Navigation';
 import User from '../components/Profile/User';
 import ProtectedContent from '../components/Protected/ProtectedContent';
 import Credentials from '../components/Profile/Credentials';

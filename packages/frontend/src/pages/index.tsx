@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import { Header, HeaderProps, Footer } from '../components/Navigation';
+import { Header, HeaderProps, Footer } from '../features/Navigation';
 
 const IndexPage = ({ top, navigation }: HeaderProps) => {
   return (

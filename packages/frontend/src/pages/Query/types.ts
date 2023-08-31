@@ -1,4 +1,4 @@
-import { NavPageLayoutProps } from '../../components/Navigation';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 export interface QueryProps {
     graphQLEndpoint?: string,

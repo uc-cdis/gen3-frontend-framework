@@ -1,8 +1,8 @@
 import { GetStaticProps } from 'next';
-import { NavPageLayout, NavPageLayoutProps } from '../components/Navigation';
+import { NavPageLayout, NavPageLayoutProps } from '../features/Navigation';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
 import ContentSource from '../lib/content';
-import LoginPanel, { LoginPanelProps } from '../components/Login/LoginPanel';
+import LoginPanel, { LoginPanelProps } from '../features/Login/LoginPanel';
 
 type LoginPageProps = NavPageLayoutProps & LoginPanelProps;
 

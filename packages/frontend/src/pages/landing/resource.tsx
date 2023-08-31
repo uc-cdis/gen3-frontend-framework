@@ -3,7 +3,7 @@ import ContentSource from '../../lib/content';
 
 import NavPageLayout, {
   NavPageLayoutProps,
-} from '../../components/Navigation/NavPageLayout';
+} from '../../features/Navigation/NavPageLayout';
 import ResourcePageContent, {
   ResourcePageConfig,
 } from '../../components/Content/ResourcePageContent';

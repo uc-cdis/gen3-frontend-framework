@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import { type QueryProps } from './types';
-import { type NavPageLayoutProps } from '../../components/Navigation';
+import { type NavPageLayoutProps } from '../../features/Navigation';
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
