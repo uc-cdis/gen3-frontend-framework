@@ -65,7 +65,6 @@ export function useCollapsableSidebar({
     transition: string;
   } {
     const _duration = transitionDuration || getAutoWidthDuration(width);
-    console.log("getTransitionStyles", _duration);
     return {
       transition: `width ${_duration}ms ${transitionTimingFunction}`,
     };

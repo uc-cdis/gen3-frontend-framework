@@ -48,13 +48,14 @@ const Discovery = ({
               Filters
             </Button>
           </div>
-          <div className="flex flex-row justify-start">
+          <div className="flex justify-start">
             <AdvancedSearchPanel
               advSearchFilters={discoveryConfig.features.advSearchFilters}
               studies={data?.data ?? []}
               uidField={discoveryConfig.minimalFieldMapping?.uid}
               opened={showAdvancedSearch}
             />
+
             <DiscoveryTable
               data={data}
               isLoading={isLoading}
@@ -65,6 +66,7 @@ const Discovery = ({
               pagination={pagination}
               sorting={sorting}
             />
+
           </div>
         </DiscoveryProvider>
       </div>

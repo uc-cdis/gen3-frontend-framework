@@ -116,7 +116,9 @@ const DiscoveryTable = ({
   return (
     <React.Fragment>
       <StudyDetails />
+      <div className="grow w-auto inline-block overflow-x-scroll">
       <MantineReactTable table={table} />
+      </div>
     </React.Fragment>
   );
 };
