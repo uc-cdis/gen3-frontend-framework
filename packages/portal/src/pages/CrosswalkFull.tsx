@@ -18,8 +18,8 @@ const CrosswalkConfig = {
     guidField: 'petal_crosswalk',
     fromTitle:'Enter your BDCat IDs',
     toTitle:'Matching MIDRC IDs',
-    fromField : 'bdcat_id',
-    toField : 'midrc_id',
+    fromPath : ['crosswalk','subject','https://gen3.biodatacatalyst.nhlbi.nih.gov','subject.submitter_id','value'],
+    toPath: ['crosswalk','subject','https://data.midrc.org','case.submitter_id','value'],
   },
 };
 
