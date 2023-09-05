@@ -16,6 +16,7 @@ const globals = {
   uuid: 'uuid',
   lodash: 'lodash',
   immer: 'immer',
+  queue: 'queue',
 };
 
 const config = [

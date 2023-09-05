@@ -47,6 +47,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@types/estree": "^1.0.0",
     "lodash": "^4.17.21",
+    "queue": "^6.0.2",
     "uuid": "^8.3.2"
   }
 }

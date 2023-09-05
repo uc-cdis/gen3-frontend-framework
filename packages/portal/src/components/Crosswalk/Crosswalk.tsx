@@ -18,23 +18,18 @@ const downloadData = (data: string) => {
 export interface CrosswalkProps {
   readonly fromTitle: string;
   readonly toTitle: string;
-  readonly guidField: string;
   readonly fromField: string;
-  readonly toField: string;
 }
 
 export const Crosswalk: React.FC<CrosswalkProps> = ({
   fromTitle,
   toTitle,
-  guidField,
   fromField,
-  toField,
 }: CrosswalkProps): JSX.Element => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string[]>([]);
   const [sourceIds, setSourceIds] = useState<string>('');
   const { data, isSuccess } = useGetCrosswalkDataQuery(
-    { ids: query, fields: { from: fromField, to: toField } },
-    { skip: query === '' },
+    { ids: query }
   );
   const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
@@ -65,11 +60,7 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
   }, [previousField,fromField]);
 
   const onSubmit = () => {
-    const ids = sourceIds
-      .split(/,|\r?\n|\r|\n/g)
-      .map((x) => `ids.${fromField}=${x}`)
-      .join('&');
-    setQuery(`_guid_type=${guidField}&data=True&${ids}`);
+    setQuery(sourceIds.split(/,|\r?\n|\r|\n/g));
   };
 
   return (

@@ -5,18 +5,18 @@ import NavPageLayout, { NavPageLayoutProps } from '../components/Navigation/NavP
 
 const CrosswalkConfig = {
 
-  N3C : {
-    title: 'MIDRC to N3C',
-    guidField: 'n3c_crosswalk',
-    fromTitle:'Enter your MIDRC Ids',
-    toTitle:'Matching N3C IDs',
-    fromField: 'midrc_id',
-    toField: 'n3c_id'
-  },
+  // N3C : {
+  //   title: 'MIDRC to N3C',
+  //   guidField: 'n3c_crosswalk',
+  //   fromTitle:'Enter your MIDRC IDs',
+  //   toTitle:'Matching N3C IDs',
+  //   fromField: 'midrc_id',
+  //   toField: 'n3c_id'
+  // },
   Petal: {
     title: 'BDCat to MIDRC',
     guidField: 'petal_crosswalk',
-    fromTitle:'Enter your BDCat Ids',
+    fromTitle:'Enter your BDCat IDs',
     toTitle:'Matching MIDRC IDs',
     fromField : 'bdcat_id',
     toField : 'midrc_id',
