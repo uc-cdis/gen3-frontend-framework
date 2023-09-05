@@ -2,6 +2,7 @@ import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {coreCreateApi} from '../../api';
 import Queue from 'queue';
 import {Middleware, Reducer} from '@reduxjs/toolkit';
+import { JSONPath } from '@astronautlabs/jsonpath';
 
 export interface Metadata {
     readonly entries: Array<Record<string, unknown>>
@@ -17,7 +18,9 @@ export interface CrosswalkArray {
 }
 
 interface CrossWalkParams {
-    readonly ids: string;
+    readonly ids: string[];
+   readonly fromPath: string[];
+  readonly toPath: string[];
 }
 
 // Define a service using a base URL and expected endpoints
@@ -56,8 +59,8 @@ export const metadataApi = coreCreateApi({
                   result = [
                     ...result,
                     {
-                      from: (response.data as Record<string, any>)['crosswalk']['subject']['https://gen3.biodatacatalyst.nhlbi.nih.gov']['subject.submitter_id']['value'],
-                      to: (response.data as Record<string, any>)['crosswalk']['subject']['https://data.midrc.org']['case.submitter_id']['value']
+                      from: JSONPath.query(response.data as Record<string, any>, JSONPath.stringify(arg.fromPath ))?.at(0) as string,
+                      to: JSONPath.query(response.data as Record<string, any>, JSONPath.stringify(arg.toPath ) )?.at(0) as string
                     }
                   ];
                   if (callback) {

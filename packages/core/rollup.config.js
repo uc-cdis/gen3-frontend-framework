@@ -17,6 +17,7 @@ const globals = {
   lodash: 'lodash',
   immer: 'immer',
   queue: 'queue',
+  '@astronautlabs/jsonpath': 'jsonpath',
 };
 
 const config = [
@@ -54,6 +55,8 @@ const config = [
       'redux',
       'redux-toolkit',
       'react-cookie',
+      'queue',
+      'jsonpath',
     ],
     plugins: [
       peerDepsExternal(),
