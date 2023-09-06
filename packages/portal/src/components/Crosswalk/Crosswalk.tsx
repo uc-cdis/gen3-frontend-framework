@@ -35,7 +35,7 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
   const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
-  const previousPath= usePrevious(fromPath.join(','));
+  const previousPath= usePrevious<string>(fromPath.join(','));
 
   const updateIdQuery = (values: string) => {
     setSourceIds(values);
@@ -56,7 +56,7 @@ export const Crosswalk: React.FC<CrosswalkProps> = ({
   };
 
   useEffect(() => {
-    if (previousPath != fromPath)
+    if (previousPath != fromPath.join(','))
       clear();
   }, [previousPath,fromPath]);
 
