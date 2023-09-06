@@ -33,6 +33,12 @@ export interface TagCategory extends TagInfo {
   display: boolean;
 }
 
+export interface AggregationConfig {
+  name: string
+  field: string
+  type: 'sum' | 'count'
+}
+
 export type DiscoveryContentTypes = 'string' | 'number' | 'date' | 'array' | 'link' | 'boolean' | 'paragraphs';
 
 export interface StudyColumn {
@@ -105,7 +111,8 @@ export interface DiscoveryConfig extends Record<string, any> {
   features: {
     advSearchFilters: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
-  }
+  };
+  aggregations: AggregationConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
