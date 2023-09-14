@@ -21,8 +21,8 @@
     "types": "tsc --emitDeclarationOnly",
     "copy-tailwind": "mkdir -p dist && cp src/tailwind.cjs dist/tailwind.cjs",
     "copy-style": "mkdir -p dist/styles && cp src/styles/* dist/styles/",
-    "build:clean": "npm run clean && npm run build:swc && npm run types",
-    "build": "npm run copy-tailwind && rollup --config rollup.config.js",
+    "build": "npm run clean && npm run build:swc && npm run types",
+    "build:rollup": "npm run copy-tailwind && rollup --config rollup.config.js",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
     "build:watch": "npm run compile && npm run build:swc -- --watch",
     "dev": "npm run build:watch"

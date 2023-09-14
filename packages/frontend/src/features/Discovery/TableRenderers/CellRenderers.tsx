@@ -105,6 +105,8 @@ interface TagData {
   category: string;
 }
 
+// TODO Fix below
+// eslint-disable-next-line react/prop-types
 export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();

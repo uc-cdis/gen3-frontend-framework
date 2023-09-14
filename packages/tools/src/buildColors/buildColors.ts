@@ -41,34 +41,32 @@ const main = () => {
     },
   });
 
+  if (!existsSync(themeFile)) {
+    console.log("No themefile found. Please provide a themefile with '-t'.");
+    return;
+  }
+  const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
+  const themeColors = JSON.parse(themeData);
+  const primaryPallet = create10ColorPallet(themeColors.primary);
+  const secondaryPallet = create10ColorPallet(themeColors.secondary);
+  const accentPallet = create10ColorPallet(themeColors.accent);
+  const basePallet = create10ColorPallet(themeColors.base);
 
-    if (!existsSync(themeFile)) {
-      console.log("No themefile found. Please provide a themefile with '-t'.")
-      return;
-    }
-    const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
-    const themeColors = JSON.parse(themeData);
-    const primaryPallet = create10ColorPallet(themeColors.primary);
-    const secondaryPallet = create10ColorPallet(themeColors.secondary);
-    const accentPallet = create10ColorPallet(themeColors.accent);
-    const basePallet = create10ColorPallet(themeColors.base);
+  const theme = {
+    primary: primaryPallet,
+    'primary-contrast': create10ColorAccessibleContrast(primaryPallet),
+    secondary: secondaryPallet,
+    'secondary-contrast': create10ColorAccessibleContrast(secondaryPallet),
+    accent: secondaryPallet,
+    'accent-contrast': create10ColorAccessibleContrast(accentPallet),
+    base: secondaryPallet,
+    'base-contrast': create10ColorAccessibleContrast(basePallet),
+  };
 
-    const theme = {
-      primary: primaryPallet,
-      'primary-contrast': create10ColorAccessibleContrast(primaryPallet),
-      secondary: secondaryPallet,
-      'secondary-contrast': create10ColorAccessibleContrast(secondaryPallet),
-      accent: secondaryPallet,
-      'accent-contrast': create10ColorAccessibleContrast(accentPallet),
-      base: secondaryPallet,
-      'base-contrast': create10ColorAccessibleContrast(basePallet),
-    };
-
-    writeFileSync(
-      join(out ?? './', 'theme.json'),
-      JSON.stringify(theme, null, 2),
-    );
-
+  writeFileSync(
+    join(out ?? './', 'theme.json'),
+    JSON.stringify(theme, null, 2),
+  );
 };
 
 main();

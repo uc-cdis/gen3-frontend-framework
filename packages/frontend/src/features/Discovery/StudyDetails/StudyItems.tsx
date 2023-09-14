@@ -18,7 +18,7 @@ import {
 
 const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
 
-const blockTextField = (_: string, text = undefined) => (<div className={discoveryFieldStyle}>{text}</div>)
+const blockTextField = (_: string, text = undefined) => (<div className={discoveryFieldStyle}>{text}</div>);
 
 
 const label = (text: string) => <b className={discoveryFieldStyle}>{text}</b>;
@@ -100,7 +100,7 @@ const accessDescriptor = (
   _: string | undefined,
   resource: DiscoveryResource,
 ) => {
-  console.log("accessDescriptor: resource: ", resource)
+  console.log("accessDescriptor: resource: ", resource);
   if (resource[accessibleFieldName] === AccessLevel.ACCESSIBLE) {
     return <Alert color="green">You have access to this study.</Alert>;
   }
