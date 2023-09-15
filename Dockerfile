@@ -1,7 +1,8 @@
-# docker build -t ff .
-# docker run -p 3000:3000 -it ff
+# docker build -t gen3ff .
+# docker run -p 3000:3000 -it gen3ff
 
-FROM quay.io/cdis/ubuntu:20.04 as build
+FROM arm64v8/ubuntu:20.04 as build
+#FROM quay.io/cdis/ubuntu:20.04 as build
 
 ARG NODE_VERSION=16
 
@@ -20,16 +21,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     git \
+    gnupg \
     nginx \
     python3 \
     time \
-    && curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
+    vim \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/src/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@8.5
+    && npm install -g npm@8.19.4
 
 WORKDIR /gen3
 
@@ -40,14 +46,14 @@ COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/crosswalk/package.json ./packages/crosswalk/
 COPY ./packages/tools/package.json ./packages/tools/
-COPY ./packages/portal/package.json ./packages/portal/
+COPY ./packages/frontend/package.json ./packages/frontend/
+COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
 RUN npm ci
 COPY ./packages ./packages
 
-RUN lerna run --scope @gen3/core compile
-RUN lerna run --scope @gen3/core build
+RUN lerna run --scope @gen3/core build:clean
 RUN lerna run --scope @gen3/crosswalk build:clean
-RUN lerna run --scope @gen3/portal build
-
+RUN lerna run --scope @gen3/frontend build
+RUN lerna run --scope @gen3/datacommonsapp build
 ENV PORT=80
 CMD ["npm", "run", "start"]
