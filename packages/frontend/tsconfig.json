@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "dist/dts",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "declarationMap": true,
     "declaration": true,
     "emitDeclarationOnly": true,
     "allowJs": true,
@@ -27,35 +28,10 @@
       {
         "name": "next"
       }
-    ],
-  //  "baseUrl": ".",
-//    "paths": {
-//      "@/components/*": [
-//        "src/components/*"
-//      ],
-//      "@/features/*": [
-//        "src/features/*"
-//      ],
-//      "@/lib/*": [
-//        "src/lib/*"
-//      ],
-//      "@/types/*": [
-//        "src/types/*"
-//      ],
-//      "@/utils/*": [
-//        "src/utils/*"
-//      ],
-//      "@/pages/*": [
-//        "src/pages/*"
-//      ],
-//      "@/styles/*": [
-//        "src/styles/*"
-//      ]
-//    },
-
+    ]
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

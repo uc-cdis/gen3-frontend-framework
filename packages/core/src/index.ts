@@ -11,7 +11,7 @@ export * from './features/metadata/metadataSlice';
 export * from './features/fence';
 export * from './features/gen3Apps';
 export * from './features/graphQL';
-export { gen3Api } from './features/gen3';
+export * from './features/gen3';
 
 export {
   type CoreState,

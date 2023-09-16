@@ -3,7 +3,6 @@ import { StudyPreviewField } from '../types';
 import React, { ReactElement } from 'react';
 import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';
-import { DiscoveryRowRendererFactory } from './RowRendererFactory';
 
 export interface RowRenderFunctionProps {
   row: MRT_Row;
@@ -40,10 +39,6 @@ export const Gen3DiscoveryStandardRowPreviewRenderers = {
   },
 };
 
-export const registerDiscoveryDefaultStudyPreviewRenderers = () => {
-  DiscoveryRowRendererFactory.registerRowRendererCatalog(
-    Gen3DiscoveryStandardRowPreviewRenderers,
-  );
-};
+
 
 export const defaultRowRenderer = StringRowRenderer;

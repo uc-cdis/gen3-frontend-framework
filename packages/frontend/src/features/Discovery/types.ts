@@ -1,13 +1,19 @@
-import { JSONObject, JSONValue, type MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
+import {
+  JSONObject,
+  type MetadataPaginationParams,
+  useGetAggMDSQuery,
+} from '@gen3/core';
 
-export type DiscoveryTableDataHook = (arg: MetadataPaginationParams) => ReturnType<typeof useGetAggMDSQuery>;
+export type DiscoveryTableDataHook = (
+  arg: MetadataPaginationParams,
+) => ReturnType<typeof useGetAggMDSQuery>;
 
 export interface KeyValueSearchFilter {
   key: string;
-  keyDisplayName?: string
+  keyDisplayName?: string;
   valueDisplayNames?: {
-    [value: string]: string
-  }
+    [value: string]: string;
+  };
 }
 
 export interface AdvancedSearchFilters {
@@ -34,12 +40,19 @@ export interface TagCategory extends TagInfo {
 }
 
 export interface AggregationConfig {
-  name: string
-  field: string
-  type: 'sum' | 'count'
+  name: string;
+  field: string;
+  type: 'sum' | 'count';
 }
 
-export type DiscoveryContentTypes = 'string' | 'number' | 'date' | 'array' | 'link' | 'boolean' | 'paragraphs';
+export type DiscoveryContentTypes =
+  | 'string'
+  | 'number'
+  | 'date'
+  | 'array'
+  | 'link'
+  | 'boolean'
+  | 'paragraphs';
 
 export interface StudyColumn {
   name: string;
@@ -132,7 +145,8 @@ export enum AccessLevel {
   OTHER = 5,
 }
 
-export interface DiscoveryResource extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined> {
+export interface DiscoveryResource
+  extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined> {
   [accessibleFieldName]: AccessLevel;
   tags?: Array<TagInfo>;
 }

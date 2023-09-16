@@ -1,4 +1,6 @@
-import { default as QueryPage } from '@gen3/frontend/pages/Query/Query';
-export { getServerSideProps } from '@gen3/frontend/pages/Query/data';
+import {  QueryPage } from '@gen3/frontend';
+import {  QueryPageServerSideProps as getServerSideProps } from '@gen3/frontend';
 
 export default QueryPage;
+
+export { getServerSideProps };

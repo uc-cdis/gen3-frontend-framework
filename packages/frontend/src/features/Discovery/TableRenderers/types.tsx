@@ -8,7 +8,6 @@ export interface CellRenderFunctionProps {
   cell?: MRT_Cell; // optional cell object for use in custom cell renderers
 }
 
-
 /**
  * A Cell Renderer Function is a function that takes a value and returns a ReactElement
  * This is used to create a custom cell render a cell in the Discovery Table. The Discovery config

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { RowRenderFunctionProps, defaultRowRenderer } from './RowRenderers';
+import { RowRenderFunctionProps, defaultRowRenderer, Gen3DiscoveryStandardRowPreviewRenderers } from "./RowRenderers";
 import { StudyPreviewField } from '../types';
 
 // TODO Tighten up the typing here
@@ -78,4 +78,10 @@ export const DiscoveryTableRowRenderer = (
   }
   const func = DiscoveryRowRendererFactory.getRowRenderer(studyPreviewConfig?.contentType, studyPreviewConfig?.detailRenderer ?? 'default');
   return (row): ReactElement => func(row, studyPreviewConfig);
+};
+
+export const registerDiscoveryDefaultStudyPreviewRenderers = () => {
+  DiscoveryRowRendererFactory.registerRowRendererCatalog(
+    Gen3DiscoveryStandardRowPreviewRenderers,
+  );
 };

@@ -22,7 +22,7 @@ const HEALRowRenderer = (
   const value = JSONPath({
     json: row.original,
     path: studyPreviewConfig.field
-  }) ??  config.studyPreviewField.valueIfNotAvailable ?? '';
+  }) ??  config?.studyPreviewField?.valueIfNotAvailable ?? '';
 
   return (
     <Box

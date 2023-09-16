@@ -1,4 +1,3 @@
-'use client';
 import React, { ReactElement, useState } from 'react';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import GraphiQL from 'graphiql';

@@ -57,9 +57,6 @@ const config = [
         include: /\.[mc]?[jt]sx?$/, // default
         exclude: /node_modules/, // default
         tsconfig: 'tsconfig.json', // default
-        // tsconfig: false, // You can also prevent `rollup-plugin-swc` from reading tsconfig.json, see below
-        // And add your swc configuration here!
-        // "filename" will be ignored since it is handled by rollup
         jsc: {},
       }),
       swcPreserveDirectives(),

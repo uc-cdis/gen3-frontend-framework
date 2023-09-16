@@ -3,10 +3,10 @@ import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import tailwindcss from 'tailwindcss';
-
 import { default as tailwindConfig } from './src/tailwind.cjs';
 import postcss from 'rollup-plugin-postcss';
 import { swc } from 'rollup-plugin-swc3';
+import swcPreserveDirectives from 'rollup-swc-preserve-directives';
 
 const globals = {
   react: 'React',
@@ -24,34 +24,17 @@ const globals = {
 
 const config = [
   {
-    input: './src/index.tsx',
+    input: './src/index.ts',
     output: [
       {
-        file: 'dist/index.js',
+        dir: 'dist',
         format: 'cjs',
-        sourcemap: true,
         globals,
       },
       {
-        file: 'dist/index.min.js',
-        format: 'iife',
-        name: 'gen3Portal',
-        sourcemap: true,
-        plugins: [terser()],
-        globals,
-      },
-      {
-        file: 'dist/index.umd.js',
-        format: 'umd',
-        name: 'gen3Portal',
-        sourcemap: true,
-        globals,
-      },
-      {
-        file: 'dist/index.esm.js',
+        dir: 'dist',
         format: 'esm',
-        name: 'gen3Portal',
-        sourcemap: true,
+        name: 'gen3frontend',
         globals,
       },
     ],
@@ -75,7 +58,7 @@ const config = [
         exclude: /node_modules/,
         tsconfig: 'tsconfig.json',
         jsc: {},
-      }),
+      }, swcPreserveDirectives(),),
     ],
   },
   {

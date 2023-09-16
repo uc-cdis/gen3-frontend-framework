@@ -1,6 +1,8 @@
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
-export { create10ColorPallet, create10ColorAccessibleContrast };
+import { type TenStringArray } from './types';
 
+export { create10ColorPallet, create10ColorAccessibleContrast };
+export { type TenStringArray };
 /**
  * @returns {string} formatted time
  */

@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "next lint",
     "dev": "next dev",
+    "build": "next build",
     "buildColors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/"
   },
   "dependencies": {
@@ -14,10 +15,9 @@
   "devDependencies" : {
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.3",
-    "@gen3/toolsff": "0.1.0"
-  },
-  "peerDependencies": {
-    "@types/react": "^18.2.0",
+    "@gen3/toolsff": "0.1.0",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
     "next": "13.4.19",
     "react": "^18.2.0",
     "react-dom": "18.2.0",

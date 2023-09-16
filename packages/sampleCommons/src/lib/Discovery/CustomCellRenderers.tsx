@@ -14,10 +14,16 @@ import { isArray } from 'lodash';
  * Custom cell renderer for the linked study column for HEAL
  * @param cell
  */
-export const LinkedStudyCell = ({ value: cellValue }: CellRenderFunctionProps) => {
+export const LinkedStudyCell = ({
+  value: cellValue,
+}: CellRenderFunctionProps) => {
   const value = cellValue as boolean;
   return value ? (
-    <Badge variant="outline" leftSection={<CheckCircleOutlined />} color="green">
+    <Badge
+      variant="outline"
+      leftSection={<CheckCircleOutlined />}
+      color="green"
+    >
       Linked
     </Badge>
   ) : (
@@ -27,11 +33,17 @@ export const LinkedStudyCell = ({ value: cellValue }: CellRenderFunctionProps) =
   );
 };
 
-const WrappedStringCell = ({ value }: CellRenderFunctionProps, params :any[0]) => {
+const WrappedStringCell = (
+  { value }: CellRenderFunctionProps,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _params: any[0],
+) => {
   const content = value as string | string[];
   return (
     <div className="w-40">
-      <span className="break-words whitespace-break-spaces text-md">{isArray(content) ? content.join(', ') : content}</span>
+      <span className="break-words whitespace-break-spaces text-md">
+        {isArray(content) ? content.join(', ') : content}
+      </span>
     </div>
   );
 };
@@ -42,7 +54,7 @@ const HEALCellRenderers = {
   },
   boolean: {
     LinkedStudyCell,
-  }
+  },
 };
 
 /**
