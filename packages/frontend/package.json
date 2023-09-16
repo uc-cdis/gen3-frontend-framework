@@ -28,6 +28,7 @@
     "dev": "npm run build:watch"
   },
   "exports": {
+    "." : "./dist/index.js",
     "./tailwind": {
       "require": "./dist/tailwind.cjs"
     }

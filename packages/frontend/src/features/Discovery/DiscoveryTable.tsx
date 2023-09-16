@@ -14,8 +14,7 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { MetadataResponse } from '@gen3/core';
-import { OnChangeFn, PaginationState } from '@tanstack/table-core';
-import { SortingState } from '@tanstack/table-core/src/features/Sorting';
+import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
 
 const extractCellValue =
   (func: CellRendererFunction) =>

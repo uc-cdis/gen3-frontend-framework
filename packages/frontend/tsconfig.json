@@ -12,7 +12,7 @@
     "emitDeclarationOnly": true,
     "allowJs": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
