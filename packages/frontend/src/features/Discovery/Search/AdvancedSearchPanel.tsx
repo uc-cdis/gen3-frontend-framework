@@ -1,3 +1,4 @@
+import React from 'react';
 import { CollapsableSidebar } from '../../../components/CollapsableSidebar';
 import AdvancedSearch, { AdvancedSearchProps } from './AdvancedSearch';
 

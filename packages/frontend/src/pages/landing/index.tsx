@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticProps } from 'next';
 
 // if we want to use MDX

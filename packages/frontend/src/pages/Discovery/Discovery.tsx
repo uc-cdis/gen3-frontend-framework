@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import Discovery from '../../features/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';

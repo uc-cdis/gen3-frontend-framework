@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Button, Group } from '@mantine/core';
 

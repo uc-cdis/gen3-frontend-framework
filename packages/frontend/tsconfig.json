@@ -18,9 +18,10 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "resolveJsonModule": true,
     "incremental": true,
+    "noEmitOnError": true,
     // "noUnusedLocals": true, // TODO: enable
     // "noUnusedParameters": true,
     // "noImplicitReturns": true,
@@ -35,6 +36,5 @@
   ],
   "exclude": [
     "node_modules",
-    "src/pages/_app.tsx"
   ]
 }

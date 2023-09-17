@@ -1,3 +1,4 @@
+import React from 'react';
 export interface TextContentProps {
   readonly text: string;
   readonly className?: string;

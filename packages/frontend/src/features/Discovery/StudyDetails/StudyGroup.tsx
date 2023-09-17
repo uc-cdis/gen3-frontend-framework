@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { StudyTabGroup } from '../types';
 import { Text } from '@mantine/core';
 import { JSONObject } from '@gen3/core';

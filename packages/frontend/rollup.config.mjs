@@ -29,12 +29,15 @@ const config = [
       {
         dir: 'dist',
         format: 'cjs',
+        sourcemap: true,
         globals,
       },
       {
         dir: 'dist',
         format: 'esm',
         name: 'gen3frontend',
+        sourcemap: true,
+        plugins: [terser()],
         globals,
       },
     ],

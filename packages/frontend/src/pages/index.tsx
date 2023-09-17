@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetServerSideProps } from 'next';
 import { Header, HeaderProps, Footer } from '../features/Navigation';
 

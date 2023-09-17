@@ -4,18 +4,19 @@ export * from './features/Login';
 export * from './components/Profile';
 export * from './utils/';
 
+// export Gen3 data UI standard pages
 import Gen3Provider from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/Discovery';
-import { getServerSideProps as DiscoveryPageServerSideProps } from './pages/Discovery';
+import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
 import QueryPage from './pages/Query/Query';
-import { getServerSideProps as QueryPageServerSideProps } from './pages/Discovery';
+import { QueryPageGetServerSideProps } from './pages/Query/data';
 import { TailwindConfig } from './utils/tailwindConfig';
 export {
   DiscoveryPage,
-  DiscoveryPageServerSideProps,
+  DiscoveryPageGetServerSideProps,
   QueryPage,
-  QueryPageServerSideProps,
+  QueryPageGetServerSideProps,
   TailwindConfig,
   Gen3Provider
 };

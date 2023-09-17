@@ -1,3 +1,4 @@
+import React from 'react';
 import { StudyTabGroup } from '../types';
 import { JSONObject } from '@gen3/core';
 import StudyGroup from './StudyGroup';

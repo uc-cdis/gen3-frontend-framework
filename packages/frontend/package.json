@@ -6,7 +6,6 @@
   "author": "CTDS",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "unpkg": "dist/index.umd.js",
@@ -22,7 +21,7 @@
     "copy-tailwind": "mkdir -p dist && cp src/tailwind.cjs dist/tailwind.cjs",
     "copy-style": "mkdir -p dist/styles && cp src/styles/* dist/styles/",
     "build": "npm run clean && npm run build:rollup && npm run types",
-    "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.js",
+    "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
     "build:watch": "npm run compile && npm run build:swc -- --watch",
     "dev": "npm run build:watch"
@@ -32,6 +31,11 @@
     "./tailwind": {
       "require": "./dist/tailwind.cjs"
     }
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",

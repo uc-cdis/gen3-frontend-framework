@@ -1,3 +1,4 @@
+import React from 'react';
 // import dynamic from 'next/dynamic';
 //
 // const AppContent = dynamic(() => import('node_modules/'), {

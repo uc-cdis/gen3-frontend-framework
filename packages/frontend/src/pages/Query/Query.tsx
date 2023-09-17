@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import QueryPanel from '../../features/Query/QueryPanel';
 import { QueryPageLayoutProps } from './types';

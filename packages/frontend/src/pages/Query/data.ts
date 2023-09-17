@@ -4,7 +4,7 @@ import ContentSource from '../../lib/content';
 import { type QueryProps } from './types';
 import { type NavPageLayoutProps } from '../../features/Navigation';
 
-export const getServerSideProps: GetServerSideProps<
+export const QueryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (_context) => {
   const config = await ContentSource.get('config/siteConfig.json');

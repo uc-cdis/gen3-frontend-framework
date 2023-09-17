@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticProps } from 'next';
 import Crosswalk from '../features/Crosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';

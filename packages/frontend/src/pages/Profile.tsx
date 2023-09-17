@@ -1,4 +1,4 @@
-// should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
+import React from 'react';
 import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
 import { LandingPageProps } from '../components/Content/LandingPageContent';

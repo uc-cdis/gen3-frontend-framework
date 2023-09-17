@@ -6,6 +6,7 @@
     "lint": "next lint",
     "dev": "next dev",
     "build": "next build",
+    "start": "next start",
     "buildColors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/"
   },
   "dependencies": {
