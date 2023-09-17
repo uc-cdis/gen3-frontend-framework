@@ -49,15 +49,9 @@ COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
 RUN npm ci
 COPY ./packages ./packages
-RUN npm install --save-optional \
-    "@swc/core-darwin-arm64" \
-    "@swc/core-darwin-x64" \
-    "@swc/core-linux-arm-gnueabihf" \
-    "@swc/core-linux-arm64-gnu" \
-    "@swc/core-linux-arm64-musl" \
-    "@swc/core-linux-x64-gnu" \
-    "@napi-rs/magic-string-linux-arm64-gnu" \
-    "@napi-rs/magic-string-core-linux-x64-gnu"
+RUN npm install \
+    "@swc/core" \
+    "@napi-rs/magic-string"
 RUN lerna run --scope @gen3/core build:clean
 RUN lerna run --scope @gen3/crosswalk build:clean
 RUN lerna run --scope @gen3/frontend build
