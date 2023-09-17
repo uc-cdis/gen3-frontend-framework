@@ -1,10 +1,9 @@
 # docker build -t gen3ff .
 # docker run -p 3000:3000 -it gen3ff
+# for Macbook silicon M1/m2 uncomment the following lines and comment quay.io/cdis/ubuntu:20.04:
+#FROM arm64v8/ubuntu:20.04 as build
 
-
-
-FROM arm64v8/ubuntu:20.04 as build
-# FROM quay.io/cdis/ubuntu:20.04 as build
+FROM quay.io/cdis/ubuntu:20.04 as build
 
 ARG NODE_VERSION=16
 
