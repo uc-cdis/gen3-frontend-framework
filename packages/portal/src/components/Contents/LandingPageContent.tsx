@@ -16,16 +16,24 @@ export interface LandingPageContentProp {
 }
 
 
+
+export interface landingPageLink {
+    readonly href: string;
+    readonly text: string;
+    readonly linkType?: string;
+}
 export interface leftRightProps {
     readonly text?: string;
-    readonly link?: {
-        readonly href: string;
-        readonly text: string;
-        readonly linkType?: string;
-    };
+    readonly link?: landingPageLink;
     readonly image?: {
         readonly src: string;
         readonly alt: string;
+        readonly position?: string;
+    };
+    readonly indent?: {
+      readonly text?: string;
+      readonly link?: landingPageLink;
+      readonly style?: string;
     };
 }
 export interface LandingPageProps {
@@ -71,7 +79,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
             }
             if (obj.link) {
-              return <div className='heal-btn mb-5 mr-5' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
+              return <div className='heal-btn mb-5 mr-5 align-top' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
             }
             if (obj.image) {
               return (
@@ -81,9 +89,17 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     alt={obj.image.alt}
                     layout='fill'
                     objectFit='contain'
+                    objectPosition={obj.image.position || ''}
                   />
                 </div>
               );
+            }
+            if (obj.indent) {
+              return <div className={`border-l-8 border-heal-magenta ml-1 pt-5 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
+                {obj.indent.text && <p key={`indent-text-${index}`} className='prose sm:prose-base 2xl:prose-lg !mt-0' dangerouslySetInnerHTML={{ __html: obj.indent.text }} />
+                }
+                {obj.indent.link && <div className='heal-btn mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
+              </div>;
             }
           });
           return <div key={index} className='flex mx-20'>
