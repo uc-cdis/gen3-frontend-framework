@@ -1,5 +1,5 @@
 {
-  "name": "tools",
+  "name": "@gen3/toolsff",
   "version": "0.1.0",
   "description": "tools for processing portal content",
   "main": "index.js",
@@ -10,6 +10,10 @@
     "clean": "rimraf src/buildColors/dist src/bundleIcons/dist",
     "buildTools": "rollup --config rollup.config.js",
     "build": "echo \"no build. skipping\" && exit 0"
+  },
+  "bin" : {
+    "buildColors": "./dist/buildColors.esm.js",
+    "bundleIcons": "./dist/bundleIcons.esm.js"
   },
   "author": "Craig Barnes",
   "license": "Apache-2.0",
@@ -23,7 +27,7 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^24.5.2",
     "jest": "^27.3.1",
-    "rollup-plugin-executable": "^1.6.3",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "ts-node": "^10.2.1"
   }
 }

@@ -7,12 +7,7 @@ import {
   fetchFence,
   useGetLoginProvidersQuery,
 } from './fenceApi';
-import {
-  useGetCSRFQuery,
-  csrfApi,
-  selectCSRFToken,
-  selectCSRFTokenData,
-} from './csrfApi';
+
 import {
   type APIKey,
   type Gen3FenceCredentials,
@@ -30,12 +25,8 @@ export {
   type Gen3LoginProvider,
   type NameUrl,
   fetchFence,
-  useGetCSRFQuery,
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
-  csrfApi,
   useGetLoginProvidersQuery,
-  selectCSRFToken,
-  selectCSRFTokenData,
 };

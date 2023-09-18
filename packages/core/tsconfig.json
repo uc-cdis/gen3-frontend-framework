@@ -14,11 +14,12 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "target": "esnext",
     "resolveJsonModule": true,
     "lib": [

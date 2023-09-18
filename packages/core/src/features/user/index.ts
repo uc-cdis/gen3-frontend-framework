@@ -2,13 +2,18 @@ import {
   useUser,
   useUserAuth,
   resetUserState,
+  fetchUserState,
+  isAuthenticated,
+  selectUser,
+  selectUserData,
+  selectUserLoginStatus,
   type LoginStatus,
   type Gen3User,
-  selectUser,
-  fetchUserState,
-  selectUserData,
-  selectUserAuthenticationStatus,
 } from './userSlice';
+
+import {
+  useGetExternalLoginsQuery
+} from './externalLoginsSlice';
 
 export {
   useUser,
@@ -16,8 +21,10 @@ export {
   resetUserState,
   selectUser,
   selectUserData,
-  selectUserAuthenticationStatus,
+  selectUserLoginStatus,
   fetchUserState,
+  isAuthenticated,
+  useGetExternalLoginsQuery,
   type Gen3User,
   type LoginStatus,
 };

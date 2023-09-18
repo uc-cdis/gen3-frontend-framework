@@ -1,4 +1,4 @@
-import { gen3Api } from '../gen3/gen3Api';
+import { gen3Api } from '../gen3';
 import { Gen3Response } from '../../dataAccess';
 
 export interface NameUrl {

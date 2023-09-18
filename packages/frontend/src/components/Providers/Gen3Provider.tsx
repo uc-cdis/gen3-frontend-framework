@@ -1,4 +1,4 @@
-import React, { useEffect, PropsWithChildren } from 'react';
+import React, { useEffect, ReactNode} from 'react';
 import { CoreProvider } from '@gen3/core';
 import {
   MantineProvider,
@@ -26,16 +26,17 @@ const getEmotionCache = (): EmotionCache => {
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
+  children?: ReactNode | undefined
 }
 
 const Gen3Provider: React.FC<Gen3ProviderProps> = ({
   colors,
   icons,
   children,
-}: PropsWithChildren<Gen3ProviderProps>) => {
+}: Gen3ProviderProps) => {
   useEffect(() => {
     addCollection(icons);
-  }, []);
+  }, [icons]);
 
   return (
     <CoreProvider>

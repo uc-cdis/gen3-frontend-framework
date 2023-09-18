@@ -4,9 +4,6 @@ import { Button, Card, Stack } from '@mantine/core';
 import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
-  selectCSRFToken,
-  useCoreSelector,
-  CoreState,
   useGetCSRFQuery,
 } from '@gen3/core';
 

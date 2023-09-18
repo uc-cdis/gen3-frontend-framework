@@ -4,7 +4,7 @@ import {
   NavigationProps,
   NavPageLayoutProps,
   TopBarProps,
-} from '../../components/Navigation';
+} from '../../features/Navigation';
 import ContentSource from '../content';
 import { JSONObject } from '@gen3/core';
 

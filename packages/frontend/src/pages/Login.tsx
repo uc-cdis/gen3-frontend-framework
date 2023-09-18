@@ -1,8 +1,9 @@
+import React from 'react';
 import { GetStaticProps } from 'next';
-import { NavPageLayout, NavPageLayoutProps } from '../components/Navigation';
+import { NavPageLayout, NavPageLayoutProps } from '../features/Navigation';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
 import ContentSource from '../lib/content';
-import LoginPanel, { LoginPanelProps } from '../components/Login/LoginPanel';
+import LoginPanel, { LoginPanelProps } from '../features/Login/LoginPanel';
 
 type LoginPageProps = NavPageLayoutProps & LoginPanelProps;
 
@@ -21,7 +22,6 @@ const LoginPage = ({
   );
 };
 
-// should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps<NavPageLayoutProps> = async () => {
   const config = await ContentSource.get('config/siteConfig.json');
 

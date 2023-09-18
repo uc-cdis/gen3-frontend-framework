@@ -7,7 +7,9 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v3.4.1
       with:
-        node-version: 16.4.0
+        node-version: 16.10.0
+    - name: install npm version
+      run: npm install -g npm@8.11.0
     - name: Get Version
       run: npm -v
     - name: Install modules

@@ -51,6 +51,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
           'Content-Type': 'application/json',
           'x-csrf-token': csrfToken,
         },
+
       }),
       invalidatesTags: ['Credentials'],
     }),

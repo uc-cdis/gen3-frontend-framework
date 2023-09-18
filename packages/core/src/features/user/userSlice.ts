@@ -45,7 +45,6 @@ export interface Gen3UserLoginResponse<T> {
   readonly isUninitialized: boolean;
   readonly isFetching: boolean;
   readonly isSuccess: boolean;
-  readonly isAuthenticated: boolean;
   readonly isError: boolean;
 }
 
@@ -67,6 +66,9 @@ export const fetchUserState = createAsyncThunk<
 });
 
 export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
+
+
+export const isAuthenticated = (loginStatus: LoginStatus): boolean => loginStatus === 'authenticated';
 
 export interface Gen3UserState {
   readonly data?: Gen3User;
@@ -121,35 +123,18 @@ export const { resetUserState } = slice.actions;
 export interface Gen3UserSelectorResponse<T>
   extends CoreDataSelectorResponse<T> {
   readonly loginStatus: LoginStatus;
-  readonly isAuthenticated: boolean;
 }
 
 export const selectUserData = (
   state: CoreState,
 ): Gen3UserSelectorResponse<Gen3User> => {
-  return {
-    data: state.user.data,
-    status: state.user.status,
-    loginStatus: state.user.loginStatus,
-    error: state.user.error,
-    isAuthenticated: state.user.loginStatus === 'authenticated',
-  };
+  return state.user;
 };
-
-export interface Gen3AuthenticationStatus {
-  readonly isAuthenticated: boolean;
-}
 
 export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
 export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
   state.user.loginStatus;
-
-export const selectUserAuthenticationStatus = (
-  state: CoreState,
-): Gen3AuthenticationStatus => {
-  return { isAuthenticated: state.user.loginStatus === 'authenticated' };
-};
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
@@ -177,6 +162,5 @@ export const useUserAuth = (renew = false): Gen3UserLoginResponse<Gen3User> => {
     isFetching: status === 'pending',
     isSuccess: status === 'fulfilled',
     isError: status === 'rejected',
-    isAuthenticated: status === 'fulfilled',
   };
 };

@@ -10,7 +10,7 @@ export const coreCreateApi = buildCreateApi(
   reactHooksModule({
     // TODO properly type the next two declarations.
     useSelector: useCoreSelector,
-    useStore: useCoreStore as any,
-    useDispatch: useCoreDispatch as any,
+    useStore: useCoreStore as never,
+    useDispatch: useCoreDispatch as never,
   }),
 );

@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticProps } from 'next';
 
 // if we want to use MDX
@@ -9,7 +10,7 @@ import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import NavPageLayout, {
   NavPageLayoutProps,
-} from '../../components/Navigation/NavPageLayout';
+} from '../../features/Navigation/NavPageLayout';
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;

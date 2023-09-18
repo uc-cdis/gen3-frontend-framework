@@ -1,6 +1,9 @@
 'use strict';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+require('./src/lib/plugins/index.js');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {

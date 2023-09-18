@@ -1,7 +1,8 @@
+import React from 'react';
 import { GetStaticProps } from 'next';
-import Crosswalk from '../components/Crosswalk';
+import Crosswalk from '../features/Crosswalk';
 import { getNavPageLayoutPropsFromConfig } from '../lib/common/staticProps';
-import { NavPageLayout, NavPageLayoutProps } from '../components/Navigation';
+import { NavPageLayout, NavPageLayoutProps } from '../features/Navigation';
 const Petal = {
   guidField: 'petal_crosswalk',
   fromField: 'bdcat_id',

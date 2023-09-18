@@ -1,4 +1,5 @@
-import typescript from '@rollup/plugin-typescript';
+import { swc } from 'rollup-plugin-swc3';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 export default [
   {
@@ -11,7 +12,15 @@ export default [
       },
     ],
     external: ['tinycolor2', 'node:util', 'node:fs', 'node:path'],
-    plugins: [typescript()],
+    plugins: [
+      peerDepsExternal(),
+      swc({
+        include: /\.[mc]?[jt]sx?$/,
+        exclude: /node_modules/,
+        tsconfig: 'tsconfig.json',
+        jsc: {},
+      }),
+    ],
   },
   {
     input: './src/bundleIcons/bundleIcons.js',
@@ -23,11 +32,16 @@ export default [
       },
     ],
     external: [
-      '@iconify/tools/src/import/directory',
-      '@iconify/tools/src/svg/cleanup',
-      '@iconify/tools/src/colors/parse',
-      '@iconify/tools/src/optimise/svgo',
       'fs',
+    ],
+    plugins: [
+      peerDepsExternal(),
+      swc({
+        include: /\.[mc]?[jt]sx?$/,
+        exclude: /node_modules/,
+        tsconfig: 'tsconfig.json',
+        jsc: {},
+      }),
     ],
   },
 ];

@@ -3,6 +3,7 @@ import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import { swc } from 'rollup-plugin-swc3';
+import swcPreserveDirectives from 'rollup-swc-preserve-directives';
 
 const globals = {
   react: 'React',
@@ -56,11 +57,9 @@ const config = [
         include: /\.[mc]?[jt]sx?$/, // default
         exclude: /node_modules/, // default
         tsconfig: 'tsconfig.json', // default
-        // tsconfig: false, // You can also prevent `rollup-plugin-swc` from reading tsconfig.json, see below
-        // And add your swc configuration here!
-        // "filename" will be ignored since it is handled by rollup
         jsc: {},
       }),
+      swcPreserveDirectives(),
     ],
   },
   {
