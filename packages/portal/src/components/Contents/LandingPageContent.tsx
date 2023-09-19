@@ -115,7 +115,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
 
         if (component.full) {
           return <div key={index} className='mx-20'>
-              {splitareaJsx(component.full)}
+            {splitareaJsx(component.full)}
           </div>;
         }
         if (component.break) {
