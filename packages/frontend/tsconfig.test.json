@@ -1,7 +1,23 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist/dts",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "declarationMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
-    "moduleResolution": "nodenext"
-  }
+    "resolveJsonModule": true,
+    "incremental": true,
+    "noEmitOnError": true,
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

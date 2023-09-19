@@ -1,27 +1,17 @@
-const config = {
-  roots: ['<rootDir>/src'],
-  verbose: true,
-  testEnvironmentOptions: {
-    url: 'http://localhost/',
-  },
-  setupFilesAfterEnv: [],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  preset: 'ts-jest',
+import type { JestConfigWithTsJest } from 'ts-jest'
+
+const jestConfig: JestConfigWithTsJest = {
+  // [...]
   transform: {
-    '^.+\\.{ts|tsx}?$': ['ts-jest', {
-      babel: true,
-      tsConfig: 'tsconfig.json',
-    }],
-
+    // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
+    // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/tsconfig.test.json',
+      },
+    ],
   },
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
-  testMatch: [
-    '<rootDir>/**/(*.)test.(js|jsx|ts|tsx)',
-    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-    '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}',
-  ],
-}
+};
 
-module.exports = config;
+export default jestConfig;

@@ -2,17 +2,13 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist/dts",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "declarationMap": true,
     "declaration": true,
     "emitDeclarationOnly": true,
     "allowJs": true,
     "module": "esnext",
-
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -31,10 +27,12 @@
       }
     ]
   },
-  "include": [
-    "src/**/*",
-  ],
-  "exclude": [
-    "node_modules",
-  ]
+  "ts-node": {
+       "compilerOptions": {
+       "module": "ESNext",
+       "moduleResolution": "Node"
+     }
+ },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
