@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "target": "esnext",
     "rootDir": "src",
     "outDir": "dist/dts",
     "lib": [
@@ -13,7 +12,7 @@
     "emitDeclarationOnly": true,
     "allowJs": true,
     "module": "esnext",
-    "moduleResolution": "nodenext",
+
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
