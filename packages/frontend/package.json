@@ -27,7 +27,7 @@
     "dev": "npm run build:watch"
   },
   "exports": {
-    "." : "./dist/index.js",
+    ".": "./dist/index.js",
     "./tailwind": {
       "require": "./dist/tailwind.cjs"
     }
@@ -54,6 +54,7 @@
     "@reduxjs/toolkit": "^1.9.3",
     "chart.js": "^4.0.1",
     "cookies-next": "^2.1.1",
+    "fetch-retry": "^5.0.6",
     "fs": "^0.0.1-security",
     "graphiql": "^3.0.5",
     "graphql": "^16.8.0",
@@ -119,10 +120,10 @@
     "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
     "@mantine/core": "^6.0.20",
     "@mantine/hooks": "^6.0.20",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "5.0.2"

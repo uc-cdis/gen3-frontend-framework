@@ -12,6 +12,7 @@ import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 import QueryPage from './pages/Query/Query';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 import { TailwindConfig } from './utils/tailwindConfig';
+
 export {
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,

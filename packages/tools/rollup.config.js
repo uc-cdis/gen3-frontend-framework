@@ -1,6 +1,6 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-
+import executable from "rollup-plugin-executable";
 export default [
   {
     input: './src/buildColors/buildColors.ts',
@@ -33,6 +33,12 @@ export default [
     ],
     external: [
       'fs',
+      'node:path',
+      'node:util',
+      '@iconify/tools/lib/colors/parse',
+      '@iconify/tools/lib/import/directory',
+      '@iconify/tools/lib/svg/cleanup',
+      '@iconify/tools/lib/optimise/svgo',
     ],
     plugins: [
       peerDepsExternal(),
@@ -43,5 +49,26 @@ export default [
         jsc: {},
       }),
     ],
+  },
+  {
+    input: './src/dictionary/getSchema.ts',
+    output: [
+      {
+        file: 'dist/getSchema.esm.js',
+        format: 'esm',
+        name: 'getSchema',
+      },
+    ],
+    external: [
+      'https',
+      'http',
+      'node:fs',
+      'node:util',
+      'fetch-retry',
+      'node-fetch',
+      'path', 'url',
+      'graphql',
+    ],
+    plugins: [peerDepsExternal(), swc()],
   },
 ];
