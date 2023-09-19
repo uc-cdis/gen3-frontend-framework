@@ -54,7 +54,7 @@
     "rollup-plugin-swc3": "^0.10.1",
     "rollup-swc-preserve-directives": "^0.5.0",
     "terser-webpack-plugin": "^5.3.3",
-    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "5.0.2"
   }
 }
