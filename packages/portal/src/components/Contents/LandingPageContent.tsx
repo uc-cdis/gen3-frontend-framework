@@ -98,7 +98,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               return <div className={`border-l-8 border-heal-magenta ml-1 pt-5 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
                 {obj.indent.text && <p key={`indent-text-${index}`} className='prose sm:prose-base 2xl:prose-lg !mt-0' dangerouslySetInnerHTML={{ __html: obj.indent.text }} />
                 }
-                {obj.indent.link && <div className='heal-btn mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
+                {obj.indent.link && <div className='heal-btn mb-5 mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
               </div>;
             }
           });
