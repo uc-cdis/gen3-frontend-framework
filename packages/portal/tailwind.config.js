@@ -4,6 +4,9 @@ const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx,md,mdx}'],
+  safelist: [
+    "mb-8",
+  ],
   theme: {
     extend: {
       colors: {

@@ -38,18 +38,6 @@
                             "href": "https://heal.nih.gov/",
                             "text": "Learn More"
                         }
-                    },
-                    {
-                        "text": "<strong>HEAL Semantic Search</strong><br/> The NIH HEAL Initiative also provides HEAL Semantic Search, a complementary tool to use with the HEAL Data Platform. HEAL Semantic Search allows users to explore connections between biomedical concepts, identify variables related to a concept and discover datasets containing these variables.  Uncovering novel relationships between concepts and variables may help researchers pose relevant research questions and identify potential collaborations."
-                    },
-                    {
-                        "indent": {
-                            "text": "<strong class='text-heal-magenta'>Search HEAL with semantic search</strong>",
-                            "link": {
-                                "href": "https://healdatafair.org/resources/semanticsearch",
-                                "text": "HEAL Semantic Search"
-                            }
-                        }
                     }
                 ],
                 "right": [
@@ -62,6 +50,22 @@
                     }
                 ]
             }
+        },
+        {
+            "full": [
+                {
+                    "text": "<strong>HEAL Semantic Search</strong><br/> The NIH HEAL Initiative also provides HEAL Semantic Search, a complementary tool to use with the HEAL Data Platform. HEAL Semantic Search allows users to explore connections between biomedical concepts, identify variables related to a concept and discover datasets containing these variables.  Uncovering novel relationships between concepts and variables may help researchers pose relevant research questions and identify potential collaborations."
+                },
+                {
+                    "indent": {
+                        "text": "<strong class='text-heal-magenta'>Search HEAL with semantic search</strong>",
+                        "link": {
+                            "href": "https://healdatafair.org/resources/semanticsearch",
+                            "text": "HEAL Semantic Search"
+                        }
+                    }
+                }
+            ]
         },
         {
             "break": "standard"

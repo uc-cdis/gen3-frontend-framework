@@ -47,6 +47,7 @@ export interface LandingPageProps {
             readonly left: leftRightProps[];
             readonly right: leftRightProps[];
         };
+        readonly full?: leftRightProps[];
         readonly break?: string;
         readonly cardsArea?: {
             readonly title: string;
@@ -73,35 +74,35 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
         if (component.title) {
           return <Title key={index} className='mb-5 mx-20' order={component.title.level}>{component.title.text}</Title>;
         }
+        const splitareaJsx = (area: leftRightProps[]) => area.map((obj, index) => {
+          if (obj.text) {
+            return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0 max-w-full' dangerouslySetInnerHTML={{ __html: obj.text }} />;
+          }
+          if (obj.link) {
+            return <div className='heal-btn mb-5 mr-5 align-top' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
+          }
+          if (obj.image) {
+            return (
+              <div key={index} className='h-full relative'>
+                <Image
+                  src={`${basePath}${obj.image.src}`}
+                  alt={obj.image.alt}
+                  layout='fill'
+                  objectFit='contain'
+                  objectPosition={obj.image.position || ''}
+                />
+              </div>
+            );
+          }
+          if (obj.indent) {
+            return <div className={`border-l-8 border-heal-magenta ml-1 pt-5 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
+              {obj.indent.text && <p key={`indent-text-${index}`} className='prose sm:prose-base 2xl:prose-lg !mt-0' dangerouslySetInnerHTML={{ __html: obj.indent.text }} />
+              }
+              {obj.indent.link && <div className='heal-btn mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
+            </div>;
+          }
+        });
         if (component.splitarea) {
-          const splitareaJsx = (area: leftRightProps[]) => area.map((obj, index) => {
-            if (obj.text) {
-              return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0' dangerouslySetInnerHTML={{ __html: obj.text }} />;
-            }
-            if (obj.link) {
-              return <div className='heal-btn mb-5 mr-5 align-top' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
-            }
-            if (obj.image) {
-              return (
-                <div key={index} className='h-full relative'>
-                  <Image
-                    src={`${basePath}${obj.image.src}`}
-                    alt={obj.image.alt}
-                    layout='fill'
-                    objectFit='contain'
-                    objectPosition={obj.image.position || ''}
-                  />
-                </div>
-              );
-            }
-            if (obj.indent) {
-              return <div className={`border-l-8 border-heal-magenta ml-1 pt-5 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
-                {obj.indent.text && <p key={`indent-text-${index}`} className='prose sm:prose-base 2xl:prose-lg !mt-0' dangerouslySetInnerHTML={{ __html: obj.indent.text }} />
-                }
-                {obj.indent.link && <div className='heal-btn mb-5 mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
-              </div>;
-            }
-          });
           return <div key={index} className='flex mx-20'>
             <div className='basis-1/2 pr-10'>
               {splitareaJsx(component.splitarea.left)}
@@ -109,6 +110,12 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             <div className='basis-1/2'>
               {splitareaJsx(component.splitarea.right)}
             </div>
+          </div>;
+        }
+
+        if (component.full) {
+          return <div key={index} className='mx-20'>
+              {splitareaJsx(component.full)}
           </div>;
         }
         if (component.break) {
