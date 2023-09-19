@@ -63,8 +63,11 @@ const httpsAgent = new HTTPSAgent({
 const fetchJson = async (url: string) => {
   console.log(`Fetching ${url}`);
 
+
   return fetchWithRetry(url, {
-    // @ts-ignore // TODO: fix the typing to remove the ignore
+    // TODO: fix the typing to remove the ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     agent: url.match(/^https:/) ? httpsAgent : httpAgent,
     method: 'GET',
     headers: {
@@ -147,7 +150,7 @@ const main = () => {
       process.exit(2);
     },
   );
-}
+};
 
 export default main;
 
