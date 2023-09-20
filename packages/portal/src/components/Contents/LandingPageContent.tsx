@@ -104,10 +104,10 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
         });
         if (component.splitarea) {
           return <div key={index} className='flex mx-20'>
-            <div className='sm:basis-7/12 2xl:basis-1/2 pr-10'>
+            <div className='basis-1/2 pr-10'>
               {splitareaJsx(component.splitarea.left)}
             </div>
-            <div className='sm:basis-5/12 2xl:basis-1/2'>
+            <div className='basis-1/2'>
               {splitareaJsx(component.splitarea.right)}
             </div>
           </div>;
