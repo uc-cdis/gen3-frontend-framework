@@ -31,6 +31,10 @@ export default [
       },
     ],
     external: [
+      '@iconify/tools/src/import/directory',
+      '@iconify/tools/src/svg/cleanup',
+      '@iconify/tools/src/colors/parse',
+      '@iconify/tools/src/optimise/svgo',
       'fs',
       'node:path',
       'node:util',

@@ -26,6 +26,10 @@
     "build:watch": "npm run compile && npm run build:swc -- --watch",
     "dev": "npm run build:watch"
   },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "sideEffects": false,
   "exports": {
     ".": "./dist/index.js",
     "./tailwind": {
@@ -82,6 +86,7 @@
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
     "@iconify/react": "^4.0.1",
     "@iconify/tools": "^2.1.2",
     "@rollup/plugin-json": "^6.0.0",
@@ -94,6 +99,8 @@
     "@types/color": "^3.0.3",
     "@types/estree": "^1.0.0",
     "@types/isomorphic-fetch": "^0.0.36",
+    "@types/mdx": "^2.0.3",
+    "@types/recharts": "^1.8.23",
     "@types/jest": "^29.2.3",
     "@types/lodash": "^4.14.191",
     "@types/mdx": "^2.0.3",
@@ -115,6 +122,8 @@
     "rollup-plugin-dts": "^6.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-dts": "^5.3.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "style-loader": "^3.3.2",
     "tailwindcss": "^3.3.3",
     "ts-jest": "^29.1.1"
@@ -126,6 +135,8 @@
     "@types/react-dom": "^18.2.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "@mantine/core": "^6.0.4",
+    "@mantine/hooks": "^6.0.4",
     "typescript": "5.0.2"
   }
 }
