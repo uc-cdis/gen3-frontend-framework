@@ -8,8 +8,9 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - name: Install modules
+    - name: Setup npm
       run: npm install -g npm@8
-           npm ci
+    - name: Install modules
+      run: npm ci
     - name: Run ESLint
       run: npm run lint
