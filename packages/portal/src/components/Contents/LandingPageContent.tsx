@@ -69,17 +69,17 @@ export interface LandingPageProps {
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (
-    <div className='sm:mt-8 2xl:mt-10 text-heal-dark_gray'>
+    <div className='sm:mt-3 2xl:mt-5 text-heal-dark_gray'>
       {content?.body?.map((component, index) => {
         if (component.title) {
-          return <Title key={index} className='mb-5 mx-20' order={component.title.level}>{component.title.text}</Title>;
+          return <Title key={index} className='sm:mb-3 2xl:mb-4 mx-20' order={component.title.level}>{component.title.text}</Title>;
         }
         const splitareaJsx = (area: leftRightProps[]) => area.map((obj, index) => {
           if (obj.text) {
-            return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-5 !mt-0 max-w-full' dangerouslySetInnerHTML={{ __html: obj.text }} />;
+            return <p key={index} className='prose sm:prose-base 2xl:prose-lg mb-4 !mt-0 max-w-full' dangerouslySetInnerHTML={{ __html: obj.text }} />;
           }
           if (obj.link) {
-            return <div className='heal-btn mb-5 mr-5 align-top' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
+            return <div className='heal-btn mb-4 mr-5 align-top' key={index}><Gen3Link className='flex flex-row items-center' href={obj.link.href} linkType={obj.link.linkType} text={obj.link.text} showExternalIcon /></div>;
           }
           if (obj.image) {
             return (
@@ -95,7 +95,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             );
           }
           if (obj.indent) {
-            return <div className={`border-l-8 border-heal-magenta ml-1 pt-5 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
+            return <div className={`border-l-8 border-heal-magenta ml-1 pl-8 ${obj.indent.style || ''}`} key={`indent-${index}`}>
               {obj.indent.text && <p key={`indent-text-${index}`} className='prose sm:prose-base 2xl:prose-lg !mt-0' dangerouslySetInnerHTML={{ __html: obj.indent.text }} />
               }
               {obj.indent.link && <div className='heal-btn mr-5' key={`indent-link-${index}`}><Gen3Link className='flex flex-row items-center' href={obj.indent.link.href} linkType={obj.indent.link.linkType} text={obj.indent.link.text} showExternalIcon /></div>}
@@ -104,10 +104,10 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
         });
         if (component.splitarea) {
           return <div key={index} className='flex mx-20'>
-            <div className='basis-1/2 pr-10'>
+            <div className='sm:basis-7/12 2xl:basis-1/2 pr-10'>
               {splitareaJsx(component.splitarea.left)}
             </div>
-            <div className='basis-1/2'>
+            <div className='sm:basis-5/12 2xl:basis-1/2'>
               {splitareaJsx(component.splitarea.right)}
             </div>
           </div>;

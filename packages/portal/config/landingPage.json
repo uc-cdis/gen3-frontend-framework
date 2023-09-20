@@ -14,13 +14,13 @@
                     },
                     {
                         "indent": {
-                            "text": "<strong class='text-heal-magenta'>Search HEAL studies and related datasets</strong> for <br/> download or analysis in a workspace:",
+                            "text": "<strong class='text-heal-magenta'>Search HEAL studies and related datasets</strong> <br/>for download or analysis in a workspace",
                             "link": {
                                 "href": "/discovery",
                                 "linkType": "portal",
                                 "text": "Explore Data"
                             },
-                            "style": "mb-8"
+                            "style": "mb-4"
                         }
                     },
                     {
@@ -54,7 +54,7 @@
         {
             "full": [
                 {
-                    "text": "<strong>HEAL Semantic Search</strong><br/> The NIH HEAL Initiative also provides HEAL Semantic Search, a complementary tool to use with the HEAL Data Platform. HEAL Semantic Search allows users to explore connections between biomedical concepts, identify variables related to a concept and discover datasets containing these variables.  Uncovering novel relationships between concepts and variables may help researchers pose relevant research questions and identify potential collaborations."
+                    "text": "<strong>HEAL Semantic Search</strong><br/> The NIH HEAL Initiative also provides HEAL Semantic Search, a complementary tool to use with the HEAL Data Platform. HEAL Semantic Search allows users to explore connections between biomedical concepts, identify variables related to a concept and discover datasets containing these variables. Uncovering novel relationships between concepts and variables may help researchers pose relevant research questions and identify potential collaborations."
                 },
                 {
                     "indent": {
