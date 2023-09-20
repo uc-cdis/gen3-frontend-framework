@@ -4,14 +4,14 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v7. The minimum node version is set to v14 only from an LTS perspective.
+This is a multi-workspace repo that requires npm v9. The minimum node version is set to v18.15.0 only from an LTS perspective.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v7. To install it, run:
+Your version of Node may not ship with npm v9. To install it, run:
 
 ```bash
-npm install npm@7
+npm install npm@9.5.0 -g
 ```
 
 ### Install Dependencies
@@ -26,7 +26,7 @@ Installing from the root of the repository is required to avoid
 multiple installations of React in the workspaces. When this happens,
 React will fail to render.
 
-### Adding Depenedencies
+### Adding Dependencies
 
 Dependencies can also be installed from the root of the repository.
 To install a dependency for a specific workspace, you can run:
@@ -59,7 +59,7 @@ npm run compile --w=packages/core
 
 ### Linting
 
-Run ESLint for all of the workspaces:
+Run ESLint for all the workspaces:
 
 ```bash
 npm run lint
@@ -67,7 +67,7 @@ npm run lint
 
 ### Formatting
 
-Run prettier for all of the workspaces:
+Run prettier for all the workspaces:
 
 ```bash
 npm run format
@@ -106,9 +106,9 @@ For example,
 
 ### Deployment
 
-`docker build -t frontend .` will build a container with all available packages built
+`docker build -t gen3ff .` will build a container with all available packages built
 
-`docker run -p 3000:3000 -it frontend` will run the container from above.
+`docker run -p 3000:80 -it gen3ff` will run the container from above.
 
 The container can be viewed at `localhost:3000{BASE_PATH | /}`
 
