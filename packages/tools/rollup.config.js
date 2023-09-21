@@ -74,4 +74,24 @@ export default [
     ],
     plugins: [peerDepsExternal(), swc()],
   },
+  {
+    input: './src/drsResolver/getDRSToHostname.ts',
+    output: [
+      {
+        file: 'dist/getDRSToHostname.esm.js',
+        format: 'esm',
+        name: 'getDRSToHostname',
+      },
+    ],
+    external: [
+      'https',
+      'http',
+      'node:fs',
+      'node:util',
+      'fetch-retry',
+      'node-fetch',
+      'path', 'url',
+    ],
+    plugins: [peerDepsExternal(), swc()],
+  },
 ];

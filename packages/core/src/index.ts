@@ -12,6 +12,7 @@ export * from './features/fence';
 export * from './features/gen3Apps';
 export * from './features/graphQL';
 export * from './features/gen3';
+export * from './features/drsResolver';
 
 export {
   type CoreState,

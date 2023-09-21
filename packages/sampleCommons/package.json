@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "buildColors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/",
-    "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --host --out=config/"
+    "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --host --out=config/",
+    "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/"
   },
   "dependencies": {
     "@gen3/core": "0.1.0",

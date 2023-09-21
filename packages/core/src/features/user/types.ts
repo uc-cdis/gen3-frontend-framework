@@ -11,3 +11,7 @@ export interface ExternalProvider {
   'refresh_token_expiration': string,
   'urls': NamedURL[]
 }
+
+export interface FileMetadata {
+  'object_id': string,
+}
