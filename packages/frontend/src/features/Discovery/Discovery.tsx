@@ -7,6 +7,7 @@ import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
+import ActionBar from "./ActionBar/ActionBar";
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -56,17 +57,24 @@ const Discovery = ({
               opened={showAdvancedSearch}
             />
 
-            <DiscoveryTable
-              data={data}
-              isLoading={isLoading}
-              isFetching={isFetching}
-              isError={isError}
-              setPagination={setPagination}
-              setSorting={setSorting}
-              pagination={pagination}
-              sorting={sorting}
-            />
+            <div className="flex flex-col w-full">
+              <div className="flex flex-row items-center justify-between bg-amber-50">
 
+                <ActionBar config={discoveryConfig.exportToCart ?? { buttons: [] }}/>
+
+              </div>
+
+              <DiscoveryTable
+                data={data}
+                isLoading={isLoading}
+                isFetching={isFetching}
+                isError={isError}
+                setPagination={setPagination}
+                setSorting={setSorting}
+                pagination={pagination}
+                sorting={sorting}
+              />
+            </div>
           </div>
         </DiscoveryProvider>
       </div>

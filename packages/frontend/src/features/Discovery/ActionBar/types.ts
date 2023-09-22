@@ -1,6 +1,6 @@
 
-export  interface ActionButtonConfig {
-  readonly label: string;
-  readonly icon: string;
-  readonly action: (items: Record<string, any> | Array<any>) => void;
+
+export interface ActionButtonProps<T extends Record<string, any> = Record<string, any>> {
+  selectedResources: Array<T>;
+  manifestFieldName?: string;
 }

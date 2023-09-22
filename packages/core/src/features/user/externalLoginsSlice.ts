@@ -2,7 +2,7 @@ import { gen3Api } from '../gen3';
 import { ExternalProvider, FileMetadata } from './types';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { GUID_PREFIX_PATTERN } from '../../constants';
-import { resolveDRSObjectId } from '../drsResolver/utils';
+//import { resolveDRSObjectId } from '../drsResolver/utils';
 
 export interface ExternalProviderResponse {
   providers: ExternalProvider[];
@@ -74,16 +74,16 @@ export const externalLoginApi = gen3Api.injectEndpoints({
             },
           );
         });
-        const guidResolutions = resolveDRSObjectId(guidsForHostnameResolution);
+      //  const guidResolutions = resolveDRSObjectId(guidsForHostnameResolution);
 
-        const externalHosts = guidResolutions
-          .filter(
-            (resolvedGuid) => resolvedGuid && resolvedGuid.from_index_service,
-          )
-          .map(
-            (resolvedGuid) =>
-              new URL(resolvedGuid.from_index_service.host).host,
-          );
+        // const externalHosts = guidResolutions
+        //   .filter(
+        //     (resolvedGuid) => resolvedGuid && resolvedGuid.from_index_service,
+        //   )
+        //   .map(
+        //     (resolvedGuid) =>
+        //       new URL(resolvedGuid.from_index_service.host).host,
+        //   );
 
         return wtsResults.data
           ? {
