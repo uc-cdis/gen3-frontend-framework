@@ -3,7 +3,7 @@ import {
   type MetadataPaginationParams,
   useGetAggMDSQuery,
 } from '@gen3/core';
-import CartActionButton from "./ActionBar/CartActionButton";
+import CartActionButton from './ActionBar/CartActionButton';
 
 export type DiscoveryTableDataHook = (
   arg: MetadataPaginationParams,
@@ -120,29 +120,29 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-
 export interface CartActionButton {
-  type?: "manifest" | "zip";
-  label: string;  // label for the action button
+  type: 'manifest' | 'zip' | 'download' | 'link' | 'externalLink' | 'add-to-workspace';
+  label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
   tooltip?: string; // tooltip text
   actionFunction: string;
 }
 
-export interface  ExportToCart {
+export interface ExportToCart {
   buttons: CartActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
+  loginRequireForAllButtons?: boolean;
   manifestFieldName?: string;
 }
-
 
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
   features: {
     advSearchFilters: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
+    exportToCart?: ExportToCart;
   };
   aggregations: AggregationConfig[];
   tagCategories: TagCategory[];
@@ -151,7 +151,7 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
   minimalFieldMapping?: MinimalFieldMapping;
-  exportToCart?: ExportToCart;
+
 }
 
 export const accessibleFieldName = '__accessible';

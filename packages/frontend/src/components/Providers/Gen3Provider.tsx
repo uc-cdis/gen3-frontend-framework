@@ -1,11 +1,11 @@
-import React, { useEffect, ReactNode} from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
 import {
   MantineProvider,
   createEmotionCache,
   EmotionCache,
 } from '@mantine/core';
-import { TenStringArray } from '../../utils/types';
+import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons } from '../../lib/content/types';
 import { Notifications } from '@mantine/notifications';
@@ -16,8 +16,8 @@ const getEmotionCache = (): EmotionCache => {
   const insertionPoint =
     typeof document !== 'undefined'
       ? document.querySelectorAll<HTMLElement>(
-        'styles[api-emotion="css-global"]',
-      )?.[-1]
+          'styles[api-emotion="css-global"]',
+        )?.[-1]
       : undefined;
 
   return createEmotionCache({ key: 'mantine', insertionPoint });
@@ -26,7 +26,7 @@ const getEmotionCache = (): EmotionCache => {
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
-  children?: ReactNode | undefined
+  children?: ReactNode | undefined;
 }
 
 const Gen3Provider: React.FC<Gen3ProviderProps> = ({

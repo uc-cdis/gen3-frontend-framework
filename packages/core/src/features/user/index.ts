@@ -7,6 +7,7 @@ import {
   selectUser,
   selectUserData,
   selectUserLoginStatus,
+  useIsUserLoggedIn,
   type LoginStatus,
   type Gen3User,
 } from './userSlice';
@@ -24,6 +25,7 @@ export {
   selectUserLoginStatus,
   fetchUserState,
   isAuthenticated,
+  useIsUserLoggedIn,
   useGetExternalLoginsQuery,
   type Gen3User,
   type LoginStatus,

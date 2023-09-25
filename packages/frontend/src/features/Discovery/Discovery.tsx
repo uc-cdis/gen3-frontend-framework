@@ -40,6 +40,7 @@ const Discovery = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
   return (
     <div className="flex flex-col items-center p-2 m-2">
       <div className="w-full">
@@ -48,6 +49,7 @@ const Discovery = ({
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
             </Button>
+            { discoveryConfig.features.exportToCart ? <ActionBar config={discoveryConfig.features.exportToCart}/> : null }
           </div>
           <div className="flex justify-start">
             <AdvancedSearchPanel
@@ -58,11 +60,6 @@ const Discovery = ({
             />
 
             <div className="flex flex-col w-full">
-              <div className="flex flex-row items-center justify-between bg-amber-50">
-
-                <ActionBar config={discoveryConfig.exportToCart ?? { buttons: [] }}/>
-
-              </div>
 
               <DiscoveryTable
                 data={data}

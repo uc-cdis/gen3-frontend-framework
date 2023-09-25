@@ -5,6 +5,7 @@ import DownloadManifestButton from './DownloadManifestButton';
 import DownloadAsZipButton from './DownloadAsZipButton';
 import CartActionButton from './CartActionButton';
 
+
 interface ActionBarProps {
   config: ExportToCart;
 }
@@ -13,34 +14,37 @@ const ActionBar = ({ config }: ActionBarProps) => {
 
   const selectedResources: Array<Record<string, any>> = []; // replace with cart resources
 
-  const { buttons, manifestFieldName =  '__manifest' } = config;
+  const { buttons, manifestFieldName =  '__manifest', verifyExternalLogins } = config;
 
   return (
-    <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
+    <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
       {buttons.map((button, index) => {
-        if (button.type) {
-          return {
-            manifest: (
-              <DownloadManifestButton
-                selectedResources={selectedResources}
-                manifestFieldName={manifestFieldName}
-              />
-            ),
-            zip: <DownloadAsZipButton selectedResources={selectedResources} />,
-          }[button.type as string];
-        } else {
+        // if (button.type) {
+        //   return {
+        //     manifest: (
+        //       <DownloadManifestButton
+        //         selectedResources={selectedResources}
+        //         manifestFieldName={manifestFieldName}
+        //       />
+        //     ),
+        //     zip: <DownloadAsZipButton selectedResources={selectedResources} />,
+        //     exportToWorkspace: <DownloadAsZipButton selectedResources={selectedResources} />,
+        //
+        //   }[button.type as string];
+        //} else {
           return (
             <CartActionButton
               label={button.label}
               icon={DownloadIcon}
               toolTip={button.tooltip}
+              loginRequired={config?.loginRequireForAllButtons ?? true}
               onClick={() => {
                 console.log(`Download $[button.label]`);
               }}
               key={`action-button-${index}`}
             />
           );
-        }
+       // }
       })}
     </div>
   );

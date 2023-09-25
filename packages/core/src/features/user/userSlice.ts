@@ -138,6 +138,10 @@ export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
 
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
+export const useIsUserLoggedIn = (): boolean => {
+  return useCoreSelector((state) => isAuthenticated(selectUserLoginStatus(state)));
+};
+
 /**
  * Hook to return get the authenticated state of the user and if logged in,
  * the user's profile and access api.
