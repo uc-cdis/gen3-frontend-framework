@@ -14,6 +14,7 @@ export * from './features/graphQL';
 export * from './features/gen3';
 export * from './features/drsResolver';
 export * from './features/modals';
+export * from './features/downloadStatus';
 
 export {
   type CoreState,

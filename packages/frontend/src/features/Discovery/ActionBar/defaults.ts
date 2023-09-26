@@ -19,4 +19,4 @@ export const ExportTExportToCart_DefaultsoCart_Defaults = {
   verifyExternalLogins: true,
   loginRequireForAllButtons: true,
   manifestFieldName: '__manifest',
-}
+};

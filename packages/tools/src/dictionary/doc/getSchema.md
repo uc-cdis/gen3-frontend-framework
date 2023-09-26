@@ -6,7 +6,7 @@ To use it make sure your using the correct version of node, currently >= 18.15.0
 
 node --version
 
-Then run the following command:
+Then run the following command
 ```
     node packages/tools/src/dictionary/doc/getSchema.js --url <resource path> --out <output file>
 ```

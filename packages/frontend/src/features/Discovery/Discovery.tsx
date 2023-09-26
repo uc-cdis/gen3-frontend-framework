@@ -8,6 +8,7 @@ import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from "./ActionBar/ActionBar";
+import SearchInput from "./Search/SearchInput";
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -45,6 +46,13 @@ const Discovery = ({
     <div className="flex flex-col items-center p-2 m-2">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
+          <div className="flex flex-row m-2">
+            <div className="flex-grow">
+            </div>
+            <div className="w-full">
+            <SearchInput />
+            </div>
+          </div>
           <div className="flex flex-row">
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters

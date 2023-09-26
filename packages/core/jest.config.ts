@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   globalSetup: '<rootDir>/setupTests.ts',
   moduleNameMapper: {
     '^@/core/(.*)$': '<rootDir>/src/$1',
