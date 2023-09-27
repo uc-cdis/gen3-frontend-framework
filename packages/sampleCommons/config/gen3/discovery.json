@@ -45,6 +45,21 @@
         },
         "verifyExternalLogins": true
       },
+      "exportToCart": {
+        "verifyExternalLogins": true,
+        "enabled": true,
+        "manifestFieldName": "__manifest",
+        "buttons": [
+          {
+            "type": "download",
+            "label": "Download"
+          },
+          {
+            "type": "add-to-workspace",
+            "label": "Add to Workspace"
+          }
+        ]
+      },
       "pageTitle": {
         "enabled": false
       },

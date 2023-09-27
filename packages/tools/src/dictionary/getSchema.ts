@@ -65,7 +65,7 @@ const fetchJson = async (url: string) => {
 
 
   return fetchWithRetry(url, {
-    // TODO: fix the typing to remove the ignore
+    // TODO: fix the typing to remove the ts-ignore
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     agent: url.match(/^https:/) ? httpsAgent : httpAgent,

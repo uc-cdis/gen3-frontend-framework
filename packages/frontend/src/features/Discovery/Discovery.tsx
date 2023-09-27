@@ -7,6 +7,8 @@ import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
+import ActionBar from "./ActionBar/ActionBar";
+import SearchInput from "./Search/SearchInput";
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -39,14 +41,23 @@ const Discovery = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
   return (
     <div className="flex flex-col items-center p-2 m-2">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
+          <div className="flex flex-row m-2">
+            <div className="flex-grow">
+            </div>
+            <div className="w-full">
+            <SearchInput />
+            </div>
+          </div>
           <div className="flex flex-row">
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
             </Button>
+            { discoveryConfig.features.exportToCart ? <ActionBar config={discoveryConfig.features.exportToCart}/> : null }
           </div>
           <div className="flex justify-start">
             <AdvancedSearchPanel
@@ -56,17 +67,19 @@ const Discovery = ({
               opened={showAdvancedSearch}
             />
 
-            <DiscoveryTable
-              data={data}
-              isLoading={isLoading}
-              isFetching={isFetching}
-              isError={isError}
-              setPagination={setPagination}
-              setSorting={setSorting}
-              pagination={pagination}
-              sorting={sorting}
-            />
+            <div className="flex flex-col w-full">
 
+              <DiscoveryTable
+                data={data}
+                isLoading={isLoading}
+                isFetching={isFetching}
+                isError={isError}
+                setPagination={setPagination}
+                setSorting={setSorting}
+                pagination={pagination}
+                sorting={sorting}
+              />
+            </div>
           </div>
         </DiscoveryProvider>
       </div>
