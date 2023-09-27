@@ -13,7 +13,7 @@ export const Discovery_ActionBar_Defaults = {
   },
 };
 
-export const ExportTExportToCart_DefaultsoCart_Defaults = {
+export const ExportTExportToCart_Defaults = {
   buttons: Discovery_ActionBar_Defaults,
   enabled: true,
   verifyExternalLogins: true,
