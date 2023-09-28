@@ -4,6 +4,7 @@ import {
   useGetAggMDSQuery,
 } from '@gen3/core';
 import CartActionButton from './ActionBar/CartActionButton';
+import { SummaryStatisticsConfig } from './Statistics/types';
 
 export type DiscoveryTableDataHook = (
   arg: MetadataPaginationParams,
@@ -38,12 +39,6 @@ export interface TagCategory extends TagInfo {
   displayName: string;
   color: string;
   display: boolean;
-}
-
-export interface AggregationConfig {
-  name: string;
-  field: string;
-  type: 'sum' | 'count';
 }
 
 export type DiscoveryContentTypes =
@@ -144,7 +139,7 @@ export interface DiscoveryConfig extends Record<string, any> {
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
   };
-  aggregations: AggregationConfig[];
+  aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];

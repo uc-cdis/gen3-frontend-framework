@@ -11,6 +11,10 @@ import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
 import QueryPage from './pages/Query/Query';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
+
+import LandingPage from './pages/Landing/Landing';
+import { LandingPageGetStaticProps } from './pages/Landing/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -18,6 +22,8 @@ export {
   DiscoveryPageGetServerSideProps,
   QueryPage,
   QueryPageGetServerSideProps,
+  LandingPage,
+  LandingPageGetStaticProps,
   TailwindConfig,
   Gen3Provider
 };

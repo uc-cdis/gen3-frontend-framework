@@ -16,7 +16,7 @@ import { isArray } from 'lodash';
  */
 export const LinkedStudyCell = ({
   value: cellValue,
-}: CellRenderFunctionProps) => {
+}: CellRenderFunctionProps<boolean>) => {
   const value = cellValue as boolean;
   return value ? (
     <Badge

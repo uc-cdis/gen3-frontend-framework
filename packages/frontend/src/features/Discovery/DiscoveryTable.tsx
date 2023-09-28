@@ -14,6 +14,7 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { MetadataResponse } from '@gen3/core';
+import { Box, Text } from '@mantine/core';
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
 
 const extractCellValue =
@@ -109,14 +110,17 @@ const DiscoveryTable = ({
           textTransform: 'uppercase',
         };
       },
-    },
+    }
   });
 
   return (
     <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
-      <MantineReactTable table={table} />
+        <MantineReactTable table={table}
+
+
+        />
       </div>
     </React.Fragment>
   );

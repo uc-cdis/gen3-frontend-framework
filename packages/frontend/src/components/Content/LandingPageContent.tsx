@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
 
@@ -63,13 +62,13 @@ export interface LandingPageProps {
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (
-    <div className="sm:mt-8 2xl:mt-10 text-heal-dark_gray">
+    <div className="sm:mt-8 2xl:mt-10">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
             <Title
               key={index}
-              className="mb-5 mx-20"
+              className="mb-5 pl-20 pb-2"
               order={component.title.level}
             >
               {component.title.text}

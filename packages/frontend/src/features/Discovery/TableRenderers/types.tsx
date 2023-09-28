@@ -3,8 +3,8 @@ import { ReactElement } from 'react';
 import { MRT_Cell } from 'mantine-react-table';
 
 // TODO Tighten up the typing
-export interface CellRenderFunctionProps {
-  value: any; // value of the cell
+export interface CellRenderFunctionProps<T = any> {
+  value: T; // value of the cell
   cell?: MRT_Cell; // optional cell object for use in custom cell renderers
 }
 

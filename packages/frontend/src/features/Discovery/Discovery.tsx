@@ -7,8 +7,9 @@ import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
-import ActionBar from "./ActionBar/ActionBar";
-import SearchInput from "./Search/SearchInput";
+import ActionBar from './ActionBar/ActionBar';
+import SearchInput from './Search/SearchInput';
+import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -46,18 +47,22 @@ const Discovery = ({
     <div className="flex flex-col items-center p-2 m-2">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
-          <div className="flex flex-row m-2">
-            <div className="flex-grow">
-            </div>
+          <div className="flex items-center m-2">
+            <SummaryStatisticPanel
+              aggregations={discoveryConfig.aggregations}
+            />
+            <div className="flex-grow"></div>
             <div className="w-full">
-            <SearchInput />
+              <SearchInput />
             </div>
           </div>
           <div className="flex flex-row">
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
             </Button>
-            { discoveryConfig.features.exportToCart ? <ActionBar config={discoveryConfig.features.exportToCart}/> : null }
+            {discoveryConfig.features.exportToCart ? (
+              <ActionBar config={discoveryConfig.features.exportToCart} />
+            ) : null}
           </div>
           <div className="flex justify-start">
             <AdvancedSearchPanel
@@ -68,7 +73,6 @@ const Discovery = ({
             />
 
             <div className="flex flex-col w-full">
-
               <DiscoveryTable
                 data={data}
                 isLoading={isLoading}

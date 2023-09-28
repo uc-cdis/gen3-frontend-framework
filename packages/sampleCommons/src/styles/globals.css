@@ -78,5 +78,12 @@
   }
 }
 
+.mantine-TableBodyCell-DetailPanel {
+  border-color: aqua;
+  border-top: hidden;
+  padding: 16px;
+  margin: 16px 0;
+}
+
 @tailwind utilities;
 @tailwind variants;

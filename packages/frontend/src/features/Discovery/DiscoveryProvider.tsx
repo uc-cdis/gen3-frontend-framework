@@ -18,8 +18,7 @@ const useDiscoveryContext = () => {
   const context = React.useContext(DiscoveryContext);
   if (context === undefined) {
     throw Error(
-      'RadioGroupItem must be used inside of a RadioGroup, ' +
-        'otherwise it will not function correctly.',
+      'Discovery must be used  must be used inside of a DiscoveryContext'
     );
   }
   return context;
