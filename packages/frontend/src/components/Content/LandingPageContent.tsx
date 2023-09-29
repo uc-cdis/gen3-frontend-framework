@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
+import { Gen3Button, Gen3ButtonReverse } from "../Buttons/Gen3Button";
 
 import {
   MdFormatQuote,
@@ -89,7 +90,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               }
               if (obj.link) {
                 return (
-                  <div className="heal-btn mb-5 mr-5" key={index}>
+                  <Gen3Button colors="accent-lighter" className="mb-5 mr-5" key={index}>
                     <Gen3Link
                       className="flex flex-row items-center"
                       href={obj.link.href}
@@ -97,7 +98,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                       text={obj.link.text}
                       showExternalIcon
                     />
-                  </div>
+                  </Gen3Button>
                 );
               }
               if (obj.image) {
@@ -149,17 +150,18 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                   >
                     {React.createElement(allowedIcons[card.icon], {
                       title: `${card.btnText} icon`,
-                      className: 'inline-block text-7xl text-heal-magenta',
+                      className: 'inline-block text-7xl text-accent-lighter',
                     })}
-                    <p className="block text-gen3-titanium leading-6 mb-2">
+                    <p className="block text-primary leading-6 mb-2">
                       {card.bodyText}
                     </p>
+                    <Gen3ButtonReverse colors="accent-lighter" className="mb-5 mr-5" key={index}>
                     <Gen3Link
-                      className="heal-btn heal-btn-rev"
                       href={card.href}
                       linkType={card.linkType}
                       text={card.btnText}
                     />
+                    </Gen3ButtonReverse>
                   </li>
                 ))}
               </ul>

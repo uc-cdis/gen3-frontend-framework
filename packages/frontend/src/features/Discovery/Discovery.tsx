@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';

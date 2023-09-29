@@ -1,3 +1,4 @@
+'use client';
 import React, { useMemo } from 'react';
 import {
   MantineReactTable,
@@ -14,7 +15,6 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { MetadataResponse } from '@gen3/core';
-import { Box, Text } from '@mantine/core';
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
 
 const extractCellValue =
@@ -98,11 +98,22 @@ const DiscoveryTable = ({
         'mrt-row-expand': false,
       },
     },
+     // TODO expand to highlight row/detail row on hover
+    // mantineTableBodyRowProps: {
+    //   onMouseEnter: (row) => {
+    //     console.log('mouse enter', row);
+    //   },
+    //   sx: {
+    //     "&:hover td": {
+    //       backgroundColor: "#FF0000",
+    //     }
+    // }},
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.secondary[9],
+          backgroundColor: theme.colors.accent[8],
+          color: theme.colors.accent[0],
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
@@ -110,6 +121,13 @@ const DiscoveryTable = ({
           textTransform: 'uppercase',
         };
       },
+    },
+    mantineTableProps: {
+      sx: (theme) => {
+        return {
+          backgroundColor: theme.colors.base[9],
+        };
+      }
     }
   });
 
@@ -117,10 +135,7 @@ const DiscoveryTable = ({
     <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
-        <MantineReactTable table={table}
-
-
-        />
+        <MantineReactTable table={table} />
       </div>
     </React.Fragment>
   );

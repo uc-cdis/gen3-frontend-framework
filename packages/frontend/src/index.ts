@@ -15,6 +15,9 @@ import { QueryPageGetServerSideProps } from './pages/Query/data';
 import LandingPage from './pages/Landing/Landing';
 import { LandingPageGetStaticProps } from './pages/Landing/data';
 
+import ColorThemePage from './pages/Theme/Colors';
+import { ColorThemePageGetServerSideProps } from './pages/Theme';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -24,6 +27,8 @@ export {
   QueryPageGetServerSideProps,
   LandingPage,
   LandingPageGetStaticProps,
+  ColorThemePage,
+  ColorThemePageGetServerSideProps,
   TailwindConfig,
-  Gen3Provider
+  Gen3Provider,
 };

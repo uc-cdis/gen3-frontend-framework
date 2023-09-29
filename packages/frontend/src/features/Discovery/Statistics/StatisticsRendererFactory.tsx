@@ -8,7 +8,7 @@ interface StatisticRendererProps extends StackProps  {
 
 const defaultStatisticRenderer = ({ value, label, ...props }: StatisticRendererProps) => {
   return <Stack {...props} align="center">
-    <Text size="2rem" color="accent.5">{value}</Text>
+    <Text size="2rem" color="accent">{value}</Text>
     <Text size="sm" color="primary">{label}</Text>
   </Stack>;
 };

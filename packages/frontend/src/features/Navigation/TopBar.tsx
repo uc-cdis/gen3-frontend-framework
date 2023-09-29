@@ -23,9 +23,9 @@ const TopIconButton: React.FC<NameAndIcon> = ({
       className="flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white "
       role="button"
     >
-      {leftIcon ? <Icon icon={leftIcon} className="text-gen3-white" /> : null}
-      <p className="font-content text-white p-2"> {name} </p>
-      {rightIcon ? <Icon icon={rightIcon} className="text-gen3-white" /> : null}
+      {leftIcon ? <Icon icon={leftIcon} className="text-secondary-contrast-lighter" /> : null}
+      <p className="font-content secondary-contrast-lighter p-2"> {name} </p>
+      {rightIcon ? <Icon icon={rightIcon} className="text-secondary-contrast-lighter" /> : null}
     </div>
   );
 };
@@ -41,7 +41,7 @@ const TopBar: React.FC<TopBarProps> = ({
 }: TopBarProps) => {
   return (
     <div>
-      <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-gen3-secondary">
+      <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-secondary-lighter">
         <nav className="flex flex-row items-center align-middle font-montserrat">
           {items.map((x) => {
             return (
@@ -51,7 +51,7 @@ const TopBar: React.FC<TopBarProps> = ({
                   leftIcon={x.leftIcon}
                   rightIcon={x.rightIcon}
                 />
-                <div className="pr-2 ml-1  border-solid h-6 " />
+                <div className="pr-2 ml-1 border-solid h-6 " />
               </a>
             );
           })}
