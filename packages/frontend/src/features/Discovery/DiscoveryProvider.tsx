@@ -6,6 +6,7 @@ interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryConfig;
   setStudyDetails: React.Dispatch<React.SetStateAction<JSONObject>>;
   studyDetails: JSONObject;
+
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({

@@ -1,14 +1,30 @@
 import {
   JSONObject,
   type MetadataPaginationParams,
-  useGetAggMDSQuery,
 } from '@gen3/core';
 import CartActionButton from './ActionBar/CartActionButton';
 import { SummaryStatisticsConfig } from './Statistics/types';
 
+export interface DiscoveryDataLoaderProps extends Record<string, any>  {
+  pagination: MetadataPaginationParams,
+  searchTerms: string;
+  discoveryConfig?: DiscoveryConfig;
+}
+
+export interface DiscoverTableDataHookResponse {
+  data: Array<JSONObject>;
+  hits: number;
+  isFetching: boolean;
+  isLoading: boolean;
+  isUninitialized: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+}
+
 export type DiscoveryTableDataHook = (
-  arg: MetadataPaginationParams,
-) => ReturnType<typeof useGetAggMDSQuery>;
+  dataHookArgs: DiscoveryDataLoaderProps,
+  ...args: any[]
+) => DiscoverTableDataHookResponse;
 
 export interface KeyValueSearchFilter {
   key: string;
@@ -124,6 +140,23 @@ export interface CartActionButton {
   actionFunction: string;
 }
 
+export interface SearchBar {
+      enabled: boolean;
+      inputSubtitle: string;
+      searchableTextFields: Array<string>;
+}
+
+interface TagSearchDropdown {
+  enabled?: boolean,
+  collapsibleButtonText?: string
+}
+
+export interface SearchConfig {
+  searchBar?: SearchBar;
+  tagSearchDropdown?: TagSearchDropdown;
+
+}
+
 export interface ExportToCart {
   buttons: CartActionButton[];
   enabled?: boolean;
@@ -138,6 +171,7 @@ export interface DiscoveryConfig extends Record<string, any> {
     advSearchFilters: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
+    search?: SearchConfig
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];

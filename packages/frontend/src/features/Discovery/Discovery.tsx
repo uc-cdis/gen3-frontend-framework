@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
+import { MetadataPaginationParams, useGetAggMDSQuery, usePrevious } from '@gen3/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -11,6 +11,7 @@ import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SearchInput from './Search/SearchInput';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
+import { useLoadAllData } from './DataLoaders/AllDataLocal';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -28,17 +29,24 @@ const useAggMDS = ({ pageSize, offset }: MetadataPaginationParams) => {
 
 const Discovery = ({
   discoveryConfig,
-  dataHook = useAggMDS,
+  dataHook = useLoadAllData,
 }: DiscoveryProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  const { data, isLoading, isFetching, isError } = dataHook({
-    pageSize: pagination.pageSize,
-    offset: pagination.pageIndex * pagination.pageSize,
+  const [searchBarTerm, setSearchBarTerm] = useState<string>('');
+
+  const { data, hits, isLoading, isFetching, isError } = dataHook({
+    pagination: {
+      offset: pagination.pageIndex * pagination.pageSize,
+      pageSize: pagination.pageSize,
+    },
+    searchTerms: searchBarTerm,
+    discoveryConfig,
   });
+
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
@@ -54,7 +62,12 @@ const Discovery = ({
             />
             <div className="flex-grow"></div>
             <div className="w-full">
-              <SearchInput />
+              <SearchInput
+                searchChanged={setSearchBarTerm}
+                placeholder={
+                  discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                }
+              />
             </div>
           </div>
           <div className="flex flex-row">
@@ -68,7 +81,7 @@ const Discovery = ({
           <div className="flex justify-start">
             <AdvancedSearchPanel
               advSearchFilters={discoveryConfig.features.advSearchFilters}
-              studies={data?.data ?? []}
+              studies={data ?? []}
               uidField={discoveryConfig.minimalFieldMapping?.uid}
               opened={showAdvancedSearch}
             />
@@ -76,6 +89,7 @@ const Discovery = ({
             <div className="flex flex-col w-full">
               <DiscoveryTable
                 data={data}
+                hits={hits}
                 isLoading={isLoading}
                 isFetching={isFetching}
                 isError={isError}

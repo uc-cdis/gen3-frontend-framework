@@ -14,7 +14,7 @@ import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
-import { MetadataResponse } from '@gen3/core';
+import { JSONObject, MetadataResponse } from "@gen3/core";
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
 
 const extractCellValue =
@@ -23,7 +23,8 @@ const extractCellValue =
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
-  data: MetadataResponse;
+  data: JSONObject[];
+  hits: number,
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -35,6 +36,7 @@ interface DiscoveryTableProps {
 
 const DiscoveryTable = ({
   data,
+  hits,
   isError,
   isLoading,
   isFetching,
@@ -76,14 +78,14 @@ const DiscoveryTable = ({
   // @ts-ignore
   const table = useMantineReactTable({
     columns: cols,
-    data: data?.data ?? [],
+    data: data ?? [],
     manualSorting: true,
     manualPagination: true,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
-    rowCount: data?.hits ?? 0,
+    rowCount: hits,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,

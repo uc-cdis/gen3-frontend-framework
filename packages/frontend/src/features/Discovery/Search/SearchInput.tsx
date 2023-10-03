@@ -9,33 +9,26 @@ import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
 import { TextInput, Tooltip } from '@mantine/core';
 
 interface SearchInputProps {
-  onSearchChanged: (searchTerm: string) => void;
-  onClearSearch: () => void;
+  searchChanged: (searchTerm: string) => void;
   placeholder?: string;
 }
 
-const SearchInput: React.FC = () => {
-  const [searchResults, setSearchResults] = useState<[]>([]);
+const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const clearSearch = useCallback(() => {
-    setSearchResults([]);
-    setSearchTerm('');
-  }, [setSearchResults, setSearchTerm]);
-
-  const onSearchChanged = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
+  console.log("searchTerm", searchTerm);
   return (
     <div className="relative">
       <TextInput
         icon={<SearchIcon size={24} />}
-        placeholder="Search"
+        placeholder={placeholder || 'Search...'}
         data-testid="textbox-search-bar"
         aria-label="App Search Input"
         value={searchTerm}
-        onChange={onSearchChanged}
+        onChange={(event) => {
+          searchChanged(event.target.value);
+          setSearchTerm(event.target.value);
+        }}
         classNames={{
           input: 'focus:border-2 focus:border-primary text-sm',
         }}
@@ -44,7 +37,8 @@ const SearchInput: React.FC = () => {
           searchTerm.length > 0 && (
             <CloseIcon
               onClick={() => {
-                clearSearch();
+                setSearchTerm('');
+                searchChanged('');
               }}
               className="cursor-pointer"
               data-testid="search-input-clear-search"
