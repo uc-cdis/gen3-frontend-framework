@@ -1,86 +1,33 @@
-import React, { useState } from 'react';
-import { JSONObject, JSONValue } from '@gen3/core';
-import { AdvancedSearchFilters, SearchKV } from '../types';
-import { Accordion, Button, SegmentedControl } from '@mantine/core';
-import { MdUndo as UndoIcon } from 'react-icons/md';
-import SearchFilters from './SearchFilters';
-import { SearchFilterState } from './types';
+import React, { useEffect, useState } from "react";
+import {  KeyValueSearchFilter } from "../types";
+import { Accordion, Button, SegmentedControl } from "@mantine/core";
+import { MdUndo as UndoIcon } from "react-icons/md";
+import SearchFilters from "./SearchFilters";
+import { SearchCombination, SearchFilterState, SetAdvancedSearchFiltersFn } from "./types";
 
-const getFilterValuesByKey = (
-  key: string,
-  studies: JSONObject[],
-  filtersField?: string,
-  uidField?: string,
-) => {
-  if (!studies) {
-    return [];
-  }
 
-  if (!filtersField) {
-    throw new Error(
-      'Misconfiguration error: missing required configuration property `discoveryConfig.features.advSearchFilters.field`',
-    );
-  }
-
-  if (!uidField) {
-    throw new Error(
-      'Misconfiguration error: missing required configuration property `discoveryConfig.features.advSearchFilters.field`',
-    );
-  }
-
-  const filterValuesMap: Record<string, JSONValue> = {};
-  studies.forEach((study) => {
-    const studyFilters: SearchKV[] =
-      (study[filtersField] as unknown as SearchKV[]) ?? [];
-
-    if (!studyFilters) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `Warning: expected to find property '${filtersField}' in study metadata for study ${
-          study[uidField] ?? 'unknown'
-        }, but could not find it! This study will not be filterable by the advanced search filters.`,
-      );
-      return;
-    }
-    try {
-      studyFilters.forEach((filterValue: SearchKV) => {
-        if (filterValue.key === key) {
-          filterValuesMap[filterValue.value] = true;
-        }
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
-      // eslint-disable-next-line no-console
-      console.error(
-        `The above error appeared in study ${study[uidField] ?? 'unknown'}`,
-      );
-    }
-  });
-  return Object.keys(filterValuesMap);
-};
-
-enum SearchCombination {
-  and = 'AND',
-  or = 'OR',
-}
 
 export interface AdvancedSearchProps {
-  advSearchFilters: AdvancedSearchFilters;
-  studies: JSONObject[];
-  uidField?: string;
+  advSearchFilters: ReadonlyArray<KeyValueSearchFilter>
+  setAdvancedSearchFilters: SetAdvancedSearchFiltersFn;
   opened: boolean;
 }
 
 const AdvancedSearch = ({
   advSearchFilters,
-  studies,
-  uidField,
+  setAdvancedSearchFilters,
 }: AdvancedSearchProps) => {
   const [searchCombination, setSearchCombination] = useState<SearchCombination>(
     SearchCombination.and,
   );
   const [filterState, setFilterState] = useState<SearchFilterState>({});
+
+  useEffect(() => {
+    setAdvancedSearchFilters({
+      operation: searchCombination,
+      filters: filterState,
+    });
+  }, [searchCombination, filterState, setAdvancedSearchFilters]);
 
   return (
     <React.Fragment>
@@ -113,14 +60,9 @@ const AdvancedSearch = ({
         </div>
 
         <Accordion className="mt-2" radius="sm" multiple>
-          {advSearchFilters.filters.map((filter) => {
-            const { key, keyDisplayName } = filter;
-            const values = getFilterValuesByKey(
-              key,
-              studies,
-              advSearchFilters.field,
-              uidField,
-            );
+          {advSearchFilters.map((filter) => {
+            const { key, keyDisplayName, valueDisplayNames } = filter;
+            const values = valueDisplayNames ? Object.values(valueDisplayNames) : [];
             return (
               <Accordion.Item
                 value={key}

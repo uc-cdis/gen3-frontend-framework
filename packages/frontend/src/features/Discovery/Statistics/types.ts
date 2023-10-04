@@ -9,17 +9,14 @@ export interface SummaryStatisticsConfig {
   displayFunction?: string; // The display function to use
 }
 
-interface StatisticsDataRequest {
+export interface StatisticsDataRequest {
   field: string; // JSON Path of field to aggregate
   type: 'sum' | 'count'; // The type of aggregation
 }
 
-interface StatisticsDataResponse extends StatisticsDataRequest {
-  value: number; // The value of the aggregation
+export interface StatisticsDataResponse extends StatisticsDataRequest {
+  value: number | string; // The value of the aggregation
 }
+export type SummaryStatistics = Record<string, StatisticsDataResponse>;
 
 export type StatisticsDataRetrievalFunction = (items: ReadonlyArray<StatisticsDataRequest>) => Array<StatisticsDataResponse>;
-
-interface StatisticsItemProps {
-
-}

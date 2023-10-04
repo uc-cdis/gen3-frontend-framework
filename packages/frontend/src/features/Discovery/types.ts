@@ -1,19 +1,30 @@
-import {
-  JSONObject,
-  type MetadataPaginationParams,
-} from '@gen3/core';
-import CartActionButton from './ActionBar/CartActionButton';
-import { SummaryStatisticsConfig } from './Statistics/types';
+import { JSONObject, type MetadataPaginationParams } from "@gen3/core";
+import CartActionButton from "./ActionBar/CartActionButton";
+import { StatisticsDataResponse, SummaryStatisticsConfig } from "./Statistics/types";
+import { AdvancedSearchTerms, SearchCombination } from "./Search/types";
+
+interface KeywordSearch {
+  keywords: string[];
+  operator: SearchCombination;
+}
+
+export interface SearchTerms {
+  keyword: KeywordSearch;
+  advancedSearchTerms: AdvancedSearchTerms;
+}
 
 export interface DiscoveryDataLoaderProps extends Record<string, any>  {
   pagination: MetadataPaginationParams,
-  searchTerms: string;
-  discoveryConfig?: DiscoveryConfig;
+  searchTerms: SearchTerms;
+  discoveryConfig: DiscoveryConfig;
 }
 
-export interface DiscoverTableDataHookResponse {
+
+export interface DiscoverDataHookResponse {
   data: Array<JSONObject>;
   hits: number;
+  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
+  useGetSummaryStatistics: (_:string) => StatisticsDataResponse;
   isFetching: boolean;
   isLoading: boolean;
   isUninitialized: boolean;
@@ -24,14 +35,12 @@ export interface DiscoverTableDataHookResponse {
 export type DiscoveryTableDataHook = (
   dataHookArgs: DiscoveryDataLoaderProps,
   ...args: any[]
-) => DiscoverTableDataHookResponse;
+) => DiscoverDataHookResponse;
 
 export interface KeyValueSearchFilter {
   key: string;
   keyDisplayName?: string;
-  valueDisplayNames?: {
-    [value: string]: string;
-  };
+  valueDisplayNames?: Record<string, string>
 }
 
 export interface AdvancedSearchFilters {
@@ -41,15 +50,33 @@ export interface AdvancedSearchFilters {
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
+
+
 export interface TagInfo {
   name: string;
   category: string;
 }
 
+export const isTagInfo = (obj: any): obj is TagInfo => {
+  return obj && obj.name && obj.category;
+};
+
+export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
+  return obj && Array.isArray(obj) && obj.every(isTagInfo);
+};
+
 export interface SearchKV {
   key: string;
   value: any;
 }
+
+export const isSearchKV = (obj: any): obj is SearchKV => {
+  return obj && obj.key && obj.value;
+};
+
+export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
+  return obj && Array.isArray(obj) && obj.every(isSearchKV);
+};
 
 export interface TagCategory extends TagInfo {
   displayName: string;

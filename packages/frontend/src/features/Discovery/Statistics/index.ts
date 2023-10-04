@@ -1,7 +1,9 @@
 import {
-  type SummaryStatisticsConfig
+  type SummaryStatisticsConfig,
+  type StatisticsDataResponse,
 } from "./types";
 
 export {
-  type SummaryStatisticsConfig
+  type SummaryStatisticsConfig,
+  type StatisticsDataResponse,
 };

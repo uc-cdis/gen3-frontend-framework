@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { MetadataPaginationParams, useGetAggMDSQuery, usePrevious } from '@gen3/core';
+import { MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -12,6 +12,7 @@ import ActionBar from './ActionBar/ActionBar';
 import SearchInput from './Search/SearchInput';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData } from './DataLoaders/AllDataLocal';
+import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -37,16 +38,22 @@ const Discovery = ({
   });
 
   const [searchBarTerm, setSearchBarTerm] = useState<string>('');
+  const [advancedSearchTerms, setAdvancedSearchTerms] =
+    useState<AdvancedSearchTerms>({
+      operation: SearchCombination.and,
+      filters: {},
+    });
 
-  const { data, hits, isLoading, isFetching, isError } = dataHook({
-    pagination: {
-      offset: pagination.pageIndex * pagination.pageSize,
-      pageSize: pagination.pageSize,
-    },
-    searchTerms: searchBarTerm,
-    discoveryConfig,
-  });
-
+  const { data, hits, isLoading, isFetching, isError, advancedSearchFilters } =
+    dataHook({
+      pagination: {
+        offset: pagination.pageIndex * pagination.pageSize,
+        pageSize: pagination.pageSize,
+      },
+      searchTerms: searchBarTerm,
+      advancedSearchTerms,
+      discoveryConfig,
+    });
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
@@ -80,10 +87,9 @@ const Discovery = ({
           </div>
           <div className="flex justify-start">
             <AdvancedSearchPanel
-              advSearchFilters={discoveryConfig.features.advSearchFilters}
-              studies={data ?? []}
-              uidField={discoveryConfig.minimalFieldMapping?.uid}
+              advSearchFilters={advancedSearchFilters}
               opened={showAdvancedSearch}
+              setAdvancedSearchFilters={setAdvancedSearchTerms}
             />
 
             <div className="flex flex-col w-full">

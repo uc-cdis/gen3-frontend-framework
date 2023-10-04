@@ -5,7 +5,7 @@ export type JSONValue =
   | number
   | boolean
   | JSONValue[]
-  | { [key: string]: JSONValue }
+  | JSONObject
   | ReactElement
 
 export type JSONValueWithReact = JSONValue  | ReactNode;

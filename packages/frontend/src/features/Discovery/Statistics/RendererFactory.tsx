@@ -6,6 +6,7 @@ export interface RendererFunctionCatalogEntry<T> {
   [key: string]: RendererFunction<T>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function DefaultCellRenderer<T>(_props: T): ReactElement {
   return <div></div>;
 }

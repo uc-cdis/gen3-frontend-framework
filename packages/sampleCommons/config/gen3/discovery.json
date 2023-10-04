@@ -121,7 +121,7 @@
       {
         "name": "Subjects",
         "field": "_hdp_uid",
-        "type": "count"
+        "type": "sum"
       }
     ],
     "tagSelector": {
