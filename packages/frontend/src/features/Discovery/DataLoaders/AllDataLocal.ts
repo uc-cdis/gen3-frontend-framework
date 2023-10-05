@@ -107,7 +107,6 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps) => {
-
   const searchOverFields =
     discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
@@ -233,7 +232,9 @@ export const useLoadAllData = ({
   }, [data, isSuccess, search, searchTerms]);
 
   useEffect(() => {
-    setSummaryStatistics( processAllSummaries(filteredData, discoveryConfig.aggregations));
+    setSummaryStatistics(
+      processAllSummaries(filteredData, discoveryConfig.aggregations),
+    );
   }, [filteredData, discoveryConfig.aggregations]);
 
   const useGetSummaryStatistics = (name: string): StatisticsDataResponse => {
