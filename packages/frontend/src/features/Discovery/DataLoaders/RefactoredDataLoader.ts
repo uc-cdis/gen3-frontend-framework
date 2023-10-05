@@ -1,10 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
   JSONObject,
   MetadataPaginationParams,
   useGetMDSQuery,
-  usePrevious,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch from 'minisearch';
@@ -17,7 +16,7 @@ import {
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../Search/utils';
 import { processAllSummaries } from './utils';
-import { StatisticsDataResponse, SummaryStatisticsConfig } from '../Statistics';
+import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
 
 interface QueryType {
@@ -135,7 +134,7 @@ const useGetData = ({
       );
       setMDSData(studyData);
     }
-  }, [data, isSuccess]);
+  }, [data, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -157,12 +156,14 @@ interface SearchMetadataProps {
   discoveryConfig: any;
   searchTerms: SearchTerms;
   mdsData: JSONObject[];
+  isSuccess: boolean;
 }
 
 const useSearchMetadata = ({
   discoveryConfig,
   searchTerms,
   mdsData,
+                             isSuccess,
 }: SearchMetadataProps) => {
   const searchOverFields =
     discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
@@ -198,11 +199,11 @@ const useSearchMetadata = ({
 
   useEffect(() => {
     // we have the data, so set it and build the search index and get the advanced search filter values
-    if (mdsData) {
+    if (mdsData && isSuccess) {
       removeAll();
       addAll(mdsData);
     }
-  }, [addAll, mdsData, removeAll]);
+  }, [addAll, isSuccess, mdsData, removeAll]);
 
   useEffect(() => {
     if (mdsData && isSearching) {
@@ -265,7 +266,7 @@ const usePagination = ({ data, pagination }: PaginationHookProps) => {
     };
 
     updatePaginatedData();
-  }, [data]);
+  }, [data, pagination.offset, pagination.pageSize]);
 
   return {
     paginatedData,
@@ -358,6 +359,7 @@ export const useLoadAllData = ({
     discoveryConfig,
     searchTerms,
     mdsData,
+    isSuccess,
   });
 
   const { paginatedData } = usePagination({

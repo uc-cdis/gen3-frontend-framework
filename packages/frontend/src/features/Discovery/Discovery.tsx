@@ -11,7 +11,7 @@ import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SearchInput from './Search/SearchInput';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllData } from './DataLoaders/AllDataLocal';
+import { useLoadAllData } from './DataLoaders/RefactoredDataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
 export interface DiscoveryProps {
@@ -44,14 +44,19 @@ const Discovery = ({
       filters: {},
     });
 
-  const { data, hits, isLoading, isFetching, isError, advancedSearchFilters } =
+  const { data, hits, isLoading, isFetching, isError, advancedSearchFilterValues } =
     dataHook({
       pagination: {
         offset: pagination.pageIndex * pagination.pageSize,
         pageSize: pagination.pageSize,
       },
-      searchTerms: searchBarTerm,
-      advancedSearchTerms,
+      searchTerms: {
+        keyword: {
+          operator: SearchCombination.and,
+          keywords: [searchBarTerm],
+        },
+        advancedSearchTerms: advancedSearchTerms,
+      },
       discoveryConfig,
     });
 
@@ -87,7 +92,7 @@ const Discovery = ({
           </div>
           <div className="flex justify-start">
             <AdvancedSearchPanel
-              advSearchFilters={advancedSearchFilters}
+              advSearchFilters={advancedSearchFilterValues}
               opened={showAdvancedSearch}
               setAdvancedSearchFilters={setAdvancedSearchTerms}
             />

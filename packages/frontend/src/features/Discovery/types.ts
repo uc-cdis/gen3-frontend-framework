@@ -24,7 +24,6 @@ export interface DiscoverDataHookResponse {
   data: Array<JSONObject>;
   hits: number;
   advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
-  useGetSummaryStatistics: (_:string) => StatisticsDataResponse;
   isFetching: boolean;
   isLoading: boolean;
   isUninitialized: boolean;
