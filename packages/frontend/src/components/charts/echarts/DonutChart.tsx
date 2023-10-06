@@ -1,10 +1,9 @@
 import React, {useMemo} from 'react';
 import {processLabel, truncateString} from '../utils';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
+import { HistogramDataArray, HistogramData } from "@gen3/core";
+import { ChartProps } from '../types';
 
-interface DonutChartProps {
-    data: ReadonlyArray<Record<string, number>>;
-}
 
 interface DonutChartData {
     value: number;
@@ -12,14 +11,14 @@ interface DonutChartData {
 }
 
 const processChartData = (
-    facetData: Record<string, any>,
+    facetData: HistogramDataArray,
     maxBins = 100,
 ) : DonutChartData[]  => {
 
     if (!facetData) {
         return [];
     }
-    const data =facetData.filter((d:any) => d.key !== '_missing');
+    const data =facetData.filter((d:HistogramData) => d.key !== '_missing');
 
     const results = data.slice(0, maxBins)
         .map((d:any) => ({
@@ -29,7 +28,7 @@ const processChartData = (
     return results;
 };
 
-const DonutChart : React.FC<DonutChartProps> = ({ data } : DonutChartProps) => {
+const DonutChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
                 legend: {
@@ -48,7 +47,7 @@ const DonutChart : React.FC<DonutChartProps> = ({ data } : DonutChartProps) => {
                     {
                         type: 'pie',
                         radius: ['30%','60%'],
-                        data: processChartData(data[0]),
+                        data: processChartData(data),
                         labelLine: {
                             show: false
                         },

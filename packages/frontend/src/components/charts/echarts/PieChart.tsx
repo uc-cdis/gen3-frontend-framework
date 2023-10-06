@@ -1,10 +1,8 @@
 import React, {useMemo} from 'react';
 import {processLabel, truncateString} from '../utils';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
+import { ChartProps } from '../types';
 
-interface PieChartProps {
-    data: ReadonlyArray<Record<string, number>>;
-}
 
 interface PieChartData {
     value: number;
@@ -29,7 +27,7 @@ const processChartData = (
     return results;
 };
 
-const PieChart : React.FC<PieChartProps> = ({ data } : PieChartProps) => {
+const PieChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
             label: {

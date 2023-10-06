@@ -1,10 +1,9 @@
 import React, {useMemo} from 'react';
 import {processLabel, truncateString} from '../utils';
+import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
+import { HistogramDataArray } from "@gen3/core";
 
-interface BarChartProps {
-    data: ReadonlyArray<Record<string, number>>;
-}
 
 interface BarChartData {
     value: number;
@@ -12,7 +11,7 @@ interface BarChartData {
 }
 
 const processChartData = (
-    facetData: Record<string, any>,
+    facetData: HistogramDataArray,
     maxBins = 100,
 ) : BarChartData[]  => {
 
@@ -29,7 +28,7 @@ const processChartData = (
     return results;
 };
 
-const BarChart : React.FC<BarChartProps> = ({ data } : BarChartProps) => {
+const BarChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
 
@@ -37,7 +36,7 @@ const BarChart : React.FC<BarChartProps> = ({ data } : BarChartProps) => {
                     trigger: 'item'
                 },
                 series: [
-                    { type: 'bar',  data: processChartData(data[0]) }
+                    { type: 'bar',  data: processChartData(data) }
                 ]
 
         }; }, [data]);

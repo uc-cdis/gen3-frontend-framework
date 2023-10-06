@@ -38,7 +38,7 @@ const Charts: React.FC<ChartsProps> = ({ index, charts, data, isSuccess }: Chart
               </Group>
             </Card.Section>
           <LoadingOverlay visible={!isSuccess} />
-            { createChart(charts[field].chartType, data===undefined ? [] : [data[field]])}
+            { createChart(charts[field].chartType, data===undefined ? [] : data[field])}
           </Card>
         </Grid.Col>
       ))}

@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
 import { VictoryAxis, VictoryBar, VictoryChart,VictoryContainer, VictoryLabel, VictoryTheme } from 'victory';
 import {  processLabel, truncateString } from './utils';
-import { HistogramDataArray } from "@gen3/core";
+import { HistogramDataArray, HistogramData } from "@gen3/core";
+import { ChartProps } from './types';
 
-interface BarChartProps {
-    data: HistogramDataArray;
-}
 
 interface BarChartData {
     x: string;
@@ -21,7 +19,7 @@ const processChartData = (
     if (!facetData) {
         return [];
     }
-    const data =facetData.filter((d:any) => d.key !== '_missing');
+    const data =facetData.filter((d:HistogramData) => d.key !== '_missing');
 
     const results = data.slice(0, maxBins)
         .map((d:any) => ({
@@ -32,9 +30,9 @@ const processChartData = (
     return results.reverse();
 };
 
-const BarChart : React.FC<BarChartProps> = ({ data } : BarChartProps) => {
+const BarChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
 
-    const chartData = useMemo(() => processChartData(data[0]), [data]);
+    const chartData = useMemo(() => processChartData(data), [data]);
 
     return (
         <VictoryChart
