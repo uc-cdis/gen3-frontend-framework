@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
-import { Gen3Button, Gen3ButtonReverse } from "../Buttons/Gen3Button";
+import { Gen3Button, Gen3ButtonReverse } from '../Buttons/Gen3Button';
 
 import {
   MdFormatQuote,

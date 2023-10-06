@@ -36,7 +36,7 @@ const ActionBar = ({ config }: ActionBarProps) => {
             toolTip={button.tooltip}
             loginRequired={config?.loginRequireForAllButtons ?? true}
             onClick={() => {
-              console.log(`Download $[button.label]`);
+              console.log('Download $[button.label]');
             }}
             key={`action-button-${index}`}
           />

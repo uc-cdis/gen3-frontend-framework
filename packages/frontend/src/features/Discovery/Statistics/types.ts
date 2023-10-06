@@ -1,5 +1,5 @@
 
-import { CellRenderFunctionProps } from "../TableRenderers/types";
+import { CellRenderFunctionProps } from '../TableRenderers/types';
 
 
 export interface SummaryStatisticsConfig {

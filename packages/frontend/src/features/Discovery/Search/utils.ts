@@ -1,5 +1,5 @@
-import { JSONObject, JSONValue } from "@gen3/core";
-import { SearchKV, SearchTerms } from "../types";
+import { JSONObject, JSONValue } from '@gen3/core';
+import { SearchKV, SearchTerms } from '../types';
 
 export const getFilterValuesByKey = (
   key: string,

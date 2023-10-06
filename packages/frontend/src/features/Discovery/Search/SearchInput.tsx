@@ -16,7 +16,7 @@ interface SearchInputProps {
 const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  console.log("searchTerm", searchTerm);
+  console.log('searchTerm', searchTerm);
   return (
     <div className="relative">
       <TextInput

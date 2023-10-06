@@ -17,6 +17,7 @@ import { LandingPageGetStaticProps } from './pages/Landing/data';
 
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
+import ExplorerPage from './pages/Explorer/Explorer';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -29,6 +30,7 @@ export {
   LandingPageGetStaticProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
+  ExplorerPage,
   TailwindConfig,
   Gen3Provider,
 };

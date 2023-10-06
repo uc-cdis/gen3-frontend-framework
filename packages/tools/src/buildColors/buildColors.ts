@@ -4,29 +4,29 @@ import { parseArgs } from 'node:util';
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
 
 const utility = {
-  link: "#155276",
-  success: "#318f71",
-  warning: "#d9a214",
-  error: "#8a0e2a",
-  emergency: "#6a0019",
-  info: "#1c5e86",
-  category1: "#1c5e86",
-  category2: "#d1541d",
-  category3: "#564990",
-  category4: "#4dbc97",
+  link: '#155276',
+  success: '#318f71',
+  warning: '#d9a214',
+  error: '#8a0e2a',
+  emergency: '#6a0019',
+  info: '#1c5e86',
+  category1: '#1c5e86',
+  category2: '#d1541d',
+  category3: '#564990',
+  category4: '#4dbc97',
 };
 
 const utilityContrast = {
-  link: "#f1f1f1",
-  success: "#000000",
-  warning: "#1b1b1b",
-  error: "#f1f1f1",
-  emergency: "#f1f1f1",
-  info: "#f1f1f1",
-  category1: "#f1f1f1",
-  category2: "#000000",
-  category3: "#f1f1f1",
-  category4: "#1b1b1b",
+  link: '#f1f1f1',
+  success: '#000000',
+  warning: '#1b1b1b',
+  error: '#f1f1f1',
+  emergency: '#f1f1f1',
+  info: '#f1f1f1',
+  category1: '#f1f1f1',
+  category2: '#000000',
+  category3: '#f1f1f1',
+  category4: '#1b1b1b',
 };
 
 const main = () => {
@@ -76,7 +76,7 @@ const main = () => {
   });
 
   if (!existsSync(themeFile)) {
-    console.log("No themefile found. Please provide a themefile with '-t'.");
+    console.log('No themefile found. Please provide a themefile with \'-t\'.');
     return;
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });

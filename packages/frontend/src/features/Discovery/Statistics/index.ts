@@ -1,7 +1,7 @@
 import {
   type SummaryStatisticsConfig,
   type StatisticsDataResponse,
-} from "./types";
+} from './types';
 
 export {
   type SummaryStatisticsConfig,

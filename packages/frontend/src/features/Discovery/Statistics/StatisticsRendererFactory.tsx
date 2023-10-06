@@ -1,5 +1,5 @@
 import { RenderFactoryTypedInstance } from './RendererFactory';
-import { Stack, StackProps, Text } from "@mantine/core";
+import { Stack, StackProps, Text } from '@mantine/core';
 
 interface StatisticRendererProps extends StackProps  {
   value: string;

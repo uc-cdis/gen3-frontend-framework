@@ -14,3 +14,12 @@ export interface JSONObject {
   [k: string]: JSONValue;
 }
 export type JSONArray = Array<JSONValue>;
+
+export interface HistogramData  {
+  key: string | [number, number];
+  count: number;
+}
+
+export type HistogramDataArray = Array<HistogramData>;
+
+export type AggregationsData = Record<string, HistogramDataArray>;
