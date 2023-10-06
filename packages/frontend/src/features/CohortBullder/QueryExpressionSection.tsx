@@ -33,7 +33,7 @@ const MAX_COLLAPSED_ROWS = 3;
 interface CollapsedStateReducerAction {
   type: 'expand' | 'collapse' | 'clear' | 'init' | 'expandAll' | 'collapseAll';
   cohortId: string;
-  field: string;
+  field?: string;
 }
 
 const reducer = (
@@ -47,16 +47,27 @@ const reducer = (
         [action.cohortId]: {},
       };
     case 'expand':
+      if (action.field) {
+        return {
+          ...state,
+          [action.cohortId]: { ...state[action.cohortId], [action.field]: true },
+        };
+      } else
       return {
         ...state,
-        [action.cohortId]: { ...state[action.cohortId], [action.field]: true },
+        [action.cohortId]: { ...state[action.cohortId] },
       };
     case 'collapse':
+      if (action.field)
       return {
         ...state,
         [action.cohortId]: { ...state[action.cohortId], [action.field]: false },
       };
-
+      else
+        return {
+          ...state,
+          [action.cohortId]: { ...state[action.cohortId] },
+        };
     case 'expandAll':
       return {
         ...state,
@@ -93,7 +104,7 @@ interface QueryExpressionSectionProps {
 export const QueryExpressionsExpandedContext =
   React.createContext<
     [Record<string, boolean>, (action: CollapsedStateReducerAction) => void]
-  >("default");
+  >([{}, () => null]);
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,

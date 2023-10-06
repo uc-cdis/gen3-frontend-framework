@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef, ReactElement } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { usePrevious, fieldNameToTitle } from '@gen3/core';
 
 import {

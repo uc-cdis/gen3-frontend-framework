@@ -1,5 +1,10 @@
 'use client';
-import React, { useCallback, useEffect, useMemo, useState, ReactNode } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   type FacetDefinition,
   type CohortPanelConfig,
@@ -7,30 +12,31 @@ import {
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
-  FacetType, extractEnumFilterValue,
-  CoreState
+  FacetType,
+  extractEnumFilterValue,
+  CoreState,
+  TabConfig
 } from '@gen3/core';
 
 import {
-  classifyFacets, extractRangeValues,
+  classifyFacets,
+  extractRangeValues,
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
   useGetFacetFilters,
-  useUpdateFilters
+  useUpdateFilters,
 } from '../../components/facets/utils';
-import {
-  useClearFilters,
-} from '../../components/facets/hooks';
+import { useClearFilters } from '../../components/facets/hooks';
 import { FacetRequiredHooks } from '../../components/facets/types';
 import { partial } from 'lodash';
 import { FiltersPanel } from './FiltersPanel';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
-import ExplorerTable from '../../components/table/ExplorerTable';
+import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import { Tabs } from '@mantine/core';
-import { TabConfig } from './types';
+;
 
 export const CohortPanel = ({
   guppyConfig,
@@ -50,7 +56,7 @@ export const CohortPanel = ({
     Record<string, SummaryChart>
   >({});
 
-  const cohortFilters = useCoreSelector((state : CoreState) =>
+  const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
 
@@ -139,14 +145,15 @@ export const CohortPanel = ({
           variant="pills"
           orientation="vertical"
           keepMounted={false}
-          defaultValue={filters?.tabs[0].title ?? "Filters"}
+          defaultValue={filters?.tabs[0].title ?? 'Filters'}
         >
           <Tabs.List>
-            {filters?.tabs.map((tab : TabConfig) : ReactNode  => (
+            {filters?.tabs.map((tab: TabConfig) => {
+              return (
               <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
                 {tab.title}
               </Tabs.Tab>
-            ))}
+            );})}
           </Tabs.List>
 
           {filters?.tabs.map((tab: TabConfig) => {
@@ -190,7 +197,9 @@ export const CohortPanel = ({
             <div className="grid">
               <ExplorerTable index={index} tableConfig={table} />
             </div>
-          ) : false}
+          ) : (
+            false
+          )}
         </div>
       </div>
     </div>

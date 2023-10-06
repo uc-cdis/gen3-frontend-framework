@@ -5,8 +5,8 @@ import {
   selectIndexFilters,
   SummaryTable,
   useCoreSelector,
-  useGetRawDataAndTotalCountsQuery,
-} from '@gen3/core';
+  useGetRawDataAndTotalCountsQuery
+} from "@gen3/core";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -35,25 +35,26 @@ const ExplorerTable: React.FC<ExplorerTableProps> = ({
   const cols = useMemo(() => {
     // setup table columns at the same time
     // TODO: refactor to support more complex table configs
-    const cols = tableConfig.fields.map((field) => {
-      const columnDef = tableConfig.columns?.[field];
-      return {
+    const cols = tableConfig.fields.reduce((acc, field) => {
+      if (tableConfig.columns?.[field] === undefined)
+        return acc;
+      const columnDef = tableConfig.columns[field];
+      return [...acc, {
         field: field,
         accessorKey: field as never,
-        header: columnDef?.title ?? fieldNameToTitle(field),
-        accessorFn: columnDef?.accessorPath
+        header: columnDef.title ?? fieldNameToTitle(field),
+        accessorFn: columnDef.accessorPath
           ? jsonPathAccessor(columnDef.accessorPath)
           : undefined,
-        Cell: columnDef?.type
+        Cell: columnDef.type
           ? TableCellRenderer(
-              columnDef?.type,
-              columnDef?.cellRenderFunction ?? 'default',
-              columnDef?.params,
+              columnDef.type,
+              columnDef.cellRenderFunction ?? 'default',
             )
           : undefined,
-        size: columnDef?.width,
-      };
-    });
+        size: columnDef.width,
+      }];
+    }, [] as any[]);
     return cols;
   }, [tableConfig]);
 

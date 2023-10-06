@@ -23,7 +23,7 @@ export const FiltersPanel = ({
         return createFacetCard(
           facetDefinition,
             valueLabel,
-          dataFunctions[facetDefinition.type as string],
+          dataFunctions[facetDefinition.type],
           'filters-panel',
           undefined,
           false,

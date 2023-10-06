@@ -83,7 +83,7 @@ const RangeFacet: React.FC<RangeFacetCardProps> = ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-}: RangeFacetCardProps) => {
+}) => {
   const { data, rangeFilters, isSuccess } = dataHooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
@@ -99,7 +99,7 @@ const RangeFacet: React.FC<RangeFacetCardProps> = ({
       to: maximum,
     });
     clearRangeFilterFromCohort(field);
-  }, [field]);
+  }, [clearRangeFilterFromCohort, field, maximum, minimum]);
 
   const updateRangeFilter = dataHooks.useUpdateFacetFilters();
   const updateFilters = useCallback(
@@ -111,7 +111,7 @@ const RangeFacet: React.FC<RangeFacetCardProps> = ({
         to: to,
       });
     },
-    [field],
+    [field, updateRangeFilter],
   );
 
   return (
