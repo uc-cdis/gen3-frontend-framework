@@ -4,11 +4,8 @@ import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 
-export interface CohortBuilderProps {
-  explorerConfig: CohortBuilderConfiguration;
-}
-
-export const CohortBuilder = ({ explorerConfig }: CohortBuilderProps) => {
+export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
+  console.log("CohortBuilder.tsx: CohortBuilder: cohortBuilderConfig: ", explorerConfig) ;
   return (
     <div>
       <Tabs
@@ -17,9 +14,9 @@ export const CohortBuilder = ({ explorerConfig }: CohortBuilderProps) => {
                 tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
             }}
             keepMounted={false}
-            defaultValue={explorerConfig.explorerConfig[0].tabTitle}>
+            defaultValue={explorerConfig[0].tabTitle}>
         <Tabs.List>
-          {explorerConfig.explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          {explorerConfig.map((panelConfig: CohortPanelConfig) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -29,7 +26,7 @@ export const CohortBuilder = ({ explorerConfig }: CohortBuilderProps) => {
           ))}
         </Tabs.List>
 
-        {explorerConfig.explorerConfig.map((panelConfig: CohortPanelConfig) => (
+        {explorerConfig.map((panelConfig: CohortPanelConfig) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}

@@ -1,7 +1,8 @@
 
-import { CohortBuilder, type CohortBuilderProps } from "./CohortBuilder";
+import { CohortBuilder} from "./CohortBuilder";
+import {type CohortBuilderConfiguration } from './types';
 
 export {
   CohortBuilder,
-  type CohortBuilderProps
+  type CohortBuilderConfiguration
 };

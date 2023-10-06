@@ -1,16 +1,16 @@
 import React from 'react';
-import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
-import { CohortBuilder  } from '../../features/CohortBuilder';
-import { ExplorerPageProps} from "./types";
+import { NavPageLayout } from '../../features/Navigation';
+import { CohortBuilder } from '../../features/CohortBuilder';
+import { ExplorerPageProps } from './types';
 
 const ExplorerPage = ({
   headerProps,
   footerProps,
-                        explorerConfig,
+  explorerConfig,
 }: ExplorerPageProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <CohortBuilder explorerConfig={explorerConfig}/>
+      <CohortBuilder explorerConfig={explorerConfig} />
     </NavPageLayout>
   );
 };
