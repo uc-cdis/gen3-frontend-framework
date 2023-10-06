@@ -5,7 +5,6 @@ import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 
 export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
-  console.log("CohortBuilder.tsx: CohortBuilder: cohortBuilderConfig: ", explorerConfig) ;
   return (
     <div>
       <Tabs
