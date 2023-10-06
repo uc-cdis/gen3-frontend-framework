@@ -1,13 +1,15 @@
+import React from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 
-import ColorTheme from '../../features/Theme/ColorTheme';
-
-const ColorThemePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
+const ExplorerPage = ({
+  headerProps,
+  footerProps,
+}: NavPageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-
+      <div></div>
     </NavPageLayout>
   );
 };
 
-export default ColorThemePage;
+export default ExplorerPage;

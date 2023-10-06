@@ -1,5 +1,6 @@
 export * from './features/Navigation';
 export * from './features/Discovery';
+
 export * from './features/Login';
 export * from './components/Profile';
 export * from './utils/';
@@ -15,6 +16,9 @@ import { QueryPageGetServerSideProps } from './pages/Query/data';
 import LandingPage from './pages/Landing/Landing';
 import { LandingPageGetStaticProps } from './pages/Landing/data';
 
+import ExplorerPage from './pages/Explorer/Explorer';
+import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
+
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
 
@@ -29,6 +33,8 @@ export {
   LandingPageGetStaticProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
+  ExplorerPage,
+  ExplorerPageGetServerSideProps,
   TailwindConfig,
   Gen3Provider,
 };
