@@ -1,18 +1,15 @@
 import React from 'react';
-import { NavPageLayout, NavPageLayoutProps } from "../../features/Navigation";
-import { CohortBuilder } from '../../features/CohortBullder/CohortBuilder';
+import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 
-
-const CohortBuilderPage = ({
+const ExplorerPage = ({
   headerProps,
   footerProps,
 }: NavPageLayoutProps): JSX.Element => {
-
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <CohortBuilder  />
+      <div></div>
     </NavPageLayout>
   );
 };
 
-export default CohortBuilderPage;
+export default ExplorerPage;

@@ -15,9 +15,11 @@ import { QueryPageGetServerSideProps } from './pages/Query/data';
 import LandingPage from './pages/Landing/Landing';
 import { LandingPageGetStaticProps } from './pages/Landing/data';
 
+import ExplorerPage from './pages/Explorer/Explorer';
+import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
+
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
-import ExplorerPage from './pages/Explorer/Explorer';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -31,6 +33,7 @@ export {
   ColorThemePage,
   ColorThemePageGetServerSideProps,
   ExplorerPage,
+  ExplorerPageGetServerSideProps,
   TailwindConfig,
   Gen3Provider,
 };
