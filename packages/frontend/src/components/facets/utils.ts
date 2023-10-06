@@ -1,14 +1,12 @@
 import {
   EnumFilterValue,
   FacetDefinition,
-  FieldToName,
   HistogramData,
   HistogramDataArray,
   Includes,
   Operation,
   selectIndexedFilterByName,
   isOperationWithField,
-  TabConfig,
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
@@ -17,6 +15,8 @@ import {
 } from '@gen3/core';
 import {ClearFacetFunction, FromToRange, UpdateFacetFilterFunction,} from './types';
 import {isArray} from 'lodash';
+import {TabConfig} from '../../features/CohortBuilder/types';
+import { FieldToName } from './types';
 
 export const getAllFieldsFromFilterConfigs = (
   filterTabConfigs: ReadonlyArray<TabConfig>

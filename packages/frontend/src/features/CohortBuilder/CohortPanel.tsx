@@ -7,16 +7,16 @@ import React, {
 } from 'react';
 import {
   type FacetDefinition,
-  type CohortPanelConfig,
-  type SummaryChart,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
   FacetType,
   extractEnumFilterValue,
   CoreState,
-  TabConfig
 } from '@gen3/core';
+
+import { type CohortPanelConfig, type TabConfig } from './types';
+import { type SummaryChart} from "../../components/charts/types";
 
 import {
   classifyFacets,

@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import {
   fieldNameToTitle,
   selectIndexFilters,
-  SummaryTable,
   useCoreSelector,
   useGetRawDataAndTotalCountsQuery
 } from "@gen3/core";
@@ -15,6 +14,8 @@ import {
 } from 'mantine-react-table';
 import { jsonPathAccessor } from './utils';
 import { TableCellRenderer } from './CellRenderers';
+
+import { SummaryTable } from "./types";
 
 interface ExplorerTableProps {
   index: string;

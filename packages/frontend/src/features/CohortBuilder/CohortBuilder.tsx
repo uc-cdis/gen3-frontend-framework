@@ -1,15 +1,14 @@
 'use client';
 import React from 'react';
-import { CohortPanelConfig, CohortBuilderConfiguration } from '@gen3/core';
-import midrcConfig from '../../components/data/midrc.json';
+import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 
-interface CohortBuilderProps {
-  config?: CohortBuilderConfiguration;
+export interface CohortBuilderProps {
+  explorerConfig: CohortBuilderConfiguration;
 }
 
-export const CohortBuilder = ({ config = midrcConfig as unknown as CohortBuilderConfiguration  }: CohortBuilderProps) => {
+export const CohortBuilder = ({ explorerConfig }: CohortBuilderProps) => {
   return (
     <div>
       <Tabs
@@ -18,9 +17,9 @@ export const CohortBuilder = ({ config = midrcConfig as unknown as CohortBuilder
                 tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
             }}
             keepMounted={false}
-            defaultValue={config.explorerConfig[0].tabTitle}>
+            defaultValue={explorerConfig.explorerConfig[0].tabTitle}>
         <Tabs.List>
-          {config.explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          {explorerConfig.explorerConfig.map((panelConfig: CohortPanelConfig) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -30,7 +29,7 @@ export const CohortBuilder = ({ config = midrcConfig as unknown as CohortBuilder
           ))}
         </Tabs.List>
 
-        {config.explorerConfig.map((panelConfig: CohortPanelConfig) => (
+        {explorerConfig.explorerConfig.map((panelConfig: CohortPanelConfig) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}

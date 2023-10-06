@@ -1,5 +1,6 @@
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './features/CohortBuilder';
 export * from './features/Login';
 export * from './components/Profile';
 export * from './utils/';

@@ -95,18 +95,20 @@ export const extractIndexAndFieldNameFromFullFieldName = (
   return [index, rest.join('.')];
 };
 
-const enumValueExtractorHandler = new EnumValueExtractorHandler();
-const valueExtractorHandler = new ValueExtractorHandler();
+
+
 
 export const isOperationWithField = (operation: OperationWithField | Operation): operation is OperationWithField => {
   return (operation as OperationWithField)?.field !== undefined;
 };
 export const extractFilterValue = (op: Operation): FilterValue => {
+  const valueExtractorHandler = new ValueExtractorHandler();
   return handleOperation<FilterValue>(valueExtractorHandler, op);
 };
 export const extractEnumFilterValue = (
   op: Operation
 ): EnumFilterValue => {
+  const enumValueExtractorHandler = new EnumValueExtractorHandler();
   const results = handleOperation<EnumFilterValue | undefined>(enumValueExtractorHandler, op);
   return results ?? [];
 };

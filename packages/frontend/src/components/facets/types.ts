@@ -1,5 +1,5 @@
-import { Operation, EnumFilterValue } from '@gen3/core';
-import {ComponentType} from 'react';
+import { EnumFilterValue, Operation } from "@gen3/core";
+import { ComponentType } from "react";
 
 export interface FacetCardProps<T extends FacetHooks = FacetHooks> {
     readonly field: string;
@@ -90,4 +90,9 @@ export interface FromToRangeValues<T> {
 export interface FromToRange<T> extends FromToRangeValues<T> {
     readonly fromOp?: RangeFromOp;
     readonly toOp?: RangeToOp;
+}
+
+export interface FieldToName {
+    readonly field: string;
+    readonly name: string;
 }

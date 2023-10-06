@@ -1,15 +1,13 @@
-import { useCallback } from 'react';
+
 import {
-  selectIndexFilters,
-  useCoreSelector,
-  useGetAggsQuery,
   fieldNameToTitle,
-  SummaryChart,
+
   AggregationsData
 } from '@gen3/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import { ActionIcon, Card, Grid, Group,Menu, Text,  LoadingOverlay } from '@mantine/core';
 import {createChart} from './createChart';
+import { SummaryChart } from './types';
 
 export type ChartDataConverter = (
   data: Record<string, number>
