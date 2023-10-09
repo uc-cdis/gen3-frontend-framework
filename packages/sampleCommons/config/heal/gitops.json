@@ -1,0 +1,744 @@
+{
+  "gaTrackingId": "UA-119127212-20",
+  "ddEnv": "healprod",
+  "homepageHref": "https://healdata.org",
+  "graphql": {
+    "boardCounts": [],
+    "chartCounts": [],
+    "projectDetails": "boardCounts"
+  },
+  "components": {
+    "appName": "HEAL Data Platform",
+    "metaDescription": "The HEAL Platform shares data from the NIH HEAL Initiative&reg; with the community of researchers, healthcare providers, community leaders, policy makers, and other stakeholders.",
+    "index": {
+      "introduction": {
+        "heading": "HEAL Data Platform",
+        "text": "The HEAL Data Platform supports the management, analysis and sharing of data for the research community.",
+        "link": "/submission"
+      },
+      "buttons": [
+        {
+          "name": "Discover Study Metadata",
+          "icon": "data-explore",
+          "body": "Discover Study Metadata",
+          "link": "/discovery",
+          "label": "Discover Metadata"
+        }
+      ]
+    },
+    "navigation": {
+      "title": "HEAL Data Platform",
+      "items": [
+        {
+          "icon": "query",
+          "link": "/discovery",
+          "name": "Discovery",
+          "tooltip": "Use free-text search and tags to rapidly find relevant studies, discover new datasets across multiple resources, and easily export selected data files to the analysis workspace."
+        },
+        {
+          "icon": "workspace",
+          "link": "/workspace",
+          "name": "Workspace",
+          "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
+        },
+        {
+          "name": "Example Analysis",
+          "link": "/resource-browser",
+          "icon": "bar-chart",
+          "tooltip": "Learn how to use Jupyter Notebooks to explore and visualize data available on the HEAL platform by running a static tutorial notebook, or use one of these examples as a launching point for your own custom analysis."
+        },
+        {
+          "icon": "profile",
+          "link": "/identity",
+          "name": "Profile",
+          "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
+        }
+      ]
+    },
+    "topBar": {
+      "items": [
+        {
+          "link": "https://healdata.org/documentation",
+          "name": "Help and Guidance"
+        }
+      ]
+    },
+    "login": {
+      "title": "HEAL Data Platform",
+      "subTitle": "Explore, Analyze, and Share Data",
+      "text": "This website supports the discovery, analysis and sharing of data and aims to support the accelerated discovery and development of therapies, diagnostic tests, and other technologies.",
+      "contact": "If you have any questions about access or the registration process, please contact ",
+      "email": "heal-support@datacommons.io",
+      "image": "/../../../../custom/sponsors/gitops-sponsors/heal_login_color_sides"
+    },
+    "categorical9Colors": [
+      "#99286B",
+      "#402264",
+      "#A1242E",
+      "#CF3626",
+      "#C2BACD",
+      "#E0C4D2",
+      "#E4BEB8",
+      "#F5D1D0",
+      "#F2F2F2"
+    ],
+    "categorical2Colors": [
+      "#99286B",
+      "#402264"
+    ],
+    "footer": {
+      "externalURL": "/external/footer"
+    }
+  },
+  "requiredCerts": [],
+  "featureFlags": {
+    "explorer": false,
+    "analysis": false,
+    "discovery": true,
+    "discoveryUseAggMDS": true,
+    "studyRegistration": true,
+    "workspaceRegistration": true
+  },
+  "discoveryConfig": {
+    "features": {
+      "advSearchFilters": {
+        "enabled": true,
+        "field": "advSearchFilters",
+        "displayName": "Filters",
+        "filters": [
+          {
+            "key": "Study Type"
+          },
+          {
+            "key": "Data Type"
+          },
+          {
+            "key": "Subject Type"
+          },
+          {
+            "key": "Gender"
+          },
+          {
+            "key": "Age"
+          }
+        ]
+      },
+      "tagsColumn": {
+        "enabled": false
+      },
+      "tagsInDescription": {
+        "enabled": true
+      },
+      "exportToWorkspace": {
+        "enabled": true,
+        "manifestFieldName": "__manifest",
+        "enableDownloadManifest": true,
+        "enableDownloadZip": true,
+        "downloadZipButtonText": "Download Zip",
+        "downloadManifestButtonText": "Download Manifest",
+        "documentationLinks": {
+          "gen3Client": "https://gen3.org/resources/user/gen3-client/",
+          "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
+        },
+        "verifyExternalLogins": true
+      },
+      "pageTitle": {
+        "enabled": false
+      },
+      "search": {
+        "searchBar": {
+          "enabled": true,
+          "inputSubtitle": "Examples: pain, buprenorphine, intervention",
+          "searchableTextFields": [
+            "study_metadata.minimal_info.study_description",
+            "institutions",
+            "investigators_name",
+            "study_metadata.minimal_info.study_name",
+            "project_number",
+            "study_metadata.metadata_location.nih_application_id",
+            "_hdp_uid",
+            "dataset_1_title",
+            "dataset_2_title",
+            "dataset_3_title",
+            "dataset_4_title",
+            "administering_ic",
+            "research_program",
+            "data_dictionary"
+          ]
+        },
+        "tagSearchDropdown": {
+          "enabled": true,
+          "collapsibleButtonText": "Data Repository"
+        }
+      },
+      "authorization": {
+        "enabled": true,
+        "columnTooltip": "Filter by data access",
+        "supportedValues": {
+          "accessible": {
+            "enabled": true,
+            "menuText": "Available"
+          },
+          "unaccessible": {
+            "enabled": false,
+            "menuText": "Not Accessible"
+          },
+          "pending": {
+            "enabled": true,
+            "menuText": "Pending"
+          },
+          "notAvailable": {
+            "enabled": true,
+            "menuText": "Not Available"
+          }
+        }
+      }
+    },
+    "aggregations": [
+      {
+        "name": "Studies",
+        "field": "_hdp_uid",
+        "type": "count"
+      }
+    ],
+    "tagSelector": {
+      "showTagCategoryNames": true
+    },
+    "studies": [],
+    "studyColumns": [
+      {
+        "name": "Project Title",
+        "field": "study_metadata.minimal_info.study_name",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      },
+      {
+        "name": "HEAL Research Focus Area",
+        "field": "research_focus_area",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      },
+      {
+        "name": "Investigator(s)",
+        "field": "investigators_name",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      }
+    ],
+    "studyPreviewField": {
+      "name": "Summary",
+      "field": "study_metadata.minimal_info.study_description",
+      "contentType": "string",
+      "includeName": false,
+      "includeIfNotAvailable": true,
+      "valueIfNotAvailable": "No summary has been provided for this study."
+    },
+    "detailView": {
+      "headerField": "study_metadata.minimal_info.study_name",
+      "tabs": [
+        {
+          "tabName": "Study",
+          "groups": [
+            {
+              "header": "Study Description Summary",
+              "fields": [
+                {
+                  "type": "block",
+                  "sourceField": "study_metadata.minimal_info.study_description"
+                }
+              ]
+            },
+            {
+              "header": "(Meta)Data Location",
+              "fields": [
+                {
+                  "type": "link",
+                  "label": "Repository URL",
+                  "sourceField": "distributor_repository_url"
+                }
+              ]
+            },
+            {
+              "header": "HEAL Research Initiatives",
+              "fields": [
+                {
+                  "type": "text",
+                  "label": "Project Number",
+                  "sourceField": "project_number",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Research Focus Area",
+                  "sourceField": "research_focus_area",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Research Program",
+                  "sourceField": "research_program",
+                  "default": "Not specified"
+                }
+              ]
+            },
+            {
+              "header": "Host Institution",
+              "fields": [
+                {
+                  "type": "text",
+                  "label": "Institution(s)",
+                  "sourceField": "institutions",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Investigator(s)",
+                  "sourceField": "investigators_name",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Administering IC(s)",
+                  "sourceField": "administering_ic",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Year Grant Awarded",
+                  "sourceField": "year_awarded",
+                  "default": "Not specified"
+                }
+              ]
+            },
+            {
+              "header": "Clinical Trial",
+              "fields": [
+                {
+                  "type": "text",
+                  "label": "Study Type",
+                  "sourceField": "study_type",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Study Name",
+                  "sourceField": "study_name_title",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "link",
+                  "label": "Study URL",
+                  "sourceField": "study_url",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Study Description",
+                  "sourceField": "study_description",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Number of Subjects",
+                  "sourceField": "subjects",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Number of Sites",
+                  "sourceField": "sites",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Clinical Trial ID",
+                  "sourceField": "study_metadata.metadata_location.clinical_trials_study_ID",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Protocol Name",
+                  "sourceField": "protocol_name",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset Description",
+                  "sourceField": "dataset_description",
+                  "default": "Not specified"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset Category",
+                  "sourceField": "dataset_category",
+                  "default": "Not specified"
+                }
+              ]
+            },
+            {
+              "header": "Study Characteristics",
+              "fields": [
+                {
+                  "type": "tags"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tabName": "Datasets",
+          "groups": [
+            {
+              "header": "Data Files",
+              "fields": [
+                {
+                  "type": "text",
+                  "label": "Dataset 1 - Title",
+                  "sourceField": "dataset_1_title"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 1 - Type",
+                  "sourceField": "dataset_1_type"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 1 - Description",
+                  "sourceField": "dataset_1_description"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 2 - Title",
+                  "sourceField": "dataset_2_title"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 2 - Type",
+                  "sourceField": "dataset_2_type"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 2 - Description",
+                  "sourceField": "dataset_2_description"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 3 - Title",
+                  "sourceField": "dataset_3_title"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 3 - Type",
+                  "sourceField": "dataset_3_type"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 3 - Description",
+                  "sourceField": "dataset_3_description"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 4 - Title",
+                  "sourceField": "dataset_4_title"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 4 - Type",
+                  "sourceField": "dataset_4_type"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 4 - Description",
+                  "sourceField": "dataset_4_description"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 5 - Title",
+                  "sourceField": "dataset_5_title"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 5 - Type",
+                  "sourceField": "dataset_5_type"
+                },
+                {
+                  "type": "text",
+                  "label": "Dataset 5 - Description",
+                  "sourceField": "dataset_5_description"
+                }
+              ]
+            },
+            {
+              "header": "Data Availability",
+              "fields": [
+                {
+                  "type": "text",
+                  "sourceField": "data_availability",
+                  "label": "Data Availability"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tabName": "Repositories",
+          "groups": [
+            {
+              "header": "Resources/Repositories",
+              "fields": [
+                {
+                  "label": "Repository URL",
+                  "sourceField": "repository_url",
+                  "type": "link"
+                },
+                {
+                  "label": "Repository Names",
+                  "sourceField": "study_metadata.metadata_location.data_repositories[*].repository_name",
+                  "type": "text"
+                },
+                {
+                  "label": "Repository Study IDs",
+                  "sourceField": "study_metadata.metadata_location.data_repositories[*].repository_study_ID",
+                  "type": "text"
+                },
+                {
+                  "label": "Repository Persistent IDs",
+                  "sourceField": "study_metadata.metadata_location.data_repositories[*].repository_persistent_ID",
+                  "type": "text"
+                },
+                {
+                  "type": "tags",
+                  "categories": [
+                    "Commons"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tabName": "Access",
+          "groups": [
+            {
+              "fields": [
+                {
+                  "type": "accessDescriptor"
+                }
+              ]
+            },
+            {
+              "header": "Study Access",
+              "fields": [
+                {
+                  "type": "text",
+                  "sourceField": "study_data_requires_access_request",
+                  "label": "Study Data Requires Access Request"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "tagsDisplayName": "Study Filters",
+    "tagColumnWidth": "500px",
+    "minimalFieldMapping": {
+      "authzField": "authz",
+      "tagsListFieldName": "tags",
+      "dataAvailabilityField": "data_availability",
+      "uid": "_hdp_uid"
+    },
+    "tagCategories": [
+      {
+        "name": "Study Setting",
+        "displayName": "Study Setting",
+        "color": "#532565",
+        "display": false
+      },
+      {
+        "name": "Subject Characteristics",
+        "displayName": "Subject Characteristics",
+        "color": "#982568",
+        "display": false
+      },
+      {
+        "name": "Study Design",
+        "displayName": "Study Design",
+        "color": "#981f32",
+        "display": false
+      },
+      {
+        "name": "Intervention/Treatment",
+        "displayName": "Intervention/Treatment",
+        "color": "#bf362e",
+        "display": false
+      },
+      {
+        "name": "Pain",
+        "color": "#e07c3e",
+        "display": false
+      },
+      {
+        "name": "Substance Use",
+        "displayName": "Substance Use",
+        "color": "#532565",
+        "display": false
+      },
+      {
+        "name": "Data Type",
+        "displayName": "Data Type",
+        "color": "#982568",
+        "display": false
+      },
+      {
+        "name": "Commons",
+        "displayName": "Data Resources",
+        "color": "#981f32",
+        "display": false
+      },
+      {
+        "name": "Other",
+        "color": "#bf362e",
+        "display": false
+      },
+      {
+        "name": "Data Repository",
+        "displayName": "Data Repository",
+        "color": "#bf362e",
+        "display": true
+      }
+    ]
+  },
+  "resourceBrowser": {
+    "title": "Static HEAL Jupyter Notebooks",
+    "public": true,
+    "description": "The Jupyter notebooks contained in this notebook viewer pull data from various sources to generate and output useful tables, charts, graphs, and models. Each notebook is static, meaning the data being used by the notebooks is not updated in real time. These notebooks are also available in the Gen3 Workspace.",
+    "resources": [
+      {
+        "title": "BACPAC Synthetic Data Analysis",
+        "description": "In this Jupyter notebook, we used synthetic data of the BACPAC study as an example to demonstrate how to navigate datasets within the workspace in HEAL and conduct data analysis using Python libraries.",
+        "link": "/dashboard/Public/notebooks/BACPAC_Synthetic_Data_Analysis.html",
+        "imageUrl": "/dashboard/Public/notebooks/BACPAC_Synthetic_Data_Analysis.png"
+      },
+      {
+        "title": "Monitoring The Future: 12th Grader Opiate Use - Part 1",
+        "description": "In this notebook we use a variety of machine learning methods to analyze patterns in 12th grader opiate use as reported in the Monitoring The Future survey results from 2019.",
+        "imageUrl": "/dashboard/Public/notebooks/Monitoring_The_Future_Part1.png",
+        "link": "/dashboard/Public/notebooks/Monitoring_The_Future_Part1.html"
+      },
+      {
+        "title": "Opioid Environment Toolkit And OEPS R",
+        "description": "In this R notebook, we used the Opioid Environment Policy Scan (OEPS) and the Opioid Environment Toolkit to characterize the multi-dimensional risk environment impacting opioid use.",
+        "link": "/dashboard/Public/notebooks/Opioid_Environment_Toolkit_And_OEPS_R.html",
+        "imageUrl": "/dashboard/Public/notebooks/Opioid_Environment_Toolkit_And_OEPS_R.png"
+      },
+      {
+        "title": "JCOIN Tracking Opioid Stigma",
+        "description": "In this Jupyter notebook, we used the JCOIN-MAARC (Justice Community Opioid Innovation Network - Methodology and Advanced Analytics Resource Center) Survey Core Survey Project 1/4 to track stigma related to Opioid Use Disorder (OUD) and public attitudes towards persons with OUD as well as how treatment of/for persons with OUD may impact the effect of OUD interventions.",
+        "link": "/dashboard/Public/notebooks/JCOIN_Tracking_Opioid_Stigma.html",
+        "imageUrl": "/dashboard/Public/notebooks/JCOIN_Tracking_Opioid_Stigma.png"
+      },
+      {
+        "title": "Opioid Prevalence And Overdoses",
+        "description": "In this Jupyter notebook, we used the CDC WONDER, DEA ARCOS, and PDAPS datasets to demonstate how multiple datasets may be utilized within the workspace in HEAL.",
+        "link": "/dashboard/Public/notebooks/Opioid_Prevalence_And_Overdoses.html",
+        "imageUrl": "/dashboard/Public/notebooks/Opioid_Prevalence_And_Overdoses.png"
+      },
+      {
+        "title": "Opioid Overdose Trajectories",
+        "description": "In this Jupyter notebook, we used the CDC WONDER dataset to explore opioid overdose death rate trajectories in the United States.",
+        "link": "/dashboard/Public/notebooks/Opioid_Overdose_Trajectories.html",
+        "imageUrl": "/dashboard/Public/notebooks/Opioid_Overdose_Trajectories.png"
+      },
+      {
+        "title": "JCOIN MOUD Accessibility Analysis",
+        "description": "In this Jupyter notebook, we used the data from the OEPS database to analyze the Medication for Opioid Use Disorder (MOUD) providers accessibility at state and county level across the United States",
+        "imageUrl": "/dashboard/Public/notebooks/jcoin_moud_analysis.png",
+        "link": "/dashboard/Public/notebooks/JCOIN-MOUD_accessibility_analysis_02092022.html"
+      },
+      {
+        "title": "Changes In Opioid Treatment Policy During COVID-19",
+        "description": "In this notebook we used data from NIDA-PDAPS and CDC WONDER mortality data to visualize the relationship between statewide changes in opioid treatment policy and opioid overdose mortality rates in 2020.",
+        "imageUrl": "/dashboard/Public/notebooks/VisualizingChangesInOpioidTreatmentPolicy.png",
+        "link": "/dashboard/Public/notebooks/VisualizingChangesInOpioidTreatmentPolicy.html"
+      },
+      {
+        "title": "Rates Of Opioid Overdose Deaths And COVID-19 In 2020",
+        "description": "In this notebook we examine correlations between statewide rates of opioid overdose deaths and COVID-19 cases and deaths.",
+        "imageUrl": "/dashboard/Public/notebooks/COVID-19_and_Opioids_part1.png",
+        "link": "/dashboard/Public/notebooks/COVID-19_and_Opioids_part1.html"
+      }
+    ]
+  },
+  "useArboristUI": true,
+  "showArboristAuthzOnProfile": true,
+  "showFenceAuthzOnProfile": false,
+  "showExternalLoginsOnProfile": true,
+  "componentToResourceMapping": {},
+  "stridesPortalURL": "https://healportal.org",
+  "registrationConfigs": {
+    "features": {
+      "studyRegistrationConfig": {
+        "studyRegistrationTrackingField": "registrant_username",
+        "studyRegistrationValidationField": "is_registered",
+        "studyRegistrationAccessCheckField": "registration_authz",
+        "studyRegistrationFormDisclaimerField": "Information provided on this page will be used for correspondence regarding your request and may be shared with the NIH and/or the HEAL Data Stewards",
+        "clinicalTrialFields": [
+          "NCTId",
+          "OfficialTitle",
+          "BriefTitle",
+          "Acronym",
+          "StudyType",
+          "OverallStatus",
+          "StartDate",
+          "StartDateType",
+          "CompletionDate",
+          "CompletionDateType",
+          "IsFDARegulatedDrug",
+          "IsFDARegulatedDevice",
+          "IsPPSD",
+          "BriefSummary",
+          "DetailedDescription",
+          "Condition",
+          "DesignAllocation",
+          "DesignPrimaryPurpose",
+          "Phase",
+          "DesignInterventionModel",
+          "EnrollmentCount",
+          "EnrollmentType",
+          "DesignObservationalModel",
+          "InterventionType",
+          "PrimaryOutcomeMeasure",
+          "SecondaryOutcomeMeasure",
+          "OtherOutcomeMeasure",
+          "Gender",
+          "GenderBased",
+          "MaximumAge",
+          "MinimumAge",
+          "IPDSharing",
+          "IPDSharingTimeFrame",
+          "IPDSharingAccessCriteria",
+          "IPDSharingURL",
+          "SeeAlsoLinkURL",
+          "AvailIPDURL",
+          "AvailIPDId",
+          "AvailIPDComment"
+        ],
+        "dataDictionarySubmissionBucket": "",
+        "dataDictionarySubmissionDisclaimerField": "All submitted data dictionaries will be available to public.",
+        "dataDictionaryField": "data_dictionaries"
+      },
+      "workspaceRegistrationConfig" : {
+        "workspacePolicyId": "workspace_strides_integrated",
+        "workspaceInfoMessage": "The HEAL workspace provides a standardized computational environment for accessing and analyzing data from HEAL studies. Please fill out this form to request access to the workspace and start computing!",
+        "successRedirect" : {
+          "link": "/discovery",
+          "text": "Go to Discovery Page"
+        }
+      }
+    },
+    "kayakoConfig": {
+      "kayakoDepartmentId": 21
+    }
+  }
+}

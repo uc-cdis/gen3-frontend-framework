@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
@@ -37,12 +37,22 @@ const Discovery = ({
     pageSize: 10,
   });
 
-  const [searchBarTerm, setSearchBarTerm] = useState<string>('');
+  const [searchBarTerm, setSearchBarTerm] = useState<string[]> ([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
       filters: {},
     });
+
+  const searchParam = useMemo(() => {
+    return {
+      keyword: {
+        operator: SearchCombination.and,
+        keywords: searchBarTerm,
+      },
+      advancedSearchTerms: advancedSearchTerms,
+    };
+  }, [searchBarTerm, advancedSearchTerms]);
 
   const { data, hits, isLoading, isFetching, isError, advancedSearchFilterValues } =
     dataHook({
@@ -50,13 +60,7 @@ const Discovery = ({
         offset: pagination.pageIndex * pagination.pageSize,
         pageSize: pagination.pageSize,
       },
-      searchTerms: {
-        keyword: {
-          operator: SearchCombination.and,
-          keywords: [searchBarTerm],
-        },
-        advancedSearchTerms: advancedSearchTerms,
-      },
+      searchTerms:searchParam,
       discoveryConfig,
     });
 
@@ -75,7 +79,7 @@ const Discovery = ({
             <div className="flex-grow"></div>
             <div className="w-full">
               <SearchInput
-                searchChanged={setSearchBarTerm}
+                searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
                   discoveryConfig?.features?.search?.searchBar?.inputSubtitle
                 }

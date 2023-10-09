@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
   JSONObject,
@@ -6,7 +6,7 @@ import {
   useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
-import MiniSearch from 'minisearch';
+import MiniSearch  from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoveryDataLoaderProps,
@@ -19,6 +19,10 @@ import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
 
+// TODO remove after debugging
+// import { reactWhatChanged as RWC } from 'react-what-changed';
+
+
 interface QueryType {
   term: string;
   fields: string[];
@@ -26,10 +30,18 @@ interface QueryType {
 }
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
-  return {
-    combineWith: 'AND',
-    queries: terms.keyword.keywords,
-  };
+  const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ??[];
+  const res = keywords.join(" ");
+  // const res =  {
+  //   combineWith: 'AND',
+  //   queries: keywords ?? [],
+  // };
+
+
+
+  console.log("buildMiniSearchKeywordQuery: res:", res);
+
+  return res;
 
   // TODO: see if minisearch can handle this
   // const a = {
@@ -174,6 +186,7 @@ const useSearchMetadata = ({
   const {
     search,
     searchResults,
+    rawResults,
     addAll,
     removeAll,
     clearSearch,
@@ -186,22 +199,22 @@ const useSearchMetadata = ({
     processTerm: (term) => suffixes(term, 3),
     searchOptions: {
       processTerm: MiniSearch.getDefault('processTerm'),
-      prefix: true,
     },
   });
 
   const isSearching = hasSearchTerms(searchTerms);
 
-  const clearSearchTerms = () => {
+  const clearSearchTerms = useCallback(() =>{
     clearSearch();
     clearSuggestions();
-  };
+  }, [clearSearch, clearSuggestions]);
 
   useEffect(() => {
     // we have the data, so set it and build the search index and get the advanced search filter values
     if (mdsData && isSuccess) {
       removeAll();
       addAll(mdsData);
+      console.log("mds data", mdsData);
     }
   }, [addAll, isSuccess, mdsData, removeAll]);
 
@@ -209,11 +222,11 @@ const useSearchMetadata = ({
     if (mdsData && isSearching) {
       search(buildMiniSearchKeywordQuery(searchTerms));
     }
-  }, [mdsData, search, searchTerms, isSearching]);
+  }, [isSearching, mdsData, search, searchTerms]);
 
   useEffect(() => {
     const filterKeywordSearchResults = () => {
-      return searchResults && searchResults.length > 0
+      return searchResults
         ? searchResults
         : mdsData;
     };
@@ -233,6 +246,8 @@ const useSearchMetadata = ({
     searchResults,
     searchTerms.advancedSearchTerms,
   ]);
+
+  console.log("searchedData", searchedData, rawResults);
 
   return {
     searchedData: isSearching ? searchedData : mdsData,
@@ -351,7 +366,7 @@ export const useLoadAllData = ({
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
-    advancedSearchFilters: advancedSearchTerms,
+    advancedSearchFilters: discoveryConfig.features.advSearchFilters,
     uidField,
   });
 

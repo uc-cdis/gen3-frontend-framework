@@ -4,7 +4,7 @@ import { StatisticsDataResponse, SummaryStatisticsConfig } from "./Statistics/ty
 import { AdvancedSearchTerms, SearchCombination } from "./Search/types";
 
 interface KeywordSearch {
-  keywords: string[];
+  keywords?: string[];
   operator: SearchCombination;
 }
 
