@@ -102,6 +102,7 @@
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/jest": "^29.2.3",
+    "@types/js-search": "^1.4.1",
     "@types/lodash": "^4.14.191",
     "@types/mdx": "^2.0.3",
     "@types/node": "18.15.5",

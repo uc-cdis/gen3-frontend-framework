@@ -11,6 +11,7 @@ interface KeywordSearch {
 export interface SearchTerms {
   keyword: KeywordSearch;
   advancedSearchTerms: AdvancedSearchTerms;
+  selectedTags: Record<string, boolean>;
 }
 
 export interface DiscoveryDataLoaderProps extends Record<string, any>  {
@@ -191,13 +192,25 @@ export interface ExportToCart {
   manifestFieldName?: string;
 }
 
+export interface DataAuthorization {
+  columnTooltip: string
+  supportedValues: any
+  enabled: boolean
+}
+
+export interface AccessFilters  {
+  [accessLevel: number]: boolean
+}
+
+
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
   features: {
     advSearchFilters: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
-    search?: SearchConfig
+    search?: SearchConfig;
+    authorization: Partial<DataAuthorization>;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];

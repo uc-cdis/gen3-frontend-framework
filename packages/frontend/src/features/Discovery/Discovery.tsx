@@ -51,6 +51,7 @@ const Discovery = ({
         keywords: searchBarTerm,
       },
       advancedSearchTerms: advancedSearchTerms,
+      selectedTags: {}
     };
   }, [searchBarTerm, advancedSearchTerms]);
 
@@ -79,7 +80,7 @@ const Discovery = ({
             <div className="flex-grow"></div>
             <div className="w-full">
               <SearchInput
-                searchChanged={(v) => setSearchBarTerm(v.split(' '))}
+                searchChanged={(v) => setSearchBarTerm([v])}
                 placeholder={
                   discoveryConfig?.features?.search?.searchBar?.inputSubtitle
                 }

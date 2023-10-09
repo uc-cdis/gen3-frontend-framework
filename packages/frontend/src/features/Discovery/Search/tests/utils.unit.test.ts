@@ -16,6 +16,7 @@ describe('hasSearchTerms', () => {
           operation: 'AND' as SearchCombination,
           filters: {},
         },
+        selectedTags: {},
       };
       const result = hasSearchTerms(searchTerms);
       expect(result).toBe(true);
@@ -41,6 +42,7 @@ describe('hasSearchTerms', () => {
             },
           },
         },
+        selectedTags: {},
       };
       const result = hasSearchTerms(searchTerms);
       expect(result).toBe(true);
@@ -66,6 +68,7 @@ describe('hasSearchTerms', () => {
             },
           },
         },
+        selectedTags: {},
       };
       const result = hasSearchTerms(searchTerms);
       expect(result).toBe(true);
@@ -82,6 +85,7 @@ describe('hasSearchTerms', () => {
           operation: 'AND' as SearchCombination,
           filters: {},
         },
+        selectedTags: {},
       };
       const result = hasSearchTerms(searchTerms);
       expect(result).toBe(false);

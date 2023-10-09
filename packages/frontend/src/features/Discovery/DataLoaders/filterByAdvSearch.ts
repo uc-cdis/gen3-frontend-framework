@@ -24,10 +24,8 @@ const filterByAdvSearch = (
       if (Object.values(selectedValues).length === 0) {
         return true;
       }
-      if (Object.values(selectedValues).every((selected) => !selected)) {
-        return true;
-      }
-      return false;
+      return Object.values(selectedValues).every((selected) => !selected);
+
     },
   );
 
