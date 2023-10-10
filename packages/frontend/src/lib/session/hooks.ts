@@ -16,11 +16,6 @@ export const useAuthSession = (): AuthTokenData => {
     '/api/auth/sessionToken',
     fetcher,
   );
-  console.log(
-    'useAuthSession',
-    sessionToken,
-    typeof window === 'undefined' ? 'server' : 'client',
-  );
   return error || sessionToken === undefined
     ? { status: 'error' }
     : sessionToken;

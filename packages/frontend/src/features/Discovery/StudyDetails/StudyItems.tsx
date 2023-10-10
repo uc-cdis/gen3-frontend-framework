@@ -101,7 +101,6 @@ const accessDescriptor = (
   _: string | undefined,
   resource: DiscoveryResource,
 ) => {
-  console.log('accessDescriptor: resource: ', resource);
   if (resource[accessibleFieldName] === AccessLevel.ACCESSIBLE) {
     return <Alert color="green">You have access to this study.</Alert>;
   }
@@ -180,11 +179,9 @@ export const createFieldRendererElementOrig = (
   } else {
     switch (field.type) {
       case 'accessDescriptor': {
-        console.log('accessDescriptor: resource: ', resource);
         return accessDescriptor(field.label, resource);
       }
       case 'tags': {
-        console.log('tags: resource: ', resource);
         return renderDetailTags(field, resource);
       }
     }
@@ -209,11 +206,9 @@ export const createFieldRendererElement = (
   } else {
     switch (field.type) {
       case 'accessDescriptor': {
-        console.log('accessDescriptor: resource: ', resource);
         return studyFieldRenderer(field.label, resource);
       }
       case 'tags': {
-        console.log('tags: resource: ', resource);
         return studyFieldRenderer(field, resource);
       }
     }

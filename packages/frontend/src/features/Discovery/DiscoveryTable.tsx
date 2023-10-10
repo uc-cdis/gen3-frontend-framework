@@ -15,6 +15,7 @@ import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject, MetadataResponse } from "@gen3/core";
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
+import { DataRequestStatus } from "./types";
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -24,9 +25,7 @@ const extractCellValue =
 interface DiscoveryTableProps {
   data: JSONObject[];
   hits: number,
-  isLoading: boolean;
-  isFetching: boolean;
-  isError: boolean;
+  dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;
@@ -36,15 +35,14 @@ interface DiscoveryTableProps {
 const DiscoveryTable = ({
   data,
   hits,
-  isError,
-  isLoading,
-  isFetching,
+  dataRequestStatus,
   setSorting,
   setPagination,
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
+  const { isLoading, isError, isFetching } = dataRequestStatus;
 
   const cols = useMemo(() => {
     const studyColumns = config.studyColumns ?? [];

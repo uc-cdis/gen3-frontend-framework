@@ -1,20 +1,13 @@
-import React, { ReactNode } from 'react';
-import { SummaryStatisticsConfig } from './types';
+import React from 'react';
+import { SummaryStatistics } from './types';
 import StatisticRendererFactory from './StatisticsRendererFactory';
 
-
 // TODO remove this once stats are working
-const SAMPLE_VALUES = [
-  1023,
-  2392
-];
+const SAMPLE_VALUES = [1023, 2392];
 
-
-const BuildSummaryStatisticPanel = (
-  aggregations: SummaryStatisticsConfig[] = [],
-) => {
-  return aggregations.map((aggregation, idx) => {
-    const { name, field, type } = aggregation;
+const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
+  return summaries.map((summary, idx) => {
+    const { name, field, type } = summary;
     if (name && field && type) {
       // TODO replace 'default' with a real value
       const element = StatisticRendererFactory().getRenderer(
@@ -23,26 +16,24 @@ const BuildSummaryStatisticPanel = (
       );
 
       return element({
-        value: SAMPLE_VALUES[idx].toString(),
+        value: summary.value ?? "N/A",
         label: name,
         key: `stats-item-${name}-${field}-${type}`,
-        className:
-          'px-5 border-accent-darker first:border-r-2 last:border-right-0',
+        className: summaries.length > 1 ?
+          'px-5 border-accent-darker first:border-r-2 last:border-right-0' : 'px-5'
       });
     }
   });
 };
 
 interface SummaryStatisticPanelProps {
-  aggregations: SummaryStatisticsConfig[];
+  summaries: SummaryStatistics;
 }
 
-const SummaryStatisticPanel = ({
-  aggregations,
-}: SummaryStatisticPanelProps) => {
+const SummaryStatisticPanel = ({ summaries }: SummaryStatisticPanelProps) => {
   return (
     <div className="flex items-center">
-      {BuildSummaryStatisticPanel(aggregations)}
+      {BuildSummaryStatisticPanel(summaries)}
     </div>
   );
 };

@@ -1,25 +1,25 @@
-import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
-import { type TenStringArray } from './types';
+import { create10ColorAccessibleContrast, create10ColorPallet } from "./colors";
+import { type TenStringArray } from "./types";
 
 export { create10ColorPallet, create10ColorAccessibleContrast };
 export { type TenStringArray };
-/**
- * @returns {string} formatted time
- */
-export function now(): number {
-  return Math.floor(Date.now() / 1000);
-}
 
-// hash function for a string
-// https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
-export function hashCode(str: string) {
+import { getCurrentUnixTimestamp, unixTimeToString } from "./time";
+export { getCurrentUnixTimestamp, unixTimeToString };
+
+// separate function for hashing logic
+function hashString(str: string) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
   return hash;
 }
-// convert unix timestamp to date time string
-export function unixTimeToString(unixTime: number): string {
-  return new Date(unixTime * 1000).toLocaleString();
+
+// hash function for a string
+export function hashCode(str: string) {
+  if (str === null || str === '') {
+    return 0;
+  }
+  return hashString(str);
 }

@@ -2,8 +2,14 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import { JSONObject } from '@gen3/core';
-import { SummaryStatisticsConfig, StatisticsDataResponse } from '../Statistics';
+import { SummaryStatisticsConfig } from '../../Statistics';
+import { SummaryStatistics } from "../../Statistics/types";
 
+/**
+ * Process a summary statistic using the provided data and summary config
+ * @param {JSONObject }data
+ * @param {SummaryStatisticsConfig} summary config from Discovery Config
+ */
 export const processSummary = (
   data: JSONObject[],
   summary: SummaryStatisticsConfig,
@@ -45,13 +51,12 @@ export const processAllSummaries = (
   }
 
   return summaries.reduce((acc,summary) => {
-    return {
+    return [
       ...acc,
-      [summary.name] :
       {
         ...summary,
         value: processSummary(data, summary),
       }
-    };
-  }, {} as Record<string, StatisticsDataResponse>);
+    ];
+  }, [] as SummaryStatistics);
 };

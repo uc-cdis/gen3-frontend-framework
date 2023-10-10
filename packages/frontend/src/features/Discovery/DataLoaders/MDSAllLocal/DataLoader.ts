@@ -8,16 +8,16 @@ import {
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
-  AdvancedSearchFilters,
+  AdvancedSearchFilters, DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
-  SearchTerms,
-} from '../types';
+  SearchTerms
+} from "../../types";
 import filterByAdvSearch from './filterByAdvSearch';
-import { getFilterValuesByKey, hasSearchTerms } from '../Search/utils';
+import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import { processAllSummaries } from './utils';
-import { SummaryStatisticsConfig } from '../Statistics';
-import { SummaryStatistics } from '../Statistics/types';
+import { SummaryStatisticsConfig } from '../../Statistics';
+import { SummaryStatistics, SummaryStatisticsDisplayData } from "../../Statistics/types";
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -30,14 +30,12 @@ interface QueryType {
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
-  console.log('terms', terms);
+  // TODO See if minisearch can handle this
   // const res = keywords.join(" ");
   // const res =  {
   //   combineWith: 'AND',
   //   queries: keywords ?? [],
   // };
-
-  console.log('buildMiniSearchKeywordQuery: resxxxx:', keywords[0]);
 
   return keywords[0];
 
@@ -342,7 +340,7 @@ const useGetSummaryStatistics = ({
   aggregationConfig,
 }: SummaryStatisticsHookProps) => {
   const [summaryStatistics, setSummaryStatistics] = useState<SummaryStatistics>(
-    {},
+    [],
   );
 
   useEffect(() => {
@@ -362,7 +360,7 @@ export const useLoadAllData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) => {
+}: DiscoveryDataLoaderProps) : DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const {
@@ -398,21 +396,23 @@ export const useLoadAllData = ({
   });
 
   const { summaryStatistics } = useGetSummaryStatistics({
-    data: paginatedData,
+    data: searchedData,
     aggregationConfig: discoveryConfig?.aggregations,
   });
 
   return {
     data: paginatedData,
     hits: searchedData.length ?? -1,
-    clearSearchTerms,
+    clearSearch: clearSearchTerms,
     suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
-    isUninitialized,
-    isFetching,
-    isLoading,
-    isSuccess,
-    isError,
+    dataRequestStatus: {
+      isUninitialized,
+      isFetching,
+      isLoading,
+      isSuccess,
+      isError,
+    }
   };
 };

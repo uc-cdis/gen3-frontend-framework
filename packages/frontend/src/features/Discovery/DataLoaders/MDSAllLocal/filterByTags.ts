@@ -1,4 +1,4 @@
-import { DiscoveryConfig, isTagInfoArray, TagInfo } from '../types';
+import { DiscoveryConfig, isTagInfoArray, TagInfo } from '../../types';
 import { JSONObject } from '@gen3/core';
 ;
 

@@ -9,7 +9,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllData } from './DataLoaders/RefactoredDataLoader';
+import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 
@@ -53,14 +53,15 @@ const Discovery = ({
     };
   }, [searchBarTerm, advancedSearchTerms]);
 
+  // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
+
   const {
     data,
     hits,
-    isLoading,
-    isFetching,
-    isError,
+    dataRequestStatus,
     advancedSearchFilterValues,
     suggestions,
+    summaryStatistics
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -80,7 +81,7 @@ const Discovery = ({
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
           <div className="flex items-center m-2">
             <SummaryStatisticPanel
-              aggregations={discoveryConfig.aggregations}
+              summaries={summaryStatistics}
             />
             <div className="flex-grow"></div>
             <div className="w-full">
@@ -88,7 +89,7 @@ const Discovery = ({
                 suggestions={suggestions}
                 searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
-                  discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                  discoveryConfig?.features?.search?.searchBar?.placeholder ?? 'Search...'
                 }
                 label={
                   discoveryConfig?.features?.search?.searchBar?.inputSubtitle
@@ -115,9 +116,7 @@ const Discovery = ({
               <DiscoveryTable
                 data={data}
                 hits={hits}
-                isLoading={isLoading}
-                isFetching={isFetching}
-                isError={isError}
+                dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}
                 pagination={pagination}

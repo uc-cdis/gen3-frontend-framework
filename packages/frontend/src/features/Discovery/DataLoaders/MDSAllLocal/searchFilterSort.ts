@@ -1,7 +1,7 @@
 import filterByTags from './filterByTags';
 import filterByAdvSearch from './filterByAdvSearch';
-import { DiscoveryConfig,  SearchTerms, AccessFilters } from "../types";
-import { AccessSortDirection, AdvancedSearchTerms } from "../Search/types";
+import { DiscoveryConfig,  SearchTerms, AccessFilters } from "../../types";
+import { AccessSortDirection, AdvancedSearchTerms } from "../../Search/types";
 import { JSONObject } from "@gen3/core";
 
 ;
@@ -31,10 +31,8 @@ const searchFilterSort = (parametersForDoSearchFilterSort: ParametersForDoSearch
   } = parametersForDoSearchFilterSort;
   let filteredResources = studies;
   // perform keyword search
-  console.log("jsSearch", jsSearch, searchTerms);
   if (jsSearch && searchTerms.keyword.keywords && searchTerms.keyword.keywords.length > 0) {
     filteredResources = jsSearch.search(searchTerms.keyword.keywords.join(' '));
-    console.log("filteredResources after search", filteredResources);
   }
   filteredResources = filterByTags(
     filteredResources,
@@ -74,7 +72,6 @@ const searchFilterSort = (parametersForDoSearchFilterSort: ParametersForDoSearch
     return 0;
   });
 
-  console.log("filteredResources", filteredResources);
   return filteredResources;
 };
 export default searchFilterSort;

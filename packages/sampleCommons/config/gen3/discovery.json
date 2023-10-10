@@ -117,11 +117,6 @@
         "name": "Studies",
         "field": "_hdp_uid",
         "type": "count"
-      },
-      {
-        "name": "Subjects",
-        "field": "_hdp_uid",
-        "type": "sum"
       }
     ],
     "tagSelector": {

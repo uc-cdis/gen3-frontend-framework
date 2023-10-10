@@ -1,5 +1,5 @@
 
-import { CellRenderFunctionProps } from "../TableRenderers/types";
+import { JSONValue } from "@gen3/core";
 
 
 export interface SummaryStatisticsConfig {
@@ -15,8 +15,14 @@ export interface StatisticsDataRequest {
 }
 
 export interface StatisticsDataResponse extends StatisticsDataRequest {
-  value: number | string; // The value of the aggregation
+  value: JSONValue; // The value of the aggregation
 }
-export type SummaryStatistics = Record<string, StatisticsDataResponse>;
+
+//TODO type this instead of using any
+export interface SummaryStatisticsDisplayData extends SummaryStatisticsConfig {
+  value: any; // The value of the aggregation
+}
+
+export type SummaryStatistics = Array<SummaryStatisticsDisplayData>;
 
 export type StatisticsDataRetrievalFunction = (items: ReadonlyArray<StatisticsDataRequest>) => Array<StatisticsDataResponse>;
