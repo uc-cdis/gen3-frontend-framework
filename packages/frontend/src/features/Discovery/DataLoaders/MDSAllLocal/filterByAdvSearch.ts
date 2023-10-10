@@ -14,7 +14,8 @@ const filterByAdvSearch = (
   config: DiscoveryConfig,
 ): JSONObject[] => {
   // leave if advanced search filters are not enabled
-  if (!config.features.advSearchFilters) {
+
+  if (config.features?.advSearchFilters === undefined || !config.features.advSearchFilters.enabled) {
     return studies;
   }
 
@@ -38,11 +39,15 @@ const filterByAdvSearch = (
     return studies.filter((study) =>
       Object.keys(advancedSearchTerms.filters).every((filterName) => {
         const filterValues = Object.keys(
-          advancedSearchTerms.filters[filterName],
+          advancedSearchTerms.filters[filterName]
         );
         // Handle the edge case where no values in this filter are selected
         if (filterValues.length === 0) {
           return true;
+        }
+
+        if (config.features?.advSearchFilters?.field === undefined) {
+          return false;
         }
 
         const studyFilters = study[config.features.advSearchFilters.field];
@@ -71,7 +76,11 @@ const filterByAdvSearch = (
         return true;
       }
 
-      const studyFilters = study[config.features.advSearchFilters.field];
+      if (config.features?.advSearchFilters?.field === undefined) {
+        return false;
+      }
+
+      const studyFilters = study[config.features.advSearchFilters?.field];
 
       if (!isSearchKVArray(studyFilters)) {
         return false;
