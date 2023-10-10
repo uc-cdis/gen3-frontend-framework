@@ -6,6 +6,7 @@ import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
+import { DataAccessCellRenderer } from './DataAccessCellRenderers';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -153,6 +154,9 @@ export const Gen3DiscoveryStandardCellRenderers = {
   link: {
     default: RenderLinkCell,
   },
+  dataAccess: {
+    default: DataAccessCellRenderer,
+  }
 };
 
 export const registerDiscoveryDefaultCellRenderers = () => {

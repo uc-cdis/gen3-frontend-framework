@@ -19,7 +19,7 @@ const LoginButton = () => {
       className="mx-2 "
       onClick={() => handleSelected(isAuthenticated(loginStatus))}
     >
-      <div className="flex items-center hover:border-b-1 border-white text-primary-contrast font-medium font-heading ">
+      <div className="flex items-center hover:border-b-1 border-white secondary-contrast-lighter font-medium font-heading ">
         {isAuthenticated(loginStatus) ? 'Logout' : 'Login'}
         <LoginIcon className="pl-1" size={'1.75rem'} />
       </div>

@@ -35,6 +35,7 @@ export interface MetadataPaginationParams {
 export interface MetadataRequestParams extends MetadataPaginationParams {
   url?: string;
   guidType: string;
+  studyField?: string;
 }
 
 // Define a service using a base URL and expected endpoints
@@ -61,20 +62,17 @@ export const metadataApi = gen3Api.injectEndpoints({
       },
     }),
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({ url, guidType, offset, pageSize }) => {
+      query: ({ url, guidType, offset, pageSize}) => {
         if (url) {
           return `${url}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
         } else {
           return `metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
         }
       },
-      transformResponse: (response: Record<string, any>, _meta, params) => {
+      transformResponse: (response: Record<string, any>, _meta) => {
         return {
-          data: response.results.map(
-            (x: JSONObject) =>
-              (Object.values(x)?.at(0) as JSONObject)[params.guidType],
-          ),
-          hits: -1,
+          data: Object.keys(response).map((guid) => response[guid]),
+          hits: Object.keys(response).length,
         };
       },
     }),

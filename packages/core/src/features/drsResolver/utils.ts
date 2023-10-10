@@ -3,14 +3,24 @@
  *  Use of this function should be limited
  * @param guidsForHostnameResolution
  */
-const resolveDRSWithDataGUIS_Org = (
+const resolveDRSWithDataGUISOrg = (
   guidsForHostnameResolution: string[],
 ): Promise<string[]> => {
+  if (!Array.isArray(guidsForHostnameResolution) || !guidsForHostnameResolution.every((guid) => typeof guid === 'string')) {
+    throw new Error('Invalid input: guidsForHostnameResolution must be an array of strings');
+  }
   return Promise.all(
     guidsForHostnameResolution.map((guid) =>
       fetch(`https://dataguids.org/index/${guid}`)
-        .then((r) => r.json())
-        .catch(() => {
+        .then((r) => {
+          if (r.ok) {
+            return r.json();
+          } else {
+            throw Error('Failed to resolve DRS object ID');
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to parse JSON response:', error);
           throw Error('Failed to resolve DRS object ID');
         }),
     ),
@@ -28,7 +38,7 @@ type DRSResolverCatalog = {
 };
 
 const DRS_Resolvers: DRSResolverCatalog = {
-  dataGUISOrg: resolveDRSWithDataGUIS_Org,
+  dataGUISOrg: resolveDRSWithDataGUISOrg,
 };
 
 export const resolveDRSObjectId = (

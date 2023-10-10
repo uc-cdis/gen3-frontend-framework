@@ -34,7 +34,7 @@ const HEALRowRenderer = (
         setStudyDetails(row.original);
       }}
     >
-      <Text size="md" lineClamp={2}>
+      <Text size="sm" lineClamp={2}>
         {value}
       </Text>
     </Box>

@@ -6,7 +6,7 @@ function DemoModal() {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <>
+    <React.Fragment>
       <Modal opened={opened} onClose={close} title="Authentication">
         <div className="!bg-red-400 !w-100 !h32">
           Hello world
@@ -16,7 +16,7 @@ function DemoModal() {
       <Group position="center">
         <Button variant="outline" onClick={open}>Open modal</Button>
       </Group>
-    </>
+    </React.Fragment>
   );
 }
 

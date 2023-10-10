@@ -24,7 +24,7 @@ module.exports = {
   plugins: ['jsx-a11y', 'react', 'react-hooks', '@typescript-eslint'],
   rules: {
     'no-underscore-dangle': 'off',
-    indent: ['warn', 2],
+    'import/prefer-default-export': 'off',
     'linebreak-style': ['error', 'unix'],
     '@typescript-eslint/quotes': ['warn', 'single'],
     quotes: ['warn', 'single'],

@@ -1,20 +1,53 @@
-import {
-  JSONObject,
-  type MetadataPaginationParams,
-  useGetAggMDSQuery,
-} from '@gen3/core';
+import { JSONObject, type MetadataPaginationParams } from '@gen3/core';
 import CartActionButton from './ActionBar/CartActionButton';
+import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
+import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+
+interface KeywordSearch {
+  keywords?: string[];
+  operator: SearchCombination;
+}
+
+export interface SearchTerms {
+  keyword: KeywordSearch;
+  advancedSearchTerms: AdvancedSearchTerms;
+  selectedTags?: Record<string, boolean>;
+}
+
+export interface DiscoveryDataLoaderProps extends Record<string, any>  {
+  pagination: MetadataPaginationParams,
+  searchTerms: SearchTerms;
+  discoveryConfig: DiscoveryConfig;
+}
+
+export interface DataRequestStatus {
+  isFetching: boolean;
+  isLoading: boolean;
+  isUninitialized: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+}
+
+
+export interface DiscoverDataHookResponse {
+  data: Array<JSONObject>;
+  hits: number;
+  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
+  dataRequestStatus: DataRequestStatus;
+  summaryStatistics: SummaryStatistics,
+  suggestions: Array<string>;
+  clearSearch?: () => void;
+}
 
 export type DiscoveryTableDataHook = (
-  arg: MetadataPaginationParams,
-) => ReturnType<typeof useGetAggMDSQuery>;
+  dataHookArgs: DiscoveryDataLoaderProps,
+  ...args: any[]
+) => DiscoverDataHookResponse;
 
 export interface KeyValueSearchFilter {
   key: string;
   keyDisplayName?: string;
-  valueDisplayNames?: {
-    [value: string]: string;
-  };
+  valueDisplayNames?: Record<string, string>
 }
 
 export interface AdvancedSearchFilters {
@@ -24,26 +57,38 @@ export interface AdvancedSearchFilters {
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
+
+
 export interface TagInfo {
   name: string;
   category: string;
 }
+
+export const isTagInfo = (obj: any): obj is TagInfo => {
+  return obj && obj.name && obj.category;
+};
+
+export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
+  return obj && Array.isArray(obj) && obj.every(isTagInfo);
+};
 
 export interface SearchKV {
   key: string;
   value: any;
 }
 
+export const isSearchKV = (obj: any): obj is SearchKV => {
+  return obj && obj.key && obj.value;
+};
+
+export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
+  return obj && Array.isArray(obj) && obj.every(isSearchKV);
+};
+
 export interface TagCategory extends TagInfo {
   displayName: string;
   color: string;
   display: boolean;
-}
-
-export interface AggregationConfig {
-  name: string;
-  field: string;
-  type: 'sum' | 'count';
 }
 
 export type DiscoveryContentTypes =
@@ -129,6 +174,24 @@ export interface CartActionButton {
   actionFunction: string;
 }
 
+export interface SearchBar {
+      enabled: boolean;
+      inputSubtitle: string;
+      placeholder?: string;
+      searchableTextFields: Array<string>;
+}
+
+interface TagSearchDropdown {
+  enabled?: boolean,
+  collapsibleButtonText?: string
+}
+
+export interface SearchConfig {
+  searchBar?: SearchBar;
+  tagSearchDropdown?: TagSearchDropdown;
+
+}
+
 export interface ExportToCart {
   buttons: CartActionButton[];
   enabled?: boolean;
@@ -137,21 +200,39 @@ export interface ExportToCart {
   manifestFieldName?: string;
 }
 
+export interface DataAuthorization {
+  columnTooltip: string
+  supportedValues: any
+  enabled: boolean
+}
+
+export interface AccessFilters  {
+  [accessLevel: number]: boolean
+}
+
+
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
   features: {
-    advSearchFilters: AdvancedSearchFilters;
+    advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
+    search?: SearchConfig;
+    authorization: Partial<DataAuthorization>;
   };
-  aggregations: AggregationConfig[];
+  aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
-  minimalFieldMapping?: MinimalFieldMapping;
+  minimalFieldMapping: MinimalFieldMapping;
 
+}
+
+export interface UserAuthMapping {
+  service: string;
+  method: string;
 }
 
 export const accessibleFieldName = '__accessible';

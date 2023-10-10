@@ -13,8 +13,9 @@ import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
-import { MetadataResponse } from '@gen3/core';
+import { JSONObject, MetadataResponse } from '@gen3/core';
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
+import { DataRequestStatus } from './types';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -22,10 +23,9 @@ const extractCellValue =
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
-  data: MetadataResponse;
-  isLoading: boolean;
-  isFetching: boolean;
-  isError: boolean;
+  data: JSONObject[];
+  hits: number,
+  dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;
@@ -34,15 +34,15 @@ interface DiscoveryTableProps {
 
 const DiscoveryTable = ({
   data,
-  isError,
-  isLoading,
-  isFetching,
+  hits,
+  dataRequestStatus,
   setSorting,
   setPagination,
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
+  const { isLoading, isError, isFetching } = dataRequestStatus;
 
   const cols = useMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -75,14 +75,14 @@ const DiscoveryTable = ({
   // @ts-ignore
   const table = useMantineReactTable({
     columns: cols,
-    data: data?.data ?? [],
+    data: data ?? [],
     manualSorting: true,
     manualPagination: true,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
-    rowCount: data?.hits ?? 0,
+    rowCount: hits,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
@@ -97,11 +97,22 @@ const DiscoveryTable = ({
         'mrt-row-expand': false,
       },
     },
+     // TODO expand to highlight row/detail row on hover
+    // mantineTableBodyRowProps: {
+    //   onMouseEnter: (row) => {
+    //     console.log('mouse enter', row);
+    //   },
+    //   sx: {
+    //     "&:hover td": {
+    //       backgroundColor: "#FF0000",
+    //     }
+    // }},
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.secondary[9],
+          backgroundColor: theme.colors.accent[8],
+          color: theme.colors.accent[0],
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
@@ -110,13 +121,20 @@ const DiscoveryTable = ({
         };
       },
     },
+    mantineTableProps: {
+      sx: (theme) => {
+        return {
+          backgroundColor: theme.colors.base[9],
+        };
+      }
+    }
   });
 
   return (
     <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
-      <MantineReactTable table={table} />
+        <MantineReactTable table={table} />
       </div>
     </React.Fragment>
   );

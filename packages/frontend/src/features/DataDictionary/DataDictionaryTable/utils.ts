@@ -1,5 +1,5 @@
-import { DataDictionary, DictionaryNode } from "../types";
-import { parseDictionaryNodes } from "../utils";
+import { DataDictionary, DictionaryNode } from '../types';
+import { parseDictionaryNodes } from '../utils';
 
 export function category2NodeList(dictionary: DataDictionary) {
   /* helpers for the helper */

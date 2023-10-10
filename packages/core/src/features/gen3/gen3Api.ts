@@ -1,9 +1,9 @@
-import { createSelector, Middleware, Reducer } from "@reduxjs/toolkit";
+import { createSelector, Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { GEN3_DOMAIN } from '../../constants';
 import { CoreState } from '../../reducers';
-import { JSONObject } from "../../types";
+import { JSONObject } from '../../types';
 
 export interface CSRFToken {
   readonly csrfToken: string;

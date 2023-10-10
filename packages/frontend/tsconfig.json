@@ -18,6 +18,7 @@
     "resolveJsonModule": true,
     "incremental": true,
     "noEmitOnError": true,
+    "sourceMap": true,
     // "noUnusedLocals": true, // TODO: enable
     // "noUnusedParameters": true,
     // "noImplicitReturns": true,

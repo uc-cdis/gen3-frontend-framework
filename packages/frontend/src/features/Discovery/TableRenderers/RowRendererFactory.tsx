@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { RowRenderFunctionProps, defaultRowRenderer, Gen3DiscoveryStandardRowPreviewRenderers } from "./RowRenderers";
+import { RowRenderFunctionProps, defaultRowRenderer, Gen3DiscoveryStandardRowPreviewRenderers } from './RowRenderers';
 import { StudyPreviewField } from '../types';
 
 // TODO Tighten up the typing here
