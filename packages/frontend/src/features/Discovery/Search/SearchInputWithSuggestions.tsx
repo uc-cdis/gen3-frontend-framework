@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
 import { Autocomplete, Tooltip } from '@mantine/core';
-import { SearchInputProps} from "./types";
+import { SearchInputProps} from './types';
 
 interface SearchInputWithAutoSuggestProps extends SearchInputProps {
   suggestions: string[];

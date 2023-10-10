@@ -13,9 +13,9 @@ import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
-import { JSONObject, MetadataResponse } from "@gen3/core";
+import { JSONObject, MetadataResponse } from '@gen3/core';
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
-import { DataRequestStatus } from "./types";
+import { DataRequestStatus } from './types';
 
 const extractCellValue =
   (func: CellRendererFunction) =>

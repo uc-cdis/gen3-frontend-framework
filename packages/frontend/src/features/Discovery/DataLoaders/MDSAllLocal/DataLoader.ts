@@ -12,12 +12,12 @@ import {
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms
-} from "../../types";
+} from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics, SummaryStatisticsDisplayData } from "../../Statistics/types";
+import { SummaryStatistics, SummaryStatisticsDisplayData } from '../../Statistics/types';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';

@@ -1,5 +1,5 @@
 
-import { JSONValue } from "@gen3/core";
+import { JSONValue } from '@gen3/core';
 
 
 export interface SummaryStatisticsConfig {

@@ -1,8 +1,8 @@
 import filterByTags from './filterByTags';
 import filterByAdvSearch from './filterByAdvSearch';
-import { DiscoveryConfig,  SearchTerms, AccessFilters } from "../../types";
-import { AccessSortDirection, AdvancedSearchTerms } from "../../Search/types";
-import { JSONObject } from "@gen3/core";
+import { DiscoveryConfig,  SearchTerms, AccessFilters } from '../../types';
+import { AccessSortDirection, AdvancedSearchTerms } from '../../Search/types';
+import { JSONObject } from '@gen3/core';
 
 ;
 

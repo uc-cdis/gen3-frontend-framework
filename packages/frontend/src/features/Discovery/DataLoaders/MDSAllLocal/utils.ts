@@ -3,7 +3,7 @@ import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import { JSONObject } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics } from "../../Statistics/types";
+import { SummaryStatistics } from '../../Statistics/types';
 
 /**
  * Process a summary statistic using the provided data and summary config

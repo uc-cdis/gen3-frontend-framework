@@ -1,2 +1,2 @@
 export { default } from './Explorer';
-export  { ExplorerPageGetServerSideProps } from "./data";
+export  { ExplorerPageGetServerSideProps } from './data';

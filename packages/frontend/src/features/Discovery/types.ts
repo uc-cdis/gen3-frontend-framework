@@ -1,7 +1,7 @@
-import { JSONObject, type MetadataPaginationParams } from "@gen3/core";
-import CartActionButton from "./ActionBar/CartActionButton";
-import { SummaryStatistics, SummaryStatisticsConfig } from "./Statistics/types";
-import { AdvancedSearchTerms, SearchCombination } from "./Search/types";
+import { JSONObject, type MetadataPaginationParams } from '@gen3/core';
+import CartActionButton from './ActionBar/CartActionButton';
+import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
+import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
 interface KeywordSearch {
   keywords?: string[];

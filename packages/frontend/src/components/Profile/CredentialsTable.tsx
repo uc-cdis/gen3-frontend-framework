@@ -7,7 +7,7 @@ import {
   useGetCSRFQuery,
 } from '@gen3/core';
 import { MdDelete as DeleteIcon } from 'react-icons/md';
-import { unixTimeToString } from "../../utils/time";
+import { unixTimeToString } from '../../utils/time';
 
 const CredentialsTable = () => {
   const { data: csrfToken } = useGetCSRFQuery();

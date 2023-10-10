@@ -3,7 +3,7 @@ import { Agent as HTTPAgent } from 'http';
 import { buildClientSchema, printSchema } from 'graphql';
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { default as fetchRetry } from "fetch-retry";
+import { default as fetchRetry } from 'fetch-retry';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';

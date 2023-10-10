@@ -1,4 +1,4 @@
-import { useGetJobListQuery } from "@gen3/core/";
+import { useGetJobListQuery } from '@gen3/core/';
 
 const TestPage = () => {
 

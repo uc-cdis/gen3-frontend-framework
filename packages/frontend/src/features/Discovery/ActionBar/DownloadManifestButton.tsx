@@ -1,6 +1,6 @@
-import CartActionButton from "./CartActionButton";
+import CartActionButton from './CartActionButton';
 import FileSaver from 'file-saver';
-import { GEN3_DOMAIN } from "@gen3/core";
+import { GEN3_DOMAIN } from '@gen3/core';
 import { ActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
@@ -43,7 +43,7 @@ const DownloadManifestButton = ({ selectedResources, manifestFieldName } : Actio
       icon={DownloadIcon}
       toolTip="Download Manifest"
       onClick={() => {
-        console.log("Download Manifest");
+        console.log('Download Manifest');
       }}
     />
   );

@@ -1,10 +1,10 @@
-import { create10ColorAccessibleContrast, create10ColorPallet } from "./colors";
-import { type TenStringArray } from "./types";
+import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
+import { type TenStringArray } from './types';
 
 export { create10ColorPallet, create10ColorAccessibleContrast };
 export { type TenStringArray };
 
-import { getCurrentUnixTimestamp, unixTimeToString } from "./time";
+import { getCurrentUnixTimestamp, unixTimeToString } from './time';
 export { getCurrentUnixTimestamp, unixTimeToString };
 
 // separate function for hashing logic

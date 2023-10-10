@@ -2,7 +2,7 @@ import { Agent as HTTPSAgent } from 'https';
 import { Agent as HTTPAgent } from 'http';
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { default as fetchRetry } from "fetch-retry";
+import { default as fetchRetry } from 'fetch-retry';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -82,7 +82,7 @@ const main = () => {
       }
 
       const drsCache = drsIds.reduce((acc: Record<string, string>, drsId) => {
-        const ids = drsId.hints.map((hint) => hint.replace(".*" , "").replace(".*" , "").replace("\\." , "."));
+        const ids = drsId.hints.map((hint) => hint.replace('.*' , '').replace('.*' , '').replace('\\.' , '.'));
         ids.forEach((id) => {
           acc[id] = drsId.host;
         });

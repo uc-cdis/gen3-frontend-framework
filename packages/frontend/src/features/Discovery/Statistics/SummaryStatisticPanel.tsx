@@ -16,7 +16,7 @@ const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
       );
 
       return element({
-        value: summary.value ?? "N/A",
+        value: summary.value ?? 'N/A',
         label: name,
         key: `stats-item-${name}-${field}-${type}`,
         className: summaries.length > 1 ?
