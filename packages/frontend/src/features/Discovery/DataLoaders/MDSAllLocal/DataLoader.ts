@@ -132,7 +132,6 @@ const useGetData = ({
     isSuccess,
     isError: queryIsError,
   } = useGetMDSQuery({
-    url: 'https://healdata.org/mds',
     guidType: guidType,
     offset: 0,
     pageSize: maxStudies,
@@ -357,7 +356,7 @@ export const useLoadAllData = ({
   searchTerms,
   advancedSearchTerms,
   discoveryConfig,
-  guidType = 'unregistered_discovery_metadata',
+  guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps) : DiscoverDataHookResponse => {
@@ -378,7 +377,12 @@ export const useLoadAllData = ({
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
-    advancedSearchFilters: discoveryConfig.features.advSearchFilters,
+    advancedSearchFilters: discoveryConfig.features?.advSearchFilters ?? {
+      enabled: false,
+      field: '',
+      displayName: '',
+      filters: [],
+    },
     uidField,
   });
 

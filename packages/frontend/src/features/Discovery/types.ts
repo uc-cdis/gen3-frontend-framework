@@ -214,7 +214,7 @@ export interface AccessFilters  {
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
   features: {
-    advSearchFilters: AdvancedSearchFilters;
+    advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
     search?: SearchConfig;
@@ -226,8 +226,13 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
-  minimalFieldMapping?: MinimalFieldMapping;
+  minimalFieldMapping: MinimalFieldMapping;
 
+}
+
+export interface UserAuthMapping {
+  service: string;
+  method: string;
 }
 
 export const accessibleFieldName = '__accessible';

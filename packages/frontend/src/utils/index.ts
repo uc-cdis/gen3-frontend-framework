@@ -7,6 +7,8 @@ export { type TenStringArray };
 import { getCurrentUnixTimestamp, unixTimeToString } from './time';
 export { getCurrentUnixTimestamp, unixTimeToString };
 
+export * from './authMapping';
+
 // separate function for hashing logic
 function hashString(str: string) {
   let hash = 0;
