@@ -1,26 +1,92 @@
-import { useEffect, useState } from "react";
-import { JSONObject, MetadataPaginationParams, useGetMDSQuery } from "@gen3/core";
-import * as JsSearch from "js-search";
-import { AdvancedSearchFilters, DiscoveryDataLoaderProps, KeyValueSearchFilter, SearchTerms, StudyColumn } from "../types";
-import filterByAdvSearch from "./filterByAdvSearch";
-import { getFilterValuesByKey, hasSearchTerms } from "../Search/utils";
-import { processAllSummaries } from "./utils";
-import { SummaryStatisticsConfig } from "../Statistics";
-import { SummaryStatistics } from "../Statistics/types";
-import searchFilterSort from "./searchFilterSort";
+import { useCallback, useEffect, useState } from 'react';
+import { JSONPath } from 'jsonpath-plus';
+import {
+  JSONObject,
+  MetadataPaginationParams,
+  useGetMDSQuery,
+} from '@gen3/core';
+import { useMiniSearch } from 'react-minisearch';
+import MiniSearch, { Suggestion } from 'minisearch';
+import {
+  AdvancedSearchFilters,
+  DiscoveryDataLoaderProps,
+  KeyValueSearchFilter,
+  SearchTerms,
+} from '../types';
+import filterByAdvSearch from './filterByAdvSearch';
+import { getFilterValuesByKey, hasSearchTerms } from '../Search/utils';
+import { processAllSummaries } from './utils';
+import { SummaryStatisticsConfig } from '../Statistics';
+import { SummaryStatistics } from '../Statistics/types';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
 
+interface QueryType {
+  term: string;
+  fields: string[];
+  combineWith: 'AND' | 'OR';
+}
 
-const formatSearchIndex = (index: string) => {
-  // Removes [*] wild cards used by JSON Path and converts to array
-  const wildCardStringRegex = new RegExp(/\[\*\]/, 'g');
-  const indexWithoutWildcards = index.replace(wildCardStringRegex, '');
-  return indexWithoutWildcards.split('.');
+const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
+  const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
+  console.log('terms', terms);
+  // const res = keywords.join(" ");
+  // const res =  {
+  //   combineWith: 'AND',
+  //   queries: keywords ?? [],
+  // };
+
+  console.log('buildMiniSearchKeywordQuery: resxxxx:', keywords[0]);
+
+  return keywords[0];
+
+  // TODO: see if minisearch can handle this
+  // const a = {
+  //   combineWith: 'AND',
+  //   queries: Object.keys(terms.advancedSearchTerms.filters).map((field) => {
+  //     const filter = terms.advancedSearchTerms.filters[field];
+  //     return {
+  //       combineWith: 'AND',
+  //       queries: Object.entries(filter).reduce((acc, [term, selected]) => {
+  //         if (selected) acc.push({ term, fields: [`advancedSearch.${field}`], combineWith: 'AND' });
+  //         return acc;
+  //       }, [] as QueryType[]),
+  //     };
+  //   }),
+  // };
 };
 
+const extractValue = (document: JSONObject, field: string) => {
+  // TODO See if mimi search can handle the for advanced search
+  // if (field.startsWith('advancedSearch.')) {
+  //   if (isSearchKVArray(document['advancedSearch'])) {
+  //   const key = field.split('.')[-1];
+  //   const result = document['advancedSearch'].filter(x => x.key === key);
+  //   return result.reduce((acc, cur) => {
+  //     acc.push(cur.value);
+  //     return acc;
+  //   }, [] as string[]).join(" ");
+  //
+  // }
 
+  const result = JSONPath({ path: field, json: document });
+  return result?.length ? result[0] : undefined;
+};
+
+const suffixes = (term: string, minLength: number): string[] => {
+  if (term == null) {
+    return [];
+  }
+
+  const tokens: string[] = [];
+
+  for (let i = 0; i <= term.length - minLength; i++) {
+    tokens.push(term.slice(i));
+  }
+
+  return tokens;
+};
 
 const processAdvancedSearchTerms = (
   advSearchFilters: AdvancedSearchFilters,
@@ -60,19 +126,27 @@ const useGetData = ({
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
-  const { data, isUninitialized, isFetching, isLoading, isSuccess, isError: queryIsError } =
-    useGetMDSQuery({
-      url: 'https://healdata.org/mds',
-      guidType: guidType,
-      offset: 0,
-      pageSize: maxStudies,
-    });
+  const {
+    data,
+    isUninitialized,
+    isFetching,
+    isLoading,
+    isSuccess,
+    isError: queryIsError,
+  } = useGetMDSQuery({
+    url: 'https://healdata.org/mds',
+    guidType: guidType,
+    offset: 0,
+    pageSize: maxStudies,
+  });
 
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = Object.values(data.data).reduce(
         (acc: JSONObject[], cur) => {
-          return cur[studyField] ? [...acc, cur[studyField] as JSONObject] : acc;
+          return cur[studyField]
+            ? [...acc, cur[studyField] as JSONObject]
+            : acc;
         },
         [],
       );
@@ -107,74 +181,93 @@ const useSearchMetadata = ({
   discoveryConfig,
   searchTerms,
   mdsData,
-                             isSuccess,
+  isSuccess,
 }: SearchMetadataProps) => {
-
-  const [jsSearch, setJsSearch] = useState<JsSearch.Search | undefined>(undefined);
+  const searchOverFields =
+    discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const [searchedData, setSearchedData] = useState<Array<JSONObject>>([]);
-
+  const [suggestions, setSuggestions] = useState<Array<string>>([]);
+  const {
+    search,
+    autoSuggest,
+    searchResults,
+    rawResults,
+    suggestions: miniSearchSuggestions,
+    addAll,
+    removeAll,
+    clearSearch,
+    clearSuggestions,
+  } = useMiniSearch([], {
+    fields: searchOverFields,
+    storeFields: [uidField],
+    idField: uidField,
+    extractField: extractValue,
+    //  processTerm: (term) => suffixes(term, 3),
+    searchOptions: {
+      processTerm: MiniSearch.getDefault('processTerm'),
+    },
+  });
 
   const isSearching = hasSearchTerms(searchTerms);
 
+  const clearSearchTerms = useCallback(() => {
+    clearSearch();
+    clearSuggestions();
+  }, [clearSearch, clearSuggestions]);
 
   useEffect(() => {
     // we have the data, so set it and build the search index and get the advanced search filter values
     if (mdsData && isSuccess) {
-      console.log("building search index...");
-      const search = new JsSearch.Search(discoveryConfig.minimalFieldMapping.uid);
-      search.indexStrategy = new JsSearch.AllSubstringsIndexStrategy();
-
-      // Choose which fields in the data to make searchable.
-      // If `searchableFields` are configured, enable search over only those fields.
-      // Otherwise, default behavior: enable search over all non-numeric fields
-      // in the table and the study description.
-      // ---
-      const searchableFields: string[] = discoveryConfig.features.search.searchBar.searchableTextFields;
-      if (searchableFields) {
-        searchableFields.forEach((field:string) => {
-          const formattedFields = formatSearchIndex(field);
-          search.addIndex(formattedFields);
-        });
-      } else {
-        discoveryConfig.studyColumns.forEach((column:StudyColumn) => {
-          if (!column.contentType || column.contentType === 'string') {
-            const studyColumnFieldsArr = formatSearchIndex(column.field);
-            search.addIndex(studyColumnFieldsArr);
-          }
-        });
-        // Also enable search over preview field if present
-        if (discoveryConfig.studyPreviewField) {
-          const studyPreviewFieldArr = formatSearchIndex(discoveryConfig.studyPreviewField.field);
-          search.addIndex(studyPreviewFieldArr);
-        }
-      }
-      // ---
-
-      search.addDocuments(mdsData);
-      // expose the search function
-      setJsSearch(search);
-      console.log("done");
+      removeAll();
+      addAll(mdsData);
     }
-  }, [discoveryConfig.features.search.searchBar.searchableTextFields, discoveryConfig.minimalFieldMapping.uid, discoveryConfig.studyColumns, discoveryConfig.studyPreviewField, isSuccess, mdsData]);
-
+  }, [addAll, isSuccess, mdsData, removeAll]);
 
   useEffect(() => {
-    setSearchedData(searchFilterSort(
-      {
-        studies: mdsData,
-        jsSearch,
-        searchTerms,
-        config: discoveryConfig,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        filterState: searchTerms.advancedSearchTerms,
-        accessFilters: {},
+    if (mdsData && isSearching) {
+      const searchQuery = buildMiniSearchKeywordQuery(searchTerms);
+      if (searchQuery) {
+        search(searchQuery);
+        autoSuggest(searchQuery);
       }
-    ));
-  }, [discoveryConfig, jsSearch, mdsData, searchTerms, searchTerms.advancedSearchTerms]);
+    }
+  }, [autoSuggest, isSearching, mdsData, search, searchTerms]);
+
+  useEffect(() => {
+    const filterKeywordSearchResults = () => {
+      return searchResults ? searchResults : mdsData;
+    };
+
+    const filterAdvancedSearchResults = (input: JSONObject[]): JSONObject[] => {
+      return filterByAdvSearch(
+        input,
+        searchTerms.advancedSearchTerms,
+        discoveryConfig,
+      );
+    };
+
+    setSearchedData(filterAdvancedSearchResults(filterKeywordSearchResults()));
+
+    setSuggestions(() => {
+      return (
+        miniSearchSuggestions?.map(
+          (suggestion: Suggestion) => suggestion.suggestion,
+        ) ?? []
+      );
+    });
+  }, [
+    discoveryConfig,
+    mdsData,
+    searchResults,
+    searchTerms.advancedSearchTerms,
+  ]);
 
   return {
     searchedData: isSearching ? searchedData : mdsData,
+    clearSearchTerms: clearSearchTerms,
+    suggestions: suggestions,
   };
 };
 
@@ -261,7 +354,6 @@ const useGetSummaryStatistics = ({
   };
 };
 
-
 export const useLoadAllData = ({
   pagination,
   searchTerms,
@@ -271,7 +363,6 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps) => {
-
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const {
@@ -293,9 +384,10 @@ export const useLoadAllData = ({
     uidField,
   });
 
-  const { searchedData } = useSearchMetadata({
+  const { searchedData, clearSearchTerms, suggestions } = useSearchMetadata({
     discoveryConfig,
     searchTerms,
+
     mdsData,
     isSuccess,
   });
@@ -313,6 +405,8 @@ export const useLoadAllData = ({
   return {
     data: paginatedData,
     hits: searchedData.length ?? -1,
+    clearSearchTerms,
+    suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
     isUninitialized,

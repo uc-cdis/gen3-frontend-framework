@@ -1,4 +1,3 @@
-'use client';
 import React, { ReactNode } from 'react';
 import { SummaryStatisticsConfig } from './types';
 import StatisticRendererFactory from './StatisticsRendererFactory';

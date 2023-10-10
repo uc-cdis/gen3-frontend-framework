@@ -1,6 +1,6 @@
 import { JSONObject, type MetadataPaginationParams } from "@gen3/core";
 import CartActionButton from "./ActionBar/CartActionButton";
-import { StatisticsDataResponse, SummaryStatisticsConfig } from "./Statistics/types";
+import { SummaryStatisticsConfig } from "./Statistics/types";
 import { AdvancedSearchTerms, SearchCombination } from "./Search/types";
 
 interface KeywordSearch {
@@ -11,7 +11,7 @@ interface KeywordSearch {
 export interface SearchTerms {
   keyword: KeywordSearch;
   advancedSearchTerms: AdvancedSearchTerms;
-  selectedTags: Record<string, boolean>;
+  selectedTags?: Record<string, boolean>;
 }
 
 export interface DiscoveryDataLoaderProps extends Record<string, any>  {
@@ -30,6 +30,8 @@ export interface DiscoverDataHookResponse {
   isUninitialized: boolean;
   isSuccess: boolean;
   isError: boolean;
+  suggestions: Array<string>;
+  clearSearch?: () => void;
 }
 
 export type DiscoveryTableDataHook = (

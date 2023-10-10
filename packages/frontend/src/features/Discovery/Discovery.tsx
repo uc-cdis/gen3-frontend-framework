@@ -1,4 +1,3 @@
-'use client';
 import React, { useMemo, useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
@@ -9,10 +8,10 @@ import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
-import SearchInput from './Search/SearchInput';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData } from './DataLoaders/RefactoredDataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -37,7 +36,7 @@ const Discovery = ({
     pageSize: 10,
   });
 
-  const [searchBarTerm, setSearchBarTerm] = useState<string[]> ([]);
+  const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -51,19 +50,25 @@ const Discovery = ({
         keywords: searchBarTerm,
       },
       advancedSearchTerms: advancedSearchTerms,
-      selectedTags: {}
     };
   }, [searchBarTerm, advancedSearchTerms]);
 
-  const { data, hits, isLoading, isFetching, isError, advancedSearchFilterValues } =
-    dataHook({
-      pagination: {
-        offset: pagination.pageIndex * pagination.pageSize,
-        pageSize: pagination.pageSize,
-      },
-      searchTerms:searchParam,
-      discoveryConfig,
-    });
+  const {
+    data,
+    hits,
+    isLoading,
+    isFetching,
+    isError,
+    advancedSearchFilterValues,
+    suggestions,
+  } = dataHook({
+    pagination: {
+      offset: pagination.pageIndex * pagination.pageSize,
+      pageSize: pagination.pageSize,
+    },
+    searchTerms: searchParam,
+    discoveryConfig,
+  });
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
@@ -79,9 +84,13 @@ const Discovery = ({
             />
             <div className="flex-grow"></div>
             <div className="w-full">
-              <SearchInput
-                searchChanged={(v) => setSearchBarTerm([v])}
+              <SearchInputWithSuggestions
+                suggestions={suggestions}
+                searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
+                  discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                }
+                label={
                   discoveryConfig?.features?.search?.searchBar?.inputSubtitle
                 }
               />
