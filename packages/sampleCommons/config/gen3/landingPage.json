@@ -50,7 +50,7 @@
             "icon": "MdOutlineSearch",
             "bodyText": "Search studies and related datasets for download or analysis in a workspace.",
             "btnText": "Discover",
-            "href": "/discovery",
+            "href": "/Discovery",
             "linkType": "portal"
           },
           {
