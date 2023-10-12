@@ -18,8 +18,24 @@ const globals = {
   '@mantine/core ': 'mantineCore',
   redux: 'redux',
   uuid: 'uuid',
+  graphiql: 'graphiql',
   lodash: 'lodash',
   immer: 'immer',
+  minisearch: 'minisearch',
+  tinycolot2: 'tinyColor',
+  fs: 'fs',
+  path: 'path',
+  '@gen3/core': 'gen3Core',
+  'jsonpath-plus': 'jsonpathPlus',
+  '@mantine/notifications': 'mantineNotifications',
+  '@mantine/styles': 'mantineStyles',
+  'react-icons/fi': 'reactIcons',
+  'react-icons/lu': 'reactIcons',
+  'react-icons/md': 'reactIcons',
+  'react-minisearch': 'reactMinisearch',
+  'lodash/uniq': 'lodashUniq',
+  'lodash/sum': 'lodashSum',
+
 };
 
 const config = [
