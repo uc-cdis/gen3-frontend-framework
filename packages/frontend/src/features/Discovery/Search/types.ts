@@ -9,4 +9,15 @@ export interface AdvancedSearchTerms {
   filters: SearchFilterState;
 }
 
+export enum AccessSortDirection {
+  ASCENDING = 'sort ascending', DESCENDING = 'sort descending', NONE = 'cancel sorting'
+}
+
 export type SetAdvancedSearchFiltersFn = ( params: AdvancedSearchTerms ) => void;
+
+export interface SearchInputProps {
+  searchChanged: (searchTerm: string) => void;
+  clearSearch?: () => void;
+  placeholder?: string;
+  label?: string;
+}

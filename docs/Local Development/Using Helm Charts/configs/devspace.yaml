@@ -46,7 +46,8 @@ dev:
           - node_modules/
           - packages/core/dist/
           - packages/core/node_modules/
-          - packages/portal/.next
-          - portal/node_modules/
-          - tools/node_modules/
+          - packages/sampleCommons/.next
+          - packages/frontend/node_modules/
+          - packages/frontend/dist/
+          - packages/tools/node_modules/
           - .git/

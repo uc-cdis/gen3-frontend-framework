@@ -70,7 +70,6 @@ export const metadataApi = gen3Api.injectEndpoints({
         }
       },
       transformResponse: (response: Record<string, any>, _meta) => {
-        console.log('response', response);
         return {
           data: Object.keys(response).map((guid) => response[guid]),
           hits: Object.keys(response).length,

@@ -1,29 +1,31 @@
 import React, {
-  useEffect,
   useState,
-  useCallback,
-  useMemo,
-  ChangeEvent,
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { TextInput, Tooltip } from '@mantine/core';
+import { Autocomplete, Tooltip } from '@mantine/core';
 import { SearchInputProps} from './types';
 
+interface SearchInputWithAutoSuggestProps extends SearchInputProps {
+  suggestions: string[];
+  limit?: number;
+}
 
-const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
+const SearchInputWithSuggestions = ({ searchChanged, placeholder, label, suggestions, clearSearch = () => null, limit = 10 } : SearchInputWithAutoSuggestProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <div className="relative">
-      <TextInput
+      <Autocomplete
+        data={suggestions}
+        label={label}
         icon={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
-        data-testid="textbox-search-bar"
-        aria-label="App Search Input"
+        data-testid="discovery-textbox-search-bar"
+        aria-label="DiscoverySearch Input"
         value={searchTerm}
-        onChange={(event) => {
-          searchChanged(event.target.value);
-          setSearchTerm(event.target.value);
+        onChange={(value) => {
+          searchChanged(value);
+          setSearchTerm(value);
         }}
         classNames={{
           input: 'focus:border-2 focus:border-primary text-sm',
@@ -35,6 +37,7 @@ const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
               onClick={() => {
                 setSearchTerm('');
                 searchChanged('');
+                clearSearch();
               }}
               className="cursor-pointer"
               data-testid="search-input-clear-search"
@@ -46,4 +49,4 @@ const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
   );
 };
 
-export default SearchInput;
+export default SearchInputWithSuggestions;

@@ -59,7 +59,6 @@ export const getFilterValuesByKey = (
 export const hasSearchTerms = (searchTerms: SearchTerms): boolean => {
   return (
     searchTerms &&
-    searchTerms.keyword &&
     searchTerms.keyword.keywords &&
     searchTerms.keyword.keywords.length > 0 ||
     searchTerms.advancedSearchTerms &&

@@ -3,13 +3,13 @@ import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import { type ExplorerPageProps  } from './types';
 import { CohortBuilderConfiguration } from "../../features/CohortBuilder";
+import { GEN3_COMMONS_NAME } from "@gen3/core";
 
 export const ExplorerPageGetServerSideProps: GetServerSideProps<
   ExplorerPageProps
 > = async (_context) => {
-  const config = await ContentSource.get('config/siteConfig.json');
   const cohortBuilderProps: CohortBuilderConfiguration = await ContentSource.get(
-    `config/${config.commons}/explorer.json`,
+    `config/${GEN3_COMMONS_NAME}/explorer.json`,
   );
 
   console.log("cohortBuilderProps", cohortBuilderProps);
@@ -17,7 +17,6 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
       ...cohortBuilderProps,
-      ...config,
     },
   };
 };

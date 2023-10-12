@@ -1,16 +1,17 @@
 import { JSONObject, type MetadataPaginationParams } from '@gen3/core';
 import CartActionButton from './ActionBar/CartActionButton';
-import { StatisticsDataResponse, SummaryStatisticsConfig } from './Statistics/types';
+import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
 interface KeywordSearch {
-  keywords: string[];
+  keywords?: string[];
   operator: SearchCombination;
 }
 
 export interface SearchTerms {
   keyword: KeywordSearch;
   advancedSearchTerms: AdvancedSearchTerms;
+  selectedTags?: Record<string, boolean>;
 }
 
 export interface DiscoveryDataLoaderProps extends Record<string, any>  {
@@ -19,16 +20,23 @@ export interface DiscoveryDataLoaderProps extends Record<string, any>  {
   discoveryConfig: DiscoveryConfig;
 }
 
-
-export interface DiscoverDataHookResponse {
-  data: Array<JSONObject>;
-  hits: number;
-  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
+export interface DataRequestStatus {
   isFetching: boolean;
   isLoading: boolean;
   isUninitialized: boolean;
   isSuccess: boolean;
   isError: boolean;
+}
+
+
+export interface DiscoverDataHookResponse {
+  data: Array<JSONObject>;
+  hits: number;
+  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
+  dataRequestStatus: DataRequestStatus;
+  summaryStatistics: SummaryStatistics,
+  suggestions: Array<string>;
+  clearSearch?: () => void;
 }
 
 export type DiscoveryTableDataHook = (
@@ -169,6 +177,7 @@ export interface CartActionButton {
 export interface SearchBar {
       enabled: boolean;
       inputSubtitle: string;
+      placeholder?: string;
       searchableTextFields: Array<string>;
 }
 
@@ -191,13 +200,25 @@ export interface ExportToCart {
   manifestFieldName?: string;
 }
 
+export interface DataAuthorization {
+  columnTooltip: string
+  supportedValues: any
+  enabled: boolean
+}
+
+export interface AccessFilters  {
+  [accessLevel: number]: boolean
+}
+
+
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
   features: {
-    advSearchFilters: AdvancedSearchFilters;
+    advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
     exportToCart?: ExportToCart;
-    search?: SearchConfig
+    search?: SearchConfig;
+    authorization: Partial<DataAuthorization>;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
@@ -205,8 +226,13 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
-  minimalFieldMapping?: MinimalFieldMapping;
+  minimalFieldMapping: MinimalFieldMapping;
 
+}
+
+export interface UserAuthMapping {
+  service: string;
+  method: string;
 }
 
 export const accessibleFieldName = '__accessible';
