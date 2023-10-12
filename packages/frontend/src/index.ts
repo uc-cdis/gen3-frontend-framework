@@ -22,6 +22,9 @@ import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
 
+import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
+import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -33,6 +36,8 @@ export {
   LandingPageGetStaticProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
+  DataDictionaryPage,
+  DataDictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   TailwindConfig,
