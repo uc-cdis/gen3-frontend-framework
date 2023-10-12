@@ -1,17 +1,13 @@
 import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
-import ContentSource from '../../lib/content';
 import { type NavPageLayoutProps } from '../../features/Navigation';
 
 export const ColorThemePageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async (_context) => {
-  const config = await ContentSource.get('config/siteConfig.json');
-
+> = async () => {
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...config,
     },
   };
 };

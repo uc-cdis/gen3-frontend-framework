@@ -36,5 +36,5 @@ export {
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   TailwindConfig,
-  Gen3Provider,
+  Gen3Provider
 };

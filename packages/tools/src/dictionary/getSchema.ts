@@ -4,6 +4,7 @@ import { buildClientSchema, printSchema } from 'graphql';
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { default as fetchRetry } from 'fetch-retry';
+import dotenv from 'dotenv';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -42,7 +43,7 @@ const getSubPath = (argPath: string = undefined): SubPath => {
     getSchema downloads data/schema.json and data/dictionary.json from the environment's
     gen-api for later use configuring gql queries
 
-    Use: node pullDictionary.js [submissionApiPath]
+    Use: node getSchema.js [submissionApiPath]
         - where gdcSubmissionApiPath defaults to: process.env.GEN3_SUBPATH || 'http://localhost:5000/v0/submission/'
         - example - if gdcSubmissionApiPath = https://dev.bionimbus.org/api/vo/submission/,
             then the script loads:
