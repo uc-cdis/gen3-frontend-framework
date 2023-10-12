@@ -76,6 +76,7 @@
     "postcss-preset-env": "^8.4.2",
     "react-chartjs-2": "^5.2.0",
     "react-cookie": "^4.1.1",
+    "react-fast-compare": "^3.2.2",
     "react-icons": "^4.10.1",
     "react-minisearch": "^6.0.4",
     "react-plotly.js": "^2.5.1",
@@ -86,7 +87,8 @@
     "swr": "^2.1.5",
     "tailwind-styled-components": "^2.2.0",
     "tinycolor2": "^1.6.0",
-    "victory": "^36.6.11"
+    "victory": "^36.6.11",
+    "victory-charts": "^0.0.1"
   },
   "devDependencies": {
     "@iconify/react": "^4.0.1",

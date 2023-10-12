@@ -96,3 +96,11 @@ export interface FieldToName {
     readonly field: string;
     readonly name: string;
 }
+
+/**
+ * Sort type for range buckets
+ */
+export interface SortType {
+    type: "value" | "alpha";
+    direction: "asc" | "dsc";
+}
