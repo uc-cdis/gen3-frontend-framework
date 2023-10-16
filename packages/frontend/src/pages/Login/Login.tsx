@@ -1,6 +1,6 @@
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import LoginPanel from '../../components/Login/LoginPanel';
-import  { type LoginConfig } from '../../components/Login';
+import { type LoginConfig } from '../../components/Login';
 import React from 'react';
 
 interface Props extends NavPageLayoutProps {

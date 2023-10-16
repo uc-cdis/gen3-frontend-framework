@@ -1,9 +1,9 @@
-import { GetServerSideProps } from "next";
-import { NavPageLayoutProps } from "../../features/Navigation";
-import ContentSource from "../../lib/content";
-import { getNavPageLayoutPropsFromConfig } from "../../lib/common/staticProps";
-import { LoginConfig } from "../../components/Login";
-import { GEN3_COMMONS_NAME } from "@gen3/core";
+import { GetServerSideProps } from 'next';
+import { NavPageLayoutProps } from '../../features/Navigation';
+import ContentSource from '../../lib/content';
+import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
+import { LoginConfig } from '../../components/Login';
+import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const LoginPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
@@ -15,7 +15,7 @@ export const LoginPageGetServerSideProps: GetServerSideProps<
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...loginProps
+      ...loginProps,
     },
   };
 };

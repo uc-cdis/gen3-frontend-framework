@@ -6,8 +6,9 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_DOMAIN, GEN3_API
-} from "@gen3/core";
+  GEN3_DOMAIN,
+  GEN3_API,
+} from '@gen3/core';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;

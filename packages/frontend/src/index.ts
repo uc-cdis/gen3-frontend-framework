@@ -46,5 +46,5 @@ export {
   LoginPageGetServerSideProps,
   TailwindConfig,
   Gen3Provider,
-  getNavPageLayoutPropsFromConfig
+  getNavPageLayoutPropsFromConfig,
 };

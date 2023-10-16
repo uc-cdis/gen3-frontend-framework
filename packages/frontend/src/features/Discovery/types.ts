@@ -14,8 +14,8 @@ export interface SearchTerms {
   selectedTags?: Record<string, boolean>;
 }
 
-export interface DiscoveryDataLoaderProps extends Record<string, any>  {
-  pagination: MetadataPaginationParams,
+export interface DiscoveryDataLoaderProps extends Record<string, any> {
+  pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryConfig;
 }
@@ -28,13 +28,12 @@ export interface DataRequestStatus {
   isError: boolean;
 }
 
-
 export interface DiscoverDataHookResponse {
   data: Array<JSONObject>;
   hits: number;
   advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
   dataRequestStatus: DataRequestStatus;
-  summaryStatistics: SummaryStatistics,
+  summaryStatistics: SummaryStatistics;
   suggestions: Array<string>;
   clearSearch?: () => void;
 }
@@ -47,7 +46,7 @@ export type DiscoveryTableDataHook = (
 export interface KeyValueSearchFilter {
   key: string;
   keyDisplayName?: string;
-  valueDisplayNames?: Record<string, string>
+  valueDisplayNames?: Record<string, string>;
 }
 
 export interface AdvancedSearchFilters {
@@ -56,8 +55,6 @@ export interface AdvancedSearchFilters {
   displayName: string;
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
-
-
 
 export interface TagInfo {
   name: string;
@@ -166,7 +163,13 @@ interface DiscoveryPageTitle {
 }
 
 export interface CartActionButton {
-  type: 'manifest' | 'zip' | 'download' | 'link' | 'externalLink' | 'add-to-workspace';
+  type:
+    | 'manifest'
+    | 'zip'
+    | 'download'
+    | 'link'
+    | 'externalLink'
+    | 'add-to-workspace';
   label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
@@ -175,21 +178,20 @@ export interface CartActionButton {
 }
 
 export interface SearchBar {
-      enabled: boolean;
-      inputSubtitle: string;
-      placeholder?: string;
-      searchableTextFields: Array<string>;
+  enabled: boolean;
+  inputSubtitle: string;
+  placeholder?: string;
+  searchableTextFields: Array<string>;
 }
 
 interface TagSearchDropdown {
-  enabled?: boolean,
-  collapsibleButtonText?: string
+  enabled?: boolean;
+  collapsibleButtonText?: string;
 }
 
 export interface SearchConfig {
   searchBar?: SearchBar;
   tagSearchDropdown?: TagSearchDropdown;
-
 }
 
 export interface ExportToCart {
@@ -201,15 +203,14 @@ export interface ExportToCart {
 }
 
 export interface DataAuthorization {
-  columnTooltip: string
-  supportedValues: any
-  enabled: boolean
+  columnTooltip: string;
+  supportedValues: any;
+  enabled: boolean;
 }
 
-export interface AccessFilters  {
-  [accessLevel: number]: boolean
+export interface AccessFilters {
+  [accessLevel: number]: boolean;
 }
-
 
 // TODO: Type the rest of the config
 export interface DiscoveryConfig extends Record<string, any> {
@@ -227,7 +228,6 @@ export interface DiscoveryConfig extends Record<string, any> {
   studyPreviewField?: StudyPreviewField;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
-
 }
 
 export interface UserAuthMapping {

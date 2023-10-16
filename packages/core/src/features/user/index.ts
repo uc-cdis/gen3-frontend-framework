@@ -12,9 +12,7 @@ import {
   type Gen3User,
 } from './userSlice';
 
-import {
-  useGetExternalLoginsQuery
-} from './externalLoginsSlice';
+import { useGetExternalLoginsQuery } from './externalLoginsSlice';
 
 export {
   useUser,

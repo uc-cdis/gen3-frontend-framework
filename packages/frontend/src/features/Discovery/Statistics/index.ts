@@ -3,7 +3,4 @@ import {
   type StatisticsDataResponse,
 } from './types';
 
-export {
-  type SummaryStatisticsConfig,
-  type StatisticsDataResponse,
-};
+export { type SummaryStatisticsConfig, type StatisticsDataResponse };

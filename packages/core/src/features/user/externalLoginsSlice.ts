@@ -74,7 +74,7 @@ export const externalLoginApi = gen3Api.injectEndpoints({
             },
           );
         });
-      //  const guidResolutions = resolveDRSObjectId(guidsForHostnameResolution);
+        //  const guidResolutions = resolveDRSObjectId(guidsForHostnameResolution);
 
         // const externalHosts = guidResolutions
         //   .filter(

@@ -1,7 +1,3 @@
-import {
-  showModal, hideModal
-} from './modalsSlice';
+import { showModal, hideModal } from './modalsSlice';
 
-export {
-  showModal, hideModal
-};
+export { showModal, hideModal };

@@ -16,24 +16,24 @@ const CredentialsTable = () => {
 
   const rows = credentials
     ? credentials.map((c: APIKey) => (
-      <tr key={c.jti}>
-        <td>{c.jti}</td>
-        <td>{unixTimeToString(c.exp)}</td>
-        <td>
-          <Button
-            leftIcon={<DeleteIcon />}
-            onClick={() =>
-              removeCredential({
-                csrfToken: csrfToken?.csrfToken ?? '',
-                id: c.jti,
-              })
-            }
-          >
+        <tr key={c.jti}>
+          <td>{c.jti}</td>
+          <td>{unixTimeToString(c.exp)}</td>
+          <td>
+            <Button
+              leftIcon={<DeleteIcon />}
+              onClick={() =>
+                removeCredential({
+                  csrfToken: csrfToken?.csrfToken ?? '',
+                  id: c.jti,
+                })
+              }
+            >
               Delete
-          </Button>
-        </td>
-      </tr>
-    ))
+            </Button>
+          </td>
+        </tr>
+      ))
     : [];
 
   return (

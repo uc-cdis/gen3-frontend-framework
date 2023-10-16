@@ -67,8 +67,8 @@ export const fetchUserState = createAsyncThunk<
 
 export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
 
-
-export const isAuthenticated = (loginStatus: LoginStatus): boolean => loginStatus === 'authenticated';
+export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
+  loginStatus === 'authenticated';
 
 export interface Gen3UserState {
   readonly data?: Gen3User;
@@ -139,7 +139,9 @@ export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
 export const useIsUserLoggedIn = (): boolean => {
-  return useCoreSelector((state) => isAuthenticated(selectUserLoginStatus(state)));
+  return useCoreSelector((state) =>
+    isAuthenticated(selectUserLoginStatus(state)),
+  );
 };
 
 /**

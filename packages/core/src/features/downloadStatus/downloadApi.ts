@@ -118,7 +118,5 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const {
-  useGetJobListQuery,
-  useGetDownloadStatusQuery
-} = loadingStatusApi;
+export const { useGetJobListQuery, useGetDownloadStatusQuery } =
+  loadingStatusApi;

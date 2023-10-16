@@ -6,9 +6,7 @@ import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
 const MANIFEST_FILENAME = 'manifest.json';
 
-
-const DownloadAsZipButton = ({ selectedResources } : ActionButtonProps) => {
-
+const DownloadAsZipButton = ({ selectedResources }: ActionButtonProps) => {
   return (
     <CartActionButton
       label="Download Zip"
@@ -20,6 +18,5 @@ const DownloadAsZipButton = ({ selectedResources } : ActionButtonProps) => {
     />
   );
 };
-
 
 export default DownloadAsZipButton;

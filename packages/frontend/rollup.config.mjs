@@ -54,12 +54,15 @@ const config = [
         },
         plugins: [tailwindcss(tailwindConfig)],
       }),
-      swc({
-        include: /\.[mc]?[jt]sx?$/,
-        exclude: /node_modules/,
-        tsconfig: 'tsconfig.json',
-        jsc: {},
-      }, swcPreserveDirectives()),
+      swc(
+        {
+          include: /\.[mc]?[jt]sx?$/,
+          exclude: /node_modules/,
+          tsconfig: 'tsconfig.json',
+          jsc: {},
+        },
+        swcPreserveDirectives(),
+      ),
     ],
   },
   {

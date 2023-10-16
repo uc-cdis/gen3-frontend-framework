@@ -5,15 +5,10 @@ import TexturedSidePanel from '../Layout/TexturedSidePanel';
 import LoginProvidersPanel from './LoginProvidersPanel';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
-import { GEN3_DOMAIN} from "@gen3/core";
+import { GEN3_DOMAIN } from '@gen3/core';
 
-
-const LoginPanel = ( loginConfig: LoginConfig) => {
-  const {
-      image,
-      topContent,
-      bottomContent,
-  } = loginConfig;
+const LoginPanel = (loginConfig: LoginConfig) => {
+  const { image, topContent, bottomContent } = loginConfig;
 
   const router = useRouter();
   const {
@@ -23,7 +18,8 @@ const LoginPanel = ( loginConfig: LoginConfig) => {
   const handleLoginSelected = async (url: string, redirect?: string) => {
     router
       .push(
-        url + (redirect ? `?redirect=${redirect}` : `?redirect=/portal/dev.html`),
+        url +
+          (redirect ? `?redirect=${redirect}` : `?redirect=/portal/dev.html`),
       )
       .catch((e) => {
         showNotification({
@@ -35,7 +31,7 @@ const LoginPanel = ( loginConfig: LoginConfig) => {
 
   return (
     <div className="flex flex-row justify-between">
-      <TexturedSidePanel url={image}/>
+      <TexturedSidePanel url={image} />
       <div className="mt-24 justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-180">
         {topContent?.map((content, index) => (
           <TextContent {...content} key={index} />

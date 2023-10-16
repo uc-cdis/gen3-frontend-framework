@@ -4,7 +4,7 @@ import Discovery from '../../features/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
 import {
   registerDiscoveryDefaultCellRenderers,
-  registerDiscoveryDefaultStudyPreviewRenderers
+  registerDiscoveryDefaultStudyPreviewRenderers,
 } from '../../features/Discovery';
 
 registerDiscoveryDefaultCellRenderers();
@@ -15,7 +15,6 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
-
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <Discovery discoveryConfig={discoveryConfig} />

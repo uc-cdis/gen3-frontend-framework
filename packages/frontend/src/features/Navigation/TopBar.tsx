@@ -23,9 +23,13 @@ const TopIconButton: React.FC<NameAndIcon> = ({
       className="flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white "
       role="button"
     >
-      {leftIcon ? <Icon icon={leftIcon} className="text-secondary-contrast-lighter" /> : null}
+      {leftIcon ? (
+        <Icon icon={leftIcon} className="text-secondary-contrast-lighter" />
+      ) : null}
       <p className="font-content secondary-contrast-lighter p-2"> {name} </p>
-      {rightIcon ? <Icon icon={rightIcon} className="text-secondary-contrast-lighter" /> : null}
+      {rightIcon ? (
+        <Icon icon={rightIcon} className="text-secondary-contrast-lighter" />
+      ) : null}
     </div>
   );
 };

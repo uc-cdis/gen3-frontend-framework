@@ -9,7 +9,9 @@ interface ButtonOptions {
   dataTestId: string;
 }
 
-const isButtonOptions = (button: ButtonOptions | JSX.Element): button is ButtonOptions => {
+const isButtonOptions = (
+  button: ButtonOptions | JSX.Element,
+): button is ButtonOptions => {
   return typeof button === 'object' && 'title' in button;
 };
 

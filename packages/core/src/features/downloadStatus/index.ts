@@ -1,9 +1,3 @@
-import {
-  useGetJobListQuery,
-  useGetDownloadStatusQuery
-} from './downloadApi';
+import { useGetJobListQuery, useGetDownloadStatusQuery } from './downloadApi';
 
-export {
-  useGetJobListQuery,
-  useGetDownloadStatusQuery
-};
+export { useGetJobListQuery, useGetDownloadStatusQuery };

@@ -16,9 +16,4 @@ export * from './features/drsResolver';
 export * from './features/modals';
 export * from './features/downloadStatus';
 
-export {
-  type CoreState,
-  GEN3_COMMONS_NAME,
-  GEN3_DOMAIN,
-  GEN3_API
-};
+export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API };

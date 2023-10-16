@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StudyTabGroup } from '../types';
 import { Text } from '@mantine/core';
 import { JSONObject } from '@gen3/core';
-import { createFieldRendererElement }  from './StudyItems';
+import { createFieldRendererElement } from './StudyItems';
 import { JSONPath } from 'jsonpath-plus';
 
 interface StudyTabGroupProps extends StudyTabGroup {
@@ -10,18 +10,24 @@ interface StudyTabGroupProps extends StudyTabGroup {
 }
 
 const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
-
-  const groupHasContent = useMemo(() => fields.some(
-    (field) => {
-      if (!field.sourceField) {
-        return false;
-      }
-      const resourceFieldValue = JSONPath({ json: data, path: field.sourceField });
-      return (resourceFieldValue
-        && resourceFieldValue.length > 0
-        && resourceFieldValue[0].length !== 0);
-    },
-  ), [fields, data]);
+  const groupHasContent = useMemo(
+    () =>
+      fields.some((field) => {
+        if (!field.sourceField) {
+          return false;
+        }
+        const resourceFieldValue = JSONPath({
+          json: data,
+          path: field.sourceField,
+        });
+        return (
+          resourceFieldValue &&
+          resourceFieldValue.length > 0 &&
+          resourceFieldValue[0].length !== 0
+        );
+      }),
+    [fields, data],
+  );
 
   if (!groupHasContent) {
     return null;
@@ -32,12 +38,12 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
       <div className="bg-accent-lightest w-full p-1 mb-4">
         <Text color="primary">{header}</Text>
       </div>
-      <div className="
-      +0p-4">
+      <div
+        className="
+      +0p-4"
+      >
         {fields.map((field) => {
-          return (
-            createFieldRendererElement(field, data as any)
-          );
+          return createFieldRendererElement(field, data as any);
         })}
       </div>
     </div>
