@@ -12,7 +12,6 @@ const StringRowRenderer = (
   { row }: RowRenderFunctionProps,
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
-
   if (!studyPreviewConfig) {
     return <React.Fragment></React.Fragment>;
   }
@@ -28,7 +27,9 @@ const StringRowRenderer = (
         width: '100%',
       }}
     >
-      <Text size="xs" lineClamp={2}>{value}</Text>
+      <Text size="xs" lineClamp={2}>
+        {value}
+      </Text>
     </Box>
   );
 };
@@ -38,7 +39,5 @@ export const Gen3DiscoveryStandardRowPreviewRenderers = {
     default: StringRowRenderer,
   },
 };
-
-
 
 export const defaultRowRenderer = StringRowRenderer;

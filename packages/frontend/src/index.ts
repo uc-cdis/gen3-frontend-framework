@@ -1,9 +1,11 @@
 export * from './features/Navigation';
 export * from './features/Discovery';
 
-export * from './features/Login';
+export * from './components/Login';
 export * from './components/Profile';
 export * from './utils/';
+
+import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 
 // export Gen3 data UI standard pages
 import Gen3Provider from './components/Providers/Gen3Provider';
@@ -21,6 +23,9 @@ import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
 
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
+
+import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
+import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
 import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
 import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
@@ -40,6 +45,11 @@ export {
   DataDictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
+  ProfilePage,
+  ProfilePageGetServerSideProps,
+  LoginPage,
+  LoginPageGetServerSideProps,
   TailwindConfig,
-  Gen3Provider
+  Gen3Provider,
+  getNavPageLayoutPropsFromConfig,
 };

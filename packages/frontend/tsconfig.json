@@ -29,11 +29,11 @@
     ]
   },
   "ts-node": {
-       "compilerOptions": {
-       "module": "ESNext",
-       "moduleResolution": "Node"
-     }
- },
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "Node"
+    }
+  },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

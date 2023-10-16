@@ -6,23 +6,25 @@ import {
   StudyPreviewField,
   RowRenderFunctionProps,
   DiscoveryRowRendererFactory,
-  useDiscoveryContext
+  useDiscoveryContext,
 } from '@gen3/frontend';
 
 const HEALRowRenderer = (
   { row }: RowRenderFunctionProps,
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
-
   const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
 
   if (!studyPreviewConfig) {
     return <React.Fragment></React.Fragment>;
   }
-  const value = JSONPath({
-    json: row.original,
-    path: studyPreviewConfig.field
-  }) ??  config?.studyPreviewField?.valueIfNotAvailable ?? '';
+  const value =
+    JSONPath({
+      json: row.original,
+      path: studyPreviewConfig.field,
+    }) ??
+    config?.studyPreviewField?.valueIfNotAvailable ??
+    '';
 
   return (
     <Box

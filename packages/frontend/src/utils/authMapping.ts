@@ -1,5 +1,4 @@
-import { UserAuthMapping } from "../features/Discovery/types";
-
+import { UserAuthMapping } from '../features/Discovery/types';
 
 export const resourcePathFromProjectID = (projectID: string) => {
   const split = projectID.split('-');
@@ -8,7 +7,12 @@ export const resourcePathFromProjectID = (projectID: string) => {
   return `/programs/${program}/projects/${project}`;
 };
 
-export const userHasMethodForServiceOnResource = (method : string, service : string, resourcePath : string, userAuthMapping : Record<string, Array<UserAuthMapping>> = {}) => {
+export const userHasMethodForServiceOnResource = (
+  method: string,
+  service: string,
+  resourcePath: string,
+  userAuthMapping: Record<string, Array<UserAuthMapping>> = {},
+) => {
   const actions = userAuthMapping[resourcePath];
   // accommodate for '*' logic
   // if we need to check for a specific service/method pair for a resource,
@@ -19,5 +23,12 @@ export const userHasMethodForServiceOnResource = (method : string, service : str
   // 2. {service: sheepdog, method: *}
   // 3. {service: *, method: update}
   // 4. {service: *, method: *}
-  return actions !== undefined && actions.some((x) => ((x.service === service || x.service === '*') && (x.method === method || x.method === '*')));
+  return (
+    actions !== undefined &&
+    actions.some(
+      (x) =>
+        (x.service === service || x.service === '*') &&
+        (x.method === method || x.method === '*'),
+    )
+  );
 };

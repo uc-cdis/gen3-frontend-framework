@@ -6,8 +6,13 @@
 const resolveDRSWithDataGUISOrg = (
   guidsForHostnameResolution: string[],
 ): Promise<string[]> => {
-  if (!Array.isArray(guidsForHostnameResolution) || !guidsForHostnameResolution.every((guid) => typeof guid === 'string')) {
-    throw new Error('Invalid input: guidsForHostnameResolution must be an array of strings');
+  if (
+    !Array.isArray(guidsForHostnameResolution) ||
+    !guidsForHostnameResolution.every((guid) => typeof guid === 'string')
+  ) {
+    throw new Error(
+      'Invalid input: guidsForHostnameResolution must be an array of strings',
+    );
   }
   return Promise.all(
     guidsForHostnameResolution.map((guid) =>

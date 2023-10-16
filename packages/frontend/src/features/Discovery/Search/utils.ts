@@ -58,18 +58,18 @@ export const getFilterValuesByKey = (
 //  function to check if search terms are empty
 export const hasSearchTerms = (searchTerms: SearchTerms): boolean => {
   return (
-    searchTerms &&
-    searchTerms.keyword.keywords &&
-    searchTerms.keyword.keywords.length > 0 ||
-    searchTerms.advancedSearchTerms &&
-    searchTerms.advancedSearchTerms.filters &&
-    Object.values(searchTerms.advancedSearchTerms.filters).some(
-      (selectedValues) => {
-        return (
-          selectedValues &&
-          Object.values(selectedValues).some((selected) => selected)
-        );
-      }
-    )
+    (searchTerms &&
+      searchTerms.keyword.keywords &&
+      searchTerms.keyword.keywords.length > 0) ||
+    (searchTerms.advancedSearchTerms &&
+      searchTerms.advancedSearchTerms.filters &&
+      Object.values(searchTerms.advancedSearchTerms.filters).some(
+        (selectedValues) => {
+          return (
+            selectedValues &&
+            Object.values(selectedValues).some((selected) => selected)
+          );
+        },
+      ))
   );
 };

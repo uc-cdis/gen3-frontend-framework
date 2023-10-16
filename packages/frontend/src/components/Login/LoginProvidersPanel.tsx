@@ -21,8 +21,8 @@ const LoginProvidersPanel = ({
     <Box className="flex flex-col items-center justify-center">
       <Stack align="center">
         <Button
-          className="text-primary-contrast"
-          color="primary"
+          className="text-primary-light-contrast"
+          color="primary-light"
           onClick={() => handleLoginSelected(data.default_provider.url)}
         >
           {data.default_provider.name}

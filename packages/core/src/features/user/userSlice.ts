@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
-import { GEN3_DOMAIN } from '../../constants';
+import { GEN3_API } from '../../constants';
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -54,7 +54,7 @@ export const fetchUserState = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user', async () => {
   return await fetchFence({
-    hostname: `${GEN3_DOMAIN}`,
+    hostname: `${GEN3_API}`,
     endpoint: '/user/user',
     method: 'GET',
     headers: {
@@ -67,8 +67,8 @@ export const fetchUserState = createAsyncThunk<
 
 export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
 
-
-export const isAuthenticated = (loginStatus: LoginStatus): boolean => loginStatus === 'authenticated';
+export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
+  loginStatus === 'authenticated';
 
 export interface Gen3UserState {
   readonly data?: Gen3User;
@@ -139,7 +139,9 @@ export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
 export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
 export const useIsUserLoggedIn = (): boolean => {
-  return useCoreSelector((state) => isAuthenticated(selectUserLoginStatus(state)));
+  return useCoreSelector((state) =>
+    isAuthenticated(selectUserLoginStatus(state)),
+  );
 };
 
 /**

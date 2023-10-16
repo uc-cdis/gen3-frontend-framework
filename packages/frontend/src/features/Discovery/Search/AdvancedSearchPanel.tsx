@@ -6,8 +6,8 @@ const AdvancedSearchPanel = (props: AdvancedSearchProps) => {
   const { opened } = props;
   return (
     <React.Fragment>
-      <CollapsableSidebar in={opened} >
-        <AdvancedSearch {...props}  />
+      <CollapsableSidebar in={opened}>
+        <AdvancedSearch {...props} />
       </CollapsableSidebar>
     </React.Fragment>
   );

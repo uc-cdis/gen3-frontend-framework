@@ -1,4 +1,7 @@
-import { ColorThemePage, ColorThemePageGetServerSideProps as  getServerSideProps} from '@gen3/frontend';
+import {
+  ColorThemePage,
+  ColorThemePageGetServerSideProps as getServerSideProps,
+} from '@gen3/frontend';
 export default ColorThemePage;
 
 export { getServerSideProps };

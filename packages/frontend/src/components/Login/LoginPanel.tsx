@@ -1,22 +1,15 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
-import TexturedSidePanel from '../../components/Layout/TexturedSidePanel';
+import TexturedSidePanel from '../Layout/TexturedSidePanel';
 import LoginProvidersPanel from './LoginProvidersPanel';
-import TextContent, {
-  TextContentProps,
-} from '../../components/Content/TextContent';
+import TextContent from '../Content/TextContent';
+import { LoginConfig } from './types';
+import { GEN3_DOMAIN } from '@gen3/core';
 
-export interface LoginPanelProps {
-  readonly sideTexture?: string;
-  topContent?: ReadonlyArray<TextContentProps>;
-  bottomContent?: ReadonlyArray<TextContentProps>;
-}
-const LoginPanel = ({
-  sideTexture,
-  topContent,
-  bottomContent,
-}: LoginPanelProps) => {
+const LoginPanel = (loginConfig: LoginConfig) => {
+  const { image, topContent, bottomContent } = loginConfig;
+
   const router = useRouter();
   const {
     query: { redirect },
@@ -26,7 +19,7 @@ const LoginPanel = ({
     router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : '?redirect=https://localhost/'),
+          (redirect ? `?redirect=${redirect}` : `?redirect=/portal/dev.html`),
       )
       .catch((e) => {
         showNotification({
@@ -38,7 +31,7 @@ const LoginPanel = ({
 
   return (
     <div className="flex flex-row justify-between">
-      <TexturedSidePanel />
+      <TexturedSidePanel url={image} />
       <div className="mt-24 justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-180">
         {topContent?.map((content, index) => (
           <TextContent {...content} key={index} />

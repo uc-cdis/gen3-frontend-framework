@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import {  KeyValueSearchFilter } from '../types';
+import { KeyValueSearchFilter } from '../types';
 import { Accordion, Button, SegmentedControl } from '@mantine/core';
 import { MdUndo as UndoIcon } from 'react-icons/md';
 import SearchFilters from './SearchFilters';
-import { SearchCombination, SearchFilterState, SetAdvancedSearchFiltersFn } from './types';
-
-
+import {
+  SearchCombination,
+  SearchFilterState,
+  SetAdvancedSearchFiltersFn,
+} from './types';
 
 export interface AdvancedSearchProps {
-  advSearchFilters: ReadonlyArray<KeyValueSearchFilter>
+  advSearchFilters: ReadonlyArray<KeyValueSearchFilter>;
   setAdvancedSearchFilters: SetAdvancedSearchFiltersFn;
   opened: boolean;
 }
@@ -62,7 +64,9 @@ const AdvancedSearch = ({
         <Accordion className="mt-2" radius="sm" multiple>
           {advSearchFilters.map((filter) => {
             const { key, keyDisplayName, valueDisplayNames } = filter;
-            const values = valueDisplayNames ? Object.values(valueDisplayNames) : [];
+            const values = valueDisplayNames
+              ? Object.values(valueDisplayNames)
+              : [];
             return (
               <Accordion.Item
                 value={key}

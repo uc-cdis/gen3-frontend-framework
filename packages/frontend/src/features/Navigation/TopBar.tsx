@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
-import LoginButton from '../Login/LoginButton';
-import LoginAccountButton from '../Login/LoginAccountButton';
+import LoginButton from '../../components/Login/LoginButton';
+import LoginAccountButton from '../../components/Login/LoginAccountButton';
 
 export interface NameAndIcon {
   readonly name: string;
@@ -23,9 +23,13 @@ const TopIconButton: React.FC<NameAndIcon> = ({
       className="flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white "
       role="button"
     >
-      {leftIcon ? <Icon icon={leftIcon} className="text-secondary-contrast-lighter" /> : null}
+      {leftIcon ? (
+        <Icon icon={leftIcon} className="text-secondary-contrast-lighter" />
+      ) : null}
       <p className="font-content secondary-contrast-lighter p-2"> {name} </p>
-      {rightIcon ? <Icon icon={rightIcon} className="text-secondary-contrast-lighter" /> : null}
+      {rightIcon ? (
+        <Icon icon={rightIcon} className="text-secondary-contrast-lighter" />
+      ) : null}
     </div>
   );
 };

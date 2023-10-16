@@ -1,10 +1,16 @@
 import React, { forwardRef } from 'react';
 import { useReducedMotion } from '@mantine/hooks';
-import { DefaultProps, useComponentDefaultProps, useMantineTheme } from '@mantine/styles';
+import {
+  DefaultProps,
+  useComponentDefaultProps,
+  useMantineTheme,
+} from '@mantine/styles';
 import { Box, extractSystemStyles } from '@mantine/core';
 import { useCollapsableSidebar } from './use-collapsable-sidebar';
 
-export interface CollapsableSidebarProps extends DefaultProps, React.ComponentPropsWithoutRef<'div'> {
+export interface CollapsableSidebarProps
+  extends DefaultProps,
+    React.ComponentPropsWithoutRef<'div'> {
   /** Content that should be collapsed */
   children: React.ReactNode;
 
@@ -30,7 +36,10 @@ const defaultProps: Partial<CollapsableSidebarProps> = {
   animateOpacity: true,
 };
 
-export const CollapsableSidebar = forwardRef<HTMLDivElement, CollapsableSidebarProps>((props, ref) => {
+export const CollapsableSidebar = forwardRef<
+  HTMLDivElement,
+  CollapsableSidebarProps
+>((props, ref) => {
   const {
     children,
     in: opened,
@@ -59,15 +68,18 @@ export const CollapsableSidebar = forwardRef<HTMLDivElement, CollapsableSidebarP
     return opened ? <Box {...rest}>{children}</Box> : null;
   }
 
-
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    <Box {...getCollapsableSidebarProps({ style, ref , ...rest, ...systemStyles })}>
+    <Box
+      {...getCollapsableSidebarProps({ style, ref, ...rest, ...systemStyles })}
+    >
       <div
         style={{
           opacity: opened || !animateOpacity ? 1 : 0,
-          transition: animateOpacity ? `opacity ${duration}ms ${transitionTimingFunction}` : 'none',
+          transition: animateOpacity
+            ? `opacity ${duration}ms ${transitionTimingFunction}`
+            : 'none',
         }}
       >
         {children}

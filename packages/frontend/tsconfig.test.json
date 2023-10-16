@@ -16,7 +16,7 @@
     "jsx": "react-jsx",
     "resolveJsonModule": true,
     "incremental": true,
-    "noEmitOnError": true,
+    "noEmitOnError": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

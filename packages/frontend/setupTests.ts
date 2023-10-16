@@ -1,5 +1,5 @@
-import "@testing-library/jest-dom";
-import { loadEnvConfig } from "@next/env";
+import '@testing-library/jest-dom';
+import { loadEnvConfig } from '@next/env';
 
 window.ResizeObserver =
   window.ResizeObserver ||
@@ -9,24 +9,24 @@ window.ResizeObserver =
     unobserve: jest.fn(),
   }));
 
-window.URL.createObjectURL = (input: any) => "";
+window.URL.createObjectURL = (input: any) => '';
 
 loadEnvConfig(__dirname, true, { info: () => null, error: console.error });
 
-jest.mock("url-join", () => ({
+jest.mock('url-join', () => ({
   urlJoin: jest.fn(),
 }));
 
-jest.mock("next/conf.d", () => () => ({
+jest.mock('next/conf.d', () => () => ({
   publicRuntimeConfig: {
-    basePath: "/v2",
+    basePath: '/v2',
   },
 }));
 
-jest.mock("dom-to-svg", () => ({
+jest.mock('dom-to-svg', () => ({
   elementToSVG: jest.fn(),
 }));
 
-jest.mock("url-join", () => ({
+jest.mock('url-join', () => ({
   urlJoin: jest.fn(),
 }));

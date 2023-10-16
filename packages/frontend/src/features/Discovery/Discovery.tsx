@@ -61,7 +61,7 @@ const Discovery = ({
     dataRequestStatus,
     advancedSearchFilterValues,
     suggestions,
-    summaryStatistics
+    summaryStatistics,
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -80,16 +80,15 @@ const Discovery = ({
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
           <div className="flex items-center m-2">
-            <SummaryStatisticPanel
-              summaries={summaryStatistics}
-            />
+            <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="flex-grow"></div>
             <div className="w-full">
               <SearchInputWithSuggestions
                 suggestions={suggestions}
                 searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
-                  discoveryConfig?.features?.search?.searchBar?.placeholder ?? 'Search...'
+                  discoveryConfig?.features?.search?.searchBar?.placeholder ??
+                  'Search...'
                 }
                 label={
                   discoveryConfig?.features?.search?.searchBar?.inputSubtitle

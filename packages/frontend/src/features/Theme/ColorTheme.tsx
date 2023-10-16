@@ -263,8 +263,8 @@ const ColorTheme = () => {
       <p className="prose font-semibold text-2xl">Color Palettes</p>
       <div className="flex flex-col">
         <div>
-          The following theme colors are are currently available in this Gen3 Data
-          Commons.
+          The following theme colors are are currently available in this Gen3
+          Data Commons.
         </div>
         {Object.keys(Gen3FrontEndColors).map((name: string) => {
           return (

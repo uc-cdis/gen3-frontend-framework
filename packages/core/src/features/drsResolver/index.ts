@@ -1,7 +1,3 @@
+import { drsHostnamesReducer, setDRSHostnames } from './drsHostnameSlice';
 
-import { drsHostnamesReducer, setDRSHostnames} from './drsHostnameSlice';
-
-export {
-  drsHostnamesReducer,
-  setDRSHostnames
-};
+export { drsHostnamesReducer, setDRSHostnames };

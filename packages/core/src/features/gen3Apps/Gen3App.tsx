@@ -179,8 +179,8 @@ export const createGen3AppWithOwnStore = <
   A extends Action = AnyAction,
   S = any,
 >(
-    options: CreateGen3AppWithOwnStoreOptions<A, S>,
-  ): React.ReactNode => {
+  options: CreateGen3AppWithOwnStoreOptions<A, S>,
+): React.ReactNode => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
 

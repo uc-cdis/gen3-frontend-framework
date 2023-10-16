@@ -10,10 +10,12 @@ export interface AdvancedSearchTerms {
 }
 
 export enum AccessSortDirection {
-  ASCENDING = 'sort ascending', DESCENDING = 'sort descending', NONE = 'cancel sorting'
+  ASCENDING = 'sort ascending',
+  DESCENDING = 'sort descending',
+  NONE = 'cancel sorting',
 }
 
-export type SetAdvancedSearchFiltersFn = ( params: AdvancedSearchTerms ) => void;
+export type SetAdvancedSearchFiltersFn = (params: AdvancedSearchTerms) => void;
 
 export interface SearchInputProps {
   searchChanged: (searchTerm: string) => void;

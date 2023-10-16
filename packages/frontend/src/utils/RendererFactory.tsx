@@ -24,7 +24,7 @@ interface RendererFactorInterface<T> {
 }
 
 export class RenderFactoryTypedInstance<T>
-implements RendererFactorInterface<T>
+  implements RendererFactorInterface<T>
 {
   private catalog: Record<string, RendererFunctionCatalogEntry<T>>;
 
@@ -93,5 +93,4 @@ implements RendererFactorInterface<T>
     }
     return false;
   }
-
 }

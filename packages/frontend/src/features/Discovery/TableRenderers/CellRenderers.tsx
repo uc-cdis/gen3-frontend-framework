@@ -1,5 +1,5 @@
 import { isArray } from 'lodash';
-import React  from 'react';
+import React from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
@@ -10,9 +10,8 @@ import { DataAccessCellRenderer } from './DataAccessCellRenderers';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
-  value
+  value,
 }: CellRenderFunctionProps) => {
-
   if (isArray(value)) {
     return (
       <div className="w-64 flex flex-wrap gap-0.5">
@@ -34,7 +33,7 @@ export const RenderArrayCell: CellRendererFunction = ({
 
 export const RenderArrayCellNegativePositive = ({
   value,
-  cell
+  cell,
 }: CellRenderFunctionProps) => {
   if (isArray(value)) {
     return (
@@ -57,7 +56,7 @@ export const RenderArrayCellNegativePositive = ({
 };
 
 export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
-  const content = value  as string;
+  const content = value as string;
   return (
     <Link
       href={content}
@@ -156,7 +155,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   dataAccess: {
     default: DataAccessCellRenderer,
-  }
+  },
 };
 
 export const registerDiscoveryDefaultCellRenderers = () => {

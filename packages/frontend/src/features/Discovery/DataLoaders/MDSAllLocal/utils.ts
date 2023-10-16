@@ -37,12 +37,10 @@ export const processSummary = (
   }
 };
 
-
 export const processAllSummaries = (
   data: JSONObject[],
   summaries: SummaryStatisticsConfig[],
 ) => {
-
   if (!Array.isArray(data)) {
     throw new Error('Invalid input: data must be an array.');
   }
@@ -50,13 +48,13 @@ export const processAllSummaries = (
     throw new Error('Invalid input: summaries must be an array.');
   }
 
-  return summaries.reduce((acc,summary) => {
+  return summaries.reduce((acc, summary) => {
     return [
       ...acc,
       {
         ...summary,
         value: processSummary(data, summary),
-      }
+      },
     ];
   }, [] as SummaryStatistics);
 };

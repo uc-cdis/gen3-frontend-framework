@@ -8,16 +8,20 @@ import {
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
-  AdvancedSearchFilters, DiscoverDataHookResponse,
+  AdvancedSearchFilters,
+  DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
-  SearchTerms
+  SearchTerms,
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics, SummaryStatisticsDisplayData } from '../../Statistics/types';
+import {
+  SummaryStatistics,
+  SummaryStatisticsDisplayData,
+} from '../../Statistics/types';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -359,7 +363,7 @@ export const useLoadAllData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) : DiscoverDataHookResponse => {
+}: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const {
@@ -417,6 +421,6 @@ export const useLoadAllData = ({
       isLoading,
       isSuccess,
       isError,
-    }
+    },
   };
 };

@@ -1,6 +1,5 @@
 import { gen3Api } from '../gen3';
-import { JSONObject} from '../../types';
-
+import { JSONObject } from '../../types';
 
 const graphQLWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['graphQL'],
@@ -9,7 +8,7 @@ const graphQLWithTags = gen3Api.enhanceEndpoints({
 export const graphQLAPI = graphQLWithTags.injectEndpoints({
   endpoints: (builder) => ({
     graphQL: builder.query<JSONObject, JSONObject>({
-      query: (graphQLParams ) => ({
+      query: (graphQLParams) => ({
         url: '/graphql',
         method: 'POST',
         credentials: 'include',
@@ -17,11 +16,9 @@ export const graphQLAPI = graphQLWithTags.injectEndpoints({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(graphQLParams),
-      })
-    })
-  })
+      }),
+    }),
+  }),
 });
 
-export const {
-  useGraphQLQuery
-} = graphQLAPI;
+export const { useGraphQLQuery } = graphQLAPI;

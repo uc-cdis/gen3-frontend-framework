@@ -14,7 +14,11 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject, MetadataResponse } from '@gen3/core';
-import { OnChangeFn, PaginationState, SortingState } from '@tanstack/table-core';
+import {
+  OnChangeFn,
+  PaginationState,
+  SortingState,
+} from '@tanstack/table-core';
 import { DataRequestStatus } from './types';
 
 const extractCellValue =
@@ -24,7 +28,7 @@ const extractCellValue =
 
 interface DiscoveryTableProps {
   data: JSONObject[];
-  hits: number,
+  hits: number;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
@@ -97,7 +101,7 @@ const DiscoveryTable = ({
         'mrt-row-expand': false,
       },
     },
-     // TODO expand to highlight row/detail row on hover
+    // TODO expand to highlight row/detail row on hover
     // mantineTableBodyRowProps: {
     //   onMouseEnter: (row) => {
     //     console.log('mouse enter', row);
@@ -126,8 +130,8 @@ const DiscoveryTable = ({
         return {
           backgroundColor: theme.colors.base[9],
         };
-      }
-    }
+      },
+    },
   });
 
   return (

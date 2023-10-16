@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Fetcher,
-} from '@graphiql/toolkit';
+import { Fetcher } from '@graphiql/toolkit';
 
-import { GEN3_API, } from '@gen3/core';
+import { GEN3_API } from '@gen3/core';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import {
   EditorContextProvider,
@@ -26,10 +24,11 @@ import { GqlQueryEditorProps } from './types';
 //   return data ?? {};
 // };
 
-const GqlQueryEditorPanel : React.FC<GqlQueryEditorProps> = ({ graphQLEndpoint }: GqlQueryEditorProps) => {
+const GqlQueryEditorPanel: React.FC<GqlQueryEditorProps> = ({
+  graphQLEndpoint,
+}: GqlQueryEditorProps) => {
   const [query, setQuery] = useState('');
-//  const [variables, setVariables] = useState"(""");
-
+  //  const [variables, setVariables] = useState"(""");
 
   const fetcher: Fetcher = async (graphQLParams) => {
     const data = await fetch(graphQLEndpoint || `${GEN3_API}/graphql`, {
@@ -43,10 +42,9 @@ const GqlQueryEditorPanel : React.FC<GqlQueryEditorProps> = ({ graphQLEndpoint }
     return data.json().catch(() => data.text());
   };
 
-  const explorer = explorerPlugin( {
+  const explorer = explorerPlugin({
     showAttribution: true,
   });
-
 
   return (
     <div className="flex h-full">
