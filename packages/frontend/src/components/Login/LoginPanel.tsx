@@ -19,7 +19,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=/portal/dev.html`),
+          (redirect ? `?redirect=${redirect}` : `?redirect=${GEN3_DOMAIN}`),
       )
       .catch((e) => {
         showNotification({
