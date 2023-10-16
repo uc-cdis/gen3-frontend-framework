@@ -9,8 +9,6 @@ export interface CSRFToken {
   readonly csrfToken: string;
 }
 
-console.log('GEN3_API: ', GEN3_API);
-
 export const gen3Api = coreCreateApi({
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({
