@@ -6,7 +6,7 @@
     "lint": "next lint",
     "dev": "next dev",
     "build": "next build",
-    "start": "npm run setupCommons && next start",
+    "start": "next start",
     "setupCommons": "npm run buildColors && npm run getSchema && npm run getDRSToHostname",
     "buildColors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@gen3/core": "0.1.0",
-    "@gen3/frontend": "0.1.13"
+    "@gen3/frontend": "0.1.13",
+    "cookies-next": "^4.0.0",
+    "jose": "^4.15.4"
   },
   "devDependencies": {
     "@gen3/toolsff": "0.1.0",

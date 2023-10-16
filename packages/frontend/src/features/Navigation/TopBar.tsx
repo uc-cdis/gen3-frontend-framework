@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
-import LoginButton from '../Login/LoginButton';
-import LoginAccountButton from '../Login/LoginAccountButton';
+import LoginButton from '../../components/Login/LoginButton';
+import LoginAccountButton from '../../components/Login/LoginAccountButton';
 
 export interface NameAndIcon {
   readonly name: string;

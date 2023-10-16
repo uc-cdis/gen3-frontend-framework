@@ -16,7 +16,7 @@ const LoginButton = () => {
 
   return (
     <UnstyledButton
-      className="mx-2 "
+      className="mx-2"
       onClick={() => handleSelected(isAuthenticated(loginStatus))}
     >
       <div className="flex items-center hover:border-b-1 border-white secondary-contrast-lighter font-medium font-heading ">

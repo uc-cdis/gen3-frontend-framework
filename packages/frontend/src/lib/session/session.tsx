@@ -6,8 +6,8 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_DOMAIN,
-} from '@gen3/core';
+  GEN3_DOMAIN, GEN3_API
+} from "@gen3/core";
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
@@ -37,7 +37,7 @@ const SessionContext = React.createContext<Session | undefined>(undefined);
 
 const getSession = async () => {
   try {
-    const res = await fetch('/api/auth/sessionToken');
+    const res = await fetch(`${GEN3_API}/api/auth/sessionToken`);
     if (res.status === 200) {
       return await res.json();
     }
@@ -74,7 +74,7 @@ export const useSession = (
 
 const logoutUser = (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages if on the server
-  router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
+  router.push(`${GEN3_API}/user/logout?next=${GEN3_DOMAIN}/`);
 };
 
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
