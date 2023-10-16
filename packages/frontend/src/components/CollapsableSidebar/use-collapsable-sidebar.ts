@@ -30,9 +30,7 @@ interface GetCollapseProps {
   style?: React.CSSProperties;
   onTransitionEnd?: (e: TransitionEvent) => void;
   refKey?: string;
-  ref?:
-    | React.MutableRefObject<HTMLDivElement>
-    | ((node: HTMLDivElement) => void);
+  ref? : React.ForwardedRef<HTMLDivElement>;
 }
 
 export function useCollapsableSidebar({
