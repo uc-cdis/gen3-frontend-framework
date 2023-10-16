@@ -8,14 +8,14 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 export const LoginPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  const loginProps: LoginConfig = await ContentSource.get(
+  const loginConfig: LoginConfig = await ContentSource.get(
     `config/${GEN3_COMMONS_NAME}/login.json`,
   );
 
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...loginProps,
+      ...loginConfig,
     },
   };
 };

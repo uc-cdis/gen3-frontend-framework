@@ -2,12 +2,10 @@ import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import LoginPanel from '../../components/Login/LoginPanel';
 import { type LoginConfig } from '../../components/Login';
 import React from 'react';
+import { LoginPageLayoutProps } from './types';
 
-interface Props extends NavPageLayoutProps {
-  loginConfig: LoginConfig;
-}
 
-const LoginPage = ({ headerProps, footerProps, loginConfig }: Props) => {
+const LoginPage = ({ headerProps, footerProps, loginConfig }: LoginPageLayoutProps) => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <LoginPanel {...loginConfig} />
