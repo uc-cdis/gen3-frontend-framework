@@ -5,6 +5,8 @@ export * from './components/Login';
 export * from './components/Profile';
 export * from './utils/';
 
+import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
+
 // export Gen3 data UI standard pages
 import Gen3Provider from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/Discovery';
@@ -44,4 +46,5 @@ export {
   LoginPageGetServerSideProps,
   TailwindConfig,
   Gen3Provider,
+  getNavPageLayoutPropsFromConfig
 };
