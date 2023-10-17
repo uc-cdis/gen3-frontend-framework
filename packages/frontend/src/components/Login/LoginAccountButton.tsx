@@ -18,8 +18,8 @@ const LoginAccountButton = () => {
   const { data: user, loginStatus } = useCoreSelector(selectUserData);
 
   return isAuthenticated(loginStatus) ? (
-    <UnstyledButton className="mx-2 " onClick={() => handleSelected()}>
-      <div className="flex items-center hover:border-b-1 border-white text-primary-contrast font-medium font-heading ">
+    <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
+      <div className="flex items-center hover:border-b-1 border-primary-darker text-primary-contrast font-medium font-heading ">
         {user?.username}
       </div>
     </UnstyledButton>

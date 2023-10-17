@@ -19,7 +19,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=/portal/dev.html`),
+          (redirect ? `?redirect=${redirect}` : `?redirect=${GEN3_DOMAIN}`),
       )
       .catch((e) => {
         showNotification({
@@ -30,12 +30,13 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   };
 
   return (
-    <div className="flex flex-row justify-between">
+    <div className="grid grid-cols-6">
       <TexturedSidePanel url={image} />
-      <div className="mt-24 justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-180">
+      <div className="col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
         {topContent?.map((content, index) => (
           <TextContent {...content} key={index} />
         ))}
+
 
         <LoginProvidersPanel
           handleLoginSelected={handleLoginSelected}
@@ -46,7 +47,8 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           <TextContent {...content} key={index} />
         ))}
       </div>
-      <TexturedSidePanel />
+      <TexturedSidePanel url={image} />
+
     </div>
   );
 };
