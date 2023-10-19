@@ -11,4 +11,6 @@
 
 ### Default Charting Libraries
 
-Victory Charts - https://formidable.com/open-source/victory/docs/victory-chart/
+- Victory Charts - https://formidable.com/open-source/victory/docs/victory-chart/
+Pending:
+- echarts - https://echarts.apache.org/en/index.html
