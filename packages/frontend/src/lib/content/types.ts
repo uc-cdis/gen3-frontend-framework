@@ -17,3 +17,9 @@ export interface RegisteredIcons {
   width: number;
   height: number;
 }
+
+export interface Fonts {
+  heading: string| string[];
+  content: string | string[];
+  fontFamily: string;
+}

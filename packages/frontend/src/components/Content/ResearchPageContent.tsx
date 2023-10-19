@@ -20,10 +20,10 @@ const ResearchPageContent = ({
       <div className="py-10 text-sm px-20">
         <Link href={'/'}>Home&nbsp;</Link>
         {' > '}
-        <span className="text-heal-primary">&nbsp;{title}</span>
+        <span className="text-primary">&nbsp;{title}</span>
       </div>
       <div className="text-md px-20">
-        <Text className="font-bold text-4xl text-gen3-coal font-montserrat pb-8">
+        <Text className="font-bold text-4xl text-gen3-coal font-heading pb-8">
           {title}
         </Text>
         <MultiPartText parts={introduction} />

@@ -7,7 +7,7 @@ import {
 } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
-import { type RegisteredIcons } from '../../lib/content/types';
+import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 
@@ -26,12 +26,14 @@ const getEmotionCache = (): EmotionCache => {
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
+  fonts:  Fonts;
   children?: ReactNode | undefined;
 }
 
 const Gen3Provider: React.FC<Gen3ProviderProps> = ({
   colors,
   icons,
+                                                     fonts,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -45,7 +47,7 @@ const Gen3Provider: React.FC<Gen3ProviderProps> = ({
         withNormalizeCSS
         emotionCache={getEmotionCache()}
         theme={{
-          fontFamily: 'Montserrat, Noto Sans, sans-serif',
+          fontFamily: fonts.fontFamily,
           colors: {
             ...colors,
           },

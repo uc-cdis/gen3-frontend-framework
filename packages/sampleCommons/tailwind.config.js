@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const plugin = require('tailwindcss/plugin');
-const themer = require('./config/theme.json');
+const themeColors = require('./config/themeColors.json');
+const themeFonts = require('./config/themeFonts.json');
 
 module.exports = {
   presets: [require('@gen3/frontend/tailwind')],
@@ -55,11 +56,11 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
-        ...themer,
+        ...themeColors,
       },
       fontFamily: {
-        montserrat: ['Montserrat', 'sans-serif'],
-        sans: ['Source Sans Pro', 'sans-serif'],
+        heading: themeFonts.heading,
+        content: themeFonts.content,
       },
       fontSize: {
         tiny: '0.625rem',
@@ -107,6 +108,7 @@ module.exports = {
       addUtilities(newUtilities);
     }),
     plugin(function ({ addComponents }) {
+      // TODO remove these
       addComponents({
         '.heal-btn': {
           display: 'inline-block',

@@ -28,7 +28,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
       >
         <div className="flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:accent opacity-80 hover:opacity-100">
           <Icon height="27px" icon={icon} className="mt-[2px] ml-[4px]" />
-          <p className="content-center pt-1.5 font-montserrat body-typo">
+          <p className="content-center pt-1.5 font-content body-typo">
             {name}
           </p>
         </div>
@@ -47,7 +47,7 @@ const NavigationLogo = ({
   basePath = '',
 }: NavigationBarLogo) => {
   return (
-    <div className="relative flex flex-row h-full items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
+    <div className="relative flex flex-row h-full items-center align-middle font-heading font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
       <HoverLink className="w-32 h-full" href={'/'}>
         <Image
           className="pr-3 object-contain"
@@ -59,7 +59,7 @@ const NavigationLogo = ({
       {title && (
         <div className="border-solid border-base-darker border-l-1 ml-1 mr-3 h-32 w-1 ">
           <HoverLink
-            className="font-montserrat h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3"
+            className="font-heading h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3"
             href={'/'}
           ></HoverLink>
         </div>
@@ -74,7 +74,7 @@ const NavigationBar: React.FC<NavigationProps> = ({
 }: NavigationProps) => {
   return (
     <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
-      <div className="flex flex-row items-center align-middle font-montserrat font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
+      <div className="flex flex-row items-center align-middle font-heading font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
         {logo && <NavigationLogo {...{ ...logo }} />}
       </div>
       <div className="flex-grow">{/* middle section of header */}</div>
