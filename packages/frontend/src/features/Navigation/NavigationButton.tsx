@@ -12,7 +12,7 @@ const NavigationButton = ({ $selected, ...props }: NavigationButtonProps) => {
       color={$selected ? 'white' : 'gray'}
       variant={$selected ? 'filled' : 'outline'}
       size="lg"
-      className="subpixel-antialiased shadow rounded-lg text-base font-montserrat font-medium transition hover:bg-heal-purple hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)] hover:border-white hover:underline"
+      className="subpixel-antialiased shadow rounded-lg text-base font-heading font-medium transition hover:bg-heal-purple hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)] hover:border-white hover:underline"
     />
   );
 };

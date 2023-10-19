@@ -46,7 +46,7 @@ const TopBar: React.FC<TopBarProps> = ({
   return (
     <div>
       <header className="flex flex-row justify-end items-center align-middle w-100 h-10 bg-secondary-lighter">
-        <nav className="flex flex-row items-center align-middle font-montserrat">
+        <nav className="flex flex-row items-center align-middle font-heading">
           {items.map((x) => {
             return (
               <a className="flex flex-row" href={`${x.href}`} key={x.href}>

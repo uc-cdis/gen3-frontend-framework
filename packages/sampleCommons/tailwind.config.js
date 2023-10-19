@@ -58,8 +58,10 @@ module.exports = {
         ...themer,
       },
       fontFamily: {
-        montserrat: ['Montserrat', 'sans-serif'],
-        sans: ['Source Sans Pro', 'sans-serif'],
+        montserrat: ["Montserrat", "sans-serif"],
+        heading: ["Montserrat", "sans-serif"],
+        content: ["Noto Sans", "sans-serif"],
+        "content-noto": ["Noto Sans", "sans-serif"],
       },
       fontSize: {
         tiny: '0.625rem',

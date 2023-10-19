@@ -26,12 +26,14 @@ const getEmotionCache = (): EmotionCache => {
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
+  fontFamily: string;
   children?: ReactNode | undefined;
 }
 
 const Gen3Provider: React.FC<Gen3ProviderProps> = ({
   colors,
   icons,
+                                                     fontFamily,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -45,7 +47,7 @@ const Gen3Provider: React.FC<Gen3ProviderProps> = ({
         withNormalizeCSS
         emotionCache={getEmotionCache()}
         theme={{
-          fontFamily: 'Montserrat, Noto Sans, sans-serif',
+          fontFamily: fontFamily,
           colors: {
             ...colors,
           },
