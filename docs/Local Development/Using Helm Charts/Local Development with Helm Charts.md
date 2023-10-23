@@ -60,4 +60,5 @@ local-ssl-proxy --source 3010 --target 3000 --cert certificates/fullchain.cert -
    Or, if using Safari for feature testing with a logged-in user, click Develop -> Disable Cross-Origin Restrictions..
 
 3. After these steps, you can access the commons on `https://localhost:3010`
-4. You can test if Auth is working by clicking on the login button. You should be redirected to the google login page.
+4. You will likely see a warning about a self-signed certificate. You can ignore this warning and accept the certificate.
+5. You can test if fence login is working by clicking on the login button. You should be redirected to the google login page.
