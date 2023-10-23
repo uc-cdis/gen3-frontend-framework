@@ -8,7 +8,7 @@ const LoginButton = () => {
   const router = useRouter();
 
   const handleSelected = async (isAuthenticated: boolean) => {
-    if (!isAuthenticated) await router.push(`${GEN3_DOMAIN}/Login`);
+    if (!isAuthenticated) await router.push('Login');
     else await router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
   };
 

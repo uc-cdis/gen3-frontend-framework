@@ -38,7 +38,7 @@ const SessionContext = React.createContext<Session | undefined>(undefined);
 
 const getSession = async () => {
   try {
-    const res = await fetch(`${GEN3_API}/api/auth/sessionToken`);
+    const res = await fetch(`/api/auth/sessionToken`);
     if (res.status === 200) {
       return await res.json();
     }
@@ -66,7 +66,7 @@ export const useSession = (
       if (typeof window === 'undefined')
         // route not available on SSR
         return session;
-      router.push('/Login');
+      router.push('Login');
     }
   }
 

@@ -55,7 +55,7 @@ export const fetchUserState = createAsyncThunk<
 >('fence/user', async () => {
   return await fetchFence({
     hostname: `${GEN3_API}`,
-    endpoint: '/user/user',
+    endpoint: 'user/user',
     method: 'GET',
     headers: {
       Accept: 'application/json',

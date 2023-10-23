@@ -7,6 +7,13 @@ import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_DOMAIN } from '@gen3/core';
 
+const stripTrailingSlash = (str:string):string => {
+  return str.endsWith('/') ?
+    str.slice(0, -1) :
+    str;
+};
+
+
 const LoginPanel = (loginConfig: LoginConfig) => {
   const { image, topContent, bottomContent } = loginConfig;
 
@@ -19,7 +26,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=${GEN3_DOMAIN}`),
+          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}:3010/Profile`),
       )
       .catch((e) => {
         showNotification({
