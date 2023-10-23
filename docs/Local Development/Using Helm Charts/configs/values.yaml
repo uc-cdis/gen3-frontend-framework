@@ -6,25 +6,33 @@ global:
   frontendRoot: gen3ff
 fence:
   FENCE_CONFIG:
+    LOGIN_REDIRECT_WHITELIST: [https://localhost:3010]
     OPENID_CONNECT:
       google:
         client_id: <add google client id>
         client_secret: <add google client secret>
 
-wts:
-  enabled: false
 
-portal:
+ambassador:
   enabled: false
-
-peregrine:
-  enabled: false
-
-frontend-framework:
-  enabled: true
 
 argo-wrapper:
   enabled: false
 
 hatchery:
-  enabled: true
+  enabled: false
+
+peregrine:
+  enabled: false
+
+pidgin:
+  enabled: false
+
+portal:
+  enabled: false
+
+sower:
+  enabled: false
+
+wts:
+  enabled: false
