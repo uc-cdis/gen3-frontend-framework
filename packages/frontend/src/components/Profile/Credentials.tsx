@@ -17,21 +17,22 @@ const Credentials = () => {
 
   return (
     <React.Fragment>
-      <Stack className="w-1/2 p-2">
+      <Stack className="w-full p-2">
+        <div className="flex">
+          <Button color="accent.4"
+            onClick={() => {
+              if (csrfToken) addNewCredential(csrfToken.csrfToken);
+            }}
+          >
+            Create an API Key
+          </Button>
+        </div>
         {isLoading || isNewLoading ? (
           <Card>Loading...</Card>
         ) : (
           <CredentialsTable />
         )}
-        <div className="flex justify-center">
-          <Button
-            onClick={() => {
-              if (csrfToken) addNewCredential(csrfToken.csrfToken);
-            }}
-          >
-            Add Credentials
-          </Button>
-        </div>
+
       </Stack>
     </React.Fragment>
   );
