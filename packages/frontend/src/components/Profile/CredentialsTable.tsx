@@ -1,5 +1,5 @@
-import React, {useMemo } from 'react';
-import { ActionIcon, Box, Table } from "@mantine/core";
+import React, { useMemo } from 'react';
+import { ActionIcon, Box, Table } from '@mantine/core';
 import {
   useGetCredentialsQuery,
   useRemoveCredentialMutation,
@@ -8,7 +8,7 @@ import {
 } from '@gen3/core';
 import { MdDelete as DeleteIcon } from 'react-icons/md';
 import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
-import { unixTimeToString } from "../../utils";
+import { unixTimeToString } from '../../utils';
 
 const SOON_IN_DAYS = 86400 * 5;
 
@@ -21,24 +21,23 @@ import {
 
 const getStatus = (expiration: number, now: number) => {
   if (expiration < now) return 'Expired';
-  else if ((expiration - now) < SOON_IN_DAYS ) return 'Expiring Soon';
+  else if (expiration - now < SOON_IN_DAYS) return 'Expiring Soon';
   return 'Active';
 };
 
 interface APIKeyStatus {
-  actions: "delete" | "refreshDelete";
+  actions: 'delete' | 'refreshDelete';
   expiration: number;
   key: string;
   status: string;
 }
-
 
 const CredentialsTable = () => {
   const { data: csrfToken } = useGetCSRFQuery();
   const { data: credentials } = useGetCredentialsQuery();
   const [removeCredential] = useRemoveCredentialMutation();
 
-  const columns  =  useMemo(() => {
+  const columns = useMemo(() => {
     return [
       {
         accessorKey: 'key',
@@ -51,41 +50,55 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) => unixTimeToString(apiKey.expiration), // pragma: allowlist-secret
+        accessorFn: (apiKey: APIKeyStatus) =>
+          unixTimeToString(
+            // pragma: allowlist-secret
+            apiKey.expiration
+          ),
       },
       {
         accessorKey: 'actions',
         header: 'Actions',
-        Cell: ({  row } : MRT_Cell<APIKeyStatus> ) => (
+        Cell: ({ row }: MRT_Cell<APIKeyStatus>) => (
           <div className="flex items-center">
-            {row.original.actions=== 'delete' ? (
-              <ActionIcon onClick={() => removeCredential({
-                csrfToken: csrfToken?.csrfToken,
-                id: row.original.key,
-              })}>
+            {row.original.actions === 'delete' ? (
+              <ActionIcon
+                onClick={() =>
+                  removeCredential({
+                    csrfToken: csrfToken?.csrfToken,
+                    id: row.original.key,
+                  })
+                }
+              >
                 <DeleteIcon />
-              </ActionIcon>): (<span> <RefreshIcon /> <DeleteIcon /></span>)}
+              </ActionIcon>
+            ) : (
+              <span>
+                {' '}
+                <RefreshIcon /> <DeleteIcon />
+              </span>
+            )}
           </div>
         ),
-      }
+      },
     ] as MRT_ColumnDef<APIKeyStatus>[];
-    }, [csrfToken, removeCredential]);
+  }, [csrfToken, removeCredential]);
 
   const currentTimeInSeconds = Math.floor(Date.now() / 1000);
 
   const rows = useMemo(() => {
-      return credentials
-        ? credentials.reduce((acc : APIKeyStatus[], c: APIKey) => {
+    return credentials
+      ? credentials.reduce((acc: APIKeyStatus[], c: APIKey) => {
           const status = getStatus(c.exp, currentTimeInSeconds);
           return acc.concat({
             key: c.jti,
             expiration: c.exp,
             status: status,
-            actions: status === 'Active' ? 'delete' : 'refreshDelete'
+            actions: status === 'Active' ? 'delete' : 'refreshDelete',
           });
-        }, [] as APIKeyStatus[]) : [];
-    }
-    , [credentials, currentTimeInSeconds]);
+        }, [] as APIKeyStatus[])
+      : [];
+  }, [credentials, currentTimeInSeconds]);
 
   const table = useMantineReactTable<APIKeyStatus>({
     columns,
@@ -95,7 +108,6 @@ const CredentialsTable = () => {
     mantineSearchTextInputProps: {
       placeholder: 'Search API Keys',
     },
-
   });
 
   return <MantineReactTable table={table} />;
