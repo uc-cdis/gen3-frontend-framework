@@ -1,4 +1,5 @@
 import terser from '@rollup/plugin-terser';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -7,6 +8,7 @@ import { default as tailwindConfig } from './src/tailwind.cjs';
 import postcss from 'rollup-plugin-postcss';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
+import typescript from '@rollup/plugin-typescript';
 
 const globals = {
   react: 'React',
@@ -51,12 +53,13 @@ const config = [
         dir: 'dist',
         format: 'esm',
         name: 'gen3frontend',
-        plugins: [terser()],
+        plugins: [terser(), sourcemaps()],
         globals,
       },
     ],
     external: Object.keys(globals),
     plugins: [
+      sourcemaps(),
       peerDepsExternal(),
       json(),
       postcss({
@@ -84,7 +87,7 @@ const config = [
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss()],
+    plugins: [dts(), postcss(), sourcemaps()],
   },
 ];
 

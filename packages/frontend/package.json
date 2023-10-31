@@ -82,6 +82,7 @@
     "react-redux": "^8.0.7",
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
+    "rollup-plugin-sourcemaps": "^0.6.3",
     "sharp": "^0.30.7",
     "swr": "^2.1.5",
     "tailwind-styled-components": "^2.2.0",

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useRef, useState, useMemo } from 'react';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
@@ -6,7 +6,6 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_DOMAIN,
   GEN3_API,
 } from '@gen3/core';
 
@@ -74,9 +73,50 @@ export const useSession = (
 };
 
 const logoutUser = (router: NextRouter) => {
-  if (typeof window === 'undefined') return; // skip if this pages if on the server
-  router.push(`${GEN3_API}/user/logout?next=${GEN3_DOMAIN}/`);
+  if (typeof window === 'undefined') return; // skip if this pages is on the server
+  router.push(`${GEN3_API}/user/logout?next=/`);
 };
+
+const refreshSession = (dispatch: CoreDispatch,
+                        mostRecentSessionRefreshTimestamp:number,
+                        updateSessionRefreshTimestamp: (arg0:number)=>void ) : void => {
+  const timeSinceLastSessionUpdate =
+    Date.now() - mostRecentSessionRefreshTimestamp;
+  // don't hit Fence to refresh tokens too frequently
+  if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
+    return;
+  }
+
+  // hitting Fence endpoint refreshes token
+  updateSessionRefreshTimestamp(Date.now());
+  dispatch(fetchUserState());
+};
+
+
+type IntervalFunction = () => ( unknown | void )
+
+const  useInterval = ( callback: IntervalFunction, delay: number | null ) => {
+
+  const savedCallback = useRef<IntervalFunction| null>( null );
+
+  useEffect( () => {
+    if (delay === null) return;
+    savedCallback.current = callback;
+  } );
+
+  useEffect( () => {
+    if (delay === null) return;
+    function tick() {
+      if ( savedCallback.current !== null ) {
+        savedCallback.current();
+      }
+    }
+    const id = setInterval( tick, delay );
+    return () => clearInterval( id );
+
+  }, [ delay ] );
+};
+
 
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
@@ -115,58 +155,41 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  const checkAndRefrestSession = (dispatch: CoreDispatch) => {
-    if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
-    if (isUserOnPage('Login') /* || this.popupShown */) return;
+  // const checkAndRefreshSession = useCallback((dispatch: CoreDispatch) => {
+  //
+  //   console.log("checkAndRefreshSession", sessionInfo);
+  //
+  //   if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
+  //   if (isUserOnPage('Login') /* || this.popupShown */) return;
+  //
+  //   const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+  //
+  //   if (logoutInactiveUsers) {
+  //     if (
+  //       timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
+  //       !isUserOnPage('workspace')
+  //     ) {
+  //       logoutUser(router);
+  //       return;
+  //     }
+  //     if (
+  //       timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
+  //       isUserOnPage('workspace')
+  //     ) {
+  //       logoutUser(router);
+  //       return;
+  //     }
+  //   }
+  //   // fetching a userState will renew the session
+  //   refreshSession(dispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
+  // }, [inactiveTimeLimitMilliseconds, logoutInactiveUsers, mostRecentActivityTimestamp, mostRecentSessionRefreshTimestamp, router, sessionInfo, workspaceInactivityTimeLimitMilliseconds]);
 
-    const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-
-    if (logoutInactiveUsers) {
-      if (
-        timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-        !isUserOnPage('workspace')
-      ) {
-        logoutUser(router);
-        return;
-      }
-      if (
-        timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-        isUserOnPage('workspace')
-      ) {
-        logoutUser(router);
-        return;
-      }
-    }
-    // fetching a userState will renew the session
-    refreshSession(dispatch);
-  };
-
-  const refreshSession = (dispatch: CoreDispatch) => {
-    const timeSinceLastSessionUpdate =
-      Date.now() - mostRecentSessionRefreshTimestamp;
-    // don't hit Fence to refresh tokens too frequently
-    if (timeSinceLastSessionUpdate < UPDATE_SESSION_LIMIT) {
-      return;
-    }
-
-    // hitting Fence endpoint refreshes token
-    setMostRecentSessionRefreshTimestamp(Date.now());
-    dispatch(fetchUserState());
-  };
 
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
-
-    const updateSession = async () => {
-      const tokenStatus = await getSession();
-      setSessionInfo({
-        ...tokenStatus,
-      });
-      setPending(false);
-    };
 
     const updateUserActivity = () => {
       setMostRecentActivityTimestamp(Date.now());
@@ -175,18 +198,58 @@ export const SessionProvider = ({
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
 
-    const interval = setInterval(() => {
-      checkAndRefrestSession(coreDispatch);
-    }, updateSessionIntervalMilliseconds);
-
-    updateSession();
-
     return () => {
       window.removeEventListener('mousedown', updateUserActivity);
       window.removeEventListener('keypress', updateUserActivity);
-      clearInterval(interval);
     };
   }, []);
+
+
+  useInterval(() => {
+
+    const updateSession = async () => {
+      const tokenStatus = await getSession();
+
+      setSessionInfo((prevState) => {
+        console.log("setSessionInfo", {
+          ...prevState, ...tokenStatus
+        });
+        return ({
+          ...prevState, ...tokenStatus
+        });
+      });
+      setPending(false);
+    };
+
+      console.log("checkAndRefreshSession", sessionInfo);
+
+      if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
+      if (isUserOnPage('Login') /* || this.popupShown */) return;
+
+      const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+
+      if (logoutInactiveUsers) {
+        if (
+          timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
+          !isUserOnPage('workspace')
+        ) {
+          logoutUser(router);
+          return;
+        }
+        if (
+          timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
+          isUserOnPage('workspace')
+        ) {
+          logoutUser(router);
+          return;
+        }
+      }
+      // fetching a userState will renew the session
+      refreshSession(coreDispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
+
+      updateSession();
+
+  }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );
 
   const value: Session = useMemo(() => {
     return {

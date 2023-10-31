@@ -111,10 +111,10 @@ const Gen3FrontEndColors: Record<string, ReadonlyArray<string>> = {
     'bg-base-lighter',
     'bg-base-light',
     'bg-base',
+    'bg-base-vivid',
     'bg-base-dark',
     'bg-base-darker',
     'bg-base-darkest',
-    'bg-base-ink',
     'bg-base-min',
   ],
   primary: [

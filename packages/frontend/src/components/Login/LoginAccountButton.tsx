@@ -2,7 +2,6 @@ import React from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import {
-  GEN3_DOMAIN,
   useCoreSelector,
   selectUserData,
   isAuthenticated,
@@ -12,7 +11,7 @@ const LoginAccountButton = () => {
   const router = useRouter();
 
   const handleSelected = async () => {
-    await router.push(`${GEN3_DOMAIN}/Profile`);
+    await router.push('Profile');
   };
 
   const { data: user, loginStatus } = useCoreSelector(selectUserData);

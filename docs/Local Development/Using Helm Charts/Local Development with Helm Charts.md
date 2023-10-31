@@ -49,7 +49,7 @@ needed by local-ssl-proxy.
 
 Start the proxy using:
 ```
-local-ssl-proxy --source 3010 --target 3000 --cert certificates/fullchain.cert --key certificates/privkey.pem
+local-ssl-proxy --source 3010 --target 3000 --cert certificates/localhost/fullchain.pem --key certificates/localhost/privkey.pem
 ```
 
 ### Connecting the sample portal to the Gen3 Helm Charts

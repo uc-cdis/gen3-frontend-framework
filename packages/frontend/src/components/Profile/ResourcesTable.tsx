@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { type ServiceAndMethod } from '@gen3/core';
+import { Badge } from '@mantine/core';
 
 import {
   MantineReactTable,
@@ -29,58 +30,75 @@ const convertToRecordMethodToResource = (entries: ServiceAndMethod[]) => {
 const ResourcesTable = () => {
   const { userProfile, servicesAndMethods } = useResourcesContext();
 
-  let rows :ItemResource[] = [];
+  let rows: ItemResource[] = [];
 
-  if (userProfile && userProfile?.authz) {
-
-    rows = Object.keys(userProfile.authz).map((key) => {
-      const authz = userProfile?.authz?.[key] ?? {} as ServiceAndMethod[];
-      const methods = convertToRecordMethodToResource(authz);
-      return {
-        resource: key,
-        methods: methods,
-      };
-    }) as ItemResource[];
-  }
+  rows = useMemo(
+    () =>
+      Object.keys(userProfile?.authz ?? {}).map((key) => {
+        const authz = userProfile?.authz?.[key] ?? ({} as ServiceAndMethod[]);
+        const methods = convertToRecordMethodToResource(authz);
+        return {
+          resource: key,
+          methods: methods,
+        };
+      }),
+    [userProfile?.authz],
+  );
 
   const columns = useMemo(() => {
     return [
       {
         header: 'Resource',
         accessorKey: 'resource',
-       Cell: ({ row }: MRT_Cell<ItemResource>) => (
-          <div>
-            {row.original.resource}
-          </div>
-        )
-
+        size: 500,
+        Cell: ({ row }: MRT_Cell<ItemResource>) => (
+          <div>{row.original.resource}</div>
+        ),
       },
       ...servicesAndMethods.methods.map((method) => {
         return {
           header: method,
           accessor: 'methods',
-          Cell: ({ row }: MRT_Cell<ItemResource>) => (
-            <div>
-              {row.original.methods[method].map((resource) => {
-                return <span key={method}>{resource}</span>;
-              })}
-            </div>
-          ),
+          size:150,
+          Cell: ({ row }: MRT_Cell<ItemResource>) => {
+            return (
+            <div className="flex flex-col space-x-1 bg-base-light">
+              {
+                (method in row.original.methods) ?
+                  row.original.methods[method].map((resource) => (<Badge  key={`${resource}-${method}`} variant="filled">{resource}</Badge>)) : <span className="w-4 h-4"></span>
+              }
+            </div>);
+          },
         };
       }),
-    ] as unknown as  MRT_ColumnDef<ItemResource>[];
+    ] as unknown as MRT_ColumnDef<ItemResource>[];
   }, [servicesAndMethods.methods]);
 
   const table = useMantineReactTable<ItemResource>({
     columns,
     data: rows,
+    enableColumnResizing: true,
+    layoutMode:"grid",
+    //Disables the default flex-grow behavior of the table cells
+    mantineTableHeadCellProps:{
+    sx: {
+      flex: '1 0 auto',
+    },
+  },
+  mantineTableBodyCellProps:{
+    sx: {
+      flex: '1 0 auto',
+    },
+  },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
   });
 
-  return (<div className="w-full">
-    <MantineReactTable table={table} />;
-  </div>);
+  return (
+    <div className="w-full">
+      <MantineReactTable table={table} />;
+    </div>
+  );
 };
 
 export default ResourcesTable;
