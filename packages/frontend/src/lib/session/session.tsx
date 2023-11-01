@@ -123,8 +123,8 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 export const SessionProvider = ({
   children,
   session,
-  updateSessionTime = 0.3,
-  inactiveTimeLimit = 2,
+  updateSessionTime = 5,
+  inactiveTimeLimit = 20,
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
 }: SessionProviderProps) => {
@@ -139,8 +139,6 @@ export const SessionProvider = ({
   const [pending, setPending] = useState(session ? false : true);
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
-
-  console.log("mostRecentActivityTimestamp", mostRecentActivityTimestamp);
 
   const [
     mostRecentSessionRefreshTimestamp,
