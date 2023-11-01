@@ -170,7 +170,6 @@ export const SessionProvider = ({
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
     const updateUserActivity = () => {
-      console.log("updateUserActivity", Date.now());
       setMostRecentActivityTimestamp(Date.now());
     };
 
@@ -189,8 +188,6 @@ export const SessionProvider = ({
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-
-      console.log("timeSinceLastActivity", timeSinceLastActivity);
 
       if (logoutInactiveUsers) {
         if (

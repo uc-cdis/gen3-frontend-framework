@@ -52,7 +52,6 @@ const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
    * This is then used to build the columns and content of the ResourcesTable
    */
   const servicesAndMethods = useMemo(() => {
-    console.log('ResourcesProvider: servicesAndMethods: authzMapping: ');
     if (isAuthZLoading) return { services: [], methods: [] };
     if (!authzMapping) return { services: [], methods: [] };
     const results = Object.values<ServiceAndMethod[]>(authzMapping).reduce(
