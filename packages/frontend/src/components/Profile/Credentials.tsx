@@ -30,7 +30,7 @@ const Credentials = () => {
           </Button>
         </div>
 
-          <CredentialsTable />
+        <CredentialsTable />
       </Stack>
     </React.Fragment>
   );

@@ -9,7 +9,7 @@ const TexturedSidePanel = ({ url }: TexturedSidePanelProps) => {
   return (
     <div
       style={{ backgroundImage: `url(${url})` }}
-      className="flex h-screen w-full first:bg-left last:bg-right bg-repeat-y"
+      className="flex h-screen w-full bg-left bg-repeat-y last:-scale-x-100"
     ></div>
   );
 };

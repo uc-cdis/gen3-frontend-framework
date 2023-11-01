@@ -1,10 +1,10 @@
-import React, { createContext, ReactNode, useMemo } from "react";
+import React, { createContext, ReactNode, useMemo } from 'react';
 //import { AuthzMapping, selectUser, useCoreSelector, useGetAuthzMappingsQuery, UserProfile, ServiceAndMethod } from "@gen3/core";
-import { AuthzMapping, UserProfile, ServiceAndMethod } from "@gen3/core";
+import { AuthzMapping, UserProfile, ServiceAndMethod } from '@gen3/core';
 
 // For development testing import the following:
-import devAuthzMapping from  "./data/authzMapping.json";
-import userAuthz from  "./data/userAuthz.json";
+import devAuthzMapping from './data/authzMapping.json';
+import userAuthz from './data/userAuthz.json';
 
 interface ServicesAndMethodsTypes {
   services: string[];
@@ -25,7 +25,7 @@ interface ResourcesProviderValue {
 const ResourcesContext = createContext<ResourcesProviderValue>({
   authzMapping: {} as AuthzMapping,
   userProfile: {} as UserProfile,
-  servicesAndMethods: { services: [], methods:[] } as ServicesAndMethodsTypes
+  servicesAndMethods: { services: [], methods: [] } as ServicesAndMethodsTypes,
 });
 
 export const useResourcesContext = () => {
@@ -38,10 +38,8 @@ export const useResourcesContext = () => {
   return context;
 };
 
-
-
 const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
- // const { data: userProfile } = useCoreSelector(selectUser);
+  // const { data: userProfile } = useCoreSelector(selectUser);
   //const { data: authzMapping, isLoading: isAuthZLoading } = useGetAuthzMappingsQuery();
 
   // TODO remove this when we have a real authzMapping
@@ -54,30 +52,36 @@ const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
    * This is then used to build the columns and content of the ResourcesTable
    */
   const servicesAndMethods = useMemo(() => {
-    console.log("ResourcesProvider: servicesAndMethods: authzMapping: ");
+    console.log('ResourcesProvider: servicesAndMethods: authzMapping: ');
     if (isAuthZLoading) return { services: [], methods: [] };
     if (!authzMapping) return { services: [], methods: [] };
-    const results = Object.values<ServiceAndMethod[]>(authzMapping).reduce((acc, resource) => {
-      return resource.reduce((acc: ServicesAndMethodsTypesAsSets, entry) => {
-        acc.services.add(entry.service);
-        acc.methods.add(entry.method);
-        return acc;
-      }, acc);
-    },
-      { services: new Set<string>(), methods: new Set<string>() } as ServicesAndMethodsTypesAsSets,
+    const results = Object.values<ServiceAndMethod[]>(authzMapping).reduce(
+      (acc, resource) => {
+        return resource.reduce((acc: ServicesAndMethodsTypesAsSets, entry) => {
+          acc.services.add(entry.service);
+          acc.methods.add(entry.method);
+          return acc;
+        }, acc);
+      },
+      {
+        services: new Set<string>(),
+        methods: new Set<string>(),
+      } as ServicesAndMethodsTypesAsSets,
     );
     return {
       services: Array.from(results.services),
-      methods: Array.from(results.methods)
+      methods: Array.from(results.methods),
     };
   }, [authzMapping, isAuthZLoading]);
 
   return (
-    <ResourcesContext.Provider value={{
-      userProfile: userProfile,
-      authzMapping: authzMapping,
-      servicesAndMethods
-    }}>
+    <ResourcesContext.Provider
+      value={{
+        userProfile: userProfile,
+        authzMapping: authzMapping,
+        servicesAndMethods,
+      }}
+    >
       {children}
     </ResourcesContext.Provider>
   );

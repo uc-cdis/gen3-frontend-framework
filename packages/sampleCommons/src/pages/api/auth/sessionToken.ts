@@ -9,7 +9,7 @@ export interface JWTPayloadAndUser extends JWTPayload {
 }
 
 /**
- * returns the access_token expiration and other api
+ * returns the access_token expiration, user, and status
  * @param req
  * @param res
  */

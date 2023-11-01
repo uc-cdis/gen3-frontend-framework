@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { GEN3_COMMONS_NAME} from "@gen3/core";
 import { Gen3Provider, TenStringArray } from '@gen3/frontend';
 import themeColors from '../../config/themeColors.json';
 import themeFonts from '../../config/themeFonts.json';
@@ -9,6 +10,10 @@ import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/react/dist/style.css';
 
+
+// TODO: THis must be done in a better way using newer NextJS features
+import sessionConfig from '../../config/session.json';
+
 const colors = Object.fromEntries(
   Object.entries(themeColors).map(([key, values]) => [
     key,
@@ -18,7 +23,7 @@ const colors = Object.fromEntries(
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Gen3Provider colors={colors} icons={icons} fonts={themeFonts}>
+    <Gen3Provider colors={colors} icons={icons} fonts={themeFonts} sessionConfig={sessionConfig.sessionConfig}>
       <Component {...pageProps} />
     </Gen3Provider>
   );

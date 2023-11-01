@@ -140,6 +140,8 @@ export const SessionProvider = ({
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
+  console.log("mostRecentActivityTimestamp", mostRecentActivityTimestamp);
+
   const [
     mostRecentSessionRefreshTimestamp,
     setMostRecentSessionRefreshTimestamp,
@@ -147,51 +149,30 @@ export const SessionProvider = ({
 
   const inactiveTimeLimitMilliseconds =
     MinutesToMilliseconds(inactiveTimeLimit);
-  const updateSessionTimeMilliseconds =
-    MinutesToMilliseconds(updateSessionTime);
+
   const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
     workspaceInactivityTimeLimit,
   );
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  // const checkAndRefreshSession = useCallback((dispatch: CoreDispatch) => {
-  //
-  //   console.log("checkAndRefreshSession", sessionInfo);
-  //
-  //   if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
-  //   if (isUserOnPage('Login') /* || this.popupShown */) return;
-  //
-  //   const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-  //
-  //   if (logoutInactiveUsers) {
-  //     if (
-  //       timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-  //       !isUserOnPage('workspace')
-  //     ) {
-  //       logoutUser(router);
-  //       return;
-  //     }
-  //     if (
-  //       timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-  //       isUserOnPage('workspace')
-  //     ) {
-  //       logoutUser(router);
-  //       return;
-  //     }
-  //   }
-  //   // fetching a userState will renew the session
-  //   refreshSession(dispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
-  // }, [inactiveTimeLimitMilliseconds, logoutInactiveUsers, mostRecentActivityTimestamp, mostRecentSessionRefreshTimestamp, router, sessionInfo, workspaceInactivityTimeLimitMilliseconds]);
+  const updateSession = async () => {
+    const tokenStatus = await getSession();
 
+    setSessionInfo(tokenStatus);
 
+    setPending(false);
+  };
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
+    updateSession();
+
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
     const updateUserActivity = () => {
+      console.log("updateUserActivity", Date.now());
       setMostRecentActivityTimestamp(Date.now());
     };
 
@@ -204,29 +185,14 @@ export const SessionProvider = ({
     };
   }, []);
 
-
   useInterval(() => {
-
-    const updateSession = async () => {
-      const tokenStatus = await getSession();
-
-      setSessionInfo((prevState) => {
-        console.log("setSessionInfo", {
-          ...prevState, ...tokenStatus
-        });
-        return ({
-          ...prevState, ...tokenStatus
-        });
-      });
-      setPending(false);
-    };
-
-      console.log("checkAndRefreshSession", sessionInfo);
 
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+
+      console.log("timeSinceLastActivity", timeSinceLastActivity);
 
       if (logoutInactiveUsers) {
         if (
@@ -237,7 +203,7 @@ export const SessionProvider = ({
           return;
         }
         if (
-          timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
+          workspaceInactivityTimeLimitMilliseconds > 0  && timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
           isUserOnPage('workspace')
         ) {
           logoutUser(router);
@@ -246,7 +212,6 @@ export const SessionProvider = ({
       }
       // fetching a userState will renew the session
       refreshSession(coreDispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
-
       updateSession();
 
   }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );

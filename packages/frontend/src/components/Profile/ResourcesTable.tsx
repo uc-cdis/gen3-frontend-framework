@@ -9,6 +9,8 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { useResourcesContext } from './ResourcesProvider';
+import { useProfileContext } from './ProfileProvider';
+import { ServiceColorAndLabel } from './types';
 
 interface ItemResource {
   resource: string;
@@ -27,8 +29,32 @@ const convertToRecordMethodToResource = (entries: ServiceAndMethod[]) => {
   );
 };
 
+interface ResourceBadgeProps {
+  resource: string;
+  serviceBadgeStyle: Record<string, ServiceColorAndLabel>;
+  defaultColor?: string;
+}
+
+const ResourceBadge = ({
+  resource,
+  serviceBadgeStyle,
+  defaultColor = 'primary',
+}: ResourceBadgeProps): JSX.Element => {
+  const { color, label } =
+    resource in serviceBadgeStyle
+      ? serviceBadgeStyle[resource]
+      : { color: defaultColor, label: resource };
+
+  return (
+    <Badge variant="filled" fullWidth color={color}>
+      {label}
+    </Badge>
+  );
+};
+
 const ResourcesTable = () => {
   const { userProfile, servicesAndMethods } = useResourcesContext();
+  const { profileConfig } = useProfileContext();
 
   let rows: ItemResource[] = [];
 
@@ -59,15 +85,25 @@ const ResourcesTable = () => {
         return {
           header: method,
           accessor: 'methods',
-          size:150,
+          size: 150,
           Cell: ({ row }: MRT_Cell<ItemResource>) => {
             return (
-            <div className="flex flex-col space-x-1 bg-base-light">
-              {
-                (method in row.original.methods) ?
-                  row.original.methods[method].map((resource) => (<Badge  key={`${resource}-${method}`} variant="filled">{resource}</Badge>)) : <span className="w-4 h-4"></span>
-              }
-            </div>);
+              <div className="flex flex-col space-y-1 bg-base-light">
+                {method in row.original.methods ? (
+                  row.original.methods[method].map((resource) => (
+                    <ResourceBadge
+                      key={resource}
+                      resource={resource}
+                      serviceBadgeStyle={
+                        profileConfig.resourceTable?.serviceColors ?? {}
+                      }
+                    />
+                  ))
+                ) : (
+                  <span className="w-4 h-4"></span>
+                )}
+              </div>
+            );
           },
         };
       }),
@@ -78,18 +114,18 @@ const ResourcesTable = () => {
     columns,
     data: rows,
     enableColumnResizing: true,
-    layoutMode:"grid",
+    layoutMode: 'grid',
     //Disables the default flex-grow behavior of the table cells
-    mantineTableHeadCellProps:{
-    sx: {
-      flex: '1 0 auto',
+    mantineTableHeadCellProps: {
+      sx: {
+        flex: '0 0 auto',
+      },
     },
-  },
-  mantineTableBodyCellProps:{
-    sx: {
-      flex: '1 0 auto',
+    mantineTableBodyCellProps: {
+      sx: {
+        flex: '0 0 auto',
+      },
     },
-  },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
   });

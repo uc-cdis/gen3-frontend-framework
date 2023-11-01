@@ -53,7 +53,7 @@ const CredentialsTable = () => {
         accessorFn: (apiKey: APIKeyStatus) =>
           unixTimeToString(
             // pragma: allowlist-secret
-            apiKey.expiration
+            apiKey.expiration,
           ),
       },
       {

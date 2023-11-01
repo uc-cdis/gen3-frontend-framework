@@ -1,6 +1,5 @@
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import LoginPanel from '../../components/Login/LoginPanel';
-import { type LoginConfig } from '../../components/Login';
 import React from 'react';
 import { LoginPageLayoutProps } from './types';
 
