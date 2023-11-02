@@ -1,10 +1,12 @@
 import React, { createContext, ReactNode, useMemo } from 'react';
-//import { AuthzMapping, selectUser, useCoreSelector, useGetAuthzMappingsQuery, UserProfile, ServiceAndMethod } from "@gen3/core";
-import { AuthzMapping, UserProfile, ServiceAndMethod } from '@gen3/core';
-
-// For development testing import the following:
-import devAuthzMapping from './data/authzMapping.json';
-import userAuthz from './data/userAuthz.json';
+import {
+  AuthzMapping,
+  selectUser,
+  useCoreSelector,
+  useGetAuthzMappingsQuery,
+  UserProfile,
+  ServiceAndMethod,
+} from '@gen3/core';
 
 interface ServicesAndMethodsTypes {
   services: string[];
@@ -39,13 +41,9 @@ export const useResourcesContext = () => {
 };
 
 const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // const { data: userProfile } = useCoreSelector(selectUser);
-  //const { data: authzMapping, isLoading: isAuthZLoading } = useGetAuthzMappingsQuery();
-
-  // TODO remove this when we have a real authzMapping
-  const isAuthZLoading = false;
-  const userProfile = userAuthz;
-  const authzMapping = devAuthzMapping;
+  const { data: userProfile } = useCoreSelector(selectUser);
+  const { data: authzMapping, isLoading: isAuthZLoading } =
+    useGetAuthzMappingsQuery();
 
   /**
    * This takes the mapping and find all the unique services and methods in the mapping
