@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useMemo } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   AuthzMapping,
   selectUser,
@@ -41,18 +47,27 @@ export const useResourcesContext = () => {
 };
 
 const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: userProfile } = useCoreSelector(selectUser);
-  const { data: authzMapping, isLoading: isAuthZLoading } =
+  const { data: userProfile = {} } = useCoreSelector(selectUser);
+  const { data: authzMapping = {}, isLoading: isAuthZLoading } =
     useGetAuthzMappingsQuery();
 
-  /**
-   * This takes the mapping and find all the unique services and methods in the mapping
-   * This is then used to build the columns and content of the ResourcesTable
-   */
+  const [userProfileState, setUserProfileState] = useState<
+    Partial<UserProfile>
+  >({});
+  const [authzMappingState, setAuthzMappingState] = useState<AuthzMapping>({});
+
+  useEffect(() => {
+    setUserProfileState(userProfile);
+  }, [userProfile]);
+
+  useEffect(() => {
+    setAuthzMappingState(authzMapping);
+  }, [authzMapping]);
+
   const servicesAndMethods = useMemo(() => {
     if (isAuthZLoading) return { services: [], methods: [] };
-    if (!authzMapping) return { services: [], methods: [] };
-    const results = Object.values<ServiceAndMethod[]>(authzMapping).reduce(
+    if (!authzMappingState) return { services: [], methods: [] };
+    const results = Object.values<ServiceAndMethod[]>(authzMappingState).reduce(
       (acc, resource) => {
         return resource.reduce((acc: ServicesAndMethodsTypesAsSets, entry) => {
           acc.services.add(entry.service);
@@ -69,13 +84,13 @@ const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       services: Array.from(results.services),
       methods: Array.from(results.methods),
     };
-  }, [authzMapping, isAuthZLoading]);
+  }, [authzMappingState, isAuthZLoading]);
 
   return (
     <ResourcesContext.Provider
       value={{
-        userProfile: userProfile,
-        authzMapping: authzMapping,
+        userProfile: userProfileState,
+        authzMapping: authzMappingState,
         servicesAndMethods,
       }}
     >
