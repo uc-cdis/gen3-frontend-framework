@@ -36,6 +36,15 @@ const ResourcesContext = createContext<ResourcesProviderValue>({
   servicesAndMethods: { services: [], methods: [] } as ServicesAndMethodsTypes,
 });
 
+export const useResourcesContext = () => {
+  const context = React.useContext(ResourcesContext);
+  if (context === undefined) {
+    throw Error(
+      'Resources must be used  must be used inside of a ResourcesContext',
+    );
+  }
+  return context;
+};
 
 const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data: userProfile = {} } = useCoreSelector(selectUser);

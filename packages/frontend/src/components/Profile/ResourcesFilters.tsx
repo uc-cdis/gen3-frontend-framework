@@ -15,7 +15,7 @@ const ResourcesFilters = ({ selectedFilters, setFilters} : ResourcesFiltersProps
 
   const checkboxes = useMemo(() => {
     const serviceColors = profileConfig?.resourceTable?.serviceColors ?? {};
-    return servicesAndMethods.services.map((filter) => (
+    return servicesAndMethods.services.map((filter:string) => (
       <Checkbox
         className="m-2"
         color={filter in serviceColors ? serviceColors[filter].color : 'primary'}
