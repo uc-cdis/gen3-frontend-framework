@@ -1,33 +1,17 @@
-import React, { useMemo } from 'react';
-import { type ServiceAndMethod } from '@gen3/core';
-import { Badge } from '@mantine/core';
+import React, { useMemo } from "react";
+import { type ServiceAndMethod } from "@gen3/core";
+import { Badge } from "@mantine/core";
 
-import {
-  MantineReactTable,
-  MRT_ColumnDef,
-  MRT_Cell,
-  useMantineReactTable,
-} from 'mantine-react-table';
-import { useResourcesContext } from './ResourcesProvider';
-import { useProfileContext } from './ProfileProvider';
-import { ServiceColorAndLabel } from './types';
+import { MantineReactTable, MRT_Cell, MRT_ColumnDef, useMantineReactTable } from "mantine-react-table";
+import { useResourcesContext } from "./ResourcesProvider";
+import { useProfileContext } from "./ProfileProvider";
+import { ServiceColorAndLabel } from "./types";
+import { convertToRecordMethodToResource } from "./utils";
 
 interface ItemResource {
   resource: string;
   methods: Record<string, string[]>;
 }
-
-const convertToRecordMethodToResource = (entries: ServiceAndMethod[]) => {
-  return entries.reduce(
-    (acc: Record<string, string[]>, entry: ServiceAndMethod) => {
-      if (!(entry.method in acc)) {
-        acc[entry.method] = [entry.service];
-      } else acc[entry.method].push(entry.service);
-      return acc;
-    },
-    {} as Record<string, string[]>,
-  );
-};
 
 interface ResourceBadgeProps {
   resource: string;
@@ -52,24 +36,25 @@ const ResourceBadge = ({
   );
 };
 
-const ResourcesTable = () => {
+interface ResourcesTableProps {
+  filters: string[];
+}
+
+const ResourcesTable = ({ filters }: ResourcesTableProps) => {
   const { userProfile, servicesAndMethods } = useResourcesContext();
   const { profileConfig } = useProfileContext();
 
   let rows: ItemResource[] = [];
 
-  rows = useMemo(
-    () =>
-      Object.keys(userProfile?.authz ?? {}).map((key) => {
-        const authz = userProfile?.authz?.[key] ?? ({} as ServiceAndMethod[]);
-        const methods = convertToRecordMethodToResource(authz);
-        return {
-          resource: key,
-          methods: methods,
-        };
-      }),
-    [userProfile?.authz],
-  );
+  rows = useMemo(() => {
+    return Object.entries(userProfile?.authz ?? {}).map(([key, authz]) => {
+      const methods = convertToRecordMethodToResource(authz, filters);
+      return {
+        resource: key,
+        methods: methods,
+      };
+    }).filter((row) => Object.keys(row.methods).length > 0);
+  }, [filters, userProfile?.authz]);
 
   const columns = useMemo(() => {
     return [

@@ -1,33 +1,41 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Stack, Checkbox } from '@mantine/core';
 import { useResourcesContext } from './ResourcesProvider';
 import { useProfileContext } from './ProfileProvider';
 
-const ResourcesFilters = () => {
-  const { authzMapping, servicesAndMethods } = useResourcesContext();
+interface ResourcesFiltersProps {
+  setFilters: (filters: string[]) => void;
+  selectedFilters: string[];
+}
+
+const ResourcesFilters = ({ selectedFilters, setFilters} : ResourcesFiltersProps) => {
+  const { servicesAndMethods } = useResourcesContext();
   const { profileConfig } = useProfileContext();
 
-  const serviceColors = profileConfig?.resourceTable?.serviceColors ?? {};
 
   const checkboxes = useMemo(() => {
+    const serviceColors = profileConfig?.resourceTable?.serviceColors ?? {};
     return servicesAndMethods.services.map((filter) => (
       <Checkbox
         className="m-2"
         color={filter in serviceColors ? serviceColors[filter].color : 'primary'}
         key={filter}
+        value={filter}
         label={filter}
-        checked={true}
-        onChange={(elm) => {
-          console.log(elm.target.value);
-        }}
       />
     ));
-  }, [authzMapping, servicesAndMethods.methods]);
+  }, [profileConfig?.resourceTable?.serviceColors, servicesAndMethods.services]);
 
   return (
     <div className="w-1/4">
       <div className="flex flex-col m-2 border-1 bg-primary-max border-base-lighter">
-        {checkboxes}
+        <Checkbox.Group value={selectedFilters} onChange={setFilters}
+        label="Filter by service">
+          <Stack mt="xs">
+          {checkboxes}
+            </Stack>
+        </Checkbox.Group>
+
       </div>
     </div>
   );

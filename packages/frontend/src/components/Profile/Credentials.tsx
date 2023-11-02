@@ -17,9 +17,10 @@ const Credentials = () => {
 
   return (
     <React.Fragment>
-      <Stack className="w-full p-2">
-        <LoadingOverlay visible={isLoading || isNewLoading} />
+      <div className="flex flex-col w-full p-2">
+
         <div className="flex">
+          <LoadingOverlay visible={isLoading || isNewLoading} />
           <Button
             color="accent.4"
             onClick={() => {
@@ -31,7 +32,7 @@ const Credentials = () => {
         </div>
 
         <CredentialsTable />
-      </Stack>
+      </div>
     </React.Fragment>
   );
 };

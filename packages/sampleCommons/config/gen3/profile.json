@@ -41,6 +41,11 @@
           "service": "peregrine",
           "color": "lime.7",
           "label": "Peregrine"
+        },
+        "jupyterhub": {
+          "service": "jupyterhub",
+          "color": "lime.4",
+          "label": "JuptyerHub"
         }
       }
     }
