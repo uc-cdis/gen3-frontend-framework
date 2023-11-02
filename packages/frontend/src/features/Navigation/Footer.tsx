@@ -38,14 +38,14 @@ const Footer: React.FC<FooterProps> = ({
           <div className="flex flex-row w-[100%] pl-10 pt-3">
             {(columnLinks || []).map(({ heading, items }, i) => (
               <div className="flex flex-col pl-10" key={i}>
-                <h1 className="font-bold text-xl text-white font-montserrat">
+                <h1 className="font-bold text-xl text-white font-heading">
                   {heading}
                 </h1>
                 {(items || []).map(({ text, href, linkType }, j) => {
                   const attrs = {
                     className: `${
                       href && 'heal-link-footer'
-                    } font-medium text-sm p-[2px] text-white font-montserrat`,
+                    } font-medium text-sm p-[2px] text-white font-content`,
                     key: j,
                   };
                   if (href) {
@@ -89,7 +89,7 @@ const Footer: React.FC<FooterProps> = ({
         })}
       </div>
       {bottomLinks && bottomLinks.length > 0 ? (
-        <div className="pt-[4px] m-1 text-right text-xs text-white font-montserrat">
+        <div className="pt-[4px] m-1 text-right text-xs text-white font-content">
           {bottomLinks.map((link, i) => (
             <React.Fragment key={link.href}>
               <a

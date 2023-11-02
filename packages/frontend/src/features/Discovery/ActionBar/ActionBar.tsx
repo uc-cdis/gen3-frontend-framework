@@ -8,10 +8,7 @@ interface ActionBarProps {
 }
 
 const ActionBar = ({ config }: ActionBarProps) => {
-
-  const {
-    buttons,
-  } = config;
+  const { buttons } = config;
 
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">

@@ -111,10 +111,10 @@ const Gen3FrontEndColors: Record<string, ReadonlyArray<string>> = {
     'bg-base-lighter',
     'bg-base-light',
     'bg-base',
+    'bg-base-vivid',
     'bg-base-dark',
     'bg-base-darker',
     'bg-base-darkest',
-    'bg-base-ink',
     'bg-base-min',
   ],
   primary: [
@@ -219,7 +219,7 @@ interface ColorAndContrastStylePalletProps extends ColorStylePalletProps {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ColorPalletLine = ({ name, colors }: ColorStylePalletProps) => {
   return (
-    <div className="flex flex-row items-center font-montserrat">
+    <div className="flex flex-row items-center font-heading">
       <div className="grid gap-12 grid-cols-11 grid-rows-1 my-1">
         <p className="col-span-3 font-medium w-24">{name}</p>
         {colors.map((x, i) => (
@@ -259,12 +259,12 @@ const ColorAndContrastPalletLine = ({
 
 const ColorTheme = () => {
   return (
-    <article className="prose font-montserrat bg-base-max text-base-contrast-lighter md:prose-md min-w-full m-4">
+    <article className="prose font-heading bg-base-max text-base-contrast-lighter md:prose-md min-w-full m-4">
       <p className="prose font-semibold text-2xl">Color Palettes</p>
       <div className="flex flex-col">
         <div>
-          The following theme colors are are currently available in this Gen3 Data
-          Commons.
+          The following theme colors are are currently available in this Gen3
+          Data Commons.
         </div>
         {Object.keys(Gen3FrontEndColors).map((name: string) => {
           return (

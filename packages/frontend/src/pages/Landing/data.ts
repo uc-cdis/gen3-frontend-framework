@@ -2,17 +2,17 @@
 import { GetStaticProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
-import { GEN3_COMMONS_NAME } from "@gen3/core";
+import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const LandingPageGetStaticProps: GetStaticProps = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
   const landingPage = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/landingPage.json`
+    `config/${GEN3_COMMONS_NAME}/landingPage.json`,
   );
   return {
     props: {
       ...navPageLayoutProps,
-      landingPage
-    }
+      landingPage,
+    },
   };
 };

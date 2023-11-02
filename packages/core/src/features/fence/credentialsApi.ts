@@ -14,7 +14,7 @@ const credentialsWithTags = gen3Api.enhanceEndpoints({
 });
 
 interface DeleteCredentialParams {
-  readonly csrfToken: string;
+  readonly csrfToken?: string;
   readonly id: string;
 }
 
@@ -49,9 +49,8 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'x-csrf-token': csrfToken,
+          ...(csrfToken &&  {'x-csrf-token': csrfToken}),
         },
-
       }),
       invalidatesTags: ['Credentials'],
     }),

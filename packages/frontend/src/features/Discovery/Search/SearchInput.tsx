@@ -3,10 +3,9 @@ import React, {
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
 import { TextInput, Tooltip } from '@mantine/core';
-import { SearchInputProps} from './types';
+import { SearchInputProps } from './types';
 
-
-const SearchInput = ({ searchChanged, placeholder } : SearchInputProps) => {
+const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (

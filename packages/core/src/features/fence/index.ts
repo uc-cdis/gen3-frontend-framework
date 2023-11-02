@@ -16,6 +16,10 @@ import {
   useRemoveCredentialMutation,
 } from './credentialsApi';
 
+import {
+  useGetJWKKeysQuery
+} from './jwtApi';
+
 export {
   type Gen3FenceResponse,
   type FetchError,
@@ -29,4 +33,5 @@ export {
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
+  useGetJWKKeysQuery
 };

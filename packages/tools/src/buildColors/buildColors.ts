@@ -109,7 +109,7 @@ const main = () => {
   };
 
   writeFileSync(
-    join(out ?? './', 'theme.json'),
+    join(out ?? './', 'themeColors.json'),
     JSON.stringify(theme, null, 2),
   );
 };

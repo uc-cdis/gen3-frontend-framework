@@ -90,7 +90,11 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               }
               if (obj.link) {
                 return (
-                  <Gen3Button colors="accent-lighter" className="mb-5 mr-5" key={index}>
+                  <Gen3Button
+                    colors="accent-lighter"
+                    className="mb-5 mr-5"
+                    key={index}
+                  >
                     <Gen3Link
                       className="flex flex-row items-center"
                       href={obj.link.href}
@@ -155,12 +159,16 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     <p className="block text-primary leading-6 mb-2">
                       {card.bodyText}
                     </p>
-                    <Gen3ButtonReverse colors="accent-lighter" className="mb-5 mr-5" key={index}>
-                    <Gen3Link
-                      href={card.href}
-                      linkType={card.linkType}
-                      text={card.btnText}
-                    />
+                    <Gen3ButtonReverse
+                      colors="accent-lighter"
+                      className="mb-5 mr-5"
+                      key={index}
+                    >
+                      <Gen3Link
+                        href={card.href}
+                        linkType={card.linkType}
+                        text={card.btnText}
+                      />
                     </Gen3ButtonReverse>
                   </li>
                 ))}

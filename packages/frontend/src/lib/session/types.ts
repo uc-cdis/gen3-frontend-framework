@@ -20,9 +20,7 @@ export interface Session extends AuthTokenData {
   pending: boolean;
 }
 
-export interface SessionProviderProps {
-  children: React.ReactNode;
-  session?: Session;
+export interface SessionConfiguration {
   /**
    * A time interval (in minutes) after which the session will be re-fetched.
    * If set to `0` (default), the session is not polled.
@@ -39,7 +37,7 @@ export interface SessionProviderProps {
    */
   workspaceInactivityTimeLimit?: number;
   /**
-   * `SessionProvider` automatically refetches the session when the user switches between windows.
+   * `SessionProvider` automatically fetches the session when the user switches between windows.
    * This option activates this behaviour if set to `true` (default).
    */
   refetchOnWindowFocus?: boolean;
@@ -48,4 +46,10 @@ export interface SessionProviderProps {
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
   logoutInactiveUsers?: boolean;
+}
+
+export interface SessionProviderProps extends SessionConfiguration {
+  children: React.ReactNode;
+  session?: Session;
+
 }

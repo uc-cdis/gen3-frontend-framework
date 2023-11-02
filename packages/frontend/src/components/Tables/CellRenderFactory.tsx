@@ -1,4 +1,4 @@
-import {  MRT_Cell } from 'mantine-react-table';
+import { MRT_Cell } from 'mantine-react-table';
 import React, { ReactElement } from 'react';
 import { Text } from '@mantine/core';
 
@@ -7,7 +7,9 @@ interface CellRenderFunctionProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const defaultCellRenderer =  ( _: CellRenderFunctionProps): ReactElement => <Text>value</Text>;
+const defaultCellRenderer = (_: CellRenderFunctionProps): ReactElement => (
+  <Text>value</Text>
+);
 
 // TODO Tighten up the typing here
 export type CellRendererFunction = (
@@ -19,12 +21,9 @@ export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
 }
 
-export class TableCellRendererFactory <T = CellRendererFunctionCatalogEntry > {
+export class TableCellRendererFactory<T = CellRendererFunctionCatalogEntry> {
   private static instance: TableCellRendererFactory;
-  private cellRendererCatalog: Record<
-    string,
-    T
-  > = {};
+  private cellRendererCatalog: Record<string, T> = {};
 
   private constructor() {
     this.cellRendererCatalog = {};
@@ -38,18 +37,30 @@ export class TableCellRendererFactory <T = CellRendererFunctionCatalogEntry > {
     return TableCellRendererFactory.instance;
   }
 
-  static getCellRenderer(type: string, functionName: string): CellRendererFunction {
-    return TableCellRendererFactory.getInstance().cellRendererCatalog[type][functionName] ?? defaultCellRenderer;
+  static getCellRenderer(
+    type: string,
+    functionName: string,
+  ): CellRendererFunction {
+    return (
+      TableCellRendererFactory.getInstance().cellRendererCatalog[type][
+        functionName
+      ] ?? defaultCellRenderer
+    );
   }
 
-  static registerCellRenderer( type: string, functionName: string, func: CellRendererFunction): void {
-    TableCellRendererFactory.getInstance().cellRendererCatalog[type][functionName] = func;
+  static registerCellRenderer(
+    type: string,
+    functionName: string,
+    func: CellRendererFunction,
+  ): void {
+    TableCellRendererFactory.getInstance().cellRendererCatalog[type][
+      functionName
+    ] = func;
   }
 
-  static registerCellRendererCatalog(catalog: Record<
-    string,
-    CellRendererFunctionCatalogEntry
-  >): void {
+  static registerCellRendererCatalog(
+    catalog: Record<string, CellRendererFunctionCatalogEntry>,
+  ): void {
     Object.keys(catalog).map((type) => {
       Object.entries(catalog[type]).map(([name, func]) => {
         TableCellRendererFactory.registerCellRenderer(type, name, func);
@@ -69,13 +80,9 @@ export const TableCellRenderer = (
   functionName = 'default',
   ...params: any[]
 ): CellRendererFunction => {
-
   if (!type) {
     return defaultCellRenderer;
   }
-  const func = TableCellRendererFactory.getCellRenderer(
-    type,
-    functionName,
-  );
+  const func = TableCellRendererFactory.getCellRenderer(type, functionName);
   return (cell): ReactElement => func(cell, ...params);
 };

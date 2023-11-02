@@ -1,4 +1,3 @@
-
 //  Configure Gen3 Table Columns
 export interface Gen3TableColumn {
   field: string;

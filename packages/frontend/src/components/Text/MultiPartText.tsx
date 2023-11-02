@@ -30,7 +30,7 @@ const MultiPartText = ({ parts }: MultiPartTextProps) => {
           ),
           link: (
             <a
-              className="text-gen3-base_blue no-underline font-bold"
+              className="text-utility-link no-underline font-bold"
               href={link}
               key={i}
             >
@@ -40,7 +40,7 @@ const MultiPartText = ({ parts }: MultiPartTextProps) => {
           ),
           outboundLink: (
             <a
-              className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold px-10 mb-5"
+              className="text-utility-link flex items-baseline no-underline font-bold px-10 mb-5"
               href={link}
               target="_blank"
               rel="noreferrer"
@@ -51,7 +51,7 @@ const MultiPartText = ({ parts }: MultiPartTextProps) => {
           ),
           bold: (
             <Text
-              className="font-bold text-4xl text-gen3-coal font-montserrat pb-8"
+              className="font-bold text-4xl text-base-contrast font-content pb-8"
               key={i}
             >
               {content}

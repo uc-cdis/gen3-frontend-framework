@@ -19,8 +19,10 @@ const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
         value: summary.value ?? 'N/A',
         label: name,
         key: `stats-item-${name}-${field}-${type}`,
-        className: summaries.length > 1 ?
-          'px-5 border-accent-darker first:border-r-2 last:border-right-0' : 'px-5'
+        className:
+          summaries.length > 1
+            ? 'px-5 border-accent-darker first:border-r-2 last:border-right-0'
+            : 'px-5',
       });
     }
   });

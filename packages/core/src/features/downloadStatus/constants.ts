@@ -6,7 +6,7 @@ export const DOWNLOAD_STARTED_MESSAGE =
   'Please remain on this page until your download completes. When your download is ready, ' +
   'it will begin automatically. You can close this window.';
 export const DOWNLOAD_SUCCEEDED_MESSAGE =
-  'Your download has been prepared. If your download doesn\'t start automatically, please follow this direct link:';
+  "Your download has been prepared. If your download doesn't start automatically, please follow this direct link:";
 export const JOB_POLLING_INTERVAL = 5000;
 
 export const DOWNLOAD_FAIL_STATUS = {

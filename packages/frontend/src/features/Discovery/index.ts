@@ -27,5 +27,5 @@ export {
   DiscoveryRowRendererFactory,
   DiscoveryConfigProvider,
   useDiscoveryContext,
-  StudyGroup
+  StudyGroup,
 };

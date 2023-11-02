@@ -16,7 +16,7 @@ const SearchFilters = ({
   filterState,
   setFilterState,
 }: SearchFiltersProps) => {
-  const {key} = filter;
+  const { key } = filter;
   return (
     <div className="flex flex-col">
       <Paper>

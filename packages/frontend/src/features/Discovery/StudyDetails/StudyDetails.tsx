@@ -11,15 +11,15 @@ const StudyDetails = () => {
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   let permalink = 'Discovery/notfound';
   if (studyDetails) {
-
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ?? 'unknown')}`;
+      typeof studyId == 'string' ?? 'unknown',
+    )}`;
     permalink = `/${pagePath}`;
   }
 
   useEffect(() => {
-    if (Object.keys(studyDetails).length > 0 ) {
+    if (Object.keys(studyDetails).length > 0) {
       open();
     }
   }, [studyDetails, open]);

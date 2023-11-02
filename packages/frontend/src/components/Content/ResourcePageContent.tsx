@@ -24,10 +24,10 @@ const ResourcePageContent = ({
       <div className="py-10 text-sm px-10">
         <Link href={'/'}>Home&nbsp;</Link>
         {' > '}
-        <span className="text-heal-primary">&nbsp;{title}</span>
+        <span className="text-primary">&nbsp;{title}</span>
       </div>
       <div className="text-md pl-10">
-        <Text className="font-bold text-4xl text-gen3-coal font-montserrat pb-8">
+        <Text className="font-bold text-4xl text-gen3-coal font-heading pb-8">
           {title}
         </Text>
         <div className="pl-5">
@@ -35,10 +35,10 @@ const ResourcePageContent = ({
           {(sections || []).map(({ title, introduction, cards }, i) => {
             return (
               <div key={i} className="mt-10">
-                <Text className="font-bold text-3xl text-gen3-coal font-montserrat pb-8">
+                <Text className="font-bold text-3xl text-gen3-coal font-heading pb-8">
                   {title}
                 </Text>
-                <Text className="font-montserrat text-xl">{introduction}</Text>
+                <Text className="font-content text-xl">{introduction}</Text>
                 <CardGrid content={cards} />
               </div>
             );

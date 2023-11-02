@@ -7,6 +7,7 @@ export * from './store';
 export * from './hooks';
 export * from './dataAccess';
 export * from './provider';
+export * from './features/authz';
 export * from './features/metadata/metadataSlice';
 export * from './features/fence';
 export * from './features/gen3Apps';
@@ -19,9 +20,4 @@ export * from './features/cohort';
 export * from './features/query';
 export * from './features/filters';
 
-export {
-  type CoreState,
-  GEN3_COMMONS_NAME,
-  GEN3_DOMAIN,
-  GEN3_API
-};
+export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API };

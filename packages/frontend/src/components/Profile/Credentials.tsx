@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Stack } from '@mantine/core';
+import { Button, LoadingOverlay, Stack } from '@mantine/core';
 
 import {
   useGetCredentialsQuery,
@@ -17,22 +17,22 @@ const Credentials = () => {
 
   return (
     <React.Fragment>
-      <Stack className="w-1/2 p-2">
-        {isLoading || isNewLoading ? (
-          <Card>Loading...</Card>
-        ) : (
-          <CredentialsTable />
-        )}
-        <div className="flex justify-center">
+      <div className="flex flex-col w-full p-2">
+
+        <div className="flex">
+          <LoadingOverlay visible={isLoading || isNewLoading} />
           <Button
+            color="accent.4"
             onClick={() => {
               if (csrfToken) addNewCredential(csrfToken.csrfToken);
             }}
           >
-            Add Credentials
+            Create an API Key
           </Button>
         </div>
-      </Stack>
+
+        <CredentialsTable />
+      </div>
     </React.Fragment>
   );
 };

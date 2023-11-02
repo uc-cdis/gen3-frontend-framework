@@ -1,6 +1,4 @@
-
 import { JSONValue } from '@gen3/core';
-
 
 export interface SummaryStatisticsConfig {
   name: string; // The name of the aggregation
@@ -25,4 +23,6 @@ export interface SummaryStatisticsDisplayData extends SummaryStatisticsConfig {
 
 export type SummaryStatistics = Array<SummaryStatisticsDisplayData>;
 
-export type StatisticsDataRetrievalFunction = (items: ReadonlyArray<StatisticsDataRequest>) => Array<StatisticsDataResponse>;
+export type StatisticsDataRetrievalFunction = (
+  items: ReadonlyArray<StatisticsDataRequest>,
+) => Array<StatisticsDataResponse>;

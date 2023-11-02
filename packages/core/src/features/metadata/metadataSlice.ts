@@ -41,10 +41,7 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
 // Define a service using a base URL and expected endpoints
 export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    getAggMDS: builder.query<
-      MetadataResponse,
-      MetadataRequestParams
-    >({
+    getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({
       query: ({ url, offset, pageSize }) => {
         if (url) {
           return `${url}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
@@ -62,7 +59,7 @@ export const metadataApi = gen3Api.injectEndpoints({
       },
     }),
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({ url, guidType, offset, pageSize}) => {
+      query: ({ url, guidType, offset, pageSize }) => {
         if (url) {
           return `${url}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
         } else {

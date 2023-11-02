@@ -1,7 +1,6 @@
 import { DiscoveryConfig, AccessLevel } from '../types';
 import { userHasMethodForServiceOnResource } from '../../../utils';
 
-
 // place holders for now
 const useArboristUI = false;
 

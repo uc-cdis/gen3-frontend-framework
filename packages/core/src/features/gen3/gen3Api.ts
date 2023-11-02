@@ -1,7 +1,7 @@
 import { createSelector, Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { GEN3_DOMAIN } from '../../constants';
+import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
 
@@ -12,13 +12,14 @@ export interface CSRFToken {
 export const gen3Api = coreCreateApi({
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${GEN3_DOMAIN}`,
+    baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
       const csrfToken = selectCSRFToken(getState() as CoreState);
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);
       }
       headers.set('Access-Control-Allow-Origin', '*');
+      headers.set('Content-Type', 'application/json');
       return headers;
     },
   }),
@@ -52,5 +53,5 @@ export const selectHeadersWithCSRFToken = createSelector(
     Accept: 'application/json',
     'Content-Type': 'application/json',
     ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-  })
+  }),
 );

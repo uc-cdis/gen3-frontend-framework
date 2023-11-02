@@ -1,2 +1,2 @@
-export default'./Colors';
-export  { ColorThemePageGetServerSideProps } from './data';
+export default './Colors';
+export { ColorThemePageGetServerSideProps } from './data';

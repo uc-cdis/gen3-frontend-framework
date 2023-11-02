@@ -6,7 +6,7 @@ export function category2NodeList(dictionary: DataDictionary) {
   const idFilter = (id: string) =>
     id.charAt(0) !== '_' && id === dictionary[id].id;
 
-  const categoryFilter = (node : DictionaryNode) =>
+  const categoryFilter = (node: DictionaryNode) =>
     node.category && node.id && node.category.toLowerCase() !== 'internal';
 
   return Object.keys(dictionary)
@@ -20,19 +20,20 @@ export function category2NodeList(dictionary: DataDictionary) {
       lookup[node.category].push(node);
       return lookup;
     }, {});
-
 }
 
-export const getNodePropertyCount = (dictionary : DataDictionary) => {
-  const res = parseDictionaryNodes(dictionary)
-    .reduce((acc, node) => {
+export const getNodePropertyCount = (dictionary: DataDictionary) => {
+  const res = parseDictionaryNodes(dictionary).reduce(
+    (acc, node) => {
       acc.nodesCount += 1;
       acc.propertiesCount += Object.keys(node.properties).length;
       return acc;
-    }, {
+    },
+    {
       nodesCount: 0,
       propertiesCount: 0,
-    });
+    },
+  );
   return {
     nodesCount: res.nodesCount,
     propertiesCount: res.propertiesCount,

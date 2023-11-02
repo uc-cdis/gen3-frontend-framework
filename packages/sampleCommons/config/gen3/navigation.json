@@ -14,7 +14,7 @@
       },
       {
         "icon": "gen3:dictionary",
-        "href": "/DD",
+        "href": "/DataDictionary",
         "name": "Dictionary",
         "tooltip": "The Data Dictionary serves to inform the data model and is updated as new data is ingested."
       },

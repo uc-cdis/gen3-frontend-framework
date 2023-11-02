@@ -1,5 +1,3 @@
-
-
 export interface GqlQueryEndpointProps {
   graphQLEndpoint?: string;
 }

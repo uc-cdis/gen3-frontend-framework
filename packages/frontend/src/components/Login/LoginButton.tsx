@@ -8,18 +8,19 @@ const LoginButton = () => {
   const router = useRouter();
 
   const handleSelected = async (isAuthenticated: boolean) => {
-    if (!isAuthenticated) await router.push(`${GEN3_DOMAIN}/Login`);
+    if (!isAuthenticated) await router.push('Login');
     else await router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
   };
 
   const { loginStatus } = useUserAuth();
 
+  // TODO add referring page to redirect to after login
   return (
     <UnstyledButton
-      className="mx-2 "
+      className="mx-2 w-1/3"
       onClick={() => handleSelected(isAuthenticated(loginStatus))}
     >
-      <div className="flex items-center hover:border-b-1 border-white secondary-contrast-lighter font-medium font-heading ">
+      <div className="flex items-center hover:border-b-1 bg-secondary-lighter border-secondary text-secondary-contrast-lighter font-medium font-heading">
         {isAuthenticated(loginStatus) ? 'Logout' : 'Login'}
         <LoginIcon className="pl-1" size={'1.75rem'} />
       </div>

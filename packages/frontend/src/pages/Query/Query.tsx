@@ -7,10 +7,10 @@ const QueryPage = ({
   headerProps,
   footerProps,
   queryProps,
-} : QueryPageLayoutProps ): JSX.Element => {
+}: QueryPageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint}/>
+      <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint} />
     </NavPageLayout>
   );
 };

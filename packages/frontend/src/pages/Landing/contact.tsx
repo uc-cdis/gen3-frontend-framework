@@ -18,7 +18,7 @@ const ContactPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
             {' > '}
             <span className="text-heal-primary">&nbsp;Contact</span>
           </div>
-          <h1 className="font-bold text-4xl text-gen3-coal font-montserrat pb-4">
+          <h1 className="font-bold text-4xl text-gen3-coal font-heading pb-4">
             Contact
           </h1>
           <Text className="prose text-black text-2xl p-8">

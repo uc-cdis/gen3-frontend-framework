@@ -34,7 +34,9 @@ const GqlQueryEditor: React.FC<GqlQueryEditorProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center m-2">
-        <Text size="xl" fw={500} >Query Graph</Text>
+        <Text size="xl" fw={500}>
+          Query Graph
+        </Text>
       </div>
       <GraphiQL
         editorTheme="light"
