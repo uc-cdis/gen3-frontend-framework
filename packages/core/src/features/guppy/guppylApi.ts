@@ -1,9 +1,8 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
-import { GEN3_GUPPY_API } from '../../constants';
 import { coreCreateApi } from '../../api';
 import { JSONObject } from '../../types';
 
-export interface GraphQLFetchError {
+export interface guppyFetchError {
   readonly url: string;
   readonly status: number;
   readonly statusText: string;
@@ -11,12 +10,12 @@ export interface GraphQLFetchError {
   readonly variables?: Record<string, any>;
 }
 
-export interface GraphqlApiSliceRequest {
+export interface guppyApiSliceRequest {
   readonly query: string;
   readonly variables?: Record<string, unknown>;
 }
 
-export interface GraphQLApiResponse<H = JSONObject> {
+export interface guppyApiResponse<H = JSONObject> {
   readonly data: H;
   readonly errors: Record<string, string>;
 }
@@ -33,10 +32,10 @@ export interface TablePageOffsetProps {
   readonly searchTerm?: string;
 }
 
-const buildGraphQLFetchError = async (
+const buildGuppyFetchError = async (
   res: Response,
-  variables?: Record<string, any>
-): Promise<GraphQLFetchError> => {
+  variables?: Record<string, any>,
+): Promise<guppyFetchError> => {
   const errorData = await res.json();
   return {
     url: res.url,
@@ -47,10 +46,10 @@ const buildGraphQLFetchError = async (
   };
 };
 
-export const graphqlAPI = async <T>(
-  query: GraphqlApiSliceRequest
-): Promise<GraphQLApiResponse<T>> => {
-  const res = await fetch(`${GEN3_GUPPY_API}/graphql`, {
+export const guppyAPIFetch = async <T>(
+  query: guppyApiSliceRequest,
+): Promise<guppyApiResponse<T>> => {
+  const res = await fetch('/guppy', {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -62,26 +61,22 @@ export const graphqlAPI = async <T>(
 
   if (res.ok) return res.json();
 
-  throw await buildGraphQLFetchError(res, query);
+  throw await buildGuppyFetchError(res, query);
 };
 
-export const graphqlAPISlice = coreCreateApi({
-  reducerPath: 'graphql',
-  baseQuery: async (request: GraphqlApiSliceRequest) => {
-    let results: GraphQLApiResponse<any>;
-
+export const guppyApi = coreCreateApi({
+  reducerPath: 'guppy',
+  baseQuery: async (request: guppyApiSliceRequest) => {
     try {
-      results = await graphqlAPI(request);
+      const results = await guppyAPIFetch(request);
+      return { data: results };
     } catch (e) {
       return { error: e };
     }
-
-    return { data: results };
   },
   endpoints: () => ({}),
 });
 
-export const graphqlAPISliceMiddleware =
-  graphqlAPISlice.middleware as Middleware;
-export const graphqlAPISliceReducerPath: string = graphqlAPISlice.reducerPath;
-export const graphqlAPIReducer: Reducer = graphqlAPISlice.reducer as Reducer;
+export const guppyAPISliceMiddleware = guppyApi.middleware as Middleware;
+export const guppyApiSliceReducerPath: string = guppyApi.reducerPath;
+export const guppyApiReducer: Reducer = guppyApi.reducer as Reducer;

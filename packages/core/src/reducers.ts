@@ -7,9 +7,9 @@ import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
 
 import {
-  graphqlAPIReducer,
-  graphqlAPISliceReducerPath,
-} from './features/query/graphqlApi';
+  guppyApiReducer,
+  guppyApiSliceReducerPath,
+} from './features/guppy/guppylApi';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -18,7 +18,7 @@ export const rootReducer = combineReducers({
   drsHostnames: drsHostnamesReducer,
   modals: modalReducer,
   cohorts: cohortReducer,
-  [graphqlAPISliceReducerPath]: graphqlAPIReducer,
+  [guppyApiSliceReducerPath]: guppyApiReducer,
 });
 
 export type CoreState = ReturnType<typeof rootReducer>;

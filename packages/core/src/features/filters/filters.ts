@@ -16,9 +16,27 @@ import {
   NotEquals,
   Operation,
   OperationHandler,
-  Union
+  OperationWithField,
+  Union,
 } from './types';
-import { extractEnumFilterValue } from './utils';
+
+export const isOperationWithField = (
+  operation: OperationWithField | Operation,
+): operation is OperationWithField => {
+  return (operation as OperationWithField)?.field !== undefined;
+};
+export const extractFilterValue = (op: Operation): FilterValue => {
+  const valueExtractorHandler = new ValueExtractorHandler();
+  return handleOperation<FilterValue>(valueExtractorHandler, op);
+};
+export const extractEnumFilterValue = (op: Operation): EnumFilterValue => {
+  const enumValueExtractorHandler = new EnumValueExtractorHandler();
+  const results = handleOperation<EnumFilterValue | undefined>(
+    enumValueExtractorHandler,
+    op,
+  );
+  return results ?? [];
+};
 
 const assertNever = (x: never): never => {
   throw Error(`Exhaustive comparison did not handle: ${x}`);
@@ -26,7 +44,7 @@ const assertNever = (x: never): never => {
 
 export const handleOperation = <T>(
   handler: OperationHandler<T>,
-  op: Operation
+  op: Operation,
 ): T => {
   switch (op.operator) {
     case '=':
@@ -133,7 +151,7 @@ export interface GQLUnion {
 
 type NestedContents = GQLFilter & {
   path: string;
-}
+};
 
 export interface GQLNestedFilter {
   nested: NestedContents;
@@ -147,8 +165,8 @@ export type GQLFilter =
   | GQLGreaterThan
   | GQLGreaterThanOrEquals
   | GQLIncludes
-    | GQLExcludes
-    | GQLExcludeIfAny
+  | GQLExcludes
+  | GQLExcludeIfAny
   | GQLIntersection
   | GQLUnion
   | GQLNestedFilter;
@@ -180,7 +198,7 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
     },
   });
   handleGreaterThanOrEquals = (
-      op: GreaterThanOrEquals
+    op: GreaterThanOrEquals,
   ): GQLGreaterThanOrEquals => ({
     '>=': {
       [op.field]: op.operand,
@@ -207,7 +225,7 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
 
   handleIntersection = (op: Intersection): GQLIntersection => ({
     and: op.operands.map((x) =>
-        convertFilterToGqlFilter(x)
+      convertFilterToGqlFilter(x),
     ) as ReadonlyArray<GQLFilter>,
   });
 
@@ -215,26 +233,25 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
     or: op.operands.map((x) => convertFilterToGqlFilter(x)),
   });
 
-
   handleNestedFilter = (op: NestedFilter): GQLNestedFilter => {
-    const child : GQLFilter = convertFilterToGqlFilter(op.operand);
+    const child: GQLFilter = convertFilterToGqlFilter(op.operand);
     return {
       nested: {
         path: op.path,
-        ...child
-      }
+        ...child,
+      },
     } as GQLNestedFilter;
   };
 }
 
- const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
+const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
   const handler: OperationHandler<GQLFilter> = new ToGqlHandler();
   return handleOperation(handler, filter);
 };
 
 export const convertFilterSetToGqlFilter = (
   fs: FilterSet,
-  toplevelOp: 'and' | 'or' = 'and'
+  toplevelOp: 'and' | 'or' = 'and',
 ): GQLFilter => {
   const fsKeys = Object.keys(fs.root);
   // if no keys return undefined
@@ -245,7 +262,6 @@ export const convertFilterSetToGqlFilter = (
     : { or: fsKeys.map((key) => convertFilterToGqlFilter(fs.root[key])) };
 };
 
-
 /**
  * Extract the operand values, if operands themselves have values,  otherwise undefined.
  */
@@ -254,23 +270,23 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
   handleNotEquals: (op: NotEquals) => string | number = (op: NotEquals) =>
     op.operand;
   handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
-    op: Includes
+    op: Includes,
   ) => op.operands;
   handleExcludes: (op: Excludes) => ReadonlyArray<string | number> = (
-      op: Excludes
+    op: Excludes,
   ) => op.operands;
   handleExcludeIfAny: (op: ExcludeIfAny) => ReadonlyArray<string | number> = (
-      op: ExcludeIfAny
+    op: ExcludeIfAny,
   ) => op.operands;
   handleGreaterThanOrEquals: (op: GreaterThanOrEquals) => string | number = (
-    op: GreaterThanOrEquals
+    op: GreaterThanOrEquals,
   ) => op.operand;
   handleGreaterThan: (op: GreaterThan) => string | number = (op: GreaterThan) =>
     op.operand;
   handleLessThan: (op: LessThan) => string | number = (op: LessThan) =>
     op.operand;
   handleLessThanOrEquals: (op: LessThanOrEquals) => string | number = (
-    op: LessThanOrEquals
+    op: LessThanOrEquals,
   ) => op.operand;
   handleIntersection: (op: Intersection) => undefined = (_: Intersection) =>
     undefined;
@@ -288,27 +304,29 @@ export class EnumValueExtractorHandler
   handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
   handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
   handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
-    op: Includes
+    op: Includes,
   ) => op.operands;
   handleExcludes: (op: Excludes) => ReadonlyArray<string | number> = (
-      op: Excludes
+    op: Excludes,
   ) => op.operands;
   handleExcludeIfAny: (op: ExcludeIfAny) => ReadonlyArray<string | number> = (
-      op: ExcludeIfAny
+    op: ExcludeIfAny,
   ) => op.operands;
   handleGreaterThanOrEquals: (_: GreaterThanOrEquals) => undefined = (
-    _: GreaterThanOrEquals
+    _: GreaterThanOrEquals,
   ) => undefined;
   handleGreaterThan: (_: GreaterThan) => undefined = (_: GreaterThan) =>
     undefined;
   handleLessThan: (op: LessThan) => undefined = (_: LessThan) => undefined;
   handleLessThanOrEquals: (op: LessThanOrEquals) => undefined = (
-    _: LessThanOrEquals
+    _: LessThanOrEquals,
   ) => undefined;
   handleIntersection: (op: Intersection) => undefined = (_: Intersection) =>
     undefined;
   handleUnion: (op: Union) => undefined = (_: Union) => undefined;
-  handleNestedFilter: (op: NestedFilter) => EnumFilterValue | undefined = (op: NestedFilter) => {
-      return extractEnumFilterValue(op.operand);
+  handleNestedFilter: (op: NestedFilter) => EnumFilterValue | undefined = (
+    op: NestedFilter,
+  ) => {
+    return extractEnumFilterValue(op.operand);
   };
 }

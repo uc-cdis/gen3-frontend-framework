@@ -87,15 +87,23 @@ export type Operation =
   | GreaterThanOrEquals
   | NestedFilter
   | ExcludeIfAny
-    | Excludes;
+  | Excludes;
 
-export type OperationWithField = Includes | Equals | NotEquals | LessThan | LessThanOrEquals | GreaterThan | GreaterThanOrEquals | ExcludeIfAny | Excludes;
-
+export type OperationWithField =
+  | Includes
+  | Equals
+  | NotEquals
+  | LessThan
+  | LessThanOrEquals
+  | GreaterThan
+  | GreaterThanOrEquals
+  | ExcludeIfAny
+  | Excludes;
 
 export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: 'and' | 'or';
-};
+}
 
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
@@ -130,8 +138,8 @@ export type FacetBucket = {
 };
 
 export type HistogramBucket = {
-  key: string | [ number, number ];
-  count: number ;
+  key: string | [number, number];
+  count: number;
 };
 
 export type FacetType =

@@ -2,8 +2,9 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
   handleOperation,
+  extractEnumFilterValue,
+  extractFilterValue,
 } from './filters';
-import { extractEnumFilterValue, extractFilterValue } from './utils';
 
 export * from './types';
 export * from './utils';

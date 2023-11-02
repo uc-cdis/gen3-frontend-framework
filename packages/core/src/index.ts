@@ -17,7 +17,7 @@ export * from './features/drsResolver';
 export * from './features/modals';
 export * from './features/downloadStatus';
 export * from './features/cohort';
-export * from './features/query';
 export * from './features/filters';
+export * from './features/guppy';
 
 export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API };

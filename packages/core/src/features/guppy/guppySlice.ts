@@ -7,7 +7,7 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
 } from '../filters';
-import { graphqlAPISlice } from './graphqlApi';
+import { guppyApi } from './guppylApi';
 import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
@@ -53,7 +53,7 @@ export const useGetStatus = (): SWRResponse<JSONObject, Error> => {
   return useSWR('explorerStatus', fetcher);
 };
 
-export type AggregationResponse = Record<string, any>;
+export type AggregationResponse = Record<string, JSONObject>;
 
 export interface RawDataAndTotalCountsParams {
   type: string;
@@ -101,7 +101,7 @@ interface QueryCountsParams {
   accessibility?: Accessibility;
 }
 
-const explorerApi = graphqlAPISlice.injectEndpoints({
+const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllFieldsForType: builder.query({
       query: (type: { type: string }) => ({
@@ -373,6 +373,6 @@ export const selectAggDataForIndex = (
   index: string,
   field: string,
 ) => {
-  const data = state.graphqlAPI.aggs[index]?.[field]?.histogram;
+  const data = state.guppyApi.aggs[index]?.[field]?.histogram;
   return data ?? EmptyAggData;
 };

@@ -89,6 +89,7 @@
     "tailwind-styled-components": "^2.2.0",
     "tinycolor2": "^1.6.0",
     "victory": "^36.6.11",
+    "victory-chart": "^36.6.12",
     "victory-charts": "^0.0.1"
   },
   "devDependencies": {

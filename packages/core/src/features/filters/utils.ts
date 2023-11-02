@@ -1,6 +1,3 @@
-import { EnumFilterValue, FilterValue, Operation, OperationWithField } from './types';
-import { EnumValueExtractorHandler, handleOperation, ValueExtractorHandler } from './filters';
-
 const FieldNameOverrides: Record<string, string> = {};
 
 const COMMON_PREPOSITIONS = [
@@ -30,7 +27,7 @@ const capitalize = (s: string): string =>
 
 export const trimFirstFieldNameToTitle = (
   fieldName: string,
-  trim = false
+  trim = false,
 ): string => {
   if (trim) {
     const source = fieldName.slice(fieldName.indexOf('.') + 1);
@@ -59,7 +56,7 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
     .map((s) => s.split('_'))
     .flat()
     .map((word) =>
-      COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word)
+      COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
     )
     .join(' ');
 };
@@ -76,7 +73,7 @@ export const extractIndexFromFullFieldName = (fieldName: string): string =>
  */
 export const prependIndexToFieldName = (
   fieldName: string,
-  index: string
+  index: string,
 ): string => `${index}.${fieldName}`;
 
 /**
@@ -89,26 +86,8 @@ export const extractFieldNameFromFullFieldName = (fieldName: string): string =>
  * extract the field name and the index from the index.field name returning as a tuple
  */
 export const extractIndexAndFieldNameFromFullFieldName = (
-  fieldName: string
+  fieldName: string,
 ): [string, string] => {
   const [index, ...rest] = fieldName.split('.');
   return [index, rest.join('.')];
-};
-
-
-
-
-export const isOperationWithField = (operation: OperationWithField | Operation): operation is OperationWithField => {
-  return (operation as OperationWithField)?.field !== undefined;
-};
-export const extractFilterValue = (op: Operation): FilterValue => {
-  const valueExtractorHandler = new ValueExtractorHandler();
-  return handleOperation<FilterValue>(valueExtractorHandler, op);
-};
-export const extractEnumFilterValue = (
-  op: Operation
-): EnumFilterValue => {
-  const enumValueExtractorHandler = new EnumValueExtractorHandler();
-  const results = handleOperation<EnumFilterValue | undefined>(enumValueExtractorHandler, op);
-  return results ?? [];
 };
