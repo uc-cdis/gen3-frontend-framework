@@ -10,6 +10,7 @@ import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
+import { SessionConfiguration } from '../../lib/session/types';
 
 const getEmotionCache = (): EmotionCache => {
   // Insert mantine styles after global styles
@@ -27,13 +28,14 @@ interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
   fonts:  Fonts;
+  sessionConfig: SessionConfiguration;
   children?: ReactNode | undefined;
 }
 
 const Gen3Provider: React.FC<Gen3ProviderProps> = ({
   colors,
-  icons,
-                                                     fonts,
+  icons, fonts,
+  sessionConfig,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -63,7 +65,7 @@ const Gen3Provider: React.FC<Gen3ProviderProps> = ({
         }}
       >
         <Notifications />
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider {...sessionConfig} >{children}</SessionProvider>
       </MantineProvider>
     </CoreProvider>
   );

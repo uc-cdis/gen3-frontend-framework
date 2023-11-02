@@ -1,5 +1,6 @@
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './components/Profile';
 
 export * from './components/Login';
 export * from './components/Profile';

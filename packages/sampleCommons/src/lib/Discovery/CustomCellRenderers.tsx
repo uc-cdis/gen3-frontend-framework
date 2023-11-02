@@ -48,18 +48,17 @@ const WrappedStringCell = (
   );
 };
 
-const HEALCellRenderers = {
-  string: {
-    default: WrappedStringCell,
-  },
-  boolean: {
-    LinkedStudyCell,
-  },
-};
 
 /**
  * Register custom cell renderers for DiscoveryTable
  */
 export const registerDiscoveryCustomCellRenderers = () => {
-  DiscoveryCellRendererFactory.registerCellRendererCatalog(HEALCellRenderers);
+  DiscoveryCellRendererFactory.registerCellRendererCatalog({
+    string: {
+      default: WrappedStringCell,
+    },
+    boolean: {
+      LinkedStudyCell,
+    },
+  });
 };

@@ -1,16 +1,16 @@
 import React from 'react';
-import { LandingPageProps } from '../../components/Content/LandingPageContent';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import { Profile } from '../../features/Profile';
+import { ProfileConfig } from "../../components/Profile";
 
 interface Props extends NavPageLayoutProps {
-  landingPage: LandingPageProps;
+  profileConfig: ProfileConfig;
 }
 
-const ProfilePage = ({ headerProps, footerProps }: Props) => {
+const ProfilePage = ({ headerProps, footerProps, profileConfig }: Props) => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <Profile />
+      <Profile profileConfig={profileConfig}/>
     </NavPageLayout>
   );
 };
