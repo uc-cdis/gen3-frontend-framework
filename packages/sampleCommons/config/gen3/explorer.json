@@ -412,7 +412,6 @@
                     "loinc_code",
                     "days_from_study_to_pos_covid_test",
                     "days_from_study_to_neg_covid_test",
-                    "data_format",
                     "covid19_positive",
                     "age_at_index",
                     "index_event",

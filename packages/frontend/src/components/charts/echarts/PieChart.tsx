@@ -17,6 +17,7 @@ const processChartData = (
     if (!facetData) {
         return [];
     }
+
     const data =facetData.filter((d:any) => d.key !== '_missing');
 
     const results = data.slice(0, maxBins)
@@ -42,7 +43,7 @@ const PieChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
                     trigger: 'item'
                 },
                 series: [
-                    { type: 'pie', radius: '60%',  data: processChartData(data[0]) }
+                    { type: 'pie', radius: '60%',  data: processChartData(data) }
                 ]
 
         }; }, [data]);

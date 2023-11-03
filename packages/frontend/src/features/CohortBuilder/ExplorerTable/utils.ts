@@ -14,10 +14,3 @@ export const convertGuppyTableConfig = (
     };
   });
 };
-
-export const jsonPathAccessor =
-  <T extends Record<string, any>>(path: string) =>
-  (row: MRT_Row<T>) => {
-    // TODO: add logging if path is not found
-    return JSONPath({ json: row, path: path });
-  };

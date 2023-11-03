@@ -67,13 +67,14 @@ export const CohortPanel = ({
 
   const getEnumFacetData = useCallback(
     (field: string) => {
+      console.log("field", field, cohortFilters);
       return {
         data: processBucketData(data?.[field]),
-        enumFilters: extractEnumFilterValue(cohortFilters.root[field]),
+        enumFilters: field in cohortFilters.root ? extractEnumFilterValue(cohortFilters.root[field]) : undefined,
         isSuccess: isSuccess,
       };
     },
-    [data, cohortFilters.root, isSuccess],
+    [cohortFilters, data, isSuccess],
   );
 
   const getRangeFacetData = useCallback(

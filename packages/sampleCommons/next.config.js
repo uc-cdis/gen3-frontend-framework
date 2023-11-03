@@ -18,5 +18,3 @@ const nextConfig = {
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: process.env.BASE_PATH || '',
 };
-
-module.exports = withMDX(nextConfig);

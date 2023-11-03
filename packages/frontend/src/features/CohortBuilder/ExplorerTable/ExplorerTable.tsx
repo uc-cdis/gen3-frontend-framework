@@ -3,22 +3,33 @@ import {
   fieldNameToTitle,
   selectIndexFilters,
   useCoreSelector,
-  useGetRawDataAndTotalCountsQuery
-} from "@gen3/core";
+  useGetRawDataAndTotalCountsQuery,
+} from '@gen3/core';
 import {
   MantineReactTable,
-  useMantineReactTable,
-  type MRT_SortingState,
+  MRT_Column,
   type MRT_PaginationState,
+  type MRT_Row,
+  type MRT_SortingState,
+  useMantineReactTable,
 } from 'mantine-react-table';
-import { jsonPathAccessor } from './utils';
-import { TableCellRenderer } from './CellRenderers';
+import { jsonPathAccessor } from '../../../components/Tables/utils';
+import { CellRendererFunction, TableCellRenderer } from './CellRenderers';
 
-import { SummaryTable } from "./types";
+import { SummaryTable } from './types';
 
 interface ExplorerTableProps {
   index: string;
   tableConfig: SummaryTable;
+}
+
+interface ExplorerColumn {
+  field: string;
+  accessorKey: never;
+  header: string;
+  accessorFn?: (originalRow: ExplorerColumn) => any;
+  Cell?: CellRendererFunction ;
+  size?: number;
 }
 
 const ExplorerTable: React.FC<ExplorerTableProps> = ({
@@ -35,31 +46,30 @@ const ExplorerTable: React.FC<ExplorerTableProps> = ({
   const cols = useMemo(() => {
     // setup table columns at the same time
     // TODO: refactor to support more complex table configs
-    const cols = tableConfig.fields.reduce((acc, field) => {
-      if (tableConfig.columns?.[field] === undefined)
-        return acc;
-      const columnDef = tableConfig.columns[field];
-      return [...acc, {
+    return tableConfig.fields.map((field) => {
+      const columnDef = tableConfig?.columns?.[field];
+      return {
+        id: field,
         field: field,
         accessorKey: field as never,
-        header: columnDef.title ?? fieldNameToTitle(field),
-        accessorFn: columnDef.accessorPath
+        header: columnDef?.title ?? fieldNameToTitle(field),
+        accessorFn: columnDef?.accessorPath
           ? jsonPathAccessor(columnDef.accessorPath)
           : undefined,
-        Cell: columnDef.type
+        Cell: columnDef?.type
           ? TableCellRenderer(
-              columnDef.type,
-              columnDef.cellRenderFunction ?? 'default',
+              columnDef?.type,
+              columnDef?.cellRenderFunction ?? 'default',
             )
           : undefined,
-        size: columnDef.width,
-      }];
-    }, [] as any[]);
-    return cols;
+        size: columnDef?.width,
+      };
+    }, [] as MRT_Column<ExplorerColumn>[]);
   }, [tableConfig]);
 
   // TODO: add support for nested fields
   const fields = useMemo(() => cols.map((column) => column.field), [cols]);
+
   const cohortFilters = useCoreSelector((state) =>
     selectIndexFilters(state, index),
   );
