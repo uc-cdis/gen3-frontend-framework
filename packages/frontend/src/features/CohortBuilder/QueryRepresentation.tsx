@@ -36,7 +36,7 @@ import {
 import tw from 'tailwind-styled-components';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
-import { QueryExpressionsExpandedContext } from './QueryExpressionSection';
+import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
 import { buildNested } from '../../components/facets/utils';
 
 const RemoveButton = ({ value }: { value: string }) => (

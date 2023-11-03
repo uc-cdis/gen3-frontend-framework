@@ -35,7 +35,6 @@ const globals = {
   'react-minisearch': 'reactMinisearch',
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
-
 };
 
 const config = [
@@ -55,7 +54,23 @@ const config = [
         globals,
       },
     ],
-    external: Object.keys(globals),
+    external: [
+      ...Object.keys(globals),
+      'tailwindcss/plugin',
+      '@iconify/react',
+      'next/router',
+      'next/dynamic',
+      'next/link',
+      'next/image',
+      'react-icons/fa',
+      'react-icons/im',
+      'tinycolor2',
+      'tailwind-styled-components',
+      '@graphiql/plugin-explorer',
+      'mantine-react-table',
+      'victory',
+      'echarts'
+    ],
     plugins: [
       peerDepsExternal(),
       json(),
@@ -77,7 +92,7 @@ const config = [
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives()
+        swcPreserveDirectives(),
       ),
     ],
   },

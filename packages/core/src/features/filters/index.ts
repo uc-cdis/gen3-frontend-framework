@@ -1,5 +1,6 @@
 import {
   isFilterEmpty,
+  isOperationWithField,
   convertFilterSetToGqlFilter,
   handleOperation,
   extractEnumFilterValue,
@@ -12,6 +13,7 @@ export * from './utils';
 export {
   handleOperation,
   isFilterEmpty,
+  isOperationWithField,
   convertFilterSetToGqlFilter,
   extractFilterValue,
   extractEnumFilterValue,

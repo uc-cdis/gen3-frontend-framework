@@ -1,4 +1,3 @@
-'use client';
 import React, { useCallback } from 'react';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import { FromToRangeValues } from './types';

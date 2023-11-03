@@ -11,6 +11,7 @@ import { omit, partial } from 'lodash';
 import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
+import { QueryExpressionsExpandedContext, CollapsedStateReducerAction } from './QueryExpressionsExpandedContext';
 import {
   useUpdateFilters,
 } from '../../components/facets/utils';
@@ -30,11 +31,11 @@ const QueryExpressionContainer = tw.div`
 
 const MAX_COLLAPSED_ROWS = 3;
 
-interface CollapsedStateReducerAction {
-  type: 'expand' | 'collapse' | 'clear' | 'init' | 'expandAll' | 'collapseAll';
-  cohortId: string;
-  field?: string;
-}
+// interface CollapsedStateReducerAction {
+//   type: 'expand' | 'collapse' | 'clear' | 'init' | 'expandAll' | 'collapseAll';
+//   cohortId: string;
+//   field?: string;
+// }
 
 const reducer = (
   state: Record<string, Record<string, boolean>>,
@@ -101,10 +102,7 @@ interface QueryExpressionSectionProps {
   readonly currentCohortId: string;
 }
 
-export const QueryExpressionsExpandedContext =
-  React.createContext<
-    [Record<string, boolean>, (action: CollapsedStateReducerAction) => void]
-  >([{}, () => null]);
+
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
