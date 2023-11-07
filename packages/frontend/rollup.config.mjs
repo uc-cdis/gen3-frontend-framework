@@ -45,6 +45,7 @@ const config = [
         dir: 'dist',
         format: 'cjs',
         globals,
+        sourcemap: true
       },
       {
         dir: 'dist',
@@ -52,6 +53,14 @@ const config = [
         name: 'gen3frontend',
         plugins: [terser()],
         globals,
+        sourcemap: true
+      },
+      {
+        dir: 'dist',
+        format: 'esm',
+        name: 'gen3Core',
+        globals,
+        sourcemap: true
       },
     ],
     external: [
@@ -87,6 +96,7 @@ const config = [
       }),
       swc(
         {
+          sourceMaps: true,
           include: /\.[mc]?[jt]sx?$/,
           exclude: /node_modules/,
           tsconfig: 'tsconfig.json',

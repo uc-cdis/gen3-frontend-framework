@@ -10,6 +10,7 @@ export interface SummaryTableColumn {
   accessorPath?: string; // JSONPath to column data
   type?: "string" | "number" | "date" | "array";
   cellRenderFunction?: string,
+  params?: Record<string, any>;
   width?: number; // override auto width of column
 }
 

@@ -8,9 +8,6 @@ export const createChart = (
     type: string,
     data: HistogramDataArray,
 ): React.ReactNode => {
-
-    console.log("createChart", type, data);
-
     return (
         <React.Fragment>
             {

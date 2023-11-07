@@ -24,7 +24,7 @@
     "build:clean": "npm run clean && npm run build",
     "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
-    "build:watch": "npm run compile && npm run build:rollup -- --watch",
+    "build:watch": "npm run compile && npm run build:swc -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {

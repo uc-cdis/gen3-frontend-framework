@@ -9,14 +9,27 @@ import {
   MantineReactTable,
   MRT_Column,
   type MRT_PaginationState,
-  type MRT_Row,
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { CellRendererFunction, TableCellRenderer } from './CellRenderers';
+import { CellRendererFunction } from './CellRenderers';
 
 import { SummaryTable } from './types';
+import ExplorerTableRendererFactory, { CellRendererFunctionProps } from "./ExplorerTableCellRenderers";
+
+const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
+  if (Array.isArray(obj))
+    return false;
+
+  if (obj !== null && typeof obj === "object") {
+    return true;
+  }
+
+  return false;
+};
+
+
 
 interface ExplorerTableProps {
   index: string;
@@ -48,6 +61,14 @@ const ExplorerTable: React.FC<ExplorerTableProps> = ({
     // TODO: refactor to support more complex table configs
     return tableConfig.fields.map((field) => {
       const columnDef = tableConfig?.columns?.[field];
+
+      const cellRendererFunc = columnDef?.type ? ExplorerTableRendererFactory().getRenderer(
+            columnDef?.type,
+            columnDef?.cellRenderFunction ?? 'default',
+          )
+          : undefined;
+
+      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? Object.entries(columnDef?.params) :  [];
       return {
         id: field,
         field: field,
@@ -56,12 +77,7 @@ const ExplorerTable: React.FC<ExplorerTableProps> = ({
         accessorFn: columnDef?.accessorPath
           ? jsonPathAccessor(columnDef.accessorPath)
           : undefined,
-        Cell: columnDef?.type
-          ? TableCellRenderer(
-              columnDef?.type,
-              columnDef?.cellRenderFunction ?? 'default',
-            )
-          : undefined,
+        Cell:  cellRendererFunc && columnDef?.params ? (cell : CellRendererFunctionProps) => cellRendererFunc(cell , cellRendererFuncParams  ) : cellRendererFunc,
         size: columnDef?.width,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);

@@ -4,6 +4,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { Tabs } from '@mantine/core';
+import { partial } from 'lodash';
+
 import {
   type FacetDefinition,
   selectIndexFilters,
@@ -14,7 +17,7 @@ import {
   CoreState,
 } from '@gen3/core';
 
-import { type CohortPanelConfig, type TabConfig } from './types';
+import { type CohortPanelConfig, type TabConfig} from './types';
 import { type SummaryChart} from "../../components/charts/types";
 
 import {
@@ -28,14 +31,14 @@ import {
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
 import { FacetRequiredHooks } from '../../components/facets/types';
-import { partial } from 'lodash';
 import { FiltersPanel } from './FiltersPanel';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
-import { Tabs } from '@mantine/core';
-;
+import DownloadsPanel from './DownloadsPanel';
+import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from "./utils";
+
 
 export const CohortPanel = ({
   guppyConfig,
@@ -43,6 +46,9 @@ export const CohortPanel = ({
   charts = {},
   table,
   tabTitle,
+  dropdowns,
+  buttons,
+  loginForDownload
 }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
   const fields = getAllFieldsFromFilterConfigs(filters?.tabs ?? []);
@@ -65,9 +71,13 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
+
+  const dropdownsWithButtons  = AddButtonsToDropdown(AddButtonsArrayToDropdowns(dropdowns, ), buttons);
+
+  const actionButtons = buttons ? buttons.filter((button) => button?.dropdownId === undefined) : [];
+
   const getEnumFacetData = useCallback(
     (field: string) => {
-      console.log("field", field, cohortFilters);
       return {
         data: processBucketData(data?.[field]),
         enumFilters: field in cohortFilters.root ? extractEnumFilterValue(cohortFilters.root[field]) : undefined,
@@ -180,7 +190,10 @@ export const CohortPanel = ({
       <div>
         <div className="flex flex-col">
           <CohortManager index={index} />
-          <div className="flex justify-end">
+
+          <div className="flex justify-between mb-1 ml-2">
+            <DownloadsPanel dropdowns={dropdownsWithButtons} buttons={actionButtons} loginForDownload={loginForDownload} />.
+
             <CountsValue
               label={guppyConfig.nodeCountTitle}
               index={index}
@@ -194,12 +207,12 @@ export const CohortPanel = ({
             isSuccess={isSuccess}
           />
           {table?.enabled ? (
-            <div className="grid">
+            <div className="flex flex-col">
+               <div className="grid">
               <ExplorerTable index={index} tableConfig={table} />
             </div>
-          ) : (
-            false
-          )}
+            </div>
+          ) : false}
         </div>
       </div>
     </div>

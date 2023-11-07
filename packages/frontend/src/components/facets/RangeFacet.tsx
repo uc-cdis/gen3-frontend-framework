@@ -103,7 +103,6 @@ const RangeFacet: React.FC<RangeFacetCardProps> = ({
   const updateRangeFilter = dataHooks.useUpdateFacetFilters();
   const updateFilters = useCallback(
     (from: number, to: number) => {
-      console.log('update', from, to);
       updateRangeFilter(field, createBucket(field, from, to));
       setMinMaxValue({
         from: from,

@@ -359,7 +359,6 @@ export const QueryElement: React.FC<QueryElementProps> = ({
   );
 
   const handleRemoveFilter = () => {
-    console.log('removing filter', index, field);
     coreDispatch(
       removeCohortFilter({
         index: index,

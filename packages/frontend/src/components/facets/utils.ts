@@ -44,11 +44,8 @@ export const processRangeData = (
 ): Record<string, number> => {
   if (!data) return {};
 
-  console.log('processRangeData', data);
-
   return data.reduce((acc : Record<string, number> , curr : HistogramData) => {
     // TODO handle this better when keys are undefined
-    console.log('processRangeData', curr);
     acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] = curr.count;
     return acc;
   }, {} as Record<string, number>);
