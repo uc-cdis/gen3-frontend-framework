@@ -1,5 +1,5 @@
 import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from '../utils';
-import { DownloadButtonConfig, DropdownButtonsConfig, DropdownsWithButtonsProps } from "../types";
+import { DownloadButtonConfig, DropdownButtonsConfig, DropdownsWithButtonsProps } from '../types';
 
 describe('AddButtonsToDropdowns', () => {
   // Should return an empty object if no dropdowns are provided

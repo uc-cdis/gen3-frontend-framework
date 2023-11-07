@@ -1,4 +1,4 @@
-import { HistogramDataArray } from "@gen3/core";
+import { HistogramDataArray } from '@gen3/core';
 
 export interface SummaryChart {
   readonly title: string;

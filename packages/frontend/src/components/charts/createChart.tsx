@@ -2,7 +2,7 @@ import React from 'react';
 import BarChart from './BarChart';
 import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';
-import { HistogramDataArray } from "@gen3/core";
+import { HistogramDataArray } from '@gen3/core';
 
 export const createChart = (
     type: string,

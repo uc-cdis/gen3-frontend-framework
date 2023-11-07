@@ -122,7 +122,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const clearAllFilters = () => {
     dispatch(clearCohortFilters(index));
-    setExpandedState({ type: 'clear', cohortId: currentCohortId, field: "unset" });
+    setExpandedState({ type: 'clear', cohortId: currentCohortId, field: 'unset' });
   };
   const allQueryExpressionsCollapsed = Object.values(
     expandedState?.[currentCohortId] || {}
@@ -137,7 +137,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   useEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
-      setExpandedState({ type: 'init', cohortId: currentCohortId, field: "unset" });
+      setExpandedState({ type: 'init', cohortId: currentCohortId, field: 'unset' });
     }
   }, [currentCohortId, expandedState]);
 

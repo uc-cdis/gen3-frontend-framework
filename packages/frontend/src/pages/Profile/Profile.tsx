@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import { Profile } from '../../features/Profile';
-import { ProfileConfig } from "../../components/Profile";
+import { ProfileConfig } from '../../components/Profile';
 
 interface Props extends NavPageLayoutProps {
   profileConfig: ProfileConfig;

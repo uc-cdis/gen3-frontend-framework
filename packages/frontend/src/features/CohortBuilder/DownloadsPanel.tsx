@@ -1,6 +1,6 @@
-import { DropdownsWithButtonsProps } from "./types";
-import { DownloadButton, DownloadButtonProps } from "../../components/Buttons/DropdownButtons";
-import { useIsUserLoggedIn } from "@gen3/core";
+import { DropdownsWithButtonsProps } from './types';
+import { DownloadButton, DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
+import { useIsUserLoggedIn } from '@gen3/core';
 
 
 interface DownloadsPanelProps {
@@ -41,7 +41,7 @@ const DownloadsPanel = ({ dropdowns, loginForDownload }: DownloadsPanelProps): J
       ))}
     </div>
   ) : (
-    <></>
+    <React.Fragment></React.Fragment>
   );
 };
 

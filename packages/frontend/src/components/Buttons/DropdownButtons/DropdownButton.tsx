@@ -1,5 +1,5 @@
 import { Menu, Button, Text } from '@mantine/core';
-import { type DropdownButtonsProps } from "./types";
+import { type DropdownButtonsProps } from './types';
 
 
 const DropdownButton = ({title, buttons} : DropdownButtonsProps ) : JSX.Element  => {

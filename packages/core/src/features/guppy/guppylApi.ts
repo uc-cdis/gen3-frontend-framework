@@ -1,7 +1,7 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { JSONObject } from '../../types';
-import { GEN3_API, GEN3_GUPPY_API } from "../../constants";
+import { GEN3_API, GEN3_GUPPY_API } from '../../constants';
 
 export interface guppyFetchError {
   readonly url: string;

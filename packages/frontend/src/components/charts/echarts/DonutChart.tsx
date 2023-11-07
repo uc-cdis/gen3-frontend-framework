@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {processLabel, truncateString} from '../utils';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
-import { HistogramDataArray, HistogramData } from "@gen3/core";
+import { HistogramDataArray, HistogramData } from '@gen3/core';
 import { ChartProps } from '../types';
 
 

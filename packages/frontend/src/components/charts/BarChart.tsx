@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { VictoryAxis, VictoryBar, VictoryChart,VictoryContainer, VictoryLabel, VictoryTheme } from 'victory';
 import {  processLabel, truncateString } from './utils';
-import { HistogramDataArray, HistogramData } from "@gen3/core";
+import { HistogramDataArray, HistogramData } from '@gen3/core';
 import { ChartProps } from './types';
 
 

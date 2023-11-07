@@ -18,7 +18,7 @@ import {
 } from '@gen3/core';
 
 import { type CohortPanelConfig, type TabConfig} from './types';
-import { type SummaryChart} from "../../components/charts/types";
+import { type SummaryChart} from '../../components/charts/types';
 
 import {
   classifyFacets,
@@ -37,7 +37,7 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from "./utils";
+import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
 
 
 export const CohortPanel = ({

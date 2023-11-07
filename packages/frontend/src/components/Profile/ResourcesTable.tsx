@@ -1,12 +1,12 @@
-import React, { useMemo } from "react";
-import { type ServiceAndMethod } from "@gen3/core";
-import { Badge } from "@mantine/core";
+import React, { useMemo } from 'react';
+import { type ServiceAndMethod } from '@gen3/core';
+import { Badge } from '@mantine/core';
 
-import { MantineReactTable, MRT_Cell, MRT_ColumnDef, useMantineReactTable } from "mantine-react-table";
-import { useResourcesContext } from "./ResourcesProvider";
-import { useProfileContext } from "./ProfileProvider";
-import { ServiceColorAndLabel } from "./types";
-import { convertToRecordMethodToResource } from "./utils";
+import { MantineReactTable, MRT_Cell, MRT_ColumnDef, useMantineReactTable } from 'mantine-react-table';
+import { useResourcesContext } from './ResourcesProvider';
+import { useProfileContext } from './ProfileProvider';
+import { ServiceColorAndLabel } from './types';
+import { convertToRecordMethodToResource } from './utils';
 
 interface ItemResource {
   resource: string;

@@ -1,10 +1,10 @@
 
 // set of interfaces which follows the current explorer configuration
 
-import { SummaryChart } from "../../components/charts/types";
-import { SummaryTable } from "./ExplorerTable/types";
-import { FieldToName } from "../../components/facets/types";
-import { DownloadButtonProps } from "../../components/Buttons/DropdownButtons";
+import { SummaryChart } from '../../components/charts/types';
+import { SummaryTable } from './ExplorerTable/types';
+import { FieldToName } from '../../components/facets/types';
+import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 
 export interface TabConfig {
     readonly title: string;

@@ -35,7 +35,7 @@ const LoginProviderMultipleItems = ({ provider, handleLoginSelected, redirectURL
         key={provider.name}
         color="accent.3"
         disabled={!value}
-        onClick={() => handleLoginSelected(value ?? "", redirectURL)}
+        onClick={() => handleLoginSelected(value ?? '', redirectURL)}
       >
         {' '}
         {provider.name}

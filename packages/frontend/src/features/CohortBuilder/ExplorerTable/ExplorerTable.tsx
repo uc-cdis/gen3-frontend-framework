@@ -16,13 +16,13 @@ import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { CellRendererFunction } from './CellRenderers';
 
 import { SummaryTable } from './types';
-import ExplorerTableRendererFactory, { CellRendererFunctionProps } from "./ExplorerTableCellRenderers";
+import ExplorerTableRendererFactory, { CellRendererFunctionProps } from './ExplorerTableCellRenderers';
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))
     return false;
 
-  if (obj !== null && typeof obj === "object") {
+  if (obj !== null && typeof obj === 'object') {
     return true;
   }
 

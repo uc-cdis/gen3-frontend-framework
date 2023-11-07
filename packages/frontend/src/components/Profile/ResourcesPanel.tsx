@@ -1,7 +1,7 @@
-import { useState } from "react";
-import ResourcesFilters from "./ResourcesFilters";
-import ResourcesTable from "./ResourcesTable";
-import ResourcesProvider from "./ResourcesProvider";
+import { useState } from 'react';
+import ResourcesFilters from './ResourcesFilters';
+import ResourcesTable from './ResourcesTable';
+import ResourcesProvider from './ResourcesProvider';
 
 
 export const ResourcesPanel = () => {

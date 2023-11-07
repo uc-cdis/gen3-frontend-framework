@@ -1,4 +1,4 @@
-import { DownloadButtonConfig, DropdownButtonsConfig, DropdownsWithButtonsProps } from "./types";
+import { DownloadButtonConfig, DropdownButtonsConfig, DropdownsWithButtonsProps } from './types';
 
 /**
  * Function given an object of DropdownButtonsConfig will return an object of DropdownsWithButtonsProps

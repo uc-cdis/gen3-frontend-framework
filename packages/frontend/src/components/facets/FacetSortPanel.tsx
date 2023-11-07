@@ -1,10 +1,10 @@
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon } from '@mantine/core';
 import {
   MdSort as SortIcon,
   MdSortByAlpha as AlphaSortIcon,
-} from "react-icons/md";
-import { ImSortAmountAsc as NumberSortAsc } from "react-icons/im";
-import React from "react";
+} from 'react-icons/md';
+import { ImSortAmountAsc as NumberSortAsc } from 'react-icons/im';
+import React from 'react';
 
 interface FacetSortPanelProps {
   isSortedByValue: boolean;
@@ -33,8 +33,8 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="xs"
         className={`ml-1 border rounded-sm border-accent-darkest ${
           !isSortedByValue
-            ? "bg-accent text-accent-contrast"
-            : "bg-accent-lightest text-accent-contrast-lightest"
+            ? 'bg-accent text-accent-contrast'
+            : 'bg-accent-lightest text-accent-contrast-lightest'
         }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
         aria-label="Sort alphabetically"
       >
@@ -50,15 +50,15 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
           />
         )}
       </ActionIcon>
-      <div className={"flex flex-row items-center "}>
+      <div className={'flex flex-row items-center '}>
         <ActionIcon
           size="xs"
-          variant={isSortedByValue ? "filled" : "outline"}
+          variant={isSortedByValue ? 'filled' : 'outline'}
           onClick={() => setIsSortedByValue(true)}
           className={`ml-1 border rounded-sm border-accent-darkest ${
             isSortedByValue
-              ? "bg-accent text-accent-contrast"
-              : "bg-accent-lightest text-accent-contrast-lightest"
+              ? 'bg-accent text-accent-contrast'
+              : 'bg-accent-lightest text-accent-contrast-lightest'
           }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
           aria-label="Sort numerically"
         >
