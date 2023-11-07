@@ -1,4 +1,4 @@
-import { ServiceAndMethod } from "@gen3/core";
+import { ServiceAndMethod } from '@gen3/core';
 
 export const convertToRecordMethodToResource = (entries: ServiceAndMethod[], filters: string[]) => {
   return entries.reduce(

@@ -1,7 +1,7 @@
 import { gen3Api } from '../gen3';
 import { JSONObject } from '../../types';
 
-const graphQLWithTags = gen3Api.enhanceEndpoints({
+export const graphQLWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['graphQL'],
 });
 
@@ -13,7 +13,9 @@ export const graphQLAPI = graphQLWithTags.injectEndpoints({
         method: 'POST',
         credentials: 'include',
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
         body: JSON.stringify(graphQLParams),
       }),

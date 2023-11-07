@@ -54,4 +54,4 @@ export const selectGen3AppMetadataById = (
 ): Gen3AppMetadata => state.gen3Apps.gen3Apps[appId];
 
 export const selectGen3AppById = (appId: string): React.ReactNode =>
-  lookupGen3App(appId);
+  lookupGen3App(appId); // TODO: memoize this selector

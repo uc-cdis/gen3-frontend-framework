@@ -17,6 +17,8 @@ const globals = {
   lodash: 'lodash',
   immer: 'immer',
   'react-cookie': 'reactCookie',
+  'swr': 'swr',
+  'jsonpath-plus': 'jsonpathPlus',
 };
 
 const config = [

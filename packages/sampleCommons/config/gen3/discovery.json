@@ -18,6 +18,11 @@
         "name": "Studies",
         "field": "accession_number",
         "type": "count"
+      },
+      {
+        "name": "Subjects",
+        "field": "_hdp_uid",
+        "type": "sum"
       }
     ],
     "tagSelector": {

@@ -23,7 +23,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   } = router;
 
   const handleLoginSelected = async (url: string, redirect?: string) => {
-    router
+     router
       .push(
         url +
           (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}:3010/Profile`),

@@ -1,9 +1,5 @@
 import React, {
-  useEffect,
   useState,
-  useCallback,
-  useMemo,
-  ChangeEvent,
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
 import { TextInput, Tooltip } from '@mantine/core';

@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-export type RendererFunction<T> = (props: T) => ReactElement;
+export type RendererFunction<T> = (props: T, ...params:any[]) => ReactElement;
 
 export interface RendererFunctionCatalogEntry<T> {
   [key: string]: RendererFunction<T>;
@@ -8,10 +8,10 @@ export interface RendererFunctionCatalogEntry<T> {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function DefaultCellRenderer<T>(_props: T): ReactElement {
-  return <div></div>;
+  return <span>DefaultRenderer</span>;
 }
 
-interface RendererFactorInterface<T> {
+interface RendererFactoryInterface<T> {
   getRenderer(type: string, functionName: string): RendererFunction<T>;
   registerRenderer(
     type: string,
@@ -24,20 +24,36 @@ interface RendererFactorInterface<T> {
 }
 
 export class RenderFactoryTypedInstance<T>
-  implements RendererFactorInterface<T>
+  implements RendererFactoryInterface<T>
 {
   private catalog: Record<string, RendererFunctionCatalogEntry<T>>;
+  private defaultRenderer: RendererFunction<T>;
 
   constructor() {
     this.catalog = {};
+    this.defaultRenderer = DefaultCellRenderer;
+  }
+
+  setDefaultRenderer(func: RendererFunction<T>): void {
+    this.defaultRenderer = func;
   }
 
   getRenderer(type: string, functionName: string): RendererFunction<T> {
-    if (!this.catalog[type] || !this.catalog[type][functionName]) {
-      return DefaultCellRenderer;
-    }
+      if (!this.rendererExists(type, functionName)) {
+          return DefaultCellRenderer;
+      }
 
-    return this.catalog[type][functionName];
+      return this.catalog[type][functionName];
+  }
+
+  /**
+   * Check if a renderer exists for a given type and function name
+   * @param type
+   * @param functionName
+   * @returns boolean indicating if the renderer exists
+   */
+  rendererExists(type: string, functionName: string): boolean {
+      return type in this.catalog && functionName in this.catalog[type];
   }
 
   registerRenderer(
