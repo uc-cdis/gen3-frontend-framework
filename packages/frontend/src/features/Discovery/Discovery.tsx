@@ -85,6 +85,9 @@ const Discovery = ({
             <div className="w-full">
               <SearchInputWithSuggestions
                 suggestions={suggestions}
+                clearSearch={() => {
+                  setSearchBarTerm([]);
+                }}
                 searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
                   discoveryConfig?.features?.search?.searchBar?.placeholder ??

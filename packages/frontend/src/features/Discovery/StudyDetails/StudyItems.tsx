@@ -16,6 +16,7 @@ import {
   FieldRendererFunctionMap,
   DiscoveryDetailsRenderer,
 } from './RendererFactory';
+import { JSONArray } from "@gen3/core";
 
 const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
 
@@ -33,17 +34,25 @@ const linkField = (text: string, _ = undefined) => (
   </Link>
 );
 
+const linkFieldWithTitle = (title: string, link: string) => (
+  <Link href={link} target="_blank" rel="noreferrer">
+    {title}
+  </Link>
+);
+
 const subHeading = (text: string) => (
   <h3 className="discovery-subheading">{text}</h3>
 );
 
 const labeledSingleLinkField = (labelText: string, linkText: string) => (
-  <div className="flex bg-red-500 px-0.5 justify-between whitespace-pre-wrap">
+  <div className={discoveryFieldStyle} key={labelText}>
     {label(labelText)} {linkField(linkText)}
   </div>
 );
 
-const labeledMultipleLinkField = (labelText: string, linksText: string[]) =>
+const labeledMultipleLinkField = (labelText: string, linksText: string[]) => {
+  console.log('labeledMultipleLinkField', labelText, linksText);
+  return (
   linksText.length ? (
     <div>
       {[
@@ -54,14 +63,32 @@ const labeledMultipleLinkField = (labelText: string, linksText: string[]) =>
         // unlabeled subsequent fields
         ...linksText.slice(1).map((linkText, i) => (
           <div className={discoveryFieldStyle} key={`${linkText}-${i}`}>
-            <div /> {linkField(linkText)}
+            {label(labelText)}{linkField(linkText)}
           </div>
         )),
       ]}
     </div>
   ) : (
     <React.Fragment />
+  ));
+};
+
+interface LinkWithTitle {
+  title: string;
+  link: string;
+}
+
+const unlabeledMultipleLinkField = (fieldName:string, fieldData: JSONArray ) => {
+  const links = fieldData[0] as unknown as LinkWithTitle[];
+
+  return (
+    <div className="flex flex-col" key={`${fieldName}-links`}>
+      {
+        links.map((link) => linkFieldWithTitle(link.title, link.link))
+      }
+    </div>
   );
+};
 
 const labeledSingleTextField = (labelText: string, fieldText: string) => {
   return (
@@ -136,6 +163,7 @@ const renderDetailTags = (
           fieldConfig.categories?.includes(tag.category),
         )
       : resource.tags;
+
     return (
       <div key={`detail-tag-${fieldConfig.sourceField}`}>
         {RenderTagsCell({ value: tags })}
@@ -192,27 +220,35 @@ export const createFieldRendererElement = (
   field: StudyTabField | StudyTabTagField,
   resource: DiscoveryResource,
 ) => {
+
+
   let resourceFieldValue =
     field.sourceField && JSONPath({ json: resource, path: field.sourceField });
-  const studyFieldRenderer = DiscoveryDetailsRenderer(field.type, 'default');
-  if (
-    resourceFieldValue &&
-    resourceFieldValue.length > 0 &&
-    resourceFieldValue[0].length !== 0
-  ) {
-    resourceFieldValue =
-      formatResourceValuesWhenNestedArray(resourceFieldValue);
-    return studyFieldRenderer(field.label, resourceFieldValue);
-  } else {
-    switch (field.type) {
-      case 'accessDescriptor': {
-        return studyFieldRenderer(field.label, resource);
-      }
-      case 'tags': {
-        return studyFieldRenderer(field, resource);
-      }
+
+  const studyFieldRenderer = DiscoveryDetailsRenderer(field.type, field?.renderFunction  ?? 'default');
+  switch (field.type) {
+    case 'accessDescriptor': {
+      return studyFieldRenderer(field.label, resource);
     }
+    case 'tags': {
+      return studyFieldRenderer(field, resource);
+    }
+    default:
+      if (
+        resourceFieldValue &&
+        resourceFieldValue.length > 0 &&
+        resourceFieldValue[0].length !== 0 &&
+        resourceFieldValue.every( (val : any ) => typeof val === 'string')
+      ) {
+        resourceFieldValue =
+          formatResourceValuesWhenNestedArray(resourceFieldValue);
+        return studyFieldRenderer(field.label, resourceFieldValue);
+      } else if (resourceFieldValue)
+        return studyFieldRenderer(field.label, resourceFieldValue);
+
   }
+
+  return <React.Fragment />;
 };
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
@@ -220,9 +256,9 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   FieldRendererFunctionMap
 > = {
   text: { default: labeledSingleTextField as FieldRendererFunction },
-  link: { default: linkField as FieldRendererFunction },
+  link: { default: labeledSingleLinkField as FieldRendererFunction },
   textList: { default: labeledMultipleTextField as FieldRendererFunction },
-  linkList: { default: labeledMultipleLinkField as FieldRendererFunction },
+  linkList: { default: labeledMultipleLinkField as FieldRendererFunction, linkWithTitle: unlabeledMultipleLinkField as FieldRendererFunction },
   block: { default: blockTextField as FieldRendererFunction },
   accessDescriptor: { default: accessDescriptor as FieldRendererFunction },
   tags: { default: renderDetailTags as FieldRendererFunction },
