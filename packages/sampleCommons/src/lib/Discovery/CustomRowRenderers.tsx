@@ -33,8 +33,9 @@ const HEALRowRenderer = (
         width: '100%',
       }}
       onClick={() => {
-        setStudyDetails(row.original);
-      }}
+        setStudyDetails(() => {
+          return { ...row.original };
+      });}}
     >
       <Text size="sm" lineClamp={2}>
         {value}

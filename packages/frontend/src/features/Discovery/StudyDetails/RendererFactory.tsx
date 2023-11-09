@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react';
 import { DiscoveryResource, StudyTabTagField } from '../types';
+import { JSONArray } from '@gen3/core';
 
-export type FieldRendererFunction = (
-  _1?: string | StudyTabTagField,
-  _2?: string | string[] | DiscoveryResource,
+export type FieldRendererFunction<P1 = string | StudyTabTagField  , P2 = string | string[] | DiscoveryResource | JSONArray> = (
+  _1?: P1 ,
+  _2?: P2,
 ) => JSX.Element;
 
 const defaultStudyFieldRenderer = (): ReactElement => {
