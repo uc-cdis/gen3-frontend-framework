@@ -1,15 +1,26 @@
 import React from 'react';
-import TopBar, { TopBarProps } from './TopBar';
+import TopBar from './TopBar';
 import NavigationBar from './NavigationBar';
-import { NavigationProps } from './types';
+import { HeaderProps } from './types';
+import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 
-export interface HeaderProps {
-  readonly top: TopBarProps;
-  readonly navigation: NavigationProps;
-}
-
-const Header: React.FC<HeaderProps> = ({ top, navigation }: HeaderProps) => {
-  return (
+const Header: React.FC<HeaderProps> = ({
+  top,
+  navigation,
+  type = undefined,
+}: HeaderProps) => {
+  console.log('Header', top, navigation, type);
+  return type === 'horizontal' ? (
+    <div className="w-100">
+      <HorizontalNavigationBar
+        logo={navigation.logo}
+        title={navigation.title}
+        items={navigation.items}
+        classNames={{...navigation.classNames}}
+        actions={top}
+      />
+    </div>
+  ) : (
     <div className="w-100">
       <TopBar items={top.items} showLogin={top?.showLogin} />
       <NavigationBar

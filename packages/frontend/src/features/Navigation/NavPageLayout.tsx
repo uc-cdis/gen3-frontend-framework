@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import Footer from './Footer';
-import Header, { HeaderProps } from './Header';
-import { FooterProps } from './types';
+import Header from './Header';
+import { FooterProps, HeaderProps } from "./types";
 
 export interface NavPageLayoutProps {
   headerProps: HeaderProps;
@@ -13,6 +13,7 @@ const NavPageLayout: React.FC<NavPageLayoutProps> = ({
   footerProps,
   children,
 }: PropsWithChildren<NavPageLayoutProps>) => {
+  console.log("NavPageLayout", headerProps);
   return (
     <div className="flex flex-col h-[100vh]">
       <Header {...headerProps} />

@@ -14,10 +14,11 @@ export const getNavPageLayoutPropsFromConfig =
     const navigationConfigJSON = await ContentSource.get(
       `config/${config.commons}/navigation.json`,
     );
-    const { topBar, navigation } = navigationConfigJSON;
+    const { topBar, navigation, type } = navigationConfigJSON;
     const headerProps: HeaderProps = {
       top: topBar as unknown as TopBarProps,
       navigation: navigation as unknown as NavigationProps,
+      type,
     };
     const footerProps: FooterProps = await ContentSource.get(
       `config/${config.commons}/footer.json`,

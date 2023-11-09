@@ -1,3 +1,5 @@
+import { TopBarProps } from './TopBar';
+
 interface BottomLinks {
   text: string;
   href: string;
@@ -31,6 +33,8 @@ export interface NavigationButtonProps {
   readonly tooltip: string;
   readonly href: string;
   readonly name: string;
+  readonly iconHeight?: string;
+  readonly classNames?: Record<string, string>;
 }
 
 export interface NavigationBarLogo {
@@ -42,8 +46,16 @@ export interface NavigationBarLogo {
   readonly basePath?: string;
 }
 
+
 export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
   readonly items: [NavigationButtonProps];
   readonly title?: string;
+  readonly classNames?: Record<string, string>;
+}
+
+export interface HeaderProps {
+  readonly top: TopBarProps;
+  readonly navigation: NavigationProps;
+  readonly type?: 'horizontal' | 'vertical';
 }
