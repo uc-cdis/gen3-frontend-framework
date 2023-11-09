@@ -44,9 +44,9 @@ export const metadataApi = gen3Api.injectEndpoints({
     getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({
       query: ({ url, offset, pageSize }) => {
         if (url) {
-          return `${url}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
+          return `${url}/mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
         }
-        return 'aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}';
+        return 'mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}';
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
         return {
@@ -61,9 +61,9 @@ export const metadataApi = gen3Api.injectEndpoints({
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
       query: ({ url, guidType, offset, pageSize }) => {
         if (url) {
-          return `${url}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
+          return `${url}/mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
         } else {
-          return `metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
+          return `mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
         }
       },
       transformResponse: (response: Record<string, any>, _meta) => {

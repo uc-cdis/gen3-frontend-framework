@@ -6,13 +6,12 @@ import {
   TopBarProps,
 } from '../../features/Navigation';
 import ContentSource from '../content';
-import { JSONObject } from '@gen3/core';
+import { JSONObject, GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const getNavPageLayoutPropsFromConfig =
   async (): Promise<NavPageLayoutProps> => {
-    const config = await ContentSource.get('config/siteConfig.json');
     const navigationConfigJSON = await ContentSource.get(
-      `config/${config.commons}/navigation.json`,
+      `config/${GEN3_COMMONS_NAME}/navigation.json`,
     );
     const { topBar, navigation, type } = navigationConfigJSON;
     const headerProps: HeaderProps = {
@@ -21,7 +20,7 @@ export const getNavPageLayoutPropsFromConfig =
       type,
     };
     const footerProps: FooterProps = await ContentSource.get(
-      `config/${config.commons}/footer.json`,
+      `config/${GEN3_COMMONS_NAME}/footer.json`,
     );
     return { headerProps, footerProps };
   };

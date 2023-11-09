@@ -13,7 +13,7 @@ const StringRowRenderer = (
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
   if (!studyPreviewConfig) {
-    return <React.Fragment></React.Fragment>;
+    return <></>;
   }
   const value = JSONPath({
     json: row.original,

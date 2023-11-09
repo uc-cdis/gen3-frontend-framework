@@ -111,18 +111,20 @@ export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();
   return (
-    <div>
+    <div className="flex space-x-1 ">
       {content.map(({ name, category }: TagData) => {
         const color = getTagColor(category, config.tagCategories);
         return (
           <Badge
             key={name}
             role="button"
+            size="lg" radius="sm" variant="filled"
             tabIndex={0}
             aria-label={name}
             style={{
               backgroundColor: color,
               borderColor: color,
+              color: 'white',
             }}
           >
             {name}
