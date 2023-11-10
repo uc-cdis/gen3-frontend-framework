@@ -13,7 +13,7 @@ export interface TopIconButtonProps extends NameAndIcon {
   readonly href: string;
 }
 
-const TopIconButton: React.FC<NameAndIcon> = ({
+const TopIconButton = ({
   name,
   leftIcon = undefined,
   rightIcon = undefined,
@@ -39,7 +39,7 @@ export interface TopBarProps {
   readonly showLogin?: boolean;
 }
 
-const TopBar: React.FC<TopBarProps> = ({
+const TopBar = ({
   items,
   showLogin = false,
 }: TopBarProps) => {

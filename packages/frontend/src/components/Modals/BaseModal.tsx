@@ -27,7 +27,7 @@ interface Props {
   closeOnEscape?: boolean;
 }
 
-export const BaseModal: React.FC<Props> = ({
+export const BaseModal= ({
   openModal,
   title,
   size,

@@ -28,7 +28,7 @@ const processChartData = (
     return results;
 };
 
-const BarChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
+const BarChart  = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
 

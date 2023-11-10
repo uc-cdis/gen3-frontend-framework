@@ -11,7 +11,7 @@ interface CohortManagerProps {
     index: string;
 }
 
-const CohortManager : React.FC<CohortManagerProps> = ( { index } : CohortManagerProps) => {
+const CohortManager  = ( { index } : CohortManagerProps) => {
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state)
   );

@@ -62,7 +62,7 @@ export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
   maximum?: number;
 }
 
-const RangeFacet: React.FC<RangeFacetCardProps> = ({
+const RangeFacet= ({
   field,
   dataHooks,
   valueLabel,
@@ -82,7 +82,7 @@ const RangeFacet: React.FC<RangeFacetCardProps> = ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-}) => {
+} : RangeFacetCardProps ) => {
   const { data, rangeFilters, isSuccess } = dataHooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>

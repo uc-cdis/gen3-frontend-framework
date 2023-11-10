@@ -10,14 +10,12 @@ interface LoginButtonProps {
   className?: string;
 }
 
-const LoginButton: React.FC<LoginButtonProps> = ({
+const LoginButton = ({
   icon = <LoginIcon className="pl-1" size={'1.75rem'} />,
   hideText = false,
   className = 'flex items-center font-medium font-heading'
-                                                 }) => {
+                                                 } : LoginButtonProps) => {
   const router = useRouter();
-
-  console.log("className", className);
 
   const handleSelected = async (isAuthenticated: boolean) => {
     if (!isAuthenticated) await router.push('Login');

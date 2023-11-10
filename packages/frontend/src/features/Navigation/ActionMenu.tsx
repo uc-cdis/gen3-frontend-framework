@@ -8,7 +8,7 @@ interface ActionMenuProps {
   items: TopIconButtonProps[];
 }
 
-const ActionMenu: React.FC<ActionMenuProps> = ({ items }: ActionMenuProps) => {
+const ActionMenu = ({ items }: ActionMenuProps) => {
   return (
     <>
       <Menu>

@@ -1,10 +1,10 @@
 import React, {
-  createContext,
+  createContext, PropsWithChildren,
   ReactNode,
   useEffect,
   useMemo,
-  useState,
-} from 'react';
+  useState
+} from "react";
 import {
   AuthzMapping,
   selectUser,
@@ -46,7 +46,7 @@ export const useResourcesContext = () => {
   return context;
 };
 
-const ResourcesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+const ResourcesProvider = ({ children } : PropsWithChildren ) => {
   const { data: userProfile = {} } = useCoreSelector(selectUser);
   const { data: authzMapping = {}, isLoading: isAuthZLoading } =
     useGetAuthzMappingsQuery();

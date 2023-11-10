@@ -10,7 +10,7 @@ import {
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 
-const GqlQueryEditor: React.FC<GqlQueryEditorProps> = ({
+const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
   const [query, setQuery] = useState('');

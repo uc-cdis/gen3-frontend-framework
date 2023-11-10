@@ -5,7 +5,7 @@ import { NavigationButtonProps, NavigationProps } from '../types';
 
 type LeftSidePanelProps = Pick<NavigationProps, 'items' | 'classNames'>;
 
-const LeftSidePanel: React.FC<LeftSidePanelProps> = ({
+const LeftSidePanel = ({
   items = [],
   classNames = {},
 }: LeftSidePanelProps) => {

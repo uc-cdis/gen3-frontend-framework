@@ -4,7 +4,7 @@ import Gen3Link from './Gen3Link';
 import { FooterProps } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Footer: React.FC<FooterProps> = ({
+const Footer = ({
   bottomLinks,
   columnLinks,
   footerLogos,

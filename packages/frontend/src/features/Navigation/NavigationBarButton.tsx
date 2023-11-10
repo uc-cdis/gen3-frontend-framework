@@ -24,7 +24,7 @@ import { extractClassName } from './utils';
  *  - arrow: the class name for the tooltip arrow
  *    default: 'text-base-light'
  */
-const NavigationBarButton: React.FC<NavigationButtonProps> = ({
+const NavigationBarButton = ({
   tooltip,
   icon,
   href,

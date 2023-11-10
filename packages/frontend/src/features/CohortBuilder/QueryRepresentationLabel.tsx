@@ -4,7 +4,7 @@ interface QueryRepresentationLabelProps {
     readonly value: string | number;
 }
 
-const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = (
+const QueryRepresentationLabel = (
     { value} : QueryRepresentationLabelProps ) => {
   return <React.Fragment>{value}</React.Fragment>;
 };

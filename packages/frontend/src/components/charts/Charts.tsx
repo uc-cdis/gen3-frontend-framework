@@ -21,7 +21,7 @@ interface ChartsProps {
     isError?: boolean;
 }
 
-const Charts: React.FC<ChartsProps> = ({ index, charts, data, isSuccess }: ChartsProps) => {
+const Charts = ({ index, charts, data, isSuccess }: ChartsProps) => {
   return (
     <Grid>
       {data &&  Object.keys(charts).map((field) => (

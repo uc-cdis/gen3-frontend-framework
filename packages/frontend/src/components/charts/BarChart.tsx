@@ -30,7 +30,7 @@ const processChartData = (
     return results.reverse();
 };
 
-const BarChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
+const BarChart  = ({ data } : ChartProps) => {
 
     const chartData = useMemo(() => processChartData(data), [data]);
 

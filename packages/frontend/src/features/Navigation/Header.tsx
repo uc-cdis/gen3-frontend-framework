@@ -4,7 +4,7 @@ import NavigationBar from './NavigationBar';
 import { HeaderProps } from './types';
 import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 
-const Header: React.FC<HeaderProps> = ({
+const Header = ({
   top,
   navigation,
   type = undefined,

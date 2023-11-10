@@ -28,7 +28,7 @@ const processChartData = (
     return results;
 };
 
-const PieChart : React.FC<ChartProps> = ({ data } : ChartProps) => {
+const PieChart = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
             label: {

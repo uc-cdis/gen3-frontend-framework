@@ -24,7 +24,7 @@ import { GqlQueryEditorProps } from './types';
 //   return data ?? {};
 // };
 
-const GqlQueryEditorPanel: React.FC<GqlQueryEditorProps> = ({
+const GqlQueryEditorPanel = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps) => {
   const [query, setQuery] = useState('');

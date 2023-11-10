@@ -13,7 +13,7 @@ export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
 }
 
-const HorizontalNavigationBar: React.FC<HorizontalNavigationBarProps> = ({
+const HorizontalNavigationBar = ({
   actions,
   items,
   logo = undefined,

@@ -12,7 +12,7 @@ interface CountsValueProps {
     readonly filters: FilterSet;
 }
 
-const CountsValue : React.FC< CountsValueProps > = ({ label,  index, filters}: CountsValueProps) => {
+const CountsValue  = ({ label,  index, filters}: CountsValueProps) => {
 
     const { data, isSuccess } = useGetCountsQuery({
         type: index,

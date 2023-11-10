@@ -9,7 +9,7 @@ export interface NavPageLayoutProps {
   footerProps: FooterProps;
 }
 
-const NavPageLayout: React.FC<NavPageLayoutProps> = ({
+const NavPageLayout = ({
   headerProps,
   footerProps,
   children,

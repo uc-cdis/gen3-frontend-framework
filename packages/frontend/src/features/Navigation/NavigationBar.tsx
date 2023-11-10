@@ -3,7 +3,7 @@ import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 
-const NavigationBar: React.FC<NavigationProps> = ({
+const NavigationBar = ({
   logo = undefined,
   items = [],
 }: NavigationProps) => {

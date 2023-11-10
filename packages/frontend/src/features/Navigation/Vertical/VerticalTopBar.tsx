@@ -13,7 +13,7 @@ export interface VerticalTopBarProps
   readonly actions: TopBarProps;
 }
 
-const VerticalTopBar: React.FC<VerticalTopBarProps> = ({
+const VerticalTopBar = ({
   actions,
   logo = undefined,
   classNames = {},
