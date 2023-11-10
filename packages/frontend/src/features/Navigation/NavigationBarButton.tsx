@@ -32,7 +32,6 @@ const NavigationBarButton: React.FC<NavigationButtonProps> = ({
   iconHeight = '27px',
   classNames = {},
 }: NavigationButtonProps) => {
-
   const classNamesDefaults = {
     root: 'flex flex-col flex-nowrap px-1 py-2 pt-4 items-center hover:text-accent opacity-80 hover:opacity-100',
     label: 'content-center pt-1.5 body-typo font-heading text-sm',
@@ -41,7 +40,7 @@ const NavigationBarButton: React.FC<NavigationButtonProps> = ({
     arrow: 'bg-base-light',
   };
 
-  const mergedClassnames = {...classNamesDefaults, ...classNames};
+  const mergedClassnames = { ...classNamesDefaults, ...classNames };
   return (
     <>
       <Tooltip
@@ -72,7 +71,9 @@ const NavigationBarButton: React.FC<NavigationButtonProps> = ({
               icon={icon}
               className={extractClassName('icon', mergedClassnames)}
             />
-            <p className={extractClassName('label', mergedClassnames)}>{name}</p>
+            <p className={extractClassName('label', mergedClassnames)}>
+              {name}
+            </p>
           </div>
         </Link>
       </Tooltip>

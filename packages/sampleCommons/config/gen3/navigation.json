@@ -1,9 +1,6 @@
 {
-  "type": "horizontal",
+  "type": "vertical",
   "navigation": {
-    "classNames" : {
-      "root" : "bg-base"
-    },
     "logo": {
     "src": "/icons/gen3-dark.svg",
       "height":128,

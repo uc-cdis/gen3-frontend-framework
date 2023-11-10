@@ -7,7 +7,7 @@ import NavigationBar from './NavigationBar';
 import NavigationButton from './NavigationButton';
 import NavPageLayout, { type NavPageLayoutProps } from './NavPageLayout';
 import { type TopBarProps } from './TopBar';
-import { type FooterProps, HeaderProps, type NavigationProps } from "./types";
+import { type FooterProps, HeaderProps, type NavigationProps } from './types';
 
 export {
   type FooterProps,

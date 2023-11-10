@@ -9,17 +9,23 @@ const Header: React.FC<HeaderProps> = ({
   navigation,
   type = undefined,
 }: HeaderProps) => {
-  console.log('Header', top, navigation, type);
   return type === 'horizontal' ? (
     <div className="w-100">
       <HorizontalNavigationBar
         logo={navigation.logo}
         title={navigation.title}
         items={navigation.items}
-        classNames={{...navigation.classNames}}
+        classNames={{ ...navigation.classNames }}
         actions={top}
       />
     </div>
+  ) : type === 'vertical' ? (
+    <HorizontalNavigationBar
+      logo={navigation.logo}
+      title={navigation.title}
+      classNames={{ ...navigation.classNames }}
+      actions={top}
+    />
   ) : (
     <div className="w-100">
       <TopBar items={top.items} showLogin={top?.showLogin} />

@@ -5,7 +5,7 @@ import NavigationBarButton from './NavigationBarButton';
 
 const NavigationBar: React.FC<NavigationProps> = ({
   logo = undefined,
-  items,
+  items = [],
 }: NavigationProps) => {
   return (
     <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">

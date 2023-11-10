@@ -24,7 +24,9 @@ const NavigationLogo = ({
           <HoverLink
             className="font-heading h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3"
             href={'/'}
-          >{title}</HoverLink>
+          >
+            {title}
+          </HoverLink>
         </div>
       )}
     </div>

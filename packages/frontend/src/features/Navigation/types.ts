@@ -46,10 +46,9 @@ export interface NavigationBarLogo {
   readonly basePath?: string;
 }
 
-
 export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
-  readonly items: [NavigationButtonProps];
+  readonly items?: NavigationButtonProps[];
   readonly title?: string;
   readonly classNames?: Record<string, string>;
 }
