@@ -51,3 +51,16 @@ in the commons (for now ```sampleCommon```) source directory.
 
 You can test the color them by going to the commons web portal Color page.
 For example http://localhost:3000/Colors
+
+
+### Navigation Bar
+
+The navigation bar support extra styling using tailwind css tokens to
+configure the navigation bar layout and styling. The navigation bar
+is configured by editing ```config/<commonsName>/navbar.json```
+
+
+
+```json
+
+```

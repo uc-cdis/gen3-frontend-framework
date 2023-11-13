@@ -1,4 +1,5 @@
 import { TopBarProps } from './TopBar';
+import { ReactNode } from "react";
 
 interface BottomLinks {
   text: string;
@@ -26,6 +27,7 @@ export interface FooterProps {
   readonly columnLinks?: ReadonlyArray<ColumnLinks>;
   readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
   readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
+  readonly classNames?: Record<string, string>;
 }
 
 export interface NavigationButtonProps {
@@ -36,6 +38,8 @@ export interface NavigationButtonProps {
   readonly iconHeight?: string;
   readonly classNames?: Record<string, string>;
 }
+
+
 
 export interface NavigationBarLogo {
   readonly src: string;

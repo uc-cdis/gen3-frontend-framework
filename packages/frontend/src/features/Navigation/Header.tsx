@@ -1,14 +1,11 @@
 import React from 'react';
 import TopBar from './TopBar';
 import NavigationBar from './NavigationBar';
+import { Icon } from '@iconify/react';
 import { HeaderProps } from './types';
 import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 
-const Header = ({
-  top,
-  navigation,
-  type = undefined,
-}: HeaderProps) => {
+const Header = ({ top, navigation, type = undefined }: HeaderProps) => {
   return type === 'horizontal' ? (
     <div className="w-100">
       <HorizontalNavigationBar

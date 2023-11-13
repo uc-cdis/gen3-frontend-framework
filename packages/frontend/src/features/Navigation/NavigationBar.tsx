@@ -2,18 +2,39 @@ import React from 'react';
 import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
+import { extractClassName } from './utils';
 
 const NavigationBar = ({
   logo = undefined,
   items = [],
+  classNames = {},
 }: NavigationProps) => {
+  const classNamesDefaults = {
+    root: 'flex bg-base-lightest py-3 border-b-1 border-base-contrast',
+    navigationPanel: 'font-heading font-bold tracking-wide text-xl space-x-4',
+    login:
+      'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
+  };
+
+  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+
   return (
-    <div className="flex flex-row border-b-1 bg-gen3-white border-gen3-smoke">
-      <div className="flex flex-row items-center align-middle font-heading font-bold tracking-wide text-xl ml-[20px] mr-[20px]">
+    <div className={extractClassName('root', mergedClassnames)}>
+      <div
+        className={`flex justify-center items-center align-middle ${extractClassName(
+          'logo',
+          mergedClassnames,
+        )}`}
+      >
         {logo && <NavigationLogo {...{ ...logo }} />}
       </div>
       <div className="flex-grow">{/* middle section of header */}</div>
-      <div className="flex flex-row pl-[30px] pr-[20px] ">
+      <div
+        className={`flex justify-center items-center align-middle ${extractClassName(
+          'navigationPanel',
+          mergedClassnames,
+        )}`}
+      >
         {items.map((x, index) => {
           return (
             <div key={`${x.name}-${index}`}>
@@ -23,12 +44,12 @@ const NavigationBar = ({
                   icon={x.icon}
                   href={x.href}
                   name={x.name}
+                  classNames={x.classNames}
                 />
               </div>
             </div>
           );
         })}
-        <div className="border-l-1 border-gray-400 opacity-80" />
       </div>
     </div>
   );

@@ -12,17 +12,7 @@ import { extractClassName } from './utils';
  * @param href - the href to link to
  * @param name - the name of the button
  * @param iconHeight - the height of the icon
- * @param classNames - the class names to use
- *  - root: the root class name for the button
- *    default: 'flex flex-col flex-nowrap px-1 py-2 pt-4 items-center hover:text-accent opacity-80 hover:opacity-100'
- *  - label: the class name for the label
- *    default: 'content-center pt-1.5 body-typo font-heading text-sm'
- *  - icon: the class name for the icon
- *    default: 'mt-0.5 ml-1'
- *  - tooltip: the class name for the tooltip
- *    default: 'text-base-light'
- *  - arrow: the class name for the tooltip arrow
- *    default: 'text-base-light'
+ * @param classNames - the class names to use for root, label, icon/ tooltip and arrow'
  */
 const NavigationBarButton = ({
   tooltip,

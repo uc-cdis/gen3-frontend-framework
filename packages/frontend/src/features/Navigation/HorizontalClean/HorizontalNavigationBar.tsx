@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from "react";
 
 import { NavigationProps } from '../types';
 import NavigationBarButton from '../NavigationBarButton';
@@ -11,16 +11,18 @@ import ActionMenu from '../ActionMenu';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
+  loginIcon?: ReactElement;
 }
 
 const HorizontalNavigationBar = ({
   actions,
   items,
   logo = undefined,
+  loginIcon = (<LoginIcon size={'3.15rem'} />),
   classNames = {},
 }: HorizontalNavigationBarProps) => {
   const classNamesDefaults = {
-    root: 'py-3 border-b-2 border-base-contrast',
+    root: 'py-3 border-b-1 border-base-light shadow-sm',
     navigationPanel: 'font-heading font-bold tracking-wide text-xl space-x-4',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
@@ -67,7 +69,7 @@ const HorizontalNavigationBar = ({
       <div className="flex items-center align-middle mr-3">
         {actions.showLogin ? (
           <LoginButton
-            icon={<LoginIcon size={'3.15rem'} />}
+            icon={loginIcon}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
           />

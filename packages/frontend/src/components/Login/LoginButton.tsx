@@ -5,7 +5,7 @@ import { MdLogin as LoginIcon } from 'react-icons/md';
 import { GEN3_DOMAIN, useUserAuth, isAuthenticated } from '@gen3/core';
 
 interface LoginButtonProps {
-  readonly icon?: React.ReactNode;
+  readonly icon?: React.ReactElement;
   readonly hideText?: boolean;
   className?: string;
 }

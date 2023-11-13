@@ -10,7 +10,7 @@ const LeftSidePanel = ({
   classNames = {},
 }: LeftSidePanelProps) => {
   const classNamesDefaults = {
-    navigationPanel: 'w-32 bg-primary-lighter border-r-2 border-base-contrast',
+    navigationPanel: 'w-32 bg-base-light border-r-2 border-base',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
