@@ -1,13 +1,20 @@
 'use client';
 import React, { ReactElement } from 'react';
 import { JSONPath } from 'jsonpath-plus';
-import { Box, Text } from '@mantine/core';
+import { Badge, Box, Text } from '@mantine/core';
 import {
   StudyPreviewField,
   RowRenderFunctionProps,
   DiscoveryRowRendererFactory,
   useDiscoveryContext,
+  getTagColor,
 } from '@gen3/frontend';
+
+// TODO: This is a hack to get around the fact that the data is not typed
+interface TagData {
+  name: string;
+  category: string;
+}
 
 const HEALRowRenderer = (
   { row }: RowRenderFunctionProps,
@@ -35,11 +42,40 @@ const HEALRowRenderer = (
       onClick={() => {
         setStudyDetails(() => {
           return { ...row.original };
-      });}}
+        });
+      }}
     >
-      <Text size="sm" lineClamp={2}>
-        {value}
-      </Text>
+      <div className="flex flex-col">
+        <Text size="sm" lineClamp={2}>
+          {value}
+        </Text>
+
+        <div className="flex space-x-3 space-y-3 flex-wrap">
+          {row.original?.tags.map(({ name, category }: TagData) => {
+            const color = getTagColor(category, config.tagCategories);
+            return (
+              <Box w={150} key={name}>
+              <Badge
+                fullWidth
+                role="button"
+                size="lg"
+                radius="sm"
+                variant="outline"
+                tabIndex={0}
+                aria-label={name}
+                style={{
+                  borderColor: color,
+                  borderWidth: '3px',
+                  margin: '2px',
+                }}
+              >
+                {name}
+              </Badge>
+              </Box>
+            );
+          })}
+        </div>
+      </div>
     </Box>
   );
 };

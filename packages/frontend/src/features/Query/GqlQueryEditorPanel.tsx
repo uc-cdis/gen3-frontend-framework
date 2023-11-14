@@ -47,7 +47,7 @@ const GqlQueryEditorPanel = ({
   });
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full w-full">
       <EditorContextProvider>
         <SchemaContextProvider fetcher={fetcher}>
           <PluginContextProvider plugins={[explorer]}>

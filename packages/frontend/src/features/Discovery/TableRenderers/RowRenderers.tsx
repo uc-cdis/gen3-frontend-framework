@@ -5,7 +5,7 @@ import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';
 
 export interface RowRenderFunctionProps {
-  row: MRT_Row;
+  row: MRT_Row<any>;
 }
 
 const StringRowRenderer = (

@@ -11,7 +11,7 @@ interface ColumnLinks {
   items: ReadonlyArray<{
     text: string;
     href?: string;
-    linkType: 'gen3ff' | 'portal' | undefined;
+    linkType?: 'gen3ff' | 'portal' ;
   }>;
 }
 
@@ -60,5 +60,5 @@ export interface NavigationProps {
 export interface HeaderProps {
   readonly top: TopBarProps;
   readonly navigation: NavigationProps;
-  readonly type?: 'horizontal' | 'vertical';
+  readonly type?: 'horizontal' | 'vertical' | 'original';
 }

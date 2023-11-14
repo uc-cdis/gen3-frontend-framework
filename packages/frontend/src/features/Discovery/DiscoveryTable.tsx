@@ -94,7 +94,7 @@ const DiscoveryTable = ({
       sorting,
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: config.tableConfig?.selectableRows === true ? true : undefined,
+      expanded: config.tableConfig?.expandableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },

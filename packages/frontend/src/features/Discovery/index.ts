@@ -13,6 +13,7 @@ import DiscoveryConfigProvider, {
 } from './DiscoveryProvider';
 import { type DiscoveryConfig, type StudyPreviewField } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
+import { getTagColor } from './utils';
 
 export {
   type CellRenderFunctionProps,
@@ -28,4 +29,5 @@ export {
   DiscoveryConfigProvider,
   useDiscoveryContext,
   StudyGroup,
+  getTagColor
 };

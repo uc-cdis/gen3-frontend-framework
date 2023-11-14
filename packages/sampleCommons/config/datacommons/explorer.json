@@ -1,5 +1,6 @@
 {
-  "dataExplorerConfig": {
+  "explorerConfig": [{
+    "tabTitle": "Cases",
     "charts": {
       "gender": {
         "chartType": "pie",
@@ -96,5 +97,5 @@
         "fileName": "manifest.json"
       }
     ]
-  }
+  }]
 }

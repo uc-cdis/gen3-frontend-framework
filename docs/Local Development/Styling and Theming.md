@@ -59,8 +59,53 @@ The navigation bar support extra styling using tailwind css tokens to
 configure the navigation bar layout and styling. The navigation bar
 is configured by editing ```config/<commonsName>/navbar.json```
 
+#### Navigation Bar Styling
 
+The navigation bar styling is configured adding a className object to the
+navbar.json file. The className object is a dictionary of tailwind css
+style tokens. The members of the className object are:
+
+* root: The root style for the navigation bar this can include background color, border, etc.
+* navigationBar: styling for the container holding the navigation buttons
+* login: styling for the login button container
+
+
+the current default is:
 
 ```json
-
+  "classNames": {
+    "root": 'flex bg-base-lightest py-3 border-b-1 border-base-contrast',
+    "navigationPanel": 'font-heading font-bold tracking-wide text-xl space-x-4',
+    "login":  'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
+  }
 ```
+#### Navigation Bar Buttons Styling
+
+The navigation bar buttons are configured by defining a classNames object
+containing the tailwind css tokens for the button styling. The classNames
+object is a dictionary of tailwind css style tokens. The members of the
+classNames object are:
+
+* root: The root style for the navigation bar button this can include background color, border, etc.
+* label: styling for the button label
+* icon: styling for the button icon
+* tooltip: styling for the tooltip
+
+the current default is:
+
+```json
+  "classNames": {
+     "root": 'flex flex-col flex-nowrap px-1 py-2 pt-4 items-center hover:text-accent opacity-80 hover:opacity-100',
+     "label": 'content-center pt-1.5 body-typo font-heading text-sm',
+     "icon": 'mt-0.5 ml-1',
+     "tooltip": 'bg-primary-light text-base-contrast-light text-xl'
+  }
+```
+
+#### Footer Styling
+
+The footer styling is also configured by defining a classNames object. The members of the classNames object are:
+
+* root: The root style for the footer this can include background color, border, etc.
+
+other elements of the Footer styling will be added in the future.
