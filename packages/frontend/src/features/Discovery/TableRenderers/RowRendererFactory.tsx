@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import {
-  RowRenderFunctionProps,
+  type RowRenderFunctionParams,
   defaultRowRenderer,
   Gen3DiscoveryStandardRowPreviewRenderers,
 } from './RowRenderers';
@@ -8,7 +8,7 @@ import { StudyPreviewField } from '../types';
 
 // TODO Tighten up the typing here
 export type RowRendererFunction = (
-  props: RowRenderFunctionProps,
+  props: RowRenderFunctionParams,
   studyPreviewConfig?: StudyPreviewField,
 ) => ReactElement;
 
@@ -84,6 +84,9 @@ export const DiscoveryTableRowRenderer = (
     studyPreviewConfig?.contentType,
     studyPreviewConfig?.detailRenderer ?? 'default',
   );
+  if (!func) {
+    throw new Error(`No row renderer found for given config (contentType: ${ studyPreviewConfig?.contentType }, detailRenderer: ${ studyPreviewConfig?.detailRenderer ?? 'default'}`);
+  }
   return (row): ReactElement => func(row, studyPreviewConfig);
 };
 

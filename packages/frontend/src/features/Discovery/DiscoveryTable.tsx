@@ -85,6 +85,7 @@ const DiscoveryTable = ({
     onSortingChange: setSorting,
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
     rowCount: hits,
+    enableTopToolbar: false,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
@@ -94,7 +95,7 @@ const DiscoveryTable = ({
       sorting,
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: config.tableConfig?.selectableRows === true ? true : undefined,
+      expanded: config.tableConfig?.expandableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },

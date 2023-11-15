@@ -149,12 +149,15 @@ export interface StudyDetailTab {
 
 export interface StudyDetailView {
   headerField: string;
+  header: {
+    field: string;
+  }
   tabs: StudyDetailTab[];
 }
 
 interface DiscoveryTableConfig {
   selectableRows?: boolean;
-  expandingRows?: boolean;
+  expandableRows?: boolean;
   expandingRowRenderFunction?: string;
 }
 

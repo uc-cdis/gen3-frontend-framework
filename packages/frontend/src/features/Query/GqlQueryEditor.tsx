@@ -32,7 +32,7 @@ const GqlQueryEditor = ({
   });
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       <div className="flex justify-between items-center m-2">
         <Text size="xl" fw={500}>
           Query Graph

@@ -38,7 +38,6 @@ const NavigationBar = ({
         {items.map((x, index) => {
           return (
             <div key={`${x.name}-${index}`}>
-              <div className="border-l-1 border-gen3-smoke">
                 <NavigationBarButton
                   tooltip={x.tooltip}
                   icon={x.icon}
@@ -46,7 +45,6 @@ const NavigationBar = ({
                   name={x.name}
                   classNames={x.classNames}
                 />
-              </div>
             </div>
           );
         })}
