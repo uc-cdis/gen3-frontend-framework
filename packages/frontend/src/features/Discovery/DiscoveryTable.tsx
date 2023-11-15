@@ -85,6 +85,7 @@ const DiscoveryTable = ({
     onSortingChange: setSorting,
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
     rowCount: hits,
+    enableTopToolbar: false,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
