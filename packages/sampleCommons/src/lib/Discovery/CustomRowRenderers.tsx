@@ -16,69 +16,75 @@ interface TagData {
   category: string;
 }
 
-const HEALRowRenderer = (
-  { row }: RowRenderFunctionProps,
-  studyPreviewConfig?: StudyPreviewField,
-): ReactElement => {
-  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
+const HEALRowRenderer = React.memo(
+  (
+    row: RowRenderFunctionProps,
+    studyPreviewConfig?: StudyPreviewField,
+  ): ReactElement => {
+    const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
 
-  if (!studyPreviewConfig) {
-    return <React.Fragment></React.Fragment>;
-  }
-  const value =
-    JSONPath({
-      json: row.original,
-      path: studyPreviewConfig.field,
-    }) ??
-    config?.studyPreviewField?.valueIfNotAvailable ??
-    '';
+    if (!studyPreviewConfig) {
+      return <React.Fragment></React.Fragment>;
+    }
+    const value =
+      JSONPath({
+        json: row.original,
+        path: studyPreviewConfig.field,
+      }) ??
+      config?.studyPreviewField?.valueIfNotAvailable ??
+      '';
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        width: '100%',
-      }}
-      onClick={() => {
-        setStudyDetails(() => {
-          return { ...row.original };
-        });
-      }}
-    >
-      <div className="flex flex-col">
-        <Text size="sm" lineClamp={2}>
-          {value}
-        </Text>
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+        }}
+        onClick={() => {
+          setStudyDetails(() => {
+            return { ...row.original };
+          });
+        }}
+      >
+        <div className="flex flex-col">
+          <Text size="sm" lineClamp={2}>
+            {value}
+          </Text>
 
-        <div className="flex space-x-3 space-y-3 flex-wrap">
-          {row.original?.tags.map(({ name, category }: TagData) => {
-            const color = getTagColor(category, config.tagCategories);
-            return (
-              <Box w={150} key={name}>
-              <Badge
-                fullWidth
-                role="button"
-                size="lg"
-                radius="sm"
-                variant="outline"
-                tabIndex={0}
-                aria-label={name}
-                style={{
-                  borderColor: color,
-                  borderWidth: '3px',
-                  margin: '2px',
-                }}
-              >
-                {name}
-              </Badge>
-              </Box>
-            );
-          })}
+          <div className="flex space-x-3 space-y-3 flex-wrap">
+            {row.original?.tags.map(({ name, category }: TagData) => {
+              const color = getTagColor(category, config.tagCategories);
+              return (
+                <Box w={150} key={name}>
+                  <Badge
+                    fullWidth
+                    role="button"
+                    size="lg"
+                    radius="sm"
+                    variant="outline"
+                    tabIndex={0}
+                    aria-label={name}
+                    style={{
+                      borderColor: color,
+                      borderWidth: '3px',
+                      margin: '2px',
+                    }}
+                  >
+                    {name}
+                  </Badge>
+                </Box>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </Box>
-  );
-};
+      </Box>
+    );
+  }
+);
+
+HEALRowRenderer.displayName = 'HEALRowRenderer';
+
+export default HEALRowRenderer;
 
 export const registerDiscoveryStudyPreviewRenderers = () => {
   DiscoveryRowRendererFactory.registerRowRendererCatalog({
