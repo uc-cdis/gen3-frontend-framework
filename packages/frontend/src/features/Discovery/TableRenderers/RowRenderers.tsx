@@ -4,12 +4,16 @@ import React, { ReactElement } from 'react';
 import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';
 
-export interface RowRenderFunctionProps {
-  row: MRT_Row<any>;
+export interface RowRenderFunctionParams<TData extends Record<string, any> = Record<string, any>> {
+  row: MRT_Row<TData>;
+}
+
+export interface RowRendererRegisteredFunctionParams extends RowRenderFunctionParams {
+  studyPreviewConfig?: StudyPreviewField;
 }
 
 const StringRowRenderer = (
-  { row }: RowRenderFunctionProps,
+  { row }: RowRenderFunctionParams,
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
   if (!studyPreviewConfig) {

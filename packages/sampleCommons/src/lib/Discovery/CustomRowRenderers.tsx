@@ -4,7 +4,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { Badge, Box, Text } from '@mantine/core';
 import {
   StudyPreviewField,
-  RowRenderFunctionProps,
+  RowRenderFunctionParams,
   DiscoveryRowRendererFactory,
   useDiscoveryContext,
   getTagColor,
@@ -16,9 +16,9 @@ interface TagData {
   category: string;
 }
 
-const DetailsWithTagsRowRenderer = React.memo(
+const DetailsWithTagsRowRenderer =
   (
-    row: RowRenderFunctionProps,
+    { row } : RowRenderFunctionParams,
     studyPreviewConfig?: StudyPreviewField,
   ): ReactElement => {
     const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
@@ -51,7 +51,7 @@ const DetailsWithTagsRowRenderer = React.memo(
             {value}
           </Text>
 
-          <div className="flex space-x-3 space-y-3 flex-wrap">
+          <div className="flex space-x-6 space-y-6 flex-wrap">
             {row.original?.tags.map(({ name, category }: TagData) => {
               const color = getTagColor(category, config.tagCategories);
               return (
@@ -79,10 +79,7 @@ const DetailsWithTagsRowRenderer = React.memo(
         </div>
       </Box>
     );
-  }
-);
-
-DetailsWithTagsRowRenderer.displayName = 'DetailsWithTagsRowRenderer';
+  };
 
 export default DetailsWithTagsRowRenderer;
 
