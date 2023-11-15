@@ -139,7 +139,6 @@ const useGetData = ({
     guidType: guidType,
     offset: 0,
     pageSize: maxStudies,
-    url: "https://healdata.org"
   });
 
   useEffect(() => {
