@@ -14,7 +14,7 @@ interface Gen3LinkProps extends ClassProps {
   readonly showExternalIcon?: boolean;
 }
 
-const Gen3Link: React.FC<Gen3LinkProps> = ({
+const Gen3Link = ({
   className,
   href,
   linkType,

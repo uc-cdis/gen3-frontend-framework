@@ -13,6 +13,7 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
   const groupHasContent = useMemo(
     () =>
       fields.some((field) => {
+        // TDDO: handle ifFieldIsNotAvailable
         if (!field.sourceField) {
           return false;
         }

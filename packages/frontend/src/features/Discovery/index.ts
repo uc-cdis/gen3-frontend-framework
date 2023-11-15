@@ -1,7 +1,7 @@
 import Discovery from './Discovery';
 import TagCloud from './TagCloud';
 import { registerDiscoveryDefaultCellRenderers } from './TableRenderers/CellRenderers';
-import { type RowRenderFunctionProps } from './TableRenderers/RowRenderers';
+import { type RowRenderFunctionParams } from './TableRenderers/RowRenderers';
 import { type CellRenderFunctionProps } from './TableRenderers/types';
 import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
 import {
@@ -13,12 +13,13 @@ import DiscoveryConfigProvider, {
 } from './DiscoveryProvider';
 import { type DiscoveryConfig, type StudyPreviewField } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
+import { getTagColor } from './utils';
 
 export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,
   type StudyPreviewField,
-  type RowRenderFunctionProps,
+  type RowRenderFunctionParams,
   Discovery,
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
@@ -28,4 +29,5 @@ export {
   DiscoveryConfigProvider,
   useDiscoveryContext,
   StudyGroup,
+  getTagColor
 };

@@ -46,7 +46,7 @@ export interface EnumFacetHooks extends FacetHooks {
   useTotalCounts: GetTotalCountsFunction;
 }
 
-const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
+const EnumFacet= ({
   field,
   dataHooks,
   valueLabel,
@@ -64,7 +64,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-}) => {
+} : FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

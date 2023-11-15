@@ -13,10 +13,12 @@ export const getNavPageLayoutPropsFromConfig =
     const navigationConfigJSON = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/navigation.json`,
     );
-    const { topBar, navigation } = navigationConfigJSON;
+    console.log("navigationConfigJSON", navigationConfigJSON);
+    const { topBar, navigation, type = "original" } = navigationConfigJSON;
     const headerProps: HeaderProps = {
       top: topBar as unknown as TopBarProps,
       navigation: navigation as unknown as NavigationProps,
+      type,
     };
     const footerProps: FooterProps = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/footer.json`,

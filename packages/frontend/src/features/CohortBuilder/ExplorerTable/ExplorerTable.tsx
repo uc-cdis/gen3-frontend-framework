@@ -45,7 +45,7 @@ interface ExplorerColumn {
   size?: number;
 }
 
-const ExplorerTable: React.FC<ExplorerTableProps> = ({
+const ExplorerTable = ({
   index,
   tableConfig,
 }: ExplorerTableProps) => {

@@ -10,7 +10,7 @@ import {
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 
-const GqlQueryEditor: React.FC<GqlQueryEditorProps> = ({
+const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
   const [query, setQuery] = useState('');
@@ -32,7 +32,7 @@ const GqlQueryEditor: React.FC<GqlQueryEditorProps> = ({
   });
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       <div className="flex justify-between items-center m-2">
         <Text size="xl" fw={500}>
           Query Graph

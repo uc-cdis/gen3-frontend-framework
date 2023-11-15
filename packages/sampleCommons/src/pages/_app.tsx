@@ -1,5 +1,4 @@
 import type { AppProps } from 'next/app';
-import { GEN3_COMMONS_NAME} from '@gen3/core';
 import { Gen3Provider, TenStringArray } from '@gen3/frontend';
 import themeColors from '../../config/themeColors.json';
 import themeFonts from '../../config/themeFonts.json';

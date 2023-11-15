@@ -32,7 +32,7 @@ interface Gen3ProviderProps {
   children?: ReactNode | undefined;
 }
 
-const Gen3Provider: React.FC<Gen3ProviderProps> = ({
+const Gen3Provider = ({
   colors,
   icons, fonts,
   sessionConfig,

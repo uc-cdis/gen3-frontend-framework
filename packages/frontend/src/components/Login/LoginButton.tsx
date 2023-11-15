@@ -4,7 +4,17 @@ import { useRouter } from 'next/router';
 import { MdLogin as LoginIcon } from 'react-icons/md';
 import { GEN3_DOMAIN, useUserAuth, isAuthenticated } from '@gen3/core';
 
-const LoginButton = () => {
+interface LoginButtonProps {
+  readonly icon?: React.ReactElement;
+  readonly hideText?: boolean;
+  className?: string;
+}
+
+const LoginButton = ({
+  icon = <LoginIcon className="pl-1" size={'1.75rem'} />,
+  hideText = false,
+  className = 'flex items-center font-medium font-heading'
+                                                 } : LoginButtonProps) => {
   const router = useRouter();
 
   const handleSelected = async (isAuthenticated: boolean) => {
@@ -17,12 +27,11 @@ const LoginButton = () => {
   // TODO add referring page to redirect to after login
   return (
     <UnstyledButton
-      className="mx-2 w-1/3"
       onClick={() => handleSelected(isAuthenticated(loginStatus))}
     >
-      <div className="flex items-center hover:border-b-1 bg-secondary-lighter border-secondary text-secondary-contrast-lighter font-medium font-heading">
-        {isAuthenticated(loginStatus) ? 'Logout' : 'Login'}
-        <LoginIcon className="pl-1" size={'1.75rem'} />
+      <div className={`flex items-center font-medium font-heading ${className}`}>
+        {!hideText ? isAuthenticated(loginStatus) ? 'Logout' : 'Login' : null}
+        {icon}
       </div>
     </UnstyledButton>
   );

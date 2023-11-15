@@ -32,7 +32,7 @@ const processChartData = (
 };
 
 
-const PieChart : React.FC<PieChartProps> = ({ data } : PieChartProps) => {
+const PieChart  = ({ data } : PieChartProps) => {
     const chartData = useMemo(() => processChartData(data[0]), [data]);
     return (
             <VictoryPie theme={VictoryTheme.material} data={chartData} animate={{duration: 500}}/>

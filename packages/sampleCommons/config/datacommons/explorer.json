@@ -1,0 +1,101 @@
+{
+  "explorerConfig": [{
+    "tabTitle": "Cases",
+    "charts": {
+      "gender": {
+        "chartType": "pie",
+        "title": "Gender"
+      },
+      "race": {
+        "chartType": "bar",
+        "title": "Race"
+      },
+      "ethnicity": {
+        "chartType": "bar",
+        "title": "Ethnicity"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "Study Selection",
+          "fields": ["project_id"]
+        },
+        {
+          "title": "Subjects",
+          "fields": [
+            "age_at_enrollment",
+            "gender",
+            "race",
+            "ethnicity",
+            "experimental_group"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "project_id",
+        "submitter_id",
+        "age_at_enrollment",
+        "gender",
+        "race",
+        "ethnicity",
+        "experimental_group"
+      ]
+    },
+    "guppyConfig": {
+      "dataType": "subject",
+      "nodeCountTitle": "Subjects",
+      "fieldMapping": [
+        {
+          "field": "_samples_count",
+          "name": "Samples Count"
+        },
+        {
+          "field": "_imaging_files_count",
+          "name": "Imaging Files Count"
+        },
+        {
+          "field": "_unaligned_reads_files_count",
+          "name": "Unaligned Reads Count"
+        },
+        {
+          "field": "_aligned_reads_files_count",
+          "name": "Aligned Reads Count"
+        },
+        {
+          "field": "_expression_arrays_count",
+          "name": "Expression Arrays Count"
+        }
+      ],
+      "manifestMapping": {
+        "resourceIndexType": "file",
+        "resourceIdField": "object_id",
+        "referenceIdFieldInResourceIndex": "subject_id",
+        "referenceIdFieldInDataIndex": "subject_id"
+      },
+      "accessibleFieldCheckList": ["project_id"],
+      "accessibleValidationField": "project_id"
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "data",
+        "title": "Download Data",
+        "leftIcon": "user",
+        "rightIcon": "download",
+        "fileName": "data.json"
+      },
+      {
+        "enabled": true,
+        "type": "manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "manifest.json"
+      }
+    ]
+  }]
+}

@@ -6,7 +6,7 @@ interface TagCloudProps {
   tagSelector?: (_: string) => void;
 }
 
-const TagCloud: React.FC<TagCloudProps> = () => {
+const TagCloud = () => {
   const { isLoading } = useGetTagsQuery('');
 
   if (isLoading) {

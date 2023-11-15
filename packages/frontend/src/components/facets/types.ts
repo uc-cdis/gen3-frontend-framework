@@ -15,8 +15,8 @@ export interface FacetCardProps<T extends FacetHooks = FacetHooks> {
     readonly startShowingData?: boolean;
     readonly dismissCallback?: (_arg:string) => void;
     readonly header?: {
-        Panel: ComponentType;
-        Label: ComponentType;
+        Panel: React.ElementType<any>;
+        Label: React.ElementType<any>;
         iconStyle?: string;
     };
 }

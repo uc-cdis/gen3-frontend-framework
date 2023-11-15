@@ -2,18 +2,26 @@ import React from 'react';
 import Image from 'next/image';
 import Gen3Link from './Gen3Link';
 import { FooterProps } from './types';
+import { extractClassName } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Footer: React.FC<FooterProps> = ({
+const Footer = ({
   bottomLinks,
   columnLinks,
   footerLogos,
   footerRightLogos,
+  classNames = {},
 }: FooterProps) => {
+
+  const defaultClassNames = {
+    root: "bg-primary-lighter text-primary-contrast p-4 shadow-sm",
+  };
+
+  const mergedClassNames = { ...defaultClassNames, ...classNames };
+
   return (
     <React.Fragment>
-      <div className="bg-primary-lighter text-white p-4">
-        <div className="flex flex-row justify-end">
+      <div className={extractClassName('root',mergedClassNames )}>
+        <div className="flex justify-end">
           {(footerLogos || [[]]).map((col, index) => {
             return (
               <div
@@ -35,7 +43,7 @@ const Footer: React.FC<FooterProps> = ({
               </div>
             );
           })}
-          <div className="flex flex-row w-[100%] pl-10 pt-3">
+          <div className="flex w-[100%] pl-10 pt-3">
             {(columnLinks || []).map(({ heading, items }, i) => (
               <div className="flex flex-col pl-10" key={i}>
                 <h1 className="font-bold text-xl text-white font-heading">
@@ -70,7 +78,7 @@ const Footer: React.FC<FooterProps> = ({
           return (
             <div
               key={`footer-col-${index}`}
-              className={`flex flex-row gap-x-6 mr-8 ${
+              className={`flex gap-x-6 mr-8 ${
                 col.length > 1 ? 'justify-end' : ''
               }`}
             >

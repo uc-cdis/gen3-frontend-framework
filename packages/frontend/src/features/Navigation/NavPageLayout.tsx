@@ -1,22 +1,30 @@
 import React, { PropsWithChildren } from 'react';
 import Footer from './Footer';
-import Header, { HeaderProps } from './Header';
-import { FooterProps } from './types';
+import Header from './Header';
+import { FooterProps, HeaderProps } from './types';
+import LeftSidePanel from './Vertical/LeftSidePanel';
 
 export interface NavPageLayoutProps {
   headerProps: HeaderProps;
   footerProps: FooterProps;
 }
 
-const NavPageLayout: React.FC<NavPageLayoutProps> = ({
+const NavPageLayout = ({
   headerProps,
   footerProps,
   children,
 }: PropsWithChildren<NavPageLayoutProps>) => {
   return (
-    <div className="flex flex-col h-[100vh]">
+    <div className="flex flex-col justify-between h-[100vh]">
       <Header {...headerProps} />
-      <main className="flex-grow">{children}</main>
+      {headerProps.type === 'vertical' ? (
+        <div className="flex grow ">
+          <LeftSidePanel items={headerProps.navigation.items} />
+          <main className="flex-grow">{children}</main>
+        </div>
+      ) : (
+        <main className="flex grow">{children}</main>
+      )}
       <Footer {...footerProps} />
     </div>
   );

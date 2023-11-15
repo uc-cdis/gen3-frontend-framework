@@ -25,7 +25,7 @@ export interface CrosswalkProps {
   readonly toField: string;
 }
 
-export const Crosswalk: React.FC<CrosswalkProps> = ({
+export const Crosswalk = ({
   fromTitle,
   toTitle,
   guidField,

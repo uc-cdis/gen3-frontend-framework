@@ -21,7 +21,7 @@ interface FacetSortPanelProps {
  * @param isNumberSort - set to true to change icon from A-Z to numeric sort
  * @constructor
  */
-const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
+const FacetSortPanel = ({
                                                          isSortedByValue,
                                                          setIsSortedByValue,
                                                          valueLabel,

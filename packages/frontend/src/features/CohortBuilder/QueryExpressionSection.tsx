@@ -104,7 +104,7 @@ interface QueryExpressionSectionProps {
 
 
 
-const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
+const QueryExpressionSection = ({
   index,
   filters,
   currentCohortName,

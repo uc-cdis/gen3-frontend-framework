@@ -123,7 +123,7 @@ interface IncludeExcludeQueryElementProps
   path?: string;
 }
 
-const IncludeExcludeQueryElement: React.FC<IncludeExcludeQueryElementProps> = ({
+const IncludeExcludeQueryElement = ({
   index,
   field,
   path,
@@ -287,7 +287,7 @@ const ComparisonElement = ({
   );
 };
 
-const ExistsElement: React.FC<Exists | Missing> = ({
+const ExistsElement = ({
   field,
   operator,
 }: Exists | Missing) => {
@@ -306,9 +306,7 @@ interface ClosedRangeQueryElementProps {
   readonly op?: 'and';
 }
 
-export const ClosedRangeQueryElement: React.FC<
-  ClosedRangeQueryElementProps
-> = ({
+export const ClosedRangeQueryElement = ({
   index,
   lower,
   upper,
@@ -344,7 +342,7 @@ interface QueryElementProps {
   path?: string;
 }
 
-export const QueryElement: React.FC<QueryElementProps> = ({
+export const QueryElement = ({
   index,
   field,
   path,
