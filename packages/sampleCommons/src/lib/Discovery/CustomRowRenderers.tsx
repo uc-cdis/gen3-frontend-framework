@@ -16,7 +16,7 @@ interface TagData {
   category: string;
 }
 
-const HEALRowRenderer = React.memo(
+const DetailsWithTagsRowRenderer = React.memo(
   (
     row: RowRenderFunctionProps,
     studyPreviewConfig?: StudyPreviewField,
@@ -82,14 +82,14 @@ const HEALRowRenderer = React.memo(
   }
 );
 
-HEALRowRenderer.displayName = 'HEALRowRenderer';
+DetailsWithTagsRowRenderer.displayName = 'DetailsWithTagsRowRenderer';
 
-export default HEALRowRenderer;
+export default DetailsWithTagsRowRenderer;
 
 export const registerDiscoveryStudyPreviewRenderers = () => {
   DiscoveryRowRendererFactory.registerRowRendererCatalog({
     string: {
-      default: HEALRowRenderer,
+      default: DetailsWithTagsRowRenderer,
     },
   });
 };
