@@ -6,9 +6,8 @@ export type JSONValue =
   | boolean
   | JSONValue[]
   | JSONObject
-  | ReactElement;
 
-export type JSONValueWithReact = JSONValue | ReactNode;
+export type JSONValueWithReact = JSONValue | ReactElement | ReactNode;
 
 export interface JSONObject {
   [k: string]: JSONValue;

@@ -217,7 +217,7 @@ export interface AccessFilters {
 }
 
 // TODO: Type the rest of the config
-export interface DiscoveryConfig extends Record<string, any> {
+export interface DiscoveryConfig {
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
