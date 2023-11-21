@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
-import { type NavPageLayoutProps } from '../../features/Navigation';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
-export const DataDictionaryPageGetServerSideProps: GetServerSideProps<
+export const DictionaryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   return {

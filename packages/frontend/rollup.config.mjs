@@ -97,19 +97,19 @@ const config = [
       swc(
         {
           sourceMaps: true,
-          include: /\.[mc]?[jt]sx?$/,
+          include: /\.[mc]?[json]?[jt]sx?$/,
           exclude: /node_modules/,
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives(),
+        swcPreserveDirectives(), json(),
       ),
     ],
   },
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss()],
+    plugins: [dts(), postcss(), json()],
   },
 ];
 
