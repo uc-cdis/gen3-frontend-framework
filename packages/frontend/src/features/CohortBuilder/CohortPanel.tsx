@@ -213,6 +213,7 @@ export const CohortPanel = ({
             index={index}
             charts={summaryCharts}
             data={data ?? EmptyData}
+            counts={counts}
             isSuccess={isSuccess}
           />
           {table?.enabled ? (

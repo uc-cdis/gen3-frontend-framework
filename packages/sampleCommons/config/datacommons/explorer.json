@@ -104,11 +104,13 @@
       "charts": {
         "data_type": {
           "chartType": "horizontalStacked",
-          "title": "File Type"
+          "title": "File Type",
+          "valueType": "percent"
         },
         "data_format": {
           "chartType": "horizontalStacked",
-          "title": "File Format"
+          "title": "File Format",
+          "valueType": "percent"
         }
       },
       "filters": {

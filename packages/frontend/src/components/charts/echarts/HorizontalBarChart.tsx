@@ -15,7 +15,7 @@ interface BarChartData {
 }
 
 const ExtractDataCount = (d:HistogramData, _:number | undefined = undefined) : number => d.count;
-const ExtractDataPercent = (d:HistogramData, total?:number) : number => total? d.count / total : 0;
+const ExtractDataPercent = (d:HistogramData, total?:number) : number => total? Math.round((((d.count / total) * 100.0) + Number.EPSILON)*100)/100 : 0;
 
 const processChartData = (
   facetData: HistogramDataArray,
@@ -58,7 +58,9 @@ const HorizontalBarChart  = ({ data, valueType, total } : ChartProps) => {
       },
       legend: {
         orient: 'vertical',
-        left: '75%',
+        left: '73%',
+        type: 'scroll',
+        right: 15,
       },
       grid: {
         left: '0%',
@@ -68,7 +70,8 @@ const HorizontalBarChart  = ({ data, valueType, total } : ChartProps) => {
         height: '50%',
       },
       xAxis: {
-        type: 'value'
+        type: 'value',
+        max: 'dataMax',
       },
       yAxis: {
         type: 'category',
