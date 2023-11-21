@@ -1,4 +1,4 @@
-import { JSONObject, type MetadataPaginationParams } from '@gen3/core';
+import { JSONArray, JSONObject, type MetadataPaginationParams } from "@gen3/core";
 import CartActionButton from './ActionBar/CartActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
@@ -130,6 +130,7 @@ export interface StudyTabField {
   sourceField: string;
   label: string;
   default?: string;
+  renderFunction?: string;
 }
 
 export interface StudyTabTagField extends StudyTabField {
@@ -148,12 +149,15 @@ export interface StudyDetailTab {
 
 export interface StudyDetailView {
   headerField: string;
+  header: {
+    field: string;
+  }
   tabs: StudyDetailTab[];
 }
 
 interface DiscoveryTableConfig {
   selectableRows?: boolean;
-  expandingRows?: boolean;
+  expandableRows?: boolean;
   expandingRowRenderFunction?: string;
 }
 
@@ -247,7 +251,7 @@ export enum AccessLevel {
 }
 
 export interface DiscoveryResource
-  extends Record<string, JSONObject | AccessLevel | TagInfo[] | undefined> {
+  extends Record<string, JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined> {
   [accessibleFieldName]: AccessLevel;
   tags?: Array<TagInfo>;
 }

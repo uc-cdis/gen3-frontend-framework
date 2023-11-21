@@ -10,7 +10,7 @@ interface ConfigurableCrosswalkProps {
   converters: Record<string, LabeledCrosswalkProps>;
 }
 
-const ConfigurableCrosswalk: React.FC<ConfigurableCrosswalkProps> = ({
+const ConfigurableCrosswalk = ({
   converters,
 }: ConfigurableCrosswalkProps) => {
   const selectedData = useMemo(

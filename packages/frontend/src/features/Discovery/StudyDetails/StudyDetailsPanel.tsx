@@ -14,27 +14,28 @@ const StudyDetailsPanel = ({
   data,
   studyConfig,
 }: StudyDetailsPanelProps): ReactElement => {
+
   const headerText = JSONPath({
     json: data,
-    path: studyConfig.headerField,
+    path: studyConfig.headerField ?? studyConfig?.header?.field ?? '',
   });
   return (
     <div>
       <Text size="lg" weight={700} className="mb-4">
         {headerText}
       </Text>
-      <Tabs>
+      <Tabs defaultValue={studyConfig?.tabs?.[0]?.tabName}>
         <Tabs.List>
           {studyConfig.tabs.map((tab) => {
             return (
-              <Tabs.Tab value={tab.tabName} key={`${tab.tabName}-tab-tab`}>
+              <Tabs.Tab value={tab.tabName} key={`${tab.tabName}-details-tab`}>
                 {tab.tabName}
               </Tabs.Tab>
             );
           })}
           {studyConfig.tabs.map((tab) => {
             return (
-              <Tabs.Panel value={tab.tabName} key={`${tab.tabName}-tab-panel`}>
+              <Tabs.Panel value={tab.tabName} key={`${tab.tabName}-details-tab-panel`}>
                 <StudyGroupPanel data={data} groups={tab.groups} />
               </Tabs.Panel>
             );

@@ -13,7 +13,7 @@ import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
-import { JSONObject, MetadataResponse } from '@gen3/core';
+import { JSONObject } from '@gen3/core';
 import {
   OnChangeFn,
   PaginationState,
@@ -75,8 +75,6 @@ const DiscoveryTable = ({
     });
   }, [config]);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const table = useMantineReactTable({
     columns: cols,
     data: data ?? [],
@@ -87,6 +85,7 @@ const DiscoveryTable = ({
     onSortingChange: setSorting,
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
     rowCount: hits,
+    enableTopToolbar: false,
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
@@ -96,7 +95,7 @@ const DiscoveryTable = ({
       sorting,
       showProgressBars: isFetching,
       showAlertBanner: isError,
-      expanded: config.tableConfig?.selectableRows === true ? true : undefined,
+      expanded: config.tableConfig?.expandableRows === true ? true : undefined,
       columnVisibility: {
         'mrt-row-expand': false,
       },
@@ -135,12 +134,12 @@ const DiscoveryTable = ({
   });
 
   return (
-    <React.Fragment>
+    <>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

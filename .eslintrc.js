@@ -36,6 +36,14 @@ module.exports = {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
   },
+  overrides: [
+    {
+      files: ['**/*.tsx'],
+      rules: {
+        'react/prop-types': 'off',
+      },
+    },
+  ],
   settings: {
     react: {
       version: 'detect',

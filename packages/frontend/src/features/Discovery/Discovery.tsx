@@ -76,7 +76,7 @@ const Discovery = ({
     useDisclosure(false);
 
   return (
-    <div className="flex flex-col items-center p-2 m-2">
+    <div className="flex flex-col items-center p-2 m-2 w-full">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
           <div className="flex items-center m-2">
@@ -85,6 +85,9 @@ const Discovery = ({
             <div className="w-full">
               <SearchInputWithSuggestions
                 suggestions={suggestions}
+                clearSearch={() => {
+                  setSearchBarTerm([]);
+                }}
                 searchChanged={(v) => setSearchBarTerm(v.split(' '))}
                 placeholder={
                   discoveryConfig?.features?.search?.searchBar?.placeholder ??

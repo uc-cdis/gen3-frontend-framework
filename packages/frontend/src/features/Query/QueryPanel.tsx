@@ -12,7 +12,7 @@ interface QueryPanelProps {
   title?: string;
 }
 
-const QueryPanel: React.FC<QueryPanelProps> = ({
+const QueryPanel = ({
   graphQLEndpoint,
 }: QueryPanelProps) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

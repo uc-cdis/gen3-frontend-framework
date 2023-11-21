@@ -1,3 +1,6 @@
+import { TopBarProps } from './TopBar';
+import { ReactNode } from "react";
+
 interface BottomLinks {
   text: string;
   href: string;
@@ -8,7 +11,7 @@ interface ColumnLinks {
   items: ReadonlyArray<{
     text: string;
     href?: string;
-    linkType: 'gen3ff' | 'portal' | undefined;
+    linkType?: 'gen3ff' | 'portal' ;
   }>;
 }
 
@@ -24,6 +27,7 @@ export interface FooterProps {
   readonly columnLinks?: ReadonlyArray<ColumnLinks>;
   readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
   readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
+  readonly classNames?: Record<string, string>;
 }
 
 export interface NavigationButtonProps {
@@ -31,7 +35,11 @@ export interface NavigationButtonProps {
   readonly tooltip: string;
   readonly href: string;
   readonly name: string;
+  readonly iconHeight?: string;
+  readonly classNames?: Record<string, string>;
 }
+
+
 
 export interface NavigationBarLogo {
   readonly src: string;
@@ -44,6 +52,13 @@ export interface NavigationBarLogo {
 
 export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
-  readonly items: [NavigationButtonProps];
+  readonly items?: NavigationButtonProps[];
   readonly title?: string;
+  readonly classNames?: Record<string, string>;
+}
+
+export interface HeaderProps {
+  readonly top: TopBarProps;
+  readonly navigation: NavigationProps;
+  readonly type?: 'horizontal' | 'vertical' | 'original';
 }

@@ -6,7 +6,7 @@ import StatisticRendererFactory from './StatisticsRendererFactory';
 const SAMPLE_VALUES = [1023, 2392];
 
 const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
-  return summaries.map((summary, idx) => {
+  return summaries.map((summary) => {
     const { name, field, type } = summary;
     if (name && field && type) {
       // TODO replace 'default' with a real value

@@ -24,7 +24,7 @@ import { GqlQueryEditorProps } from './types';
 //   return data ?? {};
 // };
 
-const GqlQueryEditorPanel: React.FC<GqlQueryEditorProps> = ({
+const GqlQueryEditorPanel = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps) => {
   const [query, setQuery] = useState('');
@@ -47,7 +47,7 @@ const GqlQueryEditorPanel: React.FC<GqlQueryEditorProps> = ({
   });
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full w-full">
       <EditorContextProvider>
         <SchemaContextProvider fetcher={fetcher}>
           <PluginContextProvider plugins={[explorer]}>

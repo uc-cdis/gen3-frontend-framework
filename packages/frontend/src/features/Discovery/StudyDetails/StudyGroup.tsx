@@ -13,6 +13,7 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
   const groupHasContent = useMemo(
     () =>
       fields.some((field) => {
+        // TDDO: handle ifFieldIsNotAvailable
         if (!field.sourceField) {
           return false;
         }
@@ -39,9 +40,7 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
         <Text color="primary">{header}</Text>
       </div>
       <div
-        className="
-      +0p-4"
-      >
+        className="p-4">
         {fields.map((field) => {
           return createFieldRendererElement(field, data as any);
         })}

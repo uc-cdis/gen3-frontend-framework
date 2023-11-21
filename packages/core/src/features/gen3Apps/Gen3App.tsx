@@ -44,7 +44,7 @@ export const createGen3App = ({
   name,
   version,
   requiredEntityTypes,
-}: CreateGen3AppOptions): React.ReactNode => {
+}: CreateGen3AppOptions): React.FC => {
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
@@ -90,7 +90,7 @@ export const createGen3App = ({
   );
   registerGen3App(id, Gen3AppWrapper as unknown as React.ReactNode);
 
-  return Gen3AppWrapper as unknown as React.ReactNode;
+  return Gen3AppWrapper;
 };
 
 export interface AppDataSelectorResponse<T> {

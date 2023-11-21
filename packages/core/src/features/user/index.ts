@@ -13,6 +13,7 @@ import {
 } from './userSlice';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
+import { UserProfile } from './types';
 
 export {
   useUser,
@@ -27,4 +28,5 @@ export {
   useGetExternalLoginsQuery,
   type Gen3User,
   type LoginStatus,
+  type UserProfile,
 };

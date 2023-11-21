@@ -9,6 +9,10 @@ import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/react/dist/style.css';
 
+
+// TODO: THis must be done in a better way using newer NextJS features
+import sessionConfig from '../../config/session.json';
+
 const colors = Object.fromEntries(
   Object.entries(themeColors).map(([key, values]) => [
     key,
@@ -18,7 +22,7 @@ const colors = Object.fromEntries(
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Gen3Provider colors={colors} icons={icons} fonts={themeFonts}>
+    <Gen3Provider colors={colors} icons={icons} fonts={themeFonts} sessionConfig={sessionConfig.sessionConfig}>
       <Component {...pageProps} />
     </Gen3Provider>
   );

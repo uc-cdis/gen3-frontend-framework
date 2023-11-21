@@ -10,6 +10,7 @@ const StudyDetails = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   let permalink = 'Discovery/notfound';
+
   if (studyDetails) {
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
