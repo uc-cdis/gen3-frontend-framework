@@ -14,8 +14,10 @@ import {
   useGetAggsQuery,
   FacetType,
   extractEnumFilterValue,
-  CoreState,
-} from '@gen3/core';
+  CoreState, useGetCountsQuery
+} from "@gen3/core";
+
+const EmptyData = {};
 
 import { type CohortPanelConfig, type TabConfig} from './types';
 import { type SummaryChart} from '../../components/charts/types';
@@ -148,9 +150,16 @@ export const CohortPanel = ({
     }
   }, [isSuccess, data]);
 
+
+  const { data : counts, isSuccess : isCountSuccess } = useGetCountsQuery({
+    type: index,
+    filters: cohortFilters,
+  });
+
+
   return (
     <div className="flex mt-3">
-      <div className="basis-1/4">
+      <div>
         <Tabs
           variant="pills"
           orientation="vertical"
@@ -187,7 +196,7 @@ export const CohortPanel = ({
           })}
         </Tabs>
       </div>
-      <div>
+      <div className="w-full">
         <div className="flex flex-col">
           <CohortManager index={index} />
 
@@ -196,14 +205,14 @@ export const CohortPanel = ({
 
             <CountsValue
               label={guppyConfig.nodeCountTitle}
-              index={index}
-              filters={cohortFilters}
+              counts={counts}
+              isSuccess={isCountSuccess}
             />
           </div>
           <Charts
             index={index}
             charts={summaryCharts}
-            data={data ?? {}}
+            data={data ?? EmptyData}
             isSuccess={isSuccess}
           />
           {table?.enabled ? (

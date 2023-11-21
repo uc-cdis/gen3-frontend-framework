@@ -1,11 +1,10 @@
 
 import {
   fieldNameToTitle,
-
   AggregationsData
 } from '@gen3/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { ActionIcon, Card, Grid, Group,Menu, Text,  LoadingOverlay } from '@mantine/core';
+import { ActionIcon, Card, Grid, Group, Text,  LoadingOverlay } from '@mantine/core';
 import {createChart} from './createChart';
 import { SummaryChart } from './types';
 
@@ -16,12 +15,13 @@ export type ChartDataConverter = (
 interface ChartsProps {
   index: string;
   charts: Record<string, SummaryChart>
+  counts?: number;
   data: AggregationsData;
     isSuccess: boolean;
     isError?: boolean;
 }
 
-const Charts = ({ index, charts, data, isSuccess }: ChartsProps) => {
+const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
   return (
     <Grid>
       {data &&  Object.keys(charts).map((field) => (
@@ -36,7 +36,12 @@ const Charts = ({ index, charts, data, isSuccess }: ChartsProps) => {
               </Group>
             </Card.Section>
           <LoadingOverlay visible={!isSuccess} />
-            { createChart(charts[field].chartType, data===undefined ? [] : data[field])}
+            { createChart(charts[field].chartType, {
+                data: data===undefined ? [] : data[field],
+                total: counts ?? 1,
+                valueType: charts[field].valueType ?? 'count',
+            }
+            )}
           </Card>
         </Grid.Col>
       ))}

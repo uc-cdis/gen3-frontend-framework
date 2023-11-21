@@ -5,7 +5,7 @@ import { CohortPanel } from './CohortPanel';
 
 export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
   return (
-    <div>
+    <div className="w-full">
       <Tabs
             color="primary-lighter"
             classNames={{

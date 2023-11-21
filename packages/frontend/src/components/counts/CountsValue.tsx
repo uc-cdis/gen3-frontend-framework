@@ -8,22 +8,18 @@ import {
 
 interface CountsValueProps {
     readonly label: string;
-    readonly index: string;
-    readonly filters: FilterSet;
+    readonly counts?: number;
+    readonly isSuccess: boolean;
 }
 
-const CountsValue  = ({ label,  index, filters}: CountsValueProps) => {
+const CountsValue  = ({ label,  isSuccess, counts }: CountsValueProps) => {
 
-    const { data, isSuccess } = useGetCountsQuery({
-        type: index,
-        filters: filters,
-    });
 // TODO handle case of data.length == 1
     return (
         <div className="mr-4">
             <LoadingOverlay visible={!isSuccess} />
             <Button color="primary" variant="filled">
-                {`${data?.toLocaleString() ?? '...'} ${label}`}
+                {`${counts?.toLocaleString() ?? '...'} ${label}`}
             </Button>
         </div>
     );

@@ -2,24 +2,29 @@ import React from 'react';
 import BarChart from './BarChart';
 import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';
-import { HistogramDataArray } from '@gen3/core';
+import HorizontalBarChart from './echarts/HorizontalBarChart';
+import { ChartProps } from './types';
+
 
 export const createChart = (
-    type: string,
-    data: HistogramDataArray,
+  type: string,
+  chartProps: ChartProps
 ): React.ReactNode => {
     return (
         <React.Fragment>
             {
                 {
                     bar: (
-                        <BarChart data={data} />
+                        <BarChart {...chartProps} />
+                    ),
+                    horizontalStacked: (
+                      <HorizontalBarChart {...chartProps} />
                     ),
                     fullPie: (
-                        <PieChart data={data} />
+                        <PieChart {...chartProps}/>
                     ),
                     donut: (
-                        <DonutChart data={data} />
+                        <DonutChart {...chartProps} />
                     )
                 }[type as string]
             }

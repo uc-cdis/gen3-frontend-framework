@@ -1,8 +1,8 @@
 import { type DownloadButtonProps, type DropdownButtonsProps  } from './types';
-import  DownloadButton  from './DropdownButton';
+import  DropdownButton  from './DropdownButton';
 
 export {
   type DownloadButtonProps,
   type DropdownButtonsProps,
-  DownloadButton,
+  DropdownButton,
 };
