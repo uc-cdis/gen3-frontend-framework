@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
@@ -41,13 +42,13 @@ const ReactECharts = ({
         };
     }, [theme]);
 
-    useEffect(() => {
+    useDeepCompareEffect(() => {
         // Update chart
         if (chartRef.current !== null) {
             const chart = getInstanceByDom(chartRef.current);
             chart?.setOption(option, settings);
         }
-    }, [option, settings, theme]); // Whenever theme changes we need to add option and setting due to it being deleted in cleanup function
+    }, [option, settings, theme]);
 
     useEffect(() => {
         // Update chart
@@ -56,7 +57,7 @@ const ReactECharts = ({
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             loading === true ? chart?.showLoading() : chart?.hideLoading();
         }
-    }, [loading, theme]);
+    }, [loading]);
 
     return <div ref={chartRef} style={{ width: '100%', height: '100%', ...style }} />;
 };

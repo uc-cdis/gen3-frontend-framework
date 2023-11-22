@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { VictoryAxis, VictoryBar, VictoryChart,VictoryContainer, VictoryLabel, VictoryTheme } from 'victory';
-import {  processLabel, truncateString } from './utils';
-import { HistogramDataArray, HistogramData } from '@gen3/core';
+import { processLabel, processRangeKeyLabel, truncateString } from "./utils";
+import { HistogramDataArray, HistogramData, isHistogramDataArrayAnEnum, isHistogramDataArrayARange } from '@gen3/core';
 import { ChartProps } from './types';
 
 
@@ -11,23 +11,55 @@ interface BarChartData {
     truncatedXName: string;
 }
 
+const EmptyResult : BarChartData[] = [];
+
+const processBinnedChartData = (
+    facetData: HistogramDataArray,
+    maxBins = 100,
+) : BarChartData[]  => {
+
+    if (!facetData) {
+        return EmptyResult;
+    }
+
+    const results = facetData.slice(0, maxBins)
+        .map((d:any) => {
+            const label = processRangeKeyLabel(d.key);
+            return {
+            x: label,
+            truncatedXName: truncateString(label, 35),
+            y: d.count,
+        };
+    }
+    );
+    return results;
+};
+
 const processChartData = (
     facetData: HistogramDataArray,
     maxBins = 100,
 ) : BarChartData[]  => {
 
     if (!facetData) {
-        return [];
+        return EmptyResult;
     }
-    const data =facetData.filter((d:HistogramData) => d.key !== '_missing');
 
-    const results = data.slice(0, maxBins)
-        .map((d:any) => ({
-            x: processLabel(d.key),
-            truncatedXName: truncateString(processLabel(d.key), 35),
-            y: d.count,
+    console.log("facetData", facetData);
+    if (isHistogramDataArrayARange(facetData))
+      return processBinnedChartData(facetData, maxBins);
+
+    else {
+
+      const data = facetData.filter((d: HistogramData) => d.key !== '_missing');
+
+      const results = data.slice(0, maxBins)
+        .map((d: any) => ({
+          x: processLabel(d.key),
+          truncatedXName: truncateString(processLabel(d.key), 35),
+          y: d.count,
         }));
-    return results.reverse();
+      return results.reverse();
+    }
 };
 
 const BarChart  = ({ data } : ChartProps) => {

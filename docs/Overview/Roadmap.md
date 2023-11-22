@@ -6,7 +6,7 @@
 * Downloads buttons
 * Study details
 * Use generic CellRenderer Factory
-* Hover on row works on details row
+* Hover color on row works on details row
 * Tags
 * Search
 * Advanced Search
@@ -14,6 +14,8 @@
 
 
 ### Explorer Roadmap
+* Download buttons implemented
+* Authentication/Autherization implemented
 
 #### Features to implement
 
