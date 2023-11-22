@@ -1,6 +1,6 @@
 export const capitalize = (original: string): string => {
 
-    if (!original) {
+    if (original === undefined) {
         throw new Error('capitalize: original is undefined');
     }
     if (original.length === 0) {
@@ -34,4 +34,4 @@ export const processLabel = (label: string): string => {
 
 export const processRangeKeyLabel = (key: [number, number]): string => {
     return `${key[0]}-${key[1]}`;
-}
+};
