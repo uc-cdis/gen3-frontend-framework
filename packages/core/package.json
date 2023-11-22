@@ -46,7 +46,7 @@
     "ts-jest": "^27.0.3"
   },
   "dependencies": {
-    "@types/estree": "^0.0.47",
+    "@types/estree": "^0.0.52",
     "uuid": "^8.3.2"
   }
 }
