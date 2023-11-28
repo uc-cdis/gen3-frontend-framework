@@ -32,6 +32,8 @@ import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
+import { cacheDRSHostnames } from './lib/drs/drsResolve';
+
 export {
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
@@ -52,4 +54,5 @@ export {
   TailwindConfig,
   Gen3Provider,
   getNavPageLayoutPropsFromConfig,
+  cacheDRSHostnames
 };
