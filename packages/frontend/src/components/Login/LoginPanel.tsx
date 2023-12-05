@@ -26,7 +26,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
      router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}:3010/Profile`),
+          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}/Profile`),
       )
       .catch((e) => {
         showNotification({

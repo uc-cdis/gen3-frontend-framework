@@ -1,5 +1,5 @@
-import { resolveDRSWithDataGUISOrg } from "./resolvers/dataGUIDSDotOrg";
-import { resolveCachedDRS } from "./resolvers/cachedDRSResolver";
+import { resolveDRSWithDataGUISOrg } from './resolvers/dataGUIDSDotOrg';
+import { resolveCachedDRS } from './resolvers/cachedDRSResolver';
 
 enum DRSResolverType {
   dataGUISOrg = 'dataGUISOrg',
@@ -17,9 +17,10 @@ const DRS_Resolvers: DRSResolverCatalog = {
   cached: resolveCachedDRS,
 };
 
+// TODO - add to config file for DRS resolver
 export const resolveDRSObjectId = (
   guidsForHostnameResolution: string[],
-  resolver: DRSResolverType = DRSResolverType.dataGUISOrg,
+  resolver: DRSResolverType = DRSResolverType.cached,
 ) => {
   return DRS_Resolvers[resolver](guidsForHostnameResolution);
 };

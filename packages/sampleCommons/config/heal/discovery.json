@@ -33,7 +33,7 @@
       "tagsInDescription": {
         "enabled": true
       },
-      "exportToWorkspace": {
+      "exportToDataLibrary": {
         "enabled": true,
         "manifestFieldName": "__manifest",
         "enableDownloadManifest": true,
@@ -45,6 +45,21 @@
           "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
         },
         "verifyExternalLogins": true
+      },
+      "exportToLibrary": {
+        "verifyExternalLogins": true,
+        "enabled": true,
+        "manifestFieldName": "__manifest",
+        "buttons": [
+          {
+            "type": "download",
+            "label": "Download"
+          },
+          {
+            "type": "add-to-workspace",
+            "label": "Add to Workspace"
+          }
+        ]
       },
       "pageTitle": {
         "enabled": false

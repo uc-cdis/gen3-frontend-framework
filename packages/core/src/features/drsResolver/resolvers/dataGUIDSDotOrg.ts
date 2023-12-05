@@ -15,19 +15,22 @@ class ResolveDRSError extends Error {
  */
 export const resolveDRSWithDataGUISOrg = async (
   guidsForHostnameResolution: string[],
-): Promise<Record<string,string>> => {
+): Promise<Record<string, string>> => {
+  const INVALID_INPUT_ERROR =
+    'Invalid input: guidsForHostnameResolution must be an array of strings';
+  const RESOLVE_DRS_ERROR = 'Failed to resolve DRS object ID';
+
   if (
     !Array.isArray(guidsForHostnameResolution) ||
     !guidsForHostnameResolution.every(
       (guid: unknown) => typeof guid === 'string',
     )
   ) {
-    throw new Error(
-      'Invalid input: guidsForHostnameResolution must be an array of strings',
-    );
+    throw new Error(INVALID_INPUT_ERROR);
   }
+
   try {
-    const responses = await Promise.all(
+    const responses = await Promise.allSettled(
       guidsForHostnameResolution.map(async (guid) => {
         try {
           const response = await fetch(`https://dataguids.org/index/${guid}`);
@@ -38,24 +41,25 @@ export const resolveDRSWithDataGUISOrg = async (
               throw new ResolveDRSError('Failed to parse response as JSON');
             }
           } else {
-            throw new ResolveDRSError('Failed to resolve DRS object ID');
+            throw new ResolveDRSError(RESOLVE_DRS_ERROR);
           }
         } catch (error) {
-          throw new ResolveDRSError('Failed to resolve DRS object ID');
+          throw new ResolveDRSError(RESOLVE_DRS_ERROR);
         }
       }),
     );
+
     return responses.reduce((acc, response, index) => {
-      if (response.data) {
+      if (response.status === 'fulfilled' && response.value.data) {
         return {
           ...acc,
-          [guidsForHostnameResolution[index]]: response.data,
+          [guidsForHostnameResolution[index]]: response.value.data,
         };
       } else {
-        throw new ResolveDRSError('Failed to resolve DRS object ID');
+        throw new ResolveDRSError(RESOLVE_DRS_ERROR);
       }
-    }, {} as Record<string,string>);
+    }, {} as Record<string, string>);
   } catch (error) {
-    throw new ResolveDRSError('Failed to resolve DRS object ID');
+    throw new ResolveDRSError(RESOLVE_DRS_ERROR);
   }
 };

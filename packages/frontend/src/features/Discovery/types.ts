@@ -1,5 +1,5 @@
 import { JSONArray, JSONObject, type MetadataPaginationParams } from "@gen3/core";
-import CartActionButton from './ActionBar/CartActionButton';
+import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
@@ -166,7 +166,7 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-export interface CartActionButton {
+export interface DataLibraryActionButton {
   type:
     | 'manifest'
     | 'zip'
@@ -198,8 +198,8 @@ export interface SearchConfig {
   tagSearchDropdown?: TagSearchDropdown;
 }
 
-export interface ExportToCart {
-  buttons: CartActionButton[];
+export interface ExportToDataLibrary {
+  buttons: DataLibraryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   loginRequireForAllButtons?: boolean;
@@ -221,7 +221,7 @@ export interface DiscoveryConfig {
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
-    exportToCart?: ExportToCart;
+    exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: Partial<DataAuthorization>;
   };

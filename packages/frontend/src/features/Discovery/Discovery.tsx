@@ -109,8 +109,8 @@ const Discovery = ({
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
             </Button>
-            {discoveryConfig.features.exportToCart ? (
-              <ActionBar config={discoveryConfig.features.exportToCart} />
+            {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
+              <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
             ) : null}
           </div>
           <div className="flex justify-start">
