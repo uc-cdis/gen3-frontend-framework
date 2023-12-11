@@ -1,10 +1,11 @@
 import { DropdownsWithButtonsProps } from './types';
 import {
-  DownloadButton,
+  DropdownButton,
   DownloadButtonProps,
 } from '../../components/Buttons/DropdownButtons';
 import ActionButton from '../../components/Buttons/ActionButton';
 import { useIsUserLoggedIn } from '@gen3/core';
+
 
 interface DownloadsPanelProps {
   dropdowns: Record<string, DropdownsWithButtonsProps>;
@@ -18,6 +19,8 @@ const DownloadsPanel = ({
   loginForDownload,
 }: DownloadsPanelProps): JSX.Element => {
   const isUserLoggedIn = useIsUserLoggedIn();
+
+  console.log("DownloadsPanel: dropdowns: ", dropdowns);
 
   const loginRequired = loginForDownload ? loginForDownload : false;
 
@@ -46,7 +49,7 @@ const DownloadsPanel = ({
   return dropdowns ? (
     <div className="flex space-x-1">
       {Object.values(dropdownsToRender).map((dropdown) => (
-        <DownloadButton {...dropdown} key={dropdown.title} />
+        <DropdownButton {...dropdown} key={dropdown.title} />
       ))}
       {buttons.map((button) => (
         <ActionButton {...button} key={button.title} />

@@ -1,5 +1,11 @@
 export const capitalize = (original: string): string => {
 
+    if (original === undefined) {
+        throw new Error('capitalize: original is undefined');
+    }
+    if (original.length === 0) {
+        return original;
+    }
     return original
         .split(' ')
         .map(
@@ -23,7 +29,9 @@ export const truncateString = (str: string, n: number): string => {
 export const removeKey = (key:any, { [key]: _, ...rest }) => rest;
 
 export const processLabel = (label: string): string => {
-    const tokens = label.split(' ');
-    const capitalizedTokens = tokens.map((s) => capitalize(s));
-    return capitalizedTokens.join(' ');
+    return capitalize(label);
+};
+
+export const processRangeKeyLabel = (key: [number, number]): string => {
+    return `${key[0]}-${key[1]}`;
 };

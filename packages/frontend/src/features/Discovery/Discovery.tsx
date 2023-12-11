@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
+import { Text } from '@mantine/core';
 import { MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
@@ -79,6 +80,11 @@ const Discovery = ({
     <div className="flex flex-col items-center p-2 m-2 w-full">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
+          {
+            discoveryConfig.features?.pageTitle && discoveryConfig?.features?.pageTitle.enabled ? (
+              <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+            ) : null
+          }
           <div className="flex items-center m-2">
             <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="flex-grow"></div>

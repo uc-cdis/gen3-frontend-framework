@@ -1,101 +1,165 @@
 {
-  "explorerConfig": [{
-    "tabTitle": "Cases",
-    "charts": {
-      "gender": {
-        "chartType": "pie",
-        "title": "Gender"
+  "explorerConfig": [
+    {
+      "tabTitle": "Cases",
+      "charts": {
+        "gender": {
+          "chartType": "fullPie",
+          "title": "Gender"
+        },
+        "race": {
+          "chartType": "fullPie",
+          "title": "Race"
+        },
+        "experimental_group": {
+          "chartType": "fullPie",
+          "title": "Experimental Group"
+        }
       },
-      "race": {
-        "chartType": "bar",
-        "title": "Race"
+      "filters": {
+        "tabs": [
+          {
+            "title": "Study Selection",
+            "fields": ["project_id"]
+          },
+          {
+            "title": "Subjects",
+            "fields": [
+              "age_at_enrollment",
+              "gender",
+              "race",
+              "ethnicity",
+              "experimental_group"
+            ]
+          }
+        ]
       },
-      "ethnicity": {
-        "chartType": "bar",
-        "title": "Ethnicity"
-      }
-    },
-    "filters": {
-      "tabs": [
+      "table": {
+        "enabled": true,
+        "fields": [
+          "project_id",
+          "submitter_id",
+          "age_at_enrollment",
+          "gender",
+          "race",
+          "ethnicity",
+          "experimental_group"
+        ]
+      },
+      "guppyConfig": {
+        "dataType": "subject",
+        "nodeCountTitle": "Subjects",
+        "fieldMapping": [
+          {
+            "field": "_samples_count",
+            "name": "Samples Count"
+          },
+          {
+            "field": "_imaging_files_count",
+            "name": "Imaging Files Count"
+          },
+          {
+            "field": "_unaligned_reads_files_count",
+            "name": "Unaligned Reads Count"
+          },
+          {
+            "field": "_aligned_reads_files_count",
+            "name": "Aligned Reads Count"
+          },
+          {
+            "field": "_expression_arrays_count",
+            "name": "Expression Arrays Count"
+          }
+        ],
+        "manifestMapping": {
+          "resourceIndexType": "file",
+          "resourceIdField": "object_id",
+          "referenceIdFieldInResourceIndex": "subject_id",
+          "referenceIdFieldInDataIndex": "subject_id"
+        },
+        "accessibleFieldCheckList": ["project_id"],
+        "accessibleValidationField": "project_id"
+      },
+      "buttons": [
         {
-          "title": "Study Selection",
-          "fields": ["project_id"]
+          "enabled": true,
+          "type": "data",
+          "title": "Download Data",
+          "leftIcon": "gen3:user",
+          "rightIcon": "gen3:download",
+          "fileName": "data.json"
         },
         {
-          "title": "Subjects",
-          "fields": [
-            "age_at_enrollment",
-            "gender",
-            "race",
-            "ethnicity",
-            "experimental_group"
-          ]
+          "enabled": true,
+          "type": "manifest",
+          "title": "Download Manifest",
+          "leftIcon": "gen3:datafile",
+          "rightIcon": "gen3:download",
+          "fileName": "manifest.json"
         }
       ]
     },
-    "table": {
-      "enabled": true,
-      "fields": [
-        "project_id",
-        "submitter_id",
-        "age_at_enrollment",
-        "gender",
-        "race",
-        "ethnicity",
-        "experimental_group"
-      ]
-    },
-    "guppyConfig": {
-      "dataType": "subject",
-      "nodeCountTitle": "Subjects",
-      "fieldMapping": [
-        {
-          "field": "_samples_count",
-          "name": "Samples Count"
+    {
+      "tabTitle": "Files",
+      "charts": {
+        "data_type": {
+          "chartType": "horizontalStacked",
+          "title": "File Type",
+          "valueType": "percent"
         },
-        {
-          "field": "_imaging_files_count",
-          "name": "Imaging Files Count"
+        "data_format": {
+          "chartType": "horizontalStacked",
+          "title": "File Format",
+          "valueType": "percent"
+        }
+      },
+      "filters": {
+        "tabs": [
+          {
+            "title": "File",
+            "fields": [
+              "project_id",
+              "data_type",
+              "data_format",
+              "data_category"
+            ]
+          }
+        ]
+      },
+      "table": {
+        "enabled": true,
+        "fields": ["project_id", "file_name", "file_size", "object_id"]
+      },
+      "guppyConfig": {
+        "dataType": "file",
+        "fieldMapping": [
+          {
+            "field": "object_id",
+            "name": "GUID"
+          }
+        ],
+        "nodeCountTitle": "Files",
+        "manifestMapping": {
+          "resourceIndexType": "subject",
+          "resourceIdField": "subject_id",
+          "referenceIdFieldInResourceIndex": "object_id",
+          "referenceIdFieldInDataIndex": "object_id"
         },
+        "accessibleFieldCheckList": ["project_id"],
+        "accessibleValidationField": "project_id",
+        "downloadAccessor": "object_id"
+      },
+      "buttons": [
         {
-          "field": "_unaligned_reads_files_count",
-          "name": "Unaligned Reads Count"
-        },
-        {
-          "field": "_aligned_reads_files_count",
-          "name": "Aligned Reads Count"
-        },
-        {
-          "field": "_expression_arrays_count",
-          "name": "Expression Arrays Count"
+          "enabled": true,
+          "type": "file-manifest",
+          "title": "Download Manifest",
+          "leftIcon": "gen3:datafile",
+          "rightIcon": "gen3:download",
+          "fileName": "file-manifest.json"
         }
       ],
-      "manifestMapping": {
-        "resourceIndexType": "file",
-        "resourceIdField": "object_id",
-        "referenceIdFieldInResourceIndex": "subject_id",
-        "referenceIdFieldInDataIndex": "subject_id"
-      },
-      "accessibleFieldCheckList": ["project_id"],
-      "accessibleValidationField": "project_id"
-    },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "data",
-        "title": "Download Data",
-        "leftIcon": "user",
-        "rightIcon": "download",
-        "fileName": "data.json"
-      },
-      {
-        "enabled": true,
-        "type": "manifest",
-        "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "manifest.json"
-      }
-    ]
-  }]
+      "dropdowns": {}
+    }
+  ]
 }
