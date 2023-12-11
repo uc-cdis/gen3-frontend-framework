@@ -16,5 +16,5 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  basePath: process.env.BASE_PATH || '',
+  basePath: process.env.BASE_PATH || ''
 };

@@ -76,6 +76,8 @@ const Discovery = ({
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
+  console.log('discoveryConfig', discoveryConfig);
+
   return (
     <div className="flex flex-col items-center p-2 m-2 w-full">
       <div className="w-full">
