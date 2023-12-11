@@ -1,6 +1,7 @@
 import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
+import copy from 'rollup-plugin-copy';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import tailwindcss from 'tailwindcss';
 import { default as tailwindConfig } from './src/tailwind.cjs';
@@ -104,6 +105,11 @@ const config = [
         },
         swcPreserveDirectives(), json(),
       ),
+      copy({
+        targets: [
+          { src: ['src/features/DataDictionary/data/dictionary.json'], dest: 'dist/features/DataDictionary/data/dictionary.json' },
+        ]
+      })
     ],
   },
   {
