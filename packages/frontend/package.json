@@ -24,7 +24,7 @@
     "build:clean": "npm run clean && npm run build",
     "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
-    "build:watch": "npm run compile && npm run build:swc -- --watch",
+    "build:watch": "npm run compile && npm run build:rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -127,6 +127,7 @@
     "next": "^13.4.19",
     "react-what-changed": "^1.1.2",
     "rollup": "^3.29.1",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
