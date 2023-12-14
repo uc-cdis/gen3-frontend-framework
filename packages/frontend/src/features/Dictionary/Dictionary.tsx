@@ -75,22 +75,22 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
       : [];
     return keys.length
       ? keys.map((k) => {
-          const { properties, required } = dictionary[selectedId];
-          const row = properties[k];
-          return {
-            property: k
-              .split('_')
-              .map((name) => capitalize(name))
-              .join(' '),
-            type: Object.keys(row).includes('anyOf')
-              ? row.anyOf.map(({ type }: { type: string }) => type).join(' ')
-              : row.type,
-            required: required.includes(k) ? 'Required' : 'No',
-            description:
-              row?.description ?? row?.term?.description ?? 'No Description',
-            term: '',
-          };
-        })
+        const { properties, required } = dictionary[selectedId];
+        const row = properties[k];
+        return {
+          property: k
+            .split('_')
+            .map((name) => capitalize(name))
+            .join(' '),
+          type: Object.keys(row).includes('anyOf')
+            ? row.anyOf.map(({ type }: { type: string }) => type).join(' ')
+            : row.type,
+          required: required.includes(k) ? 'Required' : 'No',
+          description:
+            row?.description ?? row?.term?.description ?? 'No Description',
+          term: '',
+        };
+      })
       : [];
   }, [selectedId]);
 
@@ -106,82 +106,70 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
     enableTopToolbar: false,
   });
 
-  const getCategoryColor = (category: string) => {
-    // todo
-    return 'gray';
-  };
   const visibleCategories = Object.keys(dictionary).filter((id) =>
     categoryFilter(id),
   );
+
+  const handleDownloadTemplate = (e: Event) => {
+    console.log(e);
+  }
+
   return (
     <div>
-      <span>{`dictionaryName dictionary has ${
-        visibleCategories.length
-      } nodes and ${visibleCategories
-        .map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
-        .reduce((acc, curr) => acc + curr)} properties`}</span>
+      <span>{`Data Dictionary has ${visibleCategories.length
+        } nodes and ${visibleCategories
+          .map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
+          .reduce((acc, curr) => acc + curr)} properties`}</span>
       <React.Fragment>
-        {Object.keys(categories).map((c) => {
+        {Object.keys(categories).length && Object.keys(categories).map((c) => {
           // const IconSVG = getCategoryIconSVG(c);
           return (
-            // todo add category color
-            <div className={`border-l-4 border-${getCategoryColor(c)} mt-10`}>
-              <h4 className="flex text-white bg-black border mb-0 h-40 justify-between">
+            <div className={`border-l-4 border-purple mt-10`}>
+              <h4 className="flex text-white font-bold font-size-md bg-purple-950 border mb-0 justify-between">
                 <div className="flex">
                   {/* <div className="p-10 align-middle"><IconSVG /></div> */}
-                  <div style={{ padding: 5, marginLeft: 0 }}>
+                  <div className="p-5 ml-0">
                     {c
                       .split('_')
                       .map((name) => capitalize(name))
                       .join(' ')}
                   </div>
                 </div>
-                <div style={{ padding: 5, verticalAlign: 'middle' }}>
+                <div className="p-5 align-middle">
                   Download Template
                 </div>
               </h4>
-              <div style={{ border: '1px solid black', borderLeft: 0 }}>
+              <div className="w-full border border-solid border-black border-t-0">
                 {(categories[c] as unknown as any[]).map(
                   ({ title, description, id }, key) => (
                     <div
                       tabIndex={key}
                       role="button"
                       onClick={() => handleSelect(id)}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        padding: 2,
-                      }}
+                      className="flex flex-col p-2"
                       key={title}
                     >
                       <div
                         key={key}
-                        className={`flex justify-between ${
-                          key < (categories[c] as any[]).length - 1
-                            ? 'border-b border-black'
-                            : ''
-                        } bg-white hover:text-highlight`}
+                        className={`flex w-full mb-2 ${key < (categories[c] as any[]).length - 1
+                          ? 'border-b border-black'
+                          : ''
+                          } bg-white hover:text-highlight`}
                       >
-                        <div className="flex-grow-0 flex-shrink-0 w-260 p-10">
+                        <div className="w-1/5 flex-grow-0 flex-shrink-0 text-left font-bold text-sm">
                           {title}
                         </div>
-                        <div className="flex-grow-1">{description}</div>
-                        <div className="flex text-xs flex-grow-0 flex-shrink-0 justify-between items-center pt-5">
+                        <div className="w-3/5 align-left text-left">{description}</div>
+                        <div className="w-1/5 flex text-sm justify-end mr-5 items-center mt-0">
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // downloadTemplate('json', id);
-                            }}
-                            className="h-30 w-60 mx-5 text-white bg-blue-500"
+                            onClick={handleDownloadTemplate}
+                            className="text-xs p-1.5 text-white bg-orange-500 rounded-sm mr-1 h-6"
                           >
                             JSON
                           </button>
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // downloadTemplate('tsv', id);
-                            }}
-                            className="h-30 w-60 mx-5 text-white bg-custom-blue"
+                            onClick={handleDownloadTemplate}
+                            className="text-xs p-1.5 text-white bg-orange-500 rounded-sm ml-1 h-6"
                           >
                             TSV
                           </button>
@@ -196,7 +184,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                           >
                             <MantineReactTable table={table} />
                           </div>
-                        ) : undefined}
+                        ) : <></>}
                       </div>
                     </div>
                   ),
