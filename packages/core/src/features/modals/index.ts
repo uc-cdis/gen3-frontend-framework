@@ -1,3 +1,15 @@
-import { showModal, hideModal } from './modalsSlice';
+import {
+  Modals,
+  showModal,
+  hideModal,
+  selectCurrentModal,
+  selectCurrentMessage,
+} from './modalsSlice';
 
-export { showModal, hideModal };
+export {
+  Modals,
+  showModal,
+  hideModal,
+  selectCurrentModal,
+  selectCurrentMessage,
+};

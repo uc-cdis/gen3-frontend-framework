@@ -1,13 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CoreState } from '../../reducers';
 
+/**
+ * Defines the modals slice of the Redux store.
+ * This slice is used to control the display of standard Gen3 modals.
+ * and can be extended to add custom modals by representing them as strings.
+ */
 export enum Modals {
   'FirstTimeModal' = 'FirstTimeModal',
   'SessionExpireModal' = 'SessionExpireModal',
+  'NoAccessModal' = 'NoAccessModal',
+  'CreateCredentialsAPIKeyModal' = 'CreateCredentialsAPIKeyModal',
 }
 
+// Type for the current modal in the store
+// This can be a standard Gen3 modal, a custom modal (via string), or null
+type CurrentModal = Modals | string | null;
+
 export interface ModalState {
-  currentModal: Modals | null;
+  currentModal: CurrentModal;
   message?: string;
 }
 
@@ -37,7 +48,7 @@ const slice = createSlice({
 export const modalReducer = slice.reducer;
 export const { showModal, hideModal } = slice.actions;
 
-export const selectCurrentModal = (state: CoreState): Modals | null =>
+export const selectCurrentModal = (state: CoreState): CurrentModal =>
   state.modals.currentModal;
 
 export const selectCurrentMessage = (state: CoreState): string | undefined =>

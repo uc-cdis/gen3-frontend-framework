@@ -23,8 +23,9 @@
     "build": "npm run build:rollup && npm run types",
     "build:clean": "npm run clean && npm run build",
     "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
+    "build:compile": "npm run compile && npm run build:rollup",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
-    "build:watch": "npm run compile && npm run build:swc -- --watch",
+    "build:watch": "npm run compile && npm run build:rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -92,7 +93,8 @@
     "use-deep-compare": "^1.1.0",
     "victory": "^36.6.11",
     "victory-chart": "^36.6.12",
-    "victory-charts": "^0.0.1"
+    "victory-charts": "^0.0.1",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@iconify/react": "^4.0.1",
@@ -136,6 +138,7 @@
   },
   "peerDependencies": {
     "@mantine/core": "^6.0.4",
+    "@mantine/form": "^6.0.4",
     "@mantine/hooks": "^6.0.4",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
