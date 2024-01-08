@@ -120,7 +120,7 @@ export interface StudyPreviewField {
   contentType?: DiscoveryContentTypes;
   includeName: boolean;
   includeIfNotAvailable: boolean;
-  valueIfNotAvailable?: string;
+  valueIfNotAvailable?: string | number;
   detailRenderer?: string;
   params?: Record<string, unknown>;
 }
@@ -131,6 +131,30 @@ export interface StudyTabField {
   label: string;
   default?: string;
   renderFunction?: string;
+}
+
+export interface StudyPageGroup {
+  groupName?: string;
+  groupWidth?: 'half' | 'full';
+  includeName?: boolean;
+  fields: StudyPreviewField[];
+}
+
+export interface DataDownloadLinks {
+  field: string;
+  name?: string;
+}
+
+/** Legacy config interface fro StudyPage view
+ * Plan to deprecate this interface in the future
+ * Please use StudyDetailView instead
+ */
+export interface StudyPageConfig {
+  header?: {
+    field: string
+  },
+  downloadLinks?: DataDownloadLinks,
+  fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
 export interface StudyTabTagField extends StudyTabField {
@@ -198,6 +222,11 @@ export interface SearchConfig {
   tagSearchDropdown?: TagSearchDropdown;
 }
 
+export interface AuthorizationValues {
+  enabled: boolean;
+  menuText: string;
+}
+
 export interface ExportToDataLibrary {
   buttons: DataLibraryActionButton[];
   enabled?: boolean;
@@ -208,7 +237,7 @@ export interface ExportToDataLibrary {
 
 export interface DataAuthorization {
   columnTooltip: string;
-  supportedValues: any;
+  supportedValues: Record<string, AuthorizationValues>;
   enabled: boolean;
 }
 
@@ -230,6 +259,7 @@ export interface DiscoveryConfig {
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
+  studyPageConfig?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
