@@ -5,7 +5,8 @@
   "main": "index.js",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/portal"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -22,8 +23,8 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "isomorphic-fetch": "^3.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
     "react-responsive-carousel": "^3.2.23"
   },
