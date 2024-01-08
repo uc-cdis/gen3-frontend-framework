@@ -19,7 +19,7 @@ const ResourcePageContent = ({title, introduction, sections}: ResourcePageConfig
   return (
     <React.Fragment>
       <div className='py-10 text-sm px-10'>
-        <Link href={'/'}>Home&nbsp;</Link>
+        <Link legacyBehavior href={'/'}>Home&nbsp;</Link>
         {' > '}
         <span className='text-heal-primary'>&nbsp;{title}</span>
       </div>

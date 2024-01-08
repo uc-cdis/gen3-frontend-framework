@@ -42,7 +42,7 @@
     "react-table": "^7.7.0",
     "recharts": "^2.1.8",
     "sharp": "^0.32.6",
-    "tailwind-styled-components": "^2.1.4"
+    "tailwind-styled-components": "^2.2.0"
   },
   "devDependencies": {
     "@iconify/react": "^3.1.2",

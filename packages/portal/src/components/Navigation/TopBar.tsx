@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon } from '@iconify/react';
 
 export interface NameAndIcon {
@@ -14,19 +14,20 @@ const TopIconButton: React.FC<NameAndIcon> = ({
   name,
   icon = undefined,
 }: NameAndIcon) => {
+
   return (
     <div
       className='flex flex-row mr-[10px] items-center align-middle hover:border-b-1 hover:border-gen3-white '
       role='button'
     >
-      {icon ? <Icon icon={icon} className='text-gen3-white' /> : null}
+      { // TODO: this already resolved in the new version of the Gen3 FF
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        icon ? <Icon icon={icon} className='text-gen3-white' /> : null}
       <p className='body-typo text-gen3-white'> {name} </p>
     </div>
   );
 };
-
-const AccountTopButton = () => <span className='py-4 px-12' />;
-
 
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
