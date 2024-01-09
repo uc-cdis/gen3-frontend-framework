@@ -1,12 +1,15 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-
 import { coreStore } from './store';
 import { CoreContext } from './hooks';
 
-export const CoreProvider: React.FC<unknown> = ({
+interface CoreProviderProps {
+  children?: ReactNode | undefined;
+}
+
+export const CoreProvider = ({
   children,
-}: PropsWithChildren<unknown>) => {
+}: CoreProviderProps) => {
   return (
     <Provider store={coreStore} context={CoreContext}>
       {children}

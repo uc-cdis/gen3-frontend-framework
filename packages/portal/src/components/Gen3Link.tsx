@@ -23,7 +23,7 @@ const Gen3Link: React.FC<Gen3LinkProps> = ({ className,
   if (linkType === 'gen3ff') {
     return (
       <span className={className}>
-        <Link href={href}><a target='_parent'>{text}</a></Link>
+        <Link legacyBehavior href={href}><a target='_parent'>{text}</a></Link>
       </span>
     );
   }

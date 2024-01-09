@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "tsc",
+    "clean": "rimraf dist",
     "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "build:watch": "npm run compile && npm run build -- --watch",
@@ -21,8 +22,8 @@
   "license": "Apache 2.0",
   "peerDependencies": {
     "@reduxjs/toolkit": "^1.8.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^7.2.6"
   },
   "devDependencies": {

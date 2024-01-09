@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import tw from 'tailwind-styled-components';
 import { Stack,Box, Image, Grid, Text, Card, Accordion } from '@mantine/core';
 
+
 export interface ImageEntry {
     readonly src: string;
     readonly alt: string;
@@ -19,7 +20,9 @@ export interface AboutHEALPageContentProp {
     rightDropdowns: ReadonlyArray<DropdownEntry>;
 }
 
-const Item = tw.div`h-100 text-center`;
+const Item  = tw.div`
+h-100 text-center
+`;
 
 const Link = tw.a`text-heal-blue hover:underline`;
 

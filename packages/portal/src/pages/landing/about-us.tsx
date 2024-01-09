@@ -15,7 +15,7 @@ const AboutUsPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
       <div className='flex flex-row justify-center h-full'>
         <div className='flex flex-col justify-evenly pb-10 text-xl max-w-10'>
           <div className='pb-10 pt-10 text-sm'>
-            <Link href={'/'}>Home&nbsp;</Link>
+            <Link legacyBehavior href={'/'}>Home&nbsp;</Link>
             {' > '}
             <span className='text-heal-primary'>&nbsp;About Us</span>
           </div>
@@ -45,7 +45,7 @@ const AboutUsPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
           </Text>
         </div>
         <div className='flex flex-col pr-8 pt-40'>
-          <Image className='align-middle' src={`${basePath}/icons/gen3-dark.png`} width='400px' height='200px'/>
+          <Image className='align-middle' src={`${basePath}/icons/gen3-dark.png`} alt='gen3 logo' width='400' height='200'/>
         </div>
       </div>
     </NavPageLayout>

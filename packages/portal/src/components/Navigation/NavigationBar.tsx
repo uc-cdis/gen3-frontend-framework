@@ -12,11 +12,17 @@ export interface NavigationButtonProps {
 }
 
 const NavigationButton: React.FC<NavigationButtonProps> = ({tooltip, icon, href, name} : NavigationButtonProps ) => {
+
   return (
     <div className='has-tooltip relative h-[80px]'>
       <a className='content-center' href={`${(process.env.NEXT_PUBLIC_PORTAL_BASENAME && process.env.NEXT_PUBLIC_PORTAL_BASENAME !== '/') ? process.env.NEXT_PUBLIC_PORTAL_BASENAME : ''}${href}`} >
         <div className='flex flex-col min-w-[110px] flex-nowrap px-[2px] py-2 pt-[14px] items-center font-sans text-sm border-b-3 border-b-transparent hover:border-heal-primary opacity-80 hover:opacity-100'>
-          <Icon height='27px' icon={icon} className='mt-[2px] ml-[4px]'/>
+          {
+            // TODO: this already resolved in the new version of the Gen3 FF
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            (<Icon height='27px' icon={icon} className='mt-[2px] ml-[4px]'/>)
+          }
           <p className='content-center pt-1.5 font-montserrat body-typo'>{name}</p>
         </div>
       </a>

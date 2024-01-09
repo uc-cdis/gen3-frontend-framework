@@ -25,11 +25,11 @@ const Footer: React.FC<FooterProps> = ({ bottomLinks, columnLinks }: FooterProps
       <div className='flex flex-row items-center justify-between'>
         <div className='flex flex-row items-center'>
           <div className='flex flex-col mr-8 h-[100px] justify-between'>
-            <Image src={`${basePath}/icons/gen3.png`} layout='fixed' width='80px' height='40px' />
-            <Image src={`${basePath}/icons/createdby.png`} layout='fixed' width='120px' height='40px' />
+            <Image src={`${basePath}/icons/gen3.png`} layout='fixed' width='80' height='40' alt='Gen3 Logo' />
+            <Image src={`${basePath}/icons/createdby.png`} layout='fixed' width='120' height='40' alt='created by CTDS at the University of Chicago'/>
           </div>
           <div className='flex flex-col mr-8 h-[100px]'>
-            <Image src={`${basePath}/icons/logo.png`} layout='fixed' height='100px' width='164px' />
+            <Image src={`${basePath}/icons/logo.png`} layout='fixed' height='100' width='164' alt='NIH HEAL Logo'/>
           </div>
           <div className='w-[20%] text-xs text-white text-left font-montserrat'>
             <p className='p-[4px]'>The HEAL Data Platform is funded by the NIH HEAL Initiative.</p>
