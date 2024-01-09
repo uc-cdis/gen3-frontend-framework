@@ -93,7 +93,6 @@
     "use-deep-compare": "^1.1.0",
     "victory": "^36.6.11",
     "victory-chart": "^36.6.12",
-    "victory-charts": "^0.0.1",
     "yaml": "^2.3.4"
   },
   "devDependencies": {

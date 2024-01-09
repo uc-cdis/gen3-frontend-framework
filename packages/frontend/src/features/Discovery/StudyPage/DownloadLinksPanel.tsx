@@ -1,64 +1,88 @@
+import React, { useMemo } from 'react';
+import { DataDownloadLinks, DownloadLinkFields } from '../types';
+import { JSONObject } from '@gen3/core';
+import { Accordion, Button, Group, Text } from '@mantine/core';
+
+const extractFieldData = (
+  data: JSONObject,
+  fieldsMap: DownloadLinkFields,
+): Record<string, string | undefined> => {
+  const result: Record<string, string | undefined> = {};
+  Object.keys(fieldsMap).forEach((key) => {
+    const value = fieldsMap[key as keyof DownloadLinkFields];
+    if (value in data && typeof data[value] === 'string') {
+      result[key] = data[value] as string;
+    } else {
+      result[key] = undefined;
+    }
+  });
+  return result;
+};
+
+interface DataDownloadLinksProps {
+  readonly studyData: JSONObject
+  readonly downloadLinks: DataDownloadLinks;
+  readonly downloadLinkFields?: DownloadLinkFields;
+}
+
+const DownloadLinksPanel = ({
+  studyData,
+  downloadLinks,
+  downloadLinkFields = {
+    titleField: 'title',
+    descriptionField: 'description',
+    idField: 'guid',
+  },
+}: DataDownloadLinksProps) => {
+  const downloadEntries = useMemo(
+    () => {
+      const studyDownloadLinks = studyData[downloadLinks.field] as JSONObject[];
+      return studyDownloadLinks.map((data : JSONObject) => extractFieldData(data , downloadLinkFields));
+    },
+        [studyData, downloadLinks, downloadLinkFields],
+      );
 
 
-const DownloadLinksPanel = () => {
+  if (
+    downloadEntries === undefined ||
+    downloadLinks === undefined ||
+    downloadLinks.field === undefined ||
+    studyData[downloadLinks.field]
+  ) {
+    return false;
+  }
+
+
   return (
-    {props.config.studyPageFields.downloadLinks
-      && props.config.studyPageFields.downloadLinks.field
-      && props.modalData[
-        props.config.studyPageFields.downloadLinks.field
-        ] ? (
-        <Collapse
-          className='discovery-modal__download-panel'
-          defaultActiveKey={['1']}
-        >
-          <Panel
-            className='discovery-modal__download-panel-header'
-            header={
-              props.config.studyPageFields.downloadLinks.name
-              || 'Data Download Links'
-            }
-            key='1'
-          >
-            <List
-              itemLayout='horizontal'
-              dataSource={
-                props.modalData[
-                  props.config.studyPageFields.downloadLinks.field
-                  ]
-              }
-              renderItem={(item: ListItem) => (
-                <List.Item
-                  actions={[
-                    <Button
-                      className='discovery-modal__download-button'
-                      href={`${fenceDownloadPath}/${item.guid}?expires_in=900&redirect`}
-                      target='_blank'
-                      type='text'
-                      // disable button if data has no GUID
-                      disabled={!item.guid}
-                      icon={<DownloadOutlined />}
-                    >
-                      Download File
-                    </Button>,
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={(
-                      <div className='discovery-modal__download-list-title'>
-                        {item.title}
-                      </div>
-                    )}
-                    description={(
-                      <div className='discovery-modal__download-list-description'>
-                        {item.description || ''}
-                      </div>
-                    )}
-                  />
-                </List.Item>
-              )}
-            />
-          </Panel>
-        </Collapse>
+    <Accordion>
+      <Accordion.Item value="downloadLinks">
+        <Accordion.Control>
+          Customization
+          <Text>{downloadLinks?.name || 'Data Download Links'}</Text>
+        </Accordion.Control>
+
+        {downloadEntries && downloadEntries.map((entry: Record<string, string | undefined>) => {
+          // minimum required fields are title and id
+          if (
+            entry[downloadLinkFields.titleField] === undefined ||
+            entry[downloadLinkFields.idField] === undefined
+          ) {
+            return null;
+          }
+          const id = entry[downloadLinkFields.idField];
+          return (
+            <Group key={id}>
+              <Button>
+                {id}
+              </Button>
+              );
+              <Text>{entry[downloadLinkFields.titleField] || ''}</Text>
+              <Text>{entry[downloadLinkFields?.descriptionField] || ''}</Text>
+            </Group>
+          );
+        })}
+      </Accordion.Item>
+    </Accordion>
   );
 };
 

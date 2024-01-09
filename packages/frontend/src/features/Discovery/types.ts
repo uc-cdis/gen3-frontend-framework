@@ -1,4 +1,8 @@
-import { JSONArray, JSONObject, type MetadataPaginationParams } from "@gen3/core";
+import {
+  JSONArray,
+  JSONObject,
+  type MetadataPaginationParams,
+} from '@gen3/core';
 import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
@@ -145,15 +149,22 @@ export interface DataDownloadLinks {
   name?: string;
 }
 
+export interface DownloadLinkFields {
+  idField: string;
+  titleField: string;
+  descriptionField: string;
+}
+
 /** Legacy config interface fro StudyPage view
  * Plan to deprecate this interface in the future
  * Please use StudyDetailView instead
  */
 export interface StudyPageConfig {
   header?: {
-    field: string
-  },
-  downloadLinks?: DataDownloadLinks,
+    field: string;
+  };
+  downloadLinks?: DataDownloadLinks;
+  downloadLinkFields?: DownloadLinkFields;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
@@ -175,7 +186,7 @@ export interface StudyDetailView {
   headerField: string;
   header: {
     field: string;
-  }
+  };
   tabs: StudyDetailTab[];
 }
 
@@ -281,7 +292,10 @@ export enum AccessLevel {
 }
 
 export interface DiscoveryResource
-  extends Record<string, JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined> {
+  extends Record<
+    string,
+    JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined
+  > {
   [accessibleFieldName]: AccessLevel;
   tags?: Array<TagInfo>;
 }
