@@ -9,7 +9,7 @@ export const graphQLAPI = graphQLWithTags.injectEndpoints({
   endpoints: (builder) => ({
     graphQL: builder.query<JSONObject, JSONObject>({
       query: (graphQLParams) => ({
-        url: '/graphql',
+        url: '/guppy/graphql',
         method: 'POST',
         credentials: 'include',
         headers: {

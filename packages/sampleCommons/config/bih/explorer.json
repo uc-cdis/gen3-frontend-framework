@@ -1,0 +1,108 @@
+{
+  "explorerConfig": [
+    {
+      "tabTitle": "Studies",
+      "charts": {
+        "gen3_discovery.PatientSex": {
+          "chartType": "fullPie",
+          "title": "Gender"
+        },
+        "gen3_discovery.primary_site": {
+          "chartType": "fullPie",
+          "title": "Primary Site"
+        }
+      },
+      "filters": {
+        "tabs": [
+          {
+            "title": "Study Selection",
+            "fields": [
+              "gen3_discovery.PatientSex",
+              "gen3_discovery.Modality",
+              "gen3_discovery.BodyPartExamined",
+              "gen3_discovery.primary_site",
+              "gen3_discovery.disease_type"
+            ]
+          }
+        ]
+      },
+      "table": {
+        "enabled": true,
+        "fields": [
+          "gen3_discovery.StudyInstanceUID",
+          "gen3_discovery.SeriesDescription",
+          "gen3_discovery.BodyPartExamined",
+          "gen3_discovery.primary_site",
+          "gen3_discovery.disease_type"
+        ],
+        "columns" : {
+          "gen3_discovery.StudyInstanceUID" : {
+            "title" : "Study ID"
+          },
+          "gen3_discovery.SeriesDescription" : {
+            "title" : "Series Description"
+          },
+          "gen3_discovery.BodyPartExamined" : {
+            "title" : "Bod yPart Examined"
+          }
+        }
+      },
+      "guppyConfig": {
+        "dataType": "metadata",
+        "nodeCountTitle": "gen3_discovery.StudyInstanceUID",
+        "fieldMapping": [
+          {
+            "field": "gen3_discovery.StudyInstanceUID",
+            "name": "Study ID"
+          },
+          {
+            "field": "gen3_discovery.SeriesDescription",
+            "name": "Series Description"
+          },
+          {
+            "field": "gen3_discovery.BodyPartExamined",
+            "name": "Body Part Examined"
+          },
+          {
+            "field": "gen3_discovery.PatientSex",
+            "name": "Gender"
+          },
+          {
+            "field": "gen3_discovery.primary_site",
+            "name": "Primary Site"
+          },
+          {
+            "field": "gen3_discovery.disease_type",
+            "name": "Disease Type"
+          }
+        ],
+        "manifestMapping": {
+          "resourceIndexType": "metadata",
+          "resourceIdField": "gen3_discovery.StudyInstanceUID",
+          "referenceIdFieldInResourceIndex": "StudyInstanceUID",
+          "referenceIdFieldInDataIndex": "StudyInstanceUID"
+        },
+        "accessibleFieldCheckList": ["authz"],
+        "accessibleValidationField": "gen3_discovery.authz"
+      },
+      "buttons": [
+        {
+          "enabled": true,
+          "type": "data",
+          "title": "Download Data",
+          "leftIcon": "gen3:user",
+          "rightIcon": "gen3:download",
+          "fileName": "data.json"
+        },
+        {
+          "enabled": true,
+          "type": "manifest",
+          "title": "Download Manifest",
+          "leftIcon": "gen3:datafile",
+          "rightIcon": "gen3:download",
+          "fileName": "manifest.json"
+        }
+      ]
+    }
+  ]
+}

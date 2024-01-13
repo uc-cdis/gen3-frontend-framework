@@ -34,8 +34,6 @@ const RolesTable = () => {
     [],
   );
 
-  console.log('Roles:', context.state.roles);
-
   const table = useMantineReactTable<Role>({
     columns,
     data: context.state.roles ?? [],

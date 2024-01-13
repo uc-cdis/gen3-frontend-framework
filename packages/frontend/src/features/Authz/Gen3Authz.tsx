@@ -2,8 +2,9 @@ import { Tabs } from '@mantine/core';
 import UserPanel from './Users/UserPanel';
 import { Authz } from './types';
 import { AuthzProvider } from './Provider';
-import RolesPanel from "./Roles/RolesPanel";
-import PoliciesPanel from "./Policies/PoliciesPanel";
+import RolesPanel from './Roles/RolesPanel';
+import PoliciesPanel from './Policies/PoliciesPanel';
+import ResourcesPanel from './Resources/ResourcesPanel';
 
 interface Gen3AuthzProps {
   authz: Authz;
@@ -25,6 +26,9 @@ const Gen3Authz = ({ authz }: Gen3AuthzProps) => {
 
           <Tabs.Panel value="users" pl="xs">
             <UserPanel />
+          </Tabs.Panel>
+          <Tabs.Panel value="resources" pl="xs">
+            <ResourcesPanel />
           </Tabs.Panel>
           <Tabs.Panel value="policies" pl="xs">
             <PoliciesPanel />

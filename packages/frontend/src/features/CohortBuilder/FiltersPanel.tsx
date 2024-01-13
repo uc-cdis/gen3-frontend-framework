@@ -27,7 +27,7 @@ export const FiltersPanel = ({
           'filters-panel',
           undefined,
           false,
-            undefined,
+            facetDefinition.label,
             'w-64'
         );
       })}

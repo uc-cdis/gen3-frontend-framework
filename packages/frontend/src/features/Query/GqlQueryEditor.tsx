@@ -19,7 +19,7 @@ const GqlQueryEditor = ({
 
   // Typically we would put this in core but it's only used here
   const fetcher: Fetcher = async (graphQLParams) => {
-    const data = await fetch(graphQLEndpoint || `${GEN3_API}/graphql`, {
+    const data = await fetch(graphQLEndpoint || `${GEN3_API}/guppy/graphql`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(graphQLParams),

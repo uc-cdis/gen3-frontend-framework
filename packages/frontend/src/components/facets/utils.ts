@@ -94,6 +94,10 @@ export const classifyFacets = (
     // check if range facet
     const type = (value.length === 1 && isArray(value[0].key)) ? 'range' : 'enum';
 
+
+
+    const facetName = fieldMapping.find((x) => x.field === fieldKey)?.name ?? undefined;
+    console.log('fieldKey', fieldKey, facetName);
     return {
       ...acc,
       [fieldKey]: {
@@ -103,6 +107,7 @@ export const classifyFacets = (
         type: type,
         index: index,
         description: 'Not Available',
+        label: facetName,
         // assumption is that the initial data has the min and max values
         range: type === 'range' ? {
           minimum: Math.floor(Number(value[0].key[0])),

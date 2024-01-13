@@ -19,7 +19,7 @@ import {
 
 const EmptyData = {};
 
-import { type CohortPanelConfig, type TabConfig} from './types';
+import { type CohortPanelConfig, type TabConfig, TabsConfig } from "./types";
 import { type SummaryChart} from '../../components/charts/types';
 
 import {
@@ -42,16 +42,93 @@ import DownloadsPanel from './DownloadsPanel';
 import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
 
 
-export const CohortPanel = ({
-  guppyConfig,
+interface TabbablePanelProps {
+  filters: TabsConfig;
+  tabTitle: string;
+  facetDefinitions: Record<string, FacetDefinition>;
+  facetDataHooks: Record<FacetType, FacetRequiredHooks>;
+}
+
+const TabbedPanel = ({
   filters,
-  charts = {},
-  table,
   tabTitle,
-  dropdowns,
-  buttons,
-  loginForDownload
-}: CohortPanelConfig): JSX.Element => {
+  facetDefinitions,
+  facetDataHooks,
+                     } : TabbablePanelProps ) => {
+  return (
+    <div>
+      <Tabs
+        variant="pills"
+        orientation="vertical"
+        keepMounted={false}
+        defaultValue={filters?.tabs[0].title ?? "Filters"}
+      >
+        <Tabs.List>
+          {filters.tabs.map((tab: TabConfig) => {
+            return (
+              <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
+                {tab.title}
+              </Tabs.Tab>
+            );
+          })}
+        </Tabs.List>
+
+        {filters.tabs.map((tab: TabConfig) => {
+          return (
+            <Tabs.Panel
+              value={tab.title}
+              key={`filter-${tab.title}-tabPanel`}
+              className="w-1/4"
+            >
+              {Object.keys(facetDefinitions).length > 0 ? (
+                <FiltersPanel
+                  fields={tab.fields.reduce((acc, field) => {
+                    return [...acc, facetDefinitions[field]];
+                  }, [] as FacetDefinition[])}
+                  dataFunctions={facetDataHooks}
+                  valueLabel={tabTitle}
+                />
+              ) : null}
+            </Tabs.Panel>
+          );
+        })}
+      </Tabs>
+    </div>
+  );
+};
+
+const SinglePanel = ({
+  filters,
+  tabTitle,
+  facetDefinitions,
+  facetDataHooks,
+}: TabbablePanelProps) => {
+  return (
+    <div>
+      {Object.keys(facetDefinitions).length > 0 ? (
+        <FiltersPanel
+          fields={filters.tabs[0].fields.reduce((acc, field) => {
+            return [...acc, facetDefinitions[field]];
+          }, [] as FacetDefinition[])}
+          dataFunctions={facetDataHooks}
+          valueLabel={tabTitle}
+        />
+      ) : null}
+    </div>
+  );
+};
+
+
+export const CohortPanel = ({
+                              guppyConfig,
+                              filters,
+                              charts = {},
+                              table,
+                              tabTitle,
+                              dropdowns,
+                              buttons,
+                              loginForDownload
+                            }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
   const fields = getAllFieldsFromFilterConfigs(filters?.tabs ?? []);
 
@@ -64,17 +141,17 @@ export const CohortPanel = ({
   >({});
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
-    selectIndexFilters(state, index),
+    selectIndexFilters(state, index)
   );
 
   const { data, isSuccess } = useGetAggsQuery({
     type: index,
     fields: fields,
-    filters: cohortFilters,
+    filters: cohortFilters
   });
 
 
-  const dropdownsWithButtons  = AddButtonsToDropdown(AddButtonsArrayToDropdowns(dropdowns, ), buttons);
+  const dropdownsWithButtons = AddButtonsToDropdown(AddButtonsArrayToDropdowns(dropdowns), buttons);
 
   const actionButtons = buttons ? buttons.filter((button) => button?.dropdownId === undefined) : [];
 
@@ -160,41 +237,23 @@ export const CohortPanel = ({
   return (
     <div className="flex mt-3">
       <div>
-        <Tabs
-          variant="pills"
-          orientation="vertical"
-          keepMounted={false}
-          defaultValue={filters?.tabs[0].title ?? 'Filters'}
-        >
-          <Tabs.List>
-            {filters?.tabs.map((tab: TabConfig) => {
-              return (
-              <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
-                {tab.title}
-              </Tabs.Tab>
-            );})}
-          </Tabs.List>
-
-          {filters?.tabs.map((tab: TabConfig) => {
-            return (
-              <Tabs.Panel
-                value={tab.title}
-                key={`filter-${tab.title}-tabPanel`}
-                className="w-1/4"
-              >
-                {Object.keys(facetDefinitions).length > 0 ? (
-                  <FiltersPanel
-                    fields={tab.fields.reduce((acc, field) => {
-                      return [...acc, facetDefinitions[field]];
-                    }, [] as FacetDefinition[])}
-                    dataFunctions={facetDataHooks}
-                    valueLabel={tabTitle}
-                  />
-                ) : null}
-              </Tabs.Panel>
-            );
-          })}
-        </Tabs>
+        { filters?.tabs  === undefined ? null :
+          filters?.tabs.length > 1 ? (
+            <TabbedPanel
+              filters={filters}
+              tabTitle={tabTitle}
+              facetDefinitions={facetDefinitions}
+              facetDataHooks={facetDataHooks}
+            />
+          ) : (
+            <SinglePanel
+              filters={filters}
+              tabTitle={tabTitle}
+              facetDefinitions={facetDefinitions}
+              facetDataHooks={facetDataHooks}
+            />
+          )
+        }
       </div>
       <div className="w-full">
         <div className="flex flex-col">
