@@ -11,6 +11,7 @@ export enum Modals {
   'SessionExpireModal' = 'SessionExpireModal',
   'NoAccessModal' = 'NoAccessModal',
   'CreateCredentialsAPIKeyModal' = 'CreateCredentialsAPIKeyModal',
+  'GeneralErrorModal' = 'GeneralErrorModal',
 }
 
 // Type for the current modal in the store

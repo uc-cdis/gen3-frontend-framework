@@ -1,4 +1,4 @@
-import { GEN3_API, GEN3_DOMAIN, GEN3_COMMONS_NAME } from './constants';
+import { GEN3_API, GEN3_DOMAIN, GEN3_COMMONS_NAME, GEN3_DOWNLOADS_ENDPOINT } from './constants';
 import { type CoreState } from './reducers';
 
 export * from './features/user';
@@ -20,4 +20,4 @@ export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';
 
-export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API };
+export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API, GEN3_DOWNLOADS_ENDPOINT };

@@ -43,13 +43,13 @@
             "title" : "Series Description"
           },
           "gen3_discovery.BodyPartExamined" : {
-            "title" : "Bod yPart Examined"
+            "title" : "Body Part Examined"
           }
         }
       },
       "guppyConfig": {
         "dataType": "metadata",
-        "nodeCountTitle": "gen3_discovery.StudyInstanceUID",
+        "nodeCountTitle": "Studies",
         "fieldMapping": [
           {
             "field": "gen3_discovery.StudyInstanceUID",

@@ -25,7 +25,6 @@ const LoginPanel = (loginConfig: LoginConfig) => {
  const redirectURL = redirect;
 
   const handleLoginSelected = async (url: string, redirect?: string) => {
-    console.log(`handleLoginSelected: url=${url}, redirect=${redirect}`);
      router
       .push(
         url +

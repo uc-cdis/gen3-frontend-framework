@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 
@@ -14,13 +9,12 @@ import {
   useGetAggsQuery,
   FacetType,
   extractEnumFilterValue,
-  CoreState, useGetCountsQuery
-} from "@gen3/core";
+  CoreState,
+  useGetCountsQuery,
+} from '@gen3/core';
 
-const EmptyData = {};
-
-import { type CohortPanelConfig, type TabConfig, TabsConfig } from "./types";
-import { type SummaryChart} from '../../components/charts/types';
+import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
+import { type SummaryChart } from '../../components/charts/types';
 
 import {
   classifyFacets,
@@ -41,6 +35,7 @@ import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
 import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
 
+const EmptyData = {};
 
 interface TabbablePanelProps {
   filters: TabsConfig;
@@ -54,14 +49,14 @@ const TabbedPanel = ({
   tabTitle,
   facetDefinitions,
   facetDataHooks,
-                     } : TabbablePanelProps ) => {
+}: TabbablePanelProps) => {
   return (
     <div>
       <Tabs
         variant="pills"
         orientation="vertical"
         keepMounted={false}
-        defaultValue={filters?.tabs[0].title ?? "Filters"}
+        defaultValue={filters?.tabs[0].title ?? 'Filters'}
       >
         <Tabs.List>
           {filters.tabs.map((tab: TabConfig) => {
@@ -118,17 +113,16 @@ const SinglePanel = ({
   );
 };
 
-
 export const CohortPanel = ({
-                              guppyConfig,
-                              filters,
-                              charts = {},
-                              table,
-                              tabTitle,
-                              dropdowns,
-                              buttons,
-                              loginForDownload
-                            }: CohortPanelConfig): JSX.Element => {
+  guppyConfig,
+  filters,
+  charts = {},
+  table,
+  tabTitle,
+  dropdowns,
+  buttons,
+  loginForDownload,
+}: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
   const fields = getAllFieldsFromFilterConfigs(filters?.tabs ?? []);
 
@@ -141,25 +135,32 @@ export const CohortPanel = ({
   >({});
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
-    selectIndexFilters(state, index)
+    selectIndexFilters(state, index),
   );
 
   const { data, isSuccess } = useGetAggsQuery({
     type: index,
     fields: fields,
-    filters: cohortFilters
+    filters: cohortFilters,
   });
 
+  const dropdownsWithButtons = AddButtonsToDropdown(
+    AddButtonsArrayToDropdowns(dropdowns),
+    buttons,
+  );
 
-  const dropdownsWithButtons = AddButtonsToDropdown(AddButtonsArrayToDropdowns(dropdowns), buttons);
-
-  const actionButtons = buttons ? buttons.filter((button) => button?.dropdownId === undefined) : [];
+  const actionButtons = buttons
+    ? buttons.filter((button) => button?.dropdownId === undefined)
+    : [];
 
   const getEnumFacetData = useCallback(
     (field: string) => {
       return {
         data: processBucketData(data?.[field]),
-        enumFilters: field in cohortFilters.root ? extractEnumFilterValue(cohortFilters.root[field]) : undefined,
+        enumFilters:
+          field in cohortFilters.root
+            ? extractEnumFilterValue(cohortFilters.root[field])
+            : undefined,
         isSuccess: isSuccess,
       };
     },
@@ -225,43 +226,43 @@ export const CohortPanel = ({
 
       setSummaryCharts(summaryCharts);
     }
-  }, [isSuccess, data]);
+  }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
 
-
-  const { data : counts, isSuccess : isCountSuccess } = useGetCountsQuery({
+  const { data: counts, isSuccess: isCountSuccess } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
 
-
   return (
     <div className="flex mt-3">
       <div>
-        { filters?.tabs  === undefined ? null :
-          filters?.tabs.length > 1 ? (
-            <TabbedPanel
-              filters={filters}
-              tabTitle={tabTitle}
-              facetDefinitions={facetDefinitions}
-              facetDataHooks={facetDataHooks}
-            />
-          ) : (
-            <SinglePanel
-              filters={filters}
-              tabTitle={tabTitle}
-              facetDefinitions={facetDefinitions}
-              facetDataHooks={facetDataHooks}
-            />
-          )
-        }
+        {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
+          <TabbedPanel
+            filters={filters}
+            tabTitle={tabTitle}
+            facetDefinitions={facetDefinitions}
+            facetDataHooks={facetDataHooks}
+          />
+        ) : (
+          <SinglePanel
+            filters={filters}
+            tabTitle={tabTitle}
+            facetDefinitions={facetDefinitions}
+            facetDataHooks={facetDataHooks}
+          />
+        )}
       </div>
       <div className="w-full">
         <div className="flex flex-col">
           <CohortManager index={index} />
 
           <div className="flex justify-between mb-1 ml-2">
-            <DownloadsPanel dropdowns={dropdownsWithButtons} buttons={actionButtons} loginForDownload={loginForDownload} />.
-
+            <DownloadsPanel
+              dropdowns={dropdownsWithButtons}
+              buttons={actionButtons}
+              loginForDownload={loginForDownload}
+            />
+            .
             <CountsValue
               label={guppyConfig.nodeCountTitle}
               counts={counts}
@@ -277,9 +278,9 @@ export const CohortPanel = ({
           />
           {table?.enabled ? (
             <div className="flex flex-col">
-               <div className="grid">
-              <ExplorerTable index={index} tableConfig={table} />
-            </div>
+              <div className="grid">
+                <ExplorerTable index={index} tableConfig={table} />
+              </div>
             </div>
           ) : false}
         </div>
