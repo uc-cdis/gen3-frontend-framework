@@ -1,5 +1,5 @@
-import { JSONObject } from '../../types';
-import { gen3Api } from '../gen3';
+import { JSONObject } from "../../types";
+import { gen3Api } from "../gen3";
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -33,40 +33,34 @@ export interface MetadataPaginationParams {
 }
 
 export interface MetadataRequestParams extends MetadataPaginationParams {
-  url?: string;
   guidType: string;
-  studyField?: string;
+  studyField: string;
 }
 
 // Define a service using a base URL and expected endpoints
 export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({ url, offset, pageSize }) => {
-        if (url) {
-          return `${url}/mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
-        }
-        return 'mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}';
+      query: ({ offset, pageSize } : MetadataRequestParams) => {
+        return `mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
         return {
-          data: response.results.map(
-            (x: JSONObject) =>
-              (Object.values(x)?.at(0) as JSONObject)[params.guidType],
-          ),
-          hits: response.pagination.hits,
+          data: response.results.map((x: JSONObject) => {
+            const objValues = Object.values(x);
+            const firstValue = objValues ? objValues.at(0) as JSONObject : undefined;
+            return firstValue ? firstValue[params.studyField] : undefined;
+          }),
+          hits: response.pagination.hits
         };
       },
     }),
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({ url, guidType, offset, pageSize }) => {
-        if (url) {
-          return `${url}/mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
-        } else {
-          return `mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
-        }
+      query: ({  guidType, offset, pageSize }) => {
+        return `mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
       },
       transformResponse: (response: Record<string, any>, _meta) => {
+
         return {
           data: Object.keys(response).map((guid) => response[guid]),
           hits: Object.keys(response).length,

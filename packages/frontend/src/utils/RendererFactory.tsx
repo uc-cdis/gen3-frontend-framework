@@ -1,4 +1,5 @@
-import { ReactElement } from 'react';
+import { ReactElement } from "react";
+import { MRT_Cell } from "mantine-react-table";
 
 export type RendererFunction<T> = (props: T, ...params:any[]) => ReactElement;
 
@@ -18,7 +19,7 @@ interface RendererFactoryInterface<T> {
     functionName: string,
     func: RendererFunction<T>,
   ): void;
-  registerCellRendererCatalog(
+  registerRendererCatalog(
     catalog: Record<string, RendererFunctionCatalogEntry<T>>,
   ): void;
 }
@@ -85,7 +86,7 @@ export class RenderFactoryTypedInstance<T>
     }
   }
 
-  registerCellRendererCatalog(
+  registerRendererCatalog(
     catalog: Record<string, RendererFunctionCatalogEntry<T>>,
   ): boolean {
     if (catalog) {
@@ -109,4 +110,9 @@ export class RenderFactoryTypedInstance<T>
     }
     return false;
   }
+}
+
+export interface CellRendererFunctionProps {
+  cell: MRT_Cell;
+  params?: Record<string, unknown>;
 }

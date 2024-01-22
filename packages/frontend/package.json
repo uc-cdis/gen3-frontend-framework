@@ -115,6 +115,7 @@
     "@types/lodash": "^4.14.191",
     "@types/mdx": "^2.0.3",
     "@types/node": "18.15.5",
+    "@types/pluralize": "^0.0.33",
     "@types/react-table": "^7.7.15",
     "@types/recharts": "^1.8.23",
     "@types/tinycolor2": "^1.4.4",

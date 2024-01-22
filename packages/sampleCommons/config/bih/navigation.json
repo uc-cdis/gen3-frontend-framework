@@ -1,9 +1,8 @@
 {
-  "type": "horizontal",
   "navigation": {
     "logo": {
-    "src": "/icons/gen3-dark.svg",
-      "height":128,
+    "src": "/images/BDF-MIDRC Logo-V2.png",
+      "height":256,
     "href": "/"
     },
     "items": [
@@ -24,27 +23,29 @@
         "href": "/Query",
         "name": "Query",
         "tooltip": "Query the databases using GraphiQL."
-      },
-      {
-        "icon": "gen3:profile",
-        "href": "/Profile",
-        "name": "Profile",
-        "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
       }
     ]
   },
   "topBar": {
     "items": [
       {
-        "rightIcon": "gen3:upload",
-        "href": "/submission",
-        "name": "Browse Data"
+        "href": "https://gen3.org/resources/user/",
+        "name": "About",
+        "classNames": {
+          "label": "font-content text-secondary-contrast p-2"
+        }
       },
       {
         "href": "https://gen3.org/resources/user/",
-        "name": "Documentation"
+        "name": "Resources",
+        "classNames": {
+          "label": "font-content text-secondary-contrast p-2"
+        }
       }
     ],
-    "showLogin": false
+    "showLogin": false,
+    "classNames": {
+      "root": "flex justify-end items-center align-middle w-100 h-10 bg-secondary"
+    }
   }
 }

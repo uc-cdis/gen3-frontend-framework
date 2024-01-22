@@ -24,7 +24,7 @@ const Header = ({ top, navigation, type = 'original' }: HeaderProps) => {
     />
   ) : (
     <div className="w-100">
-      <TopBar items={top.items} showLogin={top?.showLogin} />
+      <TopBar items={top.items} showLogin={top?.showLogin} classNames={{...top.classNames}} />
       <NavigationBar
         logo={navigation.logo}
         title={navigation.title}

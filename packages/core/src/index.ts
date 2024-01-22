@@ -15,7 +15,6 @@ export * from './features/graphQL';
 export * from './features/gen3';
 export * from './features/drsResolver';
 export * from './features/modals';
-export * from './features/downloadStatus';
 export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';

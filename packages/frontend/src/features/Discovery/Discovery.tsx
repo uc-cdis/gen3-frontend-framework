@@ -3,7 +3,6 @@ import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
 import { Text } from '@mantine/core';
-import { MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -13,25 +12,19 @@ import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
+import { getDiscoveryDataLoader } from "./DataLoaders/registeredDataLoaders";
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
-  dataHook?: DiscoveryTableDataHook;
 }
-
-const useAggMDS = ({ pageSize, offset }: MetadataPaginationParams) => {
-  return useGetAggMDSQuery({
-    url: 'https://healdata.org/mds',
-    guidType: 'gen3_discovery',
-    pageSize: pageSize,
-    offset: offset,
-  });
-};
 
 const Discovery = ({
   discoveryConfig,
-  dataHook = useLoadAllData,
+
 }: DiscoveryProps) => {
+
+  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllData, []);
+
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -72,11 +65,11 @@ const Discovery = ({
     discoveryConfig,
   });
 
+  console.log("Discovery.tsx: dataHook: data: ", data);
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
-
-  console.log('discoveryConfig', discoveryConfig);
 
   return (
     <div className="flex flex-col items-center p-2 m-2 w-full">

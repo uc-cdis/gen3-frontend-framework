@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   fieldNameToTitle,
   selectIndexFilters,
@@ -16,7 +17,8 @@ import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { CellRendererFunction } from './CellRenderers';
 
 import { SummaryTable } from './types';
-import ExplorerTableRendererFactory, { CellRendererFunctionProps } from './ExplorerTableCellRenderers';
+import { ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
+import { CellRendererFunctionProps } from "../../../utils/RendererFactory";
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))
@@ -30,6 +32,34 @@ const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
 };
 
 
+// const ProcessData = (data: any) => {
+//   if (data === undefined) {
+//     return [];
+//   }
+//   const res = data.map((row: any) => {
+//     const ret = {
+//       ...row,
+//     };
+//     if ('SeriesInstanceUID' in row['gen3_discovery']) {
+//       const url = `https://data.midrc.org/ohif-viewer/viewer?StudyInstanceUIDs=${row['gen3_discovery']['SeriesInstanceUID']}`;
+//       const result = fetch(url).then((response) => {
+//         if (response.ok) {
+//           return true;
+//         }
+//         return false;
+//       }).catch(() => {
+//         return false;
+//       });
+//
+//       ret['SeriesInstanceUID'] = {
+//         value: row['SeriesInstanceUID'],
+//         hasLink: result,
+//       };
+//     }
+//     return { "gen3_discovery": ret };
+//   });
+//   return res;
+// };
 
 interface ExplorerTableProps {
   index: string;
@@ -56,19 +86,21 @@ const ExplorerTable = ({
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const cols = useMemo(() => {
+  const cols = useDeepCompareMemo(() => {
     // setup table columns at the same time
     // TODO: refactor to support more complex table configs
     return tableConfig.fields.map((field) => {
       const columnDef = tableConfig?.columns?.[field];
 
-      const cellRendererFunc = columnDef?.type ? ExplorerTableRendererFactory().getRenderer(
+      const cellRendererFunc = columnDef?.type ? ExplorerTableCellRendererFactory().getRenderer(
             columnDef?.type,
             columnDef?.cellRenderFunction ?? 'default',
           )
           : undefined;
 
-      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? Object.entries(columnDef?.params) :  [];
+      console.log("ExplorerTable:cellRendererFunc", columnDef?.type, columnDef?.cellRenderFunction ?? 'default',  cellRendererFunc);
+
+      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? columnDef?.params : { };
       return {
         id: field,
         field: field,
@@ -90,7 +122,7 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching } =
+  const { data, isLoading, isError, isFetching, isSuccess } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,

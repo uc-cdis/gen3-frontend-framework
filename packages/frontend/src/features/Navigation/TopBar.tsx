@@ -24,11 +24,15 @@ const TopIconButton = ({
   const classNamesDefaults = {
     root: 'flex mr-[10px] items-center align-middle hover:border-b-1 hover:border-primary',
     leftIcon: 'text-secondary-contrast-lighter',
-    label: 'font-content secondary-contrast-lighter p-2',
+    label: 'font-content text-secondary-contrast-lighter p-2',
     rightIcon: 'text-secondary-contrast-lighter',
   };
 
+  console.log("TopBar.tsx: TopIconButton: classNames: ", classNames);
+
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
+
+  console.log("TopBar.tsx: TopIconButton: mergedClassnames: ", mergedClassnames);
 
   return (
     <div className={extractClassName('root', mergedClassnames)} role="button">
@@ -59,6 +63,8 @@ const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
   const classNamesDefaults = {
     root: 'flex justify-end items-center align-middle w-100 h-10 bg-secondary-lighter',
   };
+
+  console.log("TopBar.tsx: TopBarProps: classNames: ", classNames);
 
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
 

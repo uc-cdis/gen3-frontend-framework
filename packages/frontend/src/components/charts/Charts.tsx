@@ -22,7 +22,6 @@ interface ChartsProps {
 }
 
 const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
-  console.log("Charts", index, charts, data, counts, isSuccess);
   return (
     <Grid>
       {data &&  Object.keys(charts).map((field) => (

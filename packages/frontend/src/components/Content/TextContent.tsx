@@ -1,5 +1,6 @@
 import React from 'react';
-import hash from 'stable-hash';
+
+import { hashCode } from "../../utils/hash";
 
 export enum ContentType {
   Text = 'text',
@@ -32,7 +33,7 @@ const TextContent = ({
         return (
           <div className={className}>
             {textArray.map((item) => (
-              <p key={hash(item)}>{item}</p>
+              <p key={hashCode(item)}>{item}</p>
             ))}
           </div>
         );

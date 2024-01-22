@@ -6,6 +6,7 @@
       "expandableRows": true
     },
     "features": {
+      "dataFetchFunction": "AggMDSServer",
       "advSearchFilters": {
         "enabled": false,
         "field": "advSearchFilters",
@@ -73,13 +74,6 @@
         "valueIfNotAvailable": "n/a"
       },
       {
-        "name": "Study Description",
-        "field": "StudyDescription",
-        "contentType": "string",
-        "errorIfNotAvailable": false,
-        "valueIfNotAvailable": "n/a"
-      },
-      {
         "name": "Series Description ",
         "field": "SeriesDescription",
         "contentType": "string",
@@ -94,8 +88,8 @@
         "valueIfNotAvailable": "n/a"
       },
       {
-        "name": "Image Files",
-        "field": "data_files_count",
+        "name": "Disease Type",
+        "field": "disease_type",
         "contentType": "string",
         "errorIfNotAvailable": false,
         "valueIfNotAvailable": "n/a"

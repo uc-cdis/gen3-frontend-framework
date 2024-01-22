@@ -35,7 +35,7 @@ const StatisticRendererFactory =
   (): RenderFactoryTypedInstance<StatisticRendererProps> => {
     if (!instance) {
       instance = new RenderFactoryTypedInstance<StatisticRendererProps>();
-      instance.registerCellRendererCatalog(DefaultRendererCatalog);
+      instance.registerRendererCatalog(DefaultRendererCatalog);
     }
     return instance;
   };

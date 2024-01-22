@@ -10,6 +10,10 @@
         "gen3_discovery.primary_site": {
           "chartType": "fullPie",
           "title": "Primary Site"
+        },
+        "gen3_discovery.commons": {
+          "chartType": "fullPie",
+          "title": "Platform"
         }
       },
       "filters": {
@@ -21,7 +25,8 @@
               "gen3_discovery.Modality",
               "gen3_discovery.BodyPartExamined",
               "gen3_discovery.primary_site",
-              "gen3_discovery.disease_type"
+              "gen3_discovery.disease_type",
+              "gen3_discovery.commons"
             ]
           }
         ]
@@ -29,21 +34,36 @@
       "table": {
         "enabled": true,
         "fields": [
+          "gen3_discovery.dicom_viewer_url",
           "gen3_discovery.StudyInstanceUID",
           "gen3_discovery.SeriesDescription",
+
           "gen3_discovery.BodyPartExamined",
           "gen3_discovery.primary_site",
-          "gen3_discovery.disease_type"
+          "gen3_discovery.disease_type",
+          "gen3_discovery.commons",
+          "gen3_discovery.SeriesInstanceUID"
         ],
-        "columns" : {
-          "gen3_discovery.StudyInstanceUID" : {
-            "title" : "Study ID"
+        "columns": {
+          "gen3_discovery.StudyInstanceUID": {
+            "title": "Study ID"
           },
-          "gen3_discovery.SeriesDescription" : {
-            "title" : "Series Description"
+          "gen3_discovery.dicom_viewer_url": {
+            "title": "",
+            "type": "link",
+            "cellRenderFunction": "DiacomLink"
           },
-          "gen3_discovery.BodyPartExamined" : {
-            "title" : "Body Part Examined"
+          "gen3_discovery.SeriesDescription": {
+            "title": "Series Description"
+          },
+          "gen3_discovery.BodyPartExamined": {
+            "title": "Body Part Examined"
+          },
+          "gen3_discovery.SeriesInstanceUID": {
+            "title": "Series Images"
+          },
+          "gen3_discovery.commons": {
+            "title": "Platform"
           }
         }
       },

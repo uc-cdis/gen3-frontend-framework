@@ -44,7 +44,6 @@ const processChartData = (
         return EmptyResult;
     }
 
-    console.log("facetData", facetData);
     if (isHistogramDataArrayARange(facetData))
       return processBinnedChartData(facetData, maxBins);
 

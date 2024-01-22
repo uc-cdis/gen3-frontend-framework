@@ -264,6 +264,7 @@ export interface DiscoveryConfig {
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: Partial<DataAuthorization>;
+    dataFetchFunction?: string;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
