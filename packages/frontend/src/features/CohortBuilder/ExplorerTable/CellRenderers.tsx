@@ -127,7 +127,6 @@ export const TableCellRenderer = (
         'link',
         functionName,
       );
-      console.log('link', params);
       return (cell): ReactElement => func( cell  , ...params);
     }
     default:

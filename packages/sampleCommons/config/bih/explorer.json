@@ -37,7 +37,6 @@
           "gen3_discovery.dicom_viewer_url",
           "gen3_discovery.StudyInstanceUID",
           "gen3_discovery.SeriesDescription",
-
           "gen3_discovery.BodyPartExamined",
           "gen3_discovery.primary_site",
           "gen3_discovery.disease_type",

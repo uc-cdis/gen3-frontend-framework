@@ -14,10 +14,9 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { CellRendererFunction } from './CellRenderers';
 
 import { SummaryTable } from './types';
-import { ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
+import { CellRendererFunction, ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
 import { CellRendererFunctionProps } from "../../../utils/RendererFactory";
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
@@ -30,36 +29,6 @@ const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
 
   return false;
 };
-
-
-// const ProcessData = (data: any) => {
-//   if (data === undefined) {
-//     return [];
-//   }
-//   const res = data.map((row: any) => {
-//     const ret = {
-//       ...row,
-//     };
-//     if ('SeriesInstanceUID' in row['gen3_discovery']) {
-//       const url = `https://data.midrc.org/ohif-viewer/viewer?StudyInstanceUIDs=${row['gen3_discovery']['SeriesInstanceUID']}`;
-//       const result = fetch(url).then((response) => {
-//         if (response.ok) {
-//           return true;
-//         }
-//         return false;
-//       }).catch(() => {
-//         return false;
-//       });
-//
-//       ret['SeriesInstanceUID'] = {
-//         value: row['SeriesInstanceUID'],
-//         hasLink: result,
-//       };
-//     }
-//     return { "gen3_discovery": ret };
-//   });
-//   return res;
-// };
 
 interface ExplorerTableProps {
   index: string;
@@ -97,8 +66,6 @@ const ExplorerTable = ({
             columnDef?.cellRenderFunction ?? 'default',
           )
           : undefined;
-
-      console.log("ExplorerTable:cellRendererFunc", columnDef?.type, columnDef?.cellRenderFunction ?? 'default',  cellRendererFunc);
 
       const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? columnDef?.params : { };
       return {
@@ -146,6 +113,7 @@ const ExplorerTable = ({
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    enableTopToolbar: false,
     rowCount: data?.data._aggregation?.[index]._totalCount ?? 0,
     state: {
       isLoading,

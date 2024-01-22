@@ -93,11 +93,7 @@ export const classifyFacets = (
     const dataField = fieldKey.split('.')?.slice(-1)[0] ?? fieldKey;
     // check if range facet
     const type = (value.length === 1 && isArray(value[0].key)) ? 'range' : 'enum';
-
-
-
     const facetName = fieldMapping.find((x) => x.field === fieldKey)?.name ?? undefined;
-    console.log('fieldKey', fieldKey, facetName);
     return {
       ...acc,
       [fieldKey]: {
