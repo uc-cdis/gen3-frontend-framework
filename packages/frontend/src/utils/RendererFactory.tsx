@@ -35,6 +35,12 @@ export class RenderFactoryTypedInstance<T>
     this.defaultRenderer = DefaultCellRenderer;
   }
 
+  /**
+   * Sets the default renderer function for the specified type.
+   *
+   * @param {RendererFunction<T>} func - The renderer function to set as the default.
+   * @return {void}
+   */
   setDefaultRenderer(func: RendererFunction<T>): void {
     this.defaultRenderer = func;
   }
@@ -57,6 +63,15 @@ export class RenderFactoryTypedInstance<T>
       return type in this.catalog && functionName in this.catalog[type];
   }
 
+  /**
+   * Registers a renderer function for a given type and function name.
+   *
+   * @param {string} type - The type of the renderer function.
+   * @param {string} functionName - The name of the renderer function.
+   * @param {RendererFunction<T>} func - The renderer function to register.
+   * @returns {boolean} - True if the registration is successful, false otherwise.
+   * @throws {Error} - If any of the input parameters are missing or if the renderer function already exists.
+   */
   registerRenderer(
     type: string,
     functionName: string,
@@ -86,6 +101,12 @@ export class RenderFactoryTypedInstance<T>
     }
   }
 
+  /**
+   * Registers a renderer catalog.
+   *
+   * @param {Record<string, RendererFunctionCatalogEntry<T>>} catalog - The catalog object containing the renderers.
+   * @returns {boolean} - True if the catalog was registered successfully, otherwise false.
+   */
   registerRendererCatalog(
     catalog: Record<string, RendererFunctionCatalogEntry<T>>,
   ): boolean {
@@ -112,6 +133,9 @@ export class RenderFactoryTypedInstance<T>
   }
 }
 
+/**
+ * Represents the props required for a cell renderer function.
+ */
 export interface CellRendererFunctionProps {
   cell: MRT_Cell;
   params?: Record<string, unknown>;
