@@ -13,3 +13,18 @@ export interface DictionaryNode extends Record<string, unknown> {
   id: string;
   category: string;
 }
+
+export interface DictionaryProps {
+  dictionaryConfig: DictionaryConfig | any;
+}
+
+export interface DictionaryCategory<T> {
+  [key: string]: T;
+}
+export interface DDLink {
+  backref: string;
+  label: string;
+  multiplicity: string;
+  name: string;
+  required: boolean;
+}

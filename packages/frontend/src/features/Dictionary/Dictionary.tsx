@@ -1,46 +1,21 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, ReactNode } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { capitalize } from 'lodash';
-import { DictionaryConfig } from './types';
-// import { getCategoryColor, getCategoryIconSVG } from '../../NodeCategories/helper';
-// import { downloadTemplate } from '../../utils';
-
-export interface DictionaryProps {
-  dictionaryConfig: DictionaryConfig | any;
-}
-
-export interface DictionaryCategory<T> {
-  [key: string]: T;
-}
-export interface DDLink {
-  backref: string;
-  label: string;
-  multiplicity: string;
-  name: string;
-  required: boolean;
-}
+import { DictionaryCategory, DictionaryProps } from './types';
+import { RiDownload2Fill, RiCloseFill } from "react-icons/ri";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
+import Cell from "./Cell";
+import { Icon } from '@iconify/react';
 
 const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
   const [categories, setCategories] = useState({} as DictionaryCategory<any>);
   const [selectedId, setSelectedId] = useState('');
-  // filters private categories
-  const categoryFilter = (id: string) =>
-    id.charAt(0) !== '_' &&
-    id === dictionary[id].id &&
-    dictionary[id].category &&
-    dictionary[id].id &&
-    dictionary[id].category.toLowerCase() !== 'internal';
 
   useEffect(() => {
-    const filtered = Object.keys(dictionary).filter((id) => categoryFilter(id));
-    const reduced = filtered
-      .map((id) => dictionary[id])
-      .reduce((d, property) => {
-        d[property.category] ??= [];
-        d[property.category].push(property);
-        return d;
-      }, {}) as DictionaryCategory<any>;
-    setCategories(reduced as Record<string, any>);
+    const filtered = Object.keys(dictionary).filter((id) => categoryFilter(id, dictionary));
+    const displayedCategories = categoryReduce(filtered, dictionary)
+    setCategories(displayedCategories);
   }, [dictionary]);
 
   const columns = useMemo(
@@ -48,23 +23,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
       ['property', 'type', 'required', 'description', 'term'].map((key) => ({
         accessorKey: key,
         header: key.toLocaleUpperCase(),
-        Cell: ({ cell }: { cell: any }) => (
-          <>
-            {key === 'type' ? (
-              <>
-                {
-                  <ul>
-                    {(cell.getValue()?.split(' ') || []).map((cell: any) => {
-                      return <li>{cell}</li>;
-                    })}
-                  </ul>
-                }
-              </>
-            ) : (
-              <span>{cell.getValue()}</span>
-            )}
-          </>
-        ),
+        Cell: ({ cell }: { cell: any }) => <Cell cell={cell} key={key} />,
       })),
     [],
   );
@@ -73,6 +32,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
     const keys = dictionary[selectedId]?.properties
       ? Object.keys(dictionary[selectedId].properties)
       : [];
+    // formats data for mantine subtables w/in each category
     return keys.length
       ? keys.map((k) => {
         const { properties, required } = dictionary[selectedId];
@@ -107,45 +67,58 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
   });
 
   const visibleCategories = Object.keys(dictionary).filter((id) =>
-    categoryFilter(id),
+    categoryFilter(id, dictionary),
   );
 
-  const handleDownloadTemplate = (e: Event) => {
+  const handleDownloadTemplate = (e: any) => {
     console.log(e);
+  }
+  const getIcon = (category: string) => {
+    // todo: replace with appropriate icons
+    // ideally render as <Icon icon={`gen3:${c}`} /> where c is category
+    switch (category) {
+      case "administrative":
+        return <Icon icon={"gen3:administrative"} />;
+      case "data_observations":
+        return <Icon icon={"gen3:analysis"} />;
+      case "biospecimen":
+        return <Icon icon={"gen3:query"} />
+      case "data_file":
+        return <Icon icon={"gen3:workspace"} />
+      case "medical_history":
+        return <Icon icon={"gen3:profile"} />
+      default:
+        return <Icon icon={"gen3:gen3"} />
+    }
   }
 
   return (
     <div>
       <span>{`Data Dictionary has ${visibleCategories.length
-        } nodes and ${visibleCategories
-          .map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
-          .reduce((acc, curr) => acc + curr)} properties`}</span>
-      <React.Fragment>
+        } nodes and ${getPropertyCount(visibleCategories, dictionary)} properties`}
+      </span>
+      <div>
         {Object.keys(categories).length && Object.keys(categories).map((c) => {
-          // const IconSVG = getCategoryIconSVG(c);
           return (
             <div className={`border-l-4 border-purple mt-10`}>
-              <h4 className="flex text-white font-bold font-size-md bg-purple-950 border mb-0 justify-between">
-                <div className="flex">
-                  {/* <div className="p-10 align-middle"><IconSVG /></div> */}
-                  <div className="p-5 ml-0">
-                    {c
-                      .split('_')
-                      .map((name) => capitalize(name))
-                      .join(' ')}
-                  </div>
+              <h3 className="flex text-white font-bold font-size-md bg-purple-950 border mb-0 justify-between h-16">
+                <div className="p-5 align-middle">{getIcon(c)}</div>
+                <div className="flex p-5 ml-0">
+                  {c
+                    .split('_')
+                    .map((name) => capitalize(name))
+                    .join(' ')}
                 </div>
                 <div className="p-5 align-middle">
                   Download Template
                 </div>
-              </h4>
+              </h3>
               <div className="w-full border border-solid border-black border-t-0">
                 {(categories[c] as unknown as any[]).map(
-                  ({ title, description, id }, key) => (
-                    <div
+                  ({ title, description, id }, key) => {
+                    return (<div
                       tabIndex={key}
                       role="button"
-                      onClick={() => handleSelect(id)}
                       className="flex flex-col p-2"
                       key={title}
                     >
@@ -156,46 +129,51 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                           : ''
                           } bg-white hover:text-highlight`}
                       >
-                        <div className="w-1/5 flex-grow-0 flex-shrink-0 text-left font-bold text-sm">
-                          {title}
+
+                        <div onClick={() => handleSelect(id)} className="flex w-1/5 flex-grow-0 flex-shrink-0 text-left font-bold text-sm items-center">
+                          {selectedId === id ? <IoIosArrowDown /> : <IoIosArrowForward />}<span className="ml-1">{title}</span>
                         </div>
+
                         <div className="w-3/5 align-left text-left">{description}</div>
+
                         <div className="w-1/5 flex text-sm justify-end mr-5 items-center mt-0">
                           <button
-                            onClick={handleDownloadTemplate}
-                            className="text-xs p-1.5 text-white bg-orange-500 rounded-sm mr-1 h-6"
+                            onClick={(e) => handleDownloadTemplate(e)}
+                            className="text-xs p-1 text-white bg-orange-500 rounded-sm mr-1 h-6 items-center"
                           >
-                            JSON
+                            <div className="flex "><RiDownload2Fill /><span className="ml-1">JSON</span></div>
                           </button>
+
                           <button
                             onClick={handleDownloadTemplate}
-                            className="text-xs p-1.5 text-white bg-orange-500 rounded-sm ml-1 h-6"
+                            className="text-xs p-1 text-white bg-orange-500 rounded-sm ml-1 h-6 items-center"
                           >
-                            TSV
+                            <div className="flex"><RiDownload2Fill />
+                              <span className="ml-1">TSV</span>
+                            </div>
                           </button>
                         </div>
                       </div>
+
                       <div>
                         {selectedId === id ? (
                           <div
-                            role="button"
-                            onClick={(e) => e.stopPropagation()}
                             key={selectedId}
                           >
-                            <MantineReactTable table={table} />
+                            <div className="flex flex-col">
+                              <button onClick={() => setSelectedId("")}><RiCloseFill /></button>
+                              <MantineReactTable table={table} />
+                            </div>
                           </div>
                         ) : <></>}
                       </div>
-                    </div>
-                  ),
-                )}
+                    </div>)
+                  })}
               </div>
-            </div>
-          );
+            </div>)
         })}
-      </React.Fragment>
-    </div>
-  );
+      </div>
+    </div>)
 };
 
 export default Dictionary;
