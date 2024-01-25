@@ -34,6 +34,9 @@
       "require": "./dist/tailwind.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "browser": {
     "fs": false,
     "path": false,

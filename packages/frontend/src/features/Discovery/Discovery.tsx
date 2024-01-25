@@ -65,8 +65,6 @@ const Discovery = ({
     discoveryConfig,
   });
 
-  console.log("Discovery.tsx: dataHook: data: ", data);
-
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);

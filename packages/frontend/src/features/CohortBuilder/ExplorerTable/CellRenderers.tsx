@@ -70,7 +70,6 @@ const ArrayCellFunctionCatalog = {
 };
 
 const RenderLinkCell = ({ cell } : CellRendererFunctionProps, ...args:any[] ) => {
-  console.log('RenderLinkCell', args);
   return (
     <Link href={`${args[0].baseURL}/${cell.getValue()}`}>
       {cell.getValue()  as ReactElement } --
@@ -113,7 +112,6 @@ export const TableCellRenderer = (
   functionName = 'default',
   ...params: any[]
 ): CellRendererFunction => {
-  console.log('TableCellRenderer', type);
   switch (type) {
     case 'array': {
       const func = CellRendererFactory.getInstance().getCellRenderer(

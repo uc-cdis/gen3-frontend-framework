@@ -33,5 +33,8 @@
     "rollup-plugin-executable": "^1.6.3",
     "ts-node": "^10.2.1",
     "typescript": "5.0.2"
-  }
+  },
+  "files" : [
+     "dist"
+  ]
 }

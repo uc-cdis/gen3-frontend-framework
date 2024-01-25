@@ -53,5 +53,8 @@
   "dependencies": {
     "flat": "^6.0.1",
     "papaparse": "^5.4.1"
-  }
+  },
+    "files": [
+        "dist"
+    ]
 }

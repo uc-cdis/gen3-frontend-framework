@@ -94,7 +94,7 @@ const ExplorerTable = ({
       type: index,
       fields: fields,
       filters: cohortFilters,
-      offset: pagination.pageIndex,
+      offset: pagination.pageIndex * pagination.pageSize,
       size: pagination.pageSize,
       sort:
         sorting.length > 0

@@ -1,7 +1,7 @@
 {
   "explorerConfig": [
     {
-      "tabTitle": "Studies",
+      "tabTitle": "Series",
       "charts": {
         "gen3_discovery.PatientSex": {
           "chartType": "fullPie",
@@ -68,7 +68,7 @@
       },
       "guppyConfig": {
         "dataType": "metadata",
-        "nodeCountTitle": "Studies",
+        "nodeCountTitle": "Imaging Series",
         "fieldMapping": [
           {
             "field": "gen3_discovery.StudyInstanceUID",

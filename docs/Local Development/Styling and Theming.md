@@ -53,6 +53,10 @@ You can test the color them by going to the commons web portal Color page.
 For example http://localhost:3000/Colors
 
 
+### Icons
+
+Icons can be configured by editing
+
 ### Navigation Bar
 
 The navigation bar support extra styling using tailwind css tokens to

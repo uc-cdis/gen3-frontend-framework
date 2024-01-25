@@ -22,7 +22,10 @@
         "icon": "gen3:query",
         "href": "/Query",
         "name": "Query",
-        "tooltip": "Query the databases using GraphiQL."
+        "tooltip": "Query the databases using GraphiQL.",
+        "classNames": {
+          "root": "mr-8"
+        }
       }
     ]
   },
