@@ -1,5 +1,5 @@
 {
-  "loginConfig": {
+
     "topContent": [
       {
         "text": "Gen3 Data Commons",
@@ -17,5 +17,4 @@
       }
     ],
     "image": "images/sideTexture.png"
-  }
 }

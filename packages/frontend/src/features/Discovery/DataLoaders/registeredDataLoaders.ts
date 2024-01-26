@@ -17,8 +17,16 @@ export const registerDiscoveryDataLoader = (
 };
 
 export const getDiscoveryDataLoader = (name?: string): DiscoveryDataLoader | undefined => {
-  console.log("getDiscoveryDataLoader", name, discoveryDataLoaders);
-  if (!name || !(name in discoveryDataLoaders)) return undefined;
+
+  if (name === undefined) {
+    console.error("getDiscoveryDataLoader: no name provided");
+    return undefined;
+  }
+
+  if ( !(name in discoveryDataLoaders)) {
+    console.error("getDiscoveryDataLoader: no data loader found for", name);
+    return undefined;
+  }
   return discoveryDataLoaders[name];
 };
 
@@ -29,6 +37,6 @@ export const getDiscoveryDataLoaders = (): string[] => {
 export const registerDefaultDiscoveryDataLoaders = () => {
   registerDiscoveryDataLoader("AggMDSServer", useAggMDSServer);
   registerDiscoveryDataLoader("MDSAllLocal", useLoadAllData);
-}
+};
 
 registerDefaultDiscoveryDataLoaders();

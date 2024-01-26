@@ -1,5 +1,4 @@
 {
-  "loginConfig": {
     "topContent": [
       {
         "text": "Gen3 Data Commons",
@@ -19,4 +18,3 @@
     "image": "images/sideTexture.png",
     "email": "gen3@datacommons.io"
   }
-}

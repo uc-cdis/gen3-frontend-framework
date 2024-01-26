@@ -20,7 +20,6 @@ export interface DiscoveryProps {
 
 const Discovery = ({
   discoveryConfig,
-
 }: DiscoveryProps) => {
 
   const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllData, []);

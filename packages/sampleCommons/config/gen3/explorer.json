@@ -1,5 +1,5 @@
-{
-    "explorerConfig": [
+
+    [
         {
             "tabTitle": "Cases",
             "charts": {
@@ -783,4 +783,3 @@
             }
         }
     ]
-}

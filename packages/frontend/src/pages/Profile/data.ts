@@ -16,7 +16,7 @@ export const ProfilePageGetServerSideProps: GetServerSideProps<
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...profileConfig
+      ...{ profileConfig: profileConfig },
     },
   };
 };

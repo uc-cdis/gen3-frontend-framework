@@ -1,5 +1,4 @@
-{
-  "explorerConfig": [
+ [
     {
       "tabTitle": "Series",
       "charts": {
@@ -124,4 +123,3 @@
       ]
     }
   ]
-}

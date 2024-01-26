@@ -55,7 +55,11 @@ For example http://localhost:3000/Colors
 
 ### Icons
 
-Icons can be configured by editing
+Icons can be configured by adding .svg files to the ```icons``` directory in the commons source directory.
+They need to be processed with the command
+```
+npm run build:icons
+```
 
 ### Navigation Bar
 

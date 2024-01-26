@@ -14,7 +14,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...cohortBuilderProps,
+      ...{ explorerConfig: cohortBuilderProps },
     },
   };
 };

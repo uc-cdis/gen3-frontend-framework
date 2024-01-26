@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
@@ -21,7 +21,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "proxy-agent": "^6.3.1",
-    "tinycolor2": "^1.6.0"
+    "tinycolor2": "^1.6.0",
+    "@iconify/tools": "^2.1.2"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
@@ -34,8 +35,8 @@
     "ts-node": "^10.2.1",
     "typescript": "5.0.2"
   },
-  "files" : [
-     "dist"
+  "files": [
+    "dist"
   ],
   "publishConfig": {
     "registry": "https://localhost:4873/"

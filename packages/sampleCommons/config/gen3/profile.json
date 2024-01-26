@@ -1,5 +1,4 @@
 {
-  "profileConfig": {
     "resourceTable": {
       "serviceColors": {
         "guppy": {
@@ -49,5 +48,4 @@
         }
       }
     }
-  }
 }
