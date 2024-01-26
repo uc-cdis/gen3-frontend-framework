@@ -29,6 +29,19 @@ https.
 
 Start the gen3 helm charts with `helm upgrade --install gen3 ./helm/gen3 -f ./values.yaml -f ./user.yaml`
 
+## Connecting the sample portal to the Gen3 Helm Charts
+
+There are two ways to connect the sample portal to the Gen3 Helm Charts. The first is to create a
+self-signed certificate with a root and add it to your browser. Then run nginx to proxy https to the Gen3 Helm Charts.
+
+### Creating a self-signed certificate with a root
+You can use minica to create a self-signed certificate with a root. Follow the instructions from minica's
+website [minica](https://github.com/jsha/minica). You will need to add the root certificate to your browser.
+
+
+
+The second is to use a proxy to proxy https
+to the Gen3 Helm Charts
 
 ### Setting up https using a proxy
 

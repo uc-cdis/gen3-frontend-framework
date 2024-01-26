@@ -12,7 +12,7 @@ import '@graphiql/react/dist/style.css';
 import { setDRSHostnames } from '@gen3/core';
 
 
-// TODO: THis must be done in a better way using newer NextJS features
+// TODO: This can be done in a better way using newer NextJS features
 import sessionConfig from '../../config/session.json';
 import drsHostnames from '../../config/drsHostnames.json';
 

@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.1.13",
+  "version": "0.20.1",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "",
@@ -34,9 +34,6 @@
       "require": "./dist/tailwind.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
   "browser": {
     "fs": false,
     "path": false,
@@ -45,10 +42,10 @@
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
-    "@gen3/core": "0.1.0",
-    "@graphiql/plugin-explorer": "^0.3.4",
-    "@graphiql/react": "^0.19.3",
-    "@iconify/types": "^2.0.0",
+    "@gen3/core": "^0.1.0",
+    "@graphiql/plugin-explorer": "^1.0.2",
+    "@graphiql/react": "^0.20.2",
+    "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.4",
     "@mantine/hooks": "^6.0.4",
     "@mantine/next": "^6.0.20",
@@ -56,6 +53,10 @@
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^13.4.19",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.7",
     "@reduxjs/toolkit": "^1.9.3",
     "@types/dompurify": "^3.0.3",
     "chart.js": "^4.0.1",
@@ -101,15 +102,11 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@iconify/react": "^4.0.1",
     "@iconify/tools": "^2.1.2",
+    "@iconify/types": "^2.0.0",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@svgr/webpack": "^8.1.0",
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/line-clamp": "^0.4.2",
-    "@tailwindcss/typography": "^0.5.7",
     "@types/color": "^3.0.3",
     "@types/estree": "^1.0.0",
     "@types/file-saver": "^2.0.5",
@@ -150,5 +147,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "5.0.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://localhost:4873/"
   }
 }
