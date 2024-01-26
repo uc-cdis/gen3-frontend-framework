@@ -8,13 +8,32 @@ This configuration is stored in the `config` directory.
 ### Configuration Files
 
 #### Site Configuration
-Top level configuration is stored in `config/config.json`. This file contains the following fields:
+Top level configuration is stored in .env files. These files contain the following fields:
 
-- `commons`: The name of the commons. This is used to determine the commons-specific configuration to use.
+```bash
+# The name of the commons. This is used to determine the commons-specific configuration to use.
+# For example, if commons is set to gen3, the configurations in directory config/gen3 will be used
+NEXT_PUBLIC_COMMONS=gen3
+NEXT_PUBLIC_GEN3_API=https://localhost:3010
+NEXT_PUBLIC_GEN3_DOMAIN=https://localhost:3010
+````
 
-The value of `commons` is used to determine the name of the commons-specific configuration file to use.
-For example, if `commons` is set to `gen3`, the configurations in directory `config/gen3.` will be used
+The value of `NEXT_PUBLIC_COMMONS` is used to determine the name of the commons-specific configuration file to use.
+For example, if `NEXT_PUBLIC_COMMONS` is set to `gen3`, the configurations in directory `config/gen3.` will be used.
+Tha value of `NEXT_PUBLIC_GEN3_API` is used to determine the URL of the Gen3 API to use.
+The value of `NEXT_PUBLIC_GEN3_DOMAIN` is used to determine the URL of the Gen3 domain to use.
 
+#### Setting Individual Gen3 Service URLs
+
+You can set individual Gen3 service URLs by setting the following environment variables:
+
+```bash
+
+NEXT_PUBLIC_GEN3_GUPPY_API=https://localhost:3006
+
+````
+
+currently only overrides for Guppy are supported.
 
 #### Session Configuration
 
@@ -51,9 +70,26 @@ Navigation buttons are defined in the `buttons` array. Each button is defined by
 - `tooltip`: The tooltip to display when the button is hovered over.
 
 The topbar section is defined by:
-```json
 
+```json
+  "topBar": {
+    "items": [
+      {
+        "href": "https://gen3.org/resources/user/",
+        "name": "About"
+      },
+      {
+        "href": "https://gen3.org/resources/user/",
+        "name": "Resources"
+      }
+    ],
+    "showLogin": false,
 
 ```
 
--
+The `items` array defines the buttons to display in the topbar. Each button is defined by a dictionary with the following fields:
+
+- `name`: The label to display on the button.
+- `href`: The link to navigate to when the button is clicked.
+
+The `showLogin` field determines whether the login button is displayed in the topbar.
