@@ -1,9 +1,9 @@
 {
   "navigation": {
     "logo": {
-    "src": "/icons/gen3-dark.svg",
-      "height":128,
-    "href": "/"
+      "src": "/icons/gen3-dark.svg",
+      "height": 128,
+      "href": "/"
     },
     "items": [
       {
