@@ -1,5 +1,6 @@
 import { gen3Api } from '../gen3';
 import { JSONObject } from '../../types';
+import { GEN3_GUPPY_API } from '../../constants';
 
 export const graphQLWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['graphQL'],
@@ -9,7 +10,7 @@ export const graphQLAPI = graphQLWithTags.injectEndpoints({
   endpoints: (builder) => ({
     graphQL: builder.query<JSONObject, JSONObject>({
       query: (graphQLParams) => ({
-        url: '/graphql',
+        url: `${GEN3_GUPPY_API}/guppy/graphql`,
         method: 'POST',
         credentials: 'include',
         headers: {

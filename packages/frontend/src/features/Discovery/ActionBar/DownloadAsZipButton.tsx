@@ -1,4 +1,4 @@
-import CartActionButton from './CartActionButton';
+import DataLibraryActionButton from './DataLibraryActionButton';
 import FileSaver from 'file-saver';
 import { GEN3_DOMAIN } from '@gen3/core';
 import { ActionButtonProps } from './types';
@@ -8,7 +8,7 @@ const MANIFEST_FILENAME = 'manifest.json';
 
 const DownloadAsZipButton = ({ selectedResources }: ActionButtonProps) => {
   return (
-    <CartActionButton
+    <DataLibraryActionButton
       label="Download Zip"
       icon={DownloadIcon}
       toolTip="Download Zip"

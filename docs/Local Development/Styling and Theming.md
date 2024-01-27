@@ -53,6 +53,14 @@ You can test the color them by going to the commons web portal Color page.
 For example http://localhost:3000/Colors
 
 
+### Icons
+
+Icons can be configured by adding .svg files to the ```icons``` directory in the commons source directory.
+They need to be processed with the command
+```
+npm run build:icons
+```
+
 ### Navigation Bar
 
 The navigation bar support extra styling using tailwind css tokens to

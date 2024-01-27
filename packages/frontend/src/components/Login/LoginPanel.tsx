@@ -22,11 +22,13 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     query: { redirect },
   } = router;
 
+ const redirectURL = redirect;
+
   const handleLoginSelected = async (url: string, redirect?: string) => {
      router
       .push(
         url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}:3010/Profile`),
+          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}/Profile`),
       )
       .catch((e) => {
         showNotification({
@@ -37,7 +39,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   };
 
   return (
-    <div className="grid grid-cols-6">
+    <div className="grid grid-cols-6 w-full">
       <TexturedSidePanel url={image} />
       <div className="col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
         {topContent?.map((content, index) => (
@@ -47,7 +49,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
         <LoginProvidersPanel
           handleLoginSelected={handleLoginSelected}
-          redirectURL={redirect as string | undefined}
+          redirectURL={redirectURL as string | undefined}
         />
 
         {bottomContent?.map((content, index) => (

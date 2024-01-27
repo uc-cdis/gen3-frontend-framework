@@ -4,7 +4,7 @@ import GraphiQL from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
 import {
-  GEN3_API,
+  GEN3_GUPPY_API,
   selectHeadersWithCSRFToken,
   useCoreSelector,
 } from '@gen3/core';
@@ -19,7 +19,7 @@ const GqlQueryEditor = ({
 
   // Typically we would put this in core but it's only used here
   const fetcher: Fetcher = async (graphQLParams) => {
-    const data = await fetch(graphQLEndpoint || `${GEN3_API}/graphql`, {
+    const data = await fetch(graphQLEndpoint || `${GEN3_GUPPY_API}/graphql`, {
       method: 'POST',
       headers: headers,
       body: JSON.stringify(graphQLParams),

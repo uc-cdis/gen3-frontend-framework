@@ -18,7 +18,6 @@ export const gen3Api = coreCreateApi({
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);
       }
-      headers.set('Access-Control-Allow-Origin', '*');
       headers.set('Content-Type', 'application/json');
       return headers;
     },

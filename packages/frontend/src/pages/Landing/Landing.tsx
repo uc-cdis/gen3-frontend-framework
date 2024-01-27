@@ -16,7 +16,7 @@ interface Props extends NavPageLayoutProps {
 const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
   return (
     <NavPageLayout {...{ footerProps, headerProps }}>
-      <div className="flex flex-row justify-items-center">
+      <div className="flex justify-items-center w-full">
         <LandingPageContent content={landingPage} />
       </div>
     </NavPageLayout>

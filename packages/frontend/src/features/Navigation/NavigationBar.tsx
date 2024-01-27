@@ -4,6 +4,14 @@ import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { extractClassName } from './utils';
 
+/**
+ * NavigationBar component
+ * @param {Object} NavigationProps - The navigation properties
+ * @param {Object} NavigationProps.logo - The logo object
+ * @param {Array} NavigationProps.items - The array of navigation items
+ * @param {Object} NavigationProps.classNames - The custom class names for different elements of the NavigationBar
+ * @returns {JSX.Element} The rendered NavigationBar component
+ */
 const NavigationBar = ({
   logo = undefined,
   items = [],

@@ -74,6 +74,7 @@ export const useSession = (
 
 const logoutUser = (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
+  console.log('logging out user', GEN3_API);
   router.push(`${GEN3_API}/user/logout?next=/`);
 };
 

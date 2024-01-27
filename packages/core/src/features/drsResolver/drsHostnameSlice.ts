@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CoreState } from '../../reducers';
 
 export type DRSHostnameMap = Record<string, string>;
 
-const initialState = {};
+const initialState : Record<string, string> = {};
 
 const slice = createSlice({
   name: 'drsResolver',
@@ -17,3 +18,6 @@ const slice = createSlice({
 export const drsHostnamesReducer = slice.reducer;
 
 export const { setDRSHostnames } = slice.actions;
+
+export const drsHostnamesSelector = (id:string, state: CoreState) =>
+  state.drsHostnames?.[id];

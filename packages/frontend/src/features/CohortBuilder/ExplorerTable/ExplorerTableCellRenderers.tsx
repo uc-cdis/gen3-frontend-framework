@@ -1,14 +1,9 @@
-import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
-import React, { ReactElement } from 'react';
-import { isArray } from 'lodash';
-import { Badge } from '@mantine/core';
-import { MRT_Cell } from 'mantine-react-table';
-import Link from 'next/link';
-
-export interface CellRendererFunctionProps {
-  cell: MRT_Cell;
-  params?: any[];
-}
+import { CellRendererFunctionProps, RenderFactoryTypedInstance } from "../../../utils/RendererFactory";
+import React, { ReactElement } from "react";
+import { isArray } from "lodash";
+import { Badge, Text } from "@mantine/core";
+import { DiscoveryCellRendererFactory } from "../../Discovery";
+import { Gen3DiscoveryStandardCellRenderers } from "../../Discovery/TableRenderers/CellRenderers";
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
@@ -76,12 +71,14 @@ const ArrayCellFunctionCatalog = {
 
 const RenderLinkCell = (
   { cell }: CellRendererFunctionProps,
-  ...args: any[]
+  ...args: Array<Record<string, unknown>>
 ) => {
+
   return (
-    <Link href={`${args[0].baseURL}/${cell.getValue()}`}>
-      {cell.getValue() as ReactElement}
-    </Link>
+
+    <a href={`${args[0].baseURL}${cell.getValue()}`} target="_blank" rel="noreferrer">
+      <Text c="blue" td="underline" fw={700}> {cell.getValue() as ReactElement} </Text>
+    </a>
   );
 };
 
@@ -91,21 +88,26 @@ const LinkCellFunctionCatalog = {
 
 let instance: RenderFactoryTypedInstance<CellRendererFunctionProps>;
 
-const ExplorerTableRendererFactory =
+export const ExplorerTableCellRendererFactory =
   (): RenderFactoryTypedInstance<CellRendererFunctionProps> => {
     if (!instance) {
       instance = new RenderFactoryTypedInstance<CellRendererFunctionProps>();
-      // register default cell renderers
-      instance.registerCellRendererCatalog({
-        value: {
-          default: ValueCellRenderer,
-        },
-      });
-      instance.registerCellRendererCatalog({ array: ArrayCellFunctionCatalog });
-      instance.registerCellRendererCatalog({ link: LinkCellFunctionCatalog });
-      instance.setDefaultRenderer(ValueCellRenderer);
+
     }
     return instance;
   };
 
-export default ExplorerTableRendererFactory;
+// register default cell renderers
+export const registerExplorerDefaultCellRenderers = () => {
+  ExplorerTableCellRendererFactory().registerRendererCatalog({
+    value: {
+      default: ValueCellRenderer,
+    },
+  });
+  ExplorerTableCellRendererFactory().registerRendererCatalog(
+    { array: ArrayCellFunctionCatalog }
+  );
+  ExplorerTableCellRendererFactory().registerRendererCatalog(
+    { link: LinkCellFunctionCatalog }
+  );
+};

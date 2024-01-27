@@ -8,14 +8,14 @@ import { type NavPageLayoutProps } from '../../features/Navigation';
 export const DiscoveryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  const discoveryProps: DiscoveryProps = await ContentSource.get(
+  const discoveryConfig: DiscoveryProps = await ContentSource.get(
     `config/${GEN3_COMMONS_NAME}/discovery.json`,
   );
 
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...discoveryProps,
+      ...{ discoveryConfig: discoveryConfig },
     },
   };
 };

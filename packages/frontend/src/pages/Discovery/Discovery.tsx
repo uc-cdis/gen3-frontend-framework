@@ -15,6 +15,7 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
+
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <Discovery discoveryConfig={discoveryConfig} />

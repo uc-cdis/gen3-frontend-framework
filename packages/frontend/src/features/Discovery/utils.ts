@@ -19,3 +19,10 @@ export const getTagColor = (
   }
   return categoryConfig.color;
 };
+
+
+// function given a Object and key as input will check if the key is present in the object
+// if present return the value of the key else return undefined
+export const getStringValueFromJSONObject = (objectData?: JSONObject, key?: string): string | undefined => {
+  return key && objectData ? objectData[key] as string : undefined;
+};

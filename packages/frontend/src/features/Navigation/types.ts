@@ -1,5 +1,4 @@
 import { TopBarProps } from './TopBar';
-import { ReactNode } from "react";
 
 interface BottomLinks {
   text: string;

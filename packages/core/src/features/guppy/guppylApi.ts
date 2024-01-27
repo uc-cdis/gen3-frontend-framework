@@ -1,7 +1,7 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { JSONObject } from '../../types';
-import { GEN3_API, GEN3_GUPPY_API } from '../../constants';
+import { GEN3_GUPPY_API } from '../../constants';
 
 export interface guppyFetchError {
   readonly url: string;
@@ -50,7 +50,7 @@ const buildGuppyFetchError = async (
 export const guppyAPIFetch = async <T>(
   query: guppyApiSliceRequest,
 ): Promise<guppyApiResponse<T>> => {
-  const res = await fetch(`${GEN3_API}/${GEN3_GUPPY_API}/graphql`, {
+  const res = await fetch(`${GEN3_GUPPY_API}/graphql`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

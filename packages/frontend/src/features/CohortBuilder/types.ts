@@ -46,7 +46,7 @@ export interface CohortPanelConfig {
 }
 
 export interface CohortBuilderConfiguration {
-    readonly explorerConfig: ReadonlyArray<CohortPanelConfig>;
+    explorerConfig: Array<CohortPanelConfig>;
 }
 
 // to do add buttons, options,  menus, etc
