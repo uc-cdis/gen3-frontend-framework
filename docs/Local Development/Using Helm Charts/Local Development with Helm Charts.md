@@ -39,6 +39,8 @@ Once that is done you can run a proxy using nginx (preferred) or use a https-pro
 You can use minica to create a self-signed certificate with a root. Follow the instructions from minica's
 website [minica](https://github.com/jsha/minica). You will need to add the root certificate to your browser.
 
+You can alternatively use other methods to create a self-signed certificate with a root like `mkcert`.
+
 #### Adding the root certificate to your browser
 
 #### Adding SSL certificates to helm charts
@@ -58,7 +60,8 @@ ssl:
 ```
 
 By doing this the helm chart will use the ssl certificate you created with minica (or other method) and you need
-encounter the browser warning about a self-signed certificate.
+encounter the browser warning about a self-signed certificate. If you receive a warning about a missing root certificate
+you will need to add the root certificate to your browser.
 
 ### Setting up https using nginx
 
@@ -141,6 +144,12 @@ Once you have nginx configured you can start it using `nginx -c <path to nginx.c
 You can stop it using `nginx -c <path to nginx.conf> -s stop`.
 You can restart it using `nginx -c <path to nginx.conf> -s reload` and test the configuration using `nginx -c <path to nginx.conf> -t`.
 
+Note that `<path to nginx.conf>` is a absolute path to the nginx.conf file.
+Alternatively, you can copy the nginx.conf file to the nginx directory and start nginx using `nginx -c nginx.conf`.
+
+Once nginx is running you can test it by going to `https://localhost:3010` in your browser. You should see the Gen3
+portal running. All request to the services running in the
+Gen3 Helm Charts will be proxied through nginx.
 
 ### Setting up https using a https-proxy
 
