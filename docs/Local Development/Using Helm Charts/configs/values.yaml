@@ -4,6 +4,12 @@ global:
   # set this to gen3ff if you want to use the frontend framework as the root
   # set to portal if you want to use api-portal as the root. in this case the ff will be at /ff
   frontendRoot: gen3ff
+  # use these if you want to use the same SSL cert for all services so they
+  # are the same as the ones used by the revproxy
+  tls:
+    cert: <base64 encoded cert>
+    key: <base64 encoded key>
+
 fence:
   FENCE_CONFIG:
     LOGIN_REDIRECT_WHITELIST: [https://localhost:3010]
