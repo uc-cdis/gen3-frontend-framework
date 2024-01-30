@@ -32,18 +32,28 @@ const PieChart = ({ data } : ChartProps) => {
     const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
         return {
             label: {
-                show: true
+                show: true,
+                fontSize: '14'
             },
             emphasis: {
                 label: {
-                    show: true
+                    show: true,
+                    fontSize: '14'
                 }
             },
                 tooltip: {
                     trigger: 'item'
                 },
                 series: [
-                    { type: 'pie', radius: '60%',  data: processChartData(data) }
+                    {
+                        type: 'pie',
+                        radius: '60%',
+                        data: processChartData(data),
+                        label: {
+                            fontSize: '14',
+                            fontWeight: 'bold',
+                        }
+                    }
                 ]
 
         }; }, [data]);

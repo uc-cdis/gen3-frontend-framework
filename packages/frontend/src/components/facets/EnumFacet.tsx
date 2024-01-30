@@ -1,7 +1,6 @@
-
-
 import React, { useEffect, useState, useRef } from 'react';
-import { usePrevious, fieldNameToTitle } from '@gen3/core';
+import {  fieldNameToTitle } from '@gen3/core';
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 
 import {
   MdFlip as FlipIcon,
@@ -9,7 +8,7 @@ import {
   MdClose as CloseIcon,
 } from 'react-icons/md';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
-
+import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import {
   ActionIcon,
   Checkbox,
@@ -37,6 +36,7 @@ import {
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
 import { isEqual } from 'lodash';
+import { SortType } from './types';
 
 const MAX_VALUES_TO_DISPLAY = 2048;
 
@@ -46,7 +46,7 @@ export interface EnumFacetHooks extends FacetHooks {
   useTotalCounts: GetTotalCountsFunction;
 }
 
-const EnumFacet= ({
+const EnumFacet = ({
   field,
   dataHooks,
   valueLabel,
@@ -64,18 +64,21 @@ const EnumFacet= ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-} : FacetCardProps<EnumFacetHooks>) => {
+}: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSortedByValue, setIsSortedByValue] = useState(false);
+  const [sortedData, setSortedData] = useState<Record<string|number, number>>({ } );
+  const [sortType, setSortType] = useState<SortType>({
+    type: 'alpha',
+    direction: 'asc',
+  });
+
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const { data, enumFilters, isSuccess } = dataHooks.useGetFacetData(field);
 
   const cardRef = useRef<HTMLDivElement>(null);
-  const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-  const prevFilters = usePrevious(enumFilters);
+  const [selectedEnums, setSelectedEnums] = useState(enumFilters ?? []);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const totalCount = 1000;
   // TODO Determine if total count is needed
@@ -89,28 +92,26 @@ const EnumFacet= ({
     }
   }, [isSearching]);
 
-  useEffect(() => {
-    if (isSearching) {
-      searchInputRef?.current?.focus();
-    }
-  }, [isSearching]);
+  useDeepCompareEffect(() => {
+    setSelectedEnums(enumFilters ?? []);
+  }, [enumFilters]);
 
-  // filter missing and "" strings and update checkboxes
-  useEffect(() => {
-    if (isSuccess) {
-      setVisibleItems(
-        Object.entries(data ?? {}).filter(
-          (entry) => entry[0] != '_missing' && entry[0] != '',
-        ).length,
-      );
-    }
-  }, [data, field, isSuccess]);
+  const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
 
-  useEffect(() => {
-    if (!isEqual(prevFilters, enumFilters)) {
-      setSelectedEnums(enumFilters);
+  // update filters when checkbox is selected
+  const handleChange = (value: string, checked: boolean) => {
+    setFacetChartData({
+      ...facetChartData,
+      isSuccess: false,
+    });
+    if (checked) {
+      const updated = selectedEnums ? [...selectedEnums, value] : [value];
+      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+    } else {
+      const updated = selectedEnums?.filter((x) => x != value);
+      updateFacetEnum(field, updated ?? [], updateFacetFilters, clearFilters);
     }
-  }, [enumFilters, isSuccess, prevFilters]);
+  };
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
@@ -121,63 +122,168 @@ const EnumFacet= ({
     setIsFacetView(!isFacetView);
   };
 
-  const filteredData = data
-    ? Object.entries(data)
+  const [facetChartData, setFacetChartData] = useState<{
+    filteredData: [string|number, number][];
+    filteredDataObj: Record<string|number, number>;
+    remainingValues: number;
+    numberOfBarsToDisplay: number;
+    isSuccess: boolean;
+    height: number;
+    cardStyle: string;
+  }>({
+    filteredData: [],
+    filteredDataObj: {},
+    remainingValues: 0,
+    numberOfBarsToDisplay: maxValuesToDisplay,
+    isSuccess: false,
+    height: 150,
+    cardStyle: 'overflow-hidden h-auto',
+  });
+
+  const calcCardStyle = useDeepCompareCallback(
+    (remainingValues: number) => {
+      if (isGroupExpanded) {
+        const cardHeight =
+          remainingValues > 16
+            ? 96
+            : remainingValues > 0
+            ? Math.min(96, remainingValues * 5 + 40)
+            : 24;
+        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+      } else {
+        return 'overflow-hidden h-auto';
+      }
+    },
+    [isGroupExpanded],
+  );
+
+  const calcNumberOfBarsToDisplay = useDeepCompareCallback(
+    (visibleItems: number) => {
+      const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
+      return isGroupExpanded
+        ? Math.min(16, totalNumberOfBars)
+        : Math.min(maxValuesToDisplay, totalNumberOfBars);
+    },
+    [isGroupExpanded, enumFilters, maxValuesToDisplay],
+  );
+
+  useDeepCompareEffect(() => {
+    if (isSuccess && data) {
+      // get all the data except the missing and empty values
+      const tempFilteredData = Object.entries(data)
         .filter((entry) => entry[0] != '_missing' && entry[0] != '')
         .filter((entry) =>
           searchTerm === ''
             ? entry
             : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-        )
-    : [];
+        );
 
-  // update filters when checkbox is selected
-  const handleChange = (value: string, checked: boolean) => {
-    if (checked) {
-      const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+      // it is possible that the selected enums are not in the data as their counts are 0
+      // therefore we need to add them to the data
+      const selectedEnumNotInData = selectedEnums
+        ? selectedEnums.reduce((acc, curr) => {
+            if (!tempFilteredData.find((x) => x[0] === curr)) {
+              acc.push([curr, 0]); // count will be 0
+            }
+            return acc;
+          }, [] as Array<[string|number, number]>)
+        : [];
+
+      const remainingValues =
+        tempFilteredData.length +
+        selectedEnumNotInData.length -
+        maxValuesToDisplay;
+      const cardStyle = calcCardStyle(remainingValues);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
+        tempFilteredData.length + selectedEnumNotInData.length,
+      );
+
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
+        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
+        filteredDataObj: Object.fromEntries([
+          ...tempFilteredData,
+          ...selectedEnumNotInData,
+        ]),
+        remainingValues,
+        numberOfBarsToDisplay,
+        isSuccess: true,
+        height:
+          numberOfBarsToDisplay == 1
+            ? 150
+            : numberOfBarsToDisplay == 2
+            ? 220
+            : numberOfBarsToDisplay == 3
+            ? 240
+            : numberOfBarsToDisplay * 65 + 10,
+        cardStyle: cardStyle,
+      }));
     } else {
-      const updated = selectedEnums ? selectedEnums.filter((x) => x != value) : [];
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
+        filteredDataObj: {},
+        isSuccess: false,
+      }));
     }
-  };
+  }, [
+    data,
+    isSuccess,
+    maxValuesToDisplay,
+    searchTerm,
+    calcCardStyle,
+    calcNumberOfBarsToDisplay,
+    selectedEnums,
+  ]);
 
-  const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
-  const total = visibleItems;
-  if (total == 0 && hideIfEmpty) {
-    return null; // nothing to render if total == 0
+  useDeepCompareEffect(() => {
+    if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
+      const compareValuesAscending = ([, a]: [string|number, number], [, b]: [string|number, number]): number => a - b;
+      const compareValuesDescending = ([, a]: [string|number, number], [, b]: [string|number, number]): number => b - a;
+      const compareKeysAscending = ([a]: [string|number, number], [b]: [string|number, number]): number =>
+        typeof a === 'string' && typeof b === 'string' ? a.localeCompare(b) :
+          typeof a === 'number' && typeof b === 'number' ? a - b: 0;
+
+
+      const compareKeysDescending =  ([a]: [string|number, number], [b]: [string|number, number]): number =>
+        typeof a === 'string' && typeof b === 'string' ? b.localeCompare(a) :
+          typeof a === 'number' && typeof b === 'number' ? b - a: 0;
+
+      let comparisonFn;
+
+      if (sortType.type === 'value') {
+        comparisonFn = sortType.direction === 'dsc' ? compareValuesDescending : compareValuesAscending;
+      } else {
+        comparisonFn = sortType.direction === 'dsc' ? compareKeysDescending : compareKeysAscending;
+      }
+
+      const obj = [...facetChartData.filteredData]
+        .sort(comparisonFn)
+        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string|number, number>);
+
+      const val =         Object.fromEntries(
+          [...facetChartData.filteredData]
+            .sort(comparisonFn)
+            .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
+        );
+
+
+      setSortedData(
+        obj
+      );
+    }
+  }, [
+    facetChartData.filteredData,
+    sortType,
+    isGroupExpanded,
+    maxValuesToDisplay,
+  ]);
+
+  if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
+    return null; // nothing to render if visibleItems == 0
   }
-
-  const remainingValues = filteredData.length - maxValuesToDisplay;
-  const cardHeight =
-    remainingValues > 16
-      ? 96
-      : remainingValues > 0
-      ? Math.min(96, remainingValues * 5 + 40)
-      : 24;
-
-  const cardStyle = isGroupExpanded
-    ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : 'overflow-hidden pr-3.5 h-auto';
-
-  const numberOfLines =
-    total - maxValuesToDisplay < 0
-      ? total
-      : isGroupExpanded
-      ? 16
-      : maxValuesToDisplay;
-
-  const sortedData  = filteredData
-    ? Object.fromEntries(
-        filteredData
-          .sort(
-            isSortedByValue
-              ? ([, a], [, b]) => b - a
-              : ([a], [b]) => a.localeCompare(b),
-          )
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : MAX_VALUES_TO_DISPLAY),
-      )
-    : undefined;
 
   return (
     <div
@@ -241,6 +347,7 @@ const EnumFacet= ({
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label={'search values'}
             ref={searchInputRef}
+            className="p-2"
             rightSection={
               searchTerm.length > 0 ? (
                 <ActionIcon
@@ -265,25 +372,28 @@ const EnumFacet= ({
           ref={cardRef}
         >
           <div
-            className={`card-face bg-base-max ${
+            className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
               !isFacetView ? 'invisible' : ''
             }`}
           >
             <div>
               <FacetSortPanel
-                isSortedByValue={isSortedByValue}
+                sortType={sortType}
                 valueLabel={valueLabel}
-                setIsSortedByValue={setIsSortedByValue}
+                setSort={setSortType}
+                field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={cardStyle}>
-                <LoadingOverlay visible={!isSuccess} />
-                {total == 0 ? (
+              <div className={facetChartData.cardStyle}
+                   role="group"
+                   aria-label="Filter values">
+                <LoadingOverlay visible={!isSuccess} data-testid="loading-spinner"/>
+                {facetChartData.filteredData.length == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
                   </div>
                 ) : isSuccess ? (
-                  Object.entries(sortedData ?? {}).length === 0 ? (
+                  !sortedData || Object.entries(sortedData).length === 0 ? (
                     <div className="mx-4">No results found</div>
                   ) : (
                     Object.entries(sortedData ?? {}).map(([value, count]) => {
@@ -304,12 +414,12 @@ const EnumFacet= ({
                                   e.currentTarget.checked,
                                 )
                               }
-                              aria-label={`checkbox for ${field}`}
+                              aria-label={`${value}`}
                               classNames={{
-                                input: 'hover:bg-accent-darker',
+                                input: 'bg-base hover:bg-accent-darker',
                               }}
                               checked={
-                                !!(
+                                (
                                   selectedEnums && selectedEnums.includes(value)
                                 )
                               }
@@ -338,7 +448,7 @@ const EnumFacet= ({
                   <div>
                     {
                       // uninitialized, loading, error animated bars
-                      Array.from(Array(numberOfLines)).map((_, index) => {
+                      Array.from(Array(maxValuesToDisplay)).map((_, index) => {
                         return (
                           <div
                             key={`${field}-${index}`}
@@ -362,21 +472,32 @@ const EnumFacet= ({
             </div>
             {
               <FacetExpander
-                remainingValues={remainingValues}
+                remainingValues={facetChartData.remainingValues}
                 isGroupExpanded={isGroupExpanded}
                 onShowChanged={setIsGroupExpanded}
               />
             }
           </div>
           <div
-            className={`card-face card-back bg-base-max h-full overflow-y-auto pb-1 ${
-              isFacetView ? 'invisible' : ''
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
+              isFacetView ? "invisible" : ""
             }`}
           >
-            {filteredData.length === 0 ? (
+            {facetChartData.filteredData.length === 0 ? (
               <div className="mx-4">No results found</div>
             ) : (
-              !isFacetView && <div />
+              !isFacetView && (
+                <EnumFacetChart
+                  field={field}
+                  data={facetChartData.filteredDataObj}
+                  selectedEnums={selectedEnums}
+                  isSuccess={facetChartData.isSuccess}
+                  showTitle={false}
+                  valueLabel={valueLabel}
+                  maxBins={facetChartData.numberOfBarsToDisplay}
+                  height={facetChartData.height}
+                />
+              )
             )}
           </div>
         </div>

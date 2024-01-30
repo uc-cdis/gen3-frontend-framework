@@ -1,5 +1,9 @@
-import { JSONArray, JSONObject, type MetadataPaginationParams } from "@gen3/core";
-import CartActionButton from './ActionBar/CartActionButton';
+import {
+  JSONArray,
+  JSONObject,
+  type MetadataPaginationParams,
+} from '@gen3/core';
+import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
@@ -120,7 +124,7 @@ export interface StudyPreviewField {
   contentType?: DiscoveryContentTypes;
   includeName: boolean;
   includeIfNotAvailable: boolean;
-  valueIfNotAvailable?: string;
+  valueIfNotAvailable?: string | number;
   detailRenderer?: string;
   params?: Record<string, unknown>;
 }
@@ -131,6 +135,37 @@ export interface StudyTabField {
   label: string;
   default?: string;
   renderFunction?: string;
+}
+
+export interface StudyPageGroup {
+  groupName?: string;
+  groupWidth?: 'half' | 'full';
+  includeName?: boolean;
+  fields: StudyPreviewField[];
+}
+
+export interface DataDownloadLinks {
+  field: string;
+  name?: string;
+}
+
+export interface DownloadLinkFields {
+  idField: string;
+  titleField: string;
+  descriptionField: string;
+}
+
+/** Legacy config interface fro StudyPage view
+ * Plan to deprecate this interface in the future
+ * Please use StudyDetailView instead
+ */
+export interface StudyPageConfig {
+  header?: {
+    field: string;
+  };
+  downloadLinks?: DataDownloadLinks;
+  downloadLinkFields?: DownloadLinkFields;
+  fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
 export interface StudyTabTagField extends StudyTabField {
@@ -151,7 +186,7 @@ export interface StudyDetailView {
   headerField: string;
   header: {
     field: string;
-  }
+  };
   tabs: StudyDetailTab[];
 }
 
@@ -166,7 +201,7 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-export interface CartActionButton {
+export interface DataLibraryActionButton {
   type:
     | 'manifest'
     | 'zip'
@@ -198,8 +233,13 @@ export interface SearchConfig {
   tagSearchDropdown?: TagSearchDropdown;
 }
 
-export interface ExportToCart {
-  buttons: CartActionButton[];
+export interface AuthorizationValues {
+  enabled: boolean;
+  menuText: string;
+}
+
+export interface ExportToDataLibrary {
+  buttons: DataLibraryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   loginRequireForAllButtons?: boolean;
@@ -208,7 +248,7 @@ export interface ExportToCart {
 
 export interface DataAuthorization {
   columnTooltip: string;
-  supportedValues: any;
+  supportedValues: Record<string, AuthorizationValues>;
   enabled: boolean;
 }
 
@@ -221,15 +261,17 @@ export interface DiscoveryConfig {
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     pageTitle: DiscoveryPageTitle;
-    exportToCart?: ExportToCart;
+    exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: Partial<DataAuthorization>;
+    dataFetchFunction?: string;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyPreviewField;
+  studyPageConfig?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
@@ -251,7 +293,10 @@ export enum AccessLevel {
 }
 
 export interface DiscoveryResource
-  extends Record<string, JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined> {
+  extends Record<
+    string,
+    JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined
+  > {
   [accessibleFieldName]: AccessLevel;
   tags?: Array<TagInfo>;
 }

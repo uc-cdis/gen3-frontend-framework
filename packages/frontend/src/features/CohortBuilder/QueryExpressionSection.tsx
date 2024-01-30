@@ -20,7 +20,7 @@ import { useClearFilters } from '../../components/facets/hooks';
 const QueryExpressionContainer = tw.div`
   flex
   items-center
-  bg-white
+  bg-base-min
   shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
   border-secondary-darkest
   border-1
@@ -202,7 +202,7 @@ const QueryExpressionSection = ({
               <div className="display flex gap-2 ml-auto mr-3">
                 <ActionIcon
                   variant={allQueryExpressionsCollapsed ? 'filled' : 'outline'}
-                  color="white"
+                  color="base.0"
                   onClick={() =>
                     allQueryExpressionsCollapsed
                       ? setExpandedState({
@@ -232,7 +232,7 @@ const QueryExpressionSection = ({
                 </ActionIcon>
                 <ActionIcon
                   variant={filtersSectionCollapsed ? 'outline' : 'filled'}
-                  color={filtersSectionCollapsed ? 'white' : 'white'}
+                  color={filtersSectionCollapsed ? 'base.0' : 'base.1'}
                   onClick={() =>
                     setFiltersSectionCollapsed(!filtersSectionCollapsed)
                   }

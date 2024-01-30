@@ -1,3 +1,4 @@
+
 export * from './features/Navigation';
 export * from './features/Discovery';
 export * from './components/Profile';
@@ -30,6 +31,9 @@ import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
 import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
+import AuthzPage from './pages/admin/authz/Authz';
+import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -52,4 +56,6 @@ export {
   TailwindConfig,
   Gen3Provider,
   getNavPageLayoutPropsFromConfig,
+  AuthzPage,
+  AdminAuthZPageGetServerSideProps,
 };

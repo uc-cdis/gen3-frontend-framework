@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   fieldNameToTitle,
   selectIndexFilters,
@@ -13,10 +14,10 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { CellRendererFunction } from './CellRenderers';
 
 import { SummaryTable } from './types';
-import ExplorerTableRendererFactory, { CellRendererFunctionProps } from './ExplorerTableCellRenderers';
+import { CellRendererFunction, ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
+import { CellRendererFunctionProps } from "../../../utils/RendererFactory";
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))
@@ -28,8 +29,6 @@ const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
 
   return false;
 };
-
-
 
 interface ExplorerTableProps {
   index: string;
@@ -56,19 +55,19 @@ const ExplorerTable = ({
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const cols = useMemo(() => {
+  const cols = useDeepCompareMemo(() => {
     // setup table columns at the same time
     // TODO: refactor to support more complex table configs
     return tableConfig.fields.map((field) => {
       const columnDef = tableConfig?.columns?.[field];
 
-      const cellRendererFunc = columnDef?.type ? ExplorerTableRendererFactory().getRenderer(
+      const cellRendererFunc = columnDef?.type ? ExplorerTableCellRendererFactory().getRenderer(
             columnDef?.type,
             columnDef?.cellRenderFunction ?? 'default',
           )
           : undefined;
 
-      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? Object.entries(columnDef?.params) :  [];
+      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? columnDef?.params : { };
       return {
         id: field,
         field: field,
@@ -90,12 +89,12 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching } =
+  const { data, isLoading, isError, isFetching, isSuccess } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,
       filters: cohortFilters,
-      offset: pagination.pageIndex,
+      offset: pagination.pageIndex * pagination.pageSize,
       size: pagination.pageSize,
       sort:
         sorting.length > 0
@@ -114,6 +113,7 @@ const ExplorerTable = ({
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    enableTopToolbar: false,
     rowCount: data?.data._aggregation?.[index]._totalCount ?? 0,
     state: {
       isLoading,

@@ -9,7 +9,7 @@ inline-block
 text-center
 px-2
 py-2
-text-base
+text-accent-lighter-contrast
 leading-[1.5]
 font-semibold
 uppercase
@@ -23,7 +23,7 @@ ${(p) => `hover:bg-${p.colors}-max`}
 
 export const Gen3ButtonReverse = tw.div<Gen3ButtonProps>`
 bg-base-max
-text-accent
+text-accent-contrast
 border-accent-lighter
 inline-block
 text-center

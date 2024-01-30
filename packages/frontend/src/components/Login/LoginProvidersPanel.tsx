@@ -74,7 +74,7 @@ const LoginProvidersPanel = ({
       <Stack align="center" className="w-1/3">
         {
           data.default_provider.urls.length > 1 ? <LoginProviderMultipleItems provider={data.default_provider} handleLoginSelected={handleLoginSelected} redirectURL={data.default_provider.url} /> :
-        <LoginProviderSingleItem provider={data.default_provider} handleLoginSelected={handleLoginSelected} redirectURL={data.default_provider.url} />
+        <LoginProviderSingleItem provider={data.default_provider} handleLoginSelected={handleLoginSelected} redirectURL={redirectURL} />
         }
         {
           data?.providers.filter((x) => x.name !== data.default_provider.name).map((x: Gen3LoginProvider) =>

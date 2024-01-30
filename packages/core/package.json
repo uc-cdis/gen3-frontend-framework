@@ -40,6 +40,7 @@
     "@types/estree": "^1.0.0",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/lodash": "^4.14.191",
+    "@types/papaparse": "^5.3.14",
     "@types/uuid": "^9.0.0",
     "eslint": "^8.36.0",
     "jest": "^29.7.0",
@@ -48,5 +49,15 @@
     "rollup-plugin-dts": "^6.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "^29.0.3"
+  },
+  "dependencies": {
+    "flat": "^6.0.1",
+    "papaparse": "^5.4.1"
+  },
+    "files": [
+        "dist"
+    ],
+  "publishConfig": {
+    "registry": "https://localhost:4873/"
   }
 }

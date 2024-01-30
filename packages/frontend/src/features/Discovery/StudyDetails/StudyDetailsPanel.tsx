@@ -33,14 +33,14 @@ const StudyDetailsPanel = ({
               </Tabs.Tab>
             );
           })}
+        </Tabs.List>
           {studyConfig.tabs.map((tab) => {
             return (
-              <Tabs.Panel value={tab.tabName} key={`${tab.tabName}-details-tab-panel`}>
+              <Tabs.Panel value={tab.tabName} key={`${tab.tabName}-details-tab-panel` }>
                 <StudyGroupPanel data={data} groups={tab.groups} />
               </Tabs.Panel>
             );
           })}
-        </Tabs.List>
       </Tabs>
     </div>
   );

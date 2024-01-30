@@ -13,26 +13,98 @@ fence:
         client_secret: <add google client secret>
 
 
-ambassador:
-  enabled: false
-
-argo-wrapper:
-  enabled: false
-
-hatchery:
-  enabled: false
-
-peregrine:
-  enabled: false
-
-pidgin:
-  enabled: false
-
-portal:
-  enabled: false
-
-sower:
-  enabled: false
+guppy:
+  enabled: true
+  image:
+    repository:
+    tag:
 
 wts:
   enabled: false
+  image:
+    repository:
+    tag:
+
+ambassador:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+portal:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+peregrine:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+pidgin:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+argo-wrapper:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+hatchery:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+sower:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+revproxy:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+audit:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+sheepdog:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+manifestservice:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+arborist:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+metadata:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+indexd:
+  enabled: true
+  image:
+    repository:
+    tag:

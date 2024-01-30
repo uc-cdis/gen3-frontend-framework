@@ -1,4 +1,4 @@
-# Development Tips
+# Development Tips for Gen3 Frontend developers
 
 Development of any new feature should be done in a branch created from ```develop```, and then merged into ```develop``` via a pull request.
 There is a main branch however that is currently support HEAL and eventually will be used for releases.

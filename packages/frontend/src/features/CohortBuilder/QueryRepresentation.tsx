@@ -42,12 +42,12 @@ import { buildNested } from '../../components/facets/utils';
 const RemoveButton = ({ value }: { value: string }) => (
   <ActionIcon
     size="xs"
-    color="white"
+    color="base.0"
     radius="xl"
     variant="transparent"
     aria-label={`remove ${value}`}
   >
-    <ClearIcon size={10} />
+    <ClearIcon size={12} aria-hidden="true" />
   </ActionIcon>
 );
 const QueryRepresentationText = tw.div`
@@ -85,7 +85,7 @@ flex
 flex-row
 items-stretch
 h-full
-bg-white
+bg-base-max
 `;
 
 type RangeOperation =
@@ -170,6 +170,7 @@ const IncludeExcludeQueryElement = ({
             field,
           });
         }}
+        color="accent"
         className="ml-1 my-auto"
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
         aria-expanded={expanded}
@@ -198,7 +199,7 @@ const IncludeExcludeQueryElement = ({
                   variant="filled"
                   color="accent-cool"
                   size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operandsArray.filter((o) => o !== x);

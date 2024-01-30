@@ -72,7 +72,8 @@ const ArrayCellFunctionCatalog = {
 const RenderLinkCell = ({ cell } : CellRendererFunctionProps, ...args:any[] ) => {
   return (
     <Link href={`${args[0].baseURL}/${cell.getValue()}`}>
-      {cell.getValue()  as ReactElement }
+      {cell.getValue()  as ReactElement } --
+      { args }
     </Link>
   );
 };

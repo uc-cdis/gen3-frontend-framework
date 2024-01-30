@@ -24,10 +24,9 @@ const TopIconButton = ({
   const classNamesDefaults = {
     root: 'flex mr-[10px] items-center align-middle hover:border-b-1 hover:border-primary',
     leftIcon: 'text-secondary-contrast-lighter',
-    label: 'font-content secondary-contrast-lighter p-2',
+    label: 'font-content text-secondary-contrast-lighter p-2',
     rightIcon: 'text-secondary-contrast-lighter',
   };
-
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
 
   return (
