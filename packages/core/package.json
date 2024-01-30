@@ -1,5 +1,10 @@
 {
   "name": "@gen3/core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
+    "directory": "packages/core"
+  },
   "version": "0.1.0",
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
@@ -58,6 +63,7 @@
         "dist"
     ],
   "publishConfig": {
-    "registry": "https://localhost:4873/"
+    "registry": "https://npm.pkg.github.com"
   }
+
 }

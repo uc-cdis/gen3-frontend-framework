@@ -1,5 +1,10 @@
 {
   "name": "@gen3/frontend",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
+    "directory": "packages/frontend"
+  },
   "version": "0.20.2",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
@@ -152,6 +157,6 @@
     "dist"
   ],
   "publishConfig": {
-    "registry": "https://localhost:4873/"
+    "registry": "https://npm.pkg.github.com/"
   }
 }

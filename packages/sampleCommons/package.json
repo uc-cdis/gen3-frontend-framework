@@ -1,5 +1,10 @@
 {
-  "name": "@gen3/datacommonsapp",
+  "name": "@gen3/sampleCommons",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
+    "directory": "packages/sampleCommons"
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {

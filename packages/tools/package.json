@@ -1,5 +1,10 @@
 {
-  "name": "@gen3/toolsff",
+  "name": "@gen3/tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
+    "directory": "packages/tools"
+  },
   "version": "0.1.1",
   "description": "tools for processing portal content",
   "main": "index.js",
