@@ -3,8 +3,6 @@ import { type DropdownButtonsProps } from './types';
 import { Icon } from '@iconify/react';
 
 const DropdownButton = ({title, buttons} : DropdownButtonsProps ) : JSX.Element  => {
-
-
   return (
     <Menu>
       <Menu.Target>

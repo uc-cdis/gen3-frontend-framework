@@ -71,6 +71,23 @@ export const TailwindConfig = (themer: any) => {
           6: '6px',
           8: '8px',
         },
+        width: {
+          'screen/1.5': '75vw',
+          'screen/2': '50vw',
+          'screen/3': 'calc(100vw / 3)',
+          'screen/4': 'calc(100vw / 4)',
+          'screen/5': 'calc(100vw / 5)',
+        },
+        gridTemplateColumns: {
+          '2flex1': '1fr auto',
+        },
+        transitionProperty: {
+          height: 'height',
+        },
+        variants: {
+          textColor: ['responsive', 'hover', 'focus', 'group-hover'],
+          extend: {},
+        },
       },
     },
     variants: {

@@ -1,5 +1,15 @@
 ## Gen3 Frontend Framework Roadmap
 
+The development roadmap for the Gen3 Frontend Framework is intended to document what near term features are planned for the framework.
+At the moment assume that most feature are pending, and entries under Features to implement are the next to be implemented.
+
+### General Roadmap
+
+#### Features to implement
+* Logging out notification
+* Error handling modal
+* First Time Use Message
+
 ### Discovery
 
 #### Features to implement
@@ -14,8 +24,8 @@
 
 
 ### Explorer Roadmap
-* Download buttons implemented
-* Authentication/Autherization implemented
+* Download buttons
+* Authentication/Authorization implemented
 
 #### Features to implement
 
@@ -26,3 +36,16 @@
 * Complete API documentation
 * Compete the documentation for the framework
 * Complete demonstration of the framework
+
+### Data Dictionary Roadmap
+
+#### Features to implement
+* Dictionary Table Viewer
+* Dictionary Graph Viewer
+* Dictionary Search
+
+### Workspaces Roadmap
+
+* Not started
+
+#### Features to implement

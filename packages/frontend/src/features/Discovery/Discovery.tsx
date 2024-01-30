@@ -3,7 +3,6 @@ import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
 import { Text } from '@mantine/core';
-import { MetadataPaginationParams, useGetAggMDSQuery } from '@gen3/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -13,25 +12,18 @@ import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
+import { getDiscoveryDataLoader } from "./DataLoaders/registeredDataLoaders";
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
-  dataHook?: DiscoveryTableDataHook;
 }
-
-const useAggMDS = ({ pageSize, offset }: MetadataPaginationParams) => {
-  return useGetAggMDSQuery({
-    url: 'https://healdata.org/mds',
-    guidType: 'gen3_discovery',
-    pageSize: pageSize,
-    offset: offset,
-  });
-};
 
 const Discovery = ({
   discoveryConfig,
-  dataHook = useLoadAllData,
 }: DiscoveryProps) => {
+
+  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllData, []);
+
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -109,8 +101,8 @@ const Discovery = ({
             <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
             </Button>
-            {discoveryConfig.features.exportToCart ? (
-              <ActionBar config={discoveryConfig.features.exportToCart} />
+            {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
+              <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
             ) : null}
           </div>
           <div className="flex justify-start">

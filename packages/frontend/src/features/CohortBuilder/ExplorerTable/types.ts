@@ -4,11 +4,13 @@ export interface ColumnDefinition {
   className?: string; // for use with tailwind
 }
 
+export type SummaryTableColumnType = 'string' | 'number' | 'date' | 'array' | 'link' | 'boolean' | 'paragraphs';
+
 export interface SummaryTableColumn {
   field: string;
   title: string;
   accessorPath?: string; // JSONPath to column data
-  type?: 'string' | 'number' | 'date' | 'array';
+  type?: SummaryTableColumnType,
   cellRenderFunction?: string,
   params?: Record<string, any>;
   width?: number; // override auto width of column

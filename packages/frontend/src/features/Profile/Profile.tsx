@@ -13,7 +13,7 @@ const Profile = ({ profileConfig }: ProfileProps) => {
   return (
     <ProtectedContent>
       <ProfileProvider profileConfig={profileConfig}>
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <Accordion
             multiple
             variant="separated"

@@ -15,7 +15,7 @@ export const LoginPageGetServerSideProps: GetServerSideProps<
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...loginConfig,
+      ...{ loginConfig : loginConfig },
     },
   };
 };

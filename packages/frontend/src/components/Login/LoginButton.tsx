@@ -2,7 +2,7 @@ import React from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import { GEN3_DOMAIN, useUserAuth, isAuthenticated } from '@gen3/core';
+import { GEN3_API, GEN3_DOMAIN, useUserAuth, isAuthenticated } from '@gen3/core';
 
 interface LoginButtonProps {
   readonly icon?: React.ReactElement;
@@ -19,7 +19,7 @@ const LoginButton = ({
 
   const handleSelected = async (isAuthenticated: boolean) => {
     if (!isAuthenticated) await router.push('Login');
-    else await router.push(`${GEN3_DOMAIN}/user/logout?next=${GEN3_DOMAIN}/`);
+    else await router.push(`${GEN3_API}/user/logout?next=${GEN3_DOMAIN}/`);
   };
 
   const { loginStatus } = useUserAuth();

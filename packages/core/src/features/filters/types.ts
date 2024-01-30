@@ -166,7 +166,8 @@ export interface FacetDefinition {
   readonly index: string; // what dataType is this facet for
   readonly type: FacetType; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
-  readonly hasData?: boolean;
+  readonly hasData?: boolean; // does this facet have data
+  readonly label?: string; // label for facet
 }
 
 export type IndexedFilterSet = Record<string, FilterSet>;

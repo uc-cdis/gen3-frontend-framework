@@ -84,7 +84,7 @@ const main = () => {
       const drsCache = drsIds.reduce((acc: Record<string, string>, drsId) => {
         const ids = drsId.hints.map((hint) => hint.replace('.*' , '').replace('.*' , '').replace('\\.' , '.'));
         ids.forEach((id) => {
-          acc[id] = drsId.host;
+          acc[id] = drsId.host.replace('https://', '').replace('/index/', '');
         });
         return acc;
       }, {});

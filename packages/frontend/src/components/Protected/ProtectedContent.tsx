@@ -7,14 +7,23 @@ interface ProtectedContentProps {
   children?: ReactNode;
   referer?: string;
 }
+
+
 const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const router = useRouter();
+
+  let redirect = referer;
+  if (!referer  && typeof window !== 'undefined') {
+    // route not available on SSR
+    redirect = router.asPath;
+  }
+
   const onUnauthenticated = () => {
     if (typeof window !== 'undefined')
       // route not available on SSR
       router.push({
         pathname: 'Login',
-        query: { referer: referer },
+        query: { referer: redirect },
       });
   };
 

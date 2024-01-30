@@ -10,7 +10,6 @@ export const createChart = (
   type: string,
   chartProps: ChartProps
 ): React.ReactNode => {
-    console.log("createChart", type, chartProps);
     return (
         <React.Fragment>
             {

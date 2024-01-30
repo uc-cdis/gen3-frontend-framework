@@ -20,8 +20,6 @@ const DownloadsPanel = ({
 }: DownloadsPanelProps): JSX.Element => {
   const isUserLoggedIn = useIsUserLoggedIn();
 
-  console.log("DownloadsPanel: dropdowns: ", dropdowns);
-
   const loginRequired = loginForDownload ? loginForDownload : false;
 
   let dropdownsToRender = dropdowns;

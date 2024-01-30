@@ -51,7 +51,6 @@ const labeledSingleLinkField = (labelText: string, linkText: string) => (
 );
 
 const labeledMultipleLinkField = (labelText: string, linksText: string[]) => {
-  console.log('labeledMultipleLinkField', labelText, linksText);
   return (
   linksText.length ? (
     <div>

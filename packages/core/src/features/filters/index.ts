@@ -5,6 +5,7 @@ import {
   handleOperation,
   extractEnumFilterValue,
   extractFilterValue,
+  type GQLFilter,
 } from './filters';
 
 export * from './types';
@@ -17,4 +18,5 @@ export {
   convertFilterSetToGqlFilter,
   extractFilterValue,
   extractEnumFilterValue,
+  type GQLFilter,
 };

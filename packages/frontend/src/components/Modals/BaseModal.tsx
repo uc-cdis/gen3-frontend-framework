@@ -1,4 +1,4 @@
-import { hideModal, useCoreDispatch } from '@gen3/core';
+import { hideModal, useCoreDispatch, CoreDispatch } from '@gen3/core';
 import { Button, Modal } from '@mantine/core';
 import { ReactNode } from 'react';
 
@@ -15,11 +15,48 @@ const isButtonOptions = (
   return typeof button === 'object' && 'title' in button;
 };
 
+const renderButtons = (
+  buttons: Array<ButtonOptions | JSX.Element>,
+  dispatch: CoreDispatch,
+): JSX.Element => {
+  return (
+    <div className="flex justify-end mt-2.5 gap-2">
+      {buttons.map((button) => {
+        if (isButtonOptions(button)) {
+          const { onClick, title, hideModalOnClick, dataTestId } = button;
+
+          return (
+            <Button
+              data-testid={dataTestId}
+              key={title}
+              onClick={() => {
+                if (onClick) {
+                  onClick();
+
+                  if (hideModalOnClick) {
+                     dispatch(hideModal());
+                  }
+                } else {
+                   dispatch(hideModal());
+                }
+              }}
+              className="!bg-primary hover:!bg-primary-darker"
+            >
+              {title}
+            </Button>
+          );
+        } else return button;
+      })}
+    </div>
+  );
+};
+
 interface Props {
   openModal: boolean;
   title: ReactNode;
   size?: string | number;
   children: ReactNode;
+  leftButtons?: Array<ButtonOptions | JSX.Element>;
   buttons?: Array<ButtonOptions | JSX.Element>;
   withCloseButton?: boolean;
   onClose?: () => void;
@@ -32,6 +69,7 @@ export const BaseModal= ({
   title,
   size,
   children,
+  leftButtons,
   buttons,
   withCloseButton,
   onClose,
@@ -65,36 +103,10 @@ export const BaseModal= ({
       size={size && size}
     >
       {children}
-      {buttons && (
-        <div className="flex justify-end mt-2.5 gap-2">
-          {buttons.map((button) => {
-            if (isButtonOptions(button)) {
-              const { onClick, title, hideModalOnClick, dataTestId } = button;
-
-              return (
-                <Button
-                  data-testid={dataTestId}
-                  key={title}
-                  onClick={() => {
-                    if (onClick) {
-                      onClick();
-
-                      if (hideModalOnClick) {
-                        dispatch(hideModal());
-                      }
-                    } else {
-                      dispatch(hideModal());
-                    }
-                  }}
-                  className="!bg-primary hover:!bg-primary-darker"
-                >
-                  {title}
-                </Button>
-              );
-            } else return button;
-          })}
-        </div>
-      )}
+      <div className="flex justify-between items-center">
+      {leftButtons && renderButtons(leftButtons, dispatch)}
+      {buttons && renderButtons(buttons, dispatch)}
+      </div>
     </Modal>
   );
 };
