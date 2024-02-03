@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { VictoryAxis, VictoryBar, VictoryChart,VictoryContainer, VictoryLabel, VictoryTheme } from 'victory';
-import { processLabel, processRangeKeyLabel, truncateString } from "./utils";
+import { processLabel, processRangeKeyLabel, truncateString } from './utils';
 import { HistogramDataArray, HistogramData, isHistogramDataArrayAnEnum, isHistogramDataArrayARange } from '@gen3/core';
 import { ChartProps } from './types';
 

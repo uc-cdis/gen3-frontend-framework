@@ -17,7 +17,7 @@ const StringRowRenderer = (
   studyPreviewConfig?: StudyPreviewField,
 ): ReactElement => {
   if (!studyPreviewConfig) {
-    return <></>;
+    return <React.Fragment></React.Fragment>;
   }
   const value = JSONPath({
     json: row.original,

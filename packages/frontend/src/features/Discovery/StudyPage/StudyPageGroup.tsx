@@ -1,6 +1,6 @@
 import React from 'react';
-import { JSONObject } from "@gen3/core";
-import { StudyPageConfig } from "../types";
+import { JSONObject } from '@gen3/core';
+import { StudyPageConfig } from '../types';
 
 interface StudyPageGroupProps {
     readonly studyDetails: JSONObject;

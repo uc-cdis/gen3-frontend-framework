@@ -15,7 +15,7 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...{ discoveryConfig: discoveryConfig },
+       discoveryConfig: discoveryConfig,
     },
   };
 };

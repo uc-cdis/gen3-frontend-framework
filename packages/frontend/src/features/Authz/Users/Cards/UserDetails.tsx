@@ -1,7 +1,7 @@
 import { Card, Grid, Group,  Stack, Text, Switch } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { User } from '../../types';
-import { EmailInput, IsAdminInput, NameInput, NewUserFormValues, UserId } from "../Inputs";
+import { EmailInput, IsAdminInput, NameInput, NewUserFormValues, UserId } from '../Inputs';
 
 interface UserDetailsProps {
   user: User;

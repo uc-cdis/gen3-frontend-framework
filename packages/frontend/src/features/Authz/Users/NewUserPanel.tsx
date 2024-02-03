@@ -1,7 +1,7 @@
-import { useAuthzContext } from "../Provider";
-import { Button, Group, Stack } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { EmailInput, IsAdminInput, NameInput, NewUserFormValues, UserId } from "./Inputs";
+import { useAuthzContext } from '../Provider';
+import { Button, Group, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { EmailInput, IsAdminInput, NameInput, NewUserFormValues, UserId } from './Inputs';
 
 interface NewUserPanelProps {
   closePanel: () => void;

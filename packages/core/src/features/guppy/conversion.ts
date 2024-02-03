@@ -1,4 +1,4 @@
-import { JSONArray, JSONObject } from "../../types";
+import { JSONArray, JSONObject } from '../../types';
 import { FILE_DELIMITERS } from '../../constants';
 import { flatten } from 'flat';
 import Papa, { UnparseConfig } from 'papaparse';

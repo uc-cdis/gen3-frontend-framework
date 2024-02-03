@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {  fieldNameToTitle } from '@gen3/core';
-import { EnumFacetChart } from "../charts/EnumFacetChart";
+import { EnumFacetChart } from '../charts/EnumFacetChart';
 
 import {
   MdFlip as FlipIcon,
@@ -480,7 +480,7 @@ const EnumFacet = ({
           </div>
           <div
             className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
-              isFacetView ? "invisible" : ""
+              isFacetView ? 'invisible' : ''
             }`}
           >
             {facetChartData.filteredData.length === 0 ? (

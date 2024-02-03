@@ -48,7 +48,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
       );
   }
 
-  return <React.Fragment>{children}</React.Fragment>;
+  return <>{children}</>;
 };
 
 export default ProtectedContent;

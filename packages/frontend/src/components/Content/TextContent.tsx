@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { hashCode } from "../../utils/hash";
+import { hashCode } from '../../utils/hash';
 
 export enum ContentType {
   Text = 'text',

@@ -10,7 +10,7 @@ interface ActionMenuProps {
 
 const ActionMenu = ({ items }: ActionMenuProps) => {
   return (
-    <>
+    <React.Fragment>
       <Menu>
         <Menu.Target>
           <button>
@@ -29,7 +29,7 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
           })}
         </Menu.Dropdown>
       </Menu>
-    </>
+    </React.Fragment>
   );
 };
 

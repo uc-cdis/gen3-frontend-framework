@@ -26,7 +26,7 @@
     "@gen3/toolsff": "file:../tools",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
-    "next": "13.4.19",
+    "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "^3.2.4",

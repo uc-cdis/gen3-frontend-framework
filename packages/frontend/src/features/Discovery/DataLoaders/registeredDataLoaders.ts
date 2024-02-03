@@ -1,9 +1,9 @@
 // build a factor function that returns a DataLoader for each type of data
 //
 
-import { DiscoverDataHookResponse, DiscoveryDataLoaderProps } from "../types";
-import { useAggMDSServer } from "./AggMDSServer/DataLoader";
-import { useLoadAllData } from "./MDSAllLocal/DataLoader";
+import { DiscoverDataHookResponse, DiscoveryDataLoaderProps } from '../types';
+import { useAggMDSServer } from './AggMDSServer/DataLoader';
+import { useLoadAllData } from './MDSAllLocal/DataLoader';
 
 export type DiscoveryDataLoader = (_: DiscoveryDataLoaderProps) => DiscoverDataHookResponse;
 
@@ -19,12 +19,12 @@ export const registerDiscoveryDataLoader = (
 export const getDiscoveryDataLoader = (name?: string): DiscoveryDataLoader | undefined => {
 
   if (name === undefined) {
-    console.error("getDiscoveryDataLoader: no name provided");
+    console.error('getDiscoveryDataLoader: no name provided');
     return undefined;
   }
 
   if ( !(name in discoveryDataLoaders)) {
-    console.error("getDiscoveryDataLoader: no data loader found for", name);
+    console.error('getDiscoveryDataLoader: no data loader found for', name);
     return undefined;
   }
   return discoveryDataLoaders[name];
@@ -35,8 +35,8 @@ export const getDiscoveryDataLoaders = (): string[] => {
 };
 
 export const registerDefaultDiscoveryDataLoaders = () => {
-  registerDiscoveryDataLoader("AggMDSServer", useAggMDSServer);
-  registerDiscoveryDataLoader("MDSAllLocal", useLoadAllData);
+  registerDiscoveryDataLoader('AggMDSServer', useAggMDSServer);
+  registerDiscoveryDataLoader('MDSAllLocal', useLoadAllData);
 };
 
 registerDefaultDiscoveryDataLoaders();

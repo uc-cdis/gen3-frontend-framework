@@ -17,7 +17,7 @@ import { jsonPathAccessor } from '../../../components/Tables/utils';
 
 import { SummaryTable } from './types';
 import { CellRendererFunction, ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from "../../../utils/RendererFactory";
+import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))

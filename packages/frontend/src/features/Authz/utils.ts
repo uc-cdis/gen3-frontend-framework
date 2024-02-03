@@ -1,4 +1,4 @@
-import { UserYaml, Authz } from "./types";
+import { UserYaml, Authz } from './types';
 
 export const convertUserYAMLToAuthz = (userYaml: UserYaml) : Authz => {
   // TODO: add populate of User and other fields
