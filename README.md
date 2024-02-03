@@ -14,6 +14,13 @@ Your version of Node may not ship with npm v9. To install it, run:
 npm install npm@9.5.0 -g
 ```
 
+Note: if you see this error:
+```
+npm ERR! code ENOWORKSPACES
+npm ERR! This command does not support workspaces.
+```
+you can run ```npx next telemetry disable```
+
 ### Install Dependencies
 
 From the root of the project, install dependencies by running:
