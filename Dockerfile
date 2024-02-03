@@ -51,7 +51,7 @@ COPY ./packages ./packages
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string"
-RUN lerna run --scope @gen3/core build:clean
+RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
 RUN lerna run --scope @gen3/datacommonsapp build
 ENV PORT=80
