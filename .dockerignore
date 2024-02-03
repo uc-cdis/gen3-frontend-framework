@@ -1,5 +1,6 @@
 node_modules
 packages/core/node_modules
-packages/portal/node_modules
+packages/frontend/node_modules
 packages/tools/node_modules
-packages/portal/.next
+packages/sampleCommons/node_modules
+packages/sampleCommons/.next
