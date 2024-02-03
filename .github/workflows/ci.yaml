@@ -9,7 +9,7 @@ jobs:
       with:
         node-version: 18.19.0
     - name: install npm version
-      run: npm install -g npm@10.2.3
+      run: npm install -g npm
     - name: Get Version
       run: npm -v
     - name: Install modules

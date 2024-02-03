@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/src/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@10.2.3
+    && npm install -g npm
 
 RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
 RUN npm install --location=global lerna@6.6.1
