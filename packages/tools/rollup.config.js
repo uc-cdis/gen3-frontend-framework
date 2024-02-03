@@ -93,26 +93,5 @@ export default [
       'path', 'url',
     ],
     plugins: [peerDepsExternal(), swc()],
-  },
-  // add rollup config for proxy
-  {
-    input: './src/proxy/proxy.ts',
-    output: [
-      {
-        file: 'dist/proxy.esm.js',
-        format: 'esm',
-        name: 'proxy',
-      },
-    ],
-    external: [
-      'https',
-      'http',
-      'node:fs',
-      'node:util',
-      'fetch-retry',
-      'node-fetch',
-      'path', 'url',
-    ],
-    plugins: [peerDepsExternal(), swc()],
   }
 ];
