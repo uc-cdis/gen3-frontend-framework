@@ -1,6 +1,6 @@
-import { useCoreSelector, selectCurrentMessage } from "@gen3/core";
-import { Text } from "@mantine/core";
-import { BaseModal } from "./BaseModal";
+import { useCoreSelector, selectCurrentMessage } from '@gen3/core';
+import { Text } from '@mantine/core';
+import { BaseModal } from './BaseModal';
 
 export const GeneralErrorModal = ({
   openModal,
@@ -16,7 +16,7 @@ export const GeneralErrorModal = ({
         </Text>
       }
       openModal={openModal}
-      buttons={[{ title: "Close", dataTestId: "button-general-close" }]}
+      buttons={[{ title: 'Close', dataTestId: 'button-general-close' }]}
     >
       <div className="border-y border-y-base p-4">
         <Text size="md"> {message}</Text>

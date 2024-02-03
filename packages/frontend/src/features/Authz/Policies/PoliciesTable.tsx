@@ -74,9 +74,9 @@ const PoliciesTable = () => {
     enableRowActions: true,
     positionActionsColumn: 'last',
     renderRowActionMenuItems: ({ row }) => (
-      <>
+      <React.Fragment>
         <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
-      </>
+      </React.Fragment>
     ),
     enableRowSelection: true,
     paginationDisplayMode: 'pages',

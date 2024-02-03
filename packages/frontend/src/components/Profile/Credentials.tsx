@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useCoreDispatch, showModal, Modals, useCoreSelector, selectCurrentModal, APIKey } from '@gen3/core';
 import { Button, LoadingOverlay, Stack } from '@mantine/core';
 import { CreateCredentialsAPIKeyModal } from '../Modals';

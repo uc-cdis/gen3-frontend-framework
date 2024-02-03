@@ -1,8 +1,8 @@
-import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
-import { FiDownload } from "react-icons/fi";
-import download from "../../utils/download";
-import { hideModal, Modals, useCoreDispatch } from "@gen3/core";
-import { Dispatch, SetStateAction, forwardRef } from "react";
+import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
+import { FiDownload } from 'react-icons/fi';
+import download from '../../utils/download';
+import { hideModal, Modals, useCoreDispatch } from '@gen3/core';
+import { Dispatch, SetStateAction, forwardRef } from 'react';
 
 /**
  * Properties for the DownloadButton component.
@@ -93,14 +93,14 @@ export const DownloadButton = forwardRef<
       disabled = false,
       filename,
       size = 10000,
-      format = "JSON",
+      format = 'JSON',
       fields = [],
       caseFilters = {},
       filters = {},
       inactiveText,
       activeText,
       extraParams,
-      method = "POST",
+      method = 'POST',
       customStyle,
       setActive,
       onClick,
@@ -132,7 +132,7 @@ export const DownloadButton = forwardRef<
           className={
             customStyle ||
             `text-base-lightest ${
-              disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
+              disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
             } `
           }
           loading={showLoading && active}
@@ -173,4 +173,4 @@ export const DownloadButton = forwardRef<
   },
 );
 
-DownloadButton.displayName = "DownloadButton";
+DownloadButton.displayName = 'DownloadButton';

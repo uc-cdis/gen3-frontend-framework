@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react';
 import { JSONObject } from '@gen3/core';
 import { StudyPageConfig } from '../types';
 import StudyGroupPanel from '../StudyDetails/StudyGroupPanel';
-import { CopyButton, Stack, Text } from "@mantine/core";
-import { getStringValueFromJSONObject } from "../utils";
+import { CopyButton, Stack, Text } from '@mantine/core';
+import { getStringValueFromJSONObject } from '../utils';
 
 interface StudyPagePanelProps {
   readonly studyDetails: JSONObject;

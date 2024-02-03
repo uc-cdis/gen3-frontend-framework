@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@mantine/core';
 import { DownloadButtonProps } from './DropdownButtons';
-import { Icon } from "@iconify/react";
+import { Icon } from '@iconify/react';
 
 const ActionButton = ({
   title,

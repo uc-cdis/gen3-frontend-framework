@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {processLabel, truncateString} from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
-import { HistogramData, HistogramDataArray } from "@gen3/core";
+import { HistogramData, HistogramDataArray } from '@gen3/core';
 
 interface BarChartData {
   data: number[];

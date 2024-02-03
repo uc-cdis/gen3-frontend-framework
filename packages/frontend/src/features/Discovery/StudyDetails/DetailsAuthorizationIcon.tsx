@@ -1,8 +1,8 @@
-import { DataAuthorization, AccessLevel } from "../types";
-import { JSONObject } from "@gen3/core";
+import { DataAuthorization, AccessLevel } from '../types';
+import { JSONObject } from '@gen3/core';
 import {  Badge } from '@mantine/core';
-import { FiUnlock as UnlockOutlined } from "react-icons/fi";
-import { accessibleFieldName } from "../types";
+import { FiUnlock as UnlockOutlined } from 'react-icons/fi';
+import { accessibleFieldName } from '../types';
 
 interface DetailsAccessProps {
     readonly studyData: JSONObject;

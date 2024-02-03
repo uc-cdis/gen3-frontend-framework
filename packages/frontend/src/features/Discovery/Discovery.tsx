@@ -12,7 +12,7 @@ import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
-import { getDiscoveryDataLoader } from "./DataLoaders/registeredDataLoaders";
+import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;

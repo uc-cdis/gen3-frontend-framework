@@ -3,9 +3,9 @@
  * require the Core Data hooks.
  */
 
-import { useEffect, useState } from "react";
-import { Box, Loader, Tooltip } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
+import { useEffect, useState } from 'react';
+import { Box, Loader, Tooltip } from '@mantine/core';
+import { useElementSize } from '@mantine/hooks';
 import {
   VictoryBar,
   VictoryChart,
@@ -15,11 +15,11 @@ import {
   VictoryAxis,
   VictoryStack,
   VictoryTooltip,
-} from "victory";
-import { useMantineTheme } from "@mantine/core";
-import ChartTitleBar from "./ChartTitleBar";
-import { capitalize } from "./utils";
-import { fieldNameToTitle, EnumFilterValue } from "@gen3/core";
+} from 'victory';
+import { useMantineTheme } from '@mantine/core';
+import ChartTitleBar from './ChartTitleBar';
+import { capitalize } from './utils';
+import { fieldNameToTitle, EnumFilterValue } from '@gen3/core';
 
 const maxValuesToDisplay = 7;
 
@@ -43,7 +43,7 @@ const processChartData = (
   selectedEnums: EnumFilterValue,
   maxBins = 100,
 ) => {
-  const data = removeKey("_missing", facetData);
+  const data = removeKey('_missing', facetData);
 
   const results = Object.keys(data)
     .filter((d : string| number) =>
@@ -67,7 +67,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   height,
   showTitle = true,
   maxBins = maxValuesToDisplay,
-  valueLabel = "Cases",
+  valueLabel = 'Cases',
 }: FacetChartProps) => {
   const [chart_data, setChartData] = useState<{x:string, y:any}[]>([]);
   const { ref, width } = useElementSize();
@@ -112,9 +112,9 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
 };
 
 export const processLabel = (label: string): string => {
-  const tokens = label.split(" ");
+  const tokens = label.split(' ');
   const capitalizedTokens = tokens.map((s) => capitalize(s));
-  return capitalizedTokens.join(" ");
+  return capitalizedTokens.join(' ');
 };
 
 interface EnumBarChartTooltipProps {
@@ -131,11 +131,11 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   x,
   y,
   datum,
-  unitLabel = "Cases",
+  unitLabel = 'Cases',
 }: EnumBarChartTooltipProps) => {
   const theme = useMantineTheme();
   return (
-    <g style={{ pointerEvents: "none" }}>
+    <g style={{ pointerEvents: 'none' }}>
       <foreignObject x={x} y={y}>
         <Tooltip
           label={
@@ -175,20 +175,20 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
   text,
 }: EnumBarChartVictoryLabelProps) => {
   return (
-    <foreignObject x={0} y={y - 26} width={"100%"} height="25">
+    <foreignObject x={0} y={y - 26} width={'100%'} height="25">
       <div
         style={{
           paddingTop: 2,
           paddingLeft: x + 12,
           paddingRight: 45,
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          textOverflow: "ellipsis",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+          textOverflow: 'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
           fontSize: 23,
-          fontFamily: "Noto Sans, sans-serif",
+          fontFamily: 'Noto Sans, sans-serif',
         }}
       >
         {text}
@@ -218,7 +218,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
   unitLabel,
 }: BarChartProps) => {
   const max = Math.max(...data.map((d) => d.y));
-  const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  const formatter = Intl.NumberFormat('en', { notation: 'compact' });
   const theme = useMantineTheme();
 
   return (
@@ -232,7 +232,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryAxis
         tickLabelComponent={<EnumBarChartVictoryLabel />}
         style={{
-          grid: { stroke: "none" },
+          grid: { stroke: 'none' },
           ticks: { size: 0 },
           axis: { strokeWidth: 0 },
         }}
@@ -241,8 +241,8 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryAxis
         dependentAxis
         style={{
-          grid: { stroke: "none" },
-          axisLabel: { padding: 30, fontSize: 20, fontWeight: "bold" },
+          grid: { stroke: 'none' },
+          axisLabel: { padding: 30, fontSize: 20, fontWeight: 'bold' },
           tickLabels: { fontSize: 18 },
         }}
         tickCount={3}
@@ -254,7 +254,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       <VictoryStack>
         <VictoryBar
           horizontal
-          labels={() => ""}
+          labels={() => ''}
           labelComponent={
             <VictoryTooltip
               flyoutComponent={<EnumBarChartTooltip unitLabel={unitLabel} />}

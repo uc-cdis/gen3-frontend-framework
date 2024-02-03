@@ -13,7 +13,7 @@ const Footer = ({
 }: FooterProps) => {
 
   const defaultClassNames = {
-    root: "bg-primary-lighter text-primary-contrast p-4 shadow-sm",
+    root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
   const mergedClassNames = { ...defaultClassNames, ...classNames };

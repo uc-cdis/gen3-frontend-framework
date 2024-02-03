@@ -1,9 +1,9 @@
-import { CellRendererFunctionProps, RenderFactoryTypedInstance } from "../../../utils/RendererFactory";
-import React, { ReactElement } from "react";
-import { isArray } from "lodash";
-import { Badge, Text } from "@mantine/core";
-import { DiscoveryCellRendererFactory } from "../../Discovery";
-import { Gen3DiscoveryStandardCellRenderers } from "../../Discovery/TableRenderers/CellRenderers";
+import { CellRendererFunctionProps, RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
+import React, { ReactElement } from 'react';
+import { isArray } from 'lodash';
+import { Badge, Text } from '@mantine/core';
+import { DiscoveryCellRendererFactory } from '../../Discovery';
+import { Gen3DiscoveryStandardCellRenderers } from '../../Discovery/TableRenderers/CellRenderers';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;

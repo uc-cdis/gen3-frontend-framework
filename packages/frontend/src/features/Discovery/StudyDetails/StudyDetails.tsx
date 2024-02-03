@@ -14,7 +14,7 @@ const StudyDetails = () => {
   if (studyDetails) {
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ?? 'unknown',
+      typeof studyId == 'string' ? 'string' :  'unknown',
     )}`;
     permalink = `/${pagePath}`;
   }
