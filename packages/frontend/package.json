@@ -25,7 +25,7 @@
     "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
     "build:compile": "npm run compile && npm run build:rollup",
     "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
-    "build:watch": "npm run compile && npm run build:rollup -- --watch",
+    "build:watch": "npm run build:rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -42,7 +42,7 @@
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
-    "@gen3/core": "^0.1.0",
+    "@gen3/core": "file:../core",
     "@graphiql/plugin-explorer": "^1.0.2",
     "@graphiql/react": "^0.20.2",
     "@iconify/react": "^4.0.1",
