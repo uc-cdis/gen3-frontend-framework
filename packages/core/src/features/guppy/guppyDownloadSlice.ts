@@ -1,28 +1,11 @@
 import { gen3Api } from '../gen3';
-import { GEN3_API } from '../../constants';
-import { FilterSet } from '../filters/types';
-import { Accessibility } from '../../constants';
-import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
+import { GEN3_GUPPY_API } from '../../constants';
+import { convertFilterSetToGqlFilter } from '../filters';
+import { GuppyDownloadQueryParams, GuppyDownloadRequestParams } from './types';
 
 interface DownloadRequestStatus {
   readonly status: string;
   readonly message: string;
-}
-
-interface BaseDownloadRequest {
-  type: string;
-  accessibility?: Accessibility;
-  fields?: string[];
-  sort?: string[];
-  format?: string;
-}
-
-interface DownloadQueryParams extends BaseDownloadRequest {
-  filters: FilterSet;
-}
-
-interface DownloadRequestParams extends BaseDownloadRequest {
-  readonly filter: GQLFilter;
 }
 
 export const downloadRequestApi = gen3Api.injectEndpoints({
@@ -34,13 +17,13 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
         accessibility,
         fields,
         sort,
-      }: DownloadQueryParams) => {
-        const queryBody: DownloadRequestParams = {
+      }: GuppyDownloadQueryParams) => {
+        const queryBody: GuppyDownloadRequestParams = {
           filter: convertFilterSetToGqlFilter(filters),
           ...{ type, accessibility, fields, sort },
         };
         return {
-          url: `${GEN3_API}/guppy/download`,
+          url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',
           queryBody,
         };

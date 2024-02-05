@@ -1,7 +1,7 @@
 
 // set of interfaces which follows the current explorer configuration
 
-import { SummaryChart } from '../../components/charts/types';
+import { SummaryChart } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
 import { FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
@@ -53,4 +53,12 @@ export interface CohortBuilderConfiguration {
 
 export interface CohortConfig {
     tabs: TabConfig[];
+}
+
+export enum DownloadFileFormats {
+    JSON = 'JSON',
+    CSV = 'CSV',
+    TSV = 'TSV',
+    DATA = 'DATA',
+    UNDEFINED = 'UNDEFINED',
 }

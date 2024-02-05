@@ -1,4 +1,3 @@
-'use client';
 
 import Cookies from 'universal-cookie';
 import { CoreDispatch, Modals, showModal } from '@gen3/core';
@@ -6,7 +5,6 @@ import { Button } from '@mantine/core';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
 import { includes, isPlainObject, reduce, uniqueId } from 'lodash';
 import { RiCloseCircleLine as CloseIcon } from 'react-icons/ri';
-import urlJoin from 'url-join';
 
 const hashString = (s: string) =>
   s.split('').reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
@@ -32,7 +30,7 @@ const customKeys = ['expand', 'fields', 'facets'];
 const processParamObj = (key: string, value: any) =>
   includes(customKeys, key) ? [].concat(value).join() : value;
 
-const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
+export const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
   return (
     <div>
       <p>Download preparation in progress. Please wait...</p>
@@ -84,7 +82,7 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 
 /**
  * Trigger a download by attaching an iFrame to the document with the parameters of the request as fields in a form
- * @param endpoint - endpoint to be attached with  GDC AUTH API
+ * @param endpoint - endpoint to be attached with
  * @param params - body to be attached with post request
  * @param method - Request Method: GET, PUT, POST
  * @param dispatch - dispatch send from the parent component to dispatch Modals
@@ -92,6 +90,7 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
  * @param Modal400 - Modal for 400 error
  * @param Modal403 - Modal for 403 error
  * @param customErrorMessage - custom message to be passed for 400 errors
+ * @param hideNotification - hide the notification
  */
 
 const download = async ({
@@ -121,6 +120,7 @@ const download = async ({
     to remove the cookie when the response is received (aka the download starts). This will only work on when the FE and BE
     are on the same domain.
   */
+
   const downloadToken = uniqueId(`${+new Date()}-`);
   const cookieKey = navigator.cookieEnabled
     ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
@@ -168,6 +168,7 @@ const download = async ({
       downloadCookieKey: cookieKey,
       downloadCookiePath: '/',
       attachment: true,
+      ...(params.filename !== undefined? { download: params.filename } : {}),
     },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);
@@ -224,7 +225,7 @@ const download = async ({
             dispatch(showModal({ modal: Modal400, message: errorMessage }));
           } else if (
             errorMessage ===
-            'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
+            'Your token is invalid or expired. Please get a new token.'
           ) {
             dispatch(showModal({ modal: Modal403, message: errorMessage }));
           } else {

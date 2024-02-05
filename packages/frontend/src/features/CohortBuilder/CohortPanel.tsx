@@ -34,6 +34,7 @@ import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
 import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const EmptyData = {};
 
@@ -124,7 +125,7 @@ export const CohortPanel = ({
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
-  const fields = getAllFieldsFromFilterConfigs(filters?.tabs ?? []);
+  const fields = useMemo(() =>  getAllFieldsFromFilterConfigs(filters?.tabs ?? []), []);
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
@@ -261,6 +262,10 @@ export const CohortPanel = ({
               dropdowns={dropdownsWithButtons}
               buttons={actionButtons}
               loginForDownload={loginForDownload}
+              index={index}
+              totalCount={counts ?? 0}
+              fields={fields}
+              filters={cohortFilters}
             />
             .
             <CountsValue
