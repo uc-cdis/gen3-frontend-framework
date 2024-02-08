@@ -32,7 +32,7 @@ const NavigationBarButton = ({
 
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
   return (
-    <>
+    <React.Fragment>
       <Tooltip
         label={tooltip}
         multiline
@@ -67,7 +67,7 @@ const NavigationBarButton = ({
           </div>
         </Link>
       </Tooltip>
-    </>
+    </React.Fragment>
   );
 };
 

@@ -68,6 +68,6 @@
     "dist"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://localhost:4873/"
   }
 }

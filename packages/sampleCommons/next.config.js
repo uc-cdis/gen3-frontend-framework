@@ -22,7 +22,7 @@ const nextConfig = {
   basePath: process.env.BASE_PATH || '',
   webpack: (config) => {
     config.infrastructureLogging = {
-      level: "error",
+      level: 'error',
     };
 
     return config;

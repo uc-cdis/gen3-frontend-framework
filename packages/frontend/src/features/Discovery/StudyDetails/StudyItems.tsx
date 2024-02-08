@@ -16,7 +16,7 @@ import {
   FieldRendererFunctionMap,
   DiscoveryDetailsRenderer,
 } from './RendererFactory';
-import { JSONArray } from "@gen3/core";
+import { JSONArray } from '@gen3/core';
 
 const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
 

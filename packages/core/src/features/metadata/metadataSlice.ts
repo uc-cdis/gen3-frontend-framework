@@ -1,5 +1,5 @@
-import { JSONObject } from "../../types";
-import { gen3Api } from "../gen3";
+import { JSONObject } from '../../types';
+import { gen3Api } from '../gen3';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;

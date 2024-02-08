@@ -9,7 +9,7 @@ function hashString(str: string) {
 
 // hash function for a string
 export function hashCode(str: string) {
-  if (str === null || str === "") {
+  if (str === null || str === '') {
     return 0;
   }
   return hashString(str);
