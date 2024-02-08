@@ -1,18 +1,40 @@
-import { FilterSet, GQLFilter } from '../filters';
+import { FilterSet } from '../filters';
 import { Accessibility } from '../../constants';
 
-export interface BaseGuppyDownloadRequest {
+export interface BaseGuppyDataRequest {
   type: string;
   accessibility?: Accessibility;
-  fields?: string[];
+  fields: string[];
   sort?: string[];
-  format?: string;
 }
 
-export interface GuppyDownloadQueryParams extends BaseGuppyDownloadRequest {
-  filters: FilterSet;
+export interface GuppyDownloadDataParams extends BaseGuppyDataRequest {
+  filter: FilterSet; // cohort filters
+  format: 'json' | 'csv' | 'tsv'; // the three supported formats
+  rootPath?: string; // a string (minus $.) JSONPath to the root of the data
 }
 
-export interface GuppyDownloadRequestParams extends BaseGuppyDownloadRequest {
-  readonly filter: GQLFilter;
+export interface GuppyActionFunctionParams extends Record<string, any> {
+  type: string;
+  accessibility?: Accessibility;
+  fields: string[];
+  sort?: string[];
+  filter: FilterSet;
 }
+
+export interface GuppyActionParams<T extends Record<string, any>> {
+  parameters: T;
+  onStart?: () => void;
+  onDone?: (blob: Blob) => void;
+  onError?: (error: Error) => void;
+}
+
+export interface GuppyDownloadActionFunctionParams
+  extends GuppyActionFunctionParams {
+  format: string;
+  filename: string;
+}
+
+export type GuppyActionFunction<T extends Record<string, any>> = (
+  params: GuppyActionParams<T>,
+) => void;

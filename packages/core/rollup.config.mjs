@@ -19,6 +19,8 @@ const globals = {
   'react-cookie': 'reactCookie',
   'swr': 'swr',
   'jsonpath-plus': 'jsonpathPlus',
+  'flat': 'flat',
+  'papaparse': 'papaparse',
 };
 
 const config = [

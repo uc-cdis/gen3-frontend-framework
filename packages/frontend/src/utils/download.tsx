@@ -1,4 +1,3 @@
-
 import Cookies from 'universal-cookie';
 import { CoreDispatch, Modals, showModal } from '@gen3/core';
 import { Button } from '@mantine/core';
@@ -80,6 +79,24 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 );
 */
 
+export interface DownloadFunctionParams<
+  T extends Record<string, any> = Record<string, any>,
+> {
+  endpoint: string;
+  params: T;
+  method: string;
+  dispatch: CoreDispatch;
+  done?: () => void;
+  Modal403?: Modals;
+  Modal400?: Modals;
+  customErrorMessage?: string;
+  hideNotification?: boolean;
+}
+
+export type DownloadFunction<
+  T extends Record<string, any> = Record<string, any>,
+> = (params: DownloadFunctionParams<T>) => Promise<void>;
+
 /**
  * Trigger a download by attaching an iFrame to the document with the parameters of the request as fields in a form
  * @param endpoint - endpoint to be attached with
@@ -93,7 +110,7 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
  * @param hideNotification - hide the notification
  */
 
-const download = async ({
+const download = async <T extends Record<string, any> = Record<string, any>>({
   endpoint,
   params,
   method,
@@ -103,17 +120,7 @@ const download = async ({
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
   hideNotification = false,
-}: {
-  endpoint: string;
-  params: Record<string, any>;
-  method: string;
-  dispatch: CoreDispatch;
-  done?: () => void;
-  Modal403?: Modals;
-  Modal400?: Modals;
-  customErrorMessage?: string;
-  hideNotification?: boolean;
-}): Promise<void> => {
+}: DownloadFunctionParams<T>): Promise<void> => {
   const cookies = new Cookies();
 
   /* Create a cookie with a unique identifier to attach to request. Response from server will use the set-cookie header
@@ -168,7 +175,7 @@ const download = async ({
       downloadCookieKey: cookieKey,
       downloadCookiePath: '/',
       attachment: true,
-      ...(params.filename !== undefined? { download: params.filename } : {}),
+      ...(params.filename !== undefined ? { download: params.filename } : {}),
     },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);
@@ -255,7 +262,7 @@ const download = async ({
     const form = document.createElement('form');
     form.method = method.toUpperCase();
     form.action = endpoint;
-    form.innerHTML = fields;
+    form.innerText = fields;
 
     getBody(iFrame).appendChild(form);
 

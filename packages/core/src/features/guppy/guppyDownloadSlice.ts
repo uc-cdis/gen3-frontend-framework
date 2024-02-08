@@ -1,7 +1,11 @@
 import { gen3Api } from '../gen3';
 import { GEN3_GUPPY_API } from '../../constants';
-import { convertFilterSetToGqlFilter } from '../filters';
-import { GuppyDownloadQueryParams, GuppyDownloadRequestParams } from './types';
+import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
+import { BaseGuppyDataRequest, GuppyDownloadDataParams } from './types';
+
+export interface GuppyDownloadDataQueryParams extends BaseGuppyDataRequest {
+  filter: GQLFilter;
+}
 
 interface DownloadRequestStatus {
   readonly status: string;
@@ -10,22 +14,23 @@ interface DownloadRequestStatus {
 
 export const downloadRequestApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    downloadFromGuppy: builder.query({
+    downloadFromGuppy: builder.mutation({
       query: ({
         type,
-        filters,
+        filter,
         accessibility,
         fields,
         sort,
-      }: GuppyDownloadQueryParams) => {
-        const queryBody: GuppyDownloadRequestParams = {
-          filter: convertFilterSetToGqlFilter(filters),
+      }: GuppyDownloadDataParams) => {
+        const queryBody: GuppyDownloadDataQueryParams = {
+          filter: convertFilterSetToGqlFilter(filter),
           ...{ type, accessibility, fields, sort },
         };
         return {
           url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',
           queryBody,
+          cache: 'no-cache',
         };
       },
       transformResponse: (response: DownloadRequestStatus) => {
@@ -35,4 +40,4 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useDownloadFromGuppyQuery } = downloadRequestApi;
+export const { useDownloadFromGuppyMutation } = downloadRequestApi;

@@ -7,7 +7,7 @@ import {
 } from '../../components/Buttons/DropdownButtons';
 import ActionButton from '../../components/Buttons/ActionButton';
 import { FilterSet, useIsUserLoggedIn, convertFilterSetToGqlFilter } from '@gen3/core';
-import { DownloadToFileButton } from './Downloads';
+import { DownloadToFileButton } from './DownloadButtons';
 
 
 
@@ -66,9 +66,10 @@ const DownloadsPanel = ({
         type={index}
         counts={totalCount}
         fields={fields}
-        filter={convertFilterSetToGqlFilter(filters)}
-        filename={`cohort_${index}`}
+        filter={filters}
+        filename={`${index}.json`}
         format="json"
+
     />
       {Object.values(dropdownsToRender).map((dropdown) => (
         <DropdownButton {...dropdown} key={dropdown.title} />

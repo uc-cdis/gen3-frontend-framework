@@ -1,6 +1,6 @@
 import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
-import download from '../../utils/download';
+import download, { DownloadFunctionParams } from '../../utils/download';
 import { hideModal, Modals, useCoreDispatch } from '@gen3/core';
 import { Dispatch, SetStateAction, forwardRef } from 'react';
 
@@ -28,7 +28,7 @@ import { Dispatch, SetStateAction, forwardRef } from 'react';
  * @property toolTip - The tooltip to display.
  */
 interface DownloadButtonProps {
-  endpoint: string;
+  endpoint?: string;
   disabled?: boolean;
   inactiveText: string;
   activeText: string;
@@ -75,13 +75,15 @@ interface DownloadButtonProps {
  * @param toolTip - The tooltip to display.
  * @category Buttons
  */
+
+
 export const DownloadButton = forwardRef<
   HTMLButtonElement,
   DownloadButtonProps & ButtonProps
 >(
   (
     {
-      endpoint,
+      endpoint = '',
       disabled = false,
       inactiveText,
       activeText,
@@ -94,8 +96,8 @@ export const DownloadButton = forwardRef<
       showIcon = true,
       preventClickEvent = false,
       active,
-      Modal400,
-      Modal403,
+      Modal400 = Modals.GeneralErrorModal,
+      Modal403 = Modals.NoAccessModal,
       toolTip,
       ...buttonProps
     }: DownloadButtonProps,
@@ -130,11 +132,11 @@ export const DownloadButton = forwardRef<
             dispatch(hideModal());
             setActive && setActive(true);
             download({
-              params,
               endpoint,
+              params,
               method,
-              done: () => setActive && setActive(false),
               dispatch,
+              done: () => setActive && setActive(false),
               Modal400,
               Modal403,
             });

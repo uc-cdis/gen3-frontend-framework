@@ -1,7 +1,21 @@
 export * from './guppylApi';
 export * from './guppySlice';
-export * from './guppyDownloadSlice';
-export * from './utils';
-import { type GuppyDownloadRequestParams, type GuppyDownloadQueryParams } from './types';
+import { downloadFromGuppy } from './utils';
+import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
+import {
+  type GuppyDownloadDataParams,
+  type BaseGuppyDataRequest,
+  type GuppyActionFunction,
+  type GuppyActionFunctionParams,
+  type GuppyDownloadActionFunctionParams,
+} from './types';
 
-export { type GuppyDownloadRequestParams, type GuppyDownloadQueryParams };
+export {
+  type BaseGuppyDataRequest,
+  type GuppyDownloadDataParams,
+  type GuppyActionFunctionParams,
+  type GuppyActionFunction,
+  type GuppyDownloadActionFunctionParams,
+  downloadFromGuppy,
+  useDownloadFromGuppyMutation,
+};

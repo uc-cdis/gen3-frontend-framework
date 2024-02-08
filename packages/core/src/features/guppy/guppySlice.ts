@@ -101,8 +101,6 @@ interface QueryCountsParams {
   accessibility?: Accessibility;
 }
 
-
-
 const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllFieldsForType: builder.query({
