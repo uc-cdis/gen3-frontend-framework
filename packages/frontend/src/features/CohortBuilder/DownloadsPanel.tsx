@@ -8,6 +8,7 @@ import {
 import ActionButton from '../../components/Buttons/ActionButton';
 import { FilterSet, useIsUserLoggedIn, convertFilterSetToGqlFilter } from '@gen3/core';
 import { DownloadToFileButton } from './DownloadButtons';
+import { DownloadTestJSONButton } from './testButton';
 
 
 
@@ -71,6 +72,18 @@ const DownloadsPanel = ({
         format="json"
 
     />
+
+      <DownloadTestJSONButton
+        type={index}
+        filename={`${index}.json`}
+        format="json"
+        filter={filters}
+        fields={fields}
+        disabled={false}
+        customStyle=""
+        showLoading={true}
+        toolTip="Download JSO2 to file"
+        />
       {Object.values(dropdownsToRender).map((dropdown) => (
         <DropdownButton {...dropdown} key={dropdown.title} />
       ))}

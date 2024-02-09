@@ -1,5 +1,9 @@
 'use strict';
 
+const dns = require("dns");
+
+dns.setDefaultResultOrder("ipv4first");
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('./src/lib/plugins/index.js');
 

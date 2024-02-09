@@ -262,7 +262,7 @@ const download = async <T extends Record<string, any> = Record<string, any>>({
     const form = document.createElement('form');
     form.method = method.toUpperCase();
     form.action = endpoint;
-    form.innerText = fields;
+    form.innerHTML = fields;
 
     getBody(iFrame).appendChild(form);
 

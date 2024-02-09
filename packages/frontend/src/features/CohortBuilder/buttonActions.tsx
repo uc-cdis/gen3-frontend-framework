@@ -26,6 +26,7 @@ export const downloadToFileAction = async (
   params: DownloadFileFromGuppyParams,
   done?: () => void,
   onError?: (error: Error) => void,
+  signal?: AbortSignal,
 ): Promise<void> => {
   const handleData = (data: Blob) => {
     handleDownload(data, params.filename);
@@ -38,5 +39,6 @@ export const downloadToFileAction = async (
     onError: (error: Error) => {
       onError && onError(error);
     },
+    signal,
   });
 };
