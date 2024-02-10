@@ -67,6 +67,7 @@ const prepareFetchConfig = (
  * @param onStart - The function to call when the download starts.
  * @param onDone - The function to call when the download is done.
  * @param onError - The function to call when the download fails.
+ * @param onAbort - The function to call when the download is aborted.
  * @param signal - AbortSignal to use for the request.
  */
 export const  downloadFromGuppy = async ({
@@ -74,6 +75,7 @@ export const  downloadFromGuppy = async ({
   onStart = () => null,
   onDone = (_: Blob) => null,
   onError = (_: Error) => null,
+  onAbort = () => null,
   signal = undefined
 }: DownloadFromGuppyOptions) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
@@ -83,7 +85,7 @@ export const  downloadFromGuppy = async ({
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);
   console.log('signal', signal);
 
-  fetch(url.toString(), {...fetchConfig, ...(signal ? { signal } : {})} as RequestInit)
+  fetch(url.toString(), {...fetchConfig, ...(signal ? { signal: signal  } : {})} as RequestInit)
     .then(async (response: Response) => {
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -115,7 +117,7 @@ export const  downloadFromGuppy = async ({
     .then((blob) => onDone?.(blob))
     .catch((error) => {
       if (error.name == 'AbortError') { // handle abort()
-       console.log("Download Aborted");
+       onAbort?.();
       }
       onError?.(error);
     });

@@ -6,7 +6,7 @@ import {
   showModal,
   useCoreDispatch,
 } from '@gen3/core';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useMemo, useState } from 'react';
 import { downloadToFileAction } from './buttonActions';
 import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
@@ -19,6 +19,7 @@ import { useCallback } from 'react';
 type ActionButtonFunction = (
   done?: () => void,
   onError?: (error: Error) => void,
+  onAbort?: () => void,
   signal?: AbortSignal,
 ) => void;
 
@@ -65,7 +66,7 @@ const GuppyActionButton = ({
   const ref = useRef(null);
   const dispatch = useCoreDispatch();
 
-  const controller = new AbortController();
+
 
   const handleError = useDeepCompareCallback(
     (error: Error) => {
@@ -92,13 +93,12 @@ const GuppyActionButton = ({
     [Modal400, Modal403, customErrorMessage, dispatch],
   );
 
-  const TimeoutFunction = useCallback(() => {
+  const showDownloadNotification = useCallback((controller: AbortController) => {
     showNotification({
       message: (
         <DownloadNotification
           onClick={() => {
             controller.abort();
-            console.log('aborted');
             cleanNotifications();
             if (done) {
               done();
@@ -120,39 +120,7 @@ const GuppyActionButton = ({
       }),
       closeButtonProps: { 'aria-label': 'Close notification' },
     });
-  }, [controller, done, hideNotification] );
-
-  const showNotificationTimeout = setTimeout(
-    () =>
-      showNotification({
-        message: (
-          <DownloadNotification
-            onClick={() => {
-              controller.abort();
-              console.log('aborted');
-              cleanNotifications();
-              if (done) {
-                done();
-              }
-            }}
-          />
-        ),
-        styles: () => ({
-          root: {
-            textAlign: 'center',
-            display: hideNotification ? 'none' : 'block',
-          },
-          closeButton: {
-            color: 'black',
-            '&:hover': {
-              backgroundColor: 'lightslategray',
-            },
-          },
-        }),
-        closeButtonProps: { 'aria-label': 'Close notification' },
-      }),
-    100,
-  ); // set to 100 as that is perceived as instant
+  }, [done, hideNotification] );
 
   const Icon = active ? (
     <Loader size="sm" className="p-1" />
@@ -177,17 +145,24 @@ const GuppyActionButton = ({
             onClick();
             return;
           }
+          const controller =  new AbortController();
+
+          showDownloadNotification(controller);
           dispatch(hideModal());
           setActive && setActive(true);
           actionFunction(
             () => {
-              clearTimeout(showNotificationTimeout);
               setActive && setActive(false);
+              cleanNotifications();
             },
             (error: Error) => {
-              clearTimeout(showNotificationTimeout);
               handleError(error);
               setActive && setActive(false);
+              cleanNotifications();
+            },
+            () => {
+              setActive && setActive(false);
+              cleanNotifications();
             },
             controller.signal,
           );

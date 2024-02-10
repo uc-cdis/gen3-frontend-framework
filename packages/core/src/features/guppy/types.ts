@@ -27,6 +27,7 @@ export interface GuppyActionParams<T extends Record<string, any>> {
   onStart?: () => void;
   onDone?: (blob: Blob) => void;
   onError?: (error: Error) => void;
+  onAbort?: () => void;
   signal?: AbortSignal;
 }
 
