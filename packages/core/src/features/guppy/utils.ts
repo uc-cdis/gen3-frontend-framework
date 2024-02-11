@@ -1,4 +1,4 @@
-import { GuppyActionParams, GuppyDownloadDataParams } from './types';
+import { DownloadFromGuppyParams, GuppyDownloadDataParams } from './types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { selectCSRFToken } from '../gen3';
 import { coreStore } from '../../store';
@@ -6,9 +6,6 @@ import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
 import { isJSONObject } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
-
-export type DownloadFromGuppyOptions =
-  GuppyActionParams<GuppyDownloadDataParams>;
 
 /**
  * Represents a configuration for making a fetch request.
@@ -63,7 +60,7 @@ const prepareFetchConfig = (
  * Downloads a file from Guppy using the provided parameters.
  * It will optionally convert the data to the specified format.
  *
- * @param {DownloadFromGuppyOptions} parameters - The parameters to use for the download request.
+ * @param {DownloadFromGuppyParams} parameters - The parameters to use for the download request.
  * @param onStart - The function to call when the download starts.
  * @param onDone - The function to call when the download is done.
  * @param onError - The function to call when the download fails.
@@ -77,13 +74,12 @@ export const  downloadFromGuppy = async ({
   onError = (_: Error) => null,
   onAbort = () => null,
   signal = undefined
-}: DownloadFromGuppyOptions) => {
+}: DownloadFromGuppyParams) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
   onStart?.();
 
   const url = prepareUrl(GEN3_GUPPY_API);
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);
-  console.log('signal', signal);
 
   fetch(url.toString(), {...fetchConfig, ...(signal ? { signal: signal  } : {})} as RequestInit)
     .then(async (response: Response) => {
@@ -115,7 +111,7 @@ export const  downloadFromGuppy = async ({
       return new Blob([bytes]);
     })
     .then((blob) => onDone?.(blob))
-    .catch((error) => {
+    .catch((error) => { // Abort is handle as an exception
       if (error.name == 'AbortError') { // handle abort()
        onAbort?.();
       }

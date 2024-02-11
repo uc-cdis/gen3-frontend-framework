@@ -1,6 +1,6 @@
 import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
-import download, { DownloadFunctionParams } from '../../utils/download';
+import download, { DownloadFunctionParams } from '../../../utils/download';
 import { hideModal, Modals, useCoreDispatch } from '@gen3/core';
 import { Dispatch, SetStateAction, forwardRef } from 'react';
 
@@ -75,7 +75,6 @@ interface DownloadButtonProps {
  * @param toolTip - The tooltip to display.
  * @category Buttons
  */
-
 
 export const DownloadButton = forwardRef<
   HTMLButtonElement,

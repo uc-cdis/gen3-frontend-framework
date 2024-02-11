@@ -1,17 +1,8 @@
-import {
-  Accessibility,
-  type GuppyDownloadActionFunctionParams,
-  hideModal,
-  Modals,
-  showModal,
-  useCoreDispatch,
-} from '@gen3/core';
+import { hideModal, Modals, showModal, useCoreDispatch } from '@gen3/core';
 import { Dispatch, SetStateAction, useRef, useMemo, useState } from 'react';
-import { downloadToFileAction } from './buttonActions';
 import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import { useDeepCompareCallback } from 'use-deep-compare';
-import { partial } from 'lodash';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
 import { DownloadNotification } from '../../utils/download';
 import { useCallback } from 'react';
@@ -21,7 +12,7 @@ type ActionButtonFunction = (
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
-) => void;
+) => Promise<void>;
 
 interface GuppyActionButtonProps {
   disabled?: boolean;
@@ -43,8 +34,7 @@ interface GuppyActionButtonProps {
   hideNotification?: boolean;
 }
 
-const GuppyActionButton = ({
-  active,
+export const GuppyActionButton = ({
   activeText,
   inactiveText,
   customStyle,
@@ -52,7 +42,6 @@ const GuppyActionButton = ({
   showIcon = true,
   preventClickEvent = false,
   onClick,
-  setActive,
   disabled = false,
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
@@ -62,11 +51,10 @@ const GuppyActionButton = ({
   hideNotification = false,
   actionFunction,
 }: GuppyActionButtonProps) => {
+  const [active, setActive] = useState(false);
   const text = active ? activeText : inactiveText;
   const ref = useRef(null);
   const dispatch = useCoreDispatch();
-
-
 
   const handleError = useDeepCompareCallback(
     (error: Error) => {
@@ -93,34 +81,37 @@ const GuppyActionButton = ({
     [Modal400, Modal403, customErrorMessage, dispatch],
   );
 
-  const showDownloadNotification = useCallback((controller: AbortController) => {
-    showNotification({
-      message: (
-        <DownloadNotification
-          onClick={() => {
-            controller.abort();
-            cleanNotifications();
-            if (done) {
-              done();
-            }
-          }}
-        />
-      ),
-      styles: () => ({
-        root: {
-          textAlign: 'center',
-          display: hideNotification ? 'none' : 'block',
-        },
-        closeButton: {
-          color: 'black',
-          '&:hover': {
-            backgroundColor: 'lightslategray',
+  const showDownloadNotification = useCallback(
+    (controller: AbortController) => {
+      showNotification({
+        message: (
+          <DownloadNotification
+            onClick={() => {
+              controller.abort();
+              cleanNotifications();
+              if (done) {
+                done();
+              }
+            }}
+          />
+        ),
+        styles: () => ({
+          root: {
+            textAlign: 'center',
+            display: hideNotification ? 'none' : 'block',
           },
-        },
-      }),
-      closeButtonProps: { 'aria-label': 'Close notification' },
-    });
-  }, [done, hideNotification] );
+          closeButton: {
+            color: 'black',
+            '&:hover': {
+              backgroundColor: 'lightslategray',
+            },
+          },
+        }),
+        closeButtonProps: { 'aria-label': 'Close notification' },
+      });
+    },
+    [done, hideNotification],
+  );
 
   const Icon = active ? (
     <Loader size="sm" className="p-1" />
@@ -140,17 +131,17 @@ const GuppyActionButton = ({
           } `
         }
         loading={showLoading && active}
-        onClick={() => {
+        onClick={async () => {
           if (!preventClickEvent && onClick) {
             onClick();
             return;
           }
-          const controller =  new AbortController();
+          const controller = new AbortController();
 
           showDownloadNotification(controller);
           dispatch(hideModal());
           setActive && setActive(true);
-          actionFunction(
+          await actionFunction(
             () => {
               setActive && setActive(false);
               cleanNotifications();
@@ -171,45 +162,5 @@ const GuppyActionButton = ({
         {text || Icon}
       </Button>
     </Tooltip>
-  );
-};
-
-interface DownloadToFileButtonProps extends GuppyDownloadActionFunctionParams {
-  activeText: string;
-  inactiveText: string;
-  tooltipText: string;
-  rootPath?: string;
-}
-
-export const DownloadToFileButton = ({
-  type,
-  filename,
-  filter,
-  fields,
-  accessibility,
-  activeText = 'Downloading...',
-  inactiveText = 'Download',
-  tooltipText = 'Download data',
-  rootPath = undefined,
-}: GuppyDownloadActionFunctionParams) => {
-  const [downloading, setDownloading] = useState(false);
-
-  return (
-    <GuppyActionButton
-      activeText={activeText}
-      inactiveText={inactiveText}
-      active={downloading}
-      setActive={setDownloading}
-      actionFunction={partial(downloadToFileAction, {
-        type: type,
-        filename: filename,
-        filter: filter,
-        fields: fields,
-        format: 'json',
-        rootPath: rootPath,
-        ...{ accessibility: accessibility || Accessibility.ALL },
-      })}
-      toolTip={tooltipText}
-    />
   );
 };

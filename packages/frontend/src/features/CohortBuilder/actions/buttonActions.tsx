@@ -1,15 +1,7 @@
-import {
-  GuppyDownloadDataParams,
-  downloadFromGuppy,
-} from '@gen3/core';
+import { GuppyDownloadDataParams, downloadFromGuppy } from '@gen3/core';
 
 interface DownloadFileFromGuppyParams extends GuppyDownloadDataParams {
   filename: string;
-}
-
-export interface DownloadActionParams {
-  done?: () => void;
-  onError?: (error: Error) => void;
 }
 
 const handleDownload = (data: Blob, filename: string) => {
@@ -29,14 +21,13 @@ export const downloadToFileAction = async (
   onAbort?: () => void,
   signal?: AbortSignal,
 ): Promise<void> => {
-  const handleData = (data: Blob) => {
-    handleDownload(data, params.filename);
-    done && done();
-  };
-
-  downloadFromGuppy({
+  // call the downloadFromGuppy function
+  await downloadFromGuppy({
     parameters: params,
-    onDone: (data: Blob) => handleData(data),
+    onDone: (data: Blob) => {
+      handleDownload(data, params.filename);
+      done && done();
+    },
     onError: (error: Error) => {
       onError && onError(error);
     },
