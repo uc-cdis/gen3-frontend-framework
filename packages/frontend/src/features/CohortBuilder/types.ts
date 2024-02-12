@@ -62,3 +62,18 @@ export enum DownloadFileFormats {
     DATA = 'DATA',
     UNDEFINED = 'UNDEFINED',
 }
+
+export type ActionButtonFunction = (
+  done?: () => void,
+  onError?: (error: Error) => void,
+  onAbort?: () => void,
+  signal?: AbortSignal,
+) => Promise<void>;
+
+export type ActionButtonWithArgsFunction = (
+  params: Record<string, any>,
+  done?: () => void,
+  onError?: (error: Error) => void,
+  onAbort?: () => void,
+  signal?: AbortSignal,
+) => Promise<void>;

@@ -5,11 +5,11 @@ import {
   DropdownButton,
   DownloadButtonProps,
 } from '../../components/Buttons/DropdownButtons';
-import ActionButton from '../../components/Buttons/ActionButton';
 import { FilterSet, useIsUserLoggedIn, Accessibility } from '@gen3/core';
 import { GuppyActionButton } from './DownloadButtons';
 import { partial } from 'lodash';
-import { downloadToFileAction } from './actions/buttonActions';
+import { downloadToFileAction } from './actions/downloadToFile';
+import { findButtonAction, NullButtonAction } from './actions/registeredActions';
 
 interface DownloadsPanelProps {
   dropdowns: Record<string, DropdownsWithButtonsProps>;
@@ -64,27 +64,43 @@ const DownloadsPanel = ({
 
   return dropdowns ? (
     <div className="flex space-x-1">
-      <GuppyActionButton
-        activeText={'Downloading...'}
-        inactiveText={'Download'}
-        toolTip={'Download data'}
-        actionFunction={partial(downloadToFileAction, {
-          type: index,
-          filename: `${index}.json`,
-          filter: filters,
-          fields: fields,
-          format: 'json',
-          rootPath: rootPath,
-          ...{ accessibility: accessibility || Accessibility.ALL },
-        })}
-      />
 
       {Object.values(dropdownsToRender).map((dropdown) => (
         <DropdownButton {...dropdown} key={dropdown.title} />
       ))}
-      {buttons.map((button) => (
-        <ActionButton {...button} key={button.title} />
-      ))}
+
+      {buttons.map((button) => {
+        let disabled = false;
+        let actionFunction  = NullButtonAction;
+        if (button.action) {
+          const actionItem = findButtonAction(button.action);
+          if (actionItem) {
+            const funcArgs = actionItem.args ?? {};
+            const func = actionItem.action;
+            actionFunction = partial(func, {
+              type: index,
+              filter: filters,
+              fields: fields,
+              ...{ accessibility: accessibility || Accessibility.ALL },
+              ...(funcArgs ?? {} as Record<string, any>),
+            });
+          }
+        }
+        if (loginRequired && !isUserLoggedIn) {
+          disabled = true;
+        }
+
+        return (
+        <GuppyActionButton
+          activeText={'Downloading...'}
+          inactiveText={button.title}
+          tooltipText={button.tooltipText}
+          disabled={disabled || !button.enabled}
+          actionFunction={actionFunction}
+          key={button.title}
+        />
+      );}
+      )}
     </div>
   ) : (
     <React.Fragment></React.Fragment>

@@ -1,18 +1,11 @@
 import { hideModal, Modals, showModal, useCoreDispatch } from '@gen3/core';
-import { Dispatch, SetStateAction, useRef, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useRef, useState } from 'react';
 import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import { useDeepCompareCallback } from 'use-deep-compare';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
 import { DownloadNotification } from '../../utils/download';
-import { useCallback } from 'react';
-
-type ActionButtonFunction = (
-  done?: () => void,
-  onError?: (error: Error) => void,
-  onAbort?: () => void,
-  signal?: AbortSignal,
-) => Promise<void>;
+import { ActionButtonFunction } from './types';
 
 interface GuppyActionButtonProps {
   disabled?: boolean;
@@ -27,7 +20,7 @@ interface GuppyActionButtonProps {
   active?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
-  toolTip?: string;
+  tooltipText?: string;
   done?: () => void;
   actionFunction: ActionButtonFunction;
   customErrorMessage?: string;
@@ -45,7 +38,7 @@ export const GuppyActionButton = ({
   disabled = false,
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
-  toolTip,
+  tooltipText,
   done,
   customErrorMessage,
   hideNotification = false,
@@ -119,7 +112,7 @@ export const GuppyActionButton = ({
     <FiDownload title="download" size={16} />
   );
   return (
-    <Tooltip disabled={!toolTip} label={toolTip}>
+    <Tooltip disabled={!tooltipText} label={tooltipText}>
       <Button
         ref={ref}
         leftIcon={showIcon && inactiveText && <FiDownload />}

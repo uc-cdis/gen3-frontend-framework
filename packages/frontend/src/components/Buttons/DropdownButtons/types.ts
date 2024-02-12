@@ -4,8 +4,9 @@ export interface DownloadButtonProps {
   title: string;
   leftIcon?: string;
   rightIcon?: string;
-  fileName: string;
   tooltipText?: string;
+  action?: string;
+  actionArgs?: Record<string, string>;
 }
 
 export interface DropdownButtonsProps {
