@@ -27,9 +27,6 @@ const GqlQueryEditor = ({
     return data.json().catch(() => data.text());
   };
 
-  const explorer = explorerPlugin({
-    showAttribution: true,
-  });
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -43,7 +40,6 @@ const GqlQueryEditor = ({
         fetcher={fetcher}
         query={query}
         onEditQuery={setQuery}
-        plugins={[explorer]}
       >
         <GraphiQL.Logo> {null} </GraphiQL.Logo>
       </GraphiQL>
