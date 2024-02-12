@@ -36,8 +36,5 @@
   },
   "files": [
     "dist"
-  ],
-  "publishConfig": {
-    "registry": "https://localhost:4873/"
-  }
+  ]
 }
