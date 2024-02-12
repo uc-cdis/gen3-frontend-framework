@@ -42,4 +42,4 @@ export const registerDefaultButtonActions = () => {
   registerButtonAction('data-tsv', {
     action: downloadToFileAction, args: { format: 'tsv' }
   });
-}
+};

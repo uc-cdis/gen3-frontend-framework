@@ -1,8 +1,5 @@
 import { GuppyDownloadDataParams, downloadFromGuppy } from '@gen3/core';
 
-interface DownloadFileFromGuppyParams extends GuppyDownloadDataParams {
-  filename: string;
-}
 
 const handleDownload = (data: Blob, filename: string) => {
   const aElement = document.createElement('a');

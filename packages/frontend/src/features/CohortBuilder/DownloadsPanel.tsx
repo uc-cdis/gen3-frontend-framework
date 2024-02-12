@@ -8,7 +8,6 @@ import {
 import { FilterSet, useIsUserLoggedIn, Accessibility } from '@gen3/core';
 import { GuppyActionButton } from './DownloadButtons';
 import { partial } from 'lodash';
-import { downloadToFileAction } from './actions/downloadToFile';
 import { findButtonAction, NullButtonAction } from './actions/registeredActions';
 
 interface DownloadsPanelProps {
@@ -32,7 +31,6 @@ const DownloadsPanel = ({
   fields,
   filters,
   accessibility,
-  rootPath,
 }: DownloadsPanelProps): JSX.Element => {
   const isUserLoggedIn = useIsUserLoggedIn();
   const loginRequired = loginForDownload ? loginForDownload : false;
@@ -82,7 +80,7 @@ const DownloadsPanel = ({
               filter: filters,
               fields: fields,
               ...{ accessibility: accessibility || Accessibility.ALL },
-              ...(funcArgs ?? {} as Record<string, any>),
+              ...(funcArgs ?? {} as Record<string, never>),
             });
           }
         }

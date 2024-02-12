@@ -71,7 +71,7 @@ export type ActionButtonFunction = (
 ) => Promise<void>;
 
 export type ActionButtonWithArgsFunction = (
-  params: Record<string, any>,
+  params: Record<string, never>,
   done?: () => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
