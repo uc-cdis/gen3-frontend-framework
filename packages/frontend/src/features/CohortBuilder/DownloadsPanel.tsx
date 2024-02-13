@@ -80,7 +80,7 @@ const DownloadsPanel = ({
               filter: filters,
               fields: fields,
               ...{ accessibility: accessibility || Accessibility.ALL },
-              ...(funcArgs ?? {} as Record<string, never>),
+              ...(funcArgs ?? {} as Record<string, any>),
             });
           }
         }

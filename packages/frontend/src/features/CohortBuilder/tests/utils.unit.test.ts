@@ -88,18 +88,20 @@ describe('AddButtonsToDropdown', () => {
         type: 'csv',
         leftIcon: 'download',
         rightIcon: '',
-        fileName: 'test.csv',
         tooltipText: 'test tooltip',
+        action: 'test action',
+        actionArgs: { fileName: 'test.csv' }
       },
       {
         dropdownId: 'dropdown2',
         title: 'Button 2',
         enabled: true,
         type: 'csv',
-        fileName: 'test.csv',
         leftIcon: 'download',
         tooltipText: 'test tooltip',
         rightIcon: '',
+        action: 'test action',
+        actionArgs: { fileName: 'test.csv' }
       }
     ];
     const expected : Record<string, DropdownsWithButtonsProps> = {
@@ -111,8 +113,9 @@ describe('AddButtonsToDropdown', () => {
             type: 'csv',
             leftIcon: 'download',
             rightIcon: '',
-            fileName: 'test.csv',
             tooltipText: 'test tooltip',
+            action: 'test action',
+            actionArgs: { fileName: 'test.csv' }
           }
         ],
         title: 'Dropdown 1',
@@ -123,10 +126,11 @@ describe('AddButtonsToDropdown', () => {
             title: 'Button 2',
             enabled: true,
             type: 'csv',
-            fileName: 'test.csv',
             leftIcon: 'download',
             tooltipText: 'test tooltip',
             rightIcon: '',
+            action: 'test action',
+            actionArgs: { fileName: 'test.csv' }
           }
         ],
         title: 'Dropdown 2',
@@ -150,7 +154,8 @@ describe('AddButtonsToDropdown', () => {
         title: 'Button 1',
         enabled: true,
         type: 'csv',
-        fileName: 'test.csv',
+        action: 'test action',
+        actionArgs: { fileName: 'test.csv' }
       }
     ];
     const expected : Record<string, DropdownsWithButtonsProps> = {
@@ -160,7 +165,8 @@ describe('AddButtonsToDropdown', () => {
             title: 'Button 1',
             enabled: true,
             type: 'csv',
-            fileName: 'test.csv',
+            action: 'test action',
+            actionArgs: { fileName: 'test.csv' }
           }
         ],
         title: 'Dropdown 1',
@@ -189,7 +195,8 @@ describe('AddButtonsToDropdown', () => {
         title: 'Button 3',
         enabled: true,
         type: 'csv',
-        fileName: 'test.csv',
+        action: 'test action',
+        actionArgs: { fileName: 'test.csv' }
       }
     ];
     const expected : Record<string, DropdownsWithButtonsProps> = {
