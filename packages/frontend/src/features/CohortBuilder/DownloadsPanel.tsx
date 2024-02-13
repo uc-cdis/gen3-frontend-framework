@@ -63,10 +63,12 @@ const DownloadsPanel = ({
   return dropdowns ? (
     <div className="flex space-x-1">
 
+      // handle dropdowns
       {Object.values(dropdownsToRender).map((dropdown) => (
         <DropdownButton {...dropdown} key={dropdown.title} />
       ))}
 
+      // render individual buttons
       {buttons.map((button) => {
         let disabled = false;
         let actionFunction  = NullButtonAction;

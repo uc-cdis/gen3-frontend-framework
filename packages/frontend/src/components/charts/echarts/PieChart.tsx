@@ -3,7 +3,6 @@ import {processLabel, truncateString} from '../utils';
 import ReactECharts, { ReactEChartsProps} from './ReactECharts';
 import { ChartProps } from '../types';
 
-
 interface PieChartData {
     value: number;
     name: string;
