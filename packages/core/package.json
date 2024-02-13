@@ -1,18 +1,25 @@
 {
   "name": "@gen3/core",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
-    "directory": "packages/core"
-  },
-  "version": "0.1.0",
+  "version": "0.10.2",
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
-  "main": "dist/index.esm.js",
+  "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.esm.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "scripts": {
     "compile": "tsc",
     "clean": "rimraf dist",
@@ -64,10 +71,7 @@
     "flat": "^6.0.1",
     "papaparse": "^5.4.1"
   },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "registry": "https://localhost:4873/"
-  }
+    "files": [
+        "dist"
+    ]
 }

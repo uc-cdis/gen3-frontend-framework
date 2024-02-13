@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && npm install -g npm
 
 RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-RUN npm install --location=global lerna@6.6.1
+RUN npm install --location=global lerna@6.6.2
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
@@ -53,6 +53,7 @@ RUN npm install \
     "@napi-rs/magic-string"
 RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
-RUN lerna run --scope @gen3/datacommonsapp build
+RUN lerna run --scope @gen3/toolsff build
+RUN lerna run --scope @gen3/samplecommons build
 ENV PORT=80
 CMD ["npm", "run", "start"]
