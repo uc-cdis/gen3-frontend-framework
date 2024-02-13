@@ -1,12 +1,12 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.0",
+  "version": "0.10.2",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "main": "dist/index.esm.js",
+  "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
-    "@gen3/core": "file:../core",
+    "@gen3/core": "@gen3/core",
     "@graphiql/react": "^0.20.2",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.21",

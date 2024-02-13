@@ -22,6 +22,7 @@
     "forceConsistentCasingInFileNames": true,
     "target": "esnext",
     "resolveJsonModule": true,
+    "allowJs": true,
     "sourceMap": true,
     "lib": [
       "dom",

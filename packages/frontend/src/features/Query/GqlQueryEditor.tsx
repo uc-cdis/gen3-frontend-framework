@@ -1,5 +1,4 @@
 import React, { ReactElement, useState } from 'react';
-import { explorerPlugin } from '@graphiql/plugin-explorer';
 import GraphiQL from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
