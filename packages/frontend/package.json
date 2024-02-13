@@ -1,17 +1,12 @@
 {
   "name": "@gen3/frontend",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/uc-cdis/gen3-frontend-framework.git",
-    "directory": "packages/frontend"
-  },
-  "version": "0.20.2",
+  "version": "0.10.2",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "main": "dist/index.esm.js",
+  "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
@@ -47,14 +42,13 @@
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
-    "@gen3/core": "file:../core",
-    "@graphiql/plugin-explorer": "^1.0.2",
+    "@gen3/core": "@gen3/core",
     "@graphiql/react": "^0.20.2",
     "@iconify/react": "^4.0.1",
-    "@mantine/core": "^6.0.4",
-    "@mantine/hooks": "^6.0.4",
-    "@mantine/next": "^6.0.20",
-    "@mantine/notifications": "^6.0.20",
+    "@mantine/core": "^6.0.21",
+    "@mantine/hooks": "^6.0.21",
+    "@mantine/next": "^6.0.21",
+    "@mantine/notifications": "^6.0.21",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.0",
@@ -96,7 +90,7 @@
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
     "rollup-plugin-sourcemaps": "^0.6.3",
-    "sharp": "^0.30.7",
+    "sharp": "^0.33.2",
     "stable-hash": "^0.0.3",
     "swr": "^2.1.5",
     "tailwind-styled-components": "^2.2.0",
@@ -116,7 +110,6 @@
     "@types/estree": "^1.0.0",
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.36",
-    "@types/jsonpath-plus": "^5.0.5",
     "@types/jest": "^29.2.3",
     "@types/lodash": "^4.14.191",
     "@types/mdx": "^2.0.3",
@@ -156,8 +149,5 @@
   },
   "files": [
     "dist"
-  ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  ]
 }
