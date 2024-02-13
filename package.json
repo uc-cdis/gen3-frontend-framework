@@ -6,6 +6,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "engines" : {
+    "npm" : ">=10.2.3",
+    "node" : ">=18.17.0"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
@@ -53,6 +57,7 @@
     "jest-environment-jsdom": "^29.4.3",
     "lerna": "^6.6.2",
     "prettier": "^2.7.1",
+    "rollup":"^3.29.4",
     "rollup-plugin-swc3": "^0.10.2",
     "rollup-swc-preserve-directives": "^0.5.0",
     "terser-webpack-plugin": "^5.3.3",
