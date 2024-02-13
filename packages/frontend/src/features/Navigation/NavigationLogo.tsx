@@ -16,7 +16,8 @@ const NavigationLogo = ({
           className="pr-3 object-contain"
           fill
           src={`${basePath}${src}`}
-          alt={description}
+          alt={description ?? title}
+          priority={true}
         />
       </HoverLink>
       {title && (
