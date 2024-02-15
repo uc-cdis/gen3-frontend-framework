@@ -9,7 +9,7 @@ interface ActionCreatorFactoryItem {
 
 const registeredButtonActions: Record<string, ActionCreatorFactoryItem> = {};
 
-export const NullButtonAction:ActionButtonFunction = (): Promise<void>  => { return new Promise<void>(()=>null); };
+export const NullButtonAction:ActionButtonWithArgsFunction = (): Promise<void>  => { return new Promise<void>(()=>null); };
 
 export const registerButtonAction = (
   buttonName: string,
@@ -43,3 +43,5 @@ export const registerDefaultButtonActions = () => {
     action: downloadToFileAction, args: { format: 'tsv' }
   });
 };
+
+registerDefaultButtonActions();

@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 
 const DropdownButton = ({title, buttons} : DropdownButtonsProps ) : JSX.Element  => {
   return (
-    <Menu>
+    <Menu onChange={(value) => console.log(value)}>
       <Menu.Target>
         <Button color="secondary">{title}</Button>
       </Menu.Target>

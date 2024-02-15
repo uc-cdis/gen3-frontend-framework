@@ -35,6 +35,7 @@ import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
 import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { sort } from 'next/dist/build/webpack/loaders/css-loader/src/utils';
 
 const EmptyData = {};
 
@@ -265,7 +266,7 @@ export const CohortPanel = ({
               index={index}
               totalCount={counts ?? 0}
               fields={fields}
-              filters={cohortFilters}
+              filter={cohortFilters}
             />
             .
             <CountsValue
