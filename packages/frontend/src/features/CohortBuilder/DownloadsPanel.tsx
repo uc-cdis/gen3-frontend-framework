@@ -9,9 +9,8 @@ import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import { GuppyDropdownWithIcon } from './GuppyDropdownWithIcon';
 
-const createDownloadMenuButton = (props: DropdownButtonsProps) : JSX.Element => {
-
-  const elements = props.buttons.map((button) => {
+const createDownloadMenuButton = (props: DropdownButtonsProps, args:Record<string, any>) : JSX.Element => {
+  const elements = props.dropdownItems.map((button) => {
     let disabled = false;
     let actionFunction  = NullButtonAction;
     let actionArgs = {};
@@ -19,13 +18,16 @@ const createDownloadMenuButton = (props: DropdownButtonsProps) : JSX.Element => 
     if (button.action) {
       const actionItem = findButtonAction(button.action);
       if (actionItem) {
-        const funcArgs = actionItem.args ?? {};
-        const func = actionItem.action;
-        actionFunction = func;
-        actionArgs = funcArgs ?? {} as Record<string, any>
+        actionFunction = actionItem.action;
+        actionArgs =  actionItem.args ?? {} as Record<string, any>
       }
     }
 
+    console.log("args",
+      args,
+      actionArgs,
+      button.actionArgs
+    );
 
     return {
       title: button.title,
@@ -36,7 +38,9 @@ const createDownloadMenuButton = (props: DropdownButtonsProps) : JSX.Element => 
       actionFunction: actionFunction,
       type: button.type,
       actionArgs: {
+        ...args,
         ...actionArgs,
+        ...(button.actionArgs ?? {} as Record<string, any>),
       },
     } as DownloadButtonPropsWithAction;
   })
@@ -46,16 +50,16 @@ const createDownloadMenuButton = (props: DropdownButtonsProps) : JSX.Element => 
 }
 
 interface DownloadsPanelProps {
-  dropdowns: Record<string, DropdownsWithButtonsProps>;
-  buttons: DownloadButtonProps[];
-  loginForDownload?: boolean;
-  accessibility?: Accessibility;
-  rootPath?: string;
-  index: string;
-  totalCount: number;
-  fields: string[];
-  filter: FilterSet;
-  sort?: string[];
+  readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
+  readonly buttons: ReadonlyArray<DownloadButtonProps>;
+  readonly loginForDownload?: boolean;
+  readonly accessibility?: Accessibility;
+  readonly rootPath?: string;
+  readonly index: string;
+  readonly totalCount: number;
+  readonly fields: string[];
+  readonly filter: FilterSet;
+  readonly sort?: string[];
 }
 
 const DownloadsPanel = ({
@@ -83,7 +87,7 @@ const DownloadsPanel = ({
             [key]: {
               ...dropdown,
               title: `${dropdown.title} (Login Required)`,
-              buttons: dropdown.buttons.map((button) => ({
+              buttons: dropdown.dropdownItems.map((button) => ({
                 ...button,
                 title: `${button.title} (Login Required)`,
                 enabled: false,
@@ -97,22 +101,28 @@ const DownloadsPanel = ({
     return dropdownsToRender;
   }, [dropdowns, isUserLoggedIn, loginRequired]);
 
-  return dropdowns ? (
+  console.log("dropdownsToRender", dropdownsToRender);
+  return dropdowns || buttons ? (
     <div className="flex space-x-1">
 
-      // handle dropdowns
-      {Object.values(dropdownsToRender).map((dropdown) =>
-        {return createDownloadMenuButton(dropdown); })}
+      {Object.values(dropdownsToRender).map((dropdown : DropdownsWithButtonsProps) =>
+        {return createDownloadMenuButton(dropdown,
+          {
+            type: index,
+            totalCount,
+            fields,
+            filter,
+            accessibility : accessibility ?? Accessibility.ALL,
+            // sort: sort, // TODO add sort
+          }
+        ); })}
 
-      // render individual buttons
       {buttons.map((button) => {
         let disabled = false;
         let actionFunction  = NullButtonAction;
         let actionArgs = {};
-        console.log("button", button);
         if (button.action) {
           const actionItem = findButtonAction(button.action);
-          console.log("found action item", actionItem);
           if (actionItem) {
             const funcArgs = actionItem.args ?? {};
             const func = actionItem.action;

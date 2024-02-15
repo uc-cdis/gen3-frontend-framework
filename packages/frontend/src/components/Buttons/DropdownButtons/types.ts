@@ -11,5 +11,5 @@ export interface DownloadButtonProps {
 
 export interface DropdownButtonsProps {
   readonly title: string;
-  buttons: ReadonlyArray<Partial<DownloadButtonProps>>;
+  dropdownItems: ReadonlyArray<Partial<DownloadButtonProps>>;
 }

@@ -33,8 +33,7 @@ export interface DropdownButtonsConfig {
 }
 
 export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
-    buttons: ReadonlyArray<DownloadButtonProps>;
-
+    dropdownItems: ReadonlyArray<DownloadButtonProps>;
 }
 
 export interface CohortPanelConfig {
@@ -43,8 +42,8 @@ export interface CohortPanelConfig {
     readonly charts?: Record<string, SummaryChart>;
     readonly table?: SummaryTable;
     readonly filters?: TabsConfig;
-    readonly dropdowns?: Record<string, DropdownButtonsConfig>;
-    readonly buttons?: ReadonlyArray<DownloadButtonConfig>; // legacy support for data-portal config
+    readonly dropdowns?: Record<string, DropdownsWithButtonsProps>;
+    readonly buttons?: ReadonlyArray<DownloadButtonConfig>;
     readonly loginForDownload?: boolean;
 }
 

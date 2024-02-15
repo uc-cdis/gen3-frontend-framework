@@ -145,6 +145,9 @@ export const GuppyDropdownWithIcon = ({
   tooltip = undefined,
   buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
+
+  console.log("GuppyDropdownWithIcon", dropdownElements);
+
   return (
     <Menu
       width={disableTargetWidth ?? "target"}

@@ -33,9 +33,6 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
-import { useDeepCompareMemo } from 'use-deep-compare';
-import { sort } from 'next/dist/build/webpack/loaders/css-loader/src/utils';
 
 const EmptyData = {};
 
@@ -146,15 +143,6 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  const dropdownsWithButtons = AddButtonsToDropdown(
-    AddButtonsArrayToDropdowns(dropdowns),
-    buttons,
-  );
-
-  const actionButtons = buttons
-    ? buttons.filter((button) => button?.dropdownId === undefined)
-    : [];
-
   const getEnumFacetData = useCallback(
     (field: string) => {
       return {
@@ -260,8 +248,8 @@ export const CohortPanel = ({
 
           <div className="flex justify-between mb-1 ml-2">
             <DownloadsPanel
-              dropdowns={dropdownsWithButtons}
-              buttons={actionButtons}
+              dropdowns={dropdowns ?? {}}
+              buttons={ buttons ?? []}
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}
