@@ -19,7 +19,6 @@ export const downloadToFileAction = async (
   signal?: AbortSignal,
 ): Promise<void> => {
 
-  console.log("params (downloadToFileAction)", params);
   // call the downloadFromGuppy function
   await downloadFromGuppy({
     parameters: params as GuppyDownloadDataParams,

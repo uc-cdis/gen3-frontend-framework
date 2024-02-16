@@ -85,6 +85,7 @@ const useGuppyActionButton = ({
           },
         }),
         closeButtonProps: { 'aria-label': 'Close notification' },
+        autoClose: false,
       });
     },
     [done, hideNotification],
