@@ -2,10 +2,10 @@ import useGuppyActionButton from './downloadActionHook';
 import { Button, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import { useRef } from 'react';
-import { GuppyActionButtonProps } from './types';
+import { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
 
-const GuppyActionButtonUsingHook = (
+const CohortActionButton = (
   {
     activeText,
     inactiveText,
@@ -59,4 +59,4 @@ const GuppyActionButtonUsingHook = (
   );
 };
 
-export default GuppyActionButtonUsingHook;
+export default CohortActionButton;

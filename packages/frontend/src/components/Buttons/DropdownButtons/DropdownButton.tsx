@@ -1,8 +1,8 @@
 import { Menu, Button, Text } from '@mantine/core';
-import { type DropdownButtonsProps } from './types';
+import { type DropdownButtonProps } from './types';
 import { Icon } from '@iconify/react';
 
-const DropdownButton = ({title, dropdownItems} : DropdownButtonsProps ) : JSX.Element  => {
+const DropdownButton = ({title, dropdownItems} : DropdownButtonProps ) : JSX.Element  => {
   return (
     <Menu onChange={(value) => console.log(value)}>
       <Menu.Target>

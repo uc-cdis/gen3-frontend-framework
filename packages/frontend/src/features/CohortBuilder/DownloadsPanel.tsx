@@ -1,53 +1,85 @@
 import React from 'react';
-import { DownloadButtonPropsWithAction, DropdownsWithButtonsProps } from './types';
+import {
+  DownloadButtonPropsWithAction,
+  DropdownsWithButtonsProps,
+} from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { DownloadButtonProps, type DropdownButtonsProps } from '../../components/Buttons/DropdownButtons';
+import {
+  DownloadButtonProps,
+  type DropdownButtonProps,
+} from '../../components/Buttons/DropdownButtons';
 import { Accessibility, FilterSet, useIsUserLoggedIn } from '@gen3/core';
-import GuppyActionButtonUsingHook from './GuppyActionButton';
-import { findButtonAction, NullButtonAction } from './actions/registeredActions';
+import CohortActionButton from './downloads/CohortActionButton';
+import {
+  findButtonAction,
+  NullButtonAction,
+} from './downloads/actions/registeredActions';
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
-import { GuppyDropdownWithIcon } from './GuppyDropdownWithIcon';
+import  CohortDropdownActionButton  from './downloads/CohortDropdownActionButton';
 
-const createDownloadMenuButton = (props: DropdownButtonsProps, args:Record<string, any>) : JSX.Element => {
+const makeActionArgs = (button: DownloadButtonProps) => {
+  let actionFunction = NullButtonAction;
+  let actionArgs = {} as Record<string, any>; // not required but just for clarity
+  if (button.action) {
+    const actionItem = findButtonAction(button.action);
+    if (actionItem) {
+      const funcArgs = actionItem.args ?? {};
+      const func = actionItem.action;
+      actionFunction = func;
+      actionArgs = funcArgs;
+    }
+  }
+
+  return { actionFunction, actionArgs };
+};
+
+const createDownloadMenuButton = (
+  props: DropdownButtonProps,
+  args: Record<string, any>,
+): JSX.Element => {
   const elements = props.dropdownItems.map((button) => {
-    let disabled = false;
-    let actionFunction  = NullButtonAction;
+    let actionFunction = NullButtonAction;
     let actionArgs = {};
 
     if (button.action) {
       const actionItem = findButtonAction(button.action);
       if (actionItem) {
         actionFunction = actionItem.action;
-        actionArgs =  actionItem.args ?? {} as Record<string, any>
+        actionArgs = actionItem.args ?? ({} as Record<string, any>);
       }
     }
-
-    console.log("args",
-      args,
-      actionArgs,
-      button.actionArgs
-    );
 
     return {
       title: button.title,
       activeText: 'Downloading...',
       disabled: button.enabled !== undefined ? !button.enabled : true,
-      icon: button?.leftIcon ? <Icon icon={button.leftIcon} /> : <DownloadIcon aria-label={"Download"}/>,
+      icon: button?.leftIcon ? (
+        <Icon icon={button.leftIcon} />
+      ) : (
+        <DownloadIcon aria-label={'Download'} />
+      ),
       rightSection: button?.rightIcon ? <Icon icon={button.rightIcon} /> : null,
       actionFunction: actionFunction,
       type: button.type,
       actionArgs: {
         ...args,
         ...actionArgs,
-        ...(button.actionArgs ?? {} as Record<string, any>),
+        ...(button.actionArgs ?? ({} as Record<string, any>)),
       },
     } as DownloadButtonPropsWithAction;
-  })
+  });
   return (
-    <GuppyDropdownWithIcon TargetButtonChildren={"Downloading..."} dropdownElements={elements} />
-  )
-}
+    <CohortDropdownActionButton
+      inactiveText={props.title}
+      activeText={props.actionTitle}
+      leftIcon={props.leftIcon ? <Icon icon={props.leftIcon} /> : undefined}
+      rightIcon={props.rightIcon ? <Icon icon={props.rightIcon} /> : undefined}
+      TargetButtonChildren={'Downloading...'}
+      dropdownElements={elements}
+    />
+  );
+};
 
 interface DownloadsPanelProps {
   readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
@@ -99,27 +131,26 @@ const DownloadsPanel = ({
       );
     }
     return dropdownsToRender;
-  }, [dropdowns, isUserLoggedIn, loginRequired]);
+  }, [dropdowns, loginRequired, isUserLoggedIn]);
 
-  console.log("dropdownsToRender", dropdownsToRender);
   return dropdowns || buttons ? (
     <div className="flex space-x-1">
-
-      {Object.values(dropdownsToRender).map((dropdown : DropdownsWithButtonsProps) =>
-        {return createDownloadMenuButton(dropdown,
-          {
+      {Object.values(dropdownsToRender).map(
+        (dropdown: DropdownsWithButtonsProps) => {
+          return createDownloadMenuButton(dropdown, {
             type: index,
             totalCount,
             fields,
             filter,
-            accessibility : accessibility ?? Accessibility.ALL,
+            accessibility: accessibility ?? Accessibility.ALL,
             // sort: sort, // TODO add sort
-          }
-        ); })}
+          });
+        },
+      )}
 
       {buttons.map((button) => {
         let disabled = false;
-        let actionFunction  = NullButtonAction;
+        let actionFunction = NullButtonAction;
         let actionArgs = {};
         if (button.action) {
           const actionItem = findButtonAction(button.action);
@@ -127,7 +158,7 @@ const DownloadsPanel = ({
             const funcArgs = actionItem.args ?? {};
             const func = actionItem.action;
             actionFunction = func;
-            actionArgs = funcArgs ?? {} as Record<string, any>
+            actionArgs = funcArgs ?? ({} as Record<string, any>);
           }
         }
         if (loginRequired && !isUserLoggedIn) {
@@ -135,28 +166,26 @@ const DownloadsPanel = ({
         }
 
         return (
-        <GuppyActionButtonUsingHook
-          activeText={'Downloading...'}
-          inactiveText={button.title}
-          tooltipText={button.tooltipText}
-          disabled={disabled || !button.enabled}
-          actionFunction={actionFunction}
-          actionArgs={
-            {
+          <CohortActionButton
+            activeText={'Downloading...'}
+            inactiveText={button.title}
+            tooltipText={button.tooltipText}
+            disabled={disabled || !button.enabled}
+            actionFunction={actionFunction}
+            actionArgs={{
               ...actionArgs,
-              ...(button.actionArgs ?? {} as Record<string, any>),
+              ...(button.actionArgs ?? ({} as Record<string, any>)),
               type: index,
               totalCount,
               fields,
               filter,
-              accessibility : accessibility ?? Accessibility.ALL,
-             // sort: sort, // TODO add sort
-            }
-          }
-          key={button.title}
-        />
-      );}
-      )}
+              accessibility: accessibility ?? Accessibility.ALL,
+              // sort: sort, // TODO add sort
+            }}
+            key={button.title}
+          />
+        );
+      })}
     </div>
   ) : (
     <React.Fragment></React.Fragment>

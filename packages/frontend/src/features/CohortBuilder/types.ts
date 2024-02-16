@@ -29,7 +29,6 @@ export interface DownloadButtonConfig extends DownloadButtonProps {
 
 export interface DropdownButtonsConfig {
     readonly title: string;
-
 }
 
 export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {

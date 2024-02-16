@@ -1,13 +1,13 @@
 import { useState, useRef, useCallback } from 'react';
 import { hideModal, Modals, showModal, useCoreDispatch } from '@gen3/core';
-import { GuppyActionButtonProps } from './types';
+import { GuppyActionButtonProps } from '../types';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
-import { DownloadNotification } from '../../utils/download';
+import { DownloadNotification } from '../../../utils/download';
 import { Loader } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import { useDeepCompareCallback } from 'use-deep-compare';
 
-type GuppyDownloadActionHookProps = Pick<
+interface GuppyDownloadActionHookProps extends Pick<
   GuppyActionButtonProps,
   | 'Modal403'
   | 'Modal400'
@@ -16,7 +16,9 @@ type GuppyDownloadActionHookProps = Pick<
   | 'hideNotification'
   | 'actionFunction'
   | 'actionArgs'
->;
+> {
+  setIsActive?: (active: boolean) => void;
+}
 
 const useGuppyActionButton = ({
   Modal403 = Modals.NoAccessModal,
@@ -26,6 +28,7 @@ const useGuppyActionButton = ({
   hideNotification = false,
   actionFunction,
   actionArgs,
+  setIsActive = (_:boolean) => null,
 }: GuppyDownloadActionHookProps) => {
   const [active, setActive] = useState(false);
   const dispatch = useCoreDispatch();
@@ -93,19 +96,23 @@ const useGuppyActionButton = ({
 
     showDownloadNotification(controller);
     setActive(true);
+    setIsActive && setIsActive(true);
     await actionFunction(
       actionArgs,
       () => {
         setActive(false);
+        setIsActive && setIsActive(false);
         // Clean up notifications...
       },
       (error) => {
         handleError(error);
         setActive(false);
+        setIsActive && setIsActive(false);
         // Clean up notifications...
       },
       () => {
         setActive(false);
+        setIsActive && setIsActive(false);
         // Clean up notifications...
       },
       controller.signal,
@@ -121,7 +128,7 @@ const useGuppyActionButton = ({
   return {
     handleClick,
     icon,
-    active,
+    active
   };
 };
 

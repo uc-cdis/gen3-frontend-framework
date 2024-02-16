@@ -1,4 +1,4 @@
-import { ActionButtonWithArgsFunction, ActionButtonFunction } from '../types';
+import { ActionButtonWithArgsFunction, ActionButtonFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 // create a factory for the action creators
 
