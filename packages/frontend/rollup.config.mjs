@@ -114,7 +114,7 @@ const config = [
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives(),
+        swcPreserveDirectives()
       ),
     ],
   },

@@ -1,6 +1,7 @@
+/* tslint:disable no-var-requires */
 'use strict';
 
-import dns = require('dns');
+const dns = require('dns');
 
 dns.setDefaultResultOrder('ipv4first');
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 
@@ -33,6 +33,7 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 const EmptyData = {};
 
@@ -143,7 +144,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  const getEnumFacetData = useCallback(
+  const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
         data: processBucketData(data?.[field]),
@@ -157,7 +158,7 @@ export const CohortPanel = ({
     [cohortFilters, data, isSuccess],
   );
 
-  const getRangeFacetData = useCallback(
+  const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
         data: processRangeData(data?.[field]),
@@ -171,7 +172,7 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useMemo(() => {
+  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useDeepCompareMemo(() => {
     return {
       enum: {
         useGetFacetData: getEnumFacetData,
@@ -191,7 +192,7 @@ export const CohortPanel = ({
   }, [getEnumFacetData, getRangeFacetData, index]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
       const facetDefs = classifyFacets(data, index, guppyConfig.fieldMapping);
       setFacetDefinitions(facetDefs);
