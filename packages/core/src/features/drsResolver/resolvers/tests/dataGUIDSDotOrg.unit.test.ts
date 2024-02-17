@@ -29,7 +29,7 @@ describe('resolveDRSWithDataGUISOrg', () => {
   it('should return empty object if input is an empty array', async () => {
     const guidsForHostnameResolution: string[] = [];
 
-    await expect(resolveDRSWithDataGUISOrg(guidsForHostnameResolution)).toEqual(
+    expect(resolveDRSWithDataGUISOrg(guidsForHostnameResolution)).toEqual(
       expect.objectContaining({}),
     );
   });

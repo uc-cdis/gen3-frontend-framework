@@ -1,14 +1,15 @@
 export interface DownloadButtonProps {
   enabled?:boolean;
-  type: string;
+  type?: string;
   title: string;
+  actionTitle?: string; // string to show when action is in progress
   leftIcon?: string;
   rightIcon?: string;
-  fileName: string;
   tooltipText?: string;
+  action?: string;
+  actionArgs?: Record<string, string>;
 }
 
-export interface DropdownButtonsProps {
-  readonly title: string;
-  buttons: ReadonlyArray<Partial<DownloadButtonProps>>;
+export interface DropdownButtonProps extends Omit<DownloadButtonProps, "action" |"actionArgs"> {
+  dropdownItems: ReadonlyArray<Partial<DownloadButtonProps>>;
 }

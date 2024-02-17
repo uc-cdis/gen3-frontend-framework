@@ -8,7 +8,6 @@ const ActionButton = ({
   type,
   leftIcon,
   rightIcon,
-  fileName,
   tooltipText,
 }: DownloadButtonProps) => {
   return (

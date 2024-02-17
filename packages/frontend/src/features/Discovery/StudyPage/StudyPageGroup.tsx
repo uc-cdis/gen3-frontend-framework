@@ -7,6 +7,7 @@ interface StudyPageGroupProps {
     readonly studyPageConfig: StudyPageConfig;
 }
 
+// TODO: Implement StudyPageGroup
 const StudyPageGroup = ({
                             studyDetails,
                             studyPageConfig,

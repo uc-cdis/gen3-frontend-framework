@@ -20,7 +20,6 @@ import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import {
   SummaryStatistics,
-  SummaryStatisticsDisplayData,
 } from '../../Statistics/types';
 
 // TODO remove after debugging

@@ -126,7 +126,7 @@ const ExplorerTable = ({
   });
 
   return (
-    <div className="w-auto inline-block overflow-x-scroll">
+    <div className="inline-block overflow-x-scroll">
       <MantineReactTable table={table} />
     </div>
   );

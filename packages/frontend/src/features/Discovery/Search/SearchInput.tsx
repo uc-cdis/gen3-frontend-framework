@@ -2,7 +2,7 @@ import React, {
   useState,
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { TextInput, Tooltip } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { SearchInputProps } from './types';
 
 const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
