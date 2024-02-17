@@ -1,9 +1,9 @@
-import { Button, Menu } from "@mantine/core";
-import { FloatingPosition } from "@mantine/core/lib/Floating/types";
-import { ReactNode } from "react";
-import { Tooltip } from "@mantine/core";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-import { focusStyles } from "../../utils";
+import { Button, Menu } from '@mantine/core';
+import { FloatingPosition } from '@mantine/core/lib/Floating/types';
+import { ReactNode } from 'react';
+import { Tooltip } from '@mantine/core';
+import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
+import { focusStyles } from '../../utils';
 
 interface DropdownWithIconProps {
   /**
@@ -91,9 +91,9 @@ export const DropdownWithIcon = ({
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
-      width={disableTargetWidth ?? "target"}
+      width={disableTargetWidth ?? 'target'}
       {...(customPosition && { position: customPosition })}
-      data-testid={customDataTestId ?? "menu-elem"}
+      data-testid={customDataTestId ?? 'menu-elem'}
       zIndex={zIndex}
     >
       <Menu.Target>
@@ -105,8 +105,8 @@ export const DropdownWithIcon = ({
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
           classNames={{
-            rightIcon: "border-l pl-1 -mr-2",
-            root: fullHeight ? "h-full" : undefined,
+            rightIcon: 'border-l pl-1 -mr-2',
+            root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
         >
@@ -130,7 +130,7 @@ export const DropdownWithIcon = ({
         {menuLabelText && (
           <>
             <Menu.Label
-              className={menuLabelCustomClass ?? "font-bold"}
+              className={menuLabelCustomClass ?? 'font-bold'}
               data-testid="menu-label"
             >
               {menuLabelText}

@@ -1,12 +1,10 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: "node",
+  testEnvironment: 'node',
   transform: {
-    'node_modules/(flat)/.+\\.(j|t)s?$': "ts-jest",
+    'node_modules/(flat)/.+\\.(j|t)s?$': 'ts-jest',
   },
-  transformIgnorePatterns: [
-    "node_modules/(?!flat)/"
-  ],
+  transformIgnorePatterns: ['node_modules/(?!flat)/'],
   globalSetup: '<rootDir>/setupTests.ts',
   moduleNameMapper: {
     '^@/core/(.*)$': '<rootDir>/src/$1',

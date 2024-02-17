@@ -94,7 +94,7 @@ export const cohortSlice = createSlice({
       state: Draft<CohortState>,
       action: PayloadAction<string>
     ) => {
-      const { [action.payload]: _a, ...updated } = state.cohort.filters[action.payload].root;
+      const { [action.payload]: _rest, ...updated } = state.cohort.filters[action.payload].root;
       return {
         cohort: { ...state.cohort, ...{ ...state.cohort.filters, [action.payload]: updated } },
       };

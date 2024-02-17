@@ -1,8 +1,8 @@
 'use strict';
 
-const dns = require("dns");
+import dns = require('dns');
 
-dns.setDefaultResultOrder("ipv4first");
+dns.setDefaultResultOrder('ipv4first');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('./src/lib/plugins/index.js');
@@ -15,7 +15,6 @@ const withMDX = require('@next/mdx')({
     rehypePlugins: [],
   },
 });
-
 
 // Next configuration with support for rewrting API to existing common services
 const nextConfig = {
