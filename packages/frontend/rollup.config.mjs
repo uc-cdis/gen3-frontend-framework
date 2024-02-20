@@ -25,7 +25,6 @@ const globals = {
   tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
-  '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
   '@mantine/styles': 'mantineStyles',
@@ -41,7 +40,7 @@ const globals = {
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
   'react-cookie': 'reactCookie',
-  'yaml': 'yaml',
+  yaml: 'yaml',
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
 };
@@ -54,13 +53,15 @@ const config = [
         dir: 'dist/cjs',
         format: 'cjs',
         globals,
-        sourcemap: true
+        sourcemap: true,
+        name: 'gen3frontend',
       },
       {
         dir: 'dist/esm',
         format: 'esm',
         plugins: [terser()],
         globals,
+        name: 'gen3frontend',
         sourcemap: true
       }
     ],
@@ -82,7 +83,8 @@ const config = [
       '@graphiql/plugin-explorer',
       'mantine-react-table',
       'victory',
-      'echarts'
+      'echarts',
+      '@gen3/core'
     ],
     plugins: [
       peerDepsExternal(),

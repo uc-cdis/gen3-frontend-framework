@@ -10,6 +10,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -18,7 +19,6 @@
     "resolveJsonModule": true,
     "incremental": true,
     "noEmitOnError": true,
-    "sourceMap": true,
     // "noUnusedLocals": true, // TODO: enable
     // "noUnusedParameters": true,
     // "noImplicitReturns": true,

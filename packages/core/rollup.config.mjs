@@ -1,4 +1,3 @@
-import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -21,6 +20,7 @@ const globals = {
   'jsonpath-plus': 'jsonpathPlus',
   'flat': 'flat',
   'papaparse': 'papaparse',
+  'redux-persist': 'reduxPersist',
 };
 
 const config = [
@@ -30,17 +30,17 @@ const config = [
       {
         file: 'dist/cjs/index.js',
         format: 'cjs',
-        name: 'gen3Core',
         globals,
+        sourcemap: true,
+        name: 'gen3Core'
       },
-
       {
         file: 'dist/esm/index.js',
         format: 'esm',
-        name: 'gen3Core',
         globals,
-      },
-    ],
+        sourcemap: true,
+        name: 'gen3Core'
+      }],
     external: Object.keys(globals),
     plugins: [
       peerDepsExternal(),
