@@ -57,7 +57,7 @@ const config = [
         sourcemap: true
       },
       {
-        dir: 'dist/mjs',
+        dir: 'dist/esm',
         format: 'esm',
         plugins: [terser()],
         globals,
