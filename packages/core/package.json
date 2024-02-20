@@ -4,9 +4,11 @@
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "engines" : {
+    "npm" : ">=10.2.3",
+    "node" : ">=20.11.0"
+  },
   "exports": {
     ".": {
       "import": {
