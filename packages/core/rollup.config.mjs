@@ -28,25 +28,14 @@ const config = [
     input: 'src/index.ts',
     output: [
       {
-        file: 'dist/index.cjs',
+        file: 'dist/cjs/index.js',
         format: 'cjs',
-        globals,
-      },
-      {
-        file: 'dist/index.min.js',
-        format: 'iife',
-        name: 'gen3Core',
-        plugins: [terser()],
-        globals,
-      },
-      {
-        file: 'dist/index.umd.js',
-        format: 'umd',
         name: 'gen3Core',
         globals,
       },
+
       {
-        file: 'dist/index.mjs',
+        file: 'dist/esm/index.js',
         format: 'esm',
         name: 'gen3Core',
         globals,

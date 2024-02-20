@@ -51,13 +51,13 @@ const config = [
     input: './src/index.ts',
     output: [
       {
-        dir: 'dist',
+        dir: 'dist/cjs',
         format: 'cjs',
         globals,
         sourcemap: true
       },
       {
-        dir: 'dist',
+        dir: 'dist/mjs',
         format: 'esm',
         plugins: [terser()],
         globals,

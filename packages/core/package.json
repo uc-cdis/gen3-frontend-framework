@@ -2,22 +2,20 @@
   "name": "@gen3/core",
   "version": "0.10.5",
   "author": "CTDS",
-  "type": "module",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "unpkg": "dist/index.umd.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
+        "default": "./dist/esm/index.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.cjs"
+        "default": "./dist/cjs/index.js"
       }
     }
   },
