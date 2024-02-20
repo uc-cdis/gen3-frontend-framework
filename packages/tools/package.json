@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
@@ -20,8 +20,8 @@
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
-    "tinycolor2": "^1.6.0",
-    "@iconify/tools": "^2.1.2"
+    "@iconify/tools": "^2.1.2",
+    "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
