@@ -63,7 +63,7 @@ export interface LandingPageProps {
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (
-    <div className="sm:mt-8 2xl:mt-10">
+    <div className="sm:mt-8 2xl:mt-10 w-full">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
@@ -96,7 +96,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     key={index}
                   >
                     <Gen3Link
-                      className="flex flex-row items-center"
+                      className="flex items-center"
                       href={obj.link.href}
                       linkType={obj.link.linkType}
                       text={obj.link.text}

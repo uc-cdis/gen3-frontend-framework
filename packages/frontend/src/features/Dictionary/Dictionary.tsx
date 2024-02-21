@@ -2,10 +2,10 @@ import React, { useState, useEffect, useMemo, ReactNode } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { capitalize } from 'lodash';
 import { DictionaryCategory, DictionaryProps } from './types';
-import { RiDownload2Fill, RiCloseFill } from "react-icons/ri";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { RiDownload2Fill, RiCloseFill } from 'react-icons/ri';
+import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
-import Cell from "./Cell";
+import Cell from './Cell';
 import { Icon } from '@iconify/react';
 
 const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
@@ -14,7 +14,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
 
   useEffect(() => {
     const filtered = Object.keys(dictionary).filter((id) => categoryFilter(id, dictionary));
-    const displayedCategories = categoryReduce(filtered, dictionary)
+    const displayedCategories = categoryReduce(filtered, dictionary);
     setCategories(displayedCategories);
   }, [dictionary]);
 
@@ -72,25 +72,25 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
 
   const handleDownloadTemplate = (e: any) => {
     console.log(e);
-  }
+  };
   const getIcon = (category: string) => {
     // todo: replace with appropriate icons
     // ideally render as <Icon icon={`gen3:${c}`} /> where c is category
     switch (category) {
-      case "administrative":
-        return <Icon icon={"gen3:administrative"} />;
-      case "data_observations":
-        return <Icon icon={"gen3:analysis"} />;
-      case "biospecimen":
-        return <Icon icon={"gen3:query"} />
-      case "data_file":
-        return <Icon icon={"gen3:workspace"} />
-      case "medical_history":
-        return <Icon icon={"gen3:profile"} />
+      case 'administrative':
+        return <Icon icon={'gen3:administrative'} />;
+      case 'data_observations':
+        return <Icon icon={'gen3:analysis'} />;
+      case 'biospecimen':
+        return <Icon icon={'gen3:query'} />;
+      case 'data_file':
+        return <Icon icon={'gen3:workspace'} />;
+      case 'medical_history':
+        return <Icon icon={'gen3:profile'} />;
       default:
-        return <Icon icon={"gen3:gen3"} />
+        return <Icon icon={'gen3:gen3'} />;
     }
-  }
+  };
 
   return (
     <div>
@@ -100,7 +100,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
       <div>
         {Object.keys(categories).length && Object.keys(categories).map((c) => {
           return (
-            <div className={`border-l-4 border-purple mt-10`}>
+            <div className={'border-l-4 border-purple mt-10'} key={`dictionary-entry-${c}`}>
               <h3 className="flex text-white font-bold font-size-md bg-purple-950 border mb-0 justify-between h-16">
                 <div className="p-5 align-middle">{getIcon(c)}</div>
                 <div className="flex p-5 ml-0">
@@ -158,19 +158,19 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                             key={selectedId}
                           >
                             <div className="flex flex-col">
-                              <button onClick={() => setSelectedId("")}><RiCloseFill /></button>
+                              <button onClick={() => setSelectedId('')}><RiCloseFill /></button>
                               <MantineReactTable table={table} />
                             </div>
                           </div>
-                        ) : <></>}
+                        ) : <React.Fragment></React.Fragment>}
                       </div>
-                    </div>)
+                    </div>);
                   })}
               </div>
-            </div>)
+            </div>);
         })}
       </div>
-    </div>)
+    </div>);
 };
 
 export default Dictionary;

@@ -17,7 +17,7 @@ export const FiltersPanel = ({
   return (
     <div
       data-testid="filters-facets"
-      className="flex flex-col gap-y-4 h-screen overflow-y-scroll px-4 w-full"
+      className="flex flex-col gap-y-4 h-full overflow-y-scroll px-4 w-full"
     >
       {fields.map((facetDefinition) => {
         return createFacetCard(
@@ -27,7 +27,7 @@ export const FiltersPanel = ({
           'filters-panel',
           undefined,
           false,
-            undefined,
+            facetDefinition.label,
             'w-64'
         );
       })}

@@ -12,9 +12,21 @@ const withMDX = require('@next/mdx')({
   },
 });
 
+
+// Next configuration with support for rewrting API to existing common services
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
+  transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',
+  webpack: (config) => {
+    config.infrastructureLogging = {
+      level: "error",
+    };
+
+    return config;
+  },
 };
+
+module.exports = withMDX(nextConfig);

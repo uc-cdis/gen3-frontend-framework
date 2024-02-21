@@ -6,4 +6,7 @@ module.exports = {
     '^@/core/(.*)$': '<rootDir>/src/$1',
   },
   modulePaths: ['<rootDir>'],
+  globals: {
+    fetch: global.fetch,
+  }
 };

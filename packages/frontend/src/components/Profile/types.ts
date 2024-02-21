@@ -12,3 +12,8 @@ export interface ResourceTableConfig {
 export interface ProfileConfig {
   resourceTable?: ResourceTableConfig;
 }
+
+export interface APICredentials {
+  api_key: string;
+  key_id: string;
+};

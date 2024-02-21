@@ -22,7 +22,6 @@ interface ChartsProps {
 }
 
 const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
-  console.log("Charts", index, charts, data, counts, isSuccess);
   return (
     <Grid>
       {data &&  Object.keys(charts).map((field) => (
@@ -30,7 +29,7 @@ const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
           <Card shadow={'md'}>
             <Card.Section inheritPadding py="xs">
               <Group position="apart">
-                <Text weight={500}>{charts[field].title ?? fieldNameToTitle(field)}</Text>
+                <Text weight={900}>{charts[field].title ?? fieldNameToTitle(field)}</Text>
                     <ActionIcon>
                       <CloseIcon size="1rem" />
                     </ActionIcon>

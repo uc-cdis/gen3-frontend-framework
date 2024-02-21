@@ -74,7 +74,7 @@ export const cohortSlice = createSlice({
       action: PayloadAction<RemoveFilterParams>
     ) => {
       const { index, field } = action.payload;
-      const filters = state.cohort.filters[index].root;
+      const filters = state.cohort?.filters?.[index]?.root;
       if (!filters) {
         return;
       }

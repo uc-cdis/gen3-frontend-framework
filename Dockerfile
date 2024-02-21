@@ -43,7 +43,6 @@ RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
 RUN npm install --location=global lerna@6.6.1
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
-COPY ./packages/crosswalk/package.json ./packages/crosswalk/
 COPY ./packages/tools/package.json ./packages/tools/
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
@@ -53,7 +52,6 @@ RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string"
 RUN lerna run --scope @gen3/core build:clean
-RUN lerna run --scope @gen3/crosswalk build:clean
 RUN lerna run --scope @gen3/frontend build
 RUN lerna run --scope @gen3/datacommonsapp build
 ENV PORT=80

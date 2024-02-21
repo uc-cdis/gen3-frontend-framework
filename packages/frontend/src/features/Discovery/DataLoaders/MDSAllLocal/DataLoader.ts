@@ -137,6 +137,7 @@ const useGetData = ({
     isError: queryIsError,
   } = useGetMDSQuery({
     guidType: guidType,
+    studyField: studyField,
     offset: 0,
     pageSize: maxStudies,
   });
@@ -374,9 +375,9 @@ export const useLoadAllData = ({
     isSuccess,
     isError,
   } = useGetData({
+    studyField,
     guidType,
     maxStudies,
-    studyField,
   });
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({

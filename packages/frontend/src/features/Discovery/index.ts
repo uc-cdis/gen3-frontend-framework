@@ -14,6 +14,7 @@ import DiscoveryConfigProvider, {
 import { type DiscoveryConfig, type StudyPreviewField } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
 import { getTagColor } from './utils';
+import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
 
 export {
   type CellRenderFunctionProps,
@@ -24,10 +25,11 @@ export {
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
+  registerDefaultDiscoveryDataLoaders,
   DiscoveryCellRendererFactory,
   DiscoveryRowRendererFactory,
   DiscoveryConfigProvider,
   useDiscoveryContext,
   StudyGroup,
-  getTagColor
+  getTagColor,
 };

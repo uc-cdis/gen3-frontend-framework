@@ -4,6 +4,12 @@ global:
   # set this to gen3ff if you want to use the frontend framework as the root
   # set to portal if you want to use api-portal as the root. in this case the ff will be at /ff
   frontendRoot: gen3ff
+  # use these if you want to use the same SSL cert for all services so they
+  # are the same as the ones used by the revproxy
+  tls:
+    cert: <base64 encoded cert>
+    key: <base64 encoded key>
+
 fence:
   FENCE_CONFIG:
     LOGIN_REDIRECT_WHITELIST: [https://localhost:3010]
@@ -13,26 +19,98 @@ fence:
         client_secret: <add google client secret>
 
 
-ambassador:
-  enabled: false
-
-argo-wrapper:
-  enabled: false
-
-hatchery:
-  enabled: false
-
-peregrine:
-  enabled: false
-
-pidgin:
-  enabled: false
-
-portal:
-  enabled: false
-
-sower:
-  enabled: false
+guppy:
+  enabled: true
+  image:
+    repository:
+    tag:
 
 wts:
   enabled: false
+  image:
+    repository:
+    tag:
+
+ambassador:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+portal:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+peregrine:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+pidgin:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+argo-wrapper:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+hatchery:
+  enabled: false
+  image:
+    repository:
+    tag:
+
+sower:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+revproxy:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+audit:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+sheepdog:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+manifestservice:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+arborist:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+metadata:
+  enabled: true
+  image:
+    repository:
+    tag:
+
+indexd:
+  enabled: true
+  image:
+    repository:
+    tag:
