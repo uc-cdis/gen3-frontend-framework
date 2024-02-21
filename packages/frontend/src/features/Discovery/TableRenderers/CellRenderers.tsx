@@ -7,6 +7,7 @@ import { getTagColor } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
+import { JSONObject } from '@gen3/core';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({

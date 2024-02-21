@@ -68,7 +68,7 @@ const Discovery = ({
     useDisclosure(false);
 
   return (
-    <div className="flex flex-col items-center p-2 m-2 w-full">
+    <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
           {
@@ -76,7 +76,7 @@ const Discovery = ({
               <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
             ) : null
           }
-          <div className="flex items-center m-2">
+          <div className="flex items-center  p-2 mb-2 bg-base-max">
             <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="flex-grow"></div>
             <div className="w-full">
@@ -111,7 +111,7 @@ const Discovery = ({
               opened={showAdvancedSearch}
               setAdvancedSearchFilters={setAdvancedSearchTerms}
             /> : false }
-            <div className="flex flex-col w-full">
+            <div className="flex w-full bg-base-max p-4">
               <DiscoveryTable
                 data={data}
                 hits={hits}

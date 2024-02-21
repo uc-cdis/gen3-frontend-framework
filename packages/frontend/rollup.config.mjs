@@ -60,17 +60,9 @@ const config = [
         dir: 'dist',
         format: 'esm',
         name: 'gen3frontend',
-        plugins: [terser()],
         globals,
         sourcemap: true
-      },
-      {
-        dir: 'dist',
-        format: 'esm',
-        name: 'gen3Core',
-        globals,
-        sourcemap: true
-      },
+      }
     ],
     external: [
       ...Object.keys(globals),
