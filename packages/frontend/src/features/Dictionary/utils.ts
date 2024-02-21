@@ -19,6 +19,6 @@ export const categoryReduce = (categories: any, dictionary: any) => {
 }
 
 export const getPropertyCount = (categories: any, dictionary: any) => {
-  return categories.map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
-  .reduce((acc, curr) => acc + curr)
+  return categories.map((n: string) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
+  .reduce((acc: number, curr: number) => acc + curr)
 }

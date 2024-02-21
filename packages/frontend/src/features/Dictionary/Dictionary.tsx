@@ -109,9 +109,6 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                     .map((name) => capitalize(name))
                     .join(' ')}
                 </div>
-                <div className="p-5 align-middle">
-                  Download Template
-                </div>
               </h3>
               <div className="w-full border border-solid border-black border-t-0">
                 {(categories[c] as unknown as any[]).map(
