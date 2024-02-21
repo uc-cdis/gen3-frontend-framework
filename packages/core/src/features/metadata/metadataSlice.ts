@@ -1,5 +1,6 @@
 import { JSONObject } from '../../types';
 import { gen3Api } from '../gen3';
+import { GEN3_MDS_API } from '../../constants';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -42,7 +43,7 @@ export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({
       query: ({ offset, pageSize } : MetadataRequestParams) => {
-        return `mds/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
+        return `${GEN3_MDS_API}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
         return {
@@ -57,7 +58,7 @@ export const metadataApi = gen3Api.injectEndpoints({
     }),
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
       query: ({  guidType, offset, pageSize }) => {
-        return `mds/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
+        return `${GEN3_MDS_API}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
       },
       transformResponse: (response: Record<string, any>, _meta) => {
 

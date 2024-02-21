@@ -1,0 +1,276 @@
+{
+  "tableConfig": {
+    "selectableRows": true,
+    "expandableRows": true
+  },
+  "features": {
+    "dataFetchFunction": "AggMDSServer",
+    "advSearchFilters": {
+      "enabled": false,
+      "field": "advSearchFilters",
+      "displayName": "Filters",
+      "filters": [
+        {
+          "key": "Research Focus Area"
+        },
+        {
+          "key": "Administering IC(s)"
+        },
+        {
+          "key": "Simulated vs. Real Data"
+        },
+        {
+          "key": "Year Grant Awarded"
+        },
+        {
+          "key": "Study Description"
+        }
+      ]
+    },
+    "pageTitle": {
+      "enabled": true,
+      "text": "Study Discovery"
+    },
+    "tagsColumn": {
+      "enabled": false
+    },
+    "tagsInDescription": {
+      "enabled": true
+    },
+    "search": {
+      "searchBar": {
+        "enabled": true
+      },
+      "tagSearchDropdown": {
+        "enabled": true,
+        "collapsibleButtonText": "Data Commons"
+      },
+      "exportToWorkspace": {
+        "enabled": true,
+        "manifestFieldName": "__manifest",
+        "enableDownloadManifest": true,
+        "downloadManifestButtonText": "Download",
+        "documentationLinks": {
+          "gen3Client": "https://gen3.org/resources/user/gen3-client/",
+          "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
+        }
+      }
+    },
+    "authorization": {
+      "enabled": true,
+      "columnTooltip": "Filter by data access. Accessible indicates you are authorized to access. Not accessible indicates you are not authorized to access.",
+      "supportedValues": {
+        "accessible": {
+          "enabled": true,
+          "menuText": "Available"
+        },
+        "unaccessible": {
+          "enabled": false,
+          "menuText": "Not Accessible"
+        },
+        "pending": {
+          "enabled": false,
+          "menuText": "Pending"
+        },
+        "notAvailable": {
+          "enabled": false,
+          "menuText": "Not Available"
+        }
+      }
+    }
+  },
+  "aggregations": [
+    {
+      "name": "Studies",
+      "field": "frontend_uid",
+      "type": "count"
+    },
+    {
+      "name": "Total Subjects",
+      "field": "_subjects_count",
+      "type": "sum"
+    }
+  ],
+  "tagSelector": {
+    "title": "Tags by category"
+  },
+  "studyColumns": [
+    {
+      "name": "Study Name",
+      "field": "short_name",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "n/a",
+      "width": "157px",
+      "contentType": "string"
+    },
+    {
+      "name": "Full Name",
+      "field": "full_name",
+      "contentType": "string",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "n/a",
+      "width": "400px",
+      "contentType": "string"
+    },
+    {
+      "name": "Number of Subjects",
+      "field": "_subjects_count",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "n/a",
+      "contentType": "number",
+      "width": "98px",
+      "contentType": "string"
+    },
+    {
+      "name": "ID Number",
+      "field": "study_id",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "n/a",
+      "width": "152px",
+      "contentType": "string"
+    },
+    {
+      "name": "Data Commons",
+      "field": "commons",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "n/a",
+      "hrefValueFromField": "commons_url",
+      "contentType": "string"
+    },
+    {
+      "name": "DATA ACCESS METHOD",
+      "field": "data_access_method",
+      "errorIfNotAvailable": false,
+      "valueIfNotAvailable": "API",
+      "contentType": "string"
+    }
+  ],
+  "studyPreviewField": {
+    "name": "Description",
+    "field": "study_description",
+    "contentType": "string",
+    "includeName": false,
+    "includeIfNotAvailable": true,
+    "valueIfNotAvailable": "No description has been provided for this study."
+  },
+  "studyPageFields": {
+    "showAllAvailableFields": false,
+    "header": {
+      "field": "name"
+    },
+    "fieldsToShow": [
+      {
+        "groupName": "Study Identifiers",
+        "groupWidth": "half",
+        "includeName": false,
+        "fields": [
+          {
+            "name": "Number of Subjects",
+            "field": "_subjects_count",
+            "contentType": "number"
+          },
+          {
+            "name": "Full Name",
+            "field": "full_name",
+            "contentType": "string"
+          },
+          {
+            "name": "Short Name",
+            "field": "short_name",
+            "contentType": "string",
+            "includeName": true,
+            "includeIfNotAvailable": true,
+            "valueIfNotAvailable": "N/A"
+          },
+          {
+            "name": "dbGaP Accession Number",
+            "field": "dbgap_accession",
+            "contentType": "string",
+            "includeName": true,
+            "includeIfNotAvailable": false
+          },
+          {
+            "name": "Project ID",
+            "field": "project_id",
+            "contentType": "string",
+            "includeIfNotAvailable": false
+          },
+          {
+            "name": "Data Commons",
+            "field": "commons",
+            "contentType": "string",
+            "includeIfNotAvailable": false
+          },
+          {
+            "name": "Tutorial Notebook",
+            "field": "tutorial_notebook",
+            "contentType": "string",
+            "includeIfNotAvailable": true,
+            "valueIfNotAvailable": "NO"
+          }
+        ]
+      },
+      {
+        "groupWidth": "full",
+        "fields": [
+          {
+            "name": "Description",
+            "field": "study_description",
+            "contentType": "paragraphs",
+            "includeName": true,
+            "includeIfNotAvailable": true,
+            "valueIfNotAvailable": "No description has been provided for this study."
+          }
+        ]
+      }
+    ]
+  },
+  "minimalFieldMapping": {
+    "tagsListFieldName": "tags",
+    "authzField": "authz",
+    "uid": "_unique_id"
+  },
+  "tagCategories": [
+    {
+      "name": "Commons",
+      "displayName": "Data Commons",
+      "color": "rgba(129, 211, 248, 1)",
+      "display": true
+    },
+    {
+      "name": "Program",
+      "color": "rgba(129, 211, 248, 1)",
+      "display": false
+    },
+    {
+      "name": "Study Registration",
+      "color": "rgba(236, 128, 141, 1)",
+      "display": false
+    },
+    {
+      "name": "Data Type",
+      "color": "rgba(112, 182, 3, 1)",
+      "display": false
+    },
+    {
+      "name": "primary_site",
+      "color": "rgba(112, 182, 3, 1)",
+      "display": false
+    },
+    {
+      "name": "disease_type",
+      "color": "rgba(112, 182, 3, 1)",
+      "display": false
+    },
+    {
+      "name": "data_type",
+      "color": "rgba(112, 182, 3, 1)",
+      "display": false
+    },
+    {
+      "name": "clinical_study_type",
+      "color": "rgba(112, 182, 3, 1)",
+      "display": false
+    }
+  ]
+}

@@ -67,7 +67,7 @@ const DiscoveryTable = ({
           : extractCellValue(
               DiscoveryTableCellRenderer(
                 'string',
-                'default',
+                columnDef?.cellRenderFunction ?? 'default',
                 columnDef?.params,
               ),
             ),

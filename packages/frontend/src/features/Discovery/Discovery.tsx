@@ -9,7 +9,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
+import { useLoadAllData, useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
@@ -22,8 +22,7 @@ const Discovery = ({
   discoveryConfig,
 }: DiscoveryProps) => {
 
-  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllData, []);
-
+  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllMDSData, []);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -98,20 +97,20 @@ const Discovery = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <Button onClick={toggleAdvancedSearch} color="accent">
+            {discoveryConfig?.features?.advSearchFilters?.enabled ?
+              <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
-            </Button>
+            </Button> : false }
             {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
               <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
             ) : null}
           </div>
           <div className="flex justify-start">
-            <AdvancedSearchPanel
+            { discoveryConfig?.features?.advSearchFilters?.enabled ? <AdvancedSearchPanel
               advSearchFilters={advancedSearchFilterValues}
               opened={showAdvancedSearch}
               setAdvancedSearchFilters={setAdvancedSearchTerms}
-            />
-
+            /> : false }
             <div className="flex flex-col w-full">
               <DiscoveryTable
                 data={data}
