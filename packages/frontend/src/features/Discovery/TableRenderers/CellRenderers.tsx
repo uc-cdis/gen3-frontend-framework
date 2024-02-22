@@ -89,7 +89,7 @@ const RenderNumberCell : CellRendererFunction = ({ value }: CellRenderFunctionPr
   return (
     <Text>
       {isArray(content)
-        ? content.map((v) => v.toLocaleString()).join('; ')
+        ? content.map((v) => v ? v.toLocaleString() : "").join('; ')
         : content.toLocaleString()}
     </Text>
   );
