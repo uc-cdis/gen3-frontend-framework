@@ -76,7 +76,7 @@ const Discovery = ({
               <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
             ) : null
           }
-          <div className="flex items-center  p-2 mb-2 bg-base-max">
+          <div className="flex items-center  p-2 mb-4 bg-base-max rounded-lg">
             <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="flex-grow"></div>
             <div className="w-full">
@@ -111,7 +111,7 @@ const Discovery = ({
               opened={showAdvancedSearch}
               setAdvancedSearchFilters={setAdvancedSearchTerms}
             /> : false }
-            <div className="flex w-full bg-base-max p-4">
+            <div className="flex w-full bg-base-max p-4 rounded-lg">
               <DiscoveryTable
                 data={data}
                 hits={hits}
