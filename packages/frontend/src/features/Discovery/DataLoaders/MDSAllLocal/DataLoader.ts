@@ -22,6 +22,7 @@ import { SummaryStatisticsConfig } from '../../Statistics';
 import {
   SummaryStatistics,
 } from '../../Statistics/types';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -60,7 +61,7 @@ const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
 };
 
 const extractValue = (document: JSONObject, field: string) => {
-  // TODO See if mimi search can handle the for advanced search
+  // TODO See if miniSearch can handle the for advanced search
   // if (field.startsWith('advancedSearch.')) {
   //   if (isSearchKVArray(document['advancedSearch'])) {
   //   const key = field.split('.')[-1];
@@ -156,7 +157,7 @@ const useGetMDSData = ({
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = Object.values(data.data).reduce(
-        (acc: JSONObject[], cur) => {
+        (acc: JSONObject[], cur:JSONObject) => {
           return cur[studyField]
             ? [...acc, cur[studyField] as JSONObject]
             : acc;
@@ -209,7 +210,8 @@ const useGetAggMDSData = ({
     if (data && isSuccess) {
       setMDSData(data.data);
     }
-  }, [data, isSuccess]);
+
+  }, [data, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -274,13 +276,20 @@ const useSearchMetadata = ({
     clearSuggestions();
   }, [clearSearch, clearSuggestions]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     // we have the data, so set it and build the search index and get the advanced search filter values
     if (mdsData && isSuccess && mdsData.length > 0) {
       removeAll();
-      addAll(mdsData);
+      // check if an id is missing
+       const dataWithIds = mdsData.reduce((acc, cur) => {
+          if (!cur[uidField])
+              acc.push({...cur, [uidField]: Math.random().toString(36).substring(7)});
+          else acc.push(cur);
+          return acc;
+        }, [] as JSONObject[]);
+      addAll(dataWithIds);
     }
-  }, [addAll, isSuccess, mdsData, removeAll]);
+  }, [addAll, isSuccess, mdsData, removeAll, uidField]);
 
   useEffect(() => {
     if (mdsData && isSearching) {

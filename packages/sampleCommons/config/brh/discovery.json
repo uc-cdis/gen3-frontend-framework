@@ -4,7 +4,7 @@
     "expandableRows": true
   },
   "features": {
-    "dataFetchFunction": "AggMDSServer",
+    "dataFetchFunction": "AggMDSAllLocal",
     "advSearchFilters": {
       "enabled": false,
       "field": "advSearchFilters",
@@ -28,7 +28,7 @@
       ]
     },
     "pageTitle": {
-      "enabled": true,
+      "enabled": false,
       "text": "Study Discovery"
     },
     "tagsColumn": {
@@ -82,7 +82,7 @@
   "aggregations": [
     {
       "name": "Studies",
-      "field": "frontend_uid",
+      "field": "_unique_id",
       "type": "count"
     },
     {
@@ -106,7 +106,6 @@
     {
       "name": "Full Name",
       "field": "full_name",
-      "contentType": "string",
       "errorIfNotAvailable": false,
       "valueIfNotAvailable": "n/a",
       "width": "400px",
@@ -118,8 +117,7 @@
       "errorIfNotAvailable": false,
       "valueIfNotAvailable": "n/a",
       "contentType": "number",
-      "width": "98px",
-      "contentType": "string"
+      "width": "98px"
     },
     {
       "name": "ID Number",
