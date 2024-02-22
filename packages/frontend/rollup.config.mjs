@@ -25,6 +25,7 @@ const globals = {
   tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
+  '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
   '@mantine/styles': 'mantineStyles',
@@ -40,7 +41,7 @@ const globals = {
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
   'react-cookie': 'reactCookie',
-  yaml: 'yaml',
+  'yaml': 'yaml',
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
 };
@@ -53,17 +54,14 @@ const config = [
         dir: 'dist/cjs',
         format: 'cjs',
         globals,
-        sourcemap: true,
-        name: 'gen3frontend',
+        sourcemap: true
       },
       {
         dir: 'dist/esm',
         format: 'esm',
-        plugins: [terser()],
         globals,
-        name: 'gen3frontend',
         sourcemap: true
-      }
+      },
     ],
     external: [
       ...Object.keys(globals),

@@ -18,7 +18,7 @@ const NavigationBar = ({
   classNames = {},
 }: NavigationProps) => {
   const classNamesDefaults = {
-    root: 'flex bg-base-lightest py-3 border-b-1 border-base-contrast',
+    root: 'flex bg-base-max py-3 border-b-1 border-base-contrast',
     navigationPanel: 'font-heading font-bold tracking-wide text-xl space-x-4',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',

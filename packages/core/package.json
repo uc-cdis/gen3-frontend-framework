@@ -9,15 +9,19 @@
     "npm" : ">=10.2.3",
     "node" : ">=20.11.0"
   },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "default": "./dist/index.esm.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/cjs/index.js"
+        "default": "./dist/index.js"
       }
     }
   },

@@ -1,0 +1,36 @@
+{
+  "body": [
+    {
+      "title": {
+        "text": "Biomedical Research Hub",
+        "level": 2
+      }
+    },
+    {
+      "splitarea": {
+        "left": [
+          {
+            "text": "The Biomedical Research Hub (BRH) is a standard-based data ecosystem for securely managing, analyzing and sharing biomedical data to support research communities and collaborations."
+          },
+          {
+            "link": {
+              "href": "/Discovery",
+              "text": "Discovery Data"
+            }
+          }
+        ],
+        "right": [
+          {
+            "image": {
+              "src": "https://gen3.org/figs/kv.svg",
+              "alt": "Gen3 Data Platform"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "break": "standard"
+    }
+  ]
+}

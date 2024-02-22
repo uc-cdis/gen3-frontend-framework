@@ -1,4 +1,4 @@
-import { useAuthzContext } from '../Provider';
+
 import { Button, Group, Stack, Tabs } from '@mantine/core';
 import { User } from '../types';
 import { UserDetails } from './Cards';
@@ -9,8 +9,6 @@ interface UserDetailsPanelProps {
 }
 
 const UserDetailsPanel = ({user, closePanel}: UserDetailsPanelProps) => {
-  const context = useAuthzContext();
-
   return (
     <Stack>
      <Tabs defaultValue="user"
