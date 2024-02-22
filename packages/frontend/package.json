@@ -10,6 +10,7 @@
     "npm" : ">=10.2.3",
     "node" : ">=20.11.0"
   },
+  "type": "module",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
@@ -49,10 +50,10 @@
     "os": false
   },
   "dependencies": {
+    "@gen3/core" : "^0.10.7",
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
     "@graphiql/react": "^0.20.2",
-    "@gen3/core": "file:../core",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.21",
     "@mantine/form": "^6.0.21",
