@@ -51,23 +51,14 @@ const config = [
     input: './src/index.ts',
     output: [
       {
-        dir: 'dist',
+        dir: 'dist/cjs',
         format: 'cjs',
         globals,
         sourcemap: true
       },
       {
-        dir: 'dist',
+        dir: 'dist/esm',
         format: 'esm',
-        name: 'gen3frontend',
-        plugins: [terser()],
-        globals,
-        sourcemap: true
-      },
-      {
-        dir: 'dist',
-        format: 'esm',
-        name: 'gen3Core',
         globals,
         sourcemap: true
       },

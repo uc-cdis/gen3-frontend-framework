@@ -48,7 +48,6 @@ const config = [
       {
         file: 'dist/index.esm.js',
         format: 'esm',
-        name: 'gen3Core',
         globals,
       },
     ],

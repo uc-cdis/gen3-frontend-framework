@@ -32,7 +32,7 @@ export const RenderArrayCell: CellRendererFunction = ({
   return <span>value</span>;
 };
 
-export const RenderArrayCellNegativePositive = ({
+export const RenderArrayCellNegativePositive : CellRendererFunction = ({
   value,
   cell,
 }: CellRenderFunctionProps) => {
@@ -56,7 +56,7 @@ export const RenderArrayCellNegativePositive = ({
   return <span>{value as any}</span>;
 };
 
-export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
+export const RenderLinkCell : CellRendererFunction = ({ value }: CellRenderFunctionProps) => {
   const content = value as string;
   return (
     <Link
@@ -70,13 +70,22 @@ export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
   );
 };
 
-const RenderStringCell = ({ value }: CellRenderFunctionProps) => {
+const RenderStringCell : CellRendererFunction = ({ value }: CellRenderFunctionProps,  params? : JSONObject) => {
   const content = value as string | string[];
+  if (content === undefined || content === null) {
+    return <Text>{`${params && params?.valueIfNotAvailable ? params?.valueIfNotAvailable : ''}`}   </Text>;
+  }
+  if (content == '') {
+    return <Text>{`${params && params?.valueIfNotAvailable ? params?.valueIfNotAvailable : ''}`}   </Text>;
+  }
   return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
 };
 
-const RenderNumberCell = ({ value }: CellRenderFunctionProps) => {
+const RenderNumberCell : CellRendererFunction = ({ value }: CellRenderFunctionProps, params? : JSONObject) => {
   const content = value as number | number[];
+  if (content === undefined || content === null) {
+    return <Text>{`${params && params?.valueIfNotAvailable ? params?.valueIfNotAvailable : ''}`}   </Text>;
+  }
   return (
     <Text>
       {isArray(content)
@@ -86,7 +95,7 @@ const RenderNumberCell = ({ value }: CellRenderFunctionProps) => {
   );
 };
 
-const RenderParagraphsCell = ({ value }: CellRenderFunctionProps) => {
+const RenderParagraphsCell : CellRendererFunction  = ({ value }: CellRenderFunctionProps) => {
   const content = value as string | string[];
   return (
     <React.Fragment>
@@ -108,7 +117,7 @@ interface TagData {
 
 // TODO Fix below
 // eslint-disable-next-line react/prop-types
-export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
+export const RenderTagsCell : CellRendererFunction = ({ value }: CellRenderFunctionProps) => {
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();
   return (

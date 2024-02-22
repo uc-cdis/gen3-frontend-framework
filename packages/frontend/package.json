@@ -3,33 +3,38 @@
   "version": "0.10.3",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
-  "author": "",
+  "author": "Center for Translational Data Science",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "unpkg": "dist/index.umd.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "tsc",
     "clean": "rimraf dist",
+    "rollup": "rollup --config rollup.config.mjs",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
     "test:all": "jest",
     "types": "tsc --emitDeclarationOnly",
-    "copy-tailwind": "mkdir -p dist && cp src/tailwind.cjs dist/tailwind.cjs",
-    "copy-style": "mkdir -p dist/styles && cp src/styles/* dist/styles/",
-    "build": "npm run build:rollup && npm run types",
-    "build:clean": "npm run clean && npm run build && npm run types",
-    "build:rollup": "npm run compile && npm run copy-tailwind && rollup --config rollup.config.mjs",
-    "build:compile": "npm run compile && npm run types && npm run build:rollup",
-    "build:swc": "npm run compile && npm run copy-tailwind && swc src -d dist",
-    "build:watch": "npm run build:rollup -- --watch",
+    "copy-tailwind": "cp src/tailwind.cjs dist/tailwind.cjs",
+    "build": "npm run compile && npm run types && npm run copy-tailwind && npm run rollup",
+    "build:clean": "npm run clean && npm run build",
+    "build:watch": "npm run build -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
     "./tailwind": {
       "require": "./dist/tailwind.cjs"
     }
@@ -43,7 +48,7 @@
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
     "@graphiql/react": "^0.20.2",
-    "@gen3/core": "@gen3/core",
+    "@gen3/core": "file:../core",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.21",
     "@mantine/form": "^6.0.21",
