@@ -43,7 +43,7 @@
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
     "@graphiql/react": "^0.20.2",
-    "@gen3/core": "file:../core",
+    "@gen3/core": "@gen3/core",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.21",
     "@mantine/form": "^6.0.21",
