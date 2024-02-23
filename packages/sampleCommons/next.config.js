@@ -25,6 +25,7 @@ const nextConfig = {
     esmExternals: true,
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
+  transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',
   webpack: (config) => {
     config.infrastructureLogging = {
