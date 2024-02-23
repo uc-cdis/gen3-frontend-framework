@@ -1,12 +1,12 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.5",
+  "version": "0.10.10",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
-  "engines" : {
-    "npm" : ">=10.2.3",
-    "node" : ">=20.11.0"
+  "engines": {
+    "npm": ">=10.2.3",
+    "node": ">=20.11.0"
   },
   "scripts": {
     "lint": "eslint --ext .js,.ts src",
