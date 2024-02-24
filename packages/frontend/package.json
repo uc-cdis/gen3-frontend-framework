@@ -51,7 +51,6 @@
   "dependencies": {
     "@fontsource/montserrat": "^4.5.12",
     "@fontsource/source-sans-pro": "^4.5.11",
-    "@gen3/core": "^0.10.12",
     "@graphiql/react": "^0.20.2",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^6.0.21",
@@ -152,7 +151,8 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "@gen3/core": "^0.10.12"
   },
   "files": [
     "dist"

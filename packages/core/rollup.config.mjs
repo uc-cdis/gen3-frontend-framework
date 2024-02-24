@@ -31,11 +31,13 @@ const config = [
         file: 'dist/cjs/index.js',
         format: 'cjs',
         globals,
+        "sourcemap": true,
       },
       {
         file: 'dist/esm/index.js',
         format: 'esm',
         globals,
+        "sourcemap": true,
       }],
     external: Object.keys(globals),
     plugins: [
