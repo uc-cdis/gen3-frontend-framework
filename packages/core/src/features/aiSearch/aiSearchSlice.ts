@@ -26,7 +26,7 @@ interface AiSearchResponse extends AiSearchParams {
  */
 export const aiSearchApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    getAskQuestion: builder.query<AiSearchResponse, AiSearchRequestParams>({
+    askQuestion: builder.mutation<AiSearchResponse, AiSearchRequestParams>({
       query: (searchParams: AiSearchRequestParams) => ({
         url: `${GEN3_AI_SEARCH_API}/ask`,
         method: 'POST',
@@ -69,7 +69,7 @@ export const aiSearchApi = gen3Api.injectEndpoints({
 // Add more endpoints here
 
 export const {
-  useGetAskQuestionQuery,
+  useAskQuestionMutation,
   useGetAISearchStatusQuery,
   useGetAISearchVersionQuery
 } = aiSearchApi;

@@ -14,7 +14,7 @@ const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
         icon={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
         data-testid="textbox-search-bar"
-        aria-label="App Search Input"
+        aria-label="metadata search input"
         value={searchTerm}
         onChange={(event) => {
           searchChanged(event.target.value);
