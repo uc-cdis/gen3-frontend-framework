@@ -45,7 +45,6 @@ const config = [
       json(),
       swc({
         // All options are optional
-        sourceMaps: true,
         include: /\.[mc]?[jt]sx?$/, // default
         exclude: /node_modules/, // default
         tsconfig: 'tsconfig.json', // default
