@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, ReactNode } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { capitalize } from 'lodash';
 import { DictionaryCategory, DictionaryProps } from './types';
-import { RiDownload2Fill, RiCloseFill } from 'react-icons/ri';
+import { RiDownload2Fill } from 'react-icons/ri';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
 import Cell from './Cell';
@@ -20,7 +20,7 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
 
   const columns = useMemo(
     () =>
-      ['property', 'type', 'required', 'description', 'term'].map((key) => ({
+      ['property', 'type', 'required', 'description'].map((key) => ({
         accessorKey: key,
         header: key.toLocaleUpperCase(),
         Cell: ({ cell }: { cell: any }) => <Cell cell={cell} key={key} />,
@@ -48,7 +48,6 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
           required: required.includes(k) ? 'Required' : 'No',
           description:
             row?.description ?? row?.term?.description ?? 'No Description',
-          term: '',
         };
       })
       : [];
@@ -64,6 +63,9 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
     enablePagination: false,
     enableBottomToolbar: false,
     enableTopToolbar: false,
+    mantineTableHeadRowProps: {
+      "bg": "rgb(206, 203, 228)"
+    }
   });
 
   const visibleCategories = Object.keys(dictionary).filter((id) =>
@@ -102,12 +104,16 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
           return (
             <div className={'border-l-4 border-purple mt-10'} key={`dictionary-entry-${c}`}>
               <h3 className="flex text-white font-bold font-size-md bg-purple-950 border mb-0 justify-between h-16">
-                <div className="p-5 align-middle">{getIcon(c)}</div>
-                <div className="flex p-5 ml-0">
-                  {c
-                    .split('_')
-                    .map((name) => capitalize(name))
-                    .join(' ')}
+                <div className="flex items-center">
+                  <div className="rounded-full bg-orange-500 p-1 ml-4">
+                    {getIcon(c)}
+                  </div>
+                  <div className="ml-2">
+                    {c
+                      .split('_')
+                      .map((name) => capitalize(name))
+                      .join(' ')}
+                  </div>
                 </div>
               </h3>
               <div className="w-full border border-solid border-black border-t-0">
@@ -116,29 +122,30 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                     return (<div
                       tabIndex={key}
                       role="button"
-                      className="flex flex-col p-2"
+                      className="flex flex-col"
                       key={title}
                     >
                       <div
                         key={key}
-                        className={`flex w-full mb-2 ${key < (categories[c] as any[]).length - 1
+                        className={`flex w-full ${selectedId === id && "bg-violet-100"} ${key < (categories[c] as any[]).length - 1
                           ? 'border-b border-black'
                           : ''
-                          } bg-white hover:text-highlight`}
+                          }  hover:bg-violet-50 hover:text-highlight`}
                       >
-
-                        <div onClick={() => handleSelect(id)} className="flex w-1/5 flex-grow-0 flex-shrink-0 text-left font-bold text-sm items-center">
-                          {selectedId === id ? <IoIosArrowDown /> : <IoIosArrowForward />}<span className="ml-1">{title}</span>
+                        <div
+                          onClick={() => handleSelect(id)}
+                          className={`flex w-1/5 flex-grow-0 flex-shrink-0 text-left font-black text-md items-center ${selectedId === id && "border-l-4 border-orange-500 mr-4"}`}>
+                          <span className="ml-4">{selectedId === id ? <IoIosArrowDown /> : <IoIosArrowForward />}</span><span className="ml-4">{title}</span>
                         </div>
 
-                        <div className="w-3/5 align-left text-left">{description}</div>
+                        <div className="w-3/5 ml-4 text-left">{description}</div>
 
-                        <div className="w-1/5 flex text-sm justify-end mr-5 items-center mt-0">
+                        <div className="w-1/5 flex text-sm justify-end mr-5 items-center mb-3 mt-3">
                           <button
                             onClick={(e) => handleDownloadTemplate(e)}
                             className="text-xs p-1 text-white bg-orange-500 rounded-sm mr-1 h-6 items-center"
                           >
-                            <div className="flex "><RiDownload2Fill /><span className="ml-1">JSON</span></div>
+                            <div className="flex"><RiDownload2Fill /><span className="ml-1 font-black">JSON</span></div>
                           </button>
 
                           <button
@@ -146,20 +153,20 @@ const Dictionary = ({ dictionaryConfig: dictionary }: DictionaryProps) => {
                             className="text-xs p-1 text-white bg-orange-500 rounded-sm ml-1 h-6 items-center"
                           >
                             <div className="flex"><RiDownload2Fill />
-                              <span className="ml-1">TSV</span>
+                              <span className="ml-1 font-black">TSV</span>
                             </div>
                           </button>
                         </div>
                       </div>
-
-                      <div>
+                      <div className="ml-2">
                         {selectedId === id ? (
                           <div
                             key={selectedId}
                           >
-                            <div className="flex flex-col">
-                              <button onClick={() => setSelectedId('')}><RiCloseFill /></button>
-                              <MantineReactTable table={table} />
+                            <div className="flex flex-col mt-2">
+                              <MantineReactTable
+                                table={table}
+                              />
                             </div>
                           </div>
                         ) : <React.Fragment></React.Fragment>}
