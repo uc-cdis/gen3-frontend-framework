@@ -31,6 +31,8 @@ import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
 import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
+import WorkspacePage, { WorkspacePageGetServerSideProps } from "./pages/Workspace";
+
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
@@ -47,6 +49,8 @@ export {
   ColorThemePageGetServerSideProps,
   DictionaryPage,
   DictionaryPageGetServerSideProps,
+  WorkspacePage,
+  WorkspacePageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   ProfilePage,
