@@ -15,6 +15,7 @@ import { type DiscoveryConfig, type StudyPreviewField } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
 import { getTagColor } from './utils';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
+export * from './Statistics';
 
 export {
   type CellRenderFunctionProps,

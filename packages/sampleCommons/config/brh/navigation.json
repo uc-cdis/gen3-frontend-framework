@@ -1,0 +1,42 @@
+{
+  "navigation": {
+    "logo": {
+    "src": "/images/brh/logo.png",
+      "height":256,
+    "href": "/Discovery"
+    },
+    "items": [{
+      "icon": "gen3:query",
+      "href": "/Discovery",
+      "name": "Discovery",
+      "tooltip": "Discover Data"
+    },
+      {
+        "icon": "gen3:profile",
+        "href": "/Profile",
+        "name": "Profile",
+        "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
+      }
+    ]
+  },
+  "topBar": {
+    "items": [
+      {
+        "link": "https://uc-cdis.github.io/BRH-documentation/",
+        "name": "Documentation"
+      },
+      {
+        "link": "brhsupport@datacommons.io",
+        "name": "Email Support"
+      },
+      {
+        "link": "https://uc-cdis.github.io/platform-citation/brh-cite/",
+        "name": "Cite BRH"
+      }
+    ],
+    "showLogin": false,
+    "classNames": {
+      "root": "flex justify-end items-center align-middle w-100 h-10 bg-secondary"
+    }
+  }
+}

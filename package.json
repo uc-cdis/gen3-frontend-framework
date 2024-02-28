@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.0",
+  "version": "0.10.4",
   "description": "The Gen3 Frontend Framework mono repo for development",
   "private": true,
   "workspaces": [
@@ -37,8 +37,8 @@
     "url-join": "^5.0.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^13.4.4",
-    "@swc/cli": "^0.1.57",
+    "@next/eslint-plugin-next": "^14.1.0",
+    "@swc/cli": "^0.3.9",
     "@swc/core": "^1.3.62",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.1.2",
