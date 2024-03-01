@@ -17,10 +17,20 @@ export interface TabsConfig {
     readonly tabs: ReadonlyArray<TabConfig>;
 }
 
+export interface ManifestFieldsConfig {
+    resourceIndexType: string;
+    resourceIdField: string;
+    referenceIdFieldInResourceIndex: string;
+    referenceIdFieldInDataIndex: string;
+}
+
 export interface DataTypeConfig {
     readonly dataType: string;
     readonly nodeCountTitle: string;
     readonly fieldMapping: ReadonlyArray<FieldToName>;
+    readonly manifestMapping?: ManifestFieldsConfig;
+    readonly accessibleFieldCheckList?: string[];
+    readonly accessibleValidationField?: string;
 }
 
 export interface DownloadButtonConfig extends DownloadButtonProps {

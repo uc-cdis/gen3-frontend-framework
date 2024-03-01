@@ -101,6 +101,12 @@ interface QueryCountsParams {
   accessibility?: Accessibility;
 }
 
+interface QueryForFileCountSummaryParams {
+  type: string;
+  field: string;
+  filters: FilterSet;
+}
+
 const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllFieldsForType: builder.query({
@@ -286,6 +292,30 @@ const explorerApi = guppyApi.injectEndpoints({
         return response.data._aggregation[args.type]._totalCount;
       },
     }),
+    getFieldCountSummary: builder.query<Record<string, any>, QueryForFileCountSummaryParams>({
+      query: ({ type, field, filters  } : QueryForFileCountSummaryParams) => {
+        const gqlFilters = convertFilterSetToGqlFilter(filters);
+        const query = `query ($filter: JSON) {
+        _aggregation {
+          ${type} (filter: $filter) {
+            ${field} {
+              histogram {
+                sum
+              }
+            }
+          }
+        }
+      }`;
+        return {
+          query: query,
+          variables: {
+            ...(gqlFilters && {
+              filter: gqlFilters,
+            }),
+          },
+        };
+      }
+    }),
   }),
 });
 
@@ -364,6 +394,7 @@ export const {
   useGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
+  useGetFieldCountSummaryQuery
 } = explorerApi;
 
 const EmptyAggData = {};

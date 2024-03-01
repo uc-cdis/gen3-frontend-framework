@@ -1,6 +1,6 @@
 export * from './guppylApi';
 export * from './guppySlice';
-import { downloadFromGuppy } from './utils';
+import { downloadFromGuppyToBlob, downloadJSONDataFromGuppy } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
 import {
   type GuppyDownloadDataParams,
@@ -16,6 +16,7 @@ export {
   type GuppyActionFunctionParams,
   type GuppyActionFunction,
   type GuppyDownloadActionFunctionParams,
-  downloadFromGuppy,
+  downloadFromGuppyToBlob,
+  downloadJSONDataFromGuppy,
   useDownloadFromGuppyMutation,
 };

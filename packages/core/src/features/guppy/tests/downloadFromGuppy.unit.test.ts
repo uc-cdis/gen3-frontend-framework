@@ -1,4 +1,4 @@
-import { downloadFromGuppy } from '../utils';
+import { downloadFromGuppyToBlob } from '../utils';
 import { Accessibility } from '../../../constants';
 import { DownloadFromGuppyParams, GuppyDownloadDataParams } from '../types';
 
@@ -27,18 +27,18 @@ describe('Test for downloadFromGuppy function', () => {
   });
 
   it('should call the function correctly', () => {
-    downloadFromGuppy(downloadOptions);
+    downloadFromGuppyToBlob(downloadOptions);
     expect(onStartMock).toHaveBeenCalledTimes(1);
-    expect(downloadFromGuppy).toHaveBeenCalledWith(downloadOptions);
+    expect(downloadFromGuppyToBlob).toHaveBeenCalledWith(downloadOptions);
   });
 
   it('test for onDone function', () => {
-    downloadFromGuppy(downloadOptions);
+    downloadFromGuppyToBlob(downloadOptions);
     expect(onDoneMock).toHaveBeenCalledTimes(1);
   });
 
   it('test for onError function', () => {
-    downloadFromGuppy(downloadOptions);
+    downloadFromGuppyToBlob(downloadOptions);
     expect(onErrorMock).toHaveBeenCalledTimes(0);
   });
 
