@@ -14,9 +14,15 @@ export const gen3Api = coreCreateApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
+      const state = getState() as CoreState;
       const csrfToken = selectCSRFToken(getState() as CoreState);
+      console.log("gen3Serivces: ", state.auth);
+      const accessToken = state.auth.accessToken;
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);
+      }
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
       }
       headers.set('Content-Type', 'application/json');
       return headers;
@@ -39,12 +45,15 @@ export const { useGetCSRFQuery } = gen3Api;
 
 export const selectCSRFTokenData = gen3Api.endpoints.getCSRF.select();
 
+
 const passThroughTheState = (state: CoreState) => state.gen3Services;
 
 export const selectCSRFToken = createSelector(
   [selectCSRFTokenData, passThroughTheState],
   (state) => state?.data?.csrfToken,
 );
+
+
 
 export const selectHeadersWithCSRFToken = createSelector(
   [selectCSRFToken, passThroughTheState],

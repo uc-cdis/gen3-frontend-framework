@@ -7,7 +7,6 @@ export * from './features/CohortBuilder';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
-import "@gen3/core";
 
 // export Gen3 data UI standard pages
 import Gen3Provider from './components/Providers/Gen3Provider';

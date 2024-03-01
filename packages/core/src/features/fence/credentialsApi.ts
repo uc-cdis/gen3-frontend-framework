@@ -18,6 +18,14 @@ interface DeleteCredentialParams {
   readonly id: string;
 }
 
+interface AuthorizeFromCredentialsParams {
+  api_key: string;
+  key_id: string;
+}
+export interface AuthTokenResponse {
+  access_token: string;
+}
+
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
@@ -49,16 +57,30 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          ...(csrfToken &&  {'x-csrf-token': csrfToken}),
+          ...(csrfToken && { 'x-csrf-token': csrfToken }),
         },
       }),
       invalidatesTags: ['Credentials'],
     }),
-  }),
+    authorizeFromCredentials: builder.mutation<AuthTokenResponse, AuthorizeFromCredentialsParams>({
+      query: (params) => ({
+        url: '/user/credentials/api/access_token',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          api_key: params.api_key,
+          key_id: params.key_id,
+        },
+      }),
+    }),
+  })
 });
 
 export const {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
+  useAuthorizeFromCredentialsMutation
 } = credentialsApi;

@@ -1,14 +1,10 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Box, Button, LoadingOverlay, Select, Stack } from '@mantine/core';
-import { useGetLoginProvidersQuery } from '@gen3/core';
 import type { Gen3LoginProvider, NameUrl } from '@gen3/core';
+import { useGetLoginProvidersQuery } from '@gen3/core';
+import { LoginRedirectProps } from './types';
 
-interface LoginPanelProps {
-  readonly redirectURL?: string;
-  readonly handleLoginSelected: (_: string, _2?: string) => void;
-}
-
-interface LoginProviderItemProps  extends LoginPanelProps {
+interface LoginProviderItemProps  extends LoginRedirectProps {
   readonly provider: Gen3LoginProvider;
 }
 
@@ -63,8 +59,8 @@ const LoginProviderSingleItem = ({ provider, handleLoginSelected, redirectURL }:
 const LoginProvidersPanel = ({
   handleLoginSelected,
   redirectURL,
-}: LoginPanelProps) => {
-  const { data, isSuccess } = useGetLoginProvidersQuery();;
+}: LoginRedirectProps) => {
+  const { data, isSuccess } = useGetLoginProvidersQuery();
 
   if (!isSuccess) {
     return <LoadingOverlay visible={!isSuccess} />;

@@ -13,3 +13,8 @@ export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {
   topContent?: ReadonlyArray<TextContentProps>;
   bottomContent?: ReadonlyArray<TextContentProps>;
 }
+
+export interface LoginRedirectProps {
+  readonly redirectURL?: string;
+  readonly handleLoginSelected: (_arg0: string, _arg1?: string) => void;
+}

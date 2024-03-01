@@ -5,6 +5,7 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
+import { authReducer } from './features/authz/authStateSlice';
 
 import {
   guppyApiReducer,
@@ -18,6 +19,7 @@ export const rootReducer = combineReducers({
   drsHostnames: drsHostnamesReducer,
   modals: modalReducer,
   cohorts: cohortReducer,
+  auth: authReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
 });
 
