@@ -2,9 +2,6 @@ import React from 'react';
 import { SummaryStatistics } from './types';
 import StatisticRendererFactory from './StatisticsRendererFactory';
 
-// TODO remove this once stats are working
-const SAMPLE_VALUES = [1023, 2392];
-
 const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
   return summaries.map((summary) => {
     const { name, field, type } = summary;
@@ -15,15 +12,11 @@ const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
         'default',
       );
 
-      return element({
+      return ( element({
         value: summary.value ?? 'N/A',
         label: name,
         key: `stats-item-${name}-${field}-${type}`,
-        className:
-          summaries.length > 1
-            ? 'px-5 border-accent-darker first:border-r-2 last:border-right-0'
-            : 'px-5',
-      });
+      }));
     }
   });
 };
@@ -34,7 +27,7 @@ interface SummaryStatisticPanelProps {
 
 const SummaryStatisticPanel = ({ summaries }: SummaryStatisticPanelProps) => {
   return (
-    <div className="flex items-center">
+    <div className={`grid grid-cols-${summaries.length} grow shrink-0 divide-x-2 divide-accent `} >
       {BuildSummaryStatisticPanel(summaries)}
     </div>
   );
