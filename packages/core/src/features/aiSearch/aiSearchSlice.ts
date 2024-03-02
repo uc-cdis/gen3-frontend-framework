@@ -1,6 +1,5 @@
 import { GEN3_AI_SEARCH_API } from '../../constants';
 import { gen3Api } from '../gen3';
-import { JSONObject } from '../../types';
 
 interface AiSearchParams {
 
@@ -12,11 +11,18 @@ interface AiSearchRequestParams extends AiSearchParams {
   readonly query: string;
 }
 
-interface AiSearchResponse extends AiSearchParams {
+export interface AiSearchResponse extends AiSearchParams {
+  readonly query: string;
   readonly topic: string;
   readonly conversationId: string;
   readonly response: string;
-  readonly documents: Array<JSONObject>;
+  readonly documents: {
+    readonly page_content: string;
+    readonly metadata: {
+      readonly row: number;
+      readonly source: string;
+    };
+  }[];
 }
 
 /**
@@ -41,8 +47,9 @@ export const aiSearchApi = gen3Api.injectEndpoints({
           ...(searchParams.conversationId ? { conversation_id: searchParams.conversationId } : {}),
         }),
       }),
-      transformResponse: (data: Record<string, any>) => {
+      transformResponse: (data: Record<string, any>, _, arg) => {
         return {
+          query: arg.query,
           response: data.response,
           topic: data.topic,
           conversationId: data.conversation_id,

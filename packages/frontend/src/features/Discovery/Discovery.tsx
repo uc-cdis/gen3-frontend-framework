@@ -12,7 +12,7 @@ import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData, useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
-import AISearchInput from './Search/AISearchInput';
+import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 
 export interface DiscoveryProps {
@@ -67,7 +67,6 @@ const Discovery = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
-
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <div className="w-full">
@@ -81,7 +80,6 @@ const Discovery = ({
             <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="flex-grow"></div>
             <div className="w-full flex flex-col">
-              <AISearchInput />
               <SearchInputWithSuggestions
                 suggestions={suggestions}
                 clearSearch={() => {
@@ -98,6 +96,13 @@ const Discovery = ({
               />
             </div>
           </div>
+          {true/*discoveryConfig?.features?.aiSearch*/ && (
+            <div className="mb-4">
+              <div className="flex w-full bg-base-max p-4 rounded-lg">
+                <AiSearch />
+              </div>
+            </div>
+          )}
           <div className="flex flex-row">
             {discoveryConfig?.features?.advSearchFilters?.enabled ?
               <Button onClick={toggleAdvancedSearch} color="accent">

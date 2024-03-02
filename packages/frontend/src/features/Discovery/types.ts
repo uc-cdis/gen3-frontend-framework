@@ -260,6 +260,7 @@ export interface AccessFilters {
 export interface DiscoveryConfig {
   features: {
     advSearchFilters?: AdvancedSearchFilters;
+    aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
