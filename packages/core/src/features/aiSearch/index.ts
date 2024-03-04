@@ -3,10 +3,12 @@ import {
   useAskQuestionMutation,
   useGetAISearchStatusQuery,
   useGetAISearchVersionQuery,
+  type AiSearchResponse,
 } from './aiSearchSlice';
 
 export {
   useAskQuestionMutation,
   useGetAISearchStatusQuery,
   useGetAISearchVersionQuery,
-}
+  type AiSearchResponse,
+};
