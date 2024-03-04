@@ -67,7 +67,7 @@ const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
         <nav className="flex items-center align-middle">
           {items.map((x) => {
             return (
-              <a className="flex" href={`${x.href}`} key={x.href}>
+              <a className="flex" href={`${x.href}`} key={`${x.href}_${x.name}`}>
                 <TopIconButton
                   name={x.name}
                   leftIcon={x.leftIcon}

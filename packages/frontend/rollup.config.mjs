@@ -29,12 +29,21 @@ const globals = {
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
   '@mantine/styles': 'mantineStyles',
+  '@mantine/hooks': 'mantineHooks',
+  '@mantine/core': 'mantineCore',
+  '@mantine/form': 'mantineForm',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
   'react-icons/md': 'reactIcons',
+  'react-icons/io': 'reactIcons',
+  'react-icons/ri': 'reactIcons',
   'react-minisearch': 'reactMinisearch',
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
+  'react-cookie': 'reactCookie',
+  'yaml': 'yaml',
+  'file-saver': 'fileSaver',
+  'universal-cookie': 'universalCookie',
 };
 
 const config = [
@@ -42,23 +51,14 @@ const config = [
     input: './src/index.ts',
     output: [
       {
-        dir: 'dist',
+        dir: 'dist/cjs',
         format: 'cjs',
         globals,
         sourcemap: true
       },
       {
-        dir: 'dist',
+        dir: 'dist/esm',
         format: 'esm',
-        name: 'gen3frontend',
-        plugins: [terser()],
-        globals,
-        sourcemap: true
-      },
-      {
-        dir: 'dist',
-        format: 'esm',
-        name: 'gen3Core',
         globals,
         sourcemap: true
       },
@@ -81,7 +81,8 @@ const config = [
       '@graphiql/plugin-explorer',
       'mantine-react-table',
       'victory',
-      'echarts'
+      'echarts',
+      '@gen3/core'
     ],
     plugins: [
       peerDepsExternal(),
@@ -105,7 +106,7 @@ const config = [
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives(),
+        swcPreserveDirectives()
       ),
     ],
   },

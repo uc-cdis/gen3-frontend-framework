@@ -2,6 +2,7 @@ import {
   useCoreSelector,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  CoreState,
 } from '@gen3/core';
 
 import { useCohortFacetFilters } from './hooks';
@@ -12,10 +13,10 @@ interface CohortManagerProps {
 }
 
 const CohortManager  = ( { index } : CohortManagerProps) => {
-  const currentCohortId = useCoreSelector((state) =>
+  const currentCohortId = useCoreSelector((state:CoreState) =>
     selectCurrentCohortId(state)
   );
-  const currentCohortName = useCoreSelector((state) =>
+  const currentCohortName = useCoreSelector((state: CoreState) =>
     selectCurrentCohortName(state)
   );
   const filters = useCohortFacetFilters(index);

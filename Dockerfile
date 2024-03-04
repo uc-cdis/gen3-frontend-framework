@@ -5,7 +5,7 @@
 
 FROM quay.io/cdis/ubuntu:20.04 as build
 
-ARG NODE_VERSION=18
+ARG NODE_VERSION=20
 
 ENV DEBIAN_FRONTEND=noninteractive
 

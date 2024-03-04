@@ -3,7 +3,7 @@
 
 import { DiscoverDataHookResponse, DiscoveryDataLoaderProps } from '../types';
 import { useAggMDSServer } from './AggMDSServer/DataLoader';
-import { useLoadAllData } from './MDSAllLocal/DataLoader';
+import { useLoadAllMDSData, useLoadAllAggMDSData } from './MDSAllLocal/DataLoader';
 
 export type DiscoveryDataLoader = (_: DiscoveryDataLoaderProps) => DiscoverDataHookResponse;
 
@@ -36,7 +36,8 @@ export const getDiscoveryDataLoaders = (): string[] => {
 
 export const registerDefaultDiscoveryDataLoaders = () => {
   registerDiscoveryDataLoader('AggMDSServer', useAggMDSServer);
-  registerDiscoveryDataLoader('MDSAllLocal', useLoadAllData);
+  registerDiscoveryDataLoader('MDSAllLocal', useLoadAllMDSData);
+  registerDiscoveryDataLoader('AggMDSAllLocal', useLoadAllAggMDSData);
 };
 
 registerDefaultDiscoveryDataLoaders();

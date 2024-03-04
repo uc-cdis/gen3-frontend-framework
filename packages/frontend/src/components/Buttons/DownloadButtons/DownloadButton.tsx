@@ -1,6 +1,6 @@
 import { Button, ButtonProps, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
-import download from '../../utils/download';
+import download, { DownloadFunctionParams } from '../../../utils/download';
 import { hideModal, Modals, useCoreDispatch } from '@gen3/core';
 import { Dispatch, SetStateAction, forwardRef } from 'react';
 
@@ -11,13 +11,10 @@ import { Dispatch, SetStateAction, forwardRef } from 'react';
  * @property disabled - Whether the button is disabled.
  * @property inactiveText - The text to display when the button is inactive.
  * @property activeText - The text to display when the button is active.
- * @property filename - The name of the file to download.
- * @property size - The size of the download.
+ * @property params - The parameters to pass to the endpoint.
  * @property format - The format of the download.
  * @property fields - The fields to download.
- * @property caseFilters - The case filters to download.
  * @property filters - The filters to download.
- * @property extraParams - Any extra parameters to download.
  * @property method - The method to use for the download.
  * @property customStyle - Any custom styles to apply to the button.
  * @property showLoading - Whether to show the loading icon.
@@ -31,17 +28,12 @@ import { Dispatch, SetStateAction, forwardRef } from 'react';
  * @property toolTip - The tooltip to display.
  */
 interface DownloadButtonProps {
-  endpoint: string;
+  endpoint?: string;
   disabled?: boolean;
   inactiveText: string;
   activeText: string;
-  filename?: string;
-  size?: number;
   format?: string;
-  fields?: Array<string>;
-  caseFilters?: Record<string, any>;
-  filters?: Record<string, any>;
-  extraParams?: Record<string, any>;
+  params: Record<string, any>;
   method?: string;
   customStyle?: string;
   showLoading?: boolean;
@@ -83,23 +75,18 @@ interface DownloadButtonProps {
  * @param toolTip - The tooltip to display.
  * @category Buttons
  */
+
 export const DownloadButton = forwardRef<
   HTMLButtonElement,
   DownloadButtonProps & ButtonProps
 >(
   (
     {
-      endpoint,
+      endpoint = '',
       disabled = false,
-      filename,
-      size = 10000,
-      format = 'JSON',
-      fields = [],
-      caseFilters = {},
-      filters = {},
       inactiveText,
       activeText,
-      extraParams,
+      params = {},
       method = 'POST',
       customStyle,
       setActive,
@@ -108,8 +95,8 @@ export const DownloadButton = forwardRef<
       showIcon = true,
       preventClickEvent = false,
       active,
-      Modal400,
-      Modal403,
+      Modal400 = Modals.GeneralErrorModal,
+      Modal403 = Modals.NoAccessModal,
       toolTip,
       ...buttonProps
     }: DownloadButtonProps,
@@ -142,24 +129,13 @@ export const DownloadButton = forwardRef<
               return;
             }
             dispatch(hideModal());
-            const params = {
-              size,
-              attachment: true,
-              format,
-              fields: fields.join(),
-              case_filters: caseFilters,
-              filters,
-              pretty: true,
-              ...(filename ? { filename } : {}),
-              ...extraParams,
-            };
             setActive && setActive(true);
             download({
-              params,
               endpoint,
+              params,
               method,
-              done: () => setActive && setActive(false),
               dispatch,
+              done: () => setActive && setActive(false),
               Modal400,
               Modal403,
             });
