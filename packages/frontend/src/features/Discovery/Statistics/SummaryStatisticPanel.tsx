@@ -27,7 +27,7 @@ interface SummaryStatisticPanelProps {
 
 const SummaryStatisticPanel = ({ summaries }: SummaryStatisticPanelProps) => {
   return (
-    <div className={`grid grid-cols-${summaries.length} grow shrink-0 divide-x-2 divide-accent `} >
+    <div className={`grid grid-cols-${summaries.length} grow shrink-0 divide-x-2 divide-accent`} >
       {BuildSummaryStatisticPanel(summaries)}
     </div>
   );
