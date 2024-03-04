@@ -203,7 +203,7 @@ const AiSearch = ({
                 {aiResponseDisplayed?.documents && aiResponseDisplayed.documents.length > 0 ?
                 (
                 <ul className="border-l-2 border-blue-600 pl-4 py-1">
-                  {aiResponseDisplayed?.documents.map((document:AiSearchResponse['documents'], i:number)=>{
+                  {aiResponseDisplayed?.documents.map((document:AiSearchResponse['documents'][0], i:number)=>{
                     return (<li key={i} className="inline-block after:content-[','] pr-2 last:after:content-none">{document.metadata.source}</li>);
                   })}
                 </ul>
