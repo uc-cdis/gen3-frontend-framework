@@ -97,5 +97,8 @@ export const DiscoveryTableCellRenderer = (
     return defaultCellRenderer;
   }
   const func = DiscoveryCellRendererFactory.getCellRenderer(type, functionName);
+  if (!func) {
+    return defaultCellRenderer;
+  }
   return (cellProps): ReactElement => func(cellProps, params);
 };

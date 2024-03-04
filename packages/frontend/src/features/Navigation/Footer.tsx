@@ -19,7 +19,7 @@ const Footer = ({
   const mergedClassNames = { ...defaultClassNames, ...classNames };
 
   return (
-    <React.Fragment>
+    <footer>
       <div className={extractClassName('root',mergedClassNames )}>
         <div className="flex justify-end">
           {(footerLogos || [[]]).map((col, index) => {
@@ -113,7 +113,7 @@ const Footer = ({
           ))}
         </div>
       ) : null}
-    </React.Fragment>
+    </footer>
   );
 };
 
