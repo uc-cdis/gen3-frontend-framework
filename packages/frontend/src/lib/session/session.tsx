@@ -185,6 +185,7 @@ export const SessionProvider = ({
 
   useInterval(() => {
 
+    console.log("sessionInfo.status", sessionInfo.status);
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 

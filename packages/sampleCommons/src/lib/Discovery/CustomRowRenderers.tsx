@@ -55,9 +55,8 @@ const DetailsWithTagsRowRenderer =
             {row.original?.tags.map(({ name, category }: TagData) => {
               const color = getTagColor(category, config.tagCategories);
               return (
-                <Box w={150} key={name}>
+
                   <Badge
-                    fullWidth
                     role="button"
                     size="lg"
                     radius="sm"
@@ -67,12 +66,11 @@ const DetailsWithTagsRowRenderer =
                     style={{
                       borderColor: color,
                       borderWidth: '3px',
-                      margin: '2px',
+                      margin: '0 0.125rem',
                     }}
                   >
                     {name}
                   </Badge>
-                </Box>
               );
             })}
           </div>
