@@ -70,10 +70,7 @@ const AiSearch = ({
         return;
       }
       //if no check time it was started and check if apiIsLoading
-      if (
-        apiIsLoading &&
-        aiSearchHistory[searchTerm].loadingStarted < Date.now() + 60000
-      ) {
+      if (apiIsLoading && aiSearchHistory[searchTerm].loadingStarted < (Date.now() + 60000)) {
         //wait longer
         return;
       }
@@ -236,77 +233,27 @@ const AiSearch = ({
                   </div>
                 </div>
               ) : (
-                <div className="px-4">
-                  <Title order={5} className="pb-2">
-                    AI Response
-                  </Title>
-                  <div className="border-l-2 border-blue-600 pl-4 py-1">
-                    {/** TODO interpret code and add expand */}
-
-                    {aiResponseDisplayed?.response ? (
-                      <Markdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          // define some formatting for the ai response
-                          p(props) {
-                            const { node, ...rest } = props;
-                            return (
-                              <p
-                                className="text-lg text-primary-contrast my-1"
-                                {...rest}
-                              />
-                            );
-                          },
-                          ol(props) {
-                            const { node, ...rest } = props;
-                            return (
-                              <ol
-                                className="list-decimal list-inside my-1"
-                                {...rest}
-                              />
-                            );
-                          },
-                          li(props) {
-                            const { node, ...rest } = props;
-                            return <li className="text-md" {...rest} />;
-                          },
-                        }}
-                      >
-                        {formatAiResponse(aiResponseDisplayed.response)}
-                      </Markdown>
-                    ) : (
-                      'Something went wrong please refresh and try again'
-                    )}
-                  </div>
-                  <Divider my="sm" />
-                  <Title order={5} className="pb-2">
-                    Referenced Sources
-                  </Title>
-                  {aiResponseDisplayed?.documents &&
-                  aiResponseDisplayed.documents.length > 0 ? (
-                    <ul className="border-l-2 border-blue-600 pl-4 py-1">
-                      {aiResponseDisplayed?.documents.map(
-                        (
-                          document: AiSearchDocument,
-                          i: number,
-                        ) => {
-                          return (
-                            <li
-                              key={i}
-                              className="inline-block after:content-[','] pr-2 last:after:content-none"
-                            >
-                              {document.metadata.source}
-                            </li>
-                          );
-                        },
-                      )}
-                    </ul>
-                  ) : (
-                    <div className="border-l-2 border-blue-600 pl-4 py-1">
-                      No referenced sources available.
-                    </div>
-                  )}
+              <div className="px-4">
+                <Title order={5} className="pb-2">AI Response</Title>
+                <div className="border-l-2 border-blue-600 pl-4 py-1">
+                  {/** TODO interpret code and add expand */}
+                  {aiResponseDisplayed?.response || 'Something went wrong please refresh and try again'}
                 </div>
+                <Divider my="sm" />
+                <Title order={5} className="pb-2">Referenced Sources</Title>
+                {aiResponseDisplayed?.documents && aiResponseDisplayed.documents.length > 0 ?
+                (
+                <ul className="border-l-2 border-blue-600 pl-4 py-1">
+                  {aiResponseDisplayed?.documents.map((document:AiSearchResponse['documents'][0], i:number)=>{
+                    return (<li key={i} className="inline-block after:content-[','] pr-2 last:after:content-none">{document.metadata.source}</li>);
+                  })}
+                </ul>
+                ) :(
+                <div className="border-l-2 border-blue-600 pl-4 py-1">
+                  No referenced sources available.
+                </div>
+                )}
+              </div>
               )}
             </div>
           )}
