@@ -39,7 +39,13 @@
     },
     "search": {
       "searchBar": {
-        "enabled": true
+        "enabled": true,
+        "searchableTextFields": [
+          "short_name",
+          "full_name",
+          "study_description",
+          "study_id"
+        ]
       },
       "tagSearchDropdown": {
         "enabled": true,

@@ -263,7 +263,7 @@ const useSearchMetadata = ({
     storeFields: [uidField],
     idField: uidField,
     extractField: extractValue,
-    //  processTerm: (term) => suffixes(term, 3),
+  //  processTerm: (term) => suffixes(term, 3),
     searchOptions: {
       processTerm: MiniSearch.getDefault('processTerm'),
     },
@@ -313,6 +313,8 @@ const useSearchMetadata = ({
         discoveryConfig,
       );
     };
+
+
 
     setSearchedData(filterAdvancedSearchResults(filterKeywordSearchResults()));
 

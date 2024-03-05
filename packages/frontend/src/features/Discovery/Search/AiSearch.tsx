@@ -208,15 +208,18 @@ const AiSearch = ({
                     <Markdown
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        // Map `h1` (`# heading`) to use `h2`s.
-                        // Rewrite `em`s (`*like so*`) to `i` with a red foreground color.
+                        // define some formatting for the ai response
                         p(props) {
                           const {node, ...rest} = props
-                          return <p className="text-md text-primary-contrast my-1" {...rest} />;
+                          return <p className="text-lg text-primary-contrast my-1" {...rest} />;
                         },
                         ol(props) {
                           const {node, ...rest} = props
                           return <ol className="list-decimal list-inside my-1" {...rest} />;
+                        },
+                        li(props) {
+                          const {node, ...rest} = props
+                          return <li className="text-md" {...rest} />;
                         }
                       }}
                     >
