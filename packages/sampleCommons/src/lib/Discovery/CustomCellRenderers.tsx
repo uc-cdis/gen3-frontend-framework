@@ -38,8 +38,21 @@ export const LinkedStudyCell = ({
 const WrappedStringCell = (
   { value }: CellRenderFunctionProps,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _params: any[0],
+  params?: JSONObject,
 ) => {
+
+  if (value === undefined || value === null || toString(value) === '') {
+    return (
+      <Text>
+        {`${
+          params && params?.valueIfNotAvailable
+            ? params?.valueIfNotAvailable
+            : ''
+        }`}{' '}
+      </Text>
+    );
+  }
+
   const content = value as string | string[];
   return (
     <div className="w-40">
