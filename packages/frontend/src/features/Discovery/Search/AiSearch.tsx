@@ -3,6 +3,13 @@ import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
 import { PiSparkleFill } from "react-icons/pi";
 import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Tooltip } from '@mantine/core';
 import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
+
+
+const formatAiResponse = (response: string) => {
+  return response;
+};
 
 interface AiSearchProps {
   placeholder?: string;
@@ -196,7 +203,26 @@ const AiSearch = ({
                 <Title order={5} className="pb-2">AI Response</Title>
                 <div className="border-l-2 border-blue-600 pl-4 py-1">
                   {/** TODO interpret code and add expand */}
-                  {aiResponseDisplayed?.response || 'Something went wrong please refresh and try again'}
+
+                  {aiResponseDisplayed?.response ?
+                    <Markdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        // Map `h1` (`# heading`) to use `h2`s.
+                        // Rewrite `em`s (`*like so*`) to `i` with a red foreground color.
+                        p(props) {
+                          const {node, ...rest} = props
+                          return <p className="text-md text-primary-contrast my-1" {...rest} />;
+                        },
+                        ol(props) {
+                          const {node, ...rest} = props
+                          return <ol className="list-decimal list-inside my-1" {...rest} />;
+                        }
+                      }}
+                    >
+                      {formatAiResponse(aiResponseDisplayed.response)}
+                    </Markdown>
+                    : 'Something went wrong please refresh and try again'}
                 </div>
                 <Divider my="sm" />
                 <Title order={5} className="pb-2">Referenced Sources</Title>
