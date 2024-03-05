@@ -49,6 +49,7 @@ const config = [
         exclude: /node_modules/, // default
         tsconfig: 'tsconfig.json', // default
         jsc: {},
+        sourceMaps: true,
       }),
       swcPreserveDirectives(),
     ],

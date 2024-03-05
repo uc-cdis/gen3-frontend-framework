@@ -1,4 +1,5 @@
 import { gen3Api } from '../gen3';
+import { GEN3_AUTH_API } from '../../constants';
 
 export interface APIKey {
   readonly jti: string;
@@ -21,7 +22,7 @@ interface DeleteCredentialParams {
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
-      query: () => 'user/credentials/api',
+      query: () => `${GEN3_AUTH_API}/credentials/api`,
       transformResponse: (
         response: Gen3FenceCredentials,
       ): ReadonlyArray<APIKey> => response['jtis'], // the response is a JSON object with a single key,
@@ -31,7 +32,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: 'user/credentials/api',
+        url: `${GEN3_AUTH_API}/credentials/api`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
-        url: `user/credentials/api/${id}`,
+        url: `${GEN3_AUTH_API}/credentials/api/${id}`,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
