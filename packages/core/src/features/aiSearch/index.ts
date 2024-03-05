@@ -4,6 +4,7 @@ import {
   useGetAISearchStatusQuery,
   useGetAISearchVersionQuery,
   type AiSearchResponse,
+  type AiSearchDocument,
 } from './aiSearchSlice';
 
 export {
@@ -11,4 +12,5 @@ export {
   useGetAISearchStatusQuery,
   useGetAISearchVersionQuery,
   type AiSearchResponse,
+  type AiSearchDocument,
 };

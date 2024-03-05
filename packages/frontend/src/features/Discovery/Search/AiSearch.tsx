@@ -1,11 +1,19 @@
-import React, { useState, useEffect, useMemo, useId } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
-import { PiSparkleFill } from "react-icons/pi";
-import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Tooltip } from '@mantine/core';
-import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
+import { PiSparkleFill } from 'react-icons/pi';
+import {
+  TextInput,
+  Loader,
+  Tabs,
+  Button,
+  UnstyledButton,
+  Title,
+  Divider,
+  Tooltip,
+} from '@mantine/core';
+import { useAskQuestionMutation, AiSearchResponse, AiSearchDocument } from '@gen3/core';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm'
-
+import remarkGfm from 'remark-gfm';
 
 const formatAiResponse = (response: string) => {
   return response;
@@ -16,7 +24,7 @@ interface AiSearchProps {
   uidForStorage?: string;
 }
 interface HistoryObj {
-  [key:string]: {
+  [key: string]: {
     loadingStarted: number;
     loadingEnded?: number;
     result?: AiSearchResponse;
@@ -26,7 +34,7 @@ interface HistoryObj {
  * AiSearch is an ai chatbot presenting as a searchbar
  * @param uidForStorage - optional id used to store search results Defaults to 'aiSearch'
  * @param placeholder - optional Defaults to 'e.g. Is there any data with subjects diagnosed with lung disease?'
-*/
+ */
 const AiSearch = ({
   placeholder = 'e.g. Is there any data with subjects diagnosed with lung disease?',
   uidForStorage = 'aiSearch',
@@ -36,10 +44,12 @@ const AiSearch = ({
   const [aiSearchHistory, setAiSearchHistory] = useState<HistoryObj>({});
   const [resultAreaDisplayed, setResultAreaDisplayed] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [aiResponseDisplayed, setAiResponseDisplayed] = useState<AiSearchResponse | undefined>();
+  const [aiResponseDisplayed, setAiResponseDisplayed] = useState<
+    AiSearchResponse | undefined
+  >();
   const [
     askQuestion,
-    { isLoading: apiIsLoading, data: aiResponse},
+    { isLoading: apiIsLoading, data: aiResponse },
     // This is the destructured mutation result
   ] = useAskQuestionMutation();
 
@@ -60,20 +70,21 @@ const AiSearch = ({
         return;
       }
       //if no check time it was started and check if apiIsLoading
-      if (apiIsLoading && aiSearchHistory[searchTerm].loadingStarted < (Date.now() + 60000)) {
+      if (
+        apiIsLoading &&
+        aiSearchHistory[searchTerm].loadingStarted < Date.now() + 60000
+      ) {
         //wait longer
         return;
       }
       //otherwise do the api call again
     }
 
-
     //save search term
-    setAiSearchHistory(searchHistory => ({
+    setAiSearchHistory((searchHistory) => ({
       ...searchHistory,
-      [searchTerm]: {loadingStarted: Date.now()}
+      [searchTerm]: { loadingStarted: Date.now() },
     }));
-
 
     //make API Call
     setShowLoading(true);
@@ -84,7 +95,6 @@ const AiSearch = ({
     setAiResponseDisplayed(undefined);
     //display loading/results area
     setResultAreaDisplayed(true);
-
   };
   useEffect(() => {
     //when api returns data show to user and store
@@ -98,17 +108,19 @@ const AiSearch = ({
     }
 
     //update Search History
-    setAiSearchHistory(searchHistory => {
+    setAiSearchHistory((searchHistory) => {
       const currentQuery = searchHistory[aiResponse.query];
       currentQuery.loadingEnded = Date.now();
       currentQuery.result = aiResponse;
-      return {...searchHistory};
+      return { ...searchHistory };
     });
   }, [aiResponse, searchTermOnSubmit]);
 
   useEffect(() => {
     //on load read session storage
-    setAiSearchHistory(JSON.parse((sessionStorage.getItem(uidForStorage) || '{}')));
+    setAiSearchHistory(
+      JSON.parse(sessionStorage.getItem(uidForStorage) || '{}'),
+    );
   }, [uidForStorage]);
 
   useEffect(() => {
@@ -119,10 +131,16 @@ const AiSearch = ({
   }, [uidForStorage, aiSearchHistory]);
 
   return (
-    <Tabs defaultValue="search" color="orange.8" className="w-full" classNames={{
-      tab: 'data-[active=true]:font-bold !text-[16px]',
-    }}>
-      <Tabs.List>{/**TODO add tooltip */}
+    <Tabs
+      defaultValue="search"
+      color="orange.8"
+      className="w-full"
+      classNames={{
+        tab: 'data-[active=true]:font-bold !text-[16px]',
+      }}
+    >
+      <Tabs.List>
+        {/**TODO add tooltip */}
         <Tooltip
           label="AI is a powerful tool, but we cannot guarantee the accuracy of any responses. Feel free to copy and paste perceived dataset names or descriptions from the AI response into the real search bar to try and find any datasets the AI is referring to."
           position="bottom"
@@ -131,7 +149,14 @@ const AiSearch = ({
           multiline
           width={300}
         >
-          <Tabs.Tab value="search" rightSection={<MdInfo className="text-[#C7501A]" aria-label="info icon"/>}>Ask AI About Available Data</Tabs.Tab>
+          <Tabs.Tab
+            value="search"
+            rightSection={
+              <MdInfo className="text-[#C7501A]" aria-label="info icon" />
+            }
+          >
+            Ask AI About Available Data
+          </Tabs.Tab>
         </Tooltip>
         <Tooltip
           label="Your history is only saved temporarily on this device."
@@ -141,7 +166,15 @@ const AiSearch = ({
           multiline
           width={300}
         >
-          <Tabs.Tab value="history" rightSection={<MdInfo  className="text-[#C7501A]" aria-label="info icon"/>} disabled>Search History</Tabs.Tab>
+          <Tabs.Tab
+            value="history"
+            rightSection={
+              <MdInfo className="text-[#C7501A]" aria-label="info icon" />
+            }
+            disabled
+          >
+            Search History
+          </Tabs.Tab>
         </Tooltip>
       </Tabs.List>
 
@@ -153,10 +186,13 @@ const AiSearch = ({
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
-            onKeyUp={(e) => e.key === "Enter" && askAi()}
+            onKeyUp={(e) => e.key === 'Enter' && askAi()}
             classNames={{
               root: '',
-              input: `!pr-[250px] ${resultAreaDisplayed && '!rounded-b-none !border-blue-600 !border-b-0'}`,
+              input: `!pr-[250px] ${
+                resultAreaDisplayed &&
+                '!rounded-b-none !border-blue-600 !border-b-0'
+              }`,
             }}
             size="lg"
           />
@@ -183,65 +219,94 @@ const AiSearch = ({
               size="md"
               leftIcon={<PiSparkleFill aria-hidden />}
               onClick={askAi}
-              >
+            >
               Ask AI
             </Button>
-            </div>
+          </div>
         </div>
         <div aria-live="polite">
           {resultAreaDisplayed && (
             <div className="border border-blue-600 rounded-b bg-gray-100 py-6">
               {showLoading ? (
-              <div className="text-center">
-                <Loader color="orange.8" className="inline-block mb-4"/>
-                <div>
-                  AI response is loading. If you&apos;d like to cancel this search, press the &quot;Clear&quot; button.
+                <div className="text-center">
+                  <Loader color="orange.8" className="inline-block mb-4" />
+                  <div>
+                    AI response is loading. If you&apos;d like to cancel this
+                    search, press the &quot;Clear&quot; button.
+                  </div>
                 </div>
-              </div>
               ) : (
-              <div className="px-4">
-                <Title order={5} className="pb-2">AI Response</Title>
-                <div className="border-l-2 border-blue-600 pl-4 py-1">
-                  {/** TODO interpret code and add expand */}
+                <div className="px-4">
+                  <Title order={5} className="pb-2">
+                    AI Response
+                  </Title>
+                  <div className="border-l-2 border-blue-600 pl-4 py-1">
+                    {/** TODO interpret code and add expand */}
 
-                  {aiResponseDisplayed?.response ?
-                    <Markdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        // define some formatting for the ai response
-                        p(props) {
-                          const {node, ...rest} = props
-                          return <p className="text-lg text-primary-contrast my-1" {...rest} />;
+                    {aiResponseDisplayed?.response ? (
+                      <Markdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          // define some formatting for the ai response
+                          p(props) {
+                            const { node, ...rest } = props;
+                            return (
+                              <p
+                                className="text-lg text-primary-contrast my-1"
+                                {...rest}
+                              />
+                            );
+                          },
+                          ol(props) {
+                            const { node, ...rest } = props;
+                            return (
+                              <ol
+                                className="list-decimal list-inside my-1"
+                                {...rest}
+                              />
+                            );
+                          },
+                          li(props) {
+                            const { node, ...rest } = props;
+                            return <li className="text-md" {...rest} />;
+                          },
+                        }}
+                      >
+                        {formatAiResponse(aiResponseDisplayed.response)}
+                      </Markdown>
+                    ) : (
+                      'Something went wrong please refresh and try again'
+                    )}
+                  </div>
+                  <Divider my="sm" />
+                  <Title order={5} className="pb-2">
+                    Referenced Sources
+                  </Title>
+                  {aiResponseDisplayed?.documents &&
+                  aiResponseDisplayed.documents.length > 0 ? (
+                    <ul className="border-l-2 border-blue-600 pl-4 py-1">
+                      {aiResponseDisplayed?.documents.map(
+                        (
+                          document: AiSearchDocument,
+                          i: number,
+                        ) => {
+                          return (
+                            <li
+                              key={i}
+                              className="inline-block after:content-[','] pr-2 last:after:content-none"
+                            >
+                              {document.metadata.source}
+                            </li>
+                          );
                         },
-                        ol(props) {
-                          const {node, ...rest} = props
-                          return <ol className="list-decimal list-inside my-1" {...rest} />;
-                        },
-                        li(props) {
-                          const {node, ...rest} = props
-                          return <li className="text-md" {...rest} />;
-                        }
-                      }}
-                    >
-                      {formatAiResponse(aiResponseDisplayed.response)}
-                    </Markdown>
-                    : 'Something went wrong please refresh and try again'}
+                      )}
+                    </ul>
+                  ) : (
+                    <div className="border-l-2 border-blue-600 pl-4 py-1">
+                      No referenced sources available.
+                    </div>
+                  )}
                 </div>
-                <Divider my="sm" />
-                <Title order={5} className="pb-2">Referenced Sources</Title>
-                {aiResponseDisplayed?.documents && aiResponseDisplayed.documents.length > 0 ?
-                (
-                <ul className="border-l-2 border-blue-600 pl-4 py-1">
-                  {aiResponseDisplayed?.documents.map((document:AiSearchResponse['documents'], i:number)=>{
-                    return (<li key={i} className="inline-block after:content-[','] pr-2 last:after:content-none">{document.metadata.source}</li>);
-                  })}
-                </ul>
-                ) :(
-                <div className="border-l-2 border-blue-600 pl-4 py-1">
-                  No referenced sources available.
-                </div>
-                )}
-              </div>
               )}
             </div>
           )}

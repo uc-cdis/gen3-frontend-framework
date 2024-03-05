@@ -89,7 +89,7 @@ export const RenderLinkWithURL: CellRendererFunction = (
       }`}</Text>
     );
   }
-  const rowData = getParamsValueAsString(cell?.row?.original, params['hrefValueFromField']);
+  const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
   if (rowData) {
     return (
       <Link
