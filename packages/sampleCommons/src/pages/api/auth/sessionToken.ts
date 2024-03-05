@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCookie } from 'cookies-next';
-import { decodeJwt, JWTPayload, jwtVerify } from 'jose';
+import { decodeJwt, JWTPayload, jwtVerify, importSPKI} from 'jose';
 import { GEN3_AUTH_API } from '@gen3/core';
 
 export const isExpired = (value: number) => value - Date.now() > 0;
@@ -39,10 +39,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (access_token && typeof access_token === 'string') {
     const algorithm = 'ES256';
     if (isSuccess && keys) {
-      const key = keys[0];
-      const verify = await jwtVerify(access_token, key, {
-        algorithms: [algorithm],
-      });
+      const keyStr = keys[0];
+      const publicKey = await importSPKI(keyStr, algorithm);
+
+      const verify = await jwtVerify(access_token, publicKey);
       if (verify) {
         const decodedAccessToken = decodeJwt(
           access_token
