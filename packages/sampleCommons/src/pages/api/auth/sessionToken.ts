@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCookie } from 'cookies-next';
-import { decodeJwt, JWTPayload, jwtVerify, importSPKI} from 'jose';
+import { decodeJwt, JWTPayload, jwtVerify, importJWK, JWK} from 'jose';
 import { GEN3_AUTH_API } from '@gen3/core';
 
 export const isExpired = (value: number) => value - Date.now() > 0;
@@ -9,13 +9,13 @@ export interface JWTPayloadAndUser extends JWTPayload {
   context: Record<string, string>;
 }
 
-interface JWTKeyResponse {
-  keys?: ReadonlyArray<string[2]>;
+interface JWKKeyResponse {
+  keys?: ReadonlyArray<JWK>;
   isSuccess: boolean;
   isError: boolean;
 }
-const fetchJWKKeys = async () : Promise<JWTKeyResponse> => {
-  const response = await fetch(`${GEN3_AUTH_API}/auth/jwk`);
+const fetchJWKKeys = async () : Promise<JWKKeyResponse> => {
+  const response = await fetch(`${GEN3_AUTH_API}/.well-known/jwks`);
   if (response.ok) {
     try {
       const data = await response.json();
@@ -40,8 +40,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const algorithm = 'ES256';
     if (isSuccess && keys) {
       const keyStr = keys[0];
-      const publicKey = await importSPKI(keyStr, algorithm);
-
+      const publicKey = await importJWK(keyStr);
       const verify = await jwtVerify(access_token, publicKey);
       if (verify) {
         const decodedAccessToken = decodeJwt(
