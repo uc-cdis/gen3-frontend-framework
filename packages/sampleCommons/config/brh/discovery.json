@@ -138,8 +138,11 @@
       "field": "commons",
       "errorIfNotAvailable": false,
       "valueIfNotAvailable": "n/a",
-      "hrefValueFromField": "commons_url",
-      "contentType": "string"
+      "contentType": "link",
+      "cellRenderFunction": "withURL",
+      "params": {
+        "hrefValueFromField": "commons_url"
+      }
     },
     {
       "name": "DATA ACCESS METHOD",
