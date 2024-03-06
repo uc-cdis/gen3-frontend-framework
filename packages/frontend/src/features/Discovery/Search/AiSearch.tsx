@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useId } from 'react';
+import { useState, useEffect } from 'react';
 import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
-import { PiSparkleFill } from "react-icons/pi";
-import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Tooltip } from '@mantine/core';
+import { PiSparkleFill, PiTrash } from 'react-icons/pi';
+import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Tooltip, Table } from '@mantine/core';
 import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
 
 interface AiSearchProps {
@@ -29,14 +29,15 @@ const AiSearch = ({
   const [aiSearchHistory, setAiSearchHistory] = useState<HistoryObj>({});
   const [resultAreaDisplayed, setResultAreaDisplayed] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [historyTableRows, setHistoryTableRows] = useState<[] | JSX.Element[]>([]);
   const [aiResponseDisplayed, setAiResponseDisplayed] = useState<AiSearchResponse | undefined>();
+  const [activeTab, setActiveTab] = useState<string | null>('search');
   const [
     askQuestion,
     { isLoading: apiIsLoading, data: aiResponse},
     // This is the destructured mutation result
   ] = useAskQuestionMutation();
 
-  const id = useId();
   const askAi = () => {
     if (!searchTerm) {
       return;
@@ -111,11 +112,52 @@ const AiSearch = ({
     }
   }, [uidForStorage, aiSearchHistory]);
 
+  const setCurrentSearch = (searchTerm:string) => {
+    //set search to item
+    setAiResponseDisplayed(aiSearchHistory[searchTerm].result);
+    setSearchTerm(searchTerm);
+    setShowLoading(false);
+    setResultAreaDisplayed(true);
+
+    //change tab to search tab
+    setActiveTab('search');
+
+  };
+
+  const removeSearchHistory = (searchTerm:string) => {
+    setAiSearchHistory(searchHistory => {
+      delete searchHistory[searchTerm];
+      return {...searchHistory};
+    });
+  };
+
+  useEffect(() => {
+    // TODO convert to mantine buttons?
+    //update history table
+    if (aiSearchHistory) {
+      setHistoryTableRows(Object.keys(aiSearchHistory).map((searchTerm, index) => {
+        const rowInfo = aiSearchHistory[searchTerm];
+        return (
+          <tr key={index}>
+            <td><button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{new Date(rowInfo.loadingStarted).toLocaleDateString()}</button></td>
+            <td><button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{searchTerm}</button></td>
+            <td className="text-right"><Tooltip
+          label="Delete"
+          position="bottom"
+          withArrow
+          arrowSize={6}
+        ><button className="text-red-600 hover:text-white hover:bg-red-600" onClick={()=>{removeSearchHistory(searchTerm);}}><PiTrash aria-label="Delete"/></button></Tooltip></td>
+          </tr>
+        );
+      }));
+    }
+  }, [aiSearchHistory]);
+
   return (
-    <Tabs defaultValue="search" color="orange.8" className="w-full" classNames={{
+    <Tabs color="orange.8" className="w-full" classNames={{
       tab: 'data-[active=true]:font-bold !text-[16px]',
-    }}>
-      <Tabs.List>{/**TODO add tooltip */}
+    }}  value={activeTab} onTabChange={setActiveTab}>
+      <Tabs.List>
         <Tooltip
           label="AI is a powerful tool, but we cannot guarantee the accuracy of any responses. Feel free to copy and paste perceived dataset names or descriptions from the AI response into the real search bar to try and find any datasets the AI is referring to."
           position="bottom"
@@ -134,7 +176,7 @@ const AiSearch = ({
           multiline
           width={300}
         >
-          <Tabs.Tab value="history" rightSection={<MdInfo  className="text-[#C7501A]" aria-label="info icon"/>} disabled>Search History</Tabs.Tab>
+          <Tabs.Tab value="history" rightSection={<MdInfo  className="text-[#C7501A]" aria-label="info icon"/>}>Search History</Tabs.Tab>
         </Tooltip>
       </Tabs.List>
 
@@ -220,7 +262,20 @@ const AiSearch = ({
       </Tabs.Panel>
 
       <Tabs.Panel value="history" pt="xs">
-        history coming soon
+        {historyTableRows.length > 0 ? (
+        <Table highlightOnHover>
+          <thead>
+            <tr>
+              <th className="w-24">Date</th>
+              <th>Search Input</th>
+              <th className="w-32">Clear History</th>
+            </tr>
+          </thead>
+          <tbody>{historyTableRows}</tbody>
+        </Table>
+        ): (
+          <Title order={5} className="p-2">No search history at this time</Title>
+        )}
       </Tabs.Panel>
     </Tabs>
   );
