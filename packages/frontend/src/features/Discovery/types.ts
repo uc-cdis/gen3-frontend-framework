@@ -155,17 +155,18 @@ export interface DownloadLinkFields {
   descriptionField: string;
 }
 
-/** Legacy config interface fro StudyPage view
- * Plan to deprecate this interface in the future
- * Please use StudyDetailView instead
- */
 export interface StudyPageConfig {
+  showAllAvailableFields?: boolean,
   header?: {
     field: string;
   };
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
+}
+
+export interface SingleStudyPageConfig {
+
 }
 
 export interface StudyTabTagField extends StudyTabField {
