@@ -132,21 +132,30 @@ const AiSearch = ({
   };
 
   useEffect(() => {
-    // TODO convert to mantine buttons?
     //update history table
     if (aiSearchHistory) {
       setHistoryTableRows(Object.keys(aiSearchHistory).map((searchTerm, index) => {
         const rowInfo = aiSearchHistory[searchTerm];
         return (
           <tr key={index}>
-            <td><button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{new Date(rowInfo.loadingStarted).toLocaleDateString()}</button></td>
-            <td><button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{searchTerm}</button></td>
-            <td className="text-right"><Tooltip
-          label="Delete"
-          position="bottom"
-          withArrow
-          arrowSize={6}
-        ><button className="text-red-600 hover:text-white hover:bg-red-600" onClick={()=>{removeSearchHistory(searchTerm);}}><PiTrash aria-label="Delete"/></button></Tooltip></td>
+            <td>
+              <button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{new Date(rowInfo.loadingStarted).toLocaleDateString()}</button>
+            </td>
+            <td>
+              <button className="w-full text-left" onClick={()=>{setCurrentSearch(searchTerm);}}>{searchTerm}</button>
+            </td>
+            <td className="text-right">
+              <Tooltip
+                label="Delete"
+                position="bottom"
+                withArrow
+                arrowSize={6}
+              >
+                <button className="text-red-600 hover:text-white hover:bg-red-600" onClick={()=>{removeSearchHistory(searchTerm);}}>
+                  <PiTrash aria-label="Delete"/>
+                </button>
+              </Tooltip>
+            </td>
           </tr>
         );
       }));
