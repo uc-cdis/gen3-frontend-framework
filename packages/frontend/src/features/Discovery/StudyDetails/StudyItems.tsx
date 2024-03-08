@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
 import Link from 'next/link';
 import { JSONPath } from 'jsonpath-plus';
-import { Alert } from '@mantine/core';
+import { Alert, Text } from '@mantine/core';
 import {
   accessibleFieldName,
   DiscoveryResource,
   AccessLevel,
-  StudyTabField,
+  StudyDetailsField,
   StudyTabTagField,
 } from '../types';
 import { RenderTagsCell } from '../TableRenderers/CellRenderers';
@@ -16,15 +16,50 @@ import {
   FieldRendererFunctionMap,
   DiscoveryDetailsRenderer,
 } from './RendererFactory';
-import { JSONArray } from '@gen3/core';
+import { JSONArray, JSONValue } from '@gen3/core';
+
+/**
+ * Converts a JSON value into a React element.
+ *
+ * @param {JSONValue} value - The JSON value to convert.
+ * @returns {ReactElement} The React element representing the JSON value.
+ */
+const jsonValueToElement = (value: JSONValue): ReactElement => {
+  if (typeof value === 'string') {
+    // if JSONValue is a string, display it inside a span
+    return <span>{value}</span>;
+  } else if (typeof value === 'boolean') {
+    // if JSONValue is a boolean, display it inside a span
+    return <span>{value.toString()}</span>;
+  } else if (typeof value === 'number') {
+    // if JSONValue is a number, display it inside a span
+    return <span>{value}</span>;
+  } else if (Array.isArray(value)) {
+    // if JSONValue is an array, map each item into a list element and wrap them in a ul
+    return <ul>{value.map((v, i) => <li key={i}>{jsonValueToElement(v)}</li>)}</ul>;
+  } else if (typeof value === 'object' && value !== null) {
+    // if JSONValue is an object (excluding null), display each property in its own line,
+    // using a recursive call to display the value of each property
+    return (
+      <ul>
+        {Object.entries(value).map(([k, v], i) =>
+          <li key={i}><strong>{k}:</strong> {jsonValueToElement(v)}</li>
+        )}
+      </ul>
+    )
+  } else {
+    // if JSONValue is null, or otherwise unhandled, return an empty fragment
+    return <React.Fragment />;
+  }
+};
 
 const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
 
-const blockTextField = (_: string, text = undefined) => (
-  <div className={discoveryFieldStyle}>{text}</div>
+const blockTextField = (text: JSONValue) => (
+  <div className={discoveryFieldStyle}>{jsonValueToElement(text)}</div>
 );
 
-const label = (text: string) => <b className={discoveryFieldStyle}>{text}</b>;
+const label = (text?: string) => text ? <Text className={discoveryFieldStyle}>{text}</Text> : <span />;
 
 const textField = (text: string) => <span>{text}</span>;
 
@@ -44,9 +79,15 @@ const subHeading = (text: string) => (
   <h3 className="discovery-subheading">{text}</h3>
 );
 
-const labeledSingleLinkField = (labelText: string, linkText: string) => (
+const labeledSingleLinkField = (labelText: string | undefined, linkText: string) => (
   <div className={discoveryFieldStyle} key={labelText}>
     {label(labelText)} {linkField(linkText)}
+  </div>
+);
+
+const labeledNumberField = (labelText: string | undefined, value: number | string) => (
+  <div className={discoveryFieldStyle} key={labelText}>
+    {label(labelText)} {value?.toLocaleString()}
   </div>
 );
 
@@ -89,7 +130,7 @@ const unlabeledMultipleLinkField = (fieldName:string, fieldData: JSONArray ) => 
   );
 };
 
-const labeledSingleTextField = (labelText: string, fieldText: string) => {
+const labeledSingleTextField = (labelText: string | undefined | StudyDetailsField, fieldText: string) => {
   return (
     <div
       className={discoveryFieldStyle}
@@ -156,7 +197,7 @@ const renderDetailTags = (
   fieldConfig: StudyTabTagField,
   resource: DiscoveryResource,
 ): ReactElement => {
-  if (fieldConfig.type === 'tags') {
+  if (fieldConfig.contentType === 'tags') {
     const tags = fieldConfig.categories
       ? (resource.tags || []).filter((tag) =>
           fieldConfig.categories?.includes(tag.category),
@@ -164,7 +205,7 @@ const renderDetailTags = (
       : resource.tags;
 
     return (
-      <div key={`detail-tag-${fieldConfig.sourceField}`}>
+      <div key={`detail-tag-${fieldConfig.field}`}>
         {RenderTagsCell({ value: tags })}
       </div>
     );
@@ -172,65 +213,29 @@ const renderDetailTags = (
   return <React.Fragment />;
 };
 
-export const createFieldRendererElementOrig = (
-  field: StudyTabField | StudyTabTagField,
-  resource: DiscoveryResource,
-) => {
-  let resourceFieldValue =
-    field.sourceField && JSONPath({ json: resource, path: field.sourceField });
-  if (
-    resourceFieldValue &&
-    resourceFieldValue.length > 0 &&
-    resourceFieldValue[0].length !== 0
-  ) {
-    resourceFieldValue =
-      formatResourceValuesWhenNestedArray(resourceFieldValue);
-
-    switch (field.type) {
-      case 'text': {
-        return labeledSingleTextField(field.label, resourceFieldValue);
-      }
-      case 'link': {
-        return labeledSingleLinkField(field.label, resourceFieldValue);
-      }
-      case 'textList': {
-        return labeledMultipleTextField(field.label, resourceFieldValue);
-      }
-      case 'linkList': {
-        return labeledMultipleLinkField(field.label, resourceFieldValue);
-      }
-      case 'block': {
-        return blockTextField(field.label, resourceFieldValue);
-      }
-    }
-  } else {
-    switch (field.type) {
-      case 'accessDescriptor': {
-        return accessDescriptor(field.label, resource);
-      }
-      case 'tags': {
-        return renderDetailTags(field, resource);
-      }
-    }
-  }
-};
-
 export const createFieldRendererElement = (
-  field: StudyTabField | StudyTabTagField,
+  field: StudyDetailsField | StudyTabTagField,
   resource: DiscoveryResource,
 ) => {
 
-
+  // determine the value of the field
   let resourceFieldValue =
-    field.sourceField && JSONPath({ json: resource, path: field.sourceField });
+    field.field && JSONPath({ json: resource, path: field.field });
+  if (!resourceFieldValue) {
+    if (!field.includeIfNotAvailable) return null;
+    if (field.valueIfNotAvailable)
+      resourceFieldValue = field.valueIfNotAvailable;
+  }
 
-  const studyFieldRenderer = DiscoveryDetailsRenderer(field.type, field?.renderFunction  ?? 'default');
-  switch (field.type) {
+  const label = field.includeLabel === undefined || field?.includeLabel ? field.label : undefined;
+
+  const studyFieldRenderer = DiscoveryDetailsRenderer(field.contentType, field?.renderer  ?? 'default');
+  switch (field.contentType) {
     case 'accessDescriptor': {
-      return studyFieldRenderer(field.label, resource);
+      return studyFieldRenderer(label, resource, field.params);
     }
     case 'tags': {
-      return studyFieldRenderer(field, resource);
+      return studyFieldRenderer(label, resource, field.params);
     }
     default:
       if (
@@ -241,9 +246,9 @@ export const createFieldRendererElement = (
       ) {
         resourceFieldValue =
           formatResourceValuesWhenNestedArray(resourceFieldValue);
-        return studyFieldRenderer(field.label, resourceFieldValue);
+        return studyFieldRenderer(label, resourceFieldValue,  field.params);
       } else if (resourceFieldValue)
-        return studyFieldRenderer(field.label, resourceFieldValue);
+        return studyFieldRenderer(label, resourceFieldValue, field.params);
 
   }
 
@@ -254,13 +259,16 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   string,
   FieldRendererFunctionMap
 > = {
-  text: { default: labeledSingleTextField as FieldRendererFunction },
+  text: { default: labeledSingleTextField},
+  string: { default: labeledSingleTextField },
   link: { default: labeledSingleLinkField as FieldRendererFunction },
   textList: { default: labeledMultipleTextField as FieldRendererFunction },
   linkList: { default: labeledMultipleLinkField as FieldRendererFunction, linkWithTitle: unlabeledMultipleLinkField as FieldRendererFunction },
   block: { default: blockTextField as FieldRendererFunction },
   accessDescriptor: { default: accessDescriptor as FieldRendererFunction },
   tags: { default: renderDetailTags as FieldRendererFunction },
+  number: { default: labeledNumberField  as FieldRendererFunction  },
+  paragraphs: { default: labeledSingleTextField as FieldRendererFunction },
 };
 
 StudyFieldRendererFactory.registerFieldRendererCatalog(

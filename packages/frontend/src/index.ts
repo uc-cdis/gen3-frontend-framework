@@ -4,6 +4,7 @@ export * from './features/Discovery';
 export * from './components/Profile';
 export * from './components/Login';
 export * from './features/CohortBuilder';
+export * from './features/Query';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';

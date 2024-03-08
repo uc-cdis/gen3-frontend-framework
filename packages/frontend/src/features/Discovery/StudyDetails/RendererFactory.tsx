@@ -1,10 +1,12 @@
 import React, { ReactElement } from 'react';
 import { DiscoveryResource, StudyTabTagField } from '../types';
-import { JSONArray } from '@gen3/core';
+import { JSONValue } from '@gen3/core';
 
-export type FieldRendererFunction<P1 = string | StudyTabTagField  , P2 = string | string[] | DiscoveryResource | JSONArray> = (
-  _1?: P1 ,
-  _2?: P2,
+
+export type FieldRendererFunction = (
+  value: DiscoveryResource | JSONValue,
+  label?: string,
+  params?: Record<string, unknown>,
 ) => JSX.Element;
 
 const defaultStudyFieldRenderer = (): ReactElement => {
@@ -32,6 +34,10 @@ export class StudyFieldRendererFactory {
     type: string,
     functionName: string,
   ): FieldRendererFunction {
+    if (!(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)) {
+      console.log("No field renderer found for type: ", type);
+      return defaultStudyFieldRenderer;
+    }
     return (
       StudyFieldRendererFactory.getInstance().fieldRendererCatalog[type][
         functionName
@@ -70,7 +76,6 @@ export class StudyFieldRendererFactory {
  * Retrieve the cell renderer function for the given type and function name
  * @param type
  * @param functionName
- * @param params
  */
 export const DiscoveryDetailsRenderer = (
   type = 'string',
@@ -80,5 +85,5 @@ export const DiscoveryDetailsRenderer = (
     return defaultStudyFieldRenderer;
   }
   const func = StudyFieldRendererFactory.getRenderer(type, functionName);
-  return (arg1, arg2): ReactElement => func(arg1, arg2);
+  return (arg1, arg2, arg3): ReactElement => func(arg1, arg2,  arg3);
 };

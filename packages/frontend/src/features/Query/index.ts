@@ -1,3 +1,3 @@
 import GqlQueryEditor from './GqlQueryEditor';
 
-export default GqlQueryEditor;
+export { GqlQueryEditor };

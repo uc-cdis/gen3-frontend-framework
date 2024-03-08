@@ -160,7 +160,7 @@
     "includeIfNotAvailable": true,
     "valueIfNotAvailable": "No description has been provided for this study."
   },
-  "studyPageFields": {
+  "simpleDetailsView": {
     "showAllAvailableFields": false,
     "header": {
       "field": "name"
@@ -184,7 +184,7 @@
           {
             "name": "Short Name",
             "field": "short_name",
-            "contentType": "string",
+            "contentType": "text",
             "includeName": true,
             "includeIfNotAvailable": true,
             "valueIfNotAvailable": "N/A"
@@ -192,26 +192,26 @@
           {
             "name": "dbGaP Accession Number",
             "field": "dbgap_accession",
-            "contentType": "string",
+            "contentType": "text",
             "includeName": true,
             "includeIfNotAvailable": false
           },
           {
             "name": "Project ID",
             "field": "project_id",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": false
           },
           {
             "name": "Data Commons",
             "field": "commons",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": false
           },
           {
             "name": "Tutorial Notebook",
             "field": "tutorial_notebook",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": true,
             "valueIfNotAvailable": "NO"
           }

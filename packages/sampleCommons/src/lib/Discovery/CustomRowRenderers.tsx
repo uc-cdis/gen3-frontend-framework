@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import { Badge, Box, Text } from '@mantine/core';
 import {
-  StudyPreviewField,
+  StudyDetailsField,
   RowRenderFunctionParams,
   DiscoveryRowRendererFactory,
   useDiscoveryContext,
@@ -19,7 +19,7 @@ interface TagData {
 const DetailsWithTagsRowRenderer =
   (
     { row } : RowRenderFunctionParams,
-    studyPreviewConfig?: StudyPreviewField,
+    studyPreviewConfig?: StudyDetailsField,
   ): ReactElement => {
     const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
 

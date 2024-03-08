@@ -118,30 +118,22 @@ export interface MinimalFieldMapping {
   uid: string;
 }
 
-export interface StudyPreviewField {
-  name: string;
-  field: string;
-  contentType?: DiscoveryContentTypes;
-  includeName: boolean;
-  includeIfNotAvailable: boolean;
-  valueIfNotAvailable?: string | number;
-  detailRenderer?: string;
-  params?: Record<string, unknown>;
-}
-
-export interface StudyTabField {
-  type: string;
-  sourceField: string;
+export interface StudyDetailsField {
   label: string;
-  default?: string;
-  renderFunction?: string;
+  field: string;
+  contentType?: string;
+  includeLabel?: boolean;
+  includeIfNotAvailable?: boolean;
+  valueIfNotAvailable?: string | number;
+  renderer?: string;
+  params?: Record<string, unknown>;
 }
 
 export interface StudyPageGroup {
   groupName?: string;
   groupWidth?: 'half' | 'full';
   includeName?: boolean;
-  fields: StudyPreviewField[];
+  fields: StudyDetailsField[];
 }
 
 export interface DataDownloadLinks {
@@ -165,17 +157,13 @@ export interface StudyPageConfig {
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
-export interface SingleStudyPageConfig {
-
-}
-
-export interface StudyTabTagField extends StudyTabField {
+export interface StudyTabTagField extends StudyDetailsField {
   categories?: string[];
 }
 
 export interface StudyTabGroup {
   header: string;
-  fields: Array<StudyTabField | StudyTabTagField>;
+  fields: Array<StudyDetailsField | StudyTabTagField>;
 }
 
 export interface StudyDetailTab {
@@ -248,9 +236,9 @@ export interface ExportToDataLibrary {
 }
 
 export interface DataAuthorization {
-  columnTooltip: string;
-  supportedValues: Record<string, AuthorizationValues>;
-  enabled: boolean;
+  columnTooltip?: string;
+  supportedValues?: Record<string, AuthorizationValues>;
+  enabled?: boolean;
 }
 
 export interface AccessFilters {
@@ -264,15 +252,15 @@ export interface DiscoveryConfig {
     pageTitle: DiscoveryPageTitle;
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
-    authorization: Partial<DataAuthorization>;
+    authorization: DataAuthorization;
     dataFetchFunction?: string;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
-  studyPreviewField?: StudyPreviewField;
-  studyPageConfig?: StudyPageConfig;
+  studyPreviewField?: StudyDetailsField;
+  simpleDetailsView?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
@@ -298,6 +286,6 @@ export interface DiscoveryResource
     string,
     JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined
   > {
-  [accessibleFieldName]: AccessLevel;
+  [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }
