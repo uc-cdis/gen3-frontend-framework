@@ -37,7 +37,7 @@ export class DiscoveryRowRendererFactory {
     functionName: string,
   ): RowRendererFunction {
     if (!(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)) {
-      console.log("No row renderer found for type: ", type);
+      console.log('No row renderer found for type: ', type);
       return defaultRowRenderer;
     }
 

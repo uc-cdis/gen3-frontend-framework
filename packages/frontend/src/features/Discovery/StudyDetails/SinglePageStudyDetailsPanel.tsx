@@ -51,7 +51,7 @@ const SinglePageStudyDetailsPanel = ({
 
   let headerText = '';
   if (studyConfig?.header?.field) {
-    var res: JSONObject = JSONPath({
+    const res: JSONObject = JSONPath({
       path: '$..'.concat(studyConfig.header.field),
       json: data,
     });

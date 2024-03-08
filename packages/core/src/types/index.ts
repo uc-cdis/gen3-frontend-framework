@@ -28,6 +28,16 @@ export const isJSONObject = (data: any): data is JSONObject => {
   return typeof data === 'object' && data !== null && !Array.isArray(data);
 };
 
+export const isJSONValue = (data: any): data is JSONValue => {
+  return (
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    Array.isArray(data) && data.every(isJSONValue) ||
+    isJSONObject(data)
+  );
+};
+
 export type HistogramDataArray = Array<HistogramData>;
 
 export const isHistogramData = (data: any): data is HistogramData => {

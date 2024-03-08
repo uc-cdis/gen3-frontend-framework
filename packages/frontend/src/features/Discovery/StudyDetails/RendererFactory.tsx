@@ -1,12 +1,11 @@
 import React, { ReactElement } from 'react';
-import { DiscoveryResource, StudyTabTagField } from '../types';
 import { JSONValue } from '@gen3/core';
 
 
 export type FieldRendererFunction = (
-  value: DiscoveryResource | JSONValue,
-  label?: string,
-  params?: Record<string, unknown>,
+  fieldValue: JSONValue,
+  fieldLabel?: string,
+  params?: Record<string, any>, //TODO - define the type of params
 ) => JSX.Element;
 
 const defaultStudyFieldRenderer = (): ReactElement => {
@@ -35,7 +34,7 @@ export class StudyFieldRendererFactory {
     functionName: string,
   ): FieldRendererFunction {
     if (!(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)) {
-      console.log("No field renderer found for type: ", type);
+      console.log('No field renderer found for type: ', type);
       return defaultStudyFieldRenderer;
     }
     return (

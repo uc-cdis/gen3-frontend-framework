@@ -1,5 +1,5 @@
 import {
-  JSONArray,
+  JSONValue,
   JSONObject,
   type MetadataPaginationParams,
 } from '@gen3/core';
@@ -284,7 +284,7 @@ export enum AccessLevel {
 export interface DiscoveryResource
   extends Record<
     string,
-    JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined
+    JSONValue | AccessLevel | TagInfo[] | undefined
   > {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
