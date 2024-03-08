@@ -3,6 +3,8 @@ import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
 import { PiSparkleFill, PiTrash } from 'react-icons/pi';
 import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Tooltip, Table } from '@mantine/core';
 import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface AiSearchProps {
   placeholder?: string;
@@ -61,13 +63,11 @@ const AiSearch = ({
       //otherwise do the api call again
     }
 
-
     //save search term
     setAiSearchHistory(searchHistory => ({
       ...searchHistory,
       [searchTerm]: {loadingStarted: Date.now()}
     }));
-
 
     //make API Call
     setShowLoading(true);
@@ -247,7 +247,46 @@ const AiSearch = ({
                 <Title order={5} className="pb-2">AI Response</Title>
                 <div className="border-l-2 border-blue-600 pl-4 py-1">
                   {/** TODO interpret code and add expand */}
-                  {aiResponseDisplayed?.response || 'Something went wrong please refresh and try again'}
+                  {aiResponseDisplayed?.response ? (
+                  <Markdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // define some formatting for the ai response
+                      p(props) {
+                        const { node, ...rest } = props;
+                        return (
+                          <p
+                            className="text-lg text-primary-contrast my-1"
+                            {...rest}
+                          />
+                        );
+                      },
+                      ol(props) {
+                        const { node, ...rest } = props;
+                        return (
+                          <ol
+                            className="list-disc list-inside my-1"
+                            {...rest}
+                          />
+                        );
+                      },
+                      ul(props) {
+                        const { node, ...rest } = props;
+                        return (
+                          <ul
+                            className="list-disc list-inside my-1"
+                            {...rest}
+                          />
+                        );
+                      },
+                      li(props) {
+                        const { node, ...rest } = props;
+                        return <li className="text-md" {...rest} />;
+                      },
+                    }}
+                  >
+                    {aiResponseDisplayed?.response}
+                  </Markdown>) : 'Something went wrong please refresh and try again'}
                 </div>
                 <Divider my="sm" />
                 <Title order={5} className="pb-2">Referenced Sources</Title>

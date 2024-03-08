@@ -96,7 +96,7 @@ const Discovery = ({
               />
             </div>
           </div>
-          {true/*discoveryConfig?.features?.aiSearch*/ && (
+          {discoveryConfig?.features?.aiSearch && (
             <div className="mb-4">
               <div className="flex w-full bg-base-max p-4 rounded-lg">
                 <AiSearch />
