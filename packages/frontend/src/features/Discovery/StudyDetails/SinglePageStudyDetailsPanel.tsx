@@ -1,7 +1,8 @@
 /**
  * Non tabbed version of the StudyDetailsPanel
  */
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { JSONObject, JSONValue } from '@gen3/core';
 import {
   DataAuthorization,
@@ -14,6 +15,7 @@ import { toString } from 'lodash';
 import { createFieldRendererElement } from './StudyItems';
 import { DiscoveryDetailsRenderer } from './RendererFactory';
 import { useMenuContext } from '@mantine/core/lib/Menu/Menu.context';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 
 const StudyTitle = ({ title }: { title: string }): ReactElement => {
@@ -46,7 +48,7 @@ const SinglePageStudyDetailsPanel = ({
     headerText = data.length ? toString(res[0]) : '';
   }
 
-  const elements = useMemo(() => {
+  const elements = useDeepCompareMemo(() => {
     if (!studyConfig) {
       return <div>Study Details Panel not configured</div>;
     }

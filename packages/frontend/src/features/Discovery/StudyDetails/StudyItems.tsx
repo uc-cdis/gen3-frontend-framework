@@ -232,7 +232,7 @@ const labeledParagraph: FieldRendererFunction = (
       <React.Fragment />
       )}
 
-      <Text lineClamp={8}
+      <Text lineClamp={10}
       className="pl-4 text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
     </div>
   );
