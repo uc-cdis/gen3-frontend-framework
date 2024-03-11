@@ -7,15 +7,11 @@ import { JSONObject, JSONValue } from '@gen3/core';
 import {
   DataAuthorization,
   StudyPageConfig,
-  StudyDetailsField,
 } from '../types';
 import DetailsAuthorizationIcon from './DetailsAuthorizationIcon';
 import { JSONPath } from 'jsonpath-plus';
 import { toString } from 'lodash';
 import { createFieldRendererElement } from './StudyItems';
-import { DiscoveryDetailsRenderer } from './RendererFactory';
-import { useMenuContext } from '@mantine/core/lib/Menu/Menu.context';
-import { useDeepCompareEffect } from 'use-deep-compare';
 
 
 const StudyTitle = ({ title }: { title: string }): ReactElement => {
