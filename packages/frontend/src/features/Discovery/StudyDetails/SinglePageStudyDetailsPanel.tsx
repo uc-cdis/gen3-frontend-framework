@@ -63,15 +63,13 @@ const SinglePageStudyDetailsPanel = ({
           <div className="flex flex-col">
             <div className="text-lg font-bold">{field.groupName}</div>
             {field.fields.map((field) => {
-
-              return (
-                <div
-                  key={`${field.label}-${field.field}`}
-                  className="bg-accent-lightest w-full p-1 mb-4"
-                >
-                  <div>{createFieldRendererElement(field, data as JSONValue)}</div>
-                </div>
-              );
+              const element = createFieldRendererElement(field, data as JSONValue);
+              if (element !== null) {
+                return (
+                  <div key={`item-${field.field}`} className="flex w-full bg-base-lighter my-2 justify-between rounded-sm py-1.5 px-0.5">
+                    {element}
+                  </div>);
+              }
             })}
           </div>
         </div>

@@ -65,7 +65,7 @@ const jsonValueToElement = (value: JSONValue): ReactElement => {
 /**
  * Default style for discovery field.
  */
-const discoveryFieldStyle = 'flex px-0.5 justify-between whitespace-pre-wrap';
+const discoveryFieldStyle = 'flex w-full justify-between px-0.5 no-wrap';
 
 /**
  * Renders a block of text.
@@ -83,7 +83,7 @@ const blockTextField = (fieldValue: JSONValue): ReactElement => (
  */
 const label = (labelText?: string): ReactElement =>
   labelText ? (
-    <Text tt="uppercase" className={discoveryFieldStyle}>{labelText}</Text>
+    <Text tt="uppercase" weight="500" className="p-0.75 whitespace-pre-wrap break-words">{labelText}</Text>
   ) : (
     <React.Fragment />
   );
@@ -95,7 +95,7 @@ const label = (labelText?: string): ReactElement =>
  * @returns {React.Element} - The rendered text field component.
  */
 const textField = (fieldValue: JSONValue): ReactElement => (
-  <span>{toString(fieldValue)}</span>
+  <span className="text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</span>
 );
 
 /**
@@ -214,6 +214,30 @@ const labeledSingleTextField: FieldRendererFunction = (
   );
 };
 
+const labeledParagraph: FieldRendererFunction = (
+  fieldValue: JSONValue,
+  fieldLabel?: string,
+) => {
+  if (typeof fieldValue !== 'string') return <React.Fragment />;
+
+  const stringFieldValue = fieldValue as string;
+  return (
+    <div
+      className={discoveryFieldStyle}
+      key={`study-details-${fieldLabel}-${stringFieldValue}`}
+    >
+      {fieldLabel ? (
+      <Text tt="uppercase" weight="500" className="p-0.75 mr-4 whitespace-pre-wrap break-words">{fieldLabel}</Text>
+      ) : (
+      <React.Fragment />
+      )}
+
+      <Text lineClamp={8}
+      className="pl-4 text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
+    </div>
+  );
+};
+
 const labeledMultipleTextField: FieldRendererFunction = (
   fieldsText: JSONValue,
   labelText?: string,
@@ -306,7 +330,7 @@ const renderDetailTags: FieldRendererFunction = (
 export const createFieldRendererElement = (
   field: StudyDetailsField | StudyTabTagField,
   resource: JSONValue,
-) => {
+) : ReactElement | null => {
 
   // determine the value of the field
   let resourceFieldValue =
@@ -351,7 +375,7 @@ export const createFieldRendererElement = (
         return studyFieldRenderer(resourceFieldValue, label, field.params);
   }
 
-  return <React.Fragment />;
+  return null;
 };
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
@@ -370,7 +394,7 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   accessDescriptor: { default: accessDescriptor },
   tags: { default: renderDetailTags },
   number: { default: labeledNumberField },
-  paragraphs: { default: labeledSingleTextField },
+  paragraphs: { default: labeledParagraph },
 };
 
 StudyFieldRendererFactory.registerFieldRendererCatalog(
