@@ -119,7 +119,7 @@ export interface MinimalFieldMapping {
 }
 
 export interface StudyDetailsField {
-  label: string;
+  name: string;
   field: string;
   contentType?: string;
   includeLabel?: boolean;

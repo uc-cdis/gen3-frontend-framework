@@ -17,7 +17,7 @@ import {
   FieldRendererFunctionMap,
   DiscoveryDetailsRenderer,
 } from './RendererFactory';
-import { JSONArray, JSONValue } from '@gen3/core';
+import { JSONValue } from '@gen3/core';
 
 /**
  * Converts a JSON value into a React element.
@@ -83,7 +83,7 @@ const blockTextField = (fieldValue: JSONValue): ReactElement => (
  */
 const label = (labelText?: string): ReactElement =>
   labelText ? (
-    <Text className={discoveryFieldStyle}>{labelText}</Text>
+    <Text tt="uppercase" className={discoveryFieldStyle}>{labelText}</Text>
   ) : (
     <React.Fragment />
   );
@@ -307,19 +307,23 @@ export const createFieldRendererElement = (
   field: StudyDetailsField | StudyTabTagField,
   resource: JSONValue,
 ) => {
+
   // determine the value of the field
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
+
   if (!resourceFieldValue) {
     if (!field.includeIfNotAvailable) return null;
     if (field.valueIfNotAvailable)
-      resourceFieldValue = field.valueIfNotAvailable;
-  }
+      resourceFieldValue = field.valueIfNotAvailable as JSONValue;
+  } else
+    resourceFieldValue = resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
 
   const label =
     field.includeLabel === undefined || field?.includeLabel
-      ? field.label
+      ? field.name
       : undefined;
+
 
   const studyFieldRenderer = DiscoveryDetailsRenderer(
     field.contentType,
@@ -335,9 +339,10 @@ export const createFieldRendererElement = (
     default:
       if (
         resourceFieldValue &&
+        isArray(resourceFieldValue) &&
         resourceFieldValue.length > 0 &&
         resourceFieldValue[0].length !== 0 &&
-        resourceFieldValue.every((val: any) => typeof val === 'string')
+        resourceFieldValue.every((val: unknown) => typeof val === 'string')
       ) {
         resourceFieldValue =
           formatResourceValuesWhenNestedArray(resourceFieldValue);
