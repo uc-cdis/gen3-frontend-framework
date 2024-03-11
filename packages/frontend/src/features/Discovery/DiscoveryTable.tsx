@@ -120,7 +120,7 @@ const DiscoveryTable = ({
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
-          fontSize: theme.fontSizes.xl,
+          fontSize: theme.fontSizes.lg,
           textTransform: 'uppercase',
         };
       },

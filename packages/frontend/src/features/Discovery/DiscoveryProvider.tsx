@@ -8,6 +8,9 @@ interface DiscoveryProviderValue {
   studyDetails: JSONObject;
 }
 
+
+
+
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryConfig,
   setStudyDetails: () => null,

@@ -16,7 +16,7 @@ const defaultStatisticRenderer = ({
       <Text size="2rem" color="accent">
         {value}
       </Text>
-      <Text size="sm" color="primary">
+      <Text size="sm" color="primary" className="uppercase">
         {label}
       </Text>
     </Stack>
