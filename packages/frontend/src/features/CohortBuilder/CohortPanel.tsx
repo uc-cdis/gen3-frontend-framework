@@ -257,7 +257,7 @@ export const CohortPanel = ({
               fields={fields}
               filter={cohortFilters}
             />
-            .
+
             <CountsValue
               label={guppyConfig.nodeCountTitle}
               counts={counts}

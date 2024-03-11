@@ -4,6 +4,11 @@ import ResourcesTable from './ResourcesTable';
 import ResourcesProvider from './ResourcesProvider';
 
 
+/**
+ * TODO: not sure why ResourcesProvider component is needed when
+ * ResourcesTable and ResourcesFilters get data from the useResourcesContext hook already
+ * 
+ */
 export const ResourcesPanel = () => {
   const [filters, setFilters] = useState<string[]>([]);
   return (

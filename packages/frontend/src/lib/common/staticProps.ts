@@ -8,6 +8,12 @@ import {
 import ContentSource from '../content';
 import { JSONObject, GEN3_COMMONS_NAME } from '@gen3/core';
 
+
+/**
+ * Retrieves navigation page layout properties from configuration.
+ * Note: GEN3_COMMONS_NAME depends on siteConfig.json value in the data commons package
+ * @returns A Promise resolving to an object containing header and footer props.
+ */
 export const getNavPageLayoutPropsFromConfig =
   async (): Promise<NavPageLayoutProps> => {
     const navigationConfigJSON = await ContentSource.get(

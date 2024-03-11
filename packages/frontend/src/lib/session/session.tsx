@@ -121,6 +121,17 @@ const  useInterval = ( callback: IntervalFunction, delay: number | null ) => {
 
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
+/**
+ * SessionProvider creates a react context which keeps track of wether the user is authenticated
+ * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
+ * @param children - Pass in a child session if one exists
+ * @param session - Pass in a cached session if one exists
+ * @param updateSessionTime - Interval of time between fetching session token
+ * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
+ * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
+ * @param logoutInactiveUsers - Wether to log out users that are determined to be inactive or not
+ * @returns a Session context that can be used to keep track of user session activity
+ */
 export const SessionProvider = ({
   children,
   session,
