@@ -39,7 +39,13 @@
     },
     "search": {
       "searchBar": {
-        "enabled": true
+        "enabled": true,
+        "searchableTextFields": [
+          "short_name",
+          "full_name",
+          "study_description",
+          "study_id"
+        ]
       },
       "tagSearchDropdown": {
         "enabled": true,
@@ -132,8 +138,11 @@
       "field": "commons",
       "errorIfNotAvailable": false,
       "valueIfNotAvailable": "n/a",
-      "hrefValueFromField": "commons_url",
-      "contentType": "string"
+      "contentType": "link",
+      "cellRenderFunction": "withURL",
+      "params": {
+        "hrefValueFromField": "commons_url"
+      }
     },
     {
       "name": "DATA ACCESS METHOD",
@@ -151,7 +160,7 @@
     "includeIfNotAvailable": true,
     "valueIfNotAvailable": "No description has been provided for this study."
   },
-  "studyPageFields": {
+  "simpleDetailsView": {
     "showAllAvailableFields": false,
     "header": {
       "field": "name"
@@ -175,7 +184,7 @@
           {
             "name": "Short Name",
             "field": "short_name",
-            "contentType": "string",
+            "contentType": "text",
             "includeName": true,
             "includeIfNotAvailable": true,
             "valueIfNotAvailable": "N/A"
@@ -183,26 +192,26 @@
           {
             "name": "dbGaP Accession Number",
             "field": "dbgap_accession",
-            "contentType": "string",
+            "contentType": "text",
             "includeName": true,
             "includeIfNotAvailable": false
           },
           {
             "name": "Project ID",
             "field": "project_id",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": false
           },
           {
             "name": "Data Commons",
             "field": "commons",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": false
           },
           {
             "name": "Tutorial Notebook",
             "field": "tutorial_notebook",
-            "contentType": "string",
+            "contentType": "text",
             "includeIfNotAvailable": true,
             "valueIfNotAvailable": "NO"
           }

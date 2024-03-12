@@ -1,12 +1,24 @@
 import React, { ReactElement } from 'react';
 import { Text } from '@mantine/core';
 import { JSONObject } from '@gen3/core';
-import { CellRendererFunction, CellRenderFunctionProps } from './types';
+import { CellRendererFunction } from './types';
+import { toString } from 'lodash';
 
-const defaultCellRenderer = ({
-  value,
-}: CellRenderFunctionProps): ReactElement => {
-  return <Text>{value}</Text>;
+const defaultCellRenderer : CellRendererFunction = (
+  value, params?: JSONObject,
+): ReactElement => {
+  if (value === undefined || value === null || toString(value) === '') {
+    return (
+      <Text>
+        {`${
+          params && params?.valueIfNotAvailable
+            ? params?.valueIfNotAvailable
+            : ''
+        }`}{' '}
+      </Text>
+    );
+  }
+  return <Text>{toString(value)}dfdsfdsf</Text>;
 };
 
 export interface CellRendererFunctionCatalogEntry {
@@ -85,5 +97,8 @@ export const DiscoveryTableCellRenderer = (
     return defaultCellRenderer;
   }
   const func = DiscoveryCellRendererFactory.getCellRenderer(type, functionName);
+  if (!func) {
+    return defaultCellRenderer;
+  }
   return (cellProps): ReactElement => func(cellProps, params);
 };

@@ -9,7 +9,7 @@ import { Code } from '@mantine/core';
  * @returns - a div containing a status heading and the status JSON response
  */
 const Status = () => {
-    const { data, error } = useGetStatus();
+    const { data } = useGetStatus();
     return (
         <div>
             <h1>Status</h1>

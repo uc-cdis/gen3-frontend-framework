@@ -11,16 +11,15 @@ import {
 import DiscoveryConfigProvider, {
   useDiscoveryContext,
 } from './DiscoveryProvider';
-import { type DiscoveryConfig, type StudyPreviewField } from './types';
+import { type DiscoveryConfig, type StudyDetailsField } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
 import { getTagColor } from './utils';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
-export * from './Statistics';
 
 export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,
-  type StudyPreviewField,
+  type StudyDetailsField,
   type RowRenderFunctionParams,
   Discovery,
   TagCloud,

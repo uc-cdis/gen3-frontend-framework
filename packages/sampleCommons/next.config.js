@@ -37,11 +37,11 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)?", // Matches all pages
+        source: '/(.*)?', // Matches all pages
         headers: [
           {
-            key: "X-Frame-Options",
-            value: "SAMEORIGIN",
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
           },
         ],
       },

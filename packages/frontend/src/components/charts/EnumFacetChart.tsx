@@ -2,7 +2,7 @@
  * A BarChart for Enumerated Facets. The as the chart is wrapped from EnumFacet it does not
  * require the Core Data hooks.
  */
-
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Box, Loader, Tooltip } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
@@ -139,12 +139,12 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
       <foreignObject x={x} y={y}>
         <Tooltip
           label={
-            <>
+            <React.Fragment>
               <b>{datum?.x}</b>
               <p>
                 {datum?.y.toLocaleString()} {unitLabel}
               </p>
-            </>
+            </React.Fragment>
           }
           withArrow
           opened
