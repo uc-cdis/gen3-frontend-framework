@@ -111,8 +111,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     <Image
                       src={`${basePath}${obj.image.src}`}
                       alt={obj.image.alt}
-                      layout="fill"
-                      objectFit="contain"
+                      fill
                     />
                   </div>
                 );

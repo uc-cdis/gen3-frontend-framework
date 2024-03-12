@@ -32,9 +32,9 @@ const Footer = ({
               >
                 {col.map((logo) => (
                   <Image
+                    className="object-none"
                     key={`icons/${logo.logo}`}
                     src={`/icons/${logo.logo}`}
-                    layout="fixed"
                     width={logo.width}
                     height={logo.height}
                     alt={logo.description}
@@ -86,7 +86,6 @@ const Footer = ({
                 <Image
                   key={`icons/${logo.logo}`}
                   src={`/icons/${logo.logo}`}
-                  layout="fixed"
                   width={logo.width}
                   height={logo.height}
                   alt={logo.description}

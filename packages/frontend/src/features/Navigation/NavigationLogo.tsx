@@ -17,7 +17,6 @@ const NavigationLogo = ({
           fill
           src={`${basePath}${src}`}
           alt={description ?? title}
-          priority={true}
         />
       </HoverLink>
       {title && (
