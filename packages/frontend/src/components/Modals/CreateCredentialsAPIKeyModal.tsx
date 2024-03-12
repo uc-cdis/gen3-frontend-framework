@@ -18,6 +18,11 @@ interface CreateCredentialsAPIKeyModalProps {
   credentials: APICredentials;
 }
 
+/**
+ * Creates a specialized modal that is a parto of the Credentials component on the profile page
+ * @param openModal - State tracking to keep track of wether the modal should be shown or hidden
+ * @param credentials - The new fence credential that is to be shown in the modal
+ */
 export const CreateCredentialsAPIKeyModal = ({
   openModal,
   credentials,

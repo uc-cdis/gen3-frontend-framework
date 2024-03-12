@@ -60,6 +60,11 @@ export interface LandingPageProps {
   }>;
 }
 
+/**
+ * Landing Page contents. Edit this component to change the composition of the landing page.
+ * @param content - Refer to LandingPageProps interface above. Loaded from config file
+ * located at sampleCommons/config/{commons}/landingPage.json
+ */
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (

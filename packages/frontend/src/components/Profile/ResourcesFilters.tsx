@@ -19,7 +19,7 @@ const ResourcesFilters = ({ selectedFilters, setFilters} : ResourcesFiltersProps
   const { profileConfig } = useProfileContext();
 
 
-  const checkboxes = useMemo(() => {  
+  const checkboxes = useMemo(() => {
     const serviceColors = profileConfig?.resourceTable?.serviceColors ?? {};
     return servicesAndMethods.services.map((filter:string) => (
       <Checkbox

@@ -113,6 +113,14 @@ const SinglePanel = ({
   );
 };
 
+/**
+  * The main component that houses the charts, tabs, modals
+  * filters, tables, buttons of the exploration page.
+  *
+  * All of these params come directly from the top level exploration page configuration file or
+  * explorerconfig in legacy gitops.json file.
+  * @example see packages/sampleCommons/config/gen3/explorer.json
+  */
 export const CohortPanel = ({
   guppyConfig,
   filters,

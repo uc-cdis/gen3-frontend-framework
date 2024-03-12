@@ -5,9 +5,9 @@ import ResourcesProvider from './ResourcesProvider';
 
 
 /**
- * TODO: not sure why ResourcesProvider component is needed when
- * ResourcesTable and ResourcesFilters get data from the useResourcesContext hook already
- * 
+ * ResourcesPanel gets filters from ResourcesFilters panel and passes those
+ * filters into useState setFilters hook to be used as the filters variable in the 
+ * ResourcesTable on the profile page
  */
 export const ResourcesPanel = () => {
   const [filters, setFilters] = useState<string[]>([]);

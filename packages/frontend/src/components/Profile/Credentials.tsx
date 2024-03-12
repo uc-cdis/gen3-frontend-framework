@@ -17,7 +17,8 @@ import CredentialsTable from './CredentialsTable';
 /**
  * Defines a Credentials Component containing a create credential button
  * and a table that shows all current credentials for logged in user.
- * It also retrieves CSRF token and displays a modal for creating API keys.
+ * It also retrieves CSRF token and creates a modal that shows the newly
+ * created API key coming from fence.
  * @returns {JSX.Element} The JSX element representing the credentials section.
  */
 const Credentials = () => {

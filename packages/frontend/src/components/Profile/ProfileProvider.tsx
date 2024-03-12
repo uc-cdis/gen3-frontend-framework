@@ -9,6 +9,7 @@ const ProfileContext = createContext<ProfileProviderValue>({
   profileConfig: {} as ProfileConfig,
 });
 
+
 const useProfileContext = () => {
   const context = React.useContext(ProfileContext);
   if (context === undefined) {
