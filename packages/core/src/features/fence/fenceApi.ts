@@ -74,6 +74,7 @@ const buildFetchError = async <T>(
 export const fetchFence = async <T>(
   request: FetchRequest,
 ): Promise<Gen3FenceResponse<T>> => {
+  console.log("fetchFence request", request)
   const res = await fetch(`${request.hostname}${request.endpoint}`, {
     method: request.method,
     headers: request.headers,

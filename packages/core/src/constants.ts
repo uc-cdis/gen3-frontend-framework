@@ -10,7 +10,7 @@ export const GUID_PREFIX_PATTERN = /^dg.[a-zA-Z0-9]+\//;
 export const GEN3_GUPPY_API = process.env.NEXT_PUBLIC_GEN3_GUPPY_API || `${GEN3_API}/guppy`;
 export const GEN3_MDS_API = process.env.NEXT_PUBLIC_GEN3_MDS_API || `${GEN3_API}/mds`;
 export const GEN3_DOWNLOADS_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_DOWNLOADS_ENDPOINT || 'downloads';
-export const GEN3_FENCE_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_FENCE_ENDPOINT || '';
+export const GEN3_FENCE_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_FENCE_ENDPOINT || GEN3_API;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
