@@ -1,4 +1,5 @@
 import { gen3Api } from '../gen3';
+import { GEN3_FENCE_ENDPOINT } from '../../constants';
 
 export interface APIKey {
   readonly jti: string;
@@ -39,7 +40,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: 'user/credentials/api',
+        url: `${GEN3_FENCE_ENDPOINT}/user/credentials/api`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
-        url: `user/credentials/api/${id}`,
+        url: `${GEN3_FENCE_ENDPOINT}/user/credentials/api/${id}`,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

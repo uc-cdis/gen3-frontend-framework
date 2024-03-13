@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
-import { GEN3_API } from '../../constants';
+import { GEN3_FENCE_ENDPOINT } from '../../constants';
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -30,7 +30,7 @@ export const fetchUserState = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user', async () => {
   return await fetchFence({
-    hostname: `${GEN3_API}`,
+    hostname: `${GEN3_FENCE_ENDPOINT}`,
     endpoint: '/user/user',
     method: 'GET',
     headers: {

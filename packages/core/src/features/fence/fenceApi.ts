@@ -1,5 +1,6 @@
 import { gen3Api } from '../gen3';
 import { Gen3Response } from '../../dataAccess';
+import { GEN3_FENCE_ENDPOINT } from '../../constants';
 
 export interface NameUrl {
   readonly name: string;
@@ -24,7 +25,7 @@ export interface Gen3FenceLoginProviders {
 export const loginProvidersApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
-      query: () => 'user/login',
+      query: () => `${GEN3_FENCE_ENDPOINT}/user/login`,
     }),
   }),
 });
