@@ -34,7 +34,7 @@
         "name": "Cite BRH"
       }
     ],
-    "showLogin": false,
+    "showLogin": true,
     "classNames": {
       "root": "flex justify-end items-center align-middle w-100 h-10 bg-secondary"
     }

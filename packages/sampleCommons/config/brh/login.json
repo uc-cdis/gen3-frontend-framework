@@ -20,5 +20,6 @@
       }
     ],
     "image": "images/brh/gene_bgy.png",
-    "email": "brhsupport@datacommons.io"
+    "email": "brhsupport@datacommons.io",
+    "showCredentialsLogin" : true
   }

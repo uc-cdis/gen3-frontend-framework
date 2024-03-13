@@ -12,6 +12,7 @@ export interface Gen3LoginPanelConfig {
 export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {
   topContent?: ReadonlyArray<TextContentProps>;
   bottomContent?: ReadonlyArray<TextContentProps>;
+  showCredentialsLogin?: boolean;
 }
 
 export interface LoginRedirectProps {

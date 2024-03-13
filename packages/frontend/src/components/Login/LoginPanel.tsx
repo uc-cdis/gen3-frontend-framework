@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
 import TexturedSidePanel from '../Layout/TexturedSidePanel';
@@ -19,7 +19,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
  const redirectURL = redirect;
 
-  const handleLoginSelected = async (url: string, redirect?: string) => {
+  const handleLoginSelected = useCallback((url: string, redirect?: string) => async (url: string, redirect?: string) => {
      router
       .push(
         url +
@@ -31,7 +31,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           message: `error logging in ${e.message}`,
         });
       });
-  };
+  }, [router]);
 
   return (
     <div className="grid grid-cols-6 w-full">
@@ -47,10 +47,10 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           redirectURL={redirectURL as string | undefined}
         />
 
-        <CredentialsLogin
+        { loginConfig?.showCredentialsLogin ? <CredentialsLogin
           handleLoginSelected={handleLoginSelected}
           redirectURL={redirectURL as string | undefined}
-        />
+        /> : null }
 
         {bottomContent?.map((content, index) => (
           <TextContent {...content} key={index} />
