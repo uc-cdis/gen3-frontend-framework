@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Menu } from '@mantine/core';
 import { FloatingPosition } from '@mantine/core/lib/Floating/types';
 import { ReactNode } from 'react';
@@ -128,7 +129,7 @@ export const DropdownWithIcon = ({
         className="border-1 border-secondary"
       >
         {menuLabelText && (
-          <>
+          <React.Fragment>
             <Menu.Label
               className={menuLabelCustomClass ?? 'font-bold'}
               data-testid="menu-label"
@@ -136,7 +137,7 @@ export const DropdownWithIcon = ({
               {menuLabelText}
             </Menu.Label>
             <Menu.Divider />
-          </>
+          </React.Fragment>
         )}
         {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item

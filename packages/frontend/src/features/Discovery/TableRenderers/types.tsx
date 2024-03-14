@@ -14,7 +14,7 @@ export interface CellRenderFunctionProps<T = any> {
  * is available from the DiscoveryContext.
  * @param props: value and optional cell object
  */
-export type CellRendererFunction = (
+export type CellRendererFunction<T = JSONObject> = (
   props: CellRenderFunctionProps,
-  params?: JSONObject,
+  params?: T,
 ) => ReactElement;

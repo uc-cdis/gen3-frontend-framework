@@ -90,7 +90,7 @@ export type ActionButtonWithArgsFunction = (
 ) => Promise<void>;
 
 
-export interface DownloadButtonPropsWithAction extends Omit<DownloadButtonProps, "action" |"actionArgs"> {
+export interface DownloadButtonPropsWithAction extends Omit<DownloadButtonProps, 'action' |'actionArgs'> {
     actionFunction: ActionButtonWithArgsFunction;
     actionArgs: Record<string, any>;
 

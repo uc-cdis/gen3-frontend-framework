@@ -4,7 +4,7 @@ import { useGetStatus } from '@gen3/core';
 import { Code } from '@mantine/core';
 
 const Status = () => {
-    const { data, error } = useGetStatus();
+    const { data } = useGetStatus();
     return (
         <div>
             <h1>Status</h1>

@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+import { isArray, toString } from 'lodash';
 import React from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
@@ -8,6 +8,8 @@ import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
 import { JSONObject } from '@gen3/core';
+
+import { getParamsValueAsString } from '../../../utils/values';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -68,6 +70,46 @@ export const RenderLinkCell: CellRendererFunction = ({
       rel="noreferrer"
     >
       {content}
+    </Link>
+  );
+};
+
+// given a field name, extract the value from the row using the type guards above
+
+export const RenderLinkWithURL: CellRendererFunction = (
+  { value, cell }: CellRenderFunctionProps,
+
+  params?: JSONObject,
+) => {
+  const content = toString(value);
+  if (!content) {
+    return (
+      <Text>{`${
+        getParamsValueAsString(params, 'valueIfNotAvailable') ?? ''
+      }`}</Text>
+    );
+  }
+  const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
+  if (rowData) {
+    return (
+      <Link
+        href={rowData}
+        onClick={(ev) => ev.stopPropagation()}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Text c="utility.0">{content}</Text>
+      </Link>
+    );
+  }
+  return (
+    <Link
+      href={content}
+      onClick={(ev) => ev.stopPropagation()}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <Text c="utility.0">{content}</Text>
     </Link>
   );
 };
@@ -204,6 +246,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   link: {
     default: RenderLinkCell,
+    withURL: RenderLinkWithURL,
   },
   dataAccess: {
     default: DataAccessCellRenderer,
