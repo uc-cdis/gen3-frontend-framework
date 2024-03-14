@@ -9,6 +9,7 @@ export const GUID_PREFIX_PATTERN = /^dg.[a-zA-Z0-9]+\//;
 export const GEN3_GUPPY_API = process.env.NEXT_PUBLIC_GEN3_GUPPY_API || `${GEN3_API}/guppy`;
 export const GEN3_DOWNLOADS_ENDPOINT = process.env.GEN3_DOWNLOADS_ENDPOINT || 'downloads';
 export const GEN3_WORKSPACE_API = process.env.NEXT_PUBLIC_GEN3_WORKSPACE_API || `${GEN3_API}/lw-workspace`
+export const TEMP_WORKSPACE_HOSTNAME = 'https://brh.data-commons.org';
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',

@@ -1,9 +1,13 @@
 import {
     useGetWorkspaceOptionsQuery,
     type WorkspaceOptionsResponse,
+    useGetWorkspaceRefreshQuery,
+    useGetAccessTokenQuery
 } from "./workspaceSlice";
 
 export {
     useGetWorkspaceOptionsQuery,
-    WorkspaceOptionsResponse
+    WorkspaceOptionsResponse,
+    useGetWorkspaceRefreshQuery,
+    useGetAccessTokenQuery
 }
