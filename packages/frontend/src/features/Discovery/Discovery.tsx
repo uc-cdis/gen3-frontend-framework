@@ -12,6 +12,7 @@ import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllData, useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
+import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 
 export interface DiscoveryProps {
@@ -95,6 +96,13 @@ const Discovery = ({
               />
             </div>
           </div>
+          {discoveryConfig?.features?.aiSearch && (
+            <div className="mb-4">
+              <div className="flex w-full bg-base-max p-4 rounded-lg">
+                <AiSearch />
+              </div>
+            </div>
+          )}
           <div className="flex flex-row">
             {discoveryConfig?.features?.advSearchFilters?.enabled ?
               <Button onClick={toggleAdvancedSearch} color="accent">
