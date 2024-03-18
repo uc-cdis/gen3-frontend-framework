@@ -2,17 +2,15 @@ import { GEN3_AI_SEARCH_API } from '../../constants';
 import { gen3Api } from '../gen3';
 
 interface AiSearchParams {
-
+  readonly query: string;
 }
 
 interface AiSearchRequestParams extends AiSearchParams {
   readonly topic?: string;
   readonly conversationId?: string;
-  readonly query: string;
 }
 
 export interface AiSearchResponse extends AiSearchParams {
-  readonly query: string;
   readonly topic: string;
   readonly conversationId: string;
   readonly response: string;
