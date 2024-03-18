@@ -21,6 +21,7 @@ const globals = {
   'jsonpath-plus': 'jsonpathPlus',
   'flat': 'flat',
   'papaparse': 'papaparse',
+  "redux-persist": "redux-persist"
 };
 
 const config = [
