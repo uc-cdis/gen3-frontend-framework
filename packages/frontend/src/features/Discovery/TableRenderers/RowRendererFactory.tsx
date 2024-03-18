@@ -4,12 +4,12 @@ import {
   defaultRowRenderer,
   Gen3DiscoveryStandardRowPreviewRenderers,
 } from './RowRenderers';
-import { StudyPreviewField } from '../types';
+import { StudyDetailsField } from '../types';
 
 // TODO Tighten up the typing here
 export type RowRendererFunction = (
   props: RowRenderFunctionParams,
-  studyPreviewConfig?: StudyPreviewField,
+  studyPreviewConfig?: StudyDetailsField,
 ) => ReactElement;
 
 export interface RowRendererFunctionCatalogEntry {
@@ -36,6 +36,11 @@ export class DiscoveryRowRendererFactory {
     type: string,
     functionName: string,
   ): RowRendererFunction {
+    if (!(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)) {
+      console.log('No row renderer found for type: ', type);
+      return defaultRowRenderer;
+    }
+
     return (
       DiscoveryRowRendererFactory.getInstance().RowRendererCatalog[type][
         functionName
@@ -75,17 +80,17 @@ export class DiscoveryRowRendererFactory {
  * @param studyPreviewConfig
  */
 export const DiscoveryTableRowRenderer = (
-  studyPreviewConfig?: StudyPreviewField,
+  studyPreviewConfig?: StudyDetailsField,
 ): RowRendererFunction => {
   if (!studyPreviewConfig?.contentType) {
     return (row): ReactElement => defaultRowRenderer(row, studyPreviewConfig);
   }
   const func = DiscoveryRowRendererFactory.getRowRenderer(
     studyPreviewConfig?.contentType,
-    studyPreviewConfig?.detailRenderer ?? 'default',
+    studyPreviewConfig?.renderer ?? 'default',
   );
   if (!func) {
-    throw new Error(`No row renderer found for given config (contentType: ${ studyPreviewConfig?.contentType }, detailRenderer: ${ studyPreviewConfig?.detailRenderer ?? 'default'}`);
+    throw new Error(`No row renderer found for given config (contentType: ${ studyPreviewConfig?.contentType }, detailRenderer: ${ studyPreviewConfig?.renderer ?? 'default'}`);
   }
   return (row): ReactElement => func(row, studyPreviewConfig);
 };

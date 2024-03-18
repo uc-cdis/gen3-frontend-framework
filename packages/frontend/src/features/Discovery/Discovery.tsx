@@ -67,6 +67,7 @@ const Discovery = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <div className="w-full">
@@ -76,10 +77,9 @@ const Discovery = ({
               <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
             ) : null
           }
-          <div className="flex items-center  p-2 mb-4 bg-base-max rounded-lg">
+          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             <SummaryStatisticPanel summaries={summaryStatistics} />
-            <div className="flex-grow"></div>
-            <div className="w-full flex flex-col">
+            <div className="w-3/4 flex flex-col">
               <SearchInputWithSuggestions
                 suggestions={suggestions}
                 clearSearch={() => {

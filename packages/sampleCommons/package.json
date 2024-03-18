@@ -1,16 +1,18 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.3",
+  "version": "0.10.14",
   "private": true,
   "scripts": {
     "lint": "next lint",
     "dev": "next dev",
+    "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
     "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/",
-    "build:icons" : "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
+    "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
-    "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/"
+    "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
+    "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
     "@gen3/core": "file:../core",

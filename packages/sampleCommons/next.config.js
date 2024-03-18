@@ -21,6 +21,9 @@ const withMDX = require('@next/mdx')({
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  experimental: {
+    esmExternals: true,
+  },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',
@@ -30,6 +33,19 @@ const nextConfig = {
     };
 
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)?', // Matches all pages
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+        ],
+      },
+    ];
   },
 };
 

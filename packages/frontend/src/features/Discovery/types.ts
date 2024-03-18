@@ -1,5 +1,5 @@
 import {
-  JSONArray,
+  JSONValue,
   JSONObject,
   type MetadataPaginationParams,
 } from '@gen3/core';
@@ -118,30 +118,22 @@ export interface MinimalFieldMapping {
   uid: string;
 }
 
-export interface StudyPreviewField {
+export interface StudyDetailsField {
   name: string;
   field: string;
-  contentType?: DiscoveryContentTypes;
-  includeName: boolean;
-  includeIfNotAvailable: boolean;
+  contentType?: string;
+  includeLabel?: boolean;
+  includeIfNotAvailable?: boolean;
   valueIfNotAvailable?: string | number;
-  detailRenderer?: string;
+  renderer?: string;
   params?: Record<string, unknown>;
-}
-
-export interface StudyTabField {
-  type: string;
-  sourceField: string;
-  label: string;
-  default?: string;
-  renderFunction?: string;
 }
 
 export interface StudyPageGroup {
   groupName?: string;
   groupWidth?: 'half' | 'full';
   includeName?: boolean;
-  fields: StudyPreviewField[];
+  fields: StudyDetailsField[];
 }
 
 export interface DataDownloadLinks {
@@ -155,11 +147,8 @@ export interface DownloadLinkFields {
   descriptionField: string;
 }
 
-/** Legacy config interface fro StudyPage view
- * Plan to deprecate this interface in the future
- * Please use StudyDetailView instead
- */
 export interface StudyPageConfig {
+  showAllAvailableFields?: boolean,
   header?: {
     field: string;
   };
@@ -168,13 +157,13 @@ export interface StudyPageConfig {
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
-export interface StudyTabTagField extends StudyTabField {
+export interface StudyTabTagField extends StudyDetailsField {
   categories?: string[];
 }
 
 export interface StudyTabGroup {
   header: string;
-  fields: Array<StudyTabField | StudyTabTagField>;
+  fields: Array<StudyDetailsField | StudyTabTagField>;
 }
 
 export interface StudyDetailTab {
@@ -247,9 +236,9 @@ export interface ExportToDataLibrary {
 }
 
 export interface DataAuthorization {
-  columnTooltip: string;
-  supportedValues: Record<string, AuthorizationValues>;
-  enabled: boolean;
+  columnTooltip?: string;
+  supportedValues?: Record<string, AuthorizationValues>;
+  enabled?: boolean;
 }
 
 export interface AccessFilters {
@@ -264,15 +253,15 @@ export interface DiscoveryConfig {
     pageTitle: DiscoveryPageTitle;
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
-    authorization: Partial<DataAuthorization>;
+    authorization: DataAuthorization;
     dataFetchFunction?: string;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
-  studyPreviewField?: StudyPreviewField;
-  studyPageConfig?: StudyPageConfig;
+  studyPreviewField?: StudyDetailsField;
+  simpleDetailsView?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
 }
@@ -296,8 +285,8 @@ export enum AccessLevel {
 export interface DiscoveryResource
   extends Record<
     string,
-    JSONObject | JSONArray | AccessLevel | TagInfo[] | undefined
+    JSONValue | AccessLevel | TagInfo[] | undefined
   > {
-  [accessibleFieldName]: AccessLevel;
+  [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }

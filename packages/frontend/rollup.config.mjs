@@ -81,7 +81,8 @@ const config = [
       '@graphiql/plugin-explorer',
       'mantine-react-table',
       'victory',
-      'echarts'
+      'echarts',
+      '@gen3/core'
     ],
     plugins: [
       peerDepsExternal(),

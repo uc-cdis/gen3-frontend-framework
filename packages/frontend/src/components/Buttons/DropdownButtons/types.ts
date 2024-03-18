@@ -10,6 +10,6 @@ export interface DownloadButtonProps {
   actionArgs?: Record<string, string>;
 }
 
-export interface DropdownButtonProps extends Omit<DownloadButtonProps, "action" |"actionArgs"> {
+export interface DropdownButtonProps extends Omit<DownloadButtonProps, 'action' |'actionArgs'> {
   dropdownItems: ReadonlyArray<Partial<DownloadButtonProps>>;
 }

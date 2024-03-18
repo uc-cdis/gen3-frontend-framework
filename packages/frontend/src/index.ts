@@ -4,9 +4,11 @@ export * from './features/Discovery';
 export * from './components/Profile';
 export * from './components/Login';
 export * from './features/CohortBuilder';
+export * from './features/Query';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
+import '@gen3/core';
 
 // export Gen3 data UI standard pages
 import Gen3Provider from './components/Providers/Gen3Provider';

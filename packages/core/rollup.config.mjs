@@ -21,7 +21,7 @@ const globals = {
   'jsonpath-plus': 'jsonpathPlus',
   'flat': 'flat',
   'papaparse': 'papaparse',
-  "redux-persist": "redux-persist"
+  'redux-persist': 'reduxPersist',
 };
 
 const config = [
@@ -29,35 +29,24 @@ const config = [
     input: 'src/index.ts',
     output: [
       {
-        file: 'dist/index.js',
+        file: 'dist/cjs/index.js',
         format: 'cjs',
         globals,
+        "sourcemap": true,
       },
       {
-        file: 'dist/index.min.js',
-        format: 'iife',
-        name: 'gen3Core',
-        plugins: [terser()],
-        globals,
-      },
-      {
-        file: 'dist/index.umd.js',
-        format: 'umd',
-        name: 'gen3Core',
-        globals,
-      },
-      {
-        file: 'dist/index.esm.js',
+        file: 'dist/esm/index.js',
         format: 'esm',
         globals,
-      },
-    ],
+        "sourcemap": true,
+      }],
     external: Object.keys(globals),
     plugins: [
       peerDepsExternal(),
       json(),
       swc({
         // All options are optional
+        "sourceMaps": true,
         include: /\.[mc]?[jt]sx?$/, // default
         exclude: /node_modules/, // default
         tsconfig: 'tsconfig.json', // default

@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '@gen3/core';
-import { TagCategory } from './types';
+import { JSONObject, JSONValue } from '@gen3/core';
+import { DiscoveryResource, TagCategory } from './types';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
   // TODO: add logging if path is not found
