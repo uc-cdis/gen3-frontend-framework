@@ -10,6 +10,7 @@ export interface ResearchPageConfig {
   content: ReadonlyArray<CardGridItem>;
 }
 
+// TODO not sure what this does or where it is used
 const ResearchPageContent = ({
   title,
   introduction,

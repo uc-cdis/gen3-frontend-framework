@@ -38,7 +38,21 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
   studyField: string;
 }
 
-// Define a service using a base URL and expected endpoints
+/**
+ * Defines metadataApi service using a base URL and expected endpoints. Derived from gen3Api core API.
+ *
+ * @param endpoints - Defines endpoints used in discovery page
+ *  @param getAggMDS - Queries aggregate metadata service
+ *    @see https://github.com/uc-cdis/metadata-service/blob/master/docs/agg_mds.md
+ *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_metadata_aggregate_metadata_get
+ *  @param getMDS - Queries normal metadata service
+ *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Query/search_metadata_metadata_get
+ *  @param getTags - Probably refering to Aggregate metadata service summary statistics query
+ *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_tags_aggregate_tags_get
+ *  @param getData - Looks like a duplicate of getMDS handler. unused in ./frontend package
+ *  @param getCrosswalkData - TODO not sure what the crosswalk is
+ * @returns: A guppy download API for fetching bulk metadata
+ */
 export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({

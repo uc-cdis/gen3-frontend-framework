@@ -8,6 +8,12 @@ interface ResourcesFiltersProps {
   selectedFilters: string[];
 }
 
+/**
+ * ResourcesFilters creates a checkbox filter component from cached arborist data
+ * and servicesAndMethods, useProfileContext context hooks.
+ * @returns: A resourceFilter component for sorting permissions
+ * chart on profile page by relevant microservices
+ */
 const ResourcesFilters = ({ selectedFilters, setFilters} : ResourcesFiltersProps) => {
   const { servicesAndMethods } = useResourcesContext();
   const { profileConfig } = useProfileContext();
