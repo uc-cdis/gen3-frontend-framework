@@ -15,10 +15,11 @@ document to your desired port.
 
 ### Setting up Gen3 Helm Charts
 The first set is setting up the Gen3 Helm Charts.
-Follow the instructions in [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm) for setting up the Gen3 Helm Charts.
 
-Follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md)
-and optionally the instructions for  setting up rancher-desktop.
+Follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md) **stop at Installing Gen3**.
+
+
+Follow the instructions in [Gen3 Helm Charts Local Development](https://github.com/uc-cdis/gen3-helm?tab=readme-ov-file#local-development) **steps 1-3** for setting up the Gen3 Helm Charts.
 
 Next copy the `values.yaml`, and optionally `user.yaml` file from the gen3-frontend-framework root to the `gen3-helm` root.
 You can also use the gen3 helm chart's `values.yaml`.

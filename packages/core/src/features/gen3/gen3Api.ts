@@ -9,6 +9,13 @@ export interface CSRFToken {
   readonly csrfToken: string;
 }
 
+/**
+ * Creates a base class core API for building other API endpoints on top of.
+ * @param reducerPath - The root key name that the other slices will be derived from
+ * @param baseQuery: - The template query which the slices will addon to
+ * @param endpoints - Base API endpoints that should exist in every slice
+ * @returns: The generated base API
+ */
 export const gen3Api = coreCreateApi({
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({

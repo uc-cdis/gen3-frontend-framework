@@ -26,7 +26,11 @@ export const buildResourcePaths = (resource: Resource, prefix= '', result: strin
   return result;
 };
 
-
+/**
+ * A Table displaying the allowed services for each method on each resource path
+ * Column -> Methods, Row -> Resource Paths, Cell -> Services
+ * @context AuthzContext - a context containing authz information
+ */
 const PoliciesTable = () => {
   const context = useContext(AuthzContext);
   const all_roles = context.state.roles.map((role) => role.id);

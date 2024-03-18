@@ -22,6 +22,11 @@ export interface Gen3FenceLoginProviders {
   readonly providers: Array<Gen3LoginProvider>;
 }
 
+/**
+ * Creates a fence API endpoint for handling login processes
+ * @param endpoints - defined endpoint query for logging in
+ * @returns: The generated fence login API slice
+ */
 export const loginProvidersApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
@@ -58,6 +63,10 @@ export interface FetchError<T> {
   readonly request?: T;
 }
 
+/**
+ * Template for fence error response dict
+ * @returns: An error dict reponse from a RESTFUL API request
+ */
 const buildFetchError = async <T>(
   res: Response,
   request?: T,
@@ -71,6 +80,10 @@ const buildFetchError = async <T>(
   };
 };
 
+/**
+ * Template for a standard fence request
+ * @returns: response data
+ */
 export const fetchFence = async <T>(
   request: FetchRequest,
 ): Promise<Gen3FenceResponse<T>> => {

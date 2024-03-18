@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 import { LoadingOverlay } from '@mantine/core';
 
+// Wrapper function for displaying loading element before GqlQueryEditor renders
 const GqlQueryEditor = dynamic(() => import('./GqlQueryEditor'), {
   loading: () => <LoadingOverlay visible={true} />,
   ssr: false,

@@ -5,6 +5,7 @@ export type DRSHostnameMap = Record<string, string>;
 
 const initialState : Record<string, string> = {};
 
+// TODO: document what this does
 const slice = createSlice({
   name: 'drsResolver',
   initialState,

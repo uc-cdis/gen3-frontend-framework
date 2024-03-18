@@ -11,6 +11,7 @@ export const GEN3_GUPPY_API = process.env.NEXT_PUBLIC_GEN3_GUPPY_API || `${GEN3_
 export const GEN3_MDS_API = process.env.NEXT_PUBLIC_GEN3_MDS_API || `${GEN3_API}/mds`;
 export const GEN3_DOWNLOADS_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_DOWNLOADS_ENDPOINT || 'downloads';
 export const GEN3_FENCE_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_FENCE_ENDPOINT || GEN3_API;
+export const GEN3_AI_SEARCH_API = process.env.NEXT_PUBLIC_GEN3_AI_SEARCH_API || `${GEN3_API}/ai-search`;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',

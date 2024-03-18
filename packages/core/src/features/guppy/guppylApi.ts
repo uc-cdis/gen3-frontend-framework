@@ -47,6 +47,11 @@ const buildGuppyFetchError = async (
   };
 };
 
+/**
+ * Similar to graphQLAPI except this
+ * guppyAPIFetch function is a branch of guppy core API defined below and
+ * graphQLAPI is a branch of gen3Services API.
+ */
 export const guppyAPIFetch = async <T>(
   query: guppyApiSliceRequest,
 ): Promise<guppyApiResponse<T>> => {
@@ -65,6 +70,10 @@ export const guppyAPIFetch = async <T>(
   throw await buildGuppyFetchError(res, query);
 };
 
+/**
+ * Creates a base class core API for guppy API calls.
+ * @returns: guppy core API with guppyAPIFetch base query
+ */
 export const guppyApi = coreCreateApi({
   reducerPath: 'guppy',
 

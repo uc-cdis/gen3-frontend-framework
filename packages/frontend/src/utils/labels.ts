@@ -1,7 +1,7 @@
 import pluralize from 'pluralize';
 
 
-/*
+/**
 * Convert label to pluralized (optional title case)
 * @param {label} string - a label to convert to title
 * @param {titleCase} boolean - Should first letter be capitalized default false

@@ -9,6 +9,11 @@ import {
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 
+/**
+ * Fetches graphql data from a graphql endpoint if one is specified, or guppy by default.
+ * @param graphQLEndpoint - The location of the graphql endpoint.
+ * @returns a component containing a GraphiQl editor
+ */
 const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {

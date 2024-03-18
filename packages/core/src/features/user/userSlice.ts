@@ -24,6 +24,11 @@ export interface Gen3UserLoginResponse<T> {
   readonly isError: boolean;
 }
 
+/**
+ * Creates an async thunk for fetching user permissions details from fence
+ * @see https://redux-toolkit.js.org/api/createAsyncThunk
+ * @returns: A fence response dict containing user details
+ */
 export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
@@ -59,6 +64,11 @@ const initialState: Gen3UserState = {
   error: undefined,
 };
 
+/**
+ * Wraps a slice on top of fetchUserState async thunk to keep track of
+ * query state. authenticated/not-authenticated vs. rejected/fullfilled/pending
+ * @returns: status messages wrapped around fetchUserState response dict
+ */
 const slice = createSlice({
   name: 'fence/user',
   initialState,
