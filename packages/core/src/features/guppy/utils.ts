@@ -132,6 +132,8 @@ export const downloadJSONDataFromGuppy = async ({
 }: DownloadFromGuppyParams) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
 
+  console.log("downloadJSONDataFromGuppy", parameters);
+
   const url = prepareUrl(GEN3_GUPPY_API);
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);
   try {
@@ -156,6 +158,7 @@ export const downloadJSONDataFromGuppy = async ({
     if (error.name == 'AbortError') {
       // handle abort()
       onAbort?.();
+      console.log("aborting downloadJSONDataFromGuppy");
     }
     throw new Error(error);
   }

@@ -39,6 +39,8 @@ export const downloadToManifestAction = async (
     sort: params.sort,
     format: 'json',
   };
+
+  console.log("cohortFilterParams", cohortFilterParams);
   // getting data from the same index.
   if (params.type === resourceIndexType) {
     let rawData;
@@ -54,6 +56,7 @@ export const downloadToManifestAction = async (
         onAbort: onAbort,
         signal: signal,
       });
+      console.log("rawData 1", rawData);
     } catch (err) {
       rawData = await downloadJSONDataFromGuppy({
         parameters: {
@@ -63,6 +66,7 @@ export const downloadToManifestAction = async (
         onAbort: onAbort,
         signal: signal,
       });
+      console.log("rawData 2", rawData);
     }
     return rawData;
   }
