@@ -35,7 +35,6 @@ export const fetchUserState = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user', async () => {
   return await fetchFence({
-    hostname: `${GEN3_FENCE_ENDPOINT}`,
     endpoint: '/user/user',
     method: 'GET',
     headers: {

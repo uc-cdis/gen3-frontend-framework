@@ -38,7 +38,6 @@ export const loginProvidersApi = gen3Api.injectEndpoints({
 export const { useGetLoginProvidersQuery } = loginProvidersApi;
 
 export interface FetchRequest {
-  readonly hostname: string;
   readonly endpoint: string;
   readonly method: 'GET' | 'POST';
   readonly body?: object;
@@ -87,7 +86,7 @@ const buildFetchError = async <T>(
 export const fetchFence = async <T>(
   request: FetchRequest,
 ): Promise<Gen3FenceResponse<T>> => {
-  const res = await fetch(`${request.hostname}${request.endpoint}`, {
+  const res = await fetch(`${GEN3_FENCE_ENDPOINT}${request.endpoint}`, {
     method: request.method,
     headers: request.headers,
     body: 'POST' === request.method ? JSON.stringify(request.body) : null,
