@@ -1,32 +1,32 @@
 [
   {
-    "tabTitle": "Cases",
+    "tabTitle": "Patient",
     "charts": {
-      "race": {
-        "chartType": "donut",
-        "title": "Race"
+      "project_id": {
+        "chartType": "fullPie",
+        "title": "project_id"
       },
-      "ethnicity": {
+      "gender": {
+        "chartType": "fullPie",
+        "title": "gender"
+      },
+      "maritalStatus": {
         "chartType": "donut",
-        "title": "Ethnicity"
+        "title": "maritalStatus"
       }
     },
     "filters": {
       "tabs": [
         {
-          "title": "Study Selection",
+          "title": "Patient",
           "fields": [
-            "project_id"
-          ]
-        },
-        {
-          "title": "Subjects",
-          "fields": [
-            "age_at_enrollment",
+            "project_id",
+            "us_core_race",
+            "us_core_ethnicity",
             "gender",
-            "race",
-            "ethnicity",
-            "experimental_group"
+            "maritalStatus",
+            "quality_adjusted_life_years",
+            "disability_adjusted_life_years"
           ]
         }
       ]
@@ -34,111 +34,138 @@
     "table": {
       "enabled": true,
       "fields": [
+        "id",
         "project_id",
-        "submitter_id",
-        "age_at_enrollment",
+        "us_core_race",
+        "us_core_ethnicity",
         "gender",
-        "race",
-        "ethnicity",
-        "experimental_group"
+        "maritalStatus",
+        "quality_adjusted_life_years",
+        "disability_adjusted_life_years"
       ]
     },
     "dropdowns": {
-      "download-table": {
-        "title": "Download Table"
-      }
-    },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "data-json",
-        "title": "JSON",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.json"
-      },
-      {
-        "enabled": true,
-        "type": "data-tsv",
-        "title": "TSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.tsv"
-      },
-      {
-        "enabled": true,
-        "type": "data-csv",
-        "title": "CSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.csv"
-      },
-      {
-        "enabled": true,
-        "type": "manifest",
-        "title": "Download File Manifest for Cases",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_case_manifest.json"
-      },
-      {
-        "enabled": false,
-        "type": "export-to-workspace",
-        "title": "Export to Workspace",
-        "leftIcon": "datafile",
-        "rightIcon": "download"
-      }
-    ],
-    "loginForDownload": true,
-    "guppyConfig": {
-      "dataType": "subject",
-      "nodeCountTitle": "Subjects",
-      "fieldMapping": [
+      "dropdownItems": [
         {
-          "field": "_samples_count",
-          "name": "Samples Count"
+          "enabled": true,
+          "type": "data-json",
+          "title": "JSON",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-json",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.json",
+            "rootPath": "gen3_discovery"
+          }
         },
         {
-          "field": "_imaging_files_count",
-          "name": "Imaging Files Count"
-        },
-        {
-          "field": "_unaligned_reads_files_count",
-          "name": "Unaligned Reads Count"
-        },
-        {
-          "field": "_aligned_reads_files_count",
-          "name": "Aligned Reads Count"
-        },
-        {
-          "field": "_expression_arrays_count",
-          "name": "Expression Arrays Count"
+          "enabled": true,
+          "type": "data-csv",
+          "title": "CSV",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-csv",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.csv",
+            "rootPath": "gen3_discovery"
+          }
         }
       ],
-      "manifestMapping": {
-        "resourceIndexType": "file",
-        "resourceIdField": "object_id",
-        "referenceIdFieldInResourceIndex": "subject_id",
-        "referenceIdFieldInDataIndex": "subject_id"
-      },
-      "accessibleFieldCheckList": [
-        "project_id"
+        "title": "Download Measurements Metadata Table"
+    },
+    "guppyConfig": {
+      "dataType": "patient",
+      "fieldMapping":   [
+        { "field": "quality_adjusted_life_years", "name": "quality_adjusted_life_years" },
+        { "field": "disability_adjusted_life_years", "name": "disability_adjusted_life_years" }
       ],
+      "nodeCountTitle": "Patients",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "id",
+        "referenceIdFieldInResourceIndex": "id",
+        "referenceIdFieldInDataIndex": "id"
+      },
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
+
   {
-    "tabTitle": "Data Files",
+    "tabTitle": "Observation",
+    "charts": {
+      "project_id": {
+        "chartType": "donut",
+        "title": "Project"
+      },
+      "category": {
+        "chartType": "fullPie",
+        "title": "Category"
+      },
+      "code": {
+        "chartType": "fullPie",
+        "title": "Code"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "Observation",
+          "fields": [
+            "project_id",
+            "category",
+            "code"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "patient_id",
+        "project_id",
+        "category",
+        "code",
+        "bodySite",
+        "effectiveDateTime",
+        "valueBoolean",
+        "valueCodeableConcept",
+        "valueDateTime",
+        "valueInteger",
+        "valueQuantity",
+        "valueRange",
+        "valueRatio",
+        "valueSampledData",
+        "valueString",
+        "interpretation"
+      ]
+    },
+    "dropdowns": {},
+    "guppyConfig": {
+      "dataType": "observation",
+      "fieldMapping":   [],
+      "nodeCountTitle": "Observations",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "_patient_id",
+        "referenceIdFieldInResourceIndex": "object_id",
+        "referenceIdFieldInDataIndex": "object_id"
+      },
+      "accessibleFieldCheckList": ["project_id"],
+      "accessibleValidationField": "project_id"
+    }
+  },
+
+  {
+
+    "tabTitle": "File",
     "charts": {
       "data_type": {
-        "chartType": "stackedBar",
+        "chartType": "donut",
         "title": "File Type"
       },
       "data_format": {
-        "chartType": "stackedBar",
+        "chartType": "fullPie",
         "title": "File Format"
       }
     },
@@ -149,8 +176,7 @@
           "fields": [
             "project_id",
             "data_type",
-            "data_format",
-            "data_category"
+            "data_format"
           ]
         }
       ]
@@ -159,81 +185,50 @@
       "enabled": true,
       "fields": [
         "project_id",
+        "patient_id",
+        "object_id",
+        "author",
+        "content_attachment_url",
+        "category",
+        "date",
+        "data_type",
+        "data_format",
         "file_name",
-        "file_size",
-        "object_id"
+        "content_attachment_size",
+        "id",
+        "status",
+        "type_coding"
       ]
     },
+    "dropdowns": {},
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
-        {
-          "field": "object_id",
-          "name": "GUID"
-        }
+        { "field": "object_id", "name": "Download ID" },
+        { "field": "file_name", "name": "Name" },
+        { "field": "data_type", "name": "Type" },
+        { "field": "data_format", "name": "Format" }
       ],
       "nodeCountTitle": "Files",
       "manifestMapping": {
-        "resourceIndexType": "subject",
-        "resourceIdField": "subject_id",
+        "resourceIndexType": "Patient",
+        "resourceIdField": "_patient_id",
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id",
       "downloadAccessor": "object_id"
-    },
-    "dropdowns": {
-      "download-table": {
-        "title": "Download Table"
-      }
     },
     "buttons": [
       {
         "enabled": true,
-        "type": "data-json",
-        "title": "JSON",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.json"
-      },
-      {
-        "enabled": true,
-        "type": "data-tsv",
-        "title": "TSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.tsv"
-      },
-      {
-        "enabled": true,
-        "type": "data-csv",
-        "title": "CSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.csv"
-      },
-      {
-        "enabled": true,
         "type": "file-manifest",
-        "title": "Download File Manifest",
+        "title": "Download Manifest",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_data_files_manifest.json"
-      },
-      {
-        "enabled": false,
-        "type": "export-to-workspace",
-        "title": "Export to Workspace",
-        "leftIcon": "datafile",
-        "rightIcon": "download"
+        "fileName": "file-manifest.json"
       }
-    ],
-    "loginForDownload": true
+    ]
   }
 ]

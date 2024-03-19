@@ -30,6 +30,18 @@
         "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
       },
       {
+        "icon": "gen3:exploration",
+        "href": "/SamplePage",
+        "name": "DEMO",
+        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
+        "icon": "gen3:exploration",
+        "href": "/DEMOGRIP",
+        "name": "GRIP",
+        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
         "icon": "gen3:query",
         "href": "/Query",
         "name": "Query",
