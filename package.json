@@ -6,9 +6,9 @@
   "workspaces": [
     "packages/*"
   ],
-  "engines" : {
-    "npm" : ">=10.2.3",
-    "node" : ">=20.11.0"
+  "engines": {
+    "npm": ">=10.2.3",
+    "node": ">=20.11.0"
   },
   "scripts": {
     "lint": "eslint .",
@@ -30,6 +30,7 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "dom-to-svg": "^0.12.2",
+    "echarts": "^5.5.0",
     "isomorphic-fetch": "^3.0.0",
     "oxlint": "^0.2.3-alpha.0",
     "react": "^18.2.0",
@@ -58,7 +59,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "lerna": ">=6.6.2 <7.0.0",
     "prettier": "^2.7.1",
-    "rollup":"^3.29.4",
+    "rollup": "^3.29.4",
     "rollup-plugin-swc3": "^0.10.2",
     "rollup-swc-preserve-directives": "^0.5.0",
     "terser-webpack-plugin": "^5.3.3",

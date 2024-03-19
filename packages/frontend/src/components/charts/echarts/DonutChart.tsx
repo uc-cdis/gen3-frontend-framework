@@ -9,6 +9,7 @@ interface DonutChartData {
     name: string;
 }
 
+
 const processChartData = (
     facetData: HistogramDataArray,
     maxBins = 100,

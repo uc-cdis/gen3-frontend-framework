@@ -31,8 +31,9 @@ export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';
 export * from './features/aiSearch';
-export * from './features/workspace';
-export * from './features/submission';
+export * from './features/workspaces';
+export * from './features/grip';
+
 
 export {
   type CoreState,
