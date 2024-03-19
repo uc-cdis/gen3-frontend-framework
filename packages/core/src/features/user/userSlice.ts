@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
-import { GEN3_FENCE_ENDPOINT } from '../../constants';
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,

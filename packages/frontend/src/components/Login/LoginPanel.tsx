@@ -19,7 +19,8 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
  const redirectURL = redirect;
 
-  const handleLoginSelected = useCallback((url: string, redirect?: string) => async (url: string, redirect?: string) => {
+  const handleLoginSelected = useCallback( async (url: string, redirect?: string) => {
+    console.log("handleLoginSelected")
      router
       .push(
         url +

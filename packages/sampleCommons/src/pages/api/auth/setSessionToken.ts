@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { setCookie } from 'cookies-next';
+import { deleteCookie, setCookie } from 'cookies-next';
 import { decodeJwt, JWTPayload } from 'jose';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -10,7 +10,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
   if (!payload) {
     res.status(400).json({ message: 'Invalid token' });
-    return;
+    deleteCookie( 'access_token', {
+      req, res,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
+    return res;
   }
   setCookie( 'access_token', access_token, {
     req, res,
@@ -18,5 +23,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
   });
-  res.status(200).json({ message: 'Session token set' });
+  return res.status(200).json({ message: 'Session token set' });
 }

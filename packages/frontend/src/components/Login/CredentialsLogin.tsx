@@ -40,7 +40,7 @@ const CredentialsLogin = ({
   }, [file]);
 
   useDeepCompareEffect(() => {
-    if (isSuccess && data?.access_token) {
+     if (isSuccess && data?.access_token) {
       fetch('/api/auth/setSessionToken', {
         method: 'POST',
         headers: {
@@ -49,8 +49,10 @@ const CredentialsLogin = ({
         body: JSON.stringify({ access_token: data.access_token }),
       });
 
+      console.log("set accessToken")
       dispatch(setAccessToken({ accessToken: data?.access_token }));
-      handleLoginSelected('', redirectURL);
+      handleLoginSelected('/', redirectURL);
+
     } else {
       if (isError) {
         notifications.show({
@@ -105,6 +107,7 @@ const CredentialsLogin = ({
             try {
               const json = await JSON.parse(credentials ?? '{}');
               authorizeFromCredentials(json);
+
             } catch (e) {
               notifications.show({
                 title: 'Format Error',
