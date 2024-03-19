@@ -38,7 +38,6 @@ const SessionContext = React.createContext<Session | undefined>(undefined);
 const getSession = async () => {
   try {
     const res = await fetch('/api/auth/sessionToken');
-    console.log("getSession", res);
     if (res.status === 200) {
       return await res.json();
     }

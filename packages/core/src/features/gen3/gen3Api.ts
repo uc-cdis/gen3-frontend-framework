@@ -23,7 +23,7 @@ export const gen3Api = coreCreateApi({
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as CoreState;
       const csrfToken = selectCSRFToken(getState() as CoreState);
-      const accessToken = state.auth.accessToken;
+      const {accessToken} = state.auth;
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);
       }
