@@ -1,6 +1,7 @@
 import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
+import copy from 'rollup-plugin-copy';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import tailwindcss from 'tailwindcss';
 import { default as tailwindConfig } from './src/tailwind.cjs';
@@ -101,19 +102,24 @@ const config = [
       swc(
         {
           sourceMaps: true,
-          include: /\.[mc]?[jt]sx?$/,
+          include: /\.[mc]?[json]?[jt]sx?$/,
           exclude: /node_modules/,
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives()
+        swcPreserveDirectives(), json()
       ),
+      copy({
+        targets: [
+          { src: ['src/features/DataDictionary/data/dictionary.json'], dest: 'dist/features/DataDictionary/data/dictionary.json' },
+        ]
+      })
     ],
   },
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss()],
+    plugins: [dts(), postcss(), json()],
   },
 ];
 

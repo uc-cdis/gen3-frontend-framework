@@ -1,2 +1,2 @@
-export default'./DataDictionary';
-export  { DataDictionaryPageGetServerSideProps } from './data';
+export { default } from './DataDictionary';
+export { DictionaryPageGetServerSideProps } from './data';

@@ -53,6 +53,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "@next/eslint-plugin-next": "^13.4.4",
     "jest-canvas-mock": "^2.4.0",
     "jest-environment-jsdom": "^29.7.0",
     "lerna": ">=6.6.2 <7.0.0",
