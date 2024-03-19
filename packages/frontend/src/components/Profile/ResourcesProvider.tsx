@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState
-} from "react";
+} from 'react';
 import {
   AuthzMapping,
   selectUser,
@@ -36,6 +36,8 @@ const ResourcesContext = createContext<ResourcesProviderValue>({
   servicesAndMethods: { services: [], methods: [] } as ServicesAndMethodsTypes,
 });
 
+
+// Creates a react context hook from AuthzMapping and UserProfile APIs
 export const useResourcesContext = () => {
   const context = React.useContext(ResourcesContext);
   if (context === undefined) {
@@ -46,6 +48,12 @@ export const useResourcesContext = () => {
   return context;
 };
 
+/**
+ * ResourcesProvider fetches permissions data via the authzApi and caches this data
+ * for use in other components
+ * @param children - List all the API keys for the current user
+ * @returns: A provider element that can pass data to other child elements.
+ */
 const ResourcesProvider = ({ children } : PropsWithChildren ) => {
   const { data: userProfile = {} } = useCoreSelector(selectUser);
   const { data: authzMapping = {}, isLoading: isAuthZLoading } =

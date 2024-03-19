@@ -84,8 +84,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
           <Image
             className="align-middle"
             src={`${basePath}/icons/gen3-dark.png`}
-            width={400}
-            height={200}
+            fill
             alt="Gen3 Logo"
           />
         </div>

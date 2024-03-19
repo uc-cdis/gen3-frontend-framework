@@ -32,6 +32,11 @@ interface Gen3ProviderProps {
   children?: ReactNode | undefined;
 }
 
+/**
+ * Gen3Provider wraps around the entire app and provides general configurations
+ * for the whole website like color scheme, icons, fonts, and sessionConfigs like
+ * inactivity limits for session timeouts.
+ */
 const Gen3Provider = ({
   colors,
   icons, fonts,

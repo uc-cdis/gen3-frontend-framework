@@ -1,4 +1,5 @@
-import { Anchor, Checkbox, Text } from "@mantine/core";
+import React from 'react';
+import { Anchor, Checkbox, Text } from '@mantine/core';
 
 interface DownloadAccessAgreementProps {
   readonly checked: boolean;
@@ -13,29 +14,29 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
 }: DownloadAccessAgreementProps) => {
   const dbGapLink =
     dbGapList.length === 1
-      ? "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=" +
+      ? 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=' +
         dbGapList[0]
-      : "https://www.ncbi.nlm.nih.gov/gap/?term=" +
+      : 'https://www.ncbi.nlm.nih.gov/gap/?term=' +
         encodeURIComponent(
           dbGapList.reduce(
             (acc, d, idx) =>
               acc +
-              "(" +
+              '(' +
               d +
-              `[Study])${idx < dbGapList.length - 1 ? " OR " : ""}`,
-            "",
+              `[Study])${idx < dbGapList.length - 1 ? ' OR ' : ''}`,
+            '',
           ),
         );
 
   return (
-    <>
+    <React.Fragment>
       <Text className="text-[15px] mb-3">
         You are attempting to download files that are controlled access:
       </Text>
       <Checkbox
         label={
           <Text className="text-[15px]">
-            I agree to abide by the{" "}
+            I agree to abide by the{' '}
             <Anchor
               size="sm"
               href="https://gdc.cancer.gov/about-data/data-analysis-policies"
@@ -43,8 +44,8 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
               className="underline"
             >
               GDC Data Use Agreement
-            </Anchor>{" "}
-            and the study-specific Data Use Certification Agreement available in{" "}
+            </Anchor>{' '}
+            and the study-specific Data Use Certification Agreement available in{' '}
             <Anchor
               size="sm"
               href={dbGapLink}
@@ -53,7 +54,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
             >
               dbGaP
             </Anchor>
-            . This means:{" "}
+            . This means:{' '}
           </Text>
         }
         className="mb-2"
@@ -70,7 +71,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
           and to comply with any additional restrictions therein.
         </li>
         <li>
-          I agree to abide by the{" "}
+          I agree to abide by the{' '}
           <a
             href="https://osp.od.nih.gov/scientific-sharing/policies/"
             target="_blank"
@@ -82,7 +83,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
           .
         </li>
       </ul>
-    </>
+    </React.Fragment>
   );
 };
 

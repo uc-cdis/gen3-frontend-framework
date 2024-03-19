@@ -56,7 +56,7 @@ const UserTable = ({
     enableRowActions: true,
     positionActionsColumn: 'last',
     renderRowActionMenuItems: ({ row }) => (
-      <>
+      <React.Fragment>
         <Menu.Item
           onClick={() => {
             setCurrentUser(row.original);
@@ -66,7 +66,7 @@ const UserTable = ({
           Details
         </Menu.Item>
         <Menu.Item onClick={() => console.info('Delete')}>Delete</Menu.Item>
-      </>
+      </React.Fragment>
     ),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

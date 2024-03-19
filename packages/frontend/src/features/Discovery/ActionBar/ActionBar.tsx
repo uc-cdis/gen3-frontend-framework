@@ -10,7 +10,6 @@ interface ActionBarProps {
 const ActionBar = ({ config }: ActionBarProps) => {
   const { buttons } = config;
 
-  console.log('buttons', buttons);
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
       {buttons?.map((button, index) => {

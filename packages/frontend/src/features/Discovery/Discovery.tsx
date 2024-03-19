@@ -9,10 +9,11 @@ import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllData } from './DataLoaders/MDSAllLocal/DataLoader';
+import { useLoadAllData, useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
-import { getDiscoveryDataLoader } from "./DataLoaders/registeredDataLoaders";
+import AiSearch from './Search/AiSearch';
+import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -22,8 +23,7 @@ const Discovery = ({
   discoveryConfig,
 }: DiscoveryProps) => {
 
-  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllData, []);
-
+  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllMDSData, []);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -69,7 +69,7 @@ const Discovery = ({
     useDisclosure(false);
 
   return (
-    <div className="flex flex-col items-center p-2 m-2 w-full">
+    <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
           {
@@ -77,10 +77,9 @@ const Discovery = ({
               <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
             ) : null
           }
-          <div className="flex items-center m-2">
+          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             <SummaryStatisticPanel summaries={summaryStatistics} />
-            <div className="flex-grow"></div>
-            <div className="w-full">
+            <div className="w-3/4 flex flex-col">
               <SearchInputWithSuggestions
                 suggestions={suggestions}
                 clearSearch={() => {
@@ -97,22 +96,29 @@ const Discovery = ({
               />
             </div>
           </div>
+          {discoveryConfig?.features?.aiSearch && (
+            <div className="mb-4">
+              <div className="flex w-full bg-base-max p-4 rounded-lg">
+                <AiSearch />
+              </div>
+            </div>
+          )}
           <div className="flex flex-row">
-            <Button onClick={toggleAdvancedSearch} color="accent">
+            {discoveryConfig?.features?.advSearchFilters?.enabled ?
+              <Button onClick={toggleAdvancedSearch} color="accent">
               Filters
-            </Button>
+            </Button> : false }
             {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
               <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
             ) : null}
           </div>
           <div className="flex justify-start">
-            <AdvancedSearchPanel
+            { discoveryConfig?.features?.advSearchFilters?.enabled ? <AdvancedSearchPanel
               advSearchFilters={advancedSearchFilterValues}
               opened={showAdvancedSearch}
               setAdvancedSearchFilters={setAdvancedSearchTerms}
-            />
-
-            <div className="flex flex-col w-full">
+            /> : false }
+            <div className="flex w-full bg-base-max p-4 rounded-lg">
               <DiscoveryTable
                 data={data}
                 hits={hits}

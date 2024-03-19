@@ -19,12 +19,26 @@ export interface HistogramData  {
   count: number;
 }
 
-export type HistogramDataArray = Array<HistogramData>;
-
+// type guard functions
 export const isHistogramRangeData = (key: any): key is [number, number] => {
   return Array.isArray(key) && key.length === 2 && key.every((item) => typeof item === 'number');
 };
 
+export const isJSONObject = (data: any): data is JSONObject => {
+  return typeof data === 'object' && data !== null && !Array.isArray(data);
+};
+
+export const isJSONValue = (data: any): data is JSONValue => {
+  return (
+    typeof data === 'string' ||
+    typeof data === 'number' ||
+    typeof data === 'boolean' ||
+    Array.isArray(data) && data.every(isJSONValue) ||
+    isJSONObject(data)
+  );
+};
+
+export type HistogramDataArray = Array<HistogramData>;
 
 export const isHistogramData = (data: any): data is HistogramData => {
   return typeof data === 'object' && data !== null && 'key' in data && 'count' in data;

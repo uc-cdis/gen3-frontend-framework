@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement } from 'react';
 
 import { NavigationProps } from '../types';
 import NavigationBarButton from '../NavigationBarButton';

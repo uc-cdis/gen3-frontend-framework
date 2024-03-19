@@ -34,7 +34,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
     if (pending) return <LoadingOverlay visible={pending} />;
     else
       return (
-        <React.Fragment>
+       <div className="w-full h-full">
           <LoadingOverlay visible={pending} />
           <Center>
             <Paper shadow="md" p="md">
@@ -44,7 +44,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
               </Text>
             </Paper>
           </Center>
-        </React.Fragment>
+        </div>
       );
   }
 

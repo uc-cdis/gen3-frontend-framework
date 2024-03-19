@@ -4,6 +4,7 @@ import {
   JSONObject,
   MetadataPaginationParams,
   useGetMDSQuery,
+  useGetAggMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
@@ -20,8 +21,8 @@ import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import {
   SummaryStatistics,
-  SummaryStatisticsDisplayData,
 } from '../../Statistics/types';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -60,7 +61,7 @@ const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
 };
 
 const extractValue = (document: JSONObject, field: string) => {
-  // TODO See if mimi search can handle the for advanced search
+  // TODO See if miniSearch can handle the for advanced search
   // if (field.startsWith('advancedSearch.')) {
   //   if (isSearchKVArray(document['advancedSearch'])) {
   //   const key = field.split('.')[-1];
@@ -120,11 +121,22 @@ interface GetDataProps {
   studyField: string;
 }
 
-const useGetData = ({
+interface GetDataResponse {
+  mdsData: JSONObject[];
+  isUninitialized: boolean;
+  isFetching: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+}
+
+type MetadataDataHook = (props: Partial<GetDataProps>) => GetDataResponse;
+
+const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: Partial<GetDataProps>) => {
+}: Partial<GetDataProps>) : GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
@@ -145,7 +157,7 @@ const useGetData = ({
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = Object.values(data.data).reduce(
-        (acc: JSONObject[], cur) => {
+        (acc: JSONObject[], cur:JSONObject) => {
           return cur[studyField]
             ? [...acc, cur[studyField] as JSONObject]
             : acc;
@@ -154,6 +166,51 @@ const useGetData = ({
       );
       setMDSData(studyData);
     }
+  }, [data, isSuccess, studyField]);
+
+  useEffect(() => {
+    if (queryIsError) {
+      setIsError(true);
+    }
+  }, [queryIsError]);
+
+  return {
+    mdsData,
+    isUninitialized,
+    isFetching,
+    isLoading,
+    isSuccess,
+    isError,
+  };
+};
+
+const useGetAggMDSData = ({
+                         guidType = 'unregistered_discovery_metadata',
+                         maxStudies = 10000,
+                         studyField = 'gen3_discovery',
+                       }: Partial<GetDataProps>) : GetDataResponse => {
+  const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
+  const [isError, setIsError] = useState(false);
+
+  const {
+    data,
+    isUninitialized,
+    isFetching,
+    isLoading,
+    isSuccess,
+    isError: queryIsError,
+  } = useGetAggMDSQuery({
+    guidType: guidType,
+    studyField: studyField,
+    offset: 0,
+    pageSize: maxStudies,
+  });
+
+  useEffect(() => {
+    if (data && isSuccess) {
+      setMDSData(data.data);
+    }
+
   }, [data, isSuccess, studyField]);
 
   useEffect(() => {
@@ -206,7 +263,7 @@ const useSearchMetadata = ({
     storeFields: [uidField],
     idField: uidField,
     extractField: extractValue,
-    //  processTerm: (term) => suffixes(term, 3),
+  //  processTerm: (term) => suffixes(term, 3),
     searchOptions: {
       processTerm: MiniSearch.getDefault('processTerm'),
     },
@@ -219,13 +276,20 @@ const useSearchMetadata = ({
     clearSuggestions();
   }, [clearSearch, clearSuggestions]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     // we have the data, so set it and build the search index and get the advanced search filter values
-    if (mdsData && isSuccess) {
+    if (mdsData && isSuccess && mdsData.length > 0) {
       removeAll();
-      addAll(mdsData);
+      // check if an id is missing
+       const dataWithIds = mdsData.reduce((acc, cur) => {
+          if (!cur[uidField])
+              acc.push({...cur, [uidField]: Math.random().toString(36).substring(7)});
+          else acc.push(cur);
+          return acc;
+        }, [] as JSONObject[]);
+      addAll(dataWithIds);
     }
-  }, [addAll, isSuccess, mdsData, removeAll]);
+  }, [addAll, isSuccess, mdsData, removeAll, uidField]);
 
   useEffect(() => {
     if (mdsData && isSearching) {
@@ -364,7 +428,8 @@ export const useLoadAllData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
+  dataHook,
+}: DiscoveryDataLoaderProps & { dataHook : MetadataDataHook }): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const {
@@ -374,7 +439,7 @@ export const useLoadAllData = ({
     isLoading,
     isSuccess,
     isError,
-  } = useGetData({
+  } = dataHook({
     studyField,
     guidType,
     maxStudies,
@@ -425,3 +490,42 @@ export const useLoadAllData = ({
     },
   };
 };
+
+
+export const useLoadAllMDSData = ({
+  pagination,
+    searchTerms,
+    advancedSearchTerms,
+    discoveryConfig,
+    guidType = 'discovery_metadata',
+    maxStudies = 10000,
+    studyField = 'gen3_discovery',
+}: DiscoveryDataLoaderProps) => useLoadAllData({
+  pagination,
+  searchTerms,
+  advancedSearchTerms,
+  discoveryConfig,
+  guidType,
+  maxStudies,
+  studyField,
+  dataHook: useGetMDSData,
+});
+
+export const useLoadAllAggMDSData = ({
+                                    pagination,
+                                    searchTerms,
+                                    advancedSearchTerms,
+                                    discoveryConfig,
+                                    guidType = 'discovery_metadata',
+                                    maxStudies = 10000,
+                                    studyField = 'gen3_discovery',
+                                  }: DiscoveryDataLoaderProps) => useLoadAllData({
+  pagination,
+  searchTerms,
+  advancedSearchTerms,
+  discoveryConfig,
+  guidType,
+  maxStudies,
+  studyField,
+  dataHook: useGetAggMDSData,
+});

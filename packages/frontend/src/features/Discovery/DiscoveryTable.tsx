@@ -20,6 +20,7 @@ import {
   SortingState,
 } from '@tanstack/table-core';
 import { DataRequestStatus } from './types';
+import { LoadingOverlay } from '@mantine/core';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -61,19 +62,19 @@ const DiscoveryTable = ({
               DiscoveryTableCellRenderer(
                 columnDef?.contentType,
                 columnDef?.cellRenderFunction ?? 'default',
-                columnDef?.params,
+                { ...(columnDef?.params ?? {}), valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '' },
               ),
             )
           : extractCellValue(
               DiscoveryTableCellRenderer(
                 'string',
-                'default',
-                columnDef?.params,
+                columnDef?.cellRenderFunction ?? 'default',
+                { ...(columnDef?.params ?? {}), valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '' },
               ),
             ),
       };
     });
-  }, [config]);
+  }, []);
 
   const table = useMantineReactTable({
     columns: cols,
@@ -114,12 +115,12 @@ const DiscoveryTable = ({
     mantineTableHeadCellProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.accent[8],
-          color: theme.colors.accent[0],
+          backgroundColor: theme.colors.table[8],
+          color: theme.colors.table[0],
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
-          fontSize: theme.fontSizes.xl,
+          fontSize: theme.fontSizes.lg,
           textTransform: 'uppercase',
         };
       },
@@ -134,12 +135,13 @@ const DiscoveryTable = ({
   });
 
   return (
-    <>
+    <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
+        <LoadingOverlay visible={ dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

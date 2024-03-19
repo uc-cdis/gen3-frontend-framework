@@ -1,7 +1,7 @@
-import { useAuthzContext } from "../Provider";
+
 import { Button, Group, Stack, Tabs } from '@mantine/core';
-import { User } from "../types";
-import { UserDetails } from "./Cards";
+import { User } from '../types';
+import { UserDetails } from './Cards';
 
 interface UserDetailsPanelProps {
   user: User;
@@ -9,14 +9,12 @@ interface UserDetailsPanelProps {
 }
 
 const UserDetailsPanel = ({user, closePanel}: UserDetailsPanelProps) => {
-  const context = useAuthzContext();
-
   return (
     <Stack>
      <Tabs defaultValue="user"
       classNames = {{
-        root: "w-full",
-        panel: "w-full"
+        root: 'w-full',
+        panel: 'w-full'
       }}
      >
         <Tabs.List>

@@ -1,24 +1,24 @@
-import { UseFormReturnType, useForm } from "@mantine/form";
-import { TextInput } from "@mantine/core";
-import { Permission } from "../types";
+import { UseFormReturnType, useForm } from '@mantine/form';
+import { TextInput } from '@mantine/core';
+import { Permission } from '../types';
 
 
 export const PermissionId = ({ form }: { form: UseFormReturnType<Permission> }) => {
-  return <TextInput {...form.getInputProps("id")}withAsterisk />;
+  return <TextInput {...form.getInputProps('id')}withAsterisk />;
 };
 export const MethodInput = ({
                             form
                           }: {
   form: UseFormReturnType<Permission>;
 }) => {
-  return <TextInput {...form.getInputProps("action.method")} />;
+  return <TextInput {...form.getInputProps('action.method')} />;
 };
 export const ServiceInput = ({
                              form
                            }: {
   form: UseFormReturnType<Permission>;
 }) => {
-  return <TextInput {...form.getInputProps("action.service")} />;
+  return <TextInput {...form.getInputProps('action.service')} />;
 };
 
 

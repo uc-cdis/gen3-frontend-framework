@@ -1,5 +1,5 @@
-import { ReactElement } from "react";
-import { MRT_Cell } from "mantine-react-table";
+import { ReactElement } from 'react';
+import { MRT_Cell } from 'mantine-react-table';
 
 export type RendererFunction<T> = (props: T, ...params:any[]) => ReactElement;
 

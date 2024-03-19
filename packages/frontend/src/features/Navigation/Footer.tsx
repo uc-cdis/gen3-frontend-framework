@@ -13,13 +13,13 @@ const Footer = ({
 }: FooterProps) => {
 
   const defaultClassNames = {
-    root: "bg-primary-lighter text-primary-contrast p-4 shadow-sm",
+    root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
   const mergedClassNames = { ...defaultClassNames, ...classNames };
 
   return (
-    <React.Fragment>
+    <footer>
       <div className={extractClassName('root',mergedClassNames )}>
         <div className="flex justify-end">
           {(footerLogos || [[]]).map((col, index) => {
@@ -32,9 +32,9 @@ const Footer = ({
               >
                 {col.map((logo) => (
                   <Image
+                    className="object-none"
                     key={`icons/${logo.logo}`}
                     src={`/icons/${logo.logo}`}
-                    layout="fixed"
                     width={logo.width}
                     height={logo.height}
                     alt={logo.description}
@@ -86,7 +86,6 @@ const Footer = ({
                 <Image
                   key={`icons/${logo.logo}`}
                   src={`/icons/${logo.logo}`}
-                  layout="fixed"
                   width={logo.width}
                   height={logo.height}
                   alt={logo.description}
@@ -113,7 +112,7 @@ const Footer = ({
           ))}
         </div>
       ) : null}
-    </React.Fragment>
+    </footer>
   );
 };
 

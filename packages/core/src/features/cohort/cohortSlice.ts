@@ -94,7 +94,7 @@ export const cohortSlice = createSlice({
       state: Draft<CohortState>,
       action: PayloadAction<string>
     ) => {
-      const { [action.payload]: _a, ...updated } = state.cohort.filters[action.payload].root;
+      const { [action.payload]: _rest, ...updated } = state.cohort.filters[action.payload].root;
       return {
         cohort: { ...state.cohort, ...{ ...state.cohort.filters, [action.payload]: updated } },
       };
@@ -131,6 +131,7 @@ export const selectIndexedFilterByName = (
   return state.cohorts.cohort.filters[index]?.root[name];
 };
 
+const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
 /**
  * Select a filter from the index.
  * returns undefined.
@@ -141,7 +142,7 @@ export const selectIndexFilters = (
   state: CoreState,
   index: string
 ): FilterSet => {
-  return state.cohorts.cohort.filters?.[index] ?? { mode: 'and', root: {}}; // TODO: check if this is undefined
+  return state.cohorts.cohort.filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
 };
 
 export const cohortReducer = cohortSlice.reducer;

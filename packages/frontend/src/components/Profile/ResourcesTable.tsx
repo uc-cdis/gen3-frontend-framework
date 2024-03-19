@@ -40,6 +40,15 @@ interface ResourcesTableProps {
   filters: string[];
 }
 
+/**
+ * ResourcesTable function creates a mantine-react-table'
+ * to display user permissions from the useResourcesContext
+ * and the useProfileContext context hooks
+ *
+ * @param filters - filters passed in from filters panel.
+ * @returns A resources table for viewing methods, services that user has access to
+ * on specified resource paths.
+ */
 const ResourcesTable = ({ filters }: ResourcesTableProps) => {
   const { userProfile, servicesAndMethods } = useResourcesContext();
   const { profileConfig } = useProfileContext();

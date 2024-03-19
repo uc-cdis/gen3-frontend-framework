@@ -1,4 +1,4 @@
-import { JSONArray, JSONObject } from "../../types";
+import { JSONArray, JSONObject } from '../../types';
 import { FILE_DELIMITERS } from '../../constants';
 import { flatten } from 'flat';
 import Papa, { UnparseConfig } from 'papaparse';
@@ -10,7 +10,7 @@ import Papa, { UnparseConfig } from 'papaparse';
  * @param {JSON} json
  */
 export function flattenJson(json: JSONObject) {
-  const flattenedJson : JSONArray = [];
+  const flattenedJson: JSONArray = [];
   Object.keys(json).forEach((key) => {
     flattenedJson.push(flatten(json[key], { delimiter: '_' }));
   });
@@ -28,7 +28,7 @@ export async function conversion(json: JSONArray, config: UnparseConfig) {
 
 /**
  * Converts JSON to a specified file format.
- * Defaultes to JSON if file format is not supported.
+ * Defaults to JSON if file format is not supported.
  * @param {JSON} json
  * @param {string} format
  */
@@ -40,7 +40,7 @@ export async function jsonToFormat(
     const flatJson = await flattenJson(json);
     const data = await conversion(flatJson, {
       delimiter: FILE_DELIMITERS[format] as string,
-    } );
+    });
     return data;
   }
   return json;

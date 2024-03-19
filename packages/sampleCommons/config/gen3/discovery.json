@@ -26,6 +26,7 @@
         }
       ]
     },
+    "aiSearch" : true,
     "tagsColumn": {
       "enabled": false
     },

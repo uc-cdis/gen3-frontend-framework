@@ -27,6 +27,7 @@ const initialState: ModalState = {
   currentModal: null,
 };
 
+//Creates a modal slice for tracking showModal and hideModal state.
 const slice = createSlice({
   name: 'modals',
   initialState,

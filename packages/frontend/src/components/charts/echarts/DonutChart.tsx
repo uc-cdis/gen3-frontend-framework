@@ -4,7 +4,6 @@ import ReactECharts, { ReactEChartsProps} from './ReactECharts';
 import { HistogramDataArray, HistogramData } from '@gen3/core';
 import { ChartProps } from '../types';
 
-
 interface DonutChartData {
     value: number;
     name: string;

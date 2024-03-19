@@ -1,24 +1,26 @@
 {
-  "name": "@gen3/datacommonsapp",
-  "version": "0.1.0",
+  "name": "@gen3/samplecommons",
+  "version": "0.10.15",
   "private": true,
   "scripts": {
     "lint": "next lint",
     "dev": "next dev",
+    "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
     "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/gen3/colors.json --out=config/",
-    "build:icons" : "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
+    "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
-    "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/"
+    "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
+    "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
-    "@next/mdx": "^14.0.1",
-    "@types/mdx": "^2.0.9",
+    "@next/mdx": "^14.1.0",
+    "@types/mdx": "^2.0.11",
     "cookies-next": "^4.0.0",
     "jose": "^4.15.4"
   },
@@ -26,10 +28,10 @@
     "@gen3/toolsff": "file:../tools",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
-    "next": "13.4.19",
+    "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "^3.2.4",
+    "tailwindcss": "^3.4.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "5.0.2"

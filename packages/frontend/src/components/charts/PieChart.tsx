@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { VictoryAxis, VictoryPie, VictoryChart,VictoryContainer, VictoryLabel, VictoryTheme } from 'victory';
+import { VictoryPie, VictoryTheme } from 'victory';
 import {  processLabel, truncateString } from './utils';
 
 interface PieChartProps {

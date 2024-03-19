@@ -1,4 +1,4 @@
-import { GEN3_API, GEN3_DOMAIN, GEN3_COMMONS_NAME, GEN3_DOWNLOADS_ENDPOINT, GEN3_GUPPY_API } from './constants';
+import { GEN3_API, GEN3_DOMAIN, GEN3_COMMONS_NAME, GEN3_DOWNLOADS_ENDPOINT, GEN3_GUPPY_API, Accessibility } from './constants';
 import { type CoreState } from './reducers';
 
 export * from './features/user';
@@ -18,5 +18,6 @@ export * from './features/modals';
 export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';
+export * from './features/aiSearch';
 
-export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API, GEN3_DOWNLOADS_ENDPOINT, GEN3_GUPPY_API };
+export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API, GEN3_DOWNLOADS_ENDPOINT, GEN3_GUPPY_API, Accessibility };

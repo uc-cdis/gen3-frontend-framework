@@ -17,7 +17,7 @@ import { jsonPathAccessor } from '../../../components/Tables/utils';
 
 import { SummaryTable } from './types';
 import { CellRendererFunction, ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from "../../../utils/RendererFactory";
+import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 
 const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))
@@ -44,6 +44,13 @@ interface ExplorerColumn {
   size?: number;
 }
 
+/**
+ * Main table componenet for the explorer page. Fetches data from guppy using
+ * useGetRawDataAndTotalCountsQuery() hook that leverages guppy core API slices
+ *
+ * @param index - Offset to use for fetching/displaying pages of rows
+ * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
+ */
 const ExplorerTable = ({
   index,
   tableConfig,
@@ -104,6 +111,25 @@ const ExplorerTable = ({
           : undefined,
     });
 
+
+ /**
+  * mantine-react-table setup
+  * @see https://www.mantine-react-table.com/docs/api/table-options
+  * @param columns - column options table config
+  *   @see https://www.mantine-react-table.com/docs/api/column-options
+  * @param data - data array, from useGetRawDataAndTotalCountsQuery()
+  * @param manualSorting - If this is true, you will be expected to sort your data before it is passed to the table.
+  * @param manualPagination - If this is true, you will be expected to manually paginate the rows before passing them to the table
+  * @param enableStickyHeader - TODO: not sure what this does
+  * @param paginateExpandedRows - If true expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages)
+  * @param onPaginationChange - If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself
+  * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state.sorting changes. Overrides default internal state management
+  * @param enableTopToolbar - enables additional ux features
+  * @param rowCount - Number of rows in the table
+  * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
+  * @param {Partial<MRT_TableState<TData>>} state - State management configs
+  *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
+  */
   const table = useMantineReactTable({
     columns: cols,
     data: data?.data?.[index] ?? [],
@@ -126,7 +152,7 @@ const ExplorerTable = ({
   });
 
   return (
-    <div className="w-auto inline-block overflow-x-scroll">
+    <div className="inline-block overflow-x-scroll">
       <MantineReactTable table={table} />
     </div>
   );

@@ -21,9 +21,12 @@ interface ChartsProps {
     isError?: boolean;
 }
 
+
+//The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
+
   return (
-    <Grid>
+    <Grid className="w-full mx-2">
       {data &&  Object.keys(charts).map((field) => (
         <Grid.Col span="auto" key={`${index}-charts-${field}-col`}>
           <Card shadow={'md'}>
@@ -47,6 +50,7 @@ const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
       ))}
     </Grid>
   );
+
 };
 
 export default Charts;

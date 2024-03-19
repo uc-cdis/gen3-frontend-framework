@@ -1,18 +1,25 @@
-# CTDS Frontend Framework
+# Gen3 Frontend Framework
 
 ## Installation
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v9. The minimum node version is set to v18.15.0 only from an LTS perspective.
+This is a multi-workspace repo that requires npm v9. The minimum node version is set to v20.11.0 only from an LTS perspective.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v9. To install it, run:
+Your version of Node may not ship with npm v10. To install it, run:
 
 ```bash
-npm install npm@9.5.0 -g
+npm install npm@10.2.4 -g
 ```
+
+Note: if you see this error:
+```
+npm ERR! code ENOWORKSPACES
+npm ERR! This command does not support workspaces.
+```
+you can run ```npx next telemetry disable```
 
 ### Install Dependencies
 

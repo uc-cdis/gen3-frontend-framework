@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { Autocomplete, Tooltip } from '@mantine/core';
+import { Autocomplete } from '@mantine/core';
 import { SearchInputProps } from './types';
 
 interface SearchInputWithAutoSuggestProps extends SearchInputProps {
@@ -14,7 +14,6 @@ const SearchInputWithSuggestions = ({
   label,
   suggestions,
   clearSearch = () => null,
-  limit = 10,
 }: SearchInputWithAutoSuggestProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 

@@ -13,6 +13,10 @@ export interface CardGridItem {
   link: string;
 }
 
+/**
+ * Creates a grid of cards component each containing a title, linktext, link and text.
+ * @param content - List of CardGridItem objects
+ */
 const CardGrid = ({ content }: CardGridProps) => {
   return (
     <Grid gutter="xl" className="m-0">

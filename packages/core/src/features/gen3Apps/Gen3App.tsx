@@ -39,6 +39,9 @@ export const getGen3AppId = (name: string, version: string): string => {
   return uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 };
 
+/**
+ *  TODO: can't tell what anything in this directory is doing.
+ */
 export const createGen3App = ({
   App,
   name,

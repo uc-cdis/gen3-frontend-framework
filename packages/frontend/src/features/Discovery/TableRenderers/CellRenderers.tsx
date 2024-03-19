@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+import { isArray, toString } from 'lodash';
 import React from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
@@ -7,6 +7,9 @@ import { getTagColor } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
+import { JSONObject } from '@gen3/core';
+
+import { getParamsValueAsString } from '../../../utils/values';
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -31,7 +34,7 @@ export const RenderArrayCell: CellRendererFunction = ({
   return <span>value</span>;
 };
 
-export const RenderArrayCellNegativePositive = ({
+export const RenderArrayCellNegativePositive: CellRendererFunction = ({
   value,
   cell,
 }: CellRenderFunctionProps) => {
@@ -55,7 +58,9 @@ export const RenderArrayCellNegativePositive = ({
   return <span>{value as any}</span>;
 };
 
-export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
+export const RenderLinkCell: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
   const content = value as string;
   return (
     <Link
@@ -69,23 +74,106 @@ export const RenderLinkCell = ({ value }: CellRenderFunctionProps) => {
   );
 };
 
-const RenderStringCell = ({ value }: CellRenderFunctionProps) => {
-  const content = value as string | string[];
-  return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
-};
+// given a field name, extract the value from the row using the type guards above
 
-const RenderNumberCell = ({ value }: CellRenderFunctionProps) => {
-  const content = value as number | number[];
+export const RenderLinkWithURL: CellRendererFunction = (
+  { value, cell }: CellRenderFunctionProps,
+
+  params?: JSONObject,
+) => {
+  const content = toString(value);
+  if (!content) {
+    return (
+      <Text>{`${
+        getParamsValueAsString(params, 'valueIfNotAvailable') ?? ''
+      }`}</Text>
+    );
+  }
+  const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
+  if (rowData) {
+    return (
+      <Link
+        href={rowData}
+        onClick={(ev) => ev.stopPropagation()}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Text c="utility.0">{content}</Text>
+      </Link>
+    );
+  }
   return (
-    <Text>
-      {isArray(content)
-        ? content.map((v) => v.toLocaleString()).join('; ')
-        : content.toLocaleString()}
-    </Text>
+    <Link
+      href={content}
+      onClick={(ev) => ev.stopPropagation()}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <Text c="utility.0">{content}</Text>
+    </Link>
   );
 };
 
-const RenderParagraphsCell = ({ value }: CellRenderFunctionProps) => {
+const RenderStringCell: CellRendererFunction = (
+  { value }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  const content = value as string | string[];
+  if (content === undefined || content === null) {
+    return (
+      <Text>
+        {`${
+          params && params?.valueIfNotAvailable
+            ? params?.valueIfNotAvailable
+            : ''
+        }`}{' '}
+      </Text>
+    );
+  }
+  if (content == '') {
+    return (
+      <Text>
+        {`${
+          params && params?.valueIfNotAvailable
+            ? params?.valueIfNotAvailable
+            : ''
+        }`}{' '}
+      </Text>
+    );
+  }
+  return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
+};
+
+const RenderNumberCell: CellRendererFunction = (
+  { value }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  const isContentEmpty = value === undefined || value === null;
+  const paramsValueIfNotAvailable = params && params?.valueIfNotAvailable;
+  const content = value as number | number[];
+
+  if (isContentEmpty) {
+    return (
+      <Text>{`${
+        paramsValueIfNotAvailable ? paramsValueIfNotAvailable : ''
+      }`}</Text>
+    );
+  }
+
+  let stringValue = '';
+  // check if content is an array of all numbers
+  if (isArray(content) && content.every((item) => typeof item === 'number')) {
+    stringValue = content.map((v) => (v ? v.toLocaleString() : '')).join('; ');
+  } else {
+    stringValue = content.toLocaleString();
+  }
+
+  return <Text>{stringValue}</Text>;
+};
+
+const RenderParagraphsCell: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
   const content = value as string | string[];
   return (
     <React.Fragment>
@@ -107,7 +195,9 @@ interface TagData {
 
 // TODO Fix below
 // eslint-disable-next-line react/prop-types
-export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
+export const RenderTagsCell: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();
   return (
@@ -118,7 +208,9 @@ export const RenderTagsCell = ({ value }: CellRenderFunctionProps) => {
           <Badge
             key={name}
             role="button"
-            size="lg" radius="sm" variant="filled"
+            size="lg"
+            radius="sm"
+            variant="filled"
             tabIndex={0}
             aria-label={name}
             style={{
@@ -154,6 +246,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   link: {
     default: RenderLinkCell,
+    withURL: RenderLinkWithURL,
   },
   dataAccess: {
     default: DataAccessCellRenderer,

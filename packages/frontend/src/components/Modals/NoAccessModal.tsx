@@ -1,5 +1,5 @@
-import { Text } from "@mantine/core";
-import { BaseModal } from "./BaseModal";
+import { Text } from '@mantine/core';
+import { BaseModal } from './BaseModal';
 
 export const NoAccessModal = ({
                                          openModal,
@@ -16,8 +16,8 @@ export const NoAccessModal = ({
       openModal={openModal}
       buttons={[
         {
-          title: "Close",
-          dataTestId: "button-no-access-access-alert-close",
+          title: 'Close',
+          dataTestId: 'button-no-access-access-alert-close',
         },
       ]}
     >
@@ -25,7 +25,7 @@ export const NoAccessModal = ({
         <Text size="sm"> You don&apos;t have access to Commons.</Text>
 
         <Text size="sm">
-          Please request dbGaP access to the project{" ("}
+          Please request dbGaP access to the project{' ('}
           <a
             href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
             target="_blank"
