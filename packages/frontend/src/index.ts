@@ -33,6 +33,8 @@ import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
 import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
+import WorkspacePage, { WorkspacePageGetServerSideProps } from "./pages/Workspace";
+
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
@@ -51,6 +53,8 @@ export {
   DataDictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
+  WorkspacePage,
+  WorkspacePageGetServerSideProps,
   ProfilePage,
   ProfilePageGetServerSideProps,
   LoginPage,

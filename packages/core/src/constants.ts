@@ -13,6 +13,9 @@ export const GEN3_DOWNLOADS_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_DOWNLOADS_EN
 export const GEN3_FENCE_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_FENCE_ENDPOINT || GEN3_API;
 export const GEN3_AI_SEARCH_API = process.env.NEXT_PUBLIC_GEN3_AI_SEARCH_API || `${GEN3_API}/ai-search`;
 
+export const GEN3_WORKSPACE_API = process.env.NEXT_PUBLIC_GEN3_WORKSPACE_API || `${GEN3_API}/lw-workspace`
+export const TEMP_WORKSPACE_HOSTNAME = 'https://brh.data-commons.org';
+
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
   UNACCESSIBLE = 'unaccessible',

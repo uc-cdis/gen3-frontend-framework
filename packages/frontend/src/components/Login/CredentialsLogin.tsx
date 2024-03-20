@@ -48,7 +48,6 @@ const CredentialsLogin = ({
         },
         body: JSON.stringify({ access_token: data.access_token }),
       });
-
       dispatch(setAccessToken({ accessToken: data?.access_token }));
       handleLoginSelected('/', redirectURL);
 

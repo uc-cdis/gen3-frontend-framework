@@ -19,5 +19,6 @@ export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';
 export * from './features/aiSearch';
+export * from './features/workspace';
 
 export { type CoreState, GEN3_COMMONS_NAME, GEN3_DOMAIN, GEN3_API, GEN3_DOWNLOADS_ENDPOINT, GEN3_GUPPY_API, Accessibility };
