@@ -1,5 +1,5 @@
 import { gen3Api } from "../gen3";
-import { GEN3_WORKSPACE_API } from "../../constants";
+import { GEN3_WTS_API } from "../../constants";
 
 interface PayModel {
     bmh_workspace_id: string;
@@ -38,10 +38,9 @@ export const workspaceApi = gen3Api.injectEndpoints({
     endpoints: (builder) => ({
         getWorkspaceOptions: builder.query<WorkspaceOptionsResponse, void>({
             query: () => ({
-                url: `https://brh.data-commons.org/lw-workspace/options`,
+                url: `${GEN3_WTS_API}/options`,
                 method: 'GET',
                 credentials: 'include',
-                mode: 'no-cors'
             }),
             transformResponse: (response: Record<string, any>, _meta) => {
                 console.log('res', response);
@@ -54,7 +53,7 @@ export const workspaceApi = gen3Api.injectEndpoints({
         }),
         getWorkspacePayModel: builder.query<WorkspacePayModelResponse, void>({
             query: () => ({
-                url: `${GEN3_WORKSPACE_API}/allpaymodels`,
+                url: `${GEN3_WTS_API}/allpaymodels`,
                 method: 'GET'
             }),
             transformResponse: (response: WorkspacePayModelResponse, _meta) => {
@@ -64,7 +63,7 @@ export const workspaceApi = gen3Api.injectEndpoints({
         }),
         getWorkspaceStatus: builder.query<WorkspaceStatusResponse, void>({
             query: () => ({
-                url: `${GEN3_WORKSPACE_API}/status`,
+                url: `${GEN3_WTS_API}/status`,
                 method: 'GET'
             }),
             transformResponse: (response: WorkspaceStatusResponse, _meta) => {

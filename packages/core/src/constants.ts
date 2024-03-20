@@ -14,8 +14,7 @@ export const GEN3_FENCE_API = process.env.NEXT_PUBLIC_GEN3_FENCE_API || GEN3_API
 export const GEN3_AI_SEARCH_API = process.env.NEXT_PUBLIC_GEN3_AI_SEARCH_API || `${GEN3_API}/ai-search`;
 export const GEN3_AUTHZ_API = process.env.NEXT_PUBLIC_GEN3_AUTHZ_API || `${GEN3_API}/authz`;
 
-export const GEN3_WORKSPACE_API = process.env.NEXT_PUBLIC_GEN3_WORKSPACE_API || `${GEN3_API}/lw-workspace`
-export const TEMP_WORKSPACE_HOSTNAME = 'https://brh.data-commons.org';
+export const GEN3_WTS_API = process.env.NEXT_PUBLIC_GEN3_WTS_API || `${GEN3_API}/lw-workspace`
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
