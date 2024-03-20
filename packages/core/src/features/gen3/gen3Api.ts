@@ -4,6 +4,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
+import { selectAccessToken } from '../auth';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -21,9 +22,8 @@ export const gen3Api = coreCreateApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
-      const state = getState() as CoreState;
       const csrfToken = selectCSRFToken(getState() as CoreState);
-      const {accessToken} = state.auth;
+      const accessToken = selectAccessToken(getState() as CoreState);
       console.log("accessToken", accessToken, "csrfToken", csrfToken);
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);

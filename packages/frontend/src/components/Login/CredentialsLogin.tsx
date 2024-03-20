@@ -42,17 +42,17 @@ const CredentialsLogin = ({
 
   useDeepCompareEffect(() => {
      if (isSuccess && data?.access_token) {
-      // fetch('/api/auth/setSessionToken', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ access_token: data.access_token }),
-      // });
+      fetch('/api/auth/setSessionToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ access_token: data.access_token }),
+      });
 
       // store the access token in the redux store
       dispatch(setAccessToken({ accessToken: data?.access_token }));
-
+       dispatch(fetchUserState());
     } else {
       if (isError) {
         notifications.show({
