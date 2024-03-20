@@ -53,6 +53,7 @@ const CredentialsLogin = ({
       // store the access token in the redux store
       dispatch(setAccessToken({ accessToken: data?.access_token }));
        dispatch(fetchUserState());
+       handleLoginSelected('', '/Profile');
     } else {
       if (isError) {
         notifications.show({

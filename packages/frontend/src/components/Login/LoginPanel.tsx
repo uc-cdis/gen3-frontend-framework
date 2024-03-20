@@ -22,8 +22,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   const handleLoginSelected = useCallback( async (url: string, redirect?: string) => {
      router
       .push(
-        url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}/Profile`),
+          (redirect ? `${redirect}` : '/'),
       )
       .catch((e) => {
         showNotification({
