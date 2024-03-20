@@ -6,7 +6,7 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_API,
+  GEN3_FENCE_API,
 } from '@gen3/core';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
@@ -36,6 +36,7 @@ function useOnline() {
 const SessionContext = React.createContext<Session | undefined>(undefined);
 
 const getSession = async () => {
+
   try {
     const res = await fetch('/api/auth/sessionToken');
     if (res.status === 200) {
@@ -74,8 +75,7 @@ export const useSession = (
 
 const logoutUser = (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
-  console.log('logging out user', GEN3_API);
-  router.push(`${GEN3_API}/user/logout?next=/`);
+  router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
 };
 
 const refreshSession = (dispatch: CoreDispatch,
@@ -122,7 +122,7 @@ const  useInterval = ( callback: IntervalFunction, delay: number | null ) => {
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
 /**
- * SessionProvider creates a react context which keeps track of wether the user is authenticated
+ * SessionProvider creates a React context which keeps track of wether the user is authenticated
  * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
  * @param children - Pass in a child session if one exists
  * @param session - Pass in a cached session if one exists

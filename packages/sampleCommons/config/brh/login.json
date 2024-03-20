@@ -19,7 +19,7 @@
         "className": "text-center text-sm"
       }
     ],
-    "image": "images/brh/gene_bgy.png",
+    "image": "images/brh/gene_bgy.svg",
     "email": "brhsupport@datacommons.io",
     "showCredentialsLogin" : true
   }

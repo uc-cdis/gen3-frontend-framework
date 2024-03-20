@@ -16,9 +16,9 @@ export interface JWTPayloadAndUser extends JWTPayload {
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const access_token = getCookie('access_token', { req, res });
   if (access_token && typeof access_token === 'string') {
-    const decodedAccessToken = (await decodeJwt(
+    const decodedAccessToken = decodeJwt(
       access_token,
-    )) as unknown as JWTPayloadAndUser;
+    ) as unknown as JWTPayloadAndUser;
     return res.status(200).json({
       issued: decodedAccessToken.iat,
       expires: decodedAccessToken.exp,
