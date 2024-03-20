@@ -10,7 +10,6 @@ import {
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { UserProfile } from './types';
-import { GEN3_FENCE_API } from '../../constants';
 import { selectAccessToken} from '../auth';
 
 export type Gen3User = Partial<UserProfile>;

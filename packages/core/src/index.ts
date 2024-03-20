@@ -6,6 +6,7 @@ import {
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
   GEN3_AUTHZ_API,
+  GEN3_REDIRECT_URL,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -39,5 +40,6 @@ export {
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
   GEN3_AUTHZ_API,
+  GEN3_REDIRECT_URL,
   Accessibility,
 };

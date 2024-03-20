@@ -9,7 +9,7 @@ import {
   Textarea,
 } from '@mantine/core';
 import {
-  fetchUserState,
+  fetchUserState, GEN3_REDIRECT_URL,
   setAccessToken,
   useAuthorizeFromCredentialsMutation,
   useCoreDispatch,
@@ -53,7 +53,7 @@ const CredentialsLogin = ({
       // store the access token in the redux store
       dispatch(setAccessToken({ accessToken: data?.access_token }));
        dispatch(fetchUserState());
-       handleLoginSelected('', '/Profile');
+       handleLoginSelected(GEN3_REDIRECT_URL, '/Profile');
     } else {
       if (isError) {
         notifications.show({

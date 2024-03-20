@@ -6,8 +6,6 @@ import LoginProvidersPanel from './LoginProvidersPanel';
 import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
-import { GEN3_DOMAIN } from '@gen3/core';
-import { stripTrailingSlash } from '../../utils';  // stripTrailingSlash is not used in this file
 
 const LoginPanel = (loginConfig: LoginConfig) => {
   const { image, topContent, bottomContent } = loginConfig;
@@ -22,7 +20,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   const handleLoginSelected = useCallback( async (url: string, redirect?: string) => {
      router
       .push(
-          (redirect ? `${redirect}` : '/'),
+          (redirect ? `${url}/${redirect}` : '/'),
       )
       .catch((e) => {
         showNotification({
