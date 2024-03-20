@@ -10,6 +10,8 @@ import {
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { UserProfile } from './types';
+import { GEN3_FENCE_API } from '../../constants';
+import { selectAccessToken} from '../auth';
 
 export type Gen3User = Partial<UserProfile>;
 
@@ -32,14 +34,17 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->('fence/user', async () => {
+>('fence/user/user', async (_, api  ) => {
+  const accessToken  = selectAccessToken(api.getState());
+
   return await fetchFence({
-    endpoint: '/user/user',
+    endpoint: `${GEN3_FENCE_API}/user/user`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       credentials: 'include',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 });

@@ -1,5 +1,5 @@
 import { gen3Api } from '../gen3';
-import { GEN3_FENCE_ENDPOINT } from '../../constants';
+import { GEN3_FENCE_API } from '../../constants';
 
 export interface APIKey {
   readonly jti: string;
@@ -39,7 +39,7 @@ export interface AuthTokenResponse {
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
-      query: () => 'user/credentials/api',
+      query: () => `${GEN3_FENCE_API}/user/credentials/api`,
       transformResponse: (
         response: Gen3FenceCredentials,
       ): ReadonlyArray<APIKey> => response['jtis'], // the response is a JSON object with a single key,
@@ -49,7 +49,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: `${GEN3_FENCE_ENDPOINT}/user/credentials/api`,
+        url: `${GEN3_FENCE_API}/user/credentials/api`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
-        url: `${GEN3_FENCE_ENDPOINT}/user/credentials/api/${id}`,
+        url: `${GEN3_FENCE_API}/user/credentials/api/${id}`,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     authorizeFromCredentials: builder.mutation<AuthTokenResponse, AuthorizeFromCredentialsParams>({
       query: (params) => ({
-        url: '/user/credentials/api/access_token',
+        url: `${GEN3_FENCE_API}/user/credentials/api/access_token`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
