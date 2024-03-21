@@ -18,6 +18,15 @@ interface DeleteCredentialParams {
   readonly id: string;
 }
 
+/**
+ * Adds a credentialsApi into the base gen3Api
+ * @endpoints Includes get, add, and remove credential operations
+ *   @see https://github.com/uc-cdis/fence/blob/master/openapis/swagger.yaml#L972-L1033
+  *  @param getCredentials - List all the API keys for the current user
+  *  @param addNewCredential - Get a new API key for the current user
+  *  @param removeCredential - Delete API access key with given ID for current user
+ * @returns: A fence credential API for manipulating user credentials
+ */
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({

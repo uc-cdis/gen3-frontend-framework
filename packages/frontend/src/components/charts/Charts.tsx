@@ -21,6 +21,8 @@ interface ChartsProps {
     isError?: boolean;
 }
 
+
+//The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({ index, charts, data, counts,  isSuccess }: ChartsProps) => {
 
   return (

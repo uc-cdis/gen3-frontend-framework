@@ -4,6 +4,11 @@ import ResourcesTable from './ResourcesTable';
 import ResourcesProvider from './ResourcesProvider';
 
 
+/**
+ * ResourcesPanel gets filters from ResourcesFilters panel and passes those
+ * filters into useState setFilters hook to be used as the filters variable in the 
+ * ResourcesTable on the profile page
+ */
 export const ResourcesPanel = () => {
   const [filters, setFilters] = useState<string[]>([]);
   return (

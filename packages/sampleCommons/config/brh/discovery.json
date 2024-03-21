@@ -5,6 +5,7 @@
   },
   "features": {
     "dataFetchFunction": "AggMDSAllLocal",
+    "aiSearch" : true,
     "advSearchFilters": {
       "enabled": false,
       "field": "advSearchFilters",

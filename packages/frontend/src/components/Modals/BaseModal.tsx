@@ -15,6 +15,11 @@ const isButtonOptions = (
   return typeof button === 'object' && 'title' in button;
 };
 
+/**
+ * Creates a generalized modal that can be used for a wide variety of purposes.
+ * @param buttons - Mantine button options
+ * @param dispatch - Dispatch hook to be used for state tracking
+ */
 const renderButtons = (
   buttons: Array<ButtonOptions | JSX.Element>,
   dispatch: CoreDispatch,
@@ -64,6 +69,21 @@ interface Props {
   closeOnEscape?: boolean;
 }
 
+/**
+ * Creates a generalized modal that can be used for a wide variety of purposes.
+ * @param openModal - Determines whether modal/drawer is opened
+ * @param title - Modal title
+ * @param size - Controls width of the content area, 'md' by default
+ * @param children - Modal content
+ * @param leftButtons - Mantine button component args for renderButtons component
+ * @param buttons - Mantine button component args for renderButtons component
+ * @param withCloseButton - Determines whether the close button should be rendered, true by default
+ * @param onClose - Called when modal/drawer is closed
+ * @param closeOnClickOutside - Determines whether the modal/drawer should be closed when user clicks on the overlay, true by default
+ * @param closeOnEscape - Determines whether onClose should be called when user presses the escape key, true by default
+ * @see https://mantine.dev/core/modal/
+ * @returns a mantine modal with a built in button for closing the modal
+ */
 export const BaseModal= ({
   openModal,
   title,
