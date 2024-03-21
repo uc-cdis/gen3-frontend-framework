@@ -104,17 +104,20 @@ const useGuppyActionButton = ({
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
       },
       (error) => {
         handleError(error);
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
       },
       () => {
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
       },
       controller.signal,
     );

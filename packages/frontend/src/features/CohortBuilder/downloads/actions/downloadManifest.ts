@@ -24,6 +24,7 @@ export const downloadToManifestAction = async (
     resourceIndexType: params.resourceIndexType,
     resourceIdField: params.resourceIdField,
   };
+
   const {
     referenceIdFieldInDataIndex,
     referenceIdFieldInResourceIndex,
@@ -40,9 +41,9 @@ export const downloadToManifestAction = async (
     format: 'json',
   };
 
-  console.log("cohortFilterParams", cohortFilterParams);
   // getting data from the same index.
   if (params.type === resourceIndexType) {
+    console.log("referenceIdFieldInDataIndex [1]", referenceIdFieldInDataIndex);
     let rawData;
     try {
       // the additionalFields are hardcoded, so it's possible they may
@@ -71,8 +72,10 @@ export const downloadToManifestAction = async (
     return rawData;
   }
   try {
+    console.log("referenceIdFieldInDataIndex [2]", referenceIdFieldInDataIndex);
     // get a list of reference IDs from the data index using the current cohort filters
     let refIDList = await downloadJSONDataFromGuppy({
+
       parameters: {
         ...cohortFilterParams,
         fields: [referenceIdFieldInDataIndex],
