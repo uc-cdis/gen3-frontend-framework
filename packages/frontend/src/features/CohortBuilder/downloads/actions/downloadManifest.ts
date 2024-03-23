@@ -46,6 +46,7 @@ export const downloadToManifestAction = async (
     console.log("referenceIdFieldInDataIndex [1]", referenceIdFieldInDataIndex);
     let rawData;
     try {
+      // TODO Find a better way to handle this. Currently,
       // the additionalFields are hardcoded, so it's possible they may
       // not be available in Guppy's index. Try to download the additional fields
       // first, and if the download fails, download only the referenceIDField.

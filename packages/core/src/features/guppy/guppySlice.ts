@@ -41,15 +41,18 @@ export interface GraphQLQuery {
   variables?: Record<string, unknown>;
 }
 
+
+export const fetchJson: Fetcher<JSONObject, string> = async (url: string) => {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('An error occurred while fetching the data.');
+  return (await res.json()) as JSONObject;
+};
+
 export const useGetStatus = (): SWRResponse<JSONObject, Error> => {
-  const fetcher: Fetcher<JSONObject, string> = async () => {
-    const res = await fetch(`${GEN3_GUPPY_API}${statusEndpoint}`, {
-      method: 'GET',
-      headers: { 'Content-type': 'application/json' },
-    });
-    if (!res.ok) throw new Error('An error occurred while fetching the data.');
-    return (await res.json()) as JSONObject;
-  };
+  const fetcher = () => fetchJson(`${GEN3_GUPPY_API}${statusEndpoint}`);
   return useSWR('explorerStatus', fetcher);
 };
 
