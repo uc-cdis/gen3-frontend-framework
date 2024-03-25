@@ -6,6 +6,7 @@ import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
 import { isJSONObject } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
+import { useGetFieldsForIndexQuery } from './guppySlice';
 
 /**
  * Represents a configuration for making a fetch request.
@@ -132,8 +133,6 @@ export const downloadJSONDataFromGuppy = async ({
 }: DownloadFromGuppyParams) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
 
-  console.log("downloadJSONDataFromGuppy", parameters);
-
   const url = prepareUrl(GEN3_GUPPY_API);
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);
   try {
@@ -158,8 +157,12 @@ export const downloadJSONDataFromGuppy = async ({
     if (error.name == 'AbortError') {
       // handle abort()
       onAbort?.();
-      console.log("aborting downloadJSONDataFromGuppy");
     }
     throw new Error(error);
   }
+};
+
+export const useGetIndexFields = (index: string) => {
+  const { data } = useGetFieldsForIndexQuery(index);
+  return data ?? [];
 };

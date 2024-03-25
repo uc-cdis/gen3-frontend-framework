@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import { partial } from 'lodash';
-
 import {
   type FacetDefinition,
   selectIndexFilters,
@@ -11,8 +10,8 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
+  useGetFieldsForIndexQuery
 } from '@gen3/core';
-
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 
@@ -34,6 +33,8 @@ import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
 import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+
+
 
 const EmptyData = {};
 

@@ -4,10 +4,33 @@ import {
   GuppyDownloadDataParams, Includes,
   JSONObject,
 } from '@gen3/core';
-import { ManifestFieldsConfig } from '../../types';
 import { handleDownload } from './utils';
 
-const ADDITIONAL_FILE_FIELDS = ['md5sum', 'file_name', 'file_size'];
+
+/**
+ * Process the manifest data given the data and the fields to include in the manifest.
+ * Check if the item in the data contains the fields to include in the manifest.
+ * if not, remove the item from the data.
+ * @param data
+ * @param resourceIdField
+ * @param manifestFields
+ */
+const processManifest = (data: JSONObject[], resourceIdField: string, manifestFields: string[]) => {
+  return data.filter((item) => {
+    const hasAllFields = manifestFields.every((field) => {
+      return item[field] !== undefined;
+    });
+    return hasAllFields && item[resourceIdField] !== undefined;
+  });
+};
+
+export interface DownloadToManifestParams extends Record<string, any>{
+  resourceIndexType: string;
+  resourceIdField: string;
+  referenceIdFieldInDataIndex?: string;
+  referenceIdFieldInResourceIndex?: string;
+  fileFields?: string[];
+}
 
 export const downloadToManifestAction = async (
   params: Record<string, any>,
@@ -18,19 +41,16 @@ export const downloadToManifestAction = async (
   dataFormat?: string,
 ): Promise<void> => {
 
-  const mappingConfig: ManifestFieldsConfig = {
-    referenceIdFieldInDataIndex: params.referenceIdFieldInDataIndex,
-    referenceIdFieldInResourceIndex: params.referenceIdFieldInDataIndex,
-    resourceIndexType: params.resourceIndexType,
-    resourceIdField: params.resourceIdField,
-  };
-
   const {
     referenceIdFieldInDataIndex,
     referenceIdFieldInResourceIndex,
     resourceIndexType,
     resourceIdField,
-  } = mappingConfig;
+    fileFields,
+  } = params;
+
+  const manifestFields = fileFields ?? [];
+  const manifestFilename = params?.filename ?? `${params.type}_manifest.json`;
 
   const cohortFilterParams: GuppyDownloadDataParams = {
     filter: params.filter,
@@ -43,37 +63,29 @@ export const downloadToManifestAction = async (
 
   // getting data from the same index.
   if (params.type === resourceIndexType) {
-    console.log("referenceIdFieldInDataIndex [1]", referenceIdFieldInDataIndex);
-    let rawData;
     try {
-      // TODO Find a better way to handle this. Currently,
-      // the additionalFields are hardcoded, so it's possible they may
-      // not be available in Guppy's index. Try to download the additional fields
-      // first, and if the download fails, download only the referenceIDField.
-      rawData = await downloadJSONDataFromGuppy({
+      let resultManifest = await downloadJSONDataFromGuppy({
         parameters: {
           ...cohortFilterParams,
-          fields: [referenceIdFieldInDataIndex, ...ADDITIONAL_FILE_FIELDS],
+          fields: [referenceIdFieldInDataIndex, ...manifestFields],
         },
         onAbort: onAbort,
         signal: signal,
       });
-      console.log("rawData 1", rawData);
-    } catch (err) {
-      rawData = await downloadJSONDataFromGuppy({
-        parameters: {
-          ...cohortFilterParams,
-          fields: [referenceIdFieldInDataIndex],
-        },
-        onAbort: onAbort,
-        signal: signal,
-      });
-      console.log("rawData 2", rawData);
+      resultManifest = processManifest(resultManifest, resourceIdField, manifestFields);
+      if (resultManifest.length === 0) {
+        throw new Error('No data found for the current filters');
+      }
+      handleDownload(resultManifest, manifestFilename);
+      done && done();
+    } catch (err: any) {
+      onError && onError(err);
     }
-    return rawData;
+    return;
   }
+  // join data from two different indices
+
   try {
-    console.log("referenceIdFieldInDataIndex [2]", referenceIdFieldInDataIndex);
     // get a list of reference IDs from the data index using the current cohort filters
     let refIDList = await downloadJSONDataFromGuppy({
 
@@ -87,7 +99,7 @@ export const downloadToManifestAction = async (
     // get the reference IDs from the list
     refIDList = refIDList.map(
       (item: JSONObject) => item[referenceIdFieldInDataIndex],
-    ) ;
+    );
     // create a filter of the ids to use in the resource index
     const refIdsFilter: FilterSet = {
       mode: 'and',
@@ -99,44 +111,31 @@ export const downloadToManifestAction = async (
         } as Includes,
         ...(dataFormat
           ? {
-              data_format: {
-                operator: '=',
-                operand: dataFormat,
-                field: 'data_format',
-              }  as Equals ,
-            }
+            data_format: {
+              operator: '=',
+              operand: dataFormat,
+              field: 'data_format',
+            } as Equals,
+          }
           : {}),
       },
     };
 
-    let resultManifest;
-    try {
-      resultManifest = await downloadJSONDataFromGuppy({
-        parameters: {
-          ...cohortFilterParams,
-          type: resourceIndexType,
-          filter: refIdsFilter,
-          fields: [
-            referenceIdFieldInResourceIndex,
-            resourceIdField,
-            ...ADDITIONAL_FILE_FIELDS,
-          ],
-        },
-        onAbort: onAbort,
-        signal: signal,
-      });
-    } catch (err) {
-      resultManifest = await downloadJSONDataFromGuppy({
-        parameters: {
-          ...cohortFilterParams,
-          type: resourceIndexType,
-          filter: refIdsFilter,
-          fields: [referenceIdFieldInResourceIndex, resourceIdField],
-        },
-        onAbort: onAbort,
-        signal: signal,
-      });
-    }
+    let resultManifest = await downloadJSONDataFromGuppy({
+      parameters: {
+        ...cohortFilterParams,
+        type: resourceIndexType,
+        filter: refIdsFilter,
+        fields: [
+          referenceIdFieldInResourceIndex,
+          resourceIdField,
+          ...manifestFields
+        ],
+      },
+      onAbort: onAbort,
+      signal: signal,
+    });
+
     resultManifest = resultManifest.filter(
       (x: JSONObject) => !!x[resourceIdField],
     );
@@ -146,7 +145,7 @@ export const downloadToManifestAction = async (
         x[resourceIdField] = [x[resourceIdField]];
       }
     });
-    handleDownload(resultManifest, params.filename);
+    handleDownload(resultManifest, manifestFilename);
     done && done();
   } catch (err: any) {
     onError && onError(err);

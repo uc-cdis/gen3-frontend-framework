@@ -337,6 +337,18 @@ const explorerApi = guppyApi.injectEndpoints({
         };
       }
     }),
+    getFieldsForIndex: builder.query({
+      query: (index: string) => {
+        return {
+          query: `{
+            _mapping ${index}
+          }`,
+        };
+      },
+      transformResponse: (response: Record<string, any>) => {
+        return response['_mapping'];
+      }
+    }),
   }),
 });
 
@@ -415,7 +427,8 @@ export const {
   useGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
-  useGetFieldCountSummaryQuery
+  useGetFieldCountSummaryQuery,
+  useGetFieldsForIndexQuery,
 } = explorerApi;
 
 const EmptyAggData = {};
