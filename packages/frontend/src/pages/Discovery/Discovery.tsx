@@ -6,6 +6,7 @@ import {
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
 } from '../../features/Discovery';
+import { Center } from '@mantine/core';
 
 registerDiscoveryDefaultCellRenderers();
 registerDiscoveryDefaultStudyPreviewRenderers();
@@ -15,6 +16,14 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
+
+  if (discoveryConfig === undefined) {
+    return (
+      <Center maw={400} h={100} mx="auto">
+        <div>Discovery config is not defined. Page disabled</div>
+      </Center>
+    );
+  }
 
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
