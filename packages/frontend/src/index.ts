@@ -37,6 +37,8 @@ import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom404Page  from './pages/404/Custom404Page';
+
 import WorkspacesPage from './pages/Workspaces/Workspaces';
 import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
 
@@ -65,5 +67,6 @@ export {
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
   WorkspacesPage,
-  WorkspacesPageGetServerSideProps
+  WorkspacesPageGetServerSideProps,
+  Custom404Page
 };
