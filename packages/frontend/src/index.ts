@@ -36,6 +36,8 @@ import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom404Page  from './pages/404/Custom404Page';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -60,4 +62,5 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
+  Custom404Page
 };
