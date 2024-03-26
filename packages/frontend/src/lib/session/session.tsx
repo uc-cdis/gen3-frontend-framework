@@ -33,7 +33,7 @@ function useOnline() {
   return isOnline;
 }
 
-const SessionContext = React.createContext<Session | undefined>(undefined);
+export const SessionContext = React.createContext<Session | undefined>(undefined);
 
 const getSession = async () => {
 
@@ -69,7 +69,6 @@ export const useSession = (
       router.push('Login');
     }
   }
-
   return session;
 };
 
@@ -149,6 +148,7 @@ export const SessionProvider = ({
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
+  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -226,7 +226,8 @@ export const SessionProvider = ({
   const value: Session = useMemo(() => {
     return {
       ...sessionInfo,
-      pending: pending,
+      pending,
+      setIsCredentialsLogin,
     };
   }, [pending, sessionInfo]);
 

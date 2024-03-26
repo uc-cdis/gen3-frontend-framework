@@ -11,6 +11,7 @@ import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { UserProfile } from './types';
 import { selectAccessToken} from '../auth';
+import { getCookie } from 'cookies-next';
 
 export type Gen3User = Partial<UserProfile>;
 
@@ -34,7 +35,16 @@ export const fetchUserState = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user/user', async (_, api  ) => {
-  const accessToken  = selectAccessToken(api.getState());
+  let accessToken  = selectAccessToken(api.getState());
+
+  if (accessToken === undefined) {
+
+    const access_token = getCookie('access_token');
+    if (access_token) {
+      accessToken = access_token as string;
+    } else
+        console.log("fetchUserState: accessToken is undefined", access_token);
+  }
 
   console.log("fetchUserState: accessToken: ", accessToken);
 

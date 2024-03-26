@@ -5,6 +5,7 @@ import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
 import { selectAccessToken } from '../auth';
+import { getCookie } from 'cookies-next';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -22,16 +23,24 @@ export const gen3Api = coreCreateApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
+      // TODO replace these with getting values from the cookies
       const csrfToken = selectCSRFToken(getState() as CoreState);
-      const accessToken = selectAccessToken(getState() as CoreState);
-      console.log("accessToken", accessToken, "csrfToken", csrfToken);
+      let accessToken = selectAccessToken(getState() as CoreState);
+      headers.set('Content-Type', 'application/json');
+      if (accessToken === undefined) {
+        const access_token = getCookie('access_token');
+        if (access_token) {
+          accessToken = access_token as string;
+        } else
+          console.log("gen3Api: accessToken is undefined");
+      }
+
       if (csrfToken) {
         headers.set('X-CSRFToken', csrfToken);
       }
       if (accessToken) {
         headers.set('Authorization', `Bearer ${accessToken}`);
       }
-      headers.set('Content-Type', 'application/json');
       return headers;
     },
   }),

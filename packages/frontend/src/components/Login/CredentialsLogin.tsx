@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Divider,
   FileButton,
   Group,
-  Loader,
   Textarea,
 } from '@mantine/core';
 import {
   fetchUserState, GEN3_REDIRECT_URL,
-  setAccessToken,
-  useAuthorizeFromCredentialsMutation,
   useCoreDispatch,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { useDeepCompareEffect } from 'use-deep-compare';
 import { LoginRedirectProps } from './types';
+import { SessionContext } from '../../lib/session/session';
+
+
 
 const CredentialsLogin = ({
   handleLoginSelected,
@@ -25,10 +24,11 @@ const CredentialsLogin = ({
 }: LoginRedirectProps) => {
   const dispatch = useCoreDispatch();
 
+  const sessionContext = useContext(SessionContext);
+  const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin;
+
   const [credentials, setCredentials] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [authorizeFromCredentials, { data, isError, isLoading, isSuccess }] =
-    useAuthorizeFromCredentialsMutation();
 
   useEffect(() => {
     if (file) {
@@ -40,35 +40,31 @@ const CredentialsLogin = ({
     }
   }, [file]);
 
-  useDeepCompareEffect(() => {
-     if (isSuccess && data?.access_token) {
-      fetch('/api/auth/setSessionToken', {
+  const handleCredentialsLogin = useCallback( async (credentials: string) => {
+    try {
+      const json = await JSON.parse(credentials);
+      await fetch('/api/auth/credentialsLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ access_token: data.access_token }),
+        body: JSON.stringify(json),
       });
-
-      // store the access token in the redux store
-      dispatch(setAccessToken({ accessToken: data?.access_token }));
-       dispatch(fetchUserState());
-       handleLoginSelected(GEN3_REDIRECT_URL, '/Profile');
-    } else {
-      if (isError) {
-        notifications.show({
-          title: 'Authorization Error',
-          message: 'Invalid Credentials',
-        });
-      }
+      dispatch(fetchUserState());
+      handleLoginSelected(GEN3_REDIRECT_URL, '/Profile');
+    } catch (e) {
+      notifications.show({
+        title: 'Format Error',
+        message: 'JSON is not valid',
+      });
     }
-  }, [data, isError, isSuccess, handleLoginSelected, redirectURL, dispatch]);
+  }, [dispatch, handleLoginSelected]);
 
   return (
     <Box className="flex flex-col items-center justify-center my-2">
       <Divider
         color="black"
-        size="md"
+        size="xl"
         label="Authorize with Credentials"
         labelPosition="center"
       />
@@ -83,9 +79,7 @@ const CredentialsLogin = ({
           }}
           size="sm"
           rightSection={
-            isLoading ? (
-              <Loader size={20} />
-            ) : (
+            (
               credentials &&
               credentials?.length > 0 && (
                 <CloseIcon
@@ -105,16 +99,7 @@ const CredentialsLogin = ({
         <Button
           color="blue"
           onClick={async () => {
-            try {
-              const json = await JSON.parse(credentials ?? '{}');
-              authorizeFromCredentials(json);
-
-            } catch (e) {
-              notifications.show({
-                title: 'Format Error',
-                message: 'JSON is not valid',
-              });
-            }
+            await handleCredentialsLogin(credentials ?? '');
           }}
           disabled={credentials === null || credentials === ''}
         >

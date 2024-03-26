@@ -5,6 +5,7 @@ export * from './components/Profile';
 export * from './components/Login';
 export * from './features/CohortBuilder';
 export * from './features/Query';
+export * from './features/Workspaces';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -36,6 +37,9 @@ import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import WorkspacesPage from './pages/Workspaces/Workspaces';
+import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 export {
@@ -60,4 +64,6 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
+  WorkspacesPage,
+  WorkspacesPageGetServerSideProps
 };
