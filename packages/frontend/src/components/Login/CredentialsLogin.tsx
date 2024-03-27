@@ -25,7 +25,8 @@ const CredentialsLogin = ({
   const dispatch = useCoreDispatch();
 
   const sessionContext = useContext(SessionContext);
-  const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin;
+  const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin ?? (() => null);
+  const updateSession = sessionContext?.updateSession ?? (() => null);
 
   const [credentials, setCredentials] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -50,8 +51,8 @@ const CredentialsLogin = ({
         },
         body: JSON.stringify(json),
       });
-      await getSession();
-      dispatch(fetchUserState());
+      updateSession();
+      setIsCredentialsLogin(true);
       // handleLoginSelected(GEN3_REDIRECT_URL, 'Profile');
     } catch (e) {
       notifications.show({

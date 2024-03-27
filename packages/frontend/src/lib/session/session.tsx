@@ -149,14 +149,17 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
+  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(
     session ??
       ({
         status: 'not present',
+        isCredentialsLogin,
+        setIsCredentialsLogin
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
-  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
+
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -176,10 +179,8 @@ export const SessionProvider = ({
 
   const updateSession = async () => {
     const tokenStatus = await getSession();
-
     setSessionInfo(tokenStatus);
-
-    setPending(false);
+    setPending(false); // not waiting for session to load anymore
   };
   /**
    * Update session value every updateSessionInterval seconds
@@ -236,8 +237,10 @@ export const SessionProvider = ({
       ...sessionInfo,
       pending,
       setIsCredentialsLogin,
+      isCredentialsLogin,
+      updateSession,
     };
-  }, [pending, sessionInfo]);
+  }, [isCredentialsLogin, pending, sessionInfo]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
