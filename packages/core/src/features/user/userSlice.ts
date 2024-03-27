@@ -10,7 +10,6 @@ import {
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { UserProfile } from './types';
-import { selectAccessToken} from '../auth';
 import { getCookie } from 'cookies-next';
 
 export type Gen3User = Partial<UserProfile>;
@@ -34,19 +33,13 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->('fence/user/user', async (_, api  ) => {
-  let accessToken  = selectAccessToken(api.getState());
+>('fence/user/user', async () => {
 
-  if (accessToken === undefined) {
-
-    const access_token = getCookie('access_token');
-    if (access_token) {
-      accessToken = access_token as string;
-    } else
-        console.log("fetchUserState: accessToken is undefined", access_token);
+  // Get a access token from a cookie if in development mode
+  let accessToken = undefined;
+  if (process.env.NODE_ENV === 'development') {
+    accessToken = getCookie('access_token');
   }
-
-  console.log("fetchUserState: accessToken: ", accessToken);
 
   return await fetchFence({
     endpoint: '/user/user',
@@ -80,7 +73,7 @@ const initialState: Gen3UserState = {
 
 /**
  * Wraps a slice on top of fetchUserState async thunk to keep track of
- * query state. authenticated/not-authenticated vs. rejected/fullfilled/pending
+ * query state. authenticated/not-authenticated vs. ejected/fulfilled/pending
  * @returns: status messages wrapped around fetchUserState response dict
  */
 const slice = createSlice({

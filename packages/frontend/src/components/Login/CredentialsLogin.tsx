@@ -14,7 +14,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import { LoginRedirectProps } from './types';
-import { SessionContext } from '../../lib/session/session';
+import { SessionContext, getSession } from '../../lib/session/session';
 
 
 
@@ -50,8 +50,9 @@ const CredentialsLogin = ({
         },
         body: JSON.stringify(json),
       });
+      await getSession();
       dispatch(fetchUserState());
-      handleLoginSelected(GEN3_REDIRECT_URL, '/Profile');
+      // handleLoginSelected(GEN3_REDIRECT_URL, 'Profile');
     } catch (e) {
       notifications.show({
         title: 'Format Error',

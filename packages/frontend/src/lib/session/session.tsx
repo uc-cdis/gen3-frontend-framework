@@ -35,7 +35,7 @@ function useOnline() {
 
 export const SessionContext = React.createContext<Session | undefined>(undefined);
 
-const getSession = async () => {
+export const getSession = async () => {
 
   try {
     const res = await fetch('/api/auth/sessionToken');
@@ -70,6 +70,14 @@ export const useSession = (
     }
   }
   return session;
+};
+
+export const useIsAuthenticated = () => {
+  const session = useSession();
+  return {
+    isAuthenticated: session.status === 'issued',
+    user: session.user,
+  };
 };
 
 const logoutUser = (router: NextRouter) => {

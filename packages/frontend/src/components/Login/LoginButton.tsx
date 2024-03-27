@@ -2,7 +2,8 @@ import React from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import { GEN3_FENCE_API,GEN3_REDIRECT_URL, useUserAuth, isAuthenticated } from '@gen3/core';
+import { GEN3_FENCE_API,GEN3_REDIRECT_URL } from '@gen3/core';
+import { useIsAuthenticated } from '../../lib/session/session';
 
 interface LoginButtonProps {
   readonly icon?: React.ReactElement;
@@ -22,15 +23,17 @@ const LoginButton = ({
     else await router.push(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`);
   };
 
-  const { loginStatus } = useUserAuth();
+  const {
+    isAuthenticated,
+  } = useIsAuthenticated();
 
   // TODO add referring page to redirect to after login
   return (
     <UnstyledButton
-      onClick={() => handleSelected(isAuthenticated(loginStatus))}
+      onClick={() => handleSelected(isAuthenticated)}
     >
       <div className={`flex items-center font-medium font-heading ${className}`}>
-        {!hideText ? isAuthenticated(loginStatus) ? 'Logout' : 'Login' : null}
+        {!hideText ? isAuthenticated ? 'Logout' : 'Login' : null}
         {icon}
       </div>
     </UnstyledButton>

@@ -4,7 +4,6 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
-import { selectAccessToken } from '../auth';
 import { getCookie } from 'cookies-next';
 
 export interface CSRFToken {
@@ -23,24 +22,15 @@ export const gen3Api = coreCreateApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
-      // TODO replace these with getting values from the cookies
       const csrfToken = selectCSRFToken(getState() as CoreState);
-      let accessToken = selectAccessToken(getState() as CoreState);
       headers.set('Content-Type', 'application/json');
-      if (accessToken === undefined) {
-        const access_token = getCookie('access_token');
-        if (access_token) {
-          accessToken = access_token as string;
-        } else
-          console.log("gen3Api: accessToken is undefined");
-      }
 
-      if (csrfToken) {
-        headers.set('X-CSRFToken', csrfToken);
+      let accessToken = undefined;
+      if (process.env.NODE_ENV === 'development') {
+        accessToken = getCookie('access_token');
       }
-      if (accessToken) {
-        headers.set('Authorization', `Bearer ${accessToken}`);
-      }
+      if (csrfToken) headers.set('X-CSRFToken', csrfToken);
+      if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       return headers;
     },
   }),
@@ -60,7 +50,6 @@ export const gen3ServicesReducerMiddleware = gen3Api.middleware as Middleware;
 export const { useGetCSRFQuery } = gen3Api;
 
 export const selectCSRFTokenData = gen3Api.endpoints.getCSRF.select();
-
 
 const passThroughTheState = (state: CoreState) => state.gen3Services;
 
