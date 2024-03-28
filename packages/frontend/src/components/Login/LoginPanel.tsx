@@ -44,10 +44,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           redirectURL={redirectURL as string | undefined}
         />
 
-        { loginConfig?.showCredentialsLogin ? <CredentialsLogin
-          handleLoginSelected={handleLoginSelected}
-          redirectURL={redirectURL as string | undefined}
-        /> : null }
+        { loginConfig?.showCredentialsLogin && <CredentialsLogin />}
 
         {bottomContent?.map((content, index) => (
           <TextContent {...content} key={index} />
