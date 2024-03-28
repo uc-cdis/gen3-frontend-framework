@@ -14,6 +14,7 @@ import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
+  useAuthorizeFromCredentialsMutation
 } from './credentialsApi';
 
 import {
@@ -33,5 +34,6 @@ export {
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
-  useGetJWKKeysQuery
+  useGetJWKKeysQuery,
+  useAuthorizeFromCredentialsMutation
 };

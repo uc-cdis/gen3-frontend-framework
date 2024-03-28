@@ -15,7 +15,7 @@ Top level configuration is stored in .env files. These files contain the followi
 # For example, if commons is set to gen3, the configurations in directory config/gen3 will be used
 NEXT_PUBLIC_COMMONS=gen3
 NEXT_PUBLIC_GEN3_API=https://localhost:3010
-NEXT_PUBLIC_GEN3_DOMAIN=https://localhost:3010
+NEXT_PUBLIC_GEN3_DOMAIN=localhost:3010
 ````
 
 The value of `NEXT_PUBLIC_COMMONS` is used to determine the name of the commons-specific configuration file to use.

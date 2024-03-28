@@ -38,6 +38,10 @@ export const isJSONValue = (data: any): data is JSONValue => {
   );
 };
 
+export const isJSONValueArray = (data: JSONValue): data is JSONArray => {
+  return Array.isArray(data) && data.every(isJSONValue);
+};
+
 export type HistogramDataArray = Array<HistogramData>;
 
 export const isHistogramData = (data: any): data is HistogramData => {

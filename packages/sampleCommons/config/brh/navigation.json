@@ -12,6 +12,12 @@
       "tooltip": "Discover Data"
     },
       {
+        "icon": "gen3:workspace",
+        "href": "/Workspaces",
+        "name": "Workspaces",
+        "tooltip": "Discover Data"
+      },
+      {
         "icon": "gen3:profile",
         "href": "/Profile",
         "name": "Profile",
@@ -34,7 +40,7 @@
         "name": "Cite BRH"
       }
     ],
-    "showLogin": false,
+    "showLogin": true,
     "classNames": {
       "root": "flex justify-end items-center align-middle w-100 h-10 bg-secondary"
     }

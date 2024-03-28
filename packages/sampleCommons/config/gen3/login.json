@@ -15,5 +15,6 @@
       "className": "text-center text-sm"
     }
   ],
-  "image": "images/sideTexture.png"
+  "image": "images/sideTexture.png",
+  "showCredentialsLogin" : true
 }

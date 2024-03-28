@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
-import { GEN3_API } from '../../constants';
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -11,6 +10,7 @@ import {
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { UserProfile } from './types';
+import { getCookie } from 'cookies-next';
 
 export type Gen3User = Partial<UserProfile>;
 
@@ -33,15 +33,22 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->('fence/user', async () => {
+>('fence/user/user', async () => {
+
+  // Get a access token from a cookie if in development mode
+  let accessToken = undefined;
+  if (process.env.NODE_ENV === 'development') {
+    accessToken = getCookie('access_token');
+  }
+
   return await fetchFence({
-    hostname: `${GEN3_API}`,
     endpoint: '/user/user',
     method: 'GET',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       credentials: 'include',
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 });
@@ -66,7 +73,7 @@ const initialState: Gen3UserState = {
 
 /**
  * Wraps a slice on top of fetchUserState async thunk to keep track of
- * query state. authenticated/not-authenticated vs. rejected/fullfilled/pending
+ * query state. authenticated/not-authenticated vs. ejected/fulfilled/pending
  * @returns: status messages wrapped around fetchUserState response dict
  */
 const slice = createSlice({
