@@ -12,11 +12,15 @@ export interface AuthTokenData {
   issued?: number;
   expires?: number;
   status: JWTSessionStatus;
+  userContext?: Record<string, string>
 }
 
 export interface Session extends AuthTokenData {
   userStatus?: LoginStatus;
   user?: Gen3User;
+  isCredentialsLogin?: boolean;
+  setIsCredentialsLogin: (value: boolean) => void;
+  updateSession: () => void;
   pending: boolean;
 }
 

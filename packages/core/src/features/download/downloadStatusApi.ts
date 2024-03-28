@@ -22,7 +22,7 @@ const jobAPIPath = `${GEN3_API}job/`;
 export const loadingStatusApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getJobList: builder.query<JobListResponse, void>({
-      query: () => 'job/list',
+      query: () => `${jobAPIPath}/list`,
     }),
     getDownloadStatus: builder.query<DownloadStatus, string | FetchArgs>({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {

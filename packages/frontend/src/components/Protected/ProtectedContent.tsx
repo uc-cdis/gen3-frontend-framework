@@ -29,6 +29,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
 
   const { status, pending } = useSession(true, onUnauthenticated);
 
+  console.log("ProtectedContent status", status);
   if (status !== 'issued') {
     // not logged in
     if (pending) return <LoadingOverlay visible={pending} />;

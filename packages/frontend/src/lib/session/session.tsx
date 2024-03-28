@@ -6,7 +6,7 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_API,
+  GEN3_FENCE_API,
 } from '@gen3/core';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
@@ -33,9 +33,10 @@ function useOnline() {
   return isOnline;
 }
 
-const SessionContext = React.createContext<Session | undefined>(undefined);
+export const SessionContext = React.createContext<Session | undefined>(undefined);
 
-const getSession = async () => {
+export const getSession = async () => {
+
   try {
     const res = await fetch('/api/auth/sessionToken');
     if (res.status === 200) {
@@ -68,14 +69,20 @@ export const useSession = (
       router.push('Login');
     }
   }
-
   return session;
+};
+
+export const useIsAuthenticated = () => {
+  const session = useSession();
+  return {
+    isAuthenticated: session.status === 'issued',
+    user: session.userContext,
+  };
 };
 
 const logoutUser = (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
-  console.log('logging out user', GEN3_API);
-  router.push(`${GEN3_API}/user/logout?next=/`);
+  router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
 };
 
 const refreshSession = (dispatch: CoreDispatch,
@@ -122,7 +129,7 @@ const  useInterval = ( callback: IntervalFunction, delay: number | null ) => {
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
 /**
- * SessionProvider creates a react context which keeps track of wether the user is authenticated
+ * SessionProvider creates a React context which keeps track of wether the user is authenticated
  * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
  * @param children - Pass in a child session if one exists
  * @param session - Pass in a cached session if one exists
@@ -142,13 +149,17 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
+  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(
     session ??
       ({
         status: 'not present',
+        isCredentialsLogin,
+        setIsCredentialsLogin
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
+
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -168,10 +179,8 @@ export const SessionProvider = ({
 
   const updateSession = async () => {
     const tokenStatus = await getSession();
-
     setSessionInfo(tokenStatus);
-
-    setPending(false);
+    setPending(false); // not waiting for session to load anymore
   };
   /**
    * Update session value every updateSessionInterval seconds
@@ -226,9 +235,12 @@ export const SessionProvider = ({
   const value: Session = useMemo(() => {
     return {
       ...sessionInfo,
-      pending: pending,
+      pending,
+      setIsCredentialsLogin,
+      isCredentialsLogin,
+      updateSession,
     };
-  }, [pending, sessionInfo]);
+  }, [isCredentialsLogin, pending, sessionInfo]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

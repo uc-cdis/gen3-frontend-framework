@@ -20,8 +20,6 @@ export const jwtApi = credentialsWithTags.injectEndpoints({
       query: () => 'user/jwt/keys',
       providesTags: ['fenceJWT'],
     }),
-
-
   }),
 });
 
