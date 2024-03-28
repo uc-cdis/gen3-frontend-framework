@@ -3,6 +3,7 @@
         "message": "[View the winners of the HEAL Data Ecosystem 2024 Raffle!](https://www.healdatafair.org/events/AAMkAGJiYjdiMDk4LTI2NjktNDQ0Yy1iN2NkLTk0ODE5NTkwZGMwYwBGAAAAAADFCfsravpISIJULhJ6kUB2BwDT2LgfOzJeR4d6_-DuvpGaAAAAAAENAACStECWrhwlT6Ftc2zjZMptAAJFxaAGAAA=)",
         "level": "MESSAGE",
         "dismissible": true,
+        "isExternalLink": true,
         "id": 0
     }
 ]
