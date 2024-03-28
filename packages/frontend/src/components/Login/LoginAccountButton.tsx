@@ -1,11 +1,7 @@
 import React from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
-import {
-  useCoreSelector,
-  selectUserData,
-  isAuthenticated,
-} from '@gen3/core';
+import { useIsAuthenticated } from '../../lib/session/session';
 
 const LoginAccountButton = () => {
   const router = useRouter();
@@ -14,12 +10,15 @@ const LoginAccountButton = () => {
     await router.push('Profile');
   };
 
-  const { data: user, loginStatus } = useCoreSelector(selectUserData);
+  const {
+    isAuthenticated,
+    user,
+  } = useIsAuthenticated();
 
-  return isAuthenticated(loginStatus) ? (
+  return isAuthenticated ? (
     <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
       <div className="flex items-center hover:border-b-1 border-primary-darker text-primary-contrast font-medium font-heading ">
-        {user?.username}
+        {user?.name}
       </div>
     </UnstyledButton>
   ) : null;

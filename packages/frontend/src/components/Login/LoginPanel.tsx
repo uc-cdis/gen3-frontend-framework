@@ -1,18 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
 import TexturedSidePanel from '../Layout/TexturedSidePanel';
 import LoginProvidersPanel from './LoginProvidersPanel';
+import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
-import { GEN3_DOMAIN } from '@gen3/core';
-
-const stripTrailingSlash = (str:string):string => {
-  return str.endsWith('/') ?
-    str.slice(0, -1) :
-    str;
-};
-
 
 const LoginPanel = (loginConfig: LoginConfig) => {
   const { image, topContent, bottomContent } = loginConfig;
@@ -24,11 +17,10 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
  const redirectURL = redirect;
 
-  const handleLoginSelected = async (url: string, redirect?: string) => {
+  const handleLoginSelected = useCallback( async (url: string, redirect?: string) => {
      router
       .push(
-        url +
-          (redirect ? `?redirect=${redirect}` : `?redirect=${stripTrailingSlash(GEN3_DOMAIN)}/Profile`),
+          (redirect ? `${url}/${redirect}` : '/'),
       )
       .catch((e) => {
         showNotification({
@@ -36,7 +28,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           message: `error logging in ${e.message}`,
         });
       });
-  };
+  }, [router]);
 
   return (
     <div className="grid grid-cols-6 w-full">
@@ -51,6 +43,8 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           handleLoginSelected={handleLoginSelected}
           redirectURL={redirectURL as string | undefined}
         />
+
+        { loginConfig?.showCredentialsLogin && <CredentialsLogin />}
 
         {bottomContent?.map((content, index) => (
           <TextContent {...content} key={index} />

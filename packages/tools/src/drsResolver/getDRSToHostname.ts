@@ -44,7 +44,7 @@ const fetchJson = async (url: string) => {
     if (res.status === 200) {
       return res
         .json()
-        .catch((err: Error) => console.log(`failed json parse - ${err}`));
+        .catch((err: Error) => console.error(`failed json parse - ${err}`));
     }
   });
 };

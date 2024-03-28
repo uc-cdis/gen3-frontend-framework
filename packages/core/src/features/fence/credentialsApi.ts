@@ -1,4 +1,5 @@
 import { gen3Api } from '../gen3';
+import { GEN3_FENCE_API } from '../../constants';
 
 export interface APIKey {
   readonly jti: string;
@@ -18,19 +19,27 @@ interface DeleteCredentialParams {
   readonly id: string;
 }
 
+interface AuthorizeFromCredentialsParams {
+  api_key: string;
+  key_id: string;
+}
+export interface AuthTokenResponse {
+  access_token: string;
+}
+
 /**
  * Adds a credentialsApi into the base gen3Api
  * @endpoints Includes get, add, and remove credential operations
- *   @see https://github.com/uc-cdis/fence/blob/master/openapis/swagger.yaml#L972-L1033
-  *  @param getCredentials - List all the API keys for the current user
-  *  @param addNewCredential - Get a new API key for the current user
-  *  @param removeCredential - Delete API access key with given ID for current user
+ *  @see https://github.com/uc-cdis/fence/blob/master/openapis/swagger.yaml#L972-L1033
+ *  @param getCredentials - List all the API keys for the current user
+ *  @param addNewCredential - Get a new API key for the current user
+ *  @param removeCredential - Delete API access key with given ID for current user
  * @returns: A fence credential API for manipulating user credentials
  */
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
-      query: () => 'user/credentials/api',
+      query: () => `${GEN3_FENCE_API}/user/credentials/api`,
       transformResponse: (
         response: Gen3FenceCredentials,
       ): ReadonlyArray<APIKey> => response['jtis'], // the response is a JSON object with a single key,
@@ -40,7 +49,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: 'user/credentials/api',
+        url: `${GEN3_FENCE_API}/user/credentials/api`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,20 +63,34 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
-        url: `user/credentials/api/${id}`,
+        url: `${GEN3_FENCE_API}/user/credentials/api/${id}`,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          ...(csrfToken &&  {'x-csrf-token': csrfToken}),
+          ...(csrfToken && { 'x-csrf-token': csrfToken }),
         },
       }),
       invalidatesTags: ['Credentials'],
     }),
-  }),
+    authorizeFromCredentials: builder.mutation<AuthTokenResponse, AuthorizeFromCredentialsParams>({
+      query: (params) => ({
+        url: `${GEN3_FENCE_API}/user/credentials/api/access_token`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          api_key: params.api_key,
+          key_id: params.key_id,
+        },
+      }),
+    }),
+  })
 });
 
 export const {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
+  useAuthorizeFromCredentialsMutation
 } = credentialsApi;
