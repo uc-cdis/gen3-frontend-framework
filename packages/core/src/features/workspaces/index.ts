@@ -1,5 +1,7 @@
-import { useGetWorkspaceOptionsQuery } from './workspacesSlice';
+import { useGetWorkspaceOptionsQuery, useGetWorkspacePayModelsQuery, useGetWorkspaceStatusQuery } from './workspacesSlice';
 
 export {
   useGetWorkspaceOptionsQuery,
-}
+  useGetWorkspacePayModelsQuery,
+  useGetWorkspaceStatusQuery,
+};

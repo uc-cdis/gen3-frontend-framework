@@ -12,6 +12,12 @@
       "tooltip": "Discover Data"
     },
       {
+        "icon": "gen3:workspace",
+        "href": "/Workspaces",
+        "name": "Workspaces",
+        "tooltip": "Discover Data"
+      },
+      {
         "icon": "gen3:profile",
         "href": "/Profile",
         "name": "Profile",

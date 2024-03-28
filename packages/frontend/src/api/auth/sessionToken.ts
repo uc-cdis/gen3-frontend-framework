@@ -19,12 +19,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (access_token) {
     // TODO: validate the token
     const decodedAccessToken = decodeJwt(
-      access_token
+      access_token as string
     ) as unknown as JWTPayloadAndUser;
     return res.status(200).json({
       issued: decodedAccessToken.iat,
       expires: decodedAccessToken.exp,
-      user: decodedAccessToken.context.user,
+      userContext: decodedAccessToken.context.user,
       status: decodedAccessToken.exp
         ? isExpired(decodedAccessToken.exp)
           ? 'expired'

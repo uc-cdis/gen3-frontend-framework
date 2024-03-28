@@ -12,6 +12,7 @@ export interface AuthTokenData {
   issued?: number;
   expires?: number;
   status: JWTSessionStatus;
+  userContext?: Record<string, string>
 }
 
 export interface Session extends AuthTokenData {

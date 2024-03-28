@@ -5,29 +5,18 @@ import {
   Divider,
   FileButton,
   Group,
+  Text,
   Textarea,
 } from '@mantine/core';
-import {
-  fetchUserState, GEN3_REDIRECT_URL,
-  useCoreDispatch,
-} from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { LoginRedirectProps } from './types';
-import { SessionContext, getSession } from '../../lib/session/session';
+import { SessionContext } from '../../lib/session/session';
 
 
 
-const CredentialsLogin = ({
-  handleLoginSelected,
-  redirectURL,
-}: LoginRedirectProps) => {
-  const dispatch = useCoreDispatch();
+const CredentialsLogin = () => {
 
   const sessionContext = useContext(SessionContext);
-  const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin ?? (() => null);
-  const updateSession = sessionContext?.updateSession ?? (() => null);
-
   const [credentials, setCredentials] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
@@ -42,6 +31,8 @@ const CredentialsLogin = ({
   }, [file]);
 
   const handleCredentialsLogin = useCallback( async (credentials: string) => {
+    const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin ?? (() => null);
+    const updateSession = sessionContext?.updateSession ?? (() => null);
     try {
       const json = await JSON.parse(credentials);
       await fetch('/api/auth/credentialsLogin', {
@@ -60,14 +51,17 @@ const CredentialsLogin = ({
         message: 'JSON is not valid',
       });
     }
-  }, [dispatch, handleLoginSelected]);
+  }, [sessionContext?.setIsCredentialsLogin, sessionContext?.updateSession]);
 
   return (
     <Box className="flex flex-col items-center justify-center my-2">
       <Divider
         color="black"
-        size="xl"
-        label="Authorize with Credentials"
+        size="md"
+        className="w-1/3"
+        label={
+            <Text size="md">Authorize with credentials</Text>
+        }
         labelPosition="center"
       />
       <Group>

@@ -76,7 +76,7 @@ export const useIsAuthenticated = () => {
   const session = useSession();
   return {
     isAuthenticated: session.status === 'issued',
-    user: session.user,
+    user: session.userContext,
   };
 };
 

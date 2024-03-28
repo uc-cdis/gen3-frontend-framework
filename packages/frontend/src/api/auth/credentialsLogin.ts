@@ -33,7 +33,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
     });
-    console.log("Session token NOT set");
     return res.status(response.status).json({ message: 'Invalid token' });
   }
 
@@ -52,7 +51,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
     });
-    console.log("Session token NOT set");
     return res.status(400).json({ message: 'Invalid token' });
   }
   setCookie( 'access_token', access_token, {
@@ -62,6 +60,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',
   });
-  console.log("Session token set");
+
   return res.status(200).json({ message: 'Session token set' });
 }
