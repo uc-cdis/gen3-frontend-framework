@@ -1,0 +1,45 @@
+{
+    "title": "New Datasets",
+    "introduction": [
+        {
+            "type": "text",
+            "content": "The "
+        },
+        {
+            "type": "boldText",
+            "content": "HEAL Data Platform "
+        },
+        {
+            "type": "text",
+            "content": "connects to HEAL-compliant repositories where data are stored, providing a single point of access to the diverse array of studies and data funded by the NIH HEAL Initiative®. "
+        },
+        {
+            "type": "text",
+            "content": "Here are some of the latest studies to share their data so that they are accessible on the HEAL Data Platform."
+        }
+    ],
+    "sections": [
+        {
+            "cards": [
+                {
+                    "title": "Treating pain in sickle cell disease by means of focused ultrasound neuromodulation",
+                    "content": "BIN HE, CARNEGIE-MELLON UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00009"
+                },
+                {
+                    "title": "Process Development, Manufacturing, and Preclinical Evaluation of a Monoclonal Antibody for Fentanyl Overdose",
+                    "content": "Paul T Bremer, CESSATION THERAPEUTICS, LLC",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00260"
+                },
+                {
+                    "title": "ECHO Administrative Supplement - Neonatal Opioid Trials",
+                    "content": "Laura Kristin NEWBY, Phillip Brian Smith, DUKE UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00635"
+                }
+            ]
+        }
+    ]
+}

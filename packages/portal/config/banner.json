@@ -4,5 +4,11 @@
         "level": "MESSAGE",
         "dismissible": true,
         "id": 0
+    },
+    {
+        "message": "[View the latest studies who have shared their data!](new-datasets)",
+        "level": "MESSAGE",
+        "dismissible": true,
+        "id": 1
     }
 ]
