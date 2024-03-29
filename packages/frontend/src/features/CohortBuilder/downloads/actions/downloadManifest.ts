@@ -76,7 +76,11 @@ export const downloadToManifestAction = async (
       if (resultManifest.length === 0) {
         throw new Error('No data found for the current filters');
       }
-      handleDownload(resultManifest, manifestFilename);
+      const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
+      const blob = new Blob([bytes], {
+        type: "application/json;charset=utf-8"
+      });
+      handleDownload(blob, manifestFilename);
       done && done();
     } catch (err: any) {
       onError && onError(err);
@@ -85,6 +89,7 @@ export const downloadToManifestAction = async (
   }
   // join data from two different indices
 
+  console.log("a join data from two different indices");
   try {
     // get a list of reference IDs from the data index using the current cohort filters
     let refIDList = await downloadJSONDataFromGuppy({
@@ -136,6 +141,8 @@ export const downloadToManifestAction = async (
       signal: signal,
     });
 
+    console.log("first resultManifest", resultManifest);
+
     resultManifest = resultManifest.filter(
       (x: JSONObject) => !!x[resourceIdField],
     );
@@ -145,7 +152,11 @@ export const downloadToManifestAction = async (
         x[resourceIdField] = [x[resourceIdField]];
       }
     });
-    handleDownload(resultManifest, manifestFilename);
+    const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
+    const blob = new Blob([bytes], {
+      type: "application/json;charset=utf-8"
+    });
+    handleDownload(blob, manifestFilename);
     done && done();
   } catch (err: any) {
     onError && onError(err);
