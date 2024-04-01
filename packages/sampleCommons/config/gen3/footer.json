@@ -2,16 +2,10 @@
   "footerRightLogos": [
     [
       {
-        "logo": "/images/gen3.png",
-        "width": 132,
-        "height": 60,
-        "description": "Gen3 Logo"
-      },
-      {
-        "logo": "/images/createdby.png",
-        "width": 170,
-        "height": 60,
-        "description": "Created by CTDS"
+        "logo": "ACED_PARTNERS.jpg",
+        "width": 791,
+        "height": 94,
+        "description": "ACED partners"
       }
     ]
   ]

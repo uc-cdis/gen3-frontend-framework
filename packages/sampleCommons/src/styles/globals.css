@@ -80,6 +80,12 @@
   }
 }
 
+@font-face {
+  font-family: 'FranklinGothic';
+  src: url('/fonts/FranklinGothic.ttf')
+  format('truetype');
+}
+
 .mantine-TableBodyCell-DetailPanel {
   border-color: aqua;
   border-top: hidden;
