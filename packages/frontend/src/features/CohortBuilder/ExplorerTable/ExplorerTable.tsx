@@ -83,7 +83,7 @@ const ExplorerTable = ({
         accessorFn: columnDef?.accessorPath
           ? jsonPathAccessor(columnDef.accessorPath)
           : undefined,
-        Cell:  cellRendererFunc && columnDef?.params ? (cell : CellRendererFunctionProps) => cellRendererFunc(cell , cellRendererFuncParams  ) : cellRendererFunc,
+         Cell:  cellRendererFunc && columnDef?.params ? (cell : CellRendererFunctionProps) => cellRendererFunc(cell , cellRendererFuncParams  ) : cellRendererFunc,
         size: columnDef?.width,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
