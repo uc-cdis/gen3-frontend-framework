@@ -1,5 +1,5 @@
 {
-    "title": "New Datasets",
+    "title": "Recently Added Datasets",
     "introduction": [
         {
             "type": "text",
@@ -20,24 +20,43 @@
     ],
     "sections": [
         {
+            "title" : "Jan - Mar 2024",
             "cards": [
                 {
-                    "title": "Treating pain in sickle cell disease by means of focused ultrasound neuromodulation",
-                    "content": "BIN HE, CARNEGIE-MELLON UNIVERSITY",
+                    "title": "Regulation of neuropathic pain by exercise: effects on nociceptor plasticity and inflammation",
+                    "content": "MEGAN R DETLOFF, DREXEL UNIVERSITY",
                     "linkText": "View Study",
-                    "link": "https://healdata.org/portal/discovery/HDP00009"
+                    "link": "https://healdata.org/portal/discovery/HDP01265"
                 },
                 {
-                    "title": "Process Development, Manufacturing, and Preclinical Evaluation of a Monoclonal Antibody for Fentanyl Overdose",
-                    "content": "Paul T Bremer, CESSATION THERAPEUTICS, LLC",
+                    "title": "Multi-organ human-on-a-chip system to address overdose and acute and chronic efficacy and off-target toxicity",
+                    "content": "James J Hickman, MICHAEL L SHULER, UNIVERSITY OF CENTRAL FLORIDA",
                     "linkText": "View Study",
-                    "link": "https://healdata.org/portal/discovery/HDP00260"
+                    "link": "https://healdata.org/portal/discovery/HDP00054"
                 },
                 {
-                    "title": "ECHO Administrative Supplement - Neonatal Opioid Trials",
-                    "content": "Laura Kristin NEWBY, Phillip Brian Smith, DUKE UNIVERSITY",
+                    "title": "Modeling temporomandibular joint disorders pain: role of transient receptor potential ion channels",
+                    "content": "Yong Chen, DUKE UNIVERSITY",
                     "linkText": "View Study",
-                    "link": "https://healdata.org/portal/discovery/HDP00635"
+                    "link": "https://healdata.org/portal/discovery/HDP00538"
+                },
+                {
+                    "title": "Collaborating to Heal Addiction and Mental Health in Primary care (CHAMP)",
+                    "content": "JOHN C. FORTNEY, Anna  Ratzliff, ANDREW J SAXON, UNIVERSITY OF WASHINGTON",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00201"
+                },
+                {
+                    "title": "Sleep, opiate withdrawal and the N/OFQ - NOP system",
+                    "content": "Michael R Bruchas, Thomas S Kilduff, SRI INTERNATIONAL",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00397"
+                },
+                {
+                    "title": "Improving health and employment outcomes through workplace opioid policies",
+                    "content": "Ann Marie Dale, WASHINGTON UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00331"
                 }
             ]
         }

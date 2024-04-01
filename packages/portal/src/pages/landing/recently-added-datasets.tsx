@@ -2,20 +2,20 @@ import {GetStaticProps} from 'next';
 import ContentSource from '../../lib/content';
 
 import NavPageLayout, { NavPageLayoutProps } from '../../components/Navigation/NavPageLayout';
-import NewDatasetsPageContent, {NewDatasetsPageConfig} from '../../components/Contents/NewDatasetsPageContent';
+import ResourcePageContent, {ResourcePageConfig} from '../../components/Contents/ResourcePageContent';
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 
-interface NewDatasetsPageProps extends NavPageLayoutProps {
-    newDatasetsPageConfig: NewDatasetsPageConfig
+interface ResourcePageProps extends NavPageLayoutProps {
+    resourcePageConfig: ResourcePageConfig
 }
 
-const ResourcePage = ({headerProps, footerProps, newDatasetsPageConfig}: NewDatasetsPageProps) => {
+const ResourcePage = ({headerProps, footerProps, resourcePageConfig}: ResourcePageProps) => {
 
   return (
     <NavPageLayout {...{headerProps, footerProps}}>
       <div className='flex flex-row  justify-items-center'>
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-          <NewDatasetsPageContent {...newDatasetsPageConfig}/>
+          <ResourcePageContent {...resourcePageConfig}/>
         </div>
       </div>
     </NavPageLayout>
@@ -24,13 +24,13 @@ const ResourcePage = ({headerProps, footerProps, newDatasetsPageConfig}: NewData
 
 
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
-export const getStaticProps: GetStaticProps<NewDatasetsPageProps> = async ( ) => {
+export const getStaticProps: GetStaticProps<ResourcePageProps> = async ( ) => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const newDatasetsPageConfig = await ContentSource.get('config/newDatasets.json') as unknown as NewDatasetsPageConfig;
+  const resourcePageConfig = await ContentSource.get('config/newDatasets.json') as unknown as ResourcePageConfig;
   return {
     props: {
       ...navPageLayoutProps,
-      newDatasetsPageConfig
+      resourcePageConfig
     }
   };
 };

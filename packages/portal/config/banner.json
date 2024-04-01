@@ -7,7 +7,7 @@
         "id": 0
     },
     {
-        "message": "[View the latest studies who have shared their data!](new-datasets)",
+        "message": "[View the latest studies who have shared their data!](/landing/recently-added-datasets)",
         "level": "MESSAGE",
         "dismissible": true,
         "isExternalLink": false,
