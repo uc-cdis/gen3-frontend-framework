@@ -23,11 +23,7 @@ const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
   if (Array.isArray(obj))
     return false;
 
-  if (obj !== null && typeof obj === 'object') {
-    return true;
-  }
-
-  return false;
+  return obj !== null && typeof obj === 'object';
 };
 
 interface ExplorerTableProps {
