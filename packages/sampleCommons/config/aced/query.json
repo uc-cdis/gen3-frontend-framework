@@ -1,3 +1,3 @@
 {
-  "graphQLEndpoint": "https://development.compbio.ohsu.edu/guppy/graphql"
+  "graphQLEndpoint": "https://aced-training.compbio.ohsu.edu:3010/guppy/graphql"
 }
