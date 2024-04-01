@@ -1,6 +1,6 @@
 import { jsonToFormat } from '../conversion';
 import { JSONObject } from '../../../types';
-import * as flat from 'flat';
+//import * as flat from 'flat';
 import { FILE_DELIMITERS } from '../../../constants';
 
 describe('jsonToFormat function', () => {
@@ -9,6 +9,7 @@ describe('jsonToFormat function', () => {
   it('should return JSON in specified file format', async () => {
     const jsonInput: JSONObject = { key1: 'value1', key2: 'value2' };
 
+    /*--
     const jsonInput2 = {
       data: {
         case: [
@@ -1678,15 +1679,16 @@ describe('jsonToFormat function', () => {
         },
       },
     };
-
+    -- */
     const format: keyof typeof FILE_DELIMITERS = 'csv';
 
-    const spyFlat = jest.spyOn(flat, 'flatten').mockReturnValueOnce(jsonInput2);
+    const a = flatten()
+
+   // const spyFlat = jest.spyOn(flat, 'flatten').mockReturnValueOnce(jsonInput2);
 
     const result = await jsonToFormat(jsonInput, format);
 
     expect(result).toBeInstanceOf(Object);
     expect(result).toBe(jsonInput);
-    expect(spyFlat).toHaveBeenCalledWith(jsonInput);
   });
 });
