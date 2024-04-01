@@ -5,7 +5,8 @@ import {
   JSONObject,
 } from '@gen3/core';
 import { handleDownload } from './utils';
-
+import { TextEncoder } from 'util';
+global.TextEncoder = TextEncoder;
 
 /**
  * Process the manifest data given the data and the fields to include in the manifest.
@@ -15,7 +16,7 @@ import { handleDownload } from './utils';
  * @param resourceIdField
  * @param manifestFields
  */
-const processManifest = (data: JSONObject[], resourceIdField: string, manifestFields: string[]) => {
+export const processManifest = (data: JSONObject[], resourceIdField: string, manifestFields: string[]) => {
   return data.filter((item) => {
     const hasAllFields = manifestFields.every((field) => {
       return item[field] !== undefined;
@@ -88,8 +89,6 @@ export const downloadToManifestAction = async (
     return;
   }
   // join data from two different indices
-
-  console.log("a join data from two different indices");
   try {
     // get a list of reference IDs from the data index using the current cohort filters
     let refIDList = await downloadJSONDataFromGuppy({
@@ -140,8 +139,6 @@ export const downloadToManifestAction = async (
       onAbort: onAbort,
       signal: signal,
     });
-
-    console.log("first resultManifest", resultManifest);
 
     resultManifest = resultManifest.filter(
       (x: JSONObject) => !!x[resourceIdField],

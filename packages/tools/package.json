@@ -28,7 +28,7 @@
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^11.1.6",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.3",
@@ -36,7 +36,7 @@
     "jest": "^27.3.1",
     "rollup-plugin-executable": "^1.6.3",
     "ts-node": "^10.4.0",
-    "typescript": "5.0.2"
+    "typescript": "^5.4.3"
   },
   "files": [
     "dist"

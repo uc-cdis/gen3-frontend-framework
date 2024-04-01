@@ -16,17 +16,3 @@ loadEnvConfig(__dirname, true, { info: () => null, error: console.error });
 jest.mock('url-join', () => ({
   urlJoin: jest.fn(),
 }));
-
-jest.mock('next/conf.d', () => () => ({
-  publicRuntimeConfig: {
-    basePath: '/v2',
-  },
-}));
-
-jest.mock('dom-to-svg', () => ({
-  elementToSVG: jest.fn(),
-}));
-
-jest.mock('url-join', () => ({
-  urlJoin: jest.fn(),
-}));
