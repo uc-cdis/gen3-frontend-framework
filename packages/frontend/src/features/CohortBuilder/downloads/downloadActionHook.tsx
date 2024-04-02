@@ -1,11 +1,17 @@
-import { useState, useRef, useCallback } from 'react';
-import { hideModal, Modals, showModal, useCoreDispatch } from '@gen3/core';
+import { useState, useCallback } from 'react';
+import { Modals, showModal, useCoreDispatch } from '@gen3/core';
 import { GuppyActionButtonProps } from '../types';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
 import { DownloadNotification } from '../../../utils/download';
 import { Loader } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 import { useDeepCompareCallback } from 'use-deep-compare';
+
+const showErrorMessage = (error: Error) => {
+  showNotification({
+    message: error.message,
+  });
+};
 
 interface GuppyDownloadActionHookProps extends Pick<
   GuppyActionButtonProps,
@@ -104,17 +110,21 @@ const useGuppyActionButton = ({
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
       },
       (error) => {
         handleError(error);
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
+        showErrorMessage(error);
       },
       () => {
         setActive(false);
         setIsActive && setIsActive(false);
         // Clean up notifications...
+        cleanNotifications();
       },
       controller.signal,
     );

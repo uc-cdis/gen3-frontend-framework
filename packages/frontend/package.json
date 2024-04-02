@@ -117,6 +117,8 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@svgr/webpack": "^8.1.0",
+    "@swc/core": "^1.4.11",
+    "@swc/jest": "^0.2.36",
     "@testing-library/user-event": "^14.5.2",
     "@types/color": "^3.0.3",
     "@types/estree": "^1.0.0",

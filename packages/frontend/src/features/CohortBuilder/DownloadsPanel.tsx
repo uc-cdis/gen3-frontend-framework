@@ -61,7 +61,6 @@ const createDownloadMenuButton = (
       ),
       rightSection: button?.rightIcon ? <Icon icon={button.rightIcon} /> : null,
       actionFunction: actionFunction,
-      type: button.type,
       actionArgs: {
         ...args,
         ...actionArgs,

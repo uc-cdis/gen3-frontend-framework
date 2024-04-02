@@ -45,7 +45,7 @@ interface ExplorerColumn {
 }
 
 /**
- * Main table componenet for the explorer page. Fetches data from guppy using
+ * Main table component for the explorer page. Fetches data from guppy using
  * useGetRawDataAndTotalCountsQuery() hook that leverages guppy core API slices
  *
  * @param index - Offset to use for fetching/displaying pages of rows
