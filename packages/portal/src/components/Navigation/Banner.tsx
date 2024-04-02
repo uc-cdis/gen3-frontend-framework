@@ -60,8 +60,8 @@ export const Banner: React.FC<BannerProps> = ({
             components={{
               // eslint-disable-next-line react/prop-types
               a: ({ children, ...props }) => (
-                  <a className='underline' {...props} target={linkTarget} rel='noreferrer'>
-                    {children}
+                <a className='underline' {...props} target={linkTarget} rel='noreferrer'>
+                  {children}
                   {isExternalLink && <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>}
                 </a>
               ),
