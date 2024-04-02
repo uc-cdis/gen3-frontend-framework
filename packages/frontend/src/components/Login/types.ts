@@ -15,7 +15,6 @@ export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {
   showCredentialsLogin?: boolean;
 }
 
-export interface LoginRedirectProps {
-  readonly redirectURL?: string;
-  readonly handleLoginSelected: (_arg0: string, _arg1?: string) => void;
+export interface LoginSelectedProps {
+  readonly handleLoginSelected: (_url: string) => void;
 }

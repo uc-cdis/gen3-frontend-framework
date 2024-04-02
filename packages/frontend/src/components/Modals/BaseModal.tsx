@@ -108,9 +108,13 @@ export const BaseModal= ({
           onClose();
         }
       }}
-      styles={() => ({
+      styles={(theme) => ({
         header: {
-          marginBottom: '5px',
+          fontWeight: 600,
+          paddingBottom: '2.5em',
+          marginBottom: '2em',
+          backgroundColor: theme.colors.primary[5],
+          color: theme.colors['primary-contrast'][0],
         },
         close: {
           color: 'base-darker',

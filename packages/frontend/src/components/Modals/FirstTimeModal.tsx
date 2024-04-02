@@ -2,27 +2,31 @@ import { Text } from '@mantine/core';
 import { useCookies } from 'react-cookie';
 import { BaseModal } from './BaseModal';
 import TextContent, { TextContentProps } from '../Content/TextContent';
+import { FirstTimeModalConfig } from './types';
+import { first } from 'lodash';
 
 interface FirstTimeModalProps {
   readonly openModal: boolean;
-  content: TextContentProps;
+  config: FirstTimeModalConfig;
 }
 
 export const FirstTimeModal = ({
   openModal,
-  content,
+  config,
 }: FirstTimeModalProps ): JSX.Element => {
-  const [cookie, setCookie] = useCookies(['Gen3-First-Time-Use']);
+  const [cookie, setCookie] = useCookies(['Gen3-first-time-use']);
 
   const handleAccept = () => {
-    cookie['Gen3-First-Time-Use'] || setCookie('Gen3-First-Time-Use', true);
+    cookie['Gen3-first-time-use'] || setCookie('Gen3-first-time-use', true, {
+      maxAge: 60 * 60 * 24 * (config?.expireDays ?? 365),
+    });
   };
 
   return (
     <BaseModal
       title={
         <Text size="lg" className="font-medium font-heading">
-          Warning
+          {config.title ?? 'Welcome to Gen3'}
         </Text>
       }
       openModal={openModal}
@@ -40,7 +44,7 @@ export const FirstTimeModal = ({
       closeOnEscape={false}
     >
       <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
-        <TextContent key={'first_time_use_modal'} {...content} />
+        <TextContent key={'first_time_use_modal'} {...config.content} />
       </div>
     </BaseModal>
   );

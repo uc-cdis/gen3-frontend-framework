@@ -13,7 +13,7 @@ export const GEN3_DOWNLOADS_ENDPOINT = process.env.NEXT_PUBLIC_GEN3_DOWNLOADS_EN
 export const GEN3_FENCE_API = process.env.NEXT_PUBLIC_GEN3_FENCE_API || GEN3_API;
 export const GEN3_AI_SEARCH_API = process.env.NEXT_PUBLIC_GEN3_AI_SEARCH_API || `${GEN3_API}/ai-search`;
 export const GEN3_AUTHZ_API = process.env.NEXT_PUBLIC_GEN3_AUTHZ_API || `${GEN3_API}/authz`;
-export const GEN3_REDIRECT_URL = process.env.NEXT_PUBLIC_GEN3_REDIRECT_URL || `${GEN3_API}`;
+export const GEN3_REDIRECT_URL = process.env.NEXT_PUBLIC_GEN3_REDIRECT_URL || null;
 export const GEN3_WORKSPACE_STATUS_API = process.env.NEXT_PUBLIC_GEN3_WORKSPACE_STATUS_API || `${GEN3_API}/lw-workspace`;
 
 export enum Accessibility {

@@ -13,8 +13,11 @@ import { MdClose as CloseIcon } from 'react-icons/md';
 import { SessionContext } from '../../lib/session/session';
 
 
+interface CredentialsLoginProps {
+  handleLogin: () => void;
+}
 
-const CredentialsLogin = () => {
+const CredentialsLogin = ({ handleLogin } : CredentialsLoginProps) => {
 
   const sessionContext = useContext(SessionContext);
   const [credentials, setCredentials] = useState<string | null>(null);
@@ -44,7 +47,8 @@ const CredentialsLogin = () => {
       });
       updateSession();
       setIsCredentialsLogin(true);
-      // handleLoginSelected(GEN3_REDIRECT_URL, 'Profile');
+      handleLogin();
+
     } catch (e) {
       notifications.show({
         title: 'Format Error',

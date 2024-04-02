@@ -6,6 +6,17 @@ import LoginProvidersPanel from './LoginProvidersPanel';
 import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
+import { GEN3_REDIRECT_URL } from '@gen3/core';
+
+const filterRedirect = (redirect: string | string[] | undefined) => {
+  let redirectPath  = '';
+  if (Array.isArray(redirect)) {
+    redirectPath =   redirect[0];
+  } else {
+    redirectPath = redirect ?? '/';
+  }
+  return GEN3_REDIRECT_URL ? `${GEN3_REDIRECT_URL}/${redirectPath}` : redirectPath;
+};
 
 const LoginPanel = (loginConfig: LoginConfig) => {
   const { image, topContent, bottomContent } = loginConfig;
@@ -15,20 +26,21 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     query: { redirect },
   } = router;
 
- const redirectURL = redirect;
 
-  const handleLoginSelected = useCallback( async (url: string, redirect?: string) => {
+  const handleFenceLoginSelected = useCallback( async (loginURL: string) => {
      router
-      .push(
-          (redirect ? `${url}/${redirect}` : '/'),
-      )
+      .push(`${loginURL}?redirect=${filterRedirect(redirect)}`)
       .catch((e) => {
         showNotification({
           title: 'Login Error',
           message: `error logging in ${e.message}`,
         });
       });
-  }, [router]);
+  }, [redirect, router]);
+
+  const handleCredentialsLogin = useCallback( async () => {
+    router.push(filterRedirect(redirect));
+  }, [redirect, router]);
 
   return (
     <div className="grid grid-cols-6 w-full">
@@ -40,11 +52,11 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
 
         <LoginProvidersPanel
-          handleLoginSelected={handleLoginSelected}
-          redirectURL={redirectURL as string | undefined}
+          handleLoginSelected={handleFenceLoginSelected}
         />
 
-        { loginConfig?.showCredentialsLogin && <CredentialsLogin />}
+        { loginConfig?.showCredentialsLogin &&
+          <CredentialsLogin handleLogin={handleCredentialsLogin}/>}
 
         {bottomContent?.map((content, index) => (
           <TextContent {...content} key={index} />
