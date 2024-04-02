@@ -41,12 +41,14 @@ const icon = {
   ),
 };
 
+
+
 export const Banner: React.FC<BannerProps> = ({
   message,
   level,
   isExternalLink
 }: BannerProps) => {
-
+  const linkTarget = isExternalLink ? '_target': '_self';
   return (
     <div
       className={`w-full p-1 flex justify-between ${backgroundColor[level]}`}
@@ -58,7 +60,8 @@ export const Banner: React.FC<BannerProps> = ({
             components={{
               // eslint-disable-next-line react/prop-types
               a: ({ children, ...props }) => (
-                <a className='underline' {...props} target='_blank' rel='noreferrer'>
+
+                  <a className='underline' {...props} target={linkTarget} rel='noreferrer'>
                   {children}
                   { isExternalLink && <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>}
                 </a>
