@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist/dts",
+    "outDir": "test/dts",
     "lib": ["dom", "dom.iterable", "esnext"],
     "declarationMap": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
     "allowJs": true,
-    "moduleResolution": "node",
+    "module": "nodenext",
     "skipLibCheck": true,
+    "strictNullChecks": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -16,7 +16,7 @@
     "jsx": "react-jsx",
     "resolveJsonModule": true,
     "incremental": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
