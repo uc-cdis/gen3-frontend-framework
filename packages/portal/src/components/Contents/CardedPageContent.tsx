@@ -5,7 +5,7 @@ import CardGrid, { CardGridItem } from '../CardGrid';
 import MultiPartText, { MultiPartTextPart } from '../MultiPartText';
 
 
-export interface ResourcePageConfig {
+export interface CardedPageConfig {
     readonly title: string;
     readonly introduction: ReadonlyArray<MultiPartTextPart>;
     readonly sections: ReadonlyArray<{
@@ -15,7 +15,7 @@ export interface ResourcePageConfig {
 
 
 
-const ResourcePageContent = ({title, introduction, sections}: ResourcePageConfig) => {
+const CardedPageContent = ({title, introduction, sections}: CardedPageConfig) => {
   return (
     <React.Fragment>
       <div className='py-10 text-sm px-10'>
@@ -48,4 +48,4 @@ const ResourcePageContent = ({title, introduction, sections}: ResourcePageConfig
   );
 };
 
-export default ResourcePageContent;
+export default CardedPageContent;

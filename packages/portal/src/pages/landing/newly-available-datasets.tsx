@@ -6,16 +6,16 @@ import CardedPageContent, {CardedPageConfig} from '../../components/Contents/Car
 import { getNavPageLayoutPropsFromConfig } from '../../common/staticProps';
 
 interface ResourcePageProps extends NavPageLayoutProps {
-    resourcePageConfig: CardedPageConfig
+    newDatasetsPageConfig: CardedPageConfig
 }
 
-const ResourcePage = ({headerProps, footerProps, resourcePageConfig}: ResourcePageProps) => {
+const ResourcePage = ({headerProps, footerProps, newDatasetsPageConfig}: ResourcePageProps) => {
 
   return (
     <NavPageLayout {...{headerProps, footerProps}}>
       <div className='flex flex-row  justify-items-center'>
         <div className='sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20'>
-          <CardedPageContent {...resourcePageConfig}/>
+          <CardedPageContent {...newDatasetsPageConfig}/>
         </div>
       </div>
     </NavPageLayout>
@@ -26,11 +26,11 @@ const ResourcePage = ({headerProps, footerProps, resourcePageConfig}: ResourcePa
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps<ResourcePageProps> = async ( ) => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const resourcePageConfig = await ContentSource.get('config/resource.json') as unknown as CardedPageConfig;
+  const newDatasetsPageConfig = await ContentSource.get('config/newDatasets.json') as unknown as CardedPageConfig;
   return {
     props: {
       ...navPageLayoutProps,
-      resourcePageConfig
+      newDatasetsPageConfig
     }
   };
 };

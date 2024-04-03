@@ -1,0 +1,64 @@
+{
+    "title": "Newly Available Datasets",
+    "introduction": [
+        {
+            "type": "text",
+            "content": "The "
+        },
+        {
+            "type": "boldText",
+            "content": "HEAL Data Platform "
+        },
+        {
+            "type": "text",
+            "content": "connects to HEAL-compliant repositories where data are stored, providing a single point of access to the diverse array of studies and data funded by the NIH HEAL Initiative®. "
+        },
+        {
+            "type": "text",
+            "content": "Here are some of the latest studies to share their data so that they are accessible on the HEAL Data Platform."
+        }
+    ],
+    "sections": [
+        {
+            "title" : "Jan - Mar 2024",
+            "cards": [
+                {
+                    "title": "Regulation of neuropathic pain by exercise: effects on nociceptor plasticity and inflammation",
+                    "content": "MEGAN R DETLOFF, DREXEL UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP01265"
+                },
+                {
+                    "title": "Multi-organ human-on-a-chip system to address overdose and acute and chronic efficacy and off-target toxicity",
+                    "content": "James J Hickman, MICHAEL L SHULER, UNIVERSITY OF CENTRAL FLORIDA",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00054"
+                },
+                {
+                    "title": "Modeling temporomandibular joint disorders pain: role of transient receptor potential ion channels",
+                    "content": "Yong Chen, DUKE UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00538"
+                },
+                {
+                    "title": "Collaborating to Heal Addiction and Mental Health in Primary care (CHAMP)",
+                    "content": "JOHN C. FORTNEY, Anna  Ratzliff, ANDREW J SAXON, UNIVERSITY OF WASHINGTON",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00201"
+                },
+                {
+                    "title": "Sleep, opiate withdrawal and the N/OFQ - NOP system",
+                    "content": "Michael R Bruchas, Thomas S Kilduff, SRI INTERNATIONAL",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00397"
+                },
+                {
+                    "title": "Improving health and employment outcomes through workplace opioid policies",
+                    "content": "Ann Marie Dale, WASHINGTON UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00331"
+                }
+            ]
+        }
+    ]
+}

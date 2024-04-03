@@ -10,6 +10,7 @@ export interface BannerProps {
   readonly message: string;
   readonly level: 'INFO' | 'WARNING' | 'ERROR';
   readonly dismissible: boolean;
+  readonly isExternalLink: boolean;
   readonly id: number;
 }
 
@@ -40,11 +41,14 @@ const icon = {
   ),
 };
 
+
+
 export const Banner: React.FC<BannerProps> = ({
   message,
   level,
+  isExternalLink
 }: BannerProps) => {
-
+  const linkTarget = isExternalLink ? '_blank': '_self';
   return (
     <div
       className={`w-full p-1 flex justify-between ${backgroundColor[level]}`}
@@ -56,9 +60,9 @@ export const Banner: React.FC<BannerProps> = ({
             components={{
               // eslint-disable-next-line react/prop-types
               a: ({ children, ...props }) => (
-                <a className='underline' {...props} target='_blank' rel='noreferrer'>
+                <a className='underline' {...props} target={linkTarget} rel='noreferrer'>
                   {children}
-                  <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>
+                  {isExternalLink && <FaExternalLinkAlt className='pl-1 inline-block' title='External Link'/>}
                 </a>
               ),
             }}
