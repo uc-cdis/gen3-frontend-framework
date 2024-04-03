@@ -48,7 +48,7 @@ export const Banner: React.FC<BannerProps> = ({
   level,
   isExternalLink
 }: BannerProps) => {
-  const linkTarget = isExternalLink ? '_target': '_self';
+  const linkTarget = isExternalLink ? '_blank': '_self';
   return (
     <div
       className={`w-full p-1 flex justify-between ${backgroundColor[level]}`}
