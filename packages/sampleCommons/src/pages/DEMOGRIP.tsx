@@ -99,7 +99,7 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await gripApiFetch({
+        const result = await gripApiFetch('graphql/synthea', {
           query: query,
           variables: variables
         });

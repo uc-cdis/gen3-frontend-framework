@@ -26,7 +26,13 @@
       {
         "icon": "gen3:exploration",
         "href": "/DEMOGRIP",
-        "name": "GRIP",
+        "name": "GRIPCHART",
+        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
+        "icon": "gen3:exploration",
+        "href": "/GRIPREF",
+        "name": "GRIPREF",
         "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
       },
       {
