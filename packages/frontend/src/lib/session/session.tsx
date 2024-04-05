@@ -5,21 +5,17 @@ import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
   useCoreDispatch,
-   useCoreSelector, type CoreState,
-  showModal, Modals, useLazyFetchUserDetailsQuery,
-  selectUserAuthStatus,
-  GEN3_REDIRECT_URL, GEN3_FENCE_API,
+  logoutFence,
+  selectCurrentModal, useCoreSelector, type CoreState,
+  showModal, Modals, GEN3_REDIRECT_URL,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
-import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  //TODO - investigate why this is not working
- // await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
-  await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
+  await fetch('/api/auth/sessionLogout');
 };
 
 function useOnline() {
@@ -98,9 +94,8 @@ export const useIsAuthenticated = () => {
 export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
 
-   await logoutSession();
-  //router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
-  //await router.push('/');
+  await logoutSession();
+  router.push("/");
 };
 
 const refreshSession = (getUserDetails : ()=>void,

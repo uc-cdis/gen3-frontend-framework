@@ -1,24 +1,24 @@
 import React, { useContext } from 'react';
 import { UnstyledButton, Tooltip } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation'
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import { SessionContext } from '../../lib/session/session';
-import { type CoreState, selectUserAuthStatus, useCoreSelector, isAuthenticated } from '@gen3/core';
-import { TooltipStyle } from '../../features/Navigation/style';
-
+import {  useIsAuthenticated, useSession } from '../../lib/session/session';
+import { SessionContext, logoutUser } from '../../lib/session/session';
 
 const handleSelected = async (
   isAuthenticated: boolean,
   router: NextRouter,
   referrer: string,
-  endSession?: ()  => void,
+  isCredentialsLogin = false,
 
 ) => {
   if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
-    endSession && endSession();
-    await router.push(referrer);
+    if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
+    else {
+      await logoutUser(router);
+    }
   }
 };
 
@@ -40,10 +40,11 @@ const LoginButton = ({
 
   const pathname = usePathname();
 
-  const { endSession } = useContext(SessionContext) ?? { endSession: undefined };
+  const { isCredentialsLogin } = useContext(SessionContext) ?? {
+    isCredentialsLogin: false,
+  };
 
-  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
-  const authenticated = isAuthenticated(userStatus);
+  const { isAuthenticated } = useIsAuthenticated();
   return (
     <Tooltip label={tooltip} position="bottom" withArrow
              multiline
@@ -52,7 +53,7 @@ const LoginButton = ({
              classNames={TooltipStyle}>
     <UnstyledButton
       onClick={() =>
-        handleSelected(authenticated, router, pathname, endSession)
+        handleSelected(isAuthenticated, router, pathname, isCredentialsLogin)
       }
     >
       <div
