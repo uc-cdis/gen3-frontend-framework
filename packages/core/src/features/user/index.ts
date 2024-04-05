@@ -12,14 +12,7 @@ import {
 
 import {
   useFetchUserDetailsQuery,
-  useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus,
-  useGetCSRFQuery,
-  selectCSRFToken,
-  selectCSRFTokenData,
-  selectHeadersWithCSRFToken,
-  type CSRFToken,
+  useLazyFetchUserDetailsQuery
 } from './userSliceRTK';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
@@ -40,14 +33,5 @@ export {
   type LoginStatus,
   type UserProfile,
   useFetchUserDetailsQuery,
-  useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus,
-  useGetCSRFQuery,
-  selectCSRFToken,
-  selectCSRFTokenData,
-  selectHeadersWithCSRFToken,
-  type CSRFToken,
-  type ExternalProvider,
-  type NamedURL
+  useLazyFetchUserDetailsQuery
 };

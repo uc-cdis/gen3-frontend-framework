@@ -33,12 +33,8 @@ const getModal = (
       res = config.systemUseModal?.enabled ? (
         <FirstTimeModal openModal={true} config={config.systemUseModal} />
       ) : null;
-      break;
-    }
-    case Modals.SessionExpireModal: {
-        res = (<SessionExpiredModal openModal={true} />);
-      break;
-      }
+    case Modals.SessionExpireModal:
+        res = <SessionExpiredModal openModal={true} />
   }
   return res;
 };
