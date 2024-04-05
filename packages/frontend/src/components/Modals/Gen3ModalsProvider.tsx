@@ -9,6 +9,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
+import { SessionExpiredModal } from './SessionExpiredModal';
 import { ModalsConfig } from './types';
 import { defaultComposer } from 'default-composer';
 import { ContentType } from '../Content/TextContent';
@@ -30,6 +31,8 @@ const getModal = (
       res = config.systemUseModal?.enabled ? (
         <FirstTimeModal openModal={true} config={config.systemUseModal} />
       ) : null;
+    case Modals.SessionExpireModal:
+        res = <SessionExpiredModal openModal={true} />
   }
   return res;
 };
@@ -64,6 +67,7 @@ const Gen3ModalsProvider = ({
     [],
   );
   const { isAuthenticated } = useIsAuthenticated();
+
   useDeepCompareEffect(() => {
     if (!cookie['Gen3-first-time-use'] && modalsConfig.systemUseModal.enabled) {
       if (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)

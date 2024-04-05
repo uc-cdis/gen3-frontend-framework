@@ -6,11 +6,18 @@ import {
   fetchUserState,
   CoreDispatch,
   useCoreDispatch,
-  GEN3_FENCE_API,
+  logoutFence,
+  selectCurrentModal, useCoreSelector, type CoreState,
+  showModal, Modals, GEN3_REDIRECT_URL,
 } from '@gen3/core';
+import { usePathname } from 'next/navigation';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+
+export const logoutSession = async () => {
+  await fetch('/api/auth/sessionLogout');
+};
 
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
@@ -80,9 +87,11 @@ export const useIsAuthenticated = () => {
   };
 };
 
-const logoutUser = (router: NextRouter) => {
+export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
-  router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
+
+  await logoutSession();
+  router.push("/");
 };
 
 const refreshSession = (dispatch: CoreDispatch,
@@ -163,6 +172,12 @@ export const SessionProvider = ({
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
+  const modal = useCoreSelector((state: CoreState) =>
+    selectCurrentModal(state),
+  );
+
+  const pathname = usePathname();
+
   const [
     mostRecentSessionRefreshTimestamp,
     setMostRecentSessionRefreshTimestamp,
@@ -215,6 +230,7 @@ export const SessionProvider = ({
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
           !isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
           return;
         }
@@ -222,6 +238,7 @@ export const SessionProvider = ({
           workspaceInactivityTimeLimitMilliseconds > 0  && timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
           isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
           return;
         }

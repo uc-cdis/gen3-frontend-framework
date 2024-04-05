@@ -46,6 +46,7 @@ import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
+import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 
@@ -76,6 +77,7 @@ export {
   WorkspacesPageGetServerSideProps,
   Custom404Page,
   sessionToken,
+  sessionLogout,
   credentialsLogin,
   credentialsLogout
 };

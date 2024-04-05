@@ -86,11 +86,10 @@ const slice = createSlice({
     builder
       .addCase(fetchUserState.fulfilled, (_, action) => {
         const response = action.payload;
-        if (response.errors) {
+        if (response.status !== 200) {
           return {
             status: 'rejected',
             loginStatus: 'unauthenticated',
-            error: response.errors.filters,
           };
         }
 

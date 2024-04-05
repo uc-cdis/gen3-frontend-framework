@@ -12,6 +12,11 @@ import {
   type Gen3User,
 } from './userSlice';
 
+import {
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery
+} from './userSliceRTK';
+
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
 import { UserProfile } from './types';
 
@@ -29,4 +34,6 @@ export {
   type Gen3User,
   type LoginStatus,
   type UserProfile,
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery
 };

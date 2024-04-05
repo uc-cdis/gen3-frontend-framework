@@ -44,3 +44,7 @@ export interface UserProfile {
   idp: string;
   azp: string[] | null;
 }
+
+export type Gen3User = Partial<UserProfile>;
+
+export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';

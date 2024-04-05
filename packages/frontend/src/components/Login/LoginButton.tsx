@@ -1,23 +1,24 @@
 import React, { useContext } from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
+import { usePathname } from 'next/navigation'
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '@gen3/core';
-import { useIsAuthenticated } from '../../lib/session/session';
-import { SessionContext } from '../../lib/session/session';
+import {  useIsAuthenticated, useSession } from '../../lib/session/session';
+import { SessionContext, logoutUser } from '../../lib/session/session';
 
 const handleSelected = async (
   isAuthenticated: boolean,
   router: NextRouter,
+  referrer: string,
   isCredentialsLogin = false,
+
 ) => {
-  if (!isAuthenticated) await router.push('Login');
+  if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
     if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
-    else
-      await router.push(
-        `${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`,
-      );
+    else {
+      await logoutUser(router);
+    }
   }
 };
 
@@ -34,17 +35,17 @@ const LoginButton = ({
 }: LoginButtonProps) => {
   const router = useRouter();
 
+  const pathname = usePathname();
+
   const { isCredentialsLogin } = useContext(SessionContext) ?? {
     isCredentialsLogin: false,
   };
 
   const { isAuthenticated } = useIsAuthenticated();
-
-  // TODO add referring page to redirect to after login
   return (
     <UnstyledButton
       onClick={() =>
-        handleSelected(isAuthenticated, router, isCredentialsLogin)
+        handleSelected(isAuthenticated, router, pathname, isCredentialsLogin)
       }
     >
       <div

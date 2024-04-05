@@ -1,6 +1,6 @@
 import { gen3Api } from '../gen3';
-import { Gen3Response } from '../../dataAccess';
-import { GEN3_FENCE_API } from '../../constants';
+import { JSONObject } from '../../types';
+import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '../../constants';
 
 export interface NameUrl {
   readonly name: string;
@@ -39,20 +39,16 @@ export const { useGetLoginProvidersQuery } = loginProvidersApi;
 
 export interface FetchRequest {
   readonly endpoint: string;
-  readonly method: 'GET' | 'POST';
+  readonly method?: 'GET' | 'POST';
   readonly body?: object;
   readonly headers?: Record<string, string>;
-  readonly csrfToken?: string;
+  readonly isJSON?: boolean;
 }
 
-export interface Gen3FenceRequest {
-  readonly hostname: string;
-  readonly endpoint: string;
-  readonly method: 'GET' | 'POST';
-  readonly body?: object;
+export interface Gen3FenceResponse<H = JSONObject | string> {
+  readonly data: H;
+  readonly status: number; // HTTP Status code
 }
-
-export type Gen3FenceResponse<H> = Gen3Response<H>;
 
 export interface FetchError<T> {
   readonly url: string;
@@ -64,7 +60,7 @@ export interface FetchError<T> {
 
 /**
  * Template for fence error response dict
- * @returns: An error dict reponse from a RESTFUL API request
+ * @returns: An error dict response from a RESTFUL API request
  */
 const buildFetchError = async <T>(
   res: Response,
@@ -84,14 +80,39 @@ const buildFetchError = async <T>(
  * @returns: response data
  */
 export const fetchFence = async <T>(
-  request: FetchRequest,
-): Promise<Gen3FenceResponse<T>> => {
-  const res = await fetch(`${GEN3_FENCE_API}${request.endpoint}`, {
-    method: request.method,
-    headers: request.headers,
-    body: 'POST' === request.method ? JSON.stringify(request.body) : null,
-  });
-  if (res.ok) return { data: await res.json() };
+  {
+    endpoint,
+    headers,
+    body = { },
+    method = 'GET',
+    isJSON = true
+  }: FetchRequest,
 
-  throw await buildFetchError(res, request);
+): Promise<Gen3FenceResponse<T>> => {
+  const res = await fetch(`${GEN3_FENCE_API}${endpoint}`, {
+    method: method,
+    headers: headers,
+    body: 'POST' === method ? JSON.stringify(body) : null,
+  });
+  if (res.ok) return {
+    data: isJSON ? await res.json() : await res.text(),
+    status: res.status,
+  };
+
+  throw await buildFetchError(res, {
+    endpoint,
+    method,
+    headers,
+    body,
+  });
 };
+
+/**
+ * Logout from fence
+ */
+
+export const logoutFence = async (redirect = '/') =>
+  await fetchFence({
+    endpoint: `/user/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
+    method: 'GET',
+  });

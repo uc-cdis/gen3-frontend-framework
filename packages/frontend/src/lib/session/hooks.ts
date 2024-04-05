@@ -6,7 +6,7 @@ import { decodeJwt } from 'jose';
 import {
   isExpired,
   JWTPayloadAndUser,
-} from '../../pages/api/auth/sessionToken';
+} from '../../api/auth/sessionToken';
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<AuthTokenData>);
