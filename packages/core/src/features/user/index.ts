@@ -12,9 +12,7 @@ import {
 
 import {
   useFetchUserDetailsQuery,
-  useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus,
+  useLazyFetchUserDetailsQuery
 } from './userSliceRTK';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
@@ -35,7 +33,5 @@ export {
   type LoginStatus,
   type UserProfile,
   useFetchUserDetailsQuery,
-  useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus
+  useLazyFetchUserDetailsQuery
 };
