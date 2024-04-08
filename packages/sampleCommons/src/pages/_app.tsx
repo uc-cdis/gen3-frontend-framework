@@ -13,7 +13,15 @@ import '../styles/globals.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'graphiql/graphiql.css';
 import '@graphiql/react/dist/style.css';
-import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
+import { setDRSHostnames } from '@gen3/core';
+//import dynamic from 'next/dynamic';
+
+//const sessionConfig = dynamic(() =>  import('../../config/session.json'));
+//const modalsConfig = dynamic(() => import('../../config/modals.json'));
+//const drsHostnames = dynamic(() => import('../../config/drsHostnames.json'));
+
+import sessionConfig from '../../config/session.json';
+import modalsConfig from '../../config/modals.json';
 import drsHostnames from '../../config/drsHostnames.json';
 
 interface Gen3AppProps {
@@ -48,67 +56,4 @@ const Gen3App = ({
       <Component {...pageProps} />
     </Gen3Provider>
   );
-};
-
-// TODO: replace with page router
-Gen3App.getInitialProps = async (
-  context: AppContext,
-): Promise<Gen3AppProps & AppInitialProps> => {
-  const ctx = await App.getInitialProps(context);
-
-  try {
-    const modals = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/modals.json`,
-    );
-    const session = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/session.json`,
-    );
-
-    const fonts = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeFonts.json`,
-    );
-
-    const themeColors = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeColors.json`,
-    );
-
-    const colors = Object.fromEntries(
-      Object.entries(themeColors).map(([key, values]) => [
-        key,
-        Object.values(values) as TenStringArray,
-      ]),
-    );
-
-    const icons = await ContentSource.get('config/icons/gen3.json');
-    return {
-      ...ctx,
-      modalsConfig: modals,
-      sessionConfig: session,
-      themeFonts: fonts as Fonts,
-      colors: colors,
-      icons: icons as RegisteredIcons,
-    };
-  } catch (error: any) {
-    console.error('Provider Wrapper error loading config', error.toString());
-  }
-  // return default
-  return {
-    ...ctx,
-    colors: {},
-    themeFonts: {
-      heading: ['Poppins', 'sans-serif'],
-      content: ['Poppins', 'sans-serif'],
-      fontFamily: 'Poppins',
-    },
-    icons: {
-      prefix: 'gen3',
-      lastModified: 0,
-      icons: {},
-      width: 0,
-      height: 0,
-    },
-    modalsConfig: {},
-    sessionConfig: {},
-  };
-};
-export default Gen3App;
+}

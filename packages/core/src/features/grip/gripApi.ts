@@ -1,6 +1,5 @@
 import { JSONObject } from '../../types';
 import { GEN3_GRIP_API } from '../../constants'
-
 export interface gripApiResponse<H = JSONObject> {
   readonly data: H;
 }
@@ -13,10 +12,12 @@ export interface gripApiSliceRequest {
 export const gripApiFetch = async <T>(
   query: gripApiSliceRequest
 ): Promise<gripApiResponse<T>> => {
-  const res = await fetch(`${GEN3_GRIP_API}/graphql`, {
+  //console.log("VARIABLES: ", query.variables)
+
+  const res = await fetch(`${GEN3_GRIP_API}/${endpoint_arg}`, {
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },
     method: 'POST',
