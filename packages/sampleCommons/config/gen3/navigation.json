@@ -52,8 +52,8 @@
   "topBar": {
     "items": [
       {
-        "href": "https://gen3.org/resources/user/",
-        "name": "Documentation"
+        "href": "https://www.cancerresearchuk.org/funding-for-researchers/research-opportunities-in-early-detection-and-diagnosis/international-alliance-for-cancer-early-detection",
+        "name": "ACED"
       }
     ],
     "showLogin": true

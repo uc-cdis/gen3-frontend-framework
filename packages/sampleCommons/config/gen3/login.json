@@ -1,11 +1,15 @@
 {
   "topContent": [
     {
-      "text": "Gen3 Data Commons",
+      "text": "ACED",
       "className": "text-center text-3xl font-bold"
     },
     {
       "text": "DISCOVER, ANALYZE, AND SHARE DATA",
+      "className": "text-center text-xl font-medium"
+    },
+    {
+      "text": "We are uniting world leading researchers to tackle the biggest challenges in early detection, an important area of unmet clinical need. Scientists in the Alliance are working together at the forefront of technological innovation to translate research into realistic ways to improve cancer diagnosis, which can be implemented into health systems and meaningfully benefit people with cancer.",
       "className": "text-center text-xl font-medium"
     }
   ],
