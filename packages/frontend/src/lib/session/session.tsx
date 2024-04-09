@@ -8,7 +8,7 @@ import {
   useCoreDispatch,
   logoutFence,
   selectCurrentModal, useCoreSelector, type CoreState,
-  showModal, Modals, GEN3_REDIRECT_URL,
+  showModal, Modals, useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
 
@@ -94,7 +94,7 @@ export const logoutUser = async (router: NextRouter) => {
   router.push("/");
 };
 
-const refreshSession = (dispatch: CoreDispatch,
+const refreshSession = (getUserDetails : ()=>void,
                         mostRecentSessionRefreshTimestamp:number,
                         updateSessionRefreshTimestamp: (arg0:number)=>void ) : void => {
   const timeSinceLastSessionUpdate =
@@ -106,7 +106,7 @@ const refreshSession = (dispatch: CoreDispatch,
 
   // hitting Fence endpoint refreshes token
   updateSessionRefreshTimestamp(Date.now());
-  dispatch(fetchUserState());
+  getUserDetails();
 };
 
 
@@ -169,6 +169,8 @@ export const SessionProvider = ({
   );
   const [pending, setPending] = useState(session ? false : true);
 
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery();
+
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -177,6 +179,9 @@ export const SessionProvider = ({
   );
 
   const pathname = usePathname();
+
+  console.log("session");
+
 
   const [
     mostRecentSessionRefreshTimestamp,
@@ -232,6 +237,7 @@ export const SessionProvider = ({
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
         if (
@@ -240,11 +246,12 @@ export const SessionProvider = ({
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
       }
       // fetching a userState will renew the session
-      refreshSession(coreDispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
+      refreshSession(getUserDetails, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
       updateSession();
 
   }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );

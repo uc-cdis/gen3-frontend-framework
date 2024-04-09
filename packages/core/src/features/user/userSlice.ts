@@ -9,10 +9,10 @@ import {
 } from '../../dataAccess';
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { UserProfile } from './types';
+import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
 
-export type Gen3User = Partial<UserProfile>;
+
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
@@ -53,7 +53,6 @@ export const fetchUserState = createAsyncThunk<
   });
 });
 
-export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
 
 export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
   loginStatus === 'authenticated';
