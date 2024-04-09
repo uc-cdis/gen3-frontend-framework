@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Paper, Grid, Mark } from '@mantine/core';
+import { Text, Paper, Grid } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
@@ -11,14 +11,36 @@ import {guppyAPIFetch} from '@gen3/core';
 import { GetServerSideProps } from 'next';
 import {useState, useEffect} from 'react';
 
-const DataComponent = ({ data }) => {
+interface Item {
+  id: string;
+  subject: string;
+}
+
+interface DataComponentProps {
+  data: Item[];
+}
+
+interface FileQueryResult {
+  file: Item[];
+}
+
+interface GuppyAPIFetchResult {
+  data: FileQueryResult;
+}
+
+interface SamplePageProps {
+  headerProps: any; // Adjust the type according to your actual props
+  footerProps: any; // Adjust the type according to your actual props
+}
+
+const DataComponent = ({ data }: DataComponentProps) => {
   return (
     <Grid>
       {data.map((item) => (
         <Grid.Col key={item.id} span={4} style={{ marginBottom: 5, marginTop: 5 }}>
-          <Paper padding="lg" shadow="xs">
+          <Paper style={{ padding: 'lg', boxShadow: 'xs' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Text style={{ margin: 10}} >  ✅  </Text>
+              <Text style={{ margin: 10 }}>  ✅  </Text>
               <div>
                 <div>Subject: {item.subject}</div>
               </div>
@@ -30,25 +52,29 @@ const DataComponent = ({ data }) => {
   );
 };
 
-
 const query =
-`query($filter: JSON){
-  file(filter: $filter first: 10000){
-    subject
-  }
- }`;
+  `query($filter: JSON){
+    file(filter: $filter first: 10000){
+      subject
+    }
+   }`;
 
-const variables ={filter:{AND:[{IN:{project_id:['synthea-test']}}]}};
-const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
-  const [items, setItems] = useState();
-  const [isLoading, setLoading]=useState(true);
+const variables = {
+  filter: {
+    AND: [{ IN: { project_id: ['synthea-test'] } }],
+  },
+};
+
+const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await guppyAPIFetch({
+        const result: GuppyAPIFetchResult = await guppyAPIFetch({
           query: query,
-          variables: variables
+          variables: variables,
         });
         setItems(result.data.file);
         setLoading(false);
@@ -72,10 +98,10 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         </Center>
       </div>
       {isLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <DataComponent data={items} />
-        )}
+        <p>Loading data...</p>
+      ) : (
+        <DataComponent data={items} />
+      )}
     </NavPageLayout>
   );
 };

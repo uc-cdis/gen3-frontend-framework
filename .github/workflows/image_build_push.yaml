@@ -1,16 +1,27 @@
-name: Build Image and Push to Quay
+name: Build and publish ACED ETL image
 
-on: push
+on:
+  push:
+    tags:
+      - v**
+  workflow_dispatch:
 
 jobs:
-  ci:
-    name: Build Image and Push to Quay
-    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
-    with:
-      OVERRIDE_REPO_NAME: "frontend-framework"
-      USE_QUAY_ONLY: true
-    secrets:
-      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
-      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
-      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Login to Quay.io
+      uses: docker/login-action@v2
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+    - name: Build
+      run: |
+        docker login quay.io
+        docker build -t quay.io/ohsu-comp-bio/gen3-frontend-framework  .
+        docker push quay.io/ohsu-comp-bio/gen3-frontend-framework

@@ -1,26 +1,37 @@
 import React, {useState, useEffect, useMemo, useRef} from 'react';
-import { Paper, Button, Text, Modal } from '@mantine/core';
+import { Paper, Button, Modal } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
   getNavPageLayoutPropsFromConfig,
 } from '@gen3/frontend';
 
-import {gripApiFetch, JSONObject} from '@gen3/core';
+import {gripApiFetch, gripApiResponse} from '@gen3/core';
 import { GetServerSideProps } from 'next';
 import * as echarts from 'echarts';
-import type {ECharts} from 'echarts'
 
-const DonutChart = ({ data }) => {
+interface ChartData {
+  data: {
+    observation: {
+      category: string;
+    }[];
+  };
+}
+
+interface ModalType {
+  code?: string;
+  text?: string;
+}
+const DonutChart = ({ data }: { data: ChartData }) => {
   // Harcoded example
   const observations = data.data.observation.map(item => item.category);
-  const aggregatedData = observations.reduce((counts, category) => {
-      counts[category] = (counts[category] || 0) + 1;
+  const aggregatedData: Record<string, number> = observations.reduce((counts, category) => {
+    counts[category] = (counts[category] || 0) + 1;
       return counts;
-  }, {});
+  }, {} as Record<string, number>);
 
   const transformedData = Object.entries(aggregatedData).map(([category, count]) => ({name: category, value: count}));
-  console.log("TRANSFORM DATA: ", transformedData)
+  console.log('TRANSFORM DATA: ', transformedData);
 
   const chartRef = useRef(null);
   const chartDefinition = useMemo(() => {
@@ -52,7 +63,7 @@ const DonutChart = ({ data }) => {
               },
           ],
       };
-  }, [data]);
+  }, [transformedData]);
 
   useEffect(() => {
     const chart = echarts.init(chartRef.current);
@@ -67,29 +78,25 @@ const DonutChart = ({ data }) => {
   );
 };
 
-function MyModal({text}) {
+function MyModal({text}: {text?: ModalType}) {
   const [isOpen, setIsOpen] = useState(true);
   const closeModal = () => setIsOpen(false);
   return (
-    <>
+    <React.Fragment>
       <Modal
-      opened={isOpen}
-      onClose={closeModal}
-      title={<p>{text.code}, {text.text}</p>}
-      >
-
+        opened={isOpen}
+        onClose={closeModal}
+        title={text ? <p>{text.code ?? ''}, {text.text ?? ''}</p> : null}      >
         <Button onClick={closeModal}>Close</Button>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }
-
 const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
-  const [items, setItems] = useState();
+  const [items, setItems] = useState<gripApiResponse<unknown> | undefined>(undefined);
   const [isLoading, setLoading]=useState(true);
-  const [isError, setError]=useState();
+  const [isError, setError]=useState<gripApiResponse<unknown> | undefined>(undefined);
 
-  const variables ={filter:{AND:[{IN:{project_id:['synthea-test']}}]}};
   const query =
   `query($filter: JSON){
     observation(filter: $filter first: 10000){
@@ -97,6 +104,7 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
     }
    }`;
   useEffect(() => {
+    const variables ={filter:{AND:[{IN:{project_id:['synthea-test']}}]}};
     const fetchData = async () => {
       try {
         const result = await gripApiFetch('graphql/synthea', {
@@ -107,11 +115,11 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
           setLoading(false);
       } catch (error) {
         setLoading(false);
-        setError(error);
+        //setError(error);
       }
     };
     fetchData();
-  }, []);
+  }, [query]);
 
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
@@ -120,16 +128,11 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
           {isLoading ? (
             <p>Loading data...</p>
             ) : (
-              isError ? (
                 <div>
-                  <MyModal text={isError}/>
-                </div>
-              ) : (
-                <div>
-                  <DonutChart data={items} />
+                  {items ? <DonutChart data={items as ChartData} /> : null}
                 </div>
               )
-            )}
+            }
           </div>
       </Paper>
     </NavPageLayout>
@@ -138,7 +141,7 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async (_context) => {
+> = async () => {
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),

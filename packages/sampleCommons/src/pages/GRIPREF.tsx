@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useMemo, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
+import debounce from 'lodash/debounce';
 import { Paper, Button, Text, Modal, Grid} from '@mantine/core';
 
 import {
@@ -7,46 +8,67 @@ import {
   getNavPageLayoutPropsFromConfig,
 } from '@gen3/frontend';
 
-import {gripApiFetch, JSONObject} from '@gen3/core';
+import {gripApiFetch, gripApiResponse} from '@gen3/core';
 import { GetServerSideProps } from 'next';
-import * as echarts from 'echarts';
-import type {ECharts} from 'echarts'
 
-const DataComponent = ({ data }) => {
-  // Merge all lists into a single array
-  const mergedItems = [
-    ...(data.observationItems || []).map(item => ({ ...item, type: 'observation' })),
-    ...(data.encounterItems || []).map(item => ({ ...item, type: 'encounter' })),
-    ...(data.specimenItems || []).map(item => ({ ...item, type: 'specimen' })),
-    ...(data.documentItems || []).map(item => ({ ...item, type: 'document' }))
+interface EdgeData {
+  //PatientIdsWithObservationEdge?: ObservationEdge[];
+  PatientIdsWithEncounterEdge?: EncounterEdge[];
+  PatientIdsWithSpecimenEdge?: SpecimenEdge[];
+  PatientIdsWithDocumentEdge?: DocumentEdge[];
+}
+
+/*interface ObservationEdge {
+  id: string;
+  type: string;
+}*/
+
+interface EncounterEdge {
+  id: string;
+  type: string;
+}
+
+interface SpecimenEdge {
+  id: string;
+  type: string;
+}
+
+interface DocumentEdge {
+  id: string;
+  type: string;
+}
+//    ...(data.PatientIdsWithObservationEdge || []).map(item => ({ ...item, type: 'observation' })),
+
+const DataComponent = ({ data }: { data: EdgeData }) => {
+  const mergedItems: (EncounterEdge | SpecimenEdge | DocumentEdge)[] = [
+    ...(data.PatientIdsWithEncounterEdge || []).map(item => ({ ...item, type: 'encounter' })),
+    ...(data.PatientIdsWithSpecimenEdge || []).map(item => ({ ...item, type: 'specimen' })),
+    ...(data.PatientIdsWithDocumentEdge || []).map(item => ({ ...item, type: 'document' }))
   ];
 
-  // Group items by their IDs
-  const groupedItems = mergedItems.reduce((acc, item) => {
-    const id = item.id;
-    if (!acc[id]) {
-      acc[id] = {};
+  const groupedItems: { [key: string]: { [key: string]: boolean } } = mergedItems.reduce((acc: { [key: string]: any }, item) => {
+    if (!acc[item.id]) {
+      acc[item.id] = {};
     }
-    acc[id][item.type] = true;
+    acc[item.id][item.type] = true;
     return acc;
   }, {});
 
-  // Convert the object of grouped items back to an array
-  const finalItems = Object.entries(groupedItems).map(([id, types]) => ({
+  const finalItems: ({ id: string; hasEncounter: boolean; hasSpecimen: boolean; hasDocument: boolean })[] = Object.entries(groupedItems).map(([id, types]) => ({
     id,
-    hasObservation: types.observation,
+    //hasObservation: types.observation,
     hasEncounter: types.encounter,
     hasSpecimen: types.specimen,
     hasDocument: types.document
   }));
+//              {item.hasObservation && <Text style={{ margin: 10 }}>✅ Observation</Text>}
 
   return (
     <Grid style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: 20, marginTop: 25, display: 'flex', justifyContent: 'center' }}>
       {finalItems.map(item => (
         <Grid.Col key={item.id} span={5} style={{ marginBottom: 5, marginTop: 5 }}>
-          <Paper padding="lg" shadow="xs">
+          <Paper {...{ children: 'Content', sx: { padding: '10px', shadow: 'xs' } }} >
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {item.hasObservation && <Text style={{ margin: 10 }}>✅ Observation</Text>}
               {item.hasEncounter && <Text style={{ margin: 10 }}>✅ Encounter</Text>}
               {item.hasSpecimen && <Text style={{ margin: 10 }}>✅ Specimen</Text>}
               {item.hasDocument && <Text style={{ margin: 10 }}>✅ DocumentReference</Text>}
@@ -61,107 +83,122 @@ const DataComponent = ({ data }) => {
   );
 };
 
+interface ModalType {
+  code?: string;
+  text?: string;
+}
 
-function MyModal({text}) {
+function MyModal({text}: {text?: ModalType}) {
   const [isOpen, setIsOpen] = useState(true);
   const closeModal = () => setIsOpen(false);
   return (
-    <>
+    <React.Fragment>
       <Modal
       opened={isOpen}
       onClose={closeModal}
-      title={<p>{text.code}, {text.text}</p>}
-      >
+      title={text ? <p>{text.code ?? ''}, {text.text ?? ''}</p> : null}      >
 
         <Button onClick={closeModal}>Close</Button>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }
 
 const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const [state, setState] = useState({
-    observationItems: [],
-    encounterItems: [],
-    specimenItems: [],
-    documentItems: [],
+    //PatientIdsWithObservationEdge: [],
+    PatientIdsWithEncounterEdge: [],
+    PatientIdsWithSpecimenEdge: [],
+    PatientIdsWithDocumentEdge: [],
     isLoading: true,
     isError: false
   });
 
-  const fetchEdgeData = async (query: string) => {
-    //const variables = { limit: 1000 };
-    try {
-      const result = await gripApiFetch("graphql/api", {query:query, variables:{ limit: 2000 } });
-      return result.data;
-    } catch (error) {
-      throw error;
-    }
+
+  const fetchEdgeData = async (query: string): Promise<EdgeData> => {
+    return gripApiFetch('graphql/api', { query: query, variables: { limit: 500 } })
+      .then((result: gripApiResponse<EdgeData | unknown | undefined>) => result.data as EdgeData);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    let completedFetches = 0;
+    const fetchData = async (): Promise<void> => {
+      const updateStateWithFetchResult = (result: any, key: string): void => {
+        if (result) {
+          console.log("COMPLETED FETCHES: ", completedFetches);
+          setState(prevState => ({
+            ...prevState,
+            [key]: result[key] || [],
+            isError: false,
+            isLoading: completedFetches >= 2 ? false : true // Disable loading when 4 fetches are complete
+          }));
+          completedFetches++; // Increment completedFetches after update
+        } else {
+          setState(prevState => ({
+            ...prevState,
+            isError: true
+          }));
+        }
+      };
+  
       try {
-        const [
-          docResult,
-          obsResult,
-          encounterResult,
-          specimenResult
-        ] = await Promise.all([
-          fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int) {
-            PatientIdsWithDocumentEdge(limit: $limit)  {
-              id
-            }
-          }`),
-          fetchEdgeData(`query PatientIdsWithObservationEdge($limit: Int) {
-            PatientIdsWithObservationEdge(limit: $limit)  {
-              id
-            }
-          }`),
-          fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int) {
-            PatientIdsWithEncounterEdge(limit: $limit)  {
-              id
-            }
-          }`),
-          fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int) {
-            PatientIdsWithSpecimenEdge(limit: $limit)  {
-              id
-            }
-          }`)
-        ]);
-
-        console.log("Document Result:", docResult);
-        console.log("Observation Result:", obsResult);
-        console.log("Encounter Result:", encounterResult);
-        console.log("Specimen Result:", specimenResult);
-
-        setState({
-          observationItems: obsResult.PatientIdsWithObservationEdge,
-          encounterItems: encounterResult.PatientIdsWithEncounterEdge,
-          specimenItems: specimenResult.PatientIdsWithSpecimenEdge,
-          documentItems: docResult.PatientIdsWithDocumentEdge,
-          isError: false
-        });
+        console.log('i fire once');
+        const docResult = await fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int) {
+          PatientIdsWithDocumentEdge(limit: $limit)  {
+            id
+          }
+        }`);
+        console.log('Document Result:', docResult);
+        updateStateWithFetchResult(docResult, 'PatientIdsWithDocumentEdge');
       } catch (error) {
-        console.log("ERROR: ", error)
+        console.log('ERROR fetching document data:', error);
         setState(prevState => ({
           ...prevState,
           isError: true
         }));
-      } finally {
+      }
+  
+      try {
+        const encounterResult = await fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int) {
+          PatientIdsWithEncounterEdge(limit: $limit)  {
+            id
+          }
+        }`);
+        console.log('Encounter Result:', encounterResult);
+        updateStateWithFetchResult(encounterResult, 'PatientIdsWithEncounterEdge');
+      } catch (error) {
+        console.log('ERROR fetching encounter data:', error);
         setState(prevState => ({
           ...prevState,
-          isLoading: false
+          isError: true
+        }));
+      }
+  
+      try {
+        const specimenResult = await fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int) {
+          PatientIdsWithSpecimenEdge(limit: $limit)  {
+            id
+          }
+        }`);
+        console.log('Specimen Result:', specimenResult);
+        updateStateWithFetchResult(specimenResult, 'PatientIdsWithSpecimenEdge');
+      } catch (error) {
+        console.log('ERROR fetching specimen data:', error);
+        setState(prevState => ({
+          ...prevState,
+          isError: true
         }));
       }
     };
-    setState(prevState => ({
-      ...prevState,
-      isLoading: true
-    }));
-    fetchData();
+    const debouncedFetchData = debounce(fetchData, 500); // Debounce with 500ms delay
+    debouncedFetchData();
+    
+  
+    //fetchData();
+  
+    // Dependency array left empty to run only on initial render
   }, []);
-
+  
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
        <Paper>
@@ -169,16 +206,11 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           {state.isLoading ? (
             <p>Loading data...</p>
             ) : (
-              state.isError ? (
-                <div>
-                  <MyModal text={state.isError}/>
-                </div>
-              ) : (
                 <div>
                   <DataComponent data={state} />
                 </div>
               )
-            )}
+            }
           </div>
       </Paper>
     </NavPageLayout>
@@ -187,7 +219,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async (_context) => {
+> = async () => {
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
