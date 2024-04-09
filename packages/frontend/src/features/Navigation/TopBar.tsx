@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Icon } from '@iconify/react';
 import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
@@ -9,6 +9,7 @@ export interface NameAndIcon {
   readonly rightIcon?: string;
   readonly leftIcon?: string;
   readonly classNames: Record<string, string>;
+  readonly drawBorder?: boolean;
 }
 
 export interface TopIconButtonProps extends NameAndIcon {
@@ -20,16 +21,20 @@ const TopIconButton = ({
   leftIcon = undefined,
   rightIcon = undefined,
   classNames = {},
+  drawBorder = true,
 }: NameAndIcon) => {
   const classNamesDefaults = {
-    root: 'flex mr-[10px] items-center align-middle hover:border-b-1 hover:border-primary',
-    leftIcon: 'text-secondary-contrast-lighter',
-    label: 'font-content text-secondary-contrast-lighter p-2',
-    rightIcon: 'text-secondary-contrast-lighter',
+    root: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
+    leftIcon: 'text-secondary-contrast-lighter pr-1',
+    label: 'font-content text-secondary-contrast-lighter block',
+    rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
 
   return (
+    <div className={`flex items-center align-middle px-2 ${
+      drawBorder && 'border-r-2 border-accent'
+    }  my-2`}>
     <div className={extractClassName('root', mergedClassnames)} role="button">
       {leftIcon ? (
         <Icon
@@ -45,6 +50,32 @@ const TopIconButton = ({
         />
       ) : null}
     </div>
+    </div>
+  );
+};
+
+const processTopBarItems = (
+  items: TopIconButtonProps[],
+  showLogin: boolean,
+): ReactElement[] => {
+  return items.reduce(
+    (acc: ReactElement[], item: TopIconButtonProps, index: number) => {
+      const needsBorder = !(index === items.length - 1 && !showLogin);
+      acc.push(
+        <a className="flex" href={item.href} key={`${item.href}_${item.name}`}>
+          {' '}
+          <TopIconButton
+            name={item.name}
+            leftIcon={item.leftIcon}
+            rightIcon={item.rightIcon}
+            classNames={item.classNames}
+            drawBorder={needsBorder}
+          />{' '}
+        </a>,
+      );
+      return acc;
+    },
+    [],
   );
 };
 
@@ -56,7 +87,7 @@ export interface TopBarProps {
 
 const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
   const classNamesDefaults = {
-    root: 'flex justify-end items-center align-middle w-100 h-10 bg-secondary-lighter',
+    root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
   };
 
   const mergedClassnames = { ...classNamesDefaults, ...classNames };
@@ -65,19 +96,7 @@ const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
     <div>
       <header className={extractClassName('root', mergedClassnames)}>
         <nav className="flex items-center align-middle">
-          {items.map((x) => {
-            return (
-              <a className="flex" href={`${x.href}`} key={`${x.href}_${x.name}`}>
-                <TopIconButton
-                  name={x.name}
-                  leftIcon={x.leftIcon}
-                  rightIcon={x.rightIcon}
-                  classNames={x.classNames}
-                />
-                <div className="pr-2 ml-1 border-solid h-6 " />
-              </a>
-            );
-          })}
+          {processTopBarItems(items, showLogin)}
           {showLogin ? <LoginAccountButton /> : null}
           {showLogin ? <LoginButton /> : null}
         </nav>
