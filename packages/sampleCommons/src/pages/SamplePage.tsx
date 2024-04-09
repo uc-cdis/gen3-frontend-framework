@@ -1,5 +1,5 @@
 import React from 'react';
-import { Center, Text, Paper } from '@mantine/core';
+import { Text, Paper, Grid } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
@@ -7,20 +7,88 @@ import {
 } from '@gen3/frontend';
 import { GetServerSideProps } from 'next';
 
-const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
+interface Item {
+  id: string;
+  subject: string;
+}
+
+interface DataComponentProps {
+  data: Item[];
+}
+
+interface FileQueryResult {
+  file: Item[];
+}
+
+interface GuppyAPIFetchResult {
+  data: FileQueryResult;
+}
+
+interface SamplePageProps {
+  headerProps: any; // Adjust the type according to your actual props
+  footerProps: any; // Adjust the type according to your actual props
+}
+
+const DataComponent = ({ data }: DataComponentProps) => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
-      <div className="w-full m-10">
-        <Center>
-          <Paper shadow="md" p="xl" withBorder>
-            <Text>This is a example custom page in Gen3</Text>
-            <Text>
-              You can add your own content here, and add a link to this page in
-              the navigation bar by editing the config file in navigation.json
-            </Text>
+    <Grid>
+      {data.map((item) => (
+        <Grid.Col key={item.id} span={4} style={{ marginBottom: 5, marginTop: 5 }}>
+          <Paper style={{ padding: 'lg', boxShadow: 'xs' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Text style={{ margin: 10 }}>  ✅  </Text>
+              <div>
+                <div>Subject: {item.subject}</div>
+              </div>
+            </div>
           </Paper>
-        </Center>
-      </div>
+        </Grid.Col>
+      ))}
+    </Grid>
+  );
+};
+
+const query =
+  `query($filter: JSON){
+    file(filter: $filter first: 10000){
+      subject
+    }
+   }`;
+
+const variables = {
+  filter: {
+    AND: [{ IN: { project_id: ['synthea-test'] } }],
+  },
+};
+
+const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result: GuppyAPIFetchResult = await guppyAPIFetch({
+          query: query,
+          variables: variables,
+        });
+        setItems(result.data.file);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <NavPageLayout headerProps={headerProps} footerProps={footerProps}>
+      {isLoading ? (
+        <p>Loading data...</p>
+      ) : (
+        <DataComponent data={items} />
+      )}
     </NavPageLayout>
   );
 };
