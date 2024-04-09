@@ -2,8 +2,6 @@ name: Build and publish ACED ETL image
 
 on:
   push:
-    tags:
-      - v**
   workflow_dispatch:
 
 jobs:
@@ -20,8 +18,22 @@ jobs:
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_ROBOT_TOKEN }}
 
-    - name: Build
+    - name: Build and push image
       run: |
+        # Set Image tag to the branch name
+        BRANCH=$(echo ${GITHUB_REF#refs/*/} | tr / _)
+        REPO=quay.io/ohsu-comp-bio/aced-etl
+        echo "Setting image tag to $REPO:$BRANCH"
+
+        # Login to Quay.io and build image
         docker login quay.io
-        docker build -t quay.io/ohsu-comp-bio/gen3-frontend-framework  .
-        docker push quay.io/ohsu-comp-bio/gen3-frontend-framework
+        docker build -t $REPO:$BRANCH .
+
+        # Add 'latest' tag to 'main' image
+        if [[ $BRANCH == 'main' ]]; then
+          docker image tag $REPO:main $REPO:latest
+        fi
+
+        # Push the tagged image to Quay.io
+        docker push --all-tags $REPO
+
