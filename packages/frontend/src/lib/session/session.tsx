@@ -7,7 +7,7 @@ import {
   useCoreDispatch,
   logoutFence,
   selectCurrentModal, useCoreSelector, type CoreState,
-  showModal, Modals, GEN3_REDIRECT_URL,
+  showModal, Modals, useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
 
@@ -170,11 +170,19 @@ export const SessionProvider = ({
   );
   const [pending, setPending] = useState(session ? false : true);
 
-  const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
-  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery();
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
+
+  const modal = useCoreSelector((state: CoreState) =>
+    selectCurrentModal(state),
+  );
+
+  const pathname = usePathname();
+
+  console.log("session");
+
 
   const [
     mostRecentSessionRefreshTimestamp,
