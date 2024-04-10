@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Icon } from '@iconify/react';
-import { mergeDefaultValues } from '../../utils/defaultValues';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
 import { extractClassName } from './utils';
@@ -32,7 +32,7 @@ const TopIconButton = ({
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
-  const mergedClassnames = mergeDefaultValues(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
@@ -91,8 +91,7 @@ const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
     root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
   };
 
-  const mergedClassnames = mergeDefaultValues(classNamesDefaults, classNames);;
-
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
   return (
     <div>
       <header className={extractClassName('root', mergedClassnames)}>

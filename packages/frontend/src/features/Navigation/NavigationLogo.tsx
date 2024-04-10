@@ -3,7 +3,7 @@ import HoverLink from './HoverLink';
 import Image from 'next/image';
 import React from 'react';
 import { extractClassName } from './utils';
-import { mergeDefaultValues } from '../../utils/defaultValues';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 const NavigationLogo = ({
   src,
@@ -20,7 +20,7 @@ const NavigationLogo = ({
       'font-heading h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3',
   };
 
-  const mergedClassnames = mergeDefaultValues(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>

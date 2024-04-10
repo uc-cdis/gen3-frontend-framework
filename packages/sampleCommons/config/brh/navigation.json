@@ -44,28 +44,33 @@
         "link": "https://uc-cdis.github.io/BRH-documentation/",
         "name": "Documentation",
         "classNames": {
-          "root": "font-content font-semibold text-white",
-          "label": "font-content font-semibold text-white"
+          "root": "border-base-light",
+          "label": "text-white",
+          "button": "hover:border-white"
         }
       },
       {
         "link": "brhsupport@datacommons.io",
         "name": "Email Support",
         "classNames": {
-          "label": "font-content font-semibold text-white"
+          "root": "border-base-light",
+          "label": "text-white",
+          "button": "hover:border-white"
         }
       },
       {
         "link": "https://uc-cdis.github.io/platform-citation/brh-cite/",
         "name": "Cite BRH",
         "classNames": {
-          "label": "font-content font-semibold text-white"
+          "root": "border-base-light",
+          "label": "text-white",
+          "button": "hover:border-white"
         }
       }
     ],
     "showLogin": false,
     "classNames": {
-      "root": "text-sm flex justify-end items-center align-middle w-100 h-10 bg-secondary"
+      "root": "bg-primary"
     }
   }
 }
