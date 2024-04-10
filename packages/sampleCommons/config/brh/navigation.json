@@ -1,7 +1,7 @@
 {
   "navigation": {
     "logo": {
-      "src": "/ff/images/brh/logo.png",
+      "src": "/images/brh/logo.png",
       "height": 256,
       "href": "/Discovery"
     },
@@ -44,6 +44,7 @@
         "link": "https://uc-cdis.github.io/BRH-documentation/",
         "name": "Documentation",
         "classNames": {
+          "root": "font-content font-semibold text-white",
           "label": "font-content font-semibold text-white"
         }
       },

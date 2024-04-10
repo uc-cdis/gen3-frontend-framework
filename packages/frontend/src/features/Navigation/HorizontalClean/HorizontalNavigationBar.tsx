@@ -8,7 +8,7 @@ import LoginButton from '../../../components/Login/LoginButton';
 import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
-import { defaultComposer } from 'default-composer';
+import { mergeDefaultValues } from '../../../utils/defaultValues';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
@@ -29,7 +29,7 @@ const HorizontalNavigationBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = defaultComposer(classNamesDefaults, classNames);;
+  const mergedClassnames = mergeDefaultValues(classNamesDefaults, classNames);;
 
   return (
     <div

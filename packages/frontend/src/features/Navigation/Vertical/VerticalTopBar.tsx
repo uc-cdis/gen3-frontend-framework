@@ -1,13 +1,12 @@
 import React from 'react';
 import { NavigationProps } from '../types';
-import NavigationBarButton from '../NavigationBarButton';
 import NavigationLogo from '../NavigationLogo';
-import { TopBarProps, TopIconButtonProps } from '../TopBar';
+import { TopBarProps, } from '../TopBar';
 import LoginButton from '../../../components/Login/LoginButton';
 import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
-import { defaultComposer } from 'default-composer';
+import { mergeDefaultValues } from '../../../utils/defaultValues';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
@@ -25,7 +24,7 @@ const VerticalTopBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = defaultComposer(classNamesDefaults, classNames);;
+  const mergedClassnames = mergeDefaultValues(classNamesDefaults, classNames);;
 
   return (
     <div

@@ -47,6 +47,7 @@ export interface NavigationBarLogo {
   readonly width?: number;
   readonly height?: number;
   readonly basePath?: string;
+  readonly classNames?: Record<string, string>;
 }
 
 export interface NavigationProps {
