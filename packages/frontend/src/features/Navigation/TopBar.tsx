@@ -1,8 +1,10 @@
 import React, { ReactElement } from 'react';
 import { Icon } from '@iconify/react';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
 import { extractClassName } from './utils';
+
 
 export interface NameAndIcon {
   readonly name: string;
@@ -24,18 +26,17 @@ const TopIconButton = ({
   drawBorder = true,
 }: NameAndIcon) => {
   const classNamesDefaults = {
-    root: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
+    root: `flex items-center align-middle px-2 ${drawBorder && 'border-r-2 border-accent'} my-2`,
+    button: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
     leftIcon: 'text-secondary-contrast-lighter pr-1',
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
-    <div className={`flex items-center align-middle px-2 ${
-      drawBorder && 'border-r-2 border-accent'
-    }  my-2`}>
-    <div className={extractClassName('root', mergedClassnames)} role="button">
+    <div className={extractClassName('root', mergedClassnames)}>
+    <div className={extractClassName('button', mergedClassnames)} role="button">
       {leftIcon ? (
         <Icon
           icon={leftIcon}
@@ -90,8 +91,7 @@ const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
     root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
-
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
   return (
     <div>
       <header className={extractClassName('root', mergedClassnames)}>

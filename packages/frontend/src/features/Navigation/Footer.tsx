@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Gen3Link from './Gen3Link';
 import { FooterProps } from './types';
 import { extractClassName } from './utils';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 const Footer = ({
   bottomLinks,
@@ -12,11 +13,11 @@ const Footer = ({
   classNames = {},
 }: FooterProps) => {
 
-  const defaultClassNames = {
+  const classNamesDefaults = {
     root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
-  const mergedClassNames = { ...defaultClassNames, ...classNames };
+  const mergedClassNames= mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
     <footer>

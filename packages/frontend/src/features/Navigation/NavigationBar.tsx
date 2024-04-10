@@ -3,6 +3,7 @@ import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { extractClassName } from './utils';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 /**
  * NavigationBar component
@@ -24,7 +25,7 @@ const NavigationBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);;
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>

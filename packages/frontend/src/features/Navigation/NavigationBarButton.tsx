@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { Tooltip } from '@mantine/core';
 import { extractClassName } from './utils';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 /**
  * NavigationBarButton: a button for the navigation bar
@@ -30,7 +31,7 @@ const NavigationBarButton = ({
     arrow: 'bg-base-light',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);;
   return (
     <React.Fragment>
       <Tooltip

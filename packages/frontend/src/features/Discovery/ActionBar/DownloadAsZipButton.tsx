@@ -1,6 +1,4 @@
 import DataLibraryActionButton from './DataLibraryActionButton';
-import FileSaver from 'file-saver';
-import { GEN3_DOMAIN } from '@gen3/core';
 import { ActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
