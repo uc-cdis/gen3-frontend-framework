@@ -10,7 +10,7 @@ const NavigationLogo = ({
   basePath = '',
 }: NavigationBarLogo) => {
   return (
-    <div className="relative flex h-full justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]">
+    <div className="relative flex h-full py-2 justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]">
       <HoverLink className="relative w-96 h-full" href="/">
         <Image
           className="pr-3 object-contain"
