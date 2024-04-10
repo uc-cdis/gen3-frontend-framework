@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { defaultComposer } from 'default-composer';
 import Gen3Link from './Gen3Link';
 import { FooterProps } from './types';
 import { extractClassName } from './utils';
@@ -12,11 +13,11 @@ const Footer = ({
   classNames = {},
 }: FooterProps) => {
 
-  const defaultClassNames = {
+  const classNamesDefaults = {
     root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
-  const mergedClassNames = { ...defaultClassNames, ...classNames };
+  const mergedClassNames= defaultComposer(classNamesDefaults, classNames);
 
   return (
     <footer>

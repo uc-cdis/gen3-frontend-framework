@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationButtonProps } from './types';
 import Link from 'next/link';
+import { defaultComposer } from 'default-composer';
 import { Icon } from '@iconify/react';
 import { Tooltip } from '@mantine/core';
 import { extractClassName } from './utils';
@@ -30,7 +31,7 @@ const NavigationBarButton = ({
     arrow: 'bg-base-light',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = defaultComposer(classNamesDefaults, classNames);;
   return (
     <React.Fragment>
       <Tooltip

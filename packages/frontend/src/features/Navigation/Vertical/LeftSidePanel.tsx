@@ -2,6 +2,7 @@ import { extractClassName } from '../utils';
 import NavigationBarButton from '../NavigationBarButton';
 import React from 'react';
 import { NavigationButtonProps, NavigationProps } from '../types';
+import { defaultComposer } from 'default-composer';
 
 type LeftSidePanelProps = Pick<NavigationProps, 'items' | 'classNames'>;
 
@@ -15,7 +16,7 @@ const LeftSidePanel = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = defaultComposer(classNamesDefaults, classNames);
 
   return (
     <div

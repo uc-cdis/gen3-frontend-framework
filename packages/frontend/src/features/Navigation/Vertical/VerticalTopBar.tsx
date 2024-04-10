@@ -7,6 +7,7 @@ import LoginButton from '../../../components/Login/LoginButton';
 import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
+import { defaultComposer } from 'default-composer';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
@@ -24,7 +25,7 @@ const VerticalTopBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = defaultComposer(classNamesDefaults, classNames);;
 
   return (
     <div
