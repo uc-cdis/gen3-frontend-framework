@@ -121,7 +121,7 @@ const QueryExpressionSection = ({
 
 
   const clearAllFilters = () => {
-    dispatch(clearCohortFilters(index));
+    dispatch(clearCohortFilters({index: index}));
     setExpandedState({ type: 'clear', cohortId: currentCohortId, field: 'unset' });
   };
   const allQueryExpressionsCollapsed = Object.values(
@@ -179,7 +179,10 @@ const QueryExpressionSection = ({
         value={[expandedState[currentCohortId], setExpandedState]}
       >
         <div className="flex flex-col w-full bg-primary">
-          <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
+          <div
+            data-testid="text-cohort-filters-top-row"
+            className="flex py-2 items-center border-secondary-darkest border-b-1"
+          >
             <OverflowTooltippedLabel
               label={currentCohortName}
               className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
@@ -188,13 +191,13 @@ const QueryExpressionSection = ({
             </OverflowTooltippedLabel>
             <React.Fragment>
               <button
-                data-testid="clear-all-cohort-filters"
-                className={`text-sm font-montserrat pl-2 ${
+                data-testid="button-clear-all-cohort-filters"
+                className={`text-sm content-center font-heading ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
                   noFilters
-                    ? 'cursor-not-allowed text-secondary-contrast-darkest'
+                    ? 'hidden'
                     : 'cursor-pointer text-secondary-contrast-darkest'
                 }`}
-                onClick={() => clearAllFilters()}
+                onClick={clearAllFilters}
                 disabled={noFilters}
               >
                 Clear All
@@ -206,13 +209,13 @@ const QueryExpressionSection = ({
                   onClick={() =>
                     allQueryExpressionsCollapsed
                       ? setExpandedState({
-                          type: 'expandAll',
-                          cohortId: currentCohortId,
-                        })
+                        type: 'expandAll',
+                        cohortId: currentCohortId,
+                      })
                       : setExpandedState({
-                          type: 'collapseAll',
-                          cohortId: currentCohortId,
-                        })
+                        type: 'collapseAll',
+                        cohortId: currentCohortId,
+                      })
                   }
                   aria-label="Expand/collapse all queries"
                   aria-expanded={!allQueryExpressionsCollapsed}
