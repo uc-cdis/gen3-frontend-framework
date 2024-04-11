@@ -5,7 +5,6 @@ import type { NavPageLayoutProps } from '../../features/Navigation';
 export const AISearchPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-
   try {
     return {
       props: {
