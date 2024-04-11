@@ -29,9 +29,9 @@ interface LoginButtonProps {
 }
 
 const LoginButton = ({
-  icon = <LoginIcon className="pl-1" size={'1.75rem'} />,
+  icon = <LoginIcon className="pl-1" size={'1.55rem'} />,
   hideText = false,
-  className = 'flex items-center font-medium font-heading',
+  className = 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent mx-2',
 }: LoginButtonProps) => {
   const router = useRouter();
 

@@ -43,6 +43,9 @@ import Custom404Page  from './pages/404/Custom404Page';
 import WorkspacesPage from './pages/Workspaces/Workspaces';
 import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
 
+import AiSearchPage from './pages/AiSearch/AiSearch';
+import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -79,5 +82,7 @@ export {
   sessionToken,
   sessionLogout,
   credentialsLogin,
-  credentialsLogout
+  credentialsLogout,
+  AiSearchPage,
+  AISearchPageGetServerSideProps
 };

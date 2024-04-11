@@ -16,8 +16,8 @@ const LoginAccountButton = () => {
   } = useIsAuthenticated();
 
   return isAuthenticated ? (
-    <UnstyledButton className="mx-2" onClick={async () => await handleSelected()}>
-      <div className="flex items-center hover:border-b-1 border-primary-darker text-primary-contrast font-medium font-heading ">
+    <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
+      <div className="flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent">
         {user?.name}
       </div>
     </UnstyledButton>
