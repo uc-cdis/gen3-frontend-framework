@@ -194,7 +194,7 @@ const QueryExpressionSection = ({
                     ? 'cursor-not-allowed text-secondary-contrast-darkest'
                     : 'cursor-pointer text-secondary-contrast-darkest'
                 }`}
-                onClick={clearAllFilters}
+                onClick={() => clearAllFilters()}
                 disabled={noFilters}
               >
                 Clear All
