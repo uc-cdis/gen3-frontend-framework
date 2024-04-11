@@ -4,15 +4,14 @@ import AiSearch from '../../features/Discovery/Search/AiSearch';
 import React from 'react';
 
 const AISearchPage = ({
-                         headerProps,
-                         footerProps,
-                       }: NavPageLayoutProps): JSX.Element => {
-
+  headerProps,
+  footerProps,
+}: NavPageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <div className="p-5 w-full">
-      <AiSearch />
-        </div>
+        <AiSearch />
+      </div>
     </NavPageLayout>
   );
 };
