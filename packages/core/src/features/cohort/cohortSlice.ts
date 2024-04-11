@@ -34,6 +34,10 @@ interface RemoveFilterParams {
   field: string;
 }
 
+interface ClearAllFilterParams {
+  index: string;
+}
+
 // TODO: start using this adapter
 /*
 const cohortsAdapter = createEntityAdapter<Cohort>({
@@ -92,11 +96,22 @@ export const cohortSlice = createSlice({
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
       state: Draft<CohortState>,
+      action: PayloadAction<ClearAllFilterParams>
     ) => {
+      const { index } = action.payload;
       return {
-        cohort: { ...state.cohort, ...{  filters: {}, modified_datetime: new Date().toISOString() }}
+        cohort: {
+          ...state.cohort,
+          filters: {
+            ...state.cohort.filters,
+            [index]: { // empty filter set
+              mode: 'and',
+              root: {},
+            } as FilterSet
+          }
+        }
       };
-    },
+    }
   },
   extraReducers: {},
 });
