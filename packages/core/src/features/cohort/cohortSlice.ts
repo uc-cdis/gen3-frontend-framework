@@ -92,11 +92,9 @@ export const cohortSlice = createSlice({
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
       state: Draft<CohortState>,
-      action: PayloadAction<string>
     ) => {
-      const { [action.payload]: _rest, ...updated } = state.cohort.filters[action.payload].root;
       return {
-        cohort: { ...state.cohort, ...{ ...state.cohort.filters, [action.payload]: updated } },
+        cohort: { ...state.cohort, ...{  filters: {}, modified_datetime: new Date().toISOString() }}
       };
     },
   },
