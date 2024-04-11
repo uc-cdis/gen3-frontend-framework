@@ -121,7 +121,7 @@ const QueryExpressionSection = ({
 
 
   const clearAllFilters = () => {
-    dispatch(clearCohortFilters(index));
+    dispatch(clearCohortFilters({index: index}));
     setExpandedState({ type: 'clear', cohortId: currentCohortId, field: 'unset' });
   };
   const allQueryExpressionsCollapsed = Object.values(
