@@ -55,5 +55,5 @@ RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
 RUN lerna run --scope @gen3/toolsff build
 RUN lerna run --scope @gen3/samplecommons build
-ENV PORT=80
-CMD ["npm", "run", "start"]
+ENV PORT=3000
+CMD bash ./start.sh
