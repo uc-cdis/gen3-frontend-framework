@@ -34,7 +34,6 @@ const CredentialsLogin = ({ handleLogin } : CredentialsLoginProps) => {
   }, [file]);
 
   const handleCredentialsLogin = useCallback( async (credentials: string) => {
-    const setIsCredentialsLogin  = sessionContext?.setIsCredentialsLogin ?? (() => null);
     const updateSession = sessionContext?.updateSession ?? (() => null);
     try {
       const json = await JSON.parse(credentials);
@@ -46,7 +45,6 @@ const CredentialsLogin = ({ handleLogin } : CredentialsLoginProps) => {
         body: JSON.stringify(json),
       });
       updateSession();
-      setIsCredentialsLogin(true);
       handleLogin();
 
     } catch (e) {
@@ -55,7 +53,7 @@ const CredentialsLogin = ({ handleLogin } : CredentialsLoginProps) => {
         message: 'JSON is not valid',
       });
     }
-  }, [sessionContext?.setIsCredentialsLogin, sessionContext?.updateSession]);
+  }, [handleLogin, sessionContext?.updateSession]);
 
   return (
     <Box className="flex flex-col items-center justify-center my-2">

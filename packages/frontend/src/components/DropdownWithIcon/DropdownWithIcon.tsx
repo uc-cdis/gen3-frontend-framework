@@ -139,7 +139,7 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </React.Fragment>
         )}
-        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
+        {dropdownElements?.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
               onClick && onClick();

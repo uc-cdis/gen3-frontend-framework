@@ -1,22 +1,21 @@
-import React, { useEffect, useContext, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
-  fetchUserState,
-  CoreDispatch,
   useCoreDispatch,
-  logoutFence,
   selectCurrentModal, useCoreSelector, type CoreState,
   showModal, Modals, useLazyFetchUserDetailsQuery,
+   useGetCSRFQuery,selectUserAuthStatus,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  await fetch('/api/auth/sessionLogout');
+  await fetch('/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/', { cache: 'no-store' });
 };
 
 function useOnline() {
@@ -45,7 +44,7 @@ export const SessionContext = React.createContext<Session | undefined>(undefined
 export const getSession = async () => {
 
   try {
-    const res = await fetch('/api/auth/sessionToken');
+    const res = await fetch('/api/auth/sessionToken', { cache: 'no-store' });
     if (res.status === 200) {
       return await res.json();
     }
@@ -90,8 +89,9 @@ export const useIsAuthenticated = () => {
 export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
 
-  await logoutSession();
-  router.push("/");
+   await logoutSession();
+  //router.push(`${GEN3_FENCE_API}/user/logout?next=https://localhost:3010/`);
+  await router.push("/");
 };
 
 const refreshSession = (getUserDetails : ()=>void,
@@ -145,7 +145,7 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
  * @param updateSessionTime - Interval of time between fetching session token
  * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
  * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
- * @param logoutInactiveUsers - Wether to log out users that are determined to be inactive or not
+ * @param logoutInactiveUsers - Whether to log out users that are determined to be inactive or not
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -158,18 +158,17 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(
     session ??
       ({
         status: 'not present',
-        isCredentialsLogin,
-        setIsCredentialsLogin
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
 
-  const [ getUserDetails] = useLazyFetchUserDetailsQuery();
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  useGetCSRFQuery(); // Fetch CSRF token
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
@@ -179,9 +178,6 @@ export const SessionProvider = ({
   );
 
   const pathname = usePathname();
-
-  console.log("session");
-
 
   const [
     mostRecentSessionRefreshTimestamp,
@@ -201,12 +197,20 @@ export const SessionProvider = ({
     const tokenStatus = await getSession();
     setSessionInfo(tokenStatus);
     setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
+
+  const endSession = async () => {
+     logoutSession().then(() => {
+       getUserDetails();
+    });
+    router.push("/");
   };
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
-    updateSession();
+     updateSession();
 
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
@@ -256,15 +260,14 @@ export const SessionProvider = ({
 
   }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );
 
-  const value: Session = useMemo(() => {
+  const value: Session = useDeepCompareMemo(() => {
     return {
       ...sessionInfo,
       pending,
-      setIsCredentialsLogin,
-      isCredentialsLogin,
       updateSession,
+      endSession
     };
-  }, [isCredentialsLogin, pending, sessionInfo]);
+  }, [pending, sessionInfo, updateSession, endSession]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

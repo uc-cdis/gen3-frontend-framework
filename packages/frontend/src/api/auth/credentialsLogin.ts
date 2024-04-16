@@ -27,7 +27,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 });
 
   if (response.status !== 200) {
-    deleteCookie( 'access_token', {
+    deleteCookie( 'credentials_token', {
       req, res,
       sameSite: 'lax',
       httpOnly: process.env.NODE_ENV === 'production',
@@ -45,7 +45,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const payload = decodeJwt(access_token) as JWTPayload;
 
   if (!payload) {
-    deleteCookie( 'access_token', {
+    deleteCookie( 'credentials_token', {
       req, res,
       sameSite: 'lax',
       httpOnly: process.env.NODE_ENV === 'production',
@@ -53,7 +53,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     });
     return res.status(400).json({ message: 'Invalid token' });
   }
-  setCookie( 'access_token', access_token, {
+  setCookie( 'credentials_token', access_token, {
     req, res,
     maxAge: payload && payload.exp && payload.iat ? payload.exp - payload.iat : 60 * 60 * 20,
     sameSite: 'lax',

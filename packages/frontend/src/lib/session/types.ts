@@ -18,9 +18,8 @@ export interface AuthTokenData {
 export interface Session extends AuthTokenData {
   userStatus?: LoginStatus;
   user?: Gen3User;
-  isCredentialsLogin?: boolean;
-  setIsCredentialsLogin: (value: boolean) => void;
   updateSession: () => void;
+  endSession: () => void;
   pending: boolean;
 }
 

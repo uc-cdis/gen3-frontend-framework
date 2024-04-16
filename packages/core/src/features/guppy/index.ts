@@ -1,4 +1,4 @@
-export * from './guppylApi';
+export * from './guppyApi';
 export * from './guppySlice';
 import { downloadFromGuppyToBlob, downloadJSONDataFromGuppy, useGetIndexFields } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';

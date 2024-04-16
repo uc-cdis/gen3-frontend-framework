@@ -2,11 +2,12 @@ import { createSelector } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { Gen3User, LoginStatus } from './types';
-import { JSONObject } from '../../types';
-
+import { CoreState } from '../../reducers';
+import { selectCSRFToken } from '../gen3';
+import { getCookie } from 'cookies-next';
 
 export interface UserAuthResponse  {
-  readonly data: Gen3User | JSONObject;
+  readonly data: Gen3User;
   readonly loginStatus: LoginStatus;
 }
 
@@ -14,28 +15,45 @@ const userAuthApi = coreCreateApi({
   reducerPath: 'userAuthApi',
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
-  baseQuery: async ({ endpoint }) => {
+  refetchOnReconnect: true,
+  baseQuery: async ({ endpoint }, { getState }) => {
     let results;
+    const csrfToken = selectCSRFToken(getState() as CoreState);
+    let accessToken = undefined;
+    if (process.env.NODE_ENV === 'development') {
+      accessToken = getCookie('credentials_token');
+      console.log("accessToken: ", accessToken);
+    }
+    const headers : Record<string, string>= {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken} : {}),
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      credentials: 'include',
+    };
 
+    console.log("fetching user details");
     try {
-      results = await fetchFence({ endpoint});
+      results = await fetchFence({ endpoint, headers});
     } catch (e) {
       /*
         Because an "error" response is valid for the auth requests we don't want to
         put the request in an error state, or it will attempt the request over and over again
       */
-      return { data: {}, loginStatus: 'unauthenticated'};
+      return { data: {}};
     }
 
-    return { data: results, loginStatus: 'unauthenticated'};
+    return { data: results };
   },
   endpoints: (builder) => ({
     fetchUserDetails: builder.query<UserAuthResponse, void>({
-      query: () => ({ endpoint: 'user/user' }),
+      query: () => ({ endpoint: '/user/user' }),
       transformResponse(response: Gen3FenceResponse<Gen3User>) {
+        console.log("userSliceRTK: response: ", response);
         return {
           data: response.data,
           // TODO: check if this is the correct status code
+
           loginStatus: response.status === 200 ? 'authenticated' : 'unauthenticated',
         };
       }
@@ -55,14 +73,14 @@ export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;
 export const userAuthApiReducer = userAuthApi.reducer;
 
-export const selectUsersDetails = userAuthApi.endpoints.fetchUserDetails.select();
+export const selectUserDetailsFromState= userAuthApi.endpoints.fetchUserDetails.select();
 
 export const selectUserDetails =  createSelector(
-  selectUsersDetails,
-  userDetails => userDetails?.data ?? EMPTY_USER
+  selectUserDetailsFromState,
+  userDetails => userDetails?.data?.data ?? EMPTY_USER
 );
 
 export const selectUserAuthStatus = createSelector(
-  selectUsersDetails,
+  selectUserDetailsFromState,
   userLoginState => userLoginState?.data?.loginStatus ?? 'unauthenticated' as LoginStatus
 );

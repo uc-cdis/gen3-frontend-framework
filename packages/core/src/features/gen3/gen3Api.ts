@@ -23,13 +23,17 @@ export const gen3Api = coreCreateApi({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
       const csrfToken = selectCSRFToken(getState() as CoreState);
+
+      console.log("gen3Api csrf: ", csrfToken);
       headers.set('Content-Type', 'application/json');
 
       let accessToken = undefined;
       if (process.env.NODE_ENV === 'development') {
-        accessToken = getCookie('access_token');
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        accessToken = getCookie('credentials_token');
       }
-      if (csrfToken) headers.set('X-CSRFToken', csrfToken);
+      if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
       if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       return headers;
     },
@@ -38,6 +42,7 @@ export const gen3Api = coreCreateApi({
     getCSRF: builder.query<CSRFToken, void>({
       query: () => '_status',
       transformResponse: (response: JSONObject): CSRFToken => {
+        console.log("gen3Api getCSRF: ", response);
         return { csrfToken: response['csrf'] as string };
       },
     }),

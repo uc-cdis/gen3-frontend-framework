@@ -7,7 +7,7 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
 } from '../filters';
-import { guppyApi } from './guppylApi';
+import { guppyApi } from './guppyApi';
 import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';

@@ -10,7 +10,7 @@ import { userAuthApiReducerPath, userAuthApiReducer} from './features/user/userS
 import {
   guppyApiReducer,
   guppyApiSliceReducerPath,
-} from './features/guppy/guppylApi';
+} from './features/guppy/guppyApi';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,

@@ -37,5 +37,5 @@ export {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   selectUserDetails,
-  selectUserAuthStatus,
+  selectUserAuthStatus
 };
