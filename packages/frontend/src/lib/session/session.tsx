@@ -5,17 +5,18 @@ import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
   useCoreDispatch,
-  logoutFence,
   selectCurrentModal, useCoreSelector, type CoreState,
   showModal, Modals, useLazyFetchUserDetailsQuery,
+   useGetCSRFQuery,selectUserAuthStatus,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  await fetch('/api/auth/sessionLogout');
+  await fetch('/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/', { cache: 'no-store' });
 };
 
 function useOnline() {
@@ -94,8 +95,9 @@ export const useIsAuthenticated = () => {
 export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
 
-  await logoutSession();
-  router.push("/");
+   await logoutSession();
+  //router.push(`${GEN3_FENCE_API}/user/logout?next=https://localhost:3010/`);
+  await router.push("/");
 };
 
 const refreshSession = (getUserDetails : ()=>void,
@@ -170,7 +172,9 @@ export const SessionProvider = ({
   );
   const [pending, setPending] = useState(session ? false : true);
 
-  const [ getUserDetails] = useLazyFetchUserDetailsQuery();
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  useGetCSRFQuery(); // Fetch CSRF token
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
@@ -180,9 +184,6 @@ export const SessionProvider = ({
   );
 
   const pathname = usePathname();
-
-  console.log("session");
-
 
   const [
     mostRecentSessionRefreshTimestamp,
@@ -206,29 +207,11 @@ export const SessionProvider = ({
     await getUserDetails();
   };
 
-  // update session status using the user status
-  const updateSessionWithUserStatus = async () => {
-
-    userStatus === 'authenticated' ? setSessionInfo({status: 'issued'} as Session) : setSessionInfo({status: 'not present'} as Session);
-    setPending(false); // not waiting for session to load anymore
-    await getUserDetails();
-  };
-
-  // for now we are using the user status to determine if the user is logged in
-  const updateSession = () => updateSessionWithUserStatus();
-
-  /**
-   *  Update session status when the user status changes
-   */
-  useDeepCompareEffect (() => {
-    updateSessionWithUserStatus();
-  }, [userStatus]);
-
   const endSession = async () => {
      logoutSession().then(() => {
        getUserDetails();
     });
-    router.push('/');
+    router.push("/");
   };
   /**
    * Update session value every updateSessionInterval seconds
