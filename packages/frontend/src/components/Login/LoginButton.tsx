@@ -1,24 +1,27 @@
 import React, { useContext } from 'react';
 import { UnstyledButton, Tooltip } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import {  useIsAuthenticated, useSession } from '../../lib/session/session';
-import { SessionContext, logoutUser } from '../../lib/session/session';
+import { SessionContext } from '../../lib/session/session';
+import { type CoreState, selectUserAuthStatus, useCoreSelector, isAuthenticated } from '@gen3/core';
+
 
 const handleSelected = async (
   isAuthenticated: boolean,
   router: NextRouter,
   referrer: string,
-  isCredentialsLogin = false,
+  endSession?: ()  => void,
 
 ) => {
   if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
-    if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
-    else {
-      await logoutUser(router);
-    }
+    // console.log("Logout", isCredentialsLogin);
+   // if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
+   // else {
+    endSession && endSession();
+    await router.push(referrer);
+   // }
   }
 };
 
@@ -40,11 +43,10 @@ const LoginButton = ({
 
   const pathname = usePathname();
 
-  const { isCredentialsLogin } = useContext(SessionContext) ?? {
-    isCredentialsLogin: false,
-  };
+  const { endSession } = useContext(SessionContext) ?? { endSession: undefined };
 
-  const { isAuthenticated } = useIsAuthenticated();
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  const authenticated = isAuthenticated(userStatus);
   return (
     <Tooltip label={tooltip} position="bottom" withArrow
              multiline
@@ -53,7 +55,7 @@ const LoginButton = ({
              classNames={TooltipStyle}>
     <UnstyledButton
       onClick={() =>
-        handleSelected(isAuthenticated, router, pathname, isCredentialsLogin)
+        handleSelected(authenticated, router, pathname, endSession)
       }
     >
       <div

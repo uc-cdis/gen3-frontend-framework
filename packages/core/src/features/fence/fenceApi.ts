@@ -94,6 +94,7 @@ export const fetchFence = async <T>(
     headers: headers,
     body: 'POST' === method ? JSON.stringify(body) : null,
   });
+
   if (res.ok) return {
     data: isJSON ? await res.json() : await res.text(),
     status: res.status,
@@ -113,6 +114,6 @@ export const fetchFence = async <T>(
 
 export const logoutFence = async (redirect = '/') =>
   await fetchFence({
-    endpoint: `/user/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
+    endpoint: `${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
     method: 'GET',
   });
