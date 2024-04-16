@@ -80,7 +80,12 @@ const main = () => {
     },
   });
 
-  if (!existsSync(themeFile)) {
+  if (!themeFile) {
+    console.log('No themefile found. Please provide a themefile with \'-t\'.');
+    return;
+  }
+
+  if (themeFile && !existsSync(themeFile)) {
     console.log('No themefile found. Please provide a themefile with \'-t\'.');
     return;
   }
