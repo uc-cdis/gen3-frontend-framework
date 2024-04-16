@@ -22,7 +22,6 @@ const userAuthApi = coreCreateApi({
     let accessToken = undefined;
     if (process.env.NODE_ENV === 'development') {
       accessToken = getCookie('credentials_token');
-      console.log("accessToken: ", accessToken);
     }
     const headers : Record<string, string>= {
       Accept: 'application/json',
@@ -32,7 +31,6 @@ const userAuthApi = coreCreateApi({
       credentials: 'include',
     };
 
-    console.log("fetching user details");
     try {
       results = await fetchFence({ endpoint, headers});
     } catch (e) {
@@ -49,7 +47,6 @@ const userAuthApi = coreCreateApi({
     fetchUserDetails: builder.query<UserAuthResponse, void>({
       query: () => ({ endpoint: '/user/user' }),
       transformResponse(response: Gen3FenceResponse<Gen3User>) {
-        console.log("userSliceRTK: response: ", response);
         return {
           data: response.data,
           // TODO: check if this is the correct status code

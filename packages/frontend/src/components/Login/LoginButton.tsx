@@ -16,12 +16,8 @@ const handleSelected = async (
 ) => {
   if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
-    // console.log("Logout", isCredentialsLogin);
-   // if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
-   // else {
     endSession && endSession();
     await router.push(referrer);
-   // }
   }
 };
 
