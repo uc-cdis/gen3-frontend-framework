@@ -97,7 +97,7 @@ export const logoutUser = async (router: NextRouter) => {
 
    await logoutSession();
   //router.push(`${GEN3_FENCE_API}/user/logout?next=https://localhost:3010/`);
-  await router.push("/");
+  await router.push('/');
 };
 
 const refreshSession = (getUserDetails : ()=>void,
@@ -211,7 +211,7 @@ export const SessionProvider = ({
      logoutSession().then(() => {
        getUserDetails();
     });
-    router.push("/");
+    router.push('/');
   };
   /**
    * Update session value every updateSessionInterval seconds

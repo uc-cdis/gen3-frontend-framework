@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { GEN3_FENCE_API } from '@gen3/core';
-import cookie from "cookie";
+import cookie from 'cookie';
 import { deleteCookie } from 'cookies-next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -45,5 +45,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',
   });
-  res.status(200).json({ success: "success" });
+  res.status(200).json({ success: 'success' });
 }
