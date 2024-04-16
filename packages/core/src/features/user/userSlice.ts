@@ -43,8 +43,6 @@ export const fetchUserState = createAsyncThunk<
     accessToken = getCookie('credentials_token');
   }
 
-  console.log("accessToken: ", accessToken);
-  console.log("csrfToken: ", csrfToken);
   return await fetchFence({
     endpoint: '/user/user',
     method: 'GET',

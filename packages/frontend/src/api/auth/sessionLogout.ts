@@ -15,8 +15,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-  const cookies = response.headers.get('set-cookie');
-
   res.setHeader('Set-Cookie', [
     cookie.serialize('fence', '', {
       sameSite: 'lax',
