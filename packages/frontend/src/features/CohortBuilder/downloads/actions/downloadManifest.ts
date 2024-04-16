@@ -79,7 +79,7 @@ export const downloadToManifestAction = async (
       }
       const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
       const blob = new Blob([bytes], {
-        type: "application/json;charset=utf-8"
+        type: 'application/json;charset=utf-8'
       });
       handleDownload(blob, manifestFilename);
       done && done();
@@ -151,7 +151,7 @@ export const downloadToManifestAction = async (
     });
     const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
     const blob = new Blob([bytes], {
-      type: "application/json;charset=utf-8"
+      type: 'application/json;charset=utf-8'
     });
     handleDownload(blob, manifestFilename);
     done && done();

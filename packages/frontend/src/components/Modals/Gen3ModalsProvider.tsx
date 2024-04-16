@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { useCookies } from 'react-cookie';
 import {
   type CoreState,
@@ -85,10 +85,10 @@ const Gen3ModalsProvider = ({
   ]);
 
   return (
-    <>
+    <React.Fragment>
       {modal && getModal(modal, modalsConfig)}
       {children}
-    </>
+    </React.Fragment>
   );
 };
 

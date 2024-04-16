@@ -49,8 +49,6 @@ const fetchJson = async (url: string) => {
   });
 };
 
-type ActionList = Array<Promise<void>>;
-
 const main = () => {
 
   let drsResolverURL = 'https://dataguids.org';
@@ -73,9 +71,6 @@ const main = () => {
 
 
   const drsCachePath = `${out}/drsHostnames.json`;
-
-  const actionList: ActionList = [];
-
   fetchJson(`${drsResolverURL}/index/_dist`).then((drsIds : DRSIndexEntry[]) => {
       if (!drsIds) {
         throw new Error('Failed to fetch drsHostnames.json');

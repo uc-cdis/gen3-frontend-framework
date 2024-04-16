@@ -199,7 +199,7 @@ const AiSearch = ({
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
-            onKeyUp={(e) => e.key === "Enter" && askAi()}
+            onKeyUp={(e) => e.key === 'Enter' && askAi()}
             classNames={{
               root: '',
               input: `!pr-[250px] ${resultAreaDisplayed && '!rounded-b-none !border-blue-600 !border-b-0'}`,

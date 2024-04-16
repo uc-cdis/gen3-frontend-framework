@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { NavPageLayout } from '../../features/Navigation';
 import LoginPanel from '../../components/Login/LoginPanel';
 import React from 'react';

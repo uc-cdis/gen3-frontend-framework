@@ -1,10 +1,11 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
+import React from 'react';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
 
 const Custom404Page: NextPage = () => {
   return (
-    <>
+    <React.Fragment>
       <Head>
         <title>Page Not Found</title>
         <meta
@@ -20,7 +21,7 @@ const Custom404Page: NextPage = () => {
           Click here to go to the Portal&apos;s home page.
         </Link>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
