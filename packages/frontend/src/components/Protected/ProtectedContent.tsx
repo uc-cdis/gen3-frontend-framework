@@ -33,7 +33,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
     if (pending) return <LoadingOverlay visible={pending} />;
     else
       return (
-       <div className="w-full h-full">
+       <div className="w-full h-full relative">
           <LoadingOverlay visible={pending} />
           <Center>
             <Paper shadow="md" p="md">

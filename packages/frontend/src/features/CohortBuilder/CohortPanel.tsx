@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { Box, Loader, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -228,11 +228,15 @@ export const CohortPanel = ({
     }
   }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
 
-  const { data: counts, isSuccess: isCountSuccess } = useGetCountsQuery({
+  const { data: counts, isSuccess: isCountSuccess, isLoading } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex w-100 h-100 relative justify-center"><Loader  variant="dots"  /> </div>);
+  }
   return (
     <div className="flex mt-3">
       <div>
@@ -252,7 +256,8 @@ export const CohortPanel = ({
           />
         )}
       </div>
-      <div className="w-full">
+      <div className="w-full relative">
+
         <div className="flex flex-col">
           <CohortManager index={index} />
 
