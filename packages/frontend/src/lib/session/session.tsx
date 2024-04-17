@@ -16,7 +16,6 @@ const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  console.log("logoutSession", GEN3_REDIRECT_URL, GEN3_FENCE_API);
   await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
 };
 
