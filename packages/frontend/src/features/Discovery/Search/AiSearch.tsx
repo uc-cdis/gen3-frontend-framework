@@ -119,8 +119,7 @@ const AiSearch = ({
   useEffect(() => {
     //if error show to user
     if (aiError) {
-      const errorStatus = (aiError as FetchBaseQueryError).status;
-      switch (errorStatus) {
+      switch (aiError.status) {
         case 401:
            setAiResponseDisplayed({
              topic: 'error',
