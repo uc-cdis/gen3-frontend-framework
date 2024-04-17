@@ -118,7 +118,7 @@ const AiSearch = ({
   useEffect(() => {
     //if error show to user
     if (aiError) {
-      switch (aiError.originalStatus) {
+      switch (aiError.status) {
         case 401:
            setAiResponseDisplayed({query: searchTermOnSubmit, response: 'Login required. Please login and try again'});
            break;
