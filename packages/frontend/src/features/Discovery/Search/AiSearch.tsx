@@ -6,7 +6,6 @@ import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useDeepCompareCallback } from 'use-deep-compare';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
 interface AiSearchProps {
   placeholder?: string;
@@ -119,31 +118,15 @@ const AiSearch = ({
   useEffect(() => {
     //if error show to user
     if (aiError) {
-      const errorStatus = (aiError as FetchBaseQueryError).status;
-      switch (errorStatus) {
+      switch (aiError.originalStatus) {
         case 401:
-           setAiResponseDisplayed({
-             topic: 'error',
-             conversationId: 'error',
-             documents: [],
-             query: searchTermOnSubmit,
-             response: 'Login required. Please login and try again'} );
+           setAiResponseDisplayed({query: searchTermOnSubmit, response: 'Login required. Please login and try again'});
            break;
           case 403:
-           setAiResponseDisplayed({
-             topic: 'error',
-             conversationId: 'error',
-             documents: [],
-             query: searchTermOnSubmit,
-             response: 'You do not have permission to access AISearch. Please contact your administrator'});
+           setAiResponseDisplayed({query: searchTermOnSubmit, response: 'You do not have permission to access AISearch. Please contact your administrator'});
             break;
         default:
-          setAiResponseDisplayed({
-            topic: 'error',
-            conversationId: 'error',
-            documents: [],
-            query: searchTermOnSubmit,
-            response: 'Something went wrong please refresh and try again'});
+          setAiResponseDisplayed({query: searchTermOnSubmit, response: 'Something went wrong please refresh and try again'});
       }
 
       setShowLoading(false);
