@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { Gen3User, LoginStatus } from './types';
@@ -11,7 +12,7 @@ export interface UserAuthResponse  {
 }
 
 const userAuthApi = coreCreateApi({
-  reducerPath: "userAuthApi",
+  reducerPath: 'userAuthApi',
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
@@ -35,7 +36,7 @@ const userAuthApi = coreCreateApi({
     } catch (e) {
       /*
         Because an "error" response is valid for the auth requests we don't want to
-        put the request in an error state or it will attempt the request over and over again
+        put the request in an error state, or it will attempt the request over and over again
       */
       return { data: {}};
     }
@@ -56,6 +57,10 @@ const userAuthApi = coreCreateApi({
     }),
   }),
 });
+
+const EMPTY_USER: Gen3User = {
+  username: undefined
+};
 
 export const {
   useFetchUserDetailsQuery,
