@@ -7,7 +7,8 @@ import {
   useCoreDispatch,
   selectCurrentModal, useCoreSelector, type CoreState,
   showModal, Modals, useLazyFetchUserDetailsQuery,
-   useGetCSRFQuery,selectUserAuthStatus,
+  useGetCSRFQuery, selectUserAuthStatus,
+  GEN3_REDIRECT_URL, GEN3_FENCE_API,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -16,7 +17,8 @@ const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  await fetch('/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/', { cache: 'no-store' });
+  console.log("logoutSession", GEN3_REDIRECT_URL, GEN3_FENCE_API);
+  await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
 };
 
 function useOnline() {
@@ -206,6 +208,16 @@ export const SessionProvider = ({
     setPending(false); // not waiting for session to load anymore
     await getUserDetails();
   };
+
+  // update session status using the user status
+  const updateSessionWithUserStatus = async () => {
+    userStatus === 'authenticated' ? setSessionInfo({status: 'issued'} as Session) : setSessionInfo({status: 'not present'} as Session);
+    setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
+
+  // for now we are using the user status to determine if the user is logged in
+  const updateSession = () => updateSessionWithUserStatus();
 
   const endSession = async () => {
      logoutSession().then(() => {
