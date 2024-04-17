@@ -5,21 +5,14 @@ import cookie from 'cookie';
 import { deleteCookie } from 'cookies-next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  let redirect = req.query?.next;
-  console.log("url", `${GEN3_FENCE_API}/user/logout`);
-  console.log("GEN3_FENCE_API", "-" + GEN3_FENCE_API);
-  console.log("redirect", redirect);
-  redirect = Array.isArray(redirect) ? redirect[0] : redirect;
-  const response = await fetch(`${GEN3_FENCE_API}/user/logout`,
+
+   await fetch(`${GEN3_FENCE_API}/user/logout`,
     {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
-  console.log("response", response);
-  console.log("redirect", redirect);
 
   res.setHeader('Set-Cookie', [
     cookie.serialize('fence', '', {
