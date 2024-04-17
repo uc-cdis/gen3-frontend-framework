@@ -39,7 +39,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   }, [redirect, router]);
 
   const handleCredentialsLogin = useCallback( async () => {
-    router.push(filterRedirect(redirect));
+    await router.push(filterRedirect(redirect));
   }, [redirect, router]);
 
   return (

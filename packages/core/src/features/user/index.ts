@@ -8,12 +8,17 @@ import {
   selectUserData,
   selectUserLoginStatus,
   useIsUserLoggedIn,
-  type LoginStatus,
-  type Gen3User,
 } from './userSlice';
 
+import {
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery,
+  selectUserDetails,
+  selectUserAuthStatus,
+} from './userSliceRTK';
+
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
-import { UserProfile } from './types';
+import { type UserProfile, type LoginStatus, type Gen3User } from './types';
 
 export {
   useUser,
@@ -29,4 +34,8 @@ export {
   type Gen3User,
   type LoginStatus,
   type UserProfile,
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery,
+  selectUserDetails,
+  selectUserAuthStatus
 };

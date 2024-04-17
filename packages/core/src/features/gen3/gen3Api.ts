@@ -27,9 +27,11 @@ export const gen3Api = coreCreateApi({
 
       let accessToken = undefined;
       if (process.env.NODE_ENV === 'development') {
-        accessToken = getCookie('access_token');
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        accessToken = getCookie('credentials_token');
       }
-      if (csrfToken) headers.set('X-CSRFToken', csrfToken);
+      if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
       if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       return headers;
     },

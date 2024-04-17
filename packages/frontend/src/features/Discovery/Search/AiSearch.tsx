@@ -5,6 +5,8 @@ import { TextInput, Loader, Tabs, Button, UnstyledButton, Title, Divider, Toolti
 import { useAskQuestionMutation, AiSearchResponse } from '@gen3/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useDeepCompareCallback } from 'use-deep-compare';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
 interface AiSearchProps {
   placeholder?: string;
@@ -36,7 +38,7 @@ const AiSearch = ({
   const [activeTab, setActiveTab] = useState<string | null>('search');
   const [
     askQuestion,
-    { isLoading: apiIsLoading, data: aiResponse},
+    { isLoading: apiIsLoading, data: aiResponse, error: aiError },
     // This is the destructured mutation result
   ] = useAskQuestionMutation();
 
@@ -114,7 +116,41 @@ const AiSearch = ({
     }
   }, [uidForStorage, aiSearchHistory]);
 
-  const setCurrentSearch = (searchTerm:string) => {
+  useEffect(() => {
+    //if error show to user
+    if (aiError) {
+      const errorStatus = (aiError as FetchBaseQueryError).status;
+      switch (errorStatus) {
+        case 401:
+           setAiResponseDisplayed({
+             topic: 'error',
+             conversationId: 'error',
+             documents: [],
+             query: searchTermOnSubmit,
+             response: 'Login required. Please login and try again'} );
+           break;
+          case 403:
+           setAiResponseDisplayed({
+             topic: 'error',
+             conversationId: 'error',
+             documents: [],
+             query: searchTermOnSubmit,
+             response: 'You do not have permission to access AISearch. Please contact your administrator'});
+            break;
+        default:
+          setAiResponseDisplayed({
+            topic: 'error',
+            conversationId: 'error',
+            documents: [],
+            query: searchTermOnSubmit,
+            response: 'Something went wrong please refresh and try again'});
+      }
+
+      setShowLoading(false);
+    }
+  }, [aiError, searchTermOnSubmit]);
+
+  const setCurrentSearch = useDeepCompareCallback((searchTerm:string) => {
     //set search to item
     setAiResponseDisplayed(aiSearchHistory[searchTerm].result);
     setSearchTerm(searchTerm);
@@ -124,7 +160,7 @@ const AiSearch = ({
     //change tab to search tab
     setActiveTab('search');
 
-  };
+  }, [aiSearchHistory]);
 
   const removeSearchHistory = (searchTerm:string) => {
     setAiSearchHistory(searchHistory => {
@@ -162,7 +198,7 @@ const AiSearch = ({
         );
       }));
     }
-  }, [aiSearchHistory]);
+  }, [aiSearchHistory, setCurrentSearch]);
 
   return (
     <Tabs color="orange.8" className="w-full" classNames={{
@@ -199,7 +235,7 @@ const AiSearch = ({
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
-            onKeyUp={(e) => e.key === "Enter" && askAi()}
+            onKeyUp={(e) => e.key === 'Enter' && askAi()}
             classNames={{
               root: '',
               input: `!pr-[250px] ${resultAreaDisplayed && '!rounded-b-none !border-blue-600 !border-b-0'}`,

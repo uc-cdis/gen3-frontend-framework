@@ -18,7 +18,7 @@ interface SubPath {
   commonsSubPath?: string;
 }
 
-const getSubPath = (argPath: string = undefined): SubPath => {
+const getSubPath = (argPath = ''): SubPath => {
   const addSlash = (path: string) => `${path}/`.replace(/\/+$/, '/');
 
   if (!argPath) {

@@ -140,7 +140,7 @@ const ExplorerTable = ({
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
-    rowCount: data?.data._aggregation?.[index]._totalCount ?? 0,
+    rowCount: data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize,
     state: {
       isLoading,
       pagination,

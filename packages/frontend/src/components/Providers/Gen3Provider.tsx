@@ -1,5 +1,5 @@
 import React, { useEffect, ReactNode } from 'react';
-import { CoreProvider } from '@gen3/core';
+import { CoreProvider, useGetCSRFQuery } from '@gen3/core';
 import {
   MantineProvider,
   createEmotionCache,

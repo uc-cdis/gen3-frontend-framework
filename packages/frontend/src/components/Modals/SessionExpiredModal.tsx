@@ -1,13 +1,19 @@
+import { useCallback } from 'react';
+import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
 
 export const SessionExpiredModal = ({
   openModal,
-  onLogout,
 }: {
   openModal: boolean;
-  onLogout: () => void;
 }): JSX.Element => {
+
+  const router = useRouter();
+  const onLogout = useCallback(() => {
+    router.push('/Login');
+  }, [router]);
+
   return (
     <BaseModal
       title={
@@ -19,7 +25,7 @@ export const SessionExpiredModal = ({
       size="60%"
       buttons={[
         {
-          title: 'Logout',
+          title: 'Login',
           onClick: onLogout,
           hideModalOnClick: true,
           dataTestId: 'button-session-timeout-logout',

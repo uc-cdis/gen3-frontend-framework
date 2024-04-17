@@ -1,16 +1,23 @@
-import React, { useEffect, useContext, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
-  fetchUserState,
-  CoreDispatch,
   useCoreDispatch,
-  GEN3_FENCE_API,
+  selectCurrentModal, useCoreSelector, type CoreState,
+  showModal, Modals, useLazyFetchUserDetailsQuery,
+  useGetCSRFQuery, selectUserAuthStatus,
+  GEN3_REDIRECT_URL, GEN3_FENCE_API,
 } from '@gen3/core';
+import { usePathname } from 'next/navigation';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+
+export const logoutSession = async () => {
+  await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
+};
 
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
@@ -38,7 +45,7 @@ export const SessionContext = React.createContext<Session | undefined>(undefined
 export const getSession = async () => {
 
   try {
-    const res = await fetch('/api/auth/sessionToken');
+    const res = await fetch('/api/auth/sessionToken', { cache: 'no-store' });
     if (res.status === 200) {
       return await res.json();
     }
@@ -80,12 +87,15 @@ export const useIsAuthenticated = () => {
   };
 };
 
-const logoutUser = (router: NextRouter) => {
+export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
-  router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
+
+   await logoutSession();
+  //router.push(`${GEN3_FENCE_API}/user/logout?next=https://localhost:3010/`);
+  await router.push('/');
 };
 
-const refreshSession = (dispatch: CoreDispatch,
+const refreshSession = (getUserDetails : ()=>void,
                         mostRecentSessionRefreshTimestamp:number,
                         updateSessionRefreshTimestamp: (arg0:number)=>void ) : void => {
   const timeSinceLastSessionUpdate =
@@ -97,7 +107,7 @@ const refreshSession = (dispatch: CoreDispatch,
 
   // hitting Fence endpoint refreshes token
   updateSessionRefreshTimestamp(Date.now());
-  dispatch(fetchUserState());
+  getUserDetails();
 };
 
 
@@ -136,7 +146,7 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
  * @param updateSessionTime - Interval of time between fetching session token
  * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
  * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
- * @param logoutInactiveUsers - Wether to log out users that are determined to be inactive or not
+ * @param logoutInactiveUsers - Whether to log out users that are determined to be inactive or not
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -149,19 +159,26 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  const [isCredentialsLogin, setIsCredentialsLogin] = useState(false);
   const [sessionInfo, setSessionInfo] = useState(
     session ??
       ({
         status: 'not present',
-        isCredentialsLogin,
-        setIsCredentialsLogin
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
 
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  useGetCSRFQuery(); // Fetch CSRF token
+
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
+
+  const modal = useCoreSelector((state: CoreState) =>
+    selectCurrentModal(state),
+  );
+
+  const pathname = usePathname();
 
   const [
     mostRecentSessionRefreshTimestamp,
@@ -177,16 +194,35 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  const updateSession = async () => {
+  // Update session status using the session token api
+  const updateSessionWithSessionApi = async () => {
     const tokenStatus = await getSession();
     setSessionInfo(tokenStatus);
     setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
+
+  // update session status using the user status
+  const updateSessionWithUserStatus = async () => {
+    userStatus === 'authenticated' ? setSessionInfo({status: 'issued'} as Session) : setSessionInfo({status: 'not present'} as Session);
+    setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
+
+  // for now we are using the user status to determine if the user is logged in
+  const updateSession = () => updateSessionWithUserStatus();
+
+  const endSession = async () => {
+     logoutSession().then(() => {
+       getUserDetails();
+    });
+    router.push('/');
   };
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
-    updateSession();
+     updateSession();
 
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
@@ -215,32 +251,35 @@ export const SessionProvider = ({
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
           !isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
         if (
           workspaceInactivityTimeLimitMilliseconds > 0  && timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
           isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
       }
       // fetching a userState will renew the session
-      refreshSession(coreDispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
+      refreshSession(getUserDetails, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
       updateSession();
 
   }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );
 
-  const value: Session = useMemo(() => {
+  const value: Session = useDeepCompareMemo(() => {
     return {
       ...sessionInfo,
       pending,
-      setIsCredentialsLogin,
-      isCredentialsLogin,
       updateSession,
+      endSession
     };
-  }, [isCredentialsLogin, pending, sessionInfo]);
+  }, [pending, sessionInfo, updateSession, endSession]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

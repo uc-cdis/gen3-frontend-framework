@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { useCookies } from 'react-cookie';
 import {
   type CoreState,
@@ -9,6 +9,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
+import { SessionExpiredModal } from './SessionExpiredModal';
 import { ModalsConfig } from './types';
 import { defaultComposer } from 'default-composer';
 import { ContentType } from '../Content/TextContent';
@@ -26,10 +27,16 @@ const getModal = (
 ): ReactElement | null => {
   let res: ReactElement | null = null;
   switch (modal) {
-    case Modals.FirstTimeModal:
+    case Modals.FirstTimeModal: {
       res = config.systemUseModal?.enabled ? (
         <FirstTimeModal openModal={true} config={config.systemUseModal} />
       ) : null;
+      break;
+    }
+    case Modals.SessionExpireModal: {
+        res = (<SessionExpiredModal openModal={true} />);
+      break;
+      }
   }
   return res;
 };
@@ -64,6 +71,7 @@ const Gen3ModalsProvider = ({
     [],
   );
   const { isAuthenticated } = useIsAuthenticated();
+
   useDeepCompareEffect(() => {
     if (!cookie['Gen3-first-time-use'] && modalsConfig.systemUseModal.enabled) {
       if (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)
@@ -77,10 +85,10 @@ const Gen3ModalsProvider = ({
   ]);
 
   return (
-    <>
+    <React.Fragment>
       {modal && getModal(modal, modalsConfig)}
       {children}
-    </>
+    </React.Fragment>
   );
 };
 

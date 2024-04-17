@@ -77,6 +77,7 @@ export const guppyAPIFetch = async <T>(
 export const guppyApi = coreCreateApi({
   reducerPath: 'guppy',
 
+  // TODO: refactor to use fetchBaseQuery
   baseQuery: async (request: guppyApiSliceRequest) => {
     try {
       const results = await guppyAPIFetch(request);

@@ -24,8 +24,10 @@ const colors = Object.fromEntries(
 );
 
 export default function App({ Component, pageProps }: AppProps) {
+
   useEffect(() => {
     setDRSHostnames(drsHostnames);
+
   }, []);
 
   return (

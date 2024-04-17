@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.19",
+  "version": "0.10.21",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -82,7 +82,7 @@
     "jose": "^4.13.1",
     "js-cookie": "^3.0.5",
     "jsonpath-plus": "^8.0.0",
-    "mantine-react-table": "^1.3.1",
+    "mantine-react-table": "^1.3.3",
     "minisearch": "^6.3.0",
     "next": "^14.1.0",
     "next-compose-plugins": "^2.2.1",

@@ -301,7 +301,7 @@ const useSearchMetadata = ({
     }
   }, [autoSuggest, isSearching, mdsData, search, searchTerms]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const filterKeywordSearchResults = () => {
       return searchResults ? searchResults : mdsData;
     };
@@ -323,12 +323,7 @@ const useSearchMetadata = ({
         ) ?? []
       );
     });
-  }, [
-    discoveryConfig,
-    mdsData,
-    searchResults,
-    searchTerms.advancedSearchTerms,
-  ]);
+  }, [discoveryConfig, mdsData, miniSearchSuggestions, searchResults, searchTerms.advancedSearchTerms]);
 
   return {
     searchedData: isSearching ? searchedData : mdsData,

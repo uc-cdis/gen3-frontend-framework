@@ -1,23 +1,23 @@
 import React, { useContext } from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
-import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '@gen3/core';
-import { useIsAuthenticated } from '../../lib/session/session';
 import { SessionContext } from '../../lib/session/session';
+import { type CoreState, selectUserAuthStatus, useCoreSelector, isAuthenticated } from '@gen3/core';
+
 
 const handleSelected = async (
   isAuthenticated: boolean,
   router: NextRouter,
-  isCredentialsLogin = false,
+  referrer: string,
+  endSession?: ()  => void,
+
 ) => {
-  if (!isAuthenticated) await router.push('Login');
+  if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
-    if (isCredentialsLogin) await router.push('/api/auth/credentialsLogout');
-    else
-      await router.push(
-        `${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`,
-      );
+    endSession && endSession();
+    await router.push(referrer);
   }
 };
 
@@ -34,23 +34,22 @@ const LoginButton = ({
 }: LoginButtonProps) => {
   const router = useRouter();
 
-  const { isCredentialsLogin } = useContext(SessionContext) ?? {
-    isCredentialsLogin: false,
-  };
+  const pathname = usePathname();
 
-  const { isAuthenticated } = useIsAuthenticated();
+  const { endSession } = useContext(SessionContext) ?? { endSession: undefined };
 
-  // TODO add referring page to redirect to after login
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  const authenticated = isAuthenticated(userStatus);
   return (
     <UnstyledButton
       onClick={() =>
-        handleSelected(isAuthenticated, router, isCredentialsLogin)
+        handleSelected(authenticated, router, pathname, endSession)
       }
     >
       <div
         className={`flex items-center font-medium font-heading ${className}`}
       >
-        {!hideText ? (isAuthenticated ? 'Logout' : 'Login') : null}
+        {!hideText ? (authenticated ? 'Logout' : 'Login') : null}
         {icon}
       </div>
     </UnstyledButton>

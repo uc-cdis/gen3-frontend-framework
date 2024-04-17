@@ -11,7 +11,7 @@ interface DetailsAccessProps {
 
 const DetailsAuthorizationIcon = ({ studyData, dataAccess } : DetailsAccessProps) => {
 
-  const accessStyle = "flex w-full items-center rounded-sm border-2 py-3 px-1";
+  const accessStyle = 'flex w-full items-center rounded-sm border-2 py-3 px-1';
 
   return (
     <div className="flex mb-2">

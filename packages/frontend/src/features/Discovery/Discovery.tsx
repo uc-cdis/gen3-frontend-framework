@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Text } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -67,6 +67,18 @@ const Discovery = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
+  if (dataRequestStatus.isLoading) {
+    return (
+      <div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+  }
+
+  if (dataRequestStatus.isError) {
+    return (
+      <div className="flex w-full py-24 h-100 relative justify-center">
+        <Text size={'xl'}>Error loading discovery data</Text>
+      </div>);
+  }
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">

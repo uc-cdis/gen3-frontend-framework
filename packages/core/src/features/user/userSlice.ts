@@ -9,10 +9,11 @@ import {
 } from '../../dataAccess';
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { UserProfile } from './types';
+import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
+import { selectCSRFToken } from '../gen3';
 
-export type Gen3User = Partial<UserProfile>;
+
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
@@ -33,12 +34,13 @@ export const fetchUserState = createAsyncThunk<
   Gen3FenceResponse<Gen3User>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
->('fence/user/user', async () => {
+>('fence/user/user', async (_, meta) => {
 
-  // Get a access token from a cookie if in development mode
+  // Get an access token from a cookie if in development mode
+  const csrfToken = selectCSRFToken(meta.getState());
   let accessToken = undefined;
   if (process.env.NODE_ENV === 'development') {
-    accessToken = getCookie('access_token');
+    accessToken = getCookie('credentials_token');
   }
 
   return await fetchFence({
@@ -47,13 +49,13 @@ export const fetchUserState = createAsyncThunk<
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken} : {}),
       credentials: 'include',
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 });
 
-export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
 
 export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
   loginStatus === 'authenticated';
@@ -86,11 +88,10 @@ const slice = createSlice({
     builder
       .addCase(fetchUserState.fulfilled, (_, action) => {
         const response = action.payload;
-        if (response.errors) {
+        if (response.status !== 200) {
           return {
             status: 'rejected',
             loginStatus: 'unauthenticated',
-            error: response.errors.filters,
           };
         }
 
