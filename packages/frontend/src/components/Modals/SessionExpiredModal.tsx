@@ -25,7 +25,7 @@ export const SessionExpiredModal = ({
       size="60%"
       buttons={[
         {
-          title: 'Logout',
+          title: 'Login',
           onClick: onLogout,
           hideModalOnClick: true,
           dataTestId: 'button-session-timeout-logout',

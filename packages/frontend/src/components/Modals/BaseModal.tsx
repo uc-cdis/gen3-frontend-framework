@@ -113,8 +113,8 @@ export const BaseModal= ({
           fontWeight: 600,
           paddingBottom: '2.5em',
           marginBottom: '2em',
-          backgroundColor: theme.colors.primary[5],
-          color: theme.colors['primary-contrast'][0],
+          backgroundColor: theme.colors.primary[4],
+          color: theme.colors['primary-contrast'][4],
         },
         close: {
           color: 'base-darker',
