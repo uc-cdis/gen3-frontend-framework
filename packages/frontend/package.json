@@ -156,7 +156,7 @@
     "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
-    "@gen3/core": "^0.10.12",
+    "@gen3/core": "^0.10.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "5.0.2"
