@@ -46,6 +46,7 @@ COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
+COPY ./start.sh ./
 RUN npm ci
 COPY ./packages ./packages
 RUN npm install \
