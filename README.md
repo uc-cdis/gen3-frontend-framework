@@ -115,7 +115,7 @@ For example,
 
 `docker build -t gen3ff .` will build a container with all available packages built
 
-`docker run -p 3000:80 -it gen3ff` will run the container from above.
+`docker run -p 3000:3000 -it gen3ff` will run the container from above.
 
 The container can be viewed at `localhost:3000{BASE_PATH | /}`
 
