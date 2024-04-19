@@ -183,12 +183,6 @@ export const SessionProvider = ({
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
-  const modal = useCoreSelector((state: CoreState) =>
-    selectCurrentModal(state),
-  );
-
-  const pathname = usePathname();
-
   const [
     mostRecentSessionRefreshTimestamp,
     setMostRecentSessionRefreshTimestamp,
