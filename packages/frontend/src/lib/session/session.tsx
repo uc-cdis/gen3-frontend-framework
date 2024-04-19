@@ -18,8 +18,7 @@ const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
   //TODO - investigate why this is not working
-
-  await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
+ // await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
   await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
 };
 
@@ -183,12 +182,6 @@ export const SessionProvider = ({
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
-
-  const modal = useCoreSelector((state: CoreState) =>
-    selectCurrentModal(state),
-  );
-
-  const pathname = usePathname();
 
   const [
     mostRecentSessionRefreshTimestamp,
