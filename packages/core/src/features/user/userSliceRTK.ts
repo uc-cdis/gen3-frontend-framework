@@ -45,13 +45,13 @@ const userAuthApi = coreCreateApi({
   },
   endpoints: (builder) => ({
     fetchUserDetails: builder.query<UserAuthResponse, void>({
-      query: () => ({ endpoint: '/user/user' }),
+      query: () => ({ endpoint: '/user/user/' }),
       transformResponse(response: Gen3FenceResponse<Gen3User>) {
         return {
           data: response.data,
           // TODO: check if this is the correct status code
 
-          loginStatus: response.status === 200 ? 'authenticated' : 'unauthenticated',
+          loginStatus: response.status === 200 && response.data?.username ? 'authenticated' : 'unauthenticated',
         };
       }
     }),
