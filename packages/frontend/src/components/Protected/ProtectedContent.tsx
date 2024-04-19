@@ -22,7 +22,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
     if (typeof window !== 'undefined')
       // route not available on SSR
       router.push({
-        pathname: 'Login',
+        pathname: '/Login',
         query: { referer: redirect },
       });
   };
