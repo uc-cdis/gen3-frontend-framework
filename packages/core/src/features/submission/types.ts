@@ -1,3 +1,5 @@
+import { JSONObject } from '../../types';
+
 export interface Project {
   availability_type: string;
   code: string;
@@ -6,4 +8,24 @@ export interface Project {
 
 export interface ProjectResponse {
   projects: Array<Project>;
+}
+
+export interface SubmissionGraphqlParams {
+  query: string;
+  variables: Record<string, any>;
+  mapping?: {
+    [key: string]: string;
+  };
+}
+
+export interface SubmissionGraphqlResponse {
+  data: JSONObject;
+}
+
+export interface ProjectDetailsParams {
+  ids : Array<string>;
+}
+
+export interface ProjectDetailsResponse {
+  data: JSONObject;
 }
