@@ -52,9 +52,9 @@ COPY ./packages ./packages
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string"
-RUN lerna run --scope @gen3/core build
-RUN lerna run --scope @gen3/frontend build
-RUN lerna run --scope @gen3/toolsff build
-RUN lerna run --scope @gen3/samplecommons build
+#RUN lerna run --scope @gen3/core build
+#RUN lerna run --scope @gen3/frontend build
+#RUN lerna run --scope @gen3/toolsff build
+#RUN lerna run --scope @gen3/samplecommons build
 ENV PORT=3000
 CMD bash ./start.sh
