@@ -274,40 +274,34 @@
       ]
     },
     "dropdowns": {
-      "download-table": {
+      "dropdownItems": [
+        {
+          "enabled": true,
+          "type": "data-json",
+          "title": "JSON",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-json",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.json",
+            "rootPath": "gen3_discovery"
+          }
+        },
+        {
+          "enabled": true,
+          "type": "data-csv",
+          "title": "CSV",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-csv",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.csv",
+            "rootPath": "gen3_discovery"
+          }
+        }
+      ],
         "title": "Download Measurements Metadata Table"
-      }
     },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "data-json",
-        "title": "JSON",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.json"
-      },
-      {
-        "enabled": true,
-        "type": "data-tsv",
-        "title": "TSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.tsv"
-      },
-      {
-        "enabled": true,
-        "type": "data-csv",
-        "title": "CSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.csv"
-      }
-    ],
-    "loginForDownload": true,
     "guppyConfig": {
       "dataType": "measurement",
       "nodeCountTitle": "Measurements",

@@ -5,6 +5,7 @@ import {
   type Gen3LoginProvider,
   type NameUrl,
   fetchFence,
+  logoutFence,
   useGetLoginProvidersQuery,
 } from './fenceApi';
 
@@ -14,6 +15,7 @@ import {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
+  useAuthorizeFromCredentialsMutation
 } from './credentialsApi';
 
 import {
@@ -29,9 +31,11 @@ export {
   type Gen3LoginProvider,
   type NameUrl,
   fetchFence,
+  logoutFence,
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
-  useGetJWKKeysQuery
+  useGetJWKKeysQuery,
+  useAuthorizeFromCredentialsMutation
 };

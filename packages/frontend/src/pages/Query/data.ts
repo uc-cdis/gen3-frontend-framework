@@ -7,7 +7,7 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const QueryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async (_context) => {
+> = async () => {
   const queryProps: QueryProps = await ContentSource.get(
     `config/${GEN3_COMMONS_NAME}/query.json`,
   );

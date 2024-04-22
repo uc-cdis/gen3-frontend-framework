@@ -1,15 +1,6 @@
-import { GuppyDownloadDataParams, downloadFromGuppy } from '@gen3/core';
+import { downloadFromGuppyToBlob, GuppyDownloadDataParams } from '@gen3/core';
+import { handleDownload } from './utils';
 
-
-const handleDownload = (data: Blob, filename: string) => {
-  const aElement = document.createElement('a');
-  const href = URL.createObjectURL(data);
-  aElement.setAttribute('download', filename);
-  aElement.href = href;
-  aElement.setAttribute('target', '_blank');
-  aElement.click();
-  URL.revokeObjectURL(href);
-};
 
 export const downloadToFileAction = async (
   params: Record<string, any> ,
@@ -20,7 +11,7 @@ export const downloadToFileAction = async (
 ): Promise<void> => {
 
   // call the downloadFromGuppy function
-  await downloadFromGuppy({
+  await downloadFromGuppyToBlob({
     parameters: params as GuppyDownloadDataParams,
     onDone: (data: Blob) => {
       handleDownload(data, params.filename);

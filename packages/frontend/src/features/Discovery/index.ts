@@ -4,6 +4,7 @@ import { registerDiscoveryDefaultCellRenderers } from './TableRenderers/CellRend
 import { type RowRenderFunctionParams } from './TableRenderers/RowRenderers';
 import { type CellRenderFunctionProps } from './TableRenderers/types';
 import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
+import AiSearch from './Search/AiSearch';
 import {
   DiscoveryRowRendererFactory,
   registerDiscoveryDefaultStudyPreviewRenderers,
@@ -32,4 +33,5 @@ export {
   useDiscoveryContext,
   StudyGroup,
   getTagColor,
+  AiSearch,
 };

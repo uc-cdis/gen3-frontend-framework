@@ -38,7 +38,7 @@ const createDownloadMenuButton = (
   props: DropdownButtonProps,
   args: Record<string, any>,
 ): JSX.Element => {
-  const elements = props.dropdownItems.map((button) => {
+  const elements = props.dropdownItems?.map((button) => {
     let actionFunction = NullButtonAction;
     let actionArgs = {};
 
@@ -61,7 +61,6 @@ const createDownloadMenuButton = (
       ),
       rightSection: button?.rightIcon ? <Icon icon={button.rightIcon} /> : null,
       actionFunction: actionFunction,
-      type: button.type,
       actionArgs: {
         ...args,
         ...actionArgs,
@@ -119,7 +118,7 @@ const DownloadsPanel = ({
             [key]: {
               ...dropdown,
               title: `${dropdown.title} (Login Required)`,
-              buttons: dropdown.dropdownItems.map((button) => ({
+              buttons: dropdown.dropdownItems?.map((button) => ({
                 ...button,
                 title: `${button.title} (Login Required)`,
                 enabled: false,

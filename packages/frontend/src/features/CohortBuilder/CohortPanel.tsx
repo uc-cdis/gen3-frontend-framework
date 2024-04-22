@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { Box, Loader, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
-
 import {
   type FacetDefinition,
   selectIndexFilters,
@@ -11,8 +10,8 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
+  useGetFieldsForIndexQuery
 } from '@gen3/core';
-
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 
@@ -34,6 +33,8 @@ import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
 import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+
+
 
 const EmptyData = {};
 
@@ -118,7 +119,7 @@ const SinglePanel = ({
   * filters, tables, buttons of the exploration page.
   *
   * All of these params come directly from the top level exploration page configuration file or
-  * explorerconfig in legacy gitops.json file.
+  * explorer config in legacy gitops.json file.
   * @example see packages/sampleCommons/config/gen3/explorer.json
   */
 export const CohortPanel = ({
@@ -227,11 +228,15 @@ export const CohortPanel = ({
     }
   }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
 
-  const { data: counts, isSuccess: isCountSuccess } = useGetCountsQuery({
+  const { data: counts, isSuccess: isCountSuccess, isLoading } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex w-100 h-100 relative justify-center"><Loader  variant="dots"  /> </div>);
+  }
   return (
     <div className="flex mt-3">
       <div>
@@ -251,7 +256,8 @@ export const CohortPanel = ({
           />
         )}
       </div>
-      <div className="w-full">
+      <div className="w-full relative">
+
         <div className="flex flex-col">
           <CohortManager index={index} />
 

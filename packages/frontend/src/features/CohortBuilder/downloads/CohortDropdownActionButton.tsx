@@ -199,7 +199,7 @@ const CohortDropdownActionButton = ({
         data-testid="dropdown-menu-options"
         className="border-1 border-secondary"
       >
-        {dropdownElements.map(
+        {dropdownElements?.map(
           ({ title, icon, disabled, actionFunction, actionArgs }, idx) => (
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}

@@ -1,5 +1,5 @@
 import React, { useEffect, ReactNode } from 'react';
-import { CoreProvider } from '@gen3/core';
+import { CoreProvider, useGetCSRFQuery } from '@gen3/core';
 import {
   MantineProvider,
   createEmotionCache,
@@ -8,9 +8,12 @@ import {
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
+import { Gen3ModalsProvider, type ModalsConfig}  from '../Modals';
+
 
 const getEmotionCache = (): EmotionCache => {
   // Insert mantine styles after global styles
@@ -27,8 +30,9 @@ const getEmotionCache = (): EmotionCache => {
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
   icons: RegisteredIcons;
-  fonts:  Fonts;
+  fonts: Fonts;
   sessionConfig: SessionConfiguration;
+  modalsConfig: ModalsConfig;
   children?: ReactNode | undefined;
 }
 
@@ -39,8 +43,10 @@ interface Gen3ProviderProps {
  */
 const Gen3Provider = ({
   colors,
-  icons, fonts,
+  icons,
+  fonts,
   sessionConfig,
+  modalsConfig,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -69,8 +75,14 @@ const Gen3Provider = ({
           },
         }}
       >
-        <Notifications />
-        <SessionProvider {...sessionConfig} >{children}</SessionProvider>
+        <ModalsProvider>
+          <Notifications />
+            <SessionProvider {...sessionConfig}>
+              <Gen3ModalsProvider config={modalsConfig}>
+              {children}
+              </Gen3ModalsProvider>
+            </SessionProvider>
+        </ModalsProvider>
       </MantineProvider>
     </CoreProvider>
   );

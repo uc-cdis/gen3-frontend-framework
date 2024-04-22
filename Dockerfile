@@ -46,6 +46,7 @@ COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
+COPY ./start.sh ./
 RUN npm ci
 COPY ./packages ./packages
 RUN npm install \
@@ -55,5 +56,5 @@ RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
 RUN lerna run --scope @gen3/toolsff build
 RUN lerna run --scope @gen3/samplecommons build
-ENV PORT=80
-CMD ["npm", "run", "start"]
+ENV PORT=3000
+CMD bash ./start.sh

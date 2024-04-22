@@ -7,7 +7,7 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
 } from '../filters';
-import { guppyApi } from './guppylApi';
+import { guppyApi } from './guppyApi';
 import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
@@ -41,15 +41,18 @@ export interface GraphQLQuery {
   variables?: Record<string, unknown>;
 }
 
+
+export const fetchJson: Fetcher<JSONObject, string> = async (url: string) => {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('An error occurred while fetching the data.');
+  return (await res.json()) as JSONObject;
+};
+
 export const useGetStatus = (): SWRResponse<JSONObject, Error> => {
-  const fetcher: Fetcher<JSONObject, string> = async () => {
-    const res = await fetch(`${GEN3_GUPPY_API}${statusEndpoint}`, {
-      method: 'GET',
-      headers: { 'Content-type': 'application/json' },
-    });
-    if (!res.ok) throw new Error('An error occurred while fetching the data.');
-    return (await res.json()) as JSONObject;
-  };
+  const fetcher = () => fetchJson(`${GEN3_GUPPY_API}${statusEndpoint}`);
   return useSWR('explorerStatus', fetcher);
 };
 
@@ -101,6 +104,11 @@ interface QueryCountsParams {
   accessibility?: Accessibility;
 }
 
+interface QueryForFileCountSummaryParams {
+  type: string;
+  field: string;
+  filters: FilterSet;
+}
 
 /**
  * The main endpoint used in templating Exploration page queries.
@@ -112,7 +120,7 @@ interface QueryCountsParams {
   *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#mapping-query
   * @param getAccessibleData - An aggregation histogram counts query that filters based on access type
   *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#accessibility-argument-for-regular-tier-access-level
-  * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and 
+  * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and
   * tabular results containing the raw data in the rows of selected vertex types
   *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#1-total-count-aggregation
   * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
@@ -305,6 +313,42 @@ const explorerApi = guppyApi.injectEndpoints({
         return response.data._aggregation[args.type]._totalCount;
       },
     }),
+    getFieldCountSummary: builder.query<Record<string, any>, QueryForFileCountSummaryParams>({
+      query: ({ type, field, filters  } : QueryForFileCountSummaryParams) => {
+        const gqlFilters = convertFilterSetToGqlFilter(filters);
+        const query = `query ($filter: JSON) {
+        _aggregation {
+          ${type} (filter: $filter) {
+            ${field} {
+              histogram {
+                sum
+              }
+            }
+          }
+        }
+      }`;
+        return {
+          query: query,
+          variables: {
+            ...(gqlFilters && {
+              filter: gqlFilters,
+            }),
+          },
+        };
+      }
+    }),
+    getFieldsForIndex: builder.query({
+      query: (index: string) => {
+        return {
+          query: `{
+            _mapping ${index}
+          }`,
+        };
+      },
+      transformResponse: (response: Record<string, any>) => {
+        return response['_mapping'];
+      }
+    }),
   }),
 });
 
@@ -383,6 +427,8 @@ export const {
   useGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
+  useGetFieldCountSummaryQuery,
+  useGetFieldsForIndexQuery,
 } = explorerApi;
 
 const EmptyAggData = {};

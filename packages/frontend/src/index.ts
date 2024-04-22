@@ -3,8 +3,10 @@ export * from './features/Navigation';
 export * from './features/Discovery';
 export * from './components/Profile';
 export * from './components/Login';
+export * from './components/Modals';
 export * from './features/CohortBuilder';
 export * from './features/Query';
+export * from './features/Workspaces';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -36,7 +38,21 @@ import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDi
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom404Page  from './pages/404/Custom404Page';
+
+import WorkspacesPage from './pages/Workspaces/Workspaces';
+import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
+
+import AiSearchPage from './pages/AiSearch/AiSearch';
+import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
+
+import sessionToken from './api/auth/sessionToken';
+import sessionLogout from './api/auth/sessionLogout';
+import credentialsLogin from './api/auth/credentialsLogin';
+import credentialsLogout from './api/auth/credentialsLogout';
+
 
 export {
   DiscoveryPage,
@@ -60,4 +76,13 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
+  WorkspacesPage,
+  WorkspacesPageGetServerSideProps,
+  Custom404Page,
+  sessionToken,
+  sessionLogout,
+  credentialsLogin,
+  credentialsLogout,
+  AiSearchPage,
+  AISearchPageGetServerSideProps
 };

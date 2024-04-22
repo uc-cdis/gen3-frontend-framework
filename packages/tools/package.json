@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.15",
+  "version": "0.10.21",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
@@ -28,7 +28,7 @@
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^11.1.6",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.3",

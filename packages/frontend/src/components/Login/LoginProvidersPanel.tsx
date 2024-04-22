@@ -1,18 +1,21 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Box, Button, LoadingOverlay, Select, Stack } from '@mantine/core';
-import { useGetLoginProvidersQuery } from '@gen3/core';
-import type { Gen3LoginProvider, NameUrl } from '@gen3/core';
+import {
+  type Gen3LoginProvider,
+  type NameUrl,
+  useGetLoginProvidersQuery,
+} from '@gen3/core';
+import { LoginSelectedProps } from './types';
 
-interface LoginPanelProps {
-  readonly redirectURL?: string;
-  readonly handleLoginSelected: (_: string, _2?: string) => void;
-}
-
-interface LoginProviderItemProps  extends LoginPanelProps {
+interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
 }
 
-const LoginProviderMultipleItems = ({ provider, handleLoginSelected, redirectURL }: LoginProviderItemProps) => {
+const LoginProviderMultipleItems = ({
+  provider,
+  handleLoginSelected,
+}: LoginProviderItemProps) => {
+
   const [value, setValue] = useState<string | null>(null);
   return (
     <div className="flex flex-col w-full" key={`${provider.name}-login-item`}>
@@ -21,13 +24,11 @@ const LoginProviderMultipleItems = ({ provider, handleLoginSelected, redirectURL
           value: item.url,
           label: item.name,
         }))}
-        classNames={
-          {
-            root: 'w-full',
-            item: 'font-medium hover:text-accent-light hover:font-bold',
-          }
-        }
-        onChange={ setValue}
+        classNames={{
+          root: 'w-full',
+          item: 'font-medium hover:text-accent-light hover:font-bold',
+        }}
+        onChange={setValue}
         value={value}
       />
       <Button
@@ -35,7 +36,7 @@ const LoginProviderMultipleItems = ({ provider, handleLoginSelected, redirectURL
         key={provider.name}
         color="accent.3"
         disabled={!value}
-        onClick={() => handleLoginSelected(value ?? '', redirectURL)}
+        onClick={() => value && handleLoginSelected(value)}
       >
         {' '}
         {provider.name}
@@ -44,44 +45,59 @@ const LoginProviderMultipleItems = ({ provider, handleLoginSelected, redirectURL
   );
 };
 
-const LoginProviderSingleItem = ({ provider, handleLoginSelected, redirectURL }: LoginProviderItemProps) => {
-    return (
-      <Button
-        fullWidth
-        key={provider.name}
-        color="accent.3"
-        onClick={() => handleLoginSelected(provider.urls[0].url, redirectURL)}
-      >
-        {' '}
-        {provider.name}{' '}
-      </Button>
-    );
+const LoginProviderSingleItem = ({
+  provider,
+  handleLoginSelected,
+}: LoginProviderItemProps) => {
+  return (
+    <Button
+      fullWidth
+      key={provider.name}
+      color="accent.3"
+      onClick={() => handleLoginSelected(provider.urls[0].url)}
+    >
+      {' '}
+      {provider.name}{' '}
+    </Button>
+  );
 };
 
-
-
-const LoginProvidersPanel = ({
-  handleLoginSelected,
-  redirectURL,
-}: LoginPanelProps) => {
-  const { data, isSuccess } = useGetLoginProvidersQuery();;
-
+const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
+  const { data, isSuccess } = useGetLoginProvidersQuery();
   if (!isSuccess) {
     return <LoadingOverlay visible={!isSuccess} />;
   }
   return (
     <Box className="flex flex-col items-center justify-center">
       <Stack align="center" className="w-1/3">
-        {
-          data.default_provider.urls.length > 1 ? <LoginProviderMultipleItems provider={data.default_provider} handleLoginSelected={handleLoginSelected} redirectURL={data.default_provider.url} /> :
-        <LoginProviderSingleItem provider={data.default_provider} handleLoginSelected={handleLoginSelected} redirectURL={redirectURL} />
-        }
-        {
-          data?.providers.filter((x) => x.name !== data.default_provider.name).map((x: Gen3LoginProvider) =>
-            x.urls.length > 1 ? <LoginProviderMultipleItems key={x.name} provider={x} handleLoginSelected={handleLoginSelected} redirectURL={redirectURL} /> :
-            <LoginProviderSingleItem key={x.name} provider={x} handleLoginSelected={handleLoginSelected} redirectURL={redirectURL} />)
-        }
-
+        {data.default_provider.urls.length > 1 ? (
+          <LoginProviderMultipleItems
+            provider={data.default_provider}
+            handleLoginSelected={handleLoginSelected}
+          />
+        ) : (
+          <LoginProviderSingleItem
+            provider={data.default_provider}
+            handleLoginSelected={handleLoginSelected}
+          />
+        )}
+        {data?.providers
+          .filter((x: any) => x.name !== data.default_provider.name)
+          .map((x: Gen3LoginProvider) =>
+            x.urls.length > 1 ? (
+              <LoginProviderMultipleItems
+                key={x.name}
+                provider={x}
+                handleLoginSelected={handleLoginSelected}
+              />
+            ) : (
+              <LoginProviderSingleItem
+                key={x.name}
+                provider={x}
+                handleLoginSelected={handleLoginSelected}
+              />
+            ),
+          )}
       </Stack>
     </Box>
   );

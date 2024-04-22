@@ -4,6 +4,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
+import { getCookie } from 'cookies-next';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -22,10 +23,16 @@ export const gen3Api = coreCreateApi({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
       const csrfToken = selectCSRFToken(getState() as CoreState);
-      if (csrfToken) {
-        headers.set('X-CSRFToken', csrfToken);
-      }
       headers.set('Content-Type', 'application/json');
+
+      let accessToken = undefined;
+      if (process.env.NODE_ENV === 'development') {
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        accessToken = getCookie('credentials_token');
+      }
+      if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
+      if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       return headers;
     },
   }),
@@ -52,6 +59,8 @@ export const selectCSRFToken = createSelector(
   [selectCSRFTokenData, passThroughTheState],
   (state) => state?.data?.csrfToken,
 );
+
+
 
 export const selectHeadersWithCSRFToken = createSelector(
   [selectCSRFToken, passThroughTheState],

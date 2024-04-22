@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.15",
+  "version": "0.10.21",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -34,6 +34,6 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "5.0.2"
+    "typescript": "^5.4.3"
   }
 }

@@ -1,5 +1,6 @@
 import { gen3Api } from '../gen3';
 import { type AuthzMapping } from './types';
+import { GEN3_AUTHZ_API } from '../../constants';
 
 /**
  * Creates the authzApi for checking arborist permissions for a selected user
@@ -10,7 +11,7 @@ import { type AuthzMapping } from './types';
 export const authzApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAuthzMappings: builder.query<AuthzMapping, void>({
-      query: () => 'authz/mapping',
+      query: () => `${GEN3_AUTHZ_API}/mapping`,
     }),
   }),
 });

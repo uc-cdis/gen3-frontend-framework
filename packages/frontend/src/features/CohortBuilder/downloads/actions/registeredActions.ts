@@ -1,5 +1,7 @@
 import { ActionButtonWithArgsFunction, ActionButtonFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
+import { downloadToManifestAction} from './downloadManifest';
+
 // create a factory for the action creators
 
 interface ActionCreatorFactoryItem {
@@ -41,6 +43,9 @@ export const registerDefaultButtonActions = () => {
   });
   registerButtonAction('data-tsv', {
     action: downloadToFileAction, args: { format: 'tsv' }
+  });
+  registerButtonAction('manifest', {
+    action: downloadToManifestAction, args: { format: 'manifest' }
   });
 };
 

@@ -92,25 +92,25 @@ export const RenderLinkWithURL: CellRendererFunction = (
   const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
   if (rowData) {
     return (
-      <Link
-        href={rowData}
+      <a
+        href={`http://${rowData}`}
         onClick={(ev) => ev.stopPropagation()}
         target="_blank"
         rel="noreferrer"
       >
         <Text c="utility.0">{content}</Text>
-      </Link>
+      </a>
     );
   }
   return (
-    <Link
-      href={content}
+    <a
+      href={`http://${content}`}
       onClick={(ev) => ev.stopPropagation()}
       target="_blank"
       rel="noreferrer"
     >
       <Text c="utility.0">{content}</Text>
-    </Link>
+    </a>
   );
 };
 

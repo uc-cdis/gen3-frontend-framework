@@ -1,16 +1,26 @@
-import React, { useEffect, useContext, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useContext, useRef, useState } from 'react';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
-  fetchUserState,
-  CoreDispatch,
   useCoreDispatch,
-  GEN3_API,
+  selectCurrentModal, useCoreSelector, type CoreState,
+  showModal, Modals, useLazyFetchUserDetailsQuery,
+  useGetCSRFQuery, selectUserAuthStatus,
+  GEN3_REDIRECT_URL, GEN3_FENCE_API,
 } from '@gen3/core';
+import { usePathname } from 'next/navigation';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+
+export const logoutSession = async () => {
+  //TODO - investigate why this is not working
+ // await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
+  await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
+};
 
 function useOnline() {
   const [isOnline, setIsOnline] = useState(
@@ -33,11 +43,17 @@ function useOnline() {
   return isOnline;
 }
 
-const SessionContext = React.createContext<Session | undefined>(undefined);
+export const SessionContext = React.createContext<Session | undefined>(undefined);
 
-const getSession = async () => {
+/**
+ *  Wwe eventually want to use the session token to determine if the user is logged in
+ *  as opposed to the user status since that check will happen on the server using httpOnly cookies
+ *  and vertification of the session token
+ */
+export const getSession = async () => {
+
   try {
-    const res = await fetch('/api/auth/sessionToken');
+    const res = await fetch('/api/auth/sessionToken', { cache: 'no-store' });
     if (res.status === 200) {
       return await res.json();
     }
@@ -68,17 +84,26 @@ export const useSession = (
       router.push('Login');
     }
   }
-
   return session;
 };
 
-const logoutUser = (router: NextRouter) => {
-  if (typeof window === 'undefined') return; // skip if this pages is on the server
-  console.log('logging out user', GEN3_API);
-  router.push(`${GEN3_API}/user/logout?next=/`);
+export const useIsAuthenticated = () => {
+  const session = useSession();
+  return {
+    isAuthenticated: session.status === 'issued',
+    user: session.userContext,
+  };
 };
 
-const refreshSession = (dispatch: CoreDispatch,
+export const logoutUser = async (router: NextRouter) => {
+  if (typeof window === 'undefined') return; // skip if this pages is on the server
+
+   await logoutSession();
+  //router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
+  //await router.push('/');
+};
+
+const refreshSession = (getUserDetails : ()=>void,
                         mostRecentSessionRefreshTimestamp:number,
                         updateSessionRefreshTimestamp: (arg0:number)=>void ) : void => {
   const timeSinceLastSessionUpdate =
@@ -90,7 +115,7 @@ const refreshSession = (dispatch: CoreDispatch,
 
   // hitting Fence endpoint refreshes token
   updateSessionRefreshTimestamp(Date.now());
-  dispatch(fetchUserState());
+  getUserDetails();
 };
 
 
@@ -122,14 +147,14 @@ const  useInterval = ( callback: IntervalFunction, delay: number | null ) => {
 const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
 
 /**
- * SessionProvider creates a react context which keeps track of wether the user is authenticated
+ * SessionProvider creates a React context which keeps track of wether the user is authenticated
  * and if their session is stale and logs them out if they do not preform an action in an alotted amount of time
  * @param children - Pass in a child session if one exists
  * @param session - Pass in a cached session if one exists
  * @param updateSessionTime - Interval of time between fetching session token
  * @param inactiveTimeLimit - Amount of time user is allowed to be inactive before getting logged out if user is tabbed away from page
  * @param workspaceInactivityTimeLimit - Amount of time user is allowed to be inactive if user is tabbed into the site
- * @param logoutInactiveUsers - Wether to log out users that are determined to be inactive or not
+ * @param logoutInactiveUsers - Whether to log out users that are determined to be inactive or not
  * @returns a Session context that can be used to keep track of user session activity
  */
 export const SessionProvider = ({
@@ -149,6 +174,12 @@ export const SessionProvider = ({
       } as Session),
   );
   const [pending, setPending] = useState(session ? false : true);
+
+  const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+
+  useGetCSRFQuery(); // Fetch CSRF token
+
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
@@ -166,18 +197,43 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  const updateSession = async () => {
+  // Update session status using the session token api
+  const updateSessionWithSessionApi = async () => {
     const tokenStatus = await getSession();
-
     setSessionInfo(tokenStatus);
+    setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
 
-    setPending(false);
+  // update session status using the user status
+  const updateSessionWithUserStatus = async () => {
+
+    userStatus === 'authenticated' ? setSessionInfo({status: 'issued'} as Session) : setSessionInfo({status: 'not present'} as Session);
+    setPending(false); // not waiting for session to load anymore
+    await getUserDetails();
+  };
+
+  // for now we are using the user status to determine if the user is logged in
+  const updateSession = () => updateSessionWithUserStatus();
+
+  /**
+   *  Update session status when the user status changes
+   */
+  useDeepCompareEffect (() => {
+    updateSessionWithUserStatus();
+  }, [userStatus]);
+
+  const endSession = async () => {
+     logoutSession().then(() => {
+       getUserDetails();
+    });
+    router.push('/');
   };
   /**
    * Update session value every updateSessionInterval seconds
    */
   useEffect(() => {
-    updateSession();
+     updateSession();
 
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
@@ -206,29 +262,35 @@ export const SessionProvider = ({
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
           !isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
         if (
           workspaceInactivityTimeLimitMilliseconds > 0  && timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
           isUserOnPage('workspace')
         ) {
+          coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           logoutUser(router);
+          getUserDetails();
           return;
         }
       }
       // fetching a userState will renew the session
-      refreshSession(coreDispatch, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
+      refreshSession(getUserDetails, mostRecentSessionRefreshTimestamp, (ts:number) => setMostRecentSessionRefreshTimestamp(ts));
       updateSession();
 
   }, updateSessionIntervalMilliseconds > 0 ? updateSessionIntervalMilliseconds : null  );
 
-  const value: Session = useMemo(() => {
+  const value: Session = useDeepCompareMemo(() => {
     return {
       ...sessionInfo,
-      pending: pending,
+      pending,
+      updateSession,
+      endSession
     };
-  }, [pending, sessionInfo]);
+  }, [pending, sessionInfo, updateSession, endSession]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

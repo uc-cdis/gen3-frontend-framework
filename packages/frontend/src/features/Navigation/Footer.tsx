@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Gen3Link from './Gen3Link';
 import { FooterProps } from './types';
 import { extractClassName } from './utils';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 const Footer = ({
   bottomLinks,
@@ -12,11 +13,11 @@ const Footer = ({
   classNames = {},
 }: FooterProps) => {
 
-  const defaultClassNames = {
+  const classNamesDefaults = {
     root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
-  const mergedClassNames = { ...defaultClassNames, ...classNames };
+  const mergedClassNames= mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
     <footer>
@@ -33,8 +34,8 @@ const Footer = ({
                 {col.map((logo) => (
                   <Image
                     className="object-none"
-                    key={`icons/${logo.logo}`}
-                    src={`/icons/${logo.logo}`}
+                    key={`icons-${logo.logo}`}
+                    src={`${logo.logo}`}
                     width={logo.width}
                     height={logo.height}
                     alt={logo.description}
@@ -84,8 +85,8 @@ const Footer = ({
             >
               {col.map((logo) => (
                 <Image
-                  key={`icons/${logo.logo}`}
-                  src={`/icons/${logo.logo}`}
+                  key={`icons-${logo.logo}`}
+                  src={`${logo.logo}`}
                   width={logo.width}
                   height={logo.height}
                   alt={logo.description}
