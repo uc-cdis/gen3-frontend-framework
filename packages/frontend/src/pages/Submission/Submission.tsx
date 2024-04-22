@@ -11,7 +11,7 @@ const SubmissionPage = ({
 
   return (
     <NavPageLayout footerProps={footerProps} headerProps={headerProps}>
-      <SubmissionPanel submissionConfig={submissionConfig} />
+      <SubmissionPanel config={submissionConfig} />
     </NavPageLayout>
   );
 };

@@ -29,8 +29,7 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
     return mapping;
   }, [columns]);
 
-  const detailQuery = `
-  query projectDetailQuery(
+  const detailQuery =`query projectDetailQuery(
   $name: [String]
 ) {
   project(project_id: $name) {
@@ -44,14 +43,14 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
   const { data, isLoading, isFetching, isError } = useGetProjectsDetailsQuery({
     size: 10,
     projectQuery: projectQuery,
-    projectDetailsQuery: { query: detailQuery },
+    projectDetailsQuery: detailQuery,
     mapping: mapping,
   });
   const cols = useMemo(() => {
     return [
       {
-        field: 'id',
-        accessorKey: 'project.id',
+        field: 'name',
+        accessorKey: 'project.name',
         header: 'Project',
       },
       ...columns.map((columnDef) => {
@@ -121,11 +120,9 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
   }
 
   return (
-    <React.Fragment>
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>
-    </React.Fragment>
   );
 };
 

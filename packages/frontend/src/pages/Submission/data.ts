@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
-import { SubmissionProps } from '../../features/Submission/SubmissionPanel';
+import { SubmissionConfig } from '../../features/Submission/types';
 import ContentSource from '../../lib/content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 import { SubmissionsPageLayoutProps } from './types';
@@ -9,11 +9,9 @@ export const SubmissionPageGetServerSideProps: GetServerSideProps<
   SubmissionsPageLayoutProps
 > = async () => {
   try {
-    const submissionConfig: SubmissionProps = await ContentSource.get(
+    const submissionConfig: SubmissionConfig = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/submission.json`,
     );
-
-    console.log('submissionConfig', submissionConfig);
 
     return {
       props: {

@@ -21,7 +21,7 @@
       },
       {
         "name": "Files",
-        "field": "_file_count",
+        "field": "_genotyping_array_count",
         "errorIfNotAvailable": false,
         "valueIfNotAvailable": "n/a"
       }

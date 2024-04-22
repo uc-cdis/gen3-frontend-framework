@@ -1,6 +1,6 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
-import { SubmissionProps } from '../../features/Submission/SubmissionPanel';
+import { SubmissionConfig  } from '../../features/Submission/types';
 
 export type SubmissionsPageLayoutProps = NavPageLayoutProps & {
-  submissionConfig?: SubmissionProps
+  submissionConfig?: SubmissionConfig
 };
