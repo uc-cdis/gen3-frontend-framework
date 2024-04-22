@@ -2,7 +2,8 @@ import { gen3Api } from '../gen3';
 import { GEN3_SUBMISSION_API } from '../../constants';
 import {
   Project,
-  ProjectResponse, ProjectsListRequestParams,
+  ProjectResponse,
+  ProjectsListRequestParams,
   SubmissionGraphqlParams,
   SubmissionGraphqlResponse,
 } from './types';
@@ -13,9 +14,9 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 interface ProjectFetchQueryResponse {
   data: {
     data: {
-      project: Array<Project>
+      project: Array<Project>;
     };
-  }
+  };
 }
 
 /**
@@ -27,14 +28,18 @@ interface ProjectInfoFromProjectDetails {
   code: string;
 }
 
-interface ProjectDetailsResponse extends Record<string, string | number | Array<ProjectInfoFromProjectDetails >> {
+interface ProjectDetailsResponse
+  extends Record<
+    string,
+    string | number | Array<ProjectInfoFromProjectDetails>
+  > {
   project: Array<ProjectInfoFromProjectDetails>;
 }
 
 interface ProjectDetailsFetchQueryResponse {
   data: {
-    data: ProjectDetailsResponse
-  }
+    data: ProjectDetailsResponse;
+  };
 }
 
 /**
@@ -42,8 +47,13 @@ interface ProjectDetailsFetchQueryResponse {
  *  and the project information
  */
 interface ProjectDetailsResults {
-  [key: string] : string | number | ProjectInfoFromProjectDetails;
+  [key: string]: string | number | ProjectInfoFromProjectDetails;
   project: ProjectInfoFromProjectDetails;
+}
+
+export interface ProjectDetailsQueryResponse {
+    details: ProjectDetailsResults[];
+    hits: number;
 }
 
 /**
@@ -69,23 +79,28 @@ export const submissionApi = gen3Api.injectEndpoints({
         };
       },
     }),
-    getProjectsDetails: builder.query<ProjectDetailsResults[], ProjectsListRequestParams>({
-        async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-          // get the list of projects
-          const projectsResponse = await fetchWithBQ({
-            url: `${GEN3_SUBMISSION_API}/graphql`,
-            method: 'POST',
-            credentials: 'include',
-            body: JSON.stringify(arg.projectQuery ),
-          });
-          if (projectsResponse.error)
-            return { error: projectsResponse.error as FetchBaseQueryError };
+    getProjectsDetails: builder.query<
+      ProjectDetailsQueryResponse,
+      ProjectsListRequestParams
+    >({
+      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+        // get the list of projects
+        const projectsResponse = await fetchWithBQ({
+          url: `${GEN3_SUBMISSION_API}/graphql`,
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify(arg.projectQuery),
+        });
+        if (projectsResponse.error)
+          return { error: projectsResponse.error as FetchBaseQueryError };
 
-          const projects = (projectsResponse as ProjectFetchQueryResponse)?.data.data.project;
-          const projectIds = projects.map((p) => p.project_id);
+        const projects = (projectsResponse as ProjectFetchQueryResponse)?.data
+          .data.project;
+        const projectIds = projects.map((p) => p.project_id);
 
-          // given the list of projects, get all of them by executing the projectDetailsQuery for each project
-          const projectDetails = await Promise.all(projectIds.map(async (projectId)  => {
+        // given the list of projects, get all of them by executing the projectDetailsQuery for each project
+        const projectDetails = await Promise.all(
+          projectIds.map(async (projectId) => {
             const result = await fetchWithBQ({
               url: `${GEN3_SUBMISSION_API}/graphql`,
               method: 'POST',
@@ -97,28 +112,60 @@ export const submissionApi = gen3Api.injectEndpoints({
                 },
               }),
             });
-            const { project, ...values } = (result as ProjectDetailsFetchQueryResponse).data.data;
+            const { project, ...values } = (
+              result as ProjectDetailsFetchQueryResponse
+            ).data.data;
 
-            console.log("result", result);
-              return result.data ? {
-                data: arg.mapping ?
-                  { ...extractValuesFromObject(arg.mapping, values as JSONObject), project: project[0] } as ProjectDetailsResults  : { ...values, project: project[0]} as ProjectDetailsResults
-              } : { error: result.error };
-          }));
+            return result.data
+              ? {
+                  data: arg.mapping
+                    ? ({
+                        ...extractValuesFromObject(
+                          arg.mapping,
+                          values as JSONObject,
+                        ),
+                        project: project[0],
+                      } as ProjectDetailsResults)
+                    : ({
+                        ...values,
+                        project: project[0],
+                      } as ProjectDetailsResults),
+                }
+              : { error: result.error };
+          }),
+        );
 
-          // if any of the projectDetails has an error, return the error
-          if (projectDetails.some((detail) => 'error' in detail)) {
-            return { error: projectDetails.find((detail) => 'error' in detail) as FetchBaseQueryError };
-          } else
-            return { data: projectDetails.reduce((acc, detail) => { acc.push(detail.data ?? {
-              project: {
-                name: '',
-                id: '',
-                code: ''
-              }} ); return acc; }, [] as ProjectDetailsResults[]) };
-        },
+        // if any of the projectDetails has an error, return the error
+        if (projectDetails.some((detail) => 'error' in detail)) {
+          return {
+            error: projectDetails.find(
+              (detail) => 'error' in detail,
+            ) as FetchBaseQueryError,
+          };
+        } else
+          return {
+          data: {
+            details: projectDetails.reduce((acc, detail) => {
+              acc.push(
+                detail.data ?? {
+                  project: {
+                    name: '',
+                    id: '',
+                    code: '',
+                  },
+                },
+              );
+              return acc;
+            }, [] as ProjectDetailsResults[]),
+            hits: projectIds.length, // TODO this needs to be changed to show the total number of projects
+          }
+          };
+      },
     }),
-    getSubmissionGraphQL: builder.query<SubmissionGraphqlResponse, SubmissionGraphqlParams>({
+    getSubmissionGraphQL: builder.query<
+      SubmissionGraphqlResponse,
+      SubmissionGraphqlParams
+    >({
       query: (graphQLParams) => ({
         url: `${GEN3_SUBMISSION_API}/graphql`,
         method: 'POST',
@@ -133,7 +180,7 @@ export const submissionApi = gen3Api.injectEndpoints({
       transformResponse: (response: Record<string, any>, _meta, params) => {
         if (params.mapping) {
           return {
-            data: extractValuesFromObject(params.mapping, response.data)
+            data: extractValuesFromObject(params.mapping, response.data),
           };
         }
         return response.data;
@@ -142,7 +189,10 @@ export const submissionApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useGetProjectsQuery, useGetSubmissionGraphQLQuery,
+export const {
+  useGetProjectsQuery,
+  useGetSubmissionGraphQLQuery,
   useGetProjectsDetailsQuery,
-useLazyGetProjectsQuery, useLazyGetSubmissionGraphQLQuery
+  useLazyGetProjectsQuery,
+  useLazyGetSubmissionGraphQLQuery,
 } = submissionApi;

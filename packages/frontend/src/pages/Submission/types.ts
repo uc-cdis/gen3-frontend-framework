@@ -1,10 +1,6 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
+import { SubmissionProps } from '../../features/Submission/SubmissionPanel';
 
-
-export interface SubmissionProps {
-  showTitle?: boolean;
-}
-
-export interface SubmissionsPageLayoutProps extends NavPageLayoutProps {
-  submissionProps: SubmissionProps;
-}
+export type SubmissionsPageLayoutProps = NavPageLayoutProps & {
+  submissionConfig?: SubmissionProps
+};

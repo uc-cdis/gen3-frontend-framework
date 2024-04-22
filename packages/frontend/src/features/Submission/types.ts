@@ -1,10 +1,17 @@
 
-export interface ProjectTableField {
+
+export interface ProjectTableColumn {
+  name: string;
   field: string;
-  fieldPath?: string;
-  header: string;
+  errorIfNotAvailable?: boolean;
+  valueIfNotAvailable?: string | number;
 }
 
-export interface ProjectTableProps {
-  fields: ProjectTableField[];
+
+export interface ProjectTableConfig {
+  columns: ProjectTableColumn[];
+}
+
+export interface SubmissionConfig {
+  projectTable: ProjectTableConfig;
 }
