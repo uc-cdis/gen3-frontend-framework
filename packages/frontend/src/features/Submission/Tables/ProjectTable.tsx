@@ -17,9 +17,9 @@ const ProjectTable = () => {
     <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
-        <LoadingOverlay visible={ dataRequestStatus.isLoading} />
-        <MantineReactTable table={table} />
       </div>
     </React.Fragment>
   );
-}
+};
+
+export default ProjectTable;

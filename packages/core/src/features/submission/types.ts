@@ -27,5 +27,18 @@ export interface ProjectDetailsParams {
 }
 
 export interface ProjectDetailsResponse {
-  data: JSONObject;
+  data: JSONObject[];
+}
+
+export interface ProjectsListRequestParams {
+  size: number;
+  projectQuery: JSONObject;
+  projectDetailsQuery: JSONObject;
+  mapping?: {
+    [key: string]: string;
+  };
+}
+
+export interface ProjectResponse {
+  projects: Array<Project>;
 }
