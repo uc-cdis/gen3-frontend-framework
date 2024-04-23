@@ -3,7 +3,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { filesize } from 'filesize';
+import fileSize from 'filesize';
 import { useGetSubmissionsQuery, SubmissionInfo, SubmissionDocument } from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
 
@@ -43,7 +43,7 @@ const SubmissionsTable = () => {
   const rows = useMemo(() => {
     if (data) {
       return data.transactionList.map((row:SubmissionInfo) => {
-        const fileSizeTotal = filesize(row.documents.reduce((acc:number, doc:SubmissionDocument) => acc + doc.doc_size, 0));
+        const fileSizeTotal = fileSize.filesize(row.documents.reduce((acc:number, doc:SubmissionDocument) => acc + doc.doc_size, 0));
 
         return {
           job_id: row.id,
