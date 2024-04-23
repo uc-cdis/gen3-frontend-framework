@@ -41,7 +41,7 @@ import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 import Custom404Page  from './pages/404/Custom404Page';
 
 import SubmissionPage from './pages/Submission/Submission';
-import { SubmissionPageGetServerSideProps } from './pages/Submission/data'
+import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
 import WorkspacesPage from './pages/Workspaces/Workspaces';
 import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';

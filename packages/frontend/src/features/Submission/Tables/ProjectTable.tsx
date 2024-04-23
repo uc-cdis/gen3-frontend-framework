@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
   MantineReactTable,
-  MRT_Cell,
-  type MRT_SortingState,
   type MRT_PaginationState,
   useMantineReactTable,
 } from 'mantine-react-table';
@@ -29,7 +27,7 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
     return mapping;
   }, [columns]);
 
-  const detailQuery =`query projectDetailQuery(
+  const detailQuery = { query: `query projectDetailQuery(
   $name: [String]
 ) {
   project(project_id: $name) {
@@ -38,7 +36,7 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
     id
   }
   ${buildQuery(Object.keys(mapping)).join('\n')}
-}`;
+}`};
 
   const { data, isLoading, isFetching, isError } = useGetProjectsDetailsQuery({
     size: 10,
@@ -120,9 +118,11 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
   }
 
   return (
+    <div className="flex w-full bg-base-max p-4 rounded-lg">
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>
+    </div>
   );
 };
 

@@ -4,6 +4,7 @@ import {
   Project,
   ProjectResponse,
   ProjectsListRequestParams,
+  SubmissionInfo,
   SubmissionGraphqlParams,
   SubmissionGraphqlResponse,
 } from './types';
@@ -52,9 +53,28 @@ interface ProjectDetailsResults {
 }
 
 export interface ProjectDetailsQueryResponse {
-    details: ProjectDetailsResults[];
-    hits: number;
+  details: ProjectDetailsResults[];
+  hits: number;
 }
+
+interface SubmissionQueryResponse {
+  transactionList: SubmissionInfo[];
+}
+
+const SubmissionGraphqlQuery = `query transactionList {
+    transactionList: transaction_log(last: 20) {
+      id
+      submitter
+      project_id
+      created_datetime
+      documents {
+        doc_size
+        doc
+        id
+      }
+      state
+    }
+}`;
 
 /**
  * Defines submissionApi service using a base URL and expected endpoints. Derived from gen3Api core API.
@@ -79,17 +99,32 @@ export const submissionApi = gen3Api.injectEndpoints({
         };
       },
     }),
+    getSubmissions: builder.query<SubmissionQueryResponse, void>({
+      query: () => ({
+        url: `${GEN3_SUBMISSION_API}/graphql`,
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+          query: SubmissionGraphqlQuery,
+        }),
+      }),
+      transformResponse: (response: Record<string, any>, _meta) => {
+        return {
+          transactionList: response.data.transactionList,
+        };
+      },
+    }),
     getProjectsDetails: builder.query<
       ProjectDetailsQueryResponse,
       ProjectsListRequestParams
     >({
-      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn(args, _queryApi, _extraOptions, fetchWithBQ) {
         // get the list of projects
         const projectsResponse = await fetchWithBQ({
           url: `${GEN3_SUBMISSION_API}/graphql`,
           method: 'POST',
           credentials: 'include',
-          body: JSON.stringify(arg.projectQuery),
+          body: JSON.stringify(args.projectQuery),
         });
         if (projectsResponse.error)
           return { error: projectsResponse.error as FetchBaseQueryError };
@@ -106,7 +141,7 @@ export const submissionApi = gen3Api.injectEndpoints({
               method: 'POST',
               credentials: 'include',
               body: JSON.stringify({
-                query: arg.projectDetailsQuery,
+                ...args.projectDetailsQuery,
                 variables: {
                   name: projectId,
                 },
@@ -118,10 +153,10 @@ export const submissionApi = gen3Api.injectEndpoints({
 
             return result.data
               ? {
-                  data: arg.mapping
+                  data: args.mapping
                     ? ({
                         ...extractValuesFromObject(
-                          arg.mapping,
+                          args.mapping,
                           values as JSONObject,
                         ),
                         project: project[0],
@@ -144,21 +179,21 @@ export const submissionApi = gen3Api.injectEndpoints({
           };
         } else
           return {
-          data: {
-            details: projectDetails.reduce((acc, detail) => {
-              acc.push(
-                detail.data ?? {
-                  project: {
-                    name: '',
-                    id: '',
-                    code: '',
+            data: {
+              details: projectDetails.reduce((acc, detail) => {
+                acc.push(
+                  detail.data ?? {
+                    project: {
+                      name: '',
+                      id: '',
+                      code: '',
+                    },
                   },
-                },
-              );
-              return acc;
-            }, [] as ProjectDetailsResults[]),
-            hits: projectIds.length, // TODO this needs to be changed to show the total number of projects
-          }
+                );
+                return acc;
+              }, [] as ProjectDetailsResults[]),
+              hits: projectIds.length, // TODO this needs to be changed to show the total number of projects
+            },
           };
       },
     }),
@@ -195,4 +230,5 @@ export const {
   useGetProjectsDetailsQuery,
   useLazyGetProjectsQuery,
   useLazyGetSubmissionGraphQLQuery,
+  useGetSubmissionsQuery,
 } = submissionApi;

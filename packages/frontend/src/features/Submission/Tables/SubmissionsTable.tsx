@@ -3,27 +3,17 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { useGetSubmissionGraphQLQuery } from '@gen3/core';
+import fileSize from 'filesize';
+import { useGetSubmissionsQuery, SubmissionInfo, SubmissionDocument } from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
-
-
-const query = `query transactionList {
-    transactionList: transaction_log(last: 20) {
-      id
-      submitter
-      project_id
-      created_datetime
-      documents {
-        doc_size
-        doc
-        id
-      }
-      state
-    }
-}`;
 
 const cols =
 [
+  {
+    field: 'job_id',
+    accessorKey: 'job_id',
+    header: 'Id',
+  },
     {
       field: 'submitter',
       accessorKey: 'submitter',
@@ -48,16 +38,23 @@ const cols =
 
 const SubmissionsTable = () => {
 
-  const { data, isLoading, isFetching, isError } = useGetSubmissionGraphQLQuery(
-    {
-      query,
-    }
-  );
+  const { data, isLoading, isFetching, isError } = useGetSubmissionsQuery();
 
   const rows = useMemo(() => {
     if (data) {
-      return data.transactionList;
-    }
+      return data.transactionList.map((row:SubmissionInfo) => {
+        const fileSizeTotal = fileSize.filesize(row.documents.reduce((acc:number, doc:SubmissionDocument) => acc + doc.doc_size, 0));
+
+        return {
+          job_id: row.id,
+          submitter: row.submitter,
+          project_id: row.project_id,
+          created_datetime: row.created_datetime,
+          state: row.state,
+          fileSize: fileSizeTotal
+        };
+      });
+    };
     return [];
 
   }, [data]);
@@ -69,7 +66,7 @@ const SubmissionsTable = () => {
     manualSorting: true,
     manualPagination: false,
     paginateExpandedRows: false,
-    rowCount: data?.hits ?? 0,
+    rowCount: rows.length,
     enableTopToolbar: false,
     layoutMode: 'semantic',
     state: {
@@ -115,11 +112,13 @@ const SubmissionsTable = () => {
   }
 
   return (
+    <div className="flex w-full bg-base-max p-4 rounded-lg">
     <div className="grow w-auto inline-block overflow-x-scroll">
       <MantineReactTable table={table} />
     </div>
+    </div>
   );
 
-}
+};
 
 export default SubmissionsTable;

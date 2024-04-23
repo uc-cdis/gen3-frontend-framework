@@ -6,10 +6,6 @@ export interface Project {
   project_id: string;
 }
 
-export interface ProjectResponse {
-  projects: Array<Project>;
-}
-
 export interface SubmissionGraphqlParams {
   query: string;
   variables: Record<string, any>;
@@ -41,4 +37,19 @@ export interface ProjectsListRequestParams {
 
 export interface ProjectResponse {
   projects: Array<Project>;
+}
+
+export interface SubmissionDocument {
+  doc_size: number;
+  doc?: string;
+  id: string;
+}
+
+export interface SubmissionInfo {
+  id: string;
+  submitter: string;
+  project_id: string;
+  created_datetime: string;
+  documents: Array<SubmissionDocument>;
+  state: string;
 }
