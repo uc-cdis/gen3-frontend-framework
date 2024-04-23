@@ -1,20 +1,27 @@
-import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '../types';
-
 type JsonPathMapping = { [key: string]: string };
 
-export const extractValuesFromObject = (mp: JsonPathMapping, obj: JSONObject): JSONObject =>{
+export interface JSONObject {
+  [k: string]: JSONValue;
+}
+
+export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
+
+import { JSONPath } from 'jsonpath-plus';
+
+export const extractValuesFromObject = (jsonPathMappings: JsonPathMapping, obj: JSONObject): JSONObject =>{
   const result: { [key: string]: any } = {};
 
-  for (const key in mp) {
-    if (mp.hasOwnProperty(key)) {
-      // Extract value using JSONPath. The result is an array of matches.
-      const extractedValues = JSONPath({ path: mp[key], json: obj });
+  const extractObjectValue = (jsonPath: string, obj: JSONObject): JSONValue | undefined => {
+    const extractedValues = JSONPath({ path: jsonPath, json: obj });
+    return extractedValues.length > 0 ? extractedValues[0] : undefined;
+  };
 
-      // If the array is empty, no match was found, so set to undefined.
-      result[key] = extractedValues.length > 0 ? extractedValues[0] : undefined;
+  for (const key in jsonPathMappings) {
+    if (key in Object.keys(jsonPathMappings)) {
+      // Extract value from object and store it in the result.
+      result[key] = extractObjectValue(jsonPathMappings[key], obj);
     }
   }
 
   return result;
-}
+};
