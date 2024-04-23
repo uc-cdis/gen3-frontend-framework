@@ -48,7 +48,7 @@ const cols =
 
 const SubmissionsTable = () => {
 
-  const { data, isLoading, isError } = useGetSubmissionGraphQLQuery(
+  const { data, isLoading, isFetching, isError } = useGetSubmissionGraphQLQuery(
     {
       query,
     }
@@ -67,14 +67,13 @@ const SubmissionsTable = () => {
     columns: cols,
     data: rows,
     manualSorting: true,
-    manualPagination: true,
+    manualPagination: false,
     paginateExpandedRows: false,
     rowCount: data?.hits ?? 0,
     enableTopToolbar: false,
     layoutMode: 'semantic',
     state: {
       isLoading,
-      pagination,
       showProgressBars: isFetching,
       showAlertBanner: isError,
       columnVisibility: {
