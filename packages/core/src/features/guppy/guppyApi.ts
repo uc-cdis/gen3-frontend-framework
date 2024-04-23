@@ -2,6 +2,9 @@ import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
+import { CoreState } from '../../reducers';
+import { getCookie } from 'cookies-next';
+import { selectCSRFToken } from '../gen3';
 
 export interface guppyFetchError {
   readonly url: string;
@@ -54,13 +57,10 @@ const buildGuppyFetchError = async (
  */
 export const guppyAPIFetch = async <T>(
   query: guppyApiSliceRequest,
+  headers: Record<string, string>,
 ): Promise<guppyApiResponse<T>> => {
   const res = await fetch(`${GEN3_GUPPY_API}/graphql`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+    headers: headers,
     method: 'POST',
     body: JSON.stringify(query),
   });
@@ -78,9 +78,26 @@ export const guppyApi = coreCreateApi({
   reducerPath: 'guppy',
 
   // TODO: refactor to use fetchBaseQuery
-  baseQuery: async (request: guppyApiSliceRequest) => {
+  baseQuery: async (request: guppyApiSliceRequest, api  ) => {
+
+    const csrfToken = selectCSRFToken(api.getState() as CoreState);
+
+    let accessToken = undefined;
+    if (process.env.NODE_ENV === 'development') {
+      // NOTE: This cookie can only be accessed from the client side
+      // in development mode. Otherwise, the cookie is set as httpOnly
+      accessToken = getCookie('credentials_token');
+    }
+
+    const  headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+        ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+      };
     try {
-      const results = await guppyAPIFetch(request);
+      const results = await guppyAPIFetch(request, headers);
       return { data: results };
     } catch (e) {
       return { error: e };
