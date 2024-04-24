@@ -120,7 +120,7 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
     );
   }
 
-  return (
+  return data?.hits && data?.hits > 0 ? (
     <div className="flex-col">
       <Text>Projects</Text>
       <div className="flex w-full bg-base-max p-4 rounded-lg">
@@ -129,7 +129,7 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default ProjectTable;

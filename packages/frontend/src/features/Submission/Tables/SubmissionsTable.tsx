@@ -1,49 +1,53 @@
 import React, { useMemo } from 'react';
-import {
-  MantineReactTable,
-  useMantineReactTable,
-} from 'mantine-react-table';
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import fileSize from 'filesize';
-import { useGetSubmissionsQuery, SubmissionInfo, SubmissionDocument } from '@gen3/core';
+import {
+  useGetSubmissionsQuery,
+  SubmissionInfo,
+  SubmissionDocument,
+} from '@gen3/core';
 import { Loader, Text } from '@mantine/core';
 
-const cols =
-[
+const cols = [
   {
     field: 'job_id',
     accessorKey: 'job_id',
     header: 'Id',
   },
-    {
-      field: 'submitter',
-      accessorKey: 'submitter',
-      header: 'Submitter',
-    },
-    {
-      field: 'project_id',
-      accessorKey: 'project_id',
-      header: 'Project',
-    },
-    {
-      field: 'created_datetime',
-      accessorKey: 'created_datetime',
-      header: 'Created Date',
-    },
-    {
-      field: 'state',
-      accessorKey: 'state',
-      header: 'State',
-    },
-  ];
+  {
+    field: 'submitter',
+    accessorKey: 'submitter',
+    header: 'Submitter',
+  },
+  {
+    field: 'project_id',
+    accessorKey: 'project_id',
+    header: 'Project',
+  },
+  {
+    field: 'created_datetime',
+    accessorKey: 'created_datetime',
+    header: 'Created Date',
+  },
+  {
+    field: 'state',
+    accessorKey: 'state',
+    header: 'State',
+  },
+];
 
 const SubmissionsTable = () => {
-
   const { data, isLoading, isFetching, isError } = useGetSubmissionsQuery();
 
   const rows = useMemo(() => {
     if (data) {
-      return data.transactionList.map((row:SubmissionInfo) => {
-        const fileSizeTotal = fileSize.filesize(row.documents.reduce((acc:number, doc:SubmissionDocument) => acc + doc.doc_size, 0));
+      return data.transactionList.map((row: SubmissionInfo) => {
+        const fileSizeTotal = fileSize.filesize(
+          row.documents.reduce(
+            (acc: number, doc: SubmissionDocument) => acc + doc.doc_size,
+            0,
+          ),
+        );
 
         return {
           job_id: row.id,
@@ -51,14 +55,12 @@ const SubmissionsTable = () => {
           project_id: row.project_id,
           created_datetime: row.created_datetime,
           state: row.state,
-          fileSize: fileSizeTotal
+          fileSize: fileSizeTotal,
         };
       });
-    };
+    }
     return [];
-
   }, [data]);
-
 
   const table = useMantineReactTable({
     columns: cols,
@@ -96,32 +98,35 @@ const SubmissionsTable = () => {
           backgroundColor: theme.colors.base[9],
         };
       },
-    }
+    },
   });
 
   if (isLoading) {
     return (
-      <div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+      <div className="flex w-full py-24 relative justify-center">
+        <Loader variant="dots" />{' '}
+      </div>
+    );
   }
 
   if (isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
         <Text size={'xl'}>Error loading project data</Text>
-      </div>);
+      </div>
+    );
   }
 
-  return (
+  return rows.length > 0 ? (
     <div className="flex-col">
       <Text>Submissions</Text>
-    <div className="flex w-full bg-base-max p-4 rounded-lg">
-    <div className="grow w-auto inline-block overflow-x-scroll">
-      <MantineReactTable table={table} />
+      <div className="flex w-full bg-base-max p-4 rounded-lg">
+        <div className="grow w-auto inline-block overflow-x-scroll">
+          <MantineReactTable table={table} />
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
-  );
-
+  ) : null;
 };
 
 export default SubmissionsTable;
