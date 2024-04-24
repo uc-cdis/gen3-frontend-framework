@@ -101,16 +101,6 @@ const DiscoveryTable = ({
         'mrt-row-expand': false,
       },
     },
-    // TODO expand to highlight row/detail row on hover
-    // mantineTableBodyRowProps: {
-    //   onMouseEnter: (row) => {
-    //     console.log('mouse enter', row);
-    //   },
-    //   sx: {
-    //     "&:hover td": {
-    //       backgroundColor: "#FF0000",
-    //     }
-    // }},
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
       sx: (theme) => {
