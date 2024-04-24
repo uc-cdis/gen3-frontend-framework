@@ -38,7 +38,7 @@ export const gen3Api = coreCreateApi({
   }),
   endpoints: (builder) => ({
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => `${GEN3_FENCE_API}/_status`,
+      query: () => `${GEN3_API}/_status`,
       transformResponse: (response: JSONObject): CSRFToken => {
         return { csrfToken: response['csrf'] as string };
       },

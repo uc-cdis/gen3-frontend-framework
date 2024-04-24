@@ -7,6 +7,7 @@ import {
   showModal,
   useCoreDispatch,
   useCoreSelector,
+  useGetCSRFQuery
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
 import { SessionExpiredModal } from './SessionExpiredModal';
@@ -60,6 +61,8 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
+   useGetCSRFQuery();
+
   const [cookie] = useCookies(['Gen3-first-time-use']);
   const dispatch = useCoreDispatch();
   const modal = useCoreSelector((state: CoreState) =>
@@ -83,6 +86,8 @@ const Gen3ModalsProvider = ({
     dispatch,
     modalsConfig.systemUseModal.enabled,
   ]);
+
+
 
   return (
     <React.Fragment>

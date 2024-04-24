@@ -16,14 +16,9 @@ export const graphQLAPI = graphQLWithTags.injectEndpoints({
   endpoints: (builder) => ({
     graphQL: builder.query<JSONObject, JSONObject>({
       query: (graphQLParams) => ({
-        url: `${GEN3_GUPPY_API}/guppy/graphql`,
+        url: `${GEN3_GUPPY_API}/graphql`,
         method: 'POST',
         credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
         body: JSON.stringify(graphQLParams),
       }),
     }),

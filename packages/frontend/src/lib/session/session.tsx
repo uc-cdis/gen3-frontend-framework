@@ -5,9 +5,9 @@ import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {
   useCoreDispatch,
-  selectCurrentModal, useCoreSelector, type CoreState,
+   useCoreSelector, type CoreState,
   showModal, Modals, useLazyFetchUserDetailsQuery,
-  useGetCSRFQuery, selectUserAuthStatus,
+  selectUserAuthStatus,
   GEN3_REDIRECT_URL, GEN3_FENCE_API,
 } from '@gen3/core';
 import { usePathname } from 'next/navigation';
@@ -177,8 +177,6 @@ export const SessionProvider = ({
 
   const [ getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
-
-  useGetCSRFQuery(); // Fetch CSRF token
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
