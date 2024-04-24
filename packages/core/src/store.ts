@@ -8,7 +8,7 @@ import { userAuthApiMiddleware } from './features/user/userSliceRTK';
 export const coreStore = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(gen3ServicesReducerMiddleware, guppyAPISliceMiddleware, userAuthApiMiddleware),
+    getDefaultMiddleware().concat(userAuthApiMiddleware, gen3ServicesReducerMiddleware, guppyAPISliceMiddleware),
 });
 
 setupListeners(coreStore.dispatch);

@@ -1,7 +1,7 @@
 import { createSelector, Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { GEN3_API, GEN3_FENCE_API } from '../../constants';
+import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
 import { getCookie } from 'cookies-next';
@@ -18,6 +18,7 @@ export interface CSRFToken {
  * @returns: The generated base API
  */
 export const gen3Api = coreCreateApi({
+  refetchOnFocus: true,
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
