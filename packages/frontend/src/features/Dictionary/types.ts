@@ -16,7 +16,7 @@ export interface DictionaryNode extends Record<string, unknown> {
 
 export interface DictionaryProps {
   dictionaryConfig: DictionaryConfig | any;
-  uidForStorage: string;
+  uidForStorage?: string;
 }
 
 export interface DictionaryCategory<T> {
