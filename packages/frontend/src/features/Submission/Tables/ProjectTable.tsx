@@ -9,11 +9,11 @@ import { useGetProjectsDetailsQuery } from '@gen3/core';
 import { ProjectTableConfig } from '../types';
 import { buildQuery } from '../utils';
 
-const projectQuery = { query: 'query { project(first:0) {code, project_id, availability_type}}'};
+const projectQuery = {
+  query: 'query { project(first:0) {code, project_id, availability_type}}',
+};
 
-
-const ProjectTable = ({ columns } : ProjectTableConfig) => {
-
+const ProjectTable = ({ columns }: ProjectTableConfig) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -27,7 +27,8 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
     return mapping;
   }, [columns]);
 
-  const detailQuery = { query: `query projectDetailQuery(
+  const detailQuery = {
+    query: `query projectDetailQuery(
   $name: [String]
 ) {
   project(project_id: $name) {
@@ -36,7 +37,8 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
     id
   }
   ${buildQuery(Object.keys(mapping)).join('\n')}
-}`};
+}`,
+  };
 
   const { data, isLoading, isFetching, isError } = useGetProjectsDetailsQuery({
     size: 10,
@@ -52,17 +54,14 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
         header: 'Project',
       },
       ...columns.map((columnDef) => {
-      return {
-        field: columnDef.field,
-        accessorKey: columnDef.field,
-        header: columnDef.name,
-      };
-    })
-  ];
+        return {
+          field: columnDef.field,
+          accessorKey: columnDef.field,
+          header: columnDef.name,
+        };
+      }),
+    ];
   }, [columns]);
-
-
-
 
   const table = useMantineReactTable({
     columns: cols,
@@ -102,25 +101,32 @@ const ProjectTable = ({ columns } : ProjectTableConfig) => {
           backgroundColor: theme.colors.base[9],
         };
       },
-    }
+    },
   });
 
   if (isLoading) {
     return (
-      <div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+      <div className="flex w-full py-24 relative justify-center">
+        <Loader variant="dots" />{' '}
+      </div>
+    );
   }
 
   if (isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
         <Text size={'xl'}>Error loading project data</Text>
-      </div>);
+      </div>
+    );
   }
 
   return (
-    <div className="flex w-full bg-base-max p-4 rounded-lg">
-      <div className="grow w-auto inline-block overflow-x-scroll">
-        <MantineReactTable table={table} />
+    <div className="flex-col">
+      <Text>Projects</Text>
+      <div className="flex w-full bg-base-max p-4 rounded-lg">
+        <div className="grow w-auto inline-block overflow-x-scroll">
+          <MantineReactTable table={table} />
+        </div>
       </div>
     </div>
   );

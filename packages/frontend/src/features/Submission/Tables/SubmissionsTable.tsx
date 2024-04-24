@@ -112,9 +112,12 @@ const SubmissionsTable = () => {
   }
 
   return (
+    <div className="flex-col">
+      <Text>Submissions</Text>
     <div className="flex w-full bg-base-max p-4 rounded-lg">
     <div className="grow w-auto inline-block overflow-x-scroll">
       <MantineReactTable table={table} />
+    </div>
     </div>
     </div>
   );

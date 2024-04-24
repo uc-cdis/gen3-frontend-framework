@@ -6,6 +6,7 @@ import SubmissionsTable from './Tables/SubmissionsTable';
 
 
 
+
 const SubmissionPanel = ( { config }:  { config?: SubmissionConfig}) : ReactElement  => {
 
   if (!config) {
