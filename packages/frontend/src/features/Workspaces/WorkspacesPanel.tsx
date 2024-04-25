@@ -1,9 +1,8 @@
+import { Center, Text } from '@mantine/core';
 
 const WorkspacesPanel = () => {
     return (
-        <div>
-            <h1>Workspaces</h1>
-        </div>
+      <Center className="m-20 w-full"><Text size="2rem">Coming soon.</Text></Center>
     );
 };
 

@@ -90,10 +90,10 @@ const Gen3ModalsProvider = ({
 
 
   return (
-    <React.Fragment>
+    <div className="bg-base-max">
       {modal && getModal(modal, modalsConfig)}
       {children}
-    </React.Fragment>
+    </div>
   );
 };
 

@@ -68,7 +68,7 @@ export interface LandingPageProps {
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (
-    <div className="sm:mt-8 2xl:mt-10 w-full">
+    <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
@@ -97,7 +97,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                 return (
                   <Gen3Button
                     colors="accent-lighter"
-                    className="mb-5 mr-5"
+                    className="mb-5 mr-5 text-accent-contrast-lighter"
                     key={index}
                   >
                     <Gen3Link
@@ -134,7 +134,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           );
         }
         if (component.break) {
-          return <hr key={index} className="border sm:my-10 2xl:my-12 " />;
+          return <hr key={index} className="border sm:my-10 2xl:my-12" />;
         }
         if (component.cardsArea) {
           const allowedIcons = {
@@ -165,7 +165,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     </p>
                     <Gen3ButtonReverse
                       colors="accent-lighter"
-                      className="mb-5 mr-5"
+                      className="mb-5 mr-5 text-base-contrast-lighter"
                       key={index}
                     >
                       <Gen3Link
