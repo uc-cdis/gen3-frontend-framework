@@ -15,6 +15,7 @@ export interface TextContentProps {
   readonly text: string | string[];
   readonly className?: string;
   readonly type?: ContentType;
+  readonly email?: string;
 }
 const TextContent = ({
   text,
