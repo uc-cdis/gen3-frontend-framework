@@ -48,6 +48,4 @@ export {
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
   type CSRFToken,
-  type ExternalProvider,
-  type NamedURL
 };
