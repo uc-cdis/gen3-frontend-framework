@@ -6,7 +6,6 @@ import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 import { useGetCSRFQuery } from '@gen3/core';
 
 
-
 /**
  * Header component.
  *

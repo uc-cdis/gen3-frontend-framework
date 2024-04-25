@@ -1,10 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
-import { fetchFence, Gen3FenceResponse } from '../fence';
+import { fetchFence, Gen3FenceResponse } from '../fence/fenceApi';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
-import { selectCSRFToken } from '../gen3';
 import { getCookie } from 'cookies-next';
+import { GEN3_API } from '../../constants';
+import { JSONObject } from '../../types';
+
+export interface CSRFToken {
+  readonly csrfToken: string;
+}
 
 export interface UserAuthResponse  {
   readonly data: Gen3User;
@@ -58,6 +63,12 @@ const userAuthApi = coreCreateApi({
         };
       }
     }),
+    getCSRF: builder.query<CSRFToken, void>({
+      query: () => `${GEN3_API}/_status`,
+      transformResponse: (response: JSONObject): CSRFToken => {
+        return { csrfToken: response['csrf'] as string };
+      },
+    }),
   }),
 });
 
@@ -68,7 +79,7 @@ const EMPTY_USER: Gen3User = {
 export const {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
-  useGetCSRFQuery,
+  useGetCSRFQuery
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;
@@ -84,4 +95,22 @@ export const selectUserDetails =  createSelector(
 export const selectUserAuthStatus = createSelector(
   selectUserDetailsFromState,
   userLoginState => userLoginState?.data?.loginStatus ?? 'unauthenticated' as LoginStatus
+);
+
+export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();
+
+const passThroughTheState = (state: CoreState) => state.gen3Services;
+
+export const selectCSRFToken = createSelector(
+  [selectCSRFTokenData, passThroughTheState],
+  (state) => state?.data?.csrfToken,
+);
+
+export const selectHeadersWithCSRFToken = createSelector(
+  [selectCSRFToken, passThroughTheState],
+  (csrfToken) => ({
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+  }),
 );
