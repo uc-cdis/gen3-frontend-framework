@@ -4,7 +4,7 @@ import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from '../gen3';
+import { selectCSRFToken } from '../user';
 
 export interface guppyFetchError {
   readonly url: string;

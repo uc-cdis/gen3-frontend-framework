@@ -2,8 +2,10 @@ import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
+import { useGetCSRFQuery } from '@gen3/core';
 
 export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
+  useGetCSRFQuery();
   return (
     <div className="w-full">
       <Tabs
