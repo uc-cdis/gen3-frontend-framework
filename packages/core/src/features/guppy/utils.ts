@@ -1,6 +1,6 @@
 import { DownloadFromGuppyParams, GuppyDownloadDataParams } from './types';
 import { GEN3_GUPPY_API } from '../../constants';
-import { selectCSRFToken } from '../gen3';
+import { selectCSRFToken } from '../user';
 import { coreStore } from '../../store';
 import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';

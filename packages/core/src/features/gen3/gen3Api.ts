@@ -1,14 +1,12 @@
-import { createSelector, Middleware, Reducer } from '@reduxjs/toolkit';
+import { Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
-import { JSONObject } from '../../types';
+import { selectCSRFToken } from '../user/userSliceRTK';
 import { getCookie } from 'cookies-next';
 
-export interface CSRFToken {
-  readonly csrfToken: string;
-}
+
 
 /**
  * Creates a base class core API for building other API endpoints on top of.
@@ -18,7 +16,6 @@ export interface CSRFToken {
  * @returns: The generated base API
  */
 export const gen3Api = coreCreateApi({
-  refetchOnFocus: true,
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
@@ -37,37 +34,8 @@ export const gen3Api = coreCreateApi({
       return headers;
     },
   }),
-  endpoints: (builder) => ({
-    getCSRF: builder.query<CSRFToken, void>({
-      query: () => `${GEN3_API}/_status`,
-      transformResponse: (response: JSONObject): CSRFToken => {
-        return { csrfToken: response['csrf'] as string };
-      },
-    }),
-  }),
+  endpoints: () => ({}),
 });
 
 export const gen3ServicesReducer: Reducer = gen3Api.reducer as Reducer;
 export const gen3ServicesReducerMiddleware = gen3Api.middleware as Middleware;
-
-export const { useGetCSRFQuery } = gen3Api;
-
-export const selectCSRFTokenData = gen3Api.endpoints.getCSRF.select();
-
-const passThroughTheState = (state: CoreState) => state.gen3Services;
-
-export const selectCSRFToken = createSelector(
-  [selectCSRFTokenData, passThroughTheState],
-  (state) => state?.data?.csrfToken,
-);
-
-
-
-export const selectHeadersWithCSRFToken = createSelector(
-  [selectCSRFToken, passThroughTheState],
-  (csrfToken) => ({
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-  }),
-);

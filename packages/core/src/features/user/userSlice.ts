@@ -11,7 +11,7 @@ import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from '../gen3';
+import { selectCSRFToken } from './userSliceRTK';
 
 
 
