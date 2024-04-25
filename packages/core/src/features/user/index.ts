@@ -15,6 +15,11 @@ import {
   useLazyFetchUserDetailsQuery,
   selectUserDetails,
   selectUserAuthStatus,
+  useGetCSRFQuery,
+  selectCSRFToken,
+  selectCSRFTokenData,
+  selectHeadersWithCSRFToken,
+  type CSRFToken,
 } from './userSliceRTK';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
@@ -37,5 +42,10 @@ export {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   selectUserDetails,
-  selectUserAuthStatus
+  selectUserAuthStatus,
+  useGetCSRFQuery,
+  selectCSRFToken,
+  selectCSRFTokenData,
+  selectHeadersWithCSRFToken,
+  type CSRFToken,
 };

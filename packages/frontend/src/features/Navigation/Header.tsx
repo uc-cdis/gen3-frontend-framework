@@ -3,6 +3,8 @@ import TopBar from './TopBar';
 import NavigationBar from './NavigationBar';
 import { HeaderProps } from './types';
 import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
+import { useGetCSRFQuery } from '@gen3/core';
+
 
 
 /**
@@ -15,6 +17,7 @@ import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
  * @returns {JSX.Element} - The rendered Header component.
  */
 const Header = ({ top, navigation, type = 'original' }: HeaderProps) => {
+  useGetCSRFQuery();
   return type === 'horizontal' ? (
     <div className="w-full">
       <HorizontalNavigationBar
