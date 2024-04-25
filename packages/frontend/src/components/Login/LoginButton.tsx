@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UnstyledButton } from '@mantine/core';
+import { UnstyledButton, Tooltip } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
@@ -41,6 +41,7 @@ const LoginButton = ({
   const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
   const authenticated = isAuthenticated(userStatus);
   return (
+    <Tooltip label={'Login'} position="bottom" withArrow>
     <UnstyledButton
       onClick={() =>
         handleSelected(authenticated, router, pathname, endSession)
@@ -53,6 +54,7 @@ const LoginButton = ({
         {icon}
       </div>
     </UnstyledButton>
+    </Tooltip>
   );
 };
 

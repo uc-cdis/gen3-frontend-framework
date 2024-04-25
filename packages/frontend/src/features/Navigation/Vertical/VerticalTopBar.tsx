@@ -7,6 +7,7 @@ import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
+import { Tooltip } from '@mantine/core';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
@@ -45,7 +46,7 @@ const VerticalTopBar = ({
       <div className="flex items-center align-middle mr-3">
         {actions.showLogin ? (
           <LoginButton
-            icon={<LoginIcon size={'3.15rem'} />}
+            icon={<LoginIcon />}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
           />
