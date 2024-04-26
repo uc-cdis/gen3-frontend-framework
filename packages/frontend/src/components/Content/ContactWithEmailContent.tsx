@@ -1,5 +1,4 @@
 import { Anchor } from '@mantine/core';
-import { hashCode } from '../../utils/hash';
 import React from 'react';
 
 export interface TextContentProps {
