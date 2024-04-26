@@ -128,7 +128,7 @@ const linkFieldOnly = (linkValue: string, _?: string) => (
  */
 const linkField = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    {linkValue}
+    <Text color="utility.0" className="underline">{linkValue}</Text>
   </Link>
 );
 
@@ -201,9 +201,13 @@ const labeledSingleTextField: FieldRendererFunction = (
   fieldValue: JSONValue,
   fieldLabel?: string,
 ) => {
-  if (typeof fieldValue !== 'string') return <React.Fragment />;
+  let stringFieldValue = '';
+  if (typeof fieldValue === 'number') {
+    stringFieldValue = fieldValue.toLocaleString();
+  } else
+      if (typeof fieldValue !== 'string') return <React.Fragment />;
 
-  const stringFieldValue = fieldValue as string;
+  stringFieldValue = fieldValue as string;
   return (
     <div
       className={discoveryFieldStyle}
@@ -336,8 +340,8 @@ export const createFieldRendererElement = (
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
 
-  if (!resourceFieldValue) {
-    if (!field.includeIfNotAvailable) return null;
+  if (resourceFieldValue === undefined || resourceFieldValue === null) {
+    if (field.includeIfNotAvailable === false) return null;
     if (field.valueIfNotAvailable)
       resourceFieldValue = field.valueIfNotAvailable as JSONValue;
   } else
@@ -371,7 +375,7 @@ export const createFieldRendererElement = (
         resourceFieldValue =
           formatResourceValuesWhenNestedArray(resourceFieldValue);
         return studyFieldRenderer(resourceFieldValue, label, field.params);
-      } else if (resourceFieldValue)
+      } else if (resourceFieldValue !== undefined || resourceFieldValue !== null)
         return studyFieldRenderer(resourceFieldValue, label, field.params);
   }
 
@@ -394,7 +398,7 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   accessDescriptor: { default: accessDescriptor },
   tags: { default: renderDetailTags },
   number: { default: labeledNumberField },
-  paragraphs: { default: labeledParagraph },
+  paragraph: { default: labeledParagraph },
 };
 
 StudyFieldRendererFactory.registerFieldRendererCatalog(

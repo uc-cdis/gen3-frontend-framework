@@ -13,6 +13,7 @@ const DetailsAuthorizationIcon = ({ studyData, dataAccess } : DetailsAccessProps
 
   const accessStyle = 'flex w-full items-center rounded-sm border-2 py-3 px-1';
 
+  console.log("DetailsAuthorizationIcon: studyData: ", studyData[accessibleFieldName]);
   return (
     <div className="flex mb-2">
       {(dataAccess.enabled &&

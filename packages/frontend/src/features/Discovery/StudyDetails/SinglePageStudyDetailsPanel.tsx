@@ -14,10 +14,10 @@ import { toString } from 'lodash';
 import { createFieldRendererElement } from './StudyItems';
 
 
-const StudyTitle = ({ title }: { title: string }): ReactElement => {
+const StudyTitle = ({ title, className = 'font-header text-lg font-semibold' }: { title: string, className?:string }): ReactElement => {
   return (
     <div>
-      <h1>{title}</h1>
+      <h1 className={className}>{title}</h1>
     </div>
   );
 };
@@ -38,10 +38,10 @@ const SinglePageStudyDetailsPanel = ({
   let headerText = '';
   if (studyConfig?.header?.field) {
     const res: JSONObject = JSONPath({
-      path: '$..'.concat(studyConfig.header.field),
+      path: studyConfig.header.field,
       json: data,
     });
-    headerText = data.length ? toString(res[0]) : '';
+    headerText = res.length ? toString(res[0]) : '';
   }
 
   const elements = useDeepCompareMemo(() => {
@@ -77,7 +77,7 @@ const SinglePageStudyDetailsPanel = ({
 
   return (
     <div className="flex flex-col">
-      <StudyTitle title={headerText} />
+      <StudyTitle title={headerText} className={studyConfig?.header?.className}/>
       {authorization !== undefined && authorization?.enabled ? (
         <DetailsAuthorizationIcon studyData={data} dataAccess={authorization} />
       ) : false}

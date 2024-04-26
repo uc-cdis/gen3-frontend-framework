@@ -132,7 +132,6 @@ export interface StudyDetailsField {
 export interface StudyPageGroup {
   groupName?: string;
   groupWidth?: 'half' | 'full';
-  includeName?: boolean;
   fields: StudyDetailsField[];
 }
 
@@ -151,6 +150,7 @@ export interface StudyPageConfig {
   showAllAvailableFields?: boolean,
   header?: {
     field: string;
+    className?: string;
   };
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
@@ -172,9 +172,9 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  headerField: string;
   header: {
     field: string;
+    className?: string;
   };
   tabs: StudyDetailTab[];
 }

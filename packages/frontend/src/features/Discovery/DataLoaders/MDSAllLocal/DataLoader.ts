@@ -4,7 +4,7 @@ import {
   JSONObject,
   MetadataPaginationParams,
   useGetMDSQuery,
-  useGetAggMDSQuery,
+  useGetAggMDSQuery, useCoreSelector, selectAuthzMappingData,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
@@ -23,6 +23,8 @@ import {
   SummaryStatistics,
 } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { processAuthorizations } from './utils';
+import { useDiscoveryContext } from '../../DiscoveryProvider';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -154,6 +156,9 @@ const useGetMDSData = ({
     pageSize: maxStudies,
   });
 
+  const { discoveryConfig } = useDiscoveryContext();
+  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = Object.values(data.data).reduce(
@@ -164,9 +169,13 @@ const useGetMDSData = ({
         },
         [],
       );
+
+      if (discoveryConfig?.features?.authorization.enabled) {
+        setMDSData(processAuthorizations(studyData, discoveryConfig, authMapping));
+      } else
       setMDSData(studyData);
     }
-  }, [data, isSuccess, studyField]);
+  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -205,10 +214,14 @@ const useGetAggMDSData = ({
     offset: 0,
     pageSize: maxStudies,
   });
-
+  const { discoveryConfig } = useDiscoveryContext();
+  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
   useEffect(() => {
     if (data && isSuccess) {
-      setMDSData(data.data);
+      if (discoveryConfig?.features?.authorization.enabled) {
+        setMDSData(processAuthorizations(studyData, discoveryConfig, authMapping));
+      } else
+        setMDSData(studyData);
     }
 
   }, [data, isSuccess, studyField]);

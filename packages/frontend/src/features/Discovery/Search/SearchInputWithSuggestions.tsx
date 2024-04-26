@@ -17,6 +17,7 @@ const SearchInputWithSuggestions = ({
 }: SearchInputWithAutoSuggestProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  console.log("SearchInputWithSuggestions", searchChanged, placeholder, label, suggestions, clearSearch)
   return (
     <div className="relative">
       <Autocomplete

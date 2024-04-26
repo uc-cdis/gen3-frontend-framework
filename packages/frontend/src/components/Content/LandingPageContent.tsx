@@ -14,6 +14,7 @@ import {
 } from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
+import TextContent, { ContentType } from './TextContent';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -21,6 +22,7 @@ export interface LandingPageContentProp {
 
 export interface leftRightProps {
   readonly text?: string;
+  readonly type?: ContentType;
   readonly link?: {
     readonly href: string;
     readonly text: string;
@@ -86,11 +88,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             area.map((obj, index) => {
               if (obj.text) {
                 return (
-                  <p
-                    key={index}
-                    className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
-                    dangerouslySetInnerHTML={{ __html: obj.text }}
-                  />
+                  <TextContent text={obj.text} key={index} type={obj?.type ?? ContentType.Html} className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"/>
                 );
               }
               if (obj.link) {

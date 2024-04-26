@@ -9,7 +9,7 @@ module.exports = {
   presets: [require('@gen3/frontend/tailwind')],
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
     '../../node_modules/@gen3/frontend/**/*.js',

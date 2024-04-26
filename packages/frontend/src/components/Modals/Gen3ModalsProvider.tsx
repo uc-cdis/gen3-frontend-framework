@@ -7,7 +7,8 @@ import {
   showModal,
   useCoreDispatch,
   useCoreSelector,
-  useGetCSRFQuery
+  useGetCSRFQuery,
+  useGetAuthzMappingsQuery
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
 import { SessionExpiredModal } from './SessionExpiredModal';
@@ -62,6 +63,7 @@ const Gen3ModalsProvider = ({
   children,
 }: Gen3StandardModalsProviderProps) => {
    useGetCSRFQuery();
+   useGetAuthzMappingsQuery();
 
   const [cookie] = useCookies(['Gen3-first-time-use']);
   const dispatch = useCoreDispatch();
@@ -86,8 +88,6 @@ const Gen3ModalsProvider = ({
     dispatch,
     modalsConfig.systemUseModal.enabled,
   ]);
-
-
 
   return (
     <div className="bg-base-max">

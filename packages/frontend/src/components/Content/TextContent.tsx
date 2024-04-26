@@ -26,7 +26,7 @@ const TextContent = ({
     case ContentType.Html: {
       const textString = Array.isArray(text) ? text.join('') : text;
       return (
-        <div
+        <p
           className={className}
           dangerouslySetInnerHTML={{ __html: textString }}
         />
@@ -45,11 +45,47 @@ const TextContent = ({
       case ContentType.Markdown: {
         const textString = Array.isArray(text) ? text.join('') : text;
         return (
+          <div>
           <Markdown
             remarkPlugins={[remarkGfm]}
+            components={{
+              // define some formatting for the ai response
+              p(props:any) {
+                const { node, ...rest } = props;
+                return (
+                  <p
+                    className="text-lg text-primary-contrast my-1"
+                    {...rest}
+                  />
+                );
+              },
+              ol(props:any) {
+                const { node, ...rest } = props;
+                return (
+                  <ol
+                    className="list-disc list-inside my-1"
+                    {...rest}
+                  />
+                );
+              },
+              ul(props:any) {
+                const { node, ...rest } = props;
+                return (
+                  <ul
+                    className="list-disc list-inside my-1"
+                    {...rest}
+                  />
+                );
+              },
+              li(props:any) {
+                const { node, ...rest } = props;
+                return <li className="text-md" {...rest} />;
+              },
+            }}
             >
             {textString}
           </Markdown>
+          </div>
         );
       }
     case ContentType.Text:
