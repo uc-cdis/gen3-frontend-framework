@@ -26,6 +26,7 @@ interface LoginButtonProps {
   readonly icon?: React.ReactElement;
   readonly hideText?: boolean;
   className?: string;
+  tooltip?: string;
 }
 
 
@@ -33,6 +34,7 @@ const LoginButton = ({
   icon = <LoginIcon className="pl-1" size={'1.55rem'} />,
   hideText = false,
   className = 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent mx-2',
+  tooltip
 }: LoginButtonProps) => {
   const router = useRouter();
 
@@ -43,9 +45,10 @@ const LoginButton = ({
   const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
   const authenticated = isAuthenticated(userStatus);
   return (
-    <Tooltip label={'Login'} position="bottom" withArrow
+    <Tooltip label={tooltip} position="bottom" withArrow
              multiline
              color="base"
+             disabled={tooltip === undefined}
              classNames={TooltipStyle}>
     <UnstyledButton
       onClick={() =>

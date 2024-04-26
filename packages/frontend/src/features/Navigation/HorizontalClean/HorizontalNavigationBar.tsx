@@ -73,6 +73,7 @@ const HorizontalNavigationBar = ({
             icon={loginIcon}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
+            tooltip={'Login to the commons'}
           />
         ) : null}
         <ActionMenu items={actions.items} />
