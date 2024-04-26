@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
 import { SessionContext } from '../../lib/session/session';
 import { type CoreState, selectUserAuthStatus, useCoreSelector, isAuthenticated } from '@gen3/core';
+import { TooltipStyle } from '../../features/Navigation/style';
 
 
 const handleSelected = async (
@@ -27,6 +28,7 @@ interface LoginButtonProps {
   className?: string;
 }
 
+
 const LoginButton = ({
   icon = <LoginIcon className="pl-1" size={'1.55rem'} />,
   hideText = false,
@@ -41,7 +43,10 @@ const LoginButton = ({
   const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
   const authenticated = isAuthenticated(userStatus);
   return (
-    <Tooltip label={'Login'} position="bottom" withArrow>
+    <Tooltip label={'Login'} position="bottom" withArrow
+             multiline
+             color="base"
+             classNames={TooltipStyle}>
     <UnstyledButton
       onClick={() =>
         handleSelected(authenticated, router, pathname, endSession)
