@@ -154,6 +154,7 @@ export interface StudyPageConfig {
   };
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
+  classNames?: Record<string, string>;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 

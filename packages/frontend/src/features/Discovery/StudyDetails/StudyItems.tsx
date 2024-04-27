@@ -227,7 +227,7 @@ const labeledParagraph: FieldRendererFunction = (
   const stringFieldValue = fieldValue as string;
   return (
     <div
-      className={discoveryFieldStyle}
+      className={`${discoveryFieldStyle}`}
       key={`study-details-${fieldLabel}-${stringFieldValue}`}
     >
       {fieldLabel ? (
@@ -236,8 +236,10 @@ const labeledParagraph: FieldRendererFunction = (
       <React.Fragment />
       )}
 
-      <Text lineClamp={10}
-      className="pl-4 text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
+      <div >
+      <Text
+      className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
+      </div>
     </div>
   );
 };

@@ -12,6 +12,7 @@ import DetailsAuthorizationIcon from './DetailsAuthorizationIcon';
 import { JSONPath } from 'jsonpath-plus';
 import { toString } from 'lodash';
 import { createFieldRendererElement } from './StudyItems';
+import DownloadLinksPanel from '../StudyPage/DownloadLinksPanel';
 
 
 const StudyTitle = ({ title, className = 'font-header text-lg font-semibold' }: { title: string, className?:string }): ReactElement => {
@@ -52,7 +53,7 @@ const SinglePageStudyDetailsPanel = ({
       return (
         <div
           key={`${field.fields.join('-')}-details`}
-          className={`${
+          className={`px-2 ${
             field.groupWidth == 'full' || field.groupWidth === undefined
               ? 'w-full'
               : 'w-1/2'
@@ -64,7 +65,7 @@ const SinglePageStudyDetailsPanel = ({
               const element = createFieldRendererElement(field, data as JSONValue);
               if (element !== null) {
                 return (
-                  <div key={`item-${field.field}`} className="flex w-full bg-base-lighter my-2 justify-between rounded-sm py-1.5 px-0.5">
+                  <div key={`item-${field.field}`} className={`flex w-full bg-base-lighter my-2 justify-between rounded-md py-1.5 px-1 text-sm ${field?.classNames?.['root'] ?? ''}`}>
                     {element}
                   </div>);
               }
@@ -81,7 +82,10 @@ const SinglePageStudyDetailsPanel = ({
       {authorization !== undefined && authorization?.enabled ? (
         <DetailsAuthorizationIcon studyData={data} dataAccess={authorization} />
       ) : false}
+      <div className="flex flex-wrap w-full">
       {elements}
+      </div>
+      <DownloadLinksPanel studyData={data} downloadLinks={studyConfig?.downloadLinks} />
     </div>
   );
 };

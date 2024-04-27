@@ -166,6 +166,9 @@
     "header": {
       "field": "study_title"
     },
+    "downloadLinks": {
+      "field": "data_download_links"
+    },
     "fieldsToShow": [
       {
         "groupWidth": "half",
