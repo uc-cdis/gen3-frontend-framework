@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { DataDownloadLinks, DownloadLinkFields } from '../types';
 import { JSONObject } from '@gen3/core';
 import { Accordion, Button, Group, Stack, Text } from '@mantine/core';
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
 const extractFieldData = (
   data: JSONObject,
@@ -21,8 +21,8 @@ const extractFieldData = (
 };
 
 interface DataDownloadLinksProps {
-  readonly studyData: JSONObject
-  readonly downloadLinks: DataDownloadLinks;
+  readonly studyData: JSONObject;
+  readonly downloadLinks?: DataDownloadLinks;
   readonly downloadLinkFields?: DownloadLinkFields;
 }
 
@@ -35,16 +35,13 @@ const DownloadLinksPanel = ({
     idField: 'guid',
   },
 }: DataDownloadLinksProps) => {
-
-  const downloadEntries = useMemo(
-    () => {
-      if (!downloadLinks || !studyData[downloadLinks.field])
-        return undefined;
-      const studyDownloadLinks = studyData[downloadLinks.field] as JSONObject[];
-      return studyDownloadLinks.map((data : JSONObject) => extractFieldData(data , downloadLinkFields));
-    },
-        [studyData, downloadLinks, downloadLinkFields],
-      );
+  const downloadEntries = useMemo(() => {
+    if (!downloadLinks || !studyData[downloadLinks.field]) return undefined;
+    const studyDownloadLinks = studyData[downloadLinks.field] as JSONObject[];
+    return studyDownloadLinks.map((data: JSONObject) =>
+      extractFieldData(data, downloadLinkFields),
+    );
+  }, [studyData, downloadLinks, downloadLinkFields]);
 
   return (
     <Accordion>
@@ -54,28 +51,27 @@ const DownloadLinksPanel = ({
         </Accordion.Control>
         <Accordion.Panel>
           <Stack>
-        {downloadEntries && downloadEntries.map((entry: Record<string, string | undefined>) => {
-          // minimum required fields are title and id
-          if (
-            entry['titleField'] === undefined ||
-            entry['idField'] === undefined
-          ) {
-            return null;
-          }
-          const id = entry[downloadLinkFields.idField];
-          return (
-
-            <Group key={id} position="apart" >
-              <Text>{entry['titleField'] || ''}</Text>
-              <Button leftIcon={DownloadIcon()}>
-                Download File
-              </Button>
-            </Group>
-
-          );
-        })}
+            {downloadEntries &&
+              downloadEntries.map(
+                (entry: Record<string, string | undefined>) => {
+                  // minimum required fields are title and id
+                  if (
+                    entry['titleField'] === undefined ||
+                    entry['idField'] === undefined
+                  ) {
+                    return null;
+                  }
+                  const id = entry[downloadLinkFields.idField];
+                  return (
+                    <Group key={id} position="apart">
+                      <Text>{entry['titleField'] || ''}</Text>
+                      <Button leftIcon={DownloadIcon()}>Download File</Button>
+                    </Group>
+                  );
+                },
+              )}
           </Stack>
-          </Accordion.Panel>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );

@@ -127,6 +127,7 @@ export interface StudyDetailsField {
   valueIfNotAvailable?: string | number;
   renderer?: string;
   params?: Record<string, unknown>;
+  classNames?: Record<string, string>;
 }
 
 export interface StudyPageGroup {
@@ -138,6 +139,7 @@ export interface StudyPageGroup {
 export interface DataDownloadLinks {
   field: string;
   name?: string;
+  className?: Record<string, string>;
 }
 
 export interface DownloadLinkFields {
