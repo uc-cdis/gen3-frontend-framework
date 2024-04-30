@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Paper, Grid } from '@mantine/core';
+import { Text, Paper, Grid, Title, Group } from '@mantine/core';
 import {
   NavPageLayout,
   NavPageLayoutProps,
@@ -7,14 +7,7 @@ import {
 } from '@gen3/frontend';
 import { GetServerSideProps } from 'next';
 
-interface Item {
-  id: string;
-  subject: string;
-}
 
-interface DataComponentProps {
-  data: Item[];
-}
 
 interface FileQueryResult {
   file: Item[];
@@ -29,6 +22,14 @@ interface SamplePageProps {
   footerProps: any; // Adjust the type according to your actual props
 }
 
+interface Item {
+  id: string;
+  subject: string;
+}
+
+interface DataComponentProps {
+  data: Item[];
+}
 const DataComponent = ({ data }: DataComponentProps) => {
   return (
     <Grid>
@@ -87,7 +88,10 @@ const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
       {isLoading ? (
         <p>Loading data...</p>
       ) : (
+        <Group style={{ margin: 20 }}>
+        <Title> Synthetic Data FHIR references </Title>
         <DataComponent data={items} />
+        </Group>
       )}
     </NavPageLayout>
   );
