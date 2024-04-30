@@ -1,7 +1,7 @@
 import { createSelector, Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { GEN3_API } from '../../constants';
+import { GEN3_API, GEN3_FENCE_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { JSONObject } from '../../types';
 import { getCookie } from 'cookies-next';
@@ -38,7 +38,7 @@ export const gen3Api = coreCreateApi({
   }),
   endpoints: (builder) => ({
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => '_status',
+      query: () => `${GEN3_FENCE_API}/_status`,
       transformResponse: (response: JSONObject): CSRFToken => {
         return { csrfToken: response['csrf'] as string };
       },

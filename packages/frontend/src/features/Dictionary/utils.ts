@@ -17,14 +17,19 @@ export const categoryReduce = (categories: any, dictionary: any) => {
     }, {}) as DictionaryCategory<any>;
 };
 
-export const getPropertyCount = (categories: Record<string, any>, dictionary: any) => {
+export const getPropertyCount = (
+  categories: Record<string, any>,
+  dictionary: any,
+) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  return categories
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .reduce((acc, curr) => acc + curr);
+  return (
+    categories
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .map((n) => Object.keys(dictionary[n]?.properties)?.length ?? 0)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .reduce((acc, curr) => acc + curr)
+  );
 };

@@ -1,19 +1,19 @@
 import {
-    MdKeyboardArrowDown as DownArrowIcon,
-    MdKeyboardArrowUp as UpArrowIcon,
+  MdKeyboardArrowDown as DownArrowIcon,
+  MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
 import ResultList from './ResultList';
 import { useState } from 'react';
 
 interface Result {
-    node: string;
-    category: string;
-    property: string;
+  node: string;
+  category: string;
+  property: string;
 }
 
 interface ResultCardProps {
-    term: string;
-    matches?: Result[]
+  term: string;
+  matches?: Result[];
 }
 
 const ResultCard = ({ term, matches }: ResultCardProps) => {

@@ -49,3 +49,15 @@ At the moment assume that most feature are pending, and entries under Features t
 * Not started
 
 #### Features to implement
+
+* Workspace API
+* Workspace Gridview
+* Workspace Actions
+
+### Submission Roadmap
+
+* Submission API support
+* Project Table
+* Submission Table
+* Map Data Action
+* Submission Action

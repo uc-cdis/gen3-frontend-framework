@@ -1,12 +1,12 @@
 interface Result {
-    node: string;
-    category: string;
-    property: string;
+  node: string;
+  category: string;
+  property: string;
 }
 
 interface ResultListProps {
-    matches?: Result[];
-    term: string;
+  matches?: Result[];
+  term: string;
 }
 const ResultList = ({ matches, term }: ResultListProps) => {
     return (<div>
