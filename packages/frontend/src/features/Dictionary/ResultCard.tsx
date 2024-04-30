@@ -28,7 +28,7 @@ const ResultCard = ({ term, matches }: ResultCardProps) => {
                     <div className="flex font-bold text-sm"><UpArrowIcon size={20} />Show Less</div></button>) :
                 (<button className="border-none py-1" onClick={() => setExpanded(true)}><div className="flex font-bold text-sm"><DownArrowIcon size={20} />{matches.length - 4} More</div></button>)}
         </div> : <div className="border border-solid border-black border-t-0 rounded-b-md"></div>}
-    </div>)
-}
+    </div>);
+};
 
 export default ResultCard;

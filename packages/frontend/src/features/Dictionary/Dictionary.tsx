@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { Autocomplete, TextInput } from '@mantine/core';
+import { Autocomplete, Highlight, TextInput } from '@mantine/core';
+// import { Combobox, useCombobox } from '@mantine/core';
 import { capitalize } from 'lodash';
-import { DictionaryCategory, DictionaryProps } from './types';
+import { DictionaryCategory, DictionaryProps, DictionaryEntry } from './types';
 import { RiDownload2Fill } from 'react-icons/ri';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
@@ -12,12 +13,6 @@ import { Icon } from '@iconify/react';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch from 'minisearch';
-
-interface SearchResults {
-  description: string;
-  type: string;
-  property?: string;
-}
 
 interface SearchMatches {
   node: string;
@@ -34,14 +29,17 @@ interface DictionarySearchHistoryObj {
 
 
 const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary' }: DictionaryProps) => {
-  const [categories, setCategories] = useState({} as DictionaryCategory<any>);
+  const [categories, setCategories] = useState({} as DictionaryCategory<DictionaryEntry | any>);
   const [selectedId, setSelectedId] = useState('');
   const [view, setView] = useState('table');
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [dictionarySearchResults, setDictionarySearchResults] = useState({} as any);
   const [dictionarySearchHistory, setDictionarySearchHistory] = useState<DictionarySearchHistoryObj>({});
   const [dictionaryTableRows, setDictionaryTableRows] = useState<[] | JSX.Element[]>([]);
   const [documents, setDocuments] = useState([]);
+  // const combobox = useCombobox({
+  //   onDropdownClose: () => combobox.resetSelectedOption(),
+  // });
 
   useEffect(() => {
     const filtered = Object.keys(dictionary).filter((id) => categoryFilter(id, dictionary));
@@ -52,22 +50,22 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   useEffect(() => {
     if (Object.keys(categories).length) {
       setDocuments((Object.keys(categories).map((c) => {
-        return categories[c]
+        return categories[c];
       }).flatMap((array) => {
         return array.map((d: any) => {
           return Object.keys(d?.properties).map((key) => {
-            const { description, type, term, anyOf } = d["properties"][key];
+            const { description, type, term, anyOf } = d['properties'][key];
             return {
               id: `${d.id}-${key}`,
               property: key,
-              description: description ?? term?.description ?? anyOf?.[1]?.properties?.id?.term?.description,
-              type: type ?? anyOf?.[0]?.type ?? ""
+              description: description ?? term?.description ?? anyOf?.[1]?.properties?.id?.term?.description ?? '',
+              type: type ?? anyOf?.[0]?.type ?? ''
             };
           });
         });
-      }) || []).reduce((acc: any, curr: any) => {
+      }) || []).reduce((acc: DictionaryEntry[], curr: DictionaryEntry[]) => {
         return [...acc, ...curr];
-      }, []))
+      }, []));
     }
   }, [categories]);
 
@@ -79,12 +77,24 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     removeAll,
   } = useMiniSearch(documents, {
     fields: ['description', 'type', 'property'],
-    idField: "id",
-    storeFields: ["id"],
+    idField: 'id',
+    storeFields: ['id'],
     searchOptions: {
       processTerm: MiniSearch.getDefault('processTerm'),
     },
   });
+
+  useEffect(() => {
+    console.log('suggests', suggestions);
+  }, [suggestions]);
+
+  // const options = (suggestions || []).map((item) => (
+  //   <Combobox.Option value={item} key={item}>
+  //     <Highlight highlight={value} size="sm">
+  //       {item}
+  //     </Highlight>
+  //   </Combobox.Option>
+  // ));
 
   useEffect(() => {
     search(searchTerm);
@@ -94,11 +104,11 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   useEffect(() => {
     removeAll();
     addAll(documents);
-  }, [documents, suggestions]);
+  }, [documents, suggestions, addAll, removeAll]);
 
   useEffect(() => {
     setDictionarySearchHistory(JSON.parse((sessionStorage.getItem(uidForStorage) || '{}')));
-  }, []);
+  }, [uidForStorage]);
 
   useEffect(() => {
     if (dictionarySearchHistory) {
@@ -107,12 +117,12 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   }, [uidForStorage, dictionarySearchHistory]);
 
   useEffect(() => {
-    const cachedData = JSON.parse(sessionStorage.getItem(uidForStorage) || "{}");
+    const cachedData = JSON.parse(sessionStorage.getItem(uidForStorage) || '{}');
     if (dictionarySearchResults?.term?.length && !Object.keys(cachedData).includes(dictionarySearchResults?.term) && dictionarySearchResults?.matches?.length) {
       sessionStorage.setItem(uidForStorage, JSON.stringify({ ...cachedData, [dictionarySearchResults?.term]: dictionarySearchResults.matches }));
-      setDictionarySearchHistory({ ...cachedData, [dictionarySearchResults?.term]: dictionarySearchResults.matches })
+      setDictionarySearchHistory({ ...cachedData, [dictionarySearchResults?.term]: dictionarySearchResults.matches });
     }
-  }, [dictionarySearchResults]);
+  }, [dictionarySearchResults, uidForStorage]);
 
   useEffect(() => {
     if (dictionarySearchHistory) {
@@ -123,13 +133,13 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
         );
       }));
     }
-  }, [dictionarySearchResults]);
+  }, [dictionarySearchResults, dictionarySearchHistory]);
 
   const removeDictionarySearchHistory = () => {
     sessionStorage.setItem(uidForStorage, JSON.stringify({}));
     setDictionarySearchHistory({});
     setDictionaryTableRows([]);
-  }
+  };
 
   const columns = useMemo(
     () =>
@@ -163,7 +173,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
         };
       })
       : [];
-  }, [selectedId]);
+  }, [selectedId, dictionary]);
 
   const handleSelect = (id: string) => {
     setSelectedId((i) => (i === id ? '' : id));
@@ -176,7 +186,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     enableBottomToolbar: false,
     enableTopToolbar: false,
     mantineTableHeadRowProps: {
-      "bg": "rgb(206, 203, 228)"
+      'bg': 'rgb(206, 203, 228)'
     }
   });
 
@@ -185,33 +195,30 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   );
 
   const snakeSplit = (snake: string) => {
-    return snake.split('_').map((name) => capitalize(name)).join(' ')
-  }
+    return snake.split('_').map((name) => capitalize(name)).join(' ');
+  };
 
   const getSearchResults = (term: string) => {
     const dictionary = Object.keys(categories).map((c) => {
-      return categories[c]
+      return categories[c];
     });
     const matches = [] as Record<string, string>[];
     dictionary.forEach((category) => {
       category.forEach((d: any) => {
         return Object.keys(d?.properties).forEach((p) => {
-          const { description = "", type = "" } = d?.properties?.[`${p}`];
-          let results = [{ "description": description }, { "type": type }, { "property": snakeSplit(p) }];
+          const { description = '', type = '' } = d?.properties?.[`${p}`] ?? { description: '', type: '' } ;
+          const results = [{ 'description': description }, { 'type': type }, { 'property': snakeSplit(p) }];
           results.forEach((r) => {
-            if ((Object.values(r)[0].toLowerCase() as "string").includes(term.toLowerCase())) {
-              matches.push({ node: snakeSplit(d.category), category: snakeSplit(d.id), property: capitalize(Object.keys(r)[0]) })
+            if ((Object.values(r)[0].toLowerCase() as 'string').includes(term.toLowerCase())) {
+              matches.push({ node: snakeSplit(d.category), category: snakeSplit(d.id), property: capitalize(Object.keys(r)[0]) });
             }
-          })
-        })
+          });
+        });
       });
     });
     setDictionarySearchResults({ term: searchTerm, matches: matches.sort((a, b) => a.node.localeCompare(b.node)) });
-  }
-
-  const handleDownloadTemplate = (e: any) => {
-    console.log(e);
   };
+
   const getIcon = (category: string) => {
     // todo: replace with appropriate icons
     // ideally render as <Icon icon={`gen3:${c}`} /> where c is category
@@ -235,8 +242,8 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     <div className="flex">
       <div className="w-1/4">
         <div className="flex justify-center border-t-0 border-1 border-gray-400 py-10">
-          <button className={`${view === "table" ? "bg-purple-950 text-white" : "bg-white text-purple-950"} text-sm py-2 px-10 rounded-tl-md rounded-bl-md border-2 border-purple-950 `} onClick={() => setView("table")}>Table View</button>
-          <button className={`${view === "graph" ? "bg-purple-950 text-white" : "bg-white text-purple-950"} text-sm py-2 px-10 rounded-tr-md rounded-br-md border-2 border-purple-950`} onClick={() => setView("graph")}>Graph View</button>
+          <button className={`${view === 'table' ? 'bg-purple-950 text-white' : 'bg-white text-purple-950'} text-sm py-2 px-10 rounded-tl-md rounded-bl-md border-2 border-purple-950 `} onClick={() => setView('table')}>Table View</button>
+          <button className={`${view === 'graph' ? 'bg-purple-950 text-white' : 'bg-white text-purple-950'} text-sm py-2 px-10 rounded-tr-md rounded-br-md border-2 border-purple-950`} onClick={() => setView('graph')}>Graph View</button>
         </div>
         <div className="p-4 text-sm">
           <span>
@@ -245,6 +252,8 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
         </div>
         <div className="flex flex-col">
           <div className="flex mb-1"><button className={`border p-1 ${searchTerm.length !== 0 ? "text-orange-500 border-orange-500": "text-gray-300 border-gray-300"} ml-auto mr-2 rounded-md items-center`} disabled={searchTerm.length === 0} onClick={() => getSearchResults(searchTerm)}>Search</button></div>
+          <Highlight highlight={searchTerm}>search</Highlight>
+          {/* todo: find different component besides combobox */}
           <Autocomplete
             data={(suggestions || [])?.map(({ suggestion }) => suggestion)}
             icon={<SearchIcon size={24} />}
@@ -271,6 +280,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
             }
           />
 
+
         </div>
         <div className="p-3">
           <span className="flex flex-col font-semibold text-sm">Search Results</span>
@@ -288,7 +298,6 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
 
       </div>
       <div className="w-3/4">
-
         {Object.keys(categories).length && Object.keys(categories).map((c) => {
           return (
             <div className={'border-l-4 border-purple mt-2'} key={`dictionary-entry-${c}`}>
@@ -321,24 +330,21 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
                           : ''
                           }  hover:bg-violet-50 hover:text-highlight`}
                       >
-                        <div
-                          onClick={() => handleSelect(id)}
+                        <button onClick={() => handleSelect(id)}
                           className={`flex w-1/5 flex-grow-0 flex-shrink-0 text-left font-black text-md items-center ${selectedId === id && "border-l-4 border-orange-500 mr-4"}`}>
                           <span className="ml-4">{selectedId === id ? <IoIosArrowDown /> : <IoIosArrowForward />}</span><span className="ml-4">{title}</span>
-                        </div>
+                        </button>
 
                         <div className="w-3/5 ml-4 text-left">{description}</div>
 
                         <div className="w-1/5 flex text-sm justify-end mr-5 items-center mb-3 mt-3">
                           <button
-                            onClick={(e) => handleDownloadTemplate(e)}
                             className="text-xs p-1 text-white bg-orange-500 rounded-sm mr-1 h-6 items-center"
                           >
                             <div className="flex"><RiDownload2Fill /><span className="ml-1 font-black">JSON</span></div>
                           </button>
 
                           <button
-                            onClick={handleDownloadTemplate}
                             className="text-xs p-1 text-white bg-orange-500 rounded-sm ml-1 h-6 items-center"
                           >
                             <div className="flex"><RiDownload2Fill />
