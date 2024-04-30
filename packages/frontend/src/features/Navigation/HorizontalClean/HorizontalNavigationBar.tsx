@@ -5,14 +5,14 @@ import NavigationBarButton from '../NavigationBarButton';
 import NavigationLogo from '../NavigationLogo';
 import { TopBarProps } from '../TopBar';
 import LoginButton from '../../../components/Login/LoginButton';
-import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
+import { AiOutlineLogin as LoginIcon } from 'react-icons/ai';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
-  loginIcon?: ReactElement;
+  loginIcon?: ReactElement | string;
 }
 
 const HorizontalNavigationBar = ({

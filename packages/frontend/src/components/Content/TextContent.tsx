@@ -19,7 +19,7 @@ export interface TextContentProps {
 }
 const TextContent = ({
   text,
-  className = 'inline color-ink font-medium margin-block-start-1 margin-block-end-1',
+  className = 'inline text-base-contrast color-red-500 font-medium margin-block-start-1 margin-block-end-1',
   type = ContentType.Text,
 }: TextContentProps) => {
   switch (type) {

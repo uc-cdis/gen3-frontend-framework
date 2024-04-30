@@ -54,6 +54,7 @@ export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
   readonly items?: NavigationButtonProps[];
   readonly title?: string;
+  readonly loginIcon?: string;
   readonly classNames?: Record<string, string>;
 }
 
