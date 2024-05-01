@@ -1,9 +1,11 @@
 import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '@gen3/core';
+import { type AuthzMapping, JSONObject } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
+import { DiscoveryConfig, AccessLevel } from '../../types';
+import { userHasMethodForServiceOnResource } from '../../../authorization/utils';
 
 /**
  * Check for non-numeric items in an array and convert them to numbers.
@@ -77,4 +79,38 @@ export const processAllSummaries = (
       },
     ];
   }, [] as SummaryStatistics);
+};
+
+
+export const processAuthorizations = (data: Array<JSONObject>, config: DiscoveryConfig,  authMapping: AuthzMapping): Array<JSONObject> => {
+  const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
+  const { supportedValues } = config.features.authorization;
+
+  return data.map((study) => {
+     if (typeof study[authzField] !== 'string')
+      return study;
+    const studyAuthz = study[authzField] as string;
+    let accessible: AccessLevel;
+    if (supportedValues?.pending?.enabled && dataAvailabilityField && study[dataAvailabilityField] === 'pending') {
+      accessible = AccessLevel.PENDING;
+    } else if (supportedValues?.notAvailable?.enabled && !study[authzField]) {
+      accessible = AccessLevel.NOT_AVAILABLE;
+    } else {
+      const isAuthorized = userHasMethodForServiceOnResource('read', '*', studyAuthz, authMapping)
+        || userHasMethodForServiceOnResource('read', 'peregrine', studyAuthz, authMapping)
+        || userHasMethodForServiceOnResource('read', 'guppy', studyAuthz, authMapping)
+        || userHasMethodForServiceOnResource('read-storage', 'fence', studyAuthz, authMapping);
+      if (supportedValues?.accessible?.enabled && isAuthorized) {
+        accessible = AccessLevel.ACCESSIBLE;
+      } else if (supportedValues?.unaccessible?.enabled && !isAuthorized) {
+        accessible = AccessLevel.UNACCESSIBLE;
+      } else {
+        accessible = AccessLevel.OTHER;
+      }
+    }
+    return {
+      ...study,
+      __accessible: accessible,
+    };
+  });
 };

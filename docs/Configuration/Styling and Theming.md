@@ -2,7 +2,16 @@
 
 ### Fonts
 
-Fonts cane be configured by editing ```config/themeFonts.json```
+Fonts can be installed using the ```@fontsource``` package. The package is installed by running the command
+```
+npm install @fontsource/roboto
+```
+The font can be imported in the ```styles/globals.css``` file by adding the line
+```
+import '@fontsource/roboto/400.css'
+```
+
+Once installed fonts cane be configured by editing ```config/themeFonts.json```
 The current theme support heading and body fonts. They can be specified as a google font or a local font in standary css format (e.x. "Arial, Helvetica, sans-serif")
 The```fontFamily``` member is used to set the font for the component library (e.g. Mantine.dev)
 
@@ -13,6 +22,8 @@ The```fontFamily``` member is used to set the font for the component library (e.
   "fontFamily": "Roboto"
 }
 ```
+
+
 
 ### Colors
 

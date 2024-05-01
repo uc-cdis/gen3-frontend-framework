@@ -5,21 +5,21 @@ import NavigationBarButton from '../NavigationBarButton';
 import NavigationLogo from '../NavigationLogo';
 import { TopBarProps } from '../TopBar';
 import LoginButton from '../../../components/Login/LoginButton';
-import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
+import { AiOutlineLogin as LoginIcon } from 'react-icons/ai';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
-  loginIcon?: ReactElement;
+  loginIcon?: ReactElement | string;
 }
 
 const HorizontalNavigationBar = ({
   actions,
   items,
   logo = undefined,
-  loginIcon = (<LoginIcon size={'3.15rem'} />),
+  loginIcon = <LoginIcon size={'3.15rem'} />,
   classNames = {},
 }: HorizontalNavigationBarProps) => {
   const classNamesDefaults = {
@@ -29,7 +29,10 @@ const HorizontalNavigationBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <div
@@ -73,6 +76,7 @@ const HorizontalNavigationBar = ({
             icon={loginIcon}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
+            tooltip={'Login to the commons'}
           />
         ) : null}
         <ActionMenu items={actions.items} />

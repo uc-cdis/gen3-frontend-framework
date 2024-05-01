@@ -13,6 +13,7 @@ interface CellRendererFunctionProps {
 export type CellRendererFunction = (
   props: CellRendererFunctionProps, ...args: any[]
 ) => ReactElement;
+
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({ cell } : CellRendererFunctionProps) => {
   const value = cell.getValue();

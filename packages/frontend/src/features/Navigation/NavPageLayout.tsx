@@ -19,7 +19,7 @@ const NavPageLayout = ({
       <Header {...headerProps} />
       {headerProps.type === 'vertical' ? (
         <div className="flex grow ">
-          <LeftSidePanel items={headerProps.navigation.items} />
+          <LeftSidePanel items={headerProps.navigation.items}  classNames={headerProps.navigation.classNames}/>
           <main className="flex-grow">{children}</main>
         </div>
       ) : (
