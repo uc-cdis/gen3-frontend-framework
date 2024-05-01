@@ -1,5 +1,9 @@
 {
   "packages": ["packages/*"],
   "useWorkspaces": true,
+<<<<<<< HEAD
+  "version": "0.10.25"
+=======
   "version": "0.10.24"
+>>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
 }

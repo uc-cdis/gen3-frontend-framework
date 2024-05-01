@@ -80,10 +80,25 @@
     ],
     "loginForDownload": true,
     "guppyConfig": {
-      "dataType": "patient",
-      "fieldMapping":   [
-        { "field": "quality_adjusted_life_years", "name": "quality_adjusted_life_years" },
-        { "field": "disability_adjusted_life_years", "name": "disability_adjusted_life_years" }
+      "dataType": "data_file",
+      "nodeCountTitle": "Data Files",
+      "fieldMapping": [
+        {
+          "field": "project_id",
+          "name": "Project ID"
+        },
+        {
+          "field": "case_ids",
+          "name": "Patient ID"
+        },
+        {
+          "field": "study_uid",
+          "name": "Study UID"
+        },
+        {
+          "field": "series_UID",
+          "name": "Series UID"
+        }
       ],
       "nodeCountTitle": "Patients",
       "manifestMapping": {
@@ -92,7 +107,10 @@
         "referenceIdFieldInResourceIndex": "id",
         "referenceIdFieldInDataIndex": "id"
       },
-      "accessibleFieldCheckList": ["project_id"],
+      "downloadAccessor": "object_id",
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
       "accessibleValidationField": "project_id"
     }
   },

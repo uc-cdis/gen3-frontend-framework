@@ -1,15 +1,15 @@
 {
   "primary": {
-    "DEFAULT": "#1B62BF",
-    "vivid": "#1061ca",
-    "min": "#030a13",
-    "darkest": "#09203e",
-    "darker": "#0f3669",
-    "dark": "#154c94",
-    "light": "#4e85cd",
-    "lighter": "#82a9dc",
-    "lightest": "#b5ccea",
-    "max": "#e8eff9"
+    "DEFAULT": "#2C2C54",
+    "vivid": "#26265a",
+    "min": "#040408",
+    "darkest": "#0e0e1b",
+    "darker": "#18182e",
+    "dark": "#222241",
+    "light": "#5b5b7a",
+    "lighter": "#8b8ba1",
+    "lightest": "#babac7",
+    "max": "#eaeaee"
   },
   "primary-contrast": {
     "DEFAULT": "#fefefe",
@@ -24,16 +24,16 @@
     "max": "#111111"
   },
   "secondary": {
-    "DEFAULT": "#00b6ed",
-    "vivid": "#2584d4",
-    "min": "#050d14",
-    "darkest": "#2e008b",
-    "darker": "#1c486e",
-    "dark": "#27669b",
-    "light": "#609fd4",
-    "lighter": "#00b6ed",
-    "lightest": "#bcd7ed",
-    "max": "#eaf3fa"
+    "DEFAULT": "#AAABB8",
+    "vivid": "#a2a4c0",
+    "min": "#111112",
+    "darkest": "#37383c",
+    "darker": "#5e5e65",
+    "dark": "#84858f",
+    "light": "#bdbec8",
+    "lighter": "#d0d1d8",
+    "lightest": "#e3e4e8",
+    "max": "#f7f7f8"
   },
   "secondary-contrast": {
     "DEFAULT": "#111111",
@@ -48,16 +48,16 @@
     "max": "#111111"
   },
   "accent": {
-    "DEFAULT": "#2e008b",
-    "vivid": "#c14f09",
-    "min": "#120802",
-    "darkest": "#3b1a06",
-    "darker": "#652d0a",
-    "dark": "#8e3f0f",
-    "light": "#c77848",
-    "lighter": "#00b6ed",
-    "lightest": "#e8c6b2",
-    "max": "#f8eee7"
+    "DEFAULT": "#474787",
+    "vivid": "#3d3d91",
+    "min": "#07070d",
+    "darkest": "#17172c",
+    "darker": "#27274a",
+    "dark": "#373769",
+    "light": "#7070a2",
+    "lighter": "#9a9abd",
+    "lightest": "#c3c3d8",
+    "max": "#ededf3"
   },
   "accent-contrast": {
     "DEFAULT": "#fefefe",

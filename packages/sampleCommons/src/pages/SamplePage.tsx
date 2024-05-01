@@ -1,9 +1,5 @@
 import React from 'react';
-<<<<<<< HEAD
 import { Text, Paper, Grid, Title, Group } from '@mantine/core';
-=======
-import { Center, Text, Paper } from '@mantine/core';
->>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
 import {
   NavPageLayout,
   NavPageLayoutProps,
@@ -101,11 +97,6 @@ const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
   );
 };
 
-<<<<<<< HEAD
-
-=======
-// TODO: replace this with a custom getServerSideProps function
->>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {

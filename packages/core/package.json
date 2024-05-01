@@ -1,10 +1,14 @@
 {
   "name": "@gen3/core",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "0.10.25",
 =======
   "version": "0.10.23",
 >>>>>>> 122aca0 (Fix/missing csrf v3 (#173))
+=======
+  "version": "0.10.24",
+>>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
