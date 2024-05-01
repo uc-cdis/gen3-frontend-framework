@@ -54,21 +54,9 @@
         "enabled": true,
         "inputSubtitle": "Search studies by keywords",
         "searchableTextFields": [
-          "study_metadata.minimal_info.study_description",
-          "institutions",
-          "investigators_name",
-          "study_metadata.minimal_info.study_name",
-          "project_number",
-          "study_metadata.metadata_location.nih_application_id",
-          "_hdp_uid",
-          "dataset_1_title",
-          "dataset_2_title",
-          "dataset_3_title",
-          "dataset_4_title",
-          "administering_ic",
-          "research_program",
-          "doi_identifier",
-          "doi_resolvable_link"
+          "study_description",
+          "_unique_id",
+          "full_name"
         ]
       },
       "tagSearchDropdown": {

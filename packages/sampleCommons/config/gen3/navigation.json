@@ -1,5 +1,4 @@
 {
-  "type": "vertical",
   "navigation": {
     "classNames": {
       "root": "pl-1 mr-6 bg-base-max text-primary opacity-100 hover:opacity-100",

@@ -93,6 +93,7 @@ export interface TagCategory extends TagInfo {
 }
 
 export type DiscoveryContentTypes =
+  | string
   | 'string'
   | 'number'
   | 'date'
