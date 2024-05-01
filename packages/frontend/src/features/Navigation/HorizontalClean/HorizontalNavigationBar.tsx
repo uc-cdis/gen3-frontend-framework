@@ -19,7 +19,7 @@ const HorizontalNavigationBar = ({
   actions,
   items,
   logo = undefined,
-  loginIcon = (<LoginIcon size={'3.15rem'} />),
+  loginIcon = <LoginIcon size={'3.15rem'} />,
   classNames = {},
 }: HorizontalNavigationBarProps) => {
   const classNamesDefaults = {
@@ -29,7 +29,10 @@ const HorizontalNavigationBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <div

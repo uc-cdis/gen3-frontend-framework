@@ -141,8 +141,8 @@
     },
     {
       "name": "Data Files",
-      "field": "data_files_count",
-      "contentType": "string",
+      "field": "__manifest",
+      "contentType": "manifest",
       "errorIfNotAvailable": false,
       "valueIfNotAvailable": "n/a"
     },

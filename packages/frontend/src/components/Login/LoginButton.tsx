@@ -23,7 +23,7 @@ const handleSelected = async (
 };
 
 interface LoginButtonProps {
-  readonly icon?: React.ReactElement;
+  readonly icon?: React.ReactElement | string;
   readonly hideText?: boolean;
   className?: string;
   tooltip?: string;
