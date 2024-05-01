@@ -6,6 +6,7 @@ import { Tooltip } from '@mantine/core';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import { TooltipStyle } from './style';
+import { TooltipStyle } from './style';
 
 /**
  * NavigationBarButton: a button for the navigation bar
@@ -25,16 +26,13 @@ const NavigationBarButton = ({
   classNames = {},
 }: NavigationButtonProps) => {
   const classNamesDefaults = {
-    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100',
-    label: 'pt-1.5 body-typo font-heading text-sm',
-    icon: 'mt-0.5 ml-1',
-    ...TooltipStyle,
+    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 items-center align-center hover:text-accent opacity-80 hover:opacity-100',
+    label: 'pt-1.5 body-typo font-heading text-sm text-primary  hover:text-accent',
+    icon: 'mt-0.5 ml-1 text-primary hover:text-accent',
+    ...TooltipStyle
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(
-    classNamesDefaults,
-    classNames,
-  );
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
   return (
     <React.Fragment>
       <Tooltip
@@ -47,6 +45,7 @@ const NavigationBarButton = ({
           tooltip: mergedClassnames.tooltip,
           arrow: mergedClassnames.arrow,
         }}
+        zIndex={1000}
         zIndex={1000}
         width={220}
       >
