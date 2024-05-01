@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
 import { SessionContext } from '../../lib/session/session';
 import { type CoreState, selectUserAuthStatus, useCoreSelector, isAuthenticated } from '@gen3/core';
+import { TooltipStyle } from '../../features/Navigation/style';
 
 
 const handleSelected = async (

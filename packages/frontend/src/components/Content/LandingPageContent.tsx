@@ -15,7 +15,6 @@ import {
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
-import { CoreState, isAuthenticated, selectUserAuthStatus, useCoreSelector } from '@gen3/core';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -75,7 +74,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const authenticated = isAuthenticated(userStatus);
   
   return (
-    <div className="sm:mt-8 2xl:mt-10 content-center w-full bg-base-max">
+    <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
@@ -94,12 +93,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             area.map((obj, index) => {
               if (obj.text) {
                 return (
-                  <TextContent
-                    text={obj.text}
-                    key={index}
-                    type={obj?.type ?? ContentType.Html}
-                    className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
-                  />
+                  <TextContent text={obj.text} key={index} type={obj?.type ?? ContentType.Html} className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"/>
                 );
               }
               if (obj.link) {

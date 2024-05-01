@@ -10,14 +10,6 @@ export interface Gen3LoginPanelConfig {
   className: string;
 }
 
-interface TextImageContentProps extends TextContentProps {
-  readonly image?: {
-    readonly src: string;
-    readonly alt: string;
-  };
-  readonly className: string;
-}
-
 export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {
   topContent?: ReadonlyArray<TextImageContentProps>;
   bottomContent?: ReadonlyArray<TextImageContentProps>;

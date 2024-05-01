@@ -23,20 +23,7 @@ The```fontFamily``` member is used to set the font for the component library (e.
 }
 ```
 
-you will need to also install the font to your project:
-```bash
-npm i @fontsource/montserrat
-```
-and added to the ```src/styles/globals.css```:
-```bash
-...
-@import '~@fontsource/montserrat/700.css';
-@import '~@fontsource/montserrat/400-italic.css';
-@import '~@fontsource/montserrat/index.css';
-@import '~@fontsource/montserrat/600.css';
-@import '~@fontsource/montserrat/700-italic.css';
-...
-```
+
 
 ### Colors
 

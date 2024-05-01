@@ -19,7 +19,6 @@ const StudyTitle = ({ title, className = 'font-header text-lg font-semibold' }: 
   return (
     <div>
       <h1 className={className}>{title}</h1>
-      <h1 className={className}>{title}</h1>
     </div>
   );
 };
@@ -43,7 +42,6 @@ const SinglePageStudyDetailsPanel = ({
       path: studyConfig.header.field,
       json: data,
     });
-    headerText = res.length ? toString(res[0]) : '';
     headerText = res.length ? toString(res[0]) : '';
   }
 
@@ -81,15 +79,11 @@ const SinglePageStudyDetailsPanel = ({
   return (
     <div className="flex flex-col">
       <StudyTitle title={headerText} className={studyConfig?.header?.className}/>
-      <StudyTitle title={headerText} className={studyConfig?.header?.className}/>
       {authorization !== undefined && authorization?.enabled ? (
         <DetailsAuthorizationIcon studyData={data} dataAccess={authorization} />
       ) : false}
       <div className="flex flex-wrap w-full">
-      <div className="flex flex-wrap w-full">
       {elements}
-      </div>
-      <DownloadLinksPanel studyData={data} downloadLinks={studyConfig?.downloadLinks} />
       </div>
       <DownloadLinksPanel studyData={data} downloadLinks={studyConfig?.downloadLinks} />
     </div>
