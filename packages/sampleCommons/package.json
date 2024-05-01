@@ -1,6 +1,10 @@
 {
   "name": "@gen3/samplecommons",
+<<<<<<< HEAD
+  "version": "0.10.25",
+=======
   "version": "0.10.24",
+>>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
   "private": true,
   "scripts": {
     "lint": "next lint",
