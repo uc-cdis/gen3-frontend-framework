@@ -34,6 +34,7 @@ export * from './features/grip';
 export * from './features/aiSearch';
 export * from './features/workspaces';
 export * from './features/grip';
+export * from './features/workspace';
 export * from './features/submission';
 
 export {
