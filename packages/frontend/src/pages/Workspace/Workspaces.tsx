@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
-import { WorkspacesPanel }  from '../../features/Workspaces';
+import { WorkspacesPanel }  from '../../features/Workspace';
 import { WorkspacePageProps } from './types';
 
 const WorkspacesPage = ({
