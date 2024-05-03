@@ -7,7 +7,7 @@ export * from './components/Modals';
 export * from './components/charts';
 export * from './features/CohortBuilder';
 export * from './features/Query';
-export * from './features/Workspaces';
+export * from './features/Workspace';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -46,8 +46,8 @@ import Custom404Page  from './pages/404/Custom404Page';
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacesPage from './pages/Workspaces/Workspaces';
-import { WorkspacesPageGetServerSideProps } from './pages/Workspaces/data';
+import WorkspacesPage from './pages/Workspace/Workspaces';
+import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';

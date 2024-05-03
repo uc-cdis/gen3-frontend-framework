@@ -1,8 +1,7 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
+import { WorkspaceConfiguration } from '../../features/Workspace';
 
-export interface WorkspaceProps {
-}
 
-export interface WorkspacePageLayoutProps extends NavPageLayoutProps {
-  queryProps: WorkspaceProps;
+export interface WorkspacePageProps extends NavPageLayoutProps {
+  workspaceProps: WorkspaceConfiguration;
 }
