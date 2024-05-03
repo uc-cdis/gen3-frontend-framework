@@ -6,9 +6,7 @@
       "tabs": [
         {
           "title": "Demographics",
-          "searchFields": [
-            "submitter_id"
-          ],
+          "searchFields": ["submitter_id"],
           "fields": [
             "sex",
             "race",
@@ -87,6 +85,9 @@
     },
     "table": {
       "enabled": true,
+      "pageLimit": {
+        "limit": 10000
+      },
       "fields": [
         "submitter_id",
         "sex",
@@ -389,9 +390,7 @@
         "referenceIdFieldInResourceIndex": "_case_id",
         "referenceIdFieldInDataIndex": "_case_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -475,9 +474,7 @@
           "name": "Case ID"
         }
       ],
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -567,9 +564,7 @@
         { "field": "quality_adjusted_life_years", "name": "quality_adjusted_life_years" },
         { "field": "disability_adjusted_life_years", "name": "disability_adjusted_life_years" }
       ],
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -581,9 +576,7 @@
       "tabs": [
         {
           "title": "Study Properties",
-          "searchFields": [
-            "study_uid"
-          ],
+          "searchFields": ["study_uid"],
           "fields": [
             "study_modality",
             "study_description",
@@ -608,11 +601,7 @@
         },
         {
           "title": "Imaging Properties",
-          "fields": [
-            "data_format",
-            "data_category",
-            "data_type"
-          ]
+          "fields": ["data_format", "data_category", "data_type"]
         },
         {
           "title": "Case Demographics",
@@ -682,9 +671,7 @@
       ],
       "dicomViewerId": "submitter_id",
       "dicomViewerUrl": "ohif-viewer",
-      "linkFields": [
-        "submitter_id"
-      ]
+      "linkFields": ["submitter_id"]
     },
     "dropdowns": {
       "download-table": {
@@ -824,9 +811,7 @@
         "referenceIdFieldInDataIndex": "_imaging_study_id",
         "useFilterForCounts": false
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -837,16 +822,8 @@
       "tabs": [
         {
           "title": "File Properties",
-          "searchFields": [
-            "file_name",
-            "object_id"
-          ],
-          "fields": [
-            "source_node",
-            "data_format",
-            "data_category",
-            "data_type"
-          ]
+          "searchFields": ["file_name", "object_id"],
+          "fields": ["source_node", "data_format", "data_category", "data_type"]
         },
         {
           "title": "Study Properties",
@@ -867,9 +844,7 @@
         },
         {
           "title": "Series Properties",
-          "searchFields": [
-            "series_uid"
-          ],
+          "searchFields": ["series_uid"],
           "fields": [
             "source_node",
             "acquisition_type",
@@ -1008,9 +983,7 @@
       ],
       "dicomViewerId": "submitter_id",
       "dicomViewerUrl": "ohif-viewer",
-      "linkFields": [
-        "submitter_id"
-      ]
+      "linkFields": ["submitter_id"]
     },
     "dropdowns": {
       "download-table": {
@@ -1090,9 +1063,7 @@
         "referenceIdFieldInDataIndex": "object_id"
       },
       "downloadAccessor": "object_id",
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
