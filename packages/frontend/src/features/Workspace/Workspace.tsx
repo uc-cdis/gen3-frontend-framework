@@ -4,13 +4,15 @@ import {
 } from "@gen3/core";
 import { Accordion, Select } from "@mantine/core";
 import { mockedPayload } from "./constants";
+import { WorkspaceConfiguration } from './types';
 
 
 interface WorkspaceProps {
-
+  config: WorkspaceConfiguration
 }
 
 const Workspace = ({
+  config
 }: WorkspaceProps) => {
   const { data } = useGetWorkspaceOptionsQuery();
 

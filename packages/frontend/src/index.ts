@@ -46,9 +46,6 @@ import Custom404Page  from './pages/404/Custom404Page';
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacesPage from './pages/Workspace/Workspaces';
-import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
-
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
@@ -84,8 +81,6 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
-  WorkspacesPage,
-  WorkspacesPageGetServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,

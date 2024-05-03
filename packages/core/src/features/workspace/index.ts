@@ -1,13 +1,13 @@
 import {
-    useGetWorkspaceOptionsQuery,
-    type WorkspaceOptionsResponse,
-    useGetWorkspaceRefreshQuery,
-    useGetAccessTokenQuery
-} from "./workspaceSlice";
+  useGetWorkspaceOptionsQuery,
+  useGetWorkspaceStatusQuery,
+  useGetWorkspacePayModelsQuery,
+} from './workspaceSlice';
+import { type WorkspaceOptionsResponse } from './types';
 
 export {
-    useGetWorkspaceOptionsQuery,
-    WorkspaceOptionsResponse,
-    useGetWorkspaceRefreshQuery,
-    useGetAccessTokenQuery
-}
+  useGetWorkspaceOptionsQuery,
+  type WorkspaceOptionsResponse,
+  useGetWorkspaceStatusQuery,
+  useGetWorkspacePayModelsQuery,
+};
