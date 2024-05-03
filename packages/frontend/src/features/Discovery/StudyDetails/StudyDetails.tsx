@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
+import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 
 const StudyDetails = () => {
   const { discoveryConfig: config, studyDetails } = useDiscoveryContext();
@@ -14,7 +15,7 @@ const StudyDetails = () => {
   if (studyDetails) {
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ?? 'unknown',
+      typeof studyId == 'string' ? 'string' :  'unknown',
     )}`;
     permalink = `/${pagePath}`;
   }
@@ -47,10 +48,13 @@ const StudyDetails = () => {
           </CopyButton>
         </Drawer.Header>
         <Drawer.Body>
+          {config.detailView ?
           <StudyDetailsPanel
             data={studyDetails ?? {}}
             studyConfig={config.detailView}
-          />
+          /> : config.simpleDetailsView ?
+          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={config.simpleDetailsView} authorization={config.features.authorization} /> :
+          <div>Study Details Panel not configured</div>}
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

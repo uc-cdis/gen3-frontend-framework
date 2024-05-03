@@ -2,13 +2,16 @@ import {
   DiscoveryCellRendererFactory,
   CellRenderFunctionProps,
 } from '@gen3/frontend';
-import { Badge } from '@mantine/core';
+import { Badge, Text } from '@mantine/core';
 import React from 'react';
 import {
   MdOutlineCheckCircle as CheckCircleOutlined,
   MdOutlineRemoveCircleOutline as MinusCircleOutlined,
 } from 'react-icons/md';
 import { isArray } from 'lodash';
+import { JSONObject } from '@gen3/core';
+import { toString } from 'lodash';
+import { FilemapPopup, FilemapInline } from '@/lib/Discovery/Filemap';
 
 /**
  * Custom cell renderer for the linked study column for HEAL
@@ -36,8 +39,21 @@ export const LinkedStudyCell = ({
 const WrappedStringCell = (
   { value }: CellRenderFunctionProps,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _params: any[0],
+  params?: JSONObject,
 ) => {
+
+  if (value === undefined || value === null || toString(value) === '') {
+    return (
+      <Text>
+        {`${
+          params && params?.valueIfNotAvailable
+            ? params?.valueIfNotAvailable
+            : ''
+        }`}{' '}
+      </Text>
+    );
+  }
+
   const content = value as string | string[];
   return (
     <div className="w-40">
@@ -60,5 +76,9 @@ export const registerDiscoveryCustomCellRenderers = () => {
     boolean: {
       LinkedStudyCell,
     },
+    manifest: {
+      default: FilemapPopup,
+      inline: FilemapInline,
+    }
   });
 };

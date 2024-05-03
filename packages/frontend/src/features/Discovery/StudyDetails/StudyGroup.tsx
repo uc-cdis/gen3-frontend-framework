@@ -14,12 +14,12 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
     () =>
       fields.some((field) => {
         // TDDO: handle ifFieldIsNotAvailable
-        if (!field.sourceField) {
+        if (!field.field) {
           return false;
         }
         const resourceFieldValue = JSONPath({
           json: data,
-          path: field.sourceField,
+          path: field.field,
         });
         return (
           resourceFieldValue &&

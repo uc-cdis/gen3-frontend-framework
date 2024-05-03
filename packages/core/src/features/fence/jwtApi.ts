@@ -9,15 +9,17 @@ const credentialsWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['fenceJWT'],
 });
 
-
+/**
+ * A fence API for getting the public keys which can be used to validate
+ * JWTs issued and signed by fence
+ * @returns: Fence public keys
+ */
 export const jwtApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getJWKKeys: builder.query<ReadonlyArray<JWTKeys>, void>({
       query: () => 'user/jwt/keys',
       providesTags: ['fenceJWT'],
     }),
-
-
   }),
 });
 

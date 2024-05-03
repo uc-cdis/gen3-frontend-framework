@@ -4,7 +4,7 @@ import {
 } from '@gen3/frontend';
 import { ActionIcon } from '@mantine/core';
 import React  from 'react';
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 
 const RenderDiacomLink = ({ cell }: CellRendererFunctionProps) => {

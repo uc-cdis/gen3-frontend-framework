@@ -90,6 +90,7 @@ export const classifyFacets = (
   // otherwise enum facet
   return Object.entries(data as AggregationsData).reduce((acc : Record<string, FacetDefinition>, [ fieldKey, value ] : [ string, HistogramDataArray]) => {
 
+    if (!value) return acc; // return if no data, which prevents a application crash
     const dataField = fieldKey.split('.')?.slice(-1)[0] ?? fieldKey;
     // check if range facet
     const type = (value.length === 1 && isArray(value[0].key)) ? 'range' : 'enum';

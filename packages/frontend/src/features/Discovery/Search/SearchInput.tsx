@@ -2,7 +2,7 @@ import React, {
   useState,
 } from 'react';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { TextInput, Tooltip } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { SearchInputProps } from './types';
 
 const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
@@ -14,7 +14,7 @@ const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
         icon={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
         data-testid="textbox-search-bar"
-        aria-label="App Search Input"
+        aria-label="metadata search input"
         value={searchTerm}
         onChange={(event) => {
           searchChanged(event.target.value);

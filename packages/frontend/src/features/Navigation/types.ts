@@ -1,3 +1,4 @@
+import {  ReactElement }  from 'react';
 import { TopBarProps } from './TopBar';
 
 interface BottomLinks {
@@ -47,12 +48,14 @@ export interface NavigationBarLogo {
   readonly width?: number;
   readonly height?: number;
   readonly basePath?: string;
+  readonly classNames?: Record<string, string>;
 }
 
 export interface NavigationProps {
   readonly logo?: NavigationBarLogo;
   readonly items?: NavigationButtonProps[];
   readonly title?: string;
+  readonly loginIcon?: ReactElement | string;
   readonly classNames?: Record<string, string>;
 }
 

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "strict": true,
     "target": "esnext",
     "module": "esnext",
+    "moduleResolution": "bundler",
     "outDir": "./src/buildColors/dist",
     "esModuleInterop": true,
-    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
   },
 }

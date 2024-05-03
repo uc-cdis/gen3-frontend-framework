@@ -14,6 +14,7 @@ import {
 } from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
+import TextContent, { ContentType } from './TextContent';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -21,6 +22,7 @@ export interface LandingPageContentProp {
 
 export interface leftRightProps {
   readonly text?: string;
+  readonly type?: ContentType;
   readonly link?: {
     readonly href: string;
     readonly text: string;
@@ -60,15 +62,21 @@ export interface LandingPageProps {
   }>;
 }
 
+/**
+ * Landing Page contents. Edit this component to change the composition of the landing page.
+ * @param content - Refer to LandingPageProps interface above. Loaded from config file
+ * located at sampleCommons/config/{commons}/landingPage.json
+ */
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
   return (
-    <div className="sm:mt-8 2xl:mt-10 w-full">
+    <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
             <Title
               key={index}
+              color={index % 2 === 0 ? 'primary.5' : 'primary.4'}
               className="mb-5 pl-20 pb-2"
               order={component.title.level}
             >
@@ -81,18 +89,14 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             area.map((obj, index) => {
               if (obj.text) {
                 return (
-                  <p
-                    key={index}
-                    className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
-                    dangerouslySetInnerHTML={{ __html: obj.text }}
-                  />
+                  <TextContent text={obj.text} key={index} type={obj?.type ?? ContentType.Html} className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"/>
                 );
               }
               if (obj.link) {
                 return (
                   <Gen3Button
                     colors="accent-lighter"
-                    className="mb-5 mr-5"
+                    className="mb-5 mr-5 text-accent-contrast-lighter"
                     key={index}
                   >
                     <Gen3Link
@@ -111,8 +115,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     <Image
                       src={`${basePath}${obj.image.src}`}
                       alt={obj.image.alt}
-                      layout="fill"
-                      objectFit="contain"
+                      fill
                     />
                   </div>
                 );
@@ -130,7 +133,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           );
         }
         if (component.break) {
-          return <hr key={index} className="border sm:my-10 2xl:my-12 " />;
+          return <hr key={index} className="border sm:my-10 2xl:my-12" />;
         }
         if (component.cardsArea) {
           const allowedIcons = {
@@ -161,7 +164,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                     </p>
                     <Gen3ButtonReverse
                       colors="accent-lighter"
-                      className="mb-5 mr-5"
+                      className="mb-5 mr-5 text-base-contrast-lighter"
                       key={index}
                     >
                       <Gen3Link

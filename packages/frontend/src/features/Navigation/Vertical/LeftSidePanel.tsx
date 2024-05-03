@@ -1,7 +1,8 @@
 import { extractClassName } from '../utils';
 import NavigationBarButton from '../NavigationBarButton';
 import React from 'react';
-import { NavigationButtonProps, NavigationProps } from '../types';
+import { NavigationProps } from '../types';
+import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 
 type LeftSidePanelProps = Pick<NavigationProps, 'items' | 'classNames'>;
 
@@ -11,11 +12,9 @@ const LeftSidePanel = ({
 }: LeftSidePanelProps) => {
   const classNamesDefaults = {
     navigationPanel: 'w-32 bg-base-light border-r-2 border-base',
-    login:
-      'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = { ...classNamesDefaults, ...classNames };
+  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
 
   return (
     <div

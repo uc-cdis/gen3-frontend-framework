@@ -60,12 +60,17 @@ const main = () => {
       },
       accentCool: {
         type: 'string',
-        default: '#E07C3E',
+        default: '#1552e0',
       },
       base: {
         type: 'string',
         short: 'b',
-        default: '#E07C3E',
+        default: '#858585',
+      },
+      table: {
+        type: 'string',
+        short: 'b',
+        default: '#858585',
       },
       out: {
         type: 'string',
@@ -75,7 +80,12 @@ const main = () => {
     },
   });
 
-  if (!existsSync(themeFile)) {
+  if (!themeFile) {
+    console.log('No themefile found. Please provide a themefile with \'-t\'.');
+    return;
+  }
+
+  if (themeFile && !existsSync(themeFile)) {
     console.log('No themefile found. Please provide a themefile with \'-t\'.');
     return;
   }
@@ -88,6 +98,7 @@ const main = () => {
   const accentPalletCool = create10ColorPallet(themeColors.accentCool);
   const basePallet = create10ColorPallet(themeColors.base);
   const chartPallet = create10ColorPallet(themeColors.chart);
+  const tablePallet = create10ColorPallet(themeColors.table);
 
   const theme = {
     primary: primaryPallet,
@@ -106,6 +117,8 @@ const main = () => {
     'utility-contrast': utilityContrast,
     chart: chartPallet,
     'chart-contrast': create10ColorAccessibleContrast(chartPallet),
+    table: tablePallet,
+    'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
   };
 
   writeFileSync(

@@ -34,6 +34,10 @@ interface RemoveFilterParams {
   field: string;
 }
 
+interface ClearAllFilterParams {
+  index: string;
+}
+
 // TODO: start using this adapter
 /*
 const cohortsAdapter = createEntityAdapter<Cohort>({
@@ -92,13 +96,22 @@ export const cohortSlice = createSlice({
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
       state: Draft<CohortState>,
-      action: PayloadAction<string>
+      action: PayloadAction<ClearAllFilterParams>
     ) => {
-      const { [action.payload]: _a, ...updated } = state.cohort.filters[action.payload].root;
+      const { index } = action.payload;
       return {
-        cohort: { ...state.cohort, ...{ ...state.cohort.filters, [action.payload]: updated } },
+        cohort: {
+          ...state.cohort,
+          filters: {
+            ...state.cohort.filters,
+            [index]: { // empty filter set
+              mode: 'and',
+              root: {},
+            } as FilterSet
+          }
+        }
       };
-    },
+    }
   },
   extraReducers: {},
 });
@@ -131,6 +144,7 @@ export const selectIndexedFilterByName = (
   return state.cohorts.cohort.filters[index]?.root[name];
 };
 
+const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
 /**
  * Select a filter from the index.
  * returns undefined.
@@ -141,7 +155,7 @@ export const selectIndexFilters = (
   state: CoreState,
   index: string
 ): FilterSet => {
-  return state.cohorts.cohort.filters?.[index] ?? { mode: 'and', root: {}}; // TODO: check if this is undefined
+  return state.cohorts.cohort.filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
 };
 
 export const cohortReducer = cohortSlice.reducer;

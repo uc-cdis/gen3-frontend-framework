@@ -12,10 +12,17 @@ type JobListResponse = Array<JobStatus>;
 
 const jobAPIPath = `${GEN3_API}job/`;
 
+/**
+ * Creates a loadingStatusApi for checking the status of a sower data download job
+ * @param getJobList Shows the list of jobs currently running
+ *  @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/sower/master/openapis/openapi.yaml#/sower/list
+ * @param getDownloadStatus Shows the status of a selected job
+ * @returns: A sower job response dict which returns job information of file downloads
+ */
 export const loadingStatusApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getJobList: builder.query<JobListResponse, void>({
-      query: () => 'job/list',
+      query: () => `${jobAPIPath}/list`,
     }),
     getDownloadStatus: builder.query<DownloadStatus, string | FetchArgs>({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {

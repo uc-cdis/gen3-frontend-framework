@@ -1,6 +1,6 @@
-import dynamic from "next/dynamic";
-import { ReactNode } from "react";
-import { JSONArray } from "@gen3/core";
+import dynamic from 'next/dynamic';
+import { ReactNode } from 'react';
+import { JSONArray } from '@gen3/core';
 
 
 export interface ChartTitleBarProps {

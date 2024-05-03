@@ -1,0 +1,21 @@
+{
+  "classNames": {
+    "root": "bg-base-darker"
+  },
+  "footerRightLogos": [
+    [
+      {
+        "logo": "/icons/gen3.png",
+        "width": 132,
+        "height": 60,
+        "description": "Gen3 Logo"
+      },
+      {
+        "logo": "/icons/createdby.png",
+        "width": 170,
+        "height": 60,
+        "description": "Created by CTDS"
+      }
+      ]
+    ]
+}

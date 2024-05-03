@@ -1,5 +1,6 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import executable from "rollup-plugin-executable";
 export default [
   {
     input: './src/buildColors/buildColors.ts',
@@ -72,7 +73,7 @@ export default [
       'path', 'url',
       'graphql',
     ],
-    plugins: [peerDepsExternal(), swc()],
+    plugins: [peerDepsExternal(), swc(), executable()],
   },
   {
     input: './src/drsResolver/getDRSToHostname.ts',
@@ -81,27 +82,6 @@ export default [
         file: 'dist/getDRSToHostname.esm.js',
         format: 'esm',
         name: 'getDRSToHostname',
-      },
-    ],
-    external: [
-      'https',
-      'http',
-      'node:fs',
-      'node:util',
-      'fetch-retry',
-      'node-fetch',
-      'path', 'url',
-    ],
-    plugins: [peerDepsExternal(), swc()],
-  },
-  // add rollup config for proxy
-  {
-    input: './src/proxy/proxy.ts',
-    output: [
-      {
-        file: 'dist/proxy.esm.js',
-        format: 'esm',
-        name: 'proxy',
       },
     ],
     external: [

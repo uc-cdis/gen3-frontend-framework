@@ -17,7 +17,7 @@ const StudyDetailsPanel = ({
 
   const headerText = JSONPath({
     json: data,
-    path: studyConfig.headerField ?? studyConfig?.header?.field ?? '',
+    path: studyConfig?.header?.field ?? '',
   });
   return (
     <div>
@@ -26,7 +26,7 @@ const StudyDetailsPanel = ({
       </Text>
       <Tabs defaultValue={studyConfig?.tabs?.[0]?.tabName}>
         <Tabs.List>
-          {studyConfig.tabs.map((tab) => {
+          {studyConfig?.tabs.map((tab) => {
             return (
               <Tabs.Tab value={tab.tabName} key={`${tab.tabName}-details-tab`}>
                 {tab.tabName}
@@ -34,7 +34,7 @@ const StudyDetailsPanel = ({
             );
           })}
         </Tabs.List>
-          {studyConfig.tabs.map((tab) => {
+          {studyConfig?.tabs.map((tab) => {
             return (
               <Tabs.Panel value={tab.tabName} key={`${tab.tabName}-details-tab-panel` }>
                 <StudyGroupPanel data={data} groups={tab.groups} />

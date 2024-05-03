@@ -3,14 +3,14 @@ import React, { ReactElement } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import { Badge, Box, Text } from '@mantine/core';
 import {
-  StudyPreviewField,
+  StudyDetailsField,
   RowRenderFunctionParams,
   DiscoveryRowRendererFactory,
   useDiscoveryContext,
   getTagColor,
 } from '@gen3/frontend';
 
-// TODO: This is a hack to get around the fact that the data is not typed
+
 interface TagData {
   name: string;
   category: string;
@@ -19,7 +19,7 @@ interface TagData {
 const DetailsWithTagsRowRenderer =
   (
     { row } : RowRenderFunctionParams,
-    studyPreviewConfig?: StudyPreviewField,
+    studyPreviewConfig?: StudyDetailsField,
   ): ReactElement => {
     const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
 
@@ -54,25 +54,24 @@ const DetailsWithTagsRowRenderer =
           <div className="flex space-x-6 space-y-6 flex-wrap">
             {row.original?.tags.map(({ name, category }: TagData) => {
               const color = getTagColor(category, config.tagCategories);
+              if (name === '') return null; // no tag
               return (
-                <Box w={150} key={name}>
                   <Badge
-                    fullWidth
                     role="button"
                     size="lg"
                     radius="sm"
                     variant="outline"
                     tabIndex={0}
                     aria-label={name}
+                    key={name}
                     style={{
                       borderColor: color,
                       borderWidth: '3px',
-                      margin: '2px',
+                      margin: '0 0.125rem',
                     }}
                   >
                     {name}
                   </Badge>
-                </Box>
               );
             })}
           </div>

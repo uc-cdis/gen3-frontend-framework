@@ -5,7 +5,7 @@
 
 FROM quay.io/cdis/ubuntu:20.04 as build
 
-ARG NODE_VERSION=16
+ARG NODE_VERSION=20
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -37,22 +37,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/src/apt/lists/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
-    && npm install -g npm@8.19.4
+    && npm install -g npm
 
 RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-RUN npm install --location=global lerna@6.6.1
+RUN npm install --location=global lerna@6.6.2
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/sampleCommons/package.json ./packages/sampleCommons/
+COPY ./start.sh ./
 RUN npm ci
 COPY ./packages ./packages
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string"
-RUN lerna run --scope @gen3/core build:clean
+RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
-RUN lerna run --scope @gen3/datacommonsapp build
-ENV PORT=80
-CMD ["npm", "run", "start"]
+RUN lerna run --scope @gen3/toolsff build
+RUN lerna run --scope @gen3/samplecommons build
+ENV PORT=3000
+CMD bash ./start.sh

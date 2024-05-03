@@ -22,19 +22,18 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
     if (typeof window !== 'undefined')
       // route not available on SSR
       router.push({
-        pathname: 'Login',
+        pathname: '/Login',
         query: { referer: redirect },
       });
   };
 
   const { status, pending } = useSession(true, onUnauthenticated);
-
   if (status !== 'issued') {
     // not logged in
     if (pending) return <LoadingOverlay visible={pending} />;
     else
       return (
-        <React.Fragment>
+       <div className="w-full h-full relative">
           <LoadingOverlay visible={pending} />
           <Center>
             <Paper shadow="md" p="md">
@@ -44,7 +43,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
               </Text>
             </Paper>
           </Center>
-        </React.Fragment>
+        </div>
       );
   }
 

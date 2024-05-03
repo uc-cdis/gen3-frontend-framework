@@ -1,4 +1,4 @@
 import { type AuthzMapping, type ServiceAndMethod } from './types';
-import { useGetAuthzMappingsQuery } from './authzMappingSlice';
+import { useGetAuthzMappingsQuery, selectAuthzMappingData } from './authzMappingSlice';
 
-export { useGetAuthzMappingsQuery, type AuthzMapping, type ServiceAndMethod };
+export { useGetAuthzMappingsQuery, selectAuthzMappingData, type AuthzMapping, type ServiceAndMethod, };

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useCoreDispatch, showModal, Modals, useCoreSelector, selectCurrentModal, APIKey } from '@gen3/core';
 import { Button, LoadingOverlay, Stack } from '@mantine/core';
 import { CreateCredentialsAPIKeyModal } from '../Modals';
@@ -14,7 +14,15 @@ import {
 
 import CredentialsTable from './CredentialsTable';
 
+/**
+ * Defines a Credentials Component containing a create credential button
+ * and a table that shows all current credentials for logged in user.
+ * It also retrieves CSRF token and creates a modal that shows the newly
+ * created API key coming from fence.
+ * @returns {JSX.Element} The JSX element representing the credentials section.
+ */
 const Credentials = () => {
+  // useGetCSRFQuery hook returns a user's JWT token from the default gen3 core API
   const { data: csrfToken } = useGetCSRFQuery();
   const { isLoading } = useGetCredentialsQuery();
   const [addNewCredential, { isLoading: isNewLoading, isSuccess }] =

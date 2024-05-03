@@ -1,5 +1,4 @@
 import React, { ReactElement, useState } from 'react';
-import { explorerPlugin } from '@graphiql/plugin-explorer';
 import GraphiQL from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
@@ -10,6 +9,11 @@ import {
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 
+/**
+ * Fetches graphql data from a graphql endpoint if one is specified, or guppy by default.
+ * @param graphQLEndpoint - The location of the graphql endpoint.
+ * @returns a component containing a GraphiQl editor
+ */
 const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
@@ -27,9 +31,6 @@ const GqlQueryEditor = ({
     return data.json().catch(() => data.text());
   };
 
-  const explorer = explorerPlugin({
-    showAttribution: true,
-  });
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -43,7 +44,6 @@ const GqlQueryEditor = ({
         fetcher={fetcher}
         query={query}
         onEditQuery={setQuery}
-        plugins={[explorer]}
       >
         <GraphiQL.Logo> {null} </GraphiQL.Logo>
       </GraphiQL>

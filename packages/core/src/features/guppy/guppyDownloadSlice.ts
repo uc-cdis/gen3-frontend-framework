@@ -1,48 +1,43 @@
 import { gen3Api } from '../gen3';
-import { GEN3_API } from '../../constants';
-import { FilterSet } from '../filters/types';
-import { Accessibility } from '../../constants';
+import { GEN3_GUPPY_API } from '../../constants';
 import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
+import { BaseGuppyDataRequest, GuppyDownloadDataParams } from './types';
+
+export interface GuppyDownloadDataQueryParams extends BaseGuppyDataRequest {
+  filter: GQLFilter;
+}
 
 interface DownloadRequestStatus {
   readonly status: string;
   readonly message: string;
 }
 
-interface BaseDownloadRequest {
-  type: string;
-  accessibility?: Accessibility;
-  fields?: string[];
-  sort?: string[];
-  format?: string;
-}
-
-interface DownloadQueryParams extends BaseDownloadRequest {
-  filters: FilterSet;
-}
-
-interface DownloadRequestParams extends BaseDownloadRequest {
-  readonly filter: GQLFilter;
-}
-
+/**
+ * Creates a Guppy API for fetching bulk (> 10K rows) elasticsearch data
+ * @see https://github.com/uc-cdis/guppy/blob/master/doc/download.md
+ * @param endpoints - Resolver function which configures the query with
+ * type, filter, accessibility, fields, and sort arguments
+ * @returns: A guppy download API for fetching bulk metadata
+ */
 export const downloadRequestApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    downloadFromGuppy: builder.query({
+    downloadFromGuppy: builder.mutation({
       query: ({
         type,
-        filters,
+        filter,
         accessibility,
         fields,
         sort,
-      }: DownloadQueryParams) => {
-        const queryBody: DownloadRequestParams = {
-          filter: convertFilterSetToGqlFilter(filters),
+      }: GuppyDownloadDataParams) => {
+        const queryBody: GuppyDownloadDataQueryParams = {
+          filter: convertFilterSetToGqlFilter(filter),
           ...{ type, accessibility, fields, sort },
         };
         return {
-          url: `${GEN3_API}/guppy/download`,
+          url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',
           queryBody,
+          cache: 'no-cache',
         };
       },
       transformResponse: (response: DownloadRequestStatus) => {
@@ -52,4 +47,4 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useDownloadFromGuppyQuery } = downloadRequestApi;
+export const { useDownloadFromGuppyMutation } = downloadRequestApi;

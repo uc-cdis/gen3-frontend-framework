@@ -13,6 +13,7 @@
     "esModuleInterop": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "strictNullChecks": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "noUnusedLocals": true,
@@ -22,6 +23,7 @@
     "forceConsistentCasingInFileNames": true,
     "target": "esnext",
     "resolveJsonModule": true,
+    "allowJs": true,
     "sourceMap": true,
     "lib": [
       "dom",

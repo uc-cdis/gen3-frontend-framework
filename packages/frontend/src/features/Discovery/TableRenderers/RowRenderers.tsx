@@ -1,5 +1,5 @@
 import { MRT_Row } from 'mantine-react-table';
-import { StudyPreviewField } from '../types';
+import { StudyDetailsField } from '../types';
 import React, { ReactElement } from 'react';
 import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';
@@ -9,15 +9,15 @@ export interface RowRenderFunctionParams<TData extends Record<string, any> = Rec
 }
 
 export interface RowRendererRegisteredFunctionParams extends RowRenderFunctionParams {
-  studyPreviewConfig?: StudyPreviewField;
+  studyPreviewConfig?: StudyDetailsField;
 }
 
 const StringRowRenderer = (
   { row }: RowRenderFunctionParams,
-  studyPreviewConfig?: StudyPreviewField,
+  studyPreviewConfig?: StudyDetailsField,
 ): ReactElement => {
   if (!studyPreviewConfig) {
-    return <></>;
+    return <React.Fragment></React.Fragment>;
   }
   const value = JSONPath({
     json: row.original,

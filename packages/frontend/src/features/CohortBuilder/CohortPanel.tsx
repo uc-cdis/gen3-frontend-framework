@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import React, { useMemo, useState } from 'react';
+import { Box, Loader, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
-
 import {
   type FacetDefinition,
   selectIndexFilters,
@@ -11,8 +10,8 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
+  useGetFieldsForIndexQuery
 } from '@gen3/core';
-
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 
@@ -33,7 +32,9 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { AddButtonsArrayToDropdowns, AddButtonsToDropdown } from './utils';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+
+
 
 const EmptyData = {};
 
@@ -113,6 +114,14 @@ const SinglePanel = ({
   );
 };
 
+/**
+  * The main component that houses the charts, tabs, modals
+  * filters, tables, buttons of the exploration page.
+  *
+  * All of these params come directly from the top level exploration page configuration file or
+  * explorer config in legacy gitops.json file.
+  * @example see packages/sampleCommons/config/gen3/explorer.json
+  */
 export const CohortPanel = ({
   guppyConfig,
   filters,
@@ -124,7 +133,7 @@ export const CohortPanel = ({
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
-  const fields = getAllFieldsFromFilterConfigs(filters?.tabs ?? []);
+  const fields = useMemo(() =>  getAllFieldsFromFilterConfigs(filters?.tabs ?? []), []);
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
@@ -144,16 +153,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  const dropdownsWithButtons = AddButtonsToDropdown(
-    AddButtonsArrayToDropdowns(dropdowns),
-    buttons,
-  );
-
-  const actionButtons = buttons
-    ? buttons.filter((button) => button?.dropdownId === undefined)
-    : [];
-
-  const getEnumFacetData = useCallback(
+  const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
         data: processBucketData(data?.[field]),
@@ -167,7 +167,7 @@ export const CohortPanel = ({
     [cohortFilters, data, isSuccess],
   );
 
-  const getRangeFacetData = useCallback(
+  const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
         data: processRangeData(data?.[field]),
@@ -181,7 +181,7 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useMemo(() => {
+  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useDeepCompareMemo(() => {
     return {
       enum: {
         useGetFacetData: getEnumFacetData,
@@ -201,7 +201,7 @@ export const CohortPanel = ({
   }, [getEnumFacetData, getRangeFacetData, index]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
       const facetDefs = classifyFacets(data, index, guppyConfig.fieldMapping);
       setFacetDefinitions(facetDefs);
@@ -228,11 +228,15 @@ export const CohortPanel = ({
     }
   }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
 
-  const { data: counts, isSuccess: isCountSuccess } = useGetCountsQuery({
+  const { data: counts, isSuccess: isCountSuccess, isLoading } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex w-100 h-100 relative justify-center"><Loader  variant="dots"  /> </div>);
+  }
   return (
     <div className="flex mt-3">
       <div>
@@ -252,17 +256,22 @@ export const CohortPanel = ({
           />
         )}
       </div>
-      <div className="w-full">
+      <div className="w-full relative">
+
         <div className="flex flex-col">
           <CohortManager index={index} />
 
           <div className="flex justify-between mb-1 ml-2">
             <DownloadsPanel
-              dropdowns={dropdownsWithButtons}
-              buttons={actionButtons}
+              dropdowns={dropdowns ?? {}}
+              buttons={ buttons ?? []}
               loginForDownload={loginForDownload}
+              index={index}
+              totalCount={counts ?? 0}
+              fields={fields}
+              filter={cohortFilters}
             />
-            .
+
             <CountsValue
               label={guppyConfig.nodeCountTitle}
               counts={counts}

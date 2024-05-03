@@ -44,12 +44,10 @@ const fetchJson = async (url: string) => {
     if (res.status === 200) {
       return res
         .json()
-        .catch((err: Error) => console.log(`failed json parse - ${err}`));
+        .catch((err: Error) => console.error(`failed json parse - ${err}`));
     }
   });
 };
-
-type ActionList = Array<Promise<void>>;
 
 const main = () => {
 
@@ -73,9 +71,6 @@ const main = () => {
 
 
   const drsCachePath = `${out}/drsHostnames.json`;
-
-  const actionList: ActionList = [];
-
   fetchJson(`${drsResolverURL}/index/_dist`).then((drsIds : DRSIndexEntry[]) => {
       if (!drsIds) {
         throw new Error('Failed to fetch drsHostnames.json');
