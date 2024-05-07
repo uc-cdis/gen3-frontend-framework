@@ -15,7 +15,9 @@ export interface ExternalProviderResponse {
 export const externalLoginApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getExternalLogins: builder.query<ExternalProviderResponse, void>({
-      query: () => GEN3_WTS_API
+      query: () => ({
+        url:  `${GEN3_WTS_API}/external_oidc/`,
+      }),
     }),
   }),
 });

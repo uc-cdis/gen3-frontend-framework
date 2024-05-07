@@ -16,7 +16,7 @@ export const GEN3_AUTHZ_API = process.env.NEXT_PUBLIC_GEN3_AUTHZ_API || `${GEN3_
 export const GEN3_REDIRECT_URL = process.env.NEXT_PUBLIC_GEN3_REDIRECT_URL || GEN3_API;
 export const GEN3_WORKSPACE_STATUS_API = process.env.NEXT_PUBLIC_GEN3_WORKSPACE_STATUS_API || `${GEN3_API}/lw-workspace`;
 export const GEN3_SUBMISSION_API = process.env.NEXT_PUBLIC_GEN3_SUBMISSION_API || `${GEN3_API}/api/v0/submission`;
-export const GEN3_WTS_API = process.env.GEN3_WTS_API || `${GEN3_API}/wts/external-oidc`;
+export const GEN3_WTS_API = process.env.NEXT_PUBLIC_GEN3_WTS_API || `${GEN3_API}/wts`;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',

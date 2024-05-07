@@ -4,6 +4,7 @@ import { Accordion } from '@mantine/core';
 import { ResourcesPanel } from '../../components/Profile/ResourcesPanel';
 import { ProfileProvider } from '../../components/Profile';
 import { ProfileConfig } from '../../components/Profile';
+import ExternalProvidersPanel from '../../components/Profile/ExternalProvidersPanel';
 
 export interface ProfileProps {
   profileConfig: ProfileConfig;
@@ -23,6 +24,14 @@ const Profile = ({ profileConfig }: ProfileProps) => {
               label: 'text-secondary-contrast-lighter font-heading font-bold',
             }}
           >
+            <Accordion.Item value="externalLogins">
+              <div className="bg-secondary-lighter">
+                <Accordion.Control>External Providers</Accordion.Control>
+              </div>
+              <Accordion.Panel>
+                <ExternalProvidersPanel />
+              </Accordion.Panel>
+            </Accordion.Item>
             <Accordion.Item value="apiKeys">
               <div className="bg-secondary-lighter">
                 <Accordion.Control>Current API Keys</Accordion.Control>
