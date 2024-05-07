@@ -1,5 +1,6 @@
 import { gen3Api } from '../gen3';
 import { ExternalProvider } from './types';
+import { GEN3_WTS_API } from '../../constants';
 
 
 export interface ExternalProviderResponse {
@@ -14,12 +15,7 @@ export interface ExternalProviderResponse {
 export const externalLoginApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getExternalLogins: builder.query<ExternalProviderResponse, void>({
-      query: () => ({
-        headers: {
-          credentials: 'include',
-        },
-        url: 'wts/external_oidc/',
-      }),
+      query: () => GEN3_WTS_API
     }),
   }),
 });
