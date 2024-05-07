@@ -35,7 +35,6 @@ import {
 
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
-import { isEqual } from 'lodash';
 import { SortType } from './types';
 
 const MAX_VALUES_TO_DISPLAY = 2048;
@@ -58,6 +57,7 @@ const EnumFacet = ({
   showFlip = false,
   startShowingData = true,
   dismissCallback = undefined,
+  collapse = false,
   width = undefined,
   header = {
     Panel: FacetHeader,
@@ -73,6 +73,10 @@ const EnumFacet = ({
     type: 'alpha',
     direction: 'asc',
   });
+
+  useEffect(() => {
+    if (isGroupExpanded) setIsGroupExpanded(false)
+  }, [collapse]);
 
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const { data, enumFilters, isSuccess } = dataHooks.useGetFacetData(field);
@@ -424,6 +428,7 @@ const EnumFacet = ({
                                 )
                               }
                             />
+                            <button onClick={() => console.log('sortedData', sortedData, 'selectedEnums', selectedEnums)}>hi</button>
                           </div>
                           <OverflowTooltippedLabel label={value}>
                             <span className="font-content">{value}</span>
