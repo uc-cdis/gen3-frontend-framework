@@ -428,7 +428,6 @@ const EnumFacet = ({
                                 )
                               }
                             />
-                            <button onClick={() => console.log('sortedData', sortedData, 'selectedEnums', selectedEnums)}>hi</button>
                           </div>
                           <OverflowTooltippedLabel label={value}>
                             <span className="font-content">{value}</span>
