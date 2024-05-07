@@ -49,7 +49,6 @@
             "medications.medication_code_system",
             "medications.medication_manufacturer",
             "medications.medication_name",
-            "medications.medication_status",
             "medications.medication_type"
           ]
         },
@@ -96,7 +95,6 @@
         "medications.medication_code_system",
         "medications.medication_manufacturer",
         "medications.medication_name",
-        "medications.medication_status",
         "medications.medication_type",
         "procedures.breathing_support_type",
         "procedures.days_to_procedure_start",
@@ -346,7 +344,6 @@
             "study_year",
             "study_year_shifted",
             "body_part_examined",
-            "study_location",
             "days_from_study_to_pos_covid_test",
             "days_from_study_to_neg_covid_test",
             "project_id"
@@ -555,7 +552,6 @@
             "age_at_imaging",
             "study_year",
             "study_year_shifted",
-            "study_location",
             "days_from_study_to_pos_covid_test",
             "days_from_study_to_neg_covid_test",
             "project_id"
