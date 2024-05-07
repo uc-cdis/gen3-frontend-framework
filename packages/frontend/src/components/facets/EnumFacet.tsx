@@ -75,7 +75,7 @@ const EnumFacet = ({
   });
 
   useEffect(() => {
-    if (isGroupExpanded) setIsGroupExpanded(false)
+    if (isGroupExpanded) setIsGroupExpanded(false);
   }, [collapse]);
 
   const [isFacetView, setIsFacetView] = useState(startShowingData);

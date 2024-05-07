@@ -57,10 +57,10 @@ const TabbedPanel = ({
   const handleTabChange = (tabValue: string) => {
     if (!tabValue) return;
     setTab(tabValue);
-  }
+  };
   const toggleCollapse = () => {
-    setCollapse(c => !c)
-  }
+    setCollapse(c => !c);
+  };
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mb-2">
@@ -97,8 +97,8 @@ const SinglePanel = ({
 }: TabbablePanelProps) => {
   const [collapse, setCollapse] = useState(false);
   const toggleCollapse = () => {
-    setCollapse(c => !c)
-  }
+    setCollapse(c => !c);
+  };
   return (
     <div>
       <button onClick={toggleCollapse}>Collapse All</button>
@@ -135,7 +135,7 @@ export const CohortPanel = ({
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
-  const fields = useMemo(() => getAllFieldsFromFilterConfigs(filters?.tabs ?? []), []);
+  const fields = useMemo(() => getAllFieldsFromFilterConfigs(filters?.tabs ?? []), [filters?.tabs]);
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
