@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import debounce from 'lodash/debounce';
 import { Paper, Button, Text, Modal, Grid} from '@mantine/core';
 
 import {
@@ -12,16 +11,10 @@ import {gripApiFetch, gripApiResponse} from '@gen3/core';
 import { GetServerSideProps } from 'next';
 
 interface EdgeData {
-  //PatientIdsWithObservationEdge?: ObservationEdge[];
   PatientIdsWithEncounterEdge?: EncounterEdge[];
   PatientIdsWithSpecimenEdge?: SpecimenEdge[];
   PatientIdsWithDocumentEdge?: DocumentEdge[];
 }
-
-/*interface ObservationEdge {
-  id: string;
-  type: string;
-}*/
 
 interface EncounterEdge {
   id: string;
@@ -37,38 +30,48 @@ interface DocumentEdge {
   id: string;
   type: string;
 }
-//    ...(data.PatientIdsWithObservationEdge || []).map(item => ({ ...item, type: 'observation' })),
 
 const DataComponent = ({ data }: { data: EdgeData }) => {
   const mergedItems: (EncounterEdge | SpecimenEdge | DocumentEdge)[] = [
-    ...(data.PatientIdsWithEncounterEdge || []).map(item => ({ ...item, type: 'encounter' })),
-    ...(data.PatientIdsWithSpecimenEdge || []).map(item => ({ ...item, type: 'specimen' })),
-    ...(data.PatientIdsWithDocumentEdge || []).map(item => ({ ...item, type: 'document' }))
+    ...(data.PatientIdsWithEncounterEdge || []).map((item) => ({
+      ...item,
+      type: 'encounter',
+    })),
+    ...(data.PatientIdsWithSpecimenEdge || []).map((item) => ({
+      ...item,
+      type: 'specimen',
+    })),
+    ...(data.PatientIdsWithDocumentEdge || []).map((item) => ({
+      ...item,
+      type: 'document',
+    })),
   ];
 
-  const groupedItems: { [key: string]: { [key: string]: boolean } } = mergedItems.reduce((acc: { [key: string]: any }, item) => {
-    if (!acc[item.id]) {
-      acc[item.id] = {};
-    }
-    acc[item.id][item.type] = true;
-    return acc;
-  }, {});
+  // Group items by their IDs
+  const groupedItems: { [key: string]: { [key: string]: boolean } } = mergedItems.reduce(
+    (acc: { [key: string]: any }, item) => {
+      if (!acc[item.id]) {
+        acc[item.id] = {};
+      }
+      acc[item.id][item.type] = true;
+      return acc;
+    },
+    {}
+  );
 
+  // Convert the object of grouped items back to an array
   const finalItems: ({ id: string; hasEncounter: boolean; hasSpecimen: boolean; hasDocument: boolean })[] = Object.entries(groupedItems).map(([id, types]) => ({
     id,
-    //hasObservation: types.observation,
     hasEncounter: types.encounter,
     hasSpecimen: types.specimen,
     hasDocument: types.document
   }));
-//              {item.hasObservation && <Text style={{ margin: 10 }}>✅ Observation</Text>}
 
   return (
     <Grid style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: 20, marginTop: 25, display: 'flex', justifyContent: 'center' }}>
       {finalItems.map(item => (
         <Grid.Col key={item.id} span={5} style={{ marginBottom: 5, marginTop: 5 }}>
-          <Paper {...{ children: 'Content', sx: { padding: '10px', shadow: 'xs' } }} >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Paper {...{ children: 'Content', sx: { padding: '10px', shadow: 'xs' } }} >            <div style={{ display: 'flex', alignItems: 'center' }}>
               {item.hasEncounter && <Text style={{ margin: 10 }}>✅ Encounter</Text>}
               {item.hasSpecimen && <Text style={{ margin: 10 }}>✅ Specimen</Text>}
               {item.hasDocument && <Text style={{ margin: 10 }}>✅ DocumentReference</Text>}
@@ -82,6 +85,7 @@ const DataComponent = ({ data }: { data: EdgeData }) => {
     </Grid>
   );
 };
+
 
 interface ModalType {
   code?: string;
@@ -105,100 +109,91 @@ function MyModal({text}: {text?: ModalType}) {
 }
 
 const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
-  const [state, setState] = useState({
-    //PatientIdsWithObservationEdge: [],
-    PatientIdsWithEncounterEdge: [],
-    PatientIdsWithSpecimenEdge: [],
-    PatientIdsWithDocumentEdge: [],
+  const [state, setState] = useState<{
+    encounterItems: EncounterEdge[];
+    specimenItems: SpecimenEdge[];
+    documentItems: DocumentEdge[];
+    ModalError: ModalType;
+    isLoading: boolean;
+    isError: boolean;
+  }>({
+    encounterItems: [],
+    specimenItems: [],
+    documentItems: [],
+    ModalError: {},
     isLoading: true,
-    isError: false
+    isError: false,
   });
+
+  const edgeData: EdgeData = {
+    PatientIdsWithEncounterEdge: state.encounterItems,
+    PatientIdsWithSpecimenEdge: state.specimenItems,
+    PatientIdsWithDocumentEdge: state.documentItems,
+  };
 
 
   const fetchEdgeData = async (query: string): Promise<EdgeData> => {
-    return gripApiFetch('graphql/api', { query: query, variables: { limit: 500 } })
+    return gripApiFetch({ query: query, variables: { limit: 500 }, endpoint_arg: 'graphql/api', })
       .then((result: gripApiResponse<EdgeData | unknown | undefined>) => result.data as EdgeData);
   };
 
   useEffect(() => {
-    let completedFetches = 0;
-    const fetchData = async (): Promise<void> => {
-      const updateStateWithFetchResult = (result: any, key: string): void => {
-        if (result) {
-          console.log("COMPLETED FETCHES: ", completedFetches);
-          setState(prevState => ({
-            ...prevState,
-            [key]: result[key] || [],
-            isError: false,
-            isLoading: completedFetches >= 2 ? false : true // Disable loading when 4 fetches are complete
-          }));
-          completedFetches++; // Increment completedFetches after update
-        } else {
-          setState(prevState => ({
-            ...prevState,
-            isError: true
-          }));
-        }
-      };
-  
+    const fetchData = async () => {
       try {
-        console.log('i fire once');
-        const docResult = await fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int) {
-          PatientIdsWithDocumentEdge(limit: $limit)  {
-            id
-          }
-        }`);
+        const [
+          docResult,
+          encounterResult,
+          specimenResult
+        ] = await Promise.all([
+          fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int) {
+            PatientIdsWithDocumentEdge(limit: $limit)  {
+              id
+            }
+          }`),
+          fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int) {
+            PatientIdsWithEncounterEdge(limit: $limit)  {
+              id
+            }
+          }`),
+          fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int) {
+            PatientIdsWithSpecimenEdge(limit: $limit)  {
+              id
+            }
+          }`)
+        ]);
+
         console.log('Document Result:', docResult);
-        updateStateWithFetchResult(docResult, 'PatientIdsWithDocumentEdge');
-      } catch (error) {
-        console.log('ERROR fetching document data:', error);
-        setState(prevState => ({
-          ...prevState,
-          isError: true
-        }));
-      }
-  
-      try {
-        const encounterResult = await fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int) {
-          PatientIdsWithEncounterEdge(limit: $limit)  {
-            id
-          }
-        }`);
         console.log('Encounter Result:', encounterResult);
-        updateStateWithFetchResult(encounterResult, 'PatientIdsWithEncounterEdge');
-      } catch (error) {
-        console.log('ERROR fetching encounter data:', error);
-        setState(prevState => ({
-          ...prevState,
-          isError: true
-        }));
-      }
-  
-      try {
-        const specimenResult = await fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int) {
-          PatientIdsWithSpecimenEdge(limit: $limit)  {
-            id
-          }
-        }`);
         console.log('Specimen Result:', specimenResult);
-        updateStateWithFetchResult(specimenResult, 'PatientIdsWithSpecimenEdge');
+
+        setState(prevState =>({
+          ...prevState,
+          encounterItems: encounterResult.PatientIdsWithEncounterEdge ?? [],
+          specimenItems: specimenResult.PatientIdsWithSpecimenEdge ?? [],
+          documentItems: docResult.PatientIdsWithDocumentEdge ?? [],
+          isError: false
+        }));
       } catch (error) {
-        console.log('ERROR fetching specimen data:', error);
+        console.log('ERROR: ', error);
         setState(prevState => ({
           ...prevState,
-          isError: true
+          ModalError: error ?? {},
+          isError: true,
+        }));
+      } finally {
+        setState(prevState => ({
+          ...prevState,
+          isLoading: false
         }));
       }
     };
-    const debouncedFetchData = debounce(fetchData, 500); // Debounce with 500ms delay
-    debouncedFetchData();
-    
-  
-    //fetchData();
-  
-    // Dependency array left empty to run only on initial render
+    setState(prevState => ({
+      ...prevState,
+      isLoading: true
+    }));
+    fetchData();
   }, []);
-  
+
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
        <Paper>
@@ -206,11 +201,16 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
           {state.isLoading ? (
             <p>Loading data...</p>
             ) : (
+              state.isError ? (
                 <div>
-                  <DataComponent data={state} />
+                  <MyModal text={state.ModalError}/>
+                </div>
+              ) : (
+                <div>
+                  <DataComponent data={edgeData} />
                 </div>
               )
-            }
+            )}
           </div>
       </Paper>
     </NavPageLayout>
@@ -219,7 +219,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
-> = async () => {
+> = async (_context) => {
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
