@@ -8,7 +8,11 @@ import {
 import Link from 'next/link';
 import { useDisclosure } from '@mantine/hooks';
 
-
+/**
+ * Open a new window for authentication.
+ * @param url - URL to open
+ * @param title - Title of the window
+ */
 const openAuthWindow = (url: string, title: string): Promise<unknown> => {
   const pollInterval = 500;
   return new Promise((resolve, reject) => {
@@ -92,7 +96,7 @@ const ExternalProviderCard: React.FunctionComponent<
       <Card.Section withBorder inheritPadding py="xs">
         <Center>
           <Text truncate size="lg" weight={700} color="primary.4">
-            {provider.name}{' '}
+            <span aria-label="provider-name">{provider.name} </span>
           </Text>
         </Center>
       </Card.Section>
@@ -100,19 +104,21 @@ const ExternalProviderCard: React.FunctionComponent<
         <Stack spacing="md">
           <div className="flex flex-nowrap justify-between items-center">
             <Text>IDP</Text>
-            <Text truncate>{provider.idp}</Text>
+            <Text truncate aria-label="provider-idp">
+              {provider.idp}
+            </Text>
           </div>
           <div className="flex flex-nowrap justify-between items-center">
             <Text truncate>Provider URL</Text>
             <Link href={provider.base_url} target="_blank" rel="noreferrer">
-              <Text truncate color="utility.0">
+              <Text truncate color="utility.0" aria-label="provider-base-url">
                 {provider.base_url}
               </Text>
             </Link>
           </div>
           <div className="flex flex-nowrap justify-between items-center">
             <Text truncate>Status</Text>
-            <Text truncate>
+            <Text truncate aria-label="provider-status">
               {provider.refresh_token_expiration
                 ? `Expires in ${provider.refresh_token_expiration}`
                 : 'Not authorized'}
@@ -133,12 +139,13 @@ const ExternalProviderCard: React.FunctionComponent<
               const queryChar = providerUrl.url.includes('?') ? '&' : '?';
               toggle();
               openAuthWindow(
-                `${ providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
+                `${providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
                 provider.name,
               ).then(() => {
                 toggle();
               });
             }}
+            aria-label={`provider-button-${provider.name}`}
             leftIcon={
               provider.refresh_token_expiration ? (
                 <ReloadIcon size="1.5rem" color="accent" />
@@ -147,9 +154,11 @@ const ExternalProviderCard: React.FunctionComponent<
               )
             }
           >
-            {provider.refresh_token_expiration
-              ? `Refresh ${providerUrl.name}`
-              : `Authorize ${providerUrl.name}`}
+            <span aria-hidden={true}>
+              {provider.refresh_token_expiration
+                ? `Refresh ${providerUrl.name}`
+                : `Authorize ${providerUrl.name}`}
+            </span>
           </Button>
         ))}
       </Card.Section>

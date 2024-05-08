@@ -20,8 +20,8 @@ const { data : externalProviders, isLoading, isError, isSuccess } = useGetExtern
   return (
     <div className="mt-6 relative">
       <LoadingOverlay visible={isLoading} />
-      {isError && <div>Error loading external providers</div>}
-      {isSuccess && (<div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {isError && <div role="alert">Error loading external providers</div>}
+      {isSuccess && (<div className="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" role="listbox">
         {providerCards}
       </div>)}
     </div>
