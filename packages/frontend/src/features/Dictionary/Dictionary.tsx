@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { Autocomplete, Highlight, TextInput } from '@mantine/core';
-// import { Combobox, useCombobox } from '@mantine/core';
+import { Autocomplete, Highlight } from '@mantine/core';
 import { capitalize } from 'lodash';
 import { DictionaryCategory, DictionaryProps, DictionaryEntry } from './types';
 import { RiDownload2Fill } from 'react-icons/ri';
@@ -27,6 +26,9 @@ interface DictionarySearchHistoryObj {
   };
 }
 
+interface SuggestionProps {
+  value: string;
+}
 
 const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary' }: DictionaryProps) => {
   const [categories, setCategories] = useState({} as DictionaryCategory<DictionaryEntry | any>);
@@ -37,9 +39,6 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   const [dictionarySearchHistory, setDictionarySearchHistory] = useState<DictionarySearchHistoryObj>({});
   const [dictionaryTableRows, setDictionaryTableRows] = useState<[] | JSX.Element[]>([]);
   const [documents, setDocuments] = useState([]);
-  // const combobox = useCombobox({
-  //   onDropdownClose: () => combobox.resetSelectedOption(),
-  // });
 
   useEffect(() => {
     const filtered = Object.keys(dictionary).filter((id) =>
@@ -87,14 +86,6 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   }
   );
 
-  // const options = (suggestions || []).map((item) => (
-  //   <Combobox.Option value={item} key={item}>
-  //     <Highlight highlight={value} size="sm">
-  //       {item}
-  //     </Highlight>
-  //   </Combobox.Option>
-  // ));
-
   useEffect(() => {
     search(searchTerm);
     autoSuggest(searchTerm);
@@ -103,6 +94,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
   useEffect(() => {
     removeAll();
     addAll(documents);
+
   }, [documents, suggestions, addAll, removeAll]);
 
   useEffect(() => {
@@ -206,7 +198,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     return snake.split('_').map((name) => capitalize(name)).join(' ');
   };
 
-  const getSearchResults = (term: string) => {
+  const getSearchResults = (searchEntered: string) => {
     const dictionary = Object.keys(categories).map((c) => {
       return categories[c];
     });
@@ -214,11 +206,11 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     dictionary.forEach((category) => {
       category.forEach((d: any) => {
         return Object.keys(d?.properties).forEach((p) => {
-          const { description = '', type = '' } = d?.properties?.[`${p}`] ?? { description: '', type: '' };
-          const results = [{ 'description': description }, { 'type': type }, { 'property': snakeSplit(p) }];
+          const { description, type, term, anyOf } = d['properties'][p];
+          const results = [{ 'description': description ?? term?.description ?? anyOf?.[1]?.properties?.id?.term?.description ?? '' }, { 'type': type ?? anyOf?.[0]?.type ?? '' }, { 'property': snakeSplit(p) }];
           results.forEach((r) => {
-            if ((Object.values(r)[0].toLowerCase() as 'string').includes(term.toLowerCase())) {
-              matches.push({ node: snakeSplit(d.category), category: snakeSplit(d.id), property: capitalize(Object.keys(r)[0]) });
+            if ((Object.values(r)[0].toLowerCase() as 'string').includes(searchEntered.toLowerCase())) {
+              matches.push({ node: snakeSplit(d.category), category: snakeSplit(d.id), property: capitalize(results[2].property) });
             }
           });
         });
@@ -246,6 +238,28 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
     }
   };
 
+  const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
+    function SuggestedItem({ value, ...others }: SuggestionProps, ref) {
+      return (
+        <div
+          ref={ref}
+          {...others}
+          className={`h-inherit w-inherit hover:cursor-pointer hover:bg-gray-100 border border-solid border-gray-200 p-1 ${
+            (suggestions || []).map(({ suggestion }) => suggestion).indexOf(value) !== 0 && "border-t-0"
+          }`}
+        >
+          <button className="border-none" onClick={() => setSearchTerm(value)}>
+            <Highlight highlight={searchTerm}>{value}</Highlight>
+          </button>
+        </div>
+      );
+    }
+  );
+
+  const suggestedData = (suggestions || [])?.map(({ suggestion }) => {
+    return { value: suggestion };
+  });
+
   return (<div className="flex">
     <div className="w-1/4">
       <div className="flex justify-center border-t-0 border-1 border-gray-400 py-10">
@@ -267,10 +281,9 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
         <div className="flex mb-1">
           <button className={`border p-1 ${searchTerm.length !== 0 ? "text-orange-500 border-orange-500" : "text-gray-300 border-gray-300"} ml-auto mr-2 rounded-md items-center`} disabled={searchTerm.length === 0} onClick={() => getSearchResults(searchTerm)}>Search</button>
         </div>
-        <Highlight highlight={searchTerm}>search</Highlight>
-        {/* todo: find different component besides combobox */}
         <Autocomplete
-          data={(suggestions || [])?.map(({ suggestion }) => suggestion)}
+          itemComponent={SuggestedItem}
+          data={suggestedData}
           icon={<SearchIcon size={24} />}
           placeholder={'Search in Dictionary'}
           data-testid="dictionary-textbox-search-bar"
@@ -280,7 +293,7 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
             setSearchTerm(value as string);
           }}
           classNames={{
-            input: 'focus:border-2 focus:border-primary text-sm',
+            input: 'focus:border-2 focus:border-primary text-sm p-5',
           }}
           size="sm"
           rightSection={
@@ -368,6 +381,19 @@ const Dictionary = ({ dictionaryConfig: dictionary, uidForStorage = 'dictionary'
                             <div className="flex"><RiDownload2Fill /><span className="ml-1 font-black">TSV</span></div>
                           </button>
                         </div>
+                      </div>
+                      <div className="ml-2">
+                        {selectedId === id ? (
+                          <div
+                            key={selectedId}
+                          >
+                            <div className="flex flex-col mt-2">
+                              <MantineReactTable
+                                table={table}
+                              />
+                            </div>
+                          </div>
+                        ) : <React.Fragment></React.Fragment>}
                       </div>
                     </div>
                   );
