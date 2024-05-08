@@ -12,6 +12,11 @@ import {
   guppyApiSliceReducerPath,
 } from './features/guppy/guppyApi';
 
+import {
+  gripApiReducer,
+  gripApiSliceReducerPath,
+} from './features/grip/gripApi';
+
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
   user: userReducer,
@@ -20,6 +25,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
+  [gripApiSliceReducerPath]: gripApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });
 
