@@ -1,5 +1,5 @@
-import { HTMLAttributes, useState } from 'react';
-import { Card, Text, Stack, Group, Button, Center } from '@mantine/core';
+import React, { HTMLAttributes, useEffect } from 'react';
+import { Card, Text, Stack, Button, Center } from '@mantine/core';
 import { type ExternalProvider, type NamedURL } from '@gen3/core';
 import {
   IoMdRefresh as ReloadIcon,
@@ -90,7 +90,7 @@ interface ExternalProviderCardProps extends HTMLAttributes<HTMLDivElement> {
 const ExternalProviderCard: React.FunctionComponent<
   ExternalProviderCardProps
 > = ({ provider }) => {
-  const [loading, { toggle }] = useDisclosure();
+  const [loading, handler] = useDisclosure();
   return (
     <Card withBorder radius="sm">
       <Card.Section withBorder inheritPadding py="xs">
@@ -135,22 +135,28 @@ const ExternalProviderCard: React.FunctionComponent<
             color="accent"
             disabled={loading}
             key={`${providerUrl.url}-${i}`}
-            onClick={() => {
+            onClick={async () => {
               const queryChar = providerUrl.url.includes('?') ? '&' : '?';
-              toggle();
+              handler.open();
               openAuthWindow(
                 `${providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
                 provider.name,
-              ).then(() => {
-                toggle();
+              ).finally(() => {
+                handler.close();
               });
             }}
             aria-label={`provider-button-${provider.name}`}
             leftIcon={
               provider.refresh_token_expiration ? (
-                <ReloadIcon size="1.5rem" color="accent" />
+                <ReloadIcon
+                  size="1.5rem"
+                  className="text-accent data-disabled:opacity-50"
+                />
               ) : (
-                <LoginIcon size="1.5rem" color="accent" />
+                <LoginIcon
+                  size="1.5rem"
+                  className="text-accent disabled:text-accent/50"
+                />
               )
             }
           >

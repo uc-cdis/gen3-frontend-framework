@@ -5,6 +5,8 @@ import { ResourcesPanel } from '../../components/Profile/ResourcesPanel';
 import { ProfileProvider } from '../../components/Profile';
 import { ProfileConfig } from '../../components/Profile';
 import ExternalProvidersPanel from '../../components/Profile/ExternalProvidersPanel';
+import { PiCaretCircleDownFill as Caret } from "react-icons/pi";
+
 
 export interface ProfileProps {
   profileConfig: ProfileConfig;
@@ -19,14 +21,15 @@ const Profile = ({ profileConfig }: ProfileProps) => {
             multiple
             variant="separated"
             chevronPosition="left"
-            defaultValue={['apiKeys', 'resources']}
+            chevron={<Caret color="primary.4" size="1.75rem"/>}
+            defaultValue={['externalLogins', 'apiKeys', 'resources']}
             classNames={{
               label: 'text-secondary-contrast-lighter font-heading font-bold',
             }}
           >
             <Accordion.Item value="externalLogins">
               <div className="bg-secondary-lighter">
-                <Accordion.Control>External Providers</Accordion.Control>
+                <Accordion.Control>Link Account from External Data Resources</Accordion.Control>
               </div>
               <Accordion.Panel>
                 <ExternalProvidersPanel />

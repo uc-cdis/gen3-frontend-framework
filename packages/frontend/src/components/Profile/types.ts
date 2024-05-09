@@ -16,4 +16,4 @@ export interface ProfileConfig {
 export interface APICredentials {
   api_key: string;
   key_id: string;
-};
+}

@@ -1,8 +1,15 @@
 import React, { useMemo } from 'react';
 import { type ServiceAndMethod } from '@gen3/core';
 import { Badge } from '@mantine/core';
+import { TableIcons } from '../../components/Tables/TableIcons';
 
-import { MantineReactTable, MRT_Cell, MRT_ColumnDef, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  MRT_Cell,
+  MRT_ColumnDef,
+  useMantineReactTable,
+  MRT_Icons,
+} from 'mantine-react-table';
 import { useResourcesContext } from './ResourcesProvider';
 import { useProfileContext } from './ProfileProvider';
 import { ServiceColorAndLabel } from './types';
@@ -30,7 +37,7 @@ const ResourceBadge = ({
       : { color: defaultColor, label: resource };
 
   return (
-    <Badge variant="filled" fullWidth color={color}>
+    <Badge variant="filled" color={color} aria-label={label}>
       {label}
     </Badge>
   );
@@ -52,28 +59,34 @@ interface ResourcesTableProps {
 const ResourcesTable = ({ filters }: ResourcesTableProps) => {
   const { userProfile, servicesAndMethods } = useResourcesContext();
   const { profileConfig } = useProfileContext();
-
   let rows: ItemResource[] = [];
 
   rows = useMemo(() => {
-    return Object.entries(userProfile?.authz ?? {}).map(([key, authz]) => {
-      const methods = convertToRecordMethodToResource(authz, filters);
-      return {
-        resource: key,
-        methods: methods,
-      };
-    }).filter((row) => Object.keys(row.methods).length > 0);
+    return Object.entries(userProfile?.authz ?? {})
+      .map(([key, authz]) => {
+        const methods = convertToRecordMethodToResource(authz, filters);
+        return {
+          resource: key,
+          methods: methods,
+        };
+      })
+      .filter((row) => Object.keys(row.methods).length > 0);
   }, [filters, userProfile?.authz]);
 
   const columns = useMemo(() => {
     return [
       {
-        header: 'Resource',
+        header: 'Resource(s)',
         accessorKey: 'resource',
-        size: 500,
         Cell: ({ row }: MRT_Cell<ItemResource>) => (
           <div>{row.original.resource}</div>
         ),
+        mantineTableHeadCellProps: {
+          align: 'left',
+        },
+        mantineTableBodyCellProps: {
+          align: 'left',
+        },
       },
       ...servicesAndMethods.methods.map((method) => {
         return {
@@ -102,31 +115,39 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
         };
       }),
     ] as unknown as MRT_ColumnDef<ItemResource>[];
-  }, [servicesAndMethods.methods]);
+  }, [profileConfig.resourceTable?.serviceColors, servicesAndMethods.methods]);
 
   const table = useMantineReactTable<ItemResource>({
     columns,
     data: rows,
     enableColumnResizing: true,
+    enableTopToolbar: false,
     layoutMode: 'grid',
+    icons: TableIcons,
     //Disables the default flex-grow behavior of the table cells
+    mantineTableHeadRowProps: {
+      sx: (theme) => ({
+        backgroundColor: theme.colors.secondary[8],
+        borderColor: theme.colors.base[8],
+        borderWidth: '1px',
+        boxShadow: 'none',
+        align: 'center',
+      }),
+    },
     mantineTableHeadCellProps: {
-      sx: {
-        flex: '0 0 auto',
-      },
+      align: 'center',
     },
     mantineTableBodyCellProps: {
-      sx: {
-        flex: '0 0 auto',
-      },
+      align: 'center',
     },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
+
   });
 
   return (
     <div className="w-full">
-      <MantineReactTable table={table} />;
+      <MantineReactTable table={table} />
     </div>
   );
 };
