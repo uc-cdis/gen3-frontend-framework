@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "0.10.25",
 =======
   "version": "0.10.22",
@@ -13,6 +14,9 @@
 =======
   "version": "0.10.24",
 >>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
+=======
+  "version": "0.10.26",
+>>>>>>> 5ae5d36 (v0.10.26 (#181))
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
