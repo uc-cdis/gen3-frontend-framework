@@ -10,7 +10,7 @@ import ResourcesProvider from './ResourcesProvider';
  */
 export const ResourcesPanel = () => {
   const [filters, setFilters] = useState<string[]>([]);
-  console.log("resourcesPanel filters", filters);
+  // Todo add project access Table other table types Resources vs Services Resources vs Methods
   return (
     <ResourcesProvider>
       <div className="flex">
