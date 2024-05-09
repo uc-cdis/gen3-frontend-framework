@@ -3,11 +3,12 @@ import {
   useGetWorkspaceStatusQuery,
   useGetWorkspacePayModelsQuery,
 } from './workspaceSlice';
-import { type WorkspaceOptionsResponse } from './types';
+import { type WorkspaceOptionsResponse, type WorkspaceInfo } from './types';
 
 export {
-  useGetWorkspaceOptionsQuery,
   type WorkspaceOptionsResponse,
+  type WorkspaceInfo,
+  useGetWorkspaceOptionsQuery,
   useGetWorkspaceStatusQuery,
   useGetWorkspacePayModelsQuery,
 };
