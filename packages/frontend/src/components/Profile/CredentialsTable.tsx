@@ -9,6 +9,7 @@ import {
 import { MdDelete as DeleteIcon } from 'react-icons/md';
 import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
 import { unixTimeToString } from '../../utils';
+import { TableIcons } from '../../components/Tables/TableIcons';
 
 const SOON_IN_DAYS = 86400 * 5;
 
@@ -110,9 +111,11 @@ const CredentialsTable = () => {
     data: rows,
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
+    enableTopToolbar: false,
     mantineSearchTextInputProps: {
       placeholder: 'Search API Keys',
     },
+    icons: TableIcons,
   });
 
   return <MantineReactTable table={table} />;

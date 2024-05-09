@@ -32,7 +32,7 @@
       },
       {
         "icon": "gen3:profile",
-        "href": "https://brh.data-commons.org/profile",
+        "href": "/Profile",
         "name": "Profile",
         "tooltip": "Create API keys for programmatic data access, and review your authorization privileges to datasets and services."
       }
@@ -68,7 +68,7 @@
         }
       }
     ],
-    "showLogin": false,
+    "showLogin": true,
     "classNames": {
       "root": "bg-primary"
     }

@@ -23,7 +23,7 @@ import {
 } from './userSliceRTK';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
-import { type UserProfile, type LoginStatus, type Gen3User } from './types';
+import { type UserProfile, type LoginStatus, type Gen3User, type ExternalProvider, type NamedURL } from './types';
 
 export {
   useUser,
@@ -48,4 +48,6 @@ export {
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
   type CSRFToken,
+  type ExternalProvider,
+  type NamedURL
 };
