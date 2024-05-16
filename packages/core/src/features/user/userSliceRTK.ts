@@ -4,7 +4,12 @@ import { fetchFence, Gen3FenceResponse } from '../fence/fenceApi';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { JSONObject } from '../../types';
+
+
+interface StatusWithCSRFTokenResponse {
+    csrf: string;
+    message?: string;
+}
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -61,8 +66,8 @@ const userAuthApi = coreCreateApi({
     }),
     getCSRF: builder.query<CSRFToken, void>({
       query: () =>  ({ endpoint: '/_status' }),
-      transformResponse: (response: JSONObject): CSRFToken => {
-        return { csrfToken: response['csrf'] as string };
+      transformResponse: (response : Gen3FenceResponse<StatusWithCSRFTokenResponse>): CSRFToken => {
+        return { csrfToken: response.data.csrf };
       },
     }),
   }),
