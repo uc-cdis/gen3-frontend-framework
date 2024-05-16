@@ -69,8 +69,7 @@ const Discovery = ({
     useDisclosure(false);
 
   if (dataRequestStatus.isLoading) {
-    return (
-      <div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+    return (<div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
   }
 
   if (dataRequestStatus.isError) {
