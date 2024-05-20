@@ -15,6 +15,7 @@
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
     "build": "lerna run build",
+    "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
     "start": "lerna run --parallel start",
