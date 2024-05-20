@@ -70,13 +70,18 @@ const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
 
+  const  headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result: GuppyAPIFetchResult = await guppyAPIFetch({
           query: query,
           variables: variables,
-        });
+        }, headers);
         setItems(result.data.file);
         setLoading(false);
       } catch (error) {
@@ -109,6 +114,7 @@ const SamplePage = ({ headerProps, footerProps }: SamplePageProps) => {
     </NavPageLayout>
   );
 };
+
 
 export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps

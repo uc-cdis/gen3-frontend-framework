@@ -1,22 +1,6 @@
 {
   "name": "@gen3/frontend",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   "version": "0.10.25",
-=======
-  "version": "0.10.22",
->>>>>>> 2d42db4 (add csrf token to guppyApi (#172))
-=======
-  "version": "0.10.23",
->>>>>>> 122aca0 (Fix/missing csrf v3 (#173))
-=======
-  "version": "0.10.24",
->>>>>>> 90a4d38 (Fixes content of color page, layout typing  (#174))
-=======
-  "version": "0.10.26",
->>>>>>> 5ae5d36 (v0.10.26 (#181))
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",

@@ -106,11 +106,17 @@ const SamplePage = ( {headerProps, footerProps}: NavPageLayoutProps) => {
   useEffect(() => {
     const variables ={filter:{AND:[{IN:{project_id:['synthea-test']}}]}};
     const fetchData = async () => {
+      const  headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      };
       try {
-        const result = await gripApiFetch('graphql/synthea', {
+        const result = await gripApiFetch({
           query: query,
-          variables: variables
-        });
+          variables: variables,
+          endpoint_arg: 'graphql/synthea'
+        }, headers);
           setItems(result);
           setLoading(false);
       } catch (error) {
