@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import debounce from 'lodash/debounce';
-import { Paper, Button, Text, Modal, Grid} from '@mantine/core';
+import { Paper, Button, Text, Modal, Grid, Pagination} from '@mantine/core';
 
 import {
   NavPageLayout,
@@ -105,101 +104,94 @@ function MyModal({text}: {text?: ModalType}) {
 }
 
 const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
-  const [state, setState] = useState({
-    //PatientIdsWithObservationEdge: [],
-    PatientIdsWithEncounterEdge: [],
-    PatientIdsWithSpecimenEdge: [],
-    PatientIdsWithDocumentEdge: [],
+  const [state, setState] = useState<{
+    encounterItems: EncounterEdge[];
+    specimenItems: SpecimenEdge[];
+    documentItems: DocumentEdge[];
+    ModalError: ModalType;
+    isLoading: boolean;
+    isError: boolean;
+    currentPage: number
+  }>({
+    encounterItems: [],
+    specimenItems: [],
+    documentItems: [],
+    ModalError: {},
     isLoading: true,
     isError: false,
     currentPage: 1
   });
 
 
-  const fetchEdgeData = async (query: string): Promise<EdgeData> => {
-    return gripApiFetch('graphql/api', { query: query, variables: { limit: 500 } })
+  const fetchEdgeData = async (query: string, headers: Record<string, string>, limit: number, offset: number): Promise<EdgeData> => {
+    return gripApiFetch({ query: query, variables: { limit: limit, offset: offset }, endpoint_arg: 'graphql/api' }, headers)
       .then((result: gripApiResponse<EdgeData | unknown | undefined>) => result.data as EdgeData);
+  };
+  const pageSize = 50;
+
+  const fetchData = async (limit: number, offset: number) => {
+    const  headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    };
+    try {
+      const [docResult, encounterResult, specimenResult] = await Promise.all([
+        fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int, $offset: Int) {
+          PatientIdsWithDocumentEdge(limit: $limit, offset: $offset)  {
+            id
+          }
+        }`, headers, limit, offset),
+        fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int, $offset: Int) {
+          PatientIdsWithEncounterEdge(limit: $limit, offset: $offset)  {
+            id
+          }
+        }`, headers, limit, offset),
+        fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int, $offset: Int) {
+          PatientIdsWithSpecimenEdge(limit: $limit, offset: $offset)  {
+            id
+          }
+        }`, headers, limit, offset)
+      ]);
+      setState(prevState => ({
+        ...prevState,
+        encounterItems: encounterResult.PatientIdsWithEncounterEdge ?? [],
+        specimenItems: specimenResult.PatientIdsWithSpecimenEdge ?? [],
+        documentItems: docResult.PatientIdsWithDocumentEdge ?? [],
+        isError: false
+      }));
+    } catch (error) {
+      console.log('ERROR: ', error);
+      setState(prevState => ({
+        ...prevState,
+        ModalError: error ?? {},
+        isError: true,
+      }));
+    } finally {
+      setState(prevState => ({
+        ...prevState,
+        isLoading: false
+      }));
+    }
   };
 
   useEffect(() => {
-    let completedFetches = 0;
-    const fetchData = async (): Promise<void> => {
-      const updateStateWithFetchResult = (result: any, key: string): void => {
-        if (result) {
-          console.log("COMPLETED FETCHES: ", completedFetches);
-          setState(prevState => ({
-            ...prevState,
-            [key]: result[key] || [],
-            isError: false,
-            isLoading: completedFetches >= 2 ? false : true // Disable loading when 4 fetches are complete
-          }));
-          completedFetches++; // Increment completedFetches after update
-        } else {
-          setState(prevState => ({
-            ...prevState,
-            isError: true
-          }));
-        }
-      };
-  
-      try {
-        console.log('i fire once');
-        const docResult = await fetchEdgeData(`query PatientIdsWithDocumentEdge($limit: Int) {
-          PatientIdsWithDocumentEdge(limit: $limit)  {
-            id
-          }
-        }`);
-        console.log('Document Result:', docResult);
-        updateStateWithFetchResult(docResult, 'PatientIdsWithDocumentEdge');
-      } catch (error) {
-        console.log('ERROR fetching document data:', error);
-        setState(prevState => ({
-          ...prevState,
-          isError: true
-        }));
-      }
-  
-      try {
-        const encounterResult = await fetchEdgeData(`query PatientIdsWithEncounterEdge($limit: Int) {
-          PatientIdsWithEncounterEdge(limit: $limit)  {
-            id
-          }
-        }`);
-        console.log('Encounter Result:', encounterResult);
-        updateStateWithFetchResult(encounterResult, 'PatientIdsWithEncounterEdge');
-      } catch (error) {
-        console.log('ERROR fetching encounter data:', error);
-        setState(prevState => ({
-          ...prevState,
-          isError: true
-        }));
-      }
-  
-      try {
-        const specimenResult = await fetchEdgeData(`query PatientIdsWithSpecimenEdge($limit: Int) {
-          PatientIdsWithSpecimenEdge(limit: $limit)  {
-            id
-          }
-        }`);
-        console.log('Specimen Result:', specimenResult);
-        updateStateWithFetchResult(specimenResult, 'PatientIdsWithSpecimenEdge');
-      } catch (error) {
-        console.log('ERROR fetching specimen data:', error);
-        setState(prevState => ({
-          ...prevState,
-          isError: true
-        }));
-      }
-    };
-    const debouncedFetchData = debounce(fetchData, 500); // Debounce with 500ms delay
-    debouncedFetchData();
-    
-  
-    //fetchData();
-  
-    // Dependency array left empty to run only on initial render
-  }, []);
-  
+    setState(prevState => ({
+      ...prevState,
+      isLoading: true,
+    }));
+    const offset = (state.currentPage - 1) * pageSize;
+    fetchData(pageSize, offset);
+  }, [state.currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setState(prevState => ({
+      ...prevState,
+      currentPage: page,
+      isLoading: true,
+    }));
+  };
+
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <Paper>
@@ -212,12 +204,16 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
                 <MyModal text={state.ModalError} />
               </div>
             ) : (
-                <div>
-                  <DataComponent data={state} />
-                </div>
-              )
-            }
-          </div>
+              <div>
+                <Pagination
+                  total={10}
+                  value={state.currentPage}
+                  onChange={(page: number) => handlePageChange(page)}/>
+                <DataComponent data={edgeData} />
+              </div>
+            )
+          )}
+        </div>
       </Paper>
     </NavPageLayout>
   );

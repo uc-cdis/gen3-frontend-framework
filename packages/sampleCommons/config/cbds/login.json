@@ -19,5 +19,6 @@
       "className": "text-center text-sm"
     }
   ],
-  "showCredentialsLogin": false
+  "image": "images/gene.svg",
+  "showCredentialsLogin" : true
 }

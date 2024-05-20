@@ -61,11 +61,9 @@ import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 
+import SmmartPage from './pages/Smmart/Smmart';
+
 export {
-  ContentSource,
-  type Fonts,
-  type RegisteredIcons,
-  type SessionConfiguration,
   SmmartPage,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,

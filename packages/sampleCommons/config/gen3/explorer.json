@@ -80,41 +80,26 @@
     ],
     "loginForDownload": true,
     "guppyConfig": {
-      "dataType": "data_file",
-      "nodeCountTitle": "Data Files",
+      "dataType": "measurement",
+      "nodeCountTitle": "Measurements",
       "fieldMapping": [
         {
           "field": "project_id",
           "name": "Project ID"
         },
         {
+          "field": "submitter_id",
+          "name": "Measurement ID"
+        },
+        {
           "field": "case_ids",
-          "name": "Patient ID"
-        },
-        {
-          "field": "study_uid",
-          "name": "Study UID"
-        },
-        {
-          "field": "series_UID",
-          "name": "Series UID"
+          "name": "Case ID"
         }
       ],
-      "nodeCountTitle": "Patients",
-      "manifestMapping": {
-        "resourceIndexType": "Patient",
-        "resourceIdField": "id",
-        "referenceIdFieldInResourceIndex": "id",
-        "referenceIdFieldInDataIndex": "id"
-      },
-      "downloadAccessor": "object_id",
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
-
   {
     "tabTitle": "Observation",
     "charts": {

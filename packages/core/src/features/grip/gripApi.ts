@@ -1,8 +1,10 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
 import { JSONObject } from '../../types';
-import { GEN3_GRIP_API } from '../../constants'
-
+import { GEN3_GRIP_API } from '../../constants';
+import { getCookie } from 'cookies-next';
+import { selectCSRFToken } from '../user';
+import { CoreState } from '../../reducers';
 
 export interface gripApiResponse<H = JSONObject> {
   readonly data: H;
@@ -41,29 +43,42 @@ const buildGripFetchError = async (
 };
 
 export const gripApiFetch = async <T>(
-  query: gripApiSliceRequest
+  query: gripApiSliceRequest,
+  headers: Record<string, string>,
 ): Promise<gripApiResponse<T>> => {
   const res = await fetch(`${GEN3_GRIP_API}/${query.endpoint_arg}`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+    headers: headers,
     method: 'POST',
     body: JSON.stringify(query),
   });
-
   if (res.ok) return res.json();
 
   throw await buildGripFetchError(res);
 };
 
 
-export const gripApi = coreCreateApi({
-  reducerPath: 'grip',
-  baseQuery: async (request: gripApiSliceRequest) => {
+  export const gripApi = coreCreateApi({
+    reducerPath: 'grip',
+    baseQuery: async (request: gripApiSliceRequest, api) => {
+      const csrfToken = selectCSRFToken(api.getState() as CoreState);
+
+      let accessToken = undefined;
+      if (process.env.NODE_ENV === 'development') {
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        accessToken = getCookie('credentials_token');
+      }
+      const  headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+      ...(accessToken && { 'Authorization': `bearer ${accessToken}` }),
+    };
+
+    console.log("HEADERS: ", headers);
     try {
-      const results = await gripApiFetch(request);
+      const results = await gripApiFetch(request, headers);
       return { data: results };
     } catch (e) {
       return { error: e };

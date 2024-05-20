@@ -44,28 +44,59 @@
         "disability_adjusted_life_years"
       ]
     },
+    "dropdowns": {
+      "download-table": {
+        "title": "Download Table"
+      }
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "data-json",
+        "title": "JSON",
+        "dropdownId": "download-table",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "MIDRC_Measurements_table.json"
+      },
+      {
+        "enabled": true,
+        "type": "data-tsv",
+        "title": "TSV",
+        "dropdownId": "download-table",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "MIDRC_Measurements_table.tsv"
+      },
+      {
+        "enabled": true,
+        "type": "data-csv",
+        "title": "CSV",
+        "dropdownId": "download-table",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "MIDRC_Measurements_table.csv"
+      }
+    ],
+    "loginForDownload": true,
     "guppyConfig": {
-      "dataType": "patient",
+      "dataType": "measurement",
+      "nodeCountTitle": "Measurements",
       "fieldMapping": [
         {
-          "field": "quality_adjusted_life_years",
-          "name": "quality_adjusted_life_years"
+          "field": "project_id",
+          "name": "Project ID"
         },
         {
-          "field": "disability_adjusted_life_years",
-          "name": "disability_adjusted_life_years"
+          "field": "submitter_id",
+          "name": "Measurement ID"
+        },
+        {
+          "field": "case_ids",
+          "name": "Case ID"
         }
       ],
-      "nodeCountTitle": "Patients",
-      "manifestMapping": {
-        "resourceIndexType": "Patient",
-        "resourceIdField": "id",
-        "referenceIdFieldInResourceIndex": "id",
-        "referenceIdFieldInDataIndex": "id"
-      },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -73,16 +104,16 @@
     "tabTitle": "Observation",
     "charts": {
       "project_id": {
-        "chartType": "fullPie",
+        "chartType": "donut",
         "title": "Project"
+      },
+      "category": {
+        "chartType": "fullPie",
+        "title": "Category"
       },
       "code": {
         "chartType": "fullPie",
         "title": "Code"
-      },
-      "valueString": {
-        "chartType": "fullPie",
-        "title": "Value"
       }
     },
     "filters": {
@@ -91,8 +122,17 @@
           "title": "Observation",
           "fields": [
             "project_id",
-            "code",
-            "valueString"
+            "category",
+            "code"
+          ]
+        },
+        {
+          "title": "Annotations",
+          "fields": [
+            "imaging_study_annotations.midrc_mRALE_score",
+            "imaging_study_annotations.annotation_method",
+            "imaging_study_annotations.annotator_id",
+            "data_file_annotation_name"
           ]
         }
       ]
@@ -104,12 +144,24 @@
         "project_id",
         "category",
         "code",
-        "valueString"
+        "bodySite",
+        "effectiveDateTime",
+        "valueBoolean",
+        "valueCodeableConcept",
+        "valueDateTime",
+        "valueInteger",
+        "valueQuantity",
+        "valueRange",
+        "valueRatio",
+        "valueSampledData",
+        "valueString",
+        "interpretation"
       ]
     },
+    "dropdowns": {},
     "guppyConfig": {
       "dataType": "observation",
-      "fieldMapping": [],
+      "fieldMapping":   [],
       "nodeCountTitle": "Observations",
       "manifestMapping": {
         "resourceIndexType": "Patient",
@@ -117,17 +169,17 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
+
   {
+
     "tabTitle": "File",
     "charts": {
       "data_type": {
-        "chartType": "fullPie",
+        "chartType": "donut",
         "title": "File Type"
       },
       "data_format": {
@@ -166,25 +218,14 @@
         "type_coding"
       ]
     },
+    "dropdowns": {},
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
-        {
-          "field": "object_id",
-          "name": "Download ID"
-        },
-        {
-          "field": "file_name",
-          "name": "Name"
-        },
-        {
-          "field": "data_type",
-          "name": "Type"
-        },
-        {
-          "field": "data_format",
-          "name": "Format"
-        }
+        { "field": "object_id", "name": "Download ID" },
+        { "field": "file_name", "name": "Name" },
+        { "field": "data_type", "name": "Type" },
+        { "field": "data_format", "name": "Format" }
       ],
       "nodeCountTitle": "Files",
       "manifestMapping": {
@@ -193,32 +234,18 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id",
       "downloadAccessor": "object_id"
     },
     "buttons": [
       {
         "enabled": true,
-        "type": "manifest",
-        "action": "manifest",
+        "type": "file-manifest",
         "title": "Download Manifest",
-        "leftIcon": "gen3:datafile",
-        "rightIcon": "gen3:download",
-        "fileName": "manifest.json",
-        "actionArgs": {
-          "resourceIndexType": "Patient",
-          "resourceIdField": "_patient_id",
-          "referenceIdFieldInDataIndex": "object_id",
-          "fileFields": [
-            "file_name",
-            "file_size",
-            "md5sum",
-            "object_id"
-          ]
-        }
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
       }
     ]
   }

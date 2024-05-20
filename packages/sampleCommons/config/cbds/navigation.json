@@ -6,9 +6,9 @@
       "navigationPanel": "bg-base-max text-primary"
     },
     "logo": {
-      "src": "/icons/cbds.png",
+      "src": "/icons/logo_small_2.png",
       "height": 220,
-      "href": "/cbdsLandingPage"
+      "href": "/"
     },
     "items": [
       {
@@ -19,9 +19,21 @@
       },
       {
         "icon": "gen3:exploration",
+        "href": "/SamplePage",
+        "name": "DEMO",
+        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
+        "icon": "gen3:exploration",
         "href": "/GRIPREF",
         "name": "GRIPREF",
         "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
+      },
+      {
+        "icon": "gen3:exploration",
+        "href": "/SMMART",
+        "name": "SMMART",
+        "tooltip": "SMMART"
       },
       {
         "icon": "gen3:query",
@@ -40,8 +52,8 @@
   "topBar": {
     "items": [
       {
-        "href": "https://www.ohsu.edu/knight-cancer-institute",
-        "name": "CBDS"
+        "href": "https://www.cancerresearchuk.org/funding-for-researchers/research-opportunities-in-early-detection-and-diagnosis/international-alliance-for-cancer-early-detection",
+        "name": "ACED"
       }
     ],
     "showLogin": true
