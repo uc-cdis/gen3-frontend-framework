@@ -6,7 +6,7 @@
       "navigationPanel": "bg-base-max text-primary"
     },
     "logo": {
-      "src": "/icons/logo_small_2.png",
+      "src": "/icons/cbds.png",
       "height": 220,
       "href": "/"
     },
@@ -52,8 +52,8 @@
   "topBar": {
     "items": [
       {
-        "href": "https://www.cancerresearchuk.org/funding-for-researchers/research-opportunities-in-early-detection-and-diagnosis/international-alliance-for-cancer-early-detection",
-        "name": "ACED"
+        "href": "https://www.ohsu.edu/knight-cancer-institute",
+        "name": "CBDS"
       }
     ],
     "showLogin": true
