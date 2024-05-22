@@ -1,10 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { MantineProvider, Container, Text, Grid } from '@mantine/core';
+
+import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import {
-  NavPageLayout,
-  NavPageLayoutProps,
   getNavPageLayoutPropsFromConfig,
-} from '@gen3/frontend';
+} from '../../lib/common/staticProps';
+
 import ProjectCard from './ProjectCard';
 
 
@@ -18,16 +19,19 @@ const projects = [
     title: "SMMART",
     description: "A clinical research study measuring tumor evolution and its resistance to therapy to deliver better cancer treatment.",
     icon: "/icons/SMMART.svg",
+    href: "/SMCLICK"
   },
   {
     title: "ACED",
     description: "A repository and computational platform for cancer researchers who need to understand cancer, its clinical progression, and response to therapy.",
     icon: "/icons/Soup.svg",
+    href: "/"
   },
   {
     title: "Detroit-ROCS",
     description: "A research study on the quality of life and other outcomes in African American cancer survivors who live in Metropolitan Detroit and were recently diagnosed with cancer.",
     icon: "/icons/Soup.svg",
+    href: "/"
   },
 ];
 
