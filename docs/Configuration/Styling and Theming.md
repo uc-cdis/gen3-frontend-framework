@@ -23,7 +23,20 @@ The```fontFamily``` member is used to set the font for the component library (e.
 }
 ```
 
-
+you will need to also install the font to your project:
+```bash
+npm i @fontsource/montserrat
+```
+and added to the ```src/styles/globals.css```:
+```bash
+...
+@import '~@fontsource/montserrat/700.css';
+@import '~@fontsource/montserrat/400-italic.css';
+@import '~@fontsource/montserrat/index.css';
+@import '~@fontsource/montserrat/600.css';
+@import '~@fontsource/montserrat/700-italic.css';
+...
+```
 
 ### Colors
 
@@ -56,9 +69,9 @@ Colors can be configured by editing ```config/<commonsName>/colors.json```. The 
 
 Once the colors are edited they need to be process with the command
 ```
-npm run build:colors
+npm run build:colors --commons=<commonsName>
 ```
-in the commons (for now ```sampleCommon```) source directory.
+in the commons (for now ```sampleCommons```) source directory.
 
 You can test the color them by going to the commons web portal Color page.
 For example http://localhost:3000/Colors
