@@ -52,6 +52,8 @@ const RemoveButton = ({ value }: { value: string }) => (
     radius="xl"
     variant="transparent"
     aria-label={`remove ${value}`}
+    pl={0}
+    pr={0}
   >
     <ClearIcon size={12} aria-hidden="true" />
   </ActionIcon>
@@ -204,7 +206,8 @@ const IncludeExcludeQueryElement = ({
                   variant="filled"
                   color="accent.5"
                   size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-darker"
+                  pr={0}
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-0 pr-0 hover:bg-accent-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operandsArray.filter((o) => o !== x);
