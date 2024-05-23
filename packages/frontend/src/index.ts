@@ -1,4 +1,3 @@
-
 export * from './features/Navigation';
 export * from './features/Discovery';
 export * from './components/Profile';
@@ -11,6 +10,9 @@ export * from './features/Workspace';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
+import ContentSource from './lib/content';
+import { type SessionConfiguration } from './lib/session/types';
+import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -39,7 +41,7 @@ import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
-import Custom404Page  from './pages/404/Custom404Page';
+import Custom404Page from './pages/404/Custom404Page';
 
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
@@ -57,8 +59,11 @@ import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 
-
 export {
+  ContentSource,
+  type Fonts,
+  type RegisteredIcons,
+  type SessionConfiguration,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,

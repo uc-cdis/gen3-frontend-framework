@@ -1,0 +1,8 @@
+[server]
+port = 8080
+
+[upstream]
+servers = [
+    "http://localhost:8000",
+    "http://localhost:8001"
+]

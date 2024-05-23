@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Loader, Tabs, Text } from '@mantine/core';
+import { Loader, LoadingOverlay, Tabs, Text } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -252,20 +252,12 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  if (isFetching) {
-    return (
-      <div className="flex w-100 h-1/2 relative justify-center">
-        <Loader variant="dots" />{' '}
-      </div>
-    );
-  }
-
   if (isError) {
     return <ErrorCard message="Unable to fetch cohort data" />;
   }
 
   return (
-    <div className="flex mt-3">
+    <div className="flex mt-3 relative">
       <div>
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
           <TabbedPanel

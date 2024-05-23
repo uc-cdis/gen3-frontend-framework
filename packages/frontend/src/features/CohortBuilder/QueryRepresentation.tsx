@@ -1,4 +1,9 @@
-import React, { PropsWithChildren, ReactElement, useContext, useEffect } from 'react';
+import React, {
+  PropsWithChildren,
+  ReactElement,
+  useContext,
+  useEffect,
+} from 'react';
 import { get } from 'lodash';
 import {
   Equals,
@@ -24,7 +29,7 @@ import {
   ExcludeIfAny,
   Excludes,
   NestedFilter,
-  CoreState
+  CoreState,
 } from '@gen3/core';
 import { ActionIcon, Badge, Divider, Group } from '@mantine/core';
 import { isArray } from 'lodash';
@@ -38,6 +43,7 @@ import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
 import { buildNested } from '../../components/facets/utils';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 const RemoveButton = ({ value }: { value: string }) => (
   <ActionIcon
@@ -55,10 +61,10 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.div`
-bg-accent-cool-content-lightest
+bg-accent-cool-lightest
 text-base-darkest
 uppercase
-px-2
+px-1
 border-primary-darkest
 border-r-[1.5px]
 flex
@@ -67,7 +73,6 @@ items-center
 
 const QueryItemContainer = tw.div`
 flex
-flex-row
 items-center
 font-heading
 shadow-md
@@ -134,11 +139,11 @@ const IncludeExcludeQueryElement = ({
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohortId = useCoreSelector((state:CoreState) =>
+  const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
       setQueryExpressionsExpanded({
         type: 'expand',
@@ -155,8 +160,8 @@ const IncludeExcludeQueryElement = ({
 
   const expanded = get(queryExpressionsExpanded, field, true);
   const fieldName = fieldNameToTitle(field);
-
   const operandsArray = isArray(operands) ? operands : [operands];
+
   return (
     <QueryContainer>
       <QueryFieldLabel>{fieldName}</QueryFieldLabel>
@@ -171,7 +176,7 @@ const IncludeExcludeQueryElement = ({
           });
         }}
         color="accent"
-        className="ml-1 my-auto"
+        className="ml-1 my-auto hover:bg-accent-darker hover:bg-primary]"
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
         aria-expanded={expanded}
       >
@@ -197,22 +202,24 @@ const IncludeExcludeQueryElement = ({
                   key={`query-rep-${field}-${value}-${i}`}
                   data-testid={`query-rep-${field}-${value}-${i}`}
                   variant="filled"
-                  color="accent-cool"
+                  color="accent.5"
                   size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operandsArray.filter((o) => o !== x);
+                    const fieldToUpdate =
+                      path && path != '.' ? [path, field].join('.') : field;
 
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: 'clear',
                         cohortId: currentCohortId,
-                        field: path ? [path, field].join('.') : field,
+                        field: fieldToUpdate,
                       });
                       dispatch(
                         removeCohortFilter({
-                          field: path ? [path, field].join('.') : field,
+                          field: fieldToUpdate,
                           index: index,
                         }),
                       );
@@ -220,15 +227,12 @@ const IncludeExcludeQueryElement = ({
                       dispatch(
                         updateCohortFilter({
                           index,
-                          field: path ? [path, field].join('.') : field,
-                          filter: buildNested(
-                            path ? [path, field].join('.') : field,
-                            {
-                              operator: operator,
-                              field: field,
-                              operands: newOperands,
-                            },
-                          ),
+                          field: fieldToUpdate,
+                          filter: buildNested(fieldToUpdate, {
+                            operator: operator,
+                            field: field,
+                            operands: newOperands,
+                          }),
                         }),
                       );
                     }
@@ -236,7 +240,7 @@ const IncludeExcludeQueryElement = ({
                 >
                   <OverflowTooltippedLabel
                     label={value}
-                    className="flex-grow text-md font-content-noto"
+                    className="flex-grow text-md font-content"
                   >
                     <QueryRepresentationLabel value={value.toString()} />
                   </OverflowTooltippedLabel>
@@ -277,7 +281,7 @@ const ComparisonElement = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-content-lightest text-base pb-1"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast pb-1"
           onClick={() => handleKeepMember(filter)}
         >
           {filter.operator}
@@ -288,10 +292,7 @@ const ComparisonElement = ({
   );
 };
 
-const ExistsElement = ({
-  field,
-  operator,
-}: Exists | Missing) => {
+const ExistsElement = ({ field, operator }: Exists | Missing) => {
   return (
     <div className="flex flex-row items-center">
       {fieldNameToTitle(field)} is
@@ -313,7 +314,7 @@ export const ClosedRangeQueryElement = ({
   upper,
   op = 'and',
 }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
-  const {field} = lower; // As this is a Range the field for both lower and upper will be the same
+  const { field } = lower; // As this is a Range the field for both lower and upper will be the same
 
   return (
     <React.Fragment>
@@ -357,17 +358,18 @@ export const QueryElement = ({
     selectCurrentCohortId(state),
   );
 
+  const fieldName = path && path != '.' ? [path, field].join('.') : field;
   const handleRemoveFilter = () => {
     coreDispatch(
       removeCohortFilter({
         index: index,
-        field: path ? [path, field].join('.') : field,
+        field: fieldName,
       }),
     );
     setQueryExpressionsExpanded({
       type: 'clear',
       cohortId: currentCohortId,
-      field: path ? [path, field].join('.') : field,
+      field: fieldName,
     });
   };
 
@@ -381,7 +383,7 @@ export const QueryElement = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg text-white"
+        className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >
