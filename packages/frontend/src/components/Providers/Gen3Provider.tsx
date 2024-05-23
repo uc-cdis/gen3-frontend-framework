@@ -13,7 +13,6 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
-import { ContentSource } from '../../../dist';
 
 const getEmotionCache = (): EmotionCache => {
   // Insert mantine styles after global styles
