@@ -16,7 +16,7 @@ import {
 } from './downloads/actions/registeredActions';
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
-import  CohortDropdownActionButton  from './downloads/CohortDropdownActionButton';
+import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -76,6 +76,7 @@ const createDownloadMenuButton = (
       rightIcon={props.rightIcon ? <Icon icon={props.rightIcon} /> : undefined}
       TargetButtonChildren={'Downloading...'}
       dropdownElements={elements}
+      key={props.title}
     />
   );
 };
