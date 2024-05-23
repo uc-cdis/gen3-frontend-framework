@@ -10,6 +10,7 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
+  useGetFieldsForIndexQuery,
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';

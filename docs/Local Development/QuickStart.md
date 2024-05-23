@@ -85,7 +85,6 @@ In the root of the app's source code there are .env files:
 ```
 GEN3_COMMONS_NAME=gen3
 NEXT_PUBLIC_GEN3_API=https://localhost:3010
-NEXT_PUBLIC_GEN3_DOMAIN=https://localhost:3010
 ```
 
 These set what config directory is used ```GEN3_COMMONS_NAME``` and where the endpoints are running. The defaults are ```gen3``` and https://localhost. If you are running in helm charts the only value to set is ```GEN3_COMMONS_NAME```.
