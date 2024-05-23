@@ -4,13 +4,17 @@ import { fetchFence, Gen3FenceResponse } from '../fence/fenceApi';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { JSONObject } from '../../types';
+
+interface StatusWithCSRFTokenResponse {
+  csrf: string;
+  message?: string;
+}
 
 export interface CSRFToken {
   readonly csrfToken: string;
 }
 
-export interface UserAuthResponse  {
+export interface UserAuthResponse {
   readonly data: Gen3User;
   readonly loginStatus: LoginStatus;
 }
@@ -28,23 +32,23 @@ const userAuthApi = coreCreateApi({
       accessToken = getCookie('credentials_token');
       console.log("accessToken: ", accessToken);
     }
-    const headers : Record<string, string>= {
+    const headers: Record<string, string> = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      ...(csrfToken ? { 'X-CSRF-Token': csrfToken} : {}),
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       credentials: 'include',
     };
 
     console.log("fetching user details");
     try {
-      results = await fetchFence({ endpoint, headers});
+      results = await fetchFence({ endpoint, headers });
     } catch (e) {
       /*
         Because an "error" response is valid for the auth requests we don't want to
         put the request in an error state, or it will attempt the request over and over again
       */
-      return { data: {}};
+      return { data: {} };
     }
 
     return { data: results };
@@ -58,42 +62,49 @@ const userAuthApi = coreCreateApi({
           data: response.data,
           // TODO: check if this is the correct status code
 
-          loginStatus: response.status === 200 ? 'authenticated' : 'unauthenticated',
+          loginStatus:
+            response.status === 200 && response.data?.username
+              ? 'authenticated'
+              : 'unauthenticated',
         };
-      }
+      },
     }),
     getCSRF: builder.query<CSRFToken, void>({
-      query: () =>  ({ endpoint: '/_status' }),
-      transformResponse: (response: JSONObject): CSRFToken => {
-        return { csrfToken: response['csrf'] as string };
+      query: () => ({ endpoint: '/_status' }),
+      transformResponse: (
+        response: Gen3FenceResponse<StatusWithCSRFTokenResponse>,
+      ): CSRFToken => {
+        return { csrfToken: response?.data?.csrf ?? '' };
       },
     }),
   }),
 });
 
 const EMPTY_USER: Gen3User = {
-  username: undefined
+  username: undefined,
 };
 
 export const {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
-  useGetCSRFQuery
+  useGetCSRFQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;
 export const userAuthApiReducer = userAuthApi.reducer;
 
-export const selectUserDetailsFromState= userAuthApi.endpoints.fetchUserDetails.select();
+export const selectUserDetailsFromState =
+  userAuthApi.endpoints.fetchUserDetails.select();
 
-export const selectUserDetails =  createSelector(
+export const selectUserDetails = createSelector(
   selectUserDetailsFromState,
-  userDetails => userDetails?.data?.data ?? EMPTY_USER
+  (userDetails) => userDetails?.data?.data ?? EMPTY_USER,
 );
 
 export const selectUserAuthStatus = createSelector(
   selectUserDetailsFromState,
-  userLoginState => userLoginState?.data?.loginStatus ?? 'unauthenticated' as LoginStatus
+  (userLoginState) =>
+    userLoginState?.data?.loginStatus ?? ('unauthenticated' as LoginStatus),
 );
 
 export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();

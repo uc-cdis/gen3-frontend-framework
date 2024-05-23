@@ -48,7 +48,7 @@
     "max": "#111111"
   },
   "accent": {
-    "DEFAULT": "#b75113",
+    "DEFAULT": "#474787",
     "vivid": "#3d3d91",
     "min": "#07070d",
     "darkest": "#17172c",
@@ -168,28 +168,28 @@
     "category4": "#1b1b1b"
   },
   "chart": {
-    "max": "#e7f4f6",
-    "lightest": "#b0dde0",
-    "lighter": "#7ac5cb",
-    "light": "#43adb6",
     "DEFAULT": "#0d95A1",
     "vivid": "#049caa",
-    "dark": "#0a737d",
-    "darker": "#075259",
+    "min": "#010f10",
     "darkest": "#043034",
-    "min": "#010f10"
+    "darker": "#075259",
+    "dark": "#0a737d",
+    "light": "#43adb6",
+    "lighter": "#7ac5cb",
+    "lightest": "#b0dde0",
+    "max": "#e7f4f6"
   },
   "chart-contrast": {
-    "max": "#111111",
-    "lightest": "#111111",
-    "lighter": "#111111",
-    "light": "#111111",
     "DEFAULT": "#111111",
     "vivid": "#111111",
-    "dark": "#fefefe",
-    "darker": "#fefefe",
+    "min": "#fefefe",
     "darkest": "#fefefe",
-    "min": "#fefefe"
+    "darker": "#fefefe",
+    "dark": "#fefefe",
+    "light": "#111111",
+    "lighter": "#111111",
+    "lightest": "#111111",
+    "max": "#111111"
   },
   "table": {
     "vivid": "#000000",
@@ -213,13 +213,5 @@
     "lighter": "#111111",
     "lightest": "#111111",
     "max": "#111111"
-  },
-  "cbds":{
-    "DEFAULT": "#585C94",
-    "primary": "#585C94",
-    "monoprimary": "#7377AC",
-    "secondary": "#2E8E94",
-    "monosecondary": "#3AB3BB",
-    "tertiary": "#949058"
   }
 }

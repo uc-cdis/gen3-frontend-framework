@@ -11,6 +11,7 @@ import { StylingOverride } from '../../types/styling';
 export interface TabConfig {
   readonly title: string;
   readonly fields: ReadonlyArray<string>;
+  readonly classNames?: StylingOverride;
 }
 
 export interface TabsConfig {

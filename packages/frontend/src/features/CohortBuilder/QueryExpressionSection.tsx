@@ -155,7 +155,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
         <div className="flex flex-col w-full bg-primary">
           <div
             data-testid="text-cohort-filters-top-row"
-            className="flex flex-row py-2 items-center border-b-1"
+            className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
           >
             <OverflowTooltippedLabel
               label={currentCohortName}
