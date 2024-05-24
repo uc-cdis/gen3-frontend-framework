@@ -6,10 +6,12 @@ import { FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
 import { Modals } from '@gen3/core';
+import { StylingOverride } from '../../types/styling';
 
 export interface TabConfig {
   readonly title: string;
   readonly fields: ReadonlyArray<string>;
+  readonly classNames?: StylingOverride;
 }
 
 export interface TabsConfig {

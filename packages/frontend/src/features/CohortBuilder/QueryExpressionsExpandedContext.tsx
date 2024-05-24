@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface CollapsedStateReducerAction {
-  type: 'expand' | 'collapse' | 'clear' | 'init' | 'expandAll' | 'collapseAll';
+  type: "expand" | "collapse" | "clear" | "init" | "expandAll" | "collapseAll";
   cohortId: string;
   field?: string;
 }

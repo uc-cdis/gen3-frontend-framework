@@ -46,34 +46,36 @@ const SinglePageStudyDetailsPanel = ({
   }
 
   const elements = useDeepCompareMemo(() => {
-    if (!studyConfig) {
+    if (studyConfig === undefined || studyConfig === null) {
       return <div>Study Details Panel not configured</div>;
-    }
-    return studyConfig?.fieldsToShow.map((field) => {
-      return (
-        <div
-          key={`${field.fields.join('-')}-details`}
-          className={`px-2 ${
-            field.groupWidth == 'full' || field.groupWidth === undefined
-              ? 'w-full'
-              : 'w-1/2'
-          }`}
-        >
-          <div className="flex flex-col">
-            <div className="text-lg font-bold">{field.groupName}</div>
-            {field.fields.map((field) => {
-              const element = createFieldRendererElement(field, data as JSONValue);
-              if (element !== null) {
-                return (
-                  <div key={`item-${field.field}`} className={`flex w-full bg-base-lighter my-2 justify-between rounded-md py-1.5 px-1 text-sm ${field?.classNames?.['root'] ?? ''}`}>
-                    {element}
-                  </div>);
-              }
-            })}
+    } else {
+      return studyConfig?.fieldsToShow.map((field) => {
+        return (
+          <div
+            key={`${field.fields.join('-')}-details`}
+            className={`px-2 ${
+              field.groupWidth == 'full' || field.groupWidth === undefined
+                ? 'w-full'
+                : 'w-1/2'
+            }`}
+          >
+            <div className="flex flex-col">
+              <div className="text-lg font-bold">{field.groupName}</div>
+              {field.fields.map((field) => {
+                const element = createFieldRendererElement(field, data as JSONValue);
+                if (element !== null) {
+                  return (
+                    <div key={`item-${field.field}`}
+                         className={`flex w-full bg-base-lighter my-2 justify-between rounded-md py-1.5 px-1 text-sm ${field?.classNames?.['root'] ?? ''}`}>
+                      {element}
+                    </div>);
+                }
+              })}
+            </div>
           </div>
-        </div>
-      );
-    });
+        );
+      });
+    }
   }, [studyConfig, data]);
 
   return (
