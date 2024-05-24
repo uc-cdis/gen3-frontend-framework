@@ -7,6 +7,7 @@ import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
+import ContactWithEmailContent from '../Content/ContactWithEmailContent';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
   let redirectPath  = '';
@@ -45,7 +46,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   return (
     <div className="grid grid-cols-6 w-full">
       <TexturedSidePanel url={image} />
-      <div className="col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
+      <div className="relative col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
         {topContent?.map((content, index) => (
           <TextContent {...content} key={index} />
         ))}
@@ -59,7 +60,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           <CredentialsLogin handleLogin={handleCredentialsLogin}/>}
 
         {bottomContent?.map((content, index) => (
-          <TextContent {...content} key={index} />
+          (content?.email) ? <ContactWithEmailContent {...content} key={index} /> : <TextContent {...content} key={index} />
         ))}
       </div>
       <TexturedSidePanel url={image} />

@@ -4,7 +4,7 @@ import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from '../gen3';
+import { selectCSRFToken } from '../user';
 
 export interface guppyFetchError {
   readonly url: string;
@@ -36,40 +36,6 @@ export interface TablePageOffsetProps {
   readonly searchTerm?: string;
 }
 
-const buildGuppyFetchError = async (
-  res: Response,
-  variables?: Record<string, any>,
-): Promise<guppyFetchError> => {
-  const errorData = await res.json();
-  return {
-    url: res.url,
-    status: res.status,
-    statusText: res.statusText,
-    text: errorData.message,
-    variables: variables,
-  };
-};
-
-/**
- * Similar to graphQLAPI except this
- * guppyAPIFetch function is a branch of guppy core API defined below and
- * graphQLAPI is a branch of gen3Services API.
- */
-export const guppyAPIFetch = async <T>(
-  query: guppyApiSliceRequest,
-  headers: Record<string, string>,
-): Promise<guppyApiResponse<T>> => {
-  const res = await fetch(`${GEN3_GUPPY_API}/graphql`, {
-    headers: headers,
-    method: 'POST',
-    body: JSON.stringify(query),
-  });
-
-  if (res.ok) return res.json();
-
-  throw await buildGuppyFetchError(res, query);
-};
-
 /**
  * Creates a base class core API for guppy API calls.
  * @returns: guppy core API with guppyAPIFetch base query
@@ -78,7 +44,7 @@ export const guppyApi = coreCreateApi({
   reducerPath: 'guppy',
 
   // TODO: refactor to use fetchBaseQuery
-  baseQuery: async (request: guppyApiSliceRequest, api  ) => {
+  baseQuery: async (query: guppyApiSliceRequest, api  ) => {
 
     const csrfToken = selectCSRFToken(api.getState() as CoreState);
 
@@ -89,18 +55,24 @@ export const guppyApi = coreCreateApi({
       accessToken = getCookie('credentials_token');
     }
 
-    const  headers = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-        ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
-      };
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+      ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+    };
     try {
-      const results = await guppyAPIFetch(request, headers);
-      return { data: results };
-    } catch (e) {
-      return { error: e };
+        const response = await fetch(`${GEN3_GUPPY_API}/graphql`, {
+          headers: headers,
+          method: 'POST',
+          body: JSON.stringify(query),
+        });
+      return { data: await response.json() };
+    } catch (e: unknown) {
+      if (e instanceof Error)
+        return { error: e.message };
+      return { error: e};
     }
   },
   endpoints: () => ({}),

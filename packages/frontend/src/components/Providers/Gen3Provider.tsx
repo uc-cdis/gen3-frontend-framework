@@ -1,5 +1,5 @@
 import React, { useEffect, ReactNode } from 'react';
-import { CoreProvider, useGetCSRFQuery } from '@gen3/core';
+import { CoreProvider } from '@gen3/core';
 import {
   MantineProvider,
   createEmotionCache,
@@ -12,8 +12,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
-import { Gen3ModalsProvider, type ModalsConfig}  from '../Modals';
-
+import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
 const getEmotionCache = (): EmotionCache => {
   // Insert mantine styles after global styles
@@ -77,11 +76,11 @@ const Gen3Provider = ({
       >
         <ModalsProvider>
           <Notifications />
-            <SessionProvider {...sessionConfig}>
-              <Gen3ModalsProvider config={modalsConfig}>
+          <SessionProvider {...sessionConfig}>
+            <Gen3ModalsProvider config={modalsConfig}>
               {children}
-              </Gen3ModalsProvider>
-            </SessionProvider>
+            </Gen3ModalsProvider>
+          </SessionProvider>
         </ModalsProvider>
       </MantineProvider>
     </CoreProvider>

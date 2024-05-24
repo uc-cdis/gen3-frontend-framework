@@ -17,7 +17,7 @@ const StudyDetailsPanel = ({
 
   const headerText = JSONPath({
     json: data,
-    path: studyConfig?.headerField ?? studyConfig?.header?.field ?? '',
+    path: studyConfig?.header?.field ?? '',
   });
   return (
     <div>

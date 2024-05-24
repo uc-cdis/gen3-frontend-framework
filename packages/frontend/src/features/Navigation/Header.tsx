@@ -4,6 +4,7 @@ import NavigationBar from './NavigationBar';
 import { HeaderProps } from './types';
 import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 
+
 /**
  * Header component.
  *

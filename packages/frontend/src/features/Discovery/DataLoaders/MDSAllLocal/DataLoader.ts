@@ -5,12 +5,15 @@ import {
   MetadataPaginationParams,
   useGetMDSQuery,
   useGetAggMDSQuery,
+  useCoreSelector,
+  selectAuthzMappingData,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
+  DiscoveryConfig,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
@@ -19,10 +22,10 @@ import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import { processAllSummaries } from './utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
-import {
-  SummaryStatistics,
-} from '../../Statistics/types';
+import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { processAuthorizations } from './utils';
+import { useDiscoveryContext } from '../../DiscoveryProvider';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -119,6 +122,7 @@ interface GetDataProps {
   guidType: string;
   maxStudies: number;
   studyField: string;
+  discoveryConfig?: DiscoveryConfig;
 }
 
 interface GetDataResponse {
@@ -136,7 +140,8 @@ const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: Partial<GetDataProps>) : GetDataResponse => {
+  discoveryConfig,
+}: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
@@ -152,21 +157,29 @@ const useGetMDSData = ({
     studyField: studyField,
     offset: 0,
     pageSize: maxStudies,
+
   });
+
+  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
 
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = Object.values(data.data).reduce(
-        (acc: JSONObject[], cur:JSONObject) => {
+        (acc: JSONObject[], cur: JSONObject) => {
           return cur[studyField]
             ? [...acc, cur[studyField] as JSONObject]
             : acc;
         },
         [],
       );
-      setMDSData(studyData);
+
+      if (discoveryConfig?.features?.authorization.enabled) {
+        setMDSData(
+          processAuthorizations(studyData, discoveryConfig, authMapping),
+        );
+      } else setMDSData(studyData);
     }
-  }, [data, isSuccess, studyField]);
+  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -185,10 +198,11 @@ const useGetMDSData = ({
 };
 
 const useGetAggMDSData = ({
-                         guidType = 'unregistered_discovery_metadata',
-                         maxStudies = 10000,
-                         studyField = 'gen3_discovery',
-                       }: Partial<GetDataProps>) : GetDataResponse => {
+  guidType = 'unregistered_discovery_metadata',
+  maxStudies = 10000,
+  studyField = 'gen3_discovery',
+  discoveryConfig
+}: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
@@ -206,11 +220,15 @@ const useGetAggMDSData = ({
     pageSize: maxStudies,
   });
 
+  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
   useEffect(() => {
     if (data && isSuccess) {
-      setMDSData(data.data);
+      if (discoveryConfig?.features?.authorization.enabled) {
+        setMDSData(
+          processAuthorizations(data.data, discoveryConfig, authMapping),
+        );
+      } else setMDSData(data.data);
     }
-
   }, [data, isSuccess, studyField]);
 
   useEffect(() => {
@@ -263,7 +281,7 @@ const useSearchMetadata = ({
     storeFields: [uidField],
     idField: uidField,
     extractField: extractValue,
-  //  processTerm: (term) => suffixes(term, 3),
+    //  processTerm: (term) => suffixes(term, 3),
     searchOptions: {
       processTerm: MiniSearch.getDefault('processTerm'),
     },
@@ -281,12 +299,15 @@ const useSearchMetadata = ({
     if (mdsData && isSuccess && mdsData.length > 0) {
       removeAll();
       // check if an id is missing
-       const dataWithIds = mdsData.reduce((acc, cur) => {
-          if (!cur[uidField])
-              acc.push({...cur, [uidField]: Math.random().toString(36).substring(7)});
-          else acc.push(cur);
-          return acc;
-        }, [] as JSONObject[]);
+      const dataWithIds = mdsData.reduce((acc, cur) => {
+        if (!cur[uidField])
+          acc.push({
+            ...cur,
+            [uidField]: Math.random().toString(36).substring(7),
+          });
+        else acc.push(cur);
+        return acc;
+      }, [] as JSONObject[]);
       addAll(dataWithIds);
     }
   }, [addAll, isSuccess, mdsData, removeAll, uidField]);
@@ -323,7 +344,13 @@ const useSearchMetadata = ({
         ) ?? []
       );
     });
-  }, [discoveryConfig, mdsData, miniSearchSuggestions, searchResults, searchTerms.advancedSearchTerms]);
+  }, [
+    discoveryConfig,
+    mdsData,
+    miniSearchSuggestions,
+    searchResults,
+    searchTerms.advancedSearchTerms,
+  ]);
 
   return {
     searchedData: isSearching ? searchedData : mdsData,
@@ -424,7 +451,9 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   dataHook,
-}: DiscoveryDataLoaderProps & { dataHook : MetadataDataHook }): DiscoverDataHookResponse => {
+}: DiscoveryDataLoaderProps & {
+  dataHook: MetadataDataHook;
+}): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const {
@@ -438,6 +467,7 @@ export const useLoadAllData = ({
     studyField,
     guidType,
     maxStudies,
+    discoveryConfig
   });
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
@@ -486,41 +516,42 @@ export const useLoadAllData = ({
   };
 };
 
-
 export const useLoadAllMDSData = ({
   pagination,
+  searchTerms,
+  advancedSearchTerms,
+  discoveryConfig,
+  guidType = 'discovery_metadata',
+  maxStudies = 10000,
+  studyField = 'gen3_discovery',
+}: DiscoveryDataLoaderProps) =>
+  useLoadAllData({
+    pagination,
     searchTerms,
     advancedSearchTerms,
     discoveryConfig,
-    guidType = 'discovery_metadata',
-    maxStudies = 10000,
-    studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) => useLoadAllData({
-  pagination,
-  searchTerms,
-  advancedSearchTerms,
-  discoveryConfig,
-  guidType,
-  maxStudies,
-  studyField,
-  dataHook: useGetMDSData,
-});
+    guidType,
+    maxStudies,
+    studyField,
+    dataHook: useGetMDSData,
+  });
 
 export const useLoadAllAggMDSData = ({
-                                    pagination,
-                                    searchTerms,
-                                    advancedSearchTerms,
-                                    discoveryConfig,
-                                    guidType = 'discovery_metadata',
-                                    maxStudies = 10000,
-                                    studyField = 'gen3_discovery',
-                                  }: DiscoveryDataLoaderProps) => useLoadAllData({
   pagination,
   searchTerms,
   advancedSearchTerms,
   discoveryConfig,
-  guidType,
-  maxStudies,
-  studyField,
-  dataHook: useGetAggMDSData,
-});
+  guidType = 'discovery_metadata',
+  maxStudies = 10000,
+  studyField = 'gen3_discovery',
+}: DiscoveryDataLoaderProps) =>
+  useLoadAllData({
+    pagination,
+    searchTerms,
+    advancedSearchTerms,
+    discoveryConfig,
+    guidType,
+    maxStudies,
+    studyField,
+    dataHook: useGetAggMDSData,
+  });

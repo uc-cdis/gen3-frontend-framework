@@ -1,4 +1,4 @@
-import { gen3Api } from '../gen3';
+import { gen3Api } from '../gen3/gen3Api';
 import { JSONObject } from '../../types';
 import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '../../constants';
 

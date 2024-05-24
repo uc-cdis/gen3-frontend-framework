@@ -1,8 +1,48 @@
 # Configuring Explorer
 
-The Gen3 explorer component is a cohort builder that provides Summary Statistics and  Tables view of filter data.
+The Gen3 explorer component is a cohort builder that provides Summary Statistics and  Tables view of filter data. The Cohort builder can have multiple tabs representing each configure index.
+For example, "Cases", "Images", "Data Files".
 
-## Download Configuration
+## Configuration
+
+The configuration for the explorer is stored an array of objects. Each object in the array represents a tab in the explorer. The following is an example of a tab configuration:
+
+```json
+[
+  {
+    "enabled": true,
+    "title": "Cases",
+    "index": "case",
+    "table": {
+      "enabled": true,
+      "pageLimit": {
+        "limit": 10000
+      },
+      "columns": [
+        {
+          "name": "case_id",
+          "label": "Case ID",
+          "visible": true,
+          "sortable": true
+        },
+        {
+          "name": "project_id",
+          "label": "Project ID",
+          "visible": true,
+          "sortable": true
+        },
+        {
+          "name": "disease_type",
+          "label": "Disease Type",
+          "visible": true,
+          "sortable": true
+        }
+      ]
+    }
+  }
+]
+```
+
 
 ### Download Table Data
 
@@ -82,4 +122,4 @@ Download a file manifest from a explorer table requires the following configurat
     }
 }
 ```
-This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`    
+This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`

@@ -124,7 +124,7 @@ export const BaseModal= ({
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}
       closeOnEscape={closeOnEscape ?? true}
-      size={size && size}
+      size={size}
     >
       {children}
       <div className="flex justify-between items-center">

@@ -1,18 +1,15 @@
 import { DataAuthorization, AccessLevel } from '../types';
 import { JSONObject } from '@gen3/core';
-import { Badge } from '@mantine/core';
-import { FiUnlock as UnlockOutlined, FiLock as Locked } from 'react-icons/fi';
 import { accessibleFieldName } from '../types';
 
 interface DetailsAccessProps {
     readonly studyData: JSONObject;
     dataAccess: DataAuthorization;
-};
+}
 
 const DetailsAuthorizationIcon = ({ studyData, dataAccess } : DetailsAccessProps) => {
 
   const accessStyle = 'flex w-full items-center rounded-sm border-2 py-3 px-1';
-
   return (
     <div className="flex mb-2">
       {(dataAccess.enabled &&

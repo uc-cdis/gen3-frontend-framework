@@ -7,6 +7,8 @@ import {
   showModal,
   useCoreDispatch,
   useCoreSelector,
+  useGetCSRFQuery,
+  useGetAuthzMappingsQuery
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
 import { SessionExpiredModal } from './SessionExpiredModal';
@@ -60,6 +62,9 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
+   useGetCSRFQuery();
+   useGetAuthzMappingsQuery();
+
   const [cookie] = useCookies(['Gen3-first-time-use']);
   const dispatch = useCoreDispatch();
   const modal = useCoreSelector((state: CoreState) =>
@@ -85,10 +90,10 @@ const Gen3ModalsProvider = ({
   ]);
 
   return (
-    <React.Fragment>
+    <div className="bg-base-max">
       {modal && getModal(modal, modalsConfig)}
       {children}
-    </React.Fragment>
+    </div>
   );
 };
 

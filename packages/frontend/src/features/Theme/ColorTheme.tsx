@@ -236,9 +236,8 @@ const ColorAndContrastPalletLine = ({
   contrast = undefined,
 }: ColorAndContrastStylePalletProps) => {
   return (
-    <div>
-      <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1">
-        <p className="bg-base-max col-span-2 text-black ">{name}</p>
+      <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1 mr-6">
+        <p className="bg-base-max col-span-2 text-base-contrast-max">{name}</p>
         {colors.map((x, i) => {
           const ext = x.split('-').slice(-1);
           return (
@@ -253,16 +252,15 @@ const ColorAndContrastPalletLine = ({
           );
         })}
       </div>
-    </div>
   );
 };
 
 const ColorTheme = () => {
   return (
-    <article className="prose font-heading bg-base-max text-base-contrast-lighter md:prose-md min-w-full m-4">
+    <article className="prose font-heading bg-base-max text-base-contrast-max md:prose-md m-4 min-w-full">
       <p className="prose font-semibold text-2xl">Color Palettes</p>
-      <div className="flex flex-col">
-        <div>
+      <div className="flex flex-col mx-4">
+        <div className="text-base-contrast-lighter mr-6">
           The following theme colors are are currently available in this Gen3
           Data Commons.
         </div>
@@ -282,7 +280,7 @@ const ColorTheme = () => {
             />
           );
         })}
-        <Text>
+        <Text color="text-base-contrast.3" classNames="mr-6">
           <p>
             <b>Gen3 Color Theme is based on USWDS theme color tokens</b> which
             are divided into several high-level role-based color families:{' '}
@@ -314,15 +312,8 @@ const ColorTheme = () => {
             as documented, this includes accessing lighter or darker version vis
             the primary.N (where N 0..9).
           </p>
-          Each of these color also has two contrasting colors:
+          Each of these color also has a contrasting color for text, which is:
           <ul>
-            <li>
-              <b>
-                content-max, content-lightest, content-lighter, content-light,
-                content-DEFAULT, content-vivid, content-dark, content-darker,
-                content-darkest, content-min{' '}
-              </b>
-            </li>
             <li>
               <b>
                 contrast-max, contrast-lightest, contrast-lighter,

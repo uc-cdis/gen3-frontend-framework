@@ -1,6 +1,7 @@
 import React from 'react';
 import { GetStaticProps } from 'next';
 import ContentSource from '../../lib/content';
+import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 import NavPageLayout, {
   NavPageLayoutProps,
@@ -33,9 +34,8 @@ const ResourcePage = ({
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps<ResourcePageProps> = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const config = await ContentSource.get('config/siteConfig.json');
   const resourcePageConfig = (await ContentSource.get(
-    `config/${config.commons}/resource.json`,
+    `config/${GEN3_COMMONS_NAME}/resource.json`,
   )) as unknown as ResourcePageConfig;
   return {
     props: {

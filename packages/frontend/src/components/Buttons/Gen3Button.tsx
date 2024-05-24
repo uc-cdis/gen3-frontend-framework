@@ -9,7 +9,7 @@ inline-block
 text-center
 px-2
 py-2
-text-accent-lighter-contrast
+text-accent-contrast-lighter
 leading-[1.5]
 font-semibold
 uppercase

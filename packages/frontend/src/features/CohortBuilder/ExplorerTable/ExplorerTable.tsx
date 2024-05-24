@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   fieldNameToTitle,
   selectIndexFilters,
@@ -16,18 +16,19 @@ import {
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 
 import { SummaryTable } from './types';
-import { CellRendererFunction, ExplorerTableCellRendererFactory } from './ExplorerTableCellRenderers';
+import {
+  CellRendererFunction,
+  ExplorerTableCellRendererFactory,
+} from './ExplorerTableCellRenderers';
 import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 
-const isRecordAny  = (obj: unknown): obj is Record<string, any> => {
-  if (Array.isArray(obj))
-    return false;
+const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
+const DEFAULT_PAGE_LIMIT = 10000;
 
-  if (obj !== null && typeof obj === 'object') {
-    return true;
-  }
+const isRecordAny = (obj: unknown): obj is Record<string, any> => {
+  if (Array.isArray(obj)) return false;
 
-  return false;
+  return obj !== null && typeof obj === 'object';
 };
 
 interface ExplorerTableProps {
@@ -40,7 +41,7 @@ interface ExplorerColumn {
   accessorKey: never;
   header: string;
   accessorFn?: (originalRow: ExplorerColumn) => any;
-  Cell?: CellRendererFunction ;
+  Cell?: CellRendererFunction;
   size?: number;
 }
 
@@ -51,10 +52,7 @@ interface ExplorerColumn {
  * @param index - Offset to use for fetching/displaying pages of rows
  * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
  */
-const ExplorerTable = ({
-  index,
-  tableConfig,
-}: ExplorerTableProps) => {
+const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -68,13 +66,17 @@ const ExplorerTable = ({
     return tableConfig.fields.map((field) => {
       const columnDef = tableConfig?.columns?.[field];
 
-      const cellRendererFunc = columnDef?.type ? ExplorerTableCellRendererFactory().getRenderer(
+      const cellRendererFunc = columnDef?.type
+        ? ExplorerTableCellRendererFactory().getRenderer(
             columnDef?.type,
             columnDef?.cellRenderFunction ?? 'default',
           )
-          : undefined;
+        : undefined;
 
-      const cellRendererFuncParams =  columnDef?.params && isRecordAny(columnDef?.params) ? columnDef?.params : { };
+      const cellRendererFuncParams =
+        columnDef?.params && isRecordAny(columnDef?.params)
+          ? columnDef?.params
+          : {};
       return {
         id: field,
         field: field,
@@ -83,7 +85,11 @@ const ExplorerTable = ({
         accessorFn: columnDef?.accessorPath
           ? jsonPathAccessor(columnDef.accessorPath)
           : undefined,
-        Cell:  cellRendererFunc && columnDef?.params ? (cell : CellRendererFunctionProps) => cellRendererFunc(cell , cellRendererFuncParams  ) : cellRendererFunc,
+        Cell:
+          cellRendererFunc && columnDef?.params
+            ? (cell: CellRendererFunctionProps) =>
+                cellRendererFunc(cell, cellRendererFuncParams)
+            : cellRendererFunc,
         size: columnDef?.width,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
@@ -96,7 +102,7 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching, isSuccess } =
+  const { data, isLoading, isError, isFetching, error } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,
@@ -111,25 +117,40 @@ const ExplorerTable = ({
           : undefined,
     });
 
+  const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
+    const pageLimit =
+      (tableConfig?.pageLimit && tableConfig?.pageLimit?.limit) ??
+      DEFAULT_PAGE_LIMIT;
+    const totalRowCount = tableConfig?.pageLimit
+      ? Math.min(
+          pageLimit,
+          data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize,
+        )
+      : data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize;
+    const limitLabel = tableConfig?.pageLimit
+      ? tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL
+      : 'Rows per Page:';
+    return { totalRowCount, limitLabel };
+  }, [tableConfig, data, pagination.pageSize, index]);
+  /**
+   * mantine-react-table setup
+   * @see https://www.mantine-react-table.com/docs/api/table-options
+   * @param columns - column options table config
+   *   @see https://www.mantine-react-table.com/docs/api/column-options
+   * @param data - data array, from useGetRawDataAndTotalCountsQuery()
+   * @param manualSorting - If this is true, you will be expected to sort your data before it is passed to the table.
+   * @param manualPagination - If this is true, you will be expected to manually paginate the rows before passing them to the table
+0.
 
- /**
-  * mantine-react-table setup
-  * @see https://www.mantine-react-table.com/docs/api/table-options
-  * @param columns - column options table config
-  *   @see https://www.mantine-react-table.com/docs/api/column-options
-  * @param data - data array, from useGetRawDataAndTotalCountsQuery()
-  * @param manualSorting - If this is true, you will be expected to sort your data before it is passed to the table.
-  * @param manualPagination - If this is true, you will be expected to manually paginate the rows before passing them to the table
-  * @param enableStickyHeader - TODO: not sure what this does
-  * @param paginateExpandedRows - If true expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages)
-  * @param onPaginationChange - If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself
-  * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state.sorting changes. Overrides default internal state management
-  * @param enableTopToolbar - enables additional ux features
-  * @param rowCount - Number of rows in the table
-  * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
-  * @param {Partial<MRT_TableState<TData>>} state - State management configs
-  *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
-  */
+   * @param paginateExpandedRows - If true expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages)      -
+   * @param onPaginationChange - If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself
+   * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state.sorting changes. Overrides default internal state management
+   * @param enableTopToolbar - enables additional ux features
+   * @param rowCount - Number of rows in the table
+   * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
+   * @param {Partial<MRT_TableState<TData>>} state - State management configs
+   *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
+   */
   const table = useMantineReactTable({
     columns: cols,
     data: data?.data?.[index] ?? [],
@@ -140,7 +161,13 @@ const ExplorerTable = ({
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
-    rowCount: data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize,
+    rowCount: totalRowCount,
+    paginationDisplayMode: 'pages',
+    localization: { rowsPerPage: limitLabel },
+    mantinePaginationProps: {
+      rowsPerPageOptions: ['5', '10', '20', '40', '100'],
+      withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
+    },
     state: {
       isLoading,
       pagination,
