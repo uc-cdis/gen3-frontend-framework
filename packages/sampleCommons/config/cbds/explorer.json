@@ -45,61 +45,52 @@
       ]
     },
     "dropdowns": {
-      "download-table": {
-        "title": "Download Table"
-      }
-    },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "data-json",
-        "title": "JSON",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.json"
-      },
-      {
-        "enabled": true,
-        "type": "data-tsv",
-        "title": "TSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.tsv"
-      },
-      {
-        "enabled": true,
-        "type": "data-csv",
-        "title": "CSV",
-        "dropdownId": "download-table",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "MIDRC_Measurements_table.csv"
-      }
-    ],
-    "loginForDownload": true,
-    "guppyConfig": {
-      "dataType": "measurement",
-      "nodeCountTitle": "Measurements",
-      "fieldMapping": [
+      "dropdownItems": [
         {
-          "field": "project_id",
-          "name": "Project ID"
+          "enabled": true,
+          "type": "data-json",
+          "title": "JSON",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-json",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.json",
+            "rootPath": "gen3_discovery"
+          }
         },
         {
-          "field": "submitter_id",
-          "name": "Measurement ID"
-        },
-        {
-          "field": "case_ids",
-          "name": "Case ID"
+          "enabled": true,
+          "type": "data-csv",
+          "title": "CSV",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-csv",
+          "actionArgs" : {
+            "filename": "MIDRC_Series_table.csv",
+            "rootPath": "gen3_discovery"
+          }
         }
       ],
+        "title": "Download Measurements Metadata Table"
+    },
+    "guppyConfig": {
+      "dataType": "patient",
+      "fieldMapping":   [
+        { "field": "quality_adjusted_life_years", "name": "quality_adjusted_life_years" },
+        { "field": "disability_adjusted_life_years", "name": "disability_adjusted_life_years" }
+      ],
+      "nodeCountTitle": "Patients",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "id",
+        "referenceIdFieldInResourceIndex": "id",
+        "referenceIdFieldInDataIndex": "id"
+      },
       "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
+
   {
     "tabTitle": "Observation",
     "charts": {
@@ -112,7 +103,7 @@
         "title": "Category"
       },
       "code": {
-        "chartType": "fullPie",
+        "chartType": "donut",
         "title": "Code"
       }
     },
@@ -124,15 +115,6 @@
             "project_id",
             "category",
             "code"
-          ]
-        },
-        {
-          "title": "Annotations",
-          "fields": [
-            "imaging_study_annotations.midrc_mRALE_score",
-            "imaging_study_annotations.annotation_method",
-            "imaging_study_annotations.annotator_id",
-            "data_file_annotation_name"
           ]
         }
       ]
@@ -179,7 +161,7 @@
     "tabTitle": "File",
     "charts": {
       "data_type": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "File Type"
       },
       "data_format": {

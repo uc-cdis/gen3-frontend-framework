@@ -103,7 +103,7 @@
         "title": "Category"
       },
       "code": {
-        "chartType": "fullPie",
+        "chartType": "donut",
         "title": "Code"
       }
     },
@@ -161,7 +161,7 @@
     "tabTitle": "File",
     "charts": {
       "data_type": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "File Type"
       },
       "data_format": {
