@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { coreCreateApi } from '../../api';
-import { fetchFence, Gen3FenceResponse } from '../fence/fenceApi';
+import { fetchFence } from '../fence/utils';
+import { type Gen3FenceResponse } from '../fence/types';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';

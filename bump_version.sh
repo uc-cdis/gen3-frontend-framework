@@ -52,7 +52,7 @@ npm run build:clean
 
 # Get the version from the packages/core/package.json file
 new_version=$(jq -r '.version' packages/core/package.json)
-echo "Version from packages/core/package.json: new_version"
+echo "Version from packages/core/package.json: $new_version"
 
 # Define an array of packages to pack
 packages=(
@@ -66,11 +66,10 @@ for package in "${packages[@]}"
 do
   echo "Packing $package..."
   cd $package
-  npm pack
+  tarball=$(npm pack)
   cd - > /dev/null
-
-    # Upload the tarball to the release assets
-    upload_asset "$package/$tarball" $repo $release_id
+  # Upload the tarball to the release assets
+  upload_asset "$package/$tarball" $repo $release_id
 done
 
 
