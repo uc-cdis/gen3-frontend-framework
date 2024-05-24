@@ -1,13 +1,12 @@
 import React from 'react';
 import { NavigationProps } from '../types';
 import NavigationLogo from '../NavigationLogo';
-import { TopBarProps, } from '../TopBar';
+import { TopBarProps } from '../TopBar';
 import LoginButton from '../../../components/Login/LoginButton';
 import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import { Tooltip } from '@mantine/core';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
@@ -25,7 +24,10 @@ const VerticalTopBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <div

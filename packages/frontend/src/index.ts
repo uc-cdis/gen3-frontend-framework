@@ -35,10 +35,13 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
+import DictionaryPage, {
+  DictionaryPageGetServerSideProps,
+} from './pages/DataDictionary';
 
-import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
-
-import WorkspacePage, { WorkspacePageGetServerSideProps } from "./pages/Workspace";
+import WorkspacePage, {
+  WorkspacePageGetServerSideProps,
+} from './pages/Workspace';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';

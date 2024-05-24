@@ -1,6 +1,6 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import executable from "rollup-plugin-executable";
+import executable from 'rollup-plugin-executable';
 export default [
   {
     input: './src/buildColors/buildColors.ts',
@@ -70,7 +70,8 @@ export default [
       'node:util',
       'fetch-retry',
       'node-fetch',
-      'path', 'url',
+      'path',
+      'url',
       'graphql',
     ],
     plugins: [peerDepsExternal(), swc(), executable()],
@@ -91,8 +92,9 @@ export default [
       'node:util',
       'fetch-retry',
       'node-fetch',
-      'path', 'url',
+      'path',
+      'url',
     ],
     plugins: [peerDepsExternal(), swc()],
-  }
+  },
 ];
