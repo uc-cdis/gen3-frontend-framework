@@ -1,4 +1,9 @@
 #!/bin/bash
+# This is a Bash script for automating the process of version bumping, building, packaging, and uploading assets to a
+# specific release for a JavaScript/Node.js project using lerna and npm.
+# it must be run from the root of the gen3-frontend-framework repository
+# it also requires a github token with write access to release tags, This token mus tbe stored
+# in a file named .token
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -72,6 +77,5 @@ do
   upload_asset "$package/$tarball" $repo $release_id
 done
 
-
-
+printf "\n"
 echo "Version bump, packing, and upload completed successfully."
