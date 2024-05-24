@@ -7,7 +7,7 @@
     "darker": "#18182e",
     "dark": "#222241",
     "light": "#5b5b7a",
-    "lighter": "#8b8ba1",
+    "lighter": "#949058",
     "lightest": "#babac7",
     "max": "#eaeaee"
   },
@@ -31,7 +31,7 @@
     "darker": "#5e5e65",
     "dark": "#84858f",
     "light": "#bdbec8",
-    "lighter": "#d0d1d8",
+    "lighter": "#2E8E94",
     "lightest": "#e3e4e8",
     "max": "#f7f7f8"
   },
@@ -55,7 +55,7 @@
     "darker": "#27274a",
     "dark": "#373769",
     "light": "#7070a2",
-    "lighter": "#9a9abd",
+    "lighter": "#00b6ed",
     "lightest": "#c3c3d8",
     "max": "#ededf3"
   },

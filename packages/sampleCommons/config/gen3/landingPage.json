@@ -32,7 +32,7 @@
         "right": [
           {
             "image": {
-              "src": "https://www.cancerresearchuk.org/sites/default/files/aced_website_header.jpg",
+              "src": "https://gen3.org/figs/kv.svg",
               "alt": "Gen3 Data Platform"
             }
           }
@@ -48,16 +48,16 @@
         "cards": [
           {
             "icon": "MdOutlineSearch",
-            "bodyText": "Search studies and related datasets by metadata",
+            "bodyText": "Search studies and related datasets for download or analysis in a workspace.",
             "btnText": "Discover",
-            "href": "/Query",
+            "href": "/Discovery",
             "linkType": "portal"
           },
           {
             "icon": "MdOutlineBarChart",
-            "bodyText": "Explore populated studies",
+            "bodyText": "Explore Tutorials and Example Analysis.",
             "btnText": "Analyze",
-            "href": "/Explorer",
+            "href": "/resource-browser",
             "linkType": "portal"
           }
         ]

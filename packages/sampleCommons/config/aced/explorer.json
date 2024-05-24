@@ -4,15 +4,15 @@
     "charts": {
       "project_id": {
         "chartType": "fullPie",
-        "title": "Project"
+        "title": "project_id"
       },
-      "code": {
+      "gender": {
         "chartType": "fullPie",
-        "title": "Code"
+        "title": "gender"
       },
-      "value_normalized": {
-        "chartType": "fullPie",
-        "title": "Value"
+      "maritalStatus": {
+        "chartType": "donut",
+        "title": "maritalStatus"
       }
     },
     "filters": {
@@ -21,9 +21,12 @@
           "title": "Patient",
           "fields": [
             "project_id",
-            "code",
-            "value_normalized",
-            "patient"
+            "us_core_race",
+            "us_core_ethnicity",
+            "gender",
+            "maritalStatus",
+            "quality_adjusted_life_years",
+            "disability_adjusted_life_years"
           ]
         }
       ]
@@ -31,17 +34,134 @@
     "table": {
       "enabled": true,
       "fields": [
-        "patient",
+        "id",
+        "project_id",
+        "us_core_race",
+        "us_core_ethnicity",
+        "gender",
+        "maritalStatus",
+        "quality_adjusted_life_years",
+        "disability_adjusted_life_years"
+      ]
+    },
+    "dropdowns": {
+      "dropdownItems": [
+        {
+          "enabled": true,
+          "type": "data-json",
+          "title": "JSON",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-json",
+          "actionArgs": {
+            "filename": "MIDRC_Series_table.json",
+            "rootPath": "gen3_discovery"
+          }
+        },
+        {
+          "enabled": true,
+          "type": "data-csv",
+          "title": "CSV",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-csv",
+          "actionArgs": {
+            "filename": "MIDRC_Series_table.csv",
+            "rootPath": "gen3_discovery"
+          }
+        }
+      ],
+      "title": "Download Measurements Metadata Table"
+    },
+    "guppyConfig": {
+      "dataType": "patient",
+      "fieldMapping": [
+        {
+          "field": "quality_adjusted_life_years",
+          "name": "quality_adjusted_life_years"
+        },
+        {
+          "field": "disability_adjusted_life_years",
+          "name": "disability_adjusted_life_years"
+        }
+      ],
+      "nodeCountTitle": "Patients",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "id",
+        "referenceIdFieldInResourceIndex": "id",
+        "referenceIdFieldInDataIndex": "id"
+      },
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
+      "accessibleValidationField": "project_id"
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "file-manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
+      }
+    ]
+  },
+  {
+    "tabTitle": "Observation",
+    "charts": {
+      "project_id": {
+        "chartType": "donut",
+        "title": "Project"
+      },
+      "category": {
+        "chartType": "fullPie",
+        "title": "Category"
+      },
+      "code": {
+        "chartType": "donut",
+        "title": "Code"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "Observation",
+          "fields": [
+            "project_id",
+            "category",
+            "code"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "patient_id",
         "project_id",
         "category",
         "code",
-        "value_normalized"
+        "bodySite",
+        "effectiveDateTime",
+        "valueBoolean",
+        "valueCodeableConcept",
+        "valueDateTime",
+        "valueInteger",
+        "valueQuantity",
+        "valueRange",
+        "valueRatio",
+        "valueSampledData",
+        "valueString",
+        "interpretation"
       ]
     },
+    "dropdowns": {},
     "guppyConfig": {
       "dataType": "observation",
       "fieldMapping": [],
-      "nodeCountTitle": "Patients",
+      "nodeCountTitle": "Observations",
       "manifestMapping": {
         "resourceIndexType": "Patient",
         "resourceIdField": "_patient_id",
@@ -52,7 +172,17 @@
         "project_id"
       ],
       "accessibleValidationField": "project_id"
-    }
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "file-manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
+      }
+    ]
   },
   {
     "tabTitle": "File",
@@ -97,6 +227,7 @@
         "type_coding"
       ]
     },
+    "dropdowns": {},
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
@@ -133,24 +264,11 @@
     "buttons": [
       {
         "enabled": true,
-        "type": "manifest",
-        "action": "manifest",
+        "type": "file-manifest",
         "title": "Download Manifest",
-        "leftIcon": "gen3:datafile",
-        "rightIcon": "gen3:download",
-        "fileName": "manifest.json",
-        "actionArgs": {
-          "resourceIndexType": "file",
-          "resourceIdField": "object_id",
-          "referenceIdFieldInDataIndex": "object_id",
-          "referenceIdFieldInResourceIndex": "object_id",
-          "fileFields": [
-            "file_name",
-            "file_size",
-            "md5sum",
-            "object_id"
-          ]
-        }
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
       }
     ]
   }

@@ -30,24 +30,6 @@
         "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
       },
       {
-        "icon": "gen3:exploration",
-        "href": "/SamplePage",
-        "name": "DEMO",
-        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
-      },
-      {
-        "icon": "gen3:exploration",
-        "href": "/GRIPREF",
-        "name": "GRIPREF",
-        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
-      },
-      {
-        "icon": "gen3:exploration",
-        "href": "/SMMART",
-        "name": "SMMART",
-        "tooltip": "SMMART"
-      },
-      {
         "icon": "gen3:query",
         "href": "/Query",
         "name": "Query",
@@ -76,8 +58,13 @@
   "topBar": {
     "items": [
       {
-        "href": "https://www.cancerresearchuk.org/funding-for-researchers/research-opportunities-in-early-detection-and-diagnosis/international-alliance-for-cancer-early-detection",
-        "name": "ACED"
+        "rightIcon": "gen3:upload",
+        "href": "/submission",
+        "name": "Browse Data"
+      },
+      {
+        "href": "https://gen3.org/resources/user/",
+        "name": "Documentation"
       }
     ],
     "showLogin": true

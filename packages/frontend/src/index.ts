@@ -66,6 +66,7 @@ export {
   type Fonts,
   type RegisteredIcons,
   type SessionConfiguration,
+  SmmartPage,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,

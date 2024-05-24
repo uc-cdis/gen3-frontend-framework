@@ -20,5 +20,5 @@
     }
   ],
   "image": "images/gene.svg",
-  "showCredentialsLogin" : true
+  "showCredentialsLogin": false
 }

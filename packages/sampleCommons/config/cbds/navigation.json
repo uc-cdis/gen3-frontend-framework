@@ -8,7 +8,7 @@
     "logo": {
       "src": "/icons/logo_small_2.png",
       "height": 220,
-      "href": "/"
+      "href": "/cbdsLandingPage"
     },
     "items": [
       {
@@ -19,21 +19,9 @@
       },
       {
         "icon": "gen3:exploration",
-        "href": "/SamplePage",
-        "name": "DEMO",
-        "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
-      },
-      {
-        "icon": "gen3:exploration",
         "href": "/GRIPREF",
         "name": "GRIPREF",
         "tooltip": "The Exploration Page enables discovery of the data at the subject level and features a cohort builder."
-      },
-      {
-        "icon": "gen3:exploration",
-        "href": "/SMMART",
-        "name": "SMMART",
-        "tooltip": "SMMART"
       },
       {
         "icon": "gen3:query",
