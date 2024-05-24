@@ -1,7 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { MantineProvider, Container, Text, Image } from '@mantine/core';
-import * as echarts from 'echarts';
 import ReactECharts from 'echarts-for-react';
 
 import {

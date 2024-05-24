@@ -2,7 +2,7 @@
   "body": [
     {
       "title": {
-        "text": "ACED",
+        "text": "Gen3 Data Platform",
         "level": 2
       }
     },
@@ -10,17 +10,17 @@
       "splitarea": {
         "left": [
           {
-            "text": "We are <strong>uniting</strong> world leading researchers to tackle the biggest challenges in early detection, an important area of unmet clinical need. Scientists in the Alliance are working together at the forefront of technological innovation to translate research into realistic ways to improve cancer diagnosis, which can be implemented into health systems and meaningfully benefit people with cancer."
+            "text": "The <strong>Gen3 Data Platform</strong> is a single web interface which allows visitors to <strong>discover, access and analyze data</strong>. Making data easily findable enables secondary, cross-study analyses, promotes dissemination of research and accelerates new discoveries."
           },
           {
             "link": {
-              "href": "/Explorer",
+              "href": "/discovery",
               "linkType": "portal",
               "text": "Explore Gen3 Data"
             }
           },
           {
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elit dui, commodo a tortor ut, vestibulum consectetur tellus. Aliquam erat volutpat. Aenean sodales lacus quis venenatis fermentum. Phasellus varius tempor odio a elementum. Aliquam sed diam molestie, ornare neque in, porttitor mi. Aliquam hendrerit libero volutpat, bibendum ante at, auctor velit. Nulla eget augue a turpis facilisis dictum. Nulla vulputate accumsan aliquam. Fusce imperdiet arcu nibh, nec vehicula nisi placerat at. Phasellus eget magna elementum, tincidunt urna at, venenatis nulla. Cras ullamcorper ante sed ex porttitor, at elementum ligula dapibus. Sed malesuada mi turpis, eu venenatis lorem convallis in. "
+            "text": "The Gen3 platform consists of open-source software services that support the emergence of healthy data ecosystems by enabling the interoperation and creation of cloud-based data resources, including data commons and analysis workspaces. Gen3 aims to accelerate and democratize the process of scientific discovery by making it easy to manage, analyze, harmonize, and share large and complex datasets in the cloud."
           },
           {
             "link": {
@@ -32,7 +32,7 @@
         "right": [
           {
             "image": {
-              "src": "https://www.cancerresearchuk.org/sites/default/files/aced_website_header.jpg",
+              "src": "https://gen3.org/figs/kv.svg",
               "alt": "Gen3 Data Platform"
             }
           }
@@ -48,16 +48,16 @@
         "cards": [
           {
             "icon": "MdOutlineSearch",
-            "bodyText": "Search studies and related datasets by metadata",
+            "bodyText": "Search studies and related datasets for download or analysis in a workspace.",
             "btnText": "Discover",
-            "href": "/Query",
+            "href": "/Discovery",
             "linkType": "portal"
           },
           {
             "icon": "MdOutlineBarChart",
-            "bodyText": "Explore populated studies",
+            "bodyText": "Explore Tutorials and Example Analysis.",
             "btnText": "Analyze",
-            "href": "/Explorer",
+            "href": "/resource-browser",
             "linkType": "portal"
           }
         ]

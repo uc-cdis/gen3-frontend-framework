@@ -30,6 +30,7 @@ export * from './features/modals';
 export * from './features/cohort';
 export * from './features/filters';
 export * from './features/guppy';
+export * from './features/grip';
 export * from './features/aiSearch';
 export * from './features/workspace';
 export * from './features/submission';

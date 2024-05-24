@@ -35,6 +35,8 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
+import SmmartPage from './pages/Smmart';
+
 import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
 import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
@@ -64,6 +66,7 @@ export {
   type Fonts,
   type RegisteredIcons,
   type SessionConfiguration,
+  SmmartPage,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,

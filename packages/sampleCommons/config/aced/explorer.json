@@ -1,0 +1,275 @@
+[
+  {
+    "tabTitle": "Patient",
+    "charts": {
+      "project_id": {
+        "chartType": "fullPie",
+        "title": "project_id"
+      },
+      "gender": {
+        "chartType": "fullPie",
+        "title": "gender"
+      },
+      "maritalStatus": {
+        "chartType": "donut",
+        "title": "maritalStatus"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "Patient",
+          "fields": [
+            "project_id",
+            "us_core_race",
+            "us_core_ethnicity",
+            "gender",
+            "maritalStatus",
+            "quality_adjusted_life_years",
+            "disability_adjusted_life_years"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "id",
+        "project_id",
+        "us_core_race",
+        "us_core_ethnicity",
+        "gender",
+        "maritalStatus",
+        "quality_adjusted_life_years",
+        "disability_adjusted_life_years"
+      ]
+    },
+    "dropdowns": {
+      "dropdownItems": [
+        {
+          "enabled": true,
+          "type": "data-json",
+          "title": "JSON",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-json",
+          "actionArgs": {
+            "filename": "MIDRC_Series_table.json",
+            "rootPath": "gen3_discovery"
+          }
+        },
+        {
+          "enabled": true,
+          "type": "data-csv",
+          "title": "CSV",
+          "leftIcon": "datafile",
+          "rightIcon": "download",
+          "action": "data-csv",
+          "actionArgs": {
+            "filename": "MIDRC_Series_table.csv",
+            "rootPath": "gen3_discovery"
+          }
+        }
+      ],
+      "title": "Download Measurements Metadata Table"
+    },
+    "guppyConfig": {
+      "dataType": "patient",
+      "fieldMapping": [
+        {
+          "field": "quality_adjusted_life_years",
+          "name": "quality_adjusted_life_years"
+        },
+        {
+          "field": "disability_adjusted_life_years",
+          "name": "disability_adjusted_life_years"
+        }
+      ],
+      "nodeCountTitle": "Patients",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "id",
+        "referenceIdFieldInResourceIndex": "id",
+        "referenceIdFieldInDataIndex": "id"
+      },
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
+      "accessibleValidationField": "project_id"
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "file-manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
+      }
+    ]
+  },
+  {
+    "tabTitle": "Observation",
+    "charts": {
+      "project_id": {
+        "chartType": "donut",
+        "title": "Project"
+      },
+      "category": {
+        "chartType": "fullPie",
+        "title": "Category"
+      },
+      "code": {
+        "chartType": "donut",
+        "title": "Code"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "Observation",
+          "fields": [
+            "project_id",
+            "category",
+            "code"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "patient_id",
+        "project_id",
+        "category",
+        "code",
+        "bodySite",
+        "effectiveDateTime",
+        "valueBoolean",
+        "valueCodeableConcept",
+        "valueDateTime",
+        "valueInteger",
+        "valueQuantity",
+        "valueRange",
+        "valueRatio",
+        "valueSampledData",
+        "valueString",
+        "interpretation"
+      ]
+    },
+    "dropdowns": {},
+    "guppyConfig": {
+      "dataType": "observation",
+      "fieldMapping": [],
+      "nodeCountTitle": "Observations",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "_patient_id",
+        "referenceIdFieldInResourceIndex": "object_id",
+        "referenceIdFieldInDataIndex": "object_id"
+      },
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
+      "accessibleValidationField": "project_id"
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "file-manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
+      }
+    ]
+  },
+  {
+    "tabTitle": "File",
+    "charts": {
+      "data_type": {
+        "chartType": "fullPie",
+        "title": "File Type"
+      },
+      "data_format": {
+        "chartType": "fullPie",
+        "title": "File Format"
+      }
+    },
+    "filters": {
+      "tabs": [
+        {
+          "title": "File",
+          "fields": [
+            "project_id",
+            "data_type",
+            "data_format"
+          ]
+        }
+      ]
+    },
+    "table": {
+      "enabled": true,
+      "fields": [
+        "project_id",
+        "patient_id",
+        "object_id",
+        "author",
+        "content_attachment_url",
+        "category",
+        "date",
+        "data_type",
+        "data_format",
+        "file_name",
+        "content_attachment_size",
+        "id",
+        "status",
+        "type_coding"
+      ]
+    },
+    "dropdowns": {},
+    "guppyConfig": {
+      "dataType": "file",
+      "fieldMapping": [
+        {
+          "field": "object_id",
+          "name": "Download ID"
+        },
+        {
+          "field": "file_name",
+          "name": "Name"
+        },
+        {
+          "field": "data_type",
+          "name": "Type"
+        },
+        {
+          "field": "data_format",
+          "name": "Format"
+        }
+      ],
+      "nodeCountTitle": "Files",
+      "manifestMapping": {
+        "resourceIndexType": "Patient",
+        "resourceIdField": "_patient_id",
+        "referenceIdFieldInResourceIndex": "object_id",
+        "referenceIdFieldInDataIndex": "object_id"
+      },
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
+      "accessibleValidationField": "project_id",
+      "downloadAccessor": "object_id"
+    },
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "file-manifest",
+        "title": "Download Manifest",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "fileName": "file-manifest.json"
+      }
+    ]
+  }
+]

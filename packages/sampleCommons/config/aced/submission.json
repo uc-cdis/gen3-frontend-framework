@@ -1,0 +1,24 @@
+{
+  "projectTable": {
+    "columns": [
+      {
+        "name": "Patients",
+        "field": "_patient_count",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      },
+      {
+        "name": "Observations",
+        "field": "_observation_count",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      },
+      {
+        "name": "Files",
+        "field": "_file_count",
+        "errorIfNotAvailable": false,
+        "valueIfNotAvailable": "n/a"
+      }
+    ]
+  }
+}
