@@ -1,5 +1,4 @@
 import { DictionaryCategory } from './types';
-import { snakeCase } from 'lodash';
 
 export const categoryFilter = (id: string, dictionary: any) =>
   id.charAt(0) !== '_' &&
@@ -22,8 +21,6 @@ export const getPropertyCount = (
   categories: Record<string, any>,
   dictionary: any,
 ) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   return (
     categories
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

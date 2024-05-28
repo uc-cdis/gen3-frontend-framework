@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useMemo, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useState, useRef } from 'react';
 import {
   MantineReactTable,
   useMantineReactTable,
   MRT_Cell,
+  MRT_Row,
 } from 'mantine-react-table';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import {
@@ -22,6 +23,44 @@ import { useMiniSearch } from 'react-minisearch';
 import MiniSearch from 'minisearch';
 import CategoryHeader from './CategoryHeader';
 import CategoryAccordionLabel from './CategoryAccordionLabel';
+
+const LineCell = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas === null) return;
+
+    const div = divRef.current;
+    if (!div) return;
+    // Set canvas dimensions to match div dimensions
+    canvas.width = div.clientWidth;
+    canvas.height = div.clientHeight;
+
+    const context = canvas.getContext('2d');
+
+    if (!context) return;
+    const height = canvas.height;
+    // Clear the canvas
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the vertical line
+    context.beginPath();
+    context.moveTo(canvas.width / 2, 0);
+    context.lineTo(canvas.width / 2, height);
+    context.stroke();
+  }, []);
+
+  return (
+    <div ref={divRef} className="w-2 h-full absolute">
+      <canvas
+        ref={canvasRef}
+        style={{ position: 'absolute', top: 0, left: 0 }}
+      />
+    </div>
+  );
+};
 
 interface SearchMatches {
   node: string;
@@ -186,13 +225,15 @@ const Dictionary = ({
 
   const columns = useMemo(() => {
     return [
+      /** TODO: add line to match design
       {
         id: 'decorator',
         header: '',
-        Cell: ({ cell }: { cell: MRT_Cell<Record<string, string>> }) => {
-          return <div>|</div>;
+        Cell: ({ cell, row }: { cell: MRT_Cell; row: MRT_Row }) => {
+          return <LineCell />;
         },
       },
+        */
       ...['property', 'type', 'required', 'description'].map((key) => ({
         accessorKey: key,
         header: key.toLocaleUpperCase(),
@@ -307,6 +348,9 @@ const Dictionary = ({
     });
   };
 
+  // TODO: need a more extensive icon library
+  //  Use icons from the icon library to enable
+  //  customization
   const iconMapping: Record<string, string> = {
     administrative: 'administrative',
     data_observations: 'analysis',
@@ -442,13 +486,19 @@ const Dictionary = ({
               Search History
             </span>
             <button
-              className={`text-orange-500 p-1 border text-orange-500 border-orange-500 ml-auto mr-2 rounded-md items-center`}
+              className={
+                'text-orange-500 p-1 border text-orange-500 border-orange-500 ml-auto mr-2 rounded-md items-center'
+              }
               onClick={() => removeDictionarySearchHistory()}
             >
               Clear All
             </button>
           </div>
-          {dictionaryTableRows?.length ? <>{dictionaryTableRows}</> : <></>}
+          {dictionaryTableRows?.length ? (
+            <React.Fragment>{dictionaryTableRows}</React.Fragment>
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
         </div>
       </div>
       <div className="w-3/4">
