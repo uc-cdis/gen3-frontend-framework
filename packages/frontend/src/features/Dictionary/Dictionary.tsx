@@ -14,7 +14,12 @@ import {
   Highlight,
 } from '@mantine/core';
 import { capitalize } from 'lodash';
-import { DictionaryCategory, DictionaryEntry, DictionaryProps } from './types';
+import {
+  DictionaryCategory,
+  DictionaryEntry,
+  DictionaryProps,
+  ViewType,
+} from './types';
 import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
 import Cell from './Cell';
 import { Icon } from '@iconify/react';
@@ -23,44 +28,7 @@ import { useMiniSearch } from 'react-minisearch';
 import MiniSearch from 'minisearch';
 import CategoryHeader from './CategoryHeader';
 import CategoryAccordionLabel from './CategoryAccordionLabel';
-
-const LineCell = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const divRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
-
-    const div = divRef.current;
-    if (!div) return;
-    // Set canvas dimensions to match div dimensions
-    canvas.width = div.clientWidth;
-    canvas.height = div.clientHeight;
-
-    const context = canvas.getContext('2d');
-
-    if (!context) return;
-    const height = canvas.height;
-    // Clear the canvas
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw the vertical line
-    context.beginPath();
-    context.moveTo(canvas.width / 2, 0);
-    context.lineTo(canvas.width / 2, height);
-    context.stroke();
-  }, []);
-
-  return (
-    <div ref={divRef} className="w-2 h-full absolute">
-      <canvas
-        ref={canvasRef}
-        style={{ position: 'absolute', top: 0, left: 0 }}
-      />
-    </div>
-  );
-};
+import ViewSelector from './ViewSelector';
 
 interface SearchMatches {
   node: string;
@@ -87,7 +55,7 @@ const Dictionary = ({
     {} as DictionaryCategory<DictionaryEntry | any>,
   );
   const [selectedId, setSelectedId] = useState('');
-  const [view, setView] = useState('table');
+  const [view, setView] = useState<ViewType>('table');
   const [searchTerm, setSearchTerm] = useState('');
   const [dictionarySearchResults, setDictionarySearchResults] = useState(
     {} as any,
@@ -289,7 +257,7 @@ const Dictionary = ({
     mantineTableProps: {
       striped: true,
       sx: {
-        borderSpacing: '0rem 0.25rem',
+        borderSpacing: '0rem 0rem',
         borderCollapse: 'separate',
       },
     },
@@ -361,7 +329,7 @@ const Dictionary = ({
 
   const getIcon = (category: string) => {
     const iconName = iconMapping[category] ? iconMapping[category] : 'gen3';
-    return <Icon icon={`gen3:${iconName}`} />;
+    return <Icon color="white" icon={`gen3:${iconName}`} />;
   };
 
   const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
@@ -391,6 +359,7 @@ const Dictionary = ({
   return (
     <div className="flex m-2 bg-base-max">
       <div className="w-1/4 mr-4">
+        <ViewSelector view={view} setView={setView} />
         <div className="flex justify-center border-t-0 border-1 border-gray-400 py-10">
           <button
             className={`${

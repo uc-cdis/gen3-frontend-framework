@@ -8,9 +8,9 @@ interface CategoryHeaderProps {
 }
 const CategoryHeader = ({ icon, category }: CategoryHeaderProps) => {
   return (
-    <h3 className="flex text-white font-bold font-size-md bg-purple-500 border mb-0 justify-between h-16">
+    <h3 className="flex text-secondary-contrast-darker  font-bold font-size-md bg-secondary-darker border mb-0 justify-between h-16">
       <div className="flex items-center ml-2">
-        <Avatar color="blue" radius="xl">
+        <Avatar color="accent.4" radius="xl">
           {icon}
         </Avatar>
         <div className="ml-2">{SnakeCaseToLabel(category)}</div>

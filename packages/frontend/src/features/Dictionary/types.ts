@@ -21,7 +21,7 @@ export interface DictionaryProperty {
   oneOf?: Record<string, string>[];
   term?: {
     description?: string;
-  }
+  };
 }
 
 export interface DictionaryEntry {
@@ -32,13 +32,13 @@ export interface DictionaryEntry {
   id?: string;
   links?: DDLink[];
   namespace?: string;
-  nodeTerms?: null | any
+  nodeTerms?: null | any;
   program?: string;
   project?: string;
-  properties?: Record<string, DictionaryProperty>
+  properties?: Record<string, DictionaryProperty>;
   required?: string[];
   submittable?: boolean;
-  systemProperties?: string[]
+  systemProperties?: string[];
   title?: string;
   type?: string;
   uniqueKeys?: Array<string[]>;
@@ -60,3 +60,5 @@ export interface DictionaryProps {
 export interface DictionaryCategory<T> {
   [key: string]: T;
 }
+
+export type ViewType = 'table' | 'graph';
