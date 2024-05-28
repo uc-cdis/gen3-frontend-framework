@@ -1,4 +1,5 @@
 import { DictionaryCategory } from './types';
+import { snakeCase } from 'lodash';
 
 export const categoryFilter = (id: string, dictionary: any) =>
   id.charAt(0) !== '_' &&
@@ -32,4 +33,20 @@ export const getPropertyCount = (
       // @ts-ignore
       .reduce((acc, curr) => acc + curr)
   );
+};
+
+/**
+ * Converts snake_case string to label format.
+ *
+ * @param {string} snakeCase - The snake_case string to convert.
+ * @returns {string} - The resulting label format string.
+ */
+export const SnakeCaseToLabel = (snakeCase?: string): string => {
+  if (typeof snakeCase !== 'string' || !snakeCase) {
+    return 'undefined';
+  }
+  const words = snakeCase.split('_').filter((word) => word.length > 0);
+  return words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 };
