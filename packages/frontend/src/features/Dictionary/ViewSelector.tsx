@@ -8,22 +8,34 @@ interface ViewSelectorProps {
 }
 const ViewSelector = ({ view, setView }: ViewSelectorProps) => {
   return (
-    <div className="flex justify-center border-t-0 border-1 border-gray-400 py-10">
-      <SegmentedControl
-        classNames={{
-          root: 'p-0 bg-base-max border-primary border-2 rounded-l',
-          controlActive: `bg-primary text-primary-contrast ${
-            view === 'table' ? 'rounded-l-lg' : 'rounded-r-lg'
-          }`,
-        }}
-        value={view}
-        onChange={setView}
-        data={[
-          { label: 'Table View', value: 'table' },
-          { label: 'Graph View', value: 'graph' },
-        ]}
-      />
-    </div>
+    <SegmentedControl
+      fullWidth
+      size="lg"
+      styles={(theme) => {
+        console.log('theme', theme.colors.primary);
+        return {
+          root: {
+            padding: '0px',
+            backgroundColor: theme.colors.base[9],
+            borderColor: theme.colors.primary[5],
+            borderWidth: 2,
+          },
+          controlActive: {
+            backgroundColor: theme.colors.primary[7],
+            color: theme.colors['primary-contrast'][7],
+          },
+          label: {
+            color: theme.colors['primary-contrast'][7],
+          },
+        };
+      }}
+      value={view}
+      onChange={setView}
+      data={[
+        { label: 'Table View', value: 'table' },
+        { label: 'Graph View', value: 'graph' },
+      ]}
+    />
   );
 };
 
