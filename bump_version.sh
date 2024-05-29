@@ -1,4 +1,9 @@
 #!/bin/bash
+# This is a Bash script for automating the process of version bumping, building, packaging, and uploading assets to a
+# specific release for a JavaScript/Node.js project using lerna and npm.
+# it must be run from the root of the gen3-frontend-framework repository
+# it also requires a github token with write access to release tags, This token mus tbe stored
+# in a file named .token
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -52,7 +57,7 @@ npm run build:clean
 
 # Get the version from the packages/core/package.json file
 new_version=$(jq -r '.version' packages/core/package.json)
-echo "Version from packages/core/package.json: new_version"
+echo "Version from packages/core/package.json: $new_version"
 
 # Define an array of packages to pack
 packages=(
@@ -67,12 +72,11 @@ do
   echo "Packing $package..."
   cd $package
   npm pack
+  tarball=$(npm pack)
   cd - > /dev/null
-
-    # Upload the tarball to the release assets
-    upload_asset "$package/$tarball" $repo $release_id
+  # Upload the tarball to the release assets
+  upload_asset "$package/$tarball" $repo $release_id
 done
 
-
-
+printf "\n"
 echo "Version bump, packing, and upload completed successfully."
