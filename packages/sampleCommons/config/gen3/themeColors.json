@@ -196,22 +196,23 @@
     "lightest": "#ffffff",
     "lighter": "#ffffff",
     "light": "#ffffff",
-    "vivid": "#000000",
-    "dark": "#ffffff",
-    "darker": "#ffffff",
-    "darkest": "#ffffff",
-    "min": "#ffffff"
+    "DEFAULT": "#ffffff",
+    "vivid": "#ffffff",
+    "dark": "#c6c6c6",
+    "darker": "#8c8c8c",
+    "darkest": "#535353",
+    "min": "#191919"
   },
   "tablePallet-contrast": {
     "max": "#111111",
     "lightest": "#111111",
     "lighter": "#111111",
     "light": "#111111",
-    "DEFAULT": "#fefefe",
-    "vivid": "#fefefe",
+    "DEFAULT": "#111111",
+    "vivid": "#111111",
     "dark": "#111111",
     "darker": "#111111",
-    "darkest": "#111111",
-    "min": "#111111"
+    "darkest": "#fefefe",
+    "min": "#fefefe"
   }
 }
