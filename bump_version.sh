@@ -71,6 +71,7 @@ for package in "${packages[@]}"
 do
   echo "Packing $package..."
   cd $package
+  npm pack
   tarball=$(npm pack)
   cd - > /dev/null
   # Upload the tarball to the release assets
