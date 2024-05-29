@@ -81,12 +81,12 @@ const main = () => {
   });
 
   if (!themeFile) {
-    console.log('No themefile found. Please provide a themefile with \'-t\'.');
+    console.log("No themefile found. Please provide a themefile with '-t'.");
     return;
   }
 
   if (themeFile && !existsSync(themeFile)) {
-    console.log('No themefile found. Please provide a themefile with \'-t\'.');
+    console.log("No themefile found. Please provide a themefile with '-t'.");
     return;
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
@@ -98,7 +98,7 @@ const main = () => {
   const accentPalletCool = create10ColorPallet(themeColors.accentCool);
   const basePallet = create10ColorPallet(themeColors.base);
   const chartPallet = create10ColorPallet(themeColors.chart);
-  const tablePallet = create10ColorPallet(themeColors.table);
+  const tablePallet = create10ColorPallet(themeColors?.table ?? '#ffffff');
 
   const theme = {
     primary: primaryPallet,
@@ -120,6 +120,8 @@ const main = () => {
     table: tablePallet,
     'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
   };
+
+  console.log('table', tablePallet);
 
   writeFileSync(
     join(out ?? './', 'themeColors.json'),

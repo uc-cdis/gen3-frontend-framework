@@ -81,26 +81,26 @@ export const create10ColorPallet = (
     tinycolor('#000000'),
     20,
     tinycolor(mainColor),
-  )
-    .reverse()
-    .map((color) => color);
+  ).map((color) => color);
   const lightColors = getColorsList(
     DEFAULT_NUM_LIGHT_COLORS,
     90,
     tinycolor('#ffffff'),
     20,
     tinycolor(mainColor),
-  ).map((color) => color);
+  )
+    .reverse()
+    .map((color) => color);
 
   return {
+    ...lightColors.reduce((obj, c: Instance, idx) => {
+      obj[colorType[9 - idx]] = c.toHexString();
+      return obj;
+    }, {} as Record<string, string>),
     DEFAULT: mainColor,
     vivid: tinycolor(mainColor).saturate(10).toHexString(),
     ...darkColors.reduce((obj, c: Instance, idx) => {
-      obj[colorType[idx]] = c.toHexString();
-      return obj;
-    }, {} as Record<string, string>),
-    ...lightColors.reduce((obj, c: Instance, idx) => {
-      obj[colorType[idx + 6]] = c.toHexString();
+      obj[colorType[3 - idx]] = c.toHexString();
       return obj;
     }, {} as Record<string, string>),
   };
