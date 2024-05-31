@@ -53,7 +53,7 @@
           "leftIcon": "datafile",
           "rightIcon": "download",
           "action": "data-json",
-          "actionArgs" : {
+          "actionArgs": {
             "filename": "MIDRC_Series_table.json",
             "rootPath": "gen3_discovery"
           }
@@ -65,19 +65,25 @@
           "leftIcon": "datafile",
           "rightIcon": "download",
           "action": "data-csv",
-          "actionArgs" : {
+          "actionArgs": {
             "filename": "MIDRC_Series_table.csv",
             "rootPath": "gen3_discovery"
           }
         }
       ],
-        "title": "Download Measurements Metadata Table"
+      "title": "Download Measurements Metadata Table"
     },
     "guppyConfig": {
       "dataType": "patient",
-      "fieldMapping":   [
-        { "field": "quality_adjusted_life_years", "name": "quality_adjusted_life_years" },
-        { "field": "disability_adjusted_life_years", "name": "disability_adjusted_life_years" }
+      "fieldMapping": [
+        {
+          "field": "quality_adjusted_life_years",
+          "name": "quality_adjusted_life_years"
+        },
+        {
+          "field": "disability_adjusted_life_years",
+          "name": "disability_adjusted_life_years"
+        }
       ],
       "nodeCountTitle": "Patients",
       "manifestMapping": {
@@ -86,11 +92,12 @@
         "referenceIdFieldInResourceIndex": "id",
         "referenceIdFieldInDataIndex": "id"
       },
-      "accessibleFieldCheckList": ["project_id"],
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
       "accessibleValidationField": "project_id"
     }
   },
-
   {
     "tabTitle": "Observation",
     "charts": {
@@ -143,7 +150,7 @@
     "dropdowns": {},
     "guppyConfig": {
       "dataType": "observation",
-      "fieldMapping":   [],
+      "fieldMapping": [],
       "nodeCountTitle": "Observations",
       "manifestMapping": {
         "resourceIndexType": "Patient",
@@ -151,13 +158,13 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": ["project_id"],
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
       "accessibleValidationField": "project_id"
     }
   },
-
   {
-
     "tabTitle": "File",
     "charts": {
       "data_type": {
@@ -204,10 +211,22 @@
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
-        { "field": "object_id", "name": "Download ID" },
-        { "field": "file_name", "name": "Name" },
-        { "field": "data_type", "name": "Type" },
-        { "field": "data_format", "name": "Format" }
+        {
+          "field": "object_id",
+          "name": "Download ID"
+        },
+        {
+          "field": "file_name",
+          "name": "Name"
+        },
+        {
+          "field": "data_type",
+          "name": "Type"
+        },
+        {
+          "field": "data_format",
+          "name": "Format"
+        }
       ],
       "nodeCountTitle": "Files",
       "manifestMapping": {
@@ -216,18 +235,32 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": ["project_id"],
+      "accessibleFieldCheckList": [
+        "project_id"
+      ],
       "accessibleValidationField": "project_id",
       "downloadAccessor": "object_id"
     },
     "buttons": [
       {
         "enabled": true,
-        "type": "file-manifest",
+        "type": "manifest",
+        "action": "manifest",
         "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "file-manifest.json"
+        "leftIcon": "gen3:datafile",
+        "rightIcon": "gen3:download",
+        "fileName": "manifest.json",
+        "actionArgs": {
+          "resourceIndexType": "Patient",
+          "resourceIdField": "_patient_id",
+          "referenceIdFieldInDataIndex": "object_id",
+          "fileFields": [
+            "file_name",
+            "file_size",
+            "md5sum",
+            "object_id"
+          ]
+        }
       }
     ]
   }

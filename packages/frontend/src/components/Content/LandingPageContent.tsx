@@ -89,7 +89,12 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             area.map((obj, index) => {
               if (obj.text) {
                 return (
-                  <TextContent text={obj.text} key={index} type={obj?.type ?? ContentType.Html} className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"/>
+                  <TextContent
+                    text={obj.text}
+                    key={index}
+                    type={obj?.type ?? ContentType.Html}
+                    className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
+                  />
                 );
               }
               if (obj.link) {

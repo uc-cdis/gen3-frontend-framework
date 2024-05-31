@@ -18,15 +18,6 @@
               "linkType": "portal",
               "text": "Explore Gen3 Data"
             }
-          },
-          {
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elit dui, commodo a tortor ut, vestibulum consectetur tellus. Aliquam erat volutpat. Aenean sodales lacus quis venenatis fermentum. Phasellus varius tempor odio a elementum. Aliquam sed diam molestie, ornare neque in, porttitor mi. Aliquam hendrerit libero volutpat, bibendum ante at, auctor velit. Nulla eget augue a turpis facilisis dictum. Nulla vulputate accumsan aliquam. Fusce imperdiet arcu nibh, nec vehicula nisi placerat at. Phasellus eget magna elementum, tincidunt urna at, venenatis nulla. Cras ullamcorper ante sed ex porttitor, at elementum ligula dapibus. Sed malesuada mi turpis, eu venenatis lorem convallis in. "
-          },
-          {
-            "link": {
-              "href": "https://gen3.datacommons.io",
-              "text": "Learn More"
-            }
           }
         ],
         "right": [
@@ -37,35 +28,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "break": "standard"
-    },
-    {
-      "cardsArea": {
-        "title": "",
-        "cards": [
-          {
-            "icon": "MdOutlineSearch",
-            "bodyText": "Search studies and related datasets by metadata",
-            "btnText": "Discover",
-            "href": "/Query",
-            "linkType": "portal"
-          },
-          {
-            "icon": "MdOutlineBarChart",
-            "bodyText": "Explore populated studies",
-            "btnText": "Analyze",
-            "href": "/Explorer",
-            "linkType": "portal"
-          }
-        ]
-      }
-    },
-    {
-      "quoteArea": {
-        "quote": "Our vision is a world in which researchers have ready access to the data needed and the tools required to make data-driven discoveries that increase our scientific knowledge and improve the quality of life."
       }
     }
   ]

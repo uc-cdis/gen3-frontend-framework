@@ -8,9 +8,6 @@ dns.setDefaultResultOrder('ipv4first');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('./src/lib/plugins/index.js');
 
-const siteConfig = require('./config/siteConfig.json');
-const theme = siteConfig.commons;
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
@@ -59,17 +56,20 @@ const nextConfig = {
       },
     ];
   },
-  async redirects() {
+  /*async redirects() {
+    const siteConfig = require('./config/siteConfig.json');
+    const theme = siteConfig.commons;
     const redirects = [];
+    // TODO figure out how to do this properly so that it works on both frontends
     if (theme == "cbds") {
-      redirects.push({
-        source: '/',
-        destination: '/cbdsLandingPage',
-        permanent: true,
-      });
-    }
-    return redirects
+    redirects.push({
+      source: '/',
+      destination: '/cbdsLandingPage',
+      permanent: true,
+    });
   }
+    return redirects
+}*/
 };
 
 module.exports = withMDX(nextConfig);

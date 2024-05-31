@@ -11,6 +11,7 @@ const NavigationLogo = ({
   description,
   basePath = '',
   classNames = {},
+  href,
 }: NavigationBarLogo) => {
   const classNamesDefaults = {
     root: 'relative flex h-full py-2 justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]',
@@ -20,11 +21,17 @@ const NavigationLogo = ({
       'font-heading h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
-      <HoverLink className={extractClassName('link', mergedClassnames)} href="/">
+      <HoverLink
+        className={extractClassName('link', mergedClassnames)}
+        href={href}
+      >
         <Image
           className="pr-3 object-contain"
           fill
@@ -36,7 +43,7 @@ const NavigationLogo = ({
         <div className={extractClassName('title', mergedClassnames)}>
           <HoverLink
             className={extractClassName('titleLink', mergedClassnames)}
-            href={'/'}
+            href={href}
           >
             {title}
           </HoverLink>
