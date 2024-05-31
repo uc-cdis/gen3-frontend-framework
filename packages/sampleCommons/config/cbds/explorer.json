@@ -44,35 +44,6 @@
         "disability_adjusted_life_years"
       ]
     },
-    "dropdowns": {
-      "dropdownItems": [
-        {
-          "enabled": true,
-          "type": "data-json",
-          "title": "JSON",
-          "leftIcon": "datafile",
-          "rightIcon": "download",
-          "action": "data-json",
-          "actionArgs": {
-            "filename": "MIDRC_Series_table.json",
-            "rootPath": "gen3_discovery"
-          }
-        },
-        {
-          "enabled": true,
-          "type": "data-csv",
-          "title": "CSV",
-          "leftIcon": "datafile",
-          "rightIcon": "download",
-          "action": "data-csv",
-          "actionArgs": {
-            "filename": "MIDRC_Series_table.csv",
-            "rootPath": "gen3_discovery"
-          }
-        }
-      ],
-      "title": "Download Measurements Metadata Table"
-    },
     "guppyConfig": {
       "dataType": "patient",
       "fieldMapping": [
@@ -102,16 +73,16 @@
     "tabTitle": "Observation",
     "charts": {
       "project_id": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "Project"
       },
-      "category": {
-        "chartType": "fullPie",
-        "title": "Category"
-      },
       "code": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "Code"
+      },
+      "valueString": {
+        "chartType": "fullPie",
+        "title": "Value"
       }
     },
     "filters": {
@@ -120,8 +91,8 @@
           "title": "Observation",
           "fields": [
             "project_id",
-            "category",
-            "code"
+            "code",
+            "valueString"
           ]
         }
       ]
@@ -133,21 +104,9 @@
         "project_id",
         "category",
         "code",
-        "bodySite",
-        "effectiveDateTime",
-        "valueBoolean",
-        "valueCodeableConcept",
-        "valueDateTime",
-        "valueInteger",
-        "valueQuantity",
-        "valueRange",
-        "valueRatio",
-        "valueSampledData",
-        "valueString",
-        "interpretation"
+        "valueString"
       ]
     },
-    "dropdowns": {},
     "guppyConfig": {
       "dataType": "observation",
       "fieldMapping": [],
@@ -207,7 +166,6 @@
         "type_coding"
       ]
     },
-    "dropdowns": {},
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [

@@ -44,35 +44,6 @@
         "disability_adjusted_life_years"
       ]
     },
-    "dropdowns": {
-      "dropdownItems": [
-        {
-          "enabled": true,
-          "type": "data-json",
-          "title": "JSON",
-          "leftIcon": "datafile",
-          "rightIcon": "download",
-          "action": "data-json",
-          "actionArgs": {
-            "filename": "MIDRC_Series_table.json",
-            "rootPath": "gen3_discovery"
-          }
-        },
-        {
-          "enabled": true,
-          "type": "data-csv",
-          "title": "CSV",
-          "leftIcon": "datafile",
-          "rightIcon": "download",
-          "action": "data-csv",
-          "actionArgs": {
-            "filename": "MIDRC_Series_table.csv",
-            "rootPath": "gen3_discovery"
-          }
-        }
-      ],
-      "title": "Download Measurements Metadata Table"
-    },
     "guppyConfig": {
       "dataType": "patient",
       "fieldMapping": [
@@ -96,32 +67,22 @@
         "project_id"
       ],
       "accessibleValidationField": "project_id"
-    },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "file-manifest",
-        "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "file-manifest.json"
-      }
-    ]
+    }
   },
   {
     "tabTitle": "Observation",
     "charts": {
       "project_id": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "Project"
       },
-      "category": {
-        "chartType": "fullPie",
-        "title": "Category"
-      },
       "code": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "Code"
+      },
+      "valueString": {
+        "chartType": "fullPie",
+        "title": "Value"
       }
     },
     "filters": {
@@ -130,8 +91,8 @@
           "title": "Observation",
           "fields": [
             "project_id",
-            "category",
-            "code"
+            "code",
+            "valueString"
           ]
         }
       ]
@@ -143,21 +104,9 @@
         "project_id",
         "category",
         "code",
-        "bodySite",
-        "effectiveDateTime",
-        "valueBoolean",
-        "valueCodeableConcept",
-        "valueDateTime",
-        "valueInteger",
-        "valueQuantity",
-        "valueRange",
-        "valueRatio",
-        "valueSampledData",
-        "valueString",
-        "interpretation"
+        "valueString"
       ]
     },
-    "dropdowns": {},
     "guppyConfig": {
       "dataType": "observation",
       "fieldMapping": [],
@@ -172,17 +121,7 @@
         "project_id"
       ],
       "accessibleValidationField": "project_id"
-    },
-    "buttons": [
-      {
-        "enabled": true,
-        "type": "file-manifest",
-        "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "file-manifest.json"
-      }
-    ]
+    }
   },
   {
     "tabTitle": "File",
@@ -227,7 +166,6 @@
         "type_coding"
       ]
     },
-    "dropdowns": {},
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
@@ -264,11 +202,23 @@
     "buttons": [
       {
         "enabled": true,
-        "type": "file-manifest",
+        "type": "manifest",
+        "action": "manifest",
         "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "file-manifest.json"
+        "leftIcon": "gen3:datafile",
+        "rightIcon": "gen3:download",
+        "fileName": "manifest.json",
+        "actionArgs": {
+          "resourceIndexType": "Patient",
+          "resourceIdField": "_patient_id",
+          "referenceIdFieldInDataIndex": "object_id",
+          "fileFields": [
+            "file_name",
+            "file_size",
+            "md5sum",
+            "object_id"
+          ]
+        }
       }
     ]
   }
