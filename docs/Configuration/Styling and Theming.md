@@ -2,7 +2,16 @@
 
 ### Fonts
 
-Fonts cane be configured by editing ```config/themeFonts.json```
+Fonts can be installed using the ```@fontsource``` package. The package is installed by running the command
+```
+npm install @fontsource/roboto
+```
+The font can be imported in the ```styles/globals.css``` file by adding the line
+```
+import '@fontsource/roboto/400.css'
+```
+
+Once installed fonts cane be configured by editing ```config/themeFonts.json```
 The current theme support heading and body fonts. They can be specified as a google font or a local font in standary css format (e.x. "Arial, Helvetica, sans-serif")
 The```fontFamily``` member is used to set the font for the component library (e.g. Mantine.dev)
 
@@ -12,6 +21,21 @@ The```fontFamily``` member is used to set the font for the component library (e.
   "content": "Roboto, sans-serif",
   "fontFamily": "Roboto"
 }
+```
+
+you will need to also install the font to your project:
+```bash
+npm i @fontsource/montserrat
+```
+and added to the ```src/styles/globals.css```:
+```bash
+...
+@import '~@fontsource/montserrat/700.css';
+@import '~@fontsource/montserrat/400-italic.css';
+@import '~@fontsource/montserrat/index.css';
+@import '~@fontsource/montserrat/600.css';
+@import '~@fontsource/montserrat/700-italic.css';
+...
 ```
 
 ### Colors
@@ -45,9 +69,9 @@ Colors can be configured by editing ```config/<commonsName>/colors.json```. The 
 
 Once the colors are edited they need to be process with the command
 ```
-npm run build:colors
+npm run build:colors --commons=<commonsName>
 ```
-in the commons (for now ```sampleCommon```) source directory.
+in the commons (for now ```sampleCommons```) source directory.
 
 You can test the color them by going to the commons web portal Color page.
 For example http://localhost:3000/Colors

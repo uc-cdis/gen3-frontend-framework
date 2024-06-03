@@ -93,6 +93,7 @@ export interface TagCategory extends TagInfo {
 }
 
 export type DiscoveryContentTypes =
+  | string
   | 'string'
   | 'number'
   | 'date'
@@ -127,18 +128,19 @@ export interface StudyDetailsField {
   valueIfNotAvailable?: string | number;
   renderer?: string;
   params?: Record<string, unknown>;
+  classNames?: Record<string, string>;
 }
 
 export interface StudyPageGroup {
   groupName?: string;
   groupWidth?: 'half' | 'full';
-  includeName?: boolean;
   fields: StudyDetailsField[];
 }
 
 export interface DataDownloadLinks {
   field: string;
   name?: string;
+  className?: Record<string, string>;
 }
 
 export interface DownloadLinkFields {
@@ -151,9 +153,11 @@ export interface StudyPageConfig {
   showAllAvailableFields?: boolean,
   header?: {
     field: string;
+    className?: string;
   };
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
+  classNames?: Record<string, string>;
   fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
 }
 
@@ -172,9 +176,9 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  headerField: string;
   header: {
     field: string;
+    className?: string;
   };
   tabs: StudyDetailTab[];
 }

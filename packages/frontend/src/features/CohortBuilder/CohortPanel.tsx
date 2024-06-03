@@ -10,10 +10,11 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
-  useGetFieldsForIndexQuery
+  useGetFieldsForIndexQuery,
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
+import ErrorCard from '../../components/ErrorCard';
 
 import {
   classifyFacets,
@@ -32,9 +33,11 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-
-
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 
 const EmptyData = {};
 
@@ -117,13 +120,13 @@ const SinglePanel = ({
 };
 
 /**
-  * The main component that houses the charts, tabs, modals
-  * filters, tables, buttons of the exploration page.
-  *
-  * All of these params come directly from the top level exploration page configuration file or
-  * explorer config in legacy gitops.json file.
-  * @example see packages/sampleCommons/config/gen3/explorer.json
-  */
+ * The main component that houses the charts, tabs, modals
+ * filters, tables, buttons of the exploration page.
+ *
+ * All of these params come directly from the top level exploration page configuration file or
+ * explorer config in legacy gitops.json file.
+ * @example see packages/sampleCommons/config/gen3/explorer.json
+ */
 export const CohortPanel = ({
   guppyConfig,
   filters,
@@ -228,12 +231,28 @@ export const CohortPanel = ({
 
       setSummaryCharts(summaryCharts);
     }
-  }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
+  }, [
+    isSuccess,
+    data,
+    facetDefinitions,
+    index,
+    guppyConfig.fieldMapping,
+    charts,
+  ]);
 
-  const { data: counts, isSuccess: isCountSuccess, isLoading } = useGetCountsQuery({
+  const {
+    data: counts,
+    isSuccess: isCountSuccess,
+    isError,
+    isLoading,
+  } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
+
+  if (isError) {
+    return <ErrorCard message="Unable to fetch cohort data" />;
+  }
 
   if (isLoading) {
     return (

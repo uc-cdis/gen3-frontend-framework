@@ -7,6 +7,7 @@ export interface Gen3LoginPanelConfig {
   contact: string;
   email: string;
   image: string;
+  className: string;
 }
 
 export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {

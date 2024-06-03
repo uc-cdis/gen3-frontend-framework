@@ -62,14 +62,20 @@ const DiscoveryTable = ({
               DiscoveryTableCellRenderer(
                 columnDef?.contentType,
                 columnDef?.cellRenderFunction ?? 'default',
-                { ...(columnDef?.params ?? {}), valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '' },
+                {
+                  ...(columnDef?.params ?? {}),
+                  valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
+                },
               ),
             )
           : extractCellValue(
               DiscoveryTableCellRenderer(
                 'string',
                 columnDef?.cellRenderFunction ?? 'default',
-                { ...(columnDef?.params ?? {}), valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '' },
+                {
+                  ...(columnDef?.params ?? {}),
+                  valueIfNotAvailable: columnDef?.valueIfNotAvailable ?? '',
+                },
               ),
             ),
       };
@@ -105,8 +111,8 @@ const DiscoveryTable = ({
     mantineTableHeadCellProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.table[8],
-          color: theme.colors.table[0],
+          backgroundColor: theme.colors.table[1],
+          color: theme.colors.table[5],
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
@@ -118,7 +124,7 @@ const DiscoveryTable = ({
     mantineTableProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.base[9],
+          backgroundColor: theme.colors.base[1],
         };
       },
     },
@@ -128,7 +134,7 @@ const DiscoveryTable = ({
     <React.Fragment>
       <StudyDetails />
       <div className="grow w-auto inline-block overflow-x-scroll">
-        <LoadingOverlay visible={ dataRequestStatus.isLoading} />
+        <LoadingOverlay visible={dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />
       </div>
     </React.Fragment>

@@ -1,11 +1,23 @@
 import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
-import { Tabs } from '@mantine/core';
+import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import { useGetCSRFQuery } from '@gen3/core';
 
 export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
-  useGetCSRFQuery();
+  const { isFetching, isError } =  useGetCSRFQuery(); // need to have a CSRF token to add to the guppy calls
+
+  if (isFetching) {
+    return (<div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+  }
+
+  if (isError) {
+    return (
+    <Center maw={400} h={100} mx="auto">
+      <div>Explorer config is not defined. Page disabled</div>
+    </Center>
+    );
+  }
   return (
     <div className="w-full">
       <Tabs

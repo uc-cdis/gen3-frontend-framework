@@ -16,6 +16,7 @@ export interface NameAndIcon {
 
 export interface TopIconButtonProps extends NameAndIcon {
   readonly href: string;
+  readonly tooltip?: string;
 }
 
 const TopIconButton = ({

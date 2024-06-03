@@ -11,6 +11,7 @@ import {
 import { isArray } from 'lodash';
 import { JSONObject } from '@gen3/core';
 import { toString } from 'lodash';
+import { FilemapPopup, FilemapInline } from '@/lib/Discovery/Filemap';
 
 /**
  * Custom cell renderer for the linked study column for HEAL
@@ -75,5 +76,9 @@ export const registerDiscoveryCustomCellRenderers = () => {
     boolean: {
       LinkedStudyCell,
     },
+    manifest: {
+      default: FilemapPopup,
+      inline: FilemapInline,
+    }
   });
 };

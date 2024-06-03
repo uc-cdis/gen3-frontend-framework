@@ -1,17 +1,19 @@
 import React, {
-  createContext, PropsWithChildren,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useState
+  createContext,
+  PropsWithChildren,
+  useState,
 } from 'react';
 import {
-  AuthzMapping,
-  selectUser,
+  useDeepCompareEffect,
+  useDeepCompareMemo
+} from 'use-deep-compare';
+import {
+  AuthzMapping, type CoreState,
   ServiceAndMethod,
   useCoreSelector,
   useGetAuthzMappingsQuery,
   UserProfile,
+  selectUserDetails
 } from '@gen3/core';
 
 interface ServicesAndMethodsTypes {
@@ -36,8 +38,7 @@ const ResourcesContext = createContext<ResourcesProviderValue>({
   servicesAndMethods: { services: [], methods: [] } as ServicesAndMethodsTypes,
 });
 
-
-// Creates a react context hook from AuthzMapping and UserProfile APIs
+// Creates a React context hook from AuthzMapping and UserProfile APIs
 export const useResourcesContext = () => {
   const context = React.useContext(ResourcesContext);
   if (context === undefined) {
@@ -54,8 +55,8 @@ export const useResourcesContext = () => {
  * @param children - List all the API keys for the current user
  * @returns: A provider element that can pass data to other child elements.
  */
-const ResourcesProvider = ({ children } : PropsWithChildren ) => {
-  const { data: userProfile = {} } = useCoreSelector(selectUser);
+const ResourcesProvider = ({ children }: PropsWithChildren) => {
+  const  userProfile = useCoreSelector((state: CoreState) => selectUserDetails(state));
   const { data: authzMapping = {}, isLoading: isAuthZLoading } =
     useGetAuthzMappingsQuery();
 
@@ -64,15 +65,15 @@ const ResourcesProvider = ({ children } : PropsWithChildren ) => {
   >({});
   const [authzMappingState, setAuthzMappingState] = useState<AuthzMapping>({});
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setUserProfileState(userProfile);
   }, [userProfile]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setAuthzMappingState(authzMapping);
   }, [authzMapping]);
 
-  const servicesAndMethods = useMemo(() => {
+  const servicesAndMethods = useDeepCompareMemo(() => {
     if (isAuthZLoading) return { services: [], methods: [] };
     if (!authzMappingState) return { services: [], methods: [] };
     const results = Object.values<ServiceAndMethod[]>(authzMappingState).reduce(

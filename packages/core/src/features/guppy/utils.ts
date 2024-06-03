@@ -45,7 +45,8 @@ const prepareFetchConfig = (
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(csrfToken !== undefined && { 'X-CSRFToken': csrfToken }),
+      ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
+      // TODO: Add credentials
     },
     body: JSON.stringify({
       type: parameters.type,

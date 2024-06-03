@@ -1,4 +1,5 @@
 import { gen3Api } from '../gen3';
+import { createSelector } from '@reduxjs/toolkit';
 import { type AuthzMapping } from './types';
 import { GEN3_AUTHZ_API } from '../../constants';
 
@@ -17,3 +18,10 @@ export const authzApi = gen3Api.injectEndpoints({
 });
 
 export const { useGetAuthzMappingsQuery } = authzApi;
+
+export const selectAuthzMapping= authzApi.endpoints.getAuthzMappings.select();
+
+export const selectAuthzMappingData = createSelector(
+  selectAuthzMapping,
+  authzMapping => authzMapping?.data ?? { mappings: [] }
+);

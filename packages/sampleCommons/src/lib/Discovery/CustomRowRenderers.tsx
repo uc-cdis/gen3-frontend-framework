@@ -10,7 +10,7 @@ import {
   getTagColor,
 } from '@gen3/frontend';
 
-// TODO: This is a hack to get around the fact that the data is not typed
+
 interface TagData {
   name: string;
   category: string;
@@ -54,6 +54,7 @@ const DetailsWithTagsRowRenderer =
           <div className="flex space-x-6 space-y-6 flex-wrap">
             {row.original?.tags.map(({ name, category }: TagData) => {
               const color = getTagColor(category, config.tagCategories);
+              if (name === '') return null; // no tag
               return (
                   <Badge
                     role="button"

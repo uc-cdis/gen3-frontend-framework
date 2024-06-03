@@ -1,6 +1,9 @@
 import { ServiceAndMethod } from '@gen3/core';
 
-export const convertToRecordMethodToResource = (entries: ServiceAndMethod[], filters: string[]) => {
+export const convertToRecordMethodToResource = (
+  entries: ServiceAndMethod[],
+  filters: string[],
+) => {
   return entries.reduce(
     (acc: Record<string, string[]>, entry: ServiceAndMethod) => {
       if (filters.length > 0 && !filters.includes(entry.service)) return acc;
@@ -9,6 +12,6 @@ export const convertToRecordMethodToResource = (entries: ServiceAndMethod[], fil
       } else acc[entry.method].push(entry.service);
       return acc;
     },
-    {} as Record<string, string[]>
+    {} as Record<string, string[]>,
   );
 };
