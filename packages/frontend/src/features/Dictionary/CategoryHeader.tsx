@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { SnakeCaseToLabel } from './utils';
+import { snakeCaseToLabel } from './utils';
 import { Avatar } from '@mantine/core';
 
 interface CategoryHeaderProps {
@@ -13,7 +13,7 @@ const CategoryHeader = ({ icon, category }: CategoryHeaderProps) => {
         <Avatar color="accent.4" radius="xl">
           {icon}
         </Avatar>
-        <div className="ml-2">{SnakeCaseToLabel(category)}</div>
+        <div className="ml-2">{snakeCaseToLabel(category)}</div>
       </div>
     </h3>
   );

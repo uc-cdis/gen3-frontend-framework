@@ -20,7 +20,12 @@ import {
   DictionaryProps,
   ViewType,
 } from './types';
-import { categoryFilter, categoryReduce, getPropertyCount } from './utils';
+import {
+  categoryFilter,
+  categoryReduce,
+  getPropertyCount,
+  snakeSplit,
+} from './utils';
 import Cell from './Cell';
 import { Icon } from '@iconify/react';
 import ResultCard from './ResultCard';
@@ -29,6 +34,7 @@ import MiniSearch from 'minisearch';
 import CategoryHeader from './CategoryHeader';
 import CategoryAccordionLabel from './CategoryAccordionLabel';
 import ViewSelector from './ViewSelector';
+import TableSearch from './TableSearch';
 
 interface SearchMatches {
   node: string;
@@ -267,13 +273,6 @@ const Dictionary = ({
     categoryFilter(id, dictionary),
   );
 
-  const snakeSplit = (snake: string) => {
-    return snake
-      .split('_')
-      .map((name) => capitalize(name))
-      .join(' ');
-  };
-
   const getSearchResults = (searchEntered: string) => {
     const dictionary = Object.keys(categories).map((c) => {
       return categories[c];
@@ -360,28 +359,6 @@ const Dictionary = ({
     <div className="flex m-2 bg-base-max">
       <div className="w-1/4 mr-4">
         <ViewSelector view={view} setView={setView} />
-        <div className="flex justify-center border-t-0 border-1 border-gray-400 py-10">
-          <button
-            className={`${
-              view === 'table'
-                ? 'bg-purple-950 text-white'
-                : 'bg-white text-purple-950'
-            } text-sm py-2 px-10 rounded-tl-md rounded-bl-md border-2 border-purple-950`}
-            onClick={() => setView('table')}
-          >
-            Table View
-          </button>
-          <button
-            className={`${
-              view === 'graph'
-                ? 'bg-purple-950 text-white'
-                : 'bg-white text-purple-950'
-            } text-sm py-2 px-10 rounded-tr-md rounded-br-md border-2 border-purple-950`}
-            onClick={() => setView('graph')}
-          >
-            Graph View
-          </button>
-        </div>
         <div className="p-4 text-sm">
           <span>
             The current commons dictionary has{' '}
@@ -393,6 +370,12 @@ const Dictionary = ({
             properties
           </span>
         </div>
+        <TableSearch
+          selectedId={selectedId}
+          documents={documents}
+          categories={categories}
+        />
+        {/*
         <div className="flex flex-col">
           <div className="flex mb-1">
             <button
@@ -469,6 +452,7 @@ const Dictionary = ({
             <React.Fragment></React.Fragment>
           )}
         </div>
+        */}
       </div>
       <div className="w-3/4">
         {Object.keys(categories).length &&

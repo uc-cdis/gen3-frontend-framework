@@ -1,6 +1,13 @@
 import React from 'react';
-import { SegmentedControl } from '@mantine/core';
 import { ViewType } from './types';
+
+const SelectedStyle = (selected: boolean): string => {
+  return `${
+    selected
+      ? 'bg-primary text-primary-contrast'
+      : 'bg-base-max text-base-contrast-max'
+  } text-md py-2 px-10 first:rounded-tl-md first:rounded-bl-md last:rounded-tr-md last:rounded-br-md border-2 border-primary`;
+};
 
 interface ViewSelectorProps {
   view: ViewType;
@@ -8,34 +15,20 @@ interface ViewSelectorProps {
 }
 const ViewSelector = ({ view, setView }: ViewSelectorProps) => {
   return (
-    <SegmentedControl
-      fullWidth
-      size="lg"
-      styles={(theme) => {
-        console.log('theme', theme.colors.primary);
-        return {
-          root: {
-            padding: '0px',
-            backgroundColor: theme.colors.base[9],
-            borderColor: theme.colors.primary[5],
-            borderWidth: 2,
-          },
-          controlActive: {
-            backgroundColor: theme.colors.primary[7],
-            color: theme.colors['primary-contrast'][7],
-          },
-          label: {
-            color: theme.colors['primary-contrast'][7],
-          },
-        };
-      }}
-      value={view}
-      onChange={setView}
-      data={[
-        { label: 'Table View', value: 'table' },
-        { label: 'Graph View', value: 'graph' },
-      ]}
-    />
+    <div className="flex justify-center border-b-2 border-0 border-base-light py-10">
+      <button
+        className={SelectedStyle(view === 'table')}
+        onClick={() => setView('table')}
+      >
+        Table View
+      </button>
+      <button
+        className={SelectedStyle(view === 'graph')}
+        onClick={() => setView('graph')}
+      >
+        Graph View
+      </button>
+    </div>
   );
 };
 
