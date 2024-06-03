@@ -15,6 +15,7 @@ import {
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
+import { CoreState, isAuthenticated, selectUserAuthStatus, useCoreSelector } from '@gen3/core';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -69,8 +70,12 @@ export interface LandingPageProps {
  */
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const { basePath } = useRouter();
+
+  const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
+  const authenticated = isAuthenticated(userStatus);
+  
   return (
-    <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
+    <div className="sm:mt-8 2xl:mt-10 h-1/4 w-full bg-base-max">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
@@ -106,9 +111,9 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                   >
                     <Gen3Link
                       className="flex items-center"
-                      href={obj.link.href}
+                      href={authenticated ? obj.link.href : "/Login"}
                       linkType={obj.link.linkType}
-                      text={obj.link.text}
+                      text={authenticated ? obj.link.text : "LOGIN"}
                       showExternalIcon
                     />
                   </Gen3Button>
@@ -121,7 +126,8 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                       src={`${basePath}${obj.image.src}`}
                       alt={obj.image.alt}
                       fill
-                    />
+                      objectFit="contain"
+                      />
                   </div>
                 );
               }
