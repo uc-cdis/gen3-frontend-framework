@@ -41,7 +41,6 @@ export interface GraphQLQuery {
   variables?: Record<string, unknown>;
 }
 
-
 export const fetchJson: Fetcher<JSONObject, string> = async (url: string) => {
   const res = await fetch(url, {
     method: 'GET',
@@ -116,16 +115,16 @@ interface QueryForFileCountSummaryParams {
  * Query templates support filters where applicable
  *
  * @param endpoints - Defines endpoints used in Exploration page:
-  * @param getAllFieldsForType - A mapping query that returns all property key names vertex types specified.
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#mapping-query
-  * @param getAccessibleData - An aggregation histogram counts query that filters based on access type
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#accessibility-argument-for-regular-tier-access-level
-  * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and
-  * tabular results containing the raw data in the rows of selected vertex types
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#1-total-count-aggregation
-  * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
-  * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
-  * @param getCounts - Returns total counts of a vertex type
+ * @param getAllFieldsForType - A mapping query that returns all property key names vertex types specified.
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#mapping-query
+ * @param getAccessibleData - An aggregation histogram counts query that filters based on access type
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#accessibility-argument-for-regular-tier-access-level
+ * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and
+ * tabular results containing the raw data in the rows of selected vertex types
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#1-total-count-aggregation
+ * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
+ * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
+ * @param getCounts - Returns total counts of a vertex type
  * @returns: A guppy API endpoint for templating queriable data displayed on the exploration page
  */
 const explorerApi = guppyApi.injectEndpoints({
@@ -236,6 +235,9 @@ const explorerApi = guppyApi.injectEndpoints({
       transformResponse: (response: Record<string, any>, _meta, args) => {
         return processHistogramResponse(response.data._aggregation[args.type]);
       },
+      transformErrorResponse: ({ data, ...response }) => {
+        return { ...response, ...data };
+      },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
       query: ({
@@ -312,9 +314,15 @@ const explorerApi = guppyApi.injectEndpoints({
       ): number => {
         return response.data._aggregation[args.type]._totalCount;
       },
+      transformErrorResponse: ({ data, ...response }) => {
+        return { ...response, ...data };
+      },
     }),
-    getFieldCountSummary: builder.query<Record<string, any>, QueryForFileCountSummaryParams>({
-      query: ({ type, field, filters  } : QueryForFileCountSummaryParams) => {
+    getFieldCountSummary: builder.query<
+      Record<string, any>,
+      QueryForFileCountSummaryParams
+    >({
+      query: ({ type, field, filters }: QueryForFileCountSummaryParams) => {
         const gqlFilters = convertFilterSetToGqlFilter(filters);
         const query = `query ($filter: JSON) {
         _aggregation {
@@ -335,7 +343,7 @@ const explorerApi = guppyApi.injectEndpoints({
             }),
           },
         };
-      }
+      },
     }),
     getFieldsForIndex: builder.query({
       query: (index: string) => {
@@ -347,7 +355,7 @@ const explorerApi = guppyApi.injectEndpoints({
       },
       transformResponse: (response: Record<string, any>) => {
         return response['_mapping'];
-      }
+      },
     }),
   }),
 });
