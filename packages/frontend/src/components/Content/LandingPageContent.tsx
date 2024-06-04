@@ -122,13 +122,6 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               if (obj.image) {
                 return (
                   <div key={index} className="md:w-3/4 lg:w-1/2">
-                    {/* <Image
-                      src={`${basePath}${obj.image.src}`}
-                      alt={obj.image.alt}
-                      // fill
-                      className='w-1/2'
-                      objectFit="contain"
-                      /> */}
                       <img
                         src={`${basePath}${obj.image.src}`}
                         alt={obj.image.alt}
@@ -138,14 +131,6 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               }
             });
           return (
-            // <div>
-            //   <div className="grid grid-cols-2 gap-x-4 p-20">  
-            //     <div className="bg-gray-200 p-10">
-            //       </div>
-            //     <div className="bg-gray-200 p-10">
-            //       </div>
-            //   </div>
-            // </div>
             <div key={index} className="flex mx-20 flex-col md:flex-row gap-x-4 p-0">
               <div className="flex-1 flex p-10 justify-end">
                 {splitareaJsx(component.splitarea.left)}
