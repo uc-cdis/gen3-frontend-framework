@@ -24,7 +24,7 @@ const ContactPage = ( {footerProps, headerProps}: NavPageLayoutProps) => {
           </Text>
           <Text className='prose text-black text-2xl p-8'>
                         For data-related questions, contact the data stewards from RENCI/RTI via
-            <a className='text-gen3-base_blue flex flex-row items-baseline no-underline font-bold' href='http://bit.ly/HEALStewardsConnect'>
+            <a className='text-gen3-base_blue flex flex-row items-baseline no-underline font-bold' href='https://forms.fillout.com/t/gcVveGMswBus'>
               <FaExternalLinkAlt className='pr-1 pt-2'/> the HEAL Stewards contact form
             </a>
           </Text>
