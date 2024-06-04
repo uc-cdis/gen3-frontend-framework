@@ -79,10 +79,23 @@
       {
         "enabled": true,
         "type": "manifest",
+        "action": "manifest",
         "title": "Download File Manifest for Cases",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_case_manifest.json"
+        "fileName": "MIDRC_case_manifest.json",
+        "actionArgs": {
+          "resourceIndexType": "file",
+          "resourceIdField": "object_id",
+          "referenceIdFieldInResourceIndex": "subject_id",
+          "referenceIdFieldInDataIndex": "subject_id",
+          "fileFields": [
+            "file_name",
+            "file_size",
+            "md5sum",
+            "object_id"
+          ]
+        }
       },
       {
         "enabled": false,
@@ -92,7 +105,7 @@
         "rightIcon": "download"
       }
     ],
-    "loginForDownload": true,
+    "loginForDownload": false,
     "guppyConfig": {
       "dataType": "subject",
       "nodeCountTitle": "Subjects",
