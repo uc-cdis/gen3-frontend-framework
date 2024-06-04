@@ -11,8 +11,8 @@
         "left": [
           {
             "image": {
-              "src": "https://www.cancerresearchuk.org/sites/default/files/aced_website_header.jpg",
-              "alt": "Gen3 Data Platform"
+              "src": "/icons/cbds.png",
+              "alt": "CBDS Icon"
             }
           }
         ],
