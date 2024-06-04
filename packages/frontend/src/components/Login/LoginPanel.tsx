@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
 import TexturedSidePanel from '../Layout/TexturedSidePanel';
@@ -14,7 +14,7 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
   if (Array.isArray(redirect)) {
     redirectPath =   redirect[0];
   } else {
-    redirectPath = redirect ?? '/';
+    redirectPath = redirect ?? '/Explorer';
   }
   return GEN3_REDIRECT_URL ? `${GEN3_REDIRECT_URL}/${redirectPath}` : redirectPath;
 };
@@ -47,11 +47,25 @@ const LoginPanel = (loginConfig: LoginConfig) => {
     <div className="grid grid-cols-6 w-full">
       <TexturedSidePanel url={image} />
       <div className="relative col-span-4 mt-24 flex-col justify-center sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl w-full first:captialize first:font-bold">
-        {topContent?.map((content, index) => (
-          <TextContent {...content} key={index} />
-        ))}
-
-
+        {topContent?.map((content, index) => {
+          if (content.image) {
+            return (
+              
+              <div key={index}>
+                <img
+                src={`${router.basePath}${content.image.src}`}
+                alt={content.image.alt}
+                className="w-1/2 mx-auto" ></img>
+              </div>
+            );
+          }
+          else {
+            return (
+              <TextContent {...content} key={index} />
+            )
+          }
+          })
+        }
         <LoginProvidersPanel
           handleLoginSelected={handleFenceLoginSelected}
         />
