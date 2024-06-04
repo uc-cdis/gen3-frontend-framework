@@ -1,14 +1,16 @@
 {
   "body": [
     {
-      "title": {
-        "text": "ACED",
-        "level": 2
-      }
-    },
-    {
       "splitarea": {
         "left": [
+          {
+            "image": {
+              "src": "/icons/aced_bubbles.png",
+              "alt": "ACED Data Platform"
+            }
+          }
+        ],
+        "right": [
           {
             "text": "We are <strong>uniting</strong> world leading researchers to tackle the biggest challenges in early detection, an important area of unmet clinical need. Scientists in the Alliance are working together at the forefront of technological innovation to translate research into realistic ways to improve cancer diagnosis, which can be implemented into health systems and meaningfully benefit people with cancer."
           },
@@ -17,14 +19,6 @@
               "href": "/Explorer",
               "linkType": "portal",
               "text": "Explore Gen3 Data"
-            }
-          }
-        ],
-        "right": [
-          {
-            "image": {
-              "src": "https://www.cancerresearchuk.org/sites/default/files/aced_website_header.jpg",
-              "alt": "Gen3 Data Platform"
             }
           }
         ]

@@ -14,7 +14,7 @@ const Footer = ({
 }: FooterProps) => {
 
   const classNamesDefaults = {
-    root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
+    root: 'bg-base-max text-primary-contrast p-4 shadow-sm',
   };
 
   const mergedClassNames= mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
@@ -80,7 +80,7 @@ const Footer = ({
             <div
               key={`footer-col-${index}`}
               className={`flex gap-x-6 mr-8 ${
-                col.length > 1 ? 'justify-end' : ''
+                col.length > 1 ? 'justify-end' : 'justify-center'
               }`}
             >
               {col.map((logo) => (

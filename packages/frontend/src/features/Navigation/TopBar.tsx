@@ -27,8 +27,8 @@ const TopIconButton = ({
   drawBorder = true,
 }: NameAndIcon) => {
   const classNamesDefaults = {
-    root: `flex items-center align-middle px-2 ${drawBorder && 'border-r-2 border-accent'} my-2`,
-    button: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
+    root: `flex items-center align-middle px-2 ${drawBorder && 'border-r-2 border-secondary-contrast-lighter'} my-2`,
+    button: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-secondary-contrast-lighter border-transparent',
     leftIcon: 'text-secondary-contrast-lighter pr-1',
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
@@ -89,7 +89,7 @@ export interface TopBarProps {
 
 const TopBar = ({ items, showLogin = false, classNames = {} }: TopBarProps) => {
   const classNamesDefaults = {
-    root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    root: 'flex justify-end items-center align-middle w-100 bg-primary',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);

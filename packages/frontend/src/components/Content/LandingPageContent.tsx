@@ -75,7 +75,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
   const authenticated = isAuthenticated(userStatus);
   
   return (
-    <div className="sm:mt-8 2xl:mt-10 h-1/4 w-full bg-base-max">
+    <div className="sm:mt-8 2xl:mt-10 content-center w-full bg-base-max">
       {content?.body?.map((component, index) => {
         if (component.title) {
           return (
@@ -121,23 +121,36 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               }
               if (obj.image) {
                 return (
-                  <div key={index} className="h-full relative">
-                    <Image
+                  <div key={index} className="md:w-3/4 lg:w-1/2">
+                    {/* <Image
                       src={`${basePath}${obj.image.src}`}
                       alt={obj.image.alt}
-                      fill
+                      // fill
+                      className='w-1/2'
                       objectFit="contain"
+                      /> */}
+                      <img
+                        src={`${basePath}${obj.image.src}`}
+                        alt={obj.image.alt}
                       />
                   </div>
                 );
               }
             });
           return (
-            <div key={index} className="flex mx-20">
-              <div className="basis-1/2 pr-10">
+            // <div>
+            //   <div className="grid grid-cols-2 gap-x-4 p-20">  
+            //     <div className="bg-gray-200 p-10">
+            //       </div>
+            //     <div className="bg-gray-200 p-10">
+            //       </div>
+            //   </div>
+            // </div>
+            <div key={index} className="flex mx-20 flex-col md:flex-row gap-x-4 p-0">
+              <div className="flex-1 flex p-10 justify-end">
                 {splitareaJsx(component.splitarea.left)}
               </div>
-              <div className="basis-1/2">
+              <div className="flex-1 flex-col p-10 justify-start">
                 {splitareaJsx(component.splitarea.right)}
               </div>
             </div>

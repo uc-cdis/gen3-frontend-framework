@@ -28,7 +28,6 @@ const QueryExpressionContainer = tw.div`
   items-center
   bg-base-min
   shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
-  border-secondary-darkest
   border-1
   border-l-4
   my-4
@@ -156,7 +155,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
         <div className="flex flex-col w-full bg-primary">
           <div
             data-testid="text-cohort-filters-top-row"
-            className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
+            className="flex flex-row py-2 items-center border-b-1"
           >
             <OverflowTooltippedLabel
               label={currentCohortName}
