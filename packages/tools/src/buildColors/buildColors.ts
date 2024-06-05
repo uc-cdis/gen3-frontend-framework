@@ -121,8 +121,6 @@ const main = () => {
     'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
   };
 
-  console.log('table', tablePallet);
-
   writeFileSync(
     join(out ?? './', 'themeColors.json'),
     JSON.stringify(theme, null, 2),
