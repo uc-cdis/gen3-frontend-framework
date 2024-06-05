@@ -1,12 +1,14 @@
 import {
-  downloadJSONDataFromGuppy, Equals,
+  downloadJSONDataFromGuppy,
+  Equals,
   FilterSet,
-  GuppyDownloadDataParams, Includes,
+  GuppyDownloadDataParams,
+  Includes,
   JSONObject,
 } from '@gen3/core';
 import { handleDownload } from './utils';
-import { TextEncoder } from 'util';
-global.TextEncoder = TextEncoder;
+
+const DEFAULT_FILE_FIELDS = ['file_name', 'file_size', 'md5sum', 'object_id'];
 
 /**
  * Process the manifest data given the data and the fields to include in the manifest.
@@ -16,7 +18,11 @@ global.TextEncoder = TextEncoder;
  * @param resourceIdField
  * @param manifestFields
  */
-export const processManifest = (data: JSONObject[], resourceIdField: string, manifestFields: string[]) => {
+export const processManifest = (
+  data: JSONObject[],
+  resourceIdField: string,
+  manifestFields: string[],
+) => {
   return data.filter((item) => {
     const hasAllFields = manifestFields.every((field) => {
       return item[field] !== undefined;
@@ -25,7 +31,7 @@ export const processManifest = (data: JSONObject[], resourceIdField: string, man
   });
 };
 
-export interface DownloadToManifestParams extends Record<string, any>{
+export interface DownloadToManifestParams extends Record<string, any> {
   resourceIndexType: string;
   resourceIdField: string;
   referenceIdFieldInDataIndex?: string;
@@ -41,7 +47,6 @@ export const downloadToManifestAction = async (
   signal?: AbortSignal,
   dataFormat?: string,
 ): Promise<void> => {
-
   const {
     referenceIdFieldInDataIndex,
     referenceIdFieldInResourceIndex,
@@ -50,7 +55,7 @@ export const downloadToManifestAction = async (
     fileFields,
   } = params;
 
-  const manifestFields = fileFields ?? [];
+  const manifestFields = fileFields ?? DEFAULT_FILE_FIELDS;
   const manifestFilename = params?.filename ?? `${params.type}_manifest.json`;
 
   const cohortFilterParams: GuppyDownloadDataParams = {
@@ -73,18 +78,28 @@ export const downloadToManifestAction = async (
         onAbort: onAbort,
         signal: signal,
       });
-      resultManifest = processManifest(resultManifest, resourceIdField, manifestFields);
+      resultManifest = processManifest(
+        resultManifest,
+        resourceIdField,
+        manifestFields,
+      );
       if (resultManifest.length === 0) {
         throw new Error('No data found for the current filters');
       }
-      const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
-      const blob = new Blob([bytes], {
-        type: 'application/json;charset=utf-8'
+      const str = JSON.stringify(resultManifest, null, 2);
+      const blob = new Blob([str], {
+        type: 'application/json;charset=utf-8',
       });
       handleDownload(blob, manifestFilename);
       done && done();
-    } catch (err: any) {
-      onError && onError(err);
+    } catch (err) {
+      let resultErr;
+      if (typeof err === 'string') resultErr = new Error(err);
+      if (err instanceof Error) resultErr = err;
+      if (!resultErr)
+        resultErr = new Error('unknown error in download manifest');
+
+      onError && onError(resultErr);
     }
     return;
   }
@@ -92,7 +107,6 @@ export const downloadToManifestAction = async (
   try {
     // get a list of reference IDs from the data index using the current cohort filters
     let refIDList = await downloadJSONDataFromGuppy({
-
       parameters: {
         ...cohortFilterParams,
         fields: [referenceIdFieldInDataIndex],
@@ -115,12 +129,12 @@ export const downloadToManifestAction = async (
         } as Includes,
         ...(dataFormat
           ? {
-            data_format: {
-              operator: '=',
-              operand: dataFormat,
-              field: 'data_format',
-            } as Equals,
-          }
+              data_format: {
+                operator: '=',
+                operand: dataFormat,
+                field: 'data_format',
+              } as Equals,
+            }
           : {}),
       },
     };
@@ -133,7 +147,7 @@ export const downloadToManifestAction = async (
         fields: [
           referenceIdFieldInResourceIndex,
           resourceIdField,
-          ...manifestFields
+          ...manifestFields,
         ],
       },
       onAbort: onAbort,
@@ -151,7 +165,7 @@ export const downloadToManifestAction = async (
     });
     const bytes = new TextEncoder().encode(JSON.stringify(resultManifest));
     const blob = new Blob([bytes], {
-      type: 'application/json;charset=utf-8'
+      type: 'application/json;charset=utf-8',
     });
     handleDownload(blob, manifestFilename);
     done && done();

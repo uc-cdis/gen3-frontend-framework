@@ -6,6 +6,7 @@ import {
   GEN3_GUPPY_API,
   selectHeadersWithCSRFToken,
   useCoreSelector,
+  selectCSRFToken,
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 
@@ -18,7 +19,6 @@ const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
   const [query, setQuery] = useState('');
-
   const headers = useCoreSelector(selectHeadersWithCSRFToken);
 
   // Typically we would put this in core but it's only used here
@@ -30,7 +30,6 @@ const GqlQueryEditor = ({
     });
     return data.json().catch(() => data.text());
   };
-
 
   return (
     <div className="flex flex-col h-full w-full">

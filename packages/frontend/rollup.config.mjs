@@ -1,3 +1,4 @@
+import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import copy from 'rollup-plugin-copy';
@@ -7,6 +8,7 @@ import { default as tailwindConfig } from './src/tailwind.cjs';
 import postcss from 'rollup-plugin-postcss';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const globals = {
   react: 'React',
@@ -133,7 +135,7 @@ const config = [
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss(), json()],
+    plugins: [dts(), postcss(), sourcemaps()],
   },
 ];
 
