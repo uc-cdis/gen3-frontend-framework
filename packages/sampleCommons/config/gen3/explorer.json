@@ -56,7 +56,9 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.json"
+        "actionArgs" : {
+          "filename": "data_table.json"
+        }
       },
       {
         "enabled": true,
@@ -65,7 +67,9 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.tsv"
+        "actionArgs" : {
+          "filename": "data_table.tsv"
+        }
       },
       {
         "enabled": true,
@@ -74,25 +78,33 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_Cases_table.csv"
+        "actionArgs" : {
+          "filename": "data_table.csv"
+        }
       },
       {
         "enabled": true,
         "type": "manifest",
+        "action": "manifest",
         "title": "Download File Manifest for Cases",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_case_manifest.json"
-      },
-      {
-        "enabled": false,
-        "type": "export-to-workspace",
-        "title": "Export to Workspace",
-        "leftIcon": "datafile",
-        "rightIcon": "download"
+        "fileName": "case_manifest.json",
+        "actionArgs": {
+          "resourceIndexType": "file",
+          "resourceIdField": "object_id",
+          "referenceIdFieldInResourceIndex": "project_id",
+          "referenceIdFieldInDataIndex": "project_id",
+          "fileFields": [
+            "file_name",
+            "file_size",
+            "md5sum",
+            "object_id"
+          ]
+        }
       }
     ],
-    "loginForDownload": true,
+    "loginForDownload": false,
     "guppyConfig": {
       "dataType": "subject",
       "nodeCountTitle": "Subjects",
@@ -185,11 +197,6 @@
       "accessibleValidationField": "project_id",
       "downloadAccessor": "object_id"
     },
-    "dropdowns": {
-      "download-table": {
-        "title": "Download Table"
-      }
-    },
     "buttons": [
       {
         "enabled": true,
@@ -198,7 +205,9 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.json"
+        "actionArgs" : {
+          "filename": "data_table.json"
+        }
       },
       {
         "enabled": true,
@@ -207,7 +216,9 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.tsv"
+        "actionArgs" : {
+          "filename": "data_table.tsv"
+        }
       },
       {
         "enabled": true,
@@ -216,7 +227,9 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_data_files_table.csv"
+        "actionArgs" : {
+          "filename": "data_table.csv"
+        }
       },
       {
         "enabled": true,
@@ -224,14 +237,9 @@
         "title": "Download File Manifest",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "fileName": "MIDRC_data_files_manifest.json"
-      },
-      {
-        "enabled": false,
-        "type": "export-to-workspace",
-        "title": "Export to Workspace",
-        "leftIcon": "datafile",
-        "rightIcon": "download"
+        "actionArgs" : {
+          "filename": "data_table_manifest.csv"
+        }
       }
     ],
     "loginForDownload": true
