@@ -266,9 +266,21 @@
         "enabled": true,
         "type": "file-manifest",
         "title": "Download Manifest",
-        "leftIcon": "datafile",
-        "rightIcon": "download",
-        "fileName": "file-manifest.json"
+        "leftIcon": "gen3:datafile",
+        "rightIcon": "gen3:download",
+        "fileName": "manifest.json",
+        "actionArgs": {
+          "resourceIndexType": "file",
+          "resourceIdField": "object_id",
+          "referenceIdFieldInDataIndex": "object_id",
+          "referenceIdFieldInResourceIndex": "object_id",
+          "fileFields": [
+            "file_name",
+            "file_size",
+            "md5sum",
+            "object_id"
+          ]
+        }
       }
     ]
   }
