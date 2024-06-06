@@ -5,7 +5,12 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { Button, Autocomplete, Highlight } from '@mantine/core';
+import {
+  Button,
+  Autocomplete,
+  Highlight,
+  AutocompleteItem,
+} from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
@@ -14,6 +19,7 @@ import { capitalize } from 'lodash';
 import { snakeSplit } from './utils';
 import { DictionaryCategory, DictionaryEntry } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { useDictionaryContext } from './DictionaryProvider';
 
 const getSearchResults = (
   searchEntered: string,
@@ -47,7 +53,7 @@ const getSearchResults = (
             matches.push({
               node: snakeSplit(d.category),
               category: snakeSplit(d.id),
-              property: capitalize(results[2].property),
+              property: results[2]?.property ?? '',
             });
           }
         });
@@ -110,16 +116,14 @@ const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
 
 interface TableSearchProps {
   selectedId: string;
-  documents: never[];
   uidForStorage?: string;
-  categories: DictionaryCategory<DictionaryEntry | any>;
 }
 
 const TableSearch = ({
-  documents,
-  categories,
   uidForStorage = 'dictionary',
 }: TableSearchProps): ReactElement => {
+  const { documents, categories } = useDictionaryContext();
+
   const [dictionarySearchResults, setDictionarySearchResults] = useState(
     {} as any,
   );
@@ -136,17 +140,15 @@ const TableSearch = ({
     setDictionaryTableRows([]);
   }, []);
 
-  const { search, autoSuggest, suggestions, addAll, removeAll } = useMiniSearch(
-    documents,
-    {
+  const { search, autoSuggest, suggestions, addAll, removeAll, searchResults } =
+    useMiniSearch(documents, {
       fields: ['description', 'type', 'property'],
       idField: 'id',
       storeFields: ['id'],
       searchOptions: {
         processTerm: MiniSearch.getDefault('processTerm'),
       },
-    },
-  );
+    });
 
   useEffect(() => {
     if (searchTerm.length > 1) {
@@ -161,7 +163,9 @@ const TableSearch = ({
   }, [documents, suggestions, addAll, removeAll]);
 
   useEffect(() => {
-    if (searchTerm === '') setDictionarySearchResults({});
+    if (searchTerm === '') {
+      setDictionarySearchResults({});
+    }
   }, [searchTerm]);
 
   useEffect(() => {
@@ -230,24 +234,6 @@ const TableSearch = ({
   return (
     <>
       <div className="flex flex-col">
-        <div className="flex mb-1">
-          <button
-            className={`border p-1 ${
-              searchTerm.length !== 0
-                ? 'text-orange-500 border-orange-500'
-                : 'text-gray-300 border-gray-300'
-            } ml-auto mr-2 rounded-md items-center`}
-            disabled={searchTerm.length === 0}
-            onClick={() =>
-              setDictionarySearchResults({
-                term: searchTerm,
-                matches: getSearchResults(searchTerm, categories),
-              })
-            }
-          >
-            Search
-          </button>
-        </div>
         <Autocomplete
           itemComponent={(props: any) => (
             <SuggestedItem searchTerm={searchTerm} {...props} />
@@ -260,6 +246,13 @@ const TableSearch = ({
           value={searchTerm}
           onChange={(value) => {
             setSearchTerm(value as string);
+          }}
+          onItemSubmit={(item: AutocompleteItem) => {
+            const res = getSearchResults(item.value, categories);
+            setDictionarySearchResults({
+              term: item.value,
+              matches: res,
+            });
           }}
           classNames={{
             input: 'focus:border-2 focus:border-primary text-sm p-5',

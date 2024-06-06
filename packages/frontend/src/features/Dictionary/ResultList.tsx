@@ -1,3 +1,5 @@
+import { Button } from '@mantine/core';
+
 interface Result {
   node: string;
   category: string;
@@ -33,11 +35,13 @@ const ResultList = ({ matches, term, expanded }: ResultListProps) => {
               key: number,
             ) => {
               return (
-                <div key={key} className="flex w-full p-0.5">
-                  <div className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-                    {node} {'>'} {category}
-                    {'>'} {property}
-                  </div>
+                <div key={key} className="flex w-full p-0.5 pl-2">
+                  <Button variant="subtle">
+                    <p className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {node} {'>'} {category}
+                      {'>'} {property}
+                    </p>
+                  </Button>
                 </div>
               );
             },
