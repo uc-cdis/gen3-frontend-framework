@@ -1,5 +1,5 @@
 {
-  "heading": ["FranklinGothic", "Montserrat", "sans-serif"],
-  "content": ["FranklinGothic", "Noto Sans", "sans-serif"],
+  "heading": ["FranklinGothic", "sans-serif"],
+  "content": ["FranklinGothic", "sans-serif"],
   "fontFamily": "FranklinGothic"
 }
