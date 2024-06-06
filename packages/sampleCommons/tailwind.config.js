@@ -1,9 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { GEN3_COMMONS_NAME } = require('@gen3/core');
+
+const siteConfig = require('./config/siteConfig.json');
+const theme = siteConfig.commons;
 const plugin = require('tailwindcss/plugin');
-const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
-const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
+
+const themeColors = require(`./config/${theme}/themeColors.json`);
+const themeFonts = require(`./config/${theme}/themeFonts.json`);
 
 module.exports = {
   presets: [require('@gen3/frontend/tailwind')],

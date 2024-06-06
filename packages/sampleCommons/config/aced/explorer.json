@@ -4,15 +4,15 @@
     "charts": {
       "project_id": {
         "chartType": "fullPie",
-        "title": "project_id"
+        "title": "Project"
       },
-      "gender": {
+      "code": {
         "chartType": "fullPie",
-        "title": "gender"
+        "title": "Code"
       },
-      "maritalStatus": {
-        "chartType": "donut",
-        "title": "maritalStatus"
+      "value_normalized": {
+        "chartType": "fullPie",
+        "title": "Value"
       }
     },
     "filters": {
@@ -21,78 +21,9 @@
           "title": "Patient",
           "fields": [
             "project_id",
-            "us_core_race",
-            "us_core_ethnicity",
-            "gender",
-            "maritalStatus",
-            "quality_adjusted_life_years",
-            "disability_adjusted_life_years"
-          ]
-        }
-      ]
-    },
-    "table": {
-      "enabled": true,
-      "fields": [
-        "id",
-        "project_id",
-        "us_core_race",
-        "us_core_ethnicity",
-        "gender",
-        "maritalStatus",
-        "quality_adjusted_life_years",
-        "disability_adjusted_life_years"
-      ]
-    },
-    "guppyConfig": {
-      "dataType": "patient",
-      "fieldMapping": [
-        {
-          "field": "quality_adjusted_life_years",
-          "name": "quality_adjusted_life_years"
-        },
-        {
-          "field": "disability_adjusted_life_years",
-          "name": "disability_adjusted_life_years"
-        }
-      ],
-      "nodeCountTitle": "Patients",
-      "manifestMapping": {
-        "resourceIndexType": "Patient",
-        "resourceIdField": "id",
-        "referenceIdFieldInResourceIndex": "id",
-        "referenceIdFieldInDataIndex": "id"
-      },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
-      "accessibleValidationField": "project_id"
-    }
-  },
-  {
-    "tabTitle": "Observation",
-    "charts": {
-      "project_id": {
-        "chartType": "fullPie",
-        "title": "Project"
-      },
-      "code": {
-        "chartType": "fullPie",
-        "title": "Code"
-      },
-      "valueString": {
-        "chartType": "fullPie",
-        "title": "Value"
-      }
-    },
-    "filters": {
-      "tabs": [
-        {
-          "title": "Observation",
-          "fields": [
-            "project_id",
             "code",
-            "valueString"
+            "value_normalized",
+            "patient"
           ]
         }
       ]
@@ -100,17 +31,17 @@
     "table": {
       "enabled": true,
       "fields": [
-        "patient_id",
+        "patient",
         "project_id",
         "category",
         "code",
-        "valueString"
+        "value_normalized"
       ]
     },
     "guppyConfig": {
       "dataType": "observation",
       "fieldMapping": [],
-      "nodeCountTitle": "Observations",
+      "nodeCountTitle": "Patients",
       "manifestMapping": {
         "resourceIndexType": "Patient",
         "resourceIdField": "_patient_id",
@@ -215,6 +146,7 @@
           "referenceIdFieldInResourceIndex": "object_id",
           "fileFields": [
             "file_name",
+            "file_size",
             "md5sum",
             "object_id"
           ]
