@@ -6,7 +6,6 @@ import { Tooltip } from '@mantine/core';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import { TooltipStyle } from './style';
-import { TooltipStyle } from './style';
 
 /**
  * NavigationBarButton: a button for the navigation bar
@@ -45,7 +44,6 @@ const NavigationBarButton = ({
           tooltip: mergedClassnames.tooltip,
           arrow: mergedClassnames.arrow,
         }}
-        zIndex={1000}
         zIndex={1000}
         width={220}
       >

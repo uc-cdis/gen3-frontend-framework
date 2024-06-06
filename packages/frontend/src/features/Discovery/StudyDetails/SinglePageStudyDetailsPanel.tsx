@@ -13,10 +13,8 @@ import { JSONPath } from 'jsonpath-plus';
 import { toString } from 'lodash';
 import { createFieldRendererElement } from './StudyItems';
 import DownloadLinksPanel from '../StudyPage/DownloadLinksPanel';
-import DownloadLinksPanel from '../StudyPage/DownloadLinksPanel';
 
 
-const StudyTitle = ({ title, className = 'font-header text-lg font-semibold' }: { title: string, className?:string }): ReactElement => {
 const StudyTitle = ({ title, className = 'font-header text-lg font-semibold' }: { title: string, className?:string }): ReactElement => {
   return (
     <div>
@@ -42,7 +40,6 @@ const SinglePageStudyDetailsPanel = ({
   let headerText = '';
   if (studyConfig?.header?.field) {
     const res: JSONObject = JSONPath({
-      path: studyConfig.header.field,
       path: studyConfig.header.field,
       json: data,
     });
