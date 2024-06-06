@@ -209,12 +209,12 @@
         "rightIcon": "gen3:download",
         "fileName": "manifest.json",
         "actionArgs": {
-          "resourceIndexType": "Patient",
-          "resourceIdField": "_patient_id",
+          "resourceIndexType": "file",
+          "resourceIdField": "object_id",
           "referenceIdFieldInDataIndex": "object_id",
+          "referenceIdFieldInResourceIndex": "object_id",
           "fileFields": [
             "file_name",
-            "file_size",
             "md5sum",
             "object_id"
           ]
