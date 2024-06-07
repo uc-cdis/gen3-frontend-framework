@@ -27,10 +27,10 @@ const TopIconButton = ({
   drawBorder = true,
 }: NameAndIcon) => {
   const classNamesDefaults = {
-    root: `flex items-center align-middle px-2 ${drawBorder && 'border-r-2 border-secondary-contrast-lighter'} my-2`,
-    button: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-secondary-contrast-lighter border-transparent',
-    leftIcon: 'text-secondary-contrast-lighter pr-1',
-    label: 'font-content text-secondary-contrast-lighter block',
+    root: `flex items-center align-middle px-2 ${drawBorder && 'border-r-2 border-base-max'} my-2`,
+    button: 'flex flex-nowrap items-center align-middle border-b-2 hover:border-base-max border-transparent',
+    leftIcon: 'text-primary-contrast pr-1',
+    label: 'font-content text-primary-contrast block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
   const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
