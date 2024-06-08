@@ -4,19 +4,15 @@ import {
 } from 'react-icons/md';
 import ResultList from './ResultList';
 import { useState } from 'react';
-
-interface Result {
-  node: string;
-  category: string;
-  property: string;
-}
+import { MatchingSearchResult } from './types';
 
 interface ResultCardProps {
   term: string;
-  matches?: Result[];
+  matches?: MatchingSearchResult[];
+  selectItem: (_: MatchingSearchResult) => void;
 }
 
-const ResultCard = ({ term, matches }: ResultCardProps) => {
+const ResultCard = ({ term, matches, selectItem }: ResultCardProps) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <div>
@@ -26,6 +22,7 @@ const ResultCard = ({ term, matches }: ResultCardProps) => {
           matches={matches}
           term={term}
           expanded={expanded}
+          selectItem={selectItem}
         />
       ) : (
         <ResultList
@@ -33,6 +30,7 @@ const ResultCard = ({ term, matches }: ResultCardProps) => {
           matches={matches?.slice(0, 4)}
           term={term}
           expanded={expanded}
+          selectItem={selectItem}
         />
       )}
       {matches && matches?.length > 4 ? (

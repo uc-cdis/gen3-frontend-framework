@@ -1,5 +1,4 @@
 // Holds basic types for the Data Dictionary feature
-
 import { JSONObject } from '@gen3/core';
 
 export interface DictionaryConfig extends Record<string, any> {
@@ -15,20 +14,45 @@ export interface DDLink {
   multiplicity: string;
   name: string;
   required: boolean;
+  target_type?: string;
+}
+
+export interface DDLinkWithSubgroup {
+  exclusive: boolean;
+  required: boolean;
+  subgroup: Array<DDLink>;
+}
+
+interface Term {
+  pattern?: string;
+  term?: {
+    description: string;
+    termDef: {
+      cde_id: string;
+      cde_version: null | number;
+      source: string;
+      term: string;
+      term_url: string;
+    };
+  };
+  type: string;
 }
 
 interface AnyOf {
   additionalProperties?: boolean;
-  items?: Record<string, string | number | boolean>;
+  minItems?: number;
+  maxItems?: number;
+  items?: Record<string, any>;
   properties?: Record<string, any>;
   type: string;
 }
 
 export interface DictionaryProperty {
   description?: string;
-  type?: string;
-  oneOf?: Record<string, string>[];
+  type?: string | string[];
+  oneOf?: Record<string, any>[];
   anyOf?: AnyOf[];
+  allOf?: Record<string, string | string[]>[];
   term?: {
     description?: string;
   };
@@ -40,7 +64,7 @@ export interface DictionaryEntry {
   category?: string;
   description?: string;
   id?: string;
-  links?: DDLink[];
+  links?: DDLink[] | DDLinkWithSubgroup[];
   namespace?: string;
   nodeTerms?: null | any;
   program?: string;
@@ -55,7 +79,16 @@ export interface DictionaryEntry {
   validators?: null | any;
 }
 
-export type DataDictionary = Record<string, DictionaryEntry>;
+export type DataDictionary = Partial<{
+  _definitions: any;
+  _settings: {
+    _dict_commit: string;
+    _dict_version: string;
+    enable_case_cache: boolean;
+  };
+  _terms: any;
+}> &
+  Record<string, DictionaryEntry>;
 
 export interface DictionaryNode extends Record<string, unknown> {
   id: string;
@@ -82,4 +115,12 @@ export interface DictionarySearchDocument {
   description: string;
   property: string;
   type: string | string[];
+  category: string;
+  rootCategory: string;
+}
+
+export interface MatchingSearchResult {
+  node: string;
+  category: string;
+  property: string;
 }

@@ -5,62 +5,37 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {
-  Button,
-  Autocomplete,
-  Highlight,
-  AutocompleteItem,
-} from '@mantine/core';
+import { Button, Autocomplete, AutocompleteItem } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
-import { capitalize } from 'lodash';
 import { snakeSplit } from './utils';
-import { DictionaryCategory, DictionaryEntry } from './types';
+import { DictionarySearchDocument, MatchingSearchResult } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDictionaryContext } from './DictionaryProvider';
+import { useLocalStorage } from '@mantine/hooks';
 
 const getSearchResults = (
-  searchEntered: string,
-  categories: DictionaryCategory<DictionaryEntry | any>,
-) => {
-  const dictionary = Object.keys(categories).map((c) => {
-    return categories[c];
-  });
-  const matches = [] as Record<string, string>[];
-  dictionary.forEach((category) => {
-    category.forEach((d: any) => {
-      return Object.keys(d?.properties).forEach((p) => {
-        const { description, type, term, anyOf } = d['properties'][p];
-        const results = [
-          {
-            description:
-              description ??
-              term?.description ??
-              anyOf?.[1]?.properties?.id?.term?.description ??
-              '',
-          },
-          { type: type ?? anyOf?.[0]?.type ?? '' },
-          { property: snakeSplit(p) },
-        ];
-        results.forEach((r) => {
-          if (
-            (Object.values(r)[0].toLowerCase() as 'string').includes(
-              searchEntered.toLowerCase(),
-            )
-          ) {
-            matches.push({
-              node: snakeSplit(d.category),
-              category: snakeSplit(d.id),
-              property: results[2]?.property ?? '',
-            });
-          }
-        });
-      });
+  searchResults: Array<DictionarySearchDocument>,
+): Array<MatchingSearchResult> => {
+  const matches: Array<MatchingSearchResult> = [];
+  searchResults.forEach((r) => {
+    matches.push({
+      node: r.rootCategory,
+      category: r.category,
+      property: r.property,
     });
   });
-  return matches.sort((a, b) => a.node.localeCompare(b.node));
+  return matches.sort((a, b) => {
+    if (a.node < b.node) return -1;
+    if (a.node > b.node) return 1;
+    if (a.category < b.category) return -1;
+    if (a.category > b.category) return 1;
+    if (a.property < b.property) return -1;
+    if (a.property > b.property) return 1;
+    return 0;
+  });
 };
 
 interface SearchMatches {
@@ -105,9 +80,7 @@ const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
         }`}
       >
         <button className="border-none" onClick={() => setSearchTerm(value)}>
-          <Highlight color="blue" highlight={searchTerm}>
-            {value}
-          </Highlight>
+          {value}
         </button>
       </div>
     );
@@ -117,38 +90,54 @@ const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
 interface TableSearchProps {
   selectedId: string;
   uidForStorage?: string;
+  selectItem: (_: MatchingSearchResult) => void;
 }
 
 const TableSearch = ({
   uidForStorage = 'dictionary',
+  selectItem,
 }: TableSearchProps): ReactElement => {
   const { documents, categories } = useDictionaryContext();
-
   const [dictionarySearchResults, setDictionarySearchResults] = useState(
     {} as any,
   );
-  const [dictionarySearchHistory, setDictionarySearchHistory] =
-    useState<DictionarySearchHistoryObj>({});
+  //const [dictionarySearchHistory, setDictionarySearchHistory] =
+  //  useState<DictionarySearchHistoryObj>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [dictionaryTableRows, setDictionaryTableRows] = useState<
     [] | JSX.Element[]
   >([]);
 
-  const removeDictionarySearchHistory = useCallback(() => {
-    sessionStorage.setItem(uidForStorage, JSON.stringify({}));
-    setDictionarySearchHistory({});
-    setDictionaryTableRows([]);
-  }, []);
+  const [
+    dictionarySearchHistory,
+    setDictionarySearchHistory,
+    removeDictionarySearchHistory,
+  ] = useLocalStorage<DictionarySearchHistoryObj>({
+    key: 'dictionary',
+    defaultValue: {},
+  });
 
-  const { search, autoSuggest, suggestions, addAll, removeAll, searchResults } =
-    useMiniSearch(documents, {
-      fields: ['description', 'type', 'property'],
-      idField: 'id',
-      storeFields: ['id'],
-      searchOptions: {
-        processTerm: MiniSearch.getDefault('processTerm'),
-      },
-    });
+  // const removeDictionarySearchHistory = useCallback(() => {
+  //   sessionStorage.setItem(uidForStorage, JSON.stringify({}));
+  //   setDictionarySearchHistory({});
+  //   setDictionaryTableRows([]);
+  // }, []);
+
+  const {
+    search,
+    autoSuggest,
+    suggestions,
+    searchResults,
+    clearSearch,
+    clearSuggestions,
+  } = useMiniSearch(documents, {
+    fields: ['description', 'type', 'property'],
+    idField: 'id',
+    storeFields: ['id'],
+    searchOptions: {
+      processTerm: MiniSearch.getDefault('processTerm'),
+    },
+  });
 
   useEffect(() => {
     if (searchTerm.length > 1) {
@@ -158,25 +147,22 @@ const TableSearch = ({
   }, [searchTerm, autoSuggest, search]);
 
   useEffect(() => {
-    removeAll();
-    addAll(documents);
-  }, [documents, suggestions, addAll, removeAll]);
-
-  useEffect(() => {
     if (searchTerm === '') {
       setDictionarySearchResults({});
+      clearSearch();
+      clearSuggestions();
     }
   }, [searchTerm]);
 
   useEffect(() => {
     setDictionarySearchHistory(
-      JSON.parse(sessionStorage.getItem(uidForStorage) || '{}'),
+      JSON.parse(localStorage.getItem(uidForStorage) || '{}'),
     );
-  }, [uidForStorage]);
+  }, []);
 
   useEffect(() => {
     if (dictionarySearchHistory) {
-      sessionStorage.setItem(
+      localStorage.setItem(
         uidForStorage,
         JSON.stringify(dictionarySearchHistory),
       );
@@ -184,15 +170,13 @@ const TableSearch = ({
   }, [uidForStorage, dictionarySearchHistory]);
 
   useEffect(() => {
-    const cachedData = JSON.parse(
-      sessionStorage.getItem(uidForStorage) || '{}',
-    );
+    const cachedData = JSON.parse(localStorage.getItem(uidForStorage) || '{}');
     if (
       dictionarySearchResults?.term?.length &&
       !Object.keys(cachedData).includes(dictionarySearchResults?.term) &&
       dictionarySearchResults?.matches?.length
     ) {
-      sessionStorage.setItem(
+      localStorage.setItem(
         uidForStorage,
         JSON.stringify({
           ...cachedData,
@@ -215,6 +199,7 @@ const TableSearch = ({
               <ResultCard
                 term={d}
                 matches={dictionarySearchHistory?.[d] as unknown as []}
+                selectItem={selectItem}
               />
             </div>
           );
@@ -230,7 +215,6 @@ const TableSearch = ({
       }),
     [suggestions],
   );
-
   return (
     <>
       <div className="flex flex-col">
@@ -248,10 +232,9 @@ const TableSearch = ({
             setSearchTerm(value as string);
           }}
           onItemSubmit={(item: AutocompleteItem) => {
-            const res = getSearchResults(item.value, categories);
             setDictionarySearchResults({
               term: item.value,
-              matches: res,
+              matches: getSearchResults(searchResults ?? []),
             });
           }}
           classNames={{
@@ -263,6 +246,8 @@ const TableSearch = ({
               <CloseIcon
                 onClick={() => {
                   setSearchTerm('');
+                  clearSearch();
+                  clearSuggestions();
                 }}
                 className="cursor-pointer"
               />
@@ -278,6 +263,7 @@ const TableSearch = ({
           <ResultCard
             term={dictionarySearchResults?.term}
             matches={dictionarySearchResults?.matches}
+            selectItem={selectItem}
           />
         ) : (
           <span className="text-xs items-center">

@@ -77,7 +77,9 @@ const DictionaryProvider = ({
               return Object.keys(d?.properties).map((key) => {
                 const { description, type, term, anyOf } = d['properties'][key];
                 return {
-                  id: `${d.id}-${key}`,
+                  rootCategory: d.category,
+                  category: d.id,
+                  id: `${d.category}-${d.id}-${key}`,
                   property: key,
                   description:
                     description ??

@@ -1,11 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { capitalize } from 'lodash';
 import {
   MantineReactTable,
   MRT_Cell,
+  MRT_Row,
   useMantineReactTable,
+  MRT_RowSelectionState,
 } from 'mantine-react-table';
-import Cell from './Cell';
 import { DictionaryProperty } from './types';
 
 interface PropertyTableRowData {
@@ -13,14 +14,23 @@ interface PropertyTableRowData {
   type: string;
   required: string;
   description: string;
+  property_id: string;
 }
 
 interface PropertiesTableProps {
   properties: Record<string, DictionaryProperty>;
   required?: string[];
+  category: string;
+  subCategory: string;
 }
 
-const PropertiesTable = ({ properties, required }: PropertiesTableProps) => {
+const PropertiesTable = ({
+  properties,
+  required,
+  category,
+  subCategory,
+}: PropertiesTableProps) => {
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const columns = useMemo(() => {
     return [
       /** TODO: add line to match design
@@ -32,12 +42,28 @@ const PropertiesTable = ({ properties, required }: PropertiesTableProps) => {
        },
        },
        */
-      ...['property', 'type', 'required', 'description'].map((key) => ({
+      {
+        accessorKey: 'property',
+        header: 'Property',
+        Cell: ({
+          cell,
+          row,
+        }: {
+          cell: MRT_Cell;
+          row: MRT_Row<PropertyTableRowData>;
+        }) => (
+          <span
+            id={`${category}-${subCategory}-${
+              (row.original as PropertyTableRowData).property_id
+            }`}
+          >
+            {cell.getValue<string>()}
+          </span>
+        ),
+      },
+      ...['type', 'required', 'description'].map((key) => ({
         accessorKey: key,
         header: key.toLocaleUpperCase(),
-        Cell: ({ cell }: { cell: MRT_Cell<PropertyTableRowData> }) => (
-          <Cell cell={cell} key={key} />
-        ),
       })),
     ];
   }, []);
@@ -52,9 +78,11 @@ const PropertiesTable = ({ properties, required }: PropertiesTableProps) => {
               type: '',
               required: 'No',
               description: '',
+              property_id: k,
             } as PropertyTableRowData;
           const row = properties[k];
           return {
+            property_id: k,
             property: k
               .split('_')
               .map((name) => capitalize(name))
@@ -76,13 +104,22 @@ const PropertiesTable = ({ properties, required }: PropertiesTableProps) => {
     enablePagination: false,
     enableBottomToolbar: false,
     enableTopToolbar: false,
-    mantineTableHeadRowProps: {
-      bg: 'rgb(206, 203, 228)',
-    },
-    mantineTableBodyRowProps: {
+    mantineTableBodyRowProps: ({ row }) => ({
+      //implement row selection click events manually
+      onClick: () =>
+        setRowSelection((prev) => ({
+          ...prev,
+          [row.id]: !prev[row.id],
+        })),
+      selected: rowSelection[row.id],
       sx: {
+        cursor: 'pointer',
         borderWidth: 2,
       },
+    }),
+    state: { rowSelection },
+    mantineTableHeadRowProps: {
+      bg: 'rgb(206, 203, 228)',
     },
     mantineTableProps: {
       striped: true,
@@ -92,8 +129,6 @@ const PropertiesTable = ({ properties, required }: PropertiesTableProps) => {
       },
     },
   });
-
-  console.log('properties table');
 
   return <MantineReactTable table={table} />;
 };

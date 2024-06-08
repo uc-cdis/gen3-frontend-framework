@@ -1,17 +1,18 @@
-import { Button } from '@mantine/core';
-
-interface Result {
-  node: string;
-  category: string;
-  property: string;
-}
+import { Button, Highlight } from '@mantine/core';
+import { MatchingSearchResult } from './types';
 
 interface ResultListProps {
-  matches?: Result[];
+  matches?: MatchingSearchResult[];
   term: string;
   expanded: boolean;
+  selectItem: (_: MatchingSearchResult) => void;
 }
-const ResultList = ({ matches, term, expanded }: ResultListProps) => {
+const ResultList = ({
+  matches,
+  term,
+  expanded,
+  selectItem,
+}: ResultListProps) => {
   return (
     <div>
       {matches?.length && (
@@ -27,21 +28,30 @@ const ResultList = ({ matches, term, expanded }: ResultListProps) => {
           </div>
           {matches.map(
             (
-              {
-                node,
-                category,
-                property,
-              }: { node: string; category: string; property: string },
+              { node, category, property }: MatchingSearchResult,
               key: number,
             ) => {
               return (
                 <div key={key} className="flex w-full p-0.5 pl-2">
-                  <Button variant="subtle">
-                    <p className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {node} {'>'} {category}
-                      {'>'} {property}
-                    </p>
-                  </Button>
+                  <Highlight
+                    component="button"
+                    highlight={term}
+                    truncate="end"
+                    className="hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
+                    onClick={() => {
+                      console.log(
+                        'picked',
+                        `${node} > ${category} > ${property}`,
+                      );
+                      selectItem({
+                        node,
+                        category,
+                        property,
+                      });
+                    }}
+                  >
+                    {`${node} > ${category} > ${property}`}
+                  </Highlight>
                 </div>
               );
             },

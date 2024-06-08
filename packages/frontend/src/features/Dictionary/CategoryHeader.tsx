@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { forwardRef, ReactElement } from 'react';
 import { snakeCaseToLabel } from './utils';
 import { Avatar } from '@mantine/core';
 
@@ -8,7 +8,10 @@ interface CategoryHeaderProps {
 }
 const CategoryHeader = ({ icon, category }: CategoryHeaderProps) => {
   return (
-    <h3 className="flex text-secondary-contrast-darker  font-bold font-size-md bg-secondary-darker border mb-0 justify-between h-16">
+    <h3
+      className="flex text-secondary-contrast-darker  font-bold font-size-md bg-secondary-darker border mb-0 justify-between h-16"
+      id={category}
+    >
       <div className="flex items-center ml-2">
         <Avatar color="accent.4" radius="xl">
           {icon}
@@ -18,5 +21,7 @@ const CategoryHeader = ({ icon, category }: CategoryHeaderProps) => {
     </h3>
   );
 };
+
+CategoryHeader.displayName = 'CategoryHeader';
 
 export default CategoryHeader;
