@@ -1,20 +1,15 @@
-import React, {
-  forwardRef,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
 import { Button, Autocomplete, AutocompleteItem } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
-import { snakeSplit } from './utils';
 import { DictionarySearchDocument, MatchingSearchResult } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDictionaryContext } from './DictionaryProvider';
 import { useLocalStorage } from '@mantine/hooks';
+
+const KEY_FOR_SEARCH_HISTORY = 'dictionary-search';
 
 const getSearchResults = (
   searchResults: Array<DictionarySearchDocument>,
@@ -48,6 +43,7 @@ interface DictionarySearchHistoryObj {
   [key: string]: {
     matches?: SearchMatches[];
     term: string;
+    datetime: string;
   };
 }
 
@@ -89,20 +85,14 @@ const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
 
 interface TableSearchProps {
   selectedId: string;
-  uidForStorage?: string;
   selectItem: (_: MatchingSearchResult) => void;
 }
 
-const TableSearch = ({
-  uidForStorage = 'dictionary',
-  selectItem,
-}: TableSearchProps): ReactElement => {
+const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
   const { documents, categories } = useDictionaryContext();
   const [dictionarySearchResults, setDictionarySearchResults] = useState(
     {} as any,
   );
-  //const [dictionarySearchHistory, setDictionarySearchHistory] =
-  //  useState<DictionarySearchHistoryObj>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [dictionaryTableRows, setDictionaryTableRows] = useState<
     [] | JSX.Element[]
@@ -113,15 +103,9 @@ const TableSearch = ({
     setDictionarySearchHistory,
     removeDictionarySearchHistory,
   ] = useLocalStorage<DictionarySearchHistoryObj>({
-    key: 'dictionary',
+    key: KEY_FOR_SEARCH_HISTORY,
     defaultValue: {},
   });
-
-  // const removeDictionarySearchHistory = useCallback(() => {
-  //   sessionStorage.setItem(uidForStorage, JSON.stringify({}));
-  //   setDictionarySearchHistory({});
-  //   setDictionaryTableRows([]);
-  // }, []);
 
   const {
     search,
@@ -155,50 +139,34 @@ const TableSearch = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    setDictionarySearchHistory(
-      JSON.parse(localStorage.getItem(uidForStorage) || '{}'),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (dictionarySearchHistory) {
-      localStorage.setItem(
-        uidForStorage,
-        JSON.stringify(dictionarySearchHistory),
-      );
-    }
-  }, [uidForStorage, dictionarySearchHistory]);
-
-  useEffect(() => {
-    const cachedData = JSON.parse(localStorage.getItem(uidForStorage) || '{}');
     if (
       dictionarySearchResults?.term?.length &&
-      !Object.keys(cachedData).includes(dictionarySearchResults?.term) &&
+      !Object.keys(dictionarySearchHistory).includes(
+        dictionarySearchResults?.term,
+      ) &&
       dictionarySearchResults?.matches?.length
     ) {
-      localStorage.setItem(
-        uidForStorage,
-        JSON.stringify({
-          ...cachedData,
-          [dictionarySearchResults?.term]: dictionarySearchResults.matches,
-        }),
-      );
       setDictionarySearchHistory({
-        ...cachedData,
-        [dictionarySearchResults?.term]: dictionarySearchResults.matches,
+        ...dictionarySearchHistory,
+        [dictionarySearchResults?.term]: {
+          term: dictionarySearchResults.term,
+          matches: dictionarySearchResults.matches,
+          datetime: new Date().toLocaleString(),
+        },
       });
     }
-  }, [dictionarySearchResults, uidForStorage]);
+  }, [dictionarySearchResults]);
 
   useEffect(() => {
     if (dictionarySearchHistory) {
       setDictionaryTableRows(
         Object.keys(dictionarySearchHistory).map((d) => {
+          console.log('dictionarySearchHistory[d]', dictionarySearchHistory[d]);
           return (
             <div key={`dictionary-table-row-${d}`} className="my-2">
               <ResultCard
                 term={d}
-                matches={dictionarySearchHistory?.[d] as unknown as []}
+                matches={dictionarySearchHistory[d]?.matches}
                 selectItem={selectItem}
               />
             </div>
@@ -206,7 +174,7 @@ const TableSearch = ({
         }),
       );
     }
-  }, [dictionarySearchResults, dictionarySearchHistory]);
+  }, [dictionarySearchHistory]);
 
   const suggestedData = useDeepCompareMemo(
     () =>

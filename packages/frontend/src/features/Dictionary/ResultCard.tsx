@@ -6,6 +6,8 @@ import ResultList from './ResultList';
 import { useState } from 'react';
 import { MatchingSearchResult } from './types';
 
+const MAX_UNEXPANDED_ITEMS = 4;
+
 interface ResultCardProps {
   term: string;
   matches?: MatchingSearchResult[];
@@ -14,6 +16,8 @@ interface ResultCardProps {
 
 const ResultCard = ({ term, matches, selectItem }: ResultCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  console.log('term', term);
+  console.log('matches', matches);
   return (
     <div>
       {expanded ? (
@@ -27,13 +31,13 @@ const ResultCard = ({ term, matches, selectItem }: ResultCardProps) => {
       ) : (
         <ResultList
           key={term}
-          matches={matches?.slice(0, 4)}
+          matches={matches?.slice(0, MAX_UNEXPANDED_ITEMS)}
           term={term}
           expanded={expanded}
           selectItem={selectItem}
         />
       )}
-      {matches && matches?.length > 4 ? (
+      {matches && matches?.length > MAX_UNEXPANDED_ITEMS ? (
         <div className="flex w-full items-center border-2 border-solid border-base-light border-t-0 rounded-b-md">
           {expanded ? (
             <button
@@ -52,7 +56,7 @@ const ResultCard = ({ term, matches, selectItem }: ResultCardProps) => {
             >
               <div className="flex font-bold text-sm">
                 <DownArrowIcon size={20} />
-                {matches.length - 4} More
+                {matches.length - MAX_UNEXPANDED_ITEMS} More
               </div>
             </button>
           )}

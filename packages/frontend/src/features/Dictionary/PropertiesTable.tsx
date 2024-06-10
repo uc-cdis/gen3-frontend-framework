@@ -4,6 +4,7 @@ import {
   MantineReactTable,
   MRT_Cell,
   MRT_Row,
+  MRT_ColumnDef,
   useMantineReactTable,
   MRT_RowSelectionState,
 } from 'mantine-react-table';
@@ -31,7 +32,7 @@ const PropertiesTable = ({
   subCategory,
 }: PropertiesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-  const columns = useMemo(() => {
+  const columns = useMemo<Array<MRT_ColumnDef<PropertyTableRowData>>>(() => {
     return [
       /** TODO: add line to match design
        {
@@ -49,17 +50,19 @@ const PropertiesTable = ({
           cell,
           row,
         }: {
-          cell: MRT_Cell;
+          cell: MRT_Cell<PropertyTableRowData>;
           row: MRT_Row<PropertyTableRowData>;
-        }) => (
-          <span
-            id={`${category}-${subCategory}-${
-              (row.original as PropertyTableRowData).property_id
-            }`}
-          >
-            {cell.getValue<string>()}
-          </span>
-        ),
+        }) => {
+          return (
+            <span
+              id={`${category}-${subCategory}-${
+                (row.original as PropertyTableRowData).property_id
+              }`}
+            >
+              {cell.getValue<string>()}
+            </span>
+          );
+        },
       },
       ...['type', 'required', 'description'].map((key) => ({
         accessorKey: key,

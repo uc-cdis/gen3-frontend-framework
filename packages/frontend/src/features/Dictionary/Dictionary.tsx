@@ -28,8 +28,6 @@ const Dictionary = ({ uidForStorage = 'dictionary' }: DictionaryProps) => {
     }
   }, []);
 
-  console.log('slectedI', selectedId);
-
   return (
     <div className="flex m-2 bg-base-max">
       <div className="w-1/4 mr-4">

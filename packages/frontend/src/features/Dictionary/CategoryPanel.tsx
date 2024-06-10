@@ -7,6 +7,7 @@ import PropertiesTable from './PropertiesTable';
 import { useDictionaryContext } from './DictionaryProvider';
 import { DictionaryCategory } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { MdDownload as DownloadIcon } from 'react-icons/md';
 
 // TODO: need a more extensive icon library
 //  Use icons from the icon library to enable
@@ -71,8 +72,8 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
                   />
                 </Accordion.Control>
                 <Group noWrap className="ml-auto">
-                  <Button>TSV</Button>
-                  <Button>JSON</Button>
+                  <Button leftIcon={<DownloadIcon />}>TSV</Button>
+                  <Button leftIcon={<DownloadIcon />}>JSON</Button>
                 </Group>
               </Group>
               <Accordion.Panel>
