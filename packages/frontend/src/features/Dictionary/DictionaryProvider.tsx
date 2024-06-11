@@ -8,6 +8,7 @@ import {
 } from './types';
 import { JSONObject } from '@gen3/core';
 import { categoryFilter, categoryReduce } from './utils';
+import { KEY_FOR_SEARCH_HISTORY, MAX_SEARCH_HISTORY } from './constants';
 
 interface DictionaryProviderValue extends DictionaryConfigProps {
   setPropertyDetails: React.Dispatch<React.SetStateAction<JSONObject>>;
@@ -18,7 +19,12 @@ interface DictionaryProviderValue extends DictionaryConfigProps {
 }
 
 const DictionaryContext = createContext<DictionaryProviderValue>({
-  config: {},
+  config: {
+    showGraph: false,
+    showDownloads: false,
+    historyStorageId: KEY_FOR_SEARCH_HISTORY,
+    maxHistoryItems: MAX_SEARCH_HISTORY,
+  },
   dictionary: {},
   setPropertyDetails: () => null,
   propertyDetails: {} as JSONObject,

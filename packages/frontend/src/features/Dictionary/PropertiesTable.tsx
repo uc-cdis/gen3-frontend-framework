@@ -9,6 +9,9 @@ import {
   MRT_RowSelectionState,
 } from 'mantine-react-table';
 import { DictionaryProperty } from './types';
+import { useDeepCompareEffect } from 'use-deep-compare';
+import { List, ThemeIcon } from '@mantine/core';
+import { FaCircle as DiscIcon } from 'react-icons/fa';
 
 interface PropertyTableRowData {
   property: string;
@@ -23,6 +26,7 @@ interface PropertiesTableProps {
   required?: string[];
   category: string;
   subCategory: string;
+  selectedProperty: string;
 }
 
 const PropertiesTable = ({
@@ -30,8 +34,15 @@ const PropertiesTable = ({
   required,
   category,
   subCategory,
+  selectedProperty,
 }: PropertiesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+
+  useDeepCompareEffect(() => {
+    if (selectedProperty) setRowSelection({ [selectedProperty]: true });
+    else setRowSelection({});
+  }, [selectedProperty]);
+
   const columns = useMemo<Array<MRT_ColumnDef<PropertyTableRowData>>>(() => {
     return [
       /** TODO: add line to match design
@@ -46,6 +57,7 @@ const PropertiesTable = ({
       {
         accessorKey: 'property',
         header: 'Property',
+        size: 75,
         Cell: ({
           cell,
           row,
@@ -54,22 +66,50 @@ const PropertiesTable = ({
           row: MRT_Row<PropertyTableRowData>;
         }) => {
           return (
-            <span
-              id={`${category}-${subCategory}-${
-                (row.original as PropertyTableRowData).property_id
-              }`}
-            >
+            <span id={`${category}-${subCategory}-${row.original.property_id}`}>
               {cell.getValue<string>()}
             </span>
           );
         },
       },
-      ...['type', 'required', 'description'].map((key) => ({
-        accessorKey: key,
-        header: key.toLocaleUpperCase(),
-      })),
+      {
+        accessorKey: 'type',
+        header: 'Type(s)',
+        size: 90,
+        Cell: ({
+          cell,
+          row,
+        }: {
+          cell: MRT_Cell<PropertyTableRowData>;
+          row: MRT_Row<PropertyTableRowData>;
+        }) => {
+          return (
+            <List
+              center
+              classNames={{
+                itemWrapper: 'flex items-center',
+              }}
+              icon={<DiscIcon size="0.5rem" />}
+              id={`${category}-${subCategory}-${row.original.property_id}-list`}
+            >
+              <List.Item>{cell.getValue<string>()}</List.Item>
+            </List>
+          );
+        },
+      },
+      {
+        accessorKey: 'required',
+        header: 'Required',
+        size: 60,
+      },
+      {
+        accessorKey: 'description',
+        header: 'Description',
+      },
     ];
   }, []);
+
+  console.log('rowSelection', rowSelection);
 
   const tableData = useMemo(() => {
     const keys = properties ? Object.keys(properties ?? {}) : [];
@@ -100,24 +140,35 @@ const PropertiesTable = ({
         })
       : ([] as PropertyTableRowData[]);
   }, []);
-
   const table = useMantineReactTable<PropertyTableRowData>({
     columns,
     data: tableData,
     enablePagination: false,
     enableBottomToolbar: false,
     enableTopToolbar: false,
+    selectDisplayMode: 'switch',
+    mantineTableBodyProps: {
+      sx: {},
+    },
+    getRowId: (originalRow: PropertyTableRowData, index: number) =>
+      originalRow.property_id,
     mantineTableBodyRowProps: ({ row }) => ({
-      //implement row selection click events manually
-      onClick: () =>
-        setRowSelection((prev) => ({
-          ...prev,
-          [row.id]: !prev[row.id],
-        })),
-      selected: rowSelection[row.id],
-      sx: {
-        cursor: 'pointer',
-        borderWidth: 2,
+      sx: (theme) => {
+        if (Object.keys(rowSelection).includes(row.original.property_id)) {
+          console.log('found');
+        }
+        const res = {
+          ...(Object.keys(rowSelection).includes(row.original.property_id)
+            ? {
+                backgroundColor: '#ffee00',
+              }
+            : {}),
+          borderWidth: 2,
+        };
+        if (Object.keys(rowSelection).includes(row.original.property_id)) {
+          console.log('found', res);
+        }
+        return res;
       },
     }),
     state: { rowSelection },
@@ -125,10 +176,10 @@ const PropertiesTable = ({
       bg: 'rgb(206, 203, 228)',
     },
     mantineTableProps: {
-      striped: true,
       sx: {
         borderSpacing: '0rem 0rem',
         borderCollapse: 'separate',
+        tableLayout: 'fixed',
       },
     },
   });

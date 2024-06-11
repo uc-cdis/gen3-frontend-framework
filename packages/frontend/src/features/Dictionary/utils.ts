@@ -1,4 +1,4 @@
-import { DictionaryCategory } from './types';
+import { DictionaryCategory, MatchingSearchResult } from './types';
 import { capitalize } from 'lodash';
 
 export const categoryFilter = (id: string, dictionary: any) =>
@@ -55,3 +55,17 @@ export const snakeSplit = (snake: string) => {
     .map((name) => capitalize(name))
     .join(' ');
 };
+
+export const SearchPathToPropertyIdString = (item: MatchingSearchResult) =>
+  `${item.node}-${item.category}-${item.property}`;
+export const PropertyIdStringToSearchPath = (
+  id: string,
+): MatchingSearchResult => {
+  const [node, category, property] = id.split('-');
+  return { node, category, property };
+};
+export const toPropertyIdString = (
+  node: string,
+  category: string,
+  property: string,
+) => `${node}-${category}-${property}`;

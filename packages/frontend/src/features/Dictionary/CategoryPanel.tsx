@@ -8,6 +8,7 @@ import { useDictionaryContext } from './DictionaryProvider';
 import { DictionaryCategory } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
+import { PropertyIdStringToSearchPath } from './utils';
 
 // TODO: need a more extensive icon library
 //  Use icons from the icon library to enable
@@ -31,13 +32,16 @@ interface CategoryPanel {
 }
 
 const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
-  const { dictionary, categories } = useDictionaryContext();
+  const { dictionary, categories, config } = useDictionaryContext();
   const categoryInfo: Array<DictionaryCategory<string>> = categories[category];
   const [value, setValue] = useState<string | null>(selectedId);
+  const selectedItems = PropertyIdStringToSearchPath(selectedId);
 
   useDeepCompareEffect(() => {
-    setValue(selectedId);
-  }, [selectedId]);
+    setValue(`${selectedItems.node}-${selectedItems.category}`);
+  }, [selectedItems]);
+
+  console.log('dictionary', dictionary);
 
   return (
     <div
@@ -71,10 +75,14 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
                     description={description}
                   />
                 </Accordion.Control>
-                <Group noWrap className="ml-auto">
-                  <Button leftIcon={<DownloadIcon />}>TSV</Button>
-                  <Button leftIcon={<DownloadIcon />}>JSON</Button>
-                </Group>
+                {config?.showDownloads ? (
+                  <Group noWrap className="ml-auto">
+                    <Button leftIcon={<DownloadIcon />}>TSV</Button>
+                    <Button leftIcon={<DownloadIcon />}>JSON</Button>
+                  </Group>
+                ) : (
+                  false
+                )}
               </Group>
               <Accordion.Panel>
                 <div className="ml-2">
@@ -84,6 +92,7 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
                       required={dictionary[id].required}
                       category={category}
                       subCategory={id}
+                      selectedProperty={selectedItems.property}
                     />
                   </div>
                 </div>

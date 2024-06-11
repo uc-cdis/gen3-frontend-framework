@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useScrollIntoView } from '@mantine/hooks';
 
 import { DictionaryProps, MatchingSearchResult, ViewType } from './types';
-import { getPropertyCount } from './utils';
+import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
 import TableSearch from './TableSearch';
 import { useDictionaryContext } from './DictionaryProvider';
@@ -11,14 +11,15 @@ import CategoryPanel from './CategoryPanel';
 const Dictionary = ({ uidForStorage = 'dictionary' }: DictionaryProps) => {
   const [selectedId, setSelectedId] = useState('');
   const [view, setView] = useState<ViewType>('table');
-  const { dictionary, categories, visibleCategories } = useDictionaryContext();
+  const { dictionary, categories, visibleCategories, config } =
+    useDictionaryContext();
   const { scrollIntoView, targetRef } = useScrollIntoView({});
 
   const scrollTo = useCallback((item: MatchingSearchResult) => {
     const element = document.getElementById(
       `${item.node}-${item.category}-${item.property}`,
     );
-    setSelectedId(() => `${item.node}-${item.category}`);
+    setSelectedId(() => SearchPathToPropertyIdString(item));
 
     console.log('element', element);
     if (element) {
@@ -31,7 +32,9 @@ const Dictionary = ({ uidForStorage = 'dictionary' }: DictionaryProps) => {
   return (
     <div className="flex m-2 bg-base-max">
       <div className="w-1/4 mr-4">
-        <ViewSelector view={view} setView={setView} />
+        {config?.showGraph ? (
+          <ViewSelector view={view} setView={setView} />
+        ) : null}
         <div className="p-4 text-sm">
           <span>
             The current commons dictionary has{' '}

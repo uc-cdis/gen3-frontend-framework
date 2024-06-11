@@ -104,6 +104,7 @@ module.exports = {
       addVariant('data-in-range', '&[data-in-range]');
       addVariant('data-first-in-range', '&[data-first-in-range]');
       addVariant('data-last-in-range', '&[data-last-in-range]');
+      addVariant('data-with-icon', '&[data-with-icon]');
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {

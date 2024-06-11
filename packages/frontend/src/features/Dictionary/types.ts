@@ -1,11 +1,9 @@
-// Holds basic types for the Data Dictionary feature
-import { JSONObject } from '@gen3/core';
-
-export interface DictionaryConfig extends Record<string, any> {
-  id: string;
-  category: string;
-  description: string;
-  properties: Record<string, unknown>;
+export interface DictionaryConfig
+  extends Record<string, string | number | boolean | undefined> {
+  showGraph?: boolean;
+  showDownloads?: boolean;
+  historyStorageId?: string;
+  maxHistoryItems: number;
 }
 
 export interface DDLink {
@@ -102,7 +100,7 @@ export interface DictionaryCategory<T> {
 export type ViewType = 'table' | 'graph';
 
 export interface DictionaryConfigProps {
-  config?: Record<string, any>;
+  config?: DictionaryConfig;
   dictionary: DataDictionary;
 }
 

@@ -1,5 +1,5 @@
 import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
-import { Button, Autocomplete, AutocompleteItem } from '@mantine/core';
+import { Autocomplete, AutocompleteItem, Button } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
@@ -8,8 +8,7 @@ import { DictionarySearchDocument, MatchingSearchResult } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDictionaryContext } from './DictionaryProvider';
 import { useLocalStorage } from '@mantine/hooks';
-
-const KEY_FOR_SEARCH_HISTORY = 'dictionary-search';
+import { KEY_FOR_SEARCH_HISTORY, MAX_SEARCH_HISTORY } from './constants';
 
 const getSearchResults = (
   searchResults: Array<DictionarySearchDocument>,
@@ -89,7 +88,7 @@ interface TableSearchProps {
 }
 
 const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
-  const { documents, categories } = useDictionaryContext();
+  const { documents, config } = useDictionaryContext();
   const [dictionarySearchResults, setDictionarySearchResults] = useState(
     {} as any,
   );
@@ -103,7 +102,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
     setDictionarySearchHistory,
     removeDictionarySearchHistory,
   ] = useLocalStorage<DictionarySearchHistoryObj>({
-    key: KEY_FOR_SEARCH_HISTORY,
+    key: config?.historyStorageId ?? KEY_FOR_SEARCH_HISTORY,
     defaultValue: {},
   });
 
@@ -146,14 +145,26 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
       ) &&
       dictionarySearchResults?.matches?.length
     ) {
-      setDictionarySearchHistory({
-        ...dictionarySearchHistory,
-        [dictionarySearchResults?.term]: {
+      let searchHistoryArray = Object.entries(dictionarySearchHistory);
+      searchHistoryArray.push([
+        dictionarySearchResults?.term,
+        {
           term: dictionarySearchResults.term,
           matches: dictionarySearchResults.matches,
           datetime: new Date().toLocaleString(),
         },
-      });
+      ]);
+      searchHistoryArray.sort(
+        (a, b) => Date.parse(b[1].datetime) - Date.parse(a[1].datetime),
+      );
+      // Trim the array to the last 10 items
+      searchHistoryArray = searchHistoryArray.slice(
+        0,
+        config?.maxHistoryItems ?? MAX_SEARCH_HISTORY,
+      );
+      // Convert the array back to an object
+      const newSearchHistory = Object.fromEntries(searchHistoryArray);
+      setDictionarySearchHistory(newSearchHistory);
     }
   }, [dictionarySearchResults]);
 
