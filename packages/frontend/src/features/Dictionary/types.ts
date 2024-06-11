@@ -99,13 +99,9 @@ export interface DictionaryCategory<T> {
 
 export type ViewType = 'table' | 'graph';
 
-export interface DictionaryConfigProps {
+export interface DictionaryProps {
   config?: DictionaryConfig;
   dictionary: DataDictionary;
-}
-
-export interface DictionaryProps extends DictionaryConfigProps {
-  uidForStorage?: string;
 }
 
 export interface DictionarySearchDocument {

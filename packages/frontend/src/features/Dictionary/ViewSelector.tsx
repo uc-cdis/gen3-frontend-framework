@@ -1,6 +1,5 @@
 import React from 'react';
 import { ViewType } from './types';
-import { useDictionaryContext } from './DictionaryProvider';
 
 const SelectedStyle = (selected: boolean): string => {
   return `${
