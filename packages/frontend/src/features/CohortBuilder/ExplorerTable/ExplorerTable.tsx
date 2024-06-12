@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
+  CoreState,
   fieldNameToTitle,
   selectIndexFilters,
   useCoreSelector,
@@ -21,6 +22,7 @@ import {
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
 import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
+import { CohortBuilderTableRowRenderer } from './ExploreTableDetails';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -98,7 +100,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
   // TODO: add support for nested fields
   const fields = useMemo(() => cols.map((column) => column.field), [cols]);
 
-  const cohortFilters = useCoreSelector((state) =>
+  const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
 
@@ -163,6 +165,10 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     enableTopToolbar: false,
     rowCount: totalRowCount,
     paginationDisplayMode: 'pages',
+    enableRowSelection: tableConfig?.selectableRows ?? false,
+    renderDetailPanel: tableConfig.detailsConfig
+      ? CohortBuilderTableRowRenderer(tableConfig.detailsConfig)
+      : undefined,
     localization: { rowsPerPage: limitLabel },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],

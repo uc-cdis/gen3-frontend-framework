@@ -1,3 +1,5 @@
+/// <reference types="@welldone-software/why-did-you-render" />
+import './wdyr';
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import { useEffect } from 'react';
 import {

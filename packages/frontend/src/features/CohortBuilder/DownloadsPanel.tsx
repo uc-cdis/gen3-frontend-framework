@@ -38,6 +38,7 @@ const createDownloadMenuButton = (
   props: DropdownButtonProps,
   args: Record<string, any>,
 ): JSX.Element => {
+  console.log('props', props);
   const elements = props.dropdownItems?.map((button) => {
     let actionFunction = NullButtonAction;
     let actionArgs = {};
@@ -70,6 +71,8 @@ const createDownloadMenuButton = (
       },
     } as DownloadButtonPropsWithAction;
   });
+
+  console.log('elements', elements);
   return (
     <CohortDropdownActionButton
       inactiveText={props.title}

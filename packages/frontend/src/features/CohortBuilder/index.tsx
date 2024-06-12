@@ -1,15 +1,16 @@
-
-import { CohortBuilder} from './CohortBuilder';
-import {type CohortBuilderConfiguration } from './types';
+import { CohortBuilder } from './CohortBuilder';
+import { type CohortBuilderConfiguration } from './types';
 
 import {
   ExplorerTableCellRendererFactory,
-  registerExplorerDefaultCellRenderers
+  registerExplorerDefaultCellRenderers,
+  registerCohortBuilderDefaultPreviewRenderers,
 } from './ExplorerTable';
 
 export {
   CohortBuilder,
   type CohortBuilderConfiguration,
   ExplorerTableCellRendererFactory,
-  registerExplorerDefaultCellRenderers
+  registerExplorerDefaultCellRenderers,
+  registerCohortBuilderDefaultPreviewRenderers,
 };
