@@ -1,28 +1,34 @@
-import React, { useMemo, useState } from 'react';
-import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
   fieldNameToTitle,
+  JSONObject,
   selectIndexFilters,
   useCoreSelector,
   useGetRawDataAndTotalCountsQuery,
 } from '@gen3/core';
 import {
   MantineReactTable,
-  MRT_Column,
+  type MRT_Column,
   type MRT_PaginationState,
+  type MRT_Row,
+  type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-
-import { SummaryTable } from './types';
+import { ExplorerTableProps, SummaryTable } from './types';
 import {
   CellRendererFunction,
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
 import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
-import { CohortBuilderTableRowRenderer } from './ExploreTableDetails';
+import {
+  TableDetailsPanelFactory,
+  type TableDetailsPanelProps,
+} from './ExploreTableDetails';
+import { DetailsModal } from '../../../components/Details';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -32,11 +38,6 @@ const isRecordAny = (obj: unknown): obj is Record<string, any> => {
 
   return obj !== null && typeof obj === 'object';
 };
-
-interface ExplorerTableProps {
-  index: string;
-  tableConfig: SummaryTable;
-}
 
 interface ExplorerColumn {
   field: string;
@@ -60,7 +61,19 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     pageSize: 10,
   });
 
+  const DetailsComponent = DetailsModal<TableDetailsPanelProps>;
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+
+  const DetailsPanel = useMemo(
+    () =>
+      TableDetailsPanelFactory().getRenderer(
+        'tableDetails',
+        tableConfig?.detailsConfig?.renderer ?? 'default',
+      ),
+    [],
+  );
 
   const cols = useDeepCompareMemo(() => {
     // setup table columns at the same time
@@ -99,6 +112,19 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
 
   // TODO: add support for nested fields
   const fields = useMemo(() => cols.map((column) => column.field), [cols]);
+
+  const getRowId = useCallback((tableConfig: SummaryTable) => {
+    const { detailsConfig } = tableConfig || {};
+    const idField: string | undefined = detailsConfig?.idField;
+    return (
+      originalRow: JSONObject,
+      _index: number,
+      _parentRow: MRT_Row<JSONObject>,
+    ) =>
+      idField && Object.keys(originalRow).includes(idField)
+        ? (originalRow[idField] as string)
+        : undefined;
+  }, []);
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
@@ -153,6 +179,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    * @param {Partial<MRT_TableState<TData>>} state - State management configs
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
+
   const table = useMantineReactTable({
     columns: cols,
     data: data?.data?.[index] ?? [],
@@ -163,12 +190,10 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
-    renderDetailPanel: tableConfig.detailsConfig
-      ? CohortBuilderTableRowRenderer(tableConfig.detailsConfig)
-      : undefined,
     localization: { rowsPerPage: limitLabel },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
@@ -181,13 +206,49 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
       showProgressBars: isFetching,
       showAlertBanner: isError,
       density: 'xs',
+      rowSelection: rowSelection,
     },
+    mantineTableBodyRowProps:
+      tableConfig.detailsConfig?.mode === 'click'
+        ? ({ row }) => ({
+            onClick: () => {
+              if (Object.keys(rowSelection).includes(row.id)) {
+                setRowSelection({});
+              } else {
+                setRowSelection({ [row.id as string]: true });
+              }
+            },
+            sx: {
+              cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+            },
+          })
+        : {},
   });
-
   return (
-    <div className="inline-block overflow-x-scroll">
-      <MantineReactTable table={table} />
-    </div>
+    <>
+      {Object.keys(rowSelection).length > 0 ? (
+        <DetailsComponent
+          title={tableConfig?.detailsConfig?.title}
+          id={
+            Object.keys(rowSelection).length > 0
+              ? Object.keys(rowSelection).at(0)
+              : undefined
+          }
+          onClose={() => setRowSelection({})}
+          panel={DetailsPanel}
+          classNames={tableConfig?.detailsConfig?.classNames}
+          panelProps={{
+            index,
+            tableConfig,
+            ...(tableConfig?.detailsConfig?.params ?? {}),
+          }}
+        />
+      ) : null}
+
+      <div className="inline-block overflow-x-scroll">
+        <MantineReactTable table={table} />
+      </div>
+    </>
   );
 };
 

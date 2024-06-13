@@ -31,6 +31,15 @@
     },
     "table": {
       "enabled": true,
+      "detailsConfig": {
+        "renderer": "default",
+        "mode" : "click",
+        "idField": "submitter_id",
+        "title": "Details",
+        "params" : {
+          "additional" : "info"
+        }
+      },
       "fields": [
         "project_id",
         "submitter_id",

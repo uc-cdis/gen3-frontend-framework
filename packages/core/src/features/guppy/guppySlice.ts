@@ -7,7 +7,7 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
 } from '../filters';
-import { guppyApi } from './guppyApi';
+import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
@@ -40,7 +40,6 @@ export interface GraphQLQuery {
   query: string;
   variables?: Record<string, unknown>;
 }
-
 
 export const fetchJson: Fetcher<JSONObject, string> = async (url: string) => {
   const res = await fetch(url, {
@@ -116,16 +115,16 @@ interface QueryForFileCountSummaryParams {
  * Query templates support filters where applicable
  *
  * @param endpoints - Defines endpoints used in Exploration page:
-  * @param getAllFieldsForType - A mapping query that returns all property key names vertex types specified.
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#mapping-query
-  * @param getAccessibleData - An aggregation histogram counts query that filters based on access type
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#accessibility-argument-for-regular-tier-access-level
-  * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and
-  * tabular results containing the raw data in the rows of selected vertex types
-  *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#1-total-count-aggregation
-  * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
-  * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
-  * @param getCounts - Returns total counts of a vertex type
+ * @param getAllFieldsForType - A mapping query that returns all property key names vertex types specified.
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#mapping-query
+ * @param getAccessibleData - An aggregation histogram counts query that filters based on access type
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#accessibility-argument-for-regular-tier-access-level
+ * @param getRawDataAndTotalCounts - Queries both _totalCount for selected vertex types and
+ * tabular results containing the raw data in the rows of selected vertex types
+ *   @see https://github.com/uc-cdis/guppy/blob/master/doc/queries.md#1-total-count-aggregation
+ * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
+ * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
+ * @param getCounts - Returns total counts of a vertex type
  * @returns: A guppy API endpoint for templating queriable data displayed on the exploration page
  */
 const explorerApi = guppyApi.injectEndpoints({
@@ -313,8 +312,11 @@ const explorerApi = guppyApi.injectEndpoints({
         return response.data._aggregation[args.type]._totalCount;
       },
     }),
-    getFieldCountSummary: builder.query<Record<string, any>, QueryForFileCountSummaryParams>({
-      query: ({ type, field, filters  } : QueryForFileCountSummaryParams) => {
+    getFieldCountSummary: builder.query<
+      Record<string, any>,
+      QueryForFileCountSummaryParams
+    >({
+      query: ({ type, field, filters }: QueryForFileCountSummaryParams) => {
         const gqlFilters = convertFilterSetToGqlFilter(filters);
         const query = `query ($filter: JSON) {
         _aggregation {
@@ -335,7 +337,7 @@ const explorerApi = guppyApi.injectEndpoints({
             }),
           },
         };
-      }
+      },
     }),
     getFieldsForIndex: builder.query({
       query: (index: string) => {
@@ -347,7 +349,15 @@ const explorerApi = guppyApi.injectEndpoints({
       },
       transformResponse: (response: Record<string, any>) => {
         return response['_mapping'];
-      }
+      },
+    }),
+    generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
+      query: ({ query, variables }) => {
+        return {
+          query: query,
+          variables: variables,
+        };
+      },
     }),
   }),
 });
@@ -429,6 +439,8 @@ export const {
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
   useGetFieldsForIndexQuery,
+  useGeneralGQLQuery,
+  useLazyGeneralGQLQuery,
 } = explorerApi;
 
 const EmptyAggData = {};

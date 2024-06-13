@@ -1,9 +1,10 @@
-import {
+import TableDetailsPanelFactory, {
   registerCohortBuilderDefaultPreviewRenderers,
-  CohortBuilderTableRowRenderer,
-} from './RowRendererFactory';
+} from './TableDetailsPanelFactory';
+import { type TableDetailsPanelProps } from './types';
 
 export {
+  TableDetailsPanelFactory,
   registerCohortBuilderDefaultPreviewRenderers,
-  CohortBuilderTableRowRenderer,
+  type TableDetailsPanelProps,
 };

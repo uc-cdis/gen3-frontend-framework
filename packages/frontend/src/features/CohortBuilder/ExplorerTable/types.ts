@@ -40,3 +40,8 @@ export interface SummaryTable {
   readonly detailsConfig?: ExplorerDetailsConfig;
   readonly selectableRows?: boolean;
 }
+
+export interface ExplorerTableProps {
+  index: string;
+  tableConfig: SummaryTable;
+}

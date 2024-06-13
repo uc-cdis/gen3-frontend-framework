@@ -2,46 +2,43 @@ import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import CohortBuilderProvider from './CohortBuilderProvider';
 
 export const CohortBuilder = ({
   explorerConfig,
 }: CohortBuilderConfiguration) => {
   return (
-    <CohortBuilderProvider config={explorerConfig}>
-      <div className="w-full">
-        <Tabs
-          color="primary-lighter"
-          classNames={{
-            tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
-          }}
-          keepMounted={false}
-          defaultValue={explorerConfig[0].tabTitle}
-        >
-          <Tabs.List>
-            {explorerConfig.map((panelConfig: CohortPanelConfig) => (
-              <Tabs.Tab
-                value={panelConfig.tabTitle}
-                key={`${panelConfig.tabTitle}-tabList`}
-              >
-                {panelConfig.tabTitle}
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-
+    <div className="w-full">
+      <Tabs
+        color="primary-lighter"
+        classNames={{
+          tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
+        }}
+        keepMounted={false}
+        defaultValue={explorerConfig[0].tabTitle}
+      >
+        <Tabs.List>
           {explorerConfig.map((panelConfig: CohortPanelConfig) => (
-            <Tabs.Panel
+            <Tabs.Tab
               value={panelConfig.tabTitle}
-              key={`${panelConfig.tabTitle}-tabPanel`}
+              key={`${panelConfig.tabTitle}-tabList`}
             >
-              <CohortPanel
-                {...panelConfig}
-                key={`${panelConfig.tabTitle}-CohortPanel`}
-              />
-            </Tabs.Panel>
+              {panelConfig.tabTitle}
+            </Tabs.Tab>
           ))}
-        </Tabs>
-      </div>
-    </CohortBuilderProvider>
+        </Tabs.List>
+
+        {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          <Tabs.Panel
+            value={panelConfig.tabTitle}
+            key={`${panelConfig.tabTitle}-tabPanel`}
+          >
+            <CohortPanel
+              {...panelConfig}
+              key={`${panelConfig.tabTitle}-CohortPanel`}
+            />
+          </Tabs.Panel>
+        ))}
+      </Tabs>
+    </div>
   );
 };

@@ -244,7 +244,6 @@ export const CohortPanel = ({
   const {
     data: counts,
     isSuccess: isCountSuccess,
-    isFetching,
     isError,
   } = useGetCountsQuery({
     type: index,

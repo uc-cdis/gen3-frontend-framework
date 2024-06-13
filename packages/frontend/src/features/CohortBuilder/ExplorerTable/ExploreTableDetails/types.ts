@@ -1,24 +1,16 @@
-import { MRT_Row } from 'mantine-react-table';
+import { DetailsPanelComponentProps } from '../../../../components/Details/types';
+import { SummaryTable } from '../types';
 
-export interface DetailRenderFunctionParams<
-  TData extends Record<string, any> = Record<string, any>,
-> {
-  row: MRT_Row<TData>;
+export interface TableDetailsPanelProps extends DetailsPanelComponentProps {
+  index: string;
+  tableConfig: SummaryTable;
 }
 
 export interface ExplorerDetailsConfig {
   renderer: string;
+  mode?: 'click' | 'doubleclick' | 'expand';
+  title?: string;
   params?: Record<string, unknown>;
   classNames?: Record<string, string>;
-  field?: string;
+  idField?: string;
 }
-
-export interface DataResponse<T = Record<string, unknown>> {
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  data?: T;
-  error?: unknown;
-}
-
-export type DetailsDataHook = (id: string) => DataResponse;
