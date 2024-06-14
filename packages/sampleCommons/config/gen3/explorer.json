@@ -203,7 +203,10 @@
         "panel": "fileDetails",
         "mode": "click",
         "idField": "file_name",
-        "title": "File Details"
+        "title": "File Details",
+        "classNames": {
+          "header" : "!bg-secondary"
+        }
       },
       "fields": ["project_id", "file_name", "file_size", "object_id"]
     },

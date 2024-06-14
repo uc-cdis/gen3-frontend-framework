@@ -101,7 +101,7 @@ export const FileDetailsPanel = ({
           <Anchor
             href={`${GEN3_FENCE_API}/user/data/download/${
               value ? (value as string) : ''
-            }`}
+            }?redirect=true`}
             target="_blank"
           >
             {value ? (value as string) : ''}

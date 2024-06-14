@@ -32,6 +32,8 @@ export const DetailsModal = <
     [],
   );
 
+  console.log('mergedStyles', styling);
+
   useEffect(() => {
     if (id !== undefined) open();
     else close();
