@@ -1,11 +1,31 @@
 import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
-import {
-  JSONObject,
-  useGeneralGQLQuery,
-  useLazyGeneralGQLQuery,
-} from '@gen3/core';
+import { JSONObject, useGeneralGQLQuery } from '@gen3/core';
 import ErrorCard from '../../../../components/ErrorCard';
 import { TableDetailsPanelProps } from './types';
+
+interface QueryResponse {
+  data?: Record<string, Array<any>>;
+}
+
+function isQueryResponse(obj: any): obj is QueryResponse {
+  // Considering that the data property can be optional
+  return (
+    typeof obj === 'object' &&
+    (obj.data === undefined || typeof obj.data === 'object')
+  );
+}
+
+const ExtractData = (
+  data: QueryResponse,
+  index: string,
+): Record<string, any> => {
+  if (data === undefined || data === null) return {};
+  if (data.data === undefined || data.data === null) return {};
+
+  return Array.isArray(data.data[index]) && data.data[index].length > 0
+    ? data.data[index][0]
+    : {};
+};
 
 export const TableDetailsPanel = ({
   id,
@@ -42,9 +62,10 @@ export const TableDetailsPanel = ({
   if (isError) {
     return <ErrorCard message={'Error occurred while fetching data'} />;
   }
-  console.log('data', data && (data as JSONObject)[index]);
 
-  const rows = Object.entries(data?.[index] ?? {}).map(([field, value]) => (
+  const queryData = isQueryResponse(data) ? ExtractData(data, index) : {};
+
+  const rows = Object.entries(queryData).map(([field, value]) => (
     <tr key={field}>
       <td>
         <Text weight="bold">{field}</Text>
@@ -58,7 +79,7 @@ export const TableDetailsPanel = ({
     <Stack>
       <LoadingOverlay visible={isLoading} />
       <Text color="primary.4">Results for {id}</Text>
-      <Table>
+      <Table withBorder withColumnBorders>
         <thead>
           <tr>
             <th>Field</th>
