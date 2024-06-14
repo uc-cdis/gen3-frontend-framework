@@ -65,8 +65,6 @@ export const FileDetailsPanel = ({
   tableConfig,
   onClose,
 }: TableDetailsPanelProps) => {
-  //const [queryGuppy, { data, isLoading, isError }] = useLazyGeneralGQLQuery();
-
   // get the idField from the configuration
   const idField = tableConfig.detailsConfig?.idField;
   // call the general Guppy GQL which takes an object { query: string, variables: object }
