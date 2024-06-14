@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Loader, LoadingOverlay, Tabs, Text } from '@mantine/core';
+import { Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -244,7 +244,6 @@ export const CohortPanel = ({
   const {
     data: counts,
     isSuccess: isCountSuccess,
-    isFetching,
     isError,
   } = useGetCountsQuery({
     type: index,
