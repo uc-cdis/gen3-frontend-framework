@@ -20,4 +20,5 @@ export interface DetailsComponentProps<
   withCloseButton?: boolean;
   closeOnEscape?: boolean;
   closeOnClickOutside?: boolean;
+  size?: string;
 }

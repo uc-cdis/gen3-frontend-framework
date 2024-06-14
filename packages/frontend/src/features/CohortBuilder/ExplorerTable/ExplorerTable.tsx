@@ -130,7 +130,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching, error } =
+  const { data, isLoading, isError, isFetching } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,
@@ -169,10 +169,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    * @param manualSorting - If this is true, you will be expected to sort your data before it is passed to the table.
    * @param manualPagination - If this is true, you will be expected to manually paginate the rows before passing them to the table
 0.
-
    * @param paginateExpandedRows - If true expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages)      -
    * @param onPaginationChange - If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself
-   * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state.sorting changes. Overrides default internal state management
+   * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state. sorting changes. Overrides default internal state management
    * @param enableTopToolbar - enables additional ux features
    * @param rowCount - Number of rows in the table
    * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
@@ -225,7 +224,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
         : {},
   });
   return (
-    <>
+    <React.Fragment>
       {Object.keys(rowSelection).length > 0 ? (
         <DetailsComponent
           title={tableConfig?.detailsConfig?.title}
@@ -248,7 +247,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
       <div className="inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
