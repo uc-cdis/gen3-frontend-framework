@@ -15,9 +15,7 @@
       "tabs": [
         {
           "title": "Study Selection",
-          "fields": [
-            "project_id"
-          ]
+          "fields": ["project_id"]
         },
         {
           "title": "Subjects",
@@ -45,7 +43,42 @@
     },
     "dropdowns": {
       "download-table": {
-        "title": "Download Table"
+        "title": "Download Table",
+        "dropdownItems": [
+          {
+            "enabled": true,
+            "type": "data-json",
+            "title": "JSON",
+            "dropdownId": "download-table",
+            "leftIcon": "datafile",
+            "rightIcon": "download",
+            "actionArgs": {
+              "filename": "data_table.json"
+            }
+          },
+          {
+            "enabled": true,
+            "type": "data-tsv",
+            "title": "TSV",
+            "dropdownId": "download-table",
+            "leftIcon": "datafile",
+            "rightIcon": "download",
+            "actionArgs": {
+              "filename": "data_table.tsv"
+            }
+          },
+          {
+            "enabled": true,
+            "type": "data-csv",
+            "title": "CSV",
+            "dropdownId": "download-table",
+            "leftIcon": "datafile",
+            "rightIcon": "download",
+            "actionArgs": {
+              "filename": "data_table.csv"
+            }
+          }
+        ]
       }
     },
     "buttons": [
@@ -56,7 +89,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.json"
         }
       },
@@ -67,7 +100,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.tsv"
         }
       },
@@ -78,7 +111,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.csv"
         }
       },
@@ -95,12 +128,7 @@
           "resourceIdField": "object_id",
           "referenceIdFieldInResourceIndex": "project_id",
           "referenceIdFieldInDataIndex": "project_id",
-          "fileFields": [
-            "file_name",
-            "file_size",
-            "md5sum",
-            "object_id"
-          ]
+          "fileFields": ["file_name", "file_size", "md5sum", "object_id"]
         }
       }
     ],
@@ -136,9 +164,7 @@
         "referenceIdFieldInResourceIndex": "subject_id",
         "referenceIdFieldInDataIndex": "subject_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id"
     }
   },
@@ -158,23 +184,13 @@
       "tabs": [
         {
           "title": "File",
-          "fields": [
-            "project_id",
-            "data_type",
-            "data_format",
-            "data_category"
-          ]
+          "fields": ["project_id", "data_type", "data_format", "data_category"]
         }
       ]
     },
     "table": {
       "enabled": true,
-      "fields": [
-        "project_id",
-        "file_name",
-        "file_size",
-        "object_id"
-      ]
+      "fields": ["project_id", "file_name", "file_size", "object_id"]
     },
     "guppyConfig": {
       "dataType": "file",
@@ -191,9 +207,7 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": [
-        "project_id"
-      ],
+      "accessibleFieldCheckList": ["project_id"],
       "accessibleValidationField": "project_id",
       "downloadAccessor": "object_id"
     },
@@ -205,7 +219,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.json"
         }
       },
@@ -216,7 +230,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.tsv"
         }
       },
@@ -227,7 +241,7 @@
         "dropdownId": "download-table",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table.csv"
         }
       },
@@ -237,7 +251,7 @@
         "title": "Download File Manifest",
         "leftIcon": "datafile",
         "rightIcon": "download",
-        "actionArgs" : {
+        "actionArgs": {
           "filename": "data_table_manifest.csv"
         }
       }

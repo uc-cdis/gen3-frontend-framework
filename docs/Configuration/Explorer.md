@@ -99,7 +99,26 @@ The downloads menu is a dropdown with the following members:
     * `data-csv`
     * `data-json`
 
+### Download Buttons
+Individual button (horliztonally laid out) can be configured as:
 
+```json
+ "buttons": [
+      {
+        "enabled": true,
+        "type": "data-json",
+        "title": "JSON",
+        "dropdownId": "download-table",
+        "leftIcon": "datafile",
+        "rightIcon": "download",
+        "actionArgs": {
+          "filename": "data_table.json"
+        }
+      },
+      ...
+]
+```
+Note that the button object members are the same as for the dropdowns.
 
 ### Download Manifest
 
