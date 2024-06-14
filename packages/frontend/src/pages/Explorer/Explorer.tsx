@@ -3,20 +3,23 @@ import { NavPageLayout } from '../../features/Navigation';
 import { CohortBuilder } from '../../features/CohortBuilder';
 import { ExplorerPageProps } from './types';
 import { Center } from '@mantine/core';
-import { registerExplorerDefaultCellRenderers } from '../../features/CohortBuilder';
+import {
+  registerExplorerDefaultCellRenderers,
+  registerCohortBuilderDefaultPreviewRenderers,
+} from '../../features/CohortBuilder';
 
 registerExplorerDefaultCellRenderers();
+registerCohortBuilderDefaultPreviewRenderers();
 
 const ExplorerPage = ({
   headerProps,
   footerProps,
   explorerConfig,
 }: ExplorerPageProps): JSX.Element => {
-
   if (explorerConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
-      <div>Explorer config is not defined. Page disabled</div>
+        <div>Explorer config is not defined. Page disabled</div>
       </Center>
     );
   }

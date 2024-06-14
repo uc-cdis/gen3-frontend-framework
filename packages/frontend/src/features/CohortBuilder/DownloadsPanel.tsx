@@ -70,6 +70,7 @@ const createDownloadMenuButton = (
       },
     } as DownloadButtonPropsWithAction;
   });
+
   return (
     <CohortDropdownActionButton
       inactiveText={props.title}

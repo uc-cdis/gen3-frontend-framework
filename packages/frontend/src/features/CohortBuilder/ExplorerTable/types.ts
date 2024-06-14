@@ -1,3 +1,5 @@
+import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
+
 export interface ColumnDefinition {
   header: string; // title of column
   accessorKey: string; // which data field to use
@@ -35,4 +37,11 @@ export interface SummaryTable {
   readonly fields: ReadonlyArray<string>;
   readonly columns?: Record<string, SummaryTableColumn>;
   readonly pageLimit?: SummaryTablePageLimit;
+  readonly detailsConfig?: ExplorerDetailsConfig;
+  readonly selectableRows?: boolean;
+}
+
+export interface ExplorerTableProps {
+  index: string;
+  tableConfig: SummaryTable;
 }
