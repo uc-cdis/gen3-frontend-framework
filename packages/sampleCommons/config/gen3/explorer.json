@@ -32,7 +32,7 @@
     "table": {
       "enabled": true,
       "detailsConfig": {
-        "renderer": "default",
+        "panel": "default",
         "mode" : "click",
         "idField": "submitter_id",
         "title": "Details",
@@ -199,6 +199,12 @@
     },
     "table": {
       "enabled": true,
+      "detailsConfig": {
+        "panel": "fileDetails",
+        "mode": "click",
+        "idField": "file_name",
+        "title": "File Details"
+      },
       "fields": ["project_id", "file_name", "file_size", "object_id"]
     },
     "guppyConfig": {

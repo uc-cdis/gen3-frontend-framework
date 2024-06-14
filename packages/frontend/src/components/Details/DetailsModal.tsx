@@ -54,7 +54,7 @@ export const DetailsModal = <
       classNames={styling}
       xOffset={0}
     >
-      {panel({ id: id, ...panelProps })}
+      {panel({ id: id, onClose, ...panelProps })}
     </Modal>
   );
 };

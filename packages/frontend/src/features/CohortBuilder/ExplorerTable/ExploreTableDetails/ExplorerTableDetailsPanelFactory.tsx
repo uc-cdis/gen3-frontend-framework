@@ -10,7 +10,7 @@ const DefaultRendererCatalog = {
   },
 };
 
-const TableDetailsPanelFactory =
+const ExplorerTableDetailsPanelFactory =
   (): RenderFactoryTypedInstance<TableDetailsPanelProps> => {
     if (!instance) {
       instance = new RenderFactoryTypedInstance<TableDetailsPanelProps>();
@@ -19,7 +19,9 @@ const TableDetailsPanelFactory =
   };
 
 export const registerCohortBuilderDefaultPreviewRenderers = () => {
-  TableDetailsPanelFactory().registerRendererCatalog(DefaultRendererCatalog);
+  ExplorerTableDetailsPanelFactory().registerRendererCatalog(
+    DefaultRendererCatalog,
+  );
 };
 
-export default TableDetailsPanelFactory;
+export default ExplorerTableDetailsPanelFactory;

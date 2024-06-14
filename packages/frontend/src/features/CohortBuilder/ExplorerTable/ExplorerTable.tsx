@@ -25,7 +25,7 @@ import {
 } from './ExplorerTableCellRenderers';
 import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 import {
-  TableDetailsPanelFactory,
+  ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
 } from './ExploreTableDetails';
 import { DetailsModal } from '../../../components/Details';
@@ -68,9 +68,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
 
   const DetailsPanel = useMemo(
     () =>
-      TableDetailsPanelFactory().getRenderer(
+      ExplorerTableDetailsPanelFactory().getRenderer(
         'tableDetails',
-        tableConfig?.detailsConfig?.renderer ?? 'default',
+        tableConfig?.detailsConfig?.panel ?? 'default',
       ),
     [],
   );

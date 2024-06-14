@@ -5,12 +5,16 @@ import {
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
+  type TableDetailsPanelProps,
+  ExplorerTableDetailsPanelFactory,
 } from './ExplorerTable';
 
 export {
   CohortBuilder,
   type CohortBuilderConfiguration,
+  type TableDetailsPanelProps,
   ExplorerTableCellRendererFactory,
+  ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
 };

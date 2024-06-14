@@ -1,10 +1,10 @@
-import TableDetailsPanelFactory, {
+import ExplorerTableDetailsPanelFactory, {
   registerCohortBuilderDefaultPreviewRenderers,
-} from './TableDetailsPanelFactory';
+} from './ExplorerTableDetailsPanelFactory';
 import { type TableDetailsPanelProps } from './types';
 
 export {
-  TableDetailsPanelFactory,
+  ExplorerTableDetailsPanelFactory,
   registerCohortBuilderDefaultPreviewRenderers,
   type TableDetailsPanelProps,
 };
