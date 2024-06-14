@@ -35,10 +35,7 @@
         "panel": "default",
         "mode" : "click",
         "idField": "submitter_id",
-        "title": "Details",
-        "params" : {
-          "additional" : "info"
-        }
+        "title": "Details"
       },
       "fields": [
         "project_id",
@@ -203,10 +200,7 @@
         "panel": "fileDetails",
         "mode": "click",
         "idField": "file_name",
-        "title": "File Details",
-        "classNames": {
-          "header" : "!bg-secondary"
-        }
+        "title": "File Details"
       },
       "fields": ["project_id", "file_name", "file_size", "object_id"]
     },

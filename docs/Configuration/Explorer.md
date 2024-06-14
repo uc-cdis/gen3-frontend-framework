@@ -123,3 +123,40 @@ Download a file manifest from a explorer table requires the following configurat
 }
 ```
 This is similar to the configuration for Gen3's data-portal except the `actionArgs` member now contains the information that was in the `manifestMapping` member of `gitops.json`
+
+### Details Modal
+
+There is support for a details modal that appears when the table is clicked. The modal's content is rendered using the
+default or a registered ```DetailsPanel```.
+
+![Explorer Details Modal](./images/ExplorerTable_Details_Modal.png)
+
+The basic configuration is:
+
+```json
+ "table": {
+      "enabled": true,
+      "detailsConfig": {
+        "panel": "fileDetails",
+        "mode": "click",
+        "idField": "file_name",
+        "title": "File Details",
+        "classNames": {
+          "header" : "!bg-secondary"
+        }
+      }
+
+```
+
+The details configuration has the following members:
+
+* mode - mode that activates the modal/drawer. Currently only click is supported
+* panel - name of the registered panel, defaults to "default"
+* params - object of addition (e.g. custom) parameters/values passed to the Details panel
+* classNames: object containing tailwind styling for the modal/drawer component. See [Mantine V6 Modals stules](https://v6.mantine.dev/core/modal/?t=styles-api)
+  NOTE: the tailwind directive need to be important so the must be prefixed with ```!```
+* title - title of the modal/drawer
+* withCloseButton - should modal have a close (i.e. x ) button
+* closeOnEscape - if true, closed when the esc key is pressed
+* closeOnClickOutside - close when anywhere outside the modal is closed
+* size - size of the modal
