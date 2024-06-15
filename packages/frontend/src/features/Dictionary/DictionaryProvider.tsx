@@ -1,16 +1,25 @@
-import React, { createContext, useMemo, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useMemo,
+  useState,
+  ReactNode,
+  useCallback,
+} from 'react';
 import {
-  DataDictionary,
-  DictionaryConfigProps,
-  DictionaryEntry,
   DictionaryProps,
+  DictionaryEntry,
   DictionarySearchDocument,
+  MatchingSearchResult,
 } from './types';
 import { JSONObject } from '@gen3/core';
-import { categoryFilter, categoryReduce } from './utils';
+import {
+  categoryFilter,
+  categoryReduce,
+  SearchPathToPropertyIdString,
+} from './utils';
 import { KEY_FOR_SEARCH_HISTORY, MAX_SEARCH_HISTORY } from './constants';
 
-interface DictionaryProviderValue extends DictionaryConfigProps {
+interface DictionaryProviderValue extends DictionaryProps {
   setPropertyDetails: React.Dispatch<React.SetStateAction<JSONObject>>;
   propertyDetails: JSONObject;
   categories: any;
@@ -101,7 +110,7 @@ const DictionaryProvider = ({
         return [...acc, ...curr];
       }, [] as Array<DictionarySearchDocument>);
     }
-  }, [categories]);
+  }, []);
 
   return (
     <DictionaryContext.Provider

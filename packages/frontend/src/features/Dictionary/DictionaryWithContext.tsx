@@ -1,14 +1,11 @@
 import Dictionary from './Dictionary';
-import { DictionaryConfigProps } from './types';
+import { DictionaryProps } from './types';
 import DictionaryProvider from './DictionaryProvider';
 
-const DictionaryWithContext = ({
-  config,
-  dictionary,
-}: DictionaryConfigProps) => {
+const DictionaryWithContext = ({ config, dictionary }: DictionaryProps) => {
   return (
     <DictionaryProvider config={config} dictionary={dictionary}>
-      <Dictionary dictionary={dictionary} />
+      <Dictionary />
     </DictionaryProvider>
   );
 };

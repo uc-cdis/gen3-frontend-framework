@@ -6,11 +6,11 @@ import dataDictionaryData from '../../features/Dictionary/data/dictionary.json';
 const DictionaryPage = ({
   headerProps,
   footerProps,
-}: // todo: pass dictionaryConfig instead of data
-DictionaryPageProps): JSX.Element => {
+  config,
+}: DictionaryPageProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <DictionaryWithContext dictionary={dataDictionaryData} />
+      <DictionaryWithContext config={config} dictionary={dataDictionaryData} />
     </NavPageLayout>
   );
 };

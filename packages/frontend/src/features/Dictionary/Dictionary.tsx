@@ -1,32 +1,27 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { useScrollIntoView } from '@mantine/hooks';
 
-import { DictionaryProps, MatchingSearchResult, ViewType } from './types';
+import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
 import TableSearch from './TableSearch';
 import { useDictionaryContext } from './DictionaryProvider';
 import CategoryPanel from './CategoryPanel';
 
-const Dictionary = ({ uidForStorage = 'dictionary' }: DictionaryProps) => {
+const Dictionary = () => {
   const [selectedId, setSelectedId] = useState('');
   const [view, setView] = useState<ViewType>('table');
   const { dictionary, categories, visibleCategories, config } =
     useDictionaryContext();
-  const { scrollIntoView, targetRef } = useScrollIntoView({});
 
   const scrollTo = useCallback((item: MatchingSearchResult) => {
-    const element = document.getElementById(
-      `${item.node}-${item.category}-${item.property}`,
-    );
     setSelectedId(() => SearchPathToPropertyIdString(item));
-
-    console.log('element', element);
-    if (element) {
-      // TODO: likely a better way to do this with mantine v7.
-      targetRef.current = element;
-      scrollIntoView();
-    }
   }, []);
 
   return (

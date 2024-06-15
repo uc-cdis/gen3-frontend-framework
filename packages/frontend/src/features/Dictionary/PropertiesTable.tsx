@@ -10,12 +10,12 @@ import {
 } from 'mantine-react-table';
 import { DictionaryProperty } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { List, ThemeIcon } from '@mantine/core';
+import { List } from '@mantine/core';
 import { FaCircle as DiscIcon } from 'react-icons/fa';
 
 interface PropertyTableRowData {
   property: string;
-  type: string;
+  type: string[];
   required: string;
   description: string;
   property_id: string;
@@ -27,6 +27,7 @@ interface PropertiesTableProps {
   category: string;
   subCategory: string;
   selectedProperty: string;
+  appendRef: (id: string, el: HTMLSpanElement | null) => void;
 }
 
 const PropertiesTable = ({
@@ -35,12 +36,14 @@ const PropertiesTable = ({
   category,
   subCategory,
   selectedProperty,
+  appendRef,
 }: PropertiesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   useDeepCompareEffect(() => {
-    if (selectedProperty) setRowSelection({ [selectedProperty]: true });
-    else setRowSelection({});
+    if (selectedProperty) {
+      setRowSelection({ [selectedProperty]: true });
+    } else setRowSelection({});
   }, [selectedProperty]);
 
   const columns = useMemo<Array<MRT_ColumnDef<PropertyTableRowData>>>(() => {
@@ -65,8 +68,9 @@ const PropertiesTable = ({
           cell: MRT_Cell<PropertyTableRowData>;
           row: MRT_Row<PropertyTableRowData>;
         }) => {
+          const itemId = `${category}-${subCategory}-${row.original.property_id}`;
           return (
-            <span id={`${category}-${subCategory}-${row.original.property_id}`}>
+            <span ref={(el) => appendRef(itemId, el)} id={itemId}>
               {cell.getValue<string>()}
             </span>
           );
@@ -74,7 +78,7 @@ const PropertiesTable = ({
       },
       {
         accessorKey: 'type',
-        header: 'Type(s)',
+        header: 'Type',
         size: 90,
         Cell: ({
           cell,
@@ -85,6 +89,7 @@ const PropertiesTable = ({
         }) => {
           return (
             <List
+              size="sm"
               center
               classNames={{
                 itemWrapper: 'flex items-center',
@@ -92,7 +97,11 @@ const PropertiesTable = ({
               icon={<DiscIcon size="0.5rem" />}
               id={`${category}-${subCategory}-${row.original.property_id}-list`}
             >
-              <List.Item>{cell.getValue<string>()}</List.Item>
+              {cell.getValue<string[]>().map((type, index) => (
+                <List.Item key={`${row.original.property_id}-${type}-${index}`}>
+                  {type}
+                </List.Item>
+              ))}
             </List>
           );
         },
@@ -109,8 +118,6 @@ const PropertiesTable = ({
     ];
   }, []);
 
-  console.log('rowSelection', rowSelection);
-
   const tableData = useMemo(() => {
     const keys = properties ? Object.keys(properties ?? {}) : [];
     return keys.length
@@ -118,7 +125,7 @@ const PropertiesTable = ({
           if (!properties || !Object.keys(properties).includes(k))
             return {
               property: '',
-              type: '',
+              type: [],
               required: 'No',
               description: '',
               property_id: k,
@@ -131,8 +138,10 @@ const PropertiesTable = ({
               .map((name) => capitalize(name))
               .join(' '),
             type: Object.keys(row).includes('anyOf')
-              ? row.anyOf?.map(({ type }) => type).join(' ')
-              : row.type,
+              ? row.anyOf?.map(({ type }) => type)
+              : Object.keys(row).includes('oneOf')
+              ? row.oneOf?.map(({ type }) => type)
+              : [row.type],
             required: required?.includes(k) ? 'Required' : 'No',
             description:
               row?.description ?? row?.term?.description ?? 'No Description',
@@ -154,9 +163,6 @@ const PropertiesTable = ({
       originalRow.property_id,
     mantineTableBodyRowProps: ({ row }) => ({
       sx: (theme) => {
-        if (Object.keys(rowSelection).includes(row.original.property_id)) {
-          console.log('found');
-        }
         const res = {
           ...(Object.keys(rowSelection).includes(row.original.property_id)
             ? {
@@ -165,9 +171,6 @@ const PropertiesTable = ({
             : {}),
           borderWidth: 2,
         };
-        if (Object.keys(rowSelection).includes(row.original.property_id)) {
-          console.log('found', res);
-        }
         return res;
       },
     }),

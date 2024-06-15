@@ -1,8 +1,8 @@
 export interface DictionaryConfig
   extends Record<string, string | number | boolean | undefined> {
-  showGraph?: boolean;
-  showDownloads?: boolean;
-  historyStorageId?: string;
+  showGraph: boolean;
+  showDownloads: boolean;
+  historyStorageId: string;
   maxHistoryItems: number;
 }
 
@@ -100,7 +100,7 @@ export interface DictionaryCategory<T> {
 export type ViewType = 'table' | 'graph';
 
 export interface DictionaryProps {
-  config?: DictionaryConfig;
+  config: DictionaryConfig;
   dictionary: DataDictionary;
 }
 
