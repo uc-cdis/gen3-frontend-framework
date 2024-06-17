@@ -1,11 +1,4 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
-import { useScrollIntoView } from '@mantine/hooks';
+import React, { useCallback, useState } from 'react';
 
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';

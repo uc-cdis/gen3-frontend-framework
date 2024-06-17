@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Icon } from '@iconify/react';
 import CategoryHeader from './CategoryHeader';
 import { Accordion, Button, Group } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
@@ -9,25 +8,8 @@ import { useDictionaryContext } from './DictionaryProvider';
 import { DictionaryCategory } from './types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
-import { PropertyIdStringToSearchPath } from './utils';
-
-const ACCORDION_TRANSITION_DURATION = 75;
-
-// TODO: need a more extensive icon library
-//  Use icons from the icon library to enable
-//  customization
-const iconMapping: Record<string, string> = {
-  administrative: 'administrative',
-  data_observations: 'analysis',
-  biospecimen: 'query',
-  data_file: 'workspace',
-  medical_history: 'profile',
-};
-
-const getIcon = (category: string) => {
-  const iconName = iconMapping[category] ? iconMapping[category] : 'gen3';
-  return <Icon color="primary-contrast.4" icon={`gen3:${iconName}`} />;
-};
+import { ACCORDION_TRANSITION_DURATION } from './constants';
+import { PropertyIdStringToSearchPath, toNodeCategory } from './utils';
 
 interface CategoryPanel {
   category: string;
@@ -57,16 +39,20 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
     }
   };
 
+  // set up a timeout to give the ref time to be rendered in it's final position withing the
+  // page.
   useEffect(() => {
-    if (value !== null) {
-      console.log('timeout', value);
+    if (
+      value !== null &&
+      value == toNodeCategory(selectedItems) &&
+      selectedItems.property.length > 0
+    ) {
       const timer = setTimeout(() => {
         scrollToItem(selectedId);
       }, 5); // Adjust the delay based on your accordion animation duration
-
       return () => clearTimeout(timer);
     }
-  }, [scrollToItem, selectedId, value]);
+  }, [scrollToItem, selectedId, selectedItems, value]);
 
   useDeepCompareEffect(() => {
     if (category == selectedItems.node)
@@ -80,12 +66,12 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
       className="border-l-4 border-purple mt-2"
       key={`dictionary-entry-${category}`}
     >
-      <CategoryHeader icon={getIcon(category)} category={category} />
+      <CategoryHeader category={category} />
       <Accordion
         chevronPosition="left"
         value={value}
         onChange={setValue}
-        transitionDuration={0}
+        transitionDuration={ACCORDION_TRANSITION_DURATION}
         styles={{
           chevron: {
             transform: 'rotate(-90deg)',

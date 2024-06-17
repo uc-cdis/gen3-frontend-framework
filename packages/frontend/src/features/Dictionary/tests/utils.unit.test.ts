@@ -1,5 +1,9 @@
 import data_dictionary from '../data/dictionary.json';
-import { getPropertyCount, snakeCaseToLabel } from '../utils';
+import {
+  getPropertyCount,
+  removeUnusedFieldsFromDictionaryObject,
+  snakeCaseToLabel,
+} from '../utils';
 import { describe, expect, test } from '@jest/globals';
 
 // note the use of data_dictionary will change to a mock data dictionary at some point
@@ -14,7 +18,7 @@ it('get total number of properties in data dictionary', () => {
       'administrative',
       'data_observations',
     ],
-    data_dictionary,
+    removeUnusedFieldsFromDictionaryObject(data_dictionary),
   );
   expect(result).toEqual(1432);
 });

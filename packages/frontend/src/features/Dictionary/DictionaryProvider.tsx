@@ -1,21 +1,14 @@
-import React, {
-  createContext,
-  useMemo,
-  useState,
-  ReactNode,
-  useCallback,
-} from 'react';
+import React, { createContext, useMemo, useState, ReactNode } from 'react';
 import {
   DictionaryProps,
   DictionaryEntry,
   DictionarySearchDocument,
-  MatchingSearchResult,
 } from './types';
 import { JSONObject } from '@gen3/core';
 import {
   categoryFilter,
   categoryReduce,
-  SearchPathToPropertyIdString,
+  getDictionaryWithExcludeSystemProperties,
 } from './utils';
 import { KEY_FOR_SEARCH_HISTORY, MAX_SEARCH_HISTORY } from './constants';
 
@@ -63,18 +56,21 @@ const DictionaryProvider = ({
 }: DictionaryProviderProps) => {
   const [propertyDetails, setPropertyDetails] = useState<JSONObject>({});
 
+  const processedDictionary =
+    getDictionaryWithExcludeSystemProperties(dictionary);
+
   const categories = useMemo(() => {
-    const filtered = Object.keys(dictionary).filter((id) =>
-      categoryFilter(id, dictionary),
-    );
-    const displayedCategories = categoryReduce(filtered, dictionary);
+    const filtered = Object.keys(processedDictionary);
+    const displayedCategories = categoryReduce(filtered, processedDictionary);
     return displayedCategories;
   }, []);
 
   const visibleCategories = useMemo(
     () =>
-      Object.keys(dictionary).filter((id) => categoryFilter(id, dictionary)),
-    [dictionary],
+      Object.keys(processedDictionary).filter((id) =>
+        categoryFilter(id, processedDictionary),
+      ),
+    [processedDictionary],
   );
 
   const documents = useMemo<Array<DictionarySearchDocument>>(() => {
@@ -115,7 +111,7 @@ const DictionaryProvider = ({
   return (
     <DictionaryContext.Provider
       value={{
-        dictionary,
+        dictionary: processedDictionary,
         config,
         setPropertyDetails,
         propertyDetails,

@@ -51,6 +51,7 @@ export interface DictionaryProperty {
   oneOf?: Record<string, any>[];
   anyOf?: AnyOf[];
   allOf?: Record<string, string | string[]>[];
+  enum?: string[];
   term?: {
     description?: string;
   };
@@ -67,7 +68,7 @@ export interface DictionaryEntry {
   nodeTerms?: null | any;
   program?: string;
   project?: string;
-  properties?: Record<string, DictionaryProperty>;
+  properties: Record<string, DictionaryProperty>;
   required?: string[];
   submittable?: boolean;
   systemProperties?: string[];
@@ -77,16 +78,7 @@ export interface DictionaryEntry {
   validators?: null | any;
 }
 
-export type DataDictionary = Partial<{
-  _definitions: any;
-  _settings: {
-    _dict_commit: string;
-    _dict_version: string;
-    enable_case_cache: boolean;
-  };
-  _terms: any;
-}> &
-  Record<string, DictionaryEntry>;
+export type DataDictionary = Record<string, DictionaryEntry>;
 
 export interface DictionaryNode extends Record<string, unknown> {
   id: string;
