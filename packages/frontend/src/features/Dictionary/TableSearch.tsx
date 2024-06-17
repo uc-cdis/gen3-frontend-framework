@@ -172,7 +172,6 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
     if (dictionarySearchHistory) {
       setDictionaryTableRows(
         Object.keys(dictionarySearchHistory).map((d) => {
-          console.log('dictionarySearchHistory[d]', dictionarySearchHistory[d]);
           return (
             <div key={`dictionary-table-row-${d}`} className="my-2">
               <ResultCard

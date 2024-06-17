@@ -59,13 +59,14 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
 
   useEffect(() => {
     if (value !== null) {
+      console.log('timeout', value);
       const timer = setTimeout(() => {
         scrollToItem(selectedId);
-      }, 120); // Adjust the delay based on your accordion animation duration
+      }, 5); // Adjust the delay based on your accordion animation duration
 
       return () => clearTimeout(timer);
     }
-  }, [selectedId, value]);
+  }, [scrollToItem, selectedId, value]);
 
   useDeepCompareEffect(() => {
     if (category == selectedItems.node)
@@ -84,7 +85,7 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
         chevronPosition="left"
         value={value}
         onChange={setValue}
-        transitionDuration={ACCORDION_TRANSITION_DURATION}
+        transitionDuration={0}
         styles={{
           chevron: {
             transform: 'rotate(-90deg)',
@@ -112,9 +113,7 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
                     <Button leftIcon={<DownloadIcon />}>TSV</Button>
                     <Button leftIcon={<DownloadIcon />}>JSON</Button>
                   </Group>
-                ) : (
-                  false
-                )}
+                ) : null}
               </Group>
               <Accordion.Panel>
                 <div className="ml-2">
@@ -138,4 +137,13 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
   );
 };
 
-export default React.memo(CategoryPanel);
+export default React.memo(CategoryPanel, (prevProps, nextProps) => {
+  const selectedItems = PropertyIdStringToSearchPath(nextProps.selectedId);
+  // only rerender when selectedItem is for this panel's
+  // category and it has changed.
+  return (
+    prevProps.category === nextProps.category &&
+    selectedItems.node === prevProps.category &&
+    prevProps.selectedId === nextProps.selectedId
+  );
+});
