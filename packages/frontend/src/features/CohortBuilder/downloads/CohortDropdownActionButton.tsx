@@ -1,6 +1,6 @@
 import { Button, Menu, MenuItemProps } from '@mantine/core';
 import { FloatingPosition } from '@mantine/core/lib/Floating/types';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Tooltip } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
@@ -99,7 +99,7 @@ interface DropdownWithIconProps {
    */
   inactiveText?: string;
   /**
-   *    label to show when menu item's actinn is executing
+   *    label to show when menu item's action is executing
    */
   activeText?: string;
   /**
@@ -181,6 +181,7 @@ const CohortDropdownActionButton = ({
           }}
           aria-label={buttonAriaLabel}
           loading={isActive}
+          key={menuLabelText}
         >
           <div>
             {tooltip?.length && !disabled ? (

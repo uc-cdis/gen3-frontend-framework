@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.16",
+  "version": "0.10.30",
   "description": "The Gen3 Frontend Framework mono repo for development",
   "private": true,
   "workspaces": [
@@ -15,6 +15,7 @@
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
     "build": "lerna run build",
+    "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
     "start": "lerna run --parallel start",

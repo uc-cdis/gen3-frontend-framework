@@ -1,3 +1,5 @@
+import { StylingOverride } from '../../../types/styling';
+
 export interface DownloadButtonProps {
   enabled?:boolean;
   type?: string;
@@ -8,6 +10,7 @@ export interface DownloadButtonProps {
   tooltipText?: string;
   action?: string;
   actionArgs?: Record<string, string>;
+  classNames?: StylingOverride;
 }
 
 export interface DropdownButtonProps extends Omit<DownloadButtonProps, 'action' |'actionArgs'> {

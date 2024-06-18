@@ -16,7 +16,7 @@ import {
 } from './downloads/actions/registeredActions';
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
-import  CohortDropdownActionButton  from './downloads/CohortDropdownActionButton';
+import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -42,8 +42,10 @@ const createDownloadMenuButton = (
     let actionFunction = NullButtonAction;
     let actionArgs = {};
 
-    if (button.action) {
-      const actionItem = findButtonAction(button.action);
+    const buttonAction = button.action ?? button.type;
+
+    if (buttonAction) {
+      const actionItem = findButtonAction(buttonAction);
       if (actionItem) {
         actionFunction = actionItem.action;
         actionArgs = actionItem.args ?? ({} as Record<string, any>);
@@ -68,6 +70,7 @@ const createDownloadMenuButton = (
       },
     } as DownloadButtonPropsWithAction;
   });
+
   return (
     <CohortDropdownActionButton
       inactiveText={props.title}
@@ -76,6 +79,7 @@ const createDownloadMenuButton = (
       rightIcon={props.rightIcon ? <Icon icon={props.rightIcon} /> : undefined}
       TargetButtonChildren={'Downloading...'}
       dropdownElements={elements}
+      key={props.title}
     />
   );
 };
@@ -151,8 +155,9 @@ const DownloadsPanel = ({
         let disabled = false;
         let actionFunction = NullButtonAction;
         let actionArgs = {};
-        if (button.action) {
-          const actionItem = findButtonAction(button.action);
+        const buttonAction = button.action ?? button.type;
+        if (buttonAction) {
+          const actionItem = findButtonAction(buttonAction);
           if (actionItem) {
             const funcArgs = actionItem.args ?? {};
             const func = actionItem.action;

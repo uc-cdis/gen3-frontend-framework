@@ -2,19 +2,20 @@ import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useGetCSRFQuery } from '@gen3/core';
 
-export const CohortBuilder = ({ explorerConfig }: CohortBuilderConfiguration) => {
-  useGetCSRFQuery();
+export const CohortBuilder = ({
+  explorerConfig,
+}: CohortBuilderConfiguration) => {
   return (
     <div className="w-full">
       <Tabs
-            color="primary-lighter"
-            classNames={{
-                tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
-            }}
-            keepMounted={false}
-            defaultValue={explorerConfig[0].tabTitle}>
+        color="primary-lighter"
+        classNames={{
+          tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
+        }}
+        keepMounted={false}
+        defaultValue={explorerConfig[0].tabTitle}
+      >
         <Tabs.List>
           {explorerConfig.map((panelConfig: CohortPanelConfig) => (
             <Tabs.Tab

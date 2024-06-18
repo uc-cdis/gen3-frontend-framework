@@ -5,29 +5,23 @@ import { useRef } from 'react';
 import { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
 
-const CohortActionButton = (
-  {
-    activeText,
-    inactiveText,
-    customStyle,
-    showLoading = true,
-    showIcon = true,
-    disabled = false,
-    Modal403 = Modals.NoAccessModal,
-    Modal400 = Modals.GeneralErrorModal,
-    tooltipText,
-    done,
-    customErrorMessage,
-    hideNotification = false,
-    actionFunction,
-    actionArgs,
-  } : GuppyActionButtonProps
-) => {
-  const {
-    handleClick,
-    icon,
-    active,
-  } = useGuppyActionButton( {
+const CohortActionButton = ({
+  activeText,
+  inactiveText,
+  customStyle,
+  showLoading = true,
+  showIcon = true,
+  disabled = false,
+  Modal403 = Modals.NoAccessModal,
+  Modal400 = Modals.GeneralErrorModal,
+  tooltipText,
+  done,
+  customErrorMessage,
+  hideNotification = false,
+  actionFunction,
+  actionArgs,
+}: GuppyActionButtonProps) => {
+  const { handleClick, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
     done,

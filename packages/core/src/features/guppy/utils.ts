@@ -45,7 +45,8 @@ const prepareFetchConfig = (
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(csrfToken !== undefined && { 'X-CSRFToken': csrfToken }),
+      ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
+      // TODO: Add credentials
     },
     body: JSON.stringify({
       type: parameters.type,
@@ -107,13 +108,14 @@ export const downloadFromGuppyToBlob = async ({
       } else {
         const convertedData = await jsonToFormat(jsonData, parameters.format);
         if (isJSONObject(convertedData)) {
-          str = JSON.stringify(convertedData);
+          str = JSON.stringify(convertedData, null, 2);
         } else {
           str = convertedData;
         }
       }
-      const bytes = new TextEncoder().encode(str);
-      return new Blob([bytes]);
+      return new Blob([str], {
+        type: 'application/json',
+      });
     })
     .then((blob) => onDone?.(blob))
     .catch((error) => {

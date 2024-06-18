@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Loader, Tabs } from '@mantine/core';
+import { Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -10,10 +10,10 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
-  useGetFieldsForIndexQuery
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
+import ErrorCard from '../../components/ErrorCard';
 
 import {
   classifyFacets,
@@ -32,9 +32,11 @@ import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-
-
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 
 const EmptyData = {};
 
@@ -115,13 +117,13 @@ const SinglePanel = ({
 };
 
 /**
-  * The main component that houses the charts, tabs, modals
-  * filters, tables, buttons of the exploration page.
-  *
-  * All of these params come directly from the top level exploration page configuration file or
-  * explorer config in legacy gitops.json file.
-  * @example see packages/sampleCommons/config/gen3/explorer.json
-  */
+ * The main component that houses the charts, tabs, modals
+ * filters, tables, buttons of the exploration page.
+ *
+ * All of these params come directly from the top level exploration page configuration file or
+ * explorer config in legacy gitops.json file.
+ * @example see packages/sampleCommons/config/gen3/explorer.json
+ */
 export const CohortPanel = ({
   guppyConfig,
   filters,
@@ -133,7 +135,10 @@ export const CohortPanel = ({
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
   const index = guppyConfig.dataType;
-  const fields = useMemo(() =>  getAllFieldsFromFilterConfigs(filters?.tabs ?? []), []);
+  const fields = useMemo(
+    () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
+    [],
+  );
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
@@ -181,24 +186,25 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useDeepCompareMemo(() => {
-    return {
-      enum: {
-        useGetFacetData: getEnumFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useTotalCounts: undefined,
-      },
-      range: {
-        useGetFacetData: getRangeFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useTotalCounts: undefined,
-      },
-    };
-  }, [getEnumFacetData, getRangeFacetData, index]);
+  const facetDataHooks: Record<FacetType, FacetRequiredHooks> =
+    useDeepCompareMemo(() => {
+      return {
+        enum: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        range: {
+          useGetFacetData: getRangeFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+      };
+    }, [getEnumFacetData, getRangeFacetData, index]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
@@ -226,19 +232,30 @@ export const CohortPanel = ({
 
       setSummaryCharts(summaryCharts);
     }
-  }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping, charts]);
+  }, [
+    isSuccess,
+    data,
+    facetDefinitions,
+    index,
+    guppyConfig.fieldMapping,
+    charts,
+  ]);
 
-  const { data: counts, isSuccess: isCountSuccess, isLoading } = useGetCountsQuery({
+  const {
+    data: counts,
+    isSuccess: isCountSuccess,
+    isError,
+  } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex w-100 h-100 relative justify-center"><Loader  variant="dots"  /> </div>);
+  if (isError) {
+    return <ErrorCard message="Unable to fetch cohort data" />;
   }
+
   return (
-    <div className="flex mt-3">
+    <div className="flex mt-3 relative">
       <div>
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
           <TabbedPanel
@@ -257,14 +274,13 @@ export const CohortPanel = ({
         )}
       </div>
       <div className="w-full relative">
-
         <div className="flex flex-col">
           <CohortManager index={index} />
 
           <div className="flex justify-between mb-1 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
-              buttons={ buttons ?? []}
+              buttons={buttons ?? []}
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}
@@ -291,7 +307,9 @@ export const CohortPanel = ({
                 <ExplorerTable index={index} tableConfig={table} />
               </div>
             </div>
-          ) : false}
+          ) : (
+            false
+          )}
         </div>
       </div>
     </div>

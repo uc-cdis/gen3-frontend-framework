@@ -1,6 +1,9 @@
-import { ActionButtonWithArgsFunction, ActionButtonFunction } from '../../types';
+import {
+  ActionButtonWithArgsFunction,
+  ActionButtonFunction,
+} from '../../types';
 import { downloadToFileAction } from './downloadToFile';
-import { downloadToManifestAction} from './downloadManifest';
+import { downloadToManifestAction } from './downloadManifest';
 
 // create a factory for the action creators
 
@@ -11,7 +14,14 @@ interface ActionCreatorFactoryItem {
 
 const registeredButtonActions: Record<string, ActionCreatorFactoryItem> = {};
 
-export const NullButtonAction:ActionButtonWithArgsFunction = (): Promise<void>  => { return new Promise<void>(()=>null); };
+export const NullButtonAction: ActionButtonWithArgsFunction = (
+  _params,
+  done,
+): Promise<void> => {
+  return new Promise<void>((done) => {
+    done && done();
+  });
+};
 
 export const registerButtonAction = (
   buttonName: string,
@@ -20,7 +30,9 @@ export const registerButtonAction = (
   registeredButtonActions[buttonName] = actionItem;
 };
 
-export const findButtonAction = (buttonName?: string): ActionCreatorFactoryItem | undefined => {
+export const findButtonAction = (
+  buttonName?: string,
+): ActionCreatorFactoryItem | undefined => {
   if (buttonName === undefined) {
     console.error('getButtonAction: no name provided');
     return undefined;
@@ -33,19 +45,22 @@ export const findButtonAction = (buttonName?: string): ActionCreatorFactoryItem 
   return registeredButtonActions[buttonName];
 };
 
-
 export const registerDefaultButtonActions = () => {
   registerButtonAction('data-json', {
-    action: downloadToFileAction, args: { format: 'json' }
+    action: downloadToFileAction,
+    args: { format: 'json' },
   });
   registerButtonAction('data-csv', {
-    action: downloadToFileAction, args: { format: 'csv' }
+    action: downloadToFileAction,
+    args: { format: 'csv' },
   });
   registerButtonAction('data-tsv', {
-    action: downloadToFileAction, args: { format: 'tsv' }
+    action: downloadToFileAction,
+    args: { format: 'tsv' },
   });
   registerButtonAction('manifest', {
-    action: downloadToManifestAction, args: { format: 'manifest' }
+    action: downloadToManifestAction,
+    args: { format: 'manifest' },
   });
 };
 
