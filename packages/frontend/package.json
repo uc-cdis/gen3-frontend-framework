@@ -139,8 +139,6 @@
     "@types/recharts": "^1.8.23",
     "@types/tinycolor2": "^1.4.4",
     "@types/uuid": "^9.0.4",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
     "autoprefixer": "^10.4.15",
     "css-loader": "^6.8.1",
     "eslint": "^8.49.0",

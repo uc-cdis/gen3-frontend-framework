@@ -16,7 +16,7 @@ const ActionBar = ({ config }: ActionBarProps) => {
         return (
           <DataLibraryActionButton
             label={button.label}
-            icon={DownloadIcon}
+            icon={<DownloadIcon />}
             toolTip={button.tooltip}
             loginRequired={config?.loginRequireForAllButtons ?? true}
             onClick={() => {

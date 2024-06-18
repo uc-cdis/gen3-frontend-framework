@@ -104,7 +104,10 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           cellRendererFunc && columnDef?.params
             ? (cell: CellRendererFunctionProps) =>
                 cellRendererFunc(cell, cellRendererFuncParams)
-            : cellRendererFunc,
+            : cellRendererFunc
+            ? cellRendererFunc
+            : undefined,
+
         size: columnDef?.width,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
@@ -179,8 +182,8 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
-  const table = useMantineReactTable({
-    columns: cols,
+  const table = useMantineReactTable<JSONObject>({
+    columns: cols as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
     manualSorting: true,
     manualPagination: true,

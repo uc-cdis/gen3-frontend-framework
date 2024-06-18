@@ -65,7 +65,9 @@ const DownloadLinksPanel = ({
                   return (
                     <Group key={id} position="apart">
                       <Text>{entry['titleField'] || ''}</Text>
-                      <Button leftIcon={DownloadIcon()} disabled={!id}>Download File</Button>
+                      <Button leftIcon={<DownloadIcon />} disabled={!id}>
+                        Download File
+                      </Button>
                     </Group>
                   );
                 },

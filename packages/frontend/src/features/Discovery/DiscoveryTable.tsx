@@ -83,7 +83,7 @@ const DiscoveryTable = ({
   }, []);
 
   const table = useMantineReactTable({
-    columns: cols,
+    columns: cols as any[],
     data: data ?? [],
     manualSorting: true,
     manualPagination: true,
