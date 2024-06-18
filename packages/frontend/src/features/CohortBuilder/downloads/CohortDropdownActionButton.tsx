@@ -181,6 +181,7 @@ const CohortDropdownActionButton = ({
           }}
           aria-label={buttonAriaLabel}
           loading={isActive}
+          key={menuLabelText}
         >
           <div>
             {tooltip?.length && !disabled ? (

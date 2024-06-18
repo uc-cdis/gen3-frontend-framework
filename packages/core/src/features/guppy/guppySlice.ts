@@ -7,7 +7,7 @@ import {
   isFilterEmpty,
   convertFilterSetToGqlFilter,
 } from '../filters';
-import { guppyApi } from './guppyApi';
+import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
@@ -343,7 +343,7 @@ const explorerApi = guppyApi.injectEndpoints({
             }),
           },
         };
-      },
+      }
     }),
     getFieldsForIndex: builder.query({
       query: (index: string) => {
@@ -355,6 +355,14 @@ const explorerApi = guppyApi.injectEndpoints({
       },
       transformResponse: (response: Record<string, any>) => {
         return response['_mapping'];
+      },
+    }),
+    generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
+      query: ({ query, variables }) => {
+        return {
+          query: query,
+          variables: variables,
+        };
       },
     }),
   }),
@@ -437,6 +445,8 @@ export const {
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
   useGetFieldsForIndexQuery,
+  useGeneralGQLQuery,
+  useLazyGeneralGQLQuery,
 } = explorerApi;
 
 const EmptyAggData = {};
