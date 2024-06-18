@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, MutableRefObject } from 'react';
 import CategoryHeader from './CategoryHeader';
 import { Accordion, Button, Group } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
@@ -14,15 +14,21 @@ import { PropertyIdStringToSearchPath, toNodeCategory } from './utils';
 interface CategoryPanel {
   category: string;
   selectedId: string;
+  scrollToSelection: (ref: HTMLSpanElement) => void;
 }
 
-const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
+const CategoryPanel = ({
+  category,
+  selectedId,
+  scrollToSelection,
+}: CategoryPanel) => {
   const { dictionary, categories, config } = useDictionaryContext();
   const categoryInfo: Array<DictionaryCategory<string>> = categories[category];
   const [value, setValue] = useState<string | null>(selectedId);
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLSpanElement>({
-    offset: 60,
-  });
+  // const { scrollIntoView, targetRef, } =
+  //   useScrollIntoView<HTMLSpanElement>({
+  //     offset: 60,
+  //   });
   const selectedItems = PropertyIdStringToSearchPath(selectedId);
   const itemRefs = useRef<Record<string, HTMLSpanElement | null>>({});
 
@@ -34,8 +40,7 @@ const CategoryPanel = ({ category, selectedId }: CategoryPanel) => {
     if (!itemRefs.current || itemRefs.current[id] == null) return;
     const elm = itemRefs.current[id];
     if (elm !== null) {
-      targetRef.current = elm;
-      scrollIntoView();
+      scrollToSelection(elm);
     }
   };
 
@@ -130,6 +135,7 @@ export default React.memo(CategoryPanel, (prevProps, nextProps) => {
   return (
     prevProps.category === nextProps.category &&
     selectedItems.node === prevProps.category &&
-    prevProps.selectedId === nextProps.selectedId
+    prevProps.selectedId === nextProps.selectedId &&
+    prevProps.scrollToSelection === nextProps.scrollToSelection
   );
 });

@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
-
+import { ScrollArea } from '@mantine/core';
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
 import TableSearch from './TableSearch';
 import { useDictionaryContext } from './DictionaryProvider';
 import CategoryPanel from './CategoryPanel';
+import { useScrollIntoView } from '@mantine/hooks';
 
 const Dictionary = () => {
   const [selectedId, setSelectedId] = useState('');
@@ -13,9 +14,22 @@ const Dictionary = () => {
   const { dictionary, categories, visibleCategories, config } =
     useDictionaryContext();
 
+  const { scrollIntoView, targetRef, scrollableRef } =
+    useScrollIntoView<HTMLSpanElement>({
+      offset: 60,
+    });
+
   const scrollTo = useCallback((item: MatchingSearchResult) => {
     setSelectedId(() => SearchPathToPropertyIdString(item));
   }, []);
+
+  const scrollToSelection = useCallback(
+    (itemRef: HTMLSpanElement) => {
+      targetRef.current = itemRef;
+      scrollIntoView();
+    },
+    [scrollIntoView, targetRef],
+  );
 
   return (
     <div className="flex m-2 bg-base-max">
@@ -37,14 +51,17 @@ const Dictionary = () => {
         <TableSearch selectedId={selectedId} selectItem={scrollTo} />
       </div>
       <div className="w-3/4">
-        {Object.keys(categories).length &&
-          Object.keys(categories).map((category) => (
-            <CategoryPanel
-              key={category}
-              category={category}
-              selectedId={selectedId}
-            />
-          ))}
+        <ScrollArea h="100vh" offsetScrollbars viewportRef={scrollableRef}>
+          {Object.keys(categories).length &&
+            Object.keys(categories).map((category) => (
+              <CategoryPanel
+                key={category}
+                category={category}
+                selectedId={selectedId}
+                scrollToSelection={scrollToSelection}
+              />
+            ))}
+        </ScrollArea>
       </div>
     </div>
   );

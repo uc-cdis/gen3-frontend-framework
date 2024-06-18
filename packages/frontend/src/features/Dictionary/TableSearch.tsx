@@ -1,5 +1,10 @@
 import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button } from '@mantine/core';
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  ScrollArea,
+} from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
@@ -135,7 +140,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
       clearSearch();
       clearSuggestions();
     }
-  }, [searchTerm]);
+  }, [clearSearch, clearSuggestions, searchTerm]);
 
   useEffect(() => {
     if (
@@ -166,7 +171,12 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
       const newSearchHistory = Object.fromEntries(searchHistoryArray);
       setDictionarySearchHistory(newSearchHistory);
     }
-  }, [dictionarySearchResults]);
+  }, [
+    config?.maxHistoryItems,
+    dictionarySearchHistory,
+    dictionarySearchResults,
+    setDictionarySearchHistory,
+  ]);
 
   useEffect(() => {
     if (dictionarySearchHistory) {
@@ -195,79 +205,81 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
   );
   return (
     <>
-      <div className="flex flex-col">
-        <Autocomplete
-          itemComponent={(props: any) => (
-            <SuggestedItem searchTerm={searchTerm} {...props} />
-          )}
-          data={suggestedData}
-          icon={<SearchIcon size={24} className="text-accent" />}
-          placeholder={'Search in Dictionary'}
-          data-testid="dictionary-textbox-search-bar"
-          aria-label="Dictionary Search Input"
-          value={searchTerm}
-          onChange={(value) => {
-            setSearchTerm(value as string);
-          }}
-          onItemSubmit={(item: AutocompleteItem) => {
-            setDictionarySearchResults({
-              term: item.value,
-              matches: getSearchResults(searchResults ?? []),
-            });
-          }}
-          classNames={{
-            input: 'focus:border-2 focus:border-primary text-sm p-5',
-          }}
-          size="sm"
-          rightSection={
-            searchTerm.length > 0 && (
-              <CloseIcon
-                onClick={() => {
-                  setSearchTerm('');
-                  clearSearch();
-                  clearSuggestions();
-                }}
-                className="cursor-pointer"
-              />
-            )
-          }
-        />
-      </div>
-      <div className="p-3">
-        <span className="flex flex-col font-semibold text-sm">
-          Search Results
-        </span>
-        {dictionarySearchResults?.matches?.length > 0 ? (
-          <ResultCard
-            term={dictionarySearchResults?.term}
-            matches={dictionarySearchResults?.matches}
-            selectItem={selectItem}
+      <ScrollArea h="100vh" offsetScrollbars>
+        <div className="flex flex-col">
+          <Autocomplete
+            itemComponent={(props: any) => (
+              <SuggestedItem searchTerm={searchTerm} {...props} />
+            )}
+            data={suggestedData}
+            icon={<SearchIcon size={24} className="text-accent" />}
+            placeholder={'Search in Dictionary'}
+            data-testid="dictionary-textbox-search-bar"
+            aria-label="Dictionary Search Input"
+            value={searchTerm}
+            onChange={(value) => {
+              setSearchTerm(value as string);
+            }}
+            onItemSubmit={(item: AutocompleteItem) => {
+              setDictionarySearchResults({
+                term: item.value,
+                matches: getSearchResults(searchResults ?? []),
+              });
+            }}
+            classNames={{
+              input: 'focus:border-2 focus:border-primary text-sm p-5',
+            }}
+            size="sm"
+            rightSection={
+              searchTerm.length > 0 && (
+                <CloseIcon
+                  onClick={() => {
+                    setSearchTerm('');
+                    clearSearch();
+                    clearSuggestions();
+                  }}
+                  className="cursor-pointer"
+                />
+              )
+            }
           />
-        ) : (
-          <span className="text-xs items-center">
-            Try a different search query
-          </span>
-        )}
-      </div>
-      <div className="p-3">
-        <div className="flex justify-between">
-          <span className="flex flex-col font-semibold text-sm">
-            Search History
-          </span>
-          <Button
-            variant="outline"
-            radius="md"
-            onClick={() => removeDictionarySearchHistory()}
-          >
-            Clear All
-          </Button>
         </div>
-        {dictionaryTableRows?.length ? (
-          <React.Fragment>{dictionaryTableRows}</React.Fragment>
-        ) : (
-          <React.Fragment></React.Fragment>
-        )}
-      </div>
+        <div className="p-3">
+          <span className="flex flex-col font-semibold text-sm">
+            Search Results
+          </span>
+          {dictionarySearchResults?.matches?.length > 0 ? (
+            <ResultCard
+              term={dictionarySearchResults?.term}
+              matches={dictionarySearchResults?.matches}
+              selectItem={selectItem}
+            />
+          ) : (
+            <span className="text-xs items-center">
+              Try a different search query
+            </span>
+          )}
+        </div>
+        <div className="p-3">
+          <div className="flex justify-between">
+            <span className="flex flex-col font-semibold text-sm">
+              Search History
+            </span>
+            <Button
+              variant="outline"
+              radius="md"
+              onClick={() => removeDictionarySearchHistory()}
+            >
+              Clear All
+            </Button>
+          </div>
+          {dictionaryTableRows?.length ? (
+            <React.Fragment>{dictionaryTableRows}</React.Fragment>
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
+        </div>
+      </ScrollArea>
     </>
   );
 };

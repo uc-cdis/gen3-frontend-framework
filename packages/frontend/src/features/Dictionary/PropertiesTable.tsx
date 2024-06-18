@@ -168,7 +168,7 @@ const PropertiesTable = ({
         const res = {
           ...(Object.keys(rowSelection).includes(row.original.property_id)
             ? {
-                backgroundColor: '#ffee00',
+                borderColor: '#ffee00',
               }
             : {}),
           borderWidth: 2,
