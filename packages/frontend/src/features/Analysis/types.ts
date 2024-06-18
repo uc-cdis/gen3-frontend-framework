@@ -1,3 +1,3 @@
 export interface AnalysisCenterProps {
-    analysis?: any;
-  }
+  analysis?: any;
+}
