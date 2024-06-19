@@ -67,15 +67,13 @@ const CategoryPanel = ({
   }, [selectedItems]);
 
   return (
-    <div
-      className="border-l-4 border-purple mt-2"
-      key={`dictionary-entry-${category}`}
-    >
+    <div className="mt-2" key={`dictionary-entry-${category}`}>
       <CategoryHeader category={category} />
       <Accordion
         chevronPosition="left"
         value={value}
         onChange={setValue}
+        variant="contained"
         transitionDuration={ACCORDION_TRANSITION_DURATION}
         styles={{
           chevron: {
@@ -91,8 +89,16 @@ const CategoryPanel = ({
             <Accordion.Item
               value={`${category}-${id}`}
               key={`${category}-${id}`}
+              className="odd:bg-base-lightest even:bg-base-max"
             >
-              <Group noWrap>
+              <Group
+                noWrap
+                className={
+                  `${category}-${id}` === value
+                    ? 'border-accent border-l-4'
+                    : ''
+                }
+              >
                 <Accordion.Control>
                   <CategoryAccordionLabel
                     label={title}

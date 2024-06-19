@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { Group, ScrollArea, Stack } from '@mantine/core';
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
@@ -51,7 +50,7 @@ const Dictionary = () => {
         </div>
       </div>
       <div
-        className="w-3/4 overflow-auto p-4 bg-base-lightest"
+        className="w-3/4 overflow-auto p-4 bg-base-lighter"
         ref={scrollableRef}
       >
         <div className="h-full">

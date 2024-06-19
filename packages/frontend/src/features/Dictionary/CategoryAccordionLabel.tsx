@@ -7,9 +7,14 @@ interface CategoryLabelProps {
 
 const CategoryAccordionLabel = ({ label, description }: CategoryLabelProps) => {
   return (
-    <Group noWrap>
-      <Text className="min-w-40 max-w-40">{label}</Text>
-      <Text size="sm" color="dimmed" weight={400}>
+    <Group
+      noWrap
+      className="odd:text-base-contrast-lightest even:bg-base-contrast-max"
+    >
+      <Text className="min-w-40 max-w-40" weight={600}>
+        {label}
+      </Text>
+      <Text size="sm" className="opacity-95">
         {description}
       </Text>
     </Group>

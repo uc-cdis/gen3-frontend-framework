@@ -157,10 +157,17 @@ const PropertiesTable = ({
     enablePagination: false,
     enableBottomToolbar: false,
     enableTopToolbar: false,
-    selectDisplayMode: 'switch',
-    mantineTableBodyProps: {
-      sx: {},
-    },
+    enableRowSelection: false,
+    // mantineTableBodyProps: {
+    //   sx: {
+    //     backgroundColor: '#f1fff6',
+    //     borderWidth: 10,
+    //     borderColor: 'red',
+    //     borderCollapse: 'collapse',
+    //     borderStyle: 'solid',
+    //     boxShadow: '0px 0px 0px 10px rgb(0, 0, 0)',
+    //   },
+    // },
     getRowId: (originalRow: PropertyTableRowData, index: number) =>
       originalRow.property_id,
     mantineTableBodyRowProps: ({ row }) => ({
@@ -168,10 +175,9 @@ const PropertiesTable = ({
         const res = {
           ...(Object.keys(rowSelection).includes(row.original.property_id)
             ? {
-                borderColor: '#ffee00',
+                boxShadow: `inset 4px 0px 0px 0px ${theme.colors['accent'][4]}`,
               }
             : {}),
-          borderWidth: 2,
         };
         return res;
       },
