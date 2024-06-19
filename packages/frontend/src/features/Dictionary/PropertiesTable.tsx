@@ -90,6 +90,7 @@ const PropertiesTable = ({
           return (
             <List
               size="sm"
+              spacing="xs"
               center
               classNames={{
                 itemWrapper: 'flex items-center',
@@ -158,16 +159,6 @@ const PropertiesTable = ({
     enableBottomToolbar: false,
     enableTopToolbar: false,
     enableRowSelection: false,
-    // mantineTableBodyProps: {
-    //   sx: {
-    //     backgroundColor: '#f1fff6',
-    //     borderWidth: 10,
-    //     borderColor: 'red',
-    //     borderCollapse: 'collapse',
-    //     borderStyle: 'solid',
-    //     boxShadow: '0px 0px 0px 10px rgb(0, 0, 0)',
-    //   },
-    // },
     getRowId: (originalRow: PropertyTableRowData, index: number) =>
       originalRow.property_id,
     mantineTableBodyRowProps: ({ row }) => ({
