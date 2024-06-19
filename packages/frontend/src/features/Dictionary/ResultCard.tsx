@@ -16,8 +16,6 @@ interface ResultCardProps {
 
 const ResultCard = ({ term, matches, selectItem }: ResultCardProps) => {
   const [expanded, setExpanded] = useState(false);
-  console.log('term', term);
-  console.log('matches', matches);
   return (
     <div>
       {expanded ? (

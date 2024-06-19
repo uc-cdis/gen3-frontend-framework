@@ -1,5 +1,6 @@
-import { Button, Highlight } from '@mantine/core';
+import { Text, Highlight } from '@mantine/core';
 import { MatchingSearchResult } from './types';
+import { snakeSplit } from './utils';
 
 interface ResultListProps {
   matches?: MatchingSearchResult[];
@@ -33,25 +34,31 @@ const ResultList = ({
             ) => {
               return (
                 <div key={key} className="flex w-full p-0.5 pl-2">
-                  <Highlight
-                    component="button"
-                    highlight={term}
+                  <Text
+                    size="sm"
                     truncate="end"
-                    className="hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
-                    onClick={() => {
-                      console.log(
-                        'picked',
-                        `${node} > ${category} > ${property}`,
-                      );
-                      selectItem({
-                        node,
-                        category,
-                        property,
-                      });
-                    }}
+                    className="w-full"
+                    align="left"
                   >
-                    {`${node} > ${category} > ${property}`}
-                  </Highlight>
+                    <Highlight
+                      component="button"
+                      highlight={term}
+                      align="left"
+                      truncate="end"
+                      className="w-full hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
+                      onClick={() => {
+                        selectItem({
+                          node,
+                          category,
+                          property,
+                        });
+                      }}
+                    >
+                      {`${snakeSplit(node)} > ${snakeSplit(
+                        category,
+                      )} > ${property}`}
+                    </Highlight>
+                  </Text>
                 </div>
               );
             },

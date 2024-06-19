@@ -10,7 +10,9 @@ const DictionaryPage = ({
   config,
 }: DictionaryPageProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps, mainProps: { fixed: true } }}
+    >
       <DictionaryWithContext
         config={config}
         dictionary={removeUnusedFieldsFromDictionaryObject(dataDictionaryData)}

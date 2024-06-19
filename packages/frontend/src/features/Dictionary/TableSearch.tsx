@@ -3,6 +3,8 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
+  Stack,
+  Group,
   ScrollArea,
 } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
@@ -205,81 +207,81 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
   );
   return (
     <>
-      <ScrollArea h="100vh" offsetScrollbars>
-        <div className="flex flex-col">
-          <Autocomplete
-            itemComponent={(props: any) => (
-              <SuggestedItem searchTerm={searchTerm} {...props} />
-            )}
-            data={suggestedData}
-            icon={<SearchIcon size={24} className="text-accent" />}
-            placeholder={'Search in Dictionary'}
-            data-testid="dictionary-textbox-search-bar"
-            aria-label="Dictionary Search Input"
-            value={searchTerm}
-            onChange={(value) => {
-              setSearchTerm(value as string);
-            }}
-            onItemSubmit={(item: AutocompleteItem) => {
-              setDictionarySearchResults({
-                term: item.value,
-                matches: getSearchResults(searchResults ?? []),
-              });
-            }}
-            classNames={{
-              input: 'focus:border-2 focus:border-primary text-sm p-5',
-            }}
-            size="sm"
-            rightSection={
-              searchTerm.length > 0 && (
-                <CloseIcon
-                  onClick={() => {
-                    setSearchTerm('');
-                    clearSearch();
-                    clearSuggestions();
-                  }}
-                  className="cursor-pointer"
-                />
-              )
-            }
-          />
-        </div>
-        <div className="p-3">
-          <span className="flex flex-col font-semibold text-sm">
-            Search Results
-          </span>
-          {dictionarySearchResults?.matches?.length > 0 ? (
-            <ResultCard
-              term={dictionarySearchResults?.term}
-              matches={dictionarySearchResults?.matches}
-              selectItem={selectItem}
-            />
-          ) : (
-            <span className="text-xs items-center">
-              Try a different search query
-            </span>
+      <Stack justify="flex-start">
+        <Autocomplete
+          itemComponent={(props: any) => (
+            <SuggestedItem searchTerm={searchTerm} {...props} />
           )}
-        </div>
-        <div className="p-3">
-          <div className="flex justify-between">
-            <span className="flex flex-col font-semibold text-sm">
-              Search History
-            </span>
-            <Button
-              variant="outline"
-              radius="md"
-              onClick={() => removeDictionarySearchHistory()}
-            >
-              Clear All
-            </Button>
-          </div>
+          data={suggestedData}
+          icon={<SearchIcon size={24} className="text-accent" />}
+          placeholder={'Search in Dictionary'}
+          data-testid="dictionary-textbox-search-bar"
+          aria-label="Dictionary Search Input"
+          value={searchTerm}
+          onChange={(value) => {
+            setSearchTerm(value as string);
+          }}
+          onItemSubmit={(item: AutocompleteItem) => {
+            setDictionarySearchResults({
+              term: item.value,
+              matches: getSearchResults(searchResults ?? []),
+            });
+          }}
+          classNames={{
+            input: 'focus:border-2 focus:border-primary text-sm p-5',
+          }}
+          size="sm"
+          rightSection={
+            searchTerm.length > 0 && (
+              <CloseIcon
+                onClick={() => {
+                  setSearchTerm('');
+                  clearSearch();
+                  clearSuggestions();
+                }}
+                className="cursor-pointer"
+              />
+            )
+          }
+        />
+      </Stack>
+
+      <Stack justify="flex-start">
+        <span className="font-semibold text-sm ">Search Results</span>
+        {dictionarySearchResults?.matches?.length > 0 ? (
+          <ResultCard
+            term={dictionarySearchResults?.term}
+            matches={dictionarySearchResults?.matches}
+            selectItem={selectItem}
+          />
+        ) : (
+          <span className="text-xs items-center">
+            Try a different search query
+          </span>
+        )}
+      </Stack>
+      <Stack justify="flex-start">
+        <Group position="apart">
+          <span className="flex flex-col font-semibold text-sm">
+            Search History
+          </span>
+          <Button
+            variant="outline"
+            color="accent.4"
+            radius="md"
+            onClick={() => removeDictionarySearchHistory()}
+          >
+            Clear All
+          </Button>
+        </Group>
+        <Stack justify="flex-start">
           {dictionaryTableRows?.length ? (
             <React.Fragment>{dictionaryTableRows}</React.Fragment>
           ) : (
             <React.Fragment></React.Fragment>
           )}
-        </div>
-      </ScrollArea>
+        </Stack>
+      </Stack>
     </>
   );
 };

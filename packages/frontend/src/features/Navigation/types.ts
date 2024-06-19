@@ -1,4 +1,4 @@
-import {  ReactElement }  from 'react';
+import { ReactElement } from 'react';
 import { TopBarProps } from './TopBar';
 
 interface BottomLinks {
@@ -11,7 +11,7 @@ interface ColumnLinks {
   items: ReadonlyArray<{
     text: string;
     href?: string;
-    linkType?: 'gen3ff' | 'portal' ;
+    linkType?: 'gen3ff' | 'portal';
   }>;
 }
 
@@ -39,8 +39,6 @@ export interface NavigationButtonProps {
   readonly classNames?: Record<string, string>;
 }
 
-
-
 export interface NavigationBarLogo {
   readonly src: string;
   readonly title?: string;
@@ -63,4 +61,8 @@ export interface HeaderProps {
   readonly top: TopBarProps;
   readonly navigation: NavigationProps;
   readonly type?: 'horizontal' | 'vertical' | 'original';
+}
+
+export interface MainContentProps {
+  fixed: boolean;
 }

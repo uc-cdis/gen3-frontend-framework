@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { ScrollArea } from '@mantine/core';
+import { Group, ScrollArea, Stack } from '@mantine/core';
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
@@ -32,12 +32,12 @@ const Dictionary = () => {
   );
 
   return (
-    <div className="flex m-2 bg-base-max">
-      <div className="w-1/4 mr-4">
-        {config?.showGraph ? (
-          <ViewSelector view={view} setView={setView} />
-        ) : null}
-        <div className="p-4 text-sm">
+    <>
+      <div className="w-1/4 overflow-auto p-4">
+        <div className="h-full p-4">
+          {config?.showGraph ? (
+            <ViewSelector view={view} setView={setView} />
+          ) : null}
           <span>
             The current commons dictionary has{' '}
             <span className="font-bold">{visibleCategories.length}</span> nodes
@@ -47,11 +47,12 @@ const Dictionary = () => {
             </span>{' '}
             properties
           </span>
+
+          <TableSearch selectedId={selectedId} selectItem={scrollTo} />
         </div>
-        <TableSearch selectedId={selectedId} selectItem={scrollTo} />
       </div>
-      <div className="w-3/4">
-        <ScrollArea h="100vh" offsetScrollbars viewportRef={scrollableRef}>
+      <div className="w-3/4 overflow-auto p-4 m-2" ref={scrollableRef}>
+        <div className="h-full">
           {Object.keys(categories).length &&
             Object.keys(categories).map((category) => (
               <CategoryPanel
@@ -61,9 +62,9 @@ const Dictionary = () => {
                 scrollToSelection={scrollToSelection}
               />
             ))}
-        </ScrollArea>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
