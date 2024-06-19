@@ -34,7 +34,7 @@ const Dictionary = () => {
   return (
     <>
       <div className="w-1/4 overflow-auto p-4">
-        <div className="h-full p-4">
+        <div className="h-full">
           {config?.showGraph ? (
             <ViewSelector view={view} setView={setView} />
           ) : null}
@@ -47,11 +47,13 @@ const Dictionary = () => {
             </span>{' '}
             properties
           </span>
-
           <TableSearch selectedId={selectedId} selectItem={scrollTo} />
         </div>
       </div>
-      <div className="w-3/4 overflow-auto p-4 m-2" ref={scrollableRef}>
+      <div
+        className="w-3/4 overflow-auto p-4 bg-base-lightest"
+        ref={scrollableRef}
+      >
         <div className="h-full">
           {Object.keys(categories).length &&
             Object.keys(categories).map((category) => (

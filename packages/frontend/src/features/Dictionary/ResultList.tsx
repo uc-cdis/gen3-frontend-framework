@@ -18,13 +18,13 @@ const ResultList = ({
     <div>
       {matches?.length && (
         <div
-          className={`flex flex-col border-2 border-solid border-base-light rounded-t-md ${
+          className={`flex flex-col border border-solid border-base-light rounded-t-sm ${
             matches.length < 4 || (!expanded && matches.length > 4)
-              ? 'rounded-b-md'
+              ? 'rounded-b-sm'
               : 'border-b-0'
           }`}
         >
-          <div className="p-2 border-b-2 border-base-light text-md font-bold bg-primary-lightest text-primary-contrast-lighter rounded-t-md">
+          <div className="p-2 border-b-2 border-base-light text-md font-bold bg-primary-max text-primary-contrast-max rounded-t-sm">
             {term}
           </div>
           {matches.map(

@@ -131,7 +131,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
 
   useEffect(() => {
     if (searchTerm.length > 1) {
-      search(searchTerm);
+      search(searchTerm, { combineWith: 'AND' });
       autoSuggest(searchTerm);
     }
   }, [searchTerm, autoSuggest, search]);
@@ -207,7 +207,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
   );
   return (
     <>
-      <Stack justify="flex-start">
+      <Stack justify="flex-start" className="mt-2">
         <Autocomplete
           itemComponent={(props: any) => (
             <SuggestedItem searchTerm={searchTerm} {...props} />
@@ -246,7 +246,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
         />
       </Stack>
 
-      <Stack justify="flex-start">
+      <Stack justify="flex-start" className="mt-2">
         <span className="font-semibold text-sm ">Search Results</span>
         {dictionarySearchResults?.matches?.length > 0 ? (
           <ResultCard
@@ -260,8 +260,8 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
           </span>
         )}
       </Stack>
-      <Stack justify="flex-start">
-        <Group position="apart">
+      <Stack justify="flex-start" spacing="xs" className="mt-1">
+        <Group position="apart" align="center">
           <span className="flex flex-col font-semibold text-sm">
             Search History
           </span>
@@ -274,13 +274,12 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
             Clear All
           </Button>
         </Group>
-        <Stack justify="flex-start">
-          {dictionaryTableRows?.length ? (
-            <React.Fragment>{dictionaryTableRows}</React.Fragment>
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
-        </Stack>
+
+        {dictionaryTableRows?.length ? (
+          <React.Fragment>{dictionaryTableRows}</React.Fragment>
+        ) : (
+          <React.Fragment></React.Fragment>
+        )}
       </Stack>
     </>
   );
