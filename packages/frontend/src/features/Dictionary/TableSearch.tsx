@@ -90,7 +90,6 @@ const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
 );
 
 interface TableSearchProps {
-  selectedId: string;
   selectItem: (_: MatchingSearchResult) => void;
 }
 

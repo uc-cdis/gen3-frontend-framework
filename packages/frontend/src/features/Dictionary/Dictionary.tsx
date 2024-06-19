@@ -46,7 +46,7 @@ const Dictionary = () => {
             </span>{' '}
             properties
           </span>
-          <TableSearch selectedId={selectedId} selectItem={scrollTo} />
+          <TableSearch selectItem={scrollTo} />
         </div>
       </div>
       <div

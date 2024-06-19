@@ -93,7 +93,6 @@ export type ViewType = 'table' | 'graph';
 
 export interface DictionaryProps {
   config: DictionaryConfig;
-  dictionary: DataDictionary;
 }
 
 export interface DictionarySearchDocument {

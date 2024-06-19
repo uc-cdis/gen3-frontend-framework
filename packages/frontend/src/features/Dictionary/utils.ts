@@ -148,6 +148,7 @@ export const getDictionaryWithExcludeSystemProperties = (
 export const removeUnusedFieldsFromDictionaryObject = (
   obj: Record<string, any>,
 ) => {
+  console.log('remove', obj);
   return Object.keys(obj).reduce((acc, key) => {
     if (categoryFilter(key, obj)) {
       acc[key] = obj[key];

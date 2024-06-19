@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
+import { DiscoveryConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
 import { Loader, Text } from '@mantine/core';
@@ -19,11 +19,13 @@ export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
 }
 
-const Discovery = ({
-  discoveryConfig,
-}: DiscoveryProps) => {
-
-  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllMDSData, []);
+const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
+  const dataHook = useMemo(
+    () =>
+      getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ??
+      useLoadAllMDSData,
+    [],
+  );
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -69,25 +71,29 @@ const Discovery = ({
     useDisclosure(false);
 
   if (dataRequestStatus.isLoading) {
-    return (<div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+    return (
+      <div className="flex w-full py-24 relative justify-center">
+        <Loader variant="dots" />{' '}
+      </div>
+    );
   }
 
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
         <Text size={'xl'}>Error loading discovery data</Text>
-      </div>);
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <div className="w-full">
         <DiscoveryProvider discoveryConfig={discoveryConfig}>
-          {
-            discoveryConfig.features?.pageTitle && discoveryConfig?.features?.pageTitle.enabled ? (
-              <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
-            ) : null
-          }
+          {discoveryConfig.features?.pageTitle &&
+          discoveryConfig?.features?.pageTitle.enabled ? (
+            <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+          ) : null}
           <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             <SummaryStatisticPanel summaries={summaryStatistics} />
             <div className="w-3/4 flex flex-col">
@@ -115,20 +121,29 @@ const Discovery = ({
             </div>
           )}
           <div className="flex flex-row">
-            {discoveryConfig?.features?.advSearchFilters?.enabled ?
+            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
               <Button onClick={toggleAdvancedSearch} color="accent">
-              Filters
-            </Button> : false }
+                Filters
+              </Button>
+            ) : (
+              false
+            )}
             {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
-              <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
+              <ActionBar
+                config={discoveryConfig.features.exportToDataLibrary}
+              />
             ) : null}
           </div>
           <div className="flex justify-start">
-            { discoveryConfig?.features?.advSearchFilters?.enabled ? <AdvancedSearchPanel
-              advSearchFilters={advancedSearchFilterValues}
-              opened={showAdvancedSearch}
-              setAdvancedSearchFilters={setAdvancedSearchTerms}
-            /> : false }
+            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
+              <AdvancedSearchPanel
+                advSearchFilters={advancedSearchFilterValues}
+                opened={showAdvancedSearch}
+                setAdvancedSearchFilters={setAdvancedSearchTerms}
+              />
+            ) : (
+              false
+            )}
             <div className="flex w-full bg-base-max p-4 rounded-lg">
               <DiscoveryTable
                 data={data}

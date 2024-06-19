@@ -3,6 +3,7 @@ import {
   DictionaryProps,
   DictionaryEntry,
   DictionarySearchDocument,
+  DataDictionary,
 } from './types';
 import { JSONObject } from '@gen3/core';
 import {
@@ -18,6 +19,7 @@ interface DictionaryProviderValue extends DictionaryProps {
   categories: any;
   documents: Array<DictionarySearchDocument>;
   visibleCategories: string[];
+  dictionary: DataDictionary;
 }
 
 const DictionaryContext = createContext<DictionaryProviderValue>({
@@ -47,6 +49,7 @@ const useDictionaryContext = () => {
 
 interface DictionaryProviderProps extends DictionaryProps {
   children: ReactNode;
+  dictionary: DataDictionary;
 }
 
 const DictionaryProvider = ({
