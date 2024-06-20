@@ -27,7 +27,11 @@
       ]
     },
     "data_file_error_type": {
-      "enum": ["file_size", "file_format", "md5sum"],
+      "enum": [
+        "file_size",
+        "file_format",
+        "md5sum"
+      ],
       "term": {
         "$ref": "_terms.yaml#/data_file_error_type"
       }
@@ -125,10 +129,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -297,7 +307,11 @@
       "type": "string"
     },
     "qc_metrics_state": {
-      "enum": ["FAIL", "PASS", "WARN"],
+      "enum": [
+        "FAIL",
+        "PASS",
+        "WARN"
+      ],
       "term": {
         "$ref": "_terms.yaml#/qc_metric_state"
       }
@@ -305,7 +319,11 @@
     "release_state": {
       "default": "unreleased",
       "description": "Release state of an entity.",
-      "enum": ["unreleased", "released", "redacted"]
+      "enum": [
+        "unreleased",
+        "released",
+        "redacted"
+      ]
     },
     "state": {
       "default": "validated",
@@ -334,10 +352,16 @@
           ]
         },
         {
-          "enum": ["validated", "submitted", "released"]
+          "enum": [
+            "validated",
+            "submitted",
+            "released"
+          ]
         }
       ],
-      "public": ["live"],
+      "public": [
+        "live"
+      ],
       "term": {
         "description": "The current state of the object.\n"
       }
@@ -623,10 +647,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -2780,10 +2810,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -2982,7 +3018,15 @@
     ],
     "title": "Aligned Reads File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "aliquot": {
@@ -3199,10 +3243,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -3245,7 +3295,11 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "samples"],
+    "required": [
+      "submitter_id",
+      "type",
+      "samples"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -3256,7 +3310,15 @@
     ],
     "title": "Aliquot",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "clinical_assessment": {
@@ -3288,7 +3350,10 @@
       },
       "age_at_assessment_gt89": {
         "description": "Indicates whether the age of the subject when the assessment was taken is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "assessment_class": {
         "description": "Classification of the clinical assessment.",
@@ -3364,10 +3429,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -3472,7 +3543,11 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type", "subjects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "subjects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -3483,7 +3558,15 @@
     ],
     "title": "Clinical Assessment",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "clinical_assessment_file": {
@@ -3537,7 +3620,10 @@
       },
       "age_at_assessment_gt89": {
         "description": "Indicates whether the age of the subject when the assessment was taken is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "assessment_class": {
         "description": "Classification of the clinical assessment.",
@@ -3770,10 +3856,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -3907,7 +3999,15 @@
     ],
     "title": "Clinical Assessment File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "condition": {
@@ -3951,7 +4051,10 @@
       },
       "age_at_diagnosis_gt89": {
         "description": "Indicates whether the age of the subject when the primary diagnosis was determined is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "age_at_onset": {
         "description": "The age at which the subject acquired, developed, or first experienced symptoms of the primary disease or disorder. If age is greater than 89 years, see age_at_onset_gt89.",
@@ -3961,7 +4064,10 @@
       },
       "age_at_onset_gt89": {
         "description": "Indicate whether the 'Age at onset (ageonset) in years' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "childhood_trauma_diagnosis": {
         "description": "The determined diagnosis of childhood trauma.",
@@ -4046,7 +4152,11 @@
       },
       "pd_most_affected_side_onset": {
         "description": "Side most affected at PD onset",
-        "enum": ["Left", "Right", "Symmetric"]
+        "enum": [
+          "Left",
+          "Right",
+          "Symmetric"
+        ]
       },
       "pd_primary_diagnosis": {
         "description": "Most Likely Primary Diagnosis",
@@ -4063,7 +4173,11 @@
       },
       "persistent_asymmetry_side_onset_most": {
         "description": "Persistent asymmetry affecting the side of onset most (DCASYMM).",
-        "enum": ["No", "Not Applicable", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Yes"
+        ]
       },
       "primary_diagnosis": {
         "term": {
@@ -4139,10 +4253,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -4264,7 +4384,11 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type", "subjects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "subjects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -4275,7 +4399,15 @@
     ],
     "title": "Condition",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "copy_number_variation_file": {
@@ -4674,10 +4806,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -4877,7 +5015,15 @@
     ],
     "title": "Copy Number Variation File (CNV)",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "core_metadata_collection": {
@@ -5076,10 +5222,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -5126,7 +5278,11 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "projects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "projects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -5137,7 +5293,15 @@
     ],
     "title": "Core Metadata Collection",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "data_release": {
@@ -5276,7 +5440,9 @@
         ]
       },
       "type": {
-        "enum": ["data_release"]
+        "enum": [
+          "data_release"
+        ]
       },
       "updated_datetime": {
         "oneOf": [
@@ -5293,12 +5459,25 @@
         }
       }
     },
-    "required": ["name", "major_version", "minor_version", "type"],
+    "required": [
+      "name",
+      "major_version",
+      "minor_version",
+      "type"
+    ],
     "submittable": false,
-    "systemProperties": ["id", "created_datetime", "updated_datetime"],
+    "systemProperties": [
+      "id",
+      "created_datetime",
+      "updated_datetime"
+    ],
     "title": "Data Release",
     "type": "object",
-    "uniqueKeys": [["id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ],
     "validators": null
   },
   "derived_image": {
@@ -5567,10 +5746,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -5661,7 +5846,15 @@
     ],
     "title": "Derived Image",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "device": {
@@ -5844,10 +6037,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -5941,7 +6140,10 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type"],
+    "required": [
+      "submitter_id",
+      "type"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -5952,7 +6154,15 @@
     ],
     "title": "Device",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "drug": {
@@ -6010,11 +6220,19 @@
       },
       "age_at_assessment_gt89": {
         "description": "Indicates whether the age of the subject when the information was recorded is greater than 89 years",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_inflam_other_not_periods": {
         "description": "During this time, periods X years or more NOT regularly taking other anti-inflammatory meds. Variable from Anti-Inflammatory Meds RFQ Form (AINNOT)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "anti_inflam_other_not_years": {
         "description": "How many years total did you NOT take other anti-inflammatory meds. Variable from Anti-Inflammatory Meds RFQ Form (AINNOTYR)",
@@ -6026,11 +6244,20 @@
       },
       "anti_inflam_other_pills_unknown": {
         "description": "Other anti-inflammatory meds-pills unknown. Variable from Anti-Inflammatory Meds RFQ Form (AINPLDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_inflam_other_regular": {
         "description": "Regularly taken other anti-inflammatory meds. Variable from Anti-Inflammatory Meds RFQ Form (AINREG)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "anti_inflam_other_start_age": {
         "description": "Age started taking other anti-inflammatory meds. Variable from Anti-Inflammatory Meds RFQ Form (AINAGSTR)",
@@ -6040,7 +6267,11 @@
       },
       "anti_inflam_other_start_unknown": {
         "description": "Age or Year started taking other anti-inflammatory meds unknown. Variable from Anti-Inflammatory Meds RFQ Form (AINSTRDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_inflam_other_start_year": {
         "description": "Year started taking other anti-inflammatory meds. Variable from Anti-Inflammatory Meds RFQ Form (AINYRSTR)",
@@ -6054,11 +6285,18 @@
       },
       "anti_inflam_other_stop_year_unknown": {
         "description": "Age or Year stopped taking other anti-inflammatory meds unknown. Variable from Anti-Inflammatory Meds RFQ Form (AINSTPDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_inflam_periods_avg_years_alcohol": {
         "description": "Flag-period over which average use reported. Variable from Anti-Inflammatory Meds RFQ Form (antiinfl_AVGLTRG)",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "anti_inflam_periods_totaling_years": {
         "description": "Flag-periods totaling X amount of years. Variable from Anti-Inflammatory Meds RFQ Form (antiinfl_NOTREGN)",
@@ -6066,15 +6304,28 @@
       },
       "antidepressants_60days_more": {
         "description": "Has The Subject Ever Taken Any New Anti-Depressants Or Mood Stabilizing Medications For More Than 60 Days",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "antipsychotic_60days_more": {
         "description": "Has The Subject Ever Taken Any New Anti-Psychotics For More Than 60 Days",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "aspirin_not_periods": {
         "description": "During this time, periods X years or more NOT regularly taking aspirin. Variable from Anti-Inflammatory Meds RFQ Form (ASPNOT)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "aspirin_not_years": {
         "description": "How many years total did you NOT take aspirin. Variable from Anti-Inflammatory Meds RFQ Form (ASPNOTYR)",
@@ -6088,11 +6339,20 @@
       },
       "aspirin_pills_unknown": {
         "description": "Aspirin-pills unknown. Variable from Anti-Inflammatory Meds RFQ Form (ASPPLDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "aspirin_regular": {
         "description": "Regularly taken aspirin. Variable from Anti-Inflammatory Meds RFQ Form (ASPREG)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "aspirin_start_age": {
         "description": "Age started taking aspirin. Variable from Anti-Inflammatory Meds RFQ Form (ASPAGSTR)",
@@ -6102,7 +6362,11 @@
       },
       "aspirin_start_unknown": {
         "description": "Age or Year started taking aspirin unknown. Variable from Anti-Inflammatory Meds RFQ Form (ASPSTRDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "aspirin_start_year": {
         "description": "Year started taking aspirin. Variable from Anti-Inflammatory Meds RFQ Form (ASPYRSTR)",
@@ -6116,7 +6380,11 @@
       },
       "aspirin_stop_unknown": {
         "description": "Age or Year stopped taking aspirin unknown. Variable from Anti-Inflammatory Meds RFQ Form (ASPSTPDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "aspirin_stop_year_unknown": {
         "description": "Year stopped taking aspirin unknown. Variable from Anti-Inflammatory Meds RFQ Form (ASPYRSTP)",
@@ -6306,7 +6574,11 @@
       },
       "exclusionary_med_flag": {
         "description": "Concomitant Medication Exclusionary Medication Flag",
-        "enum": ["No", "Not Applicable", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Yes"
+        ]
       },
       "first_reason_discontinued": {
         "description": "1st Reason Discontinued",
@@ -6332,11 +6604,20 @@
       },
       "hypertension_treatment": {
         "description": "Indicates whether the patient is receiving medication for hypertension.",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "ibuprofen_based_non_aspirin_not_periods": {
         "description": "During this time, periods X years or more NOT regularly taking ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUNOT)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "ibuprofen_based_non_aspirin_not_years": {
         "description": "How many years total did you NOT take ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUNOTYR)",
@@ -6346,7 +6627,12 @@
       },
       "ibuprofen_based_non_aspirin_regular": {
         "description": "Regularly taken ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUREG)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "ibuprofen_based_non_aspirin_start_age": {
         "description": "Age started taking ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUAGSTR)",
@@ -6356,7 +6642,11 @@
       },
       "ibuprofen_based_non_aspirin_start_unknown": {
         "description": "Age or Year started taking ibuprofen-based non-aspirin unknown. Variable from Anti-Inflammatory Meds RFQ Form (IBUSTRDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "ibuprofen_based_non_aspirin_start_year": {
         "description": "Year started taking ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUYRSTR)",
@@ -6370,7 +6660,11 @@
       },
       "ibuprofen_based_non_aspirin_stop_unknown": {
         "description": "Age or Year stopped taking ibuprofen-based non-aspirin unknown. Variable from Anti-Inflammatory Meds RFQ Form (IBUSTPDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "ibuprofen_based_non_aspirin_stop_year": {
         "description": "Year stopped taking ibuprofen-based non-aspirin. Variable from Anti-Inflammatory Meds RFQ Form (IBUYRSTP)",
@@ -6382,7 +6676,11 @@
       },
       "ibuprofen_based_pills_unknown": {
         "description": "Ibuprofen-based med-pills unknown. Variable from Anti-Inflammatory Meds RFQ Form (IBUPLDK)",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "id": {
         "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
@@ -6452,11 +6750,19 @@
       },
       "memory_loss_demetia_meds_60days_more": {
         "description": "Has The Subject Taken Any New Medications For Memory Loss Or Dimentia For More Than 60 Days Since The Last Visit",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "metoclopramide_60days_more": {
         "description": "Has The Subject Ever Taken Metoclopramide (Reglan) For More Than 60 Days",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "non_datatop_otc_drugs_multivitamin": {
         "description": "Non-DATATOP OTC Drugs and Multivitamin",
@@ -6496,15 +6802,28 @@
       },
       "ongoing": {
         "description": "Is this an ongoing medication?",
-        "enum": ["No", "Not Applicable", "Not Specified", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Not Specified",
+          "Yes"
+        ]
       },
       "pd_medication": {
         "description": "PD Medication",
-        "enum": ["No", "Not Applicable", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Yes"
+        ]
       },
       "pd_medication_60days_more": {
         "description": "Has The Subject Ever Taken Any Medications For Parkinson's Disease For More Than 60 Days",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "pd_medication_initiation": {
         "description": "Initiation Of PD Medication",
@@ -6512,7 +6831,11 @@
       },
       "prescription_medication_indicator": {
         "description": "Indicates whether the patient was taking prescription medication at the time the enrolled in the study.",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "prn_monthly_frequency": {
         "description": "PRN, average monthly frequency",
@@ -6539,7 +6862,12 @@
       },
       "sleep_apnea_treatment_type": {
         "description": "Text term used to describe the type of treatment the patient is receiving for sleep apnea.",
-        "enum": ["BIPAP", "CPAP", "Oral device or guard", "medication"]
+        "enum": [
+          "BIPAP",
+          "CPAP",
+          "Oral device or guard",
+          "medication"
+        ]
       },
       "state": {
         "default": "validated",
@@ -6568,10 +6896,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -6701,7 +7035,10 @@
       },
       "taken": {
         "description": "Concomitant Medication Taken (none)",
-        "enum": ["None", "Some Meds Were Taken"]
+        "enum": [
+          "None",
+          "Some Meds Were Taken"
+        ]
       },
       "taking_amantadine": {
         "description": "Is Subject Taking Amantadine",
@@ -6787,7 +7124,10 @@
       },
       "used_symptomatic_med": {
         "description": "Used Symptomatic Medication",
-        "enum": ["None", "Some Meds Were Taken"]
+        "enum": [
+          "None",
+          "Some Meds Were Taken"
+        ]
       },
       "visit_id": {
         "description": "The submitter_id of a subject's visit in the study.",
@@ -6850,7 +7190,11 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type", "medication_name"],
+    "required": [
+      "submitter_id",
+      "type",
+      "medication_name"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -6861,7 +7205,15 @@
     ],
     "title": "Drug",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "exposure": {
@@ -6891,11 +7243,21 @@
       },
       "acetaminophen_regular_taken": {
         "description": "Acetaminophen (Tylenol)- Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "acetaminophen_regular_taken_past_year": {
         "description": "Acetaminophen (Tylenol)- Regular Use In Past Year (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "acetaminophen_year_start": {
         "description": "Acetaminophen Year Of First Use",
@@ -6927,7 +7289,11 @@
       },
       "alcohol_consumption_change_last_10years": {
         "description": "Alcohol Consumption Change In The Last 10 Years",
-        "enum": ["Decreased", "Increased", "No"]
+        "enum": [
+          "Decreased",
+          "Increased",
+          "No"
+        ]
       },
       "alcohol_currently_drink_regularly": {
         "description": "Do You Currently Drink Alcohol Regularly",
@@ -6935,15 +7301,30 @@
       },
       "alcohol_drinks_over_100": {
         "description": "In lifetime, drunk 100 or more alcoholic drinks. Variable from Alcohol RFQ Form (alclf100)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "alcohol_heavy_drinker_past": {
         "description": "Have You Consumed Alcohol Excessively In The Past",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "alcohol_not_periods": {
         "description": "During this time, periods X years or more NOT regularly drinking alcohol. Variable from Alcohol RFQ Form (alcnot)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "alcohol_not_start_age": {
         "description": "Period 1 NOT regularly drinking-age started. Variable from Alcohol RFQ Form (alnta1sr)",
@@ -6989,11 +7370,17 @@
       },
       "alcohol_periods_avg_years": {
         "description": "Flag-period over which average use reported. Variable from Alcohol RFQ Form (alc_avgltrg)",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "alcohol_periods_totaling_amount_of_years": {
         "description": "The total amount of years for periods alcohol was consumed.",
-        "enum": ["Periods Totaling 1 Year", "Periods Totaling 5 Years"]
+        "enum": [
+          "Periods Totaling 1 Year",
+          "Periods Totaling 5 Years"
+        ]
       },
       "alcohol_periods_totaling_years": {
         "description": "Flag-periods totaling X amount of years. Variable from Alcohol RFQ Form (alc_NOTREGN)",
@@ -7003,7 +7390,12 @@
       },
       "alcohol_regular_drinker": {
         "description": "In lifetime,regularly drunk alcohol. Variable from Alcohol RFQ Form (alclfreg)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "alcohol_scale_acuity": {
         "description": "The acuity of the scale used to determine the alcohol use score.",
@@ -7017,7 +7409,10 @@
       },
       "alcohol_start_unknown": {
         "description": "Age or Year started regularly drinking alcohol unknown. Variable from Alcohol RFQ Form (alcstrdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "alcohol_start_year": {
         "description": "Year started regularly drinking alcohol. Variable from Alcohol RFQ Form (alcyrstr)",
@@ -7031,7 +7426,11 @@
       },
       "alcohol_stop_unknown": {
         "description": "Age or Year stopped regularly drinking alcohol unknown. Variable from Alcohol RFQ Form (alcstpdk)",
-        "enum": ["Currently Drink", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Drink",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "alcohol_stop_year": {
         "description": "Year stopped regularly drinking alcohol. Variable from Alcohol RFQ Form (alcyrstp)",
@@ -7039,7 +7438,11 @@
       },
       "alcohol_use": {
         "description": "Alcohol use",
-        "enum": ["Current", "Former", "Never"]
+        "enum": [
+          "Current",
+          "Former",
+          "Never"
+        ]
       },
       "alcohol_use_scale": {
         "description": "Name of the scale used to determine the alcohol use score.",
@@ -7057,7 +7460,10 @@
       },
       "anti_infl_age_start_aspirin_gt89": {
         "description": "Indicate whether 'Age Started Taking Aspirin' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_start_ibupr_based_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age Started Taking Ibuprofen-Based Non-Aspirin. If age is greater than 89 years, see 'anti_infl_age_start_ibupr_based_non_aspirin_gt89'.",
@@ -7067,7 +7473,10 @@
       },
       "anti_infl_age_start_ibupr_based_non_aspirin_gt89": {
         "description": "Indicate whether 'Age Started Taking Ibuprofen-Based Non-Aspirin' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_start_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- Age Started Taking Other Anti-Inflammatory Medications. If age is greater than 89 years, see 'anti_infl_age_start_other_anti_infl_meds_gt89'.",
@@ -7077,7 +7486,10 @@
       },
       "anti_infl_age_start_other_anti_infl_meds_gt89": {
         "description": "Indicate whether 'Age Started Taking Other Anti-Inflammatory Medications' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_stop_take_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age Stopped Taking Aspirin. If age is greater than 89 years, see 'anti_infl_age_stop_take_aspirin_gt89'.",
@@ -7087,7 +7499,10 @@
       },
       "anti_infl_age_stop_take_aspirin_gt89": {
         "description": "Indicate whether 'Age Stopped Taking Aspirin' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_stop_take_ibupr_based_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age Stopped Taking Ibuprofen-Based Non-Aspirin. If age is greater than 89 years, see 'anti_infl_age_stop_take_ibupr_based_non_aspirin_gt89'.",
@@ -7097,7 +7512,10 @@
       },
       "anti_infl_age_stop_take_ibupr_based_non_aspirin_gt89": {
         "description": "Indicate whether 'Age Stopped Taking Ibuprofen-Based Non-Aspirin' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_stop_take_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- Age Stopped Taking Other Anti-Inflammatory Medications. If age is greater than 89 years, see 'anti_infl_age_stop_take_other_anti_infl_meds_gt89'.",
@@ -7107,35 +7525,57 @@
       },
       "anti_infl_age_stop_take_other_anti_infl_meds_gt89": {
         "description": "Indicate whether 'Age Stopped Taking Other Anti-Inflammatory Medications' is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_age_year_start_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Started Taking Aspirin",
-        "enum": ["Don't Know"]
+        "enum": [
+          "Don't Know"
+        ]
       },
       "anti_infl_age_year_start_ibupr_based_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Started Taking Ibuprofen-Based Non-Aspirin",
-        "enum": ["Don't Know"]
+        "enum": [
+          "Don't Know"
+        ]
       },
       "anti_infl_age_year_start_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Started Taking Other Anti-Inflammatory Medications",
-        "enum": ["Don't Know"]
+        "enum": [
+          "Don't Know"
+        ]
       },
       "anti_infl_age_year_stop_ibupr_based_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Stopped Taking Ibuprofen-Based Non-Aspirin",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_infl_age_year_stop_take_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Stopped Taking Aspirin",
-        "enum": ["Currently Take", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Take",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_infl_age_year_stop_take_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- Age and Year Stopped Taking Other Anti-Inflammatory Medications",
-        "enum": ["Currently Take", "Don't Know"]
+        "enum": [
+          "Currently Take",
+          "Don't Know"
+        ]
       },
       "anti_infl_aspirin_pills": {
         "description": "Anti-Inflammatory Medications RFQ- Aspirin (Pills)",
-        "enum": ["Don't Know"]
+        "enum": [
+          "Don't Know"
+        ]
       },
       "anti_infl_aspirin_pills_per_week": {
         "description": "Anti-Inflammatory Medications RFQ- Aspirin (Pills Per Week)",
@@ -7143,7 +7583,10 @@
       },
       "anti_infl_ibuprof_based_medication_pills": {
         "description": "Anti-Inflammatory Medications RFQ- Ibuprofen-Based Medication (Pills)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_infl_ibuprof_based_medication_pills_per_week": {
         "description": "Anti-Inflammatory Medications RFQ- Ibuprofen-Based Medication (Pills Per Week)",
@@ -7151,7 +7594,10 @@
       },
       "anti_infl_other_anti_infl_meds_pills": {
         "description": "Anti-Inflammatory Medications RFQ- Other Anti-Inflammatory Medications (Pills)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "anti_infl_other_anti_infl_meds_pills_per_week": {
         "description": "Anti-Inflammatory Medications RFQ- Other Anti-Inflammatory Medications (Pills Per Week)",
@@ -7159,39 +7605,75 @@
       },
       "anti_infl_period_average_use_reported": {
         "description": "Anti-Inflammatory Medications RFQ- Flag - Period Over Which Average Use Reported",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "anti_infl_periods_not_regular_take_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- During This Time, Periods X Years Or More Not Regularly Taking Aspirin",
-        "enum": ["Don't Know", "No", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_periods_not_regular_take_ibupr_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- During This Time, Periods X Years Or More Not Regularly Taking Ibuprofen-Based Non-Aspirin",
-        "enum": ["Don't Know", "No", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_periods_not_regular_take_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- During This Time, Periods X Years Or More Not Regularly Taking Other Anti-Inflammatory Medications",
-        "enum": ["Don't Know", "No", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_periods_totaling_amount_of_years": {
         "description": "Anti-Inflammatory Medications RFQ- Flag - Periods Totaling X Amount Of Years",
-        "enum": ["Periods Totaling 1 Year", "Periods Totaling 5 Years"]
+        "enum": [
+          "Periods Totaling 1 Year",
+          "Periods Totaling 5 Years"
+        ]
       },
       "anti_infl_regular_take_ibupr_based_non_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Regularly Taken Ibuprofen-Based Non-Aspirin",
-        "enum": ["Don't Know", "No", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_regular_taken_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Regularly Taken Aspirin",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "anti_infl_regular_taken_aspirin_past_year": {
         "description": "Aspirin- Regular Use In Past Year (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "anti_infl_regular_taken_other_anti_infl_meds": {
         "description": "Anti-Inflammatory Medications RFQ- Regularly Taken Other Anti-Inflammatory Medications",
-        "enum": ["Don't Know", "No", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Yes"
+        ]
       },
       "anti_infl_year_start_aspirin": {
         "description": "Anti-Inflammatory Medications RFQ- Year Started Taking Aspirin",
@@ -7235,7 +7717,11 @@
       },
       "beer_unknown": {
         "description": "Beer-servings unknown. Variable from Alcohol RFQ Form (brsvdk)",
-        "enum": ["Don't Know", "Never Drank", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Never Drank",
+          "Refused"
+        ]
       },
       "black_tea_cups_per_week": {
         "description": "Caffeinated black tea-cups per week. Variable from Caffeine RFQ Form (btecpwk)",
@@ -7243,15 +7729,28 @@
       },
       "black_tea_cups_unknown": {
         "description": "Caffeinated black tea-cups unknown. Variable from Caffeine RFQ Form (btecpdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "black_tea_lifetime_regularly": {
         "description": "In lifetime,regularly drunk caffeinated black tea. Variable from Caffeine RFQ Form (cbtea)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "black_tea_not_periods": {
         "description": "During this time, periods X years or more NOT regularly drinking caffeinated black tea. Variable from Caffeine RFQ Form (btenot)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "black_tea_not_start_age_period1": {
         "description": "Period 1 NOT regularly drinking caffeinated black tea-age started. Variable from Caffeine RFQ Form (btnta1sr)",
@@ -7303,7 +7802,10 @@
       },
       "black_tea_start_unknown": {
         "description": "Age or Year started regularly drinking caffeinated black tea unknown. Variable from Caffeine RFQ Form (btestrdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "black_tea_start_year": {
         "description": "Year started regularly drinking caffeinated black tea. Variable from Caffeine RFQ Form (bteyrstr)",
@@ -7317,7 +7819,11 @@
       },
       "black_tea_stop_unknown": {
         "description": "Age or Year stopped regularly drinking caffeinated black tea unknown. Variable from Caffeine RFQ Form (btestpdk)",
-        "enum": ["Currently Drink", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Drink",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "black_tea_stop_year": {
         "description": "Year stopped regularly drinking caffeinated black tea. Variable from Caffeine RFQ Form (bteyrstp)",
@@ -7343,7 +7849,11 @@
       },
       "caffeinated_soda_consumption_change_last_10years": {
         "description": "Caffeinated Soft Drinks Consumption- If Changes - Increase In Consumption Or Reduction In The Last 10 Years. Variable from Caffeine RFQ Form",
-        "enum": ["Decreased", "Increased", "No"]
+        "enum": [
+          "Decreased",
+          "Increased",
+          "No"
+        ]
       },
       "caffeinated_soda_consumption_has_changed_last_10years": {
         "description": "Caffeinated Soft Drinks Consumption Change In The Last 10 Years.  Variable from Caffeine RFQ Form",
@@ -7355,11 +7865,19 @@
       },
       "caffeinated_soda_cups_unknown": {
         "description": "Caffeinated soda-cans unknown. Variable from Caffeine RFQ Form (sdacndk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "caffeinated_soda_not_periods": {
         "description": "During this time, periods X years or more NOT regularly drinking caffeinated soda. Variable from Caffeine RFQ Form (sdanot)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "caffeinated_soda_not_start_age_period1": {
         "description": "Period 1 NOT regularly drinking caffeinated soda-age started. Variable from Caffeine RFQ Form (sdnta1sr)",
@@ -7405,7 +7923,12 @@
       },
       "caffeinated_soda_regular_drinker": {
         "description": "In lifetime,regularly drunk caffeinated soda. Variable from Caffeine RFQ Form (csoda)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "caffeinated_soda_start_age": {
         "description": "Age started regularly drinking caffeinated soda. Variable from Caffeine RFQ Form (sdaagstr)",
@@ -7415,7 +7938,10 @@
       },
       "caffeinated_soda_start_unknown": {
         "description": "Age or Year started regularly drinking caffeinated soda unknown. Variable from Caffeine RFQ Form (sdastrdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "caffeinated_soda_start_year": {
         "description": "Year started regularly drinking caffeinated soda. Variable from Caffeine RFQ Form (sdayrstr)",
@@ -7429,7 +7955,11 @@
       },
       "caffeinated_soda_stop_unknown": {
         "description": "Age or Year stopped regularly drinking caffeinated soda unknown. Variable from Caffeine RFQ Form (sdastpdk)",
-        "enum": ["Currently Drink", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Drink",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "caffeinated_soda_stop_year": {
         "description": "Year stopped regularly drinking caffeinated soda. Variable from Caffeine RFQ Form (sdayrstp)",
@@ -7437,7 +7967,11 @@
       },
       "caffeinated_tea_consumption_change_last_10years": {
         "description": "Caffeinated Tea Consumption- If Changes - Increase In Consumption Or Reduction In The Last 10 Years. Variable from Caffeine RFQ Form",
-        "enum": ["Decreased", "Increased", "No"]
+        "enum": [
+          "Decreased",
+          "Increased",
+          "No"
+        ]
       },
       "caffeinated_tea_consumption_has_changed_last_10years": {
         "description": "Caffeinated Tea Consumption Change In The Last 10 Years. Variable from Caffeine RFQ Form",
@@ -7599,11 +8133,16 @@
       },
       "caffeine_period_average_use_reported": {
         "description": "Caffeine RFQ- Flag - Period Over Which Average Use Reported (Average Over Lifetime or During Time Of Regular Use)",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "caffeine_periods_totaling_years": {
         "description": "Caffeine RFQ- Flag - Periods Totaling X Amount Of Years",
-        "enum": ["Periods 1 Year Or More"]
+        "enum": [
+          "Periods 1 Year Or More"
+        ]
       },
       "caffeine_regular_cola_frequency": {
         "description": "Caffeine Questionnaire (CAFF)- 07a. Regular Cola Frequency",
@@ -7627,7 +8166,11 @@
       },
       "coffee_consumption_change_last_10years": {
         "description": "Caffeinated Coffee Consumption- If Changes - Increase In Consumption Or Reduction In The Last 10 Years. Variable from Caffeine RFQ Form",
-        "enum": ["Decreased", "Increased", "No"]
+        "enum": [
+          "Decreased",
+          "Increased",
+          "No"
+        ]
       },
       "coffee_consumption_has_changed_last_10years": {
         "description": "Caffeinated Coffee Consumption Change In The Last 10 Years. Variable from Caffeine RFQ Form",
@@ -7639,15 +8182,28 @@
       },
       "coffee_cups_unknown": {
         "description": "Caffeinated Coffee-cups unknown. Variable from Caffeine RFQ Form (cofcpdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "coffee_lifetime_regularly": {
         "description": "In lifetime,regularly drunk caffeinated coffee. Variable from Caffeine RFQ Form (ccoff)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "coffee_not_periods": {
         "description": "During this time, periods X years or more NOT regularly drinking caffeinated coffee. Variable from Caffeine RFQ Form (cofnot)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "coffee_not_start_age_period1": {
         "description": "Period 1 NOT regularly drinking caffeinated coffee-age started. Variable from Caffeine RFQ Form (cfnta1sr)",
@@ -7691,11 +8247,17 @@
       },
       "coffee_periods_avg_years": {
         "description": "Flag-period over which average use reported. Variable from Caffeine RFQ Form (caff_AVGLTRG)",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "coffee_periods_totaling_amount_years": {
         "description": "The total amount of years for periods coffee was consumed.",
-        "enum": ["Periods Totaling 1 Year", "Periods Totaling 5 Years"]
+        "enum": [
+          "Periods Totaling 1 Year",
+          "Periods Totaling 5 Years"
+        ]
       },
       "coffee_periods_totaling_years": {
         "description": "Flag-periods totaling X amount of years. Variable from Caffeine RFQ Form (caff_NOTREGN)",
@@ -7709,7 +8271,10 @@
       },
       "coffee_start_unknown": {
         "description": "Age or Year started regularly drinking caffeinated coffee unknown. Variable from Caffeine RFQ Form (cofstrdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "coffee_start_year": {
         "description": "Year started regularly drinking caffeinated coffee. Variable from Caffeine RFQ Form (cofyrstr)",
@@ -7723,7 +8288,11 @@
       },
       "coffee_stop_unknown": {
         "description": "Age or Year stopped regularly drinking caffeinated coffee unknown. Variable from Caffeine RFQ Form (cofstpdk)",
-        "enum": ["Currently Drink", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Drink",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "coffee_stop_year": {
         "description": "Year stopped regularly drinking caffeinated coffee. Variable from Caffeine RFQ Form (cofyrstp)",
@@ -7739,11 +8308,21 @@
       },
       "cox2_inhibitor_regular_taken": {
         "description": "Cox-2-Inhibitor (Bextra, Cerebrex, Vioxx)- Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "cox2_inhibitor_regular_taken_past_year": {
         "description": "Cox-2-Inhibitor (Bextra, Cerebrex, Vioxx)- In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "cox2_inhibitor_year_start": {
         "description": "Cox-2-Inhibitor Year Of First Use",
@@ -7777,7 +8356,11 @@
       },
       "currently_taking_birth_control_pills_regularly": {
         "description": "Hormone Replacement Therapy And Oral Contraceptives Use Survey (HRT)- 13. Currently Taking Birth Control Pills Regularly (hrt13)",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "currently_taking_hrt_regularly": {
         "description": "Hormone Replacement Therapy And Oral Contraceptives Use Survey (HRT)- 03. Currently Taking HRT Regularly (hrt03)",
@@ -7813,11 +8396,21 @@
       },
       "estrogen_regular_taken": {
         "description": "Estrogen Containing Hormone Replacement Drug Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "estrogen_regular_taken_past_year": {
         "description": "Estrogen Containing Hormone Replacement Drug In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "estrogen_year_start": {
         "description": "Estrogen Containing Hormone Replacement Drug Year Of First Use",
@@ -7885,11 +8478,19 @@
       },
       "green_tea_cups_unknown": {
         "description": "Caffeinated green tea-cups unknown. Variable from Caffeine RFQ Form (gtecpdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "green_tea_not_periods": {
         "description": "During this time, periods X years or more NOT regularly drinking caffeinated green tea. Variable from Caffeine RFQ Form (gtenot)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "green_tea_not_start_age_period1": {
         "description": "Period 1 NOT regularly drinking caffeinated green tea-age started. Variable from Caffeine RFQ Form (gtnta1sr)",
@@ -7935,7 +8536,12 @@
       },
       "green_tea_regular_drinker": {
         "description": "In lifetime,regularly drunk caffeinated green tea. Variable from Caffeine RFQ Form (cgtea)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "green_tea_start_age": {
         "description": "Age started regularly drinking caffeinated green tea. Variable from Caffeine RFQ Form (gteagstr)",
@@ -7945,7 +8551,10 @@
       },
       "green_tea_start_unknown": {
         "description": "Age or Year started regularly drinking caffeinated green tea unknown. Variable from Caffeine RFQ Form (gtestrdk)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "green_tea_start_year": {
         "description": "Year started regularly drinking caffeinated green tea. Variable from Caffeine RFQ Form (gteyrstr)",
@@ -7959,7 +8568,11 @@
       },
       "green_tea_stop_unknown": {
         "description": "Age or Year stopped regularly drinking caffeinated green tea unknown. Variable from Caffeine RFQ Form (gtestpdk)",
-        "enum": ["Currently Drink", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Drink",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "green_tea_stop_year": {
         "description": "Year stopped regularly drinking caffeinated green tea. Variable from Caffeine RFQ Form (gteyrstp)",
@@ -8084,11 +8697,21 @@
       },
       "ibuprofen_regular_taken": {
         "description": "Ibuprofen- Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "ibuprofen_regular_taken_past_year": {
         "description": "Ibuprofen (Advil, Motrin) In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "ibuprofen_year_start": {
         "description": "Ibuprofen Year Of First Use",
@@ -8127,11 +8750,21 @@
       },
       "lipid_lowering_statin_regular_taken": {
         "description": "Lipid Lowering Statin Drug Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "lipid_lowering_statin_regular_taken_past_year": {
         "description": "Lipid Lowering Statin Drug In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "lipid_lowering_statin_year_start": {
         "description": "Lipid Lowering Statin Year Of First Use",
@@ -8147,7 +8780,11 @@
       },
       "liquor_unknown": {
         "description": "Liquor-servings unknown. Variable from Alcohol RFQ Form (lqsvdk)",
-        "enum": ["Don't Know", "Never Drank", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Never Drank",
+          "Refused"
+        ]
       },
       "lived_with_smoker": {
         "description": "Ever Lived With A Smoker",
@@ -8197,15 +8834,26 @@
       },
       "military_pow": {
         "description": "Were you ever a Prisoner of War?",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "military_service": {
         "description": "Indicates whether the patient has ever served in the military.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "military_service_country": {
         "description": "The country in which the subject served the military.",
-        "enum": ["Canadian", "None", "Other (specify)", "United States"]
+        "enum": [
+          "Canadian",
+          "None",
+          "Other (specify)",
+          "United States"
+        ]
       },
       "military_service_end": {
         "description": "The number of days from the index date to the date the patient's military service ended. Note if multiple the patient had multiple periods of servive, complete one military_service node for each period.",
@@ -8221,7 +8869,12 @@
       },
       "military_status": {
         "description": "Current military status.",
-        "enum": ["Active Duty", "National Guard", "Reserve", "Veteran"]
+        "enum": [
+          "Active Duty",
+          "National Guard",
+          "Reserve",
+          "Veteran"
+        ]
       },
       "military_tour_name": {
         "description": "List of operations or wars served in (e.g., \"Operation Iraqi Freedom\" or \"Vietnam War\").",
@@ -8233,15 +8886,24 @@
       },
       "military_under_fire": {
         "description": "Have you ever been under enemy fire while serving in the military?",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "military_warzone": {
         "description": "Did you serve in a war or operation zone?",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "military_wounded": {
         "description": "Were you wounded or injured while serving in the military?",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "months_hrt_taken_regularly": {
         "description": "Hormone Replacement Therapy And Oral Contraceptives Use Survey (HRT)- 02b. How Long HRT Taken Regularly (months) (hrt02b)",
@@ -8261,19 +8923,35 @@
       },
       "mothers_pregnancy_consumed_alcohol": {
         "description": "Indicates whether the patient's mother consumed alcohol during her pregnancy with the patient.",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "mothers_pregnancy_nonperscription_drug_use": {
         "description": "Indicates whether the patient's mother had a history of non-prescription drug use during the mother's pregnancy orprior to the delivery of the patient.",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "mothers_pregnancy_smoked_cigarettes": {
         "description": "Indicates whether the patient's mother smoked cigarettes during her pregnancy with the patient.",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "mptp_exposure": {
         "description": "MPTP exposure (MPTPEXP)",
-        "enum": ["No", "Not Applicable", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Yes"
+        ]
       },
       "ongoing_amiodaron": {
         "description": "Amiodaron - Currently Taking",
@@ -8317,11 +8995,21 @@
       },
       "other_nsaid_regular_taken": {
         "description": "Other Nonsterodial Anti-Inflammatory (NSAID)- Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "other_nsaid_regular_taken_past_year": {
         "description": "Other Nonsteroidal Anti-inflammatory (NSAID) (Clinoril, Indocin, Naprocyn, Orudis, Relafen, Volatren) In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "other_nsaid_year_start": {
         "description": "Other Nonsterodial Anti-Inflammatory (NSAID) Year Of First Use",
@@ -8389,11 +9077,21 @@
       },
       "progesterone_regular_taken": {
         "description": "Progesterone Containing Hormone Replacement Drug Ever Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "progesterone_regular_taken_past_year": {
         "description": "Progesterone Containing Hormone Replacement Drug In The Past Year Used Regularly (2 Or More Tablets Per Week For 6 Months Or Longer)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "progesterone_year_start": {
         "description": "Progesterone Containing Hormone Replacement Drug Year Of First Use",
@@ -8423,7 +9121,11 @@
       },
       "red_wine_unknown": {
         "description": "Red Wine-servings unknown. Variable from Alcohol RFQ Form (rwsvdk)",
-        "enum": ["Don't Know", "Never Drank", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Never Drank",
+          "Refused"
+        ]
       },
       "smoke_cigarettes_now": {
         "description": "Smoking and Tobacco- Do You Smoke Cigarettes Now",
@@ -8453,7 +9155,12 @@
       },
       "smokeless_tobacco_regular": {
         "description": "In lifetime,regularly used smokeless tobacco. Variable from Smoking and Tobacco RFQ Form (CHWREG)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "smokeless_tobacco_start_age": {
         "description": "Age started regularly using smokeless tobacco. Variable from Smoking and Tobacco RFQ Form (CHWAGSTR)",
@@ -8463,7 +9170,10 @@
       },
       "smokeless_tobacco_start_unknown": {
         "description": "Age or Year started regularly using smokeless tobacco unknown. Variable from Smoking and Tobacco RFQ Form (CHWSTRDK)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "smokeless_tobacco_start_year": {
         "description": "Year started regularly using smokeless tobacco. Variable from Smoking and Tobacco RFQ Form (CHWYRSTR)",
@@ -8477,7 +9187,11 @@
       },
       "smokeless_tobacco_stop_unknown": {
         "description": "Age or Year stopped regularly using smokeless tobacco unknown. Variable from Smoking and Tobacco RFQ Form (CHWSTPDK)",
-        "enum": ["Currently Use", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Use",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "smokeless_tobacco_stop_year": {
         "description": "Year stopped regularly using smokeless tobacco. Variable from Smoking and Tobacco RFQ Form (CHWYRSTP)",
@@ -8506,7 +9220,12 @@
       },
       "smoking_cigarettes_over_100": {
         "description": "In lifetime, smoked 100 or more cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGLF100)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "smoking_cigarettes_packs_per_day": {
         "description": "Cigarettes-packs per day. Variable from Smoking and Tobacco RFQ Form (CGPKDY)",
@@ -8518,11 +9237,19 @@
       },
       "smoking_cigarettes_periods_avg_years": {
         "description": "The method periods average years smoking cigarettes was determined.",
-        "enum": ["Average Over Lifetime", "During Time of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time of Regular Use"
+        ]
       },
       "smoking_cigarettes_regularly": {
         "description": "In lifetime,regularly smoked cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGLFREG)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "smoking_cigarettes_start_age": {
         "description": "Age started regularly smoking cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGAGSTR)",
@@ -8532,7 +9259,10 @@
       },
       "smoking_cigarettes_start_unknown": {
         "description": "Age or Year started smoking cigarettes unknown. Variable from Smoking and Tobacco RFQ Form (CIGSTRDK)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "smoking_cigarettes_start_year": {
         "description": "Year started regularly smoking cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGYRSTR)",
@@ -8546,7 +9276,11 @@
       },
       "smoking_cigarettes_stop_unknown": {
         "description": "Age or Year stopped smoking cigarettes unknown. Variable from Smoking and Tobacco RFQ Form (CIGSTPDK)",
-        "enum": ["Currently Smoke", "Don't Know", "Refused"]
+        "enum": [
+          "Currently Smoke",
+          "Don't Know",
+          "Refused"
+        ]
       },
       "smoking_cigarettes_stop_year": {
         "description": "Year stopped regularly smoking cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGYRSTP)",
@@ -8554,7 +9288,10 @@
       },
       "smoking_cigarettes_unknown": {
         "description": "Cigarettes-unknown. Variable from Smoking and Tobacco RFQ Form (CGDYDK)",
-        "enum": ["Don't Know", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Refused"
+        ]
       },
       "smoking_cigars_per_day": {
         "description": "Cigars (Per Day). Variable from Smoking and Tobacco RFQ Form",
@@ -8574,7 +9311,12 @@
       },
       "smoking_no_cigarettes_periods": {
         "description": "During this time, periods X years or more NOT regularly smoking cigarettes. Variable from Smoking and Tobacco RFQ Form (CIGNOT)",
-        "enum": ["Don't Know", "No", "Refused", "Yes"]
+        "enum": [
+          "Don't Know",
+          "No",
+          "Refused",
+          "Yes"
+        ]
       },
       "smoking_no_cigarettes_start_age_period1": {
         "description": "Period 1 NOT regularly smoking cigarettes-age started. Variable from Smoking and Tobacco RFQ Form (CGNTA1SR)",
@@ -8622,7 +9364,10 @@
       },
       "smoking_periods_avg_years": {
         "description": "Flag-period over which average use reported. Variable from Smoking and Tobacco RFQ Form (smok_avgltrg)",
-        "enum": ["Average Over Lifetime", "During Time Of Regular Use"]
+        "enum": [
+          "Average Over Lifetime",
+          "During Time Of Regular Use"
+        ]
       },
       "smoking_periods_totaling_years": {
         "description": "Flag-periods totaling X amount of years. Variable from Smoking and Tobacco RFQ Form (smok_NOTREGN)",
@@ -8654,7 +9399,12 @@
       },
       "snuff_how_many_cans_units": {
         "description": "Tobacco Use Survey (TOB)- 11b How Many Cans Of Snuff  (years, months, weeks or days) (tob11b)",
-        "enum": ["Days", "Months", "Weeks", "Years"]
+        "enum": [
+          "Days",
+          "Months",
+          "Weeks",
+          "Years"
+        ]
       },
       "state": {
         "default": "validated",
@@ -8683,10 +9433,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -8770,7 +9526,16 @@
         "type": "boolean"
       },
       "tobacco_smoking_status": {
-        "enum": ["1", "2", "3", "4", "5", "6", "7", "Unknown"],
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "Unknown"
+        ],
         "term": {
           "description": "Category describing current smoking status and smoking history as self-reported by a patient.\n",
           "termDef": {
@@ -8784,7 +9549,11 @@
       },
       "tobacco_use": {
         "description": "Tobacco use",
-        "enum": ["Current", "Former", "Never"]
+        "enum": [
+          "Current",
+          "Former",
+          "Never"
+        ]
       },
       "type": {
         "description": "The node_id of the node in the data model; the name of the node used in queries and API requests (e.g., \"aligned_reads_file\" for the \"Aligned Reads File\" node).",
@@ -8806,7 +9575,11 @@
       },
       "used_estrogen_or_progest_regularly": {
         "description": "Hormone Replacement Therapy And Oral Contraceptives Use Survey (HRT)- 05. Used Estrogen Or Progesterone Regularly (hrt05)",
-        "enum": ["No", "Unknown", "Yes"]
+        "enum": [
+          "No",
+          "Unknown",
+          "Yes"
+        ]
       },
       "used_estrogen_progest_regularly": {
         "description": "Hormone Replacement Therapy And Oral Contraceptives Use Survey (HRT)- 05. Used Estrogen Or Progesterone Regularly (hrt05)",
@@ -8826,11 +9599,18 @@
       },
       "white_wine_unknown": {
         "description": "White Wine-servings unknown. Variable from Alcohol RFQ Form (wwsvdk)",
-        "enum": ["Don't Know", "Never Drank", "Refused"]
+        "enum": [
+          "Don't Know",
+          "Never Drank",
+          "Refused"
+        ]
       },
       "work_areas": {
         "description": "Have You Ever Worked In The Following Areas- Agriculture, Cleaning, Galvanizing, Industrial Painting, Metal Smelting, Milling, Petrochemistry, Welding, Woodworking",
-        "enum": ["No", "Yes (specify)"]
+        "enum": [
+          "No",
+          "Yes (specify)"
+        ]
       },
       "work_areas_specify": {
         "description": "If 'Yes (specify)' was choosen for work_areas, specify work areas (free text)",
@@ -8892,7 +9672,12 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type", "subjects", "primary_exposure"],
+    "required": [
+      "submitter_id",
+      "type",
+      "subjects",
+      "primary_exposure"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -8903,7 +9688,15 @@
     ],
     "title": "Exposure",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "expression_array": {
@@ -9173,10 +9966,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -9345,7 +10144,15 @@
     ],
     "title": "Expression Array",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "expression_file": {
@@ -9615,10 +10422,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -9787,7 +10600,15 @@
     ],
     "title": "Expression File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "expression_result": {
@@ -10004,10 +10825,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -10136,7 +10963,10 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type"],
+    "required": [
+      "submitter_id",
+      "type"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -10147,7 +10977,15 @@
     ],
     "title": "Expression Result",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "genotyping_result": {
@@ -10388,10 +11226,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -10496,7 +11340,10 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type"],
+    "required": [
+      "submitter_id",
+      "type"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -10507,7 +11354,15 @@
     ],
     "title": "Genotyping Result",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "imaging_file": {
@@ -10906,10 +11761,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -11046,7 +11907,15 @@
     ],
     "title": "Imaging File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "imaging_report": {
@@ -11315,10 +12184,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -11386,7 +12261,15 @@
     ],
     "title": "Imaging Report",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "lab_test": {
@@ -11477,7 +12360,11 @@
       },
       "abnormal_test_severity": {
         "description": "Abnormal_Laboratory_Tests_(Form_6003) - Severity",
-        "enum": ["Mild", "Moderate", "Severe"]
+        "enum": [
+          "Mild",
+          "Moderate",
+          "Severe"
+        ]
       },
       "activity_area": {
         "description": "The area above the fitted dose response curve for an analyte or compound.",
@@ -11762,10 +12649,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -11862,7 +12755,10 @@
       },
       "test_status": {
         "description": "Abnormal_Laboratory_Tests_(Form_6003) - Status",
-        "enum": ["Active", "Inactive"]
+        "enum": [
+          "Active",
+          "Inactive"
+        ]
       },
       "test_type": {
         "description": "The general type or category of the laboratory test",
@@ -11943,7 +12839,11 @@
         "type": "integer"
       }
     },
-    "required": ["submitter_id", "type", "test_type"],
+    "required": [
+      "submitter_id",
+      "type",
+      "test_type"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -11954,7 +12854,15 @@
     ],
     "title": "Lab Test",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "metaschema": {
@@ -12025,7 +12933,11 @@
             "type": "array"
           }
         },
-        "required": ["exclusive", "required", "subgroup"]
+        "required": [
+          "exclusive",
+          "required",
+          "subgroup"
+        ]
       },
       "validator_def": {
         "properties": {
@@ -12042,7 +12954,10 @@
             "type": "string"
           }
         },
-        "required": ["property", "function"],
+        "required": [
+          "property",
+          "function"
+        ],
         "title": "Define a validator to be used on a property",
         "type": "object"
       }
@@ -12112,7 +13027,10 @@
         "items": {
           "$ref": "#/definitions/validator_def"
         },
-        "type": ["array", "null"]
+        "type": [
+          "array",
+          "null"
+        ]
       }
     },
     "required": [
@@ -12287,10 +13205,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -12415,7 +13339,12 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "studies", "panel_name"],
+    "required": [
+      "submitter_id",
+      "type",
+      "studies",
+      "panel_name"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -12426,7 +13355,15 @@
     ],
     "title": "Panel Definition",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "pathology_slide": {
@@ -12716,10 +13653,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -12842,7 +13785,15 @@
     ],
     "title": "Pathology Slide",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "procedure": {
@@ -12882,7 +13833,11 @@
     "properties": {
       "adverse_event": {
         "description": "Was there an adverse event related to the procedure?",
-        "enum": ["No", "Not Reported", "Yes"]
+        "enum": [
+          "No",
+          "Not Reported",
+          "Yes"
+        ]
       },
       "anatomic_site": {
         "description": "The term that best describes the primary anatomic site of the procedure.",
@@ -13271,7 +14226,13 @@
       },
       "laterality": {
         "description": "Side of body for the procedure's anatomic site.",
-        "enum": ["Bilateral", "Left", "Not Applicable", "Right", "Unknown"]
+        "enum": [
+          "Bilateral",
+          "Left",
+          "Not Applicable",
+          "Right",
+          "Unknown"
+        ]
       },
       "procedure_purpose": {
         "description": "Describe the purpose of the procedure.",
@@ -13318,10 +14279,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -13423,7 +14390,10 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type"],
+    "required": [
+      "submitter_id",
+      "type"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -13434,7 +14404,15 @@
     ],
     "title": "Procedure",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "program": {
@@ -13474,12 +14452,24 @@
         "type": "string"
       }
     },
-    "required": ["name", "dbgap_accession_number"],
+    "required": [
+      "name",
+      "dbgap_accession_number"
+    ],
     "submittable": false,
-    "systemProperties": ["id"],
+    "systemProperties": [
+      "id"
+    ],
     "title": "Program",
     "type": "object",
-    "uniqueKeys": [["id"], ["name"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "name"
+      ]
+    ],
     "validators": null
   },
   "project": {
@@ -13508,7 +14498,10 @@
       },
       "availability_type": {
         "description": "Is the project open or restricted?",
-        "enum": ["Open", "Restricted"]
+        "enum": [
+          "Open",
+          "Restricted"
+        ]
       },
       "code": {
         "description": "Unique identifier for the project.",
@@ -13516,7 +14509,10 @@
       },
       "complete": {
         "description": "Description of whether the project submission is complete or still in progress.\n",
-        "enum": ["Complete", "Incomplete"]
+        "enum": [
+          "Complete",
+          "Incomplete"
+        ]
       },
       "date_collected": {
         "description": "The date or date range in which the project data was collected.",
@@ -13628,7 +14624,13 @@
       "state": {
         "default": "open",
         "description": "The possible states a project can be in. All but 'open' are\nequivalent to some type of locked state.\n",
-        "enum": ["open", "review", "submitted", "processing", "closed"]
+        "enum": [
+          "open",
+          "review",
+          "submitted",
+          "processing",
+          "closed"
+        ]
       },
       "support_id": {
         "description": "The ID of the source providing support/grant resources.",
@@ -13642,7 +14644,12 @@
         "type": "string"
       }
     },
-    "required": ["code", "name", "dbgap_accession_number", "programs"],
+    "required": [
+      "code",
+      "name",
+      "dbgap_accession_number",
+      "programs"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -13653,7 +14660,14 @@
     ],
     "title": "Project",
     "type": "object",
-    "uniqueKeys": [["id"], ["code"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "code"
+      ]
+    ],
     "validators": null
   },
   "publication": {
@@ -13828,10 +14842,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -13842,7 +14862,9 @@
       },
       "type": {
         "description": "The node_id of this node.",
-        "enum": ["publication"]
+        "enum": [
+          "publication"
+        ]
       },
       "updated_datetime": {
         "oneOf": [
@@ -13859,7 +14881,11 @@
         }
       }
     },
-    "required": ["submitter_id", "type", "projects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "projects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -13870,7 +14896,15 @@
     ],
     "title": "Publication",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "read_group": {
@@ -14258,10 +15292,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -14312,7 +15352,11 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "aliquots"],
+    "required": [
+      "submitter_id",
+      "type",
+      "aliquots"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -14323,7 +15367,15 @@
     ],
     "title": "Read Group",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "root": {
@@ -14337,7 +15389,9 @@
     "project": "*",
     "properties": {
       "id": {
-        "enum": ["root"]
+        "enum": [
+          "root"
+        ]
       },
       "schema_version": {
         "type": "string"
@@ -14346,13 +15400,21 @@
         "type": "string"
       }
     },
-    "required": ["type"],
+    "required": [
+      "type"
+    ],
     "root": "*",
     "submittable": false,
-    "systemProperties": ["id"],
+    "systemProperties": [
+      "id"
+    ],
     "title": "Root",
     "type": "object",
-    "uniqueKeys": [["id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ]
+    ],
     "validators": null
   },
   "sample": {
@@ -14450,7 +15512,13 @@
       },
       "laterality": {
         "description": "The side of the organ or body the biospecimen was taken from (e.g., 'Left' if 'anatomic_site' was 'Lung' and it was taken from the left lung)",
-        "enum": ["Bilateral", "Left", "Not Reported", "Right", "Unknown"]
+        "enum": [
+          "Bilateral",
+          "Left",
+          "Not Reported",
+          "Right",
+          "Unknown"
+        ]
       },
       "preservation_method": {
         "description": "The text term that describes the method used to preserve the biospecimen after collection.",
@@ -14467,7 +15535,10 @@
       },
       "procured_or_purchased": {
         "description": "Was the biospecimen purchased from a vendor or procured from a study participant.",
-        "enum": ["Procured", "Purchased"]
+        "enum": [
+          "Procured",
+          "Purchased"
+        ]
       },
       "procurement_method": {
         "description": "The term that best describes the method used to extract the sample from the subject.",
@@ -14538,10 +15609,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -14643,7 +15720,11 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "subjects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "subjects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -14654,7 +15735,15 @@
     ],
     "title": "Sample",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "study": {
@@ -14806,10 +15895,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -14857,7 +15952,10 @@
       },
       "study_setup": {
         "description": "A high level description of the setup used to achieve the study objectives.",
-        "enum": ["Detection/Enumeration/Isolation", "Genetic Analysis"]
+        "enum": [
+          "Detection/Enumeration/Isolation",
+          "Genetic Analysis"
+        ]
       },
       "study_url": {
         "description": "A URL for the study's source data or the contributing organization's website.",
@@ -14869,7 +15967,9 @@
       },
       "type": {
         "description": "The node_id of this node.",
-        "enum": ["study"]
+        "enum": [
+          "study"
+        ]
       },
       "updated_datetime": {
         "oneOf": [
@@ -14903,7 +16003,15 @@
     ],
     "title": "Study",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "subject": {
@@ -14939,7 +16047,10 @@
       },
       "age_at_enrollment_gt89": {
         "description": "The age of the subject at enrollment is greater than 89 years.",
-        "enum": ["No", "Yes"]
+        "enum": [
+          "No",
+          "Yes"
+        ]
       },
       "age_at_immigration": {
         "description": "The age of the study subject at immigration, if the age is less than 90 years.",
@@ -15020,7 +16131,13 @@
         "type": "string"
       },
       "gender": {
-        "enum": ["Female", "Male", "Not Reported", "Unknown", "Unspecified"],
+        "enum": [
+          "Female",
+          "Male",
+          "Not Reported",
+          "Unknown",
+          "Unspecified"
+        ],
         "term": {
           "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]\n",
           "termDef": {
@@ -15034,7 +16151,11 @@
       },
       "handedness": {
         "description": "Handedness of the subject.",
-        "enum": ["Left", "Mixed", "Right"]
+        "enum": [
+          "Left",
+          "Mixed",
+          "Right"
+        ]
       },
       "id": {
         "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
@@ -15062,11 +16183,19 @@
       },
       "index_event_status": {
         "description": "A measure of our confidence that the logitundinal structure of the study is well described as data-defined or via curation.",
-        "enum": ["Data-Derived", "Imputed"]
+        "enum": [
+          "Data-Derived",
+          "Imputed"
+        ]
       },
       "lost_to_followup": {
         "description": "A yes/no indicator related to whether a patient was unable to be contacted for follow-up.",
-        "enum": ["No", "Not Applicable", "Not Reported", "Yes"]
+        "enum": [
+          "No",
+          "Not Applicable",
+          "Not Reported",
+          "Yes"
+        ]
       },
       "place_of_birth": {
         "description": "Place of birth or origin.",
@@ -15144,10 +16273,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -15240,7 +16375,11 @@
         "type": "string"
       }
     },
-    "required": ["submitter_id", "type", "studies"],
+    "required": [
+      "submitter_id",
+      "type",
+      "studies"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -15251,7 +16390,15 @@
     ],
     "title": "Subject",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "supplementary_file": {
@@ -15352,7 +16499,9 @@
         }
       },
       "data_category": {
-        "enum": ["Supplementary File"],
+        "enum": [
+          "Supplementary File"
+        ],
         "term": {
           "description": "Broad categorization of the contents of the data file.\n"
         }
@@ -15444,10 +16593,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -15515,7 +16670,15 @@
     ],
     "title": "Supplementary File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "unaligned_reads_file": {
@@ -15814,7 +16977,10 @@
         ]
       },
       "read_pair_number": {
-        "enum": ["R1", "R2"],
+        "enum": [
+          "R1",
+          "R2"
+        ],
         "term": {
           "description": "Denotes whether a submitted FASTQ file contains forward (R1) or reverse (R2) reads for paired-end sequencing.\n",
           "termDef": {
@@ -15853,10 +17019,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -15979,7 +17151,15 @@
     ],
     "title": "Unaligned Reads File",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "variant_call_file": {
@@ -16374,10 +17554,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -16577,7 +17763,15 @@
     ],
     "title": "Variant Call File (VCF)",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   },
   "visit": {
@@ -16679,10 +17873,16 @@
             ]
           },
           {
-            "enum": ["validated", "submitted", "released"]
+            "enum": [
+              "validated",
+              "submitted",
+              "released"
+            ]
           }
         ],
-        "public": ["live"],
+        "public": [
+          "live"
+        ],
         "term": {
           "description": "The current state of the object.\n"
         }
@@ -16842,18 +18042,36 @@
       },
       "visit_scheduled": {
         "description": "Specify whether the visit was scheduled or unscheduled.",
-        "enum": ["Scheduled", "Unscheduled"]
+        "enum": [
+          "Scheduled",
+          "Unscheduled"
+        ]
       },
       "visit_type": {
         "description": "Text term used to describe the type of visit.",
-        "enum": ["Inpatient", "Intensive outpatient", "Outpatient"]
+        "enum": [
+          "Inpatient",
+          "Intensive outpatient",
+          "Outpatient"
+        ]
       },
       "visit_units": {
         "description": "If a visit is defined by a given interval of time, specify the time interval. For example, for a visit defined as 'Month 6 Visit', specify 'Month' for 'visit_units' and specify '6' for 'visit_number'.",
-        "enum": ["Biweekly", "Day", "Month", "Quarter", "Week", "Year"]
+        "enum": [
+          "Biweekly",
+          "Day",
+          "Month",
+          "Quarter",
+          "Week",
+          "Year"
+        ]
       }
     },
-    "required": ["submitter_id", "type", "subjects"],
+    "required": [
+      "submitter_id",
+      "type",
+      "subjects"
+    ],
     "submittable": true,
     "systemProperties": [
       "id",
@@ -16864,7 +18082,15 @@
     ],
     "title": "Visit",
     "type": "object",
-    "uniqueKeys": [["id"], ["project_id", "submitter_id"]],
+    "uniqueKeys": [
+      [
+        "id"
+      ],
+      [
+        "project_id",
+        "submitter_id"
+      ]
+    ],
     "validators": null
   }
 }

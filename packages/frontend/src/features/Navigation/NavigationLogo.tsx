@@ -20,16 +20,22 @@ const NavigationLogo = ({
       'font-heading h3-typo pt-2 text-ink-dark hover:text-ink-darkest hover:border-accent hover:border-b-3',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
-      <HoverLink className={extractClassName('link', mergedClassnames)} href="/">
+      <HoverLink
+        className={extractClassName('link', mergedClassnames)}
+        href="/"
+      >
         <Image
           className="pr-3 object-contain"
           fill
           src={`${basePath}${src}`}
-          alt={description ?? title}
+          alt={description ?? title ?? 'link back to homepage'}
         />
       </HoverLink>
       {title && (
