@@ -1,4 +1,4 @@
-import { JSONObject } from '../../types';
+import { JSONObject, JSONValue } from '../../types';
 
 export interface Project {
   availability_type: string;
@@ -8,7 +8,7 @@ export interface Project {
 
 export interface SubmissionGraphqlParams {
   query: string;
-  variables: Record<string, any>;
+  variables: Record<string, JSONValue>;
   mapping?: {
     [key: string]: string;
   };
@@ -19,7 +19,7 @@ export interface SubmissionGraphqlResponse {
 }
 
 export interface ProjectDetailsParams {
-  ids : Array<string>;
+  ids: Array<string>;
 }
 
 export interface ProjectDetailsResponse {

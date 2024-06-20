@@ -42,8 +42,10 @@ const createDownloadMenuButton = (
     let actionFunction = NullButtonAction;
     let actionArgs = {};
 
-    if (button.action) {
-      const actionItem = findButtonAction(button.action);
+    const buttonAction = button.action ?? button.type;
+
+    if (buttonAction) {
+      const actionItem = findButtonAction(buttonAction);
       if (actionItem) {
         actionFunction = actionItem.action;
         actionArgs = actionItem.args ?? ({} as Record<string, any>);
@@ -68,6 +70,7 @@ const createDownloadMenuButton = (
       },
     } as DownloadButtonPropsWithAction;
   });
+
   return (
     <CohortDropdownActionButton
       inactiveText={props.title}
@@ -152,8 +155,9 @@ const DownloadsPanel = ({
         let disabled = false;
         let actionFunction = NullButtonAction;
         let actionArgs = {};
-        if (button.action) {
-          const actionItem = findButtonAction(button.action);
+        const buttonAction = button.action ?? button.type;
+        if (buttonAction) {
+          const actionItem = findButtonAction(buttonAction);
           if (actionItem) {
             const funcArgs = actionItem.args ?? {};
             const func = actionItem.action;

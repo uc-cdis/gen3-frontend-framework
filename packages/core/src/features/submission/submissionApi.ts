@@ -221,6 +221,11 @@ export const submissionApi = gen3Api.injectEndpoints({
         return response.data;
       },
     }),
+    getDictionary: builder.query<SubmissionGraphqlResponse, void>({
+      query: () => ({
+        url: `${GEN3_SUBMISSION_API}/_dictionary/_all/`,
+      }),
+    }),
   }),
 });
 
@@ -231,4 +236,5 @@ export const {
   useLazyGetProjectsQuery,
   useLazyGetSubmissionGraphQLQuery,
   useGetSubmissionsQuery,
+  useGetDictionaryQuery,
 } = submissionApi;

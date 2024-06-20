@@ -8,6 +8,7 @@ import { default as tailwindConfig } from './src/tailwind.cjs';
 import postcss from 'rollup-plugin-postcss';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const globals = {
   react: 'React',
@@ -33,11 +34,15 @@ const globals = {
   '@mantine/hooks': 'mantineHooks',
   '@mantine/core': 'mantineCore',
   '@mantine/form': 'mantineForm',
+  '@mantine/modals': 'mantineModals',
+  "@tabler/icons-react": "tablerIcons",
+  'react-icons/ai': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
   'react-icons/md': 'reactIcons',
   'react-icons/io': 'reactIcons',
   'react-icons/ri': 'reactIcons',
+  'react-icons/ti': 'reactIcons',
   'react-minisearch': 'reactMinisearch',
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
@@ -45,6 +50,17 @@ const globals = {
   'yaml': 'yaml',
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
+  "jose" : "jose",
+  "cookies-next":"cookies-next",
+  "cookie":"cookie",
+  "next/head":"nextHead",
+  "next/navigation":"nextNavigation",
+  "react-markdown":"reactMarkdown",
+  "remark-gfm":"remark-gfm",
+  "default-composer":"default-composer",
+  "filesize":"filesize",
+  "tailwind-merge":"tailwind-merge",
+  "util":"util"
 };
 
 const config = [
@@ -107,7 +123,7 @@ const config = [
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives(), json(),
+        swcPreserveDirectives(), json()
       ),
       copy({
         targets: [
@@ -119,7 +135,7 @@ const config = [
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss(), json()],
+    plugins: [dts(), postcss()],
   },
 ];
 

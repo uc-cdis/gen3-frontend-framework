@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable @typescript-eslint/no-var-requires */
-
+const { GEN3_COMMONS_NAME } = require('@gen3/core');
 const plugin = require('tailwindcss/plugin');
-const themeColors = require('./config/themeColors.json');
-const themeFonts = require('./config/themeFonts.json');
+const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
+const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 
 module.exports = {
   presets: [require('@gen3/frontend/tailwind')],
@@ -96,6 +96,15 @@ module.exports = {
       addVariant('api-in-range', '&[api-in-range]');
       addVariant('api-first-in-range', '&[api-first-in-range]');
       addVariant('api-last-in-range', '&[api-last-in-range]');
+      addVariant('data-checked', '&[data-checked]');
+      addVariant('data-active', '&[data-active]');
+      addVariant('data-selected', '&[data-selected]');
+      addVariant('data-hovered', '&[data-hovered]');
+      addVariant('data-disabled', '&[data-disabled]');
+      addVariant('data-in-range', '&[data-in-range]');
+      addVariant('data-first-in-range', '&[data-first-in-range]');
+      addVariant('data-last-in-range', '&[data-last-in-range]');
+      addVariant('data-with-icon', '&[data-with-icon]');
     }),
     plugin(function ({ addUtilities }) {
       const newUtilities = {

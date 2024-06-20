@@ -1,5 +1,5 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
-// import { DictionaryProps } from "../../features/Dictionary/Dictionary";
+import { DictionaryProps } from '../../features/Dictionary';
 
 //& DictionaryProps;
-export type DictionaryPageProps = NavPageLayoutProps
+export type DictionaryPageProps = NavPageLayoutProps & DictionaryProps;

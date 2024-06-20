@@ -1,9 +1,10 @@
-import { CellRendererFunctionProps, RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
+import {
+  CellRendererFunctionProps,
+  RenderFactoryTypedInstance,
+} from '../../../utils/RendererFactory';
 import React, { ReactElement } from 'react';
 import { isArray } from 'lodash';
 import { Badge, Text } from '@mantine/core';
-import { DiscoveryCellRendererFactory } from '../../Discovery';
-import { Gen3DiscoveryStandardCellRenderers } from '../../Discovery/TableRenderers/CellRenderers';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
@@ -73,11 +74,16 @@ const RenderLinkCell = (
   { cell }: CellRendererFunctionProps,
   ...args: Array<Record<string, unknown>>
 ) => {
-
   return (
-
-    <a href={`${args[0].baseURL}${cell.getValue()}`} target="_blank" rel="noreferrer">
-      <Text c="blue" td="underline" fw={700}> {cell.getValue() as ReactElement} </Text>
+    <a
+      href={`${args[0].baseURL}${cell.getValue()}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <Text c="blue" td="underline" fw={700}>
+        {' '}
+        {cell.getValue() as ReactElement}{' '}
+      </Text>
     </a>
   );
 };
@@ -92,7 +98,6 @@ export const ExplorerTableCellRendererFactory =
   (): RenderFactoryTypedInstance<CellRendererFunctionProps> => {
     if (!instance) {
       instance = new RenderFactoryTypedInstance<CellRendererFunctionProps>();
-
     }
     return instance;
   };
@@ -104,10 +109,10 @@ export const registerExplorerDefaultCellRenderers = () => {
       default: ValueCellRenderer,
     },
   });
-  ExplorerTableCellRendererFactory().registerRendererCatalog(
-    { array: ArrayCellFunctionCatalog }
-  );
-  ExplorerTableCellRendererFactory().registerRendererCatalog(
-    { link: LinkCellFunctionCatalog }
-  );
+  ExplorerTableCellRendererFactory().registerRendererCatalog({
+    array: ArrayCellFunctionCatalog,
+  });
+  ExplorerTableCellRendererFactory().registerRendererCatalog({
+    link: LinkCellFunctionCatalog,
+  });
 };

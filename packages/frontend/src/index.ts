@@ -4,6 +4,7 @@ export * from './components/Profile';
 export * from './components/Login';
 export * from './components/Modals';
 export * from './components/charts';
+
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
@@ -13,6 +14,7 @@ import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
+import ErrorCard from './components/ErrorCard';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -35,13 +37,8 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-import DictionaryPage, {
-  DictionaryPageGetServerSideProps,
-} from './pages/DataDictionary';
 
-import WorkspacePage, {
-  WorkspacePageGetServerSideProps,
-} from './pages/Workspace';
+import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -50,6 +47,9 @@ import Custom404Page from './pages/404/Custom404Page';
 
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
+
+import WorkspacesPage from './pages/Workspace/Workspaces';
+import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
@@ -66,6 +66,7 @@ export {
   type Fonts,
   type RegisteredIcons,
   type SessionConfiguration,
+  ErrorCard,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,
@@ -76,8 +77,6 @@ export {
   ColorThemePageGetServerSideProps,
   DictionaryPage,
   DictionaryPageGetServerSideProps,
-  WorkspacePage,
-  WorkspacePageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   ProfilePage,
@@ -89,6 +88,8 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
+  WorkspacesPage,
+  WorkspacesPageGetServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,
