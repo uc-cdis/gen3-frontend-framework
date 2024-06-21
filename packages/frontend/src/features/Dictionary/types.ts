@@ -55,13 +55,6 @@ export interface DictionaryProperty {
   term?: {
     description?: string;
   };
-// Holds basic types for the Data Dictionary feature
-
-export interface DictionaryConfig extends Record<string, any> {
-  id: string;
-  category: string;
-  description: string;
-  properties: Record<string, unknown>;
 }
 
 export interface DictionaryEntry {

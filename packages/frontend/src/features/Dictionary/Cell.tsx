@@ -1,20 +1,18 @@
-import React from 'react';
-
 const Cell = ({ cell, key }: { cell: any; key: string }) => {
   return (
     <div>
       {key === 'type' ? (
-        <React.Fragment>
+        <div>
           {
             <ul>
               {(cell.getValue()?.split(' ') || []).map(
-                (cell: any, index: number) => {
-                  return <li key={`cell-${index}`}>{cell}</li>;
+                (cell: any, key: number) => {
+                  return <li key={key}>{cell}</li>;
                 },
               )}
             </ul>
           }
-        </React.Fragment>
+        </div>
       ) : (
         <span>{cell.getValue()}</span>
       )}
