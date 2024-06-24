@@ -37,8 +37,8 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
-import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
+
+import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -75,8 +75,8 @@ export {
   LandingPageGetStaticProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
-  DataDictionaryPage,
-  DataDictionaryPageGetServerSideProps,
+  DictionaryPage,
+  DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   ProfilePage,
