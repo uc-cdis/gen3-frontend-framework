@@ -5,7 +5,7 @@ import { ResourcesPanel } from '../../components/Profile/ResourcesPanel';
 import { ProfileProvider } from '../../components/Profile';
 import { ProfileConfig } from '../../components/Profile';
 import ExternalProvidersPanel from '../../components/Profile/ExternalProvidersPanel';
-import { PiCaretCircleDownFill as Caret } from "react-icons/pi";
+import { PiCaretCircleDownFill as Caret } from 'react-icons/pi';
 
 
 export interface ProfileProps {

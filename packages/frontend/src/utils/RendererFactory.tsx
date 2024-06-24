@@ -3,8 +3,7 @@ import {
   MRT_Cell,
   MRT_Column,
   MRT_Row,
-  MRT_TableInstance,
-  MRT_ColumnDef,
+  MRT_TableInstance
 } from 'mantine-react-table';
 import { JSONObject } from '@gen3/core';
 

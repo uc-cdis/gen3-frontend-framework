@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavigationProps } from '../types';
 import NavigationLogo from '../NavigationLogo';
 import { TopBarProps, } from '../TopBar';
@@ -7,7 +6,6 @@ import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import { Tooltip } from '@mantine/core';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
