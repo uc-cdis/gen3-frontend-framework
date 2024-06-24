@@ -11,6 +11,7 @@ export const createFacetCard = (
     idPrefix: string,
     dismissCallback: (_arg0:string) => void = () => null,
     hideIfEmpty = false,
+    collapse: boolean,
     facetName?: string,
     width?: string,
 ): React.ReactNode => {
@@ -32,6 +33,7 @@ export const createFacetCard = (
                                 width={width}
                                 dataHooks={dataFunctions}
                                 showPercent={false}
+                                collapse={collapse}
                             />
                         ),
                     range: (
@@ -46,6 +48,7 @@ export const createFacetCard = (
                             dataHooks={dataFunctions}
                             minimum={facetDefinition.range?.minimum}
                             maximum={facetDefinition.range?.maximum}
+                            collapse={collapse}
                         />
                     )
                 }[type as string]

@@ -27,10 +27,10 @@ interface FacetExpanderProps {
  * @param onShowChanged - callback to call when the expand/compact button is clicked
  */
 const FacetExpander: React.FC<FacetExpanderProps> = ({
-                                                       remainingValues,
-                                                       isGroupExpanded,
-                                                       onShowChanged,
-                                                     }: FacetExpanderProps) => {
+  remainingValues,
+  isGroupExpanded,
+  onShowChanged,
+}: FacetExpanderProps) => {
   return (
     <div className="mt-3 flex flex-row justify-end border-t-2 p-1.5">
       {remainingValues > 0 && !isGroupExpanded ? (
