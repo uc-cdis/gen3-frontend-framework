@@ -8,7 +8,7 @@ const DownloadAsZipButton = ({ selectedResources }: ActionButtonProps) => {
   return (
     <DataLibraryActionButton
       label="Download Zip"
-      icon={DownloadIcon}
+      icon={<DownloadIcon />}
       toolTip="Download Zip"
       onClick={() => {
         console.log('Download Zip');

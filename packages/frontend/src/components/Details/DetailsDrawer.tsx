@@ -1,5 +1,5 @@
 import { Button, Drawer } from '@mantine/core';
-import React, { cloneElement, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { DetailsComponentProps } from './types';
