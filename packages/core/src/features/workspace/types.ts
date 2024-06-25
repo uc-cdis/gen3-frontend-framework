@@ -1,4 +1,4 @@
-interface PayModel {
+export interface PayModel {
   bmh_workspace_id: string;
   workspace_type: string;
   user_id: string;
@@ -11,7 +11,7 @@ interface PayModel {
   'hard-limit': number;
   'soft-limit': number;
   'total-usage': number;
-  'current_pay_model': boolean;
+  current_pay_model: boolean;
 }
 
 export interface WorkspaceInfo {
@@ -34,8 +34,8 @@ export type WorkspaceOptionsResponse = Array<WorkspaceInfoResponse>;
 export type WorkspaceOptions = Array<WorkspaceInfo>;
 
 export interface WorkspacePayModelResponse {
-  'current_pay_model': PayModel;
-  'all_pay_models': PayModel[];
+  current_pay_model: PayModel;
+  all_pay_models: PayModel[];
 }
 
 export interface WorkspaceStatusResponse {
