@@ -13,8 +13,6 @@ import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
 import { selectCSRFToken } from './userSliceRTK';
 
-
-
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
   readonly error?: string;
@@ -35,7 +33,6 @@ export const fetchUserState = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user/user', async (_, meta) => {
-
   // Get an access token from a cookie if in development mode
   const csrfToken = selectCSRFToken(meta.getState());
   let accessToken = undefined;
@@ -49,13 +46,12 @@ export const fetchUserState = createAsyncThunk<
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      ...(csrfToken ? { 'X-CSRF-Token': csrfToken} : {}),
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       credentials: 'include',
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
   });
 });
-
 
 export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
   loginStatus === 'authenticated';

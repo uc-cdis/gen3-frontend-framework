@@ -37,8 +37,9 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-
-import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
+import DictionaryPage, {
+  DictionaryPageGetServerSideProps,
+} from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -60,6 +61,8 @@ import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
+
+import getList from './api/dataLibrary/getList';
 
 export {
   ContentSource,
@@ -95,6 +98,7 @@ export {
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  getList,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   SubmissionPage,
