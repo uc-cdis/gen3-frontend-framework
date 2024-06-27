@@ -4,7 +4,7 @@ import { DataLibrary, DataList, ListItemDefinition } from './types';
 
 interface AddUpdateListParams {
   id: string;
-  list: DataList;
+  list: ListItemDefinition;
 }
 
 const TAGS = 'dataLibrary';
@@ -14,6 +14,13 @@ export const dataLibraryTags = gen3Api.enhanceEndpoints({
 });
 
 /**
+ * RTKQuery hooks for data-library list CRUD operations.
+ * @param getLists returns all the list in the user's data library
+ * @param getList args: id returns the list for the given id
+ * @param addLists args: Record<string, ListItemDefinition> populates the whole datalibrary
+ * @param addList args: id ListItemDefinition creates a new list
+ * @param updateList args: id ListItemDefinition updates a list
+ * @param deleteList args: id deletes the list by id
  */
 export const dataLibraryApi = dataLibraryTags.injectEndpoints({
   endpoints: (builder) => ({
