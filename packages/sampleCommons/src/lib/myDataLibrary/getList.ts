@@ -27,7 +27,7 @@ const deleteAll = async (res: NextApiResponse) => {
 
 const deleteList = async (id: string, res: NextApiResponse) => {
   try {
-    await database.getData(`/${id}`);
+    await database.getData(`/${id}`); // will throw error if not found
     await database.delete(`/${id}`);
     res.status(200).json({ message: `${id} deleted` });
   } catch (error: unknown) {
