@@ -62,8 +62,6 @@ import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 
-import getList from './api/dataLibrary/getList';
-
 export {
   ContentSource,
   type Fonts,
@@ -98,7 +96,6 @@ export {
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
-  getList,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   SubmissionPage,

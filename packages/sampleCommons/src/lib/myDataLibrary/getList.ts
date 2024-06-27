@@ -1,8 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { database } from '../../lib/myDataLibary';
+import database from './dataLibrary';
+import { DataError } from 'node-json-db';
 import { isArray } from 'lodash';
 import { JSONObject, isJSONObject } from '@gen3/core';
 import { nanoid } from '@reduxjs/toolkit';
+
+const handleError = (error: unknown, id?: string) => {
+  let statusCode = 500;
+  let message = 'a error has occurred';
+  if (error instanceof DataError) {
+    if (error.id === 5) {
+      statusCode = 404;
+      message = `${id} does not exist in the library`;
+    }
+  }
+  return {
+    statusCode,
+    message,
+  };
+};
 
 const deleteAll = async (res: NextApiResponse) => {
   await database.delete('/');
@@ -11,10 +27,12 @@ const deleteAll = async (res: NextApiResponse) => {
 
 const deleteList = async (id: string, res: NextApiResponse) => {
   try {
+    await database.getData(`/${id}`);
     await database.delete(`/${id}`);
     res.status(200).json({ message: `${id} deleted` });
   } catch (error: unknown) {
-    res.status(401).json({ error: `cannot find list with id: ${id}` });
+    const { statusCode, message } = handleError(error, id);
+    res.status(statusCode).json({ error: `error deleting list: ${message}` });
   }
 };
 
@@ -58,9 +76,10 @@ const updateList = async (
       ...body,
     };
     await database.push(`/${id}`, updated, override);
-    res.status(200).json({ message: `${id} added` });
+    res.status(200).json({ message: `${id} updated` });
   } catch (error: unknown) {
-    res.status(500).json({ error: `error adding list: ${id}` });
+    const { statusCode, message } = handleError(error, id);
+    res.status(statusCode).json({ error: `error updating list: ${message}` });
   }
 };
 
@@ -97,17 +116,24 @@ const addAllList = async (body: JSONObject, res: NextApiResponse) => {
 };
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  const { id } =
-    isArray(req.query) && req.query.length === 1 ? req.query[0] : undefined;
+  const { id: rawId } = req.query;
+  const id = isArray(rawId) && rawId.length === 1 ? rawId[0] : undefined;
 
   if (req.method === 'GET') {
     let lists = undefined;
     if (id) {
       try {
         lists = await database.getData(`/${id}`);
-        res.status(200).json({ lists });
+        res.status(200).json({
+          lists: {
+            [id]: lists,
+          },
+        });
       } catch (error: unknown) {
-        res.status(401).json({ error: `cannot find list with id: ${id}` });
+        const { statusCode, message } = handleError(error, id);
+        res
+          .status(statusCode)
+          .json({ error: `error getting list: ${message}` });
       }
     } else {
       lists = await database.getData('/');
@@ -120,23 +146,19 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   } else if (req.method === 'DELETE') {
     // deleting a single list
     if (id) {
-      if (typeof id === 'string') await deleteList(id, res);
-      if (isArray(id)) {
-        id.forEach((x) => deleteList(x, res));
-      }
+      await deleteList(id, res);
     } else {
       // delete everything
       await deleteAll(res);
     }
   } else if (req.method === 'POST') {
-    console.log('id', id);
     if (id) {
       await addList(id, req.body, res);
     } else {
       await addAllList(req.body, res);
     }
-  } else if (req.method === 'UPDATE') {
-    // no support for UPDATE all
+  } else if (req.method === 'PATCH') {
+    // no support for PATCH all
     if (id) {
       await updateList(id, req.body, res);
     } else {

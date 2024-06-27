@@ -1,5 +1,3 @@
-'use_server';
-
-import { getList } from '@gen3/frontend';
+import getList from '../../../../../lib/myDataLibrary/getList';
 
 export default getList;
