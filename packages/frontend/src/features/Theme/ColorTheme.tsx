@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 
 export const divider_style = {
   label: 'font-medium text-primary-content-darkest text-lg my-2',
@@ -236,22 +236,22 @@ const ColorAndContrastPalletLine = ({
   contrast = undefined,
 }: ColorAndContrastStylePalletProps) => {
   return (
-      <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1 mr-6">
-        <p className="bg-base-max col-span-2 text-base-contrast-max">{name}</p>
-        {colors.map((x, i) => {
-          const ext = x.split('-').slice(-1);
-          return (
-            <div
-              key={`${x}-${i}`}
-              className={`${x} ${
-                contrast?.[i] ?? ''
-              } flex justify-center p-4 px-8 mx-2 rounded border text-sm border-black`}
-            >
-              {ext}
-            </div>
-          );
-        })}
-      </div>
+    <div className="grid gap-2 grid-cols-12 grid-rows-1 my-1 mr-6">
+      <p className="bg-base-max col-span-2 text-base-contrast-max">{name}</p>
+      {colors.map((x, i) => {
+        const ext = x.split('-').slice(-1);
+        return (
+          <div
+            key={`${x}-${i}`}
+            className={`${x} ${
+              contrast?.[i] ?? ''
+            } flex justify-center p-4 px-8 mx-2 rounded border text-sm border-black`}
+          >
+            {ext}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

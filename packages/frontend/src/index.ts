@@ -37,8 +37,9 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-
-import DictionaryPage, { DictionaryPageGetServerSideProps } from './pages/DataDictionary';
+import DictionaryPage, {
+  DictionaryPageGetServerSideProps,
+} from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -48,8 +49,8 @@ import Custom404Page from './pages/404/Custom404Page';
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacesPage from './pages/Workspace/Workspaces';
-import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
+import WorkspacePage from './pages/Workspace/Workspace';
+import { WorkspacePageGetServerSideProps } from './pages/Workspace/data';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
@@ -88,8 +89,8 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
-  WorkspacesPage,
-  WorkspacesPageGetServerSideProps,
+  WorkspacePage,
+  WorkspacePageGetServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,

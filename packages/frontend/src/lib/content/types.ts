@@ -1,5 +1,9 @@
 export interface ContentSource {
   get<T extends Record<string, undefined>>(filepath: string): Promise<T>;
+  getAll<T extends Record<string, unknown>>(
+    filepath: string,
+    filter: string,
+  ): Promise<Array<T>>;
 }
 
 interface Gen3Icon {
@@ -19,7 +23,7 @@ export interface RegisteredIcons {
 }
 
 export interface Fonts {
-  heading: string| string[];
+  heading: string | string[];
   content: string | string[];
   fontFamily: string;
 }

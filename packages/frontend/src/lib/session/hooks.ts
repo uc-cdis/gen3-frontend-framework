@@ -3,10 +3,7 @@ import { AuthTokenData } from './types';
 import type { IncomingMessage } from 'http';
 import { getCookie } from 'cookies-next';
 import { decodeJwt } from 'jose';
-import {
-  isExpired,
-  JWTPayloadAndUser,
-} from '../../api/auth/sessionToken';
+import { isExpired, JWTPayloadAndUser } from '../../api/auth/sessionToken';
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<AuthTokenData>);
@@ -25,7 +22,7 @@ export const useAuthSession = (): AuthTokenData => {
  * For server side rendering only
  * @param ctx
  */
-export const getAuthSession = async <T>(req: IncomingMessage) => {
+export const getAuthSession = async (req: IncomingMessage) => {
   const access_token = getCookie('access_token', { req });
 
   if (access_token && typeof access_token === 'string') {
