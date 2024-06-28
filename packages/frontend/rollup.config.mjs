@@ -27,6 +27,7 @@ const globals = {
   tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
+  glob: 'glob',
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',

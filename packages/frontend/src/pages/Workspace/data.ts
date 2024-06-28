@@ -2,13 +2,13 @@ import { GetServerSideProps } from 'next';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
-import { WorkspaceConfiguration } from '../../features/Workspace';
+import { WorkspaceConfig } from '../../features/Workspace';
 import { WorkspacePageLayoutProps } from './types';
 
 export const WorkspacePageGetServerSideProps: GetServerSideProps<
   WorkspacePageLayoutProps
 > = async (_context) => {
-  const workspaceProps: WorkspaceConfiguration = await ContentSource.get(
+  const workspaceProps: WorkspaceConfig = await ContentSource.get(
     `config/${GEN3_COMMONS_NAME}/workspace.json`,
   );
   try {
@@ -22,7 +22,7 @@ export const WorkspacePageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        workspaceProps: {  },
+        workspaceProps: {},
       },
     };
   }

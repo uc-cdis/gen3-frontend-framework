@@ -8,9 +8,6 @@ interface DiscoveryProviderValue {
   studyDetails: JSONObject;
 }
 
-
-
-
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryConfig,
   setStudyDetails: () => null,
@@ -20,9 +17,7 @@ const DiscoveryContext = createContext<DiscoveryProviderValue>({
 const useDiscoveryContext = () => {
   const context = React.useContext(DiscoveryContext);
   if (context === undefined) {
-    throw Error(
-      'Discovery must be used  must be used inside of a DiscoveryContext',
-    );
+    throw Error('Discovery must be used inside of a DiscoveryContext');
   }
   return context;
 };

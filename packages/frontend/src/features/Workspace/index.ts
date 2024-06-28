@@ -1,4 +1,4 @@
 import Workspace from './Workspace';
-import { type WorkspaceConfiguration } from './types';
+import { type WorkspaceConfig } from './types';
 
-export { Workspace, type WorkspaceConfiguration };
+export { Workspace, type WorkspaceConfig };

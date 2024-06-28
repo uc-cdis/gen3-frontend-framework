@@ -23,7 +23,7 @@ export default [
     ],
   },
   {
-    input: './src/bundleIcons/bundleIcons.js',
+    input: './src/bundleIcons/bundleIcons.ts',
     output: [
       {
         file: 'dist/bundleIcons.esm.js',
