@@ -20,41 +20,166 @@
     ],
     "sections": [
         {
-            "title" : "Jan - Mar 2024",
+            "title": "April - June 2024",
             "cards": [
                 {
+                    "title": "Smartphone-based rewards as a bridge to treatment for naloxone reversal patients",
+                    "content": "ANTHONY DEFULIO; DYNAMICARE HEALTH, INC.",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00172"
+                },
+                {
+                    "title": "Collaborative Care Office-Based Opioid Treatment for Adolescents and Young Adults",
+                    "content": "SCOTT EVAN HADLAND; BOSTON MEDICAL CENTER",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00467"
+                },
+                {
+                    "title": "Improving Access and Treatment for Co-occurring Opioid Use Disorders and Mental Illness",
+                    "content": "MIRIAM KOMAROMY, KATHERINE E WATKINS; RAND CORPORATION",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00276"
+                },
+                {
+                    "title": "Reducing Stigma Toward People with Opioid Use Disorder Among Primary Care Clinicians",
+                    "content": "STEPHANIE A. HOOKER, GAVIN BART, REBECCA ROSSOM; HEALTH PARTNERS INSTITUTE FOR EDUCATION & RESEARCH",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP01287"
+                },
+                {
+                    "title": "Multi-organ-on-chip device for modeling opioid reinforcement and withdrawal and the negative affective component of pain: a therapeutic screening tool.",
+                    "content": "NUREDDIN ASHAMMAKHI, ALI KHADEMHOSSEINI, NIGEL T MAIDMENT, CLIVE NIELS SVENDSEN, STEPHANIE KRISTIN SEIDLITS; UNIVERSITY OF CALIFORNIA LOS ANGELES",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00249"
+                },
+                {
+                    "title": "Development of an MRgFUS system for precision-targeted neuromodulation of pain circuits with simultaneous functional MRI",
+                    "content": "CHARLES F CASKEY, LI MIN CHEN, WILLIAM A GRISSOM; VANDERBILT UNIVERSITY MEDICAL CENTER",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00328"
+                },
+                {
+                    "title": "Evaluation of drug mixtures for treating pain: behavioral and pharmacological interactions between opioids and serotonin agonists",
+                    "content": "DAVID RICHARD MAGUIRE; UNIVERSITY OF TEXAS HLTH SCIENCE CENTER",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00343"
+                },
+                {
+                    "title": "Researching Effective Strategies to Prevent Opioid Death (RESPOND)",
+                    "content": "BENJAMIN P. LINAS; BOSTON MEDICAL CENTER",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00516"
+                },
+                {
+                    "title": "Validation of Targeting Macrophage-Mediated Events in the DRG to Alleviate Chronic Spinal Cord Injury Pain",
+                    "content": "MEGAN R DETLOFF; DREXEL UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00541"
+                },
+                {
+                    "title": "Development & Malleability from Childhood to Adulthood",
+                    "content": "NICHOLAS S IALONGO; JOHNS HOPKINS UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00556"
+                },
+                {
+                    "title": "Effect of Mindfulness Training on Opioid Use and Anxiety During Primary Care Buprenorphine Treatment",
+                    "content": "ZEV DAVID SCHUMAN OLIVIER; CAMBRIDGE HEALTH ALLIANCE",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00825"
+                },
+                {
+                    "title": "Human Nociceptor and Spinal Cord Molecular Signature Center",
+                    "content": "MICHELE CURATOLO, PATRICK M DOUGHERTY, THEODORE J PRICE; UNIVERSITY OF TEXAS DALLAS",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00971"
+                },
+                {
+                    "title": "Addressing the chronic pain epidemic among older adults in underserved community center; The GetActive+ study.",
+                    "content": "CHRISTINE S RITCHIE, ANA-MARIA VRANCEANU; MASSACHUSETTS GENERAL HOSPITAL",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00980"
+                },
+                {
+                    "title": "Assessing chronic pain using brain entropy mapping",
+                    "content": "ZE WANG; UNIVERSITY OF MARYLAND BALTIMORE",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00981"
+                },
+                {
+                    "title": "PNPase inhibition as an effective treatment for chronic bladder pain",
+                    "content": "LORI A BIRDER, EDWIN KERRY JACKSON; UNIVERSITY OF PITTSBURGH AT PITTSBURGH",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00990"
+                },
+                {
+                    "title": "Nociceptive Afferent Topographical Innervation of the Heart and Stomach",
+                    "content": "ZIXI JACK CHENG; UNIVERSITY OF CENTRAL FLORIDA",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP01063"
+                },
+                {
+                    "title": "Validation of a Community Pharmacy-based Prescription Drug Monitoring Program Risk Screening Tool (PHARMSCREEN)",
+                    "content": "GERALD COCHRAN, T. JOHN WINHUSEN; UNIVERSITY OF UTAH HEALTH",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP01288"
+                }
+            ]
+        },
+        {
+            "title": "January - March 2024",
+            "cards": [
+                {
+                    "title": "ECHO Administrative Supplement - Neonatal Opioid Trials",
+                    "content": "LAURA KRISTIN NEWBY, PHILLIP BRIAN SMITH; DREXEL UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00635"
+                },
+                {
+                    "title": "Process Development, Manufacturing, and Preclinical Evaluation of a Monoclonal Antibody for Fentanyl Overdose",
+                    "content": "PAUL T BREMER; CESSATION THERAPEUTICS, LLC",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00260"
+                },
+                {
+                    "title": "Treating pain in sickle cell disease by means of focused ultrasound neuromodulation",
+                    "content": "BIN  HE; CARNEGIE-MELLON UNIVERSITY",
+                    "linkText": "View Study",
+                    "link": "https://healdata.org/portal/discovery/HDP00009"
+                },
+                {
                     "title": "Regulation of neuropathic pain by exercise: effects on nociceptor plasticity and inflammation",
-                    "content": "MEGAN R DETLOFF, DREXEL UNIVERSITY",
+                    "content": "MEGAN R DETLOFF; DREXEL UNIVERSITY",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP01265"
                 },
                 {
                     "title": "Multi-organ human-on-a-chip system to address overdose and acute and chronic efficacy and off-target toxicity",
-                    "content": "James J Hickman, MICHAEL L SHULER, UNIVERSITY OF CENTRAL FLORIDA",
+                    "content": "JAMES J HICKMAN, MICHAEL L SHULER; UNIVERSITY OF CENTRAL FLORIDA",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP00054"
                 },
                 {
                     "title": "Modeling temporomandibular joint disorders pain: role of transient receptor potential ion channels",
-                    "content": "Yong Chen, DUKE UNIVERSITY",
+                    "content": "YONG CHEN; DUKE UNIVERSITY",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP00538"
                 },
                 {
                     "title": "Collaborating to Heal Addiction and Mental Health in Primary care (CHAMP)",
-                    "content": "JOHN C. FORTNEY, Anna  Ratzliff, ANDREW J SAXON, UNIVERSITY OF WASHINGTON",
+                    "content": "JOHN C. FORTNEY, ANNA RATZLIFF, ANDREW J SAXON; UNIVERSITY OF WASHINGTON",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP00201"
                 },
                 {
                     "title": "Sleep, opiate withdrawal and the N/OFQ - NOP system",
-                    "content": "Michael R Bruchas, Thomas S Kilduff, SRI INTERNATIONAL",
+                    "content": "MICHAEL R BRUCHAS, THOMAS S KILDUFF; SRI INTERNATIONAL",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP00397"
                 },
                 {
                     "title": "Improving health and employment outcomes through workplace opioid policies",
-                    "content": "Ann Marie Dale, WASHINGTON UNIVERSITY",
+                    "content": "ANN MARIE DALE; WASHINGTON UNIVERSITY",
                     "linkText": "View Study",
                     "link": "https://healdata.org/portal/discovery/HDP00331"
                 }
