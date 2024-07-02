@@ -55,6 +55,10 @@ import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
+import DataLibraryPage, {
+  DataLibraryPageGetServerSideProps,
+} from './pages/DataLibrary';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -100,4 +104,6 @@ export {
   AISearchPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
+  DataLibraryPage,
+  DataLibraryPageGetServerSideProps,
 };

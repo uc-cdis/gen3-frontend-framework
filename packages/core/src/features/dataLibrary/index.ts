@@ -1,17 +1,17 @@
 export * from './types';
 
 import {
-  useGetListQuery,
-  useGetListsQuery,
-  useAddListMutation,
-  useDeleteListMutation,
-  useUpdateListMutation,
+  useGetDataLibraryListQuery,
+  useGetDataLibraryListsQuery,
+  useAddDataLibraryListMutation,
+  useDeleteDataLibraryListMutation,
+  useUpdateDataLibraryListMutation,
 } from './dataLibraryApi';
 
 export {
-  useGetListQuery,
-  useGetListsQuery,
-  useAddListMutation,
-  useDeleteListMutation,
-  useUpdateListMutation,
+  useGetDataLibraryListQuery,
+  useGetDataLibraryListsQuery,
+  useAddDataLibraryListMutation,
+  useDeleteDataLibraryListMutation,
+  useUpdateDataLibraryListMutation,
 };
