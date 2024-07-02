@@ -12,7 +12,7 @@ import { JSONObject } from '../../types/';
 const BuildDataSet = (setId: string, dataSet: DataSet): DataSet => {
   const res = Object.entries(dataSet?.items).reduce((acc, [id, data]) => {
     if (data?.type === 'AdditionalData') {
-      acc.items[id] = {
+      acc[id] = {
         name: data.name,
         itemType: 'AdditionalData',
         description: data?.description,
@@ -20,7 +20,11 @@ const BuildDataSet = (setId: string, dataSet: DataSet): DataSet => {
         url: data?.url as string,
       } as AdditionalDataItem;
     } else {
-      acc.items[id] = data;
+      acc[id] = {
+        ...data,
+        itemType: 'Data',
+        guid: id,
+      };
     }
     return acc;
   }, {} as DataSetItems);

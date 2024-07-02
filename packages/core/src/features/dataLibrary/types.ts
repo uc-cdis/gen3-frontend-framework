@@ -5,7 +5,7 @@ export interface AuthZAccess {
   authz: string[];
 }
 
-export type ItemValue = string|number|undefined|Items;
+export type ItemValue = string | number | undefined | Items;
 
 export interface Items {
   [k: string]: ItemValue;
@@ -17,7 +17,7 @@ export interface ListItem {
 }
 
 /**
- *   A Data item: at the minimum it will have a guid and a item type
+ *   A Data item: at the minimum it will have a guid and an item type
  */
 
 export interface FileItem extends ListItem {
@@ -25,7 +25,7 @@ export interface FileItem extends ListItem {
   name?: string;
   description?: string;
   type?: string;
-  size: number;
+  size?: string;
   itemType: 'Data';
 }
 
@@ -44,7 +44,7 @@ export interface AdditionalDataItem extends ListItem {
   itemType: 'AdditionalData';
 }
 
-export type DataSetItems =  Record<string, FileItem | AdditionalDataItem>;
+export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
 export interface DataSet {
   name: string;
