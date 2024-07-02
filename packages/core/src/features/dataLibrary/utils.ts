@@ -1,11 +1,35 @@
 import {
   AdditionalDataItem,
   CohortItem,
-  DataList,
   DataLibrary,
   DataLibraryAPIResponse,
+  DataList,
+  DataSet,
+  DataSetItems,
 } from './types';
 import { JSONObject } from '../../types/';
+
+const BuildDataSet = (setId: string, dataSet: DataSet): DataSet => {
+  const res = Object.entries(dataSet?.items).reduce((acc, [id, data]) => {
+    if (data?.type === 'AdditionalData') {
+      acc.items[id] = {
+        name: data.name,
+        itemType: 'AdditionalData',
+        description: data?.description,
+        documentationUrl: data?.documentationUrl as string,
+        url: data?.url as string,
+      } as AdditionalDataItem;
+    } else {
+      acc.items[id] = data;
+    }
+    return acc;
+  }, {} as DataSetItems);
+  return {
+    name: dataSet?.name,
+    id: setId,
+    items: res,
+  };
+};
 
 export const BuildList = (
   listId: string,
@@ -13,27 +37,17 @@ export const BuildList = (
 ): DataList | undefined => {
   if (!Object.keys(listData).includes('items')) return undefined;
 
-  const items = Object.entries(listData?.list).reduce(
+  const items = Object.entries(listData?.items).reduce(
     (acc, [id, data]) => {
-      if (data?.type === 'AdditionalData') {
-        const aData: AdditionalDataItem = {
-          name: id,
-          itemType: 'AdditionalData',
-          description: data?.description,
-          documentationUrl: data?.documentationUrl,
-          url: data?.url,
-        };
-        acc.items[id] = aData;
-      } else if (data?.type === 'Gen3GraphQL') {
-        const cData: CohortItem = {
+      if (data?.type === 'Gen3GraphQL') {
+        acc.items[id] = {
           itemType: 'Gen3GraphQL',
           guid: data.guid,
           schemaVersion: data.schemaVersion,
           data: data.data,
-        };
-        acc.items[id] = cData;
+        } as CohortItem;
       } else {
-        acc.items[id] = data;
+        acc.items[id] = BuildDataSet(id, data);
       }
       return acc;
     },
@@ -55,10 +69,9 @@ export const BuildList = (
 };
 
 export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
-  const res = Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
+  return Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
     const list = BuildList(listId, listData);
     if (list) acc[listId] = list;
     return acc;
   }, {} as DataLibrary);
-  return res;
 };

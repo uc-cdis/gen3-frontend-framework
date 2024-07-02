@@ -1,13 +1,19 @@
-import { JSONObject, JSONValue } from '../../types';
+import { JSONObject } from '../../types';
 
 export interface AuthZAccess {
   version: number;
   authz: string[];
 }
 
+export type ItemValue = string|number|undefined|Items;
+
+export interface Items {
+  [k: string]: ItemValue;
+}
+
 export interface ListItem {
   itemType: 'Data' | 'AdditionalData' | 'Gen3GraphQL';
-  [k: string]: JSONValue | undefined;
+  [k: string]: ItemValue;
 }
 
 /**
@@ -25,7 +31,7 @@ export interface FileItem extends ListItem {
 
 export interface CohortItem extends ListItem {
   itemType: 'Gen3GraphQL';
-  data: JSONObject;
+  data: ItemValue;
   guid: string;
   name?: string;
   schemaVersion: string;
@@ -38,17 +44,21 @@ export interface AdditionalDataItem extends ListItem {
   itemType: 'AdditionalData';
 }
 
-export interface ListItemDefinition {
+export type DataSetItems =  Record<string, FileItem | AdditionalDataItem>;
+
+export interface DataSet {
   name: string;
-  items: Record<string, FileItem | CohortItem | AdditionalDataItem>;
+  id: string;
+  items: DataSetItems;
 }
 
-export interface DataList extends ListItemDefinition {
+export interface DataList {
   id: string;
   createdTime: string;
   updatedTime: string;
   authz: AuthZAccess;
   version: number;
+  items: Record<string, DataSet | CohortItem>;
 }
 
 export type DataLibrary = Record<string, DataList>;

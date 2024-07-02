@@ -1,16 +1,11 @@
 import { gen3Api } from '../gen3';
 import { GEN3_DATA_LIBRARY_API } from '../../constants';
-import {
-  DataLibrary,
-  DataList,
-  ListItemDefinition,
-  DataLibraryAPIResponse,
-} from './types';
+import { DataLibrary, DataList, DataLibraryAPIResponse } from './types';
 import { BuildLists } from './utils';
 
 interface AddUpdateListParams {
   id: string;
-  list: ListItemDefinition;
+  list: DataList;
 }
 
 const TAGS = 'dataLibrary';
@@ -39,10 +34,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       transformResponse: (res: DataLibraryAPIResponse) =>
         BuildLists(res)?.lists,
     }),
-    addDataLibraryLists: builder.mutation<
-      void,
-      Record<string, ListItemDefinition>
-    >({
+    addDataLibraryLists: builder.mutation<void, Record<string, DataList>>({
       query: (lists) => ({
         url: `${GEN3_DATA_LIBRARY_API}`,
         method: 'POST',
