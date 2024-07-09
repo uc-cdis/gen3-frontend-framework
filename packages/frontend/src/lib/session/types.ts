@@ -1,18 +1,11 @@
 import React from 'react';
-import { Gen3User, LoginStatus } from '@gen3/core';
-
-export type JWTSessionStatus =
-  | 'not present'
-  | 'issued'
-  | 'expired'
-  | 'invalid'
-  | 'error';
+import { Gen3User, LoginStatus, JWTSessionStatus } from '@gen3/core';
 
 export interface AuthTokenData {
   issued?: number;
   expires?: number;
   status: JWTSessionStatus;
-  userContext?: Record<string, string>
+  userContext?: Record<string, string>;
 }
 
 export interface Session extends AuthTokenData {
@@ -54,5 +47,4 @@ export interface SessionConfiguration {
 export interface SessionProviderProps extends SessionConfiguration {
   children: React.ReactNode;
   session?: Session;
-
 }

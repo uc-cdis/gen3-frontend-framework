@@ -34,8 +34,8 @@ export type WorkspaceOptionsResponse = Array<WorkspaceInfoResponse>;
 export type WorkspaceOptions = Array<WorkspaceInfo>;
 
 export interface WorkspacePayModelResponse {
-  current_pay_model: PayModel;
-  all_pay_models: PayModel[];
+  currentPayModel: PayModel;
+  allPayModels: PayModel[];
 }
 
 export interface WorkspaceStatusResponse {

@@ -24,7 +24,11 @@ const WorkspaceProvider = ({
   children: ReactNode;
   config: WorkspaceConfig;
 }) => {
-  return <WorkspaceProvider config={config}>{children}</WorkspaceProvider>;
+  return (
+    <WorkspaceContext.Provider value={{ config }}>
+      {children}
+    </WorkspaceContext.Provider>
+  );
 };
 
 export default WorkspaceProvider;

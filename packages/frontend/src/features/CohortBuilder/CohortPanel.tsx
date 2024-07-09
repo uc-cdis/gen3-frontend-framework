@@ -13,7 +13,7 @@ import {
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
-import ErrorCard from '../../components/ErrorCard';
+import { ErrorCard } from '../../components/MessageCards';
 
 import {
   classifyFacets,

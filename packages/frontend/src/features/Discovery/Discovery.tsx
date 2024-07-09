@@ -2,11 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { DiscoveryConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Loader, Text } from '@mantine/core';
+import { Button, Loader, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
-import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
@@ -14,6 +13,7 @@ import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
+import { ErrorCard } from '../../components/MessageCards';
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
@@ -79,11 +79,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   }
 
   if (dataRequestStatus.isError) {
-    return (
-      <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
-      </div>
-    );
+    return <ErrorCard message={'Error loading discovery data'} />;
   }
 
   return (

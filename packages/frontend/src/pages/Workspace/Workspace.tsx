@@ -6,11 +6,11 @@ import { WorkspacePageLayoutProps } from './types';
 const WorkspacePage = ({
   headerProps,
   footerProps,
-                         workspaceProps,
+  workspaceProps,
 }: WorkspacePageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
-      <Workspace config={workspaceProps.config}/>
+      <Workspace config={workspaceProps} />
     </NavPageLayout>
   );
 };

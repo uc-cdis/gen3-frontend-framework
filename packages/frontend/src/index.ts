@@ -14,7 +14,7 @@ import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
-import ErrorCard from './components/ErrorCard';
+import ErrorCard from './components/MessageCards/ErrorCard';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages

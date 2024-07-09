@@ -20,7 +20,8 @@ import {
   FaUser as ActiveIcon,
   FaExclamationCircle as InactiveIcon,
 } from 'react-icons/fa';
-import { PaymentNumberToString } from './utils';
+import { PaymentNumberToString } from '../utils';
+import { WarningCard, ErrorCard } from '../../../components/MessageCards';
 
 const PayModelSelectItem = forwardRef<HTMLDivElement, PayModelMenuItem>(
   ({ icon, label, totalUsage }: PayModelMenuItem, ref) => (
@@ -37,14 +38,14 @@ const PayModelSelectItem = forwardRef<HTMLDivElement, PayModelMenuItem>(
 PayModelSelectItem.displayName = 'PayModelSelectItem';
 
 const PaymentPanel = () => {
-  const { data, isLoading, isFetching, isError } =
+  const { data, isLoading, isFetching, isError, error } =
     useGetWorkspacePayModelsQuery();
 
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
 
   const usersPayModels = useDeepCompareMemo(() => {
     if (!data) return [];
-    return data.all_pay_models.map((payModel: PayModel): PayModelMenuItem => {
+    return data.allPayModels.map((payModel: PayModel): PayModelMenuItem => {
       return {
         value: payModel.bmh_workspace_id ?? payModel.workspace_type,
         label: payModel.workspace_type,
@@ -59,13 +60,19 @@ const PaymentPanel = () => {
     });
   }, [data]);
 
+  console.log('Payment data', data, error);
+
+  if (isLoading && isFetching) return <Loader />;
+
   if (isError) {
-    return (
-      <div className="flex w-full py-24 relative justify-center">
-        <Text size={'xl'}>Error: unable to get Payment information</Text>
-      </div>
-    );
-  }
+    if (
+      'status' in error &&
+      error.status === 'PARSING_ERROR' &&
+      error.originalStatus === 404
+    ) {
+      return <WarningCard message="No Pay Model Defined" />;
+    }
+  } else return <ErrorCard message="Unable to get Payment information" />;
 
   return (
     <div>
@@ -96,29 +103,18 @@ const PaymentPanel = () => {
                 <div className="text-md border-b-1 border-gray mb-2 w-full py-2 text-xs">
                   Total Charges (USD)
                 </div>
-                {isLoading || isFetching ? (
-                  <Loader />
-                ) : (
-                  <Text>
-                    {PaymentNumberToString(
-                      data?.current_pay_model['total-usage'],
-                    )}
-                  </Text>
-                )}
+                <Text>
+                  {PaymentNumberToString(data?.currentPayModel['total-usage'])}
+                </Text>
+                )
               </div>
               <div className="flex flex-col text-center border-1 border-gray p-2">
                 <div className="text-md border-b-1 border-gray mb-2 w-full py-2 text-xs">
                   Spending Limit (USD)
                 </div>
-                {isLoading || isFetching ? (
-                  <Loader />
-                ) : (
-                  <Text>
-                    {PaymentNumberToString(
-                      data?.current_pay_model['hard-limit'],
-                    )}
-                  </Text>
-                )}
+                <Text>
+                  {PaymentNumberToString(data?.currentPayModel['hard-limit'])}
+                </Text>
               </div>
             </div>
           </Accordion.Panel>

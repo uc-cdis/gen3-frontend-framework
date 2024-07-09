@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
@@ -10,18 +16,18 @@ import {
   showModal,
   Modals,
   useLazyFetchUserDetailsQuery,
+  useHasExistingSessionQuery,
   selectUserAuthStatus,
   GEN3_REDIRECT_URL,
   GEN3_FENCE_API,
 } from '@gen3/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { useManageSession } from './hooks';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
 
 export const logoutSession = async () => {
-  //TODO - investigate why this is not working
-  // await fetch(`/api/auth/sessionLogout?next=${GEN3_REDIRECT_URL}/`, { cache: 'no-store' });
   await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, {
     cache: 'no-store',
   });
@@ -171,18 +177,23 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  const [sessionInfo, setSessionInfo] = useState(
-    session ??
-      ({
-        status: 'not present',
-      } as Session),
-  );
-  const [pending, setPending] = useState(session ? false : true);
+  // const [sessionInfo, setSessionInfo] = useState(
+  //   session ??
+  //     ({
+  //       status: 'not present',
+  //     } as Session),
+  // );
+  // const [pending, setPending] = useState(session ? false : true);
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
+
+  // const userStatus = useDeepCompareMemo(() => {
+  //   console.log('user status updated');
+  //   return currentUserStatus;
+  // }, [currentUserStatus]);
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
@@ -203,30 +214,35 @@ export const SessionProvider = ({
 
   // Update session status using the session token api
   const updateSessionWithSessionApi = async () => {
-    const tokenStatus = await getSession();
-    setSessionInfo(tokenStatus);
-    setPending(false); // not waiting for session to load anymore
+    // const tokenStatus = await getSession();
+    // setSessionInfo(tokenStatus);
+    // setPending(false); // not waiting for session to load anymore
     await getUserDetails();
   };
 
   // update session status using the user status
   const updateSessionWithUserStatus = async () => {
-    userStatus === 'authenticated'
-      ? setSessionInfo({ status: 'issued' } as Session)
-      : setSessionInfo({ status: 'not present' } as Session);
-    setPending(false); // not waiting for session to load anymore
+    // userStatus === 'authenticated'
+    //   ? setSessionInfo({ status: 'issued' } as Session)
+    //   : setSessionInfo({ status: 'not present' } as Session);
+    // setPending(false); // not waiting for session to load anymore
     await getUserDetails();
   };
 
+  const sessionInfo = useManageSession(userStatus);
+
   // for now we are using the user status to determine if the user is logged in
-  const updateSession = () => updateSessionWithUserStatus();
+  const updateSession = useCallback(
+    () => updateSessionWithUserStatus(),
+    [updateSessionWithUserStatus],
+  );
 
   /**
    *  Update session status when the user status changes
    */
-  useDeepCompareEffect(() => {
-    updateSessionWithUserStatus();
-  }, [userStatus]);
+  // useDeepCompareEffect(() => {
+  //   updateSessionWithUserStatus();
+  // }, [userStatus]);
 
   const endSession = async () => {
     logoutSession().then(() => {
@@ -299,11 +315,10 @@ export const SessionProvider = ({
   const value: Session = useDeepCompareMemo(() => {
     return {
       ...sessionInfo,
-      pending,
       updateSession,
       endSession,
     };
-  }, [pending, sessionInfo, updateSession, endSession]);
+  }, [sessionInfo, updateSession, endSession]);
 
   return (
     <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
