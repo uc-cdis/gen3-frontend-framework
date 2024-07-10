@@ -19,7 +19,7 @@ const downloadData = (data: string) => {
   document.body.removeChild(link);
 };
 
-export interface CrosswalkProps {
+export interface CrosswalkConfig {
   readonly fromTitle: string;
   readonly toTitle: string;
   readonly guidField: string;
@@ -27,13 +27,13 @@ export interface CrosswalkProps {
   readonly toField: string;
 }
 
-export const Crosswalk: React.FC<CrosswalkProps> = ({
+export const Crosswalk: React.FC<CrosswalkConfig> = ({
   fromTitle,
   toTitle,
   guidField,
   fromField,
   toField,
-}: CrosswalkProps): JSX.Element => {
+}: CrosswalkConfig): JSX.Element => {
   const [query, setQuery] = useState<string>('');
   const [sourceIds, setSourceIds] = useState<string>('');
   const { data, isSuccess } = useGetCrosswalkDataQuery(

@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Crosswalk, CrosswalkProps } from './Crosswalk';
+import { Crosswalk, CrosswalkConfig } from './Crosswalk';
 import { Select, Stack } from '@mantine/core';
 
-interface LabeledCrosswalkProps extends CrosswalkProps {
+interface LabeledCrosswalkProps extends CrosswalkConfig {
   title: string;
 }
 
@@ -10,9 +10,7 @@ interface ConfigurableCrosswalkProps {
   converters: Record<string, LabeledCrosswalkProps>;
 }
 
-const ConfigurableCrosswalk = ({
-  converters,
-}: ConfigurableCrosswalkProps) => {
+const ConfigurableCrosswalk = ({ converters }: ConfigurableCrosswalkProps) => {
   const selectedData = useMemo(
     () =>
       Object.entries(converters).map(([key, value]) => {
