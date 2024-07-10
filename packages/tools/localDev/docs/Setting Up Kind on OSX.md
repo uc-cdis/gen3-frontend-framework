@@ -28,7 +28,10 @@ nodes:
 ```bash
   kind create cluster --config kind-config.yaml
 ```
-  Stopping the cluster: ```kind delete cluster --name=kind-multi-node```
+  Stopping the cluster:
+  ```bash
+  kind delete cluster --name=kind-multi-node
+  ```
 
 ## Set up ingress
   Notes from : https://dustinspecker.com/posts/test-ingress-in-kind/
