@@ -23,27 +23,26 @@ export interface CrosswalkConfig {
   readonly fromTitle: string;
   readonly toTitle: string;
   readonly guidField: string;
-  readonly fromField: string;
-  readonly toField: string;
+  readonly fromPath: string[];
+  readonly toPath: string[];
 }
 
 export const Crosswalk: React.FC<CrosswalkConfig> = ({
   fromTitle,
   toTitle,
-  guidField,
-  fromField,
-  toField,
+  fromPath,
+  toPath,
 }: CrosswalkConfig): JSX.Element => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string[]>([]);
   const [sourceIds, setSourceIds] = useState<string>('');
-  const { data, isSuccess } = useGetCrosswalkDataQuery(
-    { ids: query, fields: { from: fromField, to: toField } },
-    { skip: query === '' },
-  );
+  const { data, isSuccess } = useGetCrosswalkDataQuery({
+    ids: query,
+    fields: { fromPath, toPath },
+  });
   const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
-  const previousField = usePrevious(fromField);
+  const previousPath = usePrevious<string>(fromPath.join(','));
 
   const updateIdQuery = (values: string) => {
     setSourceIds(values);
@@ -60,19 +59,15 @@ export const Crosswalk: React.FC<CrosswalkConfig> = ({
   const clear = () => {
     setSourceIds('');
     setCrosswalkIds('');
-    setQuery('');
+    setQuery([]);
   };
 
   useEffect(() => {
-    if (previousField != fromField) clear();
-  }, [previousField, fromField]);
+    if (previousPath != fromPath.join(',')) clear();
+  }, [previousPath, fromPath]);
 
   const onSubmit = () => {
-    const ids = sourceIds
-      .split(/,|\r?\n|\r|\n/g)
-      .map((x) => `ids.${fromField}=${x}`)
-      .join('&');
-    setQuery(`_guid_type=${guidField}&data=True&${ids}`);
+    setQuery(sourceIds.split(/,|\r?\n|\r|\n/g));
   };
 
   return (

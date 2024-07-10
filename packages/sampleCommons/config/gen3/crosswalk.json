@@ -1,0 +1,20 @@
+{
+  "title": "BDCat to MIDRC",
+  "guidField": "petal_crosswalk",
+  "fromTitle": "Enter your BDCat IDs",
+  "toTitle": "Matching MIDRC IDs",
+  "fromPath": [
+    "crosswalk",
+    "subject",
+    "https://gen3.biodatacatalyst.nhlbi.nih.gov",
+    "subject.submitter_id",
+    "value"
+  ],
+  "toPath": [
+    "crosswalk",
+    "subject",
+    "https://data.midrc.org",
+    "case.submitter_id",
+    "value"
+  ]
+}

@@ -1,6 +1,8 @@
 import { JSONObject } from '../../types';
 import { gen3Api } from '../gen3';
+import Queue from 'queue';
 import { GEN3_MDS_API, GEN3_CROSSWALK_API } from '../../constants';
+import { JSONPath } from 'jsonpath-plus';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -16,11 +18,10 @@ export interface CrosswalkArray {
 }
 
 interface CrossWalkParams {
-  readonly ids: string;
-  readonly fields: {
-    from: string;
-    to: string;
-  };
+  readonly ids: string[];
+  readonly fromPath: string[];
+  readonly toPath: string[];
+  readonly guidType: string;
 }
 
 export interface MetadataResponse {
@@ -91,18 +92,58 @@ export const metadataApi = gen3Api.injectEndpoints({
     }),
     // TODO: Move this to own slice
     getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
-      query: (params) => ({
-        url: `${GEN3_CROSSWALK_API}/metadata?${params.ids}`,
-      }),
-      transformResponse: (response: Record<string, any>, _meta, params) => {
-        return {
-          mapping: Object.values(response).map((x): CrosswalkInfo => {
-            return {
-              from: x.ids[params.fields.from],
-              to: x.ids[params.fields.to],
-            };
-          }),
+      queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const queryMutiple = async (): Promise<CrosswalkInfo[]> => {
+          let result = [] as CrosswalkInfo[];
+          const queue = Queue({ concurrency: 15 });
+          for (const id of arg.ids) {
+            queue.push(async (callback: () => void) => {
+              const response = await fetchWithBQ({ url: `metadata/${id}` });
+
+              if (response.error) {
+                return { error: response.error };
+              }
+
+              const fromData = JSONPath({
+                json: response.data as Record<string, any>,
+                path: `$.[${arg.fromPath}]`,
+                resultType: 'value',
+              });
+
+              const toData = JSONPath({
+                json: response.data as Record<string, any>,
+                path: `$.[${arg.toPath}]`,
+                resultType: 'value',
+              });
+
+              result = [
+                ...result,
+                {
+                  from: fromData as string,
+                  to: toData as string,
+                },
+              ];
+              if (callback) {
+                callback();
+              }
+              return result;
+            });
+          }
+
+          return new Promise((resolve, reject) => {
+            queue.start((err: unknown) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            });
+          });
         };
+
+        const result = await queryMutiple();
+
+        return { data: { mapping: result } };
       },
     }),
   }),
