@@ -29,6 +29,7 @@ import {
   type TableDetailsPanelProps,
 } from './ExploreTableDetails';
 import { DetailsModal } from '../../../components/Details';
+import ErrorCard from '../../../components/ErrorCard';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -146,6 +147,12 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
+    if (isError)
+      return {
+        totalRowCount: 0,
+        limitLabel: tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL,
+      };
+
     const pageLimit =
       (tableConfig?.pageLimit && tableConfig?.pageLimit?.limit) ??
       DEFAULT_PAGE_LIMIT;
@@ -223,6 +230,11 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           })
         : {},
   });
+
+  if (isError) {
+    return <ErrorCard message={'Error loading table data'} />;
+  }
+
   return (
     <React.Fragment>
       {Object.keys(rowSelection).length > 0 ? (
