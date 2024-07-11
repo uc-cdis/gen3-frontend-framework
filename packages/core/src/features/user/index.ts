@@ -23,9 +23,23 @@ import {
 } from './userSliceRTK';
 
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
-import { type UserProfile, type LoginStatus, type Gen3User, type ExternalProvider, type NamedURL } from './types';
+import {
+  type UserProfile,
+  type LoginStatus,
+  type Gen3User,
+  type ExternalProvider,
+  type NamedURL,
+  type JWTSessionStatus,
+} from './types';
 
 export {
+  type Gen3User,
+  type LoginStatus,
+  type UserProfile,
+  type JWTSessionStatus,
+  type CSRFToken,
+  type ExternalProvider,
+  type NamedURL,
   useUser,
   useUserAuth,
   resetUserState,
@@ -36,9 +50,6 @@ export {
   isAuthenticated,
   useIsUserLoggedIn,
   useGetExternalLoginsQuery,
-  type Gen3User,
-  type LoginStatus,
-  type UserProfile,
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   selectUserDetails,
@@ -47,7 +58,4 @@ export {
   selectCSRFToken,
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
-  type CSRFToken,
-  type ExternalProvider,
-  type NamedURL
 };
