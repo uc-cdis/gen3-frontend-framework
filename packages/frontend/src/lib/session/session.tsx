@@ -59,7 +59,7 @@ export const SessionContext = React.createContext<Session | undefined>(
 /**
  *  Wwe eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
- *  and vertification of the session token
+ *  and verification of the session token
  */
 export const getSession = async () => {
   try {
@@ -103,12 +103,6 @@ export const useIsAuthenticated = () => {
     isAuthenticated: session.status === 'issued',
     user: session.userContext,
   };
-};
-
-export const logoutUser = async (router: NextRouter) => {
-  if (typeof window === 'undefined') return; // skip if this pages is on the server
-
-  await logoutSession();
 };
 
 const refreshSession = (
@@ -206,10 +200,6 @@ export const SessionProvider = ({
 
   // update session status using the user status
   const updateSessionWithUserStatus = async () => {
-    // userStatus === 'authenticated'
-    //   ? setSessionInfo({ status: 'issued' } as Session)
-    //   : setSessionInfo({ status: 'not present' } as Session);
-    // setPending(false); // not waiting for session to load anymore
     await getUserDetails();
   };
 
@@ -261,8 +251,7 @@ export const SessionProvider = ({
           !isUserOnPage('workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          logoutUser(router);
-          getUserDetails();
+          endSession();
           return;
         }
         if (
@@ -271,8 +260,7 @@ export const SessionProvider = ({
           isUserOnPage('workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          logoutUser(router);
-          getUserDetails();
+          endSession();
           return;
         }
       }

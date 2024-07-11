@@ -1,8 +1,14 @@
 import React from 'react';
 import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
-import { selectUserAuthStatus, selectUserDetails,  useCoreSelector, isAuthenticated, type CoreState } from '@gen3/core';
-
+import {
+  selectUserAuthStatus,
+  selectUserDetails,
+  useCoreSelector,
+  isAuthenticated,
+  type CoreState,
+} from '@gen3/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 const LoginAccountButton = () => {
   const router = useRouter();
@@ -11,8 +17,18 @@ const LoginAccountButton = () => {
     await router.push('Profile');
   };
 
- const userStatus =  useCoreSelector((state: CoreState) => selectUserAuthStatus(state));
- const userInfo = useCoreSelector((state: CoreState) => selectUserDetails(state));
+  const userStatus = useCoreSelector((state: CoreState) =>
+    selectUserAuthStatus(state),
+  );
+  const userInfo = useCoreSelector((state: CoreState) =>
+    selectUserDetails(state),
+  );
+
+  console.log('user status', userStatus);
+
+  useDeepCompareEffect(() => {
+    console.log('user status changed', userStatus);
+  }, [userStatus]);
 
   return userStatus && isAuthenticated(userStatus) ? (
     <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
