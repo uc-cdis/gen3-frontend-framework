@@ -190,7 +190,7 @@ local-ssl-proxy --source 3010 --target 3000 --cert cert.pem --key key.pem
 If you want to test the portal with credentials login you can use the following steps. In the login.json configuration file, you can add the following configuration:
 add the following:
 ```json
-"showCredentialsLogin" : true
+"showCredentialsLogin": true
 ```
 Refer to the [Using Credentials Login](../Credentials%20Login/Using%20Credentials%20Login.md) for more information on how to use credentials login.
 

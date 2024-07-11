@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnstyledButton } from '@mantine/core';
+import { Loader, UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import {
   selectUserAuthStatus,
@@ -8,7 +8,6 @@ import {
   isAuthenticated,
   type CoreState,
 } from '@gen3/core';
-import { useDeepCompareEffect } from 'use-deep-compare';
 
 const LoginAccountButton = () => {
   const router = useRouter();
@@ -24,19 +23,16 @@ const LoginAccountButton = () => {
     selectUserDetails(state),
   );
 
-  console.log('user status', userStatus);
-
-  useDeepCompareEffect(() => {
-    console.log('user status changed', userStatus);
-  }, [userStatus]);
-
-  return userStatus && isAuthenticated(userStatus) ? (
-    <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
-      <div className="flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent">
-        {userInfo?.username}
-      </div>
-    </UnstyledButton>
-  ) : null;
+  if (userStatus && isAuthenticated(userStatus)) {
+    return (
+      <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
+        <div className="flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent">
+          {userInfo?.username}
+        </div>
+      </UnstyledButton>
+    );
+  }
+  return null;
 };
 
 export default LoginAccountButton;
