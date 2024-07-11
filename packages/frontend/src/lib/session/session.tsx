@@ -109,8 +109,6 @@ export const logoutUser = async (router: NextRouter) => {
   if (typeof window === 'undefined') return; // skip if this pages is on the server
 
   await logoutSession();
-  //router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
-  //await router.push('/');
 };
 
 const refreshSession = (
@@ -175,23 +173,11 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  // const [sessionInfo, setSessionInfo] = useState(
-  //   session ??
-  //     ({
-  //       status: 'not present',
-  //     } as Session),
-  // );
-  // const [pending, setPending] = useState(session ? false : true);
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-
-  // const userStatus = useDeepCompareMemo(() => {
-  //   console.log('user status updated');
-  //   return currentUserStatus;
-  // }, [currentUserStatus]);
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
