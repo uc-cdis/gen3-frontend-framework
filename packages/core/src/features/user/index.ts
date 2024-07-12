@@ -23,7 +23,11 @@ import {
   type CSRFToken,
 } from './userSliceRTK';
 
-import { useGetExternalLoginsQuery } from './externalLoginsSlice';
+import {
+  useGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
+} from './externalLoginsSlice';
 import {
   type UserProfile,
   type LoginStatus,
@@ -52,6 +56,8 @@ export {
   useIsUserLoggedIn,
   resetUserState,
   useGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   selectUserDetails,

@@ -18,7 +18,19 @@ export const externalLoginApi = gen3Api.injectEndpoints({
         url: `${GEN3_WTS_API}/external_oidc/`,
       }),
     }),
+    isExternalConnected: builder.query<boolean, string>({
+      query: (idp: string) => ({
+        url: `${GEN3_WTS_API}/oauth2/connected?idp=${idp}`,
+      }),
+      transformResponse: () => {
+        return true; // if success then connected is true
+      },
+    }),
   }),
 });
 
-export const { useGetExternalLoginsQuery } = externalLoginApi;
+export const {
+  useGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
+} = externalLoginApi;
