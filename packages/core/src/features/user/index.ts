@@ -25,6 +25,7 @@ import {
 
 import {
   useGetExternalLoginsQuery,
+  useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
   useIsExternalConnectedQuery,
 } from './externalLoginsSlice';
@@ -56,6 +57,7 @@ export {
   useIsUserLoggedIn,
   resetUserState,
   useGetExternalLoginsQuery,
+  useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
   useIsExternalConnectedQuery,
   useFetchUserDetailsQuery,

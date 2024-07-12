@@ -11,6 +11,7 @@ export interface ResourceTableConfig {
 
 export interface ProfileConfig {
   resourceTable?: ResourceTableConfig;
+  hasExternalLogins?: boolean;
 }
 
 export interface APICredentials {

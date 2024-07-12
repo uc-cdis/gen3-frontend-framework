@@ -31,6 +31,7 @@ export const externalLoginApi = gen3Api.injectEndpoints({
 
 export const {
   useGetExternalLoginsQuery,
+  useLazyGetExternalLoginsQuery,
   useLazyIsExternalConnectedQuery,
   useIsExternalConnectedQuery,
 } = externalLoginApi;
