@@ -1,7 +1,7 @@
 import { JSONObject } from '../../types';
 import { gen3Api } from '../gen3';
 import Queue from 'queue';
-import { GEN3_MDS_API, GEN3_CROSSWALK_API } from '../../constants';
+import { GEN3_MDS_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
 
 export interface Metadata {
@@ -93,7 +93,7 @@ export const metadataApi = gen3Api.injectEndpoints({
     // TODO: Move this to own slice
     getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
       queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const queryMutiple = async (): Promise<CrosswalkInfo[]> => {
+        const queryMultiple = async (): Promise<CrosswalkInfo[]> => {
           let result = [] as CrosswalkInfo[];
           const queue = Queue({ concurrency: 15 });
           for (const id of arg.ids) {
@@ -141,7 +141,7 @@ export const metadataApi = gen3Api.injectEndpoints({
           });
         };
 
-        const result = await queryMutiple();
+        const result = await queryMultiple();
 
         return { data: { mapping: result } };
       },

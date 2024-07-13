@@ -1,20 +1,24 @@
 {
-  "title": "BDCat to MIDRC",
-  "guidField": "petal_crosswalk",
-  "fromTitle": "Enter your BDCat IDs",
-  "toTitle": "Matching MIDRC IDs",
-  "fromPath": [
-    "crosswalk",
-    "subject",
-    "https://gen3.biodatacatalyst.nhlbi.nih.gov",
-    "subject.submitter_id",
-    "value"
-  ],
-  "toPath": [
-    "crosswalk",
-    "subject",
-    "https://data.midrc.org",
-    "case.submitter_id",
-    "value"
-  ]
+  "mapping" : {
+    "source" : {
+      "id": "prom",
+      "name": "Prometheus",
+      "dataPath" : "crosswalk->subject->https://gen3.biodatacatalyst.nhlbi.nih.gov->subject.submitter_id->value",
+      "description" : "PROject for Military Exposures and Toxin History Evaluation in US Service Members"
+    },
+    "external" : [
+      {
+        "id": "MIDRC",
+        "name": "Midrc Data Commons",
+        "dataPath": "crosswalk->subject->https://data.midrc.org->case.submitter_id->value",
+        "description": "The Medical Imaging & Data Resource Center (MIDRC) Data Commons"
+      },
+      {
+        "id": "BDCat",
+        "name": "BioData Catalyst",
+        "dataPath": "crosswalk->subject->https://https://biodatacatalyst.nhlbi.nih.gov.case_id->value",
+        "description": "NHLBI BioData Catalyst® (BDC) is a cloud-based ecosystem that offers researchers data, analytic tools, applications, and workflows in secure workspaces"
+      }
+    ]
+  }
 }
