@@ -1,7 +1,8 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { CrosswalkMapping } from './types';
 import React, { useMemo } from 'react';
-import { LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Text } from '@mantine/core';
+import { TableIcons } from '../../components/Tables/TableIcons';
 
 interface CrosswalkTableProps {
   mapping: CrosswalkMapping;
@@ -9,6 +10,7 @@ interface CrosswalkTableProps {
   isFetching: boolean;
   isSuccess: boolean;
   isError: boolean;
+  tableMessage: string;
 }
 
 const CrosswalkTable = ({
@@ -16,6 +18,7 @@ const CrosswalkTable = ({
   data,
   isFetching,
   isError,
+  tableMessage,
 }: CrosswalkTableProps) => {
   const cols = useMemo(() => {
     return [
@@ -43,6 +46,8 @@ const CrosswalkTable = ({
     paginateExpandedRows: false,
     rowCount: data.length,
     enableTopToolbar: false,
+    icons: TableIcons,
+    enableStickyHeader: true,
     state: {
       isLoading: isFetching,
       showProgressBars: isFetching,
@@ -56,7 +61,7 @@ const CrosswalkTable = ({
       sx: (theme) => {
         return {
           backgroundColor: theme.colors.table[1],
-          color: theme.colors.table[5],
+          color: theme.colors.table[9],
           textAlign: 'center',
           padding: theme.spacing.md,
           fontWeight: 'bold',
@@ -72,10 +77,17 @@ const CrosswalkTable = ({
         };
       },
     },
+    renderEmptyRowsFallback: () => {
+      return (
+        <div className="flex justify-center items-center content-center h-96 w-full">
+          <Text>{tableMessage}</Text>
+        </div>
+      );
+    },
   });
 
   return (
-    <div className="grow w-auto inline-block overflow-x-scroll">
+    <div className="grow w-auto inline-block overflow-x-auto">
       <LoadingOverlay visible={isFetching} />
       <MantineReactTable table={table} />
     </div>
