@@ -83,7 +83,7 @@ const DiscoveryTable = ({
   }, []);
 
   const table = useMantineReactTable({
-    columns: cols as any[], // TODO: fix typing issues when migrating to mantine-react-table v2.
+    columns: cols as any[],
     data: data ?? [],
     manualSorting: true,
     manualPagination: true,

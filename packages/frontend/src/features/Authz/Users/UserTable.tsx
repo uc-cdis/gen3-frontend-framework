@@ -7,7 +7,7 @@ import {
 } from 'mantine-react-table';
 import { User } from '../types';
 import { AuthzContext } from '../Provider';
-import { Box, Menu, Text } from '@mantine/core';
+import { Menu } from '@mantine/core';
 
 interface UserTableProps {
   setCurrentUser: (user: User) => void;
