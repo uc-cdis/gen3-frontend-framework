@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Card, Text, Group, ThemeIcon } from '@mantine/core';
-import { IconAlertTriangle } from '@tabler/icons-react';
-
+import { BsExclamationTriangle as IconAlertTriangle } from 'react-icons/bs';
 interface ErrorCardProps {
   message: string;
   icon?: ReactElement;
