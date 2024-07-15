@@ -31,7 +31,6 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
   const handleFenceLoginSelected = useCallback(
     async (loginURL: string) => {
-      console.log('login redirect = ', referer);
       router
         .push(`${loginURL}?redirect=${filterRedirect(referer)}`)
         .catch((e) => {

@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useCallback, useState } from 'react';
+import React, { HTMLAttributes, useEffect } from 'react';
 import { Card, Text, Stack, Button, Center } from '@mantine/core';
 import { type ExternalProvider, type NamedURL } from '@gen3/core';
 import {
@@ -61,7 +61,7 @@ const openAuthWindow = (url: string, title: string): Promise<unknown> => {
           ) {
             win.close();
             clearInterval(interval);
-            if (win.document.URL.includes('error=access_denied')) {
+            if (win.document.URL.includes('error=401')) {
               reject('login_error');
               return;
             }
@@ -74,7 +74,6 @@ const openAuthWindow = (url: string, title: string): Promise<unknown> => {
           // instead of rejecting, we avoid the issue where browser complains about cross origin
           // and ensure a smoother user experience where the promise chain continues until we login and we
           // avoid pre-maturely triggering calls which fetches user info.
-          console.log('error', err);
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);
@@ -92,7 +91,6 @@ const ExternalProviderCard: React.FunctionComponent<
   ExternalProviderCardProps
 > = ({ provider }) => {
   const [loading, handler] = useDisclosure();
-
   return (
     <Card withBorder radius="sm">
       <Card.Section withBorder inheritPadding py="xs">
@@ -129,49 +127,46 @@ const ExternalProviderCard: React.FunctionComponent<
         </Stack>
       </Card.Section>
       <Card.Section inheritPadding p="sm">
-        {provider.urls.map((providerUrl: NamedURL, i: number) => {
-          //  const updatedURL = 'https://prometheus.data-commons.org/wts/oauth2/authorization_url?';
-          return (
-            <Button
-              variant="outline"
-              fullWidth
-              size="md"
-              color="accent"
-              disabled={loading}
-              key={`${providerUrl.url}-${i}`}
-              onClick={async () => {
-                const queryChar = providerUrl.url.includes('?') ? '&' : '?';
-                handler.open();
-                openAuthWindow(
-                  `${providerUrl.url}${queryChar}redirect=/`,
-                  provider.name,
-                ).finally(() => {
-                  handler.close();
-                });
-              }}
-              aria-label={`provider-button-${provider.name}`}
-              leftIcon={
-                provider.refresh_token_expiration ? (
-                  <ReloadIcon
-                    size="1.5rem"
-                    className="text-accent data-disabled:opacity-50"
-                  />
-                ) : (
-                  <LoginIcon
-                    size="1.5rem"
-                    className="text-accent disabled:text-accent/50"
-                  />
-                )
-              }
-            >
-              <span aria-hidden={true}>
-                {provider.refresh_token_expiration
-                  ? `Refresh ${providerUrl.name}`
-                  : `Authorize ${providerUrl.name}`}
-              </span>
-            </Button>
-          );
-        })}
+        {provider.urls.map((providerUrl: NamedURL, i: number) => (
+          <Button
+            variant="outline"
+            fullWidth
+            size="md"
+            color="accent"
+            disabled={loading}
+            key={`${providerUrl.url}-${i}`}
+            onClick={async () => {
+              const queryChar = providerUrl.url.includes('?') ? '&' : '?';
+              handler.open();
+              openAuthWindow(
+                `${providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
+                provider.name,
+              ).finally(() => {
+                handler.close();
+              });
+            }}
+            aria-label={`provider-button-${provider.name}`}
+            leftIcon={
+              provider.refresh_token_expiration ? (
+                <ReloadIcon
+                  size="1.5rem"
+                  className="text-accent data-disabled:opacity-50"
+                />
+              ) : (
+                <LoginIcon
+                  size="1.5rem"
+                  className="text-accent disabled:text-accent/50"
+                />
+              )
+            }
+          >
+            <span aria-hidden={true}>
+              {provider.refresh_token_expiration
+                ? `Refresh ${providerUrl.name}`
+                : `Authorize ${providerUrl.name}`}
+            </span>
+          </Button>
+        ))}
       </Card.Section>
     </Card>
   );
