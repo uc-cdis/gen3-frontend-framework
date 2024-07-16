@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gen3User, LoginStatus, JWTSessionStatus } from '@gen3/core';
+import { Gen3User, LoginStatus, type JWTSessionStatus } from '@gen3/core';
 
 export interface AuthTokenData {
   issued?: number;

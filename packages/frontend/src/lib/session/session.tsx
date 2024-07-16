@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDeepCompareEffect } from 'use-deep-compare';
 import { useRouter, NextRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
@@ -16,7 +15,6 @@ import {
   showModal,
   Modals,
   useLazyFetchUserDetailsQuery,
-  useHasExistingSessionQuery,
   selectUserAuthStatus,
   GEN3_REDIRECT_URL,
   GEN3_FENCE_API,
@@ -61,7 +59,7 @@ export const SessionContext = React.createContext<Session | undefined>(
 /**
  *  Wwe eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
- *  and vertification of the session token
+ *  and verification of the session token
  */
 export const getSession = async () => {
   try {
@@ -105,14 +103,6 @@ export const useIsAuthenticated = () => {
     isAuthenticated: session.status === 'issued',
     user: session.userContext,
   };
-};
-
-export const logoutUser = async (router: NextRouter) => {
-  if (typeof window === 'undefined') return; // skip if this pages is on the server
-
-  await logoutSession();
-  //router.push(`${GEN3_FENCE_API}/user/logout?next=/`);
-  //await router.push('/');
 };
 
 const refreshSession = (
@@ -177,23 +167,11 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  // const [sessionInfo, setSessionInfo] = useState(
-  //   session ??
-  //     ({
-  //       status: 'not present',
-  //     } as Session),
-  // );
-  // const [pending, setPending] = useState(session ? false : true);
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-
-  // const userStatus = useDeepCompareMemo(() => {
-  //   console.log('user status updated');
-  //   return currentUserStatus;
-  // }, [currentUserStatus]);
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
@@ -222,10 +200,6 @@ export const SessionProvider = ({
 
   // update session status using the user status
   const updateSessionWithUserStatus = async () => {
-    // userStatus === 'authenticated'
-    //   ? setSessionInfo({ status: 'issued' } as Session)
-    //   : setSessionInfo({ status: 'not present' } as Session);
-    // setPending(false); // not waiting for session to load anymore
     await getUserDetails();
   };
 
@@ -236,13 +210,6 @@ export const SessionProvider = ({
     () => updateSessionWithUserStatus(),
     [updateSessionWithUserStatus],
   );
-
-  /**
-   *  Update session status when the user status changes
-   */
-  // useDeepCompareEffect(() => {
-  //   updateSessionWithUserStatus();
-  // }, [userStatus]);
 
   const endSession = async () => {
     logoutSession().then(() => {
@@ -284,8 +251,7 @@ export const SessionProvider = ({
           !isUserOnPage('workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          logoutUser(router);
-          getUserDetails();
+          endSession();
           return;
         }
         if (
@@ -294,8 +260,7 @@ export const SessionProvider = ({
           isUserOnPage('workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-          logoutUser(router);
-          getUserDetails();
+          endSession();
           return;
         }
       }

@@ -4,6 +4,7 @@ import {
   resetUserState,
   fetchUserState,
   isAuthenticated,
+  isPending,
   selectUser,
   selectUserData,
   selectUserLoginStatus,
@@ -24,16 +25,17 @@ import {
 
 import {
   useGetExternalLoginsQuery,
-  useHasExistingSessionQuery,
-  useLazyHasExistingSessionQuery,
+  useLazyGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
 } from './externalLoginsSlice';
 import {
   type UserProfile,
   type LoginStatus,
-  type JWTSessionStatus,
   type Gen3User,
   type ExternalProvider,
   type NamedURL,
+  type JWTSessionStatus,
 } from './types';
 
 export {
@@ -46,22 +48,24 @@ export {
   type NamedURL,
   useUser,
   useUserAuth,
-  resetUserState,
   selectUser,
   selectUserData,
   selectUserLoginStatus,
   fetchUserState,
   isAuthenticated,
+  isPending,
   useIsUserLoggedIn,
+  resetUserState,
   useGetExternalLoginsQuery,
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
+  useLazyGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
   selectUserDetails,
   selectUserAuthStatus,
   useGetCSRFQuery,
   selectCSRFToken,
   selectCSRFTokenData,
-  useHasExistingSessionQuery,
-  useLazyHasExistingSessionQuery,
   selectHeadersWithCSRFToken,
 };

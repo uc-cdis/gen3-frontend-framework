@@ -1,5 +1,5 @@
 import { gen3Api } from '../gen3';
-import { ExternalProvider, ExistingSession } from './types';
+import { ExternalProvider } from './types';
 import { GEN3_WTS_API } from '../../constants';
 
 export interface ExternalProviderResponse {
@@ -18,14 +18,12 @@ export const externalLoginApi = gen3Api.injectEndpoints({
         url: `${GEN3_WTS_API}/external_oidc/`,
       }),
     }),
-    hasExistingSession: builder.query<ExistingSession, void>({
-      query: () => ({ url: '/api/auth/sessionToken' }),
-      transformResponse: (response: ExistingSession): ExistingSession => {
-        return {
-          issued: response.issued,
-          expires: response.expires,
-          status: response.status,
-        };
+    isExternalConnected: builder.query<boolean, string>({
+      query: (idp: string) => ({
+        url: `${GEN3_WTS_API}/oauth2/connected?idp=${idp}`,
+      }),
+      transformResponse: () => {
+        return true; // if success then connected is true
       },
     }),
   }),
@@ -33,6 +31,7 @@ export const externalLoginApi = gen3Api.injectEndpoints({
 
 export const {
   useGetExternalLoginsQuery,
-  useHasExistingSessionQuery,
-  useLazyHasExistingSessionQuery,
+  useLazyGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
 } = externalLoginApi;
