@@ -215,7 +215,7 @@ export const SessionProvider = ({
     logoutSession().then(() => {
       getUserDetails();
     });
-    router.push('/');
+    await router.push('/');
   };
   /**
    * Update session value every updateSessionInterval seconds
