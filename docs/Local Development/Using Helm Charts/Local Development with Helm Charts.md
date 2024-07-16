@@ -18,7 +18,6 @@ The first set is setting up the Gen3 Helm Charts.
 
 Follow the instructions in the [Gen3 Helm Charts](https://github.com/uc-cdis/gen3-helm/blob/master/docs/gen3_developer_environments.md) **stop at Installing Gen3**.
 
-
 Follow the instructions in [Gen3 Helm Charts Local Development](https://github.com/uc-cdis/gen3-helm?tab=readme-ov-file#local-development) **steps 1-3** for setting up the Gen3 Helm Charts.
 
 Next copy the `values.yaml`, and optionally `user.yaml` file from the gen3-frontend-framework root to the `gen3-helm` root.
@@ -191,7 +190,7 @@ local-ssl-proxy --source 3010 --target 3000 --cert cert.pem --key key.pem
 If you want to test the portal with credentials login you can use the following steps. In the login.json configuration file, you can add the following configuration:
 add the following:
 ```json
-"showCredentialsLogin" : true
+"showCredentialsLogin": true
 ```
 Refer to the [Using Credentials Login](../Credentials%20Login/Using%20Credentials%20Login.md) for more information on how to use credentials login.
 

@@ -118,7 +118,7 @@ const main = () => {
     chart: chartPallet,
     'chart-contrast': create10ColorAccessibleContrast(chartPallet),
     table: tablePallet,
-    'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
+    'table-contrast': create10ColorAccessibleContrast(tablePallet),
   };
 
   writeFileSync(
