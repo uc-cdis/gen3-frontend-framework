@@ -23,7 +23,7 @@
             "New_Dataset": {
               "description": "New Dataset featuring extensive genomic data",
               "docsUrl": "https://datasetinfo.io",
-              "type": "AddtionalData",
+              "type": "AdditionalData",
               "dataset_guid": "phs000002.v1.p1.c1"
             }
           }

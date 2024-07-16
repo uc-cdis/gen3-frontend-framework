@@ -42,6 +42,7 @@ export interface AdditionalDataItem extends ListItem {
   documentationUrl?: string;
   url?: string;
   itemType: 'AdditionalData';
+  name: string;
 }
 
 export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
