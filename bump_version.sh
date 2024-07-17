@@ -11,7 +11,7 @@ set -e
 # Read the GitHub token from the .token file
 if [ -f .token ]; then
   token=$(cat .token)
-  echo "GitHub token loaded from .token file."
+  echo "GitHub token loaded from .token file: $token"
 else
   echo ".token file not found. Please create a .token file with your GitHub token."
   exit 1
@@ -21,6 +21,7 @@ fi
 get_release_id() {
   local repo=$1
   local tag=$2
+  echo "https://api.github.com/repos/$repo/releases/tags/$tag"
   local release_id=$(curl -s -H "Authorization: token $token" \
     "https://api.github.com/repos/$repo/releases/tags/$tag" | jq -r '.id')
   echo $release_id
@@ -42,7 +43,8 @@ upload_asset() {
 repo="uc-cdis/gen3-frontend-framework"
 tag="v0.10.0-alpha"
 release_id=$(get_release_id $repo $tag)
-if [ "$release_id" == "null" ]; then
+echo $release_id
+if [ $release_id == null ]; then
   echo "Release tag $tag not found in repository $repo."
   exit 1
 else
