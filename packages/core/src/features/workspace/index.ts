@@ -4,6 +4,8 @@ import {
   useGetWorkspacePayModelsQuery,
   useGetActivePayModelQuery,
   useSetCurrentPayModelMutation,
+  useLaunchWorkspaceMutation,
+  useTerminateWorkspaceMutation,
 } from './workspaceSlice';
 import {
   type WorkspaceOptionsResponse,
@@ -20,4 +22,6 @@ export {
   useGetWorkspacePayModelsQuery,
   useGetActivePayModelQuery,
   useSetCurrentPayModelMutation,
+  useLaunchWorkspaceMutation,
+  useTerminateWorkspaceMutation,
 };

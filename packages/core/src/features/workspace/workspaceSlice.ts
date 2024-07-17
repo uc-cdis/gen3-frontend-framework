@@ -10,7 +10,11 @@ import {
   WorkspaceStatusResponse,
 } from './types';
 
-export const workspacesApi = gen3Api.injectEndpoints({
+const WorkspaceWithTags = gen3Api.enhanceEndpoints({
+  addTagTypes: ['Workspace', 'PayModel'],
+});
+
+export const workspacesApi = WorkspaceWithTags.injectEndpoints({
   endpoints: (builder) =>
     ({
       getWorkspaceOptions: builder.query<WorkspaceOptions, void>({
@@ -36,11 +40,48 @@ export const workspacesApi = gen3Api.injectEndpoints({
       getWorkspaceStatus: builder.query<WorkspaceStatusResponse, void>({
         query: () => `${GEN3_WORKSPACE_API}/status`,
       }),
+      launchWorkspace: builder.mutation<boolean, string>({
+        // async queryFn(id, _queryApi, _extraOptions, fetchWithBQ) {
+        //   try {
+        //     await fetchWithBQ({
+        //       headers: {
+        //         credentials: 'include',
+        //       },
+        //       url: `${GEN3_WORKSPACE_API}/launch?id=${id}`,
+        //       method: 'POST',
+        //       credentials: 'include',
+        //     });
+        //     return {
+        //       data: true,
+        //     };
+        //   } catch (error) {
+        //     return error;
+        //   }
+        // },
+        query: (id) => {
+          console.log('launchWorkspace', id);
+
+          return {
+            url: `${GEN3_WORKSPACE_API}/launch?id=${id}`,
+            method: 'POST',
+            invalidatesTags: ['Workspace'],
+          };
+        },
+        transformResponse: () => true,
+      }),
+      terminateWorkspace: builder.mutation<void, void>({
+        query: () => ({
+          url: `${GEN3_WORKSPACE_API}/terminate`,
+          method: 'POST',
+          invalidatesTags: ['Workspace'],
+        }),
+      }),
       setCurrentPayModel: builder.mutation<void, string>({
         query: (id: string) => ({
           url: `${GEN3_WORKSPACE_API}/setpaymodel`,
           method: 'POST',
           body: id,
+          invalidatesTags: ['PayModel'],
         }),
       }),
     } as const),
@@ -52,4 +93,6 @@ export const {
   useGetWorkspaceStatusQuery,
   useGetActivePayModelQuery,
   useSetCurrentPayModelMutation,
+  useLaunchWorkspaceMutation,
+  useTerminateWorkspaceMutation,
 } = workspacesApi;

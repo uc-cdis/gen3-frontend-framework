@@ -38,10 +38,37 @@ export interface WorkspacePayModelResponse {
   allPayModels: PayModel[];
 }
 
+export enum WorkspaceStatus {
+  Launching = 'Launching',
+  Running = 'Running',
+  Terminating = 'Terminating',
+  Stopped = 'Stopped',
+  'Not Found' = 'Not Found',
+}
+
+export enum PodConditionType {
+  PodScheduled = 'PodScheduled',
+  Initialized = 'Initialized',
+  ContainersReady = 'ContainersReady',
+  Ready = 'Ready',
+}
+
+export enum PodStatus {
+  True = 'True',
+  False = 'False',
+  Unknown = 'Unknown',
+}
+
 export interface WorkspaceStatusResponse {
-  status: string;
-  conditions: any | null; // todo change any
-  containerStates: any | null; // here too
+  status: WorkspaceStatus;
+  conditions: Array<{
+    type: PodConditionType;
+    status: PodStatus;
+  }>;
+  containerStates: Array<{
+    name: string;
+    description: string;
+  }>;
   idleTimeLimit: number;
   lastActivityTime: number;
   workspaceType: string;

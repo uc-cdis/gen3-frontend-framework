@@ -60,8 +60,6 @@ const PaymentPanel = () => {
     });
   }, [data]);
 
-  console.log('Payment data', data, error);
-
   if (isLoading && isFetching) return <Loader />;
 
   if (isError) {
