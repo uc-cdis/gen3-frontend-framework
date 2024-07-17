@@ -23,9 +23,9 @@ export interface UserAuthResponse {
 
 const userAuthApi = coreCreateApi({
   reducerPath: 'userAuthApi',
-  refetchOnFocus: true,
-  refetchOnMountOrArgChange: 1800,
-  refetchOnReconnect: true,
+  // refetchOnFocus: false,
+  // refetchOnMountOrArgChange: 1800,
+  // refetchOnReconnect: true,
   baseQuery: async ({ endpoint }, { getState }) => {
     let results;
     const csrfToken = selectCSRFToken(getState() as CoreState);

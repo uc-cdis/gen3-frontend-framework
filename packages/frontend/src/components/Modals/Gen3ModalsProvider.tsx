@@ -8,7 +8,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   useGetCSRFQuery,
-  useGetAuthzMappingsQuery
+  useGetAuthzMappingsQuery,
 } from '@gen3/core';
 import { FirstTimeModal } from './FirstTimeModal';
 import { SessionExpiredModal } from './SessionExpiredModal';
@@ -36,9 +36,9 @@ const getModal = (
       break;
     }
     case Modals.SessionExpireModal: {
-        res = (<SessionExpiredModal openModal={true} />);
+      res = <SessionExpiredModal openModal={true} />;
       break;
-      }
+    }
   }
   return res;
 };
@@ -62,8 +62,8 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
-   useGetCSRFQuery();
-   useGetAuthzMappingsQuery();
+  useGetCSRFQuery();
+  useGetAuthzMappingsQuery();
 
   const [cookie] = useCookies(['Gen3-first-time-use']);
   const dispatch = useCoreDispatch();
