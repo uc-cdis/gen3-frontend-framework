@@ -62,7 +62,7 @@ const Gen3ModalsProvider = ({
   config,
   children,
 }: Gen3StandardModalsProviderProps) => {
-  useGetCSRFQuery();
+  useGetCSRFQuery(undefined, { refetchOnFocus: true });
   useGetAuthzMappingsQuery();
 
   const [cookie] = useCookies(['Gen3-first-time-use']);
