@@ -1,15 +1,22 @@
 import React, { ReactElement } from 'react';
 import { JSONValue } from '@gen3/core';
 
-
 export type FieldRendererFunction = (
   fieldValue: JSONValue,
   fieldLabel?: string,
   params?: Record<string, any>, //TODO - define the type of params
 ) => JSX.Element;
 
-const defaultStudyFieldRenderer = (): ReactElement => {
-  return <span>Field</span>;
+const defaultStudyFieldRenderer = (
+  fieldValue: JSONValue,
+  fieldLabel?: string,
+): ReactElement => {
+  return (
+    <div className="flex w-full justify-between px-1 no-wrap'">
+      {fieldLabel ? <span>{fieldLabel}</span> : null};
+      <span>{fieldValue as string}</span>;
+    </div>
+  );
 };
 
 export type FieldRendererFunctionMap = Record<string, FieldRendererFunction>;
@@ -33,7 +40,9 @@ export class StudyFieldRendererFactory {
     type: string,
     functionName: string,
   ): FieldRendererFunction {
-    if (!(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)) {
+    if (
+      !(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)
+    ) {
       console.log('No field renderer found for type: ', type);
       return defaultStudyFieldRenderer;
     }
@@ -84,5 +93,5 @@ export const DiscoveryDetailsRenderer = (
     return defaultStudyFieldRenderer;
   }
   const func = StudyFieldRendererFactory.getRenderer(type, functionName);
-  return (arg1, arg2, arg3): ReactElement => func(arg1, arg2,  arg3);
+  return (arg1, arg2, arg3): ReactElement => func(arg1, arg2, arg3);
 };

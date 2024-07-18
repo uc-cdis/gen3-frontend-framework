@@ -46,7 +46,7 @@ const DiscoveryTable = ({
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
-  const { discoveryConfig: config } = useDiscoveryContext();
+  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
 
   const cols = useMemo(() => {
@@ -121,6 +121,16 @@ const DiscoveryTable = ({
         };
       },
     },
+    mantineTableBodyRowProps: ({ row }) => ({
+      onClick: (event) => {
+        setStudyDetails(() => {
+          return { ...row.original };
+        });
+      },
+      sx: {
+        cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+      },
+    }),
     mantineTableProps: {
       sx: (theme) => {
         return {
