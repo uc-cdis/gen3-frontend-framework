@@ -13,7 +13,7 @@ import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
-  DiscoveryConfig,
+  DiscoveryIndexConfig,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
@@ -25,7 +25,6 @@ import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { processAuthorizations } from './utils';
-import { useDiscoveryContext } from '../../DiscoveryProvider';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -122,7 +121,7 @@ interface GetDataProps {
   guidType: string;
   maxStudies: number;
   studyField: string;
-  discoveryConfig?: DiscoveryConfig;
+  discoveryConfig?: DiscoveryIndexConfig;
 }
 
 interface GetDataResponse {
@@ -157,7 +156,6 @@ const useGetMDSData = ({
     studyField: studyField,
     offset: 0,
     pageSize: maxStudies,
-
   });
 
   const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
@@ -201,7 +199,7 @@ const useGetAggMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-  discoveryConfig
+  discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
@@ -467,7 +465,7 @@ export const useLoadAllData = ({
     studyField,
     guidType,
     maxStudies,
-    discoveryConfig
+    discoveryConfig,
   });
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({

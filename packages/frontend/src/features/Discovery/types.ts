@@ -21,7 +21,7 @@ export interface SearchTerms {
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
-  discoveryConfig: DiscoveryConfig;
+  discoveryConfig: DiscoveryIndexConfig;
 }
 
 export interface DataRequestStatus {
@@ -150,7 +150,7 @@ export interface DownloadLinkFields {
 }
 
 export interface StudyPageConfig {
-  showAllAvailableFields?: boolean,
+  showAllAvailableFields?: boolean;
   header?: {
     field: string;
     className?: string;
@@ -249,8 +249,15 @@ export interface AccessFilters {
   [accessLevel: number]: boolean;
 }
 
+interface DiscoveryIndex {
+  indexName: string;
+}
+
 // TODO: Type the rest of the config
-export interface DiscoveryConfig {
+export interface DiscoveryIndexConfig {
+  guidType?: string;
+  studyField?: string;
+  label?: string;
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
@@ -270,6 +277,10 @@ export interface DiscoveryConfig {
   minimalFieldMapping: MinimalFieldMapping;
 }
 
+export interface DiscoveryConfig {
+  metadataConfig: Array<DiscoveryIndexConfig>;
+}
+
 export interface UserAuthMapping {
   service: string;
   method: string;
@@ -287,10 +298,7 @@ export enum AccessLevel {
 }
 
 export interface DiscoveryResource
-  extends Record<
-    string,
-    JSONValue | AccessLevel | TagInfo[] | undefined
-  > {
+  extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }

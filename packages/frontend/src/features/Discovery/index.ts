@@ -1,4 +1,4 @@
-import Discovery from './Discovery';
+import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import TagCloud from './TagCloud';
 import { registerDiscoveryDefaultCellRenderers } from './TableRenderers/CellRenderers';
 import { type RowRenderFunctionParams } from './TableRenderers/RowRenderers';
@@ -22,7 +22,7 @@ export {
   type DiscoveryConfig,
   type StudyDetailsField,
   type RowRenderFunctionParams,
-  Discovery,
+  DiscoveryIndexPanel,
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
