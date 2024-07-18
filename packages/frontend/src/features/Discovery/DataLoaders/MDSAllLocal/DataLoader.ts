@@ -453,6 +453,8 @@ export const useLoadAllData = ({
   dataHook: MetadataDataHook;
 }): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  const dataGuidType = discoveryConfig?.guidType ?? guidType;
+  const dataStudyField = discoveryConfig?.studyField ?? studyField;
 
   const {
     mdsData,
@@ -462,8 +464,8 @@ export const useLoadAllData = ({
     isSuccess,
     isError,
   } = dataHook({
-    studyField,
-    guidType,
+    studyField: dataStudyField,
+    guidType: dataGuidType,
     maxStudies,
     discoveryConfig,
   });

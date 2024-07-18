@@ -28,6 +28,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
         indexSelector={
           menuItems.length > 1 ? (
             <Select
+              label="Metadata:"
               data={menuItems}
               value={metadataIndex}
               onChange={(v: string | null) => {

@@ -28,7 +28,7 @@ const DiscoveryIndexPanel = ({
     () =>
       getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ??
       useLoadAllMDSData,
-    [],
+    [discoveryConfig?.features.dataFetchFunction],
   );
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
