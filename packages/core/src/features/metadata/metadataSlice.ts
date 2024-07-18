@@ -50,32 +50,33 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
  *  @param getTags - Probably refering to Aggregate metadata service summary statistics query
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_tags_aggregate_tags_get
  *  @param getData - Looks like a duplicate of getMDS handler. unused in ./frontend package
- *  @param getCrosswalkData - TODO not sure what the crosswalk is
+ *  @param getCrosswalkData - Maps ids from one source to another
  * @returns: A guppy download API for fetching bulk metadata
  */
 export const metadataApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getAggMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({ offset, pageSize } : MetadataRequestParams) => {
+      query: ({ offset, pageSize }: MetadataRequestParams) => {
         return `${GEN3_MDS_API}/aggregate/metadata?flatten=true&pagination=true&offset=${offset}&limit=${pageSize}`;
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
         return {
           data: response.results.map((x: JSONObject) => {
             const objValues = Object.values(x);
-            const firstValue = objValues ? objValues.at(0) as JSONObject : undefined;
+            const firstValue = objValues
+              ? (objValues.at(0) as JSONObject)
+              : undefined;
             return firstValue ? firstValue[params.studyField] : undefined;
           }),
-          hits: response.pagination.hits
+          hits: response.pagination.hits,
         };
       },
     }),
     getMDS: builder.query<MetadataResponse, MetadataRequestParams>({
-      query: ({  guidType, offset, pageSize }) => {
+      query: ({ guidType, offset, pageSize }) => {
         return `${GEN3_MDS_API}/metadata?data=True&_guid_type=${guidType}&limit=${pageSize}&offset=${offset}`;
       },
       transformResponse: (response: Record<string, any>, _meta) => {
-
         return {
           data: Object.keys(response).map((guid) => response[guid]),
           hits: Object.keys(response).length,
