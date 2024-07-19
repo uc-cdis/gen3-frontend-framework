@@ -266,6 +266,7 @@ export interface DiscoveryIndexConfig {
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataFetchFunction?: string;
+    dataFetchArgs?: JSONObject;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];

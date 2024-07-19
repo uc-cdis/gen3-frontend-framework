@@ -2,10 +2,10 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import { type AuthzMapping, JSONObject } from '@gen3/core';
-import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics } from '../../Statistics/types';
-import { DiscoveryIndexConfig, AccessLevel } from '../../types';
-import { userHasMethodForServiceOnResource } from '../../../authorization/utils';
+import { SummaryStatisticsConfig } from '../Statistics';
+import { SummaryStatistics } from '../Statistics/types';
+import { DiscoveryIndexConfig, AccessLevel } from '../types';
+import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 
 /**
  * Check for non-numeric items in an array and convert them to numbers.

@@ -38,6 +38,10 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
   studyField: string;
 }
 
+interface IndexedMetadataRequestParams extends MetadataRequestParams {
+  indexKeys: Array<string>;
+}
+
 /**
  * Defines metadataApi service using a base URL and expected endpoints. Derived from gen3Api core API.
  *
@@ -68,6 +72,34 @@ export const metadataApi = gen3Api.injectEndpoints({
               : undefined;
             return firstValue ? firstValue[params.studyField] : undefined;
           }),
+          hits: response.pagination.hits,
+        };
+      },
+    }),
+    getIndexAggMDS: builder.query<
+      MetadataResponse,
+      IndexedMetadataRequestParams
+    >({
+      query: ({ pageSize }: IndexedMetadataRequestParams) => {
+        return `${GEN3_MDS_API}/aggregate/metadata&limit=${pageSize}`;
+      },
+      transformResponse: (response: Record<string, any>, _meta, params) => {
+        const dataFromIndexes = params.indexKeys.reduce((acc, key) => {
+          if (response.results[key]) {
+            acc.push(...response.results[key]);
+          }
+          return acc;
+        }, [] as Array<Record<string, any>>);
+
+        return {
+          data:
+            (dataFromIndexes.map((x: JSONObject) => {
+              const objValues = Object.values(x);
+              const firstValue = objValues
+                ? (objValues.at(0) as JSONObject)
+                : undefined;
+              return firstValue ? firstValue[params.studyField] : undefined;
+            }) as JSONObject[]) ?? [],
           hits: response.pagination.hits,
         };
       },
@@ -111,4 +143,5 @@ export const {
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
+  useGetIndexAggMDSQuery,
 } = metadataApi;

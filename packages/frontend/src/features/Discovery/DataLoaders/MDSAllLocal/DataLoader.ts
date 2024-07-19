@@ -3,37 +3,30 @@ import { JSONPath } from 'jsonpath-plus';
 import {
   JSONObject,
   MetadataPaginationParams,
-  useGetMDSQuery,
-  useGetAggMDSQuery,
-  useCoreSelector,
   selectAuthzMappingData,
+  useCoreSelector,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
-  DiscoveryIndexConfig,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
-import { processAllSummaries } from './utils';
+import { processAllSummaries, processAuthorizations } from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { processAuthorizations } from './utils';
+import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
-
-interface QueryType {
-  term: string;
-  fields: string[];
-  combineWith: 'AND' | 'OR';
-}
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
@@ -116,24 +109,6 @@ const processAdvancedSearchTerms = (
     };
   });
 };
-
-interface GetDataProps {
-  guidType: string;
-  maxStudies: number;
-  studyField: string;
-  discoveryConfig?: DiscoveryIndexConfig;
-}
-
-interface GetDataResponse {
-  mdsData: JSONObject[];
-  isUninitialized: boolean;
-  isFetching: boolean;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-}
-
-type MetadataDataHook = (props: Partial<GetDataProps>) => GetDataResponse;
 
 const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
