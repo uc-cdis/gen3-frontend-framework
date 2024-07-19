@@ -51,6 +51,7 @@ interface IndexedMetadataRequestParams extends MetadataRequestParams {
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_metadata_aggregate_metadata_get
  *  @param getMDS - Queries normal metadata service
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Query/search_metadata_metadata_get
+ *  @param getIndexAggMDS - queries the Aggregate Metadata service and returns all common passed in indexKeys
  *  @param getTags - Probably refering to Aggregate metadata service summary statistics query
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_tags_aggregate_tags_get
  *  @param getData - Looks like a duplicate of getMDS handler. unused in ./frontend package
@@ -81,12 +82,12 @@ export const metadataApi = gen3Api.injectEndpoints({
       IndexedMetadataRequestParams
     >({
       query: ({ pageSize }: IndexedMetadataRequestParams) => {
-        return `${GEN3_MDS_API}/aggregate/metadata&limit=${pageSize}`;
+        return `${GEN3_MDS_API}/aggregate/metadata?limit=${pageSize}`;
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
         const dataFromIndexes = params.indexKeys.reduce((acc, key) => {
-          if (response.results[key]) {
-            acc.push(...response.results[key]);
+          if (response[key]) {
+            acc.push(...response[key]);
           }
           return acc;
         }, [] as Array<Record<string, any>>);
@@ -100,7 +101,7 @@ export const metadataApi = gen3Api.injectEndpoints({
                 : undefined;
               return firstValue ? firstValue[params.studyField] : undefined;
             }) as JSONObject[]) ?? [],
-          hits: response.pagination.hits,
+          hits: dataFromIndexes.length,
         };
       },
     }),

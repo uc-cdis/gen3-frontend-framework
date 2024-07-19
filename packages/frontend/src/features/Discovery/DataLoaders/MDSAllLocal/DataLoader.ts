@@ -24,6 +24,7 @@ import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
+import { getManualSortingAndPagination } from '../../utils';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -350,16 +351,6 @@ const usePagination = ({ data, pagination }: PaginationHookProps) => {
     updatePaginatedData();
   }, [data, pagination.offset, pagination.pageSize]);
 
-  useEffect(() => {
-    const updatePaginatedData = () => {
-      setPaginatedData(
-        data.slice(pagination.offset, pagination.offset + pagination.pageSize),
-      );
-    };
-
-    updatePaginatedData();
-  }, [data, pagination.offset, pagination.pageSize]);
-
   return {
     paginatedData,
   };
@@ -445,6 +436,9 @@ export const useLoadAllData = ({
     discoveryConfig,
   });
 
+  const manualSortingAndPagination =
+    getManualSortingAndPagination(discoveryConfig);
+
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
     advancedSearchFilters: discoveryConfig.features?.advSearchFilters ?? {
@@ -464,6 +458,7 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
     data: searchedData,
     pagination,
@@ -475,7 +470,7 @@ export const useLoadAllData = ({
   });
 
   return {
-    data: paginatedData,
+    data: manualSortingAndPagination ? paginatedData : searchedData,
     hits: searchedData.length ?? -1,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,

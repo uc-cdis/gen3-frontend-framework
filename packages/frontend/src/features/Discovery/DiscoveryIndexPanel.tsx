@@ -26,9 +26,10 @@ const DiscoveryIndexPanel = ({
 }: DiscoveryIndexPanelProps) => {
   const dataHook = useMemo(
     () =>
-      getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ??
-      useLoadAllMDSData,
-    [discoveryConfig?.features.dataFetchFunction],
+      getDiscoveryDataLoader(
+        discoveryConfig?.features?.dataLoader?.dataFetchFunction,
+      ) ?? useLoadAllMDSData,
+    [discoveryConfig?.features?.dataLoader?.dataFetchFunction],
   );
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,

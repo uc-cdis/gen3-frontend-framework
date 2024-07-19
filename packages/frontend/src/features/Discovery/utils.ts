@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
 import { JSONObject } from '@gen3/core';
-import { TagCategory } from './types';
+import { DiscoveryIndexConfig, TagCategory } from './types';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
   // TODO: add logging if path is not found
@@ -20,9 +20,18 @@ export const getTagColor = (
   return categoryConfig.color;
 };
 
-
 // function given a Object and key as input will check if the key is present in the object
 // if present return the value of the key else return undefined
-export const getStringValueFromJSONObject = (objectData?: JSONObject, key?: string): string | undefined => {
-  return key && objectData ? objectData[key] as string : undefined;
+export const getStringValueFromJSONObject = (
+  objectData?: JSONObject,
+  key?: string,
+): string | undefined => {
+  return key && objectData ? (objectData[key] as string) : undefined;
+};
+
+export const getManualSortingAndPagination = (config: DiscoveryIndexConfig) => {
+  const defaultFeature = 'client';
+  const sortingAndPagination =
+    config?.features?.dataLoader?.sortingAndPagination ?? defaultFeature;
+  return sortingAndPagination === 'server';
 };

@@ -89,7 +89,11 @@ export const RenderLinkWithURL: CellRendererFunction = (
       }`}</Text>
     );
   }
-  const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
+  const ttValue = params?.transform || undefined;
+  const rowData = getParamsValueAsString(
+    cell?.row?.original,
+    toString(params?.['hrefValueFromField']),
+  );
   if (rowData) {
     return (
       <a
@@ -98,7 +102,9 @@ export const RenderLinkWithURL: CellRendererFunction = (
         target="_blank"
         rel="noreferrer"
       >
-        <Text c="utility.0">{content}</Text>
+        <Text c="utility.0" tt={ttValue}>
+          {content}
+        </Text>
       </a>
     );
   }
@@ -109,7 +115,9 @@ export const RenderLinkWithURL: CellRendererFunction = (
       target="_blank"
       rel="noreferrer"
     >
-      <Text c="utility.0">{content}</Text>
+      <Text c="utility.0" tt={ttValue}>
+        {content} fgh
+      </Text>
     </a>
   );
 };
@@ -118,30 +126,18 @@ const RenderStringCell: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
   params?: JSONObject,
 ) => {
+  const ttValue = params?.transform || undefined;
+  const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {
-    return (
-      <Text>
-        {`${
-          params && params?.valueIfNotAvailable
-            ? params?.valueIfNotAvailable
-            : ''
-        }`}{' '}
-      </Text>
-    );
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
   }
   if (content == '') {
-    return (
-      <Text>
-        {`${
-          params && params?.valueIfNotAvailable
-            ? params?.valueIfNotAvailable
-            : ''
-        }`}{' '}
-      </Text>
-    );
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
   }
-  return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
+  return (
+    <Text tt={ttValue}>{isArray(content) ? content.join(', ') : content}</Text>
+  );
 };
 
 const RenderNumberCell: CellRendererFunction = (
@@ -149,15 +145,11 @@ const RenderNumberCell: CellRendererFunction = (
   params?: JSONObject,
 ) => {
   const isContentEmpty = value === undefined || value === null;
-  const paramsValueIfNotAvailable = params && params?.valueIfNotAvailable;
+  const paramsValueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as number | number[];
 
   if (isContentEmpty) {
-    return (
-      <Text>{`${
-        paramsValueIfNotAvailable ? paramsValueIfNotAvailable : ''
-      }`}</Text>
-    );
+    return <Text>{`${paramsValueIfNotAvailable}`}</Text>;
   }
 
   let stringValue = '';

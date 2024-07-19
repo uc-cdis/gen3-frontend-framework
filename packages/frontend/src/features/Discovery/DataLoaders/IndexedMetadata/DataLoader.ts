@@ -19,7 +19,7 @@ const extractIndexArrayFromConfig = (
     // throw an error or return default value
     return [];
   }
-  const dataFetchArgs = config.features?.dataFetchArgs;
+  const dataFetchArgs = config.features?.dataLoader?.dataFetchArgs;
 
   if (!dataFetchArgs?.indexKeys) return [];
 
@@ -59,23 +59,17 @@ const useGetIndexedMDSData = ({
     selectAuthzMappingData(state),
   );
 
+  console.log('data', data);
+
   useEffect(() => {
     if (data && isSuccess) {
-      const studyData = Object.values(data.data).reduce(
-        (acc: JSONObject[], cur: JSONObject) => {
-          return cur[studyField]
-            ? [...acc, cur[studyField] as JSONObject]
-            : acc;
-        },
-        [],
-      );
-
+      const studyData = data.data;
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
           processAuthorizations(studyData, discoveryConfig, authMapping),
         );
       } else setMDSData(studyData);
-    }
+    } else setMDSData([]);
   }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 
   useEffect(() => {
@@ -83,6 +77,8 @@ const useGetIndexedMDSData = ({
       setIsError(true);
     }
   }, [queryIsError]);
+
+  console.log('mdsData', mdsData);
 
   return {
     mdsData,

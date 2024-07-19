@@ -253,6 +253,12 @@ interface DiscoveryIndex {
   indexName: string;
 }
 
+interface DataLoader {
+  dataFetchFunction?: string;
+  dataFetchArgs?: JSONObject;
+  sortingAndPagination?: 'client' | 'server';
+}
+
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -265,8 +271,7 @@ export interface DiscoveryIndexConfig {
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: DataAuthorization;
-    dataFetchFunction?: string;
-    dataFetchArgs?: JSONObject;
+    dataLoader?: DataLoader;
   };
   aggregations: SummaryStatisticsConfig[];
   tagCategories: TagCategory[];
