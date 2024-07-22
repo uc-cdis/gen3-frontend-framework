@@ -65,7 +65,7 @@ const jsonValueToElement = (value: JSONValue): ReactElement => {
 /**
  * Default style for discovery field.
  */
-const discoveryFieldStyle = 'flex w-full justify-between px-0.5 no-wrap';
+const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap';
 
 /**
  * Renders a block of text.
@@ -83,7 +83,13 @@ const blockTextField = (fieldValue: JSONValue): ReactElement => (
  */
 const label = (labelText?: string): ReactElement =>
   labelText ? (
-    <Text tt="uppercase" weight="500" className="p-0.75 whitespace-pre-wrap break-words">{labelText}</Text>
+    <Text
+      tt="uppercase"
+      weight="500"
+      className="p-0.75 whitespace-pre-wrap break-words"
+    >
+      {labelText}
+    </Text>
   ) : (
     <React.Fragment />
   );
@@ -95,7 +101,9 @@ const label = (labelText?: string): ReactElement =>
  * @returns {React.Element} - The rendered text field component.
  */
 const textField = (fieldValue: JSONValue): ReactElement => (
-  <span className="text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</span>
+  <span className="text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">
+    {toString(fieldValue)}
+  </span>
 );
 
 /**
@@ -128,7 +136,9 @@ const linkFieldOnly = (linkValue: string, _?: string) => (
  */
 const linkField = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    <Text color="utility.0" className="underline">{linkValue}</Text>
+    <Text color="utility.0" className="underline">
+      {linkValue}
+    </Text>
   </Link>
 );
 
@@ -204,8 +214,7 @@ const labeledSingleTextField: FieldRendererFunction = (
   let stringFieldValue = '';
   if (typeof fieldValue === 'number') {
     stringFieldValue = fieldValue.toLocaleString();
-  } else
-      if (typeof fieldValue !== 'string') return <React.Fragment />;
+  } else if (typeof fieldValue !== 'string') return <React.Fragment />;
 
   stringFieldValue = fieldValue as string;
   return (
@@ -231,14 +240,21 @@ const labeledParagraph: FieldRendererFunction = (
       key={`study-details-${fieldLabel}-${stringFieldValue}`}
     >
       {fieldLabel ? (
-      <Text tt="uppercase" weight="500" className="p-0.75 mr-4 whitespace-pre-wrap break-words">{fieldLabel}</Text>
+        <Text
+          tt="uppercase"
+          weight="500"
+          className="p-0.75 mr-4 whitespace-pre-wrap break-words"
+        >
+          {fieldLabel}
+        </Text>
       ) : (
-      <React.Fragment />
+        <React.Fragment />
       )}
 
-      <div >
-      <Text
-      className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
+      <div>
+        <Text className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">
+          {toString(fieldValue)}
+        </Text>
       </div>
     </div>
   );
@@ -336,8 +352,7 @@ const renderDetailTags: FieldRendererFunction = (
 export const createFieldRendererElement = (
   field: StudyDetailsField | StudyTabTagField,
   resource: JSONValue,
-) : ReactElement | null => {
-
+): ReactElement | null => {
   // determine the value of the field
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
@@ -347,13 +362,13 @@ export const createFieldRendererElement = (
     if (field.valueIfNotAvailable)
       resourceFieldValue = field.valueIfNotAvailable as JSONValue;
   } else
-    resourceFieldValue = resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
+    resourceFieldValue =
+      resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
 
   const label =
     field.includeLabel === undefined || field?.includeLabel
       ? field.name
       : undefined;
-
 
   const studyFieldRenderer = DiscoveryDetailsRenderer(
     field.contentType,
@@ -377,7 +392,10 @@ export const createFieldRendererElement = (
         resourceFieldValue =
           formatResourceValuesWhenNestedArray(resourceFieldValue);
         return studyFieldRenderer(resourceFieldValue, label, field.params);
-      } else if (resourceFieldValue !== undefined || resourceFieldValue !== null)
+      } else if (
+        resourceFieldValue !== undefined ||
+        resourceFieldValue !== null
+      )
         return studyFieldRenderer(resourceFieldValue, label, field.params);
   }
 
