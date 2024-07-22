@@ -93,6 +93,50 @@ export const RenderLinkCell: CellRendererFunction = ({
   );
 };
 
+const RenderYearOfBirthRestricted: CellRendererFunction = (
+  { value }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
+  const valueIfNotAvailable = params?.valueIfNotAvailable || '';
+  const content = value as string | string[];
+  if (content === undefined || content === null) {
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  }
+  if (content == '') {
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  }
+
+  // Check if the content is a string and represents a year less than 1935
+  let displayContent;
+  if (
+    typeof content === 'string' &&
+    !isNaN(Number(content)) &&
+    Number(content) < 1935
+  ) {
+    displayContent = '1935';
+  } else if (isArray(content)) {
+    displayContent = content
+      .map((item) => {
+        if (
+          typeof item === 'string' &&
+          !isNaN(Number(item)) &&
+          Number(item) < 1935
+        ) {
+          return '1935';
+        }
+        return item;
+      })
+      .join(', ');
+  } else {
+    displayContent = content;
+  }
+
+  return <Text tt={ttValue}>{displayContent}</Text>;
+};
+
 // given a field name, extract the value from the row using the type guards above
 
 export const RenderLinkWithURL: CellRendererFunction = (
@@ -249,6 +293,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   string: {
     default: RenderStringCell,
+    yearOfBirthRestricted: RenderYearOfBirthRestricted,
   },
   number: {
     default: RenderNumberCell,
