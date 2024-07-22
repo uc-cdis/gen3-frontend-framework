@@ -1,4 +1,4 @@
-import React, { useMemo, useState, ReactNode } from 'react';
+import React, { useMemo, useRef, useState, ReactNode } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
@@ -36,6 +36,7 @@ const DiscoveryIndexPanel = ({
     pageSize: 10,
   });
 
+  const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
@@ -150,7 +151,10 @@ const DiscoveryIndexPanel = ({
             ) : (
               false
             )}
-            <div className="flex w-full bg-base-max p-4 rounded-lg">
+            <div
+              className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+              ref={parentDivRef}
+            >
               <DiscoveryTable
                 data={data}
                 hits={hits}

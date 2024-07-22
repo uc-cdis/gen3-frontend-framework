@@ -1,6 +1,6 @@
 import { isArray, toString } from 'lodash';
-import React from 'react';
-import { Badge, Text } from '@mantine/core';
+import React, { CSSProperties } from 'react';
+import { Badge, Text, SystemProp } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagColor } from '../utils';
@@ -33,6 +33,25 @@ export const RenderArrayCell: CellRendererFunction = ({
   }
   return <span>value</span>;
 };
+
+// Define the valid textTransform values
+const validTextTransforms: Array<CSSProperties['textTransform']> = [
+  'none',
+  'capitalize',
+  'uppercase',
+  'lowercase',
+  'full-width',
+  'full-size-kana',
+  'inherit',
+  'initial',
+  'revert',
+  'unset',
+];
+
+// Type guard function
+function isTextTransform(value: any): value is CSSProperties['textTransform'] {
+  return validTextTransforms.includes(value);
+}
 
 export const RenderArrayCellNegativePositive: CellRendererFunction = ({
   value,
@@ -89,7 +108,9 @@ export const RenderLinkWithURL: CellRendererFunction = (
       }`}</Text>
     );
   }
-  const ttValue = params?.transform || undefined;
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
   const rowData = getParamsValueAsString(
     cell?.row?.original,
     toString(params?.['hrefValueFromField']),
@@ -126,7 +147,9 @@ const RenderStringCell: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
   params?: JSONObject,
 ) => {
-  const ttValue = params?.transform || undefined;
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
   const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {

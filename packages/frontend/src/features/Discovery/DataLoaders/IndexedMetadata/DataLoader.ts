@@ -59,8 +59,6 @@ const useGetIndexedMDSData = ({
     selectAuthzMappingData(state),
   );
 
-  console.log('data', data);
-
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = data.data;
@@ -77,8 +75,6 @@ const useGetIndexedMDSData = ({
       setIsError(true);
     }
   }, [queryIsError]);
-
-  console.log('mdsData', mdsData);
 
   return {
     mdsData,

@@ -22,6 +22,7 @@ import {
 } from '@tanstack/table-core';
 import { DataRequestStatus } from './types';
 import { LoadingOverlay } from '@mantine/core';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -51,7 +52,7 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
 
-  const cols = useMemo(() => {
+  const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef) => {
       return {
@@ -82,7 +83,7 @@ const DiscoveryTable = ({
             ),
       };
     });
-  }, []);
+  }, [config.studyColumns]);
 
   const table = useMantineReactTable({
     columns: cols as any[], // TODO: fix typing issues when migrating to mantine-react-table v2.
@@ -100,6 +101,17 @@ const DiscoveryTable = ({
     rowCount: hits,
     icons: TableIcons,
     enableTopToolbar: false,
+    enableColumnFilters: false,
+    enableColumnActions: false,
+    enableStickyHeader: true,
+    enableStickyFooter: true,
+    mantineTableContainerProps: ({ table }) => {
+      return {
+        sx: {
+          maxHeight: 'calc(100vh - 560px) !important;',
+        },
+      };
+    },
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,

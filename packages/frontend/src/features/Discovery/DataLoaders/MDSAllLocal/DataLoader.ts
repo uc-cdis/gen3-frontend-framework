@@ -25,6 +25,7 @@ import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
+import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -134,7 +135,9 @@ const useGetMDSData = ({
     pageSize: maxStudies,
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -194,7 +197,9 @@ const useGetAggMDSData = ({
     pageSize: maxStudies,
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
   useEffect(() => {
     if (data && isSuccess) {
       if (discoveryConfig?.features?.authorization.enabled) {
@@ -421,6 +426,9 @@ export const useLoadAllData = ({
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   const dataGuidType = discoveryConfig?.guidType ?? guidType;
   const dataStudyField = discoveryConfig?.studyField ?? studyField;
+  const [summaryStatistics, setSummaryStatistics] = useState<SummaryStatistics>(
+    [],
+  );
 
   const {
     mdsData,
@@ -464,10 +472,16 @@ export const useLoadAllData = ({
     pagination,
   });
 
-  const { summaryStatistics } = useGetSummaryStatistics({
-    data: searchedData,
-    aggregationConfig: discoveryConfig?.aggregations,
-  });
+  useEffect(() => {
+    setSummaryStatistics(
+      processAllSummaries(searchedData, discoveryConfig?.aggregations),
+    );
+  }, [searchedData, discoveryConfig?.aggregations]);
+
+  // const { summaryStatistics } = useGetSummaryStatistics({
+  //   data: searchedData,
+  //   aggregationConfig: discoveryConfig?.aggregations,
+  // });
 
   return {
     data: manualSortingAndPagination ? paginatedData : searchedData,
