@@ -8,11 +8,6 @@ export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
 }
 
-interface IdValue {
-  id: string;
-  value: string;
-}
-
 export interface CrosswalkInfo {
   readonly from: string;
   readonly to: Record<string, string>;

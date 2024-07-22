@@ -157,7 +157,6 @@ const useGetMDSData = ({
     studyField: studyField,
     offset: 0,
     pageSize: maxStudies,
-
   });
 
   const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
@@ -201,7 +200,7 @@ const useGetAggMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-  discoveryConfig
+  discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
@@ -261,7 +260,7 @@ const useSearchMetadata = ({
   isSuccess,
 }: SearchMetadataProps) => {
   const searchOverFields =
-    discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const [searchedData, setSearchedData] = useState<Array<JSONObject>>([]);
@@ -467,7 +466,7 @@ export const useLoadAllData = ({
     studyField,
     guidType,
     maxStudies,
-    discoveryConfig
+    discoveryConfig,
   });
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({

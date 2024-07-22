@@ -22,7 +22,7 @@ export interface DiscoveryProps {
 const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   const dataHook = useMemo(
     () =>
-      getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ??
+      getDiscoveryDataLoader(discoveryConfig?.features?.dataFetchFunction) ??
       useLoadAllMDSData,
     [],
   );
