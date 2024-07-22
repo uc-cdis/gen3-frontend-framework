@@ -10,6 +10,7 @@ import {
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
+  GEN3_CROSSWALK_API,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -48,5 +49,6 @@ export {
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
+  GEN3_CROSSWALK_API,
   Accessibility,
 };

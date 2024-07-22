@@ -240,7 +240,7 @@ const useSearchMetadata = ({
   isSuccess,
 }: SearchMetadataProps) => {
   const searchOverFields =
-    discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const [searchedData, setSearchedData] = useState<Array<JSONObject>>([]);

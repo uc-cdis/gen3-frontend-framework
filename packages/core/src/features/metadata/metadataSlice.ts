@@ -122,17 +122,58 @@ export const metadataApi = gen3Api.injectEndpoints({
     getData: builder.query<Metadata, string>({
       query: (params) => ({ url: `metadata?${params}` }),
     }),
+    // TODO: Move this to own slice
     getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
-      query: (params) => ({ url: `metadata?${params.ids}` }),
-      transformResponse: (response: Record<string, any>, _meta, params) => {
-        return {
-          mapping: Object.values(response).map((x): CrosswalkInfo => {
-            return {
-              from: x.ids[params.fields.from],
-              to: x.ids[params.fields.to],
-            };
-          }),
+      queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const queryMultiple = async (): Promise<CrosswalkInfo[]> => {
+          let result = [] as CrosswalkInfo[];
+          const queue = Queue({ concurrency: 15 });
+          for (const id of arg.ids) {
+            queue.push(async (callback?: () => void) => {
+              const response = await fetchWithBQ({
+                url: `${GEN3_CROSSWALK_API}/metadata/${id}`,
+              });
+
+              if (response.error) {
+                return { error: response.error };
+              }
+
+              const toData = arg.toPaths.reduce((acc, path) => {
+                acc[path.id] =
+                  JSONPath<string>({
+                    json: response.data as Record<string, any>,
+                    path: `$.[${path.dataPath}]`,
+                    resultType: 'value',
+                  })?.[0] ?? 'n/a';
+                return acc;
+              }, {} as Record<string, string>);
+
+              result = [
+                ...result,
+                {
+                  from: id,
+                  to: toData,
+                },
+              ];
+              callback && callback();
+
+              return result;
+            });
+          }
+
+          return new Promise((resolve, reject) => {
+            queue.start((err: unknown) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            });
+          });
         };
+
+        const result = await queryMultiple();
+        return { data: result };
       },
     }),
   }),
@@ -144,5 +185,6 @@ export const {
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
+  useLazyGetCrosswalkDataQuery,
   useGetIndexAggMDSQuery,
 } = metadataApi;

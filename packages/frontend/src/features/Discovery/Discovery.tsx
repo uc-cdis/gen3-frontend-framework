@@ -11,7 +11,7 @@ export interface DiscoveryProps {
 }
 
 const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
-  const [metadataIndex, setMetadataIndex] = useState<string>('1');
+  const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
   const menuItems = useMemo(() => {
     return discoveryConfig.metadataConfig.map((n, idx) => {
