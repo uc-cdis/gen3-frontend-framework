@@ -22,17 +22,10 @@ const CrosswalkTable = ({
 }: CrosswalkTableProps) => {
   const cols = useMemo(() => {
     return [
-      {
-        field: mapping.source.id,
-        accessorKey: mapping.source.id,
-        header: mapping.source.name,
-      },
-
-      ...mapping.external.map((columnDef) => {
+      ...mapping.external.map((columnDef, idx) => {
         return {
-          field: columnDef.id,
-          accessorKey: columnDef.id,
-          header: columnDef.name,
+          accessorKey: `to.${mapping.external[idx].id}`,
+          header: columnDef.label,
         };
       }),
     ];
@@ -60,7 +53,7 @@ const CrosswalkTable = ({
     mantineTableHeadCellProps: {
       sx: (theme) => {
         return {
-          backgroundColor: theme.colors.table[1],
+          backgroundColor: theme.colors.table[3],
           color: theme.colors.table[9],
           textAlign: 'center',
           padding: theme.spacing.md,

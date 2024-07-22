@@ -1,27 +1,33 @@
 import { JSONObject } from '../../types';
 import { gen3Api } from '../gen3';
 import Queue from 'queue';
-import { GEN3_MDS_API } from '../../constants';
+import { GEN3_CROSSWALK_API, GEN3_MDS_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
 }
 
-export interface CrosswalkInfo {
-  readonly from: string;
-  readonly to: string;
+interface IdValue {
+  id: string;
+  value: string;
 }
 
-export interface CrosswalkArray {
-  readonly mapping: ReadonlyArray<CrosswalkInfo>;
+export interface CrosswalkInfo {
+  readonly from: string;
+  readonly to: Record<string, string>;
+}
+
+export type CrosswalkArray = Array<CrosswalkInfo>;
+
+interface ToMapping {
+  id: string;
+  dataPath: string[];
 }
 
 interface CrossWalkParams {
   readonly ids: string[];
-  readonly fromPath: string[];
-  readonly toPath: string[];
-  readonly guidType: string;
+  readonly toPaths: Array<ToMapping>;
 }
 
 export interface MetadataResponse {
@@ -97,35 +103,34 @@ export const metadataApi = gen3Api.injectEndpoints({
           let result = [] as CrosswalkInfo[];
           const queue = Queue({ concurrency: 15 });
           for (const id of arg.ids) {
-            queue.push(async (callback: () => void) => {
-              const response = await fetchWithBQ({ url: `metadata/${id}` });
+            queue.push(async (callback?: () => void) => {
+              const response = await fetchWithBQ({
+                url: `${GEN3_CROSSWALK_API}/metadata/${id}`,
+              });
 
               if (response.error) {
                 return { error: response.error };
               }
 
-              const fromData = JSONPath({
-                json: response.data as Record<string, any>,
-                path: `$.[${arg.fromPath}]`,
-                resultType: 'value',
-              });
-
-              const toData = JSONPath({
-                json: response.data as Record<string, any>,
-                path: `$.[${arg.toPath}]`,
-                resultType: 'value',
-              });
+              const toData = arg.toPaths.reduce((acc, path) => {
+                acc[path.id] =
+                  JSONPath<string>({
+                    json: response.data as Record<string, any>,
+                    path: `$.[${path.dataPath}]`,
+                    resultType: 'value',
+                  })?.[0] ?? 'n/a';
+                return acc;
+              }, {} as Record<string, string>);
 
               result = [
                 ...result,
                 {
-                  from: fromData as string,
-                  to: toData as string,
+                  from: id,
+                  to: toData,
                 },
               ];
-              if (callback) {
-                callback();
-              }
+              callback && callback();
+
               return result;
             });
           }
@@ -142,8 +147,7 @@ export const metadataApi = gen3Api.injectEndpoints({
         };
 
         const result = await queryMultiple();
-
-        return { data: { mapping: result } };
+        return { data: result };
       },
     }),
   }),
@@ -155,4 +159,5 @@ export const {
   useGetTagsQuery,
   useGetDataQuery,
   useGetCrosswalkDataQuery,
+  useLazyGetCrosswalkDataQuery,
 } = metadataApi;

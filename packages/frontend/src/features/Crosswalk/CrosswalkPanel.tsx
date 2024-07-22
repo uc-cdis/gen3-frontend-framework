@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Group, Stack, Button, Textarea, Text } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import {
-  // useGetCrosswalkDataQuery,
-  CrosswalkInfo,
-  usePrevious,
-} from '@gen3/core';
+import { useLazyGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
 
 const MIN_ROWS = 18;
 
 import { type CrosswalkConfig } from './types';
 import CrosswalkTable from './CrosswalkTable';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const downloadData = (data: string) => {
   const csvData = encodeURI(`data:text/csv;charset=utf-8,${data}`);
@@ -27,24 +24,24 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
   const [sourceIds, setSourceIds] = useState<string>('');
   const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
-  const previousPath = usePrevious<string>(mapping.source.dataPath);
+
   const [tableMessage, setTableMessage] = useState<string>('');
-  const { data, isSuccess, isError, isFetching } = {
-    data: [],
-    isSuccess: true,
-    isError: false,
-    isFetching: false,
-  };
+
+  const [getMapping, { data, isFetching, isError, isSuccess }] =
+    useLazyGetCrosswalkDataQuery();
 
   const clear = () => {
     setSourceIds('');
     setCrosswalkIds('');
     setQuery([]);
+    getMapping({
+      ids: [],
+      toPaths: mapping.external.map((x) => ({
+        id: x.id,
+        dataPath: x.dataPath,
+      })),
+    });
   };
-
-  useEffect(() => {
-    if (previousPath != mapping.source.dataPath) clear();
-  }, [previousPath, mapping.source.dataPath]);
 
   useEffect(() => {
     if (query.length == 0) {
@@ -57,7 +54,13 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
   }, [query, isError]);
 
   const onSubmit = () => {
-    setQuery(sourceIds.split(/,|\r?\n|\r|\n/g));
+    getMapping({
+      ids: sourceIds.split(/,|\r?\n|\r|\n/g),
+      toPaths: mapping.external.map((x) => ({
+        id: x.id,
+        dataPath: x.dataPath,
+      })),
+    });
   };
 
   const updateIdQuery = (values: string) => {
@@ -72,9 +75,8 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
     >
       <Stack align="stretch" justify="flex-start" className="p-2">
         <Group noWrap>
-          <Text>{mapping.source.name}</Text>
           <Button
-            size="xs"
+            size="md"
             color="secondary.4"
             disabled={sourceIds.length == 0}
             onClick={() => onSubmit()}
@@ -82,7 +84,7 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
             Submit
           </Button>
           <Button
-            size="xs"
+            size="md"
             color="secondary.4"
             disabled={sourceIds.length == 0}
             onClick={() => clear()}
@@ -115,18 +117,18 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
         <Group position="right">
           <Button
             variant="outline"
-            size="xs"
+            size="md"
             color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
             onClick={() => {
               if (data) clipboard.copy(data.map((x: CrosswalkInfo) => x.to));
             }}
-            disabled={crosswalkIds.length == 0}
+            disabled={!data || data.length == 0}
           >
             Copy
           </Button>
           <Button
             variant="outline"
-            size="xs"
+            size="md"
             onClick={() => {
               if (data)
                 downloadData(
@@ -135,14 +137,14 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
                     .join('\n'),
                 );
             }}
-            disabled={crosswalkIds.length == 0}
+            disabled={!data || data.length == 0}
           >
             Download
           </Button>
         </Group>
         <CrosswalkTable
           mapping={mapping}
-          data={data}
+          data={data ?? []}
           isFetching={isFetching}
           isSuccess={isSuccess}
           isError={isError}

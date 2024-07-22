@@ -1,4 +1,4 @@
-import { type CrosswalkConfig } from './types';
+import { type CrosswalkConfig, type CrosswalkName } from './types';
 import CrosswalkPanel from './CrosswalkPanel';
 
-export { type CrosswalkConfig, CrosswalkPanel };
+export { type CrosswalkConfig, type CrosswalkName, CrosswalkPanel };

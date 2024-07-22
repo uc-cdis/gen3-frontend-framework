@@ -1,12 +1,15 @@
-interface CrosswalkInfo {
+export interface CrosswalkName {
   id: string;
-  name: string;
+  label: string;
   description?: string;
-  dataPath: string;
+}
+
+interface CrosswalkInfo extends CrosswalkName {
+  dataPath: string[]; // Needed as some crosswalk keys are URL's
 }
 
 export interface CrosswalkMapping {
-  source: CrosswalkInfo;
+  source: CrosswalkName;
   external: Array<CrosswalkInfo>;
 }
 
