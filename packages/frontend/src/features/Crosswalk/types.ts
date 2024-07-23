@@ -14,5 +14,6 @@ export interface CrosswalkMapping {
 }
 
 export interface CrosswalkConfig {
+  showSubmittedIdInTable?: boolean;
   mapping: CrosswalkMapping;
 }

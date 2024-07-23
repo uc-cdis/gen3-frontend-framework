@@ -1,9 +1,9 @@
 import { isArray, toString } from 'lodash';
 import React, { CSSProperties } from 'react';
-import { Badge, Text, SystemProp } from '@mantine/core';
+import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
-import { getTagColor } from '../utils';
+import { getTagInfo } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
@@ -260,25 +260,26 @@ export const RenderTagsCell: CellRendererFunction = ({
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();
   return (
-    <div className="flex space-x-1 ">
-      {content.map(({ name, category }: TagData) => {
-        const color = getTagColor(category, config.tagCategories);
+    <div className="flex space-x-1 space-y-4">
+      {content.map((x: TagData) => {
+        const { color, display, label } = getTagInfo(x, config.tags);
+        if (!display) return null;
         return (
           <Badge
-            key={name}
+            key={x.name}
             role="button"
             size="lg"
             radius="sm"
             variant="filled"
             tabIndex={0}
-            aria-label={name}
+            aria-label={x.name}
             style={{
               backgroundColor: color,
               borderColor: color,
               color: 'white',
             }}
           >
-            {name}
+            {label}
           </Badge>
         );
       })}

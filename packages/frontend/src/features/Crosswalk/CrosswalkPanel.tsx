@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Group, Stack, Button, Textarea, Text } from '@mantine/core';
+import { Group, Stack, Button, Textarea } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useLazyGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
+import { type CrosswalkConfig, CrosswalkMapping } from './types';
+import CrosswalkTable from './CrosswalkTable';
 
 const MIN_ROWS = 18;
 
-import { type CrosswalkConfig } from './types';
-import CrosswalkTable from './CrosswalkTable';
-import { useDeepCompareMemo } from 'use-deep-compare';
+const buildCSVData = (
+  data: Array<CrosswalkInfo>,
+  mapping: CrosswalkMapping,
+) => {
+  const results = [
+    `${mapping.source.label},${mapping.external.map((x) => x.label).join(',')}`,
+
+    ...data.map((x) => {
+      const rest = mapping.external.map((columnDef) => x.to[columnDef.id]);
+      return `${x.from},${rest.join(',')}`;
+    }),
+  ].join('\n');
+  return results;
+};
 
 const downloadData = (data: string) => {
   const csvData = encodeURI(`data:text/csv;charset=utf-8,${data}`);
@@ -19,10 +32,12 @@ const downloadData = (data: string) => {
   document.body.removeChild(link);
 };
 
-const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
+const CrosswalkPanel = ({
+  mapping,
+  showSubmittedIdInTable,
+}: CrosswalkConfig) => {
   const [query, setQuery] = useState<string[]>([]);
   const [sourceIds, setSourceIds] = useState<string>('');
-  const [crosswalkIds, setCrosswalkIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
   const [tableMessage, setTableMessage] = useState<string>('');
@@ -32,7 +47,6 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
 
   const clear = () => {
     setSourceIds('');
-    setCrosswalkIds('');
     setQuery([]);
     getMapping({
       ids: [],
@@ -51,7 +65,11 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
     if (isError) {
       setTableMessage('Error returned from crosswalk service');
     }
-  }, [query, isError]);
+
+    if (isSuccess && data && data.length == 0) {
+      setTableMessage('No results found');
+    }
+  }, [query, isError, isSuccess, data?.length]);
 
   const onSubmit = () => {
     getMapping({
@@ -61,6 +79,7 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
         dataPath: x.dataPath,
       })),
     });
+    setQuery(sourceIds);
   };
 
   const updateIdQuery = (values: string) => {
@@ -120,7 +139,7 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
             size="md"
             color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
             onClick={() => {
-              if (data) clipboard.copy(data.map((x: CrosswalkInfo) => x.to));
+              if (data) clipboard.copy(buildCSVData(data, mapping));
             }}
             disabled={!data || data.length == 0}
           >
@@ -130,12 +149,7 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
             variant="outline"
             size="md"
             onClick={() => {
-              if (data)
-                downloadData(
-                  data
-                    .map((x: CrosswalkInfo) => `${x.from},${x.to}`)
-                    .join('\n'),
-                );
+              if (data) downloadData(buildCSVData(data, mapping));
             }}
             disabled={!data || data.length == 0}
           >
@@ -149,6 +163,7 @@ const CrosswalkPanel = ({ mapping }: CrosswalkConfig) => {
           isSuccess={isSuccess}
           isError={isError}
           tableMessage={tableMessage}
+          showSubmittedIdInTable={showSubmittedIdInTable ?? false}
         />
       </Stack>
     </Group>

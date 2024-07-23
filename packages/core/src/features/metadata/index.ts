@@ -25,7 +25,4 @@ export {
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
   useGetIndexAggMDSQuery,
-  type MetadataPaginationParams,
-  type MetadataRequestParams,
-  type MetadataResponse,
 };

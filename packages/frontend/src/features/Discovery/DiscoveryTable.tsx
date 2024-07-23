@@ -54,8 +54,9 @@ const DiscoveryTable = ({
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
-    return studyColumns.map((columnDef) => {
+    return studyColumns.map((columnDef, idx) => {
       return {
+        key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
         header: columnDef.name,

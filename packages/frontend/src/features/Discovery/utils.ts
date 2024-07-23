@@ -1,23 +1,41 @@
 import { JSONPath } from 'jsonpath-plus';
 import { JSONObject } from '@gen3/core';
-import { DiscoveryIndexConfig, TagCategory } from './types';
+import {
+  DiscoveryIndexConfig,
+  type TagCategory,
+  type TagData,
+  type TagsConfig,
+} from './types';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
   // TODO: add logging if path is not found
   return JSONPath({ json: row, path: path });
 };
 
-export const getTagColor = (
-  tagCategory: string,
-  tagCategories: TagCategory[],
-): string => {
-  const categoryConfig = tagCategories.find(
-    (category) => category.name === tagCategory,
+export interface TagInfo {
+  color: string;
+  display: boolean;
+  label: string;
+}
+
+export const getTagInfo = (
+  tagData: TagData,
+  tagsConfig: TagsConfig,
+): TagInfo => {
+  const categoryConfig = tagsConfig.tagCategories.find(
+    (category) => category.name === tagData.category,
   );
-  if (categoryConfig === undefined) {
-    return 'gray';
-  }
-  return categoryConfig.color;
+  if (categoryConfig === undefined)
+    return {
+      color: 'gray',
+      display: tagsConfig?.showUnknownTags ?? false,
+      label: tagData.name,
+    };
+  return {
+    color: categoryConfig.color,
+    display: categoryConfig?.display ? true : categoryConfig.display,
+    label: categoryConfig?.displayName ?? tagData.name,
+  };
 };
 
 // function given a Object and key as input will check if the key is present in the object

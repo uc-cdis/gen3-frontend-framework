@@ -7,6 +7,11 @@ import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 
+export interface TagData {
+  name: string;
+  category: string;
+}
+
 interface KeywordSearch {
   keywords?: string[];
   operator: SearchCombination;
@@ -259,6 +264,11 @@ interface DataLoader {
   sortingAndPagination?: 'client' | 'server';
 }
 
+export interface TagsConfig {
+  tagCategories: TagCategory[];
+  showUnknownTags?: boolean;
+}
+
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -274,7 +284,7 @@ export interface DiscoveryIndexConfig {
     dataLoader?: DataLoader;
   };
   aggregations: SummaryStatisticsConfig[];
-  tagCategories: TagCategory[];
+  tags: TagsConfig;
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyDetailsField;

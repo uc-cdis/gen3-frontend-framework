@@ -1,6 +1,8 @@
 import { JSONObject } from '../../types';
 import { gen3Api } from '../gen3';
-import { GEN3_MDS_API } from '../../constants';
+import Queue from 'queue';
+import { GEN3_CROSSWALK_API, GEN3_MDS_API } from '../../constants';
+import { JSONPath } from 'jsonpath-plus';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
@@ -8,19 +10,19 @@ export interface Metadata {
 
 export interface CrosswalkInfo {
   readonly from: string;
-  readonly to: string;
+  readonly to: Record<string, string>;
 }
 
-export interface CrosswalkArray {
-  readonly mapping: ReadonlyArray<CrosswalkInfo>;
+export type CrosswalkArray = Array<CrosswalkInfo>;
+
+interface ToMapping {
+  id: string;
+  dataPath: string[];
 }
 
 interface CrossWalkParams {
-  readonly ids: string;
-  readonly fields: {
-    from: string;
-    to: string;
-  };
+  readonly ids: string[];
+  readonly toPaths: Array<ToMapping>;
 }
 
 export interface MetadataResponse {
@@ -96,10 +98,16 @@ export const metadataApi = gen3Api.injectEndpoints({
           data:
             (dataFromIndexes.map((x: JSONObject) => {
               const objValues = Object.values(x);
+              const objIds = Object.keys(x);
               const firstValue = objValues
                 ? (objValues.at(0) as JSONObject)
                 : undefined;
-              return firstValue ? firstValue[params.studyField] : undefined;
+              return firstValue
+                ? {
+                    gen3MDSGUID: objIds.at(0),
+                    ...(firstValue[params.studyField] as Record<string, any>),
+                  }
+                : undefined;
             }) as JSONObject[]) ?? [],
           hits: dataFromIndexes.length,
         };
