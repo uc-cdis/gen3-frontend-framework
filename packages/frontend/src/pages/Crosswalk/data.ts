@@ -14,6 +14,7 @@ interface InitialCrosswalkInfo extends CrosswalkName {
 }
 
 export interface InitialCrosswalkConfig {
+  showSubmittedIdInTable?: boolean;
   mapping: {
     source: CrosswalkName;
     external: Array<InitialCrosswalkInfo>;

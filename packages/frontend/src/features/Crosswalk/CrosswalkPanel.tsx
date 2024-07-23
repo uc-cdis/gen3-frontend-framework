@@ -36,7 +36,7 @@ const CrosswalkPanel = ({
   mapping,
   showSubmittedIdInTable,
 }: CrosswalkConfig) => {
-  const [query, setQuery] = useState<string[]>([]);
+  const [query, setQuery] = useState<string>('');
   const [sourceIds, setSourceIds] = useState<string>('');
   const clipboard = useClipboard({ timeout: 500 });
 
@@ -47,7 +47,7 @@ const CrosswalkPanel = ({
 
   const clear = () => {
     setSourceIds('');
-    setQuery([]);
+    setQuery('');
     getMapping({
       ids: [],
       toPaths: mapping.external.map((x) => ({
