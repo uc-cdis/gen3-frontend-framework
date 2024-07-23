@@ -284,7 +284,7 @@ export const CohortPanel = ({
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}
-              fields={fields}
+              fields={table?.fields ?? []}
               filter={cohortFilters}
             />
 
