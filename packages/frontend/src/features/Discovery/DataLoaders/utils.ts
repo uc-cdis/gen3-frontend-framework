@@ -2,10 +2,10 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import { type AuthzMapping, JSONObject } from '@gen3/core';
-import { SummaryStatisticsConfig } from '../../Statistics';
-import { SummaryStatistics } from '../../Statistics/types';
-import { DiscoveryConfig, AccessLevel } from '../../types';
-import { userHasMethodForServiceOnResource } from '../../../authorization/utils';
+import { SummaryStatisticsConfig } from '../Statistics';
+import { SummaryStatistics } from '../Statistics/types';
+import { DiscoveryIndexConfig, AccessLevel } from '../types';
+import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 
 /**
  * Check for non-numeric items in an array and convert them to numbers.
@@ -13,21 +13,22 @@ import { userHasMethodForServiceOnResource } from '../../../authorization/utils'
  * It will silently convert any non-numeric items to 0 so as not to break the sum.
  * @param fields - array of fields to check
  */
-const checkForNonNumericItems = (fields: (number | string | any)[]): number[] => fields.map((item) => {
-  if (typeof item === 'number') {
-    return item;
-  }
-  // parse any string representation of an integer
-  if (typeof item === 'string') {
-    return parseInt(item, 10) || 0;
-  }
-  // if it's an array, recurse and sum the result
-  if (Array.isArray(item)) {
-    return sum(checkForNonNumericItems(item));
-  }
-  // if it's not a number, return 0 so as not to break the sum
-  return 0;
-});
+const checkForNonNumericItems = (fields: (number | string | any)[]): number[] =>
+  fields.map((item) => {
+    if (typeof item === 'number') {
+      return item;
+    }
+    // parse any string representation of an integer
+    if (typeof item === 'string') {
+      return parseInt(item, 10) || 0;
+    }
+    // if it's an array, recurse and sum the result
+    if (Array.isArray(item)) {
+      return sum(checkForNonNumericItems(item));
+    }
+    // if it's not a number, return 0 so as not to break the sum
+    return 0;
+  });
 
 /**
  * Process a summary statistic using the provided data and summary config
@@ -47,7 +48,7 @@ export const processSummary = (
   switch (type) {
     case 'sum': {
       // parse any string representation of an integer
-      fields = checkForNonNumericItems (fields);
+      fields = checkForNonNumericItems(fields);
       return sum(fields).toLocaleString();
     }
     case 'count':
@@ -81,25 +82,52 @@ export const processAllSummaries = (
   }, [] as SummaryStatistics);
 };
 
-
-export const processAuthorizations = (data: Array<JSONObject>, config: DiscoveryConfig,  authMapping: AuthzMapping): Array<JSONObject> => {
+export const processAuthorizations = (
+  data: Array<JSONObject>,
+  config: DiscoveryIndexConfig,
+  authMapping: AuthzMapping,
+): Array<JSONObject> => {
   const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
   const { supportedValues } = config.features.authorization;
 
   return data.map((study) => {
-     if (typeof study[authzField] !== 'string')
-      return study;
+    if (typeof study[authzField] !== 'string') return study;
     const studyAuthz = study[authzField] as string;
     let accessible: AccessLevel;
-    if (supportedValues?.pending?.enabled && dataAvailabilityField && study[dataAvailabilityField] === 'pending') {
+    if (
+      supportedValues?.pending?.enabled &&
+      dataAvailabilityField &&
+      study[dataAvailabilityField] === 'pending'
+    ) {
       accessible = AccessLevel.PENDING;
     } else if (supportedValues?.notAvailable?.enabled && !study[authzField]) {
       accessible = AccessLevel.NOT_AVAILABLE;
     } else {
-      const isAuthorized = userHasMethodForServiceOnResource('read', '*', studyAuthz, authMapping)
-        || userHasMethodForServiceOnResource('read', 'peregrine', studyAuthz, authMapping)
-        || userHasMethodForServiceOnResource('read', 'guppy', studyAuthz, authMapping)
-        || userHasMethodForServiceOnResource('read-storage', 'fence', studyAuthz, authMapping);
+      const isAuthorized =
+        userHasMethodForServiceOnResource(
+          'read',
+          '*',
+          studyAuthz,
+          authMapping,
+        ) ||
+        userHasMethodForServiceOnResource(
+          'read',
+          'peregrine',
+          studyAuthz,
+          authMapping,
+        ) ||
+        userHasMethodForServiceOnResource(
+          'read',
+          'guppy',
+          studyAuthz,
+          authMapping,
+        ) ||
+        userHasMethodForServiceOnResource(
+          'read-storage',
+          'fence',
+          studyAuthz,
+          authMapping,
+        );
       if (supportedValues?.accessible?.enabled && isAuthorized) {
         accessible = AccessLevel.ACCESSIBLE;
       } else if (supportedValues?.unaccessible?.enabled && !isAuthorized) {

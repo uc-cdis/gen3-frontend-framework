@@ -1,7 +1,7 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { CrosswalkMapping } from './types';
 import React, { useMemo } from 'react';
-import { LoadingOverlay, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
 
 interface CrosswalkTableProps {
@@ -11,6 +11,7 @@ interface CrosswalkTableProps {
   isSuccess: boolean;
   isError: boolean;
   tableMessage: string;
+  showSubmittedIdInTable: boolean;
 }
 
 const CrosswalkTable = ({
@@ -19,9 +20,19 @@ const CrosswalkTable = ({
   isFetching,
   isError,
   tableMessage,
+  showSubmittedIdInTable,
 }: CrosswalkTableProps) => {
   const cols = useMemo(() => {
     return [
+      ...(showSubmittedIdInTable
+        ? [
+            {
+              accessorKey: 'from',
+              header: mapping.source.label,
+            },
+          ]
+        : []),
+
       ...mapping.external.map((columnDef, idx) => {
         return {
           accessorKey: `to.${mapping.external[idx].id}`,
@@ -63,6 +74,13 @@ const CrosswalkTable = ({
         };
       },
     },
+    mantineTableContainerProps: ({ table }) => {
+      return {
+        sx: {
+          maxHeight: 'calc(100vh - 560px) !important;',
+        },
+      };
+    },
     mantineTableProps: {
       sx: (theme) => {
         return {
@@ -81,7 +99,6 @@ const CrosswalkTable = ({
 
   return (
     <div className="grow w-auto inline-block overflow-x-auto">
-      <LoadingOverlay visible={isFetching} />
       <MantineReactTable table={table} />
     </div>
   );

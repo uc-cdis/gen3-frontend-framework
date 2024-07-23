@@ -3,38 +3,32 @@ import { JSONPath } from 'jsonpath-plus';
 import {
   JSONObject,
   MetadataPaginationParams,
-  useGetMDSQuery,
-  useGetAggMDSQuery,
-  useCoreSelector,
   selectAuthzMappingData,
+  useCoreSelector,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
-  DiscoveryConfig,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
-import { processAllSummaries } from './utils';
+import { processAllSummaries, processAuthorizations } from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { processAuthorizations } from './utils';
-import { useDiscoveryContext } from '../../DiscoveryProvider';
+import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
+import { getManualSortingAndPagination } from '../../utils';
+import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
-
-interface QueryType {
-  term: string;
-  fields: string[];
-  combineWith: 'AND' | 'OR';
-}
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
@@ -118,24 +112,6 @@ const processAdvancedSearchTerms = (
   });
 };
 
-interface GetDataProps {
-  guidType: string;
-  maxStudies: number;
-  studyField: string;
-  discoveryConfig?: DiscoveryConfig;
-}
-
-interface GetDataResponse {
-  mdsData: JSONObject[];
-  isUninitialized: boolean;
-  isFetching: boolean;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-}
-
-type MetadataDataHook = (props: Partial<GetDataProps>) => GetDataResponse;
-
 const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
@@ -159,7 +135,9 @@ const useGetMDSData = ({
     pageSize: maxStudies,
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -219,7 +197,9 @@ const useGetAggMDSData = ({
     pageSize: maxStudies,
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
   useEffect(() => {
     if (data && isSuccess) {
       if (discoveryConfig?.features?.authorization.enabled) {
@@ -376,16 +356,6 @@ const usePagination = ({ data, pagination }: PaginationHookProps) => {
     updatePaginatedData();
   }, [data, pagination.offset, pagination.pageSize]);
 
-  useEffect(() => {
-    const updatePaginatedData = () => {
-      setPaginatedData(
-        data.slice(pagination.offset, pagination.offset + pagination.pageSize),
-      );
-    };
-
-    updatePaginatedData();
-  }, [data, pagination.offset, pagination.pageSize]);
-
   return {
     paginatedData,
   };
@@ -454,6 +424,11 @@ export const useLoadAllData = ({
   dataHook: MetadataDataHook;
 }): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  const dataGuidType = discoveryConfig?.guidType ?? guidType;
+  const dataStudyField = discoveryConfig?.studyField ?? studyField;
+  const [summaryStatistics, setSummaryStatistics] = useState<SummaryStatistics>(
+    [],
+  );
 
   const {
     mdsData,
@@ -463,11 +438,14 @@ export const useLoadAllData = ({
     isSuccess,
     isError,
   } = dataHook({
-    studyField,
-    guidType,
+    studyField: dataStudyField,
+    guidType: dataGuidType,
     maxStudies,
     discoveryConfig,
   });
+
+  const manualSortingAndPagination =
+    getManualSortingAndPagination(discoveryConfig);
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
@@ -488,18 +466,25 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
     data: searchedData,
     pagination,
   });
 
-  const { summaryStatistics } = useGetSummaryStatistics({
-    data: searchedData,
-    aggregationConfig: discoveryConfig?.aggregations,
-  });
+  useEffect(() => {
+    setSummaryStatistics(
+      processAllSummaries(searchedData, discoveryConfig?.aggregations),
+    );
+  }, [searchedData, discoveryConfig?.aggregations]);
+
+  // const { summaryStatistics } = useGetSummaryStatistics({
+  //   data: searchedData,
+  //   aggregationConfig: discoveryConfig?.aggregations,
+  // });
 
   return {
-    data: paginatedData,
+    data: manualSortingAndPagination ? paginatedData : searchedData,
     hits: searchedData.length ?? -1,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,

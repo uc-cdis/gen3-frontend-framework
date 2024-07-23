@@ -1,9 +1,9 @@
 import { isArray, toString } from 'lodash';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
-import { getTagColor } from '../utils';
+import { getTagInfo } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
@@ -33,6 +33,25 @@ export const RenderArrayCell: CellRendererFunction = ({
   }
   return <span>value</span>;
 };
+
+// Define the valid textTransform values
+const validTextTransforms: Array<CSSProperties['textTransform']> = [
+  'none',
+  'capitalize',
+  'uppercase',
+  'lowercase',
+  'full-width',
+  'full-size-kana',
+  'inherit',
+  'initial',
+  'revert',
+  'unset',
+];
+
+// Type guard function
+function isTextTransform(value: any): value is CSSProperties['textTransform'] {
+  return validTextTransforms.includes(value);
+}
 
 export const RenderArrayCellNegativePositive: CellRendererFunction = ({
   value,
@@ -74,6 +93,50 @@ export const RenderLinkCell: CellRendererFunction = ({
   );
 };
 
+const RenderYearOfBirthRestricted: CellRendererFunction = (
+  { value }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
+  const valueIfNotAvailable = params?.valueIfNotAvailable || '';
+  const content = value as string | string[];
+  if (content === undefined || content === null) {
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  }
+  if (content == '') {
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
+  }
+
+  // Check if the content is a string and represents a year less than 1935
+  let displayContent;
+  if (
+    typeof content === 'string' &&
+    !isNaN(Number(content)) &&
+    Number(content) < 1935
+  ) {
+    displayContent = '1935';
+  } else if (isArray(content)) {
+    displayContent = content
+      .map((item) => {
+        if (
+          typeof item === 'string' &&
+          !isNaN(Number(item)) &&
+          Number(item) < 1935
+        ) {
+          return '1935';
+        }
+        return item;
+      })
+      .join(', ');
+  } else {
+    displayContent = content;
+  }
+
+  return <Text tt={ttValue}>{displayContent}</Text>;
+};
+
 // given a field name, extract the value from the row using the type guards above
 
 export const RenderLinkWithURL: CellRendererFunction = (
@@ -89,7 +152,13 @@ export const RenderLinkWithURL: CellRendererFunction = (
       }`}</Text>
     );
   }
-  const rowData = getParamsValueAsString(cell?.row?.original, toString(params?.['hrefValueFromField']));
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
+  const rowData = getParamsValueAsString(
+    cell?.row?.original,
+    toString(params?.['hrefValueFromField']),
+  );
   if (rowData) {
     return (
       <a
@@ -98,7 +167,9 @@ export const RenderLinkWithURL: CellRendererFunction = (
         target="_blank"
         rel="noreferrer"
       >
-        <Text c="utility.0">{content}</Text>
+        <Text c="utility.0" tt={ttValue}>
+          {content}
+        </Text>
       </a>
     );
   }
@@ -109,7 +180,9 @@ export const RenderLinkWithURL: CellRendererFunction = (
       target="_blank"
       rel="noreferrer"
     >
-      <Text c="utility.0">{content}</Text>
+      <Text c="utility.0" tt={ttValue}>
+        {content} fgh
+      </Text>
     </a>
   );
 };
@@ -118,30 +191,20 @@ const RenderStringCell: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
   params?: JSONObject,
 ) => {
+  const ttValue = isTextTransform(params?.transform)
+    ? params?.transform
+    : undefined;
+  const valueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as string | string[];
   if (content === undefined || content === null) {
-    return (
-      <Text>
-        {`${
-          params && params?.valueIfNotAvailable
-            ? params?.valueIfNotAvailable
-            : ''
-        }`}{' '}
-      </Text>
-    );
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
   }
   if (content == '') {
-    return (
-      <Text>
-        {`${
-          params && params?.valueIfNotAvailable
-            ? params?.valueIfNotAvailable
-            : ''
-        }`}{' '}
-      </Text>
-    );
+    return <Text>{`${valueIfNotAvailable}`} </Text>;
   }
-  return <Text>{isArray(content) ? content.join(', ') : content}</Text>;
+  return (
+    <Text tt={ttValue}>{isArray(content) ? content.join(', ') : content}</Text>
+  );
 };
 
 const RenderNumberCell: CellRendererFunction = (
@@ -149,15 +212,11 @@ const RenderNumberCell: CellRendererFunction = (
   params?: JSONObject,
 ) => {
   const isContentEmpty = value === undefined || value === null;
-  const paramsValueIfNotAvailable = params && params?.valueIfNotAvailable;
+  const paramsValueIfNotAvailable = params?.valueIfNotAvailable || '';
   const content = value as number | number[];
 
   if (isContentEmpty) {
-    return (
-      <Text>{`${
-        paramsValueIfNotAvailable ? paramsValueIfNotAvailable : ''
-      }`}</Text>
-    );
+    return <Text>{`${paramsValueIfNotAvailable}`}</Text>;
   }
 
   let stringValue = '';
@@ -201,25 +260,26 @@ export const RenderTagsCell: CellRendererFunction = ({
   const content = value as TagData[];
   const { discoveryConfig: config } = useDiscoveryContext();
   return (
-    <div className="flex space-x-1 ">
-      {content.map(({ name, category }: TagData) => {
-        const color = getTagColor(category, config.tagCategories);
+    <div className="flex space-x-1 space-y-4">
+      {content.map((x: TagData) => {
+        const { color, display, label } = getTagInfo(x, config.tags);
+        if (!display) return null;
         return (
           <Badge
-            key={name}
+            key={x.name}
             role="button"
             size="lg"
             radius="sm"
             variant="filled"
             tabIndex={0}
-            aria-label={name}
+            aria-label={x.name}
             style={{
               backgroundColor: color,
               borderColor: color,
               color: 'white',
             }}
           >
-            {name}
+            {label}
           </Badge>
         );
       })}
@@ -234,6 +294,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   string: {
     default: RenderStringCell,
+    yearOfBirthRestricted: RenderYearOfBirthRestricted,
   },
   number: {
     default: RenderNumberCell,

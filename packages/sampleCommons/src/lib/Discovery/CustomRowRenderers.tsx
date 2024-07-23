@@ -7,13 +7,9 @@ import {
   RowRenderFunctionParams,
   DiscoveryRowRendererFactory,
   useDiscoveryContext,
-  getTagColor,
+  getTagInfo,
+  TagData,
 } from '@gen3/frontend';
-
-interface TagData {
-  name: string;
-  category: string;
-}
 
 const DetailsWithTagsRowRenderer = (
   { row }: RowRenderFunctionParams,
@@ -45,9 +41,11 @@ const DetailsWithTagsRowRenderer = (
         </Text>
 
         <div className="flex space-x-6 space-y-6 flex-wrap">
-          {row.original?.tags.map(({ name, category }: TagData) => {
-            const color = getTagColor(category, config.tagCategories);
-            if (name === '') return null; // no tag
+          {row.original?.tags.map((tagInfo: TagData) => {
+            const { color, display, label } = getTagInfo(tagInfo, config.tags);
+
+            if (tagInfo.name === '') return null; // no tag
+            if (!display) return null;
             return (
               <Badge
                 role="button"
@@ -55,15 +53,15 @@ const DetailsWithTagsRowRenderer = (
                 radius="sm"
                 variant="outline"
                 tabIndex={0}
-                aria-label={name}
-                key={name}
+                aria-label={tagInfo.name}
+                key={tagInfo.name}
                 style={{
                   borderColor: color,
                   borderWidth: '3px',
-                  margin: '0 0.125rem',
+                  margin: '0.125rem 0.125rem',
                 }}
               >
-                {name}
+                {label}
               </Badge>
             );
           })}

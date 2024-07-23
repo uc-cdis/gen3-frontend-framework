@@ -40,6 +40,10 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
   studyField: string;
 }
 
+interface IndexedMetadataRequestParams extends MetadataRequestParams {
+  indexKeys: Array<string>;
+}
+
 /**
  * Defines metadataApi service using a base URL and expected endpoints. Derived from gen3Api core API.
  *
@@ -49,10 +53,11 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_metadata_aggregate_metadata_get
  *  @param getMDS - Queries normal metadata service
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Query/search_metadata_metadata_get
+ *  @param getIndexAggMDS - queries the Aggregate Metadata service and returns all common passed in indexKeys
  *  @param getTags - Probably refering to Aggregate metadata service summary statistics query
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/metadata-service/master/docs/openapi.yaml#/Aggregate/get_aggregate_tags_aggregate_tags_get
  *  @param getData - Looks like a duplicate of getMDS handler. unused in ./frontend package
- *  @param getCrosswalkData - TODO not sure what the crosswalk is
+ *  @param getCrosswalkData - Maps ids from one source to another
  * @returns: A guppy download API for fetching bulk metadata
  */
 export const metadataApi = gen3Api.injectEndpoints({
@@ -71,6 +76,40 @@ export const metadataApi = gen3Api.injectEndpoints({
             return firstValue ? firstValue[params.studyField] : undefined;
           }),
           hits: response.pagination.hits,
+        };
+      },
+    }),
+    getIndexAggMDS: builder.query<
+      MetadataResponse,
+      IndexedMetadataRequestParams
+    >({
+      query: ({ pageSize }: IndexedMetadataRequestParams) => {
+        return `${GEN3_MDS_API}/aggregate/metadata?limit=${pageSize}`;
+      },
+      transformResponse: (response: Record<string, any>, _meta, params) => {
+        const dataFromIndexes = params.indexKeys.reduce((acc, key) => {
+          if (response[key]) {
+            acc.push(...response[key]);
+          }
+          return acc;
+        }, [] as Array<Record<string, any>>);
+
+        return {
+          data:
+            (dataFromIndexes.map((x: JSONObject) => {
+              const objValues = Object.values(x);
+              const objIds = Object.keys(x);
+              const firstValue = objValues
+                ? (objValues.at(0) as JSONObject)
+                : undefined;
+              return firstValue
+                ? {
+                    gen3MDSGUID: objIds.at(0),
+                    ...(firstValue[params.studyField] as Record<string, any>),
+                  }
+                : undefined;
+            }) as JSONObject[]) ?? [],
+          hits: dataFromIndexes.length,
         };
       },
     }),
@@ -155,4 +194,5 @@ export const {
   useGetDataQuery,
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
+  useGetIndexAggMDSQuery,
 } = metadataApi;

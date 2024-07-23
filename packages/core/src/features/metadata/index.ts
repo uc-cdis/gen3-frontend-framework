@@ -5,6 +5,7 @@ import {
   useGetDataQuery,
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
+  useGetIndexAggMDSQuery,
   type MetadataPaginationParams,
   type MetadataRequestParams,
   type MetadataResponse,
@@ -23,4 +24,5 @@ export {
   useGetDataQuery,
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
+  useGetIndexAggMDSQuery,
 };

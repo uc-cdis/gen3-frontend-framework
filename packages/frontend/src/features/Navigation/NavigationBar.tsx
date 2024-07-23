@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
@@ -25,7 +26,16 @@ const NavigationBar = ({
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
 
-  const mergedClassnames = mergeDefaultTailwindClassnames(classNamesDefaults, classNames);;
+  const mergedClassnames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
+
+  const router = useRouter();
+  const [current, setCurrent] = useState(router.pathname);
+  useEffect(() => {
+    setCurrent(router.pathname);
+  }, [router.pathname]);
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
@@ -45,15 +55,22 @@ const NavigationBar = ({
         )}`}
       >
         {items.map((x, index) => {
+          const selectedStyle =
+            current === x.href
+              ? 'border-accent border-b-4 border-b-accent'
+              : '';
           return (
-            <div key={`${x.name}-${index}`} className="first:border-l-1 border-r-1 border-base-lighter">
-                <NavigationBarButton
-                  tooltip={x.tooltip}
-                  icon={x.icon}
-                  href={x.href}
-                  name={x.name}
-                  classNames={x.classNames}
-                />
+            <div
+              key={`${x.name}-${index}`}
+              className={`first:border-l-1 border-r-1 border-base-lighter ${selectedStyle}`}
+            >
+              <NavigationBarButton
+                tooltip={x.tooltip}
+                icon={x.icon}
+                href={x.href}
+                name={x.name}
+                classNames={x.classNames}
+              />
             </div>
           );
         })}

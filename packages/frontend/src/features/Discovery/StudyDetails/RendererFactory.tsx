@@ -81,7 +81,7 @@ export class StudyFieldRendererFactory {
 }
 
 /**
- * Retrieve the cell renderer function for the given type and function name
+ * Retrieve the renderer function for the given type and function name
  * @param type
  * @param functionName
  */

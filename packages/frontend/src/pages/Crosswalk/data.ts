@@ -14,6 +14,7 @@ interface InitialCrosswalkInfo extends CrosswalkName {
 }
 
 export interface InitialCrosswalkConfig {
+  showSubmittedIdInTable?: boolean;
   mapping: {
     source: CrosswalkName;
     external: Array<InitialCrosswalkInfo>;
@@ -28,6 +29,7 @@ export const CrosswalkPageGetServerSideProps: GetServerSideProps<
   );
   const regex = /->/g;
   const processedConfig = {
+    showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
     mapping: {
       source: initialConfig.mapping.source,
       external: initialConfig.mapping.external.map((entry) => ({
