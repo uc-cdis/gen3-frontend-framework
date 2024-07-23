@@ -15,7 +15,7 @@ const DetailsWithTagsRowRenderer = (
   { row }: RowRenderFunctionParams,
   studyPreviewConfig?: StudyDetailsField,
 ): ReactElement => {
-  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
+  const { discoveryConfig: config } = useDiscoveryContext();
 
   if (!studyPreviewConfig) {
     return <React.Fragment></React.Fragment>;
