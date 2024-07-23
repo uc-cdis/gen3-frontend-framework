@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.32",
+  "version": "0.10.33",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -159,7 +159,7 @@
     "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
-    "@gen3/core": "^0.10.21",
+    "@gen3/core": "^0.10.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "5.0.2"
