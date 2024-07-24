@@ -11,15 +11,15 @@ const DataLibraryPanel = () => {
   useEffect(() => {
     const savedLists = data1["lists"].map(({ name, items, version }) => {
       const setList = Object.keys(items).map((key) => {
-        let [queries, files, additionalData] = [[] as Query[], [] as Files[], [] as AdditionalData[]];
-        let listType = items[key]['items'] ? "items" : "gql";
+        const [queries, files, additionalData] = [[] as Query[], [] as Files[], [] as AdditionalData[]];
+        const listType = items[key]['items'] ? "items" : "gql";
         const { name, type } = items[key];
         if (listType === 'gql') {
           queries.push({
             name,
             description: "",
             type
-          })
+          });
         }
         if (listType === 'items') {
           Object.keys(items[key]['items']).forEach((i) => {
@@ -30,16 +30,16 @@ const DataLibraryPanel = () => {
                 description,
                 type,
                 size: items?.[key]?.['items']?.[i]?.size ?? "0" as any
-              })
+              });
             } else if (items[key]['items'][i]?.['type'] === "AdditionalData") {
               const { description = "", docsUrl: documentation = "" } = items[key]['items'][i];
               additionalData.push({
                 name: i,
                 description,
                 documentation
-              })
+              });
             }
-          })
+          });
         }
         return {
           name: items[key].name,
@@ -47,7 +47,7 @@ const DataLibraryPanel = () => {
           files: files,
           additionalData: additionalData
         }
-      })
+      });
       return {
         name: name,
         setList
