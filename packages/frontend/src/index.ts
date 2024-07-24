@@ -55,6 +55,10 @@ import { WorkspacePageGetServerSideProps } from './pages/Workspace/data';
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
+// TODO Replace with AppTool plugin
+import CrosswalkPage from './pages/Crosswalk';
+import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -98,6 +102,8 @@ export {
   credentialsLogout,
   AiSearchPage,
   AISearchPageGetServerSideProps,
+  CrosswalkPage,
+  CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
 };

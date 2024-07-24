@@ -1,15 +1,15 @@
 import React, { createContext } from 'react';
-import { DiscoveryConfig } from './types';
+import { DiscoveryIndexConfig } from './types';
 import { JSONObject } from '@gen3/core';
 
 interface DiscoveryProviderValue {
-  discoveryConfig: DiscoveryConfig;
+  discoveryConfig: DiscoveryIndexConfig;
   setStudyDetails: React.Dispatch<React.SetStateAction<JSONObject>>;
   studyDetails: JSONObject;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
-  discoveryConfig: {} as DiscoveryConfig,
+  discoveryConfig: {} as DiscoveryIndexConfig,
   setStudyDetails: () => null,
   studyDetails: {} as JSONObject,
 });
@@ -17,22 +17,29 @@ const DiscoveryContext = createContext<DiscoveryProviderValue>({
 const useDiscoveryContext = () => {
   const context = React.useContext(DiscoveryContext);
   if (context === undefined) {
-    throw Error('Discovery must be used inside of a DiscoveryContext');
+    throw Error(
+      'Discovery must be used must be used inside of a DiscoveryContext',
+    );
   }
   return context;
 };
 
 const DiscoveryProvider = ({
   children,
-  discoveryConfig,
+  discoveryIndexConfig,
 }: {
   children: React.ReactNode;
-  discoveryConfig: DiscoveryConfig;
+  discoveryIndexConfig: DiscoveryIndexConfig;
 }) => {
   const [studyDetails, setStudyDetails] = React.useState<JSONObject>({});
+
   return (
     <DiscoveryContext.Provider
-      value={{ discoveryConfig, setStudyDetails, studyDetails }}
+      value={{
+        discoveryConfig: discoveryIndexConfig,
+        setStudyDetails,
+        studyDetails,
+      }}
     >
       {children}
     </DiscoveryContext.Provider>

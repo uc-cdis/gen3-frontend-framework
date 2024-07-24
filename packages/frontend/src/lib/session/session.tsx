@@ -21,6 +21,7 @@ import {
 } from '@gen3/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
+import { showNotification } from '@mantine/notifications';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
@@ -212,10 +213,19 @@ export const SessionProvider = ({
   );
 
   const endSession = async () => {
-    logoutSession().then(() => {
-      getUserDetails();
-    });
-    await router.push('/');
+    logoutSession()
+      .then(() => {
+        getUserDetails();
+      })
+      .catch((e) => {
+        showNotification({
+          title: 'Logout Error',
+          message: `error logging in ${e.message}`,
+        });
+      })
+      .finally(() => {
+        router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
+      });
   };
   /**
    * Update session value every updateSessionInterval seconds

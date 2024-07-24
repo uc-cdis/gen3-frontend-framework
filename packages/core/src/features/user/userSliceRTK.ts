@@ -23,7 +23,6 @@ export interface UserAuthResponse {
 
 const userAuthApi = coreCreateApi({
   reducerPath: 'userAuthApi',
-  refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
   baseQuery: async ({ endpoint }, { getState }) => {

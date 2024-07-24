@@ -21,7 +21,6 @@ const handleSelected = async (
   if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
   else {
     endSession && endSession();
-    // await router.push(referrer);
   }
 };
 

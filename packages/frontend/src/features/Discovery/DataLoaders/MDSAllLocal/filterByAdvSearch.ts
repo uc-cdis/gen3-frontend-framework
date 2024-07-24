@@ -1,6 +1,6 @@
 import { JSONObject } from '@gen3/core';
 import { AdvancedSearchTerms } from '../../Search/types';
-import { DiscoveryConfig, isSearchKVArray } from '../../types';
+import { DiscoveryIndexConfig, isSearchKVArray } from '../../types';
 
 /**
  *
@@ -11,7 +11,7 @@ import { DiscoveryConfig, isSearchKVArray } from '../../types';
 const filterByAdvSearch = (
   studies: JSONObject[],
   advancedSearchTerms: AdvancedSearchTerms,
-  config: DiscoveryConfig,
+  config: DiscoveryIndexConfig,
 ): JSONObject[] => {
   // leave if advanced search filters are not enabled
 

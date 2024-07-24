@@ -23,6 +23,8 @@ nodes:
         hostPort: 80
         protocol: TCP
       - containerPort: 443
+        hostPort: 443
+        protocol: TCP
 ```
 - Start the cluster:
 ```bash
@@ -48,7 +50,7 @@ Create a Kubernetes secret:
 
 confirm secret:
 ```
-kubectl get secrets --namespace ingress-nginx
+kubectl get secrets --namespace default
 ```
 Create a file ```ingress.yaml```:
 ```yaml
