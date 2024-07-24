@@ -20,7 +20,7 @@ export const GEN3_AUTHZ_API =
   process.env.NEXT_PUBLIC_GEN3_AUTHZ_API || `${GEN3_API}/authz`;
 export const GEN3_REDIRECT_URL =
   process.env.NEXT_PUBLIC_GEN3_REDIRECT_URL || GEN3_API;
-export const GEN3_WORKSPACE_STATUS_API =
+export const GEN3_WORKSPACE_API =
   process.env.NEXT_PUBLIC_GEN3_WORKSPACE_STATUS_API ||
   `${GEN3_API}/lw-workspace`;
 export const GEN3_SUBMISSION_API =
