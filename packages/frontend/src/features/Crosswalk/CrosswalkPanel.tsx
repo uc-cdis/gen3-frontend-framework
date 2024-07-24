@@ -7,16 +7,20 @@ import CrosswalkTable from './CrosswalkTable';
 
 const MIN_ROWS = 18;
 
+/**
+ *
+ */
 const buildCSVData = (
   data: Array<CrosswalkInfo>,
   mapping: CrosswalkMapping,
+  includeSourceId?: boolean,
 ) => {
   const results = [
     `${mapping.source.label},${mapping.external.map((x) => x.label).join(',')}`,
 
     ...data.map((x) => {
       const rest = mapping.external.map((columnDef) => x.to[columnDef.id]);
-      return `${x.from},${rest.join(',')}`;
+      return includeSourceId ? `${x.from},${rest.join(',')}` : rest.join(',');
     }),
   ].join('\n');
   return results;
@@ -139,7 +143,10 @@ const CrosswalkPanel = ({
             size="md"
             color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
             onClick={() => {
-              if (data) clipboard.copy(buildCSVData(data, mapping));
+              if (data)
+                clipboard.copy(
+                  buildCSVData(data, mapping, showSubmittedIdInTable),
+                );
             }}
             disabled={!data || data.length == 0}
           >
@@ -149,7 +156,10 @@ const CrosswalkPanel = ({
             variant="outline"
             size="md"
             onClick={() => {
-              if (data) downloadData(buildCSVData(data, mapping));
+              if (data)
+                downloadData(
+                  buildCSVData(data, mapping, showSubmittedIdInTable),
+                );
             }}
             disabled={!data || data.length == 0}
           >

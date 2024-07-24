@@ -22,7 +22,7 @@ export * from './hooks';
 export * from './dataAccess';
 export * from './provider';
 export * from './features/authz';
-export * from './features/metadata/metadataSlice';
+export * from './features/metadata';
 export * from './features/fence';
 export * from './features/gen3Apps';
 export * from './features/graphQL';

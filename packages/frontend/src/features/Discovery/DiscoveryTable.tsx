@@ -106,13 +106,14 @@ const DiscoveryTable = ({
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
-    mantineTableContainerProps: ({ table }) => {
-      return {
-        sx: {
-          maxHeight: 'calc(100vh - 560px) !important;',
-        },
-      };
-    },
+    // TODO: keep this to explore later
+    // mantineTableContainerProps: ({ table }) => {
+    //   return {
+    //     sx: {
+    //       maxHeight: 'calc(100vh - 560px) !important;',
+    //     },
+    //   };
+    // },
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
