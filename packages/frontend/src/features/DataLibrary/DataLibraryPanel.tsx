@@ -66,12 +66,12 @@ const DataLibraryPanel = () => {
                 <Accordion.Control><h4 className="font-bold text-lg ml-2 w-11/12">{name}</h4></Accordion.Control>
                 <Accordion.Panel>
                   <ListsTable
-                    data={[...setList.map(({ name }) => {
+                    data={[...setList.map(({ name }, j) => {
                       return {
                         title: name,
                         id: name,
-                        numFiles: setList?.[i]?.files.length || 0,
-                        isAddDataSource: setList?.[i]?.additionalData.length !== 0 ? "True" : "False"
+                        numFiles: setList?.[j]?.files.length || 0,
+                        isAddDataSource: setList?.[j]?.additionalData.length !== 0 ? "True" : "False"
                       }
                     })]}
                     setList={setList}
