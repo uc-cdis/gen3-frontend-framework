@@ -9,16 +9,31 @@ export const TruncatedStringWithTooltip: DataItemRendererFunction = ({
   value,
   params,
 }: DataItemRenderFunctionProps) => {
-  const limit = params?.maxLength ?? 15;
+  let limit = 15;
+  if (
+    typeof params?.maxLength === 'string' &&
+    !isNaN(Number(params?.maxLength))
+  ) {
+    limit = parseInt(params?.maxLength, 10);
+  } else if (typeof params?.maxLength === 'number') {
+    limit = params?.maxLength;
+  }
+
   const ttValue = isTextTransform(params?.transform)
     ? params?.transform
     : undefined;
-  const valueIfNotAvailable = params?.valueIfNotAvailable || '';
+  const valueIfNotAvailable = params?.valueIfNotAvailable ?? '';
   const content = value as string | string[];
-  if (content === undefined || content === null) {
-    return <Text>{`${valueIfNotAvailable}`} </Text>;
+
+  if (
+    content === undefined ||
+    content === null ||
+    (isArray(content) && content.length === 0)
+  ) {
+    return <Text>{`${valueIfNotAvailable}`}</Text>;
   }
-  if (content == '') {
+
+  if (content === '') {
     return <Text>{`${valueIfNotAvailable}`} </Text>;
   }
   const contentString = isArray(content) ? content.join(', ') : content;
