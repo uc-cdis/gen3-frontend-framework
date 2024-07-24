@@ -1,123 +1,84 @@
-import { Text } from '@mantine/core';
+import { Accordion, Text } from '@mantine/core';
 import { useGetDataLibraryListsQuery } from '@gen3/core';
 import { data1 } from "./utils";
 import { useEffect, useState } from 'react';
-
-interface Dataset {
-  name: string;
-  items: {
-    [key: string]: {
-      dataset_guid?: string;
-      description?: string;
-      docsUrl?: string;
-      type?: string;
-    };
-  };
-}
-
-interface Datasets {
-  [key: string]: Dataset | undefined;
-}
-
-interface Query {
-  name: string;
-  description: string;
-  type: string;
-}
-
-interface File {
-  name: string;
-  description?: string;
-  type?: string;
-  size?: string;
-}
-
-interface AdditionalData {
-  name: string;
-  description: string;
-  documentation: string;
-}
-interface DataLibraryList {
-  name: string;
-  queries: Query[];
-  files: File[];
-  additionalData: AdditionalData[];
-}
+import ListsTable from './components/ListsTable';
+import { AdditionalData, DataLibraryList, Files, Query } from './types';
 
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState([] as DataLibraryList[]);
 
   useEffect(() => {
     const savedLists = data1["lists"].map(({ name, items, version }) => {
-      const queries = Object.keys(items).reduce((acc, curr) => {
-        let listType = items[curr]['items'] ? "items" : 'gql';
-        const { name,
-          // schema_version,
-          //  data,
-          type } = items[curr];
+      const setList = Object.keys(items).map((key) => {
+        let [queries, files, additionalData] = [[] as Query[], [] as Files[], [] as AdditionalData[]];
+        let listType = items[key]['items'] ? "items" : "gql";
+        const { name, type } = items[key];
         if (listType === 'gql') {
-          acc.push({
+          queries.push({
             name,
-            // todo: include this for table
             description: "",
-            // schema_version,
-            // data,
             type
           })
         }
-        return acc
-      }, [] as any);
-      const files = Object.keys(items).reduce((acc, curr) => {
-        let listType = items[curr]['items'] ? "items" : 'gql';
         if (listType === 'items') {
-          Object.keys(items[curr]['items']).forEach((i) => {
-            if (items[curr]['items'][i]?.['type'] !== "AdditionalData") {
-              const { description = "", type = "", size = "" } = items[curr]['items'][i];
-              acc.push({
+          Object.keys(items[key]['items']).forEach((i) => {
+            if (items[key]['items'][i]?.['type'] !== "AdditionalData") {
+              const { description = "", type = "" } = items[key]['items'][i];
+              files.push({
                 name: i,
                 description,
                 type,
-                size
+                size: items?.[key]?.['items']?.[i]?.size ?? "0" as any
               })
-            }
-          });
-        }
-        return acc
-      }, [] as any);
-      const additionalData = Object.keys(items).reduce((acc, curr) => {
-        let listType = items[curr]['items'] ? "items" : 'gql';
-        if (listType === 'items') {
-          Object.keys(items[curr]['items']).forEach((i) => {
-            if (items[curr]['items'][i]?.['type'] === "AdditionalData") {
-              const { description = "", docsUrl: documentation = "" } = items[curr]['items'][i];
-              acc.push({
+            } else if (items[key]['items'][i]?.['type'] === "AdditionalData") {
+              const { description = "", docsUrl: documentation = "" } = items[key]['items'][i];
+              additionalData.push({
                 name: i,
                 description,
                 documentation
               })
             }
-          });
+          })
         }
-        return acc
-      }, [] as any);
+        return {
+          name: items[key].name,
+          queries: queries,
+          files: files,
+          additionalData: additionalData
+        }
+      })
       return {
-        name,
-        queries,
-        files,
-        additionalData
+        name: name,
+        setList
       }
     });
-    console.log('savedLists', savedLists);
-    setCurrentLists(savedLists);
+    setCurrentLists(savedLists as any);
   }, [data1]);
 
   return (
     <div>
-      <div className="flex flex-col">
-        {currentLists.map(({ name, queries, files, additionalData}) => {
-          return <div className="flex flex-col">
-                <div>{name}</div>
-
+      <div className="flex flex-col w-screen">
+        {currentLists.map(({ name, setList }, i) => {
+          return <div className="flex flex-col w-inherit">
+            <Accordion chevronPosition="left">
+              <Accordion.Item value={name} key={name}>
+                <Accordion.Control><h4 className="font-bold text-lg ml-2 w-11/12">{name}</h4></Accordion.Control>
+                <Accordion.Panel>
+                  <ListsTable
+                    data={[...setList.map(({ name }) => {
+                      return {
+                        title: name,
+                        id: name,
+                        numFiles: setList?.[i]?.files.length || 0,
+                        isAddDataSource: setList?.[i]?.additionalData.length !== 0 ? "True" : "False"
+                      }
+                    })]}
+                    setList={setList}
+                  />
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
           </div>
         })}
       </div>
