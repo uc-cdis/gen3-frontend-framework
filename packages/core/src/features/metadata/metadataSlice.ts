@@ -3,14 +3,10 @@ import { gen3Api } from '../gen3';
 import Queue from 'queue';
 import { GEN3_CROSSWALK_API, GEN3_MDS_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
+import { CrosswalkInfo, IndexedMetadataFilters } from './types';
 
 export interface Metadata {
   readonly entries: Array<Record<string, unknown>>;
-}
-
-export interface CrosswalkInfo {
-  readonly from: string;
-  readonly to: Record<string, string>;
 }
 
 export type CrosswalkArray = Array<CrosswalkInfo>;
@@ -42,7 +38,22 @@ export interface MetadataRequestParams extends MetadataPaginationParams {
 
 interface IndexedMetadataRequestParams extends MetadataRequestParams {
   indexKeys: Array<string>;
+  filterEmpty?: IndexedMetadataFilters;
 }
+
+const HasEnoughData = (
+  data: Record<string, any>,
+  keys: string[],
+  limit: number,
+) => {
+  const numEmptyKeys = keys.filter(
+    (k) =>
+      Object.hasOwn(data, k) &&
+      typeof data[k] === 'string' &&
+      data[k].trim() === '',
+  ).length;
+  return numEmptyKeys < limit;
+};
 
 /**
  * Defines metadataApi service using a base URL and expected endpoints. Derived from gen3Api core API.
@@ -95,20 +106,34 @@ export const metadataApi = gen3Api.injectEndpoints({
         }, [] as Array<Record<string, any>>);
 
         return {
-          data:
-            (dataFromIndexes.map((x: JSONObject) => {
+          data: (
+            dataFromIndexes.map((x: JSONObject) => {
               const objValues = Object.values(x);
               const objIds = Object.keys(x);
-              const firstValue = objValues
+              let firstValue = objValues
                 ? (objValues.at(0) as JSONObject)
                 : undefined;
+
+              if (params?.filterEmpty) {
+                // remove any data that has < limit if defined
+                if (
+                  firstValue &&
+                  !HasEnoughData(
+                    firstValue[params.studyField] as Record<string, any>,
+                    params.filterEmpty.keys,
+                    params.filterEmpty.limit,
+                  )
+                )
+                  firstValue = undefined;
+              }
               return firstValue
                 ? {
                     gen3MDSGUID: objIds.at(0),
                     ...(firstValue[params.studyField] as Record<string, any>),
                   }
                 : undefined;
-            }) as JSONObject[]) ?? [],
+            }) as JSONObject[]
+          ).filter((x: JSONObject | undefined) => x !== undefined),
           hits: dataFromIndexes.length,
         };
       },

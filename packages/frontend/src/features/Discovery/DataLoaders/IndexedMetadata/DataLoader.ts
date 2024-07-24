@@ -7,6 +7,7 @@ import {
   selectAuthzMappingData,
   CoreState,
   type JSONObject,
+  type IndexedMetadataFilters,
 } from '@gen3/core';
 import { DiscoveryDataLoaderProps, DiscoveryIndexConfig } from '../../types';
 import { isArrayOfString } from '../../../../utils/isType';
@@ -28,6 +29,20 @@ const extractIndexArrayFromConfig = (
   }
 
   return [];
+};
+
+const extractFilterEmptyFromConfig = (
+  config?: DiscoveryIndexConfig,
+): IndexedMetadataFilters | undefined => {
+  if (!config) {
+    // throw an error or return default value
+    return undefined;
+  }
+  if (config.features?.dataLoader?.dataFetchArgs?.hasEnoughData) {
+    return config.features.dataLoader.dataFetchArgs
+      .hasEnoughData as unknown as IndexedMetadataFilters;
+  }
+  return undefined;
 };
 
 const useGetIndexedMDSData = ({
@@ -53,6 +68,7 @@ const useGetIndexedMDSData = ({
     offset: 0,
     pageSize: maxStudies,
     indexKeys: indexKeys,
+    filterEmpty: extractFilterEmptyFromConfig(discoveryConfig),
   });
 
   const authMapping = useCoreSelector((state: CoreState) =>

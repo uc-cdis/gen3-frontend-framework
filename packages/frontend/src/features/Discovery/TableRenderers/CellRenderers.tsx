@@ -7,9 +7,17 @@ import { getTagInfo } from '../utils';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
+import { TruncatedStringWithTooltip } from '../../../components/DataItems/TruncatedStringWithTooltip';
 import { JSONObject } from '@gen3/core';
 
 import { getParamsValueAsString } from '../../../utils/values';
+
+const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
+  { value }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  return <TruncatedStringWithTooltip value={value} params={params} />;
+};
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -49,9 +57,11 @@ const validTextTransforms: Array<CSSProperties['textTransform']> = [
 ];
 
 // Type guard function
-function isTextTransform(value: any): value is CSSProperties['textTransform'] {
+const isTextTransform = (
+  value: any,
+): value is CSSProperties['textTransform'] => {
   return validTextTransforms.includes(value);
-}
+};
 
 export const RenderArrayCellNegativePositive: CellRendererFunction = ({
   value,
@@ -295,6 +305,7 @@ export const Gen3DiscoveryStandardCellRenderers = {
   string: {
     default: RenderStringCell,
     yearOfBirthRestricted: RenderYearOfBirthRestricted,
+    truncated: TruncatedStringWithTooltipCellRenderer,
   },
   number: {
     default: RenderNumberCell,

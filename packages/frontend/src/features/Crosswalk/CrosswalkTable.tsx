@@ -74,13 +74,13 @@ const CrosswalkTable = ({
         };
       },
     },
-    mantineTableContainerProps: ({ table }) => {
-      return {
-        sx: {
-          maxHeight: 'calc(100vh - 560px) !important;',
-        },
-      };
-    },
+    // mantineTableContainerProps: ({ table }) => {
+    //   return {
+    //     sx: {
+    //       maxHeight: 'calc(100vh - 560px) !important;',
+    //     },
+    //   };
+    // },
     mantineTableProps: {
       sx: (theme) => {
         return {
