@@ -16,8 +16,13 @@ const buildCSVData = (
   includeSourceId?: boolean,
 ) => {
   const results = [
-    `${mapping.source.label},${mapping.external.map((x) => x.label).join(',')}`,
-
+    // add the header
+    includeSourceId
+      ? `${mapping.source.label},${mapping.external
+          .map((x) => x.label)
+          .join(',')}`
+      : mapping.external.map((x) => x.label).join(','),
+    // add data
     ...data.map((x) => {
       const rest = mapping.external.map((columnDef) => x.to[columnDef.id]);
       return includeSourceId ? `${x.from},${rest.join(',')}` : rest.join(',');
@@ -96,7 +101,7 @@ const CrosswalkPanel = ({
       className="w-full items-start justify-start bg-base-lightest"
       align="stretch"
     >
-      <Stack align="stretch" justify="flex-start" className="p-2">
+      <Stack align="stretch" justify="flex-start" className="p-2 w-1/4">
         <Group noWrap>
           <Button
             size="md"

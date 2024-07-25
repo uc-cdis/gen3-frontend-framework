@@ -45,8 +45,8 @@ const CrosswalkTable = ({
   const table = useMantineReactTable({
     columns: cols as any[],
     data: data,
-    manualSorting: true,
-    manualPagination: true,
+    manualSorting: false,
+    manualPagination: false,
     paginateExpandedRows: false,
     rowCount: data.length,
     enableTopToolbar: false,
