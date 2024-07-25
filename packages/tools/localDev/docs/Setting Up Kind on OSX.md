@@ -46,6 +46,7 @@ nodes:
 ```
 Create a Kubernetes secret:
 ```bash
+kubectl create secret tls localhost-gen3 --cert=cert.pem --key=key.pem --namespace default
 ```
 
 confirm secret:
