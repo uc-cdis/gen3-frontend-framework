@@ -14,6 +14,7 @@ export interface FacetCardProps<T extends FacetHooks = FacetHooks> {
     readonly showPercent?: boolean;
     readonly startShowingData?: boolean;
     readonly dismissCallback?: (_arg:string) => void;
+    readonly collapse: boolean;
     readonly header?: {
         Panel: React.ElementType<any>;
         Label: React.ElementType<any>;
