@@ -4,9 +4,9 @@ metadata:
   name: revproxy-dev
 spec:
   tls:
-  - secretName: localhost-gen3
+  - secretName: gen3-chart
   rules:
-  - host: "localhost"
+  - host: "gen3-chart.local"
     http:
       paths:
         - pathType: Prefix
