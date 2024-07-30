@@ -136,7 +136,7 @@ export const data1: DataSets = {
                             "type": "PFB",
                             "name": "Serialized Data Model and Data (PFB)",
                             "size": "57 KB",
-                            "description": "Harmonized clinical data and subject-level sample file pointers. Harmonized to BDC'\''s Gen3 Data Dictionary."
+                            "description": "Harmonized clinical data and subject-level sample file pointers. Harmonized to BDC's Gen3 Data Dictionary."
                         },
                         "drs://dg.4503:b1aeee0f-fdf1-4092-b8cf-f521c6a6f3ea": {
                             "guid": "b1aeee0f-fdf1-4092-b8cf-f521c6a6f3ea",

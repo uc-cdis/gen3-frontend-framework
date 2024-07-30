@@ -21,7 +21,7 @@ const QueriesTable = ({ data, header }: QueriesTableProps) => {
                 accessorKey: 'type',
                 header: 'Type',
             },
-        ]
+        ];
     }, []);
     const table = useMantineReactTable<any>({
         columns,
@@ -32,12 +32,12 @@ const QueriesTable = ({ data, header }: QueriesTableProps) => {
         columnResizeMode: 'onEnd',
     });
 
-    return <div className="flex flex-col ml-8 w-inherit">
-        <span className="text-lg font-bold">{header}</span>
+    return <div className='flex flex-col ml-8 w-inherit'>
+        <span className='text-lg font-bold'>{header}</span>
         <div>
             <MantineReactTable table={table} />
         </div>
-    </div>
-}
+    </div>;
+};
 
-export default QueriesTable
+export default QueriesTable;
