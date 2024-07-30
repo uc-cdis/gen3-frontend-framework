@@ -9,7 +9,7 @@ const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState([] as DataLibraryList[]);
 
   useEffect(() => {
-    const savedLists = data1["lists"].map(({ name, items, version }) => {
+    const savedLists = data1["lists"].map(({ name, items }) => {
       const setList = Object.keys(items).map((key) => {
         const [queries, files, additionalData] = [[] as Query[], [] as Files[], [] as AdditionalData[]];
         const listType = items[key]['items'] ? "items" : "gql";
@@ -22,17 +22,18 @@ const DataLibraryPanel = () => {
           });
         }
         if (listType === 'items') {
-          Object.keys(items[key]['items']).forEach((i) => {
-            if (items[key]['items'][i]?.['type'] !== "AdditionalData") {
-              const { description = "", type = "" } = items[key]['items'][i];
+          Object.keys(items[key]['items'] || {}).forEach((i) => {
+            const subItems = items[key]?.['items'] ?? {};
+            if (subItems[i]['type'] !== "AdditionalData") {
+              const { description = "", type = "" } = subItems[i];
               files.push({
                 name: i,
                 description,
                 type,
-                size: items?.[key]?.['items']?.[i]?.size ?? "0" as any
+                size: subItems?.[i]?.size ?? "0" as any
               });
-            } else if (items[key]['items'][i]?.['type'] === "AdditionalData") {
-              const { description = "", docsUrl: documentation = "" } = items[key]['items'][i];
+            } else if (subItems[i]['type']  === "AdditionalData") {
+              const { description = "", docsUrl: documentation = "" } = subItems[i];
               additionalData.push({
                 name: i,
                 description,
@@ -59,7 +60,7 @@ const DataLibraryPanel = () => {
   return (
     <div>
       <div className="flex flex-col w-screen">
-        {currentLists.map(({ name, setList }, i) => {
+        {currentLists.map(({ name, setList }) => {
           return <div className="flex flex-col w-inherit">
             <Accordion chevronPosition="left">
               <Accordion.Item value={name} key={name}>

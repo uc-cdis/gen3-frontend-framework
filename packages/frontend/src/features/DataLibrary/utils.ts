@@ -14,7 +14,7 @@ interface Items {
 
 interface Dataset {
     name: string;
-    items: Items;
+    items?: Items;
     type?: string;
     schema_version?: string;
     data?: {
@@ -38,6 +38,7 @@ interface List {
         [key: string]: Dataset;
     };
 }
+
 
 interface DataSets {
     lists: List[];
