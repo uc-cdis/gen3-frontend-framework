@@ -31,6 +31,9 @@ export const GEN3_WTS_API =
 export const GEN3_DATA_LIBRARY_API =
   process.env.NEXT_PUBLIC_GEN3_DATA_LIBRARY_API ||
   `${GEN3_API}/api/v1/data-library/lists`;
+export const GEN3_CROSSWALK_API =
+  process.env.NEXT_PUBLIC_GEN3_CROSSWALK_API || `${GEN3_API}/mds`;
+
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
   UNACCESSIBLE = 'unaccessible',

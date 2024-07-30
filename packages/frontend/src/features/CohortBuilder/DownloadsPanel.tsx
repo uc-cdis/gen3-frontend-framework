@@ -92,7 +92,7 @@ interface DownloadsPanelProps {
   readonly rootPath?: string;
   readonly index: string;
   readonly totalCount: number;
-  readonly fields: string[];
+  readonly fields: ReadonlyArray<string>;
   readonly filter: FilterSet;
   readonly sort?: string[];
 }

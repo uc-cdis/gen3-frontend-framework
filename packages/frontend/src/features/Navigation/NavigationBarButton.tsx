@@ -25,7 +25,7 @@ const NavigationBarButton = ({
   classNames = {},
 }: NavigationButtonProps) => {
   const classNamesDefaults = {
-    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100',
+    root: `flex flex-col flex-nowrap px-3 py-2 pt-4 items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100`,
     label: 'pt-1.5 body-typo font-heading text-sm',
     icon: 'mt-0.5 ml-1',
     ...TooltipStyle,

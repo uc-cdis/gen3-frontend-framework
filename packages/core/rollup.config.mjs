@@ -23,7 +23,8 @@ const globals = {
   'flat': 'flat',
   'papaparse': 'papaparse',
   'redux-persist': 'reduxPersist',
-  'cookies-next': 'cookies-next'
+  'cookies-next': 'cookies-next',
+  "queue": "queue"
 };
 
 const config = [

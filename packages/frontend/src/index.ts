@@ -58,6 +58,9 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
 } from './pages/DataLibrary';
+// TODO Replace with AppTool plugin
+import CrosswalkPage from './pages/Crosswalk';
+import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -102,6 +105,8 @@ export {
   credentialsLogout,
   AiSearchPage,
   AISearchPageGetServerSideProps,
+  CrosswalkPage,
+  CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
   DataLibraryPage,
