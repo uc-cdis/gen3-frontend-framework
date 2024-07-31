@@ -53,6 +53,7 @@ const BarChart = ({ data }: ChartProps) => {
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       grid: [
+        //TODO: make this configurable
         {
           show: false,
           left: '1%',
