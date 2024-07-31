@@ -1,12 +1,12 @@
 import { RenderFactoryTypedInstance } from '../../utils/RendererFactory';
 import { ChartProps } from './types';
-import BarChart from './BarChart';
+import BarChart from './echarts/BarChart';
 import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';
 import HorizontalBarChart from './echarts/HorizontalBarChart';
 
 const DefaultChartCatalog = {
-  charts: {
+  chart: {
     bar: BarChart,
     horizontalStacked: HorizontalBarChart,
     fullPie: PieChart,

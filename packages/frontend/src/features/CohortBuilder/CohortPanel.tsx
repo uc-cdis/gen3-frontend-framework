@@ -277,7 +277,7 @@ export const CohortPanel = ({
         <div className="flex flex-col">
           <CohortManager index={index} />
 
-          <div className="flex justify-between mb-1 ml-2">
+          <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
               buttons={buttons ?? []}
@@ -302,7 +302,7 @@ export const CohortPanel = ({
             isSuccess={isSuccess}
           />
           {table?.enabled ? (
-            <div className="flex flex-col">
+            <div className="mt-2 flex flex-col">
               <div className="grid">
                 <ExplorerTable index={index} tableConfig={table} />
               </div>

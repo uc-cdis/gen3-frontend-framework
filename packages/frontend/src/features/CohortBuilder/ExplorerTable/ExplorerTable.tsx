@@ -18,12 +18,15 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { ExplorerTableProps, SummaryTable } from './types';
+import {
+  ExplorerTableProps,
+  SummaryTable,
+  CellRendererFunctionProps,
+} from './types';
 import {
   CellRendererFunction,
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 import {
   ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
@@ -197,6 +200,18 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
+    },
+    mantineTableHeadCellProps: {
+      sx: (theme) => {
+        return {
+          backgroundColor: theme.colors.table[1],
+          color: theme.colors['table-contrast'][5],
+          textAlign: 'center',
+          padding: theme.spacing.md,
+          fontWeight: 'bold',
+          fontSize: theme.fontSizes.lg,
+        };
+      },
     },
     state: {
       isLoading,
