@@ -1,5 +1,9 @@
 import { Button, Card, Group, Text } from '@mantine/core';
-import { useLaunchWorkspaceMutation, WorkspaceInfo } from '@gen3/core';
+import {
+  useLaunchWorkspaceMutation,
+  useTerminateWorkspaceMutation,
+  WorkspaceInfo,
+} from '@gen3/core';
 import { useWorkspaceContext } from './WorkspaceProvider';
 
 interface NotebookCardParams {
@@ -13,6 +17,15 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
     { isLoading: apiIsLoading, data: aiResponse, error: aiError },
     // This is the destructured mutation result
   ] = useLaunchWorkspaceMutation();
+
+  const [
+    terminateWorkspace,
+    {
+      isLoading: terminateIsLoadingg,
+      data: terminateData,
+      error: terminateError,
+    },
+  ] = useTerminateWorkspaceMutation();
 
   return (
     <Card withBorder shadow="sm" radius="md">
@@ -31,6 +44,13 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         }}
       >
         Launch
+      </Button>
+      <Button
+        onClick={async () => {
+          await terminateWorkspace();
+        }}
+      >
+        Terminate
       </Button>
     </Card>
   );
