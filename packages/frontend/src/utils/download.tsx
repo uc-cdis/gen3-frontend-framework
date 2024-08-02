@@ -29,7 +29,6 @@ const customKeys = ['expand', 'fields', 'facets'];
 const processParamObj = (key: string, value: any) =>
   includes(customKeys, key) ? [].concat(value).join() : value;
 
-
 /**
  * A notification box that is used to alert the user that their
  * selected file downloads are in progress

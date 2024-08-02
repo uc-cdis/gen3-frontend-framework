@@ -19,7 +19,6 @@ interface DRSIndexEntry {
   hints: string[];
 }
 
-
 const httpAgent = new HTTPAgent();
 const httpsAgent = new HTTPSAgent({
   rejectUnauthorized: false,
@@ -50,7 +49,6 @@ const fetchJson = async (url: string) => {
 };
 
 const main = () => {
-
   let drsResolverURL = 'https://dataguids.org';
   if (process.env.DRS_RESOLVER_URL) {
     drsResolverURL = process.env.DRS_RESOLVER_URL;
@@ -58,7 +56,6 @@ const main = () => {
 
   const {
     values: { out },
-
   } = parseArgs({
     options: {
       out: {
@@ -66,28 +63,27 @@ const main = () => {
         short: 'o',
         default: `${__dirname}`,
       },
-    }
+    },
   });
 
-
   const drsCachePath = `${out}/drsHostnames.json`;
-  fetchJson(`${drsResolverURL}/index/_dist`).then((drsIds : DRSIndexEntry[]) => {
-      if (!drsIds) {
-        throw new Error('Failed to fetch drsHostnames.json');
-      }
+  fetchJson(`${drsResolverURL}/index/_dist`).then((drsIds: DRSIndexEntry[]) => {
+    if (!drsIds) {
+      throw new Error('Failed to fetch drsHostnames.json');
+    }
 
-      const drsCache = drsIds.reduce((acc: Record<string, string>, drsId) => {
-        const ids = drsId.hints.map((hint) => hint.replace('.*' , '').replace('.*' , '').replace('\\.' , '.'));
-        ids.forEach((id) => {
-          acc[id] = drsId.host.replace('https://', '').replace('/index/', '');
-        });
-        return acc;
-      }, {});
+    const drsCache = drsIds.reduce((acc: Record<string, string>, drsId) => {
+      const ids = drsId.hints.map((hint) =>
+        hint.replace('.*', '').replace('.*', '').replace('\\.', '.'),
+      );
+      ids.forEach((id) => {
+        acc[id] = drsId.host.replace('https://', '').replace('/index/', '');
+      });
+      return acc;
+    }, {});
 
-      writeFileSync(drsCachePath, JSON.stringify(drsCache, null, 2));
-
-    });
-
+    writeFileSync(drsCachePath, JSON.stringify(drsCache, null, 2));
+  });
 };
 
 export default main;

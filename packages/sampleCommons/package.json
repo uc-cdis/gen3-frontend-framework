@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@fontsource/poppins": "^5.0.14",
+    "file-system-db": "^2.1.0",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
