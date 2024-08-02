@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  Accessibility,
   CoreState,
   fieldNameToTitle,
   JSONObject,
@@ -146,6 +147,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               return { [x.id]: x.desc ? 'desc' : 'asc' };
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
+      accessibility: Accessibility.ACCESSIBLE,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
@@ -181,6 +183,8 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    * @param {Partial<MRT_TableState<TData>>} state - State management configs
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
+
+  console.log('table data', data);
 
   const table = useMantineReactTable({
     columns: cols,

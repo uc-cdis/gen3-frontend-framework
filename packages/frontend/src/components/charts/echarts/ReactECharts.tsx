@@ -30,7 +30,7 @@ const ReactECharts = ({
 
     // Add chart resize listener
     // ResizeObserver is leading to a bit janky UX
-    function resizeChart() {
+    function resizeChart(event: any) {
       chart?.resize();
     }
     window.addEventListener('resize', resizeChart);

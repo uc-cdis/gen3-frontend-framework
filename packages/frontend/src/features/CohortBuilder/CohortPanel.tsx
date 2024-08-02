@@ -152,7 +152,11 @@ export const CohortPanel = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isSuccess } = useGetAggsQuery({
+  const {
+    data,
+    isSuccess,
+    isError: isAggsQueryError,
+  } = useGetAggsQuery({
     type: index,
     fields: fields,
     filters: cohortFilters,
@@ -250,7 +254,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  if (isError) {
+  if (isError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch cohort data" />;
   }
 
