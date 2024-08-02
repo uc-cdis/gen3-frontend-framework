@@ -11,6 +11,7 @@ import {
   isAuthenticated,
 } from '@gen3/core';
 import { TooltipStyle } from '../../features/Navigation/style';
+import { LoginButtonVisibility } from './types';
 
 const handleSelected = async (
   isAuthenticated: boolean,
@@ -29,6 +30,7 @@ interface LoginButtonProps {
   readonly hideText?: boolean;
   className?: string;
   tooltip?: string;
+  visibility: LoginButtonVisibility;
 }
 
 const LoginButton = ({
@@ -36,6 +38,7 @@ const LoginButton = ({
   hideText = false,
   className = 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent mx-2',
   tooltip,
+  visibility,
 }: LoginButtonProps) => {
   const router = useRouter();
 
@@ -49,6 +52,10 @@ const LoginButton = ({
     selectUserAuthStatus(state),
   );
   const authenticated = isAuthenticated(userStatus);
+
+  if (visibility === LoginButtonVisibility.LogoutOnly && !authenticated)
+    return null;
+
   return (
     <Tooltip
       label={tooltip}

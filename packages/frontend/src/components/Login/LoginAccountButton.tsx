@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, UnstyledButton } from '@mantine/core';
+import { UnstyledButton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import {
   selectUserAuthStatus,
