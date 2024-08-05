@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@fontsource/poppins": "^5.0.14",
-    "file-system-db": "^2.1.0",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
@@ -24,6 +23,8 @@
     "@next/mdx": "^14.1.1",
     "@types/mdx": "^2.0.11",
     "cookies-next": "^4.0.0",
+    "file-system-db": "^2.1.0",
+    "idb": "^8.0.0",
     "jose": "^4.15.4"
   },
   "devDependencies": {
