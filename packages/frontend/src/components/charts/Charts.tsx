@@ -1,5 +1,6 @@
 import { fieldNameToTitle, AggregationsData } from '@gen3/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   ActionIcon,
   Card,
@@ -10,6 +11,8 @@ import {
 } from '@mantine/core';
 import { createChart } from './createChart';
 import { SummaryChart } from './types';
+
+import { computeRowSpan } from './utils';
 
 const MAX_COLS = 3;
 
@@ -28,12 +31,13 @@ interface ChartsProps {
 
 //The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({ index, charts, data, counts, isSuccess }: ChartsProps) => {
-  const span = Math.floor(12 / MAX_COLS);
+  const spans = computeRowSpan(charts);
+
   return (
     <Grid className="w-full mx-2">
       {data &&
-        Object.keys(charts).map((field) => (
-          <Grid.Col span={span} key={`${index}-charts-${field}-col`}>
+        Object.keys(charts).map((field, index) => (
+          <Grid.Col span={spans[index]} key={`${index}-charts-${field}-col`}>
             <Card shadow={'md'}>
               <Card.Section inheritPadding py="xs">
                 <Group position="apart">

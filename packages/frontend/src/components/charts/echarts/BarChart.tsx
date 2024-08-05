@@ -3,6 +3,7 @@ import { processLabel, truncateString } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
+import type { EChartsOption } from 'echarts';
 
 interface BarChartData {
   value: number;
@@ -42,11 +43,10 @@ const processAxis = (facetData: HistogramDataArray, maxBins = 100) => {
     xAxis: [
       {
         type: 'category',
-        axisTick: { show: false },
         data: categories,
       },
     ],
-  };
+  } as EChartsOption;
 };
 
 const BarChart = ({ data }: ChartProps) => {

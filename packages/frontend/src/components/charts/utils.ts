@@ -45,7 +45,7 @@ export const processRangeKeyLabel = (key: [number, number]): string => {
 export const computeRowSpan = (
   charts: Record<string, SummaryChart>,
   numCols = 3,
-) => {
+): Array<number> => {
   const numItems = Object.keys(charts).length;
   // compute the number of rows
   const numRows = Math.ceil(numItems / numCols);

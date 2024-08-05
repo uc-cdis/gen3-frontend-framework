@@ -9,6 +9,10 @@
       "ethnicity": {
         "chartType": "horizontalStacked",
         "title": "Ethnicity"
+      },
+      "gender": {
+        "chartType": "bar",
+        "title": "Gender"
       }
     },
     "filters": {

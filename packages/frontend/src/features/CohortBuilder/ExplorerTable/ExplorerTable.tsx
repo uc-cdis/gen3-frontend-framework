@@ -184,8 +184,6 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
-  console.log('table data', data);
-
   const table = useMantineReactTable({
     columns: cols,
     data: data?.data?.[index] ?? [],
