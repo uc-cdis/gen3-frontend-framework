@@ -11,6 +11,8 @@ import {
 import { createChart } from './createChart';
 import { SummaryChart } from './types';
 
+const MAX_COLS = 3;
+
 export type ChartDataConverter = (
   data: Record<string, number>,
 ) => Record<string, number>;
@@ -26,11 +28,12 @@ interface ChartsProps {
 
 //The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({ index, charts, data, counts, isSuccess }: ChartsProps) => {
+  const span = Math.floor(12 / MAX_COLS);
   return (
-    <Grid grow className="w-full mx-2">
+    <Grid className="w-full mx-2">
       {data &&
         Object.keys(charts).map((field) => (
-          <Grid.Col span={4} key={`${index}-charts-${field}-col`}>
+          <Grid.Col span={span} key={`${index}-charts-${field}-col`}>
             <Card shadow={'md'}>
               <Card.Section inheritPadding py="xs">
                 <Group position="apart">
