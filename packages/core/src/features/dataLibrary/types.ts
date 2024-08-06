@@ -47,10 +47,13 @@ export interface AdditionalDataItem extends ListItem {
 
 export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
-export interface DataSet {
+export interface DataListEntry {
   name: string;
-  id: string;
   items: DataSetItems;
+}
+
+export interface RegisteredDataListEntry extends DataListEntry {
+  id: string;
 }
 
 export interface DataList {
@@ -59,11 +62,24 @@ export interface DataList {
   updatedTime: string;
   authz: AuthZAccess;
   version: number;
-  items: Record<string, DataSet | CohortItem>;
+  items: Record<string, RegisteredDataListEntry | CohortItem>;
 }
 
 export type DataLibrary = Record<string, DataList>;
 
+export type DataLibraryItems = {
+  lists: DataLibrary;
+};
+
 export type DataLibraryAPIResponse = {
   lists: Record<string, JSONObject>;
 };
+
+export interface LoadAllListData {
+  lists: Array<DataListEntry>;
+}
+
+export interface AddUpdateListParams {
+  id: string;
+  list: DataList;
+}

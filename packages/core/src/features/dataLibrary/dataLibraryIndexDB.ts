@@ -1,14 +1,14 @@
 import { openDB, IDBPDatabase } from 'idb';
 import { isArray } from 'lodash';
 import { JSONObject, isJSONObject } from '../../types';
-import { type DataList } from './types';
+import { type DataList, LoadAllListData } from './types';
 import { nanoid } from '@reduxjs/toolkit';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
 
 interface ReturnStatus {
-  error?: true;
+  isError?: true;
   status?: string;
   lists?: Record<string, DataList>;
 }
@@ -29,7 +29,7 @@ const getDb = async (): Promise<IDBPDatabase> => {
  * @async
  * @returns {Promise<ReturnStatus>} A promise that resolves to the status of the operation.
  */
-export const deleteAll = async (): Promise<ReturnStatus> => {
+export const deleteAllIndexDB = async (): Promise<ReturnStatus> => {
   const db = await getDb();
   const tx = db.transaction(STORE_NAME, 'readwrite');
   tx.objectStore(STORE_NAME).clear();
@@ -45,7 +45,7 @@ export const deleteAll = async (): Promise<ReturnStatus> => {
  * @returns {Promise<ReturnStatus>} The status of the deletion operation.
  * @throws {Error} If the list with the provided id does not exist.
  */
-export const deleteList = async (id: string): Promise<ReturnStatus> => {
+export const deleteListIndexDB = async (id: string): Promise<ReturnStatus> => {
   try {
     const db = await getDb();
     const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -60,11 +60,25 @@ export const deleteList = async (id: string): Promise<ReturnStatus> => {
     await tx.done;
     return { status: `${id} deleted` };
   } catch (error: unknown) {
-    return { error: true };
+    return { isError: true };
   }
 };
 
-export const addList = async (body: JSONObject): Promise<ReturnStatus> => {
+export const deleteAll = async () => {
+  try {
+    const db = await getDb();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).clear();
+    await tx.done;
+    return { status: 'list added' };
+  } catch (error: unknown) {
+    return { isError: true, status: `unable to clear library` };
+  }
+};
+
+export const addListToDataLibraryIndexDB = async (
+  body: DataList,
+): Promise<ReturnStatus> => {
   const timestamp = new Date().toJSON();
   try {
     const db = await getDb();
@@ -85,14 +99,14 @@ export const addList = async (body: JSONObject): Promise<ReturnStatus> => {
     await tx.done;
     return { status: 'list added' };
   } catch (error: unknown) {
-    return { error: true, status: `unable to add list` };
+    return { isError: true, status: `unable to add list` };
   }
 };
 
-export const updateList = async (
+export const updateListIndexDB = async (
   id: string,
-  body: JSONObject,
-  override = true,
+  list: DataList,
+  //  override = true,
 ): Promise<ReturnStatus> => {
   try {
     const db = await getDb();
@@ -107,25 +121,27 @@ export const updateList = async (
     const timestamp = new Date().toJSON();
     const updated = {
       ...listData,
+      ...list,
       version: listData?.version + 1 ?? 0,
       updated_time: timestamp,
-      ...body,
     };
 
     store.put(updated);
     await tx.done;
     return { status: 'success' };
   } catch (error: any) {
-    return { error: true, status: `unable to update list: ${id}` };
+    return { isError: true, status: `unable to update list: ${id}` };
   }
 };
 
-export const addAllList = async (body: JSONObject): Promise<ReturnStatus> => {
-  if (!Object.keys(body).includes('lists') || !isArray(body['lists'])) {
-    return { error: true, status: 'lists not found in request' };
+export const addAllListIndexDB = async (
+  data: LoadAllListData,
+): Promise<ReturnStatus> => {
+  if (!Object.keys(data).includes('lists') || !isArray(data['lists'])) {
+    return { isError: true, status: 'lists not found in request' };
   }
   const timestamp = new Date().toJSON();
-  const allLists = body['lists'].reduce((acc: JSONObject, x: unknown) => {
+  const allLists = data['lists'].reduce((acc: JSONObject, x: unknown) => {
     if (!isJSONObject(x)) return acc;
 
     const id = nanoid(10);
@@ -147,16 +163,18 @@ export const addAllList = async (body: JSONObject): Promise<ReturnStatus> => {
     const db = await getDb();
     const tx = db.transaction(STORE_NAME, 'readwrite');
     for (const [id, list] of Object.entries(allLists)) {
-      tx.objectStore(STORE_NAME).put({ id, ...(list as Object) });
+      tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
     }
     await tx.done;
     return { status: 'success' };
   } catch (error: unknown) {
-    return { error: true, status: 'unable to add lists' };
+    return { isError: true, status: 'unable to add lists' };
   }
 };
 
-export const getList = async (id: string): Promise<ReturnStatus> => {
+export const getDataLibraryListIndexDB = async (
+  id?: string,
+): Promise<ReturnStatus> => {
   try {
     const db = await getDb();
     const tx = db.transaction(STORE_NAME, 'readonly');
@@ -171,28 +189,19 @@ export const getList = async (id: string): Promise<ReturnStatus> => {
           },
         };
       } else {
-        return { error: true, status: `${id} does not exist` };
+        return { isError: true, status: `${id} does not exist` };
       }
     } else {
       const lists = (await store.getAll()) as Array<DataList>;
-      return lists.reduce((acc: Record<string, DataList>, x: DataList) => {
-        acc[x.id] = x;
-        return acc;
-      }, {});
+      return {
+        status: 'success',
+        lists: lists.reduce((acc: Record<string, DataList>, x: DataList) => {
+          acc[x.id] = x;
+          return acc;
+        }, {}),
+      };
     }
   } catch (error: unknown) {
-    return { error: true };
-  }
-};
-
-export const getLists = async () => {
-  try {
-    const db = await getDb();
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const lists = await store.getAll();
-    return { lists };
-  } catch (error: unknown) {
-    return { error: true };
+    return { isError: true };
   }
 };
