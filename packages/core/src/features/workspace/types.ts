@@ -14,8 +14,11 @@ export interface PayModel {
   current_pay_model: boolean;
 }
 
-export interface WorkspaceInfo {
+export interface WorkspaceId {
   id: string;
+}
+
+export interface WorkspaceInfo extends WorkspaceId {
   name: string;
   idleTimeLimit: number;
   memoryLimit: string;

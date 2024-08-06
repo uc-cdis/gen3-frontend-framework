@@ -6,6 +6,11 @@ import {
   useSetCurrentPayModelMutation,
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
+} from './workspaceApi';
+import {
+  setActiveWorkspaceId,
+  clearActiveWorkspaceId,
+  selectActiveWorkspaceId,
 } from './workspaceSlice';
 import {
   type WorkspaceOptionsResponse,
@@ -24,4 +29,7 @@ export {
   useSetCurrentPayModelMutation,
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
+  setActiveWorkspaceId,
+  clearActiveWorkspaceId,
+  selectActiveWorkspaceId,
 };

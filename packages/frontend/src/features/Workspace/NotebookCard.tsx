@@ -2,7 +2,10 @@ import { Button, Card, Group, Text } from '@mantine/core';
 import {
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
+  setActiveWorkspaceId,
+  clearActiveWorkspaceId,
   WorkspaceInfo,
+  useCoreDispatch,
 } from '@gen3/core';
 import { useWorkspaceContext } from './WorkspaceProvider';
 
@@ -11,10 +14,15 @@ interface NotebookCardParams {
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
   const { config } = useWorkspaceContext();
+  const dispatch = useCoreDispatch();
 
   const [
     launchTrigger,
-    { isLoading: apiIsLoading, data: aiResponse, error: aiError },
+    {
+      isLoading: workspaceLaunchIsLoading,
+      data: workspaceResponse,
+      error: workspaceLaunchError,
+    },
     // This is the destructured mutation result
   ] = useLaunchWorkspaceMutation();
 
@@ -39,15 +47,19 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         </Group>
       </Card.Section>
       <Button
+        loading={workspaceLaunchIsLoading}
         onClick={async () => {
           await launchTrigger(info.id);
+          dispatch(setActiveWorkspaceId({ id: info.id }));
         }}
       >
         Launch
       </Button>
       <Button
+        loading={terminateIsLoadingg}
         onClick={async () => {
           await terminateWorkspace();
+          dispatch(clearActiveWorkspaceId());
         }}
       >
         Terminate
