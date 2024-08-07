@@ -44,9 +44,10 @@ export const guppyApi = coreCreateApi({
   reducerPath: 'guppy',
 
   // TODO: refactor to use fetchBaseQuery
-  baseQuery: async (query: guppyApiSliceRequest, api  ) => {
-
+  baseQuery: async (query: guppyApiSliceRequest, api) => {
     const csrfToken = selectCSRFToken(api.getState() as CoreState);
+
+    console.log('csrfToken', csrfToken);
 
     let accessToken = undefined;
     if (process.env.NODE_ENV === 'development') {
@@ -60,19 +61,18 @@ export const guppyApi = coreCreateApi({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-      ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
     try {
-        const response = await fetch(`${GEN3_GUPPY_API}/graphql`, {
-          headers: headers,
-          method: 'POST',
-          body: JSON.stringify(query),
-        });
+      const response = await fetch(`${GEN3_GUPPY_API}/graphql`, {
+        headers: headers,
+        method: 'POST',
+        body: JSON.stringify(query),
+      });
       return { data: await response.json() };
     } catch (e: unknown) {
-      if (e instanceof Error)
-        return { error: e.message };
-      return { error: e};
+      if (e instanceof Error) return { error: e.message };
+      return { error: e };
     }
   },
   endpoints: () => ({}),
