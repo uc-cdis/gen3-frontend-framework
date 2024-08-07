@@ -47,8 +47,6 @@ export const guppyApi = coreCreateApi({
   baseQuery: async (query: guppyApiSliceRequest, api) => {
     const csrfToken = selectCSRFToken(api.getState() as CoreState);
 
-    console.log('csrfToken', csrfToken);
-
     let accessToken = undefined;
     if (process.env.NODE_ENV === 'development') {
       // NOTE: This cookie can only be accessed from the client side
