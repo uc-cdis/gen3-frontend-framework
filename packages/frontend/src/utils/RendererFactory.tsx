@@ -1,14 +1,15 @@
 import { ReactElement } from 'react';
 import { MRT_Cell } from 'mantine-react-table';
 
-export type RendererFunction<T> = (props: T, ...params:any[]) => ReactElement;
+export type RendererFunction<T> = (props: T, ...params: any[]) => ReactElement;
 
 export interface RendererFunctionCatalogEntry<T> {
   [key: string]: RendererFunction<T>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function DefaultCellRenderer<T>(_props: T): ReactElement {
+// TODO: add custom default renderer support in library
+export function DefaultItemRenderer<T>(_props: T): ReactElement {
   return <span>DefaultRenderer</span>;
 }
 
@@ -32,7 +33,7 @@ export class RenderFactoryTypedInstance<T>
 
   constructor() {
     this.catalog = {};
-    this.defaultRenderer = DefaultCellRenderer;
+    this.defaultRenderer = DefaultItemRenderer;
   }
 
   /**
@@ -46,11 +47,11 @@ export class RenderFactoryTypedInstance<T>
   }
 
   getRenderer(type: string, functionName: string): RendererFunction<T> {
-      if (!this.rendererExists(type, functionName)) {
-          return DefaultCellRenderer;
-      }
+    if (!this.rendererExists(type, functionName)) {
+      return DefaultItemRenderer;
+    }
 
-      return this.catalog[type][functionName];
+    return this.catalog[type][functionName];
   }
 
   /**
@@ -60,7 +61,7 @@ export class RenderFactoryTypedInstance<T>
    * @returns boolean indicating if the renderer exists
    */
   rendererExists(type: string, functionName: string): boolean {
-      return type in this.catalog && functionName in this.catalog[type];
+    return type in this.catalog && functionName in this.catalog[type];
   }
 
   /**
@@ -131,12 +132,4 @@ export class RenderFactoryTypedInstance<T>
     }
     return false;
   }
-}
-
-/**
- * Represents the props required for a cell renderer function.
- */
-export interface CellRendererFunctionProps {
-  cell: MRT_Cell;
-  params?: Record<string, unknown>;
 }
