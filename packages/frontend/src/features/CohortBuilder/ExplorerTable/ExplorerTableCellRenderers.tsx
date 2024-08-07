@@ -1,10 +1,8 @@
-import {
-  CellRendererFunctionProps,
-  RenderFactoryTypedInstance,
-} from '../../../utils/RendererFactory';
+import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import React, { ReactElement } from 'react';
 import { isArray } from 'lodash';
 import { Badge, Text } from '@mantine/core';
+import { CellRendererFunctionProps } from './types';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;

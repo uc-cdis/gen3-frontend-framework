@@ -152,7 +152,8 @@ export type FacetType =
   | 'days'
   | 'percent'
   | 'datetime'
-  | 'toggle';
+  | 'toggle' // Note these support alternative UIs
+  | 'multiselect';
 
 export interface AllowableRange {
   readonly minimum?: number;

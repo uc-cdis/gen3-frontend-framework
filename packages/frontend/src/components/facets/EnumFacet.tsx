@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {  fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle } from '@gen3/core';
 import { EnumFacetChart } from '../charts/EnumFacetChart';
 
 import {
@@ -26,24 +26,20 @@ import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import { updateFacetEnum } from './utils';
 import { DEFAULT_VISIBLE_ITEMS } from './constants';
 import {
-  FacetHooks,
-  UpdateFacetFilterHook,
-  GetEnumFacetDataFunction,
-  GetTotalCountsFunction,
   FacetCardProps,
+  FacetFilterHooks,
+  GetEnumFacetDataFunction,
 } from './types';
 
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
-import { isEqual } from 'lodash';
 import { SortType } from './types';
 
 const MAX_VALUES_TO_DISPLAY = 2048;
 
-export interface EnumFacetHooks extends FacetHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
+export interface EnumFacetHooks extends FacetFilterHooks {
+  // get the totals count by type: cases, files, genes, ssms, projects
   useGetFacetData: GetEnumFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
 }
 
 const EnumFacet = ({
@@ -68,7 +64,9 @@ const EnumFacet = ({
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortedData, setSortedData] = useState<Record<string|number, number>>({ } );
+  const [sortedData, setSortedData] = useState<Record<string | number, number>>(
+    {},
+  );
   const [sortType, setSortType] = useState<SortType>({
     type: 'alpha',
     direction: 'asc',
@@ -123,8 +121,8 @@ const EnumFacet = ({
   };
 
   const [facetChartData, setFacetChartData] = useState<{
-    filteredData: [string|number, number][];
-    filteredDataObj: Record<string|number, number>;
+    filteredData: [string | number, number][];
+    filteredDataObj: Record<string | number, number>;
     remainingValues: number;
     numberOfBarsToDisplay: number;
     isSuccess: boolean;
@@ -186,7 +184,7 @@ const EnumFacet = ({
               acc.push([curr, 0]); // count will be 0
             }
             return acc;
-          }, [] as Array<[string|number, number]>)
+          }, [] as Array<[string | number, number]>)
         : [];
 
       const remainingValues =
@@ -237,42 +235,63 @@ const EnumFacet = ({
 
   useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
-      const compareValuesAscending = ([, a]: [string|number, number], [, b]: [string|number, number]): number => a - b;
-      const compareValuesDescending = ([, a]: [string|number, number], [, b]: [string|number, number]): number => b - a;
-      const compareKeysAscending = ([a]: [string|number, number], [b]: [string|number, number]): number =>
-        typeof a === 'string' && typeof b === 'string' ? a.localeCompare(b) :
-          typeof a === 'number' && typeof b === 'number' ? a - b: 0;
+      const compareValuesAscending = (
+        [, a]: [string | number, number],
+        [, b]: [string | number, number],
+      ): number => a - b;
+      const compareValuesDescending = (
+        [, a]: [string | number, number],
+        [, b]: [string | number, number],
+      ): number => b - a;
+      const compareKeysAscending = (
+        [a]: [string | number, number],
+        [b]: [string | number, number],
+      ): number =>
+        typeof a === 'string' && typeof b === 'string'
+          ? a.localeCompare(b)
+          : typeof a === 'number' && typeof b === 'number'
+          ? a - b
+          : 0;
 
-
-      const compareKeysDescending =  ([a]: [string|number, number], [b]: [string|number, number]): number =>
-        typeof a === 'string' && typeof b === 'string' ? b.localeCompare(a) :
-          typeof a === 'number' && typeof b === 'number' ? b - a: 0;
+      const compareKeysDescending = (
+        [a]: [string | number, number],
+        [b]: [string | number, number],
+      ): number =>
+        typeof a === 'string' && typeof b === 'string'
+          ? b.localeCompare(a)
+          : typeof a === 'number' && typeof b === 'number'
+          ? b - a
+          : 0;
 
       let comparisonFn;
 
       if (sortType.type === 'value') {
-        comparisonFn = sortType.direction === 'dsc' ? compareValuesDescending : compareValuesAscending;
+        comparisonFn =
+          sortType.direction === 'dsc'
+            ? compareValuesDescending
+            : compareValuesAscending;
       } else {
-        comparisonFn = sortType.direction === 'dsc' ? compareKeysDescending : compareKeysAscending;
+        comparisonFn =
+          sortType.direction === 'dsc'
+            ? compareKeysDescending
+            : compareKeysAscending;
       }
 
       const obj = [...facetChartData.filteredData]
         .sort(comparisonFn)
-        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined).reduce((acc, [key, value]) => {
+        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
+        .reduce((acc, [key, value]) => {
           acc[key] = value;
           return acc;
-        }, {} as Record<string|number, number>);
+        }, {} as Record<string | number, number>);
 
-      const val =         Object.fromEntries(
-          [...facetChartData.filteredData]
-            .sort(comparisonFn)
-            .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
-        );
-
-
-      setSortedData(
-        obj
+      const val = Object.fromEntries(
+        [...facetChartData.filteredData]
+          .sort(comparisonFn)
+          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
       );
+
+      setSortedData(obj);
     }
   }, [
     facetChartData.filteredData,
@@ -384,10 +403,15 @@ const EnumFacet = ({
                 field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={facetChartData.cardStyle}
-                   role="group"
-                   aria-label="Filter values">
-                <LoadingOverlay visible={!isSuccess} data-testid="loading-spinner"/>
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
+                <LoadingOverlay
+                  visible={!isSuccess}
+                  data-testid="loading-spinner"
+                />
                 {facetChartData.filteredData.length == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
@@ -419,9 +443,7 @@ const EnumFacet = ({
                                 input: 'bg-base hover:bg-accent-darker',
                               }}
                               checked={
-                                (
-                                  selectedEnums && selectedEnums.includes(value)
-                                )
+                                selectedEnums && selectedEnums.includes(value)
                               }
                             />
                           </div>
