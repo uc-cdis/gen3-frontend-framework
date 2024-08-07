@@ -30,7 +30,12 @@
             "ethnicity",
             "vital_status",
             "whatever_lab_result_value"
-          ]
+          ],
+          "fieldsConfig": {
+            "gender" : {
+              "type" : "exact"
+            }
+          }
         }
       ]
     },

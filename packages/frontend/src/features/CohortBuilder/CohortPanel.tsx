@@ -200,6 +200,13 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
         },
+        exact: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
         range: {
           useGetFacetData: getRangeFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),
@@ -213,7 +220,21 @@ export const CohortPanel = ({
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
-      const facetDefs = classifyFacets(data, index, guppyConfig.fieldMapping);
+      const configFacetDefs = filters?.tabs.reduce(
+        (acc: Record<string, FacetDefinition>, tab) => {
+          return { ...tab.fieldsConfig, ...acc };
+        },
+        {},
+      );
+
+      console.log('configFacetDefs', configFacetDefs);
+
+      const facetDefs = classifyFacets(
+        data,
+        index,
+        guppyConfig.fieldMapping,
+        configFacetDefs ?? {},
+      );
       setFacetDefinitions(facetDefs);
 
       // setup summary charts since nested fields can be listed by the split field name

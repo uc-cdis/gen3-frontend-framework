@@ -5,7 +5,7 @@ import { SummaryTable } from './ExplorerTable/types';
 import { FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals } from '@gen3/core';
+import { Modals, FacetDefinition } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 
 export type FacetType =
@@ -17,21 +17,10 @@ export type FacetType =
   | 'date'
   | 'datetime';
 
-export interface FieldConfig {
-  label?: string;
-  type?: FacetType;
-  description?: string;
-  domain?: {
-    minValue?: string;
-    maxValue?: string;
-  };
-  hideMissing?: boolean;
-}
-
 export interface TabConfig {
   title: string;
   fields: ReadonlyArray<string>;
-  fieldConfigs: Record<string, FieldConfig>;
+  fieldsConfig: Record<string, FacetDefinition>;
   classNames?: StylingOverride;
 }
 

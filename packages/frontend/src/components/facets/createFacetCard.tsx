@@ -1,8 +1,9 @@
 import React from 'react';
+import { FacetDefinition } from '@gen3/core';
 import { FacetDataHooks } from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
-import { FacetDefinition } from '@gen3/core';
+import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 
 export const createFacetCard = (
@@ -35,7 +36,7 @@ export const createFacetCard = (
           ),
           range: (
             <RangeFacet
-              key={`${idPrefix}-enum-${field}`}
+              key={`${idPrefix}-range-${field}`}
               valueLabel={valueLabel}
               field={field}
               facetName={facetName}
@@ -49,7 +50,18 @@ export const createFacetCard = (
           ),
           exact: (
             <ExactValueFacet
-              key={`${idPrefix}-enum-${field}`}
+              key={`${idPrefix}-exact-${field}`}
+              field={field}
+              facetName={facetName}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              dataHooks={dataFunctions}
+            />
+          ),
+          multiselect: (
+            <MultiSelectValueFacet
+              key={`${idPrefix}-exact-${field}`}
               field={field}
               facetName={facetName}
               description={description}
