@@ -25,7 +25,7 @@ import {
   useUpdateFilters,
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
-import { FacetRequiredHooks } from '../../components/facets/types';
+import { FacetDataHooks } from '../../components/facets/types';
 import { FiltersPanel } from './FiltersPanel';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
@@ -44,7 +44,7 @@ interface TabbablePanelProps {
   filters: TabsConfig;
   tabTitle: string;
   facetDefinitions: Record<string, FacetDefinition>;
-  facetDataHooks: Record<FacetType, FacetRequiredHooks>;
+  facetDataHooks: Record<FacetType, FacetDataHooks>;
 }
 
 const TabbedPanel = ({
@@ -190,7 +190,7 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetRequiredHooks> =
+  const facetDataHooks: Record<FacetType, FacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
         enum: {

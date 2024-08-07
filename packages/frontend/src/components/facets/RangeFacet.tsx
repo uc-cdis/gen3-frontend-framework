@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { FromToRangeValues } from './types';
+import { FacetFilterHooks, FromToRangeValues } from './types';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
@@ -20,7 +20,6 @@ import {
 
 import {
   FacetCardProps,
-  FacetHooks,
   GetRangeFacetDataFunction,
   GetTotalCountsFunction,
   UpdateFacetFilterHook,
@@ -48,10 +47,7 @@ const createBucket = (
   ],
 });
 
-
-
-
-export interface RangeFacetHooks extends FacetHooks {
+export interface RangeFacetHooks extends FacetFilterHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
@@ -62,7 +58,7 @@ export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
   maximum?: number;
 }
 
-const RangeFacet= ({
+const RangeFacet = ({
   field,
   dataHooks,
   valueLabel,
@@ -82,7 +78,7 @@ const RangeFacet= ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-} : RangeFacetCardProps ) => {
+}: RangeFacetCardProps) => {
   const { data, rangeFilters, isSuccess } = dataHooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
@@ -164,7 +160,7 @@ const RangeFacet= ({
                 placeholder="min"
                 size="sm"
                 value={rangeFilters ? rangeFilters.from : minMaxValue.from}
-                onChange={(value : number | '') => {
+                onChange={(value: number | '') => {
                   updateFilters(
                     value === '' ? minimum : value,
                     minMaxValue.to ?? DEFAULT_MAXIMUM,
@@ -188,7 +184,9 @@ const RangeFacet= ({
                 }}
               />
               <div className="bg-gray mt-4 border-1">
-                {isSuccess && data && Object.values(data).length > 0 ?  Object.values(data)[0] : '...'}
+                {isSuccess && data && Object.values(data).length > 0
+                  ? Object.values(data)[0]
+                  : '...'}
               </div>
             </div>
 
