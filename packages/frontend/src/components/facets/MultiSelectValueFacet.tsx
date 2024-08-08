@@ -14,8 +14,6 @@ import {
   Excludes,
   Includes,
   trimFirstFieldNameToTitle,
-  EnumFilterValue,
-  isEnumFacetResponse,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
@@ -81,7 +79,9 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   }, [facetDataValues?.data]);
 
   useDeepCompareEffect(() => {
-    if (facetValue && instanceOfIncludesExcludes(facetValue)) {
+    if (!facetValue) {
+      setSelectedValues([]);
+    } else if (instanceOfIncludesExcludes(facetValue)) {
       const filters = facetValue.operands.map((x: number | string) =>
         x.toString(),
       );
