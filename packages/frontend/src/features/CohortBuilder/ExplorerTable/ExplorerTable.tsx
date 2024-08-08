@@ -111,6 +111,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
                 cellRendererFunc(cell, cellRendererFuncParams)
             : cellRendererFunc,
         size: columnDef?.width,
+        enableSorting: columnDef?.sortable ?? undefined,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
   }, [tableConfig]);

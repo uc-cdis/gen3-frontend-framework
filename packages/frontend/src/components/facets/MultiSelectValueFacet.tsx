@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { FacetCardProps, FacetDataHooks } from './types';
+import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
 import { ActionIcon, Group, MultiSelect, Tooltip } from '@mantine/core';
 import {
   controlsIconStyle,
@@ -14,8 +14,8 @@ import {
   Excludes,
   Includes,
   trimFirstFieldNameToTitle,
-  EnumFilterValue,
 } from '@gen3/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 type ExactValueProps = Omit<
   FacetCardProps<FacetDataHooks>,
@@ -64,43 +64,58 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
   const facetValue = dataHooks.useGetFacetFilters(field);
+  const facetDataValues = dataHooks.useGetFacetData(field) as EnumFacetResponse;
 
   const dataValues = useMemo(() => {
-    if (facetValue && instanceOfIncludesExcludes(facetValue)) {
-      return facetValue.operands.map((x) => {
+    if (facetDataValues?.data) {
+      return Object.keys(facetDataValues.data).map((key) => {
         return {
-          value: x.toString(),
-          label: x.toString(),
-          isNumber: typeof x === 'number',
+          value: key,
+          label: key,
         };
       });
     }
     return [];
+  }, [facetDataValues?.data]);
+
+  useDeepCompareEffect(() => {
+    if (!facetValue) {
+      setSelectedValues([]);
+    } else if (instanceOfIncludesExcludes(facetValue)) {
+      const filters = facetValue.operands.map((x: number | string) =>
+        x.toString(),
+      );
+      setSelectedValues(filters);
+    }
   }, [facetValue]);
 
-  const setValues = (values: EnumFilterValue) => {
-    if (values.length > 0) {
-      if (facetValue && instanceOfIncludesExcludes(facetValue)) {
-        // updating facet value
-        updateFacetFilters(field, {
-          ...facetValue,
-          operands: values,
-        });
+  useDeepCompareEffect(() => {
+    const setValues = (values: string[]) => {
+      if (values.length > 0) {
+        if (facetValue && instanceOfIncludesExcludes(facetValue)) {
+          // updating facet value
+          updateFacetFilters(field, {
+            ...facetValue,
+            operands: values,
+          });
+        }
+        if (facetValue === undefined) {
+          // TODO: Assuming Includes by default but this might change to Include|Excludes
+          updateFacetFilters(field, {
+            operator: 'in',
+            field: field,
+            operands: values,
+          });
+        }
       }
-      if (facetValue === undefined) {
-        // TODO: Assuming Includes by default but this might change to Include|Excludes
-        updateFacetFilters(field, {
-          operator: 'in',
-          field: field,
-          operands: values,
-        });
+      // no values remove the filter
+      else {
+        clearFilters(field);
       }
-    }
-    // no values remove the filter
-    else {
-      clearFilters(field);
-    }
-  };
+    };
+
+    setValues(selectedValues);
+  }, [selectedValues]);
 
   return (
     <div
@@ -123,7 +138,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         <div className="flex flex-row">
           <Tooltip label="Clear selection">
             <FacetIconButton
-              onClick={() => clearFilters(field)}
+              onClick={() => setSelectedValues([])}
               aria-label="clear selection"
             >
               <UndoIcon size="1.15em" className={controlsIconStyle} />
@@ -153,6 +168,8 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
           value={selectedValues}
           onChange={setSelectedValues}
           data={dataValues}
+          searchable
+          maxDropdownHeight={200}
         />
       </div>
     </div>

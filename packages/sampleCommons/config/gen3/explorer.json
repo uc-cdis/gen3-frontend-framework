@@ -33,7 +33,7 @@
           ],
           "fieldsConfig": {
             "gender" : {
-              "type" : "exact"
+              "type" : "multiselect"
             }
           }
         }
@@ -56,7 +56,12 @@
         "race",
         "ethnicity",
         "whatever_lab_result_value"
-      ]
+      ],
+      "columns": {
+        "whatever_lab_result_value": {
+          "sortable": false
+        }
+      }
     },
     "dropdowns": {
       "download-table": {
