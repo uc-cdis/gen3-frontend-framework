@@ -168,6 +168,8 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
           value={selectedValues}
           onChange={setSelectedValues}
           data={dataValues}
+          searchable
+          maxDropdownHeight={200}
         />
       </div>
     </div>
