@@ -19,6 +19,7 @@ export const getNavPageLayoutPropsFromConfig =
       `config/${GEN3_COMMONS_NAME}/navigation.json`,
     );
     const { topBar, navigation, type = 'original' } = navigationConfigJSON;
+
     const headerProps: HeaderProps = {
       top: topBar as unknown as TopBarProps,
       navigation: navigation as unknown as NavigationProps,

@@ -1,8 +1,9 @@
 import { fieldNameToTitle, AggregationsData } from '@gen3/core';
-import { MdClose as CloseIcon } from 'react-icons/md';
-import { useDeepCompareMemo } from 'use-deep-compare';
+//import { MdClose as CloseIcon } from 'react-icons/md';
+//import { useDeepCompareMemo } from 'use-deep-compare';
+
 import {
-  ActionIcon,
+  // ActionIcon,
   Card,
   Grid,
   Group,
@@ -14,7 +15,7 @@ import { SummaryChart } from './types';
 
 import { computeRowSpan } from './utils';
 
-const MAX_COLS = 3;
+const DEFAULT_COLS = 3;
 
 export type ChartDataConverter = (
   data: Record<string, number>,
@@ -27,11 +28,19 @@ interface ChartsProps {
   data: AggregationsData;
   isSuccess: boolean;
   isError?: boolean;
+  numCols?: number;
 }
 
 //The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
-const Charts = ({ index, charts, data, counts, isSuccess }: ChartsProps) => {
-  const spans = computeRowSpan(charts);
+const Charts = ({
+  index,
+  charts,
+  data,
+  counts,
+  isSuccess,
+  numCols = DEFAULT_COLS,
+}: ChartsProps) => {
+  const spans = computeRowSpan(charts, numCols);
 
   return (
     <Grid className="w-full mx-2">
@@ -44,9 +53,11 @@ const Charts = ({ index, charts, data, counts, isSuccess }: ChartsProps) => {
                   <Text weight={900}>
                     {charts[field].title ?? fieldNameToTitle(field)}
                   </Text>
+                  {/* // TODO: handle close/hide chart
                   <ActionIcon>
                     <CloseIcon size="1rem" />
                   </ActionIcon>
+                   */}
                 </Group>
               </Card.Section>
               <LoadingOverlay visible={!isSuccess} />

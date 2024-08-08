@@ -19,6 +19,7 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
+import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ExplorerTableProps,
   SummaryTable,
@@ -196,6 +197,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     enableTopToolbar: false,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
+    icons: TableIcons,
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },

@@ -19,3 +19,9 @@ export interface LoginConfig extends Partial<Gen3LoginPanelConfig> {
 export interface LoginSelectedProps {
   readonly handleLoginSelected: (_url: string) => void;
 }
+
+export enum LoginButtonVisibility {
+  Hidden = 'hide',
+  Visible = 'visible',
+  LogoutOnly = 'logoutOnly',
+}

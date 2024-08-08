@@ -14,6 +14,7 @@ import {
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import ErrorCard from '../../components/ErrorCard';
+import { useMediaQuery } from '@mantine/hooks';
 
 import {
   classifyFacets,
@@ -134,6 +135,15 @@ export const CohortPanel = ({
   buttons,
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
+  const isSm = useMediaQuery('(min-width: 639px)');
+  const isMd = useMediaQuery('(min-width: 1373px)');
+  const isXl = useMediaQuery('(min-width: 1600px)');
+
+  let numCols = 3;
+  if (isSm) numCols = 1;
+  if (isMd) numCols = 2;
+  if (isXl) numCols = 4;
+
   const index = guppyConfig.dataType;
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
@@ -227,8 +237,6 @@ export const CohortPanel = ({
         {},
       );
 
-      console.log('configFacetDefs', configFacetDefs);
-
       const facetDefs = classifyFacets(
         data,
         index,
@@ -276,7 +284,7 @@ export const CohortPanel = ({
   });
 
   if (isError || isAggsQueryError) {
-    return <ErrorCard message="Unable to fetch cohort data" />;
+    return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
   return (
@@ -325,6 +333,7 @@ export const CohortPanel = ({
             data={data ?? EmptyData}
             counts={counts}
             isSuccess={isSuccess}
+            numCols={numCols}
           />
           {table?.enabled ? (
             <div className="mt-2 flex flex-col">
