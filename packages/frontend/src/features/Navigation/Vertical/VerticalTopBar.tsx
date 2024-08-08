@@ -53,6 +53,7 @@ const VerticalTopBar = ({
             icon={<LoginIcon />}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
+            visibility={actions?.loginButtonVisibility}
           />
         ) : null}
         <ActionMenu items={actions.items} />
