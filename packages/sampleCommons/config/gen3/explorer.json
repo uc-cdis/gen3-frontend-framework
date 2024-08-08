@@ -33,7 +33,7 @@
           ],
           "fieldsConfig": {
             "gender" : {
-              "type" : "exact"
+              "type" : "multiselect"
             }
           }
         }

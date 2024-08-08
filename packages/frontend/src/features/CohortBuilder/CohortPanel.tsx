@@ -203,6 +203,7 @@ export const CohortPanel = ({
   const facetDataHooks: Record<FacetType, FacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
+        // TODO: see if there a better way to do this
         enum: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),
@@ -211,6 +212,13 @@ export const CohortPanel = ({
           useTotalCounts: undefined,
         },
         exact: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        multiselect: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),

@@ -78,6 +78,12 @@ export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: EnumFilterValue;
 }
 
+export function isEnumFacetResponse(
+  facetResponse: FacetResponse,
+): facetResponse is EnumFacetResponse {
+  return 'enumFilters' in facetResponse;
+}
+
 export interface RangeFacetResponse extends FacetResponse {
   readonly rangeFilters?: FromToRange<number>;
 }
