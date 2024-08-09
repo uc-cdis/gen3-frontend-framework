@@ -27,6 +27,7 @@ const globals = {
   tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
+  glob: 'glob',
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
@@ -135,7 +136,7 @@ const config = [
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss(), sourcemaps()],
+    plugins: [dts(), postcss()],
   },
 ];
 

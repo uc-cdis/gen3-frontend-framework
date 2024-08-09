@@ -21,4 +21,12 @@ export class ContentDatabase {
   ): Promise<T> {
     return this.store.get(filepath);
   }
+
+  public async getAll<T extends Record<string, any>>(
+    filepath: string,
+    filter: string,
+  ): Promise<Array<T>> {
+    //   Array<Promise<T>>
+    return this.store.getAll(filepath, filter);
+  }
 }

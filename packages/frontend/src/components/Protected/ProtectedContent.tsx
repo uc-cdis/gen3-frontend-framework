@@ -1,19 +1,18 @@
 import React, { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from '../../lib/session/session';
-import { Center, LoadingOverlay, Paper, Text } from '@mantine/core';
+import { Center, Loader, Paper, Text } from '@mantine/core';
 
 interface ProtectedContentProps {
   children?: ReactNode;
   referer?: string;
 }
 
-
 const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const router = useRouter();
 
   let redirect = referer;
-  if (!referer  && typeof window !== 'undefined') {
+  if (!referer && typeof window !== 'undefined') {
     // route not available on SSR
     redirect = router.asPath;
   }
@@ -30,11 +29,10 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const { status, pending } = useSession(true, onUnauthenticated);
   if (status !== 'issued') {
     // not logged in
-    if (pending) return <LoadingOverlay visible={pending} />;
+    if (pending) return <Loader />;
     else
       return (
-       <div className="w-full h-full relative">
-          <LoadingOverlay visible={pending} />
+        <div className="w-full h-full relative">
           <Center>
             <Paper shadow="md" p="md">
               <Text>

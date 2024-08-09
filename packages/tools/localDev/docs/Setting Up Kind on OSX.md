@@ -85,3 +85,25 @@ add to cluster:
   kubectl apply -f ingress.yaml
 ```
 start gen3-helm
+
+
+## Additional Notes
+To check the contents of a certificate:
+```bash
+kubectl get secret localhost-gen3 -n default -o json | jq '."data"."tls.crt"'| sed 's/"//g'| base64 -d | openssl x509  -text -noout
+```
+
+To get all ingresses
+```bash
+kubectl get ingress --all-namespaces
+```
+
+Ingress configuration
+```bash
+ kubectl get ingress revproxy-dev -o yaml
+```
+
+delete ingress
+```bash
+kubectl delete ingress revproxy-dev
+```

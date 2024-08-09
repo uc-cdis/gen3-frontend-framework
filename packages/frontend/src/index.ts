@@ -14,7 +14,7 @@ import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
-import ErrorCard from './components/ErrorCard';
+import ErrorCard from './components/MessageCards/ErrorCard';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -49,8 +49,8 @@ import Custom404Page from './pages/404/Custom404Page';
 import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacesPage from './pages/Workspace/Workspaces';
-import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
+import WorkspacePage from './pages/Workspace/Workspace';
+import { WorkspacePageGetServerSideProps } from './pages/Workspace/data';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
@@ -93,8 +93,8 @@ export {
   getNavPageLayoutPropsFromConfig,
   AuthzPage,
   AdminAuthZPageGetServerSideProps,
-  WorkspacesPage,
-  WorkspacesPageGetServerSideProps,
+  WorkspacePage,
+  WorkspacePageGetServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,

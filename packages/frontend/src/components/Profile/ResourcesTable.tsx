@@ -127,8 +127,9 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     //Disables the default flex-grow behavior of the table cells
     mantineTableHeadRowProps: {
       sx: (theme) => ({
-        backgroundColor: theme.colors.secondary[8],
+        backgroundColor: theme.colors.table[4],
         borderColor: theme.colors.base[8],
+        color: theme.colors['table-contrast'][8],
         borderWidth: '1px',
         boxShadow: 'none',
         align: 'center',
@@ -142,7 +143,6 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
-
   });
 
   return (
