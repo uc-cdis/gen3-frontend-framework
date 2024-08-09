@@ -66,12 +66,17 @@ Example of a top bar item:
 }
 ```
 
-#### b. Login Display
+#### b. Login Button Display
 
-- **showLogin**: A boolean value that determines whether to show the login option in the top bar.
+- **loginButtonVisibility**: one of 'visible', 'hidden' or 'logoutOnly'
+
+where:
+ * 'visible' - always shown, if logged in shows userId and a logout button
+ * 'logoutOnly' - only show the logoutButton when logged in
+ * 'hidded' - never show
 
 ```json
-"showLogin": true
+  "loginButtonVisibility": "logoutOnly"
 ```
 
 ### 4. Example Full Configuration
@@ -105,7 +110,7 @@ Below is an example of a full navigation configuration file combining both `navi
       },
       // More items...
     ],
-    "showLogin": true
+    "loginButtonVisibility": "visible"
   }
 }
 ```
