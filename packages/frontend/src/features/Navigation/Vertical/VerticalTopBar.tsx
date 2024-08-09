@@ -7,6 +7,7 @@ import { BiLogInCircle as LoginIcon } from 'react-icons/bi';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
+import { LoginButtonVisibility } from '../../../components/Login/types';
 
 export interface VerticalTopBarProps
   extends Pick<NavigationProps, 'logo' | 'classNames'> {
@@ -46,11 +47,12 @@ const VerticalTopBar = ({
       </div>
 
       <div className="flex items-center align-middle mr-3">
-        {actions.showLogin ? (
+        {actions.loginButtonVisibility === LoginButtonVisibility.Visible ? (
           <LoginButton
             icon={<LoginIcon />}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
+            visibility={actions?.loginButtonVisibility}
           />
         ) : null}
         <ActionMenu items={actions.items} />

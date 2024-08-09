@@ -1,11 +1,22 @@
 import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
-import { Tabs } from '@mantine/core';
+import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
+import { useGetCSRFQuery } from '@gen3/core';
 
 export const CohortBuilder = ({
   explorerConfig,
 }: CohortBuilderConfiguration) => {
+  const { isLoading } = useGetCSRFQuery();
+
+  if (isLoading) {
+    return (
+      <Center maw={400} h={100} mx="auto">
+        <Loader variant="dots" />
+      </Center>
+    );
+  }
+
   return (
     <div className="w-full">
       <Tabs

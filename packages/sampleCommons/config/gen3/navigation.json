@@ -67,6 +67,6 @@
         "name": "Documentation"
       }
     ],
-    "showLogin": true
+    "loginButtonVisibility": "visible"
   }
 }
