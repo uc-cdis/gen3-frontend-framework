@@ -41,18 +41,19 @@ export interface WorkspacePayModelResponse {
   allPayModels: PayModel[];
 }
 
-export enum WorkspaceStatus {
-  Launching = 'Launching',
-  Running = 'Running',
-  Terminating = 'Terminating',
-  Stopped = 'Stopped',
-  'Not Found' = 'Not Found',
-}
+export type WorkspaceStatus =
+  | 'Launching'
+  | 'Running'
+  | 'Terminating'
+  | 'Stopped'
+  | 'Not Found'
+  | 'Errored';
 
 export enum PodConditionType {
   PodScheduled = 'PodScheduled',
   Initialized = 'Initialized',
   ContainersReady = 'ContainersReady',
+  ProxyConnected = 'ProxyConnected',
   Ready = 'Ready',
 }
 
@@ -62,16 +63,20 @@ export enum PodStatus {
   Unknown = 'Unknown',
 }
 
+export interface WorkspaceContainerState {
+  name: string;
+  description: string;
+}
+
+export interface WorkspacePodCondition {
+  type: PodConditionType;
+  status: PodStatus;
+}
+
 export interface WorkspaceStatusResponse {
   status: WorkspaceStatus;
-  conditions: Array<{
-    type: PodConditionType;
-    status: PodStatus;
-  }>;
-  containerStates: Array<{
-    name: string;
-    description: string;
-  }>;
+  conditions: Array<WorkspacePodCondition>;
+  containerStates: Array<WorkspaceContainerState>;
   idleTimeLimit: number;
   lastActivityTime: number;
   workspaceType: string;

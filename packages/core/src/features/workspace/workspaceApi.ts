@@ -2,6 +2,7 @@ import { gen3Api } from '../gen3';
 import { GEN3_WORKSPACE_API } from '../../constants';
 import {
   PayModel,
+  PodStatus,
   WorkspaceInfo,
   WorkspaceInfoResponse,
   WorkspaceOptions,
@@ -9,10 +10,21 @@ import {
   WorkspacePayModelResponse,
   WorkspaceStatusResponse,
 } from './types';
+import { selectActiveWorkspaceStatus } from './workspaceSlice';
+import { CoreState } from '../../reducers';
 
 const WorkspaceWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Workspace', 'PayModel'],
 });
+
+export const EmptyWorkspaceStatusResponse: WorkspaceStatusResponse = {
+  status: 'Not Found',
+  conditions: [],
+  containerStates: [],
+  idleTimeLimit: 0,
+  lastActivityTime: 0,
+  workspaceType: '',
+};
 
 export const workspacesApi = WorkspaceWithTags.injectEndpoints({
   endpoints: (builder) =>
@@ -38,7 +50,43 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
         query: () => `${GEN3_WORKSPACE_API}/paymodels`,
       }),
       getWorkspaceStatus: builder.query<WorkspaceStatusResponse, void>({
-        query: () => `${GEN3_WORKSPACE_API}/status`,
+        queryFn: async (_arg0, queryApi, _extraOptions, fetchWithBQ) => {
+          const currentWorkspaceStatus = selectActiveWorkspaceStatus(
+            queryApi.getState() as CoreState,
+          );
+
+          const workspaceStatus = await fetchWithBQ(
+            `${GEN3_WORKSPACE_API}/status`,
+          );
+          if (workspaceStatus.error) {
+            return workspaceStatus;
+          }
+
+          if (
+            workspaceStatus.data === 'Running' &&
+            (currentWorkspaceStatus === 'Not Founts' ||
+              currentWorkspaceStatus === 'Running')
+          ) {
+            const proxyStatus = await fetchWithBQ(
+              `${GEN3_WORKSPACE_API}/proxy`,
+            );
+            if (!proxyStatus.error) {
+              return {
+                data: {
+                  ...(workspaceStatus.data as unknown as WorkspaceStatusResponse),
+                  status: 'Running',
+                  conditions: [
+                    {
+                      type: 'ProxyConnected',
+                      status: PodStatus.False,
+                    },
+                  ],
+                } as WorkspaceStatusResponse,
+              };
+            }
+          }
+          return { data: workspaceStatus.data as WorkspaceStatusResponse };
+        },
       }),
       launchWorkspace: builder.mutation<boolean, string>({
         query: (id) => {

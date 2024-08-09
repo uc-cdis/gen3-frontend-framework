@@ -6,22 +6,20 @@ import {
   useSetCurrentPayModelMutation,
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
+  EmptyWorkspaceStatusResponse,
 } from './workspaceApi';
 import {
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
+  setActiveWorkspaceStatus,
   selectActiveWorkspaceId,
+  selectActiveWorkspaceStatus,
 } from './workspaceSlice';
-import {
-  type WorkspaceOptionsResponse,
-  type WorkspaceInfo,
-  type PayModel,
-} from './types';
+
+export * from './types';
 
 export {
-  type WorkspaceOptionsResponse,
-  type WorkspaceInfo,
-  type PayModel,
+  EmptyWorkspaceStatusResponse,
   useGetWorkspaceOptionsQuery,
   useGetWorkspaceStatusQuery,
   useGetWorkspacePayModelsQuery,
@@ -31,5 +29,7 @@ export {
   useTerminateWorkspaceMutation,
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
+  setActiveWorkspaceStatus,
   selectActiveWorkspaceId,
+  selectActiveWorkspaceStatus,
 };
