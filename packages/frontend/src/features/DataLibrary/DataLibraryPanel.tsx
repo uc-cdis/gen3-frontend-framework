@@ -1,8 +1,16 @@
-import { Accordion } from '@mantine/core';
+import { Accordion, Button, Checkbox, TextInput } from '@mantine/core';
+import React from "react";
 import { data1 } from "./utils";
 import { useEffect, useState } from 'react';
 import ListsTable from './components/ListsTable';
 import { AdditionalData, DataLibraryList, Files, Query } from './types';
+import {
+  MdSearch as SearchIcon,
+  MdDelete as DeleteIcon,
+  MdAdd as PlusIcon,
+  MdKeyboardArrowDown
+} from 'react-icons/md';
+import { HiDotsVertical } from "react-icons/hi";
 
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState([] as DataLibraryList[]);
@@ -31,7 +39,7 @@ const DataLibraryPanel = () => {
                 type,
                 size: subItems?.[i]?.size ?? '0' as any
               });
-            } else if (subItems[i]['type']  === "AdditionalData") {
+            } else if (subItems[i]['type'] === "AdditionalData") {
               const { description = '', docsUrl: documentation = '' } = subItems[i];
               additionalData.push({
                 name: i,
@@ -58,29 +66,61 @@ const DataLibraryPanel = () => {
 
   return (
     <div>
-      <div className='flex flex-col w-screen'>
-        {currentLists.map(({ name, setList }, key) => {
-          return <div className='flex flex-col w-inherit' key={key}>
-            <Accordion chevronPosition='left'>
-              <Accordion.Item value={name} key={name}>
-                <Accordion.Control><h4 className='font-bold text-lg ml-2 w-11/12'>{name}</h4></Accordion.Control>
-                <Accordion.Panel>
-                  <ListsTable
-                    data={[...setList.map(({ name }, j) => {
-                      return {
-                        title: name,
-                        id: name,
-                        numFiles: setList?.[j]?.files.length || 0,
-                        isAddDataSource: setList?.[j]?.additionalData.length !== 0 ? 'True' : 'False'
-                      };
-                    })]}
-                    setList={setList}
-                  />
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-          </div>;
-        })}
+      <div className='flex flex-col w-fit'>
+        <h4 className='font-bold'>Search</h4>
+        <div className='flex'>
+          <div>
+            <TextInput
+              mt='md'
+              placeholder='Search...'
+              icon={<SearchIcon size="1.45em" />}
+            />
+          </div>
+          <div className='mt-5 ml-2'>
+            <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
+              <PlusIcon size='1.5em' />
+            </Button>
+          </div>
+          <div className='mt-5 ml-2'>
+            <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
+              <DeleteIcon size='1.5em' />
+            </Button>
+          </div>
+        </div>
+        <div className='flex flex-col w-1/4'>
+          {currentLists.map(({ name, setList }, key) => {
+            return <div className='flex'>
+              <div className='mt-4 ml-2'><Checkbox></Checkbox></div>
+              <div className='flex'>
+                <div className='flex flex-col w-fit' key={key}>
+                  <Accordion chevronPosition='left'>
+                    <Accordion.Item value={name} key={name}>
+                      <Accordion.Control><h4 className='text-md ml-2 w-80'>{name}</h4></Accordion.Control>
+                      <Accordion.Panel>
+                        <ListsTable
+                          data={[...setList.map(({ name }, j) => {
+                            return {
+                              title: name,
+                              id: name,
+                              numFiles: setList?.[j]?.files.length || 0,
+                              isAddDataSource: setList?.[j]?.additionalData.length !== 0 ? 'True' : 'False'
+                            };
+                          })]}
+                          setList={setList}
+                        />
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  </Accordion>
+                </div>
+                <div className='mt-6 mr-10'>
+                  <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
+                    <HiDotsVertical />
+                  </Button>
+                </div>
+              </div>
+            </div>;
+          })}
+        </div>
       </div>
     </div>
   );

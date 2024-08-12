@@ -1,5 +1,6 @@
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useEffect, useMemo } from "react";
+import React from "react";
+import { useMemo } from "react";
 
 interface FilesTableProps {
     data: any;
