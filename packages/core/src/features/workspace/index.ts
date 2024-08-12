@@ -12,6 +12,7 @@ import {
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
   setActiveWorkspaceStatus,
+  setActiveWorkspace,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
 } from './workspaceSlice';
@@ -30,6 +31,7 @@ export {
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
   setActiveWorkspaceStatus,
+  setActiveWorkspace,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
 };

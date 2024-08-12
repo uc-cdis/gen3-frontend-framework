@@ -4,6 +4,7 @@ import ProtectedContent from '../../components/Protected/ProtectedContent';
 import PaymentPanel from './PaymentPanel/PaymentPanel';
 import WorkspacePanel from './WorkspacePanel';
 import WorkspaceProvider from './WorkspaceProvider';
+import WorkspaceStatusProvider from './WorkspaceStatusProvider';
 
 interface WorkspaceProps {
   config: WorkspaceConfig;
@@ -14,10 +15,12 @@ const Workspace = ({ config }: WorkspaceProps) => {
   return (
     <ProtectedContent>
       <WorkspaceProvider config={config}>
-        <div className="w-full relative">
-          <PaymentPanel />
-          <WorkspacePanel />
-        </div>
+        <WorkspaceStatusProvider>
+          <div className="w-full relative">
+            <PaymentPanel />
+            <WorkspacePanel />
+          </div>
+        </WorkspaceStatusProvider>
       </WorkspaceProvider>
     </ProtectedContent>
   );

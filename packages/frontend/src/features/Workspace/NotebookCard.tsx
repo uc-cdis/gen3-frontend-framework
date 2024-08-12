@@ -1,39 +1,17 @@
 import { Button, Card, Group, Text } from '@mantine/core';
-import {
-  useLaunchWorkspaceMutation,
-  useTerminateWorkspaceMutation,
-  setActiveWorkspaceId,
-  clearActiveWorkspaceId,
-  WorkspaceInfo,
-  useCoreDispatch,
-} from '@gen3/core';
-import { useWorkspaceContext } from './WorkspaceProvider';
+import { WorkspaceInfo } from '@gen3/core';
+import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 interface NotebookCardParams {
   info: WorkspaceInfo;
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
-  const { config } = useWorkspaceContext();
-  const dispatch = useCoreDispatch();
-
-  const [
-    launchTrigger,
-    {
-      isLoading: workspaceLaunchIsLoading,
-      data: workspaceResponse,
-      error: workspaceLaunchError,
-    },
-    // This is the destructured mutation result
-  ] = useLaunchWorkspaceMutation();
-
-  const [
-    terminateWorkspace,
-    {
-      isLoading: terminateIsLoadingg,
-      data: terminateData,
-      error: terminateError,
-    },
-  ] = useTerminateWorkspaceMutation();
+  const {
+    startWorkspace,
+    stopWorkspace,
+    workspaceLaunchIsLoading,
+    terminateIsLoading,
+  } = useWorkspaceStatusContext();
 
   return (
     <Card withBorder shadow="sm" radius="md">
@@ -46,24 +24,24 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           <Text>Memory: {info.memoryLimit}</Text>
         </Group>
       </Card.Section>
-      <Button
-        loading={workspaceLaunchIsLoading}
-        onClick={async () => {
-          await launchTrigger(info.id);
-          dispatch(setActiveWorkspaceId({ id: info.id }));
-        }}
-      >
-        Launch
-      </Button>
-      <Button
-        loading={terminateIsLoadingg}
-        onClick={async () => {
-          await terminateWorkspace();
-          dispatch(clearActiveWorkspaceId());
-        }}
-      >
-        Terminate
-      </Button>
+      <Group>
+        <Button
+          loading={workspaceLaunchIsLoading}
+          onClick={() => {
+            startWorkspace(info.id);
+          }}
+        >
+          Launch
+        </Button>
+        <Button
+          loading={terminateIsLoading}
+          onClick={() => {
+            stopWorkspace();
+          }}
+        >
+          Terminate
+        </Button>
+      </Group>
     </Card>
   );
 };

@@ -8,6 +8,7 @@ import {
   WorkspaceOptions,
   WorkspaceOptionsResponse,
   WorkspacePayModelResponse,
+  WorkspaceStatus,
   WorkspaceStatusResponse,
 } from './types';
 import { selectActiveWorkspaceStatus } from './workspaceSlice';
@@ -18,7 +19,7 @@ const WorkspaceWithTags = gen3Api.enhanceEndpoints({
 });
 
 export const EmptyWorkspaceStatusResponse: WorkspaceStatusResponse = {
-  status: 'Not Found',
+  status: WorkspaceStatus.NotFound,
   conditions: [],
   containerStates: [],
   idleTimeLimit: 0,
@@ -63,9 +64,9 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
           }
 
           if (
-            workspaceStatus.data === 'Running' &&
-            (currentWorkspaceStatus === 'Not Founts' ||
-              currentWorkspaceStatus === 'Running')
+            workspaceStatus.data === WorkspaceStatus.Running &&
+            (currentWorkspaceStatus === WorkspaceStatus.NotFound ||
+              currentWorkspaceStatus === WorkspaceStatus.Terminating)
           ) {
             const proxyStatus = await fetchWithBQ(
               `${GEN3_WORKSPACE_API}/proxy`,
@@ -74,7 +75,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
               return {
                 data: {
                   ...(workspaceStatus.data as unknown as WorkspaceStatusResponse),
-                  status: 'Running',
+                  status: WorkspaceStatus.Running,
                   conditions: [
                     {
                       type: 'ProxyConnected',

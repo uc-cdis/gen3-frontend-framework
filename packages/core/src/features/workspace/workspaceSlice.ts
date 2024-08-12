@@ -11,7 +11,7 @@ export interface WorkspaceState {
 
 const initialState: WorkspaceState = {
   id: NO_WORKSPACE_ID,
-  status: 'Not Found',
+  status: WorkspaceStatus.NotFound,
 };
 
 const slice = createSlice({
@@ -31,6 +31,9 @@ const slice = createSlice({
     ) => {
       return { ...state, status: action.payload };
     },
+    setActiveWorkspace: (_state, action: PayloadAction<WorkspaceState>) => {
+      return { ...action.payload };
+    },
   },
 });
 
@@ -39,10 +42,12 @@ export const {
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
   setActiveWorkspaceStatus,
+  setActiveWorkspace,
 } = slice.actions;
 
 export const selectActiveWorkspaceId = (state: CoreState): string =>
   state.activeWorkspace.id;
 
-export const selectActiveWorkspaceStatus = (state: CoreState): string =>
-  state.activeWorkspace.status;
+export const selectActiveWorkspaceStatus = (
+  state: CoreState,
+): WorkspaceStatus => state.activeWorkspace.status;

@@ -41,13 +41,14 @@ export interface WorkspacePayModelResponse {
   allPayModels: PayModel[];
 }
 
-export type WorkspaceStatus =
-  | 'Launching'
-  | 'Running'
-  | 'Terminating'
-  | 'Stopped'
-  | 'Not Found'
-  | 'Errored';
+export enum WorkspaceStatus {
+  Launching = 'Launching',
+  Running = 'Running',
+  Terminating = 'Terminating',
+  Stopped = 'Stopped',
+  NotFound = 'Not Found',
+  Errored = 'Errored',
+}
 
 export enum PodConditionType {
   PodScheduled = 'PodScheduled',
@@ -77,7 +78,7 @@ export interface WorkspaceStatusResponse {
   status: WorkspaceStatus;
   conditions: Array<WorkspacePodCondition>;
   containerStates: Array<WorkspaceContainerState>;
-  idleTimeLimit: number;
+  idleTimeLimit?: number;
   lastActivityTime: number;
   workspaceType: string;
 }
