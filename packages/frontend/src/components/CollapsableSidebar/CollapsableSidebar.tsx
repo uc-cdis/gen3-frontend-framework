@@ -5,7 +5,9 @@ import {
   useComponentDefaultProps,
   useMantineTheme,
 } from '@mantine/styles';
-import { Box, extractSystemStyles } from '@mantine/core';
+// TODO: replace
+// extractSystemStyles
+import { Box } from '@mantine/core';
 import { useCollapsableSidebar } from './use-collapsable-sidebar';
 
 export interface CollapsableSidebarProps
@@ -56,7 +58,8 @@ export const CollapsableSidebar = forwardRef<
   const reduceMotion = theme.respectReducedMotion ? shouldReduceMotion : false;
 
   const duration = reduceMotion ? 0 : transitionDuration;
-  const { systemStyles, rest } = extractSystemStyles(others);
+  // TODO replace
+  // const { systemStyles, rest } = extractSystemStyles(others);
   const getCollapsableSidebarProps = useCollapsableSidebar({
     opened,
     transitionDuration: duration,
@@ -65,14 +68,19 @@ export const CollapsableSidebar = forwardRef<
   });
 
   if (duration === 0) {
-    return opened ? <Box {...rest}>{children}</Box> : null;
+    return opened ? <Box
+    //  {...rest}
+     >{children}</Box> : null;
   }
 
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     <Box
-      {...getCollapsableSidebarProps({ style, ref, ...rest, ...systemStyles })}
+      {...getCollapsableSidebarProps({ style, ref,
+        // ...rest,
+        // ...systemStyles
+      })}
     >
       <div
         style={{

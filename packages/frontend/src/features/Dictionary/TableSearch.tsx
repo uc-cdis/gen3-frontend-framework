@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
 import {
   Autocomplete,
-  AutocompleteItem,
+  // AutocompleteItem,
   Button,
   Stack,
   Group,
@@ -208,11 +208,12 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
     <>
       <Stack justify="flex-start" className="mt-2">
         <Autocomplete
-          itemComponent={(props: any) => (
-            <SuggestedItem searchTerm={searchTerm} {...props} />
-          )}
+        // TODO: replace for v7
+          // itemComponent={(props: any) => (
+          //   <SuggestedItem searchTerm={searchTerm} {...props} />
+          // )}
           data={suggestedData}
-          icon={<SearchIcon size={24} className="text-accent" />}
+          leftSection={<SearchIcon size={24} className="text-accent" />}
           placeholder={'Search in Dictionary'}
           data-testid="dictionary-textbox-search-bar"
           aria-label="Dictionary Search Input"
@@ -220,12 +221,12 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
           onChange={(value) => {
             setSearchTerm(value as string);
           }}
-          onItemSubmit={(item: AutocompleteItem) => {
-            setDictionarySearchResults({
-              term: item.value,
-              matches: getSearchResults(searchResults ?? []),
-            });
-          }}
+          // onItemSubmit={(item: AutocompleteItem) => {
+          //   setDictionarySearchResults({
+          //     term: item.value,
+          //     matches: getSearchResults(searchResults ?? []),
+          //   });
+          // }}
           classNames={{
             input: 'focus:border-2 focus:border-primary text-sm p-5',
           }}
@@ -259,8 +260,8 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
           </span>
         )}
       </Stack>
-      <Stack justify="flex-start" spacing="xs" className="mt-1">
-        <Group position="apart" align="center">
+      <Stack justify="flex-start" gap='xs' className="mt-1">
+        <Group justify="space-between" align="center">
           <span className="flex flex-col font-semibold text-sm">
             Search History
           </span>

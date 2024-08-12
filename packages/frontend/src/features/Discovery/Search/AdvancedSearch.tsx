@@ -54,7 +54,7 @@ const AdvancedSearch = ({
               setFilterState({});
               setSearchCombination(SearchCombination.and);
             }}
-            leftIcon={<UndoIcon />}
+            leftSection={<UndoIcon />}
             className="ml-2"
           >
             Reset Filters

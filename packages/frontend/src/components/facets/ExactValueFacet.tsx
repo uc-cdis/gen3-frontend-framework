@@ -175,7 +175,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       </div>
       {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
       <Group
-        spacing="xs"
+        gap="xs"
         className="px-2 py-2 max-h-96 overflow-y-auto"
         data-testid="values group"
       >

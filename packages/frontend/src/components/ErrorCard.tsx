@@ -14,7 +14,7 @@ interface ErrorMessageProps {
 const ErrorMessage: React.FunctionComponent<ErrorMessageProps> = ({
   message,
 }: ErrorMessageProps): ReactElement => (
-  <Text color="utility.4" size="md" weight="md">
+  <Text color="utility.4" size="md" fw="md">
     {message}
   </Text>
 );

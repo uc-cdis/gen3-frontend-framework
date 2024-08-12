@@ -103,10 +103,10 @@ export const DropdownWithIcon = ({
           color="primary"
           className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
-          rightIcon={RightIcon}
+          rightSection={RightIcon}
           disabled={targetButtonDisabled}
           classNames={{
-            rightIcon: 'border-l pl-1 -mr-2',
+            // rightIcon: 'border-l pl-1 -mr-2',
             root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
@@ -146,7 +146,7 @@ export const DropdownWithIcon = ({
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
-            icon={icon && icon}
+            leftSection={icon && icon}
             disabled={disabled}
           >
             {title}

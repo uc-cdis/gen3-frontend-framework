@@ -114,7 +114,7 @@ export const DownloadButton = forwardRef<
       <Tooltip disabled={!toolTip} label={toolTip}>
         <Button
           ref={ref}
-          leftIcon={showIcon && inactiveText && <FiDownload />}
+          leftSection={showIcon && inactiveText && <FiDownload />}
           disabled={disabled}
           className={
             customStyle ||

@@ -33,17 +33,15 @@ const ResultList = ({
               key: number,
             ) => {
               return (
-                <div key={key} className="flex w-full p-0.5 pl-2">
+                <div key={key} className="flex w-full p-0.5 pl-2 text-left">
                   <Text
                     size="sm"
                     truncate="end"
                     className="w-full"
-                    align="left"
                   >
                     <Highlight
                       component="button"
                       highlight={term}
-                      align="left"
                       truncate="end"
                       className="w-full hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
                       onClick={() => {

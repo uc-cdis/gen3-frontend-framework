@@ -32,7 +32,7 @@ const TopIconButton = ({
     } my-2`,
     button:
       'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
-    leftIcon: 'text-secondary-contrast-lighter pr-1',
+    leftSection: 'text-secondary-contrast-lighter pr-1',
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };

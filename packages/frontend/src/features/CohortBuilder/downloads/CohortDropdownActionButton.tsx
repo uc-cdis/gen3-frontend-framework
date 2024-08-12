@@ -65,7 +65,7 @@ const GuppyDropdownMenuItem = ({
       }}
       key={`${title}-${idx}`}
       data-testid={`${title}-${idx}`}
-      icon={icon}
+      leftSection={icon}
       disabled={disabled}
     >
       {children}
@@ -172,11 +172,11 @@ const CohortDropdownActionButton = ({
       <Menu.Target>
         <Button
           className={`text-base-lightest data-disabled:bg-base bg-primary hover:bg-primary-darker ${focusStyles}`}
-          {...(leftIcon && { leftIcon: leftIcon })}
-          rightIcon={rightIcon}
+          {...(leftIcon && { leftSection: leftIcon })}
+          rightSection={rightIcon}
           disabled={disabled}
           classNames={{
-            rightIcon: 'border-l pl-1 -mr-2',
+            // rightIcon: 'border-l pl-1 -mr-2',
             root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
@@ -205,7 +205,7 @@ const CohortDropdownActionButton = ({
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}
               data-testid={`${title}-${idx}`}
-              icon={icon && icon}
+              leftSection={icon && icon}
               disabled={disabled}
               title={title}
               idx={idx}

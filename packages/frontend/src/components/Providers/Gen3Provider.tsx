@@ -2,9 +2,10 @@ import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
 import {
   MantineProvider,
-  createEmotionCache,
-  EmotionCache,
+  // createEmotionCache,
+  // EmotionCache,
 } from '@mantine/core';
+// import { createStyles, Global } from '@mantine/emotion';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -14,17 +15,17 @@ import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
-const getEmotionCache = (): EmotionCache => {
-  // Insert mantine styles after global styles
-  const insertionPoint =
-    typeof document !== 'undefined'
-      ? document.querySelectorAll<HTMLElement>(
-          'styles[api-emotion="css-global"]',
-        )?.[-1]
-      : undefined;
+// const getEmotionCache = (): EmotionCache => {
+//   // Insert mantine styles after global styles
+//   const insertionPoint =
+//     typeof document !== 'undefined'
+//       ? document.querySelectorAll<HTMLElement>(
+//           'styles[api-emotion="css-global"]',
+//         )?.[-1]
+//       : undefined;
 
-  return createEmotionCache({ key: 'mantine', insertionPoint });
-};
+//   return createEmotionCache({ key: 'mantine', insertionPoint });
+// };
 
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
@@ -55,14 +56,14 @@ const Gen3Provider = ({
   return (
     <CoreProvider>
       <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        emotionCache={getEmotionCache()}
+        // withGlobalStyles
+        // withNormalizeCSS
+        // emotionCache={getEmotionCache()}
         theme={{
           fontFamily: fonts.fontFamily,
-          colors: {
-            ...colors,
-          },
+          // colors: {
+          //   ...colors,
+          // },
           primaryColor: 'primary',
           primaryShade: { light: 4, dark: 7 },
           breakpoints: {

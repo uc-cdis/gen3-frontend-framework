@@ -43,7 +43,7 @@ const ResourcesFilters = ({
     <div className="basis-1/4 mr-4 min-w-fit">
       <div className="flex flex-col border-1 bg-base-max border-base-light">
         <div className="bg-secondary-lighter border-base-lighter border-1 w-full py-1 px-2">
-          <Text size="lg" weight={500}>
+          <Text size="lg" fw={500}>
             Filter by Service
           </Text>
         </div>
