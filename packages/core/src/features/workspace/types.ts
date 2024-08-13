@@ -54,6 +54,7 @@ export enum PodConditionType {
   PodScheduled = 'PodScheduled',
   Initialized = 'Initialized',
   ContainersReady = 'ContainersReady',
+  PodReadyToStartContainers = 'PodReadyToStartContainers',
   ProxyConnected = 'ProxyConnected',
   Ready = 'Ready',
 }
@@ -66,7 +67,11 @@ export enum PodStatus {
 
 export interface WorkspaceContainerState {
   name: string;
-  description: string;
+  ready: boolean;
+  state:
+    | { running: { startedAt: string } }
+    | { waiting: { reason: string } }
+    | { terminated: { reason: string } };
 }
 
 export interface WorkspacePodCondition {

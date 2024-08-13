@@ -13,7 +13,8 @@ import {
   useLaunchWorkspaceMutation,
   setActiveWorkspace,
   useTerminateWorkspaceMutation,
-  PodConditionType,
+  WorkspaceStatusResponse,
+  EmptyWorkspaceStatusResponse,
 } from '@gen3/core';
 
 interface WorkspaceStatusContextValue {
@@ -24,6 +25,7 @@ interface WorkspaceStatusContextValue {
   statusError?: boolean;
   workspaceLaunchIsLoading: boolean;
   terminateIsLoading: boolean;
+  workspaceStatus: WorkspaceStatusResponse;
 }
 const WorkspaceStatusContext = createContext<WorkspaceStatusContextValue>({
   isActive: false,
@@ -32,6 +34,7 @@ const WorkspaceStatusContext = createContext<WorkspaceStatusContextValue>({
   stopWorkspace: () => null,
   workspaceLaunchIsLoading: false,
   terminateIsLoading: false,
+  workspaceStatus: EmptyWorkspaceStatusResponse,
 });
 
 export const useWorkspaceStatusContext = () => {
@@ -44,6 +47,9 @@ export const useWorkspaceStatusContext = () => {
   return context;
 };
 
+const isWorkspaceInActive = (status: WorkspaceStatus) =>
+  status === WorkspaceStatus.NotFound || status === WorkspaceStatus.Errored;
+
 // const PollingInterval: Record<WorkspaceStatus, number > = {
 //   'Not Found': 0,
 //   Launching: 1000,
@@ -55,9 +61,7 @@ export const useWorkspaceStatusContext = () => {
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [isActive, setActive] = useState<boolean>(false);
-  const [workspaceState, setWorkspaceState] = useState<WorkspaceStatus>(
-    WorkspaceStatus.NotFound,
-  );
+
   const [isConnected, setConnected] = useState<boolean>(false);
   const { data: workspaceStatusData, isError: workspaceStatusRequestError } =
     useGetWorkspaceStatusQuery(undefined, {
@@ -66,37 +70,24 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
   const [
     launchTrigger,
-    {
-      isLoading: workspaceLaunchIsLoading,
-      //   data: workspaceResponse,
-      //   error: workspaceLaunchError,
-    },
+    { isLoading: workspaceLaunchIsLoading, error: workspaceLaunchError },
     // This is the destructured mutation result
   ] = useLaunchWorkspaceMutation();
 
   const [
     terminateWorkspace,
-    {
-      isLoading: terminateIsLoading,
-      //   data: terminateData,
-      //   error: terminateError,
-    },
+    { isLoading: terminateIsLoading, error: terminateError },
   ] = useTerminateWorkspaceMutation();
 
   const dispatch = useCoreDispatch();
 
+  // update the cached status
   useEffect(() => {
     if (workspaceStatusData) {
-      if (workspaceStatusData.status === WorkspaceStatus.NotFound) {
-        setActive(false);
-        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
-      } else if (workspaceStatusData.status === WorkspaceStatus.Terminating) {
-        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-      } else {
-        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-      }
+      setActive(!isWorkspaceInActive(workspaceStatusData.status));
+      console.log('setting Active', workspaceStatusData);
+      dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     } else {
-      setActive(false);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [dispatch, workspaceStatusData]);
@@ -107,7 +98,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       dispatch(
         setActiveWorkspace({ id: id, status: WorkspaceStatus.Launching }),
       );
-      setActive(true);
+      setActive(true); // need to
     };
 
     const stopWorkspace = () => {
@@ -123,6 +114,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       workspaceLaunchIsLoading,
       terminateIsLoading,
       statusError: workspaceStatusRequestError ?? undefined,
+      workspaceStatus: workspaceStatusData,
     };
   }, [
     dispatch,
@@ -132,6 +124,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     terminateIsLoading,
     terminateWorkspace,
     workspaceLaunchIsLoading,
+    workspaceStatusData,
     workspaceStatusRequestError,
   ]);
 

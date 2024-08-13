@@ -1,18 +1,11 @@
 import React from 'react';
 import { Grid, LoadingOverlay, rem } from '@mantine/core';
-import {
-  useGetWorkspaceOptionsQuery,
-  useGetWorkspaceStatusQuery,
-  WorkspaceInfo,
-} from '@gen3/core';
+import { useGetWorkspaceOptionsQuery, WorkspaceInfo } from '@gen3/core';
 import { ErrorCard } from '../../components/MessageCards';
 import NotebookCard from './NotebookCard';
 
 const WorkspacePanel = () => {
   const { data, isLoading, isError } = useGetWorkspaceOptionsQuery();
-  const { data: workspaceStatus, isSuccess } = useGetWorkspaceStatusQuery();
-
-  console.log('workspaceStatus', workspaceStatus);
 
   if (isError) {
     return <ErrorCard message="Error loading workspace definitions" />;

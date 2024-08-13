@@ -5,17 +5,16 @@ export interface WorkspaceAdditionalInfo {
   image?: string;
 }
 
-interface StatusTitleAndDescription {
+interface TitleAndDescription {
   title: string;
   description: string;
 }
 
-export type Steps = Array<StatusTitleAndDescription>;
-
-export interface WorkspaceStatusSteps {
-  currentStep: number;
-  currentStepsStatus: 'process' | 'success' | 'error';
-  steps: Steps;
+export interface WorkspaceLaunchStatus {
+  step: number;
+  status: 'not ready' | 'processing' | 'error';
+  message?: string;
+  subSteps?: Array<TitleAndDescription>;
 }
 
 export interface WorkspaceConfig extends Record<string, any> {

@@ -13,6 +13,7 @@ import {
 } from './types';
 import { selectActiveWorkspaceStatus } from './workspaceSlice';
 import { CoreState } from '../../reducers';
+import { isFetchParseError, isHttpStatusError } from '../../types';
 
 const WorkspaceWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Workspace', 'PayModel'],
@@ -63,19 +64,34 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
             return workspaceStatus;
           }
 
+          // Seems to be if reconnect to workspace page to resync the status
+          // TODO: try to find out IF this is code is required
+          console.log('workspaceStatus.data', workspaceStatus.data);
+          const workspaceStatusData =
+            workspaceStatus.data as unknown as WorkspaceStatusResponse;
+
           if (
-            workspaceStatus.data === WorkspaceStatus.Running &&
-            (currentWorkspaceStatus === WorkspaceStatus.NotFound ||
-              currentWorkspaceStatus === WorkspaceStatus.Terminating)
+            workspaceStatusData.status === WorkspaceStatus.Running &&
+            (currentWorkspaceStatus === 'Not Found' ||
+              currentWorkspaceStatus === 'Launching')
           ) {
             const proxyStatus = await fetchWithBQ(
-              `${GEN3_WORKSPACE_API}/proxy`,
+              `${GEN3_WORKSPACE_API}/proxy/`,
             );
-            if (!proxyStatus.error) {
+            let statusError = undefined;
+            if (isFetchParseError(proxyStatus.error)) {
+              statusError = proxyStatus.error.originalStatus;
+            }
+
+            if (isHttpStatusError(proxyStatus.error)) {
+              statusError = proxyStatus.error.status;
+            }
+
+            if (statusError && statusError !== 200) {
               return {
                 data: {
-                  ...(workspaceStatus.data as unknown as WorkspaceStatusResponse),
-                  status: WorkspaceStatus.Running,
+                  ...workspaceStatusData,
+                  status: WorkspaceStatus.Launching,
                   conditions: [
                     {
                       type: 'ProxyConnected',
