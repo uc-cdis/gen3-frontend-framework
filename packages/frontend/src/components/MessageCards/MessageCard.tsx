@@ -25,10 +25,10 @@ interface CardContainerProps {
 const CardContainer: React.FunctionComponent<CardContainerProps> = ({
   children,
 }: CardContainerProps): ReactElement => (
-  <div className="flex justify-center pt-10 items-center">
+  <div className="flex justify-center pt-2 items-center">
     <Card
       shadow="sm"
-      p="lg"
+      p="md"
       className="bg-base-lightest border-2 border-base-lighter"
     >
       <Group align="center" noWrap>
@@ -42,15 +42,17 @@ interface MessageCardProps {
   message: string;
   icon?: ReactElement;
   color?: string;
+  size?: string | number;
 }
 
 const MessageCard: React.FunctionComponent<MessageCardProps> = ({
   message,
   icon,
+  size = 'lg',
   color = 'utility.5',
 }: MessageCardProps): ReactElement => (
   <CardContainer>
-    <ThemeIcon color={color} variant="outline" radius="xl" size="lg">
+    <ThemeIcon color={color} variant="outline" radius="xl" size={size}>
       {icon}
     </ThemeIcon>
     <MessageText message={message} color={color} />{' '}
