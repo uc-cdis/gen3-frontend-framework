@@ -7,6 +7,10 @@ import {
 } from '@gen3/core';
 import { WorkspaceLaunchStatus } from './types';
 
+const isTerminated = (state?: WorkspaceContainerState): boolean => {
+  return state !== undefined && 'terminated' in state.state;
+};
+
 const PodConditionIndex: Record<keyof typeof PodConditionType, number> = {
   PodScheduled: 0,
   Initialized: 1,
@@ -40,12 +44,12 @@ export const calculateCurrentStep = (
   return currentStep;
 };
 
-export const UpdateLaunchSteps = ({
+export const calculateLaunchSteps = ({
   status,
   conditions,
   containerStates,
   workspaceType,
-}: WorkspaceStatusResponse) => {
+}: Omit<WorkspaceStatusResponse, 'idleTimeLimit' | 'lastActivityTime'>) => {
   // if status is not 'Launching', or 'Stopped',
   // or we don't have conditions array, don't display steps bar
   if (
@@ -73,24 +77,21 @@ export const UpdateLaunchSteps = ({
     if (workspaceType === 'ECS') {
       if (status === 'Launching') {
         workspaceLaunchStatus.status = 'processing';
-      } else if (status !== 'Active') {
+      } else if (status !== 'Stopped') {
         workspaceLaunchStatus.status = 'error';
       }
     } else {
       const cs: Array<WorkspaceContainerState> = containerStates;
       // handle container stats
       if (
-        cs.some(
-          (element: WorkspaceContainerState) =>
-            element.state && element.state.terminated,
-        )
+        cs.some((element: WorkspaceContainerState) => isTerminated(element))
       ) {
         workspaceLaunchStatus.status = 'error';
       } else {
         // If container states are available, display detailed pod statuses
         workspaceLaunchStatus.subSteps = cs.map((c) => ({
           title: c.name,
-          description: `${c.ready}`,
+          description: `${c.ready ? 'ready' : 'pending'}`,
         }));
       }
     }

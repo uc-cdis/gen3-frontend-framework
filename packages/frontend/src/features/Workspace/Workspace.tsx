@@ -5,6 +5,8 @@ import PaymentPanel from './PaymentPanel/PaymentPanel';
 import WorkspacePanel from './WorkspacePanel';
 import WorkspaceProvider from './WorkspaceProvider';
 import WorkspaceStatusProvider from './WorkspaceStatusProvider';
+import WorkspaceLaunchProgress from './WorkspaceLaunchProgress';
+import WorkspaceNotebook from './WorkspaceNotebook';
 
 interface WorkspaceProps {
   config: WorkspaceConfig;
@@ -16,9 +18,11 @@ const Workspace = ({ config }: WorkspaceProps) => {
     <ProtectedContent>
       <WorkspaceProvider config={config}>
         <WorkspaceStatusProvider>
-          <div className="w-full relative">
+          <div className="flex flex-col grow w-full relative">
             <PaymentPanel />
+            <WorkspaceLaunchProgress />
             <WorkspacePanel />
+            <WorkspaceNotebook />
           </div>
         </WorkspaceStatusProvider>
       </WorkspaceProvider>

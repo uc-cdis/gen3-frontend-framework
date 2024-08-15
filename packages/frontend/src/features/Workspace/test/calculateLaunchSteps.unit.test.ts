@@ -1,10 +1,11 @@
 // Import required dependencies
-import { UpdateLaunchSteps } from '../ComputeWorkspaceLaunchStep';
+import { calculateLaunchSteps } from '../calculateLaunchSteps';
 import {
   PodConditionType,
   PodStatus,
   WorkspaceContainerState,
   WorkspacePodCondition,
+  WorkspaceStatus,
 } from '@gen3/core';
 
 // Test suite for UpdateLaunchSteps
@@ -30,8 +31,8 @@ describe('UpdateLaunchSteps', () => {
       },
     ];
 
-    const result = UpdateLaunchSteps({
-      status: 'Launching',
+    const result = calculateLaunchSteps({
+      status: WorkspaceStatus.Launching,
       conditions: conditions,
       containerStates: containerStates,
       workspaceType: 'ECS',
@@ -60,8 +61,8 @@ describe('UpdateLaunchSteps', () => {
       },
     ];
 
-    const result = UpdateLaunchSteps({
-      status: 'Launching',
+    const result = calculateLaunchSteps({
+      status: WorkspaceStatus.Launching,
       conditions: conditions,
       containerStates: containerStates,
     });
@@ -69,8 +70,8 @@ describe('UpdateLaunchSteps', () => {
       step: 2,
       status: 'processing',
       subSteps: [
-        { title: 'container1', description: 'true' },
-        { title: 'container2', description: 'true' },
+        { title: 'container1', description: 'ready' },
+        { title: 'container2', description: 'ready' },
       ],
     });
   });
@@ -83,9 +84,10 @@ describe('UpdateLaunchSteps', () => {
       { status: PodStatus.True, type: PodConditionType.PodScheduled },
       { status: PodStatus.True, type: PodConditionType.ProxyConnected },
     ];
-    const result = UpdateLaunchSteps({
-      status: 'Launching',
+    const result = calculateLaunchSteps({
+      status: WorkspaceStatus.Launching,
       conditions: conditions,
+      containerStates: [],
     });
     expect(result).toEqual({
       step: 4,

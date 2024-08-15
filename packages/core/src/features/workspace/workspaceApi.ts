@@ -66,7 +66,6 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
 
           // Seems to be if reconnect to workspace page to resync the status
           // TODO: try to find out IF this is code is required
-          console.log('workspaceStatus.data', workspaceStatus.data);
           const workspaceStatusData =
             workspaceStatus.data as unknown as WorkspaceStatusResponse;
 

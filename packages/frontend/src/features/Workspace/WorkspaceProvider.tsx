@@ -1,13 +1,24 @@
 import React, { createContext, ReactNode } from 'react';
 import { WorkspaceConfig } from './types';
 
-interface WorkspaceProviderValue {
-  config: WorkspaceConfig;
-}
+const WorkspaceConfigDefaults: WorkspaceConfig = {
+  launchStepIndicatorConfig: {
+    steps: [
+      { label: 'Requesting', description: 'requesting workspace resources' },
+      { label: 'Initializing', description: 'starting workspace resources' },
+      { label: 'Configuring', description: 'starting services' },
+      {
+        label: 'Connecting',
+        description: 'waiting for connecting to workspace',
+      },
+      { label: 'Ready', description: 'workspace is ready' },
+    ],
+  },
+};
 
-const WorkspaceContext = createContext<WorkspaceProviderValue>({
-  config: {} as WorkspaceConfig,
-});
+const WorkspaceContext = createContext<WorkspaceConfig>(
+  WorkspaceConfigDefaults,
+);
 
 export const useWorkspaceContext = () => {
   const context = React.useContext(WorkspaceContext);
@@ -24,8 +35,9 @@ const WorkspaceProvider = ({
   children: ReactNode;
   config: WorkspaceConfig;
 }) => {
+  const mergedConfig = { ...WorkspaceConfigDefaults, ...config };
   return (
-    <WorkspaceContext.Provider value={{ config }}>
+    <WorkspaceContext.Provider value={mergedConfig}>
       {children}
     </WorkspaceContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { Button, Card, Group, Text } from '@mantine/core';
-import { WorkspaceInfo } from '@gen3/core';
+import { WorkspaceInfo, WorkspaceStatus } from '@gen3/core';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 interface NotebookCardParams {
@@ -11,6 +11,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
     stopWorkspace,
     workspaceLaunchIsLoading,
     terminateIsLoading,
+    workspaceStatus: { status },
   } = useWorkspaceStatusContext();
 
   return (
@@ -27,6 +28,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <Group>
         <Button
           loading={workspaceLaunchIsLoading}
+          disabled={status !== WorkspaceStatus.NotFound}
           onClick={() => {
             startWorkspace(info.id);
           }}
@@ -34,7 +36,8 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           Launch
         </Button>
         <Button
-          loading={terminateIsLoading}
+          loading={terminateIsLoading || status === WorkspaceStatus.Terminating}
+          disabled={status == WorkspaceStatus.NotFound}
           onClick={() => {
             stopWorkspace();
           }}

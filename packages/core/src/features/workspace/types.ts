@@ -85,5 +85,5 @@ export interface WorkspaceStatusResponse {
   containerStates: Array<WorkspaceContainerState>;
   idleTimeLimit?: number;
   lastActivityTime: number;
-  workspaceType: string;
+  workspaceType?: string;
 }

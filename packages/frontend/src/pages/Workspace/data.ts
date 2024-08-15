@@ -4,6 +4,11 @@ import ContentSource from '../../lib/content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 import { WorkspaceConfig } from '../../features/Workspace';
 import { WorkspacePageLayoutProps } from './types';
+import {
+  LaunchStepIndicatorConfiguration,
+  WorkspaceAdditionalInfo,
+  WorkspaceLaunchStatus,
+} from '../../features/Workspace/types';
 
 export const WorkspacePageGetServerSideProps: GetServerSideProps<
   WorkspacePageLayoutProps
@@ -22,7 +27,9 @@ export const WorkspacePageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        workspaceProps: {},
+        workspaceProps: {
+          launchStepIndicatorConfig: {} as LaunchStepIndicatorConfiguration,
+        },
       },
     };
   }

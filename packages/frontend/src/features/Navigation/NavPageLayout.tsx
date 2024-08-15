@@ -20,7 +20,7 @@ const NavPageLayout = ({
     ? 'flex-1 flex overflow-hidden'
     : 'flex grow';
   return (
-    <div className="flex flex-col justify-between h-screen">
+    <div className="flex flex-col justify-between">
       <Header {...headerProps} />
       {headerProps.type === 'vertical' ? (
         <div className="flex grow">

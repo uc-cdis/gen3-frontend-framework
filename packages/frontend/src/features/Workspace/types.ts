@@ -17,7 +17,15 @@ export interface WorkspaceLaunchStatus {
   subSteps?: Array<TitleAndDescription>;
 }
 
-export interface WorkspaceConfig extends Record<string, any> {
+export interface LaunchStepIndicatorConfiguration {
+  steps: Array<{
+    label: string;
+    description?: string;
+  }>;
+}
+
+export interface WorkspaceConfig {
   title?: string;
   workspaceInfo?: Record<string, WorkspaceAdditionalInfo>;
+  launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;
 }

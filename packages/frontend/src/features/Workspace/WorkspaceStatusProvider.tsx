@@ -85,7 +85,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (workspaceStatusData) {
       setActive(!isWorkspaceInActive(workspaceStatusData.status));
-      console.log('setting Active', workspaceStatusData);
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     } else {
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
@@ -114,7 +113,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       workspaceLaunchIsLoading,
       terminateIsLoading,
       statusError: workspaceStatusRequestError ?? undefined,
-      workspaceStatus: workspaceStatusData,
+      workspaceStatus: workspaceStatusData ?? EmptyWorkspaceStatusResponse,
     };
   }, [
     dispatch,
