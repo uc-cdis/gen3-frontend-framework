@@ -8,6 +8,10 @@ const WorkspaceConfigDefaults: WorkspaceConfig = {
       { label: 'Initializing', description: 'starting workspace resources' },
       { label: 'Configuring', description: 'starting services' },
       {
+        label: 'Starting',
+        description: 'waiting for services',
+      },
+      {
         label: 'Connecting',
         description: 'waiting for connecting to workspace',
       },

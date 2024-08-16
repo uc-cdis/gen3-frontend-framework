@@ -14,10 +14,10 @@ const isTerminated = (state?: WorkspaceContainerState): boolean => {
 const PodConditionIndex: Record<keyof typeof PodConditionType, number> = {
   PodScheduled: 0,
   Initialized: 1,
-  ContainersReady: 2,
   PodReadyToStartContainers: 2,
-  ProxyConnected: 3,
-  Ready: 4,
+  ContainersReady: 3,
+  ProxyConnected: 4,
+  Ready: 5,
 };
 
 export const retrievePodConditionStatus = (
@@ -39,7 +39,7 @@ export const calculateCurrentStep = (
     const idx =
       PodConditionIndex[condition.type as keyof typeof PodConditionType];
     if (condition.status === PodStatus.True)
-      currentStep = Math.max(idx + 1, currentStep);
+      currentStep = Math.max(idx + 1, currentStep); // Add +1 since if True this
   });
   return currentStep;
 };
@@ -72,6 +72,18 @@ export const calculateLaunchSteps = ({
   workspaceLaunchStatus.status = status === 'Stopped' ? 'error' : 'processing';
 
   if (currentStep == 2) {
+    //  PodReadyToStartContainers == False
+    const cs: Array<WorkspaceContainerState> = containerStates ?? [];
+    // handle container stats
+    if (cs.some((element: WorkspaceContainerState) => isTerminated(element))) {
+      workspaceLaunchStatus.status = 'error';
+      workspaceLaunchStatus.message = 'Service is terminated';
+    }
+    workspaceLaunchStatus.message = 'Starting notebook services';
+  }
+
+  if (currentStep == 3) {
+    //  ContainersReady == False
     // get container status
 
     if (workspaceType === 'ECS') {
@@ -81,12 +93,13 @@ export const calculateLaunchSteps = ({
         workspaceLaunchStatus.status = 'error';
       }
     } else {
-      const cs: Array<WorkspaceContainerState> = containerStates;
+      const cs: Array<WorkspaceContainerState> = containerStates ?? [];
       // handle container stats
       if (
         cs.some((element: WorkspaceContainerState) => isTerminated(element))
       ) {
         workspaceLaunchStatus.status = 'error';
+        workspaceLaunchStatus.message = 'Service is terminated';
       } else {
         // If container states are available, display detailed pod statuses
         workspaceLaunchStatus.subSteps = cs.map((c) => ({
@@ -95,10 +108,6 @@ export const calculateLaunchSteps = ({
         }));
       }
     }
-  }
-
-  if (currentStep == 3) {
-    // wait for proxy
     const podStatus = retrievePodConditionStatus(
       PodConditionType.ProxyConnected,
       conditions,
@@ -109,7 +118,10 @@ export const calculateLaunchSteps = ({
         'In progress. If you are stuck here for more than a few minutes, cancel launch and try again or contact user support.';
   }
 
+  // wait for proxy
+
   if (currentStep == 4) {
+    // ProxyConnect == False
     const podStatus = retrievePodConditionStatus(
       PodConditionType.ProxyConnected,
       conditions,

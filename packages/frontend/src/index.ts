@@ -55,6 +55,9 @@ import { WorkspacePageGetServerSideProps } from './pages/Workspace/data';
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
+import NotebookLitePage from './pages/NotebookLite/NotebookLite';
+import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
+
 // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
@@ -106,4 +109,6 @@ export {
   CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
+  NotebookLitePage,
+  NotebookLitePageGetStaticProps,
 };

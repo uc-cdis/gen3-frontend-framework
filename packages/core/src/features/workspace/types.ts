@@ -39,6 +39,7 @@ export type WorkspaceOptions = Array<WorkspaceInfo>;
 export interface WorkspacePayModelResponse {
   currentPayModel: PayModel;
   allPayModels: PayModel[];
+  noPayModel: boolean;
 }
 
 export enum WorkspaceStatus {
@@ -81,8 +82,8 @@ export interface WorkspacePodCondition {
 
 export interface WorkspaceStatusResponse {
   status: WorkspaceStatus;
-  conditions: Array<WorkspacePodCondition>;
-  containerStates: Array<WorkspaceContainerState>;
+  conditions?: Array<WorkspacePodCondition>;
+  containerStates?: Array<WorkspaceContainerState>;
   idleTimeLimit?: number;
   lastActivityTime: number;
   workspaceType?: string;

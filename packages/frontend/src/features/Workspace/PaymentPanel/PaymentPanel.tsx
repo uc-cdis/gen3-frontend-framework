@@ -1,6 +1,7 @@
 import React, { forwardRef, ReactElement, useState } from 'react';
 import {
   Accordion,
+  Box,
   Group,
   Loader,
   LoadingOverlay,
@@ -22,6 +23,26 @@ import {
 } from 'react-icons/fa';
 import { PaymentNumberToString } from '../utils';
 import { WarningCard, ErrorCard } from '../../../components/MessageCards';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { SerializedError } from '@reduxjs/toolkit';
+
+const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
+  return (
+    'status' in error &&
+    error.status === 'PARSING_ERROR' &&
+    error.originalStatus === 404
+  );
+};
+
+const NoPayModel = () => {
+  return (
+    <Group className="p-2 border-1 border-base-lighter w-full">
+      <Text className="pl-4" size="md">
+        No pay model set
+      </Text>
+    </Group>
+  );
+};
 
 const PayModelSelectItem = forwardRef<HTMLDivElement, PayModelMenuItem>(
   ({ icon, label, totalUsage }: PayModelMenuItem, ref) => (
@@ -63,14 +84,10 @@ const PaymentPanel = () => {
   if (isLoading && isFetching) return <Loader />;
 
   if (isError) {
-    if (
-      'status' in error &&
-      error.status === 'PARSING_ERROR' &&
-      error.originalStatus === 404
-    ) {
-      return <WarningCard message="No Pay Model Defined" />;
-    }
-  } else return <ErrorCard message="Unable to get Payment information" />;
+    if (isNoPayModelError(error)) {
+      return <NoPayModel />;
+    } else return <ErrorCard message="Unable to get Payment information" />;
+  }
 
   return (
     <div>

@@ -258,7 +258,7 @@ export const SessionProvider = ({
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-          !isUserOnPage('workspace')
+          !isUserOnPage('Workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();
@@ -267,7 +267,7 @@ export const SessionProvider = ({
         if (
           workspaceInactivityTimeLimitMilliseconds > 0 &&
           timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-          isUserOnPage('workspace')
+          isUserOnPage('Workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();

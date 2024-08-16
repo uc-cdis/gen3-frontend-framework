@@ -12,7 +12,7 @@ const WorkspacePanel = () => {
   }
 
   return (
-    <div className="mt-10">
+    <div className="mt-4">
       <LoadingOverlay visible={isLoading} />
       <Grid
         justify="space-between"
@@ -23,7 +23,11 @@ const WorkspacePanel = () => {
       >
         {data?.map((card: WorkspaceInfo) => {
           return (
-            <Grid.Col key={card.id} span={3} style={{ minHeight: rem(120) }}>
+            <Grid.Col
+              key={card.id}
+              span="content"
+              style={{ minHeight: rem(120) }}
+            >
               <NotebookCard info={card} />
             </Grid.Col>
           );
