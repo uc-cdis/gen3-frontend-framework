@@ -12,7 +12,7 @@ interface TitleAndDescription {
 
 export interface WorkspaceLaunchStatus {
   step: number;
-  status: 'not ready' | 'processing' | 'error';
+  status: 'not ready' | 'processing' | 'error' | 'complete';
   message?: string;
   subSteps?: Array<TitleAndDescription>;
 }

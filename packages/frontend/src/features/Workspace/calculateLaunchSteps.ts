@@ -131,5 +131,10 @@ export const calculateLaunchSteps = ({
     else workspaceLaunchStatus.status = 'error';
   }
 
+  if (currentStep == 5) {
+    workspaceLaunchStatus.message = 'Proxy is ready';
+    workspaceLaunchStatus.status = 'complete';
+  }
+
   return workspaceLaunchStatus;
 };

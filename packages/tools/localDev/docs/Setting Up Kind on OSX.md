@@ -84,6 +84,66 @@ add to cluster:
 ```bash
   kubectl apply -f ingress.yaml
 ```
+
+### Workspace support
+
+If you are running frontend development on https://localhost:3010 you will need to follow
+these instructions to update the Content-Security-Policy:
+```
+ kubectl edit configmap ingress-nginx-controller -n ingress-nginx
+```
+add:
+```
+apiVersion: v1
+    data:
+      allow-snippet-annotations: "true"
+```
+
+write the config and exit: It will reload and allow snippets used in the alternate config below:
+
+```
+#
+# Version to support development with iframes which add https://localhost:3010
+# to the Content-Security-Policy for iframes
+# before this is uses you will need to:
+#
+#   kubectl edit configmap ingress-nginx-controller -n ingress-nginx
+#   add:
+#     apiVersion: v1
+#     data:
+#       allow-snippet-annotations: "true"
+#
+#   write the config and exit: It will reload and allow snippets used below.
+#
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngress-nginx-controller
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "Content-Security-Policy: frame-ancestors self https://localhost https://localhost:3010";
+spec:
+  tls:
+  - hosts:
+    - localhost
+    secretName: localhost-gen3
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: revproxy-service
+              port:
+                number: 80
+```
+
+## Gen3 Helm
 start gen3-helm
 
 

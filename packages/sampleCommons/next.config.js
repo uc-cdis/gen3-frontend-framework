@@ -42,6 +42,15 @@ const nextConfig = {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },
+        ],
+      },
+      {
+        source: '/jupyter(.*)?', // Matches all pages
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
           {
             key: 'Cross-Origin-Embedder-Policy',
             value: 'require-corp',

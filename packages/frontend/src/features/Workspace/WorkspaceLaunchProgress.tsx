@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stepper, Button, Group, Text } from '@mantine/core';
+import { Stepper, Center, Text } from '@mantine/core';
 import {
   LaunchStepIndicatorConfiguration,
   WorkspaceLaunchStatus,
@@ -30,8 +30,10 @@ const WorkspaceStepper = ({
             description={x.description}
             color={step.status === 'error' ? 'red' : 'accent.4'}
           >
-            {step.message && idx === step.step ? (
-              <Text>{step.message}</Text>
+            {step.message ? (
+              <Center>
+                <Text>{step.message}</Text>
+              </Center>
             ) : null}
           </Stepper.Step>
         );
