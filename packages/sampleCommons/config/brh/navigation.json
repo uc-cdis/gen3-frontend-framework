@@ -24,6 +24,12 @@
         "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
       },
       {
+        "name": "Notebooks",
+        "href": "/NotebookLite",
+        "icon": "gen3:notebook",
+        "tooltip": "Notebooks for basic analysis"
+      },
+      {
         "icon": "gen3:profile",
         "href": "/Profile",
         "name": "Profile",
