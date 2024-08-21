@@ -1,6 +1,7 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
 import {
+  createTheme,
   MantineProvider,
   // createEmotionCache,
   // EmotionCache,
@@ -36,6 +37,50 @@ interface Gen3ProviderProps {
   children?: ReactNode | undefined;
 }
 
+// Define theme for mantine v7
+
+const createMantineTheme = (
+  fonts: Fonts,
+  colors: Record<string, TenStringArray>,
+) => {
+  const theme = createTheme({
+    // use V2 font in MantineProvider
+    fontFamily: fonts.fontFamily,
+    // Override default blue color until styles are determined
+    colors: {
+      white: [
+        // TODO: replace with primary theme color
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+      ],
+      // Add default color from tailwind config to Mantine theme
+      // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
+      // plugins declaration.
+      // TODO: refactor how the configuration get loaded
+      ...colors,
+    },
+    primaryColor: 'primary',
+    primaryShade: { light: 4, dark: 7 },
+    breakpoints: {
+      xs: '31.25em',
+      sm: '50em',
+      md: '62.5em',
+      lg: '80em',
+      xl: '112.5em',
+    },
+  });
+
+  return theme;
+};
+
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
  * for the whole website like color scheme, icons, fonts, and sessionConfigs like
@@ -53,28 +98,11 @@ const Gen3Provider = ({
     addCollection(icons);
   }, [icons]);
 
+  const theme = createMantineTheme(fonts, colors);
+
   return (
     <CoreProvider>
-      <MantineProvider
-        // withGlobalStyles
-        // withNormalizeCSS
-        // emotionCache={getEmotionCache()}
-        theme={{
-          fontFamily: fonts.fontFamily,
-          // colors: {
-          //   ...colors,
-          // },
-          primaryColor: 'primary',
-          primaryShade: { light: 4, dark: 7 },
-          breakpoints: {
-            xs: '500',
-            sm: '800',
-            md: '1000',
-            lg: '1275',
-            xl: '1800',
-          },
-        }}
-      >
+      <MantineProvider theme={theme}>
         <ModalsProvider>
           <Notifications />
           <SessionProvider {...sessionConfig}>
