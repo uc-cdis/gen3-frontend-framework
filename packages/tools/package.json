@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint --ext .js,.ts src",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "clean": "rimraf ./dist",
     "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run build"
@@ -29,11 +29,9 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
-    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^24.5.2",
-    "jest": "^27.3.1",
     "rollup-plugin-executable": "^1.6.3",
     "ts-node": "^10.4.0",
     "typescript": "5.0.2"
