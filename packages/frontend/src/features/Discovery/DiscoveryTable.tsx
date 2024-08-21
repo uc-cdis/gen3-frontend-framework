@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -145,7 +145,7 @@ const DiscoveryTable = ({
       },
     },
     mantineTableBodyRowProps: ({ row }) => ({
-      onClick: (event) => {
+      onClick: () => {
         setStudyDetails(() => {
           return { ...row.original };
         });

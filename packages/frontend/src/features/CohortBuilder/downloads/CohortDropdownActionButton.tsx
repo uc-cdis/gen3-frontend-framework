@@ -41,7 +41,7 @@ const GuppyDropdownMenuItem = ({
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
   done,
-  setIsActive = (_: boolean) => null,
+  setIsActive = () => null,
   customErrorMessage,
   hideNotification = false,
   actionFunction,
