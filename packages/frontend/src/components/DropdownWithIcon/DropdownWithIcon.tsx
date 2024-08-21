@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Menu } from '@mantine/core';
-import { FloatingPosition } from '@mantine/core/lib/Floating/types';
+import { FloatingPosition } from '@mantine/core';
 import { ReactNode } from 'react';
 import { Tooltip } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';

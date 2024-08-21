@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { useDidUpdate, mergeRefs } from '@mantine/hooks';
+import { mergeRefs, useDidUpdate } from '@mantine/hooks';
+import { CSSProperties } from '@mantine/core';
 
 function getAutoWidthDuration(width: number | string) {
   if (!width || typeof width === 'string') {
@@ -18,7 +19,7 @@ export function getElementWidth(
 
 const raf = typeof window !== 'undefined' && window.requestAnimationFrame;
 
-interface UseCollapse {
+interface UseCollapsableSidebar {
   opened: boolean;
   transitionDuration?: number;
   transitionTimingFunction?: string;
@@ -27,18 +28,18 @@ interface UseCollapse {
 
 interface GetCollapseProps {
   [key: string]: unknown;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   onTransitionEnd?: (e: TransitionEvent) => void;
   refKey?: string;
-  ref? : React.ForwardedRef<HTMLDivElement>;
+  ref?: React.ForwardedRef<HTMLDivElement>;
 }
 
 export function useCollapsableSidebar({
   transitionDuration,
   transitionTimingFunction = 'ease',
-  onTransitionEnd = () => Object,
+  onTransitionEnd = () => {},
   opened,
-}: UseCollapse): (props: GetCollapseProps) => Record<string, any> {
+}: UseCollapsableSidebar): (props: GetCollapseProps) => Record<string, any> {
   const el = useRef<HTMLElement | null>(null);
   const collapsedWidth = 0;
   const collapsedStyles = {
@@ -46,7 +47,7 @@ export function useCollapsableSidebar({
     width: 0,
     overflow: 'hidden',
   };
-  const [styles, setStylesRaw] = useState<React.CSSProperties>(
+  const [styles, setStylesRaw] = useState<CSSProperties>(
     opened ? {} : collapsedStyles,
   );
   const setStyles = (
@@ -64,13 +65,13 @@ export function useCollapsableSidebar({
   } {
     const _duration = transitionDuration || getAutoWidthDuration(width);
     return {
-      transition: `width ${_duration}ms ${transitionTimingFunction}`,
+      transition: `width ${_duration}ms ${transitionTimingFunction}, opacity ${_duration}ms ${transitionTimingFunction}`,
     };
   }
 
   useDidUpdate(() => {
-    if (opened) {
-      raf &&
+    if (typeof raf === 'function') {
+      if (opened) {
         raf(() => {
           mergeStyles({
             willChange: 'width',
@@ -82,8 +83,7 @@ export function useCollapsableSidebar({
             mergeStyles({ ...getTransitionStyles(width), width });
           });
         });
-    } else {
-      raf &&
+      } else {
         raf(() => {
           const width = getElementWidth(el);
           mergeStyles({
@@ -93,6 +93,7 @@ export function useCollapsableSidebar({
           });
           raf(() => mergeStyles({ width: collapsedWidth, overflow: 'hidden' }));
         });
+      }
     }
   }, [opened]);
 

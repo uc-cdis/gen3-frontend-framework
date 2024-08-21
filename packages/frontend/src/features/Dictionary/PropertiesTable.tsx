@@ -162,15 +162,12 @@ const PropertiesTable = ({
     getRowId: (originalRow: PropertyTableRowData, index: number) =>
       originalRow.property_id,
     mantineTableBodyRowProps: ({ row }) => ({
-      sx: (theme) => {
-        const res = {
-          ...(Object.keys(rowSelection).includes(row.original.property_id)
-            ? {
-                boxShadow: `inset 4px 0px 0px 0px ${theme.colors['accent'][4]}`,
-              }
-            : {}),
-        };
-        return res;
+      style: {
+        'box-shadow': Object.keys(rowSelection).includes(
+          row.original.property_id,
+        )
+          ? 'inset 4px 0px 0px 0px var(--mantine-color-secondary-8)'
+          : {},
       },
     }),
     state: { rowSelection },
@@ -178,7 +175,7 @@ const PropertiesTable = ({
       bg: 'rgb(206, 203, 228)',
     },
     mantineTableProps: {
-      sx: {
+      style: {
         borderSpacing: '0rem 0rem',
         borderCollapse: 'separate',
         tableLayout: 'fixed',

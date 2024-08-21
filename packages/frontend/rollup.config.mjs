@@ -30,12 +30,11 @@ const globals = {
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
-  '@mantine/styles': 'mantineStyles',
   '@mantine/hooks': 'mantineHooks',
   '@mantine/core': 'mantineCore',
   '@mantine/form': 'mantineForm',
   '@mantine/modals': 'mantineModals',
-  "@tabler/icons-react": "tablerIcons",
+  '@tabler/icons-react': 'tablerIcons',
   'react-icons/ai': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
@@ -47,20 +46,20 @@ const globals = {
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
   'react-cookie': 'reactCookie',
-  'yaml': 'yaml',
+  yaml: 'yaml',
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
-  "jose" : "jose",
-  "cookies-next":"cookies-next",
-  "cookie":"cookie",
-  "next/head":"nextHead",
-  "next/navigation":"nextNavigation",
-  "react-markdown":"reactMarkdown",
-  "remark-gfm":"remark-gfm",
-  "default-composer":"default-composer",
-  "filesize":"filesize",
-  "tailwind-merge":"tailwind-merge",
-  "util":"util",
+  jose: 'jose',
+  'cookies-next': 'cookies-next',
+  cookie: 'cookie',
+  'next/head': 'nextHead',
+  'next/navigation': 'nextNavigation',
+  'react-markdown': 'reactMarkdown',
+  'remark-gfm': 'remark-gfm',
+  'default-composer': 'default-composer',
+  filesize: 'filesize',
+  'tailwind-merge': 'tailwind-merge',
+  util: 'util',
 };
 
 const config = [
@@ -71,13 +70,13 @@ const config = [
         dir: 'dist/cjs',
         format: 'cjs',
         globals,
-        sourcemap: true
+        sourcemap: true,
       },
       {
         dir: 'dist/esm',
         format: 'esm',
         globals,
-        sourcemap: true
+        sourcemap: true,
       },
     ],
     external: [
@@ -99,7 +98,7 @@ const config = [
       'mantine-react-table',
       'victory',
       'echarts',
-      '@gen3/core'
+      '@gen3/core',
     ],
     plugins: [
       peerDepsExternal(),
@@ -123,13 +122,17 @@ const config = [
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives(), json()
+        swcPreserveDirectives(),
+        json(),
       ),
       copy({
         targets: [
-          { src: ['src/features/DataDictionary/data/dictionary.json'], dest: 'dist/features/DataDictionary/data/dictionary.json' },
-        ]
-      })
+          {
+            src: ['src/features/DataDictionary/data/dictionary.json'],
+            dest: 'dist/features/DataDictionary/data/dictionary.json',
+          },
+        ],
+      }),
     ],
   },
   {

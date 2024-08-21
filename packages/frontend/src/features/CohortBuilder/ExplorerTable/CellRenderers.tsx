@@ -3,11 +3,12 @@ import { isArray } from 'lodash';
 import React, { ReactElement } from 'react';
 import { Badge } from '@mantine/core';
 import Link from 'next/link';
+import { JSONObject } from '@gen3/core';
 
 const NullCell = (): ReactElement => <span>NULL</span>;
 
 interface CellRendererFunctionProps {
-  cell: MRT_Cell;
+  cell: MRT_Cell<JSONObject>;
 }
 
 export type CellRendererFunction = (

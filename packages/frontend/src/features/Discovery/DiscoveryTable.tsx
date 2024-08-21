@@ -26,7 +26,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
-  ({ cell }: { cell: MRT_Cell }) =>
+  ({ cell }: { cell: MRT_Cell<JSONObject> }) =>
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
@@ -134,16 +134,14 @@ const DiscoveryTable = ({
     },
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.table[1],
-          color: theme.colors.table[5],
-          textAlign: 'center',
-          padding: theme.spacing.md,
-          fontWeight: 'bold',
-          fontSize: theme.fontSizes.lg,
-          textTransform: 'uppercase',
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-table-1)',
+        color: 'var(--mantine-color-table-5)',
+        textAlign: 'center',
+        padding: 'var(--mantine-spacing-md)',
+        fontWeight: 'bold',
+        fontSize: 'var(--mantine-font-size-lg)',
+        textTransform: 'uppercase',
       },
     },
     mantineTableBodyRowProps: ({ row }) => ({
@@ -157,10 +155,8 @@ const DiscoveryTable = ({
       },
     }),
     mantineTableProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.base[1],
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-base-1)',
       },
     },
   });

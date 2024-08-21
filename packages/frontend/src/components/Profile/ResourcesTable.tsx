@@ -126,13 +126,13 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     icons: TableIcons,
     //Disables the default flex-grow behavior of the table cells
     mantineTableHeadRowProps: {
-      sx: (theme) => ({
-        backgroundColor: theme.colors.secondary[8],
-        borderColor: theme.colors.base[8],
+      style: {
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-8)',
+        borderColor: 'var(--mantine-color-base-8)',
         borderWidth: '1px',
         boxShadow: 'none',
         align: 'center',
-      }),
+      },
     },
     mantineTableHeadCellProps: {
       align: 'center',
@@ -142,7 +142,6 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
-
   });
 
   return (

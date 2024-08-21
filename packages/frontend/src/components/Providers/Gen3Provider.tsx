@@ -6,7 +6,6 @@ import {
   // createEmotionCache,
   // EmotionCache,
 } from '@mantine/core';
-// import { createStyles, Global } from '@mantine/emotion';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -15,18 +14,6 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
-
-// const getEmotionCache = (): EmotionCache => {
-//   // Insert mantine styles after global styles
-//   const insertionPoint =
-//     typeof document !== 'undefined'
-//       ? document.querySelectorAll<HTMLElement>(
-//           'styles[api-emotion="css-global"]',
-//         )?.[-1]
-//       : undefined;
-
-//   return createEmotionCache({ key: 'mantine', insertionPoint });
-// };
 
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
@@ -38,7 +25,6 @@ interface Gen3ProviderProps {
 }
 
 // Define theme for mantine v7
-
 const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
@@ -65,7 +51,12 @@ const createMantineTheme = (
       // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
       // plugins declaration.
       // TODO: refactor how the configuration get loaded
-      ...colors,
+      ...Object.fromEntries(
+        Object.entries(colors).map(([key, values]) => [
+          key,
+          Object.values(values),
+        ]),
+      ),
     },
     primaryColor: 'primary',
     primaryShade: { light: 4, dark: 7 },

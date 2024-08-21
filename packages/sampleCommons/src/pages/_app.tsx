@@ -14,6 +14,8 @@ import '../styles/globals.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'graphiql/graphiql.css';
 import '@graphiql/react/dist/style.css';
+import '@mantine/core/styles.css';
+import 'mantine-react-table/styles.css';
 import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 
