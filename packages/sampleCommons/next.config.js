@@ -45,7 +45,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/jupyter(.*)?', // Matches all pages
+        source: '/jupyter/(.*)?',
         headers: [
           {
             key: 'X-Frame-Options',

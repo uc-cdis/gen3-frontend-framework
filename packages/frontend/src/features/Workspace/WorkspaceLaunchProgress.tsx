@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Stepper, Center, Text } from '@mantine/core';
+import React from 'react';
+import { Stepper, Center, Text, Transition } from '@mantine/core';
 import {
   LaunchStepIndicatorConfiguration,
   WorkspaceLaunchStatus,
@@ -17,28 +17,46 @@ const WorkspaceStepper = ({
   stepsConfig,
   step,
 }: WorkspaceLaunchProgressProps) => {
-  if (!step) return null;
+  //  if (!step) return null;
+  //  console.log('step', step);
 
-  console.log('step', step);
   return (
-    <Stepper active={step.step} breakpoint="sm" allowNextStepsSelect={false}>
-      {stepsConfig.steps.map((x, idx) => {
-        return (
-          <Stepper.Step
-            key={x.label}
-            label={x.label}
-            description={x.description}
-            color={step.status === 'error' ? 'red' : 'accent.4'}
-          >
-            {step.message ? (
-              <Center>
-                <Text>{step.message}</Text>
-              </Center>
-            ) : null}
-          </Stepper.Step>
-        );
-      })}
-    </Stepper>
+    <Transition
+      mounted={step !== undefined}
+      transition="fade"
+      duration={1200}
+      exitDuration={1200}
+      timingFunction="ease"
+    >
+      {(styles) => (
+        <div className="p-2 mt-2 w-full" style={styles}>
+          {!step ? null : (
+            <Stepper
+              active={step?.step}
+              breakpoint="sm"
+              allowNextStepsSelect={false}
+            >
+              {stepsConfig.steps.map((x, idx) => {
+                return (
+                  <Stepper.Step
+                    key={x.label}
+                    label={x.label}
+                    description={x.description}
+                    color={step.status === 'error' ? 'red' : 'accent.4'}
+                  >
+                    {step.message ? (
+                      <Center>
+                        <Text>{step.message}</Text>
+                      </Center>
+                    ) : null}
+                  </Stepper.Step>
+                );
+              })}
+            </Stepper>
+          )}
+        </div>
+      )}
+    </Transition>
   );
 };
 

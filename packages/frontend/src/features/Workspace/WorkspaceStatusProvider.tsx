@@ -20,8 +20,10 @@ import {
 interface WorkspaceStatusContextValue {
   isActive: boolean; // is a workspace in a non-idle state
   isConnected: boolean; // is it possible to connect to a running workspace
+  isFullscreen: boolean; // fullscreen mode
   startWorkspace: (id: string) => void;
   stopWorkspace: () => void;
+  toggleFullscreen: () => void;
   statusError?: boolean;
   workspaceLaunchIsLoading: boolean;
   terminateIsLoading: boolean;
@@ -30,8 +32,10 @@ interface WorkspaceStatusContextValue {
 const WorkspaceStatusContext = createContext<WorkspaceStatusContextValue>({
   isActive: false,
   isConnected: false,
-  startWorkspace: (id: string) => null,
+  isFullscreen: false,
+  startWorkspace: () => null,
   stopWorkspace: () => null,
+  toggleFullscreen: () => null,
   workspaceLaunchIsLoading: false,
   terminateIsLoading: false,
   workspaceStatus: EmptyWorkspaceStatusResponse,
@@ -47,8 +51,10 @@ export const useWorkspaceStatusContext = () => {
   return context;
 };
 
-const isWorkspaceInActive = (status: WorkspaceStatus) =>
-  status === WorkspaceStatus.NotFound || status === WorkspaceStatus.Errored;
+const isWorkspaceActive = (status: WorkspaceStatus) =>
+  status === WorkspaceStatus.Running ||
+  status === WorkspaceStatus.Launching ||
+  status === WorkspaceStatus.Terminating;
 
 // const PollingInterval: Record<WorkspaceStatus, number > = {
 //   'Not Found': 0,
@@ -61,12 +67,14 @@ const isWorkspaceInActive = (status: WorkspaceStatus) =>
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [isActive, setActive] = useState<boolean>(false);
-
+  const [isFullscreen, setFullscreen] = useState<boolean>(false);
   const [isConnected, setConnected] = useState<boolean>(false);
   const { data: workspaceStatusData, isError: workspaceStatusRequestError } =
     useGetWorkspaceStatusQuery(undefined, {
       pollingInterval: isActive ? 1000 : undefined,
     });
+
+  const toggleFullscreen = () => setFullscreen((bVal) => !bVal);
 
   const [
     launchTrigger,
@@ -84,9 +92,10 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   // update the cached status
   useEffect(() => {
     if (workspaceStatusData) {
-      setActive(!isWorkspaceInActive(workspaceStatusData.status));
+      setActive(isWorkspaceActive(workspaceStatusData.status));
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     } else {
+      setActive(false);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [dispatch, workspaceStatusData]);
@@ -108,8 +117,10 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     return {
       isActive,
       isConnected,
+      isFullscreen,
       startWorkspace,
       stopWorkspace,
+      toggleFullscreen,
       workspaceLaunchIsLoading,
       terminateIsLoading,
       statusError: workspaceStatusRequestError ?? undefined,
@@ -119,6 +130,8 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     dispatch,
     isActive,
     isConnected,
+    isFullscreen,
+    toggleFullscreen,
     launchTrigger,
     terminateIsLoading,
     terminateWorkspace,

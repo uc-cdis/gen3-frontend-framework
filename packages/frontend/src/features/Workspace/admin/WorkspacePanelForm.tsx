@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { WorkspaceAdditionalInfo } from '../types';
 
-const WorkspaceForm: React.FC = () => {
+const WorkspacePanelForm: React.FC = () => {
   const [workspaceInfo, setWorkspaceInfo] = useState<WorkspaceAdditionalInfo>(
     {},
   );

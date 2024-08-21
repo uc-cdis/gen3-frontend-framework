@@ -25,6 +25,7 @@ import { PaymentNumberToString } from '../utils';
 import { WarningCard, ErrorCard } from '../../../components/MessageCards';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
+import StatusAndControls from '../StatusAndControls';
 
 const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   return (
@@ -36,10 +37,14 @@ const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
 
 const NoPayModel = () => {
   return (
-    <Group className="p-2 border-1 border-base-lighter w-full">
+    <Group
+      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
+      position="apart"
+    >
       <Text className="pl-4" size="md">
         No pay model set
       </Text>
+      <StatusAndControls />
     </Group>
   );
 };
@@ -81,7 +86,15 @@ const PaymentPanel = () => {
     });
   }, [data]);
 
-  if (isLoading && isFetching) return <Loader />;
+  if (isLoading && isFetching)
+    return (
+      <Group
+        className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
+        position="apart"
+      >
+        <Loader />
+      </Group>
+    );
 
   if (isError) {
     if (isNoPayModelError(error)) {
@@ -91,7 +104,6 @@ const PaymentPanel = () => {
 
   return (
     <div>
-      <LoadingOverlay visible={isLoading || isFetching} />
       <Accordion chevronPosition="left">
         <Accordion.Item value="accountInformation">
           <Accordion.Control>Account Information</Accordion.Control>

@@ -1,5 +1,13 @@
-import { Button, Card, Center, Divider, Group, Text } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import {
+  Button,
+  Card,
+  Center,
+  Divider,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core';
+import { Icon } from '@iconify/react';
 import { WorkspaceInfo, WorkspaceStatus } from '@gen3/core';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
@@ -12,25 +20,19 @@ interface NotebookCardParams {
 const NotebookCard = ({ info }: NotebookCardParams) => {
   const {
     startWorkspace,
-    stopWorkspace,
     workspaceLaunchIsLoading,
-    terminateIsLoading,
     workspaceStatus: { status },
   } = useWorkspaceStatusContext();
 
-  const [isTerminating] = useDebouncedValue(
-    terminateIsLoading || status === WorkspaceStatus.Terminating,
-    300,
-  );
-
   return (
-    <Card withBorder radius="xs">
+    <Card withBorder radius="xs" className="w-64">
       <Card.Section inheritPadding py="xs">
-        <Center>
+        <Stack align="center">
+          <Icon height={'48px'} icon={'workspace:jupyter'} />
           <Text className="font-header" align="center" size="md" fw={500}>
             {info.name}
           </Text>
-        </Center>
+        </Stack>
       </Card.Section>
       <Card.Section inheritPadding py="xs">
         <Group position="center">
@@ -56,15 +58,6 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           }}
         >
           Launch
-        </Button>
-        <Button
-          loading={isTerminating}
-          disabled={status == WorkspaceStatus.NotFound}
-          onClick={() => {
-            stopWorkspace();
-          }}
-        >
-          Terminate
         </Button>
       </Group>
     </Card>
