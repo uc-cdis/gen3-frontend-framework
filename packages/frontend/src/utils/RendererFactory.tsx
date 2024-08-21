@@ -23,7 +23,7 @@ export interface RendererFunctionCatalogEntry<T> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function DefaultCellRenderer<T>(_props: T): ReactNode {
+export function DefaultItemRenderer<T>(_props: T): ReactNode {
   return <span>DefaultRenderer</span>;
 }
 
@@ -47,7 +47,7 @@ export class RenderFactoryTypedInstance<T>
 
   constructor() {
     this.catalog = {};
-    this.defaultRenderer = DefaultCellRenderer;
+    this.defaultRenderer = DefaultItemRenderer;
   }
 
   /**
@@ -62,7 +62,7 @@ export class RenderFactoryTypedInstance<T>
 
   getRenderer(type: string, functionName: string): RendererFunction<T> {
     if (!this.rendererExists(type, functionName)) {
-      return DefaultCellRenderer;
+      return DefaultItemRenderer;
     }
 
     return this.catalog[type][functionName];

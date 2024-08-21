@@ -80,6 +80,7 @@ const RenderLinkCell = (
   { cell }: CellRendererFunctionProps,
   ...args: any[]
 ) => {
+  if (!cell.getValue()) return <span />;
   return (
     <Link href={`${args[0].baseURL}/${cell.getValue()}`}>
       {cell.getValue() as ReactElement} --

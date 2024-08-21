@@ -1,3 +1,5 @@
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
 
 export type JSONObject = {
@@ -48,8 +50,15 @@ export const isHistogramData = (data: any): data is HistogramData => {
   );
 };
 
-export const isHistogramDataAnEnum = (data: any): data is HistogramData => {
-  return typeof data.key === 'string' && typeof data.count === 'number';
+export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'key' in data &&
+    'count' in data &&
+    typeof data.key === 'string' &&
+    typeof data.count === 'number'
+  );
 };
 
 export const isHistogramDataAArray = (
@@ -67,5 +76,48 @@ export const isHistogramDataArrayARange = (data: any): boolean => {
     Array.isArray(data) && data.every((item) => isHistogramRangeData(item.key))
   );
 };
+
+/**
+ * Type predicate to narrow an unknown error to `FetchBaseQueryError`
+ */
+export function isFetchBaseQueryError(
+  error: unknown,
+): error is FetchBaseQueryError {
+  return typeof error === 'object' && error != null && 'status' in error;
+}
+
+/**
+ * Type predicate to narrow an unknown error to an object with a string 'message' property
+ */
+export function isErrorWithMessage(
+  error: unknown,
+): error is { message: string } {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'message' in error &&
+    typeof (error as any).message === 'string'
+  );
+}
+
+interface ParsingError {
+  status: 'PARSING_ERROR';
+  originalStatus: number;
+  data: string;
+  error: string;
+}
+
+/**
+ * Type predicate to narrow an unknown error to an object with a string 'message' property
+ */
+export function isFetchParseError(error: unknown): error is ParsingError {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'originalStatus' in error &&
+    'status' in error &&
+    error['status'] === 'PARSING_ERROR'
+  );
+}
 
 export type AggregationsData = Record<string, HistogramDataArray>;

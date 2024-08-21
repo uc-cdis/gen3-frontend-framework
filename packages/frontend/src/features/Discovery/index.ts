@@ -1,4 +1,4 @@
-import Discovery from './Discovery';
+import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import TagCloud from './TagCloud';
 import { registerDiscoveryDefaultCellRenderers } from './TableRenderers/CellRenderers';
 import { type RowRenderFunctionParams } from './TableRenderers/RowRenderers';
@@ -12,9 +12,14 @@ import {
 import DiscoveryConfigProvider, {
   useDiscoveryContext,
 } from './DiscoveryProvider';
-import { type DiscoveryConfig, type StudyDetailsField } from './types';
+import {
+  type DiscoveryConfig,
+  type StudyDetailsField,
+  type TagData,
+  type TagsConfig,
+} from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
-import { getTagColor } from './utils';
+import { getTagInfo } from './utils';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
 
 export {
@@ -22,7 +27,9 @@ export {
   type DiscoveryConfig,
   type StudyDetailsField,
   type RowRenderFunctionParams,
-  Discovery,
+  type TagData,
+  type TagsConfig,
+  DiscoveryIndexPanel,
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
@@ -32,6 +39,6 @@ export {
   DiscoveryConfigProvider,
   useDiscoveryContext,
   StudyGroup,
-  getTagColor,
+  getTagInfo,
   AiSearch,
 };

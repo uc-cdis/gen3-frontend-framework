@@ -16,7 +16,6 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
-
   if (discoveryConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">

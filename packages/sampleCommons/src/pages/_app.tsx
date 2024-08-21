@@ -1,5 +1,6 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+
 import {
   Gen3Provider,
   TenStringArray,
@@ -15,6 +16,14 @@ import 'graphiql/graphiql.css';
 import '@graphiql/react/dist/style.css';
 import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const ReactDOM = require('react-dom');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const axe = require('@axe-core/react');
+  axe(React, ReactDOM, 1000);
+}
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;

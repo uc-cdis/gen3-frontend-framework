@@ -7,7 +7,6 @@ import { ProfileConfig } from '../../components/Profile';
 import ExternalProvidersPanel from '../../components/Profile/ExternalProvidersPanel';
 import { PiCaretCircleDownFill as Caret } from 'react-icons/pi';
 
-
 export interface ProfileProps {
   profileConfig: ProfileConfig;
 }
@@ -21,20 +20,27 @@ const Profile = ({ profileConfig }: ProfileProps) => {
             multiple
             variant="separated"
             chevronPosition="left"
-            chevron={<Caret color="primary.4" size="1.75rem"/>}
-            defaultValue={['externalLogins', 'apiKeys', 'resources']}
+            chevron={<Caret color="primary.4" size="1.75rem" />}
+            defaultValue={[
+              ...['apiKeys', 'resources'],
+              ...(profileConfig?.hasExternalLogins ? ['externalLogins'] : []),
+            ]}
             classNames={{
               label: 'text-secondary-contrast-lighter font-heading font-bold',
             }}
           >
-            <Accordion.Item value="externalLogins">
-              <div className="bg-secondary-lighter">
-                <Accordion.Control>Link Account from External Data Resources</Accordion.Control>
-              </div>
-              <Accordion.Panel>
-                <ExternalProvidersPanel />
-              </Accordion.Panel>
-            </Accordion.Item>
+            {profileConfig?.hasExternalLogins && (
+              <Accordion.Item value="externalLogins">
+                <div className="bg-secondary-lighter">
+                  <Accordion.Control>
+                    Link Account from External Data Resources
+                  </Accordion.Control>
+                </div>
+                <Accordion.Panel>
+                  <ExternalProvidersPanel />
+                </Accordion.Panel>
+              </Accordion.Item>
+            )}
             <Accordion.Item value="apiKeys">
               <div className="bg-secondary-lighter">
                 <Accordion.Control>Current API Keys</Accordion.Control>

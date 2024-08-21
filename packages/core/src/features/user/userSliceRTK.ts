@@ -5,6 +5,7 @@ import { type Gen3FenceResponse } from '../fence/types';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
+import { QueryStatus } from '@reduxjs/toolkit/query';
 
 interface StatusWithCSRFTokenResponse {
   csrf: string;
@@ -22,7 +23,6 @@ export interface UserAuthResponse {
 
 const userAuthApi = coreCreateApi({
   reducerPath: 'userAuthApi',
-  refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
   baseQuery: async ({ endpoint }, { getState }) => {
@@ -102,7 +102,11 @@ export const selectUserDetails = createSelector(
 export const selectUserAuthStatus = createSelector(
   selectUserDetailsFromState,
   (userLoginState) =>
-    userLoginState?.data?.loginStatus ?? ('unauthenticated' as LoginStatus),
+    userLoginState.status === QueryStatus.pending
+      ? ('pending' as LoginStatus)
+      : userLoginState.status === QueryStatus.uninitialized
+      ? ('not present' as LoginStatus)
+      : userLoginState?.data?.loginStatus ?? ('unauthenticated' as LoginStatus),
 );
 
 export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();

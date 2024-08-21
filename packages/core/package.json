@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.10.31",
+  "version": "0.10.40",
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -66,6 +66,7 @@
     "@reduxjs/toolkit": "1.9.5",
     "flat": "^6.0.1",
     "papaparse": "^5.4.1",
+    "queue": "6.0.2",
     "react-redux": "^8.1.0",
     "redux-persist": "^6.0.0",
     "uuid": "^9.0.1"

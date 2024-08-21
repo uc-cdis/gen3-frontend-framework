@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  Accessibility,
   CoreState,
   fieldNameToTitle,
   JSONObject,
@@ -18,12 +19,16 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { ExplorerTableProps, SummaryTable } from './types';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import {
+  ExplorerTableProps,
+  SummaryTable,
+  CellRendererFunctionProps,
+} from './types';
 import {
   CellRendererFunction,
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 import {
   ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
@@ -109,6 +114,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             : undefined,
 
         size: columnDef?.width,
+        enableSorting: columnDef?.sortable ?? undefined,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
   }, [tableConfig]);
@@ -146,6 +152,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               return { [x.id]: x.desc ? 'desc' : 'asc' };
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
+      accessibility: Accessibility.ACCESSIBLE,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
@@ -194,12 +201,25 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     enableTopToolbar: false,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
+    icons: TableIcons,
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
+    },
+    mantineTableHeadCellProps: {
+      sx: (theme) => {
+        return {
+          backgroundColor: theme.colors.table[1],
+          color: theme.colors['table-contrast'][5],
+          textAlign: 'center',
+          padding: theme.spacing.md,
+          fontWeight: 'bold',
+          fontSize: theme.fontSizes.lg,
+        };
+      },
     },
     state: {
       isLoading,

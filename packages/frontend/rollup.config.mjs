@@ -60,7 +60,7 @@ const globals = {
   "default-composer":"default-composer",
   "filesize":"filesize",
   "tailwind-merge":"tailwind-merge",
-  "util":"util"
+  "util":"util",
 };
 
 const config = [
