@@ -29,6 +29,7 @@ export const getAuthSession = async (req: IncomingMessage) => {
   const access_token = getCookie('access_token', { req });
 
   if (access_token && typeof access_token === 'string') {
+    // TODO get secret and verify JWT
     const decodedAccessToken = (await decodeJwt(
       access_token,
     )) as unknown as JWTPayloadAndUser;
