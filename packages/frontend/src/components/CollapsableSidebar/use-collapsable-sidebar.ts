@@ -37,7 +37,7 @@ interface GetCollapseProps {
 export function useCollapsableSidebar({
   transitionDuration,
   transitionTimingFunction = 'ease',
-  onTransitionEnd = () => {},
+  onTransitionEnd = () => null,
   opened,
 }: UseCollapsableSidebar): (props: GetCollapseProps) => Record<string, any> {
   const el = useRef<HTMLElement | null>(null);
