@@ -117,7 +117,9 @@ export const downloadFromGuppyToBlob = async ({
         type: 'application/json',
       });
     })
-    .then((blob) => onDone?.(blob))
+    .then((blob) => {
+      onDone?.(blob);
+    })
     .catch((error) => {
       // Abort is handle as an exception
       if (error.name == 'AbortError') {
