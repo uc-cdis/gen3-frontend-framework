@@ -1,20 +1,12 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
+// jest.config.ts
+import { createDefaultPreset, type JestConfigWithTsJest } from 'ts-jest';
 
 const jestConfig: JestConfigWithTsJest = {
-  roots: ['<rootDir>/src'],
-  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   transform: {
-    '^.+\\.(ts|tsx)?$':[
-      'ts-jest',
-      {
-        tsconfig: 'tsconfig.test.json',
-        isolatedModules: true,
-      },
-    ],
-    'node_modules/(flat|jsonpath-plus)/.+\\.(j|t)sx?$': ['ts-jest', {}],
+    ...createDefaultPreset().transform,
   },
-  'transformIgnorePatterns': ['/node_modules/(?!(flat|jsonpath-plus))']
 };
 
 export default jestConfig;
