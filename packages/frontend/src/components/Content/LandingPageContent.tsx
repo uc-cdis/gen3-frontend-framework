@@ -76,11 +76,18 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
           return (
             <Title
               key={index}
-              className="mb-5 pl-20 pb-2"
+              className={`mb-5 pl-20 pb-2 ${
+                index % 2 === 0 ? 'text-primary' : 'text-primary-lighter'
+              }`}
               order={component.title.level}
             >
               {/* TODO: verify this color is correct */}
-              <span className={`${index % 2 === 0 ? 'text-[primary.5]' : 'text=[primary.4]'}}`}></span>{component.title.text}
+              <span
+                className={`${
+                  index % 2 === 0 ? 'text-primary' : 'text-primary-lighter'
+                }}`}
+              ></span>
+              {component.title.text}
             </Title>
           );
         }
@@ -89,7 +96,12 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
             area.map((obj, index) => {
               if (obj.text) {
                 return (
-                  <TextContent text={obj.text} key={index} type={obj?.type ?? ContentType.Html} className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"/>
+                  <TextContent
+                    text={obj.text}
+                    key={index}
+                    type={obj?.type ?? ContentType.Html}
+                    className="prose sm:prose-base 2xl:prose-lg mb-5 !mt-0"
+                  />
                 );
               }
               if (obj.link) {
