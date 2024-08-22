@@ -1,4 +1,5 @@
 import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
+import { MRT_Cell } from 'mantine-react-table';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -44,4 +45,12 @@ export interface SummaryTable {
 export interface ExplorerTableProps {
   index: string;
   tableConfig: SummaryTable;
+}
+
+/**
+ * Represents the props required for a cell renderer function.
+ */
+export interface CellRendererFunctionProps {
+  cell: MRT_Cell;
+  params?: Record<string, unknown>;
 }
