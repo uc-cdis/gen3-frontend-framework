@@ -172,7 +172,7 @@ const PropertiesTable = ({
     }),
     state: { rowSelection },
     mantineTableHeadRowProps: {
-      bg: 'rgb(206, 203, 228)',
+      bg: 'var(--mantine-color-secondary)',
     },
     mantineTableProps: {
       style: {
