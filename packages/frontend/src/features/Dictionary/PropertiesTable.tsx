@@ -159,28 +159,36 @@ const PropertiesTable = ({
     enableBottomToolbar: false,
     enableTopToolbar: false,
     enableRowSelection: false,
-    getRowId: (originalRow: PropertyTableRowData, index: number) =>
-      originalRow.property_id,
-    mantineTableBodyRowProps: ({ row }) => ({
-      style: {
-        'box-shadow': Object.keys(rowSelection).includes(
-          row.original.property_id,
-        )
-          ? 'inset 4px 0px 0px 0px var(--mantine-color-secondary-8)'
-          : {},
-      },
-    }),
+    getRowId: (originalRow: PropertyTableRowData) => originalRow.property_id,
+    mantineTableBodyRowProps: ({ row }) => {
+      // highlights the left border of the selected row in the table
+      if (Object.keys(rowSelection).includes(row.original.property_id))
+        return {
+          style: {
+            borderLeftWidth: '8px',
+            borderLeftColor: 'var(--mantine-color-accent-5)',
+          },
+        };
+      else return {};
+    },
     state: { rowSelection },
     mantineTableHeadRowProps: {
-      bg: 'var(--mantine-color-secondary)',
-    },
-    mantineTableProps: {
       style: {
-        borderSpacing: '0rem 0rem',
-        borderCollapse: 'separate',
-        tableLayout: 'fixed',
+        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-3)',
       },
     },
+    mantineTableHeadCellProps: {
+      style: {
+        color: 'var(--mantine-color-accent-contrast-cool-3)',
+      },
+    },
+    // mantineTableProps: {
+    //   style: {
+    //     borderSpacing: '0rem 0rem',
+    //     borderCollapse: 'separate',
+    //     tableLayout: 'fixed',
+    //   },
+    // },
   });
 
   return <MantineReactTable table={table} />;
