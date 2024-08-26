@@ -88,7 +88,7 @@ Gen3App.getInitialProps = async (
       ]),
     );
 
-    const icons = await ContentSource.get(`config/icons/gen3.json`);
+    const icons = await ContentSource.get('config/icons/gen3.json');
     return {
       ...ctx,
       modalsConfig: modals,

@@ -53,12 +53,13 @@
     "@fontsource/source-sans-pro": "^4.5.11",
     "@graphiql/react": "^0.23.1",
     "@iconify/react": "^4.0.1",
-    "@mantine/core": "^6.0.21",
-    "@mantine/form": "^6.0.21",
-    "@mantine/hooks": "^6.0.21",
-    "@mantine/modals": "^6.0.21",
-    "@mantine/next": "^6.0.21",
-    "@mantine/notifications": "^6.0.21",
+    "@mantine/core": "^6.0.22",
+    "@mantine/form": "^6.0.22",
+    "@mantine/hooks": "^6.0.22",
+    "@mantine/dates": "^6.0.22",
+    "@mantine/modals": "^6.0.22",
+    "@mantine/next": "^6.0.22",
+    "@mantine/notifications": "^6.0.22",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.1",
@@ -138,8 +139,6 @@
     "@types/recharts": "^1.8.23",
     "@types/tinycolor2": "^1.4.4",
     "@types/uuid": "^9.0.4",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
     "autoprefixer": "^10.4.15",
     "css-loader": "^6.8.1",
     "eslint": "^8.49.0",
@@ -162,8 +161,7 @@
   "peerDependencies": {
     "@gen3/core": "^0.10.33",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "5.0.2"
+    "react-dom": "^18.2.0"
   },
   "files": [
     "dist"
