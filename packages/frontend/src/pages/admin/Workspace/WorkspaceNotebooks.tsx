@@ -1,8 +1,15 @@
 import React from 'react';
-import { NavPageLayout } from '../../../features/Navigation';
-import { WorkspacePanelsEditor } from '../../../features/Workspace/admin/WorkspacePanelsEditor';
+import {
+  NavPageLayout,
+  NavPageLayoutProps,
+} from '../../../features/Navigation';
+import WorkspacePanelsEditor from '../../../features/Workspace/admin/WorkspacePanelsEditor';
 
-const WorkspaceNotebooksPage = ({ headerProps, footerProps, authz }: Props) => {
+interface Props extends NavPageLayoutProps {
+  isRunning?: boolean;
+}
+
+const WorkspaceNotebooksPage = ({ headerProps, footerProps }: Props) => {
   return (
     <NavPageLayout {...{ headerProps, footerProps }}>
       <WorkspacePanelsEditor />

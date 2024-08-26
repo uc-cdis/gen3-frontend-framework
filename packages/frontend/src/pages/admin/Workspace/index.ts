@@ -1,2 +1,2 @@
-export { default } from './Authz';
+export { default } from './WorkspaceNotebooks';
 export { GetWorkspaceNotebookData } from './data';

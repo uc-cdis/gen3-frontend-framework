@@ -82,4 +82,4 @@ const WorkspacePanelForm: React.FC = () => {
   );
 };
 
-export default WorkspaceForm;
+export default WorkspacePanelForm;
