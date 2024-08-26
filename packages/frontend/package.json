@@ -73,6 +73,8 @@
     "fetch-retry": "^5.0.6",
     "file-saver": "^2.0.5",
     "filesize": "^10.1.1",
+    "graphiql": "^3.4.1",
+    "graphql": "^16.8.0",
     "graphql-ws": "^5.14.0",
     "gray-matter": "^4.0.3",
     "jose": "^4.15.9",
@@ -147,6 +149,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "style-loader": "^3.3.2",
+    "tailwindcss": "^3.3.3",
     "ts-jest": "^29.1.1",
     "postcss": "^8.4.29",
     "swr": "^2.1.5"
@@ -155,8 +158,7 @@
     "@gen3/core": "^0.10.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "5.0.2",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.10",
   },
   "files": [
     "dist"

@@ -11,15 +11,15 @@ export const UserId = ({ form }: { form: UseFormReturnType<NewUserFormValues> })
   return <TextInput {...form.getInputProps('userId')} label="User Id" withAsterisk />;
 };
 export const NameInput = ({
-                            form
-                          }: {
+  form
+}: {
   form: UseFormReturnType<NewUserFormValues>;
 }) => {
   return <TextInput {...form.getInputProps('name')} label="Full name" />;
 };
 export const EmailInput = ({
-                             form
-                           }: {
+  form
+}: {
   form: UseFormReturnType<NewUserFormValues>;
 }) => {
   return <TextInput {...form.getInputProps('email')} label="Email" />;
@@ -27,8 +27,8 @@ export const EmailInput = ({
 
 export const IsAdminInput = ({
   form
-                              }: {
-    form: UseFormReturnType<NewUserFormValues>;
-  }) => {
-        return <Switch labelPosition="left" label="Is Administrator" />;
+}: {
+  form: UseFormReturnType<NewUserFormValues>;
+}) => {
+  return <Switch labelPosition="left" label="Is Administrator" />;
 };

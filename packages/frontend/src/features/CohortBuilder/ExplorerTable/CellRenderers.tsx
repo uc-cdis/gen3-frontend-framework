@@ -1,6 +1,6 @@
 import { MRT_Cell } from 'mantine-react-table';
 import { isArray } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Badge } from '@mantine/core';
 import Link from 'next/link';
 import { JSONObject } from '@gen3/core';
@@ -14,7 +14,7 @@ interface CellRendererFunctionProps {
 export type CellRendererFunction = (
   props: CellRendererFunctionProps,
   ...args: any[]
-) => ReactElement;
+) => ReactNode;
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -129,14 +129,14 @@ export const TableCellRenderer = (
         'array',
         functionName,
       );
-      return (cell): ReactElement => func(cell);
+      return (cell): ReactNode => func(cell);
     }
     case 'link': {
       const func = CellRendererFactory.getInstance().getCellRenderer(
         'link',
         functionName,
       );
-      return (cell): ReactElement => func(cell, ...params);
+      return (cell): ReactNode => func(cell, ...params);
     }
     default:
       return ValueCellRenderer;
