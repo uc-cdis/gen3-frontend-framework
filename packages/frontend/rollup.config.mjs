@@ -35,6 +35,7 @@ const globals = {
   '@mantine/modals': 'mantineModals',
   '@tabler/icons-react': 'tablerIcons',
   'react-icons/ai': 'reactIcons',
+  'react-icons/bs': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
   'react-icons/md': 'reactIcons',
