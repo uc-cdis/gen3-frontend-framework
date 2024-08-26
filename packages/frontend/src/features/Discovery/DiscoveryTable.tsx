@@ -7,6 +7,8 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 
+import classes from './style/DiscoveryTable.module.css';
+
 import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
@@ -133,14 +135,19 @@ const DiscoveryTable = ({
       },
     },
     layoutMode: 'semantic',
+    mantineDetailPanelProps: {
+      style: {
+        boxShadow: '0 -2px 0px 0px var(--table-border-color) inset',
+      },
+    },
     mantineTableHeadCellProps: {
       style: {
         backgroundColor: 'var(--mantine-color-table-1)',
-        color: 'var(--mantine-color-table-5)',
+        color: 'var(--mantine-color-table-contrast-1)',
         textAlign: 'center',
         padding: 'var(--mantine-spacing-md)',
-        fontWeight: 'bold',
-        fontSize: 'var(--mantine-font-size-lg)',
+        fontWeight: 600,
+        fontSize: 'var(--mantine-font-size-md)',
         textTransform: 'uppercase',
       },
     },
@@ -150,9 +157,7 @@ const DiscoveryTable = ({
           return { ...row.original };
         });
       },
-      sx: {
-        cursor: 'pointer', //you might want to change the cursor too when adding an onClick
-      },
+      className: classes.tableRow,
     }),
     mantineTableProps: {
       style: {
@@ -160,6 +165,8 @@ const DiscoveryTable = ({
       },
     },
   });
+
+  console.log('table', table);
 
   return (
     <React.Fragment>

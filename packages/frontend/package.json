@@ -23,7 +23,7 @@
     "test:all": "jest",
     "types": "tsc --emitDeclarationOnly",
     "copy-tailwind": "cp src/tailwind.cjs dist/tailwind.cjs",
-    "build": "npm run compile && npm run types && npm run copy-tailwind && npm run rollup",
+    "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run compile && npm run rollup -- --watch",
     "dev": "npm run build:watch"
@@ -39,18 +39,15 @@
         "default": "./dist/cjs/index.js"
       }
     },
-    "./tailwind": {
-      "require": "./dist/tailwind.cjs"
-    }
+    "./dist/styles.css": "./dist/styles.css"
   },
+  "style": "dist/styles.css",
   "browser": {
     "fs": false,
     "path": false,
     "os": false
   },
   "dependencies": {
-    "@fontsource/montserrat": "^4.5.12",
-    "@fontsource/source-sans-pro": "^4.5.11",
     "@graphiql/react": "^0.23.1",
     "@iconify/react": "^4.0.1",
     "@mantine/core": "^7.12.1",
@@ -150,7 +147,6 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "style-loader": "^3.3.2",
-    "tailwindcss": "^3.3.3",
     "ts-jest": "^29.1.1",
     "postcss": "^8.4.29",
     "swr": "^2.1.5"
@@ -159,7 +155,8 @@
     "@gen3/core": "^0.10.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "tailwindcss": "^3.4.10"
   },
   "files": [
     "dist"

@@ -15,7 +15,9 @@
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@fontsource/poppins": "^5.0.14",
+    "@fontsource/montserrat": "^5.0.19",
+    "@fontsource/source-sans-pro": "^5.0.8",
+    "@fontsource/poppins": "^5.0.15",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
@@ -34,7 +36,7 @@
     "next": "^14.2.3",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.10",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.4.3"
