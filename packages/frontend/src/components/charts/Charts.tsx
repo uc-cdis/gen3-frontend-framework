@@ -49,8 +49,8 @@ const Charts = ({
           <Grid.Col span={spans[index]} key={`${index}-charts-${field}-col`}>
             <Card shadow={'md'}>
               <Card.Section inheritPadding py="xs">
-                <Group position="apart">
-                  <Text weight={900}>
+                <Group justify="space-between">
+                  <Text fw={900}>
                     {charts[field].title ?? fieldNameToTitle(field)}
                   </Text>
                   {/* // TODO: handle close/hide chart

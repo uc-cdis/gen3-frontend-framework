@@ -21,8 +21,8 @@ const ActionButton = ({
     <Button
       color="secondary"
       disabled={enabled !== undefined ? !enabled : true}
-      leftIcon={leftIcon ? <Icon icon={leftIcon} /> : null}
-      rightIcon={rightIcon ? <Icon icon={rightIcon} /> : null}
+      leftSection={leftIcon ? <Icon icon={leftIcon} /> : null}
+      rightSection={rightIcon ? <Icon icon={rightIcon} /> : null}
     >
       {title}
     </Button>

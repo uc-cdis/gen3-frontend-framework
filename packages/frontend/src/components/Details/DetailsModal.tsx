@@ -29,7 +29,7 @@ export const DetailsModal = <
 
   const styling = useMemo(
     () => mergeDefaultTailwindClassnames(DEFAULT_PROPS, classNames ?? {}, true),
-    [],
+    [classNames],
   );
 
   useEffect(() => {

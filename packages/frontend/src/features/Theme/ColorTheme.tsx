@@ -280,7 +280,9 @@ const ColorTheme = () => {
             />
           );
         })}
-        <Text color="text-base-contrast.3" classNames="mr-6">
+        {/* todo: make sure color is this custom one */}
+        <div className="mr-6 text-[text-base-contrast.3]">
+        <Text>
           <p>
             <b>Gen3 Color Theme is based on USWDS theme color tokens</b> which
             are divided into several high-level role-based color families:{' '}
@@ -337,6 +339,7 @@ const ColorTheme = () => {
             508 contrast issues.
           </p>
         </Text>
+        </div>
       </div>
     </article>
   );

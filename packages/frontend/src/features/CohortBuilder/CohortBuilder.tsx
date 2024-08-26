@@ -20,10 +20,7 @@ export const CohortBuilder = ({
   return (
     <div className="w-full">
       <Tabs
-        color="primary-lighter"
-        classNames={{
-          tab: 'data-active:bg-primary-lighter data-active:text-primary-lighter-contrast hover:bg-primary hover:text-primary-lightest-contrast',
-        }}
+        color="primary.4"
         keepMounted={false}
         defaultValue={explorerConfig[0].tabTitle}
       >

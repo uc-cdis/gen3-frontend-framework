@@ -21,7 +21,7 @@ const StudyDetailsPanel = ({
   });
   return (
     <div>
-      <Text size="lg" weight={700} className="mb-4">
+      <Text size="lg" w={700} className="mb-4">
         {headerText}
       </Text>
       <Tabs defaultValue={studyConfig?.tabs?.[0]?.tabName}>

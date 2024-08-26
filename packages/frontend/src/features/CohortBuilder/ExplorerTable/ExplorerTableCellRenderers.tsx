@@ -1,5 +1,5 @@
 import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
-import React, { ReactElement } from 'react';
+import React, { ReactNode } from 'react';
 import { isArray } from 'lodash';
 import { Badge, Text } from '@mantine/core';
 import { CellRendererFunctionProps } from './types';
@@ -11,7 +11,8 @@ export interface CellRendererFunctionCatalogEntry {
 export type CellRendererFunction = (
   props: CellRendererFunctionProps,
   ...args: any[]
-) => ReactElement;
+) => ReactNode;
+
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
   cell,
@@ -60,7 +61,7 @@ export const RenderArrayCellNegativePositive = ({
 };
 
 const ValueCellRenderer = ({ cell }: CellRendererFunctionProps) => {
-  return <span>{cell.getValue() as ReactElement}</span>;
+  return <span>{cell.getValue() as ReactNode}</span>;
 };
 
 const ArrayCellFunctionCatalog = {
@@ -80,7 +81,7 @@ const RenderLinkCell = (
     >
       <Text c="blue" td="underline" fw={700}>
         {' '}
-        {cell.getValue() as ReactElement}{' '}
+        {cell.getValue() as ReactNode}{' '}
       </Text>
     </a>
   );
@@ -98,13 +99,13 @@ const RenderLinkCellUsingValueMap = (
     const linkMap = args[0].valueToURL as Record<string, string>;
     href = linkMap[cell.getValue() as string] ?? null;
   }
-  if (!href) return <Text fw={700}> {cell.getValue() as ReactElement} </Text>;
+  if (!href) return <Text fw={700}> {cell.getValue() as ReactNode} </Text>;
 
   return (
     <a href={`${href}`} target="_blank" rel="noreferrer">
       <Text c="blue" td="underline" fw={700}>
         {' '}
-        {cell.getValue() as ReactElement}{' '}
+        {cell.getValue() as ReactNode}{' '}
       </Text>
     </a>
   );

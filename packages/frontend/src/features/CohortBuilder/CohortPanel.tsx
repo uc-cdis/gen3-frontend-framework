@@ -147,7 +147,7 @@ export const CohortPanel = ({
   const index = guppyConfig.dataType;
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
-    [],
+    [filters?.tabs],
   );
 
   const [facetDefinitions, setFacetDefinitions] = useState<

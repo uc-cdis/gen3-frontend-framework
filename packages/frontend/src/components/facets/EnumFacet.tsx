@@ -317,7 +317,7 @@ const EnumFacet = ({
             label={description}
             position="bottom-start"
             multiline
-            width={220}
+            w={220}
             withArrow
             disabled={!description}
           >

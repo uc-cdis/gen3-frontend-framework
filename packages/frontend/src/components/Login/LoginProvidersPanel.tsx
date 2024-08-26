@@ -18,7 +18,7 @@ const LoginProviderMultipleItems = ({
 }: LoginProviderItemProps) => {
   const [value, setValue] = useState<string | null>(null);
   return (
-    <div className="flex flex-col w-full" key={`${provider.name}-login-item`}>
+    <div className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold" key={`${provider.name}-login-item`}>
       <Select
         data={provider.urls.map((item: NameUrl) => ({
           value: item.url,
@@ -26,7 +26,7 @@ const LoginProviderMultipleItems = ({
         }))}
         classNames={{
           root: 'w-full',
-          item: 'font-medium hover:text-accent-light hover:font-bold',
+          // item: 'font-medium hover:text-accent-light hover:font-bold',
         }}
         onChange={setValue}
         value={value}

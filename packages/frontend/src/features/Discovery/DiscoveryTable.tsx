@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -6,6 +6,8 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
+
+import classes from './style/DiscoveryTable.module.css';
 
 import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -26,7 +28,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
-  ({ cell }: { cell: MRT_Cell }) =>
+  ({ cell }: { cell: MRT_Cell<JSONObject> }) =>
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
@@ -87,7 +89,7 @@ const DiscoveryTable = ({
   }, [config.studyColumns]);
 
   const table = useMantineReactTable({
-    columns: cols as any[], // TODO: fix typing issues when migrating to mantine-react-table v2.
+    columns: cols as any[],
     data: data ?? [],
     manualSorting: manualSortingAndPagination,
     manualPagination: manualSortingAndPagination,
@@ -106,6 +108,7 @@ const DiscoveryTable = ({
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
+
     // TODO: keep this to explore later
     // mantineTableContainerProps: ({ table }) => {
     //   return {
@@ -133,37 +136,39 @@ const DiscoveryTable = ({
       },
     },
     layoutMode: 'semantic',
+    mantineDetailPanelProps: {
+      style: {
+        boxShadow: '0 -2px 0px 0px var(--table-border-color) inset',
+      },
+    },
     mantineTableHeadCellProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.table[1],
-          color: theme.colors.table[5],
-          textAlign: 'center',
-          padding: theme.spacing.md,
-          fontWeight: 'bold',
-          fontSize: theme.fontSizes.lg,
-          textTransform: 'uppercase',
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-table-1)',
+        color: 'var(--mantine-color-table-contrast-1)',
+        textAlign: 'center',
+        padding: 'var(--mantine-spacing-md)',
+        fontWeight: 600,
+        fontSize: 'var(--mantine-font-size-sm)',
+        textTransform: 'uppercase',
       },
     },
     mantineTableBodyRowProps: ({ row }) => ({
-      onClick: (event) => {
+      onClick: () => {
         setStudyDetails(() => {
           return { ...row.original };
         });
       },
-      sx: {
-        cursor: 'pointer', //you might want to change the cursor too when adding an onClick
-      },
+      className: classes.tableRow,
     }),
     mantineTableProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.base[1],
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-base-1)',
+        '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
       },
     },
   });
+
+  console.log('table', table);
 
   return (
     <React.Fragment>

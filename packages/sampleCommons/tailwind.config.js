@@ -6,13 +6,12 @@ const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 
 module.exports = {
-  presets: [require('@gen3/frontend/tailwind')],
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
-    '../../node_modules/@gen3/frontend/**/*.js',
+    '../frontend/dist/**/index.js',
   ],
   theme: {
     extend: {

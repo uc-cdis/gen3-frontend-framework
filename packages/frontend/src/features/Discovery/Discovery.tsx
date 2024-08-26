@@ -24,7 +24,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
       <Tabs
         className="w-full"
         defaultValue={metadataIndex}
-        onTabChange={(v: string | null) => {
+        onChange={(v: string | null) => {
           setMetadataIndex(v ?? '0');
         }}
       >
