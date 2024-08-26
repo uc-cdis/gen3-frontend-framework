@@ -13,7 +13,7 @@ const MessageText: React.FunctionComponent<MessageTextColorProps> = ({
   message,
   color,
 }: MessageTextColorProps): ReactElement => (
-  <Text color={color} size="md" weight="md">
+  <Text c={color} size="md" fw={500}>
     {message}
   </Text>
 );
@@ -31,7 +31,7 @@ const CardContainer: React.FunctionComponent<CardContainerProps> = ({
       p="md"
       className="bg-base-lightest border-2 border-base-lighter"
     >
-      <Group align="center" noWrap>
+      <Group align="center" wrap="nowrap">
         {children}
       </Group>
     </Card>

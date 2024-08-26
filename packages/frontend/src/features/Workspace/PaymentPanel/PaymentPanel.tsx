@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement, useState } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 import {
   Accordion,
   Box,
@@ -6,6 +6,7 @@ import {
   Loader,
   LoadingOverlay,
   Select,
+  SelectProps,
   Text,
 } from '@mantine/core';
 import { type PayModel, useGetWorkspacePayModelsQuery } from '@gen3/core';
@@ -39,7 +40,7 @@ const NoPayModel = () => {
   return (
     <Group
       className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
-      position="apart"
+      justify="apart"
     >
       <Text className="pl-4" size="md">
         No pay model set
@@ -49,48 +50,62 @@ const NoPayModel = () => {
   );
 };
 
-const PayModelSelectItem = forwardRef<HTMLDivElement, PayModelMenuItem>(
-  ({ icon, label, totalUsage }: PayModelMenuItem, ref) => (
-    <div ref={ref}>
-      <Group noWrap>
-        <Text size="sm">{label}</Text>
-        <Text size="sm">{totalUsage}</Text>
-        {icon}
-      </Group>
-    </div>
-  ),
-);
-
-PayModelSelectItem.displayName = 'PayModelSelectItem';
-
 const PaymentPanel = () => {
   const { data, isLoading, isFetching, isError, error } =
     useGetWorkspacePayModelsQuery();
 
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
 
-  const usersPayModels = useDeepCompareMemo(() => {
-    if (!data) return [];
-    return data.allPayModels.map((payModel: PayModel): PayModelMenuItem => {
+  const { usersPayModels, menuData } = useDeepCompareMemo(() => {
+    if (!data)
       return {
-        value: payModel.bmh_workspace_id ?? payModel.workspace_type,
-        label: payModel.workspace_type,
-        totalUsage: payModel['total-usage'].toFixed(2),
-        icon:
-          payModel.request_status === 'active' ? (
-            <ActiveIcon />
-          ) : (
-            <InactiveIcon />
-          ),
+        usersPayModels: [],
+        selectedPayModel: [],
       };
-    });
+    const usersPayModels = data.allPayModels.map(
+      (payModel: PayModel): PayModelMenuItem => {
+        return {
+          value: payModel.bmh_workspace_id ?? payModel.workspace_type,
+          label: payModel.workspace_type,
+          totalUsage: payModel['total-usage'].toFixed(2),
+          icon:
+            payModel.request_status === 'active' ? (
+              <ActiveIcon />
+            ) : (
+              <InactiveIcon />
+            ),
+        };
+      },
+    );
+    const menuData = usersPayModels.map((x: PayModelMenuItem, idx: number) => ({
+      value: idx.toString(),
+      label: x.label,
+    }));
+
+    return {
+      usersPayModels,
+      menuData,
+    };
   }, [data]);
+
+  const PayModelSelectItem: SelectProps['renderOption'] = ({ option }) => {
+    const menuItem = usersPayModels[Number(option.value)];
+    return (
+      <div>
+        <Group wrap="nowrap">
+          <Text size="sm">{menuItem.label}</Text>
+          <Text size="sm">{menuItem.totalUsage}</Text>
+          {menuItem.icon}
+        </Group>
+      </div>
+    );
+  };
 
   if (isLoading && isFetching)
     return (
       <Group
         className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
-        position="apart"
+        justify="apart"
       >
         <Loader />
       </Group>
@@ -118,7 +133,7 @@ const PaymentPanel = () => {
                   <div>
                     <Select
                       placeholder="Select Workspace"
-                      itemComponent={PayModelSelectItem}
+                      renderOption={PayModelSelectItem}
                       data={usersPayModels}
                       onChange={setSelectedPayModel}
                       value={selectedPayModel}
