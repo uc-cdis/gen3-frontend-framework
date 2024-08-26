@@ -28,6 +28,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@auto-it/upload-assets": "^11.2.0",
     "@mantine/core": "^7.12.1",
     "@mantine/form": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
@@ -36,12 +37,10 @@
     "classnames": "^2.3.1",
     "dom-to-svg": "^0.12.2",
     "isomorphic-fetch": "^3.0.0",
-    "oxlint": "^0.2.3-alpha.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-carousel": "^3.2.23",
-    "url-join": "^5.0.0",
-    "@auto-it/upload-assets": "^11.2.0"
+    "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
@@ -53,10 +52,12 @@
     "@types/jest": "^29.5.12",
     "@types/node": "20.4.1",
     "@types/react": "^18.2.21",
+    "@types/glob": "^8.1.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.4.20",
     "eslint": "8.56.0",
+    "glob": "^11.0.0",
     "eslint-config-next": "^14.2.6",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",

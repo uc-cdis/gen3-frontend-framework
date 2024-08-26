@@ -31,11 +31,7 @@ const WorkspaceStepper = ({
       {(styles) => (
         <div className="p-2 mt-2 w-full" style={styles}>
           {!step ? null : (
-            <Stepper
-              active={step?.step}
-              breakpoint="sm"
-              allowNextStepsSelect={false}
-            >
+            <Stepper active={step?.step} allowNextStepsSelect={false}>
               {stepsConfig.steps.map((x, idx) => {
                 return (
                   <Stepper.Step

@@ -29,14 +29,14 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <Card.Section inheritPadding py="xs">
         <Stack align="center">
           <Icon height={'48px'} icon={'workspace:jupyter'} />
-          <Text className="font-header" align="center" size="md" fw={500}>
+          <Text className="font-header" size="md" fw={500}>
             {info.name}
           </Text>
         </Stack>
       </Card.Section>
       <Card.Section inheritPadding py="xs">
-        <Group position="center">
-          <Text color="base-contrast.4" fw={400} size="xs">
+        <Group justify="center">
+          <Text c="base-contrast.4" fw={400} size="xs">
             CPU Limit: {info.cpuLimit}
           </Text>
           <Text
@@ -49,7 +49,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         </Group>
       </Card.Section>
       <div className="flex mx-8 justify-center border-1 border-base"></div>
-      <Group className="mt-2 p-2" position="center">
+      <Group className="mt-2 p-2" justify="center">
         <Button
           loading={workspaceLaunchIsLoading}
           disabled={status !== WorkspaceStatus.NotFound}

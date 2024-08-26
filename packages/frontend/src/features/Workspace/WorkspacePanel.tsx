@@ -31,13 +31,7 @@ const WorkspacePanel = () => {
       >
         {(styles) => (
           <div className="mt-4" style={styles}>
-            <Grid
-              justify="space-between"
-              gutter={5}
-              gutterXs="md"
-              gutterMd="xl"
-              gutterXl={50}
-            >
+            <Grid justify="space-between" gutter="md">
               {data?.map((card: WorkspaceInfo) => {
                 return (
                   <Grid.Col

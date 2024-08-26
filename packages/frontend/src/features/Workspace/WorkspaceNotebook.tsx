@@ -6,7 +6,6 @@ import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspaceNotebook = () => {
   const {
-    stopWorkspace,
     workspaceStatus: { status },
   } = useWorkspaceStatusContext();
 
