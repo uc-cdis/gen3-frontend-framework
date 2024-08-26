@@ -108,18 +108,44 @@ export const BaseModal= ({
           onClose();
         }
       }}
-      styles={(theme) => ({
-        header: {
-          fontWeight: 600,
-          paddingBottom: '2.5em',
-          marginBottom: '2em',
-          backgroundColor: theme.colors.primary[4],
-          color: theme.colors['primary-contrast'][4],
-        },
-        close: {
-          color: 'base-darker',
-        },
-      })}
+      // TODO
+    //   styles={(theme) => ({
+    //     header: {
+    //       fontWeight: 600,
+    //       paddingBottom: '2.5em',
+    //       marginBottom: '2em',
+    //       backgroundColor: theme.colors.primary[4],
+    //       color: theme.colors['primary-contrast'][4],
+    //     },
+    //     close: {
+    //       color: 'base-darker',
+    //     }
+    //   })
+    // }
+      // styles={(theme) => ({
+        // header: {
+        //   fontWeight: 600,
+        //   paddingBottom: '2.5em',
+        //   marginBottom: '2em',
+        //   backgroundColor: theme.colors.primary[4],
+        //   color: theme.colors['primary-contrast'][4],
+        // },
+        // close: {
+        //   color: 'base-darker',
+        // },
+      // })}
+      // styles={(theme) => ({
+        // header: {
+        //   fontWeight: 600,
+        //   paddingBottom: '2.5em',
+        //   marginBottom: '2em',
+        //   backgroundColor: theme.colors.primary[4],
+        //   color: theme.colors['primary-contrast'][4],
+        // },
+        // close: {
+        //   color: 'base-darker',
+        // },
+      // })}
       withinPortal={false}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}

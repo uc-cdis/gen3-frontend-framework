@@ -85,7 +85,7 @@ const label = (labelText?: string): ReactElement =>
   labelText ? (
     <Text
       tt="uppercase"
-      weight="500"
+      fw="500"
       className="p-0.75 whitespace-pre-wrap break-words"
     >
       {labelText}
@@ -294,7 +294,7 @@ const labeledParagraph: FieldRendererFunction = (
       {fieldLabel ? (
         <Text
           tt="uppercase"
-          weight="500"
+          fw="500"
           className="p-0.75 mr-4 whitespace-pre-wrap break-words"
         >
           {fieldLabel}

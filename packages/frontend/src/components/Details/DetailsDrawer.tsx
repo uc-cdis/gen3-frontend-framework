@@ -17,7 +17,7 @@ const DetailsDrawer = ({ id, panel, panelProps }: DetailsComponentProps) => {
       <Drawer.Overlay opacity={0.5} blur={4} />
       <Drawer.Content>
         <Drawer.Header>
-          <Button leftIcon={<BackIcon />} onClick={close} variant="outline">
+          <Button leftSection={<BackIcon />} onClick={close} variant="outline">
             {' '}
             Back{' '}
           </Button>

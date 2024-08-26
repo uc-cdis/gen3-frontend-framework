@@ -1,18 +1,17 @@
-import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import {
   Autocomplete,
-  AutocompleteItem,
+  AutocompleteProps,
   Button,
   Stack,
   Group,
-  ScrollArea,
 } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
-import MiniSearch, { Suggestion } from 'minisearch';
+import MiniSearch from 'minisearch';
 import { DictionarySearchDocument, MatchingSearchResult } from './types';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { useDictionaryContext } from './DictionaryProvider';
 import { useLocalStorage } from '@mantine/hooks';
 import { KEY_FOR_SEARCH_HISTORY, MAX_SEARCH_HISTORY } from './constants';
@@ -53,42 +52,6 @@ interface DictionarySearchHistoryObj {
   };
 }
 
-interface SuggestionProps {
-  value: string;
-  suggestions: Suggestion[];
-  searchTerm: string;
-  setSearchTerm: (_: string) => void;
-}
-
-const SuggestedItem = forwardRef<HTMLDivElement, SuggestionProps>(
-  function SuggestedItem(
-    {
-      value,
-      suggestions,
-      searchTerm,
-      setSearchTerm,
-      ...others
-    }: SuggestionProps,
-    ref,
-  ) {
-    return (
-      <div
-        ref={ref}
-        {...others}
-        className={`h-inherit w-inherit hover:cursor-pointer hover:bg-gray-100 border border-solid border-gray-200 p-1 ${
-          (suggestions || [])
-            .map(({ suggestion }) => suggestion)
-            .indexOf(value) !== 0 && 'border-t-0'
-        }`}
-      >
-        <button className="border-none" onClick={() => setSearchTerm(value)}>
-          {value}
-        </button>
-      </div>
-    );
-  },
-);
-
 interface TableSearchProps {
   selectItem: (_: MatchingSearchResult) => void;
 }
@@ -100,7 +63,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [dictionaryTableRows, setDictionaryTableRows] = useState<
-    [] | JSX.Element[]
+    [] | ReactElement[]
   >([]);
 
   const [
@@ -179,7 +142,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
     setDictionarySearchHistory,
   ]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (dictionarySearchHistory) {
       setDictionaryTableRows(
         Object.keys(dictionarySearchHistory).map((d) => {
@@ -204,15 +167,36 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
       }),
     [suggestions],
   );
+
+  const renderSuggestedItem: AutocompleteProps['renderOption'] = ({
+    option,
+  }) => {
+    return (
+      <div
+        className={`h-inherit w-inherit hover:cursor-pointer hover:bg-gray-100 border-0 p-1 ${
+          (suggestions || [])
+            .map(({ suggestion }) => suggestion)
+            .indexOf(option.value) !== 0 && 'border-t-0'
+        }`}
+      >
+        <button
+          className="border-0"
+          onClick={() => setSearchTerm(option.value)}
+        >
+          {option.value}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <>
       <Stack justify="flex-start" className="mt-2">
         <Autocomplete
-          itemComponent={(props: any) => (
-            <SuggestedItem searchTerm={searchTerm} {...props} />
-          )}
+          // TODO: replace for v7
           data={suggestedData}
-          icon={<SearchIcon size={24} className="text-accent" />}
+          renderOption={renderSuggestedItem}
+          leftSection={<SearchIcon size={24} className="text-accent" />}
           placeholder={'Search in Dictionary'}
           data-testid="dictionary-textbox-search-bar"
           aria-label="Dictionary Search Input"
@@ -220,9 +204,9 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
           onChange={(value) => {
             setSearchTerm(value as string);
           }}
-          onItemSubmit={(item: AutocompleteItem) => {
+          onOptionSubmit={(item) => {
             setDictionarySearchResults({
-              term: item.value,
+              term: item,
               matches: getSearchResults(searchResults ?? []),
             });
           }}
@@ -259,8 +243,8 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
           </span>
         )}
       </Stack>
-      <Stack justify="flex-start" spacing="xs" className="mt-1">
-        <Group position="apart" align="center">
+      <Stack justify="flex-start" gap="xs" className="mt-1">
+        <Group justify="space-between" align="center">
           <span className="flex flex-col font-semibold text-sm">
             Search History
           </span>

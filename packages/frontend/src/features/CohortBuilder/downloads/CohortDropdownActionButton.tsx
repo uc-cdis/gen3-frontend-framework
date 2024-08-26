@@ -1,5 +1,5 @@
 import { Button, Menu, MenuItemProps } from '@mantine/core';
-import { FloatingPosition } from '@mantine/core/lib/Floating/types';
+import { FloatingPosition } from '@mantine/core';
 import { ReactNode, useState } from 'react';
 import { Tooltip } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
@@ -41,7 +41,7 @@ const GuppyDropdownMenuItem = ({
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
   done,
-  setIsActive = (_: boolean) => null,
+  setIsActive = () => null,
   customErrorMessage,
   hideNotification = false,
   actionFunction,
@@ -65,7 +65,7 @@ const GuppyDropdownMenuItem = ({
       }}
       key={`${title}-${idx}`}
       data-testid={`${title}-${idx}`}
-      icon={icon}
+      leftSection={icon}
       disabled={disabled}
     >
       {children}
@@ -172,11 +172,11 @@ const CohortDropdownActionButton = ({
       <Menu.Target>
         <Button
           className={`text-base-lightest data-disabled:bg-base bg-primary hover:bg-primary-darker ${focusStyles}`}
-          {...(leftIcon && { leftIcon: leftIcon })}
-          rightIcon={rightIcon}
+          {...(leftIcon && { leftSection: leftIcon })}
+          rightSection={rightIcon}
           disabled={disabled}
           classNames={{
-            rightIcon: 'border-l pl-1 -mr-2',
+            // rightIcon: 'border-l pl-1 -mr-2',
             root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
@@ -205,7 +205,7 @@ const CohortDropdownActionButton = ({
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}
               data-testid={`${title}-${idx}`}
-              icon={icon && icon}
+              leftSection={icon && icon}
               disabled={disabled}
               title={title}
               idx={idx}

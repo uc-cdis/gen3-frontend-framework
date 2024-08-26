@@ -1,5 +1,6 @@
 import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
 import { MRT_Cell } from 'mantine-react-table';
+import { JSONObject } from '@gen3/core';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -51,6 +52,6 @@ export interface ExplorerTableProps {
  * Represents the props required for a cell renderer function.
  */
 export interface CellRendererFunctionProps {
-  cell: MRT_Cell;
+  cell: MRT_Cell<JSONObject>;
   params?: Record<string, unknown>;
 }

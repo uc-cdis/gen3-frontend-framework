@@ -95,7 +95,7 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
           size: 150,
           Cell: ({ row }: MRT_Cell<ItemResource>) => {
             return (
-              <div className="flex flex-col space-y-1 bg-base-light">
+              <div className="flex flex-col space-y-1">
                 {method in row.original.methods ? (
                   row.original.methods[method].map((resource) => (
                     <ResourceBadge
@@ -126,13 +126,16 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     icons: TableIcons,
     //Disables the default flex-grow behavior of the table cells
     mantineTableHeadRowProps: {
-      sx: (theme) => ({
-        backgroundColor: theme.colors.secondary[8],
-        borderColor: theme.colors.base[8],
+      style: {
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-2)',
+        borderColor: 'var(--mantine-color-secondary-2)',
         borderWidth: '1px',
         boxShadow: 'none',
         align: 'center',
-      }),
+        fontSize: 'var(--mantine-font-size-sm)',
+        fontWeight: 600,
+        color: 'var(--mantine-color-secondary-contrast-2)',
+      },
     },
     mantineTableHeadCellProps: {
       align: 'center',
@@ -142,7 +145,6 @@ const ResourcesTable = ({ filters }: ResourcesTableProps) => {
     },
     paginationDisplayMode: 'pages',
     positionToolbarAlertBanner: 'bottom',
-
   });
 
   return (

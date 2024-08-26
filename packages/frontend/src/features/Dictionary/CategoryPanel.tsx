@@ -92,7 +92,7 @@ const CategoryPanel = ({
               className="odd:bg-base-lightest even:bg-base-max"
             >
               <Group
-                noWrap
+                wrap='nowrap'
                 className={
                   `${category}-${id}` === value
                     ? 'border-accent border-l-4'
@@ -106,9 +106,9 @@ const CategoryPanel = ({
                   />
                 </Accordion.Control>
                 {config?.showDownloads ? (
-                  <Group noWrap className="ml-auto">
-                    <Button leftIcon={<DownloadIcon />}>TSV</Button>
-                    <Button leftIcon={<DownloadIcon />}>JSON</Button>
+                  <Group wrap='nowrap' className="ml-auto">
+                    <Button leftSection={<DownloadIcon />}>TSV</Button>
+                    <Button leftSection={<DownloadIcon />}>JSON</Button>
                   </Group>
                 ) : null}
               </Group>

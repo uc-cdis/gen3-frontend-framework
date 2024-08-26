@@ -10,9 +10,9 @@ const User = () => {
       <LoadingOverlay visible={isFetching} />
       <div className="flex flex-row justify-end">
         <Card shadow="sm" radius="md" withBorder>
-          <Group position="apart" mt="md" mb="xs">
+          <Group justify="space-between" mt="md" mb="xs">
             <Avatar radius="xl" color="accent.6"></Avatar>
-            <Text weight={500}>{userData?.username}</Text>
+            <Text fw={500}>{userData?.username}</Text>
           </Group>
         </Card>
       </div>
