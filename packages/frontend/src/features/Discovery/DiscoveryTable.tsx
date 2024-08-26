@@ -108,6 +108,7 @@ const DiscoveryTable = ({
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
+
     // TODO: keep this to explore later
     // mantineTableContainerProps: ({ table }) => {
     //   return {
@@ -147,7 +148,7 @@ const DiscoveryTable = ({
         textAlign: 'center',
         padding: 'var(--mantine-spacing-md)',
         fontWeight: 600,
-        fontSize: 'var(--mantine-font-size-md)',
+        fontSize: 'var(--mantine-font-size-sm)',
         textTransform: 'uppercase',
       },
     },
@@ -162,6 +163,7 @@ const DiscoveryTable = ({
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
+        '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
       },
     },
   });
