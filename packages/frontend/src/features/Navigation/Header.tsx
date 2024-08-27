@@ -4,7 +4,6 @@ import NavigationBar from './NavigationBar';
 import { HeaderProps } from './types';
 import HorizontalNavigationBar from './HorizontalClean/HorizontalNavigationBar';
 
-
 /**
  * Header component.
  *
@@ -36,7 +35,7 @@ const Header = ({ top, navigation, type = 'original' }: HeaderProps) => {
     <div className="w-100">
       <TopBar
         items={top.items}
-        showLogin={top?.showLogin}
+        loginButtonVisibility={top?.loginButtonVisibility}
         classNames={{ ...top.classNames }}
       />
       <NavigationBar

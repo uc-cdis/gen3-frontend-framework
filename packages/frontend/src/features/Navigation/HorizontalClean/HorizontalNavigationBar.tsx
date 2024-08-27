@@ -9,6 +9,7 @@ import { AiOutlineLogin as LoginIcon } from 'react-icons/ai';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
+import { LoginButtonVisibility } from '../../../components/Login/types';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
@@ -71,12 +72,13 @@ const HorizontalNavigationBar = ({
       </div>
       <div />
       <div className="flex items-center align-middle mr-3">
-        {actions.showLogin ? (
+        {actions.loginButtonVisibility === LoginButtonVisibility.Visible ? (
           <LoginButton
             icon={loginIcon}
             hideText
             className={`${extractClassName('login', mergedClassnames)}`}
             tooltip={'Login to the commons'}
+            visibility={actions?.loginButtonVisibility}
           />
         ) : null}
         <ActionMenu items={actions.items} />

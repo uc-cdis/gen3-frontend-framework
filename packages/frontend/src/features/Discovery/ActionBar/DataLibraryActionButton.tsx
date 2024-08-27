@@ -47,7 +47,7 @@ const DataLibraryActionButton = forwardRef<
           ref={ref}
           onClick={onClick}
           disabled={disabled || requiresLogin}
-          leftIcon={showIcon ? buttonUcon : undefined}
+          leftSection={showIcon ? buttonUcon : undefined}
           {...buttonProps}
         >
           {label}

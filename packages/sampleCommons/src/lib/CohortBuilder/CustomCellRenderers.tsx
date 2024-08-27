@@ -3,12 +3,11 @@ import {
   type CellRendererFunctionProps,
 } from '@gen3/frontend';
 import { ActionIcon } from '@mantine/core';
-import React  from 'react';
+import React from 'react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
-
 const RenderDiacomLink = ({ cell }: CellRendererFunctionProps) => {
-  if (cell.getValue() === undefined || cell.getValue() === '') {
+  if (!cell?.getValue() || cell?.getValue() === '') {
     return <span></span>;
   } else
     return (
@@ -22,7 +21,8 @@ const RenderDiacomLink = ({ cell }: CellRendererFunctionProps) => {
 
 export const registerCohortTableCustomCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRenderer(
-    'link', 'DiacomLink' ,
+    'link',
+    'DiacomLink',
     RenderDiacomLink,
   );
 };

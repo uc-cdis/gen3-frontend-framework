@@ -26,10 +26,8 @@ const StringRowRenderer = (
 
   return (
     <Box
-      sx={{
-        display: 'flex',
-        width: '100%',
-      }}
+      display={'flex'}
+      w={'100%'}
     >
       <Text size="xs" lineClamp={2}>
         {value}

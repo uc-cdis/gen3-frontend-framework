@@ -62,16 +62,14 @@ const CrosswalkTable = ({
     },
     layoutMode: 'semantic',
     mantineTableHeadCellProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.table[3],
-          color: theme.colors.table[9],
-          textAlign: 'center',
-          padding: theme.spacing.md,
-          fontWeight: 'bold',
-          fontSize: theme.fontSizes.lg,
-          textTransform: 'uppercase',
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-table-3)',
+        color: 'var(--mantine-color-table-9)',
+        textAlign: 'center',
+        padding: 'var(--mantine-spacing-md)',
+        fontWeight: 600,
+        fontSize: 'var(--mantine-font-size-sm)',
+        textTransform: 'uppercase',
       },
     },
     // mantineTableContainerProps: ({ table }) => {
@@ -82,10 +80,8 @@ const CrosswalkTable = ({
     //   };
     // },
     mantineTableProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.base[1],
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-base-1)',
       },
     },
     renderEmptyRowsFallback: () => {

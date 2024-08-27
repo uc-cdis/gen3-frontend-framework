@@ -17,7 +17,7 @@ const StudyPagePanel = ({
   const headerText = getStringValueFromJSONObject(studyDetails, studyPageConfig.header?.field);
   return (
     <Stack>
-        <Text size="lg" weight={700} className="mb-4">
+        <Text size="lg" fw={700} className="mb-4">
           {headerText}
         </Text>
     </Stack>
