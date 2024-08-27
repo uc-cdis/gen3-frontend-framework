@@ -168,8 +168,6 @@ const DiscoveryTable = ({
     },
   });
 
-  console.log('table', table);
-
   return (
     <React.Fragment>
       <StudyDetails />
