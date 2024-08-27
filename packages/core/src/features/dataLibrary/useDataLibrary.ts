@@ -28,7 +28,7 @@ export const useDataLibrary = (useApi: boolean) => {
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
   const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
-  const [updateItemInLibarayApi] = useUpdateDataLibraryListMutation();
+  const [updateItemInLibraryApi] = useUpdateDataLibraryListMutation();
   const [deleteAllApi] = useDeleteAllDataLibraryMutation();
 
   let hasError = false;
@@ -43,7 +43,9 @@ export const useDataLibrary = (useApi: boolean) => {
     const fetchLibrary = async () => {
       if (!useApi) {
         const { isError, lists } = await getDataLibraryListIndexDB();
-        if (!isError) setLocalLibrary(lists ?? {});
+        if (!isError) {
+          setLocalLibrary(lists ?? {});
+        }
       }
     };
 
@@ -85,7 +87,7 @@ export const useDataLibrary = (useApi: boolean) => {
 
   const updateListInDataLibrary = async (id: string, data: DataList) => {
     if (useApi) {
-      await updateItemInLibarayApi({ id, list: data });
+      await updateItemInLibraryApi({ id, list: data });
       refetchLibraryFromApi();
     } else {
       const { isError } = await updateListIndexDB(id, data);
