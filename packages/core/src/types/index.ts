@@ -7,11 +7,6 @@ export type JSONObject = {
 };
 export type JSONArray = Array<JSONValue>;
 
-export interface HistogramData {
-  key: string | [number, number];
-  count: number;
-}
-
 // type guard functions
 export const isHistogramRangeData = (key: any): key is [number, number] => {
   return (
@@ -39,15 +34,56 @@ export const isJSONValueArray = (data: JSONValue): data is JSONArray => {
   return Array.isArray(data) && data.every(isJSONValue);
 };
 
+export interface HistogramData {
+  key: string | [number, number];
+  count: number;
+}
+
+const isValidObject = (input: any): boolean =>
+  typeof input === 'object' && input !== null;
+
 export type HistogramDataArray = Array<HistogramData>;
 
 export const isHistogramData = (data: any): data is HistogramData => {
+  return isValidObject(data) && 'key' in data && 'count' in data;
+};
+
+export const isHistogramDataArray = (input: any): input is HistogramData[] => {
+  if (!isValidObject(input) || !Array.isArray(input.histogram)) {
+    return false;
+  }
+  return input.histogram.every(isHistogramData);
+};
+
+export interface HistogramDataCollection {
+  histogram: HistogramDataArray;
+}
+
+export const isHistogramDataCollection = (
+  obj: any,
+): obj is HistogramDataCollection => {
   return (
-    typeof data === 'object' &&
-    data !== null &&
-    'key' in data &&
-    'count' in data
+    isValidObject(obj) && 'histogram' in obj && isHistogramData(obj.histogram)
   );
+};
+
+export interface GuppyAggregationData {
+  [key: string]: HistogramDataCollection;
+}
+
+// Type guard function for GuppyAggregationData interface
+export const isGuppyAggregationData = (
+  obj: any,
+): obj is GuppyAggregationData => {
+  if (!isValidObject(obj)) return false;
+
+  for (const key in obj) {
+    if (!isHistogramDataCollection(obj[key])) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {

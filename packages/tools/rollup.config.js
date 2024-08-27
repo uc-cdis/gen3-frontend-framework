@@ -1,6 +1,6 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import executable from "rollup-plugin-executable";
+import executable from 'rollup-plugin-executable';
 export default [
   {
     input: './src/buildColors/buildColors.ts',

@@ -6,6 +6,7 @@ import {
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
   type TableDetailsPanelProps,
+  type CellRendererFunctionProps,
   ExplorerTableDetailsPanelFactory,
 } from './ExplorerTable';
 
@@ -13,6 +14,7 @@ export {
   CohortBuilder,
   type CohortBuilderConfiguration,
   type TableDetailsPanelProps,
+  type CellRendererFunctionProps,
   ExplorerTableCellRendererFactory,
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,

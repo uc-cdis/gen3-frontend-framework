@@ -48,7 +48,7 @@ const NavigationBarButton = ({
           arrow: mergedClassnames.arrow,
         }}
         zIndex={1000}
-        width={220}
+        w={220}
       >
         <Link
           href={`${

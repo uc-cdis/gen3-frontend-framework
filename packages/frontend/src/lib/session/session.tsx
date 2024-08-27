@@ -246,7 +246,7 @@ export const SessionProvider = ({
       window.removeEventListener('mousedown', updateUserActivity);
       window.removeEventListener('keypress', updateUserActivity);
     };
-  }, []);
+  }, []); // only call on mount/dismount
 
   useInterval(
     () => {

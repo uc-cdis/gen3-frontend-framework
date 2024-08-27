@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Card, Text, Group, ThemeIcon } from '@mantine/core';
-import { IconAlertTriangle } from '@tabler/icons-react';
-
+import { BsExclamationTriangle as IconAlertTriangle } from 'react-icons/bs';
 interface ErrorCardProps {
   message: string;
   icon?: ReactElement;
@@ -14,7 +13,7 @@ interface ErrorMessageProps {
 const ErrorMessage: React.FunctionComponent<ErrorMessageProps> = ({
   message,
 }: ErrorMessageProps): ReactElement => (
-  <Text color="utility.4" size="md" weight="md">
+  <Text color="utility.4" size="md" fw="md">
     {message}
   </Text>
 );

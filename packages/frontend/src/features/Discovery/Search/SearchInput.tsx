@@ -11,7 +11,7 @@ const SearchInput = ({ searchChanged, placeholder }: SearchInputProps) => {
   return (
     <div className="relative">
       <TextInput
-        icon={<SearchIcon size={24} />}
+        leftSection={<SearchIcon size={24} />}
         placeholder={placeholder || 'Search...'}
         data-testid="textbox-search-bar"
         aria-label="metadata search input"

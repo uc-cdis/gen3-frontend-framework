@@ -20,7 +20,13 @@ const CategoryHeader = ({ category }: CategoryHeaderProps) => {
       id={category}
     >
       <div className="flex items-center ml-4">
-        <Avatar size="sm" color="accent.4" radius="xl">
+        <Avatar
+          variant="light"
+          size="sm"
+          color="accent.4"
+          radius="xl"
+          style={{ '--avatar-bg': 'var(--mantine-color-accent-0' }}
+        >
           {getIcon(category)}
         </Avatar>
         <div className="ml-4">{snakeCaseToLabel(category)}</div>

@@ -1,9 +1,8 @@
 import { Text } from '@mantine/core';
 import { useCookies } from 'react-cookie';
 import { BaseModal } from './BaseModal';
-import TextContent, { TextContentProps } from '../Content/TextContent';
+import TextContent from '../Content/TextContent';
 import { FirstTimeModalConfig } from './types';
-import { first } from 'lodash';
 
 interface FirstTimeModalProps {
   readonly openModal: boolean;

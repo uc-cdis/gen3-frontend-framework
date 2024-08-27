@@ -196,7 +196,7 @@ const IncludeExcludeQueryElement = ({
         </b>
       ) : (
         <QueryRepresentationText>
-          <Group spacing="xs">
+          <Group gap="xs">
             {operandsArray.map((x: string | number, i) => {
               const value = x.toString();
               return (

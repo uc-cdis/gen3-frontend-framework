@@ -36,7 +36,7 @@ const CohortActionButton = ({
     <Tooltip disabled={!tooltipText} label={tooltipText}>
       <Button
         ref={ref}
-        leftIcon={showIcon && inactiveText && <FiDownload />}
+        leftSection={showIcon && inactiveText && <FiDownload />}
         disabled={disabled}
         className={
           customStyle ||

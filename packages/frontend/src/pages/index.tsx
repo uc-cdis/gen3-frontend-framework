@@ -14,6 +14,8 @@ const IndexPage = ({ top, navigation }: HeaderProps) => {
   );
 };
 
+// todo
+
 const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {

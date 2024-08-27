@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  Accessibility,
   CoreState,
   fieldNameToTitle,
   JSONObject,
@@ -18,12 +19,16 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { ExplorerTableProps, SummaryTable } from './types';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import {
+  ExplorerTableProps,
+  SummaryTable,
+  CellRendererFunctionProps,
+} from './types';
 import {
   CellRendererFunction,
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 import {
   ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
@@ -104,8 +109,12 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           cellRendererFunc && columnDef?.params
             ? (cell: CellRendererFunctionProps) =>
                 cellRendererFunc(cell, cellRendererFuncParams)
-            : cellRendererFunc,
+            : cellRendererFunc
+            ? cellRendererFunc
+            : undefined,
+
         size: columnDef?.width,
+        enableSorting: columnDef?.sortable ?? undefined,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
   }, [tableConfig]);
@@ -143,6 +152,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               return { [x.id]: x.desc ? 'desc' : 'asc' };
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
+      accessibility: Accessibility.ACCESSIBLE,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
@@ -179,8 +189,8 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
-  const table = useMantineReactTable({
-    columns: cols,
+  const table = useMantineReactTable<JSONObject>({
+    columns: cols as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
     manualSorting: true,
     manualPagination: true,
@@ -191,12 +201,30 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     enableTopToolbar: false,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
+    icons: TableIcons,
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
+    },
+    mantineTableHeadCellProps: {
+      style: {
+        '--mrt-base-background-color': 'var(--mantine-color-table-1)',
+        color: `var(--mantine-color-table-contrast-5')`,
+      },
+      // sx: (theme) => {
+      //   console.log('theme', theme);
+      //   return {
+      //     backgroundColor: theme.colors.table[1],
+      //     color: theme.colors['table-contrast'][5],
+      //     textAlign: 'center',
+      //     padding: theme.spacing.md,
+      //     fontWeight: 'bold',
+      //     fontSize: theme.fontSizes.lg,
+      //   };
+      // },
     },
     state: {
       isLoading,
