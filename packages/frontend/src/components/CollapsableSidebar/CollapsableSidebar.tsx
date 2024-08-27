@@ -1,91 +1,94 @@
-import React, { forwardRef } from 'react';
 import { useReducedMotion } from '@mantine/hooks';
 import {
-  DefaultProps,
-  useComponentDefaultProps,
+  Box,
+  BoxProps,
+  Factory,
+  factory,
+  getStyleObject,
   useMantineTheme,
-} from '@mantine/styles';
-import { Box, extractSystemStyles } from '@mantine/core';
+  useProps,
+} from '@mantine/core';
 import { useCollapsableSidebar } from './use-collapsable-sidebar';
 
 export interface CollapsableSidebarProps
-  extends DefaultProps,
-    React.ComponentPropsWithoutRef<'div'> {
-  /** Content that should be collapsed */
-  children: React.ReactNode;
-
+  extends BoxProps,
+    Omit<React.ComponentPropsWithoutRef<'div'>, keyof BoxProps> {
   /** Opened state */
   in: boolean;
 
   /** Called each time transition ends */
   onTransitionEnd?: () => void;
 
-  /** Transition duration in ms */
+  /** Transition duration in ms, `200` by default */
   transitionDuration?: number;
 
-  /** Transition timing function */
+  /** Transition timing function, default value is `ease` */
   transitionTimingFunction?: string;
 
-  /** Should opacity be animated */
+  /** Determines whether opacity should be animated, `true` by default */
   animateOpacity?: boolean;
 }
 
+export type CollapseSidebarFactory = Factory<{
+  props: CollapsableSidebarProps;
+  ref: HTMLDivElement;
+}>;
+
 const defaultProps: Partial<CollapsableSidebarProps> = {
-  transitionDuration: undefined,
+  transitionDuration: 200,
   transitionTimingFunction: 'ease',
   animateOpacity: true,
 };
 
-export const CollapsableSidebar = forwardRef<
-  HTMLDivElement,
-  CollapsableSidebarProps
->((props, ref) => {
-  const {
-    children,
-    in: opened,
-    transitionDuration,
-    transitionTimingFunction,
-    style,
-    onTransitionEnd,
-    animateOpacity,
-    ...others
-  } = useComponentDefaultProps('CollapsableSidebar', defaultProps, props);
-  const theme = useMantineTheme();
+export const CollapsableSidebar = factory<CollapseSidebarFactory>(
+  (props, ref) => {
+    const {
+      children,
+      in: opened,
+      transitionDuration,
+      transitionTimingFunction,
+      style,
+      onTransitionEnd,
+      animateOpacity,
+      ...others
+    } = useProps('Collapse', defaultProps, props);
 
-  const shouldReduceMotion = useReducedMotion();
-  const reduceMotion = theme.respectReducedMotion ? shouldReduceMotion : false;
+    const theme = useMantineTheme();
+    const shouldReduceMotion = useReducedMotion();
+    const reduceMotion = theme.respectReducedMotion
+      ? shouldReduceMotion
+      : false;
+    const duration = reduceMotion ? 0 : transitionDuration;
 
-  const duration = reduceMotion ? 0 : transitionDuration;
-  const { systemStyles, rest } = extractSystemStyles(others);
-  const getCollapsableSidebarProps = useCollapsableSidebar({
-    opened,
-    transitionDuration: duration,
-    transitionTimingFunction,
-    onTransitionEnd,
-  });
+    const getCollapseProps = useCollapsableSidebar({
+      opened,
+      transitionDuration: duration,
+      transitionTimingFunction,
+      onTransitionEnd,
+    });
 
-  if (duration === 0) {
-    return opened ? <Box {...rest}>{children}</Box> : null;
-  }
+    if (duration === 0) {
+      return opened ? <Box {...others}>{children}</Box> : null;
+    }
 
-  return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    <Box
-      {...getCollapsableSidebarProps({ style, ref, ...rest, ...systemStyles })}
-    >
-      <div
-        style={{
-          opacity: opened || !animateOpacity ? 1 : 0,
-          transition: animateOpacity
-            ? `opacity ${duration}ms ${transitionTimingFunction}`
-            : 'none',
-        }}
+    return (
+      <Box
+        {...getCollapseProps({
+          style: {
+            opacity: opened || !animateOpacity ? 1 : 0,
+            transition: animateOpacity
+              ? `opacity ${duration}ms ${transitionTimingFunction}`
+              : 'none',
+            ...getStyleObject(style, theme),
+          },
+          ref,
+          ...others,
+        })}
       >
         {children}
-      </div>
-    </Box>
-  );
-});
+      </Box>
+    );
+  },
+);
 
 CollapsableSidebar.displayName = '@gen3/frontend/CollapsableSidebar';

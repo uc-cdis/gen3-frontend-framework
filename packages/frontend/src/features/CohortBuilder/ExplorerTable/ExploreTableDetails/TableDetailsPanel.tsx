@@ -68,7 +68,7 @@ export const TableDetailsPanel = ({
   const rows = Object.entries(queryData).map(([field, value]) => (
     <tr key={field}>
       <td>
-        <Text weight="bold">{field}</Text>
+        <Text fw="bold">{field}</Text>
       </td>
       <td>
         <Text>{value ? (value as string) : ''}</Text>
@@ -79,7 +79,7 @@ export const TableDetailsPanel = ({
     <Stack>
       <LoadingOverlay visible={isLoading} />
       <Text color="primary.4">Results for {id}</Text>
-      <Table withBorder withColumnBorders>
+      <Table withTableBorder withColumnBorders>
         <thead>
           <tr>
             <th>Field</th>

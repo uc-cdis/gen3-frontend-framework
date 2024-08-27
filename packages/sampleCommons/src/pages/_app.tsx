@@ -11,9 +11,12 @@ import {
   SessionConfiguration,
 } from '@gen3/frontend';
 import '../styles/globals.css';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import 'graphiql/graphiql.css';
-import '@graphiql/react/dist/style.css';
+// import 'graphiql/graphiql.css';
+//import '@graphiql/react/dist/style.css';
+import '@fontsource/montserrat';
+import '@fontsource/source-sans-pro';
+import '@fontsource/poppins';
+
 import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 
@@ -88,7 +91,7 @@ Gen3App.getInitialProps = async (
       ]),
     );
 
-    const icons = await ContentSource.get(`config/icons/gen3.json`);
+    const icons = await ContentSource.get('config/icons/gen3.json');
     return {
       ...ctx,
       modalsConfig: modals,

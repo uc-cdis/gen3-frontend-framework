@@ -121,7 +121,7 @@ const RangeFacet = ({
             label={description}
             position="bottom-start"
             multiline
-            width={220}
+            w={220}
             withArrow
             disabled={!description}
           >
@@ -160,9 +160,9 @@ const RangeFacet = ({
                 placeholder="min"
                 size="sm"
                 value={rangeFilters ? rangeFilters.from : minMaxValue.from}
-                onChange={(value: number | '') => {
+                onChange={(value: number | string) => {
                   updateFilters(
-                    value === '' ? minimum : value,
+                    value === '' ? minimum : value as any,
                     minMaxValue.to ?? DEFAULT_MAXIMUM,
                   );
                 }}
@@ -173,7 +173,6 @@ const RangeFacet = ({
               <NumberInput
                 label="Max"
                 placeholder="max"
-                type="number"
                 size="sm"
                 value={rangeFilters ? rangeFilters.to : minMaxValue.to}
                 onChange={(value) => {

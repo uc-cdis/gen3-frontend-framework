@@ -1,4 +1,4 @@
-import { Text, Highlight } from '@mantine/core';
+import { UnstyledButton, Text, Highlight } from '@mantine/core';
 import { MatchingSearchResult } from './types';
 import { snakeSplit } from './utils';
 
@@ -33,32 +33,30 @@ const ResultList = ({
               key: number,
             ) => {
               return (
-                <div key={key} className="flex w-full p-0.5 pl-2">
-                  <Text
-                    size="sm"
-                    truncate="end"
-                    className="w-full"
-                    align="left"
-                  >
-                    <Highlight
-                      component="button"
-                      highlight={term}
-                      align="left"
-                      truncate="end"
-                      className="w-full hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
-                      onClick={() => {
-                        selectItem({
-                          node,
-                          category,
-                          property,
-                        });
-                      }}
-                    >
-                      {`${snakeSplit(node)} > ${snakeSplit(
+                <div key={key} className="flex w-full p-0.5 pl-2 justify-start">
+                  <UnstyledButton
+                    className="w-full py-1.5"
+                    onClick={() => {
+                      selectItem({
+                        node,
                         category,
-                      )} > ${property}`}
-                    </Highlight>
-                  </Text>
+                        property,
+                      });
+                    }}
+                  >
+                    <Text size="sm" truncate="end" className="w-full">
+                      <Highlight
+                        component="div"
+                        highlight={term}
+                        truncate="end"
+                        className="w-full hover:bg-accent-lighter hover:text-accent-contrast-lighter p-1"
+                      >
+                        {`${snakeSplit(node)} > ${snakeSplit(
+                          category,
+                        )} > ${property}`}
+                      </Highlight>
+                    </Text>
+                  </UnstyledButton>
                 </div>
               );
             },
