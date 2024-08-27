@@ -110,8 +110,8 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             ? (cell: CellRendererFunctionProps) =>
                 cellRendererFunc(cell, cellRendererFuncParams)
             : cellRendererFunc
-            ? cellRendererFunc
-            : undefined,
+              ? cellRendererFunc
+              : undefined,
 
         size: columnDef?.width,
         enableSorting: columnDef?.sortable ?? undefined,
@@ -164,9 +164,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           pageLimit,
           data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize,
         )
-      : data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize;
+      : (data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize);
     const limitLabel = tableConfig?.pageLimit
-      ? tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL
+      ? (tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL)
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
@@ -214,17 +214,6 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
         '--mrt-base-background-color': 'var(--mantine-color-table-1)',
         color: `var(--mantine-color-table-contrast-5')`,
       },
-      // sx: (theme) => {
-      //   console.log('theme', theme);
-      //   return {
-      //     backgroundColor: theme.colors.table[1],
-      //     color: theme.colors['table-contrast'][5],
-      //     textAlign: 'center',
-      //     padding: theme.spacing.md,
-      //     fontWeight: 'bold',
-      //     fontSize: theme.fontSizes.lg,
-      //   };
-      // },
     },
     state: {
       isLoading,

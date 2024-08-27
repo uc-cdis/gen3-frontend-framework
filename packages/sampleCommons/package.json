@@ -18,7 +18,6 @@
     "@fontsource/montserrat": "^5.0.19",
     "@fontsource/source-sans-pro": "^5.0.8",
     "@fontsource/poppins": "^5.0.15",
-    "file-system-db": "^2.1.0",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
@@ -27,7 +26,9 @@
     "@types/mdx": "^2.0.11",
     "cookies-next": "^4.0.0",
     "mantine-react-table": "^2.0.0-beta.6",
-    "jose": "^4.15.9"
+    "file-system-db": "^2.1.0",
+    "idb": "^8.0.0",
+    "jose": "^4.15.4"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",

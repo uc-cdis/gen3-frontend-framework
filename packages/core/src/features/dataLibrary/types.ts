@@ -45,12 +45,33 @@ export interface AdditionalDataItem extends ListItem {
   name: string;
 }
 
+export const isFileItem = (item: ListItem): item is FileItem => {
+  return item && 'guid' in item;
+};
+
+export const isAdditionalDataItem = (item: any): item is AdditionalDataItem => {
+  return (item as AdditionalDataItem).type === 'AdditionalData'; // TODO resolve this with type from the api
+};
+
+// Type guard for CohortItem
+export const isCohortItem = (item: any): item is CohortItem => {
+  return (
+    item &&
+    'data' in item &&
+    'schema_version' in item &&
+    item.type === 'Gen3GraphQL'
+  );
+};
+
 export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
-export interface DataSet {
+export interface DataListEntry {
   name: string;
-  id: string;
   items: DataSetItems;
+}
+
+export interface RegisteredDataListEntry extends DataListEntry {
+  id: string;
 }
 
 export interface DataList {
@@ -59,11 +80,25 @@ export interface DataList {
   updatedTime: string;
   authz: AuthZAccess;
   version: number;
-  items: Record<string, DataSet | CohortItem>;
+  name: string;
+  items: Record<string, RegisteredDataListEntry | CohortItem>;
 }
 
 export type DataLibrary = Record<string, DataList>;
 
+export type DataLibraryItems = {
+  lists: DataLibrary;
+};
+
 export type DataLibraryAPIResponse = {
   lists: Record<string, JSONObject>;
 };
+
+export interface LoadAllListData {
+  lists: Array<DataListEntry>;
+}
+
+export interface AddUpdateListParams {
+  id: string;
+  list: DataList;
+}

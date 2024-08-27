@@ -4,12 +4,16 @@ import {
   DataLibrary,
   DataLibraryAPIResponse,
   DataList,
-  DataSet,
+  DataListEntry,
   DataSetItems,
+  RegisteredDataListEntry,
 } from './types';
 import { JSONObject } from '../../types/';
 
-const BuildDataSet = (setId: string, dataSet: DataSet): DataSet => {
+const BuildDataSet = (
+  setId: string,
+  dataSet: DataListEntry,
+): RegisteredDataListEntry => {
   const res = Object.entries(dataSet?.items).reduce((acc, [id, data]) => {
     if (data?.type === 'AdditionalData') {
       acc[id] = {
@@ -74,7 +78,7 @@ export const BuildList = (
 
 export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
   return Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
-    const list = BuildList(listId, listData);
+    const list = BuildList(listId, listData as JSONObject);
     if (list) acc[listId] = list;
     return acc;
   }, {} as DataLibrary);
