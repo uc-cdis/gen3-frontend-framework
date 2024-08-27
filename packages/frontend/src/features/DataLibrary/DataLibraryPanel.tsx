@@ -11,7 +11,6 @@ import {
   CohortItem,
   isAdditionalDataItem,
   isFileItem,
-  RegisteredDataListEntry,
 } from '@gen3/core';
 
 const DataLibraryPanel = () => {
