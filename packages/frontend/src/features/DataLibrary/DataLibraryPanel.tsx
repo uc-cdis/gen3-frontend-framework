@@ -1,4 +1,4 @@
-import { Accordion, Button, Checkbox, TextInput } from '@mantine/core';
+import { Accordion, Button, Checkbox, Menu, TextInput } from '@mantine/core';
 import React from "react";
 import { data1 } from "./utils";
 import { useEffect, useState } from 'react';
@@ -65,37 +65,61 @@ const DataLibraryPanel = () => {
   }, [data1]);
 
   return (
-    <div>
-      <div className='flex flex-col w-fit'>
+    <div className='w-max ml-2'>
+      <div className='flex flex-col'>
         <h4 className='font-bold'>Search</h4>
-        <div className='flex'>
+        <div className='flex space-x-10'>
           <div>
             <TextInput
+              variant="filled"
               mt='md'
               placeholder='Search...'
               icon={<SearchIcon size="1.45em" />}
             />
           </div>
-          <div className='mt-5 ml-2'>
-            <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
-              <PlusIcon size='1.5em' />
-            </Button>
-          </div>
-          <div className='mt-5 ml-2'>
-            <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
-              <DeleteIcon size='1.5em' />
-            </Button>
+          <div className='flex'>
+            <div className='mt-5 ml-2'>
+              <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
+                <PlusIcon size='1.5em' />
+              </Button>
+            </div>
+            <div className='mt-5 ml-2'>
+              <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
+                <DeleteIcon size='1.5em' />
+              </Button>
+            </div>
           </div>
         </div>
         <div className='flex flex-col w-1/4'>
           {currentLists.map(({ name, setList }, key) => {
             return <div className='flex'>
-              <div className='mt-4 ml-2'><Checkbox></Checkbox></div>
+              <div className='mt-4 ml-2 border-b'><Checkbox></Checkbox></div>
               <div className='flex'>
                 <div className='flex flex-col w-fit' key={key}>
                   <Accordion chevronPosition='left'>
                     <Accordion.Item value={name} key={name}>
-                      <Accordion.Control><h4 className='text-md ml-2 w-80'>{name}</h4></Accordion.Control>
+                      <Accordion.Control>
+                        <div className='flex justify-between'>
+                          <h4 className='text-md ml-2 w-80'>{name}</h4>
+                          <Menu>
+                            <Menu.Target >
+                              <Button
+                                onClick={(e) => e.stopPropagation()}
+                                variant='outline' style={{ padding: '4px', height: '90%' }} >
+                                <HiDotsVertical />
+                              </Button>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                              <Menu.Item>
+                                <Button variant='unstyled' onClick={(e) => e.stopPropagation()}>Save</Button>
+                              </Menu.Item>
+                              <Menu.Item>
+                              <Button variant='unstyled' onClick={(e) => e.stopPropagation()}>Test</Button>
+                              </Menu.Item>
+                            </Menu.Dropdown>
+                          </Menu>
+                        </div>
+                      </Accordion.Control>
                       <Accordion.Panel>
                         <ListsTable
                           data={[...setList.map(({ name }, j) => {
@@ -111,11 +135,6 @@ const DataLibraryPanel = () => {
                       </Accordion.Panel>
                     </Accordion.Item>
                   </Accordion>
-                </div>
-                <div className='mt-6 mr-10'>
-                  <Button variant='outline' style={{ padding: '4px', height: '90%' }} >
-                    <HiDotsVertical />
-                  </Button>
                 </div>
               </div>
             </div>;
