@@ -1,5 +1,4 @@
 import { Accordion, Button, Checkbox, Menu, TextInput } from '@mantine/core';
-import React from "react";
 import { data1 } from "./utils";
 import { useEffect, useState } from 'react';
 import ListsTable from './components/ListsTable';
@@ -8,7 +7,6 @@ import {
   MdSearch as SearchIcon,
   MdDelete as DeleteIcon,
   MdAdd as PlusIcon,
-  MdKeyboardArrowDown
 } from 'react-icons/md';
 import { HiDotsVertical } from "react-icons/hi";
 
@@ -74,7 +72,7 @@ const DataLibraryPanel = () => {
               variant="filled"
               mt='md'
               placeholder='Search...'
-              icon={<SearchIcon size="1.45em" />}
+              leftSection={<SearchIcon size="1.45em" />}
             />
           </div>
           <div className='flex'>
