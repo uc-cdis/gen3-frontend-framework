@@ -28,5 +28,13 @@ export const getNavPageLayoutPropsFromConfig =
     const footerProps: FooterProps = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/footer.json`,
     );
-    return { headerProps, footerProps };
+    return {
+      headerProps,
+      footerProps,
+      headerData: {
+        title: 'Gen3 Frontend Framework Page',
+        content: 'Gen3 Frontend Framework Page',
+        key: 'gen3-common-page',
+      },
+    };
   };

@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from 'react';
+import Head from 'next/head';
 import Footer from './Footer';
 import Header from './Header';
 import {
@@ -28,6 +29,14 @@ const NavPageLayout = ({
     : 'flex grow';
   return (
     <div className="flex flex-col justify-between h-screen">
+      <Head>
+        <title>{headerData.title}</title>
+        <meta
+          property="og:title"
+          content={headerData.content}
+          key={headerData.key}
+        />
+      </Head>
       <Header {...headerProps}>
         <title>{headerData.title}</title>
         <meta
