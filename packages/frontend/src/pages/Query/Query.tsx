@@ -9,7 +9,14 @@ const QueryPage = ({
   queryProps,
 }: QueryPageLayoutProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Query Page',
+        content: 'Query page',
+        key: 'gen3-query-page',
+      }}
+    >
       <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint} />
     </NavPageLayout>
   );

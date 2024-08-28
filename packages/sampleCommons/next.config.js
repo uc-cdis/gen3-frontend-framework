@@ -23,6 +23,10 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
   },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
+  },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',

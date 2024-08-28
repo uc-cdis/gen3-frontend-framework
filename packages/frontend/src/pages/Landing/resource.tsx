@@ -21,7 +21,14 @@ const ResourcePage = ({
   resourcePageConfig,
 }: ResourcePageProps) => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Resource Page',
+        content: 'Resource Page',
+        key: 'gen3-resource-page',
+      }}
+    >
       <div className="flex flex-row  justify-items-center">
         <div className="sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-xl mx-20">
           <ResourcePageContent {...resourcePageConfig} />
