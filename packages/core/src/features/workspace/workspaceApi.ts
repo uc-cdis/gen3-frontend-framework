@@ -15,6 +15,11 @@ import { selectActiveWorkspaceStatus } from './workspaceSlice';
 import { CoreState } from '../../reducers';
 import { isFetchParseError, isHttpStatusError } from '../../types';
 
+interface WorkspacePayModelRawResponse {
+  current_pay_model: PayModel;
+  all_pay_models: Array<PayModel>;
+}
+
 const WorkspaceWithTags = gen3Api.enhanceEndpoints({
   addTagTypes: ['Workspace', 'PayModel'],
 });
@@ -47,6 +52,13 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
       }),
       getWorkspacePayModels: builder.query<WorkspacePayModelResponse, void>({
         query: () => `${GEN3_WORKSPACE_API}/allpaymodels`,
+        transformResponse: (response: WorkspacePayModelRawResponse) => {
+          return {
+            currentPayModel: response.current_pay_model,
+            allPayModels: response.all_pay_models,
+            noPayModel: false,
+          };
+        },
       }),
       getActivePayModel: builder.query<PayModel, void>({
         query: () => `${GEN3_WORKSPACE_API}/paymodels`,
@@ -129,7 +141,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
           invalidatesTags: ['PayModel'],
         }),
       }),
-    } as const),
+    }) as const,
 });
 
 export const {

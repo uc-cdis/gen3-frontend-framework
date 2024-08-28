@@ -30,8 +30,8 @@ const WorkspacePanel = () => {
         timingFunction="ease"
       >
         {(styles) => (
-          <div className="mt-4" style={styles}>
-            <Grid justify="space-between" gutter="md">
+          <div className="px-2 mt-4" style={styles}>
+            <Grid justify="center" align="stretch" gutter="md">
               {data?.map((card: WorkspaceInfo) => {
                 return (
                   <Grid.Col

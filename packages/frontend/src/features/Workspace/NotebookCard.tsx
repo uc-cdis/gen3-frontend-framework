@@ -36,11 +36,11 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       </Card.Section>
       <Card.Section inheritPadding py="xs">
         <Group justify="center">
-          <Text c="base-contrast.4" fw={400} size="xs">
+          <Text c="base-contrast.4" className={COMPUTE_PROPS_LABEL_STYLE}>
             CPU Limit: {info.cpuLimit}
           </Text>
           <Text
-            color="base-contrast.4"
+            c="base-contrast.4"
             className={COMPUTE_PROPS_LABEL_STYLE}
             size="xs"
           >

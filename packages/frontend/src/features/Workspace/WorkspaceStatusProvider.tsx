@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  createContext,
-  ReactNode,
-  useEffect,
-} from 'react';
+import React, { useState, useMemo, createContext, ReactNode } from 'react';
 import {
   useGetWorkspaceStatusQuery,
   WorkspaceStatus,
@@ -16,6 +10,8 @@ import {
   WorkspaceStatusResponse,
   EmptyWorkspaceStatusResponse,
 } from '@gen3/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
+import { notifications } from '@mantine/notifications';
 
 interface WorkspaceStatusContextValue {
   isActive: boolean; // is a workspace in a non-idle state
@@ -56,14 +52,14 @@ const isWorkspaceActive = (status: WorkspaceStatus) =>
   status === WorkspaceStatus.Launching ||
   status === WorkspaceStatus.Terminating;
 
-// const PollingInterval: Record<WorkspaceStatus, number > = {
-//   'Not Found': 0,
-//   Launching: 1000,
-//   Terminating: 5000,
-//   Running: 3000,
-//   Stopped: 2000,
-//   Errored: 0,
-// };
+const PollingInterval: Record<WorkspaceStatus, number | undefined> = {
+  'Not Found': undefined,
+  Launching: 1000,
+  Terminating: 5000,
+  Running: 20000,
+  Stopped: 2000,
+  Errored: 0,
+};
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [isActive, setActive] = useState<boolean>(false);
@@ -73,8 +69,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     useGetWorkspaceStatusQuery(undefined, {
       pollingInterval: isActive ? 1000 : undefined,
     });
-
-  const toggleFullscreen = () => setFullscreen((bVal) => !bVal);
 
   const [
     launchTrigger,
@@ -90,15 +84,27 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useCoreDispatch();
 
   // update the cached status
-  useEffect(() => {
-    if (workspaceStatusData) {
+  useDeepCompareEffect(() => {
+    if (
+      workspaceStatusData &&
+      !workspaceStatusRequestError &&
+      workspaceStatusData.status !== WorkspaceStatus.NotFound
+    ) {
       setActive(isWorkspaceActive(workspaceStatusData.status));
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     } else {
       setActive(false);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
-  }, [dispatch, workspaceStatusData]);
+  }, [dispatch, workspaceStatusData, workspaceStatusRequestError]);
+
+  useDeepCompareEffect(() => {
+    if (workspaceLaunchError)
+      notifications.show({
+        title: 'Workspace Error',
+        message: 'Error launching workspace',
+      });
+  }, [workspaceLaunchError]);
 
   const status = useMemo(() => {
     const startWorkspace = (id: string) => {
@@ -106,8 +112,9 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       dispatch(
         setActiveWorkspace({ id: id, status: WorkspaceStatus.Launching }),
       );
-      setActive(true); // need to
     };
+
+    const toggleFullscreen = () => setFullscreen((bVal) => !bVal);
 
     const stopWorkspace = () => {
       terminateWorkspace();
@@ -131,7 +138,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     isActive,
     isConnected,
     isFullscreen,
-    toggleFullscreen,
     launchTrigger,
     terminateIsLoading,
     terminateWorkspace,

@@ -12,6 +12,8 @@ import {
 import { type PayModel, useGetWorkspacePayModelsQuery } from '@gen3/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
+const LIMITS_LABEL_STYLE = 'text-base-lighter font-medium text-sm opacity-90';
+
 interface PayModelMenuItem {
   value: string;
   label: string;
@@ -27,6 +29,7 @@ import { WarningCard, ErrorCard } from '../../../components/MessageCards';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
 import StatusAndControls from '../StatusAndControls';
+import { data } from 'autoprefixer';
 
 const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   return (
@@ -56,37 +59,46 @@ const PaymentPanel = () => {
 
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
 
-  const { usersPayModels, menuData } = useDeepCompareMemo(() => {
-    if (!data)
-      return {
-        usersPayModels: [],
-        selectedPayModel: [],
-      };
-    const usersPayModels = data.allPayModels.map(
-      (payModel: PayModel): PayModelMenuItem => {
+  const { usersPayModels, workspaceName, hardLimit, totalUsage } =
+    useDeepCompareMemo(() => {
+      if (!data)
         return {
-          value: payModel.bmh_workspace_id ?? payModel.workspace_type,
-          label: payModel.workspace_type,
-          totalUsage: payModel['total-usage'].toFixed(2),
-          icon:
-            payModel.request_status === 'active' ? (
-              <ActiveIcon />
-            ) : (
-              <InactiveIcon />
-            ),
+          usersPayModels: [],
+          selectedPayModel: [],
+          workspaceName: 'Not Set',
+          totalUsage: undefined,
+          hardLimit: undefined,
         };
-      },
-    );
-    const menuData = usersPayModels.map((x: PayModelMenuItem, idx: number) => ({
-      value: idx.toString(),
-      label: x.label,
-    }));
+      const usersPayModels = data.allPayModels.map(
+        (payModel: PayModel): PayModelMenuItem => {
+          return {
+            value: payModel.bmh_workspace_id ?? payModel.workspace_type,
+            label: payModel.workspace_type,
+            totalUsage: payModel['total-usage'].toFixed(2),
+            icon:
+              payModel.request_status === 'active' ? (
+                <ActiveIcon />
+              ) : (
+                <InactiveIcon />
+              ),
+          };
+        },
+      );
 
-    return {
-      usersPayModels,
-      menuData,
-    };
-  }, [data]);
+      setSelectedPayModel(
+        data.currentPayModel.bmh_workspace_id ??
+          data.currentPayModel.workspace_type,
+      );
+      return {
+        usersPayModels,
+        workspaceName:
+          data.currentPayModel.bmh_workspace_id.length > 0
+            ? data.currentPayModel.bmh_workspace_id.length
+            : data.currentPayModel.workspace_type,
+        totalUsage: data.currentPayModel['total-usage'],
+        hardLimit: data.currentPayModel['hard-limit'],
+      };
+    }, [data]);
 
   const PayModelSelectItem: SelectProps['renderOption'] = ({ option }) => {
     const menuItem = usersPayModels[Number(option.value)];
@@ -121,7 +133,30 @@ const PaymentPanel = () => {
     <div>
       <Accordion chevronPosition="left">
         <Accordion.Item value="accountInformation">
-          <Accordion.Control>Account Information</Accordion.Control>
+          <Accordion.Control>
+            <Group justify="space-between">
+              Account Information
+              <Group className="font-heading text-base-contrast">
+                <Text fw={600}>{workspaceName}</Text>
+                <div className="flex items-center">
+                  <Text fw={500} size="sm" className="mr-1">
+                    Total Usage:
+                  </Text>
+                  <Text fw={500} size="sm">
+                    {PaymentNumberToString(totalUsage)}
+                  </Text>
+                </div>
+                <div className="flex items-center pr-1">
+                  <Text fw={500} size="sm" className="mr-1">
+                    Hard Limit:
+                  </Text>
+                  <Text fw={500} size="sm">
+                    {PaymentNumberToString(hardLimit)}
+                  </Text>
+                </div>
+              </Group>
+            </Group>
+          </Accordion.Control>
           <Accordion.Panel>
             <div className="grid grid-cols-3 p-4">
               <div className="flex flex-col border-1 border-gray p-2 mr-4">
@@ -145,18 +180,13 @@ const PaymentPanel = () => {
                 <div className="text-md border-b-1 border-gray mb-2 w-full py-2 text-xs">
                   Total Charges (USD)
                 </div>
-                <Text>
-                  {PaymentNumberToString(data?.currentPayModel['total-usage'])}
-                </Text>
-                )
+                <Text>{PaymentNumberToString(totalUsage)}</Text>
               </div>
               <div className="flex flex-col text-center border-1 border-gray p-2">
                 <div className="text-md border-b-1 border-gray mb-2 w-full py-2 text-xs">
                   Spending Limit (USD)
                 </div>
-                <Text>
-                  {PaymentNumberToString(data?.currentPayModel['hard-limit'])}
-                </Text>
+                <Text>{PaymentNumberToString(hardLimit)}</Text>
               </div>
             </div>
           </Accordion.Panel>
