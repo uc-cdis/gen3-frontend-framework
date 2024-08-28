@@ -103,6 +103,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       notifications.show({
         title: 'Workspace Error',
         message: 'Error launching workspace',
+        position: 'top-center',
       });
   }, [workspaceLaunchError]);
 
