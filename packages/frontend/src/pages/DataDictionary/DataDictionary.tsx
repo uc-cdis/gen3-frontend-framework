@@ -10,6 +10,11 @@ const DictionaryPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps, mainProps: { fixed: true } }}
+      headerData={{
+        title: 'Gen3 DataDictionary Page',
+        content: 'Data Dictionary',
+        key: 'gen3-data-dictionary-page',
+      }}
     >
       <DictionaryWithContext config={config} />
     </NavPageLayout>

@@ -41,12 +41,8 @@ const NavigationBarButton = ({
         label={tooltip}
         multiline
         position="bottom"
+        arrowSize={8}
         withArrow
-        color="base.8"
-        classNames={{
-          tooltip: mergedClassnames.tooltip,
-          arrow: mergedClassnames.arrow,
-        }}
         zIndex={1000}
         w={220}
       >
@@ -59,7 +55,10 @@ const NavigationBarButton = ({
               : ''
           }${href}`}
         >
-          <div className={extractClassName('root', mergedClassnames)}>
+          <div
+            className={extractClassName('root', mergedClassnames)}
+            role="navigation"
+          >
             <Icon
               height={iconHeight}
               icon={icon}

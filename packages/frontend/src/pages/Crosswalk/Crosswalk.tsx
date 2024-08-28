@@ -9,7 +9,14 @@ const CrosswalkPage = ({
   config,
 }: CrosswalkPageLayoutProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Crosswalk Page',
+        content: 'Crosswalk Data',
+        key: 'gen3-crosswalk-page',
+      }}
+    >
       <CrosswalkPanel {...config} />
     </NavPageLayout>
   );
