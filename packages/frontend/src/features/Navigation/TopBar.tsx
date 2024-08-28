@@ -42,7 +42,10 @@ const TopIconButton = ({
   );
 
   return (
-    <div className={extractClassName('root', mergedClassnames)}>
+    <div
+      className={extractClassName('root', mergedClassnames)}
+      aria-label={name}
+    >
       <div
         className={extractClassName('button', mergedClassnames)}
         role="button"

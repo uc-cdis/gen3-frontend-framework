@@ -25,7 +25,14 @@ const ExplorerPage = ({
   }
 
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Explorer Page',
+        content: 'Explorer Page',
+        key: 'gen3-explorer-page',
+      }}
+    >
       <CohortBuilder explorerConfig={explorerConfig} />
     </NavPageLayout>
   );

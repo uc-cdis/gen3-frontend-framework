@@ -57,6 +57,12 @@ export interface NavigationProps {
   readonly classNames?: Record<string, string>;
 }
 
+export interface HeaderData {
+  title: string;
+  content: string;
+  key: string;
+}
+
 export interface HeaderProps {
   readonly top: TopBarProps;
   readonly navigation: NavigationProps;

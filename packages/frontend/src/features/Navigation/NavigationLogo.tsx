@@ -26,7 +26,10 @@ const NavigationLogo = ({
   );
 
   return (
-    <div className={extractClassName('root', mergedClassnames)}>
+    <div
+      className={extractClassName('root', mergedClassnames)}
+      role="navigation"
+    >
       <HoverLink
         className={extractClassName('link', mergedClassnames)}
         href="/"
@@ -39,7 +42,10 @@ const NavigationLogo = ({
         />
       </HoverLink>
       {title && (
-        <div className={extractClassName('title', mergedClassnames)}>
+        <div
+          className={extractClassName('title', mergedClassnames)}
+          role="navigation"
+        >
           <HoverLink
             className={extractClassName('titleLink', mergedClassnames)}
             href={'/'}

@@ -10,7 +10,14 @@ import { FaEnvelope, FaExternalLinkAlt } from 'react-icons/fa';
 
 const ContactPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   return (
-    <NavPageLayout {...{ footerProps, headerProps }}>
+    <NavPageLayout
+      {...{ footerProps, headerProps }}
+      headerData={{
+        title: 'Gen3Contact Page',
+        content: 'Contact Page',
+        key: 'gen3-contact-page',
+      }}
+    >
       <div className="flex flex-row justify-center">
         <div className="flex flex-col justify-evenly pb-10 text-xl max-w-10">
           <div className="pb-10 pt-10 text-sm">
