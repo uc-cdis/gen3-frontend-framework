@@ -94,7 +94,6 @@ http {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
         }
-
         # Proxy /wts
         location /wts {
             proxy_pass https://$GEN3_REMOTE_API;
@@ -104,6 +103,7 @@ http {
         }
 
         # Proxy /lw-workspace
+
         location /lw-workspace/ {
           set $authz_resource "/workspace";
           set $authz_method "access";
@@ -168,8 +168,11 @@ http {
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection $connection_upgrade;
           proxy_set_header X-URL-SCHEME https;
+          proxy_set_header Content-Security-Policy "frame-ancestors https://localhost:3010";
+
           client_max_body_size 0;
           # for fixing noVNC connection timeout issue
           proxy_read_timeout 36000s;
         }
+    }
 }
