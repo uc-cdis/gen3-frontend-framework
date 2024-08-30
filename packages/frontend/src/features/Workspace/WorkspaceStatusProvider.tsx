@@ -65,14 +65,21 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [isActive, setActive] = useState<boolean>(false);
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
   const [isConnected, setConnected] = useState<boolean>(false);
+  const [pollingInterval, setPollingInterval] = useState<number | undefined>(
+    undefined,
+  );
   const { data: workspaceStatusData, isError: workspaceStatusRequestError } =
     useGetWorkspaceStatusQuery(undefined, {
-      pollingInterval: isActive ? 1000 : undefined,
+      pollingInterval: pollingInterval,
     });
 
   const [
     launchTrigger,
-    { isLoading: workspaceLaunchIsLoading, error: workspaceLaunchError },
+    {
+      isLoading: workspaceLaunchIsLoading,
+      isError: isWorkspaceLaunchError,
+      error: workspaceLaunchError,
+    },
     // This is the destructured mutation result
   ] = useLaunchWorkspaceMutation();
 
@@ -83,6 +90,9 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
   const dispatch = useCoreDispatch();
 
+  console.log('workspaceStatusData', workspaceStatusData);
+  console.log('workspaceLaunchError', isWorkspaceLaunchError);
+
   // update the cached status
   useDeepCompareEffect(() => {
     if (
@@ -92,17 +102,19 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     ) {
       setActive(isWorkspaceActive(workspaceStatusData.status));
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
+      setPollingInterval(PollingInterval[workspaceStatusData.status]);
     } else {
       setActive(false);
+      setPollingInterval(PollingInterval[WorkspaceStatus.NotFound]);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [dispatch, workspaceStatusData, workspaceStatusRequestError]);
 
   useDeepCompareEffect(() => {
-    if (workspaceLaunchError)
+    if (isWorkspaceLaunchError)
       notifications.show({
         title: 'Workspace Error',
-        message: 'Error launching workspace',
+        message: `Error launching workspace: ${workspaceLaunchError}`,
         position: 'top-center',
       });
   }, [workspaceLaunchError]);
