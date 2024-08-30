@@ -49,6 +49,7 @@ export enum WorkspaceStatus {
   Stopped = 'Stopped',
   NotFound = 'Not Found',
   Errored = 'Errored',
+  StatusError = 'Status Error',
 }
 
 export enum PodConditionType {

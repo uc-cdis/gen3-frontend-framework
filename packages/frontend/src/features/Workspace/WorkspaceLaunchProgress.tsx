@@ -18,7 +18,7 @@ const WorkspaceStepper = ({
   step,
 }: WorkspaceLaunchProgressProps) => {
   //  if (!step) return null;
-  //  console.log('step', step);
+  console.log('step', step);
 
   return (
     <Transition

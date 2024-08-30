@@ -1,5 +1,6 @@
 import ErrorCard from './ErrorCard';
 import WarningCard from './WarningCard';
 import MessageCard from './MessageCard';
+import CardContainer from './CardContainer';
 
-export { ErrorCard, WarningCard, MessageCard };
+export { CardContainer, ErrorCard, WarningCard, MessageCard };

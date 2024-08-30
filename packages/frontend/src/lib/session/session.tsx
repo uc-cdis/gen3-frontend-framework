@@ -170,7 +170,7 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  ///useResourceMonitor();
+  useResourceMonitor();
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

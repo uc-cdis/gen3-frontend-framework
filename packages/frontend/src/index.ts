@@ -50,7 +50,11 @@ import SubmissionPage from './pages/Submission/Submission';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
 import WorkspacePage from './pages/Workspace/Workspace';
-import { WorkspacePageGetServerSideProps } from './pages/Workspace/data';
+import { WorkspaceNoAccessPage } from './pages/Workspace/index';
+import {
+  WorkspacePageGetServerSideProps,
+  WorkspaceNoAccessPageServerSideProps,
+} from './pages/Workspace/data';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
@@ -98,6 +102,8 @@ export {
   AdminAuthZPageGetServerSideProps,
   WorkspacePage,
   WorkspacePageGetServerSideProps,
+  WorkspaceNoAccessPage,
+  WorkspaceNoAccessPageServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,

@@ -1,5 +1,6 @@
-import React, { ReactElement, ReactNode } from 'react';
-import { Card, Text, Group, ThemeIcon } from '@mantine/core';
+import React, { ReactElement } from 'react';
+import { Text, ThemeIcon } from '@mantine/core';
+import CardContainer from './CardContainer';
 
 export interface MessageTextProps {
   message: string;
@@ -16,26 +17,6 @@ const MessageText: React.FunctionComponent<MessageTextColorProps> = ({
   <Text c={color} size="md" fw={500}>
     {message}
   </Text>
-);
-
-interface CardContainerProps {
-  children: ReactNode;
-}
-
-const CardContainer: React.FunctionComponent<CardContainerProps> = ({
-  children,
-}: CardContainerProps): ReactElement => (
-  <div className="flex justify-center pt-2 items-center">
-    <Card
-      shadow="sm"
-      p="md"
-      className="bg-base-lightest border-2 border-base-lighter"
-    >
-      <Group align="center" wrap="nowrap">
-        {children}
-      </Group>
-    </Card>
-  </div>
 );
 
 interface MessageCardProps {

@@ -1,15 +1,15 @@
 import React from 'react';
-import { Text } from '@mantine/core';
-import { modals } from '@mantine/modals';
-import { GEN3_WORKSPACE_API, WorkspaceStatus } from '@gen3/core';
+import {
+  GEN3_WORKSPACE_API,
+  selectActiveWorkspaceStatus,
+  useCoreSelector,
+  WorkspaceStatus,
+} from '@gen3/core';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspaceNotebook = () => {
-  const {
-    workspaceStatus: { status },
-  } = useWorkspaceStatusContext();
-
-  if (status !== WorkspaceStatus.Running) return null;
+  const currentWorkspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
+  if (currentWorkspaceStatus !== WorkspaceStatus.Running) return null;
 
   return (
     <React.Fragment>

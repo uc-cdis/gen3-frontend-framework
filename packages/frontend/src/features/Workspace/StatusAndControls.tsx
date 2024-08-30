@@ -1,12 +1,16 @@
 import React from 'react';
-import { Group, ActionIcon, Tooltip, Text, Transition } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
+import { ActionIcon, Group, Text, Tooltip, Transition } from '@mantine/core';
+/// import { useDebouncedValue } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';
 import { Icon } from '@iconify/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
-import { WorkspaceStatus } from '@gen3/core';
+import {
+  selectActiveWorkspaceStatus,
+  useCoreSelector,
+  WorkspaceStatus,
+} from '@gen3/core';
 
 const StatusAndControls = () => {
   const {
@@ -19,16 +23,18 @@ const StatusAndControls = () => {
 
   const openModal = () =>
     modals.openConfirmModal({
-      title: 'Please confirm workspace shutdown',
+      title: 'Workspace',
       children: <Text size="sm">Please confirm workspace shutdown</Text>,
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
       onConfirm: () => stopWorkspace(),
     });
 
-  const [isTerminating] = useDebouncedValue(
-    terminateIsLoading || status === WorkspaceStatus.Terminating,
-    600,
-  );
+  // const [isTerminating] = useDebouncedValue(
+  //   terminateIsLoading || status === WorkspaceStatus.Terminating,
+  //   600,
+  // );
+
+  const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
 
   // if (!isActive) return null;
 
@@ -45,13 +51,14 @@ const StatusAndControls = () => {
             <Icon height={'2.0rem'} icon={'workspace:jupyter'} />
             <Tooltip label="Stop Workspace">
               <ActionIcon
-                loading={isTerminating}
+                loading={workspaceStatus === WorkspaceStatus.Terminating}
                 size="xl"
                 color="accent.5"
                 variant="default"
                 onClick={() => {
                   openModal();
                 }}
+                aria-label="Stop Workspace"
               >
                 <StopIcon
                   color="utility.2"
@@ -68,6 +75,7 @@ const StatusAndControls = () => {
                 onClick={() => {
                   toggleFullscreen();
                 }}
+                aria-label="Toggle Fullscreen"
               >
                 <FullscreenIcon size="1.75rem" className="text-accent-warm" />
               </ActionIcon>

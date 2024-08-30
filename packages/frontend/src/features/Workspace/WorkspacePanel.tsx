@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, rem, Transition } from '@mantine/core';
 import {
+  selectActiveWorkspaceStatus,
+  useCoreSelector,
   useGetWorkspaceOptionsQuery,
   WorkspaceInfo,
   WorkspaceStatus,
@@ -11,10 +13,12 @@ import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspacePanel = () => {
   const { data, isLoading, isError, isSuccess } = useGetWorkspaceOptionsQuery();
-  const {
-    isActive,
-    workspaceStatus: { status },
-  } = useWorkspaceStatusContext();
+  // const {
+  //   isActive,
+  //   workspaceStatus: { status },
+  // } = useWorkspaceStatusContext();
+
+  const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
 
   if (isError) {
     return <ErrorCard message="Error loading workspace definitions" />;
@@ -23,7 +27,10 @@ const WorkspacePanel = () => {
   return (
     <>
       <Transition
-        mounted={status === WorkspaceStatus.NotFound}
+        mounted={
+          workspaceStatus === WorkspaceStatus.NotFound ||
+          workspaceStatus === WorkspaceStatus.Launching
+        }
         transition="scale-y"
         duration={600}
         exitDuration={600}

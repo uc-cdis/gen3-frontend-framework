@@ -18,6 +18,7 @@ import {
 } from './workspaceSlice';
 
 export * from './types';
+export * from './utils';
 
 export {
   EmptyWorkspaceStatusResponse,

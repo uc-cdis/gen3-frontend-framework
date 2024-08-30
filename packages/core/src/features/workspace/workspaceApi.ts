@@ -76,7 +76,6 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
             return workspaceStatus;
           }
 
-          // Seems to be if reconnect to workspace page to resync the status
           // TODO: try to find out IF this is code is required
           const workspaceStatusData =
             workspaceStatus.data as unknown as WorkspaceStatusResponse;
@@ -122,15 +121,19 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
             url: `${GEN3_WORKSPACE_API}/launch?id=${id}`,
             method: 'POST',
             invalidatesTags: ['Workspace'],
+            responseHandler: (response) => response.text(),
           };
         },
-        transformResponse: () => true,
+        transformResponse: async (response: string) => {
+          return !!(response && response === 'Success');
+        },
       }),
       terminateWorkspace: builder.mutation<void, void>({
         query: () => ({
           url: `${GEN3_WORKSPACE_API}/terminate`,
           method: 'POST',
           invalidatesTags: ['Workspace'],
+          responseHandler: (response) => response.text(),
         }),
       }),
       setCurrentPayModel: builder.mutation<void, string>({
