@@ -64,7 +64,6 @@ const WorkspaceLaunchProgress = () => {
   const config = useWorkspaceContext();
 
   const workspaceStatus = useCoreSelector(selectWorkspaceStatusFromService);
-
   const step = calculateLaunchSteps(workspaceStatus);
 
   return (

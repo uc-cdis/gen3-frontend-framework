@@ -1,20 +1,20 @@
 import React from 'react';
 import { ActionIcon, Group, Text, Tooltip, Transition } from '@mantine/core';
-/// import { useDebouncedValue } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';
 import { Icon } from '@iconify/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import {
+  isWorkspaceActive,
   selectActiveWorkspaceStatus,
+  selectRequestedWorkspaceStatus,
   useCoreSelector,
   WorkspaceStatus,
 } from '@gen3/core';
 
 const StatusAndControls = () => {
-  const { isActive, stopWorkspace, toggleFullscreen } =
-    useWorkspaceStatusContext();
+  const { stopWorkspace, toggleFullscreen } = useWorkspaceStatusContext();
 
   const openModal = () =>
     modals.openConfirmModal({
@@ -25,10 +25,11 @@ const StatusAndControls = () => {
     });
 
   const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
+  const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
 
   return (
     <Transition
-      mounted={isActive}
+      mounted={isWorkspaceActive(workspaceStatus)}
       transition="fade"
       duration={1200}
       timingFunction="ease"
@@ -39,7 +40,7 @@ const StatusAndControls = () => {
             <Icon height={'2.0rem'} icon={'workspace:jupyter'} />
             <Tooltip label="Stop Workspace">
               <ActionIcon
-                loading={workspaceStatus === WorkspaceStatus.Terminating}
+                loading={requestedStatus === 'Terminating'}
                 size="xl"
                 color="accent.5"
                 variant="default"

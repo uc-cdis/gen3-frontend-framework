@@ -8,14 +8,17 @@ import {
   useTerminateWorkspaceMutation,
   EmptyWorkspaceStatusResponse,
   selectWorkspaceStatusFromService,
+  selectWorkspaceStatus,
 } from './workspaceApi';
 import {
   setActiveWorkspaceId,
   clearActiveWorkspaceId,
   setActiveWorkspaceStatus,
   setActiveWorkspace,
+  setRequestedWorkspaceStatus,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
+  selectRequestedWorkspaceStatus,
 } from './workspaceSlice';
 
 export * from './types';
@@ -34,7 +37,10 @@ export {
   clearActiveWorkspaceId,
   setActiveWorkspaceStatus,
   setActiveWorkspace,
+  setRequestedWorkspaceStatus,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
   selectWorkspaceStatusFromService,
+  selectRequestedWorkspaceStatus,
+  selectWorkspaceStatus,
 };

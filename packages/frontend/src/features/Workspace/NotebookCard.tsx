@@ -8,7 +8,13 @@ import {
   Text,
 } from '@mantine/core';
 import { Icon } from '@iconify/react';
-import { WorkspaceInfo, WorkspaceStatus } from '@gen3/core';
+import {
+  selectRequestedWorkspaceStatus,
+  selectWorkspaceStatusFromService,
+  useCoreSelector,
+  WorkspaceInfo,
+  WorkspaceStatus,
+} from '@gen3/core';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const COMPUTE_PROPS_LABEL_STYLE =
@@ -18,11 +24,11 @@ interface NotebookCardParams {
   info: WorkspaceInfo;
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
-  const {
-    startWorkspace,
-    workspaceLaunchIsLoading,
-    workspaceStatus: { status },
-  } = useWorkspaceStatusContext();
+  const { startWorkspace, workspaceLaunchIsLoading } =
+    useWorkspaceStatusContext();
+
+  const { status } = useCoreSelector(selectWorkspaceStatusFromService);
+  const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
 
   return (
     <Card withBorder radius="xs" className="w-64">
@@ -51,7 +57,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <div className="flex mx-8 justify-center border-1 border-base"></div>
       <Group className="mt-2 p-2" justify="center">
         <Button
-          loading={workspaceLaunchIsLoading}
+          loading={requestedStatus === 'Launching'}
           disabled={status !== WorkspaceStatus.NotFound}
           onClick={() => {
             startWorkspace(info.id);

@@ -53,6 +53,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
       }),
       getWorkspacePayModels: builder.query<WorkspacePayModelResponse, void>({
         query: () => `${GEN3_WORKSPACE_API}/allpaymodels`,
+        providesTags: ['PayModel'],
         transformResponse: (response: WorkspacePayModelRawResponse) => {
           return {
             currentPayModel: response.current_pay_model,
@@ -63,6 +64,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
       }),
       getActivePayModel: builder.query<PayModel, void>({
         query: () => `${GEN3_WORKSPACE_API}/paymodels`,
+        providesTags: ['PayModel'],
       }),
       getWorkspaceStatus: builder.query<WorkspaceStatusResponse, void>({
         queryFn: async (_arg0, queryApi, _extraOptions, fetchWithBQ) => {
@@ -115,6 +117,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
           }
           return { data: workspaceStatus.data as WorkspaceStatusResponse };
         },
+        providesTags: ['Workspace'],
       }),
       launchWorkspace: builder.mutation<boolean, string>({
         query: (id) => {
@@ -167,4 +170,9 @@ export const selectWorkspaceStatusFromService = createSelector(
     status.data ?? {
       ...EmptyWorkspaceStatusResponse,
     },
+);
+
+export const selectWorkspaceStatus = createSelector(
+  workspaceStatusSelector,
+  (status) => status?.data?.status ?? WorkspaceStatus.NotFound,
 );

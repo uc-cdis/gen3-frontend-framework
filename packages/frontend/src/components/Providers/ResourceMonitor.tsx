@@ -4,22 +4,24 @@ import {
   useCoreDispatch,
   useGetWorkspaceStatusQuery,
   useTerminateWorkspaceMutation,
+  selectRequestedWorkspaceStatus,
   WorkspaceStatus,
   isWorkspaceActive,
   useCoreSelector,
   selectActiveWorkspaceStatus,
+  setRequestedWorkspaceStatus,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
-const WorkspacePollingInterval: Record<WorkspaceStatus, number | undefined> = {
-  'Not Found': undefined,
-  Launching: 5000,
-  Terminating: 10000,
-  Running: undefined,
+const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
+  'Not Found': 0,
+  Launching: 1000,
+  Terminating: 5000,
+  Running: 10000,
   Stopped: 5000,
-  Errored: 1000,
-  'Status Error': undefined,
+  Errored: 10000,
+  'Status Error': 0,
 };
 
 /**
@@ -28,41 +30,40 @@ const WorkspacePollingInterval: Record<WorkspaceStatus, number | undefined> = {
  */
 
 export const useResourceMonitor = () => {
-  const [pollingInterval, setPollingInterval] = useState<number | undefined>(
-    undefined,
-  );
+  const [pollingInterval, setPollingInterval] = useState<number>(0);
   const {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
     isSuccess: isWorkspaceStatusSuccess,
-    refetch: refetchStatus,
   } = useGetWorkspaceStatusQuery(undefined, {
     pollingInterval: pollingInterval,
+    refetchOnMountOrArgChange: 1800,
+    refetchOnFocus: true,
   });
 
-  // const {
-  //   data: payModel,
-  //   refetch: refetechPayModel,
-  //   isError: isPaymodelError,
-  //   isSuccess: isPaymodelSuccess,
-  // } = useGetActivePayModelQuery();
-
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
-
+  const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
   const dispatch = useCoreDispatch();
-  const currentWorkspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
 
   useDeepCompareEffect(() => {
+    if (requestedStatus === 'Launching') {
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Launching]);
+    }
+    if (requestedStatus === 'Terminating') {
+      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
+    }
+  }, [requestedStatus]);
+
+  useDeepCompareEffect(() => {
+    if (!workspaceStatusData) return;
+
     if (isWorkspaceStatusError) {
+      console.log('Setting Error', workspaceStatusData, isWorkspaceStatusError);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
-      setPollingInterval(undefined); // stop polling
-      refetchStatus();
+      setPollingInterval(0); // stop polling
     }
 
-    if (
-      workspaceStatusData &&
-      workspaceStatusData.status !== WorkspaceStatus.NotFound
-    ) {
+    if (workspaceStatusData.status === WorkspaceStatus.Running) {
       // in some state other than idle
       console.log(
         'status update',
@@ -71,64 +72,53 @@ export const useResourceMonitor = () => {
         WorkspacePollingInterval[workspaceStatusData.status],
       );
 
-      if (workspaceStatusData.status === WorkspaceStatus.Running) {
-        // running need to check if
-        if (
-          !workspaceStatusData.idleTimeLimit ||
-          workspaceStatusData.idleTimeLimit < 0
-        ) {
-          terminateWorkspace();
-          notifications.show({
-            title: 'Workspace Shutdown',
-            message:
-              'Workspace has been idle for too long. Shutting workspace down',
-            position: 'top-center',
-          });
-        }
+      if (
+        !workspaceStatusData.idleTimeLimit ||
+        workspaceStatusData.idleTimeLimit < 0
+      ) {
+        // Do not need to poll
+        dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
+        setPollingInterval(0);
+        return;
       }
 
-      //   setActive(isWorkspaceActive(workspaceStatusData.status));
+      if (
+        workspaceStatusData?.idleTimeLimit &&
+        workspaceStatusData.idleTimeLimit > 0 &&
+        workspaceStatusData.lastActivityTime > 0
+      ) {
+        terminateWorkspace();
+        setPollingInterval(
+          WorkspacePollingInterval[WorkspaceStatus.Terminating],
+        );
+        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+        notifications.show({
+          title: 'Workspace Shutdown',
+          message:
+            'Workspace has been idle for too long. Shutting workspace down',
+          position: 'top-center',
+        });
+        return;
+      }
+      if (requestedStatus === 'Launching') {
+        dispatch(setRequestedWorkspaceStatus('NotSet'));
+      }
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
       setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
-      refetchStatus();
-    } else {
-      // need to consider that if in launchState might get a number of NotFound status before Launching
-      setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
-      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
-      refetchStatus();
+      return;
     }
-  }, [dispatch, workspaceStatusData, isWorkspaceStatusError]);
+    if (workspaceStatusData.status === WorkspaceStatus.NotFound) {
+      if (requestedStatus !== WorkspaceStatus.Launching) {
+        // need to consider that if in launchState might get a number of NotFound status before Launching
+        setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
+        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+      }
+      if (requestedStatus === 'Terminating')
+        dispatch(setRequestedWorkspaceStatus('NotSet'));
 
-  // useDeepCompareEffect(() => {
-  //   if (isWorkspaceStatusError) {
-  //     dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
-  //     setPollingInterval(undefined); // stop polling
-  //     refetchStatus();
-  //   }
-
-  // if (workSpaceStatus) {
-  //   if (workSpaceStatus.status === WorkspaceStatus.Running) {
-  //     // running need to check if
-  //     if (
-  //       !workSpaceStatus.idleTimeLimit ||
-  //       workSpaceStatus.idleTimeLimit < 0
-  //     ) {
-  //         terminateWorkspace();
-  //         notifications.show({
-  //           title: 'Workspace Shutdown',
-  //           message:
-  //             'Workspace has been idle for too long. Shutting workspace down',
-  //           position: 'top-center',
-  //         });
-  //       }
-  //       setPollingInterval(RUNNING_POLLING_INTERVAL);
-  //     } else if (isWorkspaceActive(workSpaceStatus.status)) {
-  //       dispatch(setActiveWorkspaceStatus(workSpaceStatus.status)); // set last known state of workspace
-  //       setPollingInterval(ACTIVE_POLLING_INTERVAL); // either Launching or Terminating want to poll until Running or Not Found (no workspace running)
-  //     } else {
-  //       dispatch(setActiveWorkspaceStatus(workSpaceStatus.status));
-  //       setPollingInterval(undefined); // stop polling
-  //     }
-  //   }
-  // }, [terminateWorkspace, workSpaceStatus]);
+      return;
+    }
+    dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
+    setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
+  }, [dispatch, workspaceStatusData, isWorkspaceStatusError, requestedStatus]);
 };
