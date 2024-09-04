@@ -5,7 +5,6 @@ import {
   Gen3Provider,
   TenStringArray,
   type ModalsConfig,
-  ContentSource,
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
@@ -17,7 +16,7 @@ import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
 
-import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
+import { setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '../lib/content/loadContent';
 

@@ -4,9 +4,13 @@ import {
   LaunchStepIndicatorConfiguration,
   WorkspaceLaunchStatus,
 } from './types';
-import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import { calculateLaunchSteps } from './calculateLaunchSteps';
 import { useWorkspaceContext } from './WorkspaceProvider';
+import {
+  selectWorkspaceStatusFromService,
+  useCoreSelector,
+  useCoreStore,
+} from '@gen3/core';
 
 interface WorkspaceLaunchProgressProps {
   stepsConfig: LaunchStepIndicatorConfiguration;
@@ -32,7 +36,7 @@ const WorkspaceStepper = ({
         <div className="p-2 mt-2 w-full" style={styles}>
           {!step ? null : (
             <Stepper active={step?.step} allowNextStepsSelect={false}>
-              {stepsConfig.steps.map((x, idx) => {
+              {stepsConfig.steps.map((x) => {
                 return (
                   <Stepper.Step
                     key={x.label}
@@ -58,7 +62,8 @@ const WorkspaceStepper = ({
 
 const WorkspaceLaunchProgress = () => {
   const config = useWorkspaceContext();
-  const { workspaceStatus } = useWorkspaceStatusContext();
+
+  const workspaceStatus = useCoreSelector(selectWorkspaceStatusFromService);
 
   const step = calculateLaunchSteps(workspaceStatus);
 

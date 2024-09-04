@@ -14,6 +14,7 @@ import {
 import { selectActiveWorkspaceStatus } from './workspaceSlice';
 import { CoreState } from '../../reducers';
 import { isFetchParseError, isHttpStatusError } from '../../types';
+import { createSelector } from '@reduxjs/toolkit';
 
 interface WorkspacePayModelRawResponse {
   current_pay_model: PayModel;
@@ -156,3 +157,14 @@ export const {
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
 } = workspacesApi;
+
+export const workspaceStatusSelector =
+  workspacesApi.endpoints.getWorkspaceStatus.select();
+
+export const selectWorkspaceStatusFromService = createSelector(
+  workspaceStatusSelector,
+  (status) =>
+    status.data ?? {
+      ...EmptyWorkspaceStatusResponse,
+    },
+);

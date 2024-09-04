@@ -13,13 +13,8 @@ import {
 } from '@gen3/core';
 
 const StatusAndControls = () => {
-  const {
-    isActive,
-    stopWorkspace,
-    toggleFullscreen,
-    terminateIsLoading,
-    workspaceStatus: { status },
-  } = useWorkspaceStatusContext();
+  const { isActive, stopWorkspace, toggleFullscreen } =
+    useWorkspaceStatusContext();
 
   const openModal = () =>
     modals.openConfirmModal({
@@ -29,14 +24,7 @@ const StatusAndControls = () => {
       onConfirm: () => stopWorkspace(),
     });
 
-  // const [isTerminating] = useDebouncedValue(
-  //   terminateIsLoading || status === WorkspaceStatus.Terminating,
-  //   600,
-  // );
-
   const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
-
-  // if (!isActive) return null;
 
   return (
     <Transition

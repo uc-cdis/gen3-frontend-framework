@@ -42,8 +42,8 @@ const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
 const NoPayModel = () => {
   return (
     <Group
-      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
-      justify="apart"
+      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-8"
+      justify="space-between"
     >
       <Text className="pl-4" size="md">
         No pay model defined

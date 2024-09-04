@@ -7,6 +7,7 @@ import {
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
   EmptyWorkspaceStatusResponse,
+  selectWorkspaceStatusFromService,
 } from './workspaceApi';
 import {
   setActiveWorkspaceId,
@@ -35,4 +36,5 @@ export {
   setActiveWorkspace,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
+  selectWorkspaceStatusFromService,
 };
