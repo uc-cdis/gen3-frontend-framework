@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && npm install -g npm
 
 RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-RUN npm install --location=global lerna@6.6.2
+RUN npm install --location=global lerna@8.1.8
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/tools/package.json ./packages/tools/
