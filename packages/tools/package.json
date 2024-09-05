@@ -28,8 +28,9 @@
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.6",
-    "rollup-plugin-executable": "^1.6.3",
+    "rollup-plugin-executable": "^1.6.3"
+  },
+  "peerDependencies": {
     "ts-node": "^10.9.2"
   },
   "files": [
