@@ -15,9 +15,9 @@ const WorkspaceNotebook = () => {
 
   return (
     <React.Fragment>
-      <div className="flex flex-col content-center items-center">
+      <div className="flex flex-col w-full  flex-grow content-center items-center">
         <iframe
-          className="flex flex-grow h-screen w-full border-8"
+          className="w-full h-full border-8"
           title="Workspace"
           src={`${GEN3_WORKSPACE_API}/proxy/`}
         />

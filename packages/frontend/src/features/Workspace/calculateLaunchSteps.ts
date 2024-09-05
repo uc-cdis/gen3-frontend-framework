@@ -4,6 +4,7 @@ import {
   WorkspaceStatusResponse,
   PodStatus,
   WorkspacePodCondition,
+  WorkspaceStatus,
 } from '@gen3/core';
 import { WorkspaceLaunchStatus } from './types';
 
@@ -65,6 +66,12 @@ export const calculateLaunchSteps = ({
     step: 0,
     status: 'not ready',
   };
+
+  if (status === WorkspaceStatus.Running)
+    return {
+      step: 5,
+      status: 'running',
+    };
 
   const currentStep = calculateCurrentStep(conditions);
 

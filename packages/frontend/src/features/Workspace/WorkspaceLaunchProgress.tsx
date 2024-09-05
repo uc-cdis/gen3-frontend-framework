@@ -34,7 +34,7 @@ const WorkspaceStepper = ({
       {(styles) => (
         <div className="p-2 mt-2 w-full" style={styles}>
           {!step ? null : (
-            <Stepper active={step?.step} allowNextStepsSelect={false}>
+            <Stepper size="xs" active={step?.step} allowNextStepsSelect={false}>
               {stepsConfig.steps.map((x) => {
                 return (
                   <Stepper.Step
@@ -66,10 +66,12 @@ const WorkspaceLaunchProgress = () => {
   const step = calculateLaunchSteps(workspaceStatus);
 
   return (
-    <WorkspaceStepper
-      stepsConfig={config.launchStepIndicatorConfig}
-      step={step}
-    />
+    <div className="px-2 py-1">
+      <WorkspaceStepper
+        stepsConfig={config.launchStepIndicatorConfig}
+        step={step}
+      />
+    </div>
   );
 };
 

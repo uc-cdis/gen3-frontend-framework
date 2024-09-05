@@ -7,7 +7,7 @@ import PaymentPanel from './PaymentPanel/PaymentPanel';
 import WorkspaceLaunchProgress from './WorkspaceLaunchProgress';
 
 const FULLSCREEN_STYLE =
-  'fixed top-0 left-0 w-full h-100vh flex flex-col bg-base-lightest';
+  'fixed top-0 left-0 w-full h-full flex flex-col flex-grow content-center items-center bg-base-lightest';
 
 const WorkspaceNotebookPanelWithControls = () => {
   const { isFullscreen } = useWorkspaceStatusContext();
@@ -15,7 +15,9 @@ const WorkspaceNotebookPanelWithControls = () => {
   return (
     <div
       className={
-        isFullscreen ? FULLSCREEN_STYLE : 'flex flex-col grow w-full relative'
+        isFullscreen
+          ? FULLSCREEN_STYLE
+          : 'flex flex-col grow w-full h-full relative'
       }
     >
       <ExternalLoginsStatus />
