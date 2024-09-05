@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
+import { Select, Tabs } from '@mantine/core';
 import { DiscoveryConfig, DiscoveryIndexConfig } from './types';
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
-import { Select, Tabs } from '@mantine/core';
+import MessagePanel from '../../components/MessagePanel';
 
 const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
@@ -19,6 +20,20 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
     });
   }, [discoveryConfig.metadataConfig]);
 
+  if (menuItems.length === 0) {
+    return <MessagePanel message="No discovery configuration" />;
+  }
+
+  if (menuItems.length === 1) {
+    // no need for tabs
+    return (
+      <DiscoveryIndexPanel
+        discoveryConfig={discoveryConfig.metadataConfig[0]}
+        indexSelector={null}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <Tabs
@@ -29,7 +44,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
         }}
       >
         <Tabs.List>
-          {menuItems.map((item, i) => (
+          {menuItems.map((item) => (
             <Tabs.Tab key={item.value} value={item.value}>
               {item.label}
             </Tabs.Tab>
