@@ -1,20 +1,27 @@
 import React from 'react';
-import { ActionIcon, Group, Text, Tooltip, Transition } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Text,
+  Tooltip,
+  Transition,
+} from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';
 import { Icon } from '@iconify/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import {
-  isWorkspaceActive,
+  isWorkspaceRunningOrStopping,
   selectActiveWorkspaceStatus,
   selectRequestedWorkspaceStatus,
   useCoreSelector,
-  WorkspaceStatus,
 } from '@gen3/core';
 
 const StatusAndControls = () => {
-  const { stopWorkspace, toggleFullscreen } = useWorkspaceStatusContext();
+  const { stopWorkspace, toggleFullscreen, isFullscreen } =
+    useWorkspaceStatusContext();
 
   const openModal = () =>
     modals.openConfirmModal({
@@ -29,7 +36,7 @@ const StatusAndControls = () => {
 
   return (
     <Transition
-      mounted={isWorkspaceActive(workspaceStatus)}
+      mounted={isWorkspaceRunningOrStopping(workspaceStatus)}
       transition="fade"
       duration={1200}
       timingFunction="ease"
@@ -39,35 +46,41 @@ const StatusAndControls = () => {
           <Group>
             <Icon height={'2.0rem'} icon={'workspace:jupyter'} />
             <Tooltip label="Stop Workspace">
-              <ActionIcon
+              <Button
                 loading={requestedStatus === 'Terminating'}
-                size="xl"
+                size="md"
                 color="accent.5"
                 variant="default"
                 onClick={() => {
                   openModal();
                 }}
                 aria-label="Stop Workspace"
+                leftSection={
+                  <StopIcon
+                    color="utility.2"
+                    size="1rem"
+                    className="text-accent-warm"
+                  />
+                }
               >
-                <StopIcon
-                  color="utility.2"
-                  size="1.75rem"
-                  className="text-accent-warm"
-                />
-              </ActionIcon>
+                Stop Workspace
+              </Button>
             </Tooltip>
             <Tooltip label="Toggle fullscreen mode">
-              <ActionIcon
+              <Button
                 color="utility.2"
-                size="xl"
+                size="md"
                 variant="default"
                 onClick={() => {
                   toggleFullscreen();
                 }}
-                aria-label="Toggle Fullscreen"
+                aria-label={
+                  isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'
+                }
+                leftSection={<FullscreenIcon className="text-accent-warm" />}
               >
-                <FullscreenIcon size="1.75rem" className="text-accent-warm" />
-              </ActionIcon>
+                {isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'}
+              </Button>
             </Tooltip>
           </Group>
         </div>

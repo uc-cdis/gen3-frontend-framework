@@ -8,6 +8,7 @@ import WorkspaceStatusProvider from './WorkspaceStatusProvider';
 import WorkspaceLaunchProgress from './WorkspaceLaunchProgress';
 import WorkspaceNotebook from './WorkspaceNotebook';
 import ExternalLoginsStatus from './ExternalLogins/ExternalLoginsStatus';
+import WorkspaceNotebookPanelWithControls from './WorkspaceNotebookPanelWithControls';
 
 interface WorkspaceProps {
   config: WorkspaceConfig;
@@ -20,11 +21,7 @@ const Workspace = ({ config }: WorkspaceProps) => {
       <WorkspaceProvider config={config}>
         <WorkspaceStatusProvider>
           <div className="flex flex-col grow w-full relative">
-            <ExternalLoginsStatus />
-            <PaymentPanel />
-            <WorkspaceLaunchProgress />
-            <WorkspacePanel />
-            <WorkspaceNotebook />
+            <WorkspaceNotebookPanelWithControls />
           </div>
         </WorkspaceStatusProvider>
       </WorkspaceProvider>

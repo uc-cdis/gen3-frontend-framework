@@ -1,10 +1,8 @@
 import React, { ReactElement, useMemo, useState } from 'react';
 import {
   Accordion,
-  Box,
   Group,
   Loader,
-  LoadingOverlay,
   Select,
   SelectProps,
   Text,
@@ -41,10 +39,10 @@ const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
 const NoPayModel = () => {
   return (
     <Group
-      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full"
+      className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-16"
       justify="space-between"
     >
-      <Text className="pl-4" size="md">
+      <Text className="pl-4" size="md" classNames={{ root: 'font-heading' }}>
         No pay model defined
       </Text>
       <StatusAndControls />
@@ -114,12 +112,9 @@ const PaymentPanel = () => {
 
   if (isLoading && isFetching)
     return (
-      <Group
-        className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-14"
-        justify="center"
-      >
+      <div className="flex justify-center p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-14">
         <Loader />
-      </Group>
+      </div>
     );
 
   if (isError) {

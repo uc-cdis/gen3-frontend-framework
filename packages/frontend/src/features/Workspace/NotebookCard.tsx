@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  Center,
-  Divider,
-  Group,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Button, Card, Group, Stack, Text, Transition } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import {
   selectRequestedWorkspaceStatus,
@@ -24,8 +16,7 @@ interface NotebookCardParams {
   info: WorkspaceInfo;
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
-  const { startWorkspace, workspaceLaunchIsLoading } =
-    useWorkspaceStatusContext();
+  const { startWorkspace, stopWorkspace } = useWorkspaceStatusContext();
 
   const { status } = useCoreSelector(selectWorkspaceStatusFromService);
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
@@ -65,6 +56,22 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         >
           Launch
         </Button>
+        <Transition
+          mounted={requestedStatus === 'Launching'}
+          transition="fade"
+          duration={400}
+          timingFunction="ease"
+        >
+          {() => (
+            <Button
+              onClick={() => {
+                stopWorkspace();
+              }}
+            >
+              Shutdown
+            </Button>
+          )}
+        </Transition>
       </Group>
     </Card>
   );

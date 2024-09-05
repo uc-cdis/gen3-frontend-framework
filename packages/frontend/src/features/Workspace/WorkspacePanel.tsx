@@ -13,10 +13,6 @@ import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspacePanel = () => {
   const { data, isLoading, isError, isSuccess } = useGetWorkspaceOptionsQuery();
-  // const {
-  //   isActive,
-  //   workspaceStatus: { status },
-  // } = useWorkspaceStatusContext();
 
   const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
 

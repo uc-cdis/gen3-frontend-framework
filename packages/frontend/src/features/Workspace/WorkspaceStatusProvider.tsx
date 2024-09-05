@@ -14,6 +14,7 @@ import {
   useCoreSelector,
   selectActiveWorkspaceStatus,
   setRequestedWorkspaceStatus,
+  setActiveWorkspaceStatus,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
@@ -104,6 +105,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     const stopWorkspace = () => {
       terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus('Terminating'));
+      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
       // this will inform the ResourceMonitor
     };
 

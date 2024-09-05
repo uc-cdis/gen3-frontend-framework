@@ -29,7 +29,12 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const { status, pending } = useSession(true, onUnauthenticated);
   if (status !== 'issued') {
     // not logged in
-    if (pending) return <Loader />;
+    if (pending)
+      return (
+        <div className="flex justify-center w-full mt-10">
+          <Loader />
+        </div>
+      );
     else
       return (
         <div className="w-full h-full relative">

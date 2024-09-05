@@ -9,6 +9,7 @@ import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspaceNotebook = () => {
   const currentWorkspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
+  const { isFullscreen } = useWorkspaceStatusContext();
 
   if (currentWorkspaceStatus !== WorkspaceStatus.Running) return null;
 

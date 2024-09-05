@@ -1,5 +1,5 @@
 import { useGetExternalLoginsQuery } from '@gen3/core';
-import { Badge, Group } from '@mantine/core';
+import { Badge, Group, Loader } from '@mantine/core';
 
 const ExternalLoginsStatus = () => {
   const {
@@ -9,9 +9,13 @@ const ExternalLoginsStatus = () => {
     isSuccess,
   } = useGetExternalLoginsQuery();
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="bg-primary h-24 flex justify-center">
+  //       <Loader />
+  //     </div>
+  //   );
+  // }
 
   if (isError) {
     return <div>Error occurred while fetching external logins</div>;

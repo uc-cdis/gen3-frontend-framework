@@ -18,7 +18,7 @@ const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   'Not Found': 0,
   Launching: 1000,
   Terminating: 5000,
-  Running: 10000,
+  Running: 100000,
   Stopped: 5000,
   Errored: 10000,
   'Status Error': 0,
@@ -35,6 +35,7 @@ export const useResourceMonitor = () => {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
     isSuccess: isWorkspaceStatusSuccess,
+    refetch,
   } = useGetWorkspaceStatusQuery(undefined, {
     pollingInterval: pollingInterval,
     refetchOnMountOrArgChange: 1800,
@@ -48,8 +49,10 @@ export const useResourceMonitor = () => {
   useDeepCompareEffect(() => {
     if (requestedStatus === 'Launching') {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Launching]);
+      refetch();
     }
     if (requestedStatus === 'Terminating') {
+      console.log('Setting terminate');
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
     }
   }, [requestedStatus]);
@@ -103,12 +106,16 @@ export const useResourceMonitor = () => {
       if (requestedStatus === 'Launching') {
         dispatch(setRequestedWorkspaceStatus('NotSet'));
       }
+      if (requestedStatus === 'Terminating') {
+        refetch();
+        return;
+      }
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
       setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
       return;
     }
     if (workspaceStatusData.status === WorkspaceStatus.NotFound) {
-      if (requestedStatus !== WorkspaceStatus.Launching) {
+      if (requestedStatus !== 'Launching') {
         // need to consider that if in launchState might get a number of NotFound status before Launching
         setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
         dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
@@ -118,6 +125,12 @@ export const useResourceMonitor = () => {
 
       return;
     }
+    console.log(
+      'setting setActiveWorkspaceStatus',
+      workspaceStatusData.status,
+      ' polling:',
+      WorkspacePollingInterval[workspaceStatusData.status],
+    );
     dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
   }, [dispatch, workspaceStatusData, isWorkspaceStatusError, requestedStatus]);
