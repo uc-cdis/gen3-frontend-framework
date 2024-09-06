@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  createContext,
-  ReactNode,
-  useEffect,
-} from 'react';
+import React, { useState, useMemo, createContext, ReactNode } from 'react';
 import {
   WorkspaceStatus,
   useCoreDispatch,
@@ -15,9 +9,21 @@ import {
   selectActiveWorkspaceStatus,
   setRequestedWorkspaceStatus,
   setActiveWorkspaceStatus,
+  isFetchBaseQueryError,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
+
+const getWorkspaceErrorMessage = (
+  error: unknown,
+  defaultMessage: string,
+): string => {
+  if (isFetchBaseQueryError(error)) {
+    return error.data as string;
+  }
+
+  return defaultMessage;
+};
 
 interface WorkspaceStatusContextValue {
   isFullscreen: boolean; // fullscreen mode
@@ -54,7 +60,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [
     launchTrigger,
     { isError: isWorkspaceLaunchError, error: workspaceLaunchError },
-    // This is the destructured mutation result
   ] = useLaunchWorkspaceMutation();
 
   const [
@@ -72,19 +77,22 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
   // handle errors in launching, getting status, or terminating
   useDeepCompareEffect(() => {
-    if (isWorkspaceLaunchError) {
+    if (isWorkspaceLaunchError || isTerminateError) {
       notifications.show({
         title: 'Workspace Error',
-        message: 'Error launching workspace.',
+        message: getWorkspaceErrorMessage(
+          isWorkspaceLaunchError
+            ? workspaceLaunchError
+            : workspaceTerminateError,
+          isWorkspaceLaunchError
+            ? 'Error launching workspace'
+            : 'Error stopping workspace',
+        ),
         position: 'top-center',
+        containerWidth: '50%',
       });
-    }
-    if (isTerminateError) {
-      notifications.show({
-        title: 'Workspace Error',
-        message: 'Error terminating workspace',
-        position: 'top-center',
-      });
+      dispatch(setRequestedWorkspaceStatus('NotSet'));
+      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
 
@@ -96,7 +104,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
           id: id,
           status: WorkspaceStatus.Launching,
           requestedStatus: 'Launching',
-        }), // this will inform the ResourceMonitor
+        }),
       );
     };
 
@@ -106,7 +114,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       terminateWorkspace();
       dispatch(setRequestedWorkspaceStatus('Terminating'));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-      // this will inform the ResourceMonitor
     };
 
     return {

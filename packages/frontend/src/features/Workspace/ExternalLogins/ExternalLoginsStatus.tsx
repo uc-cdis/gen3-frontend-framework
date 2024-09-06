@@ -1,5 +1,5 @@
 import { useGetExternalLoginsQuery } from '@gen3/core';
-import { Badge, Group, Loader } from '@mantine/core';
+import { Badge, Group, Loader, Stack, Text } from '@mantine/core';
 
 const ExternalLoginsStatus = () => {
   const {
@@ -9,13 +9,13 @@ const ExternalLoginsStatus = () => {
     isSuccess,
   } = useGetExternalLoginsQuery();
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="bg-primary h-24 flex justify-center">
-  //       <Loader />
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="bg-primary h-24 flex justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   if (isError) {
     return <div>Error occurred while fetching external logins</div>;
@@ -27,14 +27,26 @@ const ExternalLoginsStatus = () => {
     );
     if (providersNeedToken.length > 0) {
       return (
-        <Group>
-          The following providers need a token:
-          <Group>
-            {providersNeedToken.map((provider) => (
-              <Badge key={provider.name}>{provider.name}</Badge>
-            ))}
-          </Group>
-        </Group>
+        <div className="p-2 border border-base-lighter pb-4">
+          <Stack>
+            <Text>
+              To analyze all data to which you have access, please authorize
+              these external data resources in the Profile page:{' '}
+            </Text>
+            <Group gap="xs">
+              {providersNeedToken.map((provider) => (
+                <Badge
+                  size="lg"
+                  variant="outline"
+                  radius="sm"
+                  key={provider.name}
+                >
+                  {provider.name}
+                </Badge>
+              ))}
+            </Group>
+          </Stack>
+        </div>
       );
     }
     return null;

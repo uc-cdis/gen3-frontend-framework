@@ -52,7 +52,6 @@ export const useResourceMonitor = () => {
       refetch();
     }
     if (requestedStatus === 'Terminating') {
-      console.log('Setting terminate');
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
     }
   }, [requestedStatus]);
@@ -61,7 +60,6 @@ export const useResourceMonitor = () => {
     if (!workspaceStatusData) return;
 
     if (isWorkspaceStatusError) {
-      console.log('Setting Error', workspaceStatusData, isWorkspaceStatusError);
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
       setPollingInterval(0); // stop polling
     }

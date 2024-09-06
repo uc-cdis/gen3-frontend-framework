@@ -67,12 +67,6 @@ export const calculateLaunchSteps = ({
     status: 'not ready',
   };
 
-  if (status === WorkspaceStatus.Running)
-    return {
-      step: 5,
-      status: 'running',
-    };
-
   const currentStep = calculateCurrentStep(conditions);
 
   workspaceLaunchStatus.step = currentStep;

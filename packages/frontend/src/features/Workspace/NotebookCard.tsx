@@ -1,6 +1,7 @@
 import { Button, Card, Group, Stack, Text, Transition } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import {
+  selectActiveWorkspaceId,
   selectRequestedWorkspaceStatus,
   selectWorkspaceStatusFromService,
   useCoreSelector,
@@ -20,6 +21,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
 
   const { status } = useCoreSelector(selectWorkspaceStatusFromService);
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
+  const workspaceId = useCoreSelector(selectActiveWorkspaceId);
 
   return (
     <Card withBorder radius="xs" className="w-64">
@@ -48,7 +50,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <div className="flex mx-8 justify-center border-1 border-base"></div>
       <Group className="mt-2 p-2" justify="center">
         <Button
-          loading={requestedStatus === 'Launching'}
+          loading={info.id === workspaceId && requestedStatus === 'Launching'}
           disabled={status !== WorkspaceStatus.NotFound}
           onClick={() => {
             startWorkspace(info.id);
@@ -57,7 +59,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           Launch
         </Button>
         <Transition
-          mounted={requestedStatus === 'Launching'}
+          mounted={info.id === workspaceId && requestedStatus === 'Launching'}
           transition="fade"
           duration={400}
           timingFunction="ease"
