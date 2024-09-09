@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
-import Gen3Link from './Gen3Link';
+import Gen3Link from '../Gen3Link';
+import { extractClassName } from '../utils';
+import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { FooterProps } from './types';
-import { extractClassName } from './utils';
-import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 
 const Footer = ({
   bottomLinks,
@@ -12,17 +12,39 @@ const Footer = ({
   footerRightLogos,
   classNames = {},
 }: FooterProps) => {
-
   const classNamesDefaults = {
     root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
-  const mergedClassNames= mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassNames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <footer>
-      <div className={extractClassName('root',mergedClassNames )}>
-        <div className="flex justify-end">
+      <div className={extractClassName('root', mergedClassNames)}>
+        <div className="flex flex-row items-center justify-between">
+          {(footerRightLogos || [[]]).map((col, index) => {
+            return (
+              <div
+                key={`footer-col-${index}`}
+                className={`flex gap-x-6 mr-8 ${
+                  col.length > 1 ? 'justify-end' : ''
+                }`}
+              >
+                {col.map((logo) => (
+                  <Image
+                    key={`icons-${logo.logo}`}
+                    src={`${logo.logo}`}
+                    width={logo.width}
+                    height={logo.height}
+                    alt={logo.description}
+                  />
+                ))}
+              </div>
+            );
+          })}
           {(footerLogos || [[]]).map((col, index) => {
             return (
               <div
@@ -75,26 +97,6 @@ const Footer = ({
             ))}
           </div>
         </div>
-        {(footerRightLogos || [[]]).map((col, index) => {
-          return (
-            <div
-              key={`footer-col-${index}`}
-              className={`flex gap-x-6 mr-8 ${
-                col.length > 1 ? 'justify-end' : ''
-              }`}
-            >
-              {col.map((logo) => (
-                <Image
-                  key={`icons-${logo.logo}`}
-                  src={`${logo.logo}`}
-                  width={logo.width}
-                  height={logo.height}
-                  alt={logo.description}
-                />
-              ))}
-            </div>
-          );
-        })}
       </div>
       {bottomLinks && bottomLinks.length > 0 ? (
         <div className="pt-[4px] m-1 text-right text-xs text-white font-content">
