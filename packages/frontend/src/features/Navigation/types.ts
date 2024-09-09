@@ -15,6 +15,11 @@ interface ColumnLinks {
   }>;
 }
 
+interface ColumnText {
+  label: string;
+  className?: string;
+}
+
 interface FooterLogo {
   readonly logo: string;
   readonly description: string;
@@ -22,12 +27,18 @@ interface FooterLogo {
   readonly height: number;
 }
 
+interface FooterColumn {
+  rows: Array<FooterLogo | ColumnLinks | ColumnText>;
+  classNames?: Record<string, string>;
+}
+
 export interface FooterProps {
-  readonly bottomLinks?: ReadonlyArray<BottomLinks>;
-  readonly columnLinks?: ReadonlyArray<ColumnLinks>;
-  readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-  readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-  readonly classNames?: Record<string, string>;
+  bottomLinks?: ReadonlyArray<BottomLinks>;
+  columnLinks?: ReadonlyArray<ColumnLinks>;
+  footerLogos?: ReadonlyArray<FooterLogo>;
+  footerRightLogos?: ReadonlyArray<FooterLogo>;
+  classNames?: Record<string, string>;
+  customFooter?: ReactElement;
 }
 
 export interface NavigationButtonProps {
@@ -64,9 +75,9 @@ export interface HeaderData {
 }
 
 export interface HeaderProps {
-  readonly top: TopBarProps;
-  readonly navigation: NavigationProps;
-  readonly type?: 'horizontal' | 'vertical' | 'original';
+  top: TopBarProps;
+  navigation: NavigationProps;
+  type?: 'horizontal' | 'vertical' | 'original';
 }
 
 export interface MainContentProps {
