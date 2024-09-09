@@ -16,17 +16,19 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   'Not Found': 0,
-  Launching: 1000,
+  Launching: 5000,
   Terminating: 5000,
-  Running: 100000,
+  Running: 300000,
   Stopped: 5000,
   Errored: 10000,
   'Status Error': 0,
 };
 
+const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figure how to configure this
+
 /**
  *  Monitors resource usage.
- *  Currently, handles workspace payment and idle status
+ *  Currently, handles workspace, payment and idle status
  */
 
 export const useResourceMonitor = () => {
@@ -66,13 +68,6 @@ export const useResourceMonitor = () => {
 
     if (workspaceStatusData.status === WorkspaceStatus.Running) {
       // in some state other than idle
-      console.log(
-        'status update',
-        workspaceStatusData.status,
-        ' polling:',
-        WorkspacePollingInterval[workspaceStatusData.status],
-      );
-
       if (
         !workspaceStatusData.idleTimeLimit ||
         workspaceStatusData.idleTimeLimit < 0
@@ -88,18 +83,31 @@ export const useResourceMonitor = () => {
         workspaceStatusData.idleTimeLimit > 0 &&
         workspaceStatusData.lastActivityTime > 0
       ) {
-        terminateWorkspace();
-        setPollingInterval(
-          WorkspacePollingInterval[WorkspaceStatus.Terminating],
-        );
-        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-        notifications.show({
-          title: 'Workspace Shutdown',
-          message:
-            'Workspace has been idle for too long. Shutting workspace down',
-          position: 'top-center',
-        });
-        return;
+        const remainingWorkspaceKernelLife =
+          data.idleTimeLimit - (Date.now() - data.lastActivityTime);
+        if (remainingWorkspaceKernelLife <= 0) {
+          // kernel has died due to inactivity
+          terminateWorkspace();
+          setPollingInterval(
+            WorkspacePollingInterval[WorkspaceStatus.Terminating],
+          );
+          dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
+          notifications.show({
+            title: 'Workspace Shutdown',
+            message:
+              'Workspace has been idle for too long. Shutting workspace down',
+            position: 'top-center',
+          });
+          return;
+        }
+        if (remainingWorkspaceKernelLife <= workspaceShutdownAlertLimit) {
+          // TODO change running refresh to handle this
+          notifications.show({
+            title: 'Workspace Warning',
+            message: 'Workspace has been idle for too long. Will shutdown soon',
+            position: 'top-center',
+          });
+        }
       }
       if (requestedStatus === 'Launching') {
         dispatch(setRequestedWorkspaceStatus('NotSet'));
@@ -123,12 +131,7 @@ export const useResourceMonitor = () => {
 
       return;
     }
-    console.log(
-      'setting setActiveWorkspaceStatus',
-      workspaceStatusData.status,
-      ' polling:',
-      WorkspacePollingInterval[workspaceStatusData.status],
-    );
+
     dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
   }, [dispatch, workspaceStatusData, isWorkspaceStatusError, requestedStatus]);

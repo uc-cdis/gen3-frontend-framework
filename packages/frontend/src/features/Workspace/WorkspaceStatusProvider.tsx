@@ -33,6 +33,7 @@ interface WorkspaceStatusContextValue {
   statusError?: boolean;
   workspaceLaunchIsLoading: boolean;
   terminateIsLoading: boolean;
+  isPayModelNeededToLaunch?: boolean;
 }
 const WorkspaceStatusContext = createContext<WorkspaceStatusContextValue>({
   isFullscreen: false,
@@ -41,7 +42,7 @@ const WorkspaceStatusContext = createContext<WorkspaceStatusContextValue>({
   toggleFullscreen: () => null,
   workspaceLaunchIsLoading: false,
   terminateIsLoading: false,
-  // workspaceStatus: EmptyWorkspaceStatusResponse,
+  isPayModelNeededToLaunch: undefined,
 });
 
 export const useWorkspaceStatusContext = () => {
@@ -56,6 +57,9 @@ export const useWorkspaceStatusContext = () => {
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
+  const [isPayModelNeededToLaunch, setIsPayModelNeededToLaunch] = useState<
+    boolean | undefined
+  >(undefined);
 
   const [
     launchTrigger,
@@ -70,6 +74,30 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       error: workspaceTerminateError,
     },
   ] = useTerminateWorkspaceMutation();
+
+  const {
+    data: payModels,
+    isLoading: isPayModelLoading,
+    isError: isPayModelError,
+  } = getWorkspacePayModels();
+
+  useDeepCompareEffect(() => {
+    if (isPayModelError) {
+      notifications.show({
+        title: 'Pay Model Error',
+        message: 'Unable to get Pay Model.',
+      });
+    }
+    if (isPayModelLoading) {
+      setIsPayModelNeededToLaunch(true);
+    }
+    if (payModels) {
+      setIsPayModelNeededToLaunch(
+        Object.keys(payModels).length > 0 &&
+          payModels.current_pay_model != null,
+      );
+    }
+  }, [payModels]);
 
   const dispatch = useCoreDispatch();
 
@@ -124,6 +152,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       workspaceLaunchIsLoading:
         currentWorkspaceStatus === WorkspaceStatus.Launching,
       terminateIsLoading,
+      isPayModelNeededToLaunch,
     };
   }, [
     dispatch,

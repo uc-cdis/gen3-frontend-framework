@@ -7,8 +7,12 @@ import {
   SelectProps,
   Text,
 } from '@mantine/core';
-import { type PayModel, useGetWorkspacePayModelsQuery } from '@gen3/core';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import {
+  type PayModel,
+  useGetWorkspacePayModelsQuery,
+  useSetCurrentPayModelMutation,
+} from '@gen3/core';
+import { useDeepCompareMemo, useDeepCompareCallback } from 'use-deep-compare';
 
 const LIMITS_LABEL_STYLE = 'text-base-lighter font-medium text-sm opacity-90';
 
@@ -54,7 +58,20 @@ const PaymentPanel = () => {
   const { data, isLoading, isFetching, isError, error } =
     useGetWorkspacePayModelsQuery();
 
+  const [
+    setPaymodel,
+    { isLoading: isSetPaymodelLoading, isError: isSetPaymodelError },
+  ] = useSetCurrentPayModelMutation();
+
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
+
+  const setPayModel = useDeepCompareCallback(
+    (id: string) => {
+      setPaymodel(id);
+      setSelectedPayModel(id);
+    },
+    [setPaymodel, selectedPayModel],
+  );
 
   const { usersPayModels, workspaceName, hardLimit, totalUsage } =
     useDeepCompareMemo(() => {
@@ -164,7 +181,9 @@ const PaymentPanel = () => {
                       placeholder="Select Workspace"
                       renderOption={PayModelSelectItem}
                       data={usersPayModels}
-                      onChange={setSelectedPayModel}
+                      onChange={(id) => {
+                        if (id) setPayModel(id);
+                      }}
                       value={selectedPayModel}
                     />
                   </div>

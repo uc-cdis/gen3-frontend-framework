@@ -67,7 +67,7 @@
         }
       }
     ],
-    "showLogin": true,
+    "loginButtonVisibility": "visible",
     "classNames": {
       "root": "border-base-light",
       "label": "text-white",

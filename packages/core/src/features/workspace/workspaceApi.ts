@@ -66,6 +66,14 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
         query: () => `${GEN3_WORKSPACE_API}/paymodels`,
         providesTags: ['PayModel'],
       }),
+      setCurrentPayModel: builder.mutation<void, string>({
+        query: (id: string) => ({
+          url: `${GEN3_WORKSPACE_API}/setpaymodel`,
+          method: 'POST',
+          body: id,
+          invalidatesTags: ['PayModel'],
+        }),
+      }),
       getWorkspaceStatus: builder.query<WorkspaceStatusResponse, void>({
         queryFn: async (_arg0, queryApi, _extraOptions, fetchWithBQ) => {
           const currentWorkspaceStatus = selectActiveWorkspaceStatus(
@@ -138,14 +146,6 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
           method: 'POST',
           invalidatesTags: ['Workspace'],
           responseHandler: (response) => response.text(),
-        }),
-      }),
-      setCurrentPayModel: builder.mutation<void, string>({
-        query: (id: string) => ({
-          url: `${GEN3_WORKSPACE_API}/setpaymodel`,
-          method: 'POST',
-          body: id,
-          invalidatesTags: ['PayModel'],
         }),
       }),
     }) as const,
