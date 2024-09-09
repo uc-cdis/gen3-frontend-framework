@@ -22,9 +22,9 @@ import {
   PaginationState,
   SortingState,
 } from '@tanstack/table-core';
-import { DataRequestStatus } from './types';
 import { LoadingOverlay } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { MetadataRequestStatus } from '../metadata/DataLoaders/types';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -34,7 +34,7 @@ const extractCellValue =
 interface DiscoveryTableProps {
   data: JSONObject[];
   hits: number;
-  dataRequestStatus: DataRequestStatus;
+  dataRequestStatus: MetadataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;

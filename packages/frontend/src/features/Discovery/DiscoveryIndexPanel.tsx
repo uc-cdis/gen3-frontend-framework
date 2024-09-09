@@ -8,12 +8,12 @@ import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
-import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
+import SummaryStatisticPanel from '../metadata/Statistics/SummaryStatisticPanel';
+import { useLoadAllMDSData } from '../metadata/DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
-import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
+import { getMetadataLoader } from '../metadata/DataLoaders/registeredDataLoaders';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -26,7 +26,7 @@ const DiscoveryIndexPanel = ({
 }: DiscoveryIndexPanelProps) => {
   const dataHook = useMemo(
     () =>
-      getDiscoveryDataLoader(
+      getMetadataLoader(
         discoveryConfig?.features?.dataLoader?.dataFetchFunction,
       ) ?? useLoadAllMDSData,
     [discoveryConfig?.features?.dataLoader?.dataFetchFunction],

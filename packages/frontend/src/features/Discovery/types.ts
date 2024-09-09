@@ -1,11 +1,12 @@
-import {
-  JSONValue,
-  JSONObject,
-  type MetadataPaginationParams,
-} from '@gen3/core';
+import { JSONObject, JSONValue } from '@gen3/core';
 import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
-import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
+import { SummaryStatisticsConfig } from '../metadata/Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import {
+  MetadataHookResponse,
+  MetadataLoaderConfig,
+  MetadataLoaderProps,
+} from '../metadata/DataLoaders/types';
 
 export interface TagData {
   name: string;
@@ -23,34 +24,10 @@ export interface SearchTerms {
   selectedTags?: Record<string, boolean>;
 }
 
-export interface DiscoveryDataLoaderProps extends Record<string, any> {
-  pagination: MetadataPaginationParams;
-  searchTerms: SearchTerms;
-  discoveryConfig: DiscoveryIndexConfig;
-}
-
-export interface DataRequestStatus {
-  isFetching: boolean;
-  isLoading: boolean;
-  isUninitialized: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-}
-
-export interface DiscoverDataHookResponse {
-  data: Array<JSONObject>;
-  hits: number;
-  advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
-  dataRequestStatus: DataRequestStatus;
-  summaryStatistics: SummaryStatistics;
-  suggestions: Array<string>;
-  clearSearch?: () => void;
-}
-
 export type DiscoveryTableDataHook = (
-  dataHookArgs: DiscoveryDataLoaderProps,
+  dataHookArgs: MetadataLoaderProps,
   ...args: any[]
-) => DiscoverDataHookResponse;
+) => MetadataHookResponse;
 
 export interface KeyValueSearchFilter {
   key: string;
@@ -258,12 +235,6 @@ interface DiscoveryIndex {
   indexName: string;
 }
 
-interface DataLoader {
-  dataFetchFunction?: string;
-  dataFetchArgs?: JSONObject;
-  sortingAndPagination?: 'client' | 'server';
-}
-
 export interface TagsConfig {
   tagCategories: TagCategory[];
   showUnknownTags?: boolean;
@@ -281,7 +252,7 @@ export interface DiscoveryIndexConfig {
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: DataAuthorization;
-    dataLoader?: DataLoader;
+    dataLoader?: MetadataLoaderConfig;
   };
   aggregations: SummaryStatisticsConfig[];
   tags: TagsConfig;

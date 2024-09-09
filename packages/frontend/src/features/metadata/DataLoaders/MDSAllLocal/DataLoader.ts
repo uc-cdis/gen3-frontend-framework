@@ -12,19 +12,26 @@ import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
-  DiscoverDataHookResponse,
-  DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
-} from '../../types';
+} from '../../../Discovery/types';
 import filterByAdvSearch from './filterByAdvSearch';
-import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
+import {
+  getFilterValuesByKey,
+  hasSearchTerms,
+} from '../../../Discovery/Search/utils';
 import { processAllSummaries, processAuthorizations } from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
-import { getManualSortingAndPagination } from '../../utils';
+import {
+  MetadataQueryProps,
+  GetDataResponse,
+  MetadataDataHook,
+  MetadataHookResponse,
+  MetadataLoaderProps,
+} from '../types';
+import { getManualSortingAndPagination } from '../../../Discovery/utils';
 import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
@@ -104,10 +111,13 @@ const processAdvancedSearchTerms = (
     return {
       key,
       keyDisplayName,
-      valueDisplayNames: values.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-      }, {} as Record<string, string>),
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   });
 };
@@ -117,7 +127,7 @@ const useGetMDSData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   discoveryConfig,
-}: Partial<GetDataProps>): GetDataResponse => {
+}: Partial<MetadataQueryProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
@@ -179,7 +189,7 @@ const useGetAggMDSData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   discoveryConfig,
-}: Partial<GetDataProps>): GetDataResponse => {
+}: Partial<MetadataQueryProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
@@ -420,9 +430,9 @@ export const useLoadAllData = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
   dataHook,
-}: DiscoveryDataLoaderProps & {
+}: MetadataLoaderProps & {
   dataHook: MetadataDataHook;
-}): DiscoverDataHookResponse => {
+}): MetadataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   const dataGuidType = discoveryConfig?.guidType ?? guidType;
   const dataStudyField = discoveryConfig?.studyField ?? studyField;
@@ -508,7 +518,7 @@ export const useLoadAllMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) =>
+}: MetadataLoaderProps) =>
   useLoadAllData({
     pagination,
     searchTerms,
@@ -528,7 +538,7 @@ export const useLoadAllAggMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) =>
+}: MetadataLoaderProps) =>
   useLoadAllData({
     pagination,
     searchTerms,

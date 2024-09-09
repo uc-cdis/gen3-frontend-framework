@@ -26,7 +26,7 @@
   "scripts": {
     "lint": "eslint .",
     "compile": "tsc",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "types": "tsc --emitDeclarationOnly",
     "build": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
     "build:clean": "npm run clean && npm run compile && npm run types && rollup --config rollup.config.mjs",

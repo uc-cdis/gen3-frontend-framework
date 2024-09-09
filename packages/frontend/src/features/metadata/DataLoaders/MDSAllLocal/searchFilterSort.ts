@@ -1,7 +1,14 @@
 import filterByTags from './filterByTags';
 import filterByAdvSearch from './filterByAdvSearch';
-import { DiscoveryIndexConfig, SearchTerms, AccessFilters } from '../../types';
-import { AccessSortDirection, AdvancedSearchTerms } from '../../Search/types';
+import {
+  DiscoveryIndexConfig,
+  SearchTerms,
+  AccessFilters,
+} from '../../../Discovery/types';
+import {
+  AccessSortDirection,
+  AdvancedSearchTerms,
+} from '../../../Discovery/Search/types';
 import { JSONObject } from '@gen3/core';
 
 interface ParametersForDoSearchFilterSort {

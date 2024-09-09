@@ -4,7 +4,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { type AuthzMapping, JSONObject } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
-import { DiscoveryIndexConfig, AccessLevel } from '../types';
+import { DiscoveryIndexConfig, AccessLevel } from '../../Discovery/types';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 
 /**

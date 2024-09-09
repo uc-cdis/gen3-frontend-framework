@@ -1,6 +1,9 @@
 import { JSONObject } from '@gen3/core';
-import { AdvancedSearchTerms } from '../../Search/types';
-import { DiscoveryIndexConfig, isSearchKVArray } from '../../types';
+import { AdvancedSearchTerms } from '../../../Discovery/Search/types';
+import {
+  DiscoveryIndexConfig,
+  isSearchKVArray,
+} from '../../../Discovery/types';
 
 /**
  *

@@ -8,6 +8,7 @@ export * from './components/charts';
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
+export * from './components/MetadataViewer';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -55,9 +56,13 @@ import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
-// TODO Replace with AppTool plugin
+// TODO Replace below with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
+
+import MetadataViewerPage, {
+  MetadataViewerPageGetServerSideProps,
+} from './pages/MetadataViewer';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -104,6 +109,8 @@ export {
   AISearchPageGetServerSideProps,
   CrosswalkPage,
   CrosswalkPageGetServerSideProps,
+  MetadataViewerPage,
+  MetadataViewerPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
 };

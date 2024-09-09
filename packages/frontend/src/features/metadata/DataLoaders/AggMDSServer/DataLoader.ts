@@ -7,13 +7,15 @@ import {
 } from '@gen3/core';
 import {
   AdvancedSearchFilters,
-  DiscoverDataHookResponse,
-  DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
-} from '../../types';
+} from '../../../Discovery/types';
 
-import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
+import {
+  getFilterValuesByKey,
+  hasSearchTerms,
+} from '../../../Discovery/Search/utils';
+import { MetadataHookResponse, MetadataLoaderProps } from '../types';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -40,10 +42,13 @@ const processAdvancedSearchTerms = (
     return {
       key,
       keyDisplayName,
-      valueDisplayNames: values.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-      }, {} as Record<string, string>),
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   });
 };
@@ -129,7 +134,7 @@ export const useAggMDSServer = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
+}: MetadataLoaderProps): MetadataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   const dataGuidType = discoveryConfig?.guidType ?? guidType;
   const dataStudyField = discoveryConfig?.studyField ?? studyField;

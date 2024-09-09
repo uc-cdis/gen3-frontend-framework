@@ -20,7 +20,7 @@ import {
 } from './types';
 import StudyGroup from './StudyDetails/StudyGroup';
 import { getTagInfo } from './utils';
-import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
+import { registerDefaultMetadataLoaders } from '../metadata/DataLoaders/registeredDataLoaders';
 
 export {
   type CellRenderFunctionProps,
@@ -33,7 +33,7 @@ export {
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
   registerDiscoveryDefaultStudyPreviewRenderers,
-  registerDefaultDiscoveryDataLoaders,
+  registerDefaultMetadataLoaders,
   DiscoveryCellRendererFactory,
   DiscoveryRowRendererFactory,
   DiscoveryConfigProvider,

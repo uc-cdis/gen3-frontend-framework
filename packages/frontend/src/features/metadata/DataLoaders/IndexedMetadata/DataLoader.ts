@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { GetDataProps, GetDataResponse } from '../types';
+import {
+  MetadataQueryProps,
+  GetDataResponse,
+  MetadataLoaderProps,
+  MetadataLoaderConfig,
+} from '../types';
 import { processAuthorizations } from '../utils';
 import {
   useCoreSelector,
@@ -9,18 +14,18 @@ import {
   type JSONObject,
   type IndexedMetadataFilters,
 } from '@gen3/core';
-import { DiscoveryDataLoaderProps, DiscoveryIndexConfig } from '../../types';
+import { DiscoveryIndexConfig } from '../../../Discovery/types';
 import { isArrayOfString } from '../../../../utils/isType';
 import { useLoadAllData } from '../MDSAllLocal/DataLoader';
 
 const extractIndexArrayFromConfig = (
-  config?: DiscoveryIndexConfig,
+  config?: MetadataLoaderConfig,
 ): Array<string> => {
   if (!config) {
     // throw an error or return default value
     return [];
   }
-  const dataFetchArgs = config.features?.dataLoader?.dataFetchArgs;
+  const dataFetchArgs = config?.dataFetchArgs;
 
   if (!dataFetchArgs?.indexKeys) return [];
 
@@ -32,14 +37,14 @@ const extractIndexArrayFromConfig = (
 };
 
 const extractFilterEmptyFromConfig = (
-  config?: DiscoveryIndexConfig,
+  config?: MetadataLoaderConfig,
 ): IndexedMetadataFilters | undefined => {
   if (!config) {
     // throw an error or return default value
     return undefined;
   }
-  if (config.features?.dataLoader?.dataFetchArgs?.hasEnoughData) {
-    return config.features.dataLoader.dataFetchArgs
+  if (config?.dataFetchArgs?.hasEnoughData) {
+    return config.dataFetchArgs
       .hasEnoughData as unknown as IndexedMetadataFilters;
   }
   return undefined;
@@ -49,12 +54,13 @@ const useGetIndexedMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-  discoveryConfig,
-}: Partial<GetDataProps>): GetDataResponse => {
+  dataLoaderConfig,
+  shouldUseAuthorization,
+}: Partial<MetadataQueryProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
 
-  const indexKeys = extractIndexArrayFromConfig(discoveryConfig);
+  const indexKeys = extractIndexArrayFromConfig(dataLoaderConfig);
   const {
     data,
     isUninitialized,
@@ -68,7 +74,7 @@ const useGetIndexedMDSData = ({
     offset: 0,
     pageSize: maxStudies,
     indexKeys: indexKeys,
-    filterEmpty: extractFilterEmptyFromConfig(discoveryConfig),
+    filterEmpty: extractFilterEmptyFromConfig(dataLoaderConfig),
   });
 
   const authMapping = useCoreSelector((state: CoreState) =>
@@ -78,7 +84,7 @@ const useGetIndexedMDSData = ({
   useEffect(() => {
     if (data && isSuccess) {
       const studyData = data.data;
-      if (discoveryConfig?.features?.authorization.enabled) {
+      if (shouldUseAuthorization) {
         setMDSData(
           processAuthorizations(studyData, discoveryConfig, authMapping),
         );
@@ -110,7 +116,7 @@ export const useLoadAllIndexedAggMDSData = ({
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-}: DiscoveryDataLoaderProps) =>
+}: MetadataLoaderProps) =>
   useLoadAllData({
     pagination,
     searchTerms,
