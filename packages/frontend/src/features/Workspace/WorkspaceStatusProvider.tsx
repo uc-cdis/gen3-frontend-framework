@@ -6,6 +6,7 @@ import {
   setActiveWorkspace,
   useTerminateWorkspaceMutation,
   useCoreSelector,
+  useGetWorkspacePayModelsQuery,
   selectActiveWorkspaceStatus,
   setRequestedWorkspaceStatus,
   setActiveWorkspaceStatus,
@@ -79,7 +80,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     data: payModels,
     isLoading: isPayModelLoading,
     isError: isPayModelError,
-  } = getWorkspacePayModels();
+  } = useGetWorkspacePayModelsQuery();
 
   useDeepCompareEffect(() => {
     if (isPayModelError) {
@@ -93,8 +94,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     }
     if (payModels) {
       setIsPayModelNeededToLaunch(
-        Object.keys(payModels).length > 0 &&
-          payModels.current_pay_model != null,
+        Object.keys(payModels).length > 0 && payModels.currentPayModel != null,
       );
     }
   }, [payModels]);

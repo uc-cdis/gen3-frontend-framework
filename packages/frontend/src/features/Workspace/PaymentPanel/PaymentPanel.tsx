@@ -58,19 +58,16 @@ const PaymentPanel = () => {
   const { data, isLoading, isFetching, isError, error } =
     useGetWorkspacePayModelsQuery();
 
-  const [
-    setPaymodel,
-    { isLoading: isSetPaymodelLoading, isError: isSetPaymodelError },
-  ] = useSetCurrentPayModelMutation();
+  const [setWorkspacePayModel] = useSetCurrentPayModelMutation();
 
   const [selectedPayModel, setSelectedPayModel] = useState<string | null>(null);
 
   const setPayModel = useDeepCompareCallback(
     (id: string) => {
-      setPaymodel(id);
-      setSelectedPayModel(id);
+      setWorkspacePayModel(id); // triggers the call to the service to select the pay model
+      setSelectedPayModel(id); // set the paymodel value for the select component
     },
-    [setPaymodel, selectedPayModel],
+    [setWorkspacePayModel, selectedPayModel],
   );
 
   const { usersPayModels, workspaceName, hardLimit, totalUsage } =

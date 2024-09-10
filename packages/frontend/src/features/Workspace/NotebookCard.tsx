@@ -17,7 +17,8 @@ interface NotebookCardParams {
   info: WorkspaceInfo;
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
-  const { startWorkspace, stopWorkspace } = useWorkspaceStatusContext();
+  const { startWorkspace, stopWorkspace, isPayModelNeededToLaunch } =
+    useWorkspaceStatusContext();
 
   const { status } = useCoreSelector(selectWorkspaceStatusFromService);
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
@@ -51,7 +52,9 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <Group className="mt-2 p-2" justify="center">
         <Button
           loading={info.id === workspaceId && requestedStatus === 'Launching'}
-          disabled={status !== WorkspaceStatus.NotFound}
+          disabled={
+            status !== WorkspaceStatus.NotFound || isPayModelNeededToLaunch
+          }
           onClick={() => {
             startWorkspace(info.id);
           }}

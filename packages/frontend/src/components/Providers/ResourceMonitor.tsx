@@ -8,7 +8,6 @@ import {
   WorkspaceStatus,
   isWorkspaceActive,
   useCoreSelector,
-  selectActiveWorkspaceStatus,
   setRequestedWorkspaceStatus,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
@@ -84,7 +83,8 @@ export const useResourceMonitor = () => {
         workspaceStatusData.lastActivityTime > 0
       ) {
         const remainingWorkspaceKernelLife =
-          data.idleTimeLimit - (Date.now() - data.lastActivityTime);
+          workspaceStatusData.idleTimeLimit -
+          (Date.now() - workspaceStatusData.lastActivityTime);
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
           terminateWorkspace();
