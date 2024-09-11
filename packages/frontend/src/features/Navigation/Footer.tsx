@@ -11,17 +11,24 @@ const Footer = ({
   footerLogos,
   footerRightLogos,
   classNames = {},
+  custom = null,
 }: FooterProps) => {
+  if (custom !== null) {
+    return custom;
+  }
 
   const classNamesDefaults = {
     root: 'bg-primary-lighter text-primary-contrast p-4 shadow-sm',
   };
 
-  const mergedClassNames= mergeDefaultTailwindClassnames(classNamesDefaults, classNames);
+  const mergedClassNames = mergeDefaultTailwindClassnames(
+    classNamesDefaults,
+    classNames,
+  );
 
   return (
     <footer>
-      <div className={extractClassName('root',mergedClassNames )}>
+      <div className={extractClassName('root', mergedClassNames)}>
         <div className="flex justify-end">
           {(footerLogos || [[]]).map((col, index) => {
             return (

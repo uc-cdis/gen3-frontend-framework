@@ -28,6 +28,7 @@ export interface FooterProps {
   readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
   readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
   readonly classNames?: Record<string, string>;
+  readonly custom?: ReactElement | null;
 }
 
 export interface NavigationButtonProps {
