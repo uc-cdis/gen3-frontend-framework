@@ -1,18 +1,28 @@
 {
-  "footerRightLogos": [
-    [
-      {
-        "logo": "/images/gen3.png",
-        "width": 132,
-        "height": 60,
-        "description": "Gen3 Logo"
-      },
-      {
-        "logo": "/images/createdby.png",
-        "width": 170,
-        "height": 60,
-        "description": "Created by CTDS"
-      }
-    ]
+  "classNames": {
+    "root": "bg-base-darker"
+  },
+  "rightSection": [
+    {
+
+      "items": [
+        {
+          "logo": "/icons/gen3.png",
+          "width": 132,
+          "height": 60,
+          "description": "Gen3 Logo"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "logo": "/icons/createdby.png",
+          "width": 170,
+          "height": 60,
+          "description": "Created by CTDS"
+        }
+      ]
+    }
   ]
 }

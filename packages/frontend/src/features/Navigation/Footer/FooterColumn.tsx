@@ -1,14 +1,15 @@
 import React, { FC } from 'react';
 import Image from 'next/image';
-import { FooterLink, FooterLogo, FooterText, getFooterType } from './types';
-
-type FooterRow = FooterLogo | FooterText | FooterLink;
-
-interface FooterColumn {
-  heading?: string;
-  rows: Array<FooterRow>;
-  classNames?: Record<string, string>;
-}
+import {
+  FooterColumn,
+  FooterRow,
+  FooterLink,
+  FooterLogo,
+  FooterText,
+  getFooterType,
+} from './types';
+import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
+import { extractClassName } from '../utils';
 
 // Component for rendering a single row in the column
 const FooterRowComponent: React.FC<FooterRow> = (row) => {
@@ -43,6 +44,7 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
           width={logo.width}
           height={logo.height}
           alt={logo.description}
+          layout="fixed"
         />
       );
     }
@@ -51,15 +53,32 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
   }
 };
 
+const FooterColumnTwDefaultStyles = {
+  root: 'flex flex-col px-2 justify-start',
+  heading: 'font-bold text-xl text-white font-heading',
+};
+
 const FooterColumnComponent: React.FC<FooterColumn> = ({
   heading,
-  rows,
-  classNames,
+  items,
+  classNames = {},
 }: FooterColumn) => {
+  const mergedClassNames = mergeDefaultTailwindClassnames(
+    FooterColumnTwDefaultStyles,
+    classNames,
+  );
+
+  console.log('nergedClassNames', mergedClassNames);
+
   return (
-    <div className="footer-column">
-      {rows.map((item, index) => (
-        <FooterRowComponent key={index} {...item} />
+    <div className={extractClassName('root', mergedClassNames)}>
+      {heading && (
+        <p className={extractClassName('heading', mergedClassNames)}>
+          {heading}
+        </p>
+      )}
+      {items?.map((item, index) => (
+        <FooterRowComponent key={`footer-row-${index}`} {...item} />
       ))}
     </div>
   );

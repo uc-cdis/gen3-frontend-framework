@@ -25,7 +25,8 @@ const Footer = ({
     <footer>
       <div className={extractClassName('root', mergedClassNames)}>
         <div className="flex flex-row items-center justify-between">
-          {(footerRightLogos || [[]]).map((col, index) => {
+          {/* ---
+            footerRightLogos?.map((col, index) => {
             return (
               <div
                 key={`footer-col-${index}`}
@@ -44,8 +45,10 @@ const Footer = ({
                 ))}
               </div>
             );
-          })}
-          {(footerLogos || [[]]).map((col, index) => {
+          }) */}
+          {/*
+            (footerLogos || [[]]).map((col, index) => {
+
             return (
               <div
                 key={`footer-col-${index}`}
@@ -65,7 +68,7 @@ const Footer = ({
                 ))}
               </div>
             );
-          })}
+          }) */}
           <div className="flex w-[100%] pl-10 pt-3">
             {(columnLinks || []).map(({ heading, items }, i) => (
               <div className="flex flex-col pl-10" key={i}>

@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { StylingOverrideWithMergeControl } from '../../../types';
 
 export interface ColumnLinks {
   heading: string;
@@ -14,9 +15,13 @@ interface BottomLinks {
   href: string;
 }
 
+/**
+ *  A Text items for the footer
+ *
+ */
 export interface FooterText {
   text: string;
-  className?: string;
+  className?: StylingOverrideWithMergeControl;
 }
 
 export interface FooterLink extends FooterText {
@@ -24,11 +29,20 @@ export interface FooterLink extends FooterText {
   linkType?: 'gen3ff' | 'portal';
 }
 
-export interface FooterLogo {
-  readonly logo: string;
-  readonly description: string;
-  readonly width: number;
-  readonly height: number;
+export interface FooterLogo extends FooterText {
+  logo: string;
+  description: string;
+  width: number;
+  height: number;
+  href: string;
+}
+
+export type FooterRow = FooterLogo | FooterText | FooterLink;
+
+export interface FooterColumn {
+  heading?: string;
+  items: Array<FooterRow>;
+  classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface FooterProps {
@@ -36,7 +50,9 @@ export interface FooterProps {
   columnLinks?: ReadonlyArray<ColumnLinks>;
   footerLogos?: ReadonlyArray<FooterLogo>;
   footerRightLogos?: ReadonlyArray<FooterLogo>;
-  classNames?: Record<string, string>;
+  rightSection?: ReadonlyArray<FooterColumn>;
+  leftSection?: ReadonlyArray<FooterColumn>;
+  classNames?: StylingOverrideWithMergeControl;
   customFooter?: ReactElement;
 }
 
@@ -57,7 +73,7 @@ export const getFooterType = (
   if (
     typeof obj === 'object' &&
     obj !== null &&
-    typeof obj.label === 'string' &&
+    typeof obj.text === 'string' &&
     (obj.className === undefined || typeof obj.className === 'string')
   ) {
     if (
