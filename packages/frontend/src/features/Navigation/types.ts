@@ -39,7 +39,6 @@ export interface HeaderProps {
   top: TopBarProps;
   navigation: NavigationProps;
   banners?: Array<BannerProps>;
-  headerData: HeaderData;
   type?: 'horizontal' | 'vertical' | 'original';
 }
 
