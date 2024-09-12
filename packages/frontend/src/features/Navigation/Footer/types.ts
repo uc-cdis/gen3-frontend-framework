@@ -59,7 +59,7 @@ export type FooterRow =
 
 export interface FooterColumnProps {
   heading?: string;
-  rows: Array<FooterRow>;
+  rows: Array<Record<string, FooterRow>>;
   classNames?: StylingOverrideWithMergeControl;
 }
 
@@ -78,67 +78,3 @@ export interface FooterProps {
   classNames?: StylingOverrideWithMergeControl;
   customFooter?: ReactElement;
 }
-
-export const getFooterType = (
-  obj: any,
-):
-  | 'FooterText'
-  | 'FooterLink'
-  | 'FooterLinks'
-  | 'FooterLogo'
-  | 'FooterSection'
-  | 'unknown' => {
-  if (!obj || typeof obj !== 'object') {
-    console.log(
-      'Unknown object type: ',
-      obj,
-      ' of type ',
-      typeof obj,
-      " returning 'unknown'",
-    );
-    return 'unknown';
-  }
-
-  if (
-    typeof obj.logo === 'string' &&
-    typeof obj.description === 'string' &&
-    typeof obj.width === 'number' &&
-    typeof obj.height === 'number'
-  ) {
-    console.log('is a Logo', obj);
-    return 'FooterLogo';
-  }
-
-  if (
-    typeof obj.text === 'string' &&
-    (obj.className === undefined || typeof obj.className === 'string')
-  ) {
-    if (
-      typeof obj.href === 'string' &&
-      (obj.linkType === undefined ||
-        obj.linkType === 'gen3ff' ||
-        obj.linkType === 'portal')
-    ) {
-      return 'FooterLink';
-    }
-
-    return 'FooterText';
-  }
-
-  if ('links' in obj) {
-    return 'FooterLinks';
-  }
-
-  if ('columns' in obj) {
-    return 'FooterSection';
-  }
-
-  console.log(
-    'Unknown object type: ',
-    obj,
-    ' of type ',
-    typeof obj,
-    " returning 'unknown'",
-  );
-  return 'unknown';
-};

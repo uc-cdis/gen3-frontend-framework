@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Head from 'next/head';
-import Footer from './Footer/Footer2';
+import Footer from './Footer/Footer';
 import Header from './Header';
 import { HeaderData, HeaderProps, MainContentProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';

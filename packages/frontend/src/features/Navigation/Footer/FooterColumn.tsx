@@ -8,28 +8,43 @@ import {
   FooterText,
   FooterLinks,
   FooterSectionProps,
-  getFooterType,
 } from './types';
+import { JSONObject } from '@gen3/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { extractClassName } from '../utils';
+import { extractObjectKey } from '../../../utils/values';
+
+interface FooterRowComponentProps {
+  item: Record<string, FooterRow>;
+  rowClassname?: string;
+}
 
 // Component for rendering a single row in the column
-const FooterRowComponent: React.FC<FooterRow> = (row) => {
-  switch (getFooterType(row)) {
-    case 'FooterText': {
-      const text = row as FooterText;
-      return <p className={text?.className}> {text.text}</p>;
+// TODO: replace with a renderer factory
+const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
+  item,
+  rowClassname,
+}) => {
+  const itemType = extractObjectKey(item);
+  if (!itemType) return null;
+
+  const className = item[itemType].className ?? rowClassname;
+
+  switch (itemType) {
+    case 'Label': {
+      const text = item[itemType] as FooterText;
+      return <p className={className}> {text.text}</p>;
     }
 
-    case 'FooterLink': {
-      const link = row as FooterLink;
+    case 'Link': {
+      const link = item[itemType] as FooterLink;
       return (
         <React.Fragment key={link.href}>
           <a
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={link?.className}
+            className={className}
           >
             {link.text ? link.text : link.href}
           </a>
@@ -37,12 +52,10 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
       );
     }
 
-    case 'FooterLinks': {
-      const links = row as FooterLinks;
+    case 'Links': {
+      const links = item[itemType] as FooterLinks;
       return (
-        <div
-          className={`flex flex-no-wrap space-x-4 ${links?.className ?? ''}`}
-        >
+        <div className={`flex flex-no-wrap space-x-4 ${className ?? ''}`}>
           {links?.links.map((link, i) => {
             return (
               <React.Fragment key={link.href}>
@@ -64,8 +77,8 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
       );
     }
 
-    case 'FooterLogo': {
-      const logo = row as FooterLogo;
+    case 'Icon': {
+      const logo = item[itemType] as FooterLogo;
       return (
         <Image
           key={`icons-${logo.logo}`}
@@ -73,18 +86,13 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
           width={logo.width}
           height={logo.height}
           alt={logo.description}
-          className={logo?.className}
+          className={className}
         />
       );
     }
-    case 'FooterSection': {
-      const section = row as FooterSectionProps;
-      return (
-        <FooterSection
-          columns={section.columns}
-          className={section?.className}
-        />
-      );
+    case 'Section': {
+      const section = item[itemType] as FooterSectionProps;
+      return <FooterSection columns={section.columns} className={className} />;
     }
 
     default:
@@ -108,7 +116,7 @@ const FooterColumn: React.FC<FooterColumnProps> = ({
     classNames,
   );
 
-  const rowItem = extractClassName('rowItem', mergedClassNames);
+  const rowClassname = extractClassName('rowItem', mergedClassNames);
   return (
     <div className={extractClassName('root', mergedClassNames)}>
       {heading && (
@@ -121,7 +129,8 @@ const FooterColumn: React.FC<FooterColumnProps> = ({
         return (
           <FooterRowComponent
             key={`footer-row-${index}`}
-            {...{ ...item, className: item.className ?? rowItem }}
+            item={item}
+            rowClassname={rowClassname}
           />
         );
       })}
@@ -142,6 +151,4 @@ const FooterSection: React.FC<FooterSectionProps> = ({
   );
 };
 
-export default FooterSection;
-
-//export default React.memo(FooterSection);
+export default React.memo(FooterSection);
