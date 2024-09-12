@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
@@ -12,17 +12,17 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
  * @param {Object} NavigationProps.logo - The logo object
  * @param {Array} NavigationProps.items - The array of navigation items
  * @param {Object} NavigationProps.classNames - The custom class names for different elements of the NavigationBar
- * @returns {JSX.Element} The rendered NavigationBar component
+ * @returns {ReactElement} The rendered NavigationBar component
  */
 const NavigationBar = ({
   logo = undefined,
   title = undefined,
   items = [],
   classNames = {},
-}: NavigationProps) => {
+}: NavigationProps): ReactElement => {
   const classNamesDefaults = {
-    root: 'flex bg-base-max border-b-1 border-base-lighter',
-    navigationPanel: 'font-heading font-bold tracking-wide text-xl',
+    root: 'flex bg-base-max border-b-1 border-base-dark',
+    navigationPanel: 'font-heading',
     logoAndTitlePanel: 'flex justify-center items-center align-middle',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
@@ -38,6 +38,11 @@ const NavigationBar = ({
   useEffect(() => {
     setCurrent(router.pathname);
   }, [router.pathname]);
+
+  console.log(
+    'gir',
+    `grid grid-cols-${items?.length} ${extractClassName('navigationPanel', mergedClassnames)}`,
+  );
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
@@ -59,7 +64,7 @@ const NavigationBar = ({
           return (
             <div
               key={`${x.name}-${index}`}
-              className={`first:border-l-1 border-r-1 border-base-lighter ${selectedStyle}`}
+              className={`first:border-l-1 border-r-1 border-base-dark ${selectedStyle}`}
             >
               <NavigationBarButton
                 tooltip={x.tooltip}

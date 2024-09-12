@@ -17,8 +17,8 @@ const NavigationLogo = ({
 }: NavigationBarLogo) => {
   const classNamesDefaults = {
     root: 'relative flex py-2 justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]',
-    link: 'relative',
-    logo: 'pr-3',
+    link: 'relative object-contain',
+    logo: 'px-3',
     title: 'border-solid border-base-darker ml-1 mr-3',
     divider:
       'border-solid border-gen3-smoke border-l-1 ml-[2px] mr-[7px] h-[64px] w-1',

@@ -53,6 +53,7 @@ const Header = ({
         logo={navigation.logo}
         title={navigation.title}
         items={navigation.items}
+        classNames={navigation?.classNames}
       />
     </div>
   );
