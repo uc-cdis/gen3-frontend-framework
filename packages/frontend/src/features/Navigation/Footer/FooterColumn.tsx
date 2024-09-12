@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import Image from 'next/image';
 import {
-  FooterColumn,
+  FooterColumnProps,
   FooterRow,
   FooterLink,
   FooterLogo,
   FooterText,
+  FooterLinks,
+  FooterSectionProps,
   getFooterType,
 } from './types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
@@ -16,7 +18,7 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
   switch (getFooterType(row)) {
     case 'FooterText': {
       const text = row as FooterText;
-      return <p> {text.text}</p>;
+      return <p className={text?.className}> {text.text}</p>;
     }
 
     case 'FooterLink': {
@@ -27,11 +29,38 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="heal-link-footer"
+            className={link?.className}
           >
             {link.text ? link.text : link.href}
           </a>
         </React.Fragment>
+      );
+    }
+
+    case 'FooterLinks': {
+      const links = row as FooterLinks;
+      return (
+        <div
+          className={`flex flex-no-wrap space-x-4 ${links?.className ?? ''}`}
+        >
+          {links?.links.map((link, i) => {
+            return (
+              <React.Fragment key={link.href}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={link?.className}
+                >
+                  {link.text ? link.text : link.href}
+                </a>
+                {i !== links?.links.length - 1 && (
+                  <span className="mx-1">|</span>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
       );
     }
 
@@ -44,10 +73,20 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
           width={logo.width}
           height={logo.height}
           alt={logo.description}
-          layout="fixed"
+          className={logo?.className}
         />
       );
     }
+    case 'FooterSection': {
+      const section = row as FooterSectionProps;
+      return (
+        <FooterSection
+          columns={section.columns}
+          className={section?.className}
+        />
+      );
+    }
+
     default:
       return null;
   }
@@ -56,32 +95,53 @@ const FooterRowComponent: React.FC<FooterRow> = (row) => {
 const FooterColumnTwDefaultStyles = {
   root: 'flex flex-col px-2 justify-start',
   heading: 'font-bold text-xl text-white font-heading',
+  rowItem: '',
 };
 
-const FooterColumnComponent: React.FC<FooterColumn> = ({
+const FooterColumn: React.FC<FooterColumnProps> = ({
   heading,
-  items,
+  rows,
   classNames = {},
-}: FooterColumn) => {
+}: FooterColumnProps) => {
   const mergedClassNames = mergeDefaultTailwindClassnames(
     FooterColumnTwDefaultStyles,
     classNames,
   );
 
-  console.log('nergedClassNames', mergedClassNames);
-
+  const rowItem = extractClassName('rowItem', mergedClassNames);
   return (
     <div className={extractClassName('root', mergedClassNames)}>
       {heading && (
-        <p className={extractClassName('heading', mergedClassNames)}>
+        <h1 className={extractClassName('heading', mergedClassNames)}>
           {heading}
-        </p>
+        </h1>
       )}
-      {items?.map((item, index) => (
-        <FooterRowComponent key={`footer-row-${index}`} {...item} />
+
+      {rows?.map((item, index) => {
+        return (
+          <FooterRowComponent
+            key={`footer-row-${index}`}
+            {...{ ...item, className: item.className ?? rowItem }}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+const FooterSection: React.FC<FooterSectionProps> = ({
+  columns,
+  className = undefined,
+}: FooterSectionProps) => {
+  return (
+    <div className={`${className ?? 'flex items-center justify-center'}`}>
+      {columns?.map((col, index) => (
+        <FooterColumn key={`column-${index}`} {...col} />
       ))}
     </div>
   );
 };
 
-export default FooterColumnComponent;
+export default FooterSection;
+
+//export default React.memo(FooterSection);

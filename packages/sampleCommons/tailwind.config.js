@@ -16,6 +16,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        footer: '#373A3C',
         heal: {
           primary: '#99286B',
           secondary: '#402264',
@@ -73,6 +74,10 @@ module.exports = {
         4: '4px',
         6: '6px',
         8: '8px',
+      },
+      height: {
+        '100px': '100px',
+        '200px': '200px',
       },
     },
   },
@@ -163,4 +168,6 @@ module.exports = {
       });
     }),
   ],
+  // Add any colors used in a config file here
+  safelist: [{ pattern: /^bg-navigation-footer$/ }],
 };

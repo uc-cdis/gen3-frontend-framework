@@ -19,6 +19,17 @@ describe('mergeDefaultTailwindClassnames function', () => {
     });
   });
 
+  it('merges default and user-defined classnames with mode undefined', () => {
+    const userValues: StylingOverrideWithMergeControl = {
+      root: 'bg-blue-600',
+      label: 'text-black',
+    };
+    expect(mergeDefaultTailwindClassnames(defaultValues, userValues)).toEqual({
+      root: 'px-2 mr-8 bg-blue-600',
+      label: 'font-bold text-black',
+    });
+  });
+
   it('replaces default classnames with user-defined', () => {
     const userValues: StylingOverrideWithMergeControl = {
       root: 'bg-blue-600',

@@ -13,10 +13,10 @@ type RecordType = Record<string, string>;
  */
 export const mergeDefaultTailwindClassnames = (
   defaultValues: RecordType,
-  { mode, ...userValues} : StylingOverrideWithMergeControl
+  { mode = 'merge', ...userValues }: StylingOverrideWithMergeControl,
 ): RecordType => {
   const defaultKeys = Object.keys(defaultValues);
-  const mergedValues = { ...defaultValues, ...userValues };
+  const mergedValues = { ...defaultValues };
 
   if (mode === 'merge') {
     defaultKeys.forEach((key) => {
