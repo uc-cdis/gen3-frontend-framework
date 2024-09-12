@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { TopBarProps } from './TopBar';
 import { BannerProps } from './Banner';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface NavigationButtonProps {
   readonly icon: string;
@@ -8,7 +9,7 @@ export interface NavigationButtonProps {
   readonly href: string;
   readonly name: string;
   readonly iconHeight?: string;
-  readonly classNames?: Record<string, string>;
+  readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface NavigationBarLogo {
@@ -18,7 +19,8 @@ export interface NavigationBarLogo {
   readonly width?: number;
   readonly height?: number;
   readonly basePath?: string;
-  readonly classNames?: Record<string, string>;
+  readonly divider?: boolean;
+  readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface NavigationProps {
@@ -26,7 +28,7 @@ export interface NavigationProps {
   readonly items?: NavigationButtonProps[];
   readonly title?: string;
   readonly loginIcon?: ReactElement | string;
-  readonly classNames?: Record<string, string>;
+  readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface HeaderData {

@@ -16,12 +16,14 @@ import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwind
  */
 const NavigationBar = ({
   logo = undefined,
+  title = undefined,
   items = [],
   classNames = {},
 }: NavigationProps) => {
   const classNamesDefaults = {
     root: 'flex bg-base-max border-b-1 border-base-lighter',
     navigationPanel: 'font-heading font-bold tracking-wide text-xl',
+    logoAndTitlePanel: 'flex justify-center items-center align-middle',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
@@ -39,12 +41,7 @@ const NavigationBar = ({
 
   return (
     <div className={extractClassName('root', mergedClassnames)}>
-      <div
-        className={`flex justify-center items-center align-middle ${extractClassName(
-          'logo',
-          mergedClassnames,
-        )}`}
-      >
+      <div className={extractClassName('logoAndTitlePanel', mergedClassnames)}>
         {logo && <NavigationLogo {...{ ...logo }} />}
       </div>
       <div className="flex flex-grow">{/* middle section of header */}</div>
