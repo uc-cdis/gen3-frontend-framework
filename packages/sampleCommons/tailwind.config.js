@@ -169,5 +169,8 @@ module.exports = {
     }),
   ],
   // Add any colors used in a config file here
-  safelist: [{ pattern: /^bg-navigation-footer$/ }],
+  safelist: [
+    { pattern: /^bg-navigation-footer$/ },
+    { pattern: /^border-navigation-topbar_hover$/ },
+  ],
 };

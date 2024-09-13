@@ -9,6 +9,7 @@ import NavPageLayout, { type NavPageLayoutProps } from './NavPageLayout';
 import { type TopBarProps } from './TopBar';
 import { HeaderProps, type NavigationProps } from './types';
 import { FooterProps } from './Footer/types';
+import { BannerProps } from './Banner';
 
 export {
   type FooterProps,
@@ -16,6 +17,7 @@ export {
   type NavigationProps,
   type NavPageLayoutProps,
   type TopBarProps,
+  type BannerProps,
   Footer,
   Gen3Link,
   Header,
