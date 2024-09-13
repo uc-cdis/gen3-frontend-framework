@@ -1,9 +1,10 @@
 import {
-  FooterProps,
-  HeaderProps,
-  NavigationProps,
-  NavPageLayoutProps,
-  TopBarProps,
+  type FooterProps,
+  type HeaderProps,
+  type NavigationProps,
+  type NavPageLayoutProps,
+  type TopBarProps,
+  type BannerProps,
 } from '../../features/Navigation';
 import ContentSource from '../content';
 import { JSONObject, GEN3_COMMONS_NAME } from '@gen3/core';
@@ -18,11 +19,24 @@ export const getNavPageLayoutPropsFromConfig =
     const navigationConfigJSON = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/navigation.json`,
     );
+
+    let bannerConfigJSON: Array<BannerProps> = [];
+    try {
+      bannerConfigJSON = await ContentSource.get(
+        `config/${GEN3_COMMONS_NAME}/banner.json`,
+      );
+    } catch (e) {
+      console.log(
+        'No banner config found at: ',
+        `config/${GEN3_COMMONS_NAME}/banner.json`,
+      );
+    }
     const { topBar, navigation, type = 'original' } = navigationConfigJSON;
 
     const headerProps: HeaderProps = {
       top: topBar as unknown as TopBarProps,
       navigation: navigation as unknown as NavigationProps,
+      banners: bannerConfigJSON,
       type,
     };
     const footerProps: FooterProps = await ContentSource.get(
