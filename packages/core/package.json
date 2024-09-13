@@ -61,7 +61,8 @@
     "queue": "6.0.2",
     "react-redux": "^8.1.0",
     "redux-persist": "^6.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "swr": "^2.2.5"
   },
   "files": [
     "dist"
