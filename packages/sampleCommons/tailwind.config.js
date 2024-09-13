@@ -168,7 +168,7 @@ module.exports = {
       });
     }),
   ],
-  // Add any colors used in a config file here
+  // Add any colors used in a json config file here
   safelist: [
     { pattern: /^bg-navigation-footer$/ },
     { pattern: /^border-navigation-topbar_hover$/ },

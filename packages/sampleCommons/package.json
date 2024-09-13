@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.40",
+  "version": "0.10.45",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -20,7 +20,6 @@
     "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
-    "@mantine/styles": "^6.0.22",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.2.8",
