@@ -55,7 +55,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  dataHooks,
+  hooks,
 }: ExactValueProps) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]); // Handle the state of the TextInput
   const clearFilters = dataHooks.useClearFilter();

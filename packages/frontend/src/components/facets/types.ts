@@ -1,23 +1,27 @@
 import { EnumFilterValue, Operation } from '@gen3/core';
-import { ComponentType } from 'react';
+import { ReactNode, ComponentType } from 'react';
 
-export interface FacetCardProps<T extends FacetFilterHooks = FacetFilterHooks> {
+export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
+  readonly hooks: T;
   readonly valueLabel: string;
   readonly description?: string;
   readonly facetName?: string;
-  readonly dataHooks: T;
-  readonly width?: string;
-  readonly hideIfEmpty?: boolean;
+  readonly facetTitle?: string;
+  readonly facetBtnToolTip?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;
+  readonly isFacetView?: boolean;
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
-  readonly dismissCallback?: (_arg: string) => void;
+  readonly hideIfEmpty?: boolean;
+  readonly width?: string;
+  readonly dismissCallback?: (arg0: string) => void;
+
   readonly header?: {
-    Panel: React.ElementType<any>;
-    Label: React.ElementType<any>;
-    iconStyle?: string;
+    readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
+    readonly Label: ComponentType<{ children: ReactNode }>; // optional facet label component
+    readonly iconStyle?: string; // optional facet button component
   };
 }
 
@@ -58,20 +62,23 @@ export type GetFacetDataFunction = (
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
 
-export interface FacetFilterHooks {
+export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetFilters: SelectFacetFilterFunction;
+  useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
+  useFilterExpanded?: (field: string) => boolean;
 }
 
-export interface FacetDataHooks extends FacetFilterHooks {
+export interface FacetDataHooks extends FacetCommonHooks {
   useGetFacetData: GetFacetDataFunction; // gets data for EnumFacets and ToggleFacet
-  useTotalCounts: GetTotalCountsFunction;
+  useTotalCounts?: GetTotalCountsFunction;
 }
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;
+  readonly error?: unknown;
 }
 
 export interface EnumFacetResponse extends FacetResponse {

@@ -55,7 +55,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  dataHooks,
+  hooks,
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(''); // Handle the state of the TextInput
   const clearFilters = dataHooks.useClearFilter();

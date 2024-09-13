@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { FacetFilterHooks, FromToRangeValues } from './types';
+import { FacetCommonHooks, FromToRangeValues } from './types';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
@@ -47,7 +47,7 @@ const createBucket = (
   ],
 });
 
-export interface RangeFacetHooks extends FacetFilterHooks {
+export interface RangeFacetHooks extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
@@ -60,7 +60,7 @@ export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
 
 const RangeFacet = ({
   field,
-  dataHooks,
+  hooks,
   valueLabel,
   description,
   facetName,
@@ -79,7 +79,7 @@ const RangeFacet = ({
     iconStyle: controlsIconStyle,
   },
 }: RangeFacetCardProps) => {
-  const { data, rangeFilters, isSuccess } = dataHooks.useGetFacetData(field);
+  const { data, rangeFilters, isSuccess } = hooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
   >({
@@ -87,7 +87,7 @@ const RangeFacet = ({
     to: maximum,
   });
 
-  const clearRangeFilterFromCohort = dataHooks.useClearFilter();
+  const clearRangeFilterFromCohort = hooks.useClearFilter();
   const clearFilters = useCallback(() => {
     setMinMaxValue({
       from: minimum,
@@ -96,7 +96,7 @@ const RangeFacet = ({
     clearRangeFilterFromCohort(field);
   }, [clearRangeFilterFromCohort, field, maximum, minimum]);
 
-  const updateRangeFilter = dataHooks.useUpdateFacetFilters();
+  const updateRangeFilter = hooks.useUpdateFacetFilters();
   const updateFilters = useCallback(
     (from: number, to: number) => {
       updateRangeFilter(field, createBucket(field, from, to));
@@ -162,7 +162,7 @@ const RangeFacet = ({
                 value={rangeFilters ? rangeFilters.from : minMaxValue.from}
                 onChange={(value: number | string) => {
                   updateFilters(
-                    value === '' ? minimum : value as any,
+                    value === '' ? minimum : (value as any),
                     minMaxValue.to ?? DEFAULT_MAXIMUM,
                   );
                 }}
