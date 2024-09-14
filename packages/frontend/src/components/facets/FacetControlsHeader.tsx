@@ -15,10 +15,10 @@ import {
   FacetText,
   FacetHeader,
 } from './components';
-import { FacetCardProps, FacetDataHooks } from './types';
+import { FacetCardProps, FacetCommonHooks } from './types';
 
 type FacetHeaderProps = Pick<
-  FacetCardProps<FacetDataHooks>,
+  FacetCardProps<FacetCommonHooks>,
   | 'field'
   | 'description'
   | 'hooks'
