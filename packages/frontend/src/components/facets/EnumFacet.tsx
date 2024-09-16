@@ -19,6 +19,7 @@ import { DEFAULT_VISIBLE_ITEMS } from './constants';
 import {
   FacetCardProps,
   FacetCommonHooks,
+  FacetDataHooks,
   GetEnumFacetDataFunction,
 } from './types';
 
@@ -28,8 +29,7 @@ import { SortType } from './types';
 
 const MAX_VALUES_TO_DISPLAY = 2048;
 
-export interface EnumFacetHooks extends FacetCommonHooks {
-  // get the totals count by type: cases, files, genes, ssms, projects
+export interface EnumFacetHooks extends FacetDataHooks {
   useGetFacetData: GetEnumFacetDataFunction;
 }
 

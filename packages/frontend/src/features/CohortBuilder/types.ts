@@ -39,11 +39,14 @@ export interface DataTypeConfig {
   dataType: string;
   nodeCountTitle: string;
   fieldMapping: ReadonlyArray<FieldToName>;
-  manifestMapping?: ManifestFieldsConfig;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
   tierAccessLimit?: number; // TODO: same
+}
+
+export interface DataTypeConfigWithManifest extends DataTypeConfig {
+  manifestMapping?: ManifestFieldsConfig;
 }
 
 export interface DownloadButtonConfig extends DownloadButtonProps {
@@ -59,7 +62,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 }
 
 export interface CohortPanelConfig {
-  readonly guppyConfig: DataTypeConfig; // guppy config
+  readonly guppyConfig: DataTypeConfigWithManifest; // guppy config
   readonly tabTitle: string; // title of the tab
   readonly charts?: Record<string, SummaryChart>; // grid of charts
   readonly table?: SummaryTable; // table configuration

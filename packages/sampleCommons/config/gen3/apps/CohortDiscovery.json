@@ -1,4 +1,15 @@
 {
   "name" : "CohortDiscovery",
-  "categories" : []
+  "categories" : [ {
+    "category" : "demographic",
+    "label" : "Demographic",
+    "fields": [
+      "study",
+      "gender",
+      "race",
+      "ethnicity",
+      "vital_status",
+      "whatever_lab_result_value"
+    ]
+  }]
 }

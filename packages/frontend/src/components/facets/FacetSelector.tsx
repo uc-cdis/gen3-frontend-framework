@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SortType, FacetCardProps, FacetCommonHooks } from './types';
-import { useDeepCompareCallback } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
+import { toDisplayName } from '../../utils';
+import { FacetDefinition } from '@gen3/core';
 
 interface FacetWithLabelSelection {
   facet: string;
@@ -12,7 +14,7 @@ interface FacetWithLabelSelection {
 
 export interface SelectFacetHooks extends FacetCommonHooks {
   updateSelectedField: (facet: string) => void;
-  useGetSelectedFields: () => string[];
+  useGetFields: () => Array<FacetDefinition>;
 }
 
 interface FacetSelectorCardProps
@@ -48,6 +50,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   const isFilterExpanded =
     hooks.useFilterExpanded && hooks.useFilterExpanded(category);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+  const fields = hooks.useGetFields();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const toggleSearch = () => {
@@ -60,6 +63,17 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
       searchInputRef?.current?.focus();
     }
   }, [isSearching]);
+
+  const filteredFields = useDeepCompareMemo(() => {
+    if (!searchTerm) return fields;
+    return fields.filter(
+      (f) =>
+        f.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        toDisplayName(f?.label ?? f.field)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
+    );
+  }, [searchTerm, fields]);
 
   const calcCardStyle = useDeepCompareCallback(
     (remainingValues: number) => {

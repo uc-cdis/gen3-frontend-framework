@@ -64,13 +64,13 @@ export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
 
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetFilters: SelectFacetFilterFunction;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
 }
 
 export interface FacetDataHooks extends FacetCommonHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetFilters: SelectFacetFilterFunction;
   useGetFacetData: GetFacetDataFunction; // gets data for EnumFacets and ToggleFacet
   useTotalCounts?: GetTotalCountsFunction;
 }
