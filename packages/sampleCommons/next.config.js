@@ -17,12 +17,13 @@ const withMDX = require('@next/mdx')({
   },
 });
 
-// Next configuration with support for rewrting API to existing common services
+// Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
+    optimizePackageImports: ['@gen3/frontend', '@gen3/core'],
   },
   i18n: {
     locales: ['en'],

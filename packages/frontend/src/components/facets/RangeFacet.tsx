@@ -50,7 +50,6 @@ const createBucket = (
 export interface RangeFacetHooks extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
 }
 
 export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {

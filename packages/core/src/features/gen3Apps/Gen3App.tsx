@@ -40,7 +40,7 @@ export const getGen3AppId = (name: string, version: string): string => {
 };
 
 /**
- *  TODO: can't tell what anything in this directory is doing.
+ *  Creates a Gen3App that is dynamically loaded
  */
 export const createGen3App = ({
   App,
@@ -60,26 +60,20 @@ export const createGen3App = ({
   // need to register its name, category, path, data requirements
   // this will be used to build page3
   // click app link
-  const store = configureStore({
-    // TODO allow user to pass in a reducer in CreateGen3AppOptions?
-    reducer: (state) => state,
-    devTools: {
-      name: `${nameVersion}::${id}`,
-    },
-  });
+  // const store = configureStore({
+  //   // TODO allow user to pass in a reducer in CreateGen3AppOptions?
+  //   reducer: (state) => state,
+  //   devTools: {
+  //     name: `${nameVersion}::${id}`,
+  //   },
+  // });
 
   const Gen3AppWrapper: React.FC = () => {
     useEffect(() => {
       document.title = `GEN3 - ${name}`;
     });
 
-    return (
-      <Provider store={store}>
-        <CookiesProvider>
-          <App />
-        </CookiesProvider>
-      </Provider>
-    );
+    return <App />;
   };
 
   // add the app to the store
@@ -91,7 +85,7 @@ export const createGen3App = ({
       requiredEntityTypes,
     }),
   );
-  registerGen3App(id, Gen3AppWrapper as unknown as React.ReactNode);
+  registerGen3App(name, Gen3AppWrapper as unknown as React.ReactNode);
 
   return Gen3AppWrapper;
 };
@@ -219,6 +213,6 @@ export const createGen3AppWithOwnStore = <
       requiredEntityTypes,
     }),
   );
-  registerGen3App(id, Gen3AppWrapper as unknown as React.ReactNode);
+  registerGen3App(name, Gen3AppWrapper as unknown as React.ReactNode);
   return Gen3AppWrapper as unknown as React.ReactNode;
 };

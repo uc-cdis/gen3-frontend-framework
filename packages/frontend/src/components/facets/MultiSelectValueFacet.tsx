@@ -58,13 +58,13 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   hooks,
 }: ExactValueProps) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]); // Handle the state of the TextInput
-  const clearFilters = dataHooks.useClearFilter();
-  const updateFacetFilters = dataHooks.useUpdateFacetFilters();
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const facetValue = dataHooks.useGetFacetFilters(field);
-  const facetDataValues = dataHooks.useGetFacetData(field) as EnumFacetResponse;
+  const facetValue = hooks.useGetFacetFilters(field);
+  const facetDataValues = hooks.useGetFacetData(field) as EnumFacetResponse;
 
   const dataValues = useMemo(() => {
     if (facetDataValues?.data) {

@@ -11,14 +11,13 @@ interface FacetWithLabelSelection {
 }
 
 export interface SelectFacetHooks extends FacetCommonHooks {
-  // get the totals count by type: cases, files, genes, ssms, projects
-  useSelectorHook: (facet: string, selected: boolean) => void;
+  updateSelectedField: (facet: string) => void;
+  useGetSelectedFields: () => string[];
 }
 
 interface FacetSelectorCardProps
   extends Omit<FacetCardProps<SelectFacetHooks>, 'field' | 'valueLabel'> {
   category: string;
-  data: Array<FacetWithLabelSelection>;
 }
 
 const FacetSelector: React.FC<FacetSelectorCardProps> = ({
