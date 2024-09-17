@@ -4,7 +4,12 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from 'use-deep-compare';
-import { getAllFieldsFromFilterConfigs } from '../../components/facets/utils';
+import {
+  getAllFieldsFromFilterConfigs,
+  useUpdateFilters,
+} from '../../components/facets/utils';
+import { Group } from '@mantine/core';
+import FacetSelectionPanel from './FacetSelectionPanel';
 
 import {
   CoreState,
@@ -15,24 +20,24 @@ import {
 } from '@gen3/core';
 import { CohortDiscoveryGroup } from './types';
 import { classifyFacets } from '../../components/facets/utils';
+import { TabConfig } from '../CohortBuilder/types';
+import { ClearFacetHook } from '../../components/facets/types';
 
-const IndexPanel = ({
-  guppyConfig,
-  filters,
-  tabTitle,
-}: CohortDiscoveryGroup) => {
+const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState<string[]>([]); // the fields that have been selected by the user
 
-  const index = guppyConfig.dataType;
+  const index = dataConfig.dataType;
   const fields = useMemo(
-    () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
-    [filters?.tabs],
+    () => getAllFieldsFromFilterConfigs(tabs ?? []),
+    [tabs],
   );
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
   >({});
+
+  const [categories, setCategories] = useState<TabConfig[]>([]);
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
@@ -62,26 +67,53 @@ const IndexPanel = ({
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
-      const configFacetDefs = filters?.tabs.reduce(
+      const configFacetDefs = tabs.reduce(
         (acc: Record<string, FacetDefinition>, tab) => {
           return { ...tab.fieldsConfig, ...acc };
         },
         {},
       );
 
-      const facetDefs = classifyFacets(
-        data,
-        index,
-        guppyConfig.fieldMapping,
-        configFacetDefs ?? {},
-      );
+      const facetDefs = classifyFacets(data, index, [], configFacetDefs);
       setFacetDefinitions(facetDefs);
+      // setup categories
 
-      // setup summary charts since nested fields can be listed by the split field name
+      const categories = tabs.reduce((acc, tab) => {
+        const updatedTab = tab;
+        if (!updatedTab?.fieldsConfig) {
+          updatedTab.fieldsConfig = {};
+        }
+        updatedTab.fields.forEach((x) => {
+          tab.fieldsConfig[x] = {
+            ...tab.fieldsConfig[x],
+            ...(x in facetDefs ? facetDefs[x] : {}),
+          };
+        });
+
+        acc.push(updatedTab);
+        return acc;
+      }, [] as TabConfig[]);
+      setCategories(categories);
     }
-  }, [isSuccess, data, facetDefinitions, index, guppyConfig.fieldMapping]);
+  }, [isSuccess, data, facetDefinitions, index]);
 
-  return <div></div>;
+  console.log('categories', categories);
+
+  return (
+    <Group>
+      <FacetSelectionPanel
+        categories={categories}
+        hooks={{
+          useClearFilter: () => (field: string) => null,
+          useToggleExpandFilter: () => (field: string, expanded: boolean) =>
+            null,
+          useFilterExpanded: (field: string) => true,
+          updateSelectedField: updateFields,
+          useGetFields: () => [],
+        }}
+      />
+    </Group>
+  );
 };
 
 export default IndexPanel;

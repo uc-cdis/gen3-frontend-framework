@@ -15,7 +15,7 @@ import {
 } from '@gen3/frontend';
 
 interface AppConfig extends NavPageLayoutProps {
-  config?: any;
+  config?: object;
 }
 
 const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
@@ -38,7 +38,7 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
       }}
     >
       <div className="flex flex-col content-center gap-y-4">
-        {GdcApp && <GdcApp config={{ config: config }} />}
+        {GdcApp && <GdcApp {...config} />}
       </div>
     </NavPageLayout>
   );

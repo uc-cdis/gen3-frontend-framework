@@ -37,8 +37,7 @@ export interface ManifestFieldsConfig {
 
 export interface DataTypeConfig {
   dataType: string;
-  nodeCountTitle: string;
-  fieldMapping: ReadonlyArray<FieldToName>;
+  nodeCountTitle?: string;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
@@ -47,6 +46,7 @@ export interface DataTypeConfig {
 
 export interface DataTypeConfigWithManifest extends DataTypeConfig {
   manifestMapping?: ManifestFieldsConfig;
+  fieldMapping?: ReadonlyArray<FieldToName>; // TODO: depreciate this field and use FacetDefinition instead
 }
 
 export interface DownloadButtonConfig extends DownloadButtonProps {

@@ -1,17 +1,10 @@
-import { FacetDefinition } from '@gen3/core';
 import { Gen3AppConfigData } from '../../lib/content/types';
-import {
-  CohortPanelConfig,
-  DataTypeConfigWithManifest,
-  TabsConfig,
-} from '../CohortBuilder/types';
-import { SummaryChart } from '../../components/charts';
-import { SummaryTable } from '../CohortBuilder/ExplorerTable/types';
+import { DataTypeConfig, TabConfig } from '../CohortBuilder/types';
 
 export interface CohortDiscoveryGroup {
-  readonly guppyConfig: DataTypeConfigWithManifest; // guppy config
+  readonly dataConfig: DataTypeConfig; // database config
   readonly tabTitle: string; // title of the tab
-  readonly filters?: TabsConfig; // filters for the fields
+  readonly tabs: ReadonlyArray<TabConfig>; // filters for the fields
 }
 
 export interface CohortDiscoveryConfig extends Gen3AppConfigData {

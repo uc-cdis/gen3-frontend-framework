@@ -7,9 +7,10 @@ import {
   useGetCSRFQuery,
 } from '@gen3/core';
 import { Center, Loader } from '@mantine/core';
-import { CohortDiscoveryConfig } from './types';
+import { CohortDiscoveryConfig, CohortDiscoveryGroup } from './types';
+import IndexPanel from './IndexPanel';
 
-const CohortDiscovery = ({ config }: { config: CohortDiscoveryConfig }) => {
+const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const { isLoading } = useGetCSRFQuery(); // need for Guppy
 
   if (isLoading) {
@@ -20,7 +21,17 @@ const CohortDiscovery = ({ config }: { config: CohortDiscoveryConfig }) => {
     );
   }
 
-  return <div>Pending</div>;
+  console.log('CohortDiscovery', config);
+
+  return (
+    <div>
+      <IndexPanel
+        dataConfig={config.dataIndexes[0].dataConfig}
+        tabTitle={config.dataIndexes[0].tabTitle}
+        tabs={config.dataIndexes[0].tabs}
+      />
+    </div>
+  );
 };
 
 export default CohortDiscovery;

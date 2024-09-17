@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
-import { CohortDiscoveryGroup } from './types';
+import React, { useState, useMemo } from 'react';
 import FacetSelector, {
   SelectFacetHooks,
 } from '../../components/facets/FacetSelector';
 import { TabConfig } from '../CohortBuilder/types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface FacetSelectionPanelProps {
   categories: ReadonlyArray<TabConfig>;
@@ -14,12 +14,13 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
   categories,
   hooks,
 }) => {
-  const panels = useMemo(() => {
+  const panels = useDeepCompareMemo(() => {
     return categories.map((item) => {
       const getFields = () => item.fields.map((f) => item.fieldsConfig[f]);
 
       return (
         <FacetSelector
+          key={item.title}
           category={item.title}
           facetTitle={item.title}
           hooks={{
@@ -29,7 +30,7 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
         ></FacetSelector>
       );
     });
-  }, []);
+  }, [categories]);
 
   return <div>{panels}</div>;
 };

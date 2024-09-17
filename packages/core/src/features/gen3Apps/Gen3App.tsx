@@ -27,8 +27,8 @@ import { CookiesProvider } from 'react-cookie';
 // using a random uuid v4 as the namespace
 const GEN3_APP_NAMESPACE = '7bfaa818-c69c-457e-8d87-413cf60c25f0';
 
-export interface CreateGen3AppOptions {
-  readonly App: ComponentType;
+export interface CreateGen3AppOptions<T> {
+  readonly App: ComponentType<T>;
   readonly name: string;
   readonly version: string;
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
@@ -42,12 +42,14 @@ export const getGen3AppId = (name: string, version: string): string => {
 /**
  *  Creates a Gen3App that is dynamically loaded
  */
-export const createGen3App = ({
+export const createGen3App = <
+  T extends Record<any, any> = Record<string, any>,
+>({
   App,
   name,
   version,
   requiredEntityTypes,
-}: CreateGen3AppOptions): React.FC => {
+}: CreateGen3AppOptions<T>): React.FC<T> => {
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
@@ -68,12 +70,12 @@ export const createGen3App = ({
   //   },
   // });
 
-  const Gen3AppWrapper: React.FC = () => {
+  const Gen3AppWrapper: React.FC<T> = (props: T) => {
     useEffect(() => {
       document.title = `GEN3 - ${name}`;
     });
 
-    return <App />;
+    return <App {...props} />;
   };
 
   // add the app to the store

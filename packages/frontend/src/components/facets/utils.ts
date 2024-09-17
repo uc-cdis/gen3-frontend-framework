@@ -35,11 +35,14 @@ export const processBucketData = (
 ): Record<string, number> => {
   if (!data) return {};
 
-  return data.reduce((acc: Record<string, number>, curr: HistogramData) => {
-    if (isArray(curr.key)) return acc; // remove this line if you want to support array keys
-    acc[curr.key] = curr.count;
-    return acc;
-  }, {} as Record<string, number>);
+  return data.reduce(
+    (acc: Record<string, number>, curr: HistogramData) => {
+      if (isArray(curr.key)) return acc; // remove this line if you want to support array keys
+      acc[curr.key] = curr.count;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 };
 
 export const processRangeData = (
@@ -47,12 +50,15 @@ export const processRangeData = (
 ): Record<string, number> => {
   if (!data) return {};
 
-  return data.reduce((acc: Record<string, number>, curr: HistogramData) => {
-    // TODO handle this better when keys are undefined
-    acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] =
-      curr.count;
-    return acc;
-  }, {} as Record<string, number>);
+  return data.reduce(
+    (acc: Record<string, number>, curr: HistogramData) => {
+      // TODO handle this better when keys are undefined
+      acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] =
+        curr.count;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 };
 
 /**
@@ -87,8 +93,8 @@ export const updateFacetEnum = (
 export const classifyFacets = (
   data: AggregationsData,
   index: string,
-  fieldMapping: ReadonlyArray<FieldToName>,
-  facetDefinitionsFromConfig: Record<string, FacetDefinition>,
+  fieldMapping: ReadonlyArray<FieldToName> = [],
+  facetDefinitionsFromConfig: Record<string, FacetDefinition> = {},
 ): Record<string, FacetDefinition> => {
   if (typeof data !== 'object' || data === null) return {};
 
@@ -119,7 +125,7 @@ export const classifyFacets = (
           label: facetDef.description ?? facetName,
           // assumption is that the initial data has the min and max values
           range:
-            facetDef.range ?? type === 'range'
+            (facetDef.range ?? type === 'range')
               ? {
                   minimum: Math.floor(Number(value[0].key[0])),
                   maximum: Math.ceil(Number(value[0].key[1])),
@@ -208,7 +214,7 @@ export const extractRangeValues = <T extends string | number>(
       case 'and': {
         const a = extractRangeValues<T>(filter.operands[0]);
         const b = extractRangeValues<T>(filter.operands[1]);
-        return a && b ? { ...a, ...b } : a ?? b ?? undefined;
+        return a && b ? { ...a, ...b } : (a ?? b ?? undefined);
       }
       default:
         return undefined;
