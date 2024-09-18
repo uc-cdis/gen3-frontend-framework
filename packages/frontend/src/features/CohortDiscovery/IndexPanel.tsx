@@ -110,6 +110,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
           useFilterExpanded: (field: string) => true,
           updateSelectedField: updateFields,
           useGetFields: () => [],
+          useGetSelected: () => activeFields,
         }}
       />
     </Group>

@@ -22,7 +22,7 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
         <FacetSelector
           key={item.title}
           category={item.title}
-          facetTitle={item.title}
+          facetName={item.title}
           hooks={{
             ...hooks,
             useGetFields: getFields,

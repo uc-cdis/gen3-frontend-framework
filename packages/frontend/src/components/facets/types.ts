@@ -7,7 +7,6 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly valueLabel: string;
   readonly description?: string;
   readonly facetName?: string;
-  readonly facetTitle?: string;
   readonly facetBtnToolTip?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;

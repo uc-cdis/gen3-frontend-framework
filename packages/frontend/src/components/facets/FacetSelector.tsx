@@ -1,27 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Text, Switch, ActionIcon, TextInput } from '@mantine/core';
 import { SortType, FacetCardProps, FacetCommonHooks } from './types';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { toDisplayName } from '../../utils';
 import { FacetDefinition } from '@gen3/core';
-import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
-import { SortType } from './types';
-import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
-
-import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from '@mantine/core';
+import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
 import { MdClose as CloseIcon } from 'react-icons/md';
-
-interface FacetWithLabelSelection {
-  facet: string;
-  label: string;
-  selected: boolean;
-}
 
 export interface SelectFacetHooks extends FacetCommonHooks {
   updateSelectedField: (facet: string) => void;
   useGetFields: () => Array<FacetDefinition>;
+  useGetSelected: () => Array<string>;
 }
 
 interface FacetSelectorCardProps
@@ -31,12 +23,10 @@ interface FacetSelectorCardProps
 
 const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   category,
-  facetTitle,
+  facetName,
   hooks,
   width,
   description,
-
-  hideIfEmpty = true,
   showSearch = true,
   header = {
     Panel: FacetHeader,
@@ -47,15 +37,14 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortType, setSortType] = useState<SortType>({
-    type: 'alpha',
-    direction: 'asc',
-  });
+
+  const cardRef = useRef<HTMLDivElement>(null);
   const isFilterExpanded =
     hooks.useFilterExpanded && hooks.useFilterExpanded(category);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
   const fields = hooks.useGetFields();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const selectedFields = hooks.useGetSelected();
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
@@ -79,22 +68,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
     );
   }, [searchTerm, fields]);
 
-  const calcCardStyle = useDeepCompareCallback(
-    (remainingValues: number) => {
-      if (isGroupExpanded) {
-        const cardHeight =
-          remainingValues > 16
-            ? 96
-            : remainingValues > 0
-              ? Math.min(96, remainingValues * 5 + 40)
-              : 24;
-        return `flex-none  h-${cardHeight} overflow-y-scroll `;
-      } else {
-        return 'overflow-hidden h-auto';
-      }
-    },
-    [isGroupExpanded],
-  );
+  const remainingValues = filteredFields.length - DEFAULT_VISIBLE_ITEMS;
 
   return (
     <div
@@ -108,7 +82,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
           field={category}
           description={description}
           hooks={hooks}
-          facetName={facetTitle}
+          facetName={facetName}
           showSearch={showSearch}
           toggleSearch={toggleSearch}
           header={header}
@@ -124,9 +98,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
               data-testid="textbox-search-values"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label={`${
-                facetName ? facetName : fieldNameToTitle(field)
-              } values`}
+              aria-label={`category ${facetName}`}
               className={'p-2'}
               placeholder="Search"
               ref={searchInputRef}
@@ -135,7 +107,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                   <ActionIcon
                     onClick={() => {
                       setSearchTerm('');
-                      searchInputRef.current.focus();
+                      searchInputRef?.current?.focus();
                     }}
                     className="border-0"
                   >
@@ -146,79 +118,41 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
               role="search"
             />
           )}
-          <div
-            className={
-              isFacetView ? `flip-card ` : `flip-card flip-card-flipped`
-            }
-            ref={cardRef}
-          >
-            <div
-              className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
-                !isFacetView ? 'invisible' : ''
-              }`}
-            >
+          <div className="flip-card" ref={cardRef}>
+            <div className="card-face bg-base-max rounded-b-md flex flex-col justify-between">
               <div>
-                <FacetSortPanel
-                  sortType={sortType}
-                  valueLabel={valueLabel}
-                  setSort={setSortType}
-                  field={facetName ? facetName : fieldNameToTitle(field)}
-                />
-                <LoadingOverlay
-                  data-testid="loading-spinner"
-                  visible={!isSuccess}
-                />
-                {facetChartData.filteredData.length == 0 ? (
+                {filteredFields.length == 0 ? (
                   <div className="mx-4 font-content text-sm">
                     {BAD_DATA_MESSAGE}
                   </div>
-                ) : isSuccess ? (
-                  !sortedData ||
-                  Object.entries(sortedData).map(([value, count]) => {
+                ) : (
+                  filteredFields.map((facet) => {
                     return (
                       <div
-                        key={`${field}-${value}`}
-                        className="flex flex-row items-center gap-x-1 px-2"
+                        key={facet.field}
+                        className="flex items-center gap-x-1 px-2"
                       >
-                        <div className="flex-none">
-                          <Checkbox
-                            data-testid={`checkbox-${value}`}
-                            aria-label={`${value}`}
-                            value={value}
-                            size="xs"
-                            color="accent"
-                            onChange={(e) =>
-                              handleChange(
-                                e.currentTarget.value,
-                                e.currentTarget.checked,
-                              )
-                            }
-                            classNames={{
-                              input: 'hover:bg-accent-darker',
-                            }}
-                            checked={
-                              !!(selectedEnums && selectedEnums.includes(value))
-                            }
-                          />
-                        </div>
-                        <OverflowTooltippedLabel label={value}>
-                          <span className="font-content">{value}</span>
-                        </OverflowTooltippedLabel>
-                        <div
-                          data-testid={`text-${value}`}
-                          className="flex-none text-right w-14 font-content text-sm"
-                        >
-                          {count.toLocaleString()}
-                        </div>
+                        <Text>{facet.label}</Text>
+
+                        <Switch
+                          data-testid={`checkbox-${facet}`}
+                          aria-label={`${facet}`}
+                          size="xs"
+                          color="accent"
+                          checked={
+                            selectedFields &&
+                            selectedFields.includes(facet.field)
+                          }
+                        />
                       </div>
                     );
                   })
-                ) : null}
+                )}
               </div>
             </div>
             {
               <FacetExpander
-                remainingValues={facetChartData.remainingValues}
+                remainingValues={remainingValues}
                 isGroupExpanded={isGroupExpanded}
                 onShowChanged={setIsGroupExpanded}
               />
