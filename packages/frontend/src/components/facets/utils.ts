@@ -10,6 +10,7 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
+  fieldNameToTitle,
   AggregationsData,
   CoreState,
 } from '@gen3/core';
@@ -110,7 +111,8 @@ export const classifyFacets = (
       const type =
         value.length === 1 && isArray(value[0].key) ? 'range' : 'enum';
       const facetName =
-        fieldMapping.find((x) => x.field === fieldKey)?.name ?? undefined;
+        fieldMapping.find((x) => x.field === fieldKey)?.name ??
+        fieldNameToTitle(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
       return {
@@ -122,7 +124,7 @@ export const classifyFacets = (
           type: facetDef.type ?? type,
           index: index,
           description: facetDef.description ?? 'Not Available',
-          label: facetDef.description ?? facetName,
+          label: facetDef.label ?? facetName,
           // assumption is that the initial data has the min and max values
           range:
             (facetDef.range ?? type === 'range')

@@ -97,20 +97,17 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
     }
   }, [isSuccess, data, facetDefinitions, index]);
 
-  console.log('categories', categories);
-
   return (
-    <Group>
+    <Group className="w-full bg-base-lighter">
       <FacetSelectionPanel
         categories={categories}
+        selectedFields={activeFields}
+        updateSelectedField={updateFields}
         hooks={{
           useClearFilter: () => (field: string) => null,
           useToggleExpandFilter: () => (field: string, expanded: boolean) =>
             null,
           useFilterExpanded: (field: string) => true,
-          updateSelectedField: updateFields,
-          useGetFields: () => [],
-          useGetSelected: () => activeFields,
         }}
       />
     </Group>

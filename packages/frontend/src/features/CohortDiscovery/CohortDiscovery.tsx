@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 
-import {
-  CoreState,
-  selectIndexFilters,
-  useCoreSelector,
-  useGetCSRFQuery,
-} from '@gen3/core';
+import { useGetCSRFQuery } from '@gen3/core';
 import { Center, Loader } from '@mantine/core';
-import { CohortDiscoveryConfig, CohortDiscoveryGroup } from './types';
+import { CohortDiscoveryConfig } from './types';
 import IndexPanel from './IndexPanel';
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
@@ -21,10 +16,8 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
     );
   }
 
-  console.log('CohortDiscovery', config);
-
   return (
-    <div>
+    <div className="w-full">
       <IndexPanel
         dataConfig={config.dataIndexes[0].dataConfig}
         tabTitle={config.dataIndexes[0].tabTitle}

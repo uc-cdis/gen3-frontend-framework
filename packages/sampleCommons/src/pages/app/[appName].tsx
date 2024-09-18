@@ -37,9 +37,7 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
         key: 'gen3-app-page',
       }}
     >
-      <div className="flex flex-col content-center gap-y-4">
-        {GdcApp && <GdcApp {...config} />}
-      </div>
+      {GdcApp && <GdcApp {...config} />}
     </NavPageLayout>
   );
 };

@@ -1,4 +1,4 @@
-import { EnumFilterValue, Operation } from '@gen3/core';
+import { EnumFilterValue, FacetDefinition, Operation } from '@gen3/core';
 import { ReactNode, ComponentType } from 'react';
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
@@ -118,4 +118,11 @@ export interface FieldToName {
 export interface SortType {
   type: 'value' | 'alpha';
   direction: 'asc' | 'dsc';
+}
+
+export interface SelectedFields {
+  category: string;
+  fields: Array<FacetDefinition>;
+  selectedFields: Array<string>;
+  updateSelectedField: (facet: string) => void;
 }

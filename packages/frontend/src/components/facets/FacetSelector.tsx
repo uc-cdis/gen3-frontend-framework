@@ -5,28 +5,33 @@ import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { toDisplayName } from '../../utils';
-import { FacetDefinition } from '@gen3/core';
+import { FacetDefinition, fieldNameToTitle } from '@gen3/core';
 import FacetExpander from './FacetExpander';
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
 import { MdClose as CloseIcon } from 'react-icons/md';
 
-export interface SelectFacetHooks extends FacetCommonHooks {
+interface SelectedFields {
+  category: string;
+  fields: Array<FacetDefinition>;
+  selectedFields: Array<string>;
   updateSelectedField: (facet: string) => void;
-  useGetFields: () => Array<FacetDefinition>;
-  useGetSelected: () => Array<string>;
 }
 
-interface FacetSelectorCardProps
-  extends Omit<FacetCardProps<SelectFacetHooks>, 'field' | 'valueLabel'> {
-  category: string;
-}
+type FacetSelectorCardProps = Omit<
+  FacetCardProps<FacetCommonHooks>,
+  'field' | 'valueLabel'
+> &
+  SelectedFields;
 
 const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   category,
   facetName,
   hooks,
-  width,
+  width = 'w-full',
   description,
+  fields,
+  selectedFields,
+  updateSelectedField,
   showSearch = true,
   header = {
     Panel: FacetHeader,
@@ -42,9 +47,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   const isFilterExpanded =
     hooks.useFilterExpanded && hooks.useFilterExpanded(category);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
-  const fields = hooks.useGetFields();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const selectedFields = hooks.useGetSelected();
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
@@ -70,11 +73,14 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
 
   const remainingValues = filteredFields.length - DEFAULT_VISIBLE_ITEMS;
 
+  console.log('filtered', filteredFields);
+  console.log('selected*****Fields', selectedFields);
+
   return (
     <div
       className={`flex flex-col ${
         width ? width : 'mx-1'
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-light border-1 rounded-b-md transition`}
       id={category}
     >
       <div>
@@ -119,7 +125,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
             />
           )}
           <div className="flip-card" ref={cardRef}>
-            <div className="card-face bg-base-max rounded-b-md flex flex-col justify-between">
+            <div className="card-face bg-base-max rounded-b-xs flex flex-col gap-y-1 justify-between">
               <div>
                 {filteredFields.length == 0 ? (
                   <div className="mx-4 font-content text-sm">
@@ -127,22 +133,25 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                   </div>
                 ) : (
                   filteredFields.map((facet) => {
+                    const label = fieldNameToTitle(facet.field);
                     return (
                       <div
                         key={facet.field}
-                        className="flex items-center gap-x-1 px-2"
+                        className="flex justify-between items-center px-2 my-1"
                       >
-                        <Text>{facet.label}</Text>
+                        <Text size="sm" fw={400}>
+                          {label}
+                        </Text>
 
                         <Switch
-                          data-testid={`checkbox-${facet}`}
-                          aria-label={`${facet}`}
-                          size="xs"
+                          data-testid={`switch-${label}`}
+                          aria-label={`select ${facet.field}`}
                           color="accent"
                           checked={
                             selectedFields &&
                             selectedFields.includes(facet.field)
                           }
+                          onChange={() => updateSelectedField(facet.field)}
                         />
                       </div>
                     );
