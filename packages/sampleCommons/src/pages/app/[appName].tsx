@@ -26,7 +26,7 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
 
-  console.log('config', config);
+  console.log('config', config, GdcApp, appName);
 
   return (
     <NavPageLayout

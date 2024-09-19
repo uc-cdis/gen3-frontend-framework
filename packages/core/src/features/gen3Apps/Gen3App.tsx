@@ -162,10 +162,11 @@ export const createAppStore = (
 };
 
 export interface CreateGen3AppWithOwnStoreOptions<
+  T extends Record<any, any> = Record<string, any>,
   A extends Action = AnyAction,
   S = any,
 > {
-  readonly App: ComponentType;
+  readonly App: ComponentType<T>;
   readonly id: string; // unique id for this app
   readonly name: string; // name of the app
   readonly version: string; // version of the app, should be unique
@@ -175,10 +176,11 @@ export interface CreateGen3AppWithOwnStoreOptions<
 }
 
 export const createGen3AppWithOwnStore = <
+  T extends Record<any, any> = Record<string, any>,
   A extends Action = AnyAction,
   S = any,
 >(
-  options: CreateGen3AppWithOwnStoreOptions<A, S>,
+  options: CreateGen3AppWithOwnStoreOptions<T, A, S>,
 ): React.ReactNode => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
@@ -192,7 +194,7 @@ export const createGen3AppWithOwnStore = <
   // this will be used to build page3
   // click app link
 
-  const Gen3AppWrapper = (): React.ReactNode => {
+  const Gen3AppWrapper: React.FC<T> = (props: T) => {
     useEffect(() => {
       document.title = `GEN3 - ${name}`;
     });
@@ -200,7 +202,7 @@ export const createGen3AppWithOwnStore = <
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          <App />
+          <App {...props} />
         </CookiesProvider>
       </Provider>
     );

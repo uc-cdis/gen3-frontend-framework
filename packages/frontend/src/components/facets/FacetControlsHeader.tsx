@@ -93,9 +93,17 @@ const FacetControlsHeader = ({
               aria-label={isFilterExpanded ? 'Collapse card' : 'Expand card'}
             >
               {isFilterExpanded ? (
-                <ExpandLessIcon size="3em" color="white" aria-hidden="true" />
+                <ExpandLessIcon
+                  size="3em"
+                  color="accent.4"
+                  aria-hidden="true"
+                />
               ) : (
-                <ExpandMoreIcon size="3em" color="white" aria-hidden="true" />
+                <ExpandMoreIcon
+                  size="3em"
+                  color="accent.4"
+                  aria-hidden="true"
+                />
               )}
             </ActionIcon>
           </Tooltip>
@@ -157,7 +165,7 @@ const FacetControlsHeader = ({
               aria-label="clear selection"
             >
               <UndoIcon
-                size="1.25em"
+                size="1.0em"
                 className={header.iconStyle}
                 aria-hidden="true"
               />

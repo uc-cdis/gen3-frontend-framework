@@ -159,13 +159,13 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                 )}
               </div>
             </div>
-            {
+            {remainingValues > 0 ? (
               <FacetExpander
                 remainingValues={remainingValues}
                 isGroupExpanded={isGroupExpanded}
                 onShowChanged={setIsGroupExpanded}
               />
-            }
+            ) : null}
           </div>
         </>
       </div>

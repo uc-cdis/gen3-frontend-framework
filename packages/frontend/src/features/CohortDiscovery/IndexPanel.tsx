@@ -4,12 +4,10 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from 'use-deep-compare';
-import {
-  getAllFieldsFromFilterConfigs,
-  useUpdateFilters,
-} from '../../components/facets/utils';
-import { Group } from '@mantine/core';
+import { getAllFieldsFromFilterConfigs } from '../../components/facets/utils';
+import { Flex } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
+import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
 import {
   CoreState,
@@ -21,7 +19,6 @@ import {
 import { CohortDiscoveryGroup } from './types';
 import { classifyFacets } from '../../components/facets/utils';
 import { TabConfig } from '../CohortBuilder/types';
-import { ClearFacetHook } from '../../components/facets/types';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
@@ -98,19 +95,18 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   }, [isSuccess, data, facetDefinitions, index]);
 
   return (
-    <Group className="w-full bg-base-lighter">
+    <Flex className="w-full h-full bg-base-light">
       <FacetSelectionPanel
         categories={categories}
         selectedFields={activeFields}
         updateSelectedField={updateFields}
         hooks={{
           useClearFilter: () => (field: string) => null,
-          useToggleExpandFilter: () => (field: string, expanded: boolean) =>
-            null,
-          useFilterExpanded: (field: string) => true,
+          useToggleExpandFilter: useToggleExpandFilter,
+          useFilterExpanded: useFilterExpandedState,
         }}
       />
-    </Group>
+    </Flex>
   );
 };
 

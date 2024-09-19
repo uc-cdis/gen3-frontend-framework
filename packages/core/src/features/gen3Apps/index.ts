@@ -1,4 +1,9 @@
-import { createGen3App, getGen3AppId, createAppStore } from './Gen3App';
+import {
+  createGen3App,
+  getGen3AppId,
+  createAppStore,
+  createGen3AppWithOwnStore,
+} from './Gen3App';
 import {
   selectGen3AppMetadataByName,
   selectGen3AppByName,
@@ -6,6 +11,7 @@ import {
 
 export {
   createGen3App,
+  createGen3AppWithOwnStore,
   selectGen3AppMetadataByName,
   selectGen3AppByName,
   getGen3AppId,
