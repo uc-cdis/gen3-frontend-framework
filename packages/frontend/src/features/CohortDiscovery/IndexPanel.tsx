@@ -19,6 +19,7 @@ import {
 import { CohortDiscoveryGroup } from './types';
 import { classifyFacets } from '../../components/facets/utils';
 import { TabConfig } from '../CohortBuilder/types';
+import ErrorCard from '../../components/ErrorCard';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
@@ -93,6 +94,10 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
       setCategories(categories);
     }
   }, [isSuccess, data, facetDefinitions, index]);
+
+  if (isAggsQueryError) {
+    return <ErrorCard message="Unable to fetch data from server" />;
+  }
 
   return (
     <Flex className="w-full h-full bg-base-light">

@@ -10,3 +10,5 @@ export interface CohortDiscoveryGroup {
 export interface CohortDiscoveryConfig extends Gen3AppConfigData {
   dataIndexes: Array<CohortDiscoveryGroup>;
 }
+
+export type SupportedFacetTypes = 'enum' | 'range';

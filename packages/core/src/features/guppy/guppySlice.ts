@@ -256,8 +256,8 @@ const explorerApi = guppyApi.injectEndpoints({
         } $nestedAggFields: JSON) {
     _aggregation {
       ${type} ( ${
-          gqlFilter ?? 'filter: $filter, filterSelf: false,'
-        } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
+        gqlFilter ?? 'filter: $filter, filterSelf: false,'
+      } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
         ${nestedHistogramQueryStrForEachField(mainField, numericAggAsText)}
       }`;
 
@@ -452,4 +452,12 @@ export const selectAggDataForIndex = (
 ) => {
   const data = state.guppyApi.aggs[index]?.[field]?.histogram;
   return data ?? EmptyAggData;
+};
+
+export const selectCountsForField = (
+  state: CoreState,
+  index: string,
+  field: string,
+) => {
+  return state.guppyApi.totals[index]?.[field]?.count;
 };

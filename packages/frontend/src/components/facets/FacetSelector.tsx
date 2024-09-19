@@ -73,9 +73,6 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
 
   const remainingValues = filteredFields.length - DEFAULT_VISIBLE_ITEMS;
 
-  console.log('filtered', filteredFields);
-  console.log('selected*****Fields', selectedFields);
-
   return (
     <div
       className={`flex flex-col ${
