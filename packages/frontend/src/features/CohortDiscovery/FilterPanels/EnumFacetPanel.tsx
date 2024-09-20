@@ -1,32 +1,44 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Text } from '@mantine/core';
-import { FacetCardProps } from '../../../components/facets';
-import FacetEnumList from '../../../components/facets/FacetEnumList';
-import { EnumFacetHooks } from '../../../components/facets/EnumFacet';
+import {
+  FacetCardProps,
+  FacetDataHooks,
+  GetEnumFacetDataFunction,
+  GetFacetDataTotalCountsFunction,
+} from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
-import { AggregationsData, CoreState, useCoreSelector } from '@gen3/core';
 import { EnumFacetToHistogramArray } from '../utils';
-import { selectCountsForField } from '@gen3/core/dist/dts';
+import FacetPanelDataHeader from './FacetPanelDataHeader';
+import { FacetDefinition, fieldNameToTitle } from '@gen3/core';
+import FacetEnumList from '../../../components/facets/FacetEnumList';
 
-interface EnumFacetPanelProps extends FacetCardProps<EnumFacetHooks> {
-  showTotals: boolean;
+export interface EnumFacetPanelDataHooks extends FacetDataHooks {
+  useGetFacetData: GetEnumFacetDataFunction;
+  useGetFacetDataCount: GetFacetDataTotalCountsFunction;
+}
+
+interface EnumFacetPanelProps {
+  facet: FacetDefinition;
+  valueLabel: string;
+  hooks: EnumFacetPanelDataHooks;
+  showTotals?: boolean;
   chartType?: string;
-  index: string;
 }
 
 const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
-  field,
-  facetName,
+  facet,
   hooks,
-  index,
   valueLabel,
   showTotals = false,
   chartType = 'bar',
 }) => {
-  const { data } = hooks.useGetFacetData(field);
-  const counts = useCoreSelector((state: CoreState) =>
-    selectCountsForField(state, index, field),
+  const { field, label } = facet;
+  const facetName = useMemo(
+    () => label ?? fieldNameToTitle(field),
+    [label, field],
   );
+  const { data } = hooks.useGetFacetData(field);
+  const counts = hooks.useGetFacetDataCount(field);
 
   return (
     <div className="flex flex-col bg-base-max relative border-base-light border-1 rounded-b-md transition">
@@ -41,6 +53,8 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
           valueType: 'count',
         })}
       </div>
+      <FacetPanelDataHeader label={facetName} valueLabel={valueLabel} />
+      <FacetEnumList field={field} valueLabel={valueLabel} hooks={hooks} />
     </div>
   );
 };

@@ -17,10 +17,10 @@ interface FacetEnumListProps {
   facetName?: string;
   valueLabel: string;
   hooks: EnumFacetHooks;
-  isSearching: boolean;
-  isFacetView: boolean;
-  showPercent: boolean;
-  hideIfEmpty: boolean;
+  isSearching?: boolean;
+  isFacetView?: boolean;
+  showPercent?: boolean;
+  hideIfEmpty?: boolean;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -28,10 +28,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   facetName,
   hooks,
   valueLabel,
-  isFacetView,
-  isSearching,
-  showPercent,
-  hideIfEmpty,
+  isFacetView = true,
+  isSearching = false,
+  showPercent = false,
+  hideIfEmpty = false,
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);

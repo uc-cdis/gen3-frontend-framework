@@ -5,6 +5,7 @@ import {
   selectAllFiltersCollapsed,
   toggleCategoryFilter,
 } from './FilterExpandSlice';
+import { useCoreSelector, CoreState, selectCountsForField } from '@gen3/core';
 
 export const useToggleExpandFilter = () => {
   const dispatch = useAppDispatch();
@@ -21,4 +22,10 @@ export const useFilterExpandedState = (field: string) => {
 
 export const useAllFiltersCollapsed = () => {
   return useAppSelector((state: AppState) => selectAllFiltersCollapsed(state));
+};
+
+export const useGetFacetDataTotals = (index: string, field: string) => {
+  return useCoreSelector((state: CoreState) =>
+    selectCountsForField(state, index, field),
+  );
 };
