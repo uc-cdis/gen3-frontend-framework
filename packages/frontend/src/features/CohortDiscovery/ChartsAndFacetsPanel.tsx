@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Grid } from '@mantine/core';
 import {
   CoreState,
   extractEnumFilterValue,
@@ -23,7 +24,7 @@ import { useClearFilters } from '../../components/facets/hooks';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { useGetFacetDataTotals } from './hooks';
+import { computeRowSpan } from '../../components/charts';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -33,12 +34,11 @@ interface ChartsAndFacetsPanelProps {
 /**
  * CartsAndFacetsPanel component
  *
- * @param {Object} props - The component properties.
- * @param {string} props.index - The index type used for querying data.
- * @param {Array} props.facets - The list of facets to be rendered.
+ * @param {string} index - The index type used for querying data.
+ * @param {Array} facets - The list of facets to be rendered.
  * @returns {JSX.Element} The rendered component showing facets.
  */
-const CartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
+const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,
   facets,
 }) => {
@@ -56,15 +56,6 @@ const CartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     filters: cohortFilters,
   });
 
-  const {
-    data: counts,
-    isSuccess: isCountSuccess,
-    isError: isCountError,
-  } = useGetCountsQuery({
-    type: index,
-    filters: cohortFilters,
-  });
-
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
@@ -76,7 +67,7 @@ const CartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
         isSuccess: isSuccess,
       };
     },
-    [cohortFilters, data, isSuccess],
+    [cohortFilters, cohortFilters.root, data, isSuccess],
   );
 
   const getRangeFacetData = useDeepCompareCallback(
@@ -90,37 +81,49 @@ const CartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     [data, cohortFilters.root, isSuccess],
   );
 
-  const facetHooks: Record<
-    SupportedFacetTypes,
-    EnumFacetPanelDataHooks | FacetDataHooks
-  > = useDeepCompareMemo(() => {
-    return {
-      // TODO: see if there a better way to do this
-      enum: {
-        useGetFacetData: getEnumFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useGetFacetDataCount: partial(useGetFacetDataTotals, index),
-        useTotalCounts: undefined,
-      },
-      range: {
-        useGetFacetData: getRangeFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useTotalCounts: undefined,
-      },
-    };
-  }, [getEnumFacetData, getRangeFacetData, index]);
+  const facetHooks: Record<SupportedFacetTypes, EnumFacetPanelDataHooks> =
+    useDeepCompareMemo(() => {
+      return {
+        // TODO: see if there a better way to do this
+        enum: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        // range: {
+        //   useGetFacetData: getRangeFacetData,
+        //   useUpdateFacetFilters: partial(useUpdateFilters, index),
+        //   useGetFacetFilters: partial(useGetFacetFilters, index),
+        //   useClearFilter: partial(useClearFilters, index),
+        //   useTotalCounts: undefined,
+        // },
+      };
+    }, [getEnumFacetData, getRangeFacetData, index]);
 
-  const panels = useMemo(
+  const panels = useDeepCompareMemo(
     () =>
       facets.map((facet) =>
         createFacetPanel(facet, 'bar', index, facetHooks.enum),
       ),
-    [facets],
+    [facets, index, facetHooks.enum],
   );
 
-  return <div>{panels}</div>;
+  const spans = computeRowSpan(panels.length);
+
+  return (
+    <Grid className="w-full mx-2">
+      {panels.map((panel, index) => (
+        <Grid.Col
+          span={spans[index]}
+          key={`${index}-charts-${facets[index].field}-col`}
+        >
+          {panel}
+        </Grid.Col>
+      ))}
+    </Grid>
+  );
 };
+
+export default ChartsAndFacetsPanel;

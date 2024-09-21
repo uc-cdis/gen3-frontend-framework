@@ -4,7 +4,6 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from 'use-deep-compare';
-import { getAllFieldsFromFilterConfigs } from '../../components/facets/utils';
 import { Flex } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
@@ -17,13 +16,18 @@ import {
   useGetAggsQuery,
 } from '@gen3/core';
 import { CohortDiscoveryGroup } from './types';
-import { classifyFacets } from '../../components/facets/utils';
+import {
+  getAllFieldsFromFilterConfigs,
+  classifyFacets,
+} from '../../components/facets';
 import { TabConfig } from '../CohortBuilder/types';
 import ErrorCard from '../../components/ErrorCard';
+import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
-  const [controlsExpanded, setControlsExpanded] = useState(true);
-  const [activeFields, setActiveFields] = useState<string[]>([]); // the fields that have been selected by the user
+  const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
+    Array<FacetDefinition>
+  >([]);
 
   const index = dataConfig.dataType;
   const fields = useMemo(
@@ -41,25 +45,37 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
     selectIndexFilters(state, index),
   );
 
+  const queryFields =
+    categories.length === 0
+      ? fields
+      : activeFieldDefinitions.map((x) => x.field);
   const {
     data,
     isSuccess,
     isError: isAggsQueryError,
-  } = useGetAggsQuery({
-    type: index,
-    fields: fields,
-    filters: cohortFilters,
-  });
+  } = useGetAggsQuery(
+    {
+      type: index,
+      fields: queryFields,
+      filters: cohortFilters,
+    },
+    { skip: queryFields.length === 0 },
+  );
 
   const updateFields = useDeepCompareCallback(
     (field: string) => {
-      if (activeFields.includes(field)) {
-        setActiveFields(activeFields.filter((f) => f !== field));
+      if (activeFieldDefinitions.some((facetDef) => facetDef.field === field)) {
+        setActiveFieldDefinitions((prevState) => {
+          return prevState.filter((f) => f.field !== field);
+        });
       } else {
-        setActiveFields([...activeFields, field]);
+        setActiveFieldDefinitions((prevState) => [
+          ...prevState,
+          facetDefinitions[field],
+        ]);
       }
     },
-    [activeFields],
+    [activeFieldDefinitions, facetDefinitions],
   );
 
   // Set the facet definitions based on the data only the first time the data is loaded
@@ -99,11 +115,13 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
     return <ErrorCard message="Unable to fetch data from server" />;
   }
 
+  console.log('activeFields', activeFieldDefinitions);
+
   return (
     <Flex className="w-full h-full bg-base-light">
       <FacetSelectionPanel
         categories={categories}
-        selectedFields={activeFields}
+        selectedFields={activeFieldDefinitions.map((x) => x.field)}
         updateSelectedField={updateFields}
         hooks={{
           useClearFilter: () => (field: string) => null,
@@ -111,6 +129,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
           useFilterExpanded: useFilterExpandedState,
         }}
       />
+      <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
     </Flex>
   );
 };

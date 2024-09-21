@@ -8,7 +8,6 @@ import {
   convertFilterSetToGqlFilter,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
 
@@ -107,6 +106,7 @@ interface QueryForFileCountSummaryParams {
   type: string;
   field: string;
   filters: FilterSet;
+  accessibility?: Accessibility;
 }
 
 /**
@@ -316,14 +316,19 @@ const explorerApi = guppyApi.injectEndpoints({
       Record<string, any>,
       QueryForFileCountSummaryParams
     >({
-      query: ({ type, field, filters }: QueryForFileCountSummaryParams) => {
+      query: ({
+        type,
+        field,
+        filters,
+        accessibility = Accessibility.ALL,
+      }: QueryForFileCountSummaryParams) => {
         const gqlFilters = convertFilterSetToGqlFilter(filters);
-        const query = `query ($filter: JSON) {
+        const query = `query summary ($filter: JSON) {
         _aggregation {
-          ${type} (filter: $filter) {
+          ${type} (filter: $filter, accessibility: ${accessibility}) {
             ${field} {
               histogram {
-                sum
+                sum,
               }
             }
           }
@@ -435,6 +440,7 @@ export const {
   useGetAccessibleDataQuery,
   useGetAllFieldsForTypeQuery,
   useGetAggsQuery,
+  useLazyGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
@@ -442,22 +448,3 @@ export const {
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
 } = explorerApi;
-
-const EmptyAggData = {};
-
-export const selectAggDataForIndex = (
-  state: CoreState,
-  index: string,
-  field: string,
-) => {
-  const data = state.guppyApi.aggs[index]?.[field]?.histogram;
-  return data ?? EmptyAggData;
-};
-
-export const selectCountsForField = (
-  state: CoreState,
-  index: string,
-  field: string,
-) => {
-  return state.guppyApi.totals[index]?.[field]?.count;
-};

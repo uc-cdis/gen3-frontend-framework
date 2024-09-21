@@ -1,15 +1,5 @@
 import { fieldNameToTitle, AggregationsData } from '@gen3/core';
-//import { MdClose as CloseIcon } from 'react-icons/md';
-//import { useDeepCompareMemo } from 'use-deep-compare';
-
-import {
-  // ActionIcon,
-  Card,
-  Grid,
-  Group,
-  Text,
-  LoadingOverlay,
-} from '@mantine/core';
+import { Card, Grid, Group, Text, LoadingOverlay } from '@mantine/core';
 import { createChart } from './createChart';
 import { SummaryChart } from './types';
 
@@ -40,7 +30,7 @@ const Charts = ({
   isSuccess,
   numCols = DEFAULT_COLS,
 }: ChartsProps) => {
-  const spans = computeRowSpan(charts, numCols);
+  const spans = computeRowSpan(Object.keys(charts).length, numCols);
 
   return (
     <Grid className="w-full mx-2">

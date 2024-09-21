@@ -21,6 +21,7 @@ interface FacetEnumListProps {
   isFacetView?: boolean;
   showPercent?: boolean;
   hideIfEmpty?: boolean;
+  showSorting?: boolean;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -32,6 +33,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   isSearching = false,
   showPercent = false,
   hideIfEmpty = false,
+  showSorting = true,
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -60,6 +62,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       setSearchTerm('');
     }
   }, [isSearching, searchTerm]);
+
+  useDeepCompareEffect(() => {
+    setSelectedEnums(enumFilters ?? []);
+  }, [enumFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
 
@@ -314,12 +320,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
               }`}
             >
               <div>
-                <FacetSortPanel
-                  sortType={sortType}
-                  valueLabel={valueLabel}
-                  setSort={setSortType}
-                  field={facetName ? facetName : fieldNameToTitle(field)}
-                />
+                {showSorting ? (
+                  <FacetSortPanel
+                    sortType={sortType}
+                    valueLabel={valueLabel}
+                    setSort={setSortType}
+                    field={facetName ? facetName : fieldNameToTitle(field)}
+                  />
+                ) : (
+                  false
+                )}
 
                 <div
                   className={facetChartData.cardStyle}

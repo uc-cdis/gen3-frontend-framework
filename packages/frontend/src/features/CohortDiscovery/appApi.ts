@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
+import { selectedFacetsReducer } from './SelectedFacetsSlice';
 
 const _APP_NAME = 'CohortDiscovery';
 
@@ -18,6 +19,7 @@ const persistConfig = {
 // the filters and other store/cache values
 
 const reducers = combineReducers({
+  selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
 });
 

@@ -11,6 +11,7 @@
     "node": ">=20.11.0"
   },
   "scripts": {
+
     "lint": "lerna run --parallel lint",
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
@@ -18,6 +19,7 @@
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
+    "dev:watch": "lerna watch -- lerna run build --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run --parallel start",
     "build:start": "npm run build && npm run start",
     "test": "npm run test --workspaces",

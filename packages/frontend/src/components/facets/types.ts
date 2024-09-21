@@ -46,8 +46,6 @@ export type UpdateFacetFilterFunction = (
 ) => void;
 export type SelectFacetFilterFunction = (field: string) => Operation;
 
-export type GetFacetDataTotalCountsFunction = (field: string) => number;
-
 export interface EnumFacetData {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;

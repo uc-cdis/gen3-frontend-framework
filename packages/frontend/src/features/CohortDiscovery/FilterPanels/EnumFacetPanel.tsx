@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
 import { Text } from '@mantine/core';
 import {
-  FacetCardProps,
   FacetDataHooks,
   GetEnumFacetDataFunction,
-  GetFacetDataTotalCountsFunction,
 } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
 import { EnumFacetToHistogramArray } from '../utils';
@@ -14,7 +12,6 @@ import FacetEnumList from '../../../components/facets/FacetEnumList';
 
 export interface EnumFacetPanelDataHooks extends FacetDataHooks {
   useGetFacetData: GetEnumFacetDataFunction;
-  useGetFacetDataCount: GetFacetDataTotalCountsFunction;
 }
 
 interface EnumFacetPanelProps {
@@ -38,7 +35,6 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
     [label, field],
   );
   const { data } = hooks.useGetFacetData(field);
-  const counts = hooks.useGetFacetDataCount(field);
 
   return (
     <div className="flex flex-col bg-base-max relative border-base-light border-1 rounded-b-md transition">
@@ -49,12 +45,17 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
       <div>
         {createChart(chartType, {
           data: EnumFacetToHistogramArray(data),
-          total: counts ?? 1,
+          total: 1,
           valueType: 'count',
         })}
       </div>
       <FacetPanelDataHeader label={facetName} valueLabel={valueLabel} />
-      <FacetEnumList field={field} valueLabel={valueLabel} hooks={hooks} />
+      <FacetEnumList
+        field={field}
+        valueLabel={valueLabel}
+        hooks={hooks}
+        showSorting={false}
+      />
     </div>
   );
 };
