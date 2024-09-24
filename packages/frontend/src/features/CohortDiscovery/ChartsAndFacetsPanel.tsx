@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { Grid } from '@mantine/core';
+import { Grid, Transition } from '@mantine/core';
 import {
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
   FacetType,
+  fieldNameToTitle,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
@@ -84,14 +85,13 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   const facetHooks: Record<SupportedFacetTypes, EnumFacetPanelDataHooks> =
     useDeepCompareMemo(() => {
       return {
-        // TODO: see if there a better way to do this
         enum: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
-        },
+        }, // TODO: range facets
         // range: {
         //   useGetFacetData: getRangeFacetData,
         //   useUpdateFacetFilters: partial(useUpdateFilters, index),
@@ -102,18 +102,16 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
       };
     }, [getEnumFacetData, getRangeFacetData, index]);
 
-  const panels = useDeepCompareMemo(
-    () =>
-      facets.map((facet) =>
-        createFacetPanel(facet, 'bar', index, facetHooks.enum),
-      ),
-    [facets, index, facetHooks.enum],
-  );
+  const panels = useDeepCompareMemo(() => {
+    return facets.map((facet) =>
+      createFacetPanel(facet, 'bar', fieldNameToTitle(index), facetHooks.enum),
+    );
+  }, [facets, index, facetHooks.enum]);
 
   const spans = computeRowSpan(panels.length);
 
   return (
-    <Grid className="w-full mx-2">
+    <Grid className="w-full mx-2 bg-base-max p-4">
       {panels.map((panel, index) => (
         <Grid.Col
           span={spans[index]}

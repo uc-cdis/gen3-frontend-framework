@@ -20,8 +20,6 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
     );
   }
 
-  console.log('CohortDiscovery', config);
-
   return (
     <>
       <PersistGate persistor={persistor}>

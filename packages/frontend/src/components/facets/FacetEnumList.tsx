@@ -352,7 +352,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                         return (
                           <div
                             key={`${field}-${value}`}
-                            className="flex flex-row items-center gap-x-1 px-2 "
+                            className="flex flex-row items-center gap-x-1"
                           >
                             <div className="flex-none">
                               <Checkbox
@@ -376,13 +376,15 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               />
                             </div>
                             <OverflowTooltippedLabel label={value}>
-                              <span className="font-content">{value}</span>
+                              <span className="text-sm font-normal font-heading">
+                                {value}
+                              </span>
                             </OverflowTooltippedLabel>
-                            <div className="flex-none text-right w-14 font-content">
+                            <div className="flex-none text-right w-14 text-sm font-normal font-content">
                               {count.toLocaleString()}
                             </div>
                             {showPercent ? (
-                              <div className="flex-none text-right w-18 font-content">
+                              <div className="flex-none text-right w-18 text-sm font-normal font-content">
                                 (
                                 {(
                                   ((count as number) / totalCount) *
@@ -423,13 +425,13 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                   )}
                 </div>
               </div>
-              {
+              {facetChartData.remainingValues > 0 ? (
                 <FacetExpander
                   remainingValues={facetChartData.remainingValues}
                   isGroupExpanded={isGroupExpanded}
                   onShowChanged={setIsGroupExpanded}
                 />
-              }
+              ) : null}
             </div>
             <div
               className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${

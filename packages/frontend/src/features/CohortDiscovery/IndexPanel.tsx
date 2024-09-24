@@ -115,8 +115,6 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
     return <ErrorCard message="Unable to fetch data from server" />;
   }
 
-  console.log('activeFields', activeFieldDefinitions);
-
   return (
     <Flex className="w-full h-full bg-base-light">
       <FacetSelectionPanel

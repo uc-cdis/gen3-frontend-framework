@@ -1,5 +1,5 @@
 import React from 'react';
-import { Group, Text } from '@mantine/core';
+import { Checkbox, Group, Text } from '@mantine/core';
 
 interface FacetPanelDataHeaderProps {
   label: string;
@@ -11,9 +11,15 @@ const FacetPanelDataHeader: React.FC<FacetPanelDataHeaderProps> = ({
   valueLabel,
 }) => {
   return (
-    <Group justify="space-between">
-      <Text>{label}</Text>
-      <Text>{valueLabel}</Text>
+    <Group justify="space-between" className="border-1 border-base p-2 px-4">
+      <div className="flex">
+        <Text size="sm" fw={600}>
+          {label}
+        </Text>
+      </div>
+      <Text size="sm" fw={600}>
+        {valueLabel}
+      </Text>
     </Group>
   );
 };
