@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
-import { Flex } from '@mantine/core';
+import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { Flex, Stack } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
@@ -23,6 +19,7 @@ import {
 import { TabConfig } from '../CohortBuilder/types';
 import ErrorCard from '../../components/ErrorCard';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
+import ActionButtonGroup from './ActionButtonGroup';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
@@ -127,7 +124,10 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
           useFilterExpanded: useFilterExpandedState,
         }}
       />
-      <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+      <Stack className="w-full">
+        <ActionButtonGroup />
+        <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+      </Stack>
     </Flex>
   );
 };
