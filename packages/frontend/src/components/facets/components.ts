@@ -12,7 +12,7 @@ hover:text-primary-lightest
 `;
 
 export const controlsIconStyle =
-  'text-primary-contrast-darker hover:text-primary-lighter';
+  'text-secondary-contrast hover:text-secondary-lighter';
 
 export const FacetText = tw.div`
 text-secondary-contrast font-heading font-semibold text-sm break-words

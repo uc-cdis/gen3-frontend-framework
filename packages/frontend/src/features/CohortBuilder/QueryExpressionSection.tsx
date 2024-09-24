@@ -12,15 +12,16 @@ import { omit, partial } from 'lodash';
 import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
-import { QueryExpressionsExpandedContext, CollapsedStateReducerAction } from './QueryExpressionsExpandedContext';
+import {
+  QueryExpressionsExpandedContext,
+  CollapsedStateReducerAction,
+} from './QueryExpressionsExpandedContext';
 
 import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
 } from './style';
-import {
-  useUpdateFilters,
-} from '../../components/facets/utils';
+import { useUpdateFilters } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
 
 const QueryExpressionContainer = tw.div`
@@ -37,11 +38,9 @@ const QueryExpressionContainer = tw.div`
 
 const MAX_HEIGHT_QE_SECTION = 120;
 
-
-
 const reducer = (
   state: Record<string, Record<string, boolean>>,
-  action: CollapsedStateReducerAction
+  action: CollapsedStateReducerAction,
 ) => {
   switch (action.type) {
     case 'init':
@@ -53,19 +52,25 @@ const reducer = (
       if (action.field) {
         return {
           ...state,
-          [action.cohortId]: { ...state[action.cohortId], [action.field]: true },
+          [action.cohortId]: {
+            ...state[action.cohortId],
+            [action.field]: true,
+          },
         };
       } else
-      return {
-        ...state,
-        [action.cohortId]: { ...state[action.cohortId] },
-      };
+        return {
+          ...state,
+          [action.cohortId]: { ...state[action.cohortId] },
+        };
     case 'collapse':
       if (action.field)
-      return {
-        ...state,
-        [action.cohortId]: { ...state[action.cohortId], [action.field]: false },
-      };
+        return {
+          ...state,
+          [action.cohortId]: {
+            ...state[action.cohortId],
+            [action.field]: false,
+          },
+        };
       else
         return {
           ...state,
@@ -104,9 +109,7 @@ interface QueryExpressionSectionProps {
   readonly currentCohortId: string;
 }
 
-
-
-const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
+const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   filters,
   currentCohortName,
@@ -128,8 +131,12 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
   }, [expandedState, filters, filtersRef]);
 
   const clearAllFilters = () => {
-    dispatch(clearCohortFilters({index: index}));
-    setExpandedState({ type: 'clear', cohortId: currentCohortId, field: 'unset' });
+    dispatch(clearCohortFilters({ index: index }));
+    setExpandedState({
+      type: 'clear',
+      cohortId: currentCohortId,
+      field: 'unset',
+    });
   };
   const allQueryExpressionsCollapsed = Object.values(
     expandedState?.[currentCohortId] || {},
@@ -144,7 +151,11 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
 
   useDeepCompareEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
-      setExpandedState({ type: 'init', cohortId: currentCohortId, field: 'unset' });
+      setExpandedState({
+        type: 'init',
+        cohortId: currentCohortId,
+        field: 'unset',
+      });
     }
   }, [currentCohortId, expandedState]);
 
@@ -153,7 +164,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
       <QueryExpressionsExpandedContext.Provider
         value={[expandedState[currentCohortId], setExpandedState]}
       >
-        <div className="flex flex-col w-full bg-primary">
+        <div className="flex flex-col w-full bg-primary-lighter">
           <div
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
@@ -193,13 +204,13 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                     onClick={() =>
                       allQueryExpressionsCollapsed
                         ? setExpandedState({
-                          type: 'expandAll',
-                          cohortId: currentCohortId,
-                        })
+                            type: 'expandAll',
+                            cohortId: currentCohortId,
+                          })
                         : setExpandedState({
-                          type: 'collapseAll',
-                          cohortId: currentCohortId,
-                        })
+                            type: 'collapseAll',
+                            cohortId: currentCohortId,
+                          })
                     }
                     aria-label="Expand/collapse all queries"
                     aria-expanded={!allQueryExpressionsCollapsed}
@@ -224,8 +235,10 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
 
                 <Tooltip
                   label={
-                    noFilters || filtersRef.current != null &&
-                    filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                    noFilters ||
+                    (filtersRef.current != null &&
+                      filtersRef?.current?.scrollHeight <=
+                        MAX_HEIGHT_QE_SECTION)
                       ? 'All rows are already displayed'
                       : filtersSectionCollapsed
                         ? 'Display all rows'
@@ -241,8 +254,10 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={
-                      noFilters || filtersRef.current != null &&
-                      filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                      noFilters ||
+                      (filtersRef.current != null &&
+                        filtersRef?.current?.scrollHeight <=
+                          MAX_HEIGHT_QE_SECTION)
                     }
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,

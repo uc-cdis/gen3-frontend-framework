@@ -20,6 +20,7 @@ import { TabConfig } from '../CohortBuilder/types';
 import ErrorCard from '../../components/ErrorCard';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
+import CohortManager from '../CohortBuilder/CohortManager';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
@@ -113,22 +114,25 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   }
 
   return (
-    <Flex className="w-full h-full bg-base-light">
-      <FacetSelectionPanel
-        categories={categories}
-        selectedFields={activeFieldDefinitions.map((x) => x.field)}
-        updateSelectedField={updateFields}
-        hooks={{
-          useClearFilter: () => (field: string) => null,
-          useToggleExpandFilter: useToggleExpandFilter,
-          useFilterExpanded: useFilterExpandedState,
-        }}
-      />
-      <Stack className="w-full">
-        <ActionButtonGroup />
-        <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
-      </Stack>
-    </Flex>
+    <Stack>
+      <CohortManager index={index} />
+      <Flex className="w-full h-full bg-base-light">
+        <FacetSelectionPanel
+          categories={categories}
+          selectedFields={activeFieldDefinitions.map((x) => x.field)}
+          updateSelectedField={updateFields}
+          hooks={{
+            useClearFilter: () => (field: string) => null,
+            useToggleExpandFilter: useToggleExpandFilter,
+            useFilterExpanded: useFilterExpandedState,
+          }}
+        />
+        <Stack className="w-full">
+          <ActionButtonGroup />
+          <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+        </Stack>
+      </Flex>
+    </Stack>
   );
 };
 

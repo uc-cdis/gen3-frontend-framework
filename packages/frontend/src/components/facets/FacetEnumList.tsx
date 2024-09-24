@@ -411,6 +411,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 <div className="flex-none">
                                   <Checkbox
                                     size="xs"
+                                    radius="xs"
                                     className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
                                   />
                                 </div>
