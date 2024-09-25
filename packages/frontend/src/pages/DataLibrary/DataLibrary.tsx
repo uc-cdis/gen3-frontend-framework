@@ -7,7 +7,14 @@ const DataLibraryPage = ({
   footerProps,
 }: NavPageLayoutProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 DataLibrary Page',
+        content: 'DataLibrary Data',
+        key: 'gen3-data-library-page',
+      }}
+    >
       <DataLibraryPanel />
     </NavPageLayout>
   );
