@@ -10,6 +10,8 @@ export * from './features/Query';
 export * from './features/Workspace';
 export * from './utils/';
 
+export * from './lib/statistics/database';
+
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
@@ -44,6 +46,10 @@ import DictionaryPage, {
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
+
+import SiteAdministration, {
+  SiteAdminPageGetServerSideProps,
+} from './pages/admin/site';
 
 import Custom404Page from './pages/404/Custom404Page';
 
@@ -108,4 +114,6 @@ export {
   SubmissionPage,
   SubmissionPageGetServerSideProps,
   registerCohortDiscoveryApp,
+  SiteAdministration,
+  SiteAdminPageGetServerSideProps,
 };
