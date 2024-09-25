@@ -63,6 +63,30 @@ const globals = {
   swc: 'swc',
 };
 
+const external = [
+  ...Object.keys(globals),
+  'tailwindcss/plugin',
+  '@iconify/react',
+  'next/router',
+  'next/dynamic',
+  'next/link',
+  'next/image',
+  'react-icons/bi',
+  'react-icons/fa',
+  'react-icons/im',
+  'react-icons/pi',
+  'use-deep-compare',
+  'tinycolor2',
+  'tailwind-styled-components',
+  '@graphiql/plugin-explorer',
+  'mantine-react-table',
+  'victory',
+  'echarts',
+  '@gen3/core',
+  'swr',
+  'node-json-db',
+];
+
 const config = [
   {
     input: './src/index.ts',
@@ -80,28 +104,7 @@ const config = [
         sourcemap: true,
       },
     ],
-    external: [
-      ...Object.keys(globals),
-      'tailwindcss/plugin',
-      '@iconify/react',
-      'next/router',
-      'next/dynamic',
-      'next/link',
-      'next/image',
-      'react-icons/bi',
-      'react-icons/fa',
-      'react-icons/im',
-      'react-icons/pi',
-      'use-deep-compare',
-      'tinycolor2',
-      'tailwind-styled-components',
-      '@graphiql/plugin-explorer',
-      'mantine-react-table',
-      'victory',
-      'echarts',
-      '@gen3/core',
-      'swr',
-    ],
+    external,
     plugins: [
       peerDepsExternal(),
       json(),
@@ -150,6 +153,27 @@ const config = [
         ],
       }),
     ],
+  },
+  {
+    input: 'src/server.ts',
+    output: [
+      { file: 'dist/cjs/server.js', format: 'cjs', sourcemap: true },
+      { file: 'dist/esm/server.js', format: 'esm', sourcemap: true },
+    ],
+    plugins: [
+      swc(
+        {
+          sourceMaps: true,
+          include: /\.[mc]?[json]?[jt]sx?$/,
+          exclude: /node_modules/,
+          tsconfig: 'tsconfig.json',
+          jsc: {},
+        },
+        swcPreserveDirectives(),
+        json(),
+      ),
+    ],
+    external,
   },
 ];
 

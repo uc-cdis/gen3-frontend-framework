@@ -40,6 +40,10 @@
         "default": "./dist/cjs/index.js"
       }
     },
+    "./server": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/server.js"
+    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",
@@ -51,7 +55,6 @@
   "dependencies": {
     "@graphiql/react": "^0.23.1",
     "@iconify/react": "^4.0.1",
-    "@kbox-labs/react-echarts": "^1.4.0",
     "@mantine/core": "^7.12.1",
     "@mantine/form": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
