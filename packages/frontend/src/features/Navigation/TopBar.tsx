@@ -5,12 +5,13 @@ import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
 import { extractClassName } from './utils';
 import { LoginButtonVisibility } from '../../components/Login/types';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface NameAndIcon {
   readonly name: string;
   readonly rightIcon?: string;
   readonly leftIcon?: string;
-  readonly classNames: Record<string, string>;
+  readonly classNames: StylingOverrideWithMergeControl;
   readonly drawBorder?: boolean;
 }
 
@@ -32,7 +33,7 @@ const TopIconButton = ({
     } my-2`,
     button:
       'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
-    leftSection: 'text-secondary-contrast-lighter pr-1',
+    leftIcon: 'text-secondary-contrast-lighter pr-1',
     label: 'font-content text-secondary-contrast-lighter block',
     rightIcon: 'text-secondary-contrast-lighter pl-1',
   };
@@ -42,7 +43,10 @@ const TopIconButton = ({
   );
 
   return (
-    <div className={extractClassName('root', mergedClassnames)}>
+    <div
+      className={extractClassName('root', mergedClassnames)}
+      aria-label={name}
+    >
       <div
         className={extractClassName('button', mergedClassnames)}
         role="button"
@@ -93,7 +97,7 @@ const processTopBarItems = (
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
   readonly loginButtonVisibility?: LoginButtonVisibility;
-  readonly classNames?: Record<string, string>;
+  readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 const TopBar = ({

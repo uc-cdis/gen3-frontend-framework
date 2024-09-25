@@ -78,7 +78,7 @@ const CategoryPanel = ({
         styles={{
           chevron: {
             transform: 'rotate(-90deg)',
-            '&[data-rotate]': {
+            '&[dataRotate]': {
               transform: 'rotate(0deg)',
             },
           },
@@ -92,7 +92,7 @@ const CategoryPanel = ({
               className="odd:bg-base-lightest even:bg-base-max"
             >
               <Group
-                wrap='nowrap'
+                wrap="nowrap"
                 className={
                   `${category}-${id}` === value
                     ? 'border-accent border-l-4'
@@ -106,7 +106,7 @@ const CategoryPanel = ({
                   />
                 </Accordion.Control>
                 {config?.showDownloads ? (
-                  <Group wrap='nowrap' className="ml-auto">
+                  <Group wrap="nowrap" className="ml-auto">
                     <Button leftSection={<DownloadIcon />}>TSV</Button>
                     <Button leftSection={<DownloadIcon />}>JSON</Button>
                   </Group>

@@ -4,7 +4,8 @@ This guide provides detailed instructions on how to configure the footer of a we
 
 ### 1. Overview of Configuration Structure
 
-The configuration file for the footer is structured to define how logos are displayed on the right side of the footer. Here's an overview of the main configuration option:
+The configuration file for the footer is structured to define how logos, Text and Links are displayed on footer.
+Here's an overview of the main configuration option:
 
 - `footerRightLogos`: A nested array that holds details about each logo to be displayed in the footer on the right side.
 
@@ -12,14 +13,45 @@ The configuration file for the footer is structured to define how logos are disp
 
 #### a. Footer Right Logos (`footerRightLogos`)
 
-The `footerRightLogos` is an array of arrays. Each inner array can contain one or more logo configurations, allowing grouping of logos as needed. This setup is useful for aligning multiple logos side by side or in various groupings based on design requirements.
+The `rightSection` contain an array of columns. Each column contains an array of rows of footer items.
+Footer items can be:
+* Icon - image file to display
+* Text - text to display
+* Link - link to a page
+* Links - a row of links
+* Section - which allows for rows of columns allowing more complex layouts
+This setup is useful for aligning multiple logos side by side or in various groupings based on design requirements.
 
-Each logo within the inner arrays can be configured with the following properties:
-
+### Icon
+Each logo within row can be configured with the following properties:
 - **logo**: URL or path to the logo image file.
 - **width**: Width of the logo in pixels.
 - **height**: Height of the logo in pixels.
 - **description**: A text description of the logo, which can be used for accessibility features like alt text.
+
+### Label
+- **text**: Text to display.
+- **className**: CSS class name for the text.
+
+### Link
+- **text**: Text to display.
+- **href**: Link to a page.
+- **className**: CSS class name for the link.
+
+### Links
+An array of link in one row separated by ```|```
+- *links**: array of Links
+- **className**: CSS class name for the link.
+
+Styling:
+
+The className or classNames is used control the styling of the individual elements of the footer.
+The styling can either be tailwind styling keywords or a custom css class.
+
+Note: tailwind's arbitrary items (like ```top-[117px] lg:top-[344px]``) are not supported, as these are considered
+dynamic styling which tailwind does not support. In order to achieve the same result, you can use a custom css class
+and define the styling in your own css file.
+
 
 ### 3. Example of a Footer Logo Configuration
 
@@ -27,29 +59,46 @@ Here is an example configuration that demonstrates how to specify two logos grou
 
 ```json
 {
-  "footerRightLogos": [
-    [
+  "classNames": {
+    "root": "bg-base-darker",
+    "layout": "flex items-center justify-end"
+  },
+  "rightSection": {
+    "columns": [
       {
-        "logo": "/icons/gen3.png",
-        "width": 132,
-        "height": 60,
-        "description": "Gen3 Logo"
+        "rows": [
+          {
+            "Icon": {
+              "logo": "/icons/gen3.png",
+              "width": 132,
+              "height": 60,
+              "description": "Gen3 Logo"
+            }
+          }
+        ]
       },
       {
-        "logo": "/icons/createdby.png",
-        "width": 170,
-        "height": 60,
-        "description": "Created by CTDS"
+        "rows": [
+          {
+            "Icon": {
+              "logo": "/icons/createdby.png",
+              "width": 170,
+              "height": 60,
+              "description": "Created by CTDS"
+            }
+          }
+        ]
       }
     ]
-  ]
+  }
 }
+
 ```
 
 #### Explanation:
 
-- The `footerRightLogos` array contains one inner array, indicating a single grouping of logos.
-- Inside this inner array, there are two objects, each representing a logo.
+- The `rightSection` has two columns, indicating a single grouping of logos.
+- Each column has one row containing a Icon.
     - The first logo is the "Gen3 Logo" with specific dimensions.
     - The second logo is the "Created by CTDS" logo, also with defined dimensions.
 - Each logo entry includes a `description` that serves as alt text for accessibility, describing the image when it cannot be viewed.

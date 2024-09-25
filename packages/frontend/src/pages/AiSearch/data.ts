@@ -18,13 +18,15 @@ export const AISearchPageGetServerSideProps: GetServerSideProps<
         headerProps: {
           top: {
             items: [],
-
           },
-          navigation: {}
-
+          navigation: {},
         },
-        footerProps: {
-        }
+        footerProps: {},
+        headerData: {
+          title: 'Gen3 AI Search Page',
+          content: 'AI Search',
+          key: 'gen3-ai-search-page',
+        },
       },
     };
   }

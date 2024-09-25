@@ -13,7 +13,14 @@ import { FaExternalLinkAlt } from 'react-icons/fa';
 const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   const { basePath } = useRouter();
   return (
-    <NavPageLayout {...{ footerProps, headerProps }}>
+    <NavPageLayout
+      {...{ footerProps, headerProps }}
+      headerData={{
+        title: 'Gen3 About Us Page',
+        content: ' About Us Page',
+        key: 'gen3-about-us-page',
+      }}
+    >
       <div className="flex flex-row justify-center h-full">
         <div className="flex flex-col justify-evenly pb-10 text-xl max-w-10">
           <div className="pb-10 pt-10 text-sm">

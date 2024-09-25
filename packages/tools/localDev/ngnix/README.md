@@ -57,7 +57,7 @@ and if it's okay, you can start nginx with:
 nginx
 ```
 
-Other commands: 
+Other commands:
 stop nginx:
 ```bash
 nginx -s stop
@@ -68,7 +68,7 @@ nginx -s reload
 ```
 
 ### Use the custom configuration file location
-
+Note there is a bash script to do most of the steps below, See [Shell Script](#shell-script)
 
 ```base
 GEN3_REMOTE_API=gen3.datacommons.io envsubst "\$GEN3_REMOTE_API" < revproxy_nginx.conf.template > my_nginx.conf
@@ -93,3 +93,29 @@ curl -k  https://localhost:3010/_status
 ```
 and compare with http://gen3.data.commons/io/_status where gen3.datacommons.io is replaced with the
 commons pass to ``GEN3_REMOTE_API```.
+
+## Shell Script
+
+There is a shell script to do the above. To use it copy ```revproxy_nginx.conf.template```:
+
+```bash
+cp revproxy_nginx.conf.template revproxy_nginx_with_certs.template
+```
+
+Edit ```revproxy_nginx_with_certs.template``` and add the path to the cert and key SSL files
+Now you can run a shell script to update the config and reload nginx:
+
+```bash
+./configureNginx.sh <domain name of commons>
+```
+
+NOTE: do *NOT* add http:// or https:// to the passed domain name, it just need to be the name of the commong.
+For example:
+Do NOT:
+```bash
+./configureNginx.sh https://gen3.datacommons.io
+```
+Instead:
+```bash
+./configureNginx.sh gen3.datacommons.io
+```

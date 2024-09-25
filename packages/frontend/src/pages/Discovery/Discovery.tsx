@@ -25,7 +25,14 @@ const DiscoveryPage = ({
   }
 
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Discovery Page',
+        content: 'Discovery Data',
+        key: 'gen3-discovery-page',
+      }}
+    >
       <Discovery discoveryConfig={discoveryConfig} />
     </NavPageLayout>
   );

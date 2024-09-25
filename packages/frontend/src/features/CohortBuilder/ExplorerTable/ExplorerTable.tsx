@@ -214,6 +214,16 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
         '--mrt-base-background-color': 'var(--mantine-color-table-1)',
         color: `var(--mantine-color-table-contrast-5')`,
       },
+      // sx: (theme) => {
+      //   return {
+      //     backgroundColor: theme.colors.table[1],
+      //     color: theme.colors['table-contrast'][5],
+      //     textAlign: 'center',
+      //     padding: theme.spacing.md,
+      //     fontWeight: 'bold',
+      //     fontSize: theme.fontSizes.lg,
+      //   };
+      // },
     },
     state: {
       isLoading,
