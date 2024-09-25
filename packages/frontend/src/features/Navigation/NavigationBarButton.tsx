@@ -26,7 +26,7 @@ const NavigationBarButton = ({
 }: NavigationButtonProps) => {
   const classNamesDefaults = {
     root: `flex flex-col flex-nowrap px-3 py-2 pt-4 items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100`,
-    label: 'pt-1.5 body-typo font-heading text-sm',
+    label: 'pt-1.5 body-typo font-heading text-sm text-nowrap',
     icon: 'mt-0.5 ml-1',
     ...TooltipStyle,
   };
@@ -41,12 +41,8 @@ const NavigationBarButton = ({
         label={tooltip}
         multiline
         position="bottom"
+        arrowSize={8}
         withArrow
-        color="base.8"
-        classNames={{
-          tooltip: mergedClassnames.tooltip,
-          arrow: mergedClassnames.arrow,
-        }}
         zIndex={1000}
         w={220}
       >
@@ -59,7 +55,10 @@ const NavigationBarButton = ({
               : ''
           }${href}`}
         >
-          <div className={extractClassName('root', mergedClassnames)}>
+          <div
+            className={extractClassName('root', mergedClassnames)}
+            role="navigation"
+          >
             <Icon
               height={iconHeight}
               icon={icon}

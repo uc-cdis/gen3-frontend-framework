@@ -17,7 +17,18 @@ export const hasOwnProperty = <X extends object, Y extends PropertyKey>(
   return Object.hasOwnProperty.call(obj, prop);
 };
 export const getParamsValueAsString = (params?: JSONObject, key?: string) => {
-  return params && key && key !== '' && isPropertyKey(key) && hasOwnProperty(params, key)
+  return params &&
+    key &&
+    key !== '' &&
+    isPropertyKey(key) &&
+    hasOwnProperty(params, key)
     ? toString(params[key])
     : undefined;
+};
+
+export const extractObjectKey = <T extends object>(
+  obj: T,
+): keyof T | undefined => {
+  const keys = Object.keys(obj) as Array<keyof T>;
+  return keys.length > 0 ? keys[0] : undefined;
 };

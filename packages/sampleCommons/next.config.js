@@ -22,6 +22,11 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     esmExternals: true,
+    instrumentationHook: true,
+  },
+  i18n: {
+    locales: ['en'],
+    defaultLocale: 'en',
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],

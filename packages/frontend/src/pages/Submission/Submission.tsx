@@ -8,9 +8,16 @@ const SubmissionPage = ({
   headerProps,
   footerProps,
 }: SubmissionsPageLayoutProps): JSX.Element => {
-
   return (
-    <NavPageLayout footerProps={footerProps} headerProps={headerProps}>
+    <NavPageLayout
+      footerProps={footerProps}
+      headerProps={headerProps}
+      headerData={{
+        title: 'Gen3 Submission Page',
+        content: 'Submission page',
+        key: 'gen3-submission-page',
+      }}
+    >
       <SubmissionPanel config={submissionConfig} />
     </NavPageLayout>
   );

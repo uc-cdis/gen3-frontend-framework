@@ -1,12 +1,14 @@
+import { nanoid } from '@reduxjs/toolkit';
 import { gen3Api } from '../gen3';
 import { GEN3_DATA_LIBRARY_API } from '../../constants';
-import { DataLibrary, DataList, DataLibraryAPIResponse } from './types';
+import {
+  AddUpdateListParams,
+  DataLibraryItems,
+  DataList,
+  LoadAllListData,
+  DataLibraryAPIResponse,
+} from './types';
 import { BuildLists } from './utils';
-
-interface AddUpdateListParams {
-  id: string;
-  list: DataList;
-}
 
 const TAGS = 'dataLibrary';
 
@@ -25,16 +27,18 @@ export const dataLibraryTags = gen3Api.enhanceEndpoints({
  */
 export const dataLibraryApi = dataLibraryTags.injectEndpoints({
   endpoints: (builder) => ({
-    getDataLibraryLists: builder.query<DataLibrary, void>({
+    getDataLibraryLists: builder.query<DataLibraryItems, void>({
       query: () => `${GEN3_DATA_LIBRARY_API}`,
-      transformResponse: (res: DataLibraryAPIResponse) => BuildLists(res),
+      transformResponse: (res: DataLibraryAPIResponse) => {
+        return { lists: BuildLists(res) };
+      },
     }),
     getDataLibraryList: builder.query<DataList, string>({
       query: (id: string) => `${GEN3_DATA_LIBRARY_API}/${id}`,
       transformResponse: (res: DataLibraryAPIResponse) =>
         BuildLists(res)?.lists,
     }),
-    addDataLibraryLists: builder.mutation<void, Record<string, DataList>>({
+    addAllDataLibraryLists: builder.mutation<void, LoadAllListData>({
       query: (lists) => ({
         url: `${GEN3_DATA_LIBRARY_API}`,
         method: 'POST',
@@ -42,9 +46,9 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       }),
       invalidatesTags: [TAGS],
     }),
-    addDataLibraryList: builder.mutation<void, AddUpdateListParams>({
-      query: ({ id, list }) => ({
-        url: `${GEN3_DATA_LIBRARY_API}/${id}`,
+    addDataLibraryList: builder.mutation<void, DataList>({
+      query: (list) => ({
+        url: `${GEN3_DATA_LIBRARY_API}/${nanoid()}`,
         method: 'POST',
         body: list,
       }),
@@ -65,6 +69,13 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       }),
       invalidatesTags: [TAGS],
     }),
+    deleteAllDataLibrary: builder.mutation<void, void>({
+      query: () => ({
+        url: `${GEN3_DATA_LIBRARY_API}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [TAGS],
+    }),
   }),
 });
 
@@ -72,6 +83,8 @@ export const {
   useGetDataLibraryListQuery,
   useGetDataLibraryListsQuery,
   useAddDataLibraryListMutation,
+  useAddAllDataLibraryListsMutation,
   useDeleteDataLibraryListMutation,
+  useDeleteAllDataLibraryMutation,
   useUpdateDataLibraryListMutation,
 } = dataLibraryApi;
