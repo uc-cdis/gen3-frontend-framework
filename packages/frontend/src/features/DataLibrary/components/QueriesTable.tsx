@@ -1,4 +1,5 @@
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import React from "react";
 import { useMemo } from "react";
 
 interface QueriesTableProps {
