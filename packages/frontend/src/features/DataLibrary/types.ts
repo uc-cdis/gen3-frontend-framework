@@ -9,9 +9,6 @@ export interface Dataset {
     };
   };
 }
-export interface Datasets {
-  [key: string]: Dataset | undefined;
-}
 
 export interface Query {
   name: string;
@@ -45,9 +42,4 @@ export interface SetList {
   queries: Query[];
   files: File[];
   additionalData: AdditionalData[];
-}
-
-export interface ListsTableProps {
-  data: any;
-  setList: any;
 }

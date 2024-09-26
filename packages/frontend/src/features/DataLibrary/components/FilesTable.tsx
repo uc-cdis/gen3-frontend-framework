@@ -1,48 +1,49 @@
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import React from "react";
-import { useMemo } from "react";
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import React from 'react';
+import { FileItem } from '@gen3/core';
 
 interface FilesTableProps {
-    data: any;
-    header: string;
+  data: Array<FileItem>;
+  header: string;
 }
 
-const FilesTable = ({ data, header }: FilesTableProps) => {
-    const columns = useMemo(() => {
-        return [
-            {
-                accessorKey: 'name',
-                header: 'Name',
-            },
-            {
-                accessorKey: 'description',
-                header: 'Description',
-            },
-            {
-                accessorKey: 'type',
-                header: 'Type',
-            },
-            {
-                accessorKey: "size",
-                header: "Size"
-            }
-        ];
-    }, []);
-    const table = useMantineReactTable<any>({
-        columns,
-        data: data,
-        enableTopToolbar: false,
-        enableBottomToolbar: false,
-        enableColumnResizing: true,
-        columnResizeMode: 'onEnd',
-    });
+const columns = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+  },
+  {
+    accessorKey: 'type',
+    header: 'Type',
+  },
+  {
+    accessorKey: 'size',
+    header: 'Size',
+  },
+];
 
-    return <div className='flex flex-col ml-8 w-inherit'>
-        <span className='text-lg font-bold'>{header}</span>
-        <div>
-            <MantineReactTable table={table} />
-        </div>
-    </div>;
+const FilesTable = ({ data, header }: FilesTableProps) => {
+  const table = useMantineReactTable<FileItem>({
+    columns,
+    data: data,
+    enableTopToolbar: false,
+    enableBottomToolbar: false,
+    enableColumnResizing: true,
+    columnResizeMode: 'onEnd',
+  });
+
+  return (
+    <div className="flex flex-col ml-8 w-inherit">
+      <span className="text-lg font-bold">{header}</span>
+      <div>
+        <MantineReactTable table={table} />
+      </div>
+    </div>
+  );
 };
 
 export default FilesTable;
