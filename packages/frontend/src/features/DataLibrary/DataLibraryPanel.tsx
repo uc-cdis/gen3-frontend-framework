@@ -17,6 +17,7 @@ import {
   MdSearch as SearchIcon,
 } from 'react-icons/md';
 import { HiDotsVertical } from 'react-icons/hi';
+import { data1 } from './utils';
 
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState([] as DataLibraryList[]);
@@ -32,9 +33,9 @@ const DataLibraryPanel = () => {
       ([listId, dataList]) => {
         const listMembers = Object.keys(dataList.items).map((key) => {
           const [queries, files, additionalData] = [
-            [] as Query[],
-            [] as Files[],
-            [] as AdditionalData[],
+            [] as CohortItem[],
+            [] as FileItem[],
+            [] as AdditionalDataItem[],
           ];
 
           // for each dataset in the List
@@ -51,22 +52,9 @@ const DataLibraryPanel = () => {
             // handle RegisteredDataListEntry
             Object.entries(dataItem.items).forEach(([id, item]) => {
               if (isFileItem(item)) {
-                const { description = '', type = '', guid } = item as FileItem;
-                files.push({
-                  name: item.name ?? id,
-                  description,
-                  type,
-                  guid,
-                  size: item.size ?? ('0' as any),
-                });
+                files.push(item);
               } else if (isAdditionalDataItem(item)) {
-                const { description = '', documentationUrl = '' } =
-                  item as AdditionalDataItem;
-                additionalData.push({
-                  name: item.name,
-                  description,
-                  documentation: documentationUrl,
-                });
+                additionalData.push(item);
               } else {
                 console.log('DataLibrary: unknown item', item);
               }
@@ -113,76 +101,88 @@ const DataLibraryPanel = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col w-1/4">
+      <div className="flex flex-col w-full">
         {currentLists.map(({ name, setList }, key) => {
           return (
-            <div className="flex">
+            <div className="flex" key={key}>
               <div className="mt-4 ml-2 border-b">
-                <Checkbox></Checkbox>
+                <Checkbox />
               </div>
-              <div className="flex">
-                <div className="flex flex-col w-fit" key={key}>
-                  <Accordion chevronPosition="left">
-                    <Accordion.Item value={name} key={name}>
-                      <Accordion.Control>
-                        <div className="flex justify-between">
-                          <h4 className="text-md ml-2 w-80">{name}</h4>
-                          <Menu>
-                            <Menu.Target>
-                              <Button
-                                onClick={(e) => e.stopPropagation()}
-                                variant="outline"
-                                style={{ padding: '4px', height: '90%' }}
-                              >
-                                <HiDotsVertical />
-                              </Button>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                              <Menu.Item>
-                                <Button
-                                  variant="unstyled"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Save
-                                </Button>
-                              </Menu.Item>
-                              <Menu.Item>
-                                <Button
-                                  variant="unstyled"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Test
-                                </Button>
-                              </Menu.Item>
-                            </Menu.Dropdown>
-                          </Menu>
-                        </div>
-                      </Accordion.Control>
-                      <Accordion.Panel>
-                        <ListsTable
-                          data={[
-                            ...setList.map(({ name }, j) => {
-                              return {
-                                title: name,
-                                id: name,
-                                numFiles: setList?.[j]?.files.length || 0,
-                                isAddDataSource:
-                                  setList?.[j]?.additionalData.length !== 0
-                                    ? 'True'
-                                    : 'False',
-                              };
-                            }),
-                          ]}
-                          setList={setList}
-                        />
-                      </Accordion.Panel>
-                    </Accordion.Item>
-                  </Accordion>
-                </div>
-              </div>
+              <Accordion chevronPosition="left" classNames={{ root: 'w-full' }}>
+                <Accordion.Item value={name} key={name}>
+                  <Accordion.Control>
+                    <div className="flex justify-between">
+                      <h4 className="text-md ml-2">{name}</h4>
+                      <Menu>
+                        <Menu.Target>
+                          <Button
+                            onClick={(e) => e.stopPropagation()}
+                            variant="outline"
+                            style={{ padding: '4px', height: '90%' }}
+                          >
+                            <HiDotsVertical />
+                          </Button>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                          <Menu.Item>
+                            <Button
+                              variant="unstyled"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Save
+                            </Button>
+                          </Menu.Item>
+                          <Menu.Item>
+                            <Button
+                              variant="unstyled"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Test
+                            </Button>
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                      </Menu>
+                    </div>
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <ListsTable
+                      data={[
+                        ...setList.map(({ name }, j) => {
+                          return {
+                            title: name,
+                            id: name,
+                            numFiles: setList?.[j]?.files.length || 0,
+                            isAddDataSource:
+                              setList?.[j]?.additionalData.length !== 0
+                                ? 'True'
+                                : 'False',
+                          };
+                        }),
+                      ]}
+                      setList={setList}
+                    />
+                  </Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
             </div>
           );
         })}
+      </div>
+      <div className="flex space-x-4 m-2">
+        <Button
+          onClick={() => {
+            setAllListsInDataLibrary(data1 as any);
+          }}
+        >
+          Load Sample List
+        </Button>
+        <Button
+          onClick={() => {
+            clearLibrary();
+          }}
+        >
+          Clear All
+        </Button>
       </div>
     </div>
   );
