@@ -1,5 +1,5 @@
 import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
-import { JSONObject, useGeneralGQLQuery } from '@gen3/core';
+import { useGeneralGQLQuery } from '@gen3/core';
 import ErrorCard from '../../../../components/ErrorCard';
 import { TableDetailsPanelProps } from './types';
 

@@ -19,7 +19,7 @@ export const NullButtonAction: ActionButtonWithArgsFunction = (
   done,
 ): Promise<void> => {
   return new Promise<void>((done) => {
-    done && done();
+    if (done) done();
   });
 };
 
