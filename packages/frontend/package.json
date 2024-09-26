@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint .",
     "compile": "tsc",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "rollup": "rollup --config rollup.config.mjs",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
@@ -100,7 +100,6 @@
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
     "remark-gfm": "^4.0.0",
-    "sharp": "^0.33.2",
     "stable-hash": "^0.0.3",
     "tailwind-merge": "^2.5.2",
     "tailwind-styled-components": "^2.2.0",
@@ -112,10 +111,8 @@
   "devDependencies": {
     "@iconify/tools": "^2.1.2",
     "@iconify/types": "^2.0.0",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-terser": "^0.4.3",
     "@svgr/webpack": "^8.1.0",
-    "@swc/core": "^1.4.11",
+    "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@testing-library/user-event": "^14.5.2",
     "@types/color": "^3.0.3",
@@ -138,17 +135,13 @@
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.29",
+    "sharp": "^0.33.2",
     "react-what-changed": "^1.1.2",
-    "rollup-plugin-copy": "^3.5.0",
-    "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-sourcemaps": "^0.6.3",
     "style-loader": "^3.3.2",
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "^0.10.33",
+    "@gen3/core": "^0.10.45",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.4.10"

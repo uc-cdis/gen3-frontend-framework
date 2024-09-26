@@ -26,7 +26,6 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'import/prefer-default-export': 'off',
     'linebreak-style': ['error', 'unix'],
-    '@typescript-eslint/quotes': ['warn', 'single'],
     quotes: ['warn', 'single'],
     'jsx-quotes': ['warn', 'prefer-double'],
     semi: ['error', 'always'],
@@ -35,6 +34,7 @@ module.exports = {
     // disable these because we're using React 17+ with the jsx transform
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-explicit-any': ['warn'],
   },
   overrides: [
     {
