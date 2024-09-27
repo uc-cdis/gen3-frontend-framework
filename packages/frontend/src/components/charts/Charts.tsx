@@ -12,7 +12,6 @@ export type ChartDataConverter = (
 ) => Record<string, number>;
 
 interface ChartsProps {
-  index: string;
   charts: Record<string, SummaryChart>;
   counts?: number;
   data: AggregationsData;
@@ -23,7 +22,6 @@ interface ChartsProps {
 
 //The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({
-  index,
   charts,
   data,
   counts,

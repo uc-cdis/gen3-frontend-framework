@@ -1,7 +1,7 @@
 import { HistogramDataArray } from '@gen3/core';
+import { TitleAndDescription } from '../../types';
 
-export interface SummaryChart {
-  readonly title: string;
+export interface SummaryChart extends TitleAndDescription {
   readonly chartType: string;
   readonly valueType?: 'count' | 'percent';
 }
