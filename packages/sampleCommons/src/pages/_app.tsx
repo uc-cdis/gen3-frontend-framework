@@ -26,9 +26,9 @@ import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const ReactDOM = require('react-dom');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const axe = require('@axe-core/react');
   axe(React, ReactDOM, 1000);
 }

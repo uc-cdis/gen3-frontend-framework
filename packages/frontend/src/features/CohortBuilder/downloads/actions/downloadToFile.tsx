@@ -13,13 +13,13 @@ export const downloadToFileAction = async (
     parameters: params as GuppyDownloadDataParams,
     onDone: (data: Blob) => {
       handleDownload(data, params.filename);
-      done && done();
+      if (done) done();
     },
     onError: (error: Error) => {
-      onError && onError(error);
+      if (onError) onError(error);
     },
     onAbort: () => {
-      onAbort && onAbort();
+      if (onAbort) onAbort();
     },
     signal,
   });

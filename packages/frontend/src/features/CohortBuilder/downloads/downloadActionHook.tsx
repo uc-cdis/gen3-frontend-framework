@@ -13,16 +13,17 @@ const showErrorMessage = (error: Error) => {
   });
 };
 
-interface GuppyDownloadActionHookProps extends Pick<
-  GuppyActionButtonProps,
-  | 'Modal403'
-  | 'Modal400'
-  | 'done'
-  | 'customErrorMessage'
-  | 'hideNotification'
-  | 'actionFunction'
-  | 'actionArgs'
-> {
+interface GuppyDownloadActionHookProps
+  extends Pick<
+    GuppyActionButtonProps,
+    | 'Modal403'
+    | 'Modal400'
+    | 'done'
+    | 'customErrorMessage'
+    | 'hideNotification'
+    | 'actionFunction'
+    | 'actionArgs'
+  > {
   setIsActive?: (active: boolean) => void;
 }
 
@@ -34,7 +35,7 @@ const useGuppyActionButton = ({
   hideNotification = false,
   actionFunction,
   actionArgs,
-  setIsActive = (_:boolean) => null,
+  setIsActive = (_: boolean) => null,
 }: GuppyDownloadActionHookProps) => {
   const [active, setActive] = useState(false);
   const dispatch = useCoreDispatch();
@@ -98,31 +99,30 @@ const useGuppyActionButton = ({
   );
 
   const handleClick = async () => {
-
     const controller = new AbortController();
 
     showDownloadNotification(controller);
     setActive(true);
-    setIsActive && setIsActive(true);
+    if (setIsActive) setIsActive(true);
     await actionFunction(
       actionArgs,
       () => {
         setActive(false);
-        setIsActive && setIsActive(false);
+        if (setIsActive) setIsActive(false);
         // Clean up notifications...
         cleanNotifications();
       },
       (error) => {
         handleError(error);
         setActive(false);
-        setIsActive && setIsActive(false);
+        if (setIsActive) setIsActive(false);
         // Clean up notifications...
         cleanNotifications();
         showErrorMessage(error);
       },
       () => {
         setActive(false);
-        setIsActive && setIsActive(false);
+        if (setIsActive) setIsActive(false);
         // Clean up notifications...
         cleanNotifications();
       },
@@ -139,7 +139,7 @@ const useGuppyActionButton = ({
   return {
     handleClick,
     icon,
-    active
+    active,
   };
 };
 
