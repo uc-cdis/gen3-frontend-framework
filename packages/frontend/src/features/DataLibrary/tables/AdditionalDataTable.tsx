@@ -1,5 +1,7 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { useMemo } from 'react';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import { commonTableSettings } from './tableSettings';
 
 const columns = [
   {
@@ -25,13 +27,10 @@ const AdditionalDataTableTable = ({
   data,
   header,
 }: AdditionalDataTableTableProps) => {
-  const table = useMantineReactTable<any>({
+  const table = useMantineReactTable({
     columns,
     data: data,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    enableColumnResizing: true,
-    columnResizeMode: 'onEnd',
+    ...commonTableSettings,
   });
 
   return (

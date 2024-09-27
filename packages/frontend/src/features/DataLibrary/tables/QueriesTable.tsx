@@ -1,6 +1,8 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { ColumnResizeMode } from '@tanstack/react-table';
 import { CohortItem } from '@gen3/core';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import { commonTableSettings } from './tableSettings';
 
 interface QueriesTableProps {
   data: Array<CohortItem>;
@@ -23,19 +25,14 @@ const columns = [
 ];
 
 const QueriesTable = ({ data, header }: QueriesTableProps) => {
-  const tableOptions = {
+  const table = useMantineReactTable({
     columns,
     data: data,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    enableColumnResizing: true,
-    columnResizeMode: 'onEnd' as ColumnResizeMode,
-  };
-
-  const table = useMantineReactTable<CohortItem>(tableOptions);
+    ...commonTableSettings,
+  });
 
   return (
-    <div className="flex flex-col ml-8 w-inherit">
+    <div className="flex flex-col ml-8">
       <span className="text-lg font-bold">{header}</span>
       <MantineReactTable table={table} />
     </div>

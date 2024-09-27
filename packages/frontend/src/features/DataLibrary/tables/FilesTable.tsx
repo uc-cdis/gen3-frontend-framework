@@ -1,6 +1,9 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import React from 'react';
 import { FileItem } from '@gen3/core';
+import { Text } from '@mantine/core';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import { commonTableSettings } from './tableSettings';
 
 interface FilesTableProps {
   data: Array<FileItem>;
@@ -27,19 +30,16 @@ const columns = [
 ];
 
 const FilesTable = ({ data, header }: FilesTableProps) => {
-  const table = useMantineReactTable<FileItem>({
+  const table = useMantineReactTable({
     columns,
     data: data,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    enableColumnResizing: true,
-    columnResizeMode: 'onEnd',
+    ...commonTableSettings,
   });
 
   return (
-    <div className="flex flex-col ml-8 w-inherit">
-      <span className="text-lg font-bold">{header}</span>
-      <div>
+    <div className="flex flex-col ml-8">
+      <Text fw={600}>{header}</Text>
+      <div className="mt-2">
         <MantineReactTable table={table} />
       </div>
     </div>
