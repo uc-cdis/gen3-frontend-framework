@@ -25,8 +25,12 @@ import SearchAndActions from './SearchAndActions';
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState<Array<DataLibraryList>>([]);
 
-  const { dataLibraryItems, setAllListsInDataLibrary, clearLibrary } =
-    useDataLibrary(false);
+  const {
+    dataLibraryItems,
+    setAllListsInDataLibrary,
+    clearLibrary,
+    deleteListFromDataLibrary,
+  } = useDataLibrary(false);
 
   useEffect(() => {
     const savedLists = Object.entries(dataLibraryItems?.lists ?? {}).map(
@@ -83,9 +87,9 @@ const DataLibraryPanel = () => {
     <div className="flex flex-col w-full ml-2">
       <SearchAndActions />
       <div className="flex flex-col">
-        {currentLists.map(({ name, datasetItems }) => {
+        {currentLists.map(({ id, name, datasetItems }) => {
           return (
-            <div className="flex" key={name}>
+            <div className="flex" key={id}>
               <div className="mt-4 ml-2 border-b">
                 <Checkbox />
               </div>
@@ -111,9 +115,16 @@ const DataLibraryPanel = () => {
                               Rename
                             </UnstyledButton>
                           </Menu.Item>
-                          <UnstyledButton onClick={(e) => e.stopPropagation()}>
-                            Delete
-                          </UnstyledButton>
+                          <Menu.Item>
+                            <UnstyledButton
+                              onClick={async (e) => {
+                                await deleteListFromDataLibrary(id);
+                                e.stopPropagation();
+                              }}
+                            >
+                              Delete
+                            </UnstyledButton>
+                          </Menu.Item>
                         </Menu.Dropdown>
                       </Menu>
                     </div>

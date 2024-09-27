@@ -1,6 +1,4 @@
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
-import { useMemo } from 'react';
-import { TableIcons } from '../../../components/Tables/TableIcons';
 import { commonTableSettings } from './tableSettings';
 
 const columns = [
@@ -31,6 +29,7 @@ const AdditionalDataTableTable = ({
     columns,
     data: data,
     ...commonTableSettings,
+    enableRowActions: false,
   });
 
   return (

@@ -34,6 +34,7 @@ const FilesTable = ({ data, header }: FilesTableProps) => {
     columns,
     data: data,
     ...commonTableSettings,
+    enableRowActions: false,
   });
 
   return (

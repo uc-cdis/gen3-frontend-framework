@@ -49,8 +49,7 @@ const ListContentsTable = ({ data }: ListsTableProps) => {
     ...commonTableSettings,
     renderRowActionMenuItems: () => (
       <>
-        <Menu.Item>Rename</Menu.Item>
-        <Menu.Item>Delete</Menu.Item>
+        <Menu.Item>Remove</Menu.Item>
       </>
     ),
     renderDetailPanel: ({ row }) => {
@@ -78,14 +77,7 @@ const ListContentsTable = ({ data }: ListsTableProps) => {
   return (
     <div className="flex flex-col ml-8 w-full">
       <div>
-        <MantineReactTable
-          table={table}
-          displayColumnDefOptions={{
-            'mrt-row-select': {
-              size: 30,
-            },
-          }}
-        />
+        <MantineReactTable table={table} />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ export interface DatasetContents {
 }
 
 export interface DataLibraryList {
+  id: string;
   name: string;
   datasetItems: Array<DatasetContents>;
 }
