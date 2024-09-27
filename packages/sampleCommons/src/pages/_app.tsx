@@ -14,6 +14,7 @@ import {
   Fonts,
   SessionConfiguration,
   registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
 } from '@gen3/frontend';
 import '../styles/globals.css';
 import 'graphiql/graphiql.css';
@@ -34,6 +35,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
 }
 
 registerCohortDiscoveryApp();
+registerCohortDiversityApp();
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;

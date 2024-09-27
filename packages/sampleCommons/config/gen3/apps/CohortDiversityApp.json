@@ -1,0 +1,51 @@
+{
+  "datasets": {
+    "ground": {
+      "dataset": "census"
+    },
+    "comparison": [
+      {
+        "dataset": "MIDRC"
+      }
+    ]
+  },
+  "fields": [
+    "Age_at_Index",
+    "Sex",
+    "Race",
+    "Ethnicity"
+  ],
+  "fieldsConfig": {
+    "Age_at_Index": {
+      "title": "Age at Index"
+    }
+  },
+  "charts": {
+    "Age_at_Index": {
+      "type": "bar"
+    },
+    "Sex": {
+      "type": "bar"
+    },
+    "Race": {
+      "type": "bar"
+    },
+    "Ethnicity": {
+      "type": "bar"
+    }
+  },
+  "diversityCharts": {
+    "Age_at_Index": {
+      "type": "bar"
+    },
+    "Sex": {
+      "type": "bar"
+    },
+    "Race": {
+      "type": "bar"
+    },
+    "Ethnicity": {
+      "type": "bar"
+    }
+  }
+}

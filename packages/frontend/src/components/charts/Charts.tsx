@@ -39,7 +39,7 @@ const Charts = ({
               <Card.Section inheritPadding py="xs">
                 <Group justify="space-between">
                   <Text fw={900}>
-                    {charts[field].title ?? fieldNameToTitle(field)}
+                    {charts[field]?.title ?? fieldNameToTitle(field)}
                   </Text>
                   {/* // TODO: handle close/hide chart
                   <ActionIcon>

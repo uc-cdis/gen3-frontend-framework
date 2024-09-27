@@ -1,4 +1,4 @@
-import { FacetDefinition, JSONObject } from '@gen3/core';
+import { JSONObject } from '@gen3/core';
 import { SummaryChart } from '../../components/charts';
 import { TitleAndDescription } from '../../types';
 
@@ -17,7 +17,7 @@ export interface CohortDiversityConfig {
     comparison: Array<DiversityData>;
   };
   fields: ReadonlyArray<string>;
-  fieldsConfig: Record<string, FacetDefinition>;
+  fieldsConfig?: Record<string, Partial<TitleAndDescription>>;
   charts: Record<string, SummaryChart>;
   diversityCharts: Record<string, DiversityChart>;
 }

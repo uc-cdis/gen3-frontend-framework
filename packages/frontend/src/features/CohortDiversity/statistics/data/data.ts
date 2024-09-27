@@ -3,7 +3,7 @@ import { convertToAggregateData } from './utils';
 export const getDiversityData = () =>
   convertToAggregateData({
     census: {
-      'Age at Index': {
+      Age_at_Index: {
         '0-4 Years': 6,
         '5-11 Years': 8.7,
         '12-15 Years': 5.1,
@@ -35,7 +35,7 @@ export const getDiversityData = () =>
         Male: 49.25,
         'Not reported': 0,
       },
-      'Race and Ethnicity': {
+      Race_and_Ethnicity: {
         'Hispanic or Latino': 18.45,
         'American Indian or Alaska Native, Not Hispanic or Latino': 0.74,
         'Asian, Not Hispanic or Latino': 5.76,
@@ -47,7 +47,7 @@ export const getDiversityData = () =>
       },
     },
     MIDRC: {
-      'Age at Index': {
+      Age_at_Index: {
         '50-64 Years': 25.9889610654,
         '65-74 Years': 17.3029197575,
         '85+ Years': 15.5304519996,
