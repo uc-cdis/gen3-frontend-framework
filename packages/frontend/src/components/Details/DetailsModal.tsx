@@ -42,7 +42,7 @@ export const DetailsModal = <
       opened={opened}
       onClose={() => {
         close();
-        onClose && onClose(id);
+        if (onClose) onClose(id);
       }}
       title={title}
       withinPortal={true}

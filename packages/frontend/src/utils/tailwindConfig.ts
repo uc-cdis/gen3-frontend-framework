@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports */
 import plugin from 'tailwindcss/plugin';
 
 export const TailwindConfig = (themer: any) => {
