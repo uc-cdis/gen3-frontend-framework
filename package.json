@@ -18,7 +18,7 @@
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
-    "dev:watch": " lerna watch -- lerna run build --scope=\\$LERNA_PACKAGE_NAME & lerna run --scope @gen3/samplecommons dev",
+    "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run --parallel start",
     "build:start": "npm run build && npm run start",
     "test": "npm run test --workspaces",

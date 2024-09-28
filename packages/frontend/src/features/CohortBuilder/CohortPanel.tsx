@@ -10,7 +10,6 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
-  fieldNameToTitle,
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -338,7 +337,6 @@ export const CohortPanel = ({
             />
           </div>
           <Charts
-            index={index}
             charts={summaryCharts}
             data={data ?? EmptyData}
             counts={counts}

@@ -34,6 +34,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   axe(React, ReactDOM, 1000);
 }
 
+// TODO fix app registration
 registerCohortDiscoveryApp();
 registerCohortDiversityApp();
 

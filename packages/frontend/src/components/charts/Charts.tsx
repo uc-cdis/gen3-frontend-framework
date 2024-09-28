@@ -28,13 +28,13 @@ const Charts = ({
   isSuccess,
   numCols = DEFAULT_COLS,
 }: ChartsProps) => {
-  const spans = computeRowSpan(Object.keys(charts).length, numCols);
+  //const spans = computeRowSpan(Object.keys(charts).length, numCols);
 
   return (
     <Grid className="w-full mx-2">
       {data &&
         Object.keys(charts).map((field, index) => (
-          <Grid.Col span={spans[index]} key={`${index}-charts-${field}-col`}>
+          <Grid.Col span={3} key={`${index}-charts-${field}-col`}>
             <Card shadow={'md'}>
               <Card.Section inheritPadding py="xs">
                 <Group justify="space-between">

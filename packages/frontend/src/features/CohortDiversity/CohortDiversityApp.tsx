@@ -7,9 +7,11 @@ import { CohortDiversityConfig } from './types';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();
+  console.log(diversityData);
+  console.log(config);
 
   return (
-    <Stack>
+    <Stack classNames={{ root: 'w-full border-1 border-gray-200' }}>
       <Accordion variant="contained">
         <Accordion.Item value="photos">
           <Accordion.Control
@@ -25,9 +27,9 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           >
             Summary Charts
           </Accordion.Control>
-          <Accordion.Panel>
+          <Accordion.Panel classNames={{ root: 'w-full p-2' }}>
             <Charts
-              data={diversityData[config.datasets.ground.dateset]}
+              data={diversityData[config.datasets.ground.dataset]}
               charts={config.charts}
               isSuccess={true}
             />

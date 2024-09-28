@@ -8,7 +8,7 @@ interface DiversityChart extends TitleAndDescription {
 }
 
 interface DiversityData {
-  dateset: string;
+  dataset: string;
 }
 
 export interface CohortDiversityConfig {

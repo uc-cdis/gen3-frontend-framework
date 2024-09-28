@@ -22,30 +22,30 @@
   },
   "charts": {
     "Age_at_Index": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Sex": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Race": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Ethnicity": {
-      "type": "bar"
+      "chartType": "bar"
     }
   },
   "diversityCharts": {
     "Age_at_Index": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Sex": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Race": {
-      "type": "bar"
+      "chartType": "bar"
     },
     "Ethnicity": {
-      "type": "bar"
+      "chartType": "bar"
     }
   }
 }
