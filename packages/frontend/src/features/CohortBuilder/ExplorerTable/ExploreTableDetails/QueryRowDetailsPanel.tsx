@@ -27,7 +27,7 @@ const ExtractData = (
     : {};
 };
 
-export const TableDetailsPanel = ({
+export const QueryRowDetailsPanel = ({
   id,
   index,
   tableConfig,
@@ -53,7 +53,7 @@ export const TableDetailsPanel = ({
     },
   });
 
-  if (!idField || idField === null) {
+  if (!idField) {
     return (
       <ErrorCard message={'idField not configure in Tables Details Config'} />
     );
@@ -78,7 +78,7 @@ export const TableDetailsPanel = ({
   return (
     <Stack>
       <LoadingOverlay visible={isLoading} />
-      <Text color="primary.4">Results for {id}</Text>
+      <Text c="primary.4">Results for {id}</Text>
       <Table withTableBorder withColumnBorders>
         <thead>
           <tr>
@@ -92,4 +92,4 @@ export const TableDetailsPanel = ({
   );
 };
 
-export default TableDetailsPanel;
+export default QueryRowDetailsPanel;
