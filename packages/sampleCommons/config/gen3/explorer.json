@@ -42,7 +42,7 @@
     "table": {
       "enabled": true,
       "detailsConfig": {
-        "panel": "rowDetails",
+        "panel": "default",
         "mode" : "click",
         "idField": "submitter_id",
         "title": "Row Details"

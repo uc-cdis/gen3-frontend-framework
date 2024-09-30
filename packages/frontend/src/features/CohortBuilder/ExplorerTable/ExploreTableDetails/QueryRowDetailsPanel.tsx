@@ -27,7 +27,7 @@ const ExtractData = (
     : {};
 };
 
-export const TableDetailsPanel = ({
+export const QueryRowDetailsPanel = ({
   id,
   index,
   tableConfig,
@@ -92,4 +92,4 @@ export const TableDetailsPanel = ({
   );
 };
 
-export default TableDetailsPanel;
+export default QueryRowDetailsPanel;
