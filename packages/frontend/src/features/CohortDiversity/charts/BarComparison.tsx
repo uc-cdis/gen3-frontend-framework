@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   processLabel,
   ReactECharts,
   ReactEChartsProps,
   truncateString,
 } from '../../../components/charts';
+import { type SeriesOption } from 'echarts';
 import { HistogramDataArray } from '@gen3/core';
 
 interface DatasetWithLabel {
@@ -15,7 +16,7 @@ interface DatasetWithLabel {
 const processComparisonData = (
   baseData: DatasetWithLabel,
   comparisonData: DatasetWithLabel,
-) => {
+): SeriesOption[] => {
   return [
     {
       name: baseData.title,
@@ -72,7 +73,7 @@ const BarComparison: React.FC<BarComparisonProps> = ({
         text: title,
       },
       legend: {
-        data: ['Census Population', 'Study Population'],
+        data: [baseDataset.title, comparisonDataset.title],
       },
       xAxis: {
         type: 'category',
@@ -81,7 +82,7 @@ const BarComparison: React.FC<BarComparisonProps> = ({
       yAxis: {
         type: 'value',
       },
-      series: series,
+      series: series as SeriesOption[],
     };
   }, [categories, series, title]);
 

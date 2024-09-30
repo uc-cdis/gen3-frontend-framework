@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
