@@ -1,19 +1,24 @@
 import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
-import { DiversityChart } from '../types';
-import DefaultDetailsPanel from './DefaultDetailsPanel';
+import BarComparison from './BarComparison';
+import { ComparisonChartProps } from './types';
 
-let instance: RenderFactoryTypedInstance<DiversityChart>;
+let instance: RenderFactoryTypedInstance<ComparisonChartProps>;
+
+const DefaultComparisonChart = () => {
+  return <div>Chart not configured</div>;
+};
 
 const DefaultRendererCatalog = {
   details: {
-    default: DefaultDetailsPanel,
+    default: DefaultComparisonChart,
+    barComparison: BarComparison,
   },
 };
 
 const DiversityChartsFactory =
-  (): RenderFactoryTypedInstance<DiversityChart> => {
+  (): RenderFactoryTypedInstance<ComparisonChartProps> => {
     if (!instance) {
-      instance = new RenderFactoryTypedInstance<DiversityChart>();
+      instance = new RenderFactoryTypedInstance<ComparisonChartProps>();
       instance.registerRendererCatalog(DefaultRendererCatalog);
     }
     return instance;

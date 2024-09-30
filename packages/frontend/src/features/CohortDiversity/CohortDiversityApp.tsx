@@ -7,8 +7,6 @@ import { CohortDiversityConfig } from './types';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();
-  console.log(diversityData);
-  console.log(config);
 
   return (
     <Stack classNames={{ root: 'w-full border-1 border-gray-200' }}>

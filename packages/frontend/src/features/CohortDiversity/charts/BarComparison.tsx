@@ -6,12 +6,8 @@ import {
   truncateString,
 } from '../../../components/charts';
 import { type SeriesOption } from 'echarts';
-import { HistogramDataArray } from '@gen3/core';
 
-interface DatasetWithLabel {
-  data: HistogramDataArray;
-  title: string;
-}
+import { ComparisonChartProps, DatasetWithLabel } from './types';
 
 const processComparisonData = (
   baseData: DatasetWithLabel,
@@ -31,14 +27,7 @@ const processComparisonData = (
   ];
 };
 
-interface BarComparisonProps {
-  baseDataset: DatasetWithLabel;
-  comparisonDataset: DatasetWithLabel;
-  title: string;
-  yAxisLabel?: string;
-}
-
-const BarComparison: React.FC<BarComparisonProps> = ({
+const BarComparison: React.FC<ComparisonChartProps> = ({
   baseDataset,
   comparisonDataset,
   title,
@@ -81,6 +70,7 @@ const BarComparison: React.FC<BarComparisonProps> = ({
       },
       yAxis: {
         type: 'value',
+        name: yAxisLabel,
       },
       series: series as SeriesOption[],
     };
