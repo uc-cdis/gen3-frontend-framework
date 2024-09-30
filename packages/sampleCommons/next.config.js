@@ -22,6 +22,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     esmExternals: true,
+    instrumentationHook: true,
   },
   i18n: {
     locales: ['en'],

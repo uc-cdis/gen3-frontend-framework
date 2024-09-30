@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from 'react';
-//import GraphiQL from 'graphiql';
+import GraphiQL from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
 import {
@@ -37,7 +37,6 @@ const GqlQueryEditor = ({
           Query Graph
         </Text>
       </div>
-      {/* ---
       <GraphiQL
         editorTheme="light"
         fetcher={fetcher}
@@ -46,7 +45,6 @@ const GqlQueryEditor = ({
       >
         <GraphiQL.Logo> {null} </GraphiQL.Logo>
       </GraphiQL>
-      --- */}
     </div>
   );
 };

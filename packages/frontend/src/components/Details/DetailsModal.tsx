@@ -28,7 +28,7 @@ export const DetailsModal = <
   const [opened, { open, close }] = useDisclosure(id !== undefined);
 
   const styling = useMemo(
-    () => mergeDefaultTailwindClassnames(DEFAULT_PROPS, classNames ?? {}, true),
+    () => mergeDefaultTailwindClassnames(DEFAULT_PROPS, classNames ?? {}),
     [classNames],
   );
 
@@ -42,7 +42,7 @@ export const DetailsModal = <
       opened={opened}
       onClose={() => {
         close();
-        onClose && onClose(id);
+        if (onClose) onClose(id);
       }}
       title={title}
       withinPortal={true}

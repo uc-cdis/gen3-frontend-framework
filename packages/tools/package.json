@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.44",
+  "version": "0.10.45",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts src",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf ./dist",
+    "clean": "rm -rf ./dist",
     "build": "rollup --config rollup.config.js",
     "build:clean": "npm run clean && npm run build"
   },

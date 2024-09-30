@@ -61,7 +61,7 @@ const GuppyDropdownMenuItem = ({
   return (
     <Menu.Item
       onClick={() => {
-        handleClick && handleClick();
+        if (handleClick) handleClick();
       }}
       key={`${title}-${idx}`}
       data-testid={`${title}-${idx}`}

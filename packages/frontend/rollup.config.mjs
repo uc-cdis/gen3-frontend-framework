@@ -7,7 +7,6 @@ import autoprefixer from 'autoprefixer';
 import postcssImport from 'postcss-import';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const globals = {
   react: 'React',
@@ -141,7 +140,6 @@ const config = [
     plugins: [
       dts(),
       postcss(),
-      sourcemaps(),
       copy({
         targets: [
           {

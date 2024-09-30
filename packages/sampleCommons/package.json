@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.40",
+  "version": "0.10.45",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -16,31 +16,33 @@
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.0.19",
-    "@fontsource/source-sans-pro": "^5.0.8",
     "@fontsource/poppins": "^5.0.15",
+    "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
-    "@next/mdx": "^14.2.8",
-    "@types/mdx": "^2.0.13",
     "cookies-next": "^4.0.0",
-    "mantine-react-table": "^2.0.0-beta.6",
-    "jose": "^4.15.9"
+    "jose": "^4.15.9",
+    "mantine-react-table": "^2.0.0-beta.6"
   },
   "devDependencies": {
+    "@next/mdx": "^14.2.8",
+    "@types/mdx": "^2.0.13",
     "@gen3/toolsff": "file:../tools",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@welldone-software/why-did-you-render": "^8.0.3",
+    "postcss-import": "^16.1.0",
+    "postcss-preset-mantine": "^1.17.0",
     "next": "^14.2.8",
     "react": "^18.2.0",
     "react-dom": "18.2.0"
   },
   "peerDependencies": {
-    "typescript": "^5.5.4",
     "tailwindcss": "^3.4.10",
     "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   }
 }

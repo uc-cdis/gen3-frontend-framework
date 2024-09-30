@@ -3,20 +3,11 @@ import {
   MRT_Cell,
   MRT_Column,
   MRT_Row,
-  MRT_TableInstance
+  MRT_TableInstance,
 } from 'mantine-react-table';
 import { JSONObject } from '@gen3/core';
 
 export type RendererFunction<T> = (props: T, ...params: any[]) => ReactNode;
-
-export type RenderFunction2 = (props: {
-  cell: MRT_Cell<JSONObject>;
-  renderedCellValue: ReactNode;
-  column: MRT_Column<JSONObject>;
-  row: MRT_Row<JSONObject>;
-  rowRef?: RefObject<HTMLTableRowElement> | undefined;
-  table: MRT_TableInstance<JSONObject>;
-}) => ReactNode;
 
 export interface RendererFunctionCatalogEntry<T> {
   [key: string]: RendererFunction<T>;

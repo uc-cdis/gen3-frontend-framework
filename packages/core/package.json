@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.10.44",
+  "version": "0.10.45",
   "author": "CTDS",
   "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -26,7 +26,7 @@
   "scripts": {
     "lint": "eslint .",
     "compile": "tsc",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "types": "tsc --emitDeclarationOnly",
     "build": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
     "build:clean": "npm run clean && npm run compile && npm run types && rollup --config rollup.config.mjs",
@@ -48,7 +48,6 @@
     "@types/fastestsmallesttextencoderdecoder": "^1.0.2",
     "@types/flat": "^5.0.3",
     "@types/isomorphic-fetch": "^0.0.36",
-    "@types/jest": "^29.5.12",
     "@types/jsonpath-plus": "5.0.5",
     "@types/lodash": "^4.14.191",
     "@types/papaparse": "^5.3.14",
@@ -61,6 +60,7 @@
     "queue": "6.0.2",
     "react-redux": "^8.1.0",
     "redux-persist": "^6.0.0",
+    "swr": "^2.2.5",
     "uuid": "^9.0.1"
   },
   "files": [
