@@ -16,8 +16,6 @@ import {
   registerCohortDiscoveryApp,
 } from '@gen3/frontend';
 import '../styles/globals.css';
-import 'graphiql/graphiql.css';
-import '@graphiql/react/dist/style.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
