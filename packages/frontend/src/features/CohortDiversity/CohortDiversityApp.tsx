@@ -27,7 +27,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           >
             Summary Charts
           </Accordion.Control>
-          <Accordion.Panel classNames={{ root: 'w-full p-2' }}>
+          <Accordion.Panel>
             <Charts
               data={diversityData[config.datasets.ground.dataset]}
               charts={config.charts}
@@ -36,6 +36,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
+      <div></div>
     </Stack>
   );
 };
