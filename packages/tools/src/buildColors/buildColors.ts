@@ -87,23 +87,16 @@ const main = () => {
   });
 
   if (!themeFile) {
-    console.log('No theme file found. Please provide a theme file with \'-t\'.');
+    console.log("No theme file found. Please provide a theme file with '-t'.");
     return;
   }
 
   if (themeFile && !existsSync(themeFile)) {
-    console.log('No theme file found. Please provide a theme file with \'-t\'.');
+    console.log("No theme file found. Please provide a theme file with '-t'.");
     return;
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
-
-  const themeColors = Object.entries(getThemeColor).reduce(acc, [name, colors]) =>
-
-
-  {}})
-
-
   const primaryPallet = create10ColorPallet(themeColors.primary);
   const secondaryPallet = create10ColorPallet(themeColors.secondary);
   const accentPallet = create10ColorPallet(themeColors.accent);
