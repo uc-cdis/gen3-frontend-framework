@@ -32,7 +32,7 @@ const extractCellValue =
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
-  data: JSONObject[];
+  data: Array<Record<string, any>>;
   hits: number;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
