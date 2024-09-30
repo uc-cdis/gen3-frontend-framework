@@ -53,7 +53,7 @@ export const TableDetailsPanel = ({
     },
   });
 
-  if (!idField || idField === null) {
+  if (!idField) {
     return (
       <ErrorCard message={'idField not configure in Tables Details Config'} />
     );
@@ -78,7 +78,7 @@ export const TableDetailsPanel = ({
   return (
     <Stack>
       <LoadingOverlay visible={isLoading} />
-      <Text color="primary.4">Results for {id}</Text>
+      <Text c="primary.4">Results for {id}</Text>
       <Table withTableBorder withColumnBorders>
         <thead>
           <tr>

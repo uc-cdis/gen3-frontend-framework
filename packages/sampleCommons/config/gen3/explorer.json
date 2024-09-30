@@ -42,10 +42,10 @@
     "table": {
       "enabled": true,
       "detailsConfig": {
-        "panel": "default",
+        "panel": "rowDetails",
         "mode" : "click",
         "idField": "submitter_id",
-        "title": "Details"
+        "title": "Row Details"
       },
       "pageLimit": {
         "limit": 10000
