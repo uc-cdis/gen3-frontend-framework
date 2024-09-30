@@ -53,7 +53,7 @@ export const TableDetailsPanel = ({
     },
   });
 
-  if (!idField || idField === null) {
+  if (!idField) {
     return (
       <ErrorCard message={'idField not configure in Tables Details Config'} />
     );

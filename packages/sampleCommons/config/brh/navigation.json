@@ -8,6 +8,7 @@
     "logo": {
       "src": "/images/brh/logo.png",
       "height": 256,
+      "width": 320,
       "href": "/Discovery"
     },
     "items": [
