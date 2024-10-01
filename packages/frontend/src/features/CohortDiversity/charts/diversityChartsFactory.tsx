@@ -2,14 +2,15 @@ import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import BarComparison from './BarComparison';
 import { ComparisonChartProps } from './types';
 
-let instance: RenderFactoryTypedInstance<ComparisonChartProps>;
+let instance: RenderFactoryTypedInstance<ComparisonChartProps> | undefined =
+  undefined;
 
 const DefaultComparisonChart = () => {
   return <div>Chart not configured</div>;
 };
 
 const DefaultRendererCatalog = {
-  details: {
+  comparison: {
     default: DefaultComparisonChart,
     barComparison: BarComparison,
   },

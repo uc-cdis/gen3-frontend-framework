@@ -35,6 +35,7 @@ const ReactECharts = ({
     // Update chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
+      console.log('chart', chart);
       chart?.setOption(option, settings);
     }
   }, [option, settings, theme]);

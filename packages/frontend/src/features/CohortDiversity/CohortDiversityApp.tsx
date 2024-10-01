@@ -4,6 +4,7 @@ import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
 import { getDiversityData } from './statistics/data/data';
 import { CohortDiversityConfig } from './types';
+import ComparisonCharts from './charts/ComparisonCharts';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();
@@ -34,7 +35,11 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
-      <div></div>
+      <ComparisonCharts
+        data={diversityData}
+        comparisonChartsConfig={config.comparisonCharts}
+        datasets={config.datasets}
+      />
     </Stack>
   );
 };

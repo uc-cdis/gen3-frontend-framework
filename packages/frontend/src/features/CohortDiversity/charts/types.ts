@@ -2,12 +2,12 @@ import { HistogramDataArray } from '@gen3/core';
 
 export interface DatasetWithLabel {
   data: HistogramDataArray;
-  title: string;
+  label: string;
 }
 
 export interface ComparisonChartProps {
   baseDataset: DatasetWithLabel;
   comparisonDataset: DatasetWithLabel;
-  title: string;
+  title?: string;
   yAxisLabel?: string;
 }

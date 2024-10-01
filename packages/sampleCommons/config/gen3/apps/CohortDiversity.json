@@ -1,11 +1,13 @@
 {
   "datasets": {
     "ground": {
-      "dataset": "census"
+      "dataset": "census",
+      "label": "Census"
     },
     "comparison": [
       {
-        "dataset": "MIDRC"
+        "dataset": "MIDRC",
+        "label": "MIDRC Data Commons"
       }
     ]
   },
@@ -34,18 +36,18 @@
       "chartType": "bar"
     }
   },
-  "diversityCharts": {
+  "comparisonCharts": {
     "Age_at_Index": {
-      "chartType": "bar"
+      "chartType": "barComparison"
     },
     "Sex": {
-      "chartType": "bar"
+      "chartType": "barComparison"
     },
     "Race": {
-      "chartType": "bar"
+      "chartType": "barComparison"
     },
     "Ethnicity": {
-      "chartType": "bar"
+      "chartType": "barComparison"
     }
   }
 }

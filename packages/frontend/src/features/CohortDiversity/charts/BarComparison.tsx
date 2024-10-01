@@ -20,7 +20,7 @@ const processComparisonData = (
       data: baseData.data.map((item) => item.count),
     },
     {
-      name: baseData.title,
+      name: comparisonData.title,
       type: 'bar',
       data: comparisonData.data.map((item) => item.count),
     },
@@ -62,7 +62,7 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
         text: title,
       },
       legend: {
-        data: [baseDataset.title, comparisonDataset.title],
+        data: [baseDataset.label, comparisonDataset.label],
       },
       xAxis: {
         type: 'category',
@@ -74,7 +74,14 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
       },
       series: series as SeriesOption[],
     };
-  }, [categories, series, title]);
+  }, [
+    baseDataset.label,
+    categories,
+    comparisonDataset.label,
+    series,
+    title,
+    yAxisLabel,
+  ]);
 
   return (
     <div className="w-full h-64">
