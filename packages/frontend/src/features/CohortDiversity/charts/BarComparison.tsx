@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Text } from '@mantine/core';
 import {
   processLabel,
   ReactECharts,
@@ -6,8 +7,11 @@ import {
   truncateString,
 } from '../../../components/charts';
 import { type SeriesOption } from 'echarts';
-
 import { ComparisonChartProps, DatasetWithLabel } from './types';
+
+const roundTo2AfterDecimal = (number: number) => {
+  return Math.round((number + Number.EPSILON) * 100) / 100;
+};
 
 const processComparisonData = (
   baseData: DatasetWithLabel,
@@ -15,14 +19,14 @@ const processComparisonData = (
 ): SeriesOption[] => {
   return [
     {
-      name: baseData.title,
+      name: baseData.label,
       type: 'bar',
-      data: baseData.data.map((item) => item.count),
+      data: baseData.data.map((item) => roundTo2AfterDecimal(item.count)),
     },
     {
-      name: comparisonData.title,
+      name: comparisonData.label,
       type: 'bar',
-      data: comparisonData.data.map((item) => item.count),
+      data: comparisonData.data.map((item) => roundTo2AfterDecimal(item.count)),
     },
   ];
 };
@@ -44,17 +48,6 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
 
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
-      grid: [
-        //TODO: make this configurable
-        {
-          show: false,
-          left: '1%',
-          top: 10,
-          right: '1%',
-          bottom: 7,
-          containLabel: true,
-        },
-      ],
       tooltip: {
         trigger: 'item',
       },
@@ -84,7 +77,11 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
   ]);
 
   return (
-    <div className="w-full h-64">
+    <div
+      role="region"
+      aria-labelledby="bar-comparison-title"
+      className="flex flex-col w-full h-64"
+    >
       <ReactECharts option={chartDefinition} />
     </div>
   );

@@ -45,7 +45,11 @@ const NavigationBar = ({
   );
 
   return (
-    <div className={extractClassName('root', mergedClassnames)}>
+    <div
+      role="navigation"
+      aria-label="main site navigation"
+      className={extractClassName('root', mergedClassnames)}
+    >
       <div className={extractClassName('logoAndTitlePanel', mergedClassnames)}>
         {logo && <NavigationLogo {...{ ...logo }} />}
       </div>

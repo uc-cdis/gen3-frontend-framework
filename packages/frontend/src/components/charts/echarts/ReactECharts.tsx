@@ -35,7 +35,6 @@ const ReactECharts = ({
     // Update chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
-      console.log('chart', chart);
       chart?.setOption(option, settings);
     }
   }, [option, settings, theme]);
@@ -54,7 +53,12 @@ const ReactECharts = ({
   }, [rect]);
 
   return (
-    <div ref={chartRef} style={{ width: '100%', height: '100%', ...style }} />
+    <div
+      role="figure"
+      aria-label="Data Chart"
+      ref={chartRef}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
   );
 };
 
