@@ -71,7 +71,7 @@ const updateList = async (
     const timestamp = new Date().toJSON();
     const updated = {
       ...listData,
-      version: listData?.version + 1 ?? 0,
+      version: listData?.version ? listData?.version + 1 : 0,
       updated_time: timestamp,
       ...body,
     };

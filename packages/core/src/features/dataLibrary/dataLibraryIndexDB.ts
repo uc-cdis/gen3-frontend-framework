@@ -1,8 +1,8 @@
-import { openDB, IDBPDatabase } from 'idb';
 import { isArray } from 'lodash';
 import { JSONObject, isJSONObject } from '../../types';
 import { type DataList, LoadAllListData } from './types';
 import { nanoid } from '@reduxjs/toolkit';
+import { openDB, IDBPDatabase } from 'idb';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';

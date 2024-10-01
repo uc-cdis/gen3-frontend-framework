@@ -25,6 +25,7 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "lib": [
       "dom",
       "esnext"
