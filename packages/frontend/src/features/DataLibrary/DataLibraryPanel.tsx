@@ -2,8 +2,12 @@ import {
   Accordion,
   Button,
   Checkbox,
+  Group,
   Menu,
+  Text,
+  TextInput,
   UnstyledButton,
+  AccordionControlProps,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import ListsTable from './tables/ListsTable';
@@ -11,6 +15,7 @@ import { DataLibraryList } from './types';
 import {
   AdditionalDataItem,
   CohortItem,
+  DataLibrary,
   FileItem,
   isAdditionalDataItem,
   isCohortItem,
@@ -21,6 +26,57 @@ import {
 import { HiDotsVertical } from 'react-icons/hi';
 import { data1 } from './utils';
 import SearchAndActions from './SearchAndActions';
+
+const DatasetAccordianControl = (
+  props: AccordionControlProps & { id: string; name: string },
+): JSX.Element => {
+  const [renaming, setRenaming] = useState<string | undefined>(undefined);
+  const { deleteListFromDataLibrary } = useDataLibrary(false);
+  const { id, name } = props;
+  return (
+    <div className="flex items-center">
+      <Accordion.Control {...props} className="w-4" />
+      <div className="flex justify-between w-full items-center ml-4">
+        {renaming && renaming === props.id ? (
+          <TextInput value={name} />
+        ) : (
+          <Text fw={600} className="ml-2">
+            {name}
+          </Text>
+        )}
+        <Menu>
+          <Menu.Target>
+            <Button onClick={(e) => e.stopPropagation()} variant="outline">
+              <HiDotsVertical />
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item>
+              <UnstyledButton
+                onClick={(e) => {
+                  setRenaming(id);
+                  e.stopPropagation();
+                }}
+              >
+                Rename
+              </UnstyledButton>
+            </Menu.Item>
+            <Menu.Item>
+              <UnstyledButton
+                onClick={async (e) => {
+                  await deleteListFromDataLibrary(id);
+                  e.stopPropagation();
+                }}
+              >
+                Delete
+              </UnstyledButton>
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </div>
+    </div>
+  );
+};
 
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState<Array<DataLibraryList>>([]);
@@ -95,9 +151,13 @@ const DataLibraryPanel = () => {
               </div>
               <Accordion chevronPosition="left" classNames={{ root: 'w-full' }}>
                 <Accordion.Item value={name} key={name}>
-                  <Accordion.Control>
+                  {/* } <Accordion.Control>
                     <div className="flex justify-between">
-                      <h4 className="text-md ml-2">{name}</h4>
+
+                        <Text fw={600} className="ml-2">
+                          {name}
+                        </Text>
+
                       <Menu>
                         <Menu.Target>
                           <Button
@@ -110,7 +170,9 @@ const DataLibraryPanel = () => {
                         <Menu.Dropdown>
                           <Menu.Item>
                             <UnstyledButton
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
                             >
                               Rename
                             </UnstyledButton>
@@ -128,7 +190,8 @@ const DataLibraryPanel = () => {
                         </Menu.Dropdown>
                       </Menu>
                     </div>
-                  </Accordion.Control>
+                  </Accordion.Control> */}
+                  <DatasetAccordianControl id={id} name={name} />
                   <Accordion.Panel>
                     <ListsTable data={datasetItems} />
                   </Accordion.Panel>
