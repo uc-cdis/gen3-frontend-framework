@@ -81,7 +81,7 @@ const Gen3ModalsProvider = ({
     if (!cookie['Gen3-first-time-use'] && modalsConfig.systemUseModal.enabled) {
       if (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)
         return;
-      dispatch && dispatch(showModal({ modal: Modals.FirstTimeModal }));
+      if (dispatch) dispatch(showModal({ modal: Modals.FirstTimeModal }));
     }
   }, [
     cookie['Gen3-first-time-use'],

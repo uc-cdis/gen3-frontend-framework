@@ -8,9 +8,6 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
 } from '../../features/CohortBuilder';
 
-registerExplorerDefaultCellRenderers();
-registerCohortBuilderDefaultPreviewRenderers();
-
 const ExplorerPage = ({
   headerProps,
   footerProps,

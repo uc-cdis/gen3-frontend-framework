@@ -288,7 +288,7 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
   handleLessThanOrEquals: (op: LessThanOrEquals) => string | number = (
     op: LessThanOrEquals,
   ) => op.operand;
-  handleIntersection: (op: Intersection) => undefined = (_: Intersection) =>
+  handleIntersection: (op: Intersection) => undefined = (_arg: Intersection) =>
     undefined;
   handleUnion: (op: Union) => undefined = (_: Union) => undefined;
   handleNestedFilter: (op: NestedFilter) => undefined = (_: NestedFilter) =>

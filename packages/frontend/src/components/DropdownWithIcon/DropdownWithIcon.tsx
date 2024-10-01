@@ -142,7 +142,7 @@ export const DropdownWithIcon = ({
         {dropdownElements?.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
-              onClick && onClick();
+              if (onClick) onClick();
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
