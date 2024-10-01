@@ -123,7 +123,7 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
   let displayContent;
   if (
     typeof content === 'string' &&
-    !isNaN(Number(content)) &&
+    !Number.isNaN(Number(content)) &&
     Number(content) < 1935
   ) {
     displayContent = '1935';
@@ -132,7 +132,7 @@ const RenderYearOfBirthRestricted: CellRendererFunction = (
       .map((item) => {
         if (
           typeof item === 'string' &&
-          !isNaN(Number(item)) &&
+          !Number.isNaN(Number(item)) &&
           Number(item) < 1935
         ) {
           return '1935';

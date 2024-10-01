@@ -119,18 +119,26 @@ export const updateListIndexDB = async (
     }
 
     const timestamp = new Date().toJSON();
+    const version = listData.version ? listData.version + 1 : 0;
     const updated = {
       ...listData,
       ...list,
-      version: listData?.version + 1 ?? 0,
+      version: version,
       updated_time: timestamp,
     };
 
     store.put(updated);
     await tx.done;
     return { status: 'success' };
-  } catch (error: any) {
-    return { isError: true, status: `unable to update list: ${id}` };
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return {
+      isError: true,
+      status: `Unable to update list: ${id}. Error: ${errorMessage}`,
+    };
   }
 };
 

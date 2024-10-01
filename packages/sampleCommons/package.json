@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
@@ -25,11 +25,11 @@
     "@mdx-js/react": "^3.0.0",
     "cookies-next": "^4.0.0",
     "jose": "^4.15.9",
+    "file-system-db": "^2.1.0",
+    "idb": "^8.0.0",
     "mantine-react-table": "^2.0.0-beta.6",
     "postcss-import": "^16.1.0",
-    "postcss-preset-mantine": "^1.17.0",
-    "file-system-db": "^2.1.0",
-    "idb": "^8.0.0"
+    "postcss-preset-mantine": "^1.17.0"
   },
   "devDependencies": {
     "@next/mdx": "^14.2.8",

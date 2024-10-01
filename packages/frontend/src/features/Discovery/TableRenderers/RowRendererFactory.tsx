@@ -36,7 +36,9 @@ export class DiscoveryRowRendererFactory {
     type: string,
     functionName: string,
   ): RowRendererFunction {
-    if (!(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)) {
+    if (
+      !(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)
+    ) {
       console.log('No row renderer found for type: ', type);
       return defaultRowRenderer;
     }
@@ -67,8 +69,8 @@ export class DiscoveryRowRendererFactory {
   static registerRowRendererCatalog(
     catalog: Record<string, RowRendererFunctionCatalogEntry>,
   ): void {
-    Object.keys(catalog).map((type) => {
-      Object.entries(catalog[type]).map(([name, func]) => {
+    Object.keys(catalog).forEach((type) => {
+      Object.entries(catalog[type]).forEach(([name, func]) => {
         DiscoveryRowRendererFactory.registerRowRenderer(type, name, func);
       });
     });
@@ -90,7 +92,9 @@ export const DiscoveryTableRowRenderer = (
     studyPreviewConfig?.renderer ?? 'default',
   );
   if (!func) {
-    throw new Error(`No row renderer found for given config (contentType: ${ studyPreviewConfig?.contentType }, detailRenderer: ${ studyPreviewConfig?.renderer ?? 'default'}`);
+    throw new Error(
+      `No row renderer found for given config (contentType: ${studyPreviewConfig?.contentType}, detailRenderer: ${studyPreviewConfig?.renderer ?? 'default'}`,
+    );
   }
   return (row): ReactElement => func(row, studyPreviewConfig);
 };
