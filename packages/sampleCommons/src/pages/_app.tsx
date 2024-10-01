@@ -1,7 +1,7 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useEffect, useRef } from 'react';
 
-import { Faro, FaroErrorBoundary, withFaroProfiler } from "@grafana/faro-react";
+import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
 
 import { initGrafanaFaro } from '../lib/Grafana/grafana';
 
@@ -15,8 +15,6 @@ import {
   SessionConfiguration,
 } from '@gen3/frontend';
 import '../styles/globals.css';
-// import 'graphiql/graphiql.css';
-//import '@graphiql/react/dist/style.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
@@ -25,9 +23,9 @@ import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const ReactDOM = require('react-dom');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const axe = require('@axe-core/react');
   axe(React, ReactDOM, 1000);
 }
@@ -67,7 +65,6 @@ const Gen3App = ({
 
   return (
     <FaroErrorBoundary>
-
       <Gen3Provider
         colors={colors}
         icons={icons}

@@ -98,12 +98,15 @@ export const metadataApi = gen3Api.injectEndpoints({
         return `${GEN3_MDS_API}/aggregate/metadata?limit=${pageSize}`;
       },
       transformResponse: (response: Record<string, any>, _meta, params) => {
-        const dataFromIndexes = params.indexKeys.reduce((acc, key) => {
-          if (response[key]) {
-            acc.push(...response[key]);
-          }
-          return acc;
-        }, [] as Array<Record<string, any>>);
+        const dataFromIndexes = params.indexKeys.reduce(
+          (acc, key) => {
+            if (response[key]) {
+              acc.push(...response[key]);
+            }
+            return acc;
+          },
+          [] as Array<Record<string, any>>,
+        );
 
         return {
           data: (
@@ -171,15 +174,18 @@ export const metadataApi = gen3Api.injectEndpoints({
                 return { error: response.error };
               }
 
-              const toData = arg.toPaths.reduce((acc, path) => {
-                acc[path.id] =
-                  JSONPath<string>({
-                    json: response.data as Record<string, any>,
-                    path: `$.[${path.dataPath}]`,
-                    resultType: 'value',
-                  })?.[0] ?? 'n/a';
-                return acc;
-              }, {} as Record<string, string>);
+              const toData = arg.toPaths.reduce(
+                (acc, path) => {
+                  acc[path.id] =
+                    JSONPath<string>({
+                      json: response.data as Record<string, any>,
+                      path: `$.[${path.dataPath}]`,
+                      resultType: 'value',
+                    })?.[0] ?? 'n/a';
+                  return acc;
+                },
+                {} as Record<string, string>,
+              );
 
               result = [
                 ...result,
@@ -188,7 +194,7 @@ export const metadataApi = gen3Api.injectEndpoints({
                   to: toData,
                 },
               ];
-              callback && callback();
+              if (callback) callback();
 
               return result;
             });
