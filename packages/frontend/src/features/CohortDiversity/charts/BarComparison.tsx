@@ -21,12 +21,19 @@ const processComparisonData = (
     {
       name: baseData.label,
       type: 'bar',
+      barGap: 0,
       data: baseData.data.map((item) => roundTo2AfterDecimal(item.count)),
+      emphasis: {
+        focus: 'series',
+      },
     },
     {
       name: comparisonData.label,
       type: 'bar',
       data: comparisonData.data.map((item) => roundTo2AfterDecimal(item.count)),
+      emphasis: {
+        focus: 'series',
+      },
     },
   ];
 };
@@ -49,17 +56,22 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       tooltip: {
-        trigger: 'item',
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
       },
       title: {
         text: title,
       },
+
       legend: {
         data: [baseDataset.label, comparisonDataset.label],
       },
       xAxis: {
         type: 'category',
         data: categories,
+        axisTick: { show: false },
       },
       yAxis: {
         type: 'value',
