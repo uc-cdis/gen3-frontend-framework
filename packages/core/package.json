@@ -30,7 +30,7 @@
     "types": "tsc --emitDeclarationOnly --skipLibCheck",
     "build": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
     "build:clean": "npm run clean && npm run compile && npm run types && rollup --config rollup.config.mjs",
-    "build:watch": "npm run types && rollup --config rollup.config.mjs --watch",
+    "build:watch": "npm run compile && npm run build -- --watch",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "jest int",
