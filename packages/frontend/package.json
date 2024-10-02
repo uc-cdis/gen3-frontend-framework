@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.45",
+  "version": "0.10.46",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -135,8 +135,8 @@
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.29",
-    "sharp": "^0.33.2",
     "react-what-changed": "^1.1.2",
+    "sharp": "^0.33.2",
     "style-loader": "^3.3.2",
     "swr": "^2.2.5"
   },
