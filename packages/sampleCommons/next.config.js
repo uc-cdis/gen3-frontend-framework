@@ -23,19 +23,24 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
-    experimental: {
-      turbo: {
-        moduleIdStrategy: 'deterministic',
-      },
+    turbo: {
+      moduleIdStrategy: 'deterministic',
     },
   },
   i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
+    locales: ['en-US'],
+    defaultLocale: 'en-US',
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',
+  webpack: (config) => {
+    config.infrastructureLogging = {
+      level: 'error',
+    };
+
+    return config;
+  },
   async headers() {
     return [
       {

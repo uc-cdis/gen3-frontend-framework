@@ -29,10 +29,12 @@ const columns = [
 ];
 
 export interface ListsTableProps {
+  listId: string;
   data: Array<DatasetContents>;
+  removeList: (listId: string, itemId: string) => void;
 }
 
-const ListContentsTable = ({ data }: ListsTableProps) => {
+const ListContentsTable = ({ listId, data, removeList }: ListsTableProps) => {
   const rows = useDeepCompareMemo(
     () => [
       ...data.map(({ name, id }, j) => {
@@ -52,8 +54,13 @@ const ListContentsTable = ({ data }: ListsTableProps) => {
     columns: columns,
     data: rows,
     ...commonTableSettings,
-    renderRowActionMenuItems: () => (
-      <ActionIcon>
+    renderRowActions: ({ row }) => (
+      <ActionIcon
+        aria-label={`remove datalist ${row.original.name} from list`}
+        onClick={() => {
+          removeList(listId, row.original.name);
+        }}
+      >
         <RemoveIcon />
       </ActionIcon>
     ),

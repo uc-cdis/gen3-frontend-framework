@@ -1,5 +1,5 @@
 import { Accordion, Button, Checkbox } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ListsTable from './tables/ListsTable';
 import { DataLibraryList } from './types';
 import {
@@ -14,6 +14,7 @@ import {
 import { data1 } from './utils';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordianControl } from './DatasetAccordianControl';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 const DataLibraryPanel = () => {
   const [currentLists, setCurrentLists] = useState<Array<DataLibraryList>>([]);
@@ -23,10 +24,12 @@ const DataLibraryPanel = () => {
     setAllListsInDataLibrary,
     clearLibrary,
     updateListInDataLibrary,
+    deleteListFromDataLibrary,
   } = useDataLibrary(false);
 
   const updateList = async (listId: string, update: Record<string, any>) => {
     if (!dataLibraryItems) return;
+    console.log('updateList from list', listId);
     await updateListInDataLibrary(listId, {
       ...dataLibraryItems.lists[listId],
       ...update,
@@ -34,7 +37,21 @@ const DataLibraryPanel = () => {
     });
   };
 
-  useEffect(() => {
+  const removeItemFromList = async (listId: string, itemId: string) => {
+    if (!dataLibraryItems) return;
+
+    console.log('remove from list', listId, itemId);
+    const { [itemId]: removedKey, ...newObject } =
+      dataLibraryItems.lists[listId].items;
+    await updateListInDataLibrary(listId, {
+      ...dataLibraryItems.lists[listId],
+      items: newObject,
+      updatedTime: new Date().toISOString(),
+    });
+  };
+
+  useDeepCompareEffect(() => {
+    console.log('DataLibraryPanel: dataLibraryItems', dataLibraryItems);
     const savedLists = Object.entries(dataLibraryItems?.lists ?? {}).map(
       // for each List
       ([listId, dataList]) => {
@@ -98,9 +115,14 @@ const DataLibraryPanel = () => {
                     id={id}
                     listName={name}
                     updateHandler={updateList}
+                    deleteListHandler={deleteListFromDataLibrary}
                   />
                   <Accordion.Panel>
-                    <ListsTable data={datasetItems} />
+                    <ListsTable
+                      listId={id}
+                      data={datasetItems}
+                      removeList={removeItemFromList}
+                    />
                   </Accordion.Panel>
                 </Accordion.Item>
               </Accordion>

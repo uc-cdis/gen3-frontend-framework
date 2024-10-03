@@ -24,11 +24,11 @@ export const DatasetAccordianControl = (
       listId: string,
       update: Record<string, any>,
     ) => Promise<void>;
+    deleteListHandler: (listId: string) => Promise<void>;
   },
 ): JSX.Element => {
-  const { id, listName, updateHandler } = props;
+  const { id, listName, updateHandler, deleteListHandler } = props;
   const [value, setValue] = useState<string | undefined>(undefined);
-  const { deleteListFromDataLibrary } = useDataLibrary(false);
 
   const handleSubmit = () => {
     updateHandler(id, { name: value });
@@ -71,7 +71,7 @@ export const DatasetAccordianControl = (
         <ActionIcon
           color="accent.4"
           aria-label="delete datalist"
-          onClick={() => deleteListFromDataLibrary(id)}
+          onClick={() => deleteListHandler(id)}
         >
           <DeleteIcon />
         </ActionIcon>
