@@ -21,6 +21,7 @@ const DataLibraryPanel = () => {
 
   const {
     dataLibraryItems,
+    addListToDataLibrary,
     setAllListsInDataLibrary,
     clearLibrary,
     updateListInDataLibrary,
@@ -29,7 +30,6 @@ const DataLibraryPanel = () => {
 
   const updateList = async (listId: string, update: Record<string, any>) => {
     if (!dataLibraryItems) return;
-    console.log('updateList from list', listId);
     await updateListInDataLibrary(listId, {
       ...dataLibraryItems.lists[listId],
       ...update,
@@ -40,7 +40,6 @@ const DataLibraryPanel = () => {
   const removeItemFromList = async (listId: string, itemId: string) => {
     if (!dataLibraryItems) return;
 
-    console.log('remove from list', listId, itemId);
     const { [itemId]: removedKey, ...newObject } =
       dataLibraryItems.lists[listId].items;
     await updateListInDataLibrary(listId, {
@@ -51,7 +50,6 @@ const DataLibraryPanel = () => {
   };
 
   useDeepCompareEffect(() => {
-    console.log('DataLibraryPanel: dataLibraryItems', dataLibraryItems);
     const savedLists = Object.entries(dataLibraryItems?.lists ?? {}).map(
       // for each List
       ([listId, dataList]) => {
@@ -104,7 +102,7 @@ const DataLibraryPanel = () => {
 
   return (
     <div className="flex flex-col w-full ml-2">
-      <SearchAndActions />
+      <SearchAndActions createList={addListToDataLibrary} />
       <div className="flex flex-col">
         {currentLists.map(({ id, name, datasetItems }) => {
           return (

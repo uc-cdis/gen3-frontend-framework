@@ -46,11 +46,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       }),
       invalidatesTags: [TAGS],
     }),
-    addDataLibraryList: builder.mutation<void, DataList>({
+    addDataLibraryList: builder.mutation<void, Partial<DataList> | undefined>({
       query: (list) => ({
         url: `${GEN3_DATA_LIBRARY_API}/${nanoid()}`,
         method: 'POST',
-        body: list,
+        body: list ?? {},
       }),
       invalidatesTags: [TAGS],
     }),

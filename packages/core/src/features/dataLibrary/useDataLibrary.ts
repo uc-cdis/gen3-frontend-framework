@@ -33,6 +33,22 @@ export const useDataLibrary = (useApi: boolean) => {
 
   let hasError = false;
 
+  const generateUniqueName = (baseName: string = 'List') => {
+    let uniqueName = baseName;
+    let counter = 1;
+
+    const existingNames = dataLibraryItems?.lists
+      ? Object.values(dataLibraryItems?.lists).map((x) => x.name)
+      : [];
+
+    while (existingNames.includes(uniqueName)) {
+      uniqueName = `${baseName} ${counter}`;
+      counter++;
+    }
+
+    return uniqueName;
+  };
+
   const refetchLocalLists = async () => {
     const { isError, lists } = await getDataLibraryListIndexDB();
     setLocalLibrary(lists ?? {});
@@ -52,12 +68,17 @@ export const useDataLibrary = (useApi: boolean) => {
     fetchLibrary();
   }, [useApi]);
 
-  const addListToDataLibrary = async (item: DataList) => {
+  const addListToDataLibrary = async (item?: Partial<DataList>) => {
+    const adjustedData = {
+      ...(item ?? {}),
+      name: generateUniqueName(item?.name ?? 'List'),
+    };
+
     if (useApi) {
-      await addItemToLibraryApi(item);
+      await addItemToLibraryApi(adjustedData);
       refetchLibraryFromApi();
     } else {
-      const { isError } = await addListToDataLibraryIndexDB(item);
+      const { isError } = await addListToDataLibraryIndexDB(adjustedData);
       await refetchLocalLists();
       hasError = isError === true;
     }

@@ -77,7 +77,7 @@ export const deleteAll = async () => {
 };
 
 export const addListToDataLibraryIndexDB = async (
-  body: DataList,
+  body?: Partial<DataList>,
 ): Promise<ReturnStatus> => {
   const timestamp = new Date().toJSON();
   try {
@@ -87,12 +87,13 @@ export const addListToDataLibraryIndexDB = async (
     tx.objectStore(STORE_NAME).put({
       id,
       version: 0,
-      items: body,
+      items: body?.items ?? {},
       creator: '{{subject_id}}',
       authz: {
         version: 0,
         authz: [`/users/{{subject_id}}/user-library/lists/${id}`],
       },
+      name: body?.name ?? 'New List',
       created_time: timestamp,
       updated_time: timestamp,
     });
