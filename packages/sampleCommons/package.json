@@ -15,7 +15,6 @@
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
-    "file-system-db": "^2.1.0",
     "@fontsource/montserrat": "^5.0.19",
     "@fontsource/poppins": "^5.0.15",
     "@fontsource/source-sans-pro": "^5.0.8",
@@ -48,6 +47,6 @@
     "tailwindcss": "^3.4.10",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }

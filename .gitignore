@@ -34,3 +34,5 @@ yarn-error.log*
 
 # Ignore DevSpace cache and log folder
 .devspace/
+
+.nx/cache

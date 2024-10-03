@@ -1,13 +1,18 @@
 import React from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
-import FilesTable from './FilesTable';
+import { ActionIcon } from '@mantine/core';
+import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
 import { DatasetContents } from '../types';
 import { commonTableSettings } from './tableSettings';
-import { Menu } from '@mantine/core';
 
+import FilesTable from './FilesTable';
+
+/**
+ *  Component that manages a List items, which are composed of Dataset and/or Cohorts
+ */
 const columns = [
   {
     accessorKey: 'name',
@@ -24,10 +29,12 @@ const columns = [
 ];
 
 export interface ListsTableProps {
+  listId: string;
   data: Array<DatasetContents>;
+  removeList: (listId: string, itemId: string) => void;
 }
 
-const ListContentsTable = ({ data }: ListsTableProps) => {
+const ListContentsTable = ({ listId, data, removeList }: ListsTableProps) => {
   const rows = useDeepCompareMemo(
     () => [
       ...data.map(({ name, id }, j) => {
@@ -47,10 +54,15 @@ const ListContentsTable = ({ data }: ListsTableProps) => {
     columns: columns,
     data: rows,
     ...commonTableSettings,
-    renderRowActionMenuItems: () => (
-      <>
-        <Menu.Item>Remove</Menu.Item>
-      </>
+    renderRowActions: ({ row }) => (
+      <ActionIcon
+        aria-label={`remove datalist ${row.original.name} from list`}
+        onClick={() => {
+          removeList(listId, row.original.name);
+        }}
+      >
+        <RemoveIcon />
+      </ActionIcon>
     ),
     renderDetailPanel: ({ row }) => {
       const rowIdx = row.index;
