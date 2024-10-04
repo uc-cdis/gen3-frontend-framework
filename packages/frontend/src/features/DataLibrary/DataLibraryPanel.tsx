@@ -53,43 +53,43 @@ const DataLibraryPanel = () => {
     const savedLists = Object.entries(dataLibraryItems?.lists ?? {}).map(
       // for each List
       ([listId, dataList]) => {
-        const listMembers = Object.keys(dataList.items).map((key) => {
-          const [queries, files, additionalData] = [
-            [] as CohortItem[],
-            [] as FileItem[],
-            [] as AdditionalDataItem[],
-          ];
+        const listMembers = Object.entries(dataList.items).map(
+          ([datasetId, dataItem]) => {
+            const [queries, files, additionalData] = [
+              [] as CohortItem[],
+              [] as FileItem[],
+              [] as AdditionalDataItem[],
+            ];
 
-          // for each dataset in the List
-          const dataItem = dataList.items[key];
+            // for each dataset in the List
 
-          if (isCohortItem(dataItem)) {
-            queries.push({
-              ...(dataItem as CohortItem),
-              description: '',
-              data: dataItem.items as string,
-              name: key,
-            });
-          } else {
-            // handle RegisteredDataListEntry
-            Object.entries(dataItem.items).forEach(([id, item]) => {
-              if (isFileItem(item)) {
-                files.push(item);
-              } else if (isAdditionalDataItem(item)) {
-                additionalData.push(item);
-              } else {
-                console.warn('DataLibrary: unknown item', item);
-              }
-            });
-          }
-          return {
-            id: dataList.id,
-            name: key,
-            queries: queries,
-            files: files,
-            additionalData: additionalData,
-          };
-        });
+            if (isCohortItem(dataItem)) {
+              queries.push({
+                ...(dataItem as CohortItem),
+                description: '',
+              });
+            } else {
+              // handle RegisteredDataListEntry
+              Object.values(dataItem.items).forEach((item) => {
+                if (isFileItem(item)) {
+                  files.push(item);
+                } else if (isAdditionalDataItem(item)) {
+                  additionalData.push(item);
+                } else {
+                  console.warn('DataLibrary: unknown item', item);
+                }
+              });
+            }
+            // return the
+            return {
+              id: datasetId,
+              name: dataItem.name,
+              queries: queries,
+              files: files,
+              additionalData: additionalData,
+            };
+          },
+        );
         return {
           id: listId,
           name: dataList.name,

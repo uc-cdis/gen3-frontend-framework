@@ -50,7 +50,7 @@ export const BuildList = (
       if (data?.type === 'Gen3GraphQL') {
         acc.items[id] = {
           itemType: 'Gen3GraphQL',
-          guid: data.guid,
+          id: data.guid,
           schemaVersion: data.schemaVersion,
           data: data.data,
         } as CohortItem;

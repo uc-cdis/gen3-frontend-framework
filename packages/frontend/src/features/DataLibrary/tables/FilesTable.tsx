@@ -1,13 +1,19 @@
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  MRT_RowSelectionState,
+  useMantineReactTable,
+} from 'mantine-react-table';
 import React from 'react';
 import { FileItem } from '@gen3/core';
 import { Text } from '@mantine/core';
-import { TableIcons } from '../../../components/Tables/TableIcons';
 import { commonTableSettings } from './tableSettings';
+import { OnChangeFn } from '@tanstack/table-core';
 
 interface FilesTableProps {
   data: Array<FileItem>;
   header: string;
+  selection: MRT_RowSelectionState;
+  updateRowSelection: OnChangeFn<MRT_RowSelectionState>;
 }
 
 const columns = [
@@ -29,12 +35,20 @@ const columns = [
   },
 ];
 
-const FilesTable = ({ data, header }: FilesTableProps) => {
+const FilesTable = ({
+  data,
+  header,
+  selection,
+  updateRowSelection,
+}: FilesTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: data,
     ...commonTableSettings,
     enableRowActions: false,
+    getRowId: (originalRow) => originalRow.guid,
+    onRowSelectionChange: updateRowSelection,
+    state: { rowSelection: selection },
   });
 
   return (

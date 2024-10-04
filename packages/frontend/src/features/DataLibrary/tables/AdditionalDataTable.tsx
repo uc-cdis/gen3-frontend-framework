@@ -30,6 +30,7 @@ const AdditionalDataTableTable = ({
     data: data,
     ...commonTableSettings,
     enableRowActions: false,
+    enableRowSelection: false,
   });
 
   return (

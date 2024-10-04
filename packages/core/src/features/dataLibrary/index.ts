@@ -10,6 +10,12 @@ import {
 
 import useDataLibrary from './useDataLibrary';
 
+import {
+  setDataLibraryListSelection,
+  clearDataLibrarySelection,
+  dataLibrarySelectionReducer,
+} from './dataLibrarySelectionSlice';
+
 export {
   useGetDataLibraryListQuery,
   useGetDataLibraryListsQuery,
@@ -17,4 +23,7 @@ export {
   useDeleteDataLibraryListMutation,
   useUpdateDataLibraryListMutation,
   useDataLibrary,
+  setDataLibraryListSelection,
+  clearDataLibrarySelection,
+  dataLibrarySelectionReducer,
 };

@@ -5,12 +5,13 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
-import { userAuthApiReducerPath, userAuthApiReducer} from './features/user/userSliceRTK';
-
+import { dataLibrarySelectionReducer } from './features/dataLibrary';
 import {
-  guppyApiReducer,
-  guppyApiSliceReducerPath,
-} from './features/guppy/guppyApi';
+  userAuthApiReducerPath,
+  userAuthApiReducer,
+} from './features/user/userSliceRTK';
+
+import { guppyApiReducer, guppyApiSliceReducerPath } from './features/guppy';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -19,6 +20,7 @@ export const rootReducer = combineReducers({
   drsHostnames: drsHostnamesReducer,
   modals: modalReducer,
   cohorts: cohortReducer,
+  dataLibrarySelection: dataLibrarySelectionReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });

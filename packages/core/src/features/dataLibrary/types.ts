@@ -5,7 +5,7 @@ export interface AuthZAccess {
   authz: string[];
 }
 
-export type ItemValue = string | number | undefined | Items;
+export type ItemValue = string | number | undefined | JSONObject;
 
 export interface Items {
   [k: string]: ItemValue;
@@ -31,10 +31,10 @@ export interface FileItem extends ListItem {
 
 export interface CohortItem extends ListItem {
   itemType: 'Gen3GraphQL';
-  data: ItemValue;
-  guid: string;
-  name?: string;
+  data: JSONObject;
+  name: string;
   schemaVersion: string;
+  id: string;
 }
 
 export interface AdditionalDataItem extends ListItem {

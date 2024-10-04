@@ -1,12 +1,19 @@
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  MRT_RowSelectionState,
+  useMantineReactTable,
+} from 'mantine-react-table';
 import { ColumnResizeMode } from '@tanstack/react-table';
 import { CohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { commonTableSettings } from './tableSettings';
+import { OnChangeFn } from '@tanstack/table-core';
 
 interface QueriesTableProps {
   data: Array<CohortItem>;
   header: string;
+  selection: MRT_RowSelectionState;
+  updateRowSelection: OnChangeFn<MRT_RowSelectionState>;
 }
 
 const columns = [
@@ -24,11 +31,19 @@ const columns = [
   },
 ];
 
-const QueriesTable = ({ data, header }: QueriesTableProps) => {
+const QueriesTable = ({
+  data,
+  header,
+  selection,
+  updateRowSelection,
+}: QueriesTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: data,
     ...commonTableSettings,
+    getRowId: (originalRow) => originalRow.name,
+    onRowSelectionChange: updateRowSelection,
+    state: { rowSelection: selection },
   });
 
   return (
