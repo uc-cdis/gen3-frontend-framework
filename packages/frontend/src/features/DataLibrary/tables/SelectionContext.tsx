@@ -1,22 +1,41 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 
 // Define types
-type RootObjectId = string;
-type ItemId = string;
+type ListId = string;
+
+export type SelectedMembers = Record<string, boolean>;
+
+interface ListMember {
+  id: string;
+  objectIds: SelectedMembers;
+}
+
+export type ListMembers = Record<string, ListMember>;
 
 interface DataLibrarySelectionState {
-  [key: RootObjectId]: ItemId[];
+  [key: ListId]: ListMembers;
 }
 
 type Action =
   | {
       type: 'UPDATE_DATA_LIBRARY_SELECTION';
-      payload: { rootObjectId: RootObjectId; itemIds: ItemId[] };
+      payload: { listId: ListId; members: ListMembers };
+    }
+  | {
+      type: 'UPDATE_DATALIST_MEMBER_SELECTION';
+      payload: { listId: ListId; memberId: string; selection: SelectedMembers };
     }
   | { type: 'CLEAR_DATA_LIBRARY_SELECTION' };
 
 interface DataLibraryContextType {
-  state: DataLibrarySelectionState;
+  selections: DataLibrarySelectionState;
+  updateSelections: (listId: ListId, members: ListMembers) => void;
+  updateListMemberSelections: (
+    listId: ListId,
+    memberId: string,
+    selection: SelectedMembers,
+  ) => void;
+  clearSelections: () => void;
   dispatch: Dispatch<Action>;
 }
 
@@ -27,23 +46,33 @@ const DataLibrarySelectionContext = createContext<
 
 // Reducer function
 const dataLibrarySelectionReducer = (
-  state: DataLibrarySelectionState,
+  selections: DataLibrarySelectionState,
   action: Action,
 ): DataLibrarySelectionState => {
   switch (action.type) {
     case 'UPDATE_DATA_LIBRARY_SELECTION':
-      if (action.payload.itemIds.length === 0) {
-        const { [action.payload.rootObjectId]: _, ...restState } = state;
+      if (Object.keys(action.payload.members).length === 0) {
+        const { [action.payload.listId]: _, ...restState } = selections;
         return restState;
       }
       return {
-        ...state,
-        [action.payload.rootObjectId]: action.payload.itemIds,
+        ...selections,
+        [action.payload.listId]: action.payload.members,
+      };
+    case 'UPDATE_DATALIST_MEMBER_SELECTION':
+      return {
+        ...selections,
+        [action.payload.listId]: {
+          [action.payload.memberId]: {
+            id: action.payload.memberId,
+            objectIds: action.payload.selection,
+          },
+        },
       };
     case 'CLEAR_DATA_LIBRARY_SELECTION':
       return {};
     default:
-      return state;
+      return selections;
   }
 };
 
@@ -51,10 +80,35 @@ const dataLibrarySelectionReducer = (
 export const DataLibrarySelectionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [state, dispatch] = useReducer(dataLibrarySelectionReducer, {});
+  const [selections, dispatch] = useReducer(dataLibrarySelectionReducer, {});
 
+  const updateSelections = (listId: ListId, members: ListMembers) => {
+    dispatch(updateDataLibrarySelection(listId, members));
+  };
+
+  const updateListMemberSelections = (
+    listId: ListId,
+    memberId: string,
+    selection: SelectedMembers,
+  ) => {
+    dispatch(updateDataLibraryListMemberSelection(listId, memberId, selection));
+  };
+
+  const clearSelections = () => {
+    dispatch(clearDataLibrarySelection());
+  };
+
+  console.log('selections', selections);
   return (
-    <DataLibrarySelectionContext.Provider value={{ state, dispatch }}>
+    <DataLibrarySelectionContext.Provider
+      value={{
+        selections,
+        dispatch,
+        updateSelections,
+        updateListMemberSelections,
+        clearSelections,
+      }}
+    >
       {children}
     </DataLibrarySelectionContext.Provider>
   );
@@ -70,11 +124,20 @@ export const useDataLibrarySelection = (): DataLibraryContextType => {
 };
 
 export const updateDataLibrarySelection = (
-  rootObjectId: RootObjectId,
-  itemIds: ItemId[],
+  listId: ListId,
+  members: ListMembers,
 ): Action => ({
   type: 'UPDATE_DATA_LIBRARY_SELECTION',
-  payload: { rootObjectId, itemIds },
+  payload: { listId, members },
+});
+
+export const updateDataLibraryListMemberSelection = (
+  listId: ListId,
+  memberId: string,
+  selection: SelectedMembers,
+): Action => ({
+  type: 'UPDATE_DATALIST_MEMBER_SELECTION',
+  payload: { listId, memberId, selection },
 });
 
 export const clearDataLibrarySelection = (): Action => ({
@@ -83,6 +146,6 @@ export const clearDataLibrarySelection = (): Action => ({
 
 // Selector function
 export const selectDataLibrarySelectedItems = (
-  state: DataLibrarySelectionState,
-  rootObjectId: RootObjectId,
-): ItemId[] => state[rootObjectId] || [];
+  selections: DataLibrarySelectionState,
+  listId: ListId,
+): ListMembers => selections[listId] || [];

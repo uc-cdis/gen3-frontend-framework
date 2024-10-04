@@ -3,13 +3,15 @@ import { AdditionalDataItem, CohortItem, FileItem } from '@gen3/core';
 export interface DatasetContents {
   id: string;
   name: string;
-  queries: CohortItem[];
-  files: FileItem[];
+  queries: Array<CohortItem>;
+  files: Array<FileItem>;
   additionalData: Array<AdditionalDataItem>;
 }
+
+export type DetalistMembers = Record<string, DatasetContents>;
 
 export interface DataLibraryList {
   id: string;
   name: string;
-  datasetItems: Array<DatasetContents>;
+  datalistMembers: DetalistMembers;
 }

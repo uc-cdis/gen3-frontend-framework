@@ -4,14 +4,19 @@ import {
   MantineReactTable,
   useMantineReactTable,
   MRT_RowSelectionState,
+  MRT_Updater,
 } from 'mantine-react-table';
 import { ActionIcon } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
-import { DatasetContents } from '../types';
+import { DetalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
-
+import {
+  ListMembers,
+  SelectedMembers,
+  useDataLibrarySelection,
+} from './SelectionContext';
 import FilesTable from './FilesTable';
 
 /**
@@ -23,6 +28,10 @@ const columns = [
     header: 'Name',
   },
   {
+    accessorKey: 'id',
+    header: 'Id',
+  },
+  {
     accessorKey: 'numFiles',
     header: '# Files',
   },
@@ -32,45 +41,76 @@ const columns = [
   },
 ];
 
+class DatalistMembers {}
+
 export interface ListsTableProps {
   listId: string;
-  data: Array<DatasetContents>;
+  data: DetalistMembers;
   removeList: (listId: string, itemId: string) => void;
 }
 
-const ListContentsTable = ({ listId, data, removeList }: ListsTableProps) => {
+const DataSetContentsTable = ({
+  listId,
+  data,
+  removeList,
+}: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
+  const { selections, updateSelections } = useDataLibrarySelection();
+
+  // build the rows
+
   const rows = useDeepCompareMemo(
-    () => [
-      ...data.map(({ name, id }, j) => {
+    () =>
+      Object.keys(data).map((key) => {
         return {
-          name: name,
-          id: id, // TODO: fix id
-          numFiles: data?.[j]?.files.length || 0,
+          name: data[key].name,
+          id: data[key].id,
+          numFiles: data[key]?.files.length || 0,
           isAddDataSource:
-            data?.[j]?.additionalData.length !== 0 ? 'True' : 'False',
+            data[key]?.additionalData.length !== 0 ? 'True' : 'False',
         };
       }),
-    ],
     [data],
   );
 
-  useDeepCompareEffect(() => {
-    console.log(`listId: ${listId} rowSelection: ${rowSelection}`);
-    if (listId in Object.keys(rowSelection)) {
-      console.log('selectAll');
-    }
-  }, [listId, rowSelection]);
+  const handleRowSelectionChange = (
+    updater: MRT_Updater<MRT_RowSelectionState>,
+  ) => {
+    let value: MRT_RowSelectionState = {};
+    setRowSelection((prevSelection) => {
+      value = updater instanceof Function ? updater(prevSelection) : updater;
+      return value;
+    });
+
+    const members = Object.keys(value).reduce((acc: ListMembers, datasetId) => {
+      acc[datasetId] = {
+        id: datasetId,
+        objectIds: [
+          ...data[datasetId].files.map((x) => x.guid),
+          ...data[datasetId].queries.map((x) => x.id),
+        ].reduce((acc: SelectedMembers, key) => {
+          acc[key] = true;
+          return acc;
+        }, {}),
+      };
+      return acc;
+    }, {});
+
+    updateSelections(listId, members);
+  };
 
   const table = useMantineReactTable({
     columns: columns,
     data: rows,
     ...commonTableSettings,
     getRowId: (originalRow) => originalRow.id,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: handleRowSelectionChange,
     enableSelectAll: false,
     state: { rowSelection },
+    mantineSelectCheckboxProps: ({ row }) => {
+      return { color: 'violet', radius: 'xl' };
+    },
     renderRowActions: ({ row }) => (
       <ActionIcon
         aria-label={`remove datalist ${row.original.name} from list`}
@@ -82,28 +122,27 @@ const ListContentsTable = ({ listId, data, removeList }: ListsTableProps) => {
       </ActionIcon>
     ),
     renderDetailPanel: ({ row }) => {
-      const rowIdx = row.index;
+      const rowData = data[row.id];
 
       return (
         <div className="flex flex-col w-full">
-          {data?.[rowIdx]?.files.length > 0 && (
+          {rowData?.files.length > 0 && (
             <FilesTable
               header={'Files'}
-              data={data?.[rowIdx]?.files}
-              selection={rowSelection}
-              updateRowSelection={setRowSelection}
+              datasetId={rowData.id}
+              data={rowData?.files}
             />
           )}
-          {data?.[rowIdx]?.additionalData.length > 0 && (
+          {rowData.additionalData.length > 0 && (
             <AdditionalDataTable
               header={'Additional Data'}
-              data={data?.[rowIdx]?.additionalData}
+              data={rowData?.additionalData}
             />
           )}
-          {data?.[rowIdx]?.queries.length > 0 && (
+          {rowData?.queries.length > 0 && (
             <QueriesTable
               header="Queries"
-              data={data?.[rowIdx]?.queries}
+              data={rowData?.queries}
               selection={rowSelection}
               updateRowSelection={setRowSelection}
             />
@@ -122,4 +161,4 @@ const ListContentsTable = ({ listId, data, removeList }: ListsTableProps) => {
   );
 };
 
-export default ListContentsTable;
+export default DataSetContentsTable;

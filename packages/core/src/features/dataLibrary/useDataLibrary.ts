@@ -132,7 +132,7 @@ export const useDataLibrary = (useApi: boolean) => {
 
   return {
     dataLibraryItems,
-    hasError,
+    isError: hasError,
     addListToDataLibrary,
     deleteListFromDataLibrary,
     clearLibrary,

@@ -1,3 +1,3 @@
-import DataLibraryLists from './DataLibraryLists';
+import DataLibraryPanel from './DataLibraryPanel';
 
-export { DataLibraryLists };
+export { DataLibraryPanel };

@@ -1,7 +1,4 @@
-import { Accordion, Button, Checkbox } from '@mantine/core';
-import { useState } from 'react';
-import ListsTable from './tables/ListsTable';
-import { DataLibraryList } from './types';
+import { Button } from '@mantine/core';
 import {
   AdditionalDataItem,
   CohortItem,
@@ -12,21 +9,20 @@ import {
   useDataLibrary,
 } from '@gen3/core';
 import { data1 } from './utils';
-import SearchAndActions from './SearchAndActions';
-import { DatasetAccordianControl } from './DatasetAccordianControl';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import DataLibraryLists from './DataLibraryLists';
+import { DatasetContents } from './types';
 
 const DataLibraryPanel = () => {
   const { dataLibraryItems, clearLibrary, setAllListsInDataLibrary } =
     useDataLibrary(false);
 
   const dataLists = useDeepCompareMemo(() => {
-    const savedLists = Object.entries(dataLibraryItems?.lists ?? {}).map(
+    return Object.entries(dataLibraryItems?.lists ?? {}).map(
       // for each List
       ([listId, dataList]) => {
-        const listMembers = Object.entries(dataList.items).map(
-          ([datasetId, dataItem]) => {
+        const listMembers = Object.entries(dataList.items).reduce(
+          (acc: Record<string, DatasetContents>, [datasetId, dataItem]) => {
             const [queries, files, additionalData] = [
               [] as CohortItem[],
               [] as FileItem[],
@@ -39,6 +35,7 @@ const DataLibraryPanel = () => {
               queries.push({
                 ...(dataItem as CohortItem),
                 description: '',
+                id: datasetId,
               });
             } else {
               // handle RegisteredDataListEntry
@@ -53,24 +50,28 @@ const DataLibraryPanel = () => {
               });
             }
             // return the
-            return {
+            acc[datasetId] = {
               id: datasetId,
               name: dataItem.name,
               queries: queries,
               files: files,
               additionalData: additionalData,
             };
+            return acc;
           },
+          {},
         );
+        console.log('listMembers', listMembers);
         return {
           id: listId,
           name: dataList.name,
-          datasetItems: listMembers,
+          datalistMembers: listMembers,
         };
       },
     );
-    return savedLists;
   }, [dataLibraryItems?.lists]);
+
+  console.log('datalist', dataLists);
 
   return (
     <div className="flex flex-col w-full ml-2">
