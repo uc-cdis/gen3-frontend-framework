@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
-import { DataLibraryPanel } from '../../features/DataLibrary';
+import { DataLibraryLists } from '../../features/DataLibrary';
 
 const DataLibraryPage = ({
   headerProps,
@@ -15,7 +15,7 @@ const DataLibraryPage = ({
         key: 'gen3-data-library-page',
       }}
     >
-      <DataLibraryPanel />
+      <DataLibraryLists />
     </NavPageLayout>
   );
 };
