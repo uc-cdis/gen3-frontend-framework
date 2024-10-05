@@ -36,6 +36,7 @@ interface DataLibraryContextType {
     selection: SelectedMembers,
   ) => void;
   clearSelections: () => void;
+  numDatesetItemsSelected: (listId: string, itemId: string) => number;
   dispatch: Dispatch<Action>;
 }
 
@@ -98,6 +99,10 @@ export const DataLibrarySelectionProvider: React.FC<{
     dispatch(clearDataLibrarySelection());
   };
 
+  const numDatesetItemsSelected = (listId: string, itemId: string) => {
+    return Object.keys(selections?.[listId]?.[itemId]?.objectIds ?? {}).length;
+  };
+
   console.log('selections', selections);
   return (
     <DataLibrarySelectionContext.Provider
@@ -107,6 +112,7 @@ export const DataLibrarySelectionProvider: React.FC<{
         updateSelections,
         updateListMemberSelections,
         clearSelections,
+        numDatesetItemsSelected,
       }}
     >
       {children}

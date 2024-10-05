@@ -56,7 +56,8 @@ const DataSetContentsTable = ({
 }: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
-  const { selections, updateSelections } = useDataLibrarySelection();
+  const { selections, updateSelections, numDatesetItemsSelected } =
+    useDataLibrarySelection();
 
   // build the rows
 
@@ -67,6 +68,8 @@ const DataSetContentsTable = ({
           name: data[key].name,
           id: data[key].id,
           numFiles: data[key]?.files.length || 0,
+          numItems:
+            (data[key]?.files.length || 0) + (data[key]?.queries.length || 0),
           isAddDataSource:
             data[key]?.additionalData.length !== 0 ? 'True' : 'False',
         };
@@ -109,7 +112,15 @@ const DataSetContentsTable = ({
     enableSelectAll: false,
     state: { rowSelection },
     mantineSelectCheckboxProps: ({ row }) => {
-      return { color: 'violet', radius: 'xl' };
+      const selectedCount = numDatesetItemsSelected(listId, row.id);
+      const isIndeterminate =
+        selectedCount > 0 && selectedCount != row.original.numItems;
+      return {
+        color: 'violet',
+        radius: 'xl',
+        indeterminate: isIndeterminate,
+        ...(isIndeterminate ? { checked: false } : {}),
+      };
     },
     renderRowActions: ({ row }) => (
       <ActionIcon
@@ -130,6 +141,7 @@ const DataSetContentsTable = ({
             <FilesTable
               header={'Files'}
               datasetId={rowData.id}
+              listId={listId}
               data={rowData?.files}
             />
           )}

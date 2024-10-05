@@ -4,14 +4,16 @@ import {
   MRT_Updater,
   useMantineReactTable,
 } from 'mantine-react-table';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FileItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
 import { OnChangeFn } from '@tanstack/table-core';
+import { useDataLibrarySelection } from './SelectionContext';
 
 interface FilesTableProps {
   datasetId: string;
+  listId: string;
   data: Array<FileItem>;
   header: string;
 }
@@ -35,8 +37,15 @@ const columns = [
   },
 ];
 
-const FilesTable = ({ datasetId, data, header }: FilesTableProps) => {
+const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+
+  const { selections, updateListMemberSelections } = useDataLibrarySelection();
+
+  useEffect(() => {
+    const sel = selections?.[listId]?.[datasetId]?.objectIds ?? {};
+    setRowSelection(sel);
+  }, [listId, datasetId, selections]);
 
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
@@ -47,7 +56,7 @@ const FilesTable = ({ datasetId, data, header }: FilesTableProps) => {
       return value;
     });
 
-    // updateSelections(datasetId);
+    updateListMemberSelections(listId, datasetId, value);
   };
 
   const table = useMantineReactTable({
@@ -56,7 +65,7 @@ const FilesTable = ({ datasetId, data, header }: FilesTableProps) => {
     ...commonTableSettings,
     enableRowActions: false,
     getRowId: (originalRow) => originalRow.guid,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
   });
 

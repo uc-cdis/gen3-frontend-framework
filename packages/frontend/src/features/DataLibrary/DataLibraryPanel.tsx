@@ -61,7 +61,6 @@ const DataLibraryPanel = () => {
           },
           {},
         );
-        console.log('listMembers', listMembers);
         return {
           id: listId,
           name: dataList.name,
