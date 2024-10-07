@@ -26,8 +26,8 @@ const nextConfig = {
     optimizePackageImports: ['@gen3/frontend', '@gen3/core'],
   },
   i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
+    locales: ['en-US'],
+    defaultLocale: 'en-US',
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],

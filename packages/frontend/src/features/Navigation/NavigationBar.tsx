@@ -39,11 +39,6 @@ const NavigationBar = ({
     setCurrent(router.pathname);
   }, [router.pathname]);
 
-  console.log(
-    'gir',
-    `grid grid-cols-${items?.length} ${extractClassName('navigationPanel', mergedClassnames)}`,
-  );
-
   return (
     <div
       role="navigation"

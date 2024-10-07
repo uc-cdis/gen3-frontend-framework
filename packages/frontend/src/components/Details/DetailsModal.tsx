@@ -16,6 +16,7 @@ export const DetailsModal = <
 >({
   title,
   id,
+  row,
   classNames,
   panel,
   panelProps,
@@ -54,7 +55,7 @@ export const DetailsModal = <
       classNames={styling}
       xOffset={0}
     >
-      {panel({ id: id, onClose, ...panelProps })}
+      {panel({ id, onClose, row, ...panelProps })}
     </Modal>
   );
 };
