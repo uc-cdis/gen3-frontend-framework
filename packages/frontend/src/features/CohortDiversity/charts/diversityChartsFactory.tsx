@@ -1,6 +1,8 @@
 import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import BarComparison from './BarComparison';
 import { ComparisonChartProps } from './types';
+import HeatmapComparison from './HeatmapComparison';
+import RadarComparison from './RadarComparison';
 
 let instance: RenderFactoryTypedInstance<ComparisonChartProps> | undefined =
   undefined;
@@ -13,6 +15,8 @@ const DefaultRendererCatalog = {
   comparison: {
     default: DefaultComparisonChart,
     barComparison: BarComparison,
+    heatmapComparison: HeatmapComparison,
+    radarComparison: RadarComparison,
   },
 };
 

@@ -38,7 +38,7 @@
   },
   "comparisonCharts": {
     "Age_at_Index": {
-      "chartType": "barComparison"
+      "chartType": "radarComparison"
     },
     "Sex": {
       "chartType": "barComparison"

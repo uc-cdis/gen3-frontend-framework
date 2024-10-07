@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Text } from '@mantine/core';
 import {
   processLabel,
   ReactECharts,
@@ -8,10 +7,7 @@ import {
 } from '../../../components/charts';
 import { type SeriesOption } from 'echarts';
 import { ComparisonChartProps, DatasetWithLabel } from './types';
-
-const roundTo2AfterDecimal = (number: number) => {
-  return Math.round((number + Number.EPSILON) * 100) / 100;
-};
+import { roundTo2AfterDecimal } from './utils';
 
 const processComparisonData = (
   baseData: DatasetWithLabel,
