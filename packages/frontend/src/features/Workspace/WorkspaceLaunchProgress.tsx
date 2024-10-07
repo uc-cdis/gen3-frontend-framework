@@ -32,7 +32,7 @@ const WorkspaceStepper = ({
       timingFunction="ease"
     >
       {(styles) => (
-        <div className="p-2 mt-2 w-full" style={styles}>
+        <div className="p-2 mt-2 w-full mx-8" style={styles}>
           {!step ? null : (
             <Stepper size="xs" active={step?.step} allowNextStepsSelect={false}>
               {stepsConfig.steps.map((x) => {

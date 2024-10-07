@@ -24,6 +24,8 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
   const workspaceId = useCoreSelector(selectActiveWorkspaceId);
 
+  console.log('NotebookCard: ', requestedStatus, workspaceId, status);
+
   return (
     <Card withBorder radius="xs" className="w-64">
       <Card.Section inheritPadding py="xs">
@@ -62,7 +64,10 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           Launch
         </Button>
         <Transition
-          mounted={info.id === workspaceId && requestedStatus === 'Launching'}
+          mounted={
+            (info.id === workspaceId && requestedStatus === 'Launching') ||
+            status === 'Launching'
+          }
           transition="fade"
           duration={400}
           timingFunction="ease"

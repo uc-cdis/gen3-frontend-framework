@@ -14,6 +14,7 @@ import {
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
+import { useFullscreen } from '@mantine/hooks';
 
 const getWorkspaceErrorMessage = (
   error: unknown,
@@ -57,7 +58,8 @@ export const useWorkspaceStatusContext = () => {
 };
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
-  const [isFullscreen, setFullscreen] = useState<boolean>(false);
+  const { toggle: switchScreenMode, fullscreen: isFullscreen } =
+    useFullscreen();
   const [isPayModelNeededToLaunch, setIsPayModelNeededToLaunch] = useState<
     boolean | undefined
   >(undefined);
@@ -136,7 +138,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
       );
     };
 
-    const toggleFullscreen = () => setFullscreen((bVal) => !bVal);
+    const toggleFullscreen = () => switchScreenMode();
 
     const stopWorkspace = () => {
       terminateWorkspace();
