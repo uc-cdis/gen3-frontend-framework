@@ -67,6 +67,15 @@ const createMantineTheme = (
       lg: '80em',
       xl: '112.5em',
     },
+    components: {
+      Modal: {
+        defaultProps: {
+          classNames: {
+            title: 'font-bold',
+          },
+        },
+      },
+    },
   });
 
   return theme;

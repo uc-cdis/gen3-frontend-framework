@@ -64,9 +64,10 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
         <LoginProvidersPanel handleLoginSelected={handleFenceLoginSelected} />
 
-        {loginConfig?.showCredentialsLogin && (
-          <CredentialsLogin handleLogin={handleCredentialsLogin} />
-        )}
+        {loginConfig?.showCredentialsLogin &&
+          process.env.NODE_ENV === 'development' && (
+            <CredentialsLogin handleLogin={handleCredentialsLogin} />
+          )}
 
         {bottomContent?.map((content, index) =>
           content?.email ? (

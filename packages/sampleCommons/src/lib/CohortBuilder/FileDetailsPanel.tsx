@@ -130,7 +130,7 @@ export const FileDetailsPanel = ({
   return (
     <Stack>
       <LoadingOverlay visible={isLoading} />
-      <Text color="primary.4">Results for {id}</Text>
+      <Text c="primary.4">Results for {id}</Text>
       <Table withColumnBorders>
         <thead>
           <tr>

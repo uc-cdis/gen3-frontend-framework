@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.45",
+  "version": "0.10.47",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -27,15 +27,15 @@
     "mantine-react-table": "^2.0.0-beta.6"
   },
   "devDependencies": {
+    "@gen3/toolsff": "file:../tools",
     "@next/mdx": "^14.2.8",
     "@types/mdx": "^2.0.13",
-    "@gen3/toolsff": "file:../tools",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@welldone-software/why-did-you-render": "^8.0.3",
+    "next": "^14.2.8",
     "postcss-import": "^16.1.0",
     "postcss-preset-mantine": "^1.17.0",
-    "next": "^14.2.8",
     "react": "^18.2.0",
     "react-dom": "18.2.0"
   },

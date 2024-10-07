@@ -25,8 +25,8 @@ const nextConfig = {
     instrumentationHook: true,
   },
   i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
+    locales: ['en-US'],
+    defaultLocale: 'en-US',
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
