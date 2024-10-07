@@ -24,7 +24,7 @@ http {
         }
 
         location /api/guppy/download {
-            proxy_pass http://$GEN3_REMOTE_API/api/guppy/download;
+            proxy_pass http://$GEN3_REMOTE_API;
             proxy_buffering off;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-Host $host;

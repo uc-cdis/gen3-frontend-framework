@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { type ServiceAndMethod } from '@gen3/core';
 import { Badge } from '@mantine/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
 
@@ -8,7 +7,6 @@ import {
   MRT_Cell,
   MRT_ColumnDef,
   useMantineReactTable,
-  MRT_Icons,
 } from 'mantine-react-table';
 import { useResourcesContext } from './ResourcesProvider';
 import { useProfileContext } from './ProfileProvider';

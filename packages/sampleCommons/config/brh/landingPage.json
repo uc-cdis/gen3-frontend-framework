@@ -22,7 +22,7 @@
         "right": [
           {
             "image": {
-              "src": "https://gen3.org/figs/kv.svg",
+              "src": "/images/kv.svg",
               "alt": "Gen3 Data Platform"
             }
           }

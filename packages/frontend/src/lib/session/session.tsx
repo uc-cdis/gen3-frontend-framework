@@ -22,6 +22,7 @@ import {
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
+import { useResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
@@ -169,6 +170,8 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
+  useResourceMonitor();
+
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
@@ -258,7 +261,7 @@ export const SessionProvider = ({
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
-          !isUserOnPage('workspace')
+          !isUserOnPage('Workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();
@@ -267,7 +270,7 @@ export const SessionProvider = ({
         if (
           workspaceInactivityTimeLimitMilliseconds > 0 &&
           timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
-          isUserOnPage('workspace')
+          isUserOnPage('Workspace')
         ) {
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();

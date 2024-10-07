@@ -6,8 +6,6 @@ import { CoreState } from '../../reducers';
 import { selectCSRFToken } from '../user/userSliceRTK';
 import { getCookie } from 'cookies-next';
 
-
-
 /**
  * Creates a base class core API for building other API endpoints on top of.
  * @param reducerPath - The root key name that the other slices will be derived from

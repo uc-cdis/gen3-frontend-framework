@@ -143,6 +143,20 @@ interface ParsingError {
   error: string;
 }
 
+interface HttpError {
+  status: number;
+  data: unknown;
+}
+
+export function isHttpStatusError(error: unknown): error is HttpError {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'status' in error &&
+    typeof error.status === 'number'
+  );
+}
+
 /**
  * Type predicate to narrow an unknown error to an object with a string 'message' property
  */
