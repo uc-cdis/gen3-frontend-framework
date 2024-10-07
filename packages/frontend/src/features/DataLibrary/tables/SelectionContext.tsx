@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
+import { list } from 'postcss';
 
 // Define types
 type ListId = string;
@@ -36,7 +37,6 @@ interface DataLibraryContextType {
     selection: SelectedMembers,
   ) => void;
   clearSelections: () => void;
-  numDatesetItemsSelected: (listId: string, itemId: string) => number;
   dispatch: Dispatch<Action>;
 }
 
@@ -99,10 +99,6 @@ export const DataLibrarySelectionProvider: React.FC<{
     dispatch(clearDataLibrarySelection());
   };
 
-  const numDatesetItemsSelected = (listId: string, itemId: string) => {
-    return Object.keys(selections?.[listId]?.[itemId]?.objectIds ?? {}).length;
-  };
-
   console.log('selections', selections);
   return (
     <DataLibrarySelectionContext.Provider
@@ -112,7 +108,6 @@ export const DataLibrarySelectionProvider: React.FC<{
         updateSelections,
         updateListMemberSelections,
         clearSelections,
-        numDatesetItemsSelected,
       }}
     >
       {children}
@@ -149,6 +144,22 @@ export const updateDataLibraryListMemberSelection = (
 export const clearDataLibrarySelection = (): Action => ({
   type: 'CLEAR_DATA_LIBRARY_SELECTION',
 });
+
+export const numDatesetItemsSelected = (
+  selections: DataLibrarySelectionState,
+  listId: string,
+  itemId: string,
+) => {
+  return Object.keys(selections?.[listId]?.[itemId]?.objectIds ?? {}).length;
+};
+
+export const numListItemsSelected = (
+  selections: DataLibrarySelectionState,
+  listId: string,
+) =>
+  Object.keys(selections[listId]).reduce((count: number, datasetId) => {
+    return count + numDatesetItemsSelected(selections, listId, datasetId);
+  }, 0);
 
 // Selector function
 export const selectDataLibrarySelectedItems = (

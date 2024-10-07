@@ -29,8 +29,10 @@ export const DatasetAccordianControl = (
 ): JSX.Element => {
   const { id, listName, updateHandler, deleteListHandler } = props;
   const [value, setValue] = useState<string | undefined>(undefined);
+  const [listSelectionState, setListSelectionState] =
+    useState<string>('unselected');
 
-  const handleSubmit = () => {
+  const handleUpdateName = () => {
     updateHandler(id, { name: value });
     setValue(undefined);
   };
@@ -44,7 +46,7 @@ export const DatasetAccordianControl = (
           <TextInput
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            onKeyDown={getHotkeyHandler([['Enter', handleSubmit]])}
+            onKeyDown={getHotkeyHandler([['Enter', handleUpdateName]])}
             rightSection={
               <CloseButton
                 aria-label="Clear input"

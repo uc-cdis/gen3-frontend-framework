@@ -5,6 +5,7 @@ import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordianControl } from './DatasetAccordianControl';
 import { DataLibrarySelectionProvider } from './tables/SelectionContext';
+import { selectAllDatasetMembers } from './tables/selection';
 
 interface DataLibraryListsProps {
   dataLists: Array<DataLibraryList>;
@@ -37,6 +38,17 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
       items: newObject,
       updatedTime: new Date().toISOString(),
     });
+  };
+
+  const handleSelectList = (listId: string) => {
+    if (!dataLibraryItems?.lists[listId]) {
+      return;
+    }
+
+    const selectAllDatasets = selectAllDatasetMembers(
+      Object.keys(dataLibraryItems.lists[listId]),
+      dataLists.lists[listId],
+    );
   };
 
   console.log('datalist 2', dataLists);

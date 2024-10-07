@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import {
-  MantineReactTable,
-  useMantineReactTable,
-  MRT_RowSelectionState,
-  MRT_Updater,
-} from 'mantine-react-table';
+import { MantineReactTable, MRT_RowSelectionState, MRT_Updater, useMantineReactTable } from 'mantine-react-table';
 import { ActionIcon } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
 import { DetalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
-import {
-  ListMembers,
-  SelectedMembers,
-  useDataLibrarySelection,
-} from './SelectionContext';
+import { numDatesetItemsSelected, useDataLibrarySelection } from './SelectionContext';
+import { selectAllDatasetMembers } from './selection';
 import FilesTable from './FilesTable';
 
 /**
@@ -40,8 +32,7 @@ const columns = [
     header: 'Additional Data Sources',
   },
 ];
-
-class DatalistMembers {}
+}
 
 export interface ListsTableProps {
   listId: string;
@@ -56,8 +47,7 @@ const DataSetContentsTable = ({
 }: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
-  const { selections, updateSelections, numDatesetItemsSelected } =
-    useDataLibrarySelection();
+  const { selections, updateSelections } = useDataLibrarySelection();
 
   // build the rows
 
@@ -77,31 +67,62 @@ const DataSetContentsTable = ({
     [data],
   );
 
+  /**
+   * Handles the change in row selection.
+   *
+   * @param {MRT_Updater<MRT_RowSelectionState>} updater - A function or value
+   * that provides the new state of row selection. If a function is provided,
+   * it will be called with the previous selection state.
+   *
+   * This function updates the state of selected rows by transforming the
+   * updater's value. It generates a mapping of selected members for each
+   * dataset, containing the dataset ID and an object representing the selected
+   * object IDs. It then updates the selections for a given list and filters
+   * the values to indicate whether each dataset has any selected objects.
+   */
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
   ) => {
-    let value: MRT_RowSelectionState = {};
     setRowSelection((prevSelection) => {
-      value = updater instanceof Function ? updater(prevSelection) : updater;
-      return value;
-    });
+      const value =
+        updater instanceof Function ? updater(prevSelection) : updater;
 
-    const members = Object.keys(value).reduce((acc: ListMembers, datasetId) => {
-      acc[datasetId] = {
-        id: datasetId,
-        objectIds: [
-          ...data[datasetId].files.map((x) => x.guid),
-          ...data[datasetId].queries.map((x) => x.id),
-        ].reduce((acc: SelectedMembers, key) => {
-          acc[key] = true;
+
+      const members = selectAllDatasetMembers( Object.keys(value), data);
+      updateSelections(listId, members);
+
+      return Object.keys(members).reduce(
+        (acc: Record<string, boolean>, key) => {
+          acc[key] = Object.keys(members[key].objectIds).length > 0;
           return acc;
-        }, {}),
-      };
-      return acc;
-    }, {});
-
-    updateSelections(listId, members);
+        },
+        {},
+      );
+    });
   };
+
+  useDeepCompareEffect(() => {
+    if (!selections[listId]) {
+      console.warn(`List ID ${listId} does not exist in selections`);
+      return;
+    }
+
+    const filteredValues = Object.keys(selections[listId]).reduce(
+      (acc: Record<string, boolean>, key) => {
+        const objectIds = selections[listId][key]?.objectIds;
+        if (!objectIds) {
+          console.warn(
+            `Object IDs for key ${key} in list ${listId} are not available`,
+          );
+          return acc;
+        }
+        acc[key] = Object.keys(objectIds).length > 0;
+        return acc;
+      },
+      {},
+    );
+    setRowSelection(filteredValues);
+  }, [setRowSelection, selections, listId]);
 
   const table = useMantineReactTable({
     columns: columns,
@@ -112,7 +133,7 @@ const DataSetContentsTable = ({
     enableSelectAll: false,
     state: { rowSelection },
     mantineSelectCheckboxProps: ({ row }) => {
-      const selectedCount = numDatesetItemsSelected(listId, row.id);
+      const selectedCount = numDatesetItemsSelected(selections, listId, row.id);
       const isIndeterminate =
         selectedCount > 0 && selectedCount != row.original.numItems;
       return {
