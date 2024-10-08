@@ -53,7 +53,8 @@ const dataLibrarySelectionReducer = (
   switch (action.type) {
     case 'UPDATE_DATA_LIBRARY_SELECTION':
       if (Object.keys(action.payload.members).length === 0) {
-        const { [action.payload.listId]: _, ...restState } = selections;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [action.payload.listId]: _unused, ...restState } = selections;
         return restState;
       }
       return {
@@ -61,6 +62,19 @@ const dataLibrarySelectionReducer = (
         [action.payload.listId]: action.payload.members,
       };
     case 'UPDATE_DATALIST_MEMBER_SELECTION':
+      if (Object.keys(action.payload.selection).length === 0) {
+        const {
+          [action.payload.listId]: {
+            [action.payload.listId]: _unused,
+            ...restState
+          },
+        } = selections;
+        return {
+          ...selections,
+          [action.payload.memberId]: restState,
+        };
+      }
+
       return {
         ...selections,
         [action.payload.listId]: {
@@ -99,7 +113,6 @@ export const DataLibrarySelectionProvider: React.FC<{
     dispatch(clearDataLibrarySelection());
   };
 
-  console.log('selections', selections);
   return (
     <DataLibrarySelectionContext.Provider
       value={{

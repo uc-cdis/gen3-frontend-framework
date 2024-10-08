@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { MantineReactTable, MRT_RowSelectionState, MRT_Updater, useMantineReactTable } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  MRT_RowSelectionState,
+  MRT_Updater,
+  useMantineReactTable,
+} from 'mantine-react-table';
 import { ActionIcon } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
 import { DetalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
-import { numDatesetItemsSelected, useDataLibrarySelection } from './SelectionContext';
+import {
+  numDatesetItemsSelected,
+  useDataLibrarySelection,
+} from './SelectionContext';
 import { selectAllDatasetMembers } from './selection';
 import FilesTable from './FilesTable';
 
@@ -32,7 +40,6 @@ const columns = [
     header: 'Additional Data Sources',
   },
 ];
-}
 
 export interface ListsTableProps {
   listId: string;
@@ -87,8 +94,7 @@ const DataSetContentsTable = ({
       const value =
         updater instanceof Function ? updater(prevSelection) : updater;
 
-
-      const members = selectAllDatasetMembers( Object.keys(value), data);
+      const members = selectAllDatasetMembers(Object.keys(value), data);
       updateSelections(listId, members);
 
       return Object.keys(members).reduce(

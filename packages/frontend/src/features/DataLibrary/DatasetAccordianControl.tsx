@@ -15,6 +15,7 @@ import {
   MdModeEditOutline as EditIcon,
   MdDelete as DeleteIcon,
 } from 'react-icons/md';
+import { selectAllDatasetMembers } from './tables/selection';
 
 export const DatasetAccordianControl = (
   props: AccordionControlProps & {
@@ -25,12 +26,12 @@ export const DatasetAccordianControl = (
       update: Record<string, any>,
     ) => Promise<void>;
     deleteListHandler: (listId: string) => Promise<void>;
+    selectListHandler: (listId: string, checked: boolean) => void;
   },
 ): JSX.Element => {
-  const { id, listName, updateHandler, deleteListHandler } = props;
+  const { id, listName, updateHandler, deleteListHandler, selectListHandler } =
+    props;
   const [value, setValue] = useState<string | undefined>(undefined);
-  const [listSelectionState, setListSelectionState] =
-    useState<string>('unselected');
 
   const handleUpdateName = () => {
     updateHandler(id, { name: value });
@@ -39,7 +40,11 @@ export const DatasetAccordianControl = (
 
   return (
     <div className="flex items-center">
-      <Checkbox />
+      <Checkbox
+        onChange={(event) => {
+          selectListHandler(id, event.currentTarget.checked);
+        }}
+      />
       <Accordion.Control {...props} className="w-4" />
       <div className="flex justify-between w-full items-center ml-4">
         {value ? (

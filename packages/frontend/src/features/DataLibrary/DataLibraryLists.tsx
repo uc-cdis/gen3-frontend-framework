@@ -4,8 +4,8 @@ import { DataLibraryList } from './types';
 import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordianControl } from './DatasetAccordianControl';
-import { DataLibrarySelectionProvider } from './tables/SelectionContext';
 import { selectAllDatasetMembers } from './tables/selection';
+import { useDataLibrarySelection } from './tables/SelectionContext';
 
 interface DataLibraryListsProps {
   dataLists: Array<DataLibraryList>;
@@ -18,6 +18,8 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
     updateListInDataLibrary,
     deleteListFromDataLibrary,
   } = useDataLibrary(false);
+
+  const { updateSelections } = useDataLibrarySelection();
 
   const updateList = async (listId: string, update: Record<string, any>) => {
     if (!dataLibraryItems) return;
@@ -40,15 +42,24 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
     });
   };
 
-  const handleSelectList = (listId: string) => {
+  const handleSelectList = (listId: string, checked: boolean) => {
     if (!dataLibraryItems?.lists[listId]) {
       return;
     }
 
+    if (!checked) {
+      updateSelections(listId, {});
+      return;
+    }
+
+    const listMembers = dataLists.find((value) => value.id === listId);
+    if (!listMembers) return;
+
     const selectAllDatasets = selectAllDatasetMembers(
       Object.keys(dataLibraryItems.lists[listId]),
-      dataLists.lists[listId],
+      listMembers.datalistMembers,
     );
+    updateSelections(listId, selectAllDatasets);
   };
 
   console.log('datalist 2', dataLists);
@@ -56,31 +67,31 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
   return (
     <div className="flex flex-col w-full ml-2">
       <SearchAndActions createList={addListToDataLibrary} />
-      <DataLibrarySelectionProvider>
-        {dataLists?.map(({ id, name, datalistMembers }) => {
-          return (
-            <div className="flex items-center" key={id}>
-              <Accordion chevronPosition="left" classNames={{ root: 'w-full' }}>
-                <Accordion.Item value={name} key={name}>
-                  <DatasetAccordianControl
-                    id={id}
-                    listName={name}
-                    updateHandler={updateList}
-                    deleteListHandler={deleteListFromDataLibrary}
+
+      {dataLists?.map(({ id, name, datalistMembers }) => {
+        return (
+          <div className="flex items-center" key={id}>
+            <Accordion chevronPosition="left" classNames={{ root: 'w-full' }}>
+              <Accordion.Item value={name} key={name}>
+                <DatasetAccordianControl
+                  id={id}
+                  listName={name}
+                  updateHandler={updateList}
+                  deleteListHandler={deleteListFromDataLibrary}
+                  selectListHandler={handleSelectList}
+                />
+                <Accordion.Panel>
+                  <DataSetContentsTable
+                    listId={id}
+                    data={datalistMembers}
+                    removeList={removeItemFromList}
                   />
-                  <Accordion.Panel>
-                    <DataSetContentsTable
-                      listId={id}
-                      data={datalistMembers}
-                      removeList={removeItemFromList}
-                    />
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-            </div>
-          );
-        })}
-      </DataLibrarySelectionProvider>
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+          </div>
+        );
+      })}
     </div>
   );
 };

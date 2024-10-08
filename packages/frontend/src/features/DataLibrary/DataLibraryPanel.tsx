@@ -12,6 +12,11 @@ import { data1 } from './utils';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import DataLibraryLists from './DataLibraryLists';
 import { DatasetContents } from './types';
+import { selectAllDatasetMembers } from './tables/selection';
+import {
+  updateDataLibrarySelection,
+  useDataLibrarySelection,
+} from './tables/SelectionContext';
 
 const DataLibraryPanel = () => {
   const { dataLibraryItems, clearLibrary, setAllListsInDataLibrary } =
@@ -69,8 +74,6 @@ const DataLibraryPanel = () => {
       },
     );
   }, [dataLibraryItems?.lists]);
-
-  console.log('datalist', dataLists);
 
   return (
     <div className="flex flex-col w-full ml-2">
