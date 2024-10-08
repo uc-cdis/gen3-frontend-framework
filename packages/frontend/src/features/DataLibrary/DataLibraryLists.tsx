@@ -19,7 +19,7 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
     deleteListFromDataLibrary,
   } = useDataLibrary(false);
 
-  const { updateSelections } = useDataLibrarySelection();
+  const { selections, updateSelections } = useDataLibrarySelection();
 
   const updateList = async (listId: string, update: Record<string, any>) => {
     if (!dataLibraryItems) return;
@@ -42,8 +42,14 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
     });
   };
 
+  console.log('selections', selections);
+
   const handleSelectList = (listId: string, checked: boolean) => {
     if (!dataLibraryItems?.lists[listId]) {
+      return;
+    }
+
+    if (Object.keys(dataLibraryItems?.lists[listId].items).length === 0) {
       return;
     }
 
@@ -56,10 +62,10 @@ const DataLibraryLists: React.FC<DataLibraryListsProps> = ({ dataLists }) => {
     if (!listMembers) return;
 
     const selectAllDatasets = selectAllDatasetMembers(
-      Object.keys(dataLibraryItems.lists[listId]),
+      Object.keys(dataLibraryItems.lists[listId].items), // gets the ids of all of the dataset members of list
       listMembers.datalistMembers,
     );
-    updateSelections(listId, selectAllDatasets);
+    updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
 
   console.log('datalist 2', dataLists);

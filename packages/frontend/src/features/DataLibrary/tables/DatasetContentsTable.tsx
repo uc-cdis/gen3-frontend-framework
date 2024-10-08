@@ -109,7 +109,8 @@ const DataSetContentsTable = ({
 
   useDeepCompareEffect(() => {
     if (!selections[listId]) {
-      console.warn(`List ID ${listId} does not exist in selections`);
+      // not found in selections, unselect all
+      setRowSelection({});
       return;
     }
 
@@ -179,12 +180,7 @@ const DataSetContentsTable = ({
             />
           )}
           {rowData?.queries.length > 0 && (
-            <QueriesTable
-              header="Queries"
-              data={rowData?.queries}
-              selection={rowSelection}
-              updateRowSelection={setRowSelection}
-            />
+            <QueriesTable header="Queries" data={rowData?.queries} />
           )}
         </div>
       );
