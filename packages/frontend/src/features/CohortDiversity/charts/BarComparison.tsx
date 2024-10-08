@@ -53,6 +53,9 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
 
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
+      aria: {
+        enabled: true,
+      },
       tooltip: {
         trigger: 'axis',
         axisPointer: {

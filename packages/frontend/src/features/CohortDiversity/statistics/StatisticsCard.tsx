@@ -153,12 +153,14 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({
                 <Table.Th>Contribution</Table.Th>
               </Table.Tr>
             </Table.Thead>
-            {metrics.chiSquareContributions.map(({ group, contribution }) => (
-              <Table.Tr key={group}>
-                <Table.Td>{group}</Table.Td>
-                <Table.Td>{contribution.toFixed(4)}</Table.Td>
-              </Table.Tr>
-            ))}
+            <Table.Tbody>
+              {metrics.chiSquareContributions.map(({ group, contribution }) => (
+                <Table.Tr key={group}>
+                  <Table.Td>{group}</Table.Td>
+                  <Table.Td>{contribution.toFixed(4)}</Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
           </Table>
         </ScrollArea>
       </Stack>

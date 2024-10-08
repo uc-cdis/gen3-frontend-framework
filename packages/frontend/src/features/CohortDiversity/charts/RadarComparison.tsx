@@ -69,6 +69,9 @@ const RadarComparison: React.FC<ComparisonChartProps> = ({
 
   const chartDefinition = useMemo(() => {
     const option: echarts.EChartsOption = {
+      aria: {
+        enabled: true,
+      },
       title: {
         text: title,
         left: 'center',
