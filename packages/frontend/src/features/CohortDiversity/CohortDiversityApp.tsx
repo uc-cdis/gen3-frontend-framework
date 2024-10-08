@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Stack, Accordion, rem } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
@@ -12,12 +12,12 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   return (
     <Stack classNames={{ root: 'w-full border-1 border-gray-200' }}>
       <Accordion variant="contained">
-        <Accordion.Item value="photos">
+        <Accordion.Item value="summaryCharts">
           <Accordion.Control
             icon={
               <SummaryChartIcon
                 style={{
-                  color: 'var(--mantine-color-red-6',
+                  color: 'accent.4',
                   width: rem(20),
                   height: rem(20),
                 }}
@@ -31,6 +31,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
               data={diversityData[config.datasets.ground.dataset]}
               charts={config.charts}
               isSuccess={true}
+              numCols={2}
             />
           </Accordion.Panel>
         </Accordion.Item>

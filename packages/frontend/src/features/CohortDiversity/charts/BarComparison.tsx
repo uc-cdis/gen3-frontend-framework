@@ -18,6 +18,7 @@ const processComparisonData = (
       name: baseData.label,
       type: 'bar',
       barGap: 0,
+      itemStyle: { color: '#4e79a7' },
       data: baseData.data.map((item) => roundTo2AfterDecimal(item.count)),
       emphasis: {
         focus: 'series',
@@ -26,6 +27,7 @@ const processComparisonData = (
     {
       name: comparisonData.label,
       type: 'bar',
+      itemStyle: { color: '#f28e2c' },
       data: comparisonData.data.map((item) => roundTo2AfterDecimal(item.count)),
       emphasis: {
         focus: 'series',
@@ -59,10 +61,12 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
       },
       title: {
         text: title,
+        left: 'center',
       },
 
       legend: {
         data: [baseDataset.label, comparisonDataset.label],
+        bottom: '5%',
       },
       xAxis: {
         type: 'category',
@@ -88,9 +92,14 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
     <div
       role="region"
       aria-labelledby="bar-comparison-title"
-      className="flex flex-col w-full h-64"
+      className="flex flex-col w-full h-96"
     >
-      <ReactECharts option={chartDefinition} />
+      <ReactECharts
+        option={chartDefinition}
+        settings={{
+          notMerge: true,
+        }}
+      />
     </div>
   );
 };
