@@ -5,6 +5,7 @@ import { Charts } from '../../components/charts';
 import { getDiversityData } from './statistics/data/data';
 import { CohortDiversityConfig } from './types';
 import ComparisonCharts from './charts/ComparisonCharts';
+import StatisticsPanel from './statistics/StatisticsPanel';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();
@@ -37,6 +38,11 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
         </Accordion.Item>
       </Accordion>
       <ComparisonCharts
+        data={diversityData}
+        comparisonChartsConfig={config.comparisonCharts}
+        datasets={config.datasets}
+      />
+      <StatisticsPanel
         data={diversityData}
         comparisonChartsConfig={config.comparisonCharts}
         datasets={config.datasets}
