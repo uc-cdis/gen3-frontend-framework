@@ -14,14 +14,8 @@ import {
 } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordianControl } from './DatasetAccordianControl';
-import {
-  selectAllDatasetMembers,
-  selectAllListItems,
-} from './tables/selection';
-import {
-  numListItemsSelected,
-  useDataLibrarySelection,
-} from './tables/SelectionContext';
+import { selectAllListItems } from './tables/selection';
+import { useDataLibrarySelection } from './tables/SelectionContext';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
