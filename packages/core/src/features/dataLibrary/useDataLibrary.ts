@@ -16,10 +16,10 @@ import {
   updateListIndexDB,
   deleteAll,
 } from './dataLibraryIndexDB';
-import { DataList, LoadAllListData } from './types';
+import { Datalist, LoadAllListData } from './types';
 
 export const useDataLibrary = (useApi: boolean) => {
-  const [localLibrary, setLocalLibrary] = useState<Record<string, DataList>>(
+  const [localLibrary, setLocalLibrary] = useState<Record<string, Datalist>>(
     {},
   );
 
@@ -68,7 +68,7 @@ export const useDataLibrary = (useApi: boolean) => {
     fetchLibrary();
   }, [useApi]);
 
-  const addListToDataLibrary = async (item?: Partial<DataList>) => {
+  const addListToDataLibrary = async (item?: Partial<Datalist>) => {
     const adjustedData = {
       ...(item ?? {}),
       name: generateUniqueName(item?.name ?? 'List'),
@@ -106,7 +106,7 @@ export const useDataLibrary = (useApi: boolean) => {
     }
   };
 
-  const updateListInDataLibrary = async (id: string, data: DataList) => {
+  const updateListInDataLibrary = async (id: string, data: Datalist) => {
     if (useApi) {
       await updateItemInLibraryApi({ id, list: data });
       refetchLibraryFromApi();

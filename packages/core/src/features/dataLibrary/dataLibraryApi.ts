@@ -4,7 +4,7 @@ import { GEN3_DATA_LIBRARY_API } from '../../constants';
 import {
   AddUpdateListParams,
   DataLibraryItems,
-  DataList,
+  Datalist,
   LoadAllListData,
   DataLibraryAPIResponse,
 } from './types';
@@ -33,7 +33,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         return { lists: BuildLists(res) };
       },
     }),
-    getDataLibraryList: builder.query<DataList, string>({
+    getDataLibraryList: builder.query<Datalist, string>({
       query: (id: string) => `${GEN3_DATA_LIBRARY_API}/${id}`,
       transformResponse: (res: DataLibraryAPIResponse) =>
         BuildLists(res)?.lists,
@@ -46,7 +46,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       }),
       invalidatesTags: [TAGS],
     }),
-    addDataLibraryList: builder.mutation<void, Partial<DataList> | undefined>({
+    addDataLibraryList: builder.mutation<void, Partial<Datalist> | undefined>({
       query: (list) => ({
         url: `${GEN3_DATA_LIBRARY_API}/${nanoid()}`,
         method: 'POST',

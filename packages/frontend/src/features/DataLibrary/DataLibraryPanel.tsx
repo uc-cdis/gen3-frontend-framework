@@ -72,7 +72,7 @@ const DataLibraryPanel = () => {
 
   return (
     <div className="flex flex-col w-full ml-2">
-      <DataLibraryLists dataLists={dataLists} />
+      <DataLibraryLists />
       <div className="flex space-x-4 m-2">
         <Button
           onClick={() => {

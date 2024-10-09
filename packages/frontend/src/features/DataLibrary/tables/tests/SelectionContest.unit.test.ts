@@ -87,6 +87,63 @@ describe('DataLibrarySelection', () => {
     expect(newState).toEqual({});
   });
 
+  test('updateDataLibraryListMemberSelection should remove one dataset', () => {
+    const initialStateWithMember: DataLibrarySelectionState = {
+      buJH_tA38h: {
+        DS_211: {
+          id: 'DS_211',
+          objectIds: {
+            'phs000001.v1.p1.c1': true,
+          },
+        },
+        DS_3: {
+          id: 'DS_3',
+          objectIds: {
+            'ab6623a7-a474-4ffb-ab88-e926764628c4': true,
+            'b1aeee0f-fdf1-4092-b8cf-f521c6a6f3ea': true,
+          },
+        },
+        CF_4: {
+          id: 'CF_4',
+          objectIds: {
+            CF_4: true,
+          },
+        },
+      },
+    };
+
+    const action = updateDataLibraryListMemberSelection('buJH_tA38h', 'DS_3', {
+      'ab6623a7-a474-4ffb-ab88-e926764628c4': true,
+    });
+    const newState = dataLibrarySelectionReducer(
+      initialStateWithMember,
+      action,
+    );
+
+    expect(newState).toEqual({
+      buJH_tA38h: {
+        DS_211: {
+          id: 'DS_211',
+          objectIds: {
+            'phs000001.v1.p1.c1': true,
+          },
+        },
+        DS_3: {
+          id: 'DS_3',
+          objectIds: {
+            'ab6623a7-a474-4ffb-ab88-e926764628c4': true,
+          },
+        },
+        CF_4: {
+          id: 'CF_4',
+          objectIds: {
+            CF_4: true,
+          },
+        },
+      },
+    });
+  });
+
   test('updateDataLibraryListMemberSelection should remove member when empty selection is provided', () => {
     const initialStateWithMember: DataLibrarySelectionState = {
       list1: {

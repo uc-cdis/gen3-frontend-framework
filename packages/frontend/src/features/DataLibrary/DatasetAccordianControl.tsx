@@ -19,22 +19,18 @@ import { selectAllDatasetMembers } from './tables/selection';
 
 export const DatasetAccordianControl = (
   props: AccordionControlProps & {
-    id: string;
     listName: string;
-    updateHandler: (
-      listId: string,
-      update: Record<string, any>,
-    ) => Promise<void>;
-    deleteListHandler: (listId: string) => Promise<void>;
-    selectListHandler: (listId: string, checked: boolean) => void;
+    updateHandler: (update: Record<string, any>) => Promise<void>;
+    deleteListHandler: () => Promise<void>;
+    selectListHandler: (checked: boolean) => void;
   },
 ): JSX.Element => {
-  const { id, listName, updateHandler, deleteListHandler, selectListHandler } =
+  const { listName, updateHandler, deleteListHandler, selectListHandler } =
     props;
   const [value, setValue] = useState<string | undefined>(undefined);
 
   const handleUpdateName = () => {
-    updateHandler(id, { name: value });
+    updateHandler({ name: value });
     setValue(undefined);
   };
 
@@ -42,7 +38,7 @@ export const DatasetAccordianControl = (
     <div className="flex items-center">
       <Checkbox
         onChange={(event) => {
-          selectListHandler(id, event.currentTarget.checked);
+          selectListHandler(event.currentTarget.checked);
         }}
       />
       <Accordion.Control {...props} className="w-4" />
@@ -78,7 +74,7 @@ export const DatasetAccordianControl = (
         <ActionIcon
           color="accent.4"
           aria-label="delete datalist"
-          onClick={() => deleteListHandler(id)}
+          onClick={() => deleteListHandler()}
         >
           <DeleteIcon />
         </ActionIcon>

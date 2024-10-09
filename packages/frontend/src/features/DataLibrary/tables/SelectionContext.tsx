@@ -85,6 +85,7 @@ export const dataLibrarySelectionReducer = (
       return {
         ...selections,
         [action.payload.listId]: {
+          ...selections[action.payload.listId],
           [action.payload.memberId]: {
             id: action.payload.memberId,
             objectIds: action.payload.selection,

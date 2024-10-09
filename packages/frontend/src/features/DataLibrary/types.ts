@@ -8,10 +8,10 @@ export interface DatasetContents {
   additionalData: Array<AdditionalDataItem>;
 }
 
-export type DetalistMembers = Record<string, DatasetContents>;
+export type DatalistMembers = Record<string, DatasetContents>;
 
 export interface DataLibraryList {
   id: string;
   name: string;
-  datalistMembers: DetalistMembers;
+  datalistMembers: DatalistMembers;
 }

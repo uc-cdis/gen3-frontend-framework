@@ -55,8 +55,10 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
       value = updater instanceof Function ? updater(prevSelection) : updater;
       return value;
     });
-
+    console.log('Files Before', selections);
+    console.log('updateListMemberSelections', listId, datasetId, value);
     updateListMemberSelections(listId, datasetId, value);
+    console.log('Files After', selections);
   };
 
   const table = useMantineReactTable({

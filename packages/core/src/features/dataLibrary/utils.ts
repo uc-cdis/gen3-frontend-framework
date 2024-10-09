@@ -3,7 +3,7 @@ import {
   CohortItem,
   DataLibrary,
   DataLibraryAPIResponse,
-  DataList,
+  Datalist,
   DataListEntry,
   DataSetItems,
   RegisteredDataListEntry,
@@ -42,7 +42,7 @@ const BuildDataSet = (
 export const BuildList = (
   listId: string,
   listData: JSONObject,
-): DataList | undefined => {
+): Datalist | undefined => {
   if (!Object.keys(listData).includes('items')) return undefined;
 
   const items = Object.entries(listData?.items).reduce(
@@ -71,7 +71,7 @@ export const BuildList = (
         version: (listData.authz as JSONObject).version,
         authz: (listData as JSONObject).authz,
       },
-    } as DataList,
+    } as Datalist,
   );
   return items;
 };

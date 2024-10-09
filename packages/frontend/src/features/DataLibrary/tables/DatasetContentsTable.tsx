@@ -10,7 +10,7 @@ import { ActionIcon } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
-import { DetalistMembers } from '../types';
+import { DatalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
 import {
   numDatesetItemsSelected,
@@ -43,7 +43,7 @@ const columns = [
 
 export interface ListsTableProps {
   listId: string;
-  data: DetalistMembers;
+  data: DatalistMembers;
   removeList: (listId: string, itemId: string) => void;
 }
 
@@ -96,7 +96,6 @@ const DataSetContentsTable = ({
 
       const members = selectAllDatasetMembers(Object.keys(value), data);
       updateSelections(listId, members);
-
       return Object.keys(members).reduce(
         (acc: Record<string, boolean>, key) => {
           acc[key] = Object.keys(members[key].objectIds).length > 0;

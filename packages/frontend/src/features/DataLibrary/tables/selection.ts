@@ -1,5 +1,6 @@
 import { ListMembers, SelectedMembers } from './SelectionContext';
-import { DetalistMembers, DatasetContents } from '../types';
+import { DatalistMembers, DatasetContents } from '../types';
+import { DataList, FilesOrCohort, isCohortItem } from '@gen3/core';
 
 /**
  * Extracts and consolidates GUIDs and IDs from dataset contents into a single object.
@@ -22,12 +23,12 @@ const getObjectIds = (dataset: DatasetContents): SelectedMembers => {
  * Function that generates a mapping of dataset IDs to their respective member objects.
  *
  * @param {Array<string>} datasetIds - Array of dataset IDs to be processed.
- * @param {DetalistMembers} datasetContents - Object containing details about dataset members.
+ * @param {DatalistMembers} datasetContents - Object containing details about dataset members.
  * @returns {ListMembers} - An object mapping each dataset ID to its respective member objects.
  */
 export const selectAllDatasetMembers = (
   datasetIds: Array<string>,
-  datasetContents: DetalistMembers,
+  datasetContents: DatalistMembers,
 ): ListMembers => {
   return datasetIds.reduce((acc: ListMembers, datasetId) => {
     acc[datasetId] = {
@@ -36,4 +37,36 @@ export const selectAllDatasetMembers = (
     };
     return acc;
   }, {});
+};
+
+const getDatasetMembers = (dataSetOrCohort: FilesOrCohort): SelectedMembers => {
+  if (isCohortItem(dataSetOrCohort)) {
+    return { [dataSetOrCohort.id]: true };
+  }
+  return Object.keys(dataSetOrCohort.items).reduce(
+    (acc: SelectedMembers, key) => {
+      acc[key] = true;
+      return acc;
+    },
+    {},
+  );
+};
+
+/**
+ * Function that generates a mapping of dataset IDs to their respective member objects.
+ *
+ * @param {DatalistMembers} members - Object containing details about dataset members.
+ * @returns {ListMembers} - An object mapping each dataset ID to its respective member objects.
+ */
+export const selectAllListItems = (members: DataList): ListMembers => {
+  return Object.entries(members).reduce(
+    (acc: ListMembers, [datasetId, datasetContents]) => {
+      acc[datasetId] = {
+        id: datasetId,
+        objectIds: getDatasetMembers(datasetContents.items),
+      };
+      return acc;
+    },
+    {},
+  );
 };

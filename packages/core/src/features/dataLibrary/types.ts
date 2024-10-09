@@ -74,17 +74,22 @@ export interface RegisteredDataListEntry extends DataListEntry {
   id: string;
 }
 
-export interface DataList {
+export type FilesOrCohort = Record<
+  string,
+  RegisteredDataListEntry | CohortItem
+>;
+
+export interface Datalist {
   id: string;
   createdTime: string;
   updatedTime: string;
   authz: AuthZAccess;
   version: number;
   name: string;
-  items: Record<string, RegisteredDataListEntry | CohortItem>;
+  items: FilesOrCohort;
 }
 
-export type DataLibrary = Record<string, DataList>;
+export type DataLibrary = Record<string, Datalist>;
 
 export type DataLibraryItems = {
   lists: DataLibrary;
@@ -100,5 +105,5 @@ export interface LoadAllListData {
 
 export interface AddUpdateListParams {
   id: string;
-  list: DataList;
+  list: Datalist;
 }

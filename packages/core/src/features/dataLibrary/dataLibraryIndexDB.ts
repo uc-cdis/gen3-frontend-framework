@@ -1,6 +1,6 @@
 import { isArray } from 'lodash';
 import { JSONObject, isJSONObject } from '../../types';
-import { type DataList, LoadAllListData } from './types';
+import { type Datalist, LoadAllListData } from './types';
 import { nanoid } from '@reduxjs/toolkit';
 import { openDB, IDBPDatabase } from 'idb';
 
@@ -10,7 +10,7 @@ const STORE_NAME = 'DataLibraryLists';
 interface ReturnStatus {
   isError?: true;
   status?: string;
-  lists?: Record<string, DataList>;
+  lists?: Record<string, Datalist>;
 }
 
 const getDb = async (): Promise<IDBPDatabase> => {
@@ -77,7 +77,7 @@ export const deleteAll = async () => {
 };
 
 export const addListToDataLibraryIndexDB = async (
-  body?: Partial<DataList>,
+  body?: Partial<Datalist>,
 ): Promise<ReturnStatus> => {
   const timestamp = new Date().toJSON();
   try {
@@ -106,7 +106,7 @@ export const addListToDataLibraryIndexDB = async (
 
 export const updateListIndexDB = async (
   id: string,
-  list: DataList,
+  list: Datalist,
   //  override = true,
 ): Promise<ReturnStatus> => {
   try {
@@ -201,10 +201,10 @@ export const getDataLibraryListIndexDB = async (
         return { isError: true, status: `${id} does not exist` };
       }
     } else {
-      const lists = (await store.getAll()) as Array<DataList>;
+      const lists = (await store.getAll()) as Array<Datalist>;
       return {
         status: 'success',
-        lists: lists.reduce((acc: Record<string, DataList>, x: DataList) => {
+        lists: lists.reduce((acc: Record<string, Datalist>, x: Datalist) => {
           acc[x.id] = x;
           return acc;
         }, {}),
