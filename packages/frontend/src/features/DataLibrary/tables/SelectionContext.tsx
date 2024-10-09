@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
-import { list } from 'postcss';
 
 // Define types
 type ListId = string;
@@ -13,7 +12,7 @@ interface ListMember {
 
 export type ListMembers = Record<string, ListMember>;
 
-interface DataLibrarySelectionState {
+export interface DataLibrarySelectionState {
   [key: ListId]: ListMembers;
 }
 
@@ -46,7 +45,7 @@ const DataLibrarySelectionContext = createContext<
 >(undefined);
 
 // Reducer function
-const dataLibrarySelectionReducer = (
+export const dataLibrarySelectionReducer = (
   selections: DataLibrarySelectionState,
   action: Action,
 ): DataLibrarySelectionState => {
@@ -63,15 +62,23 @@ const dataLibrarySelectionReducer = (
       };
     case 'UPDATE_DATALIST_MEMBER_SELECTION':
       if (Object.keys(action.payload.selection).length === 0) {
+        // need to remove the dataset
         const {
           [action.payload.listId]: {
-            [action.payload.listId]: _unused,
+            [action.payload.memberId]: _unused,
             ...restState
           },
         } = selections;
+
+        if (Object.keys(restState).length === 0) {
+          const { [action.payload.listId]: _unused2, ...restList } = selections;
+          return restList;
+        }
         return {
           ...selections,
-          [action.payload.memberId]: restState,
+          [action.payload.listId]: {
+            ...restState,
+          },
         };
       }
 
