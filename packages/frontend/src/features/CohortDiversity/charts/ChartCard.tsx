@@ -8,13 +8,14 @@ import DiversityChartsFactory, {
 
 DiversityChartsFactory();
 
-const generateChart = (
+export const generateChart = (
   groundData: AggregationsData,
   groundLabel: string,
   comparisonData: AggregationsData,
   comparisonLabel: string,
   field: string,
   config: DiversityChart,
+  showTitle: boolean = true,
 ): ReactNode => {
   // Check if the field exists in the datasets
   if (!(field in groundData) || !(field in comparisonData)) {
@@ -27,8 +28,6 @@ const generateChart = (
     config.chartType,
   );
 
-  console.log(chartRenderer, config.chartType);
-
   // Check if renderer is the DefaultItemRenderer to log a warning
   if (chartRenderer === DefaultComparisonChart) {
     console.warn(
@@ -39,12 +38,12 @@ const generateChart = (
   return chartRenderer({
     baseDataset: { data: groundData[field], label: groundLabel },
     comparisonDataset: { data: comparisonData[field], label: comparisonLabel },
-    title: fieldNameToTitle(field),
+    title: showTitle ? fieldNameToTitle(field) : '',
   });
 };
 
 interface ChartCardProps {
-  style: string;
+  style?: string;
   config: DiversityChart;
   groundData: AggregationsData;
   groundLabel: string;
@@ -54,7 +53,7 @@ interface ChartCardProps {
 }
 
 const ChartCard: React.FC<ChartCardProps> = ({
-  style,
+  style = 'box',
   config,
   groundData,
   groundLabel,

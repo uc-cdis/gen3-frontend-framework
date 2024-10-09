@@ -46,12 +46,8 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
     truncateString(processLabel(d.key), 35),
   );
 
-  const series = useMemo(
-    () => processComparisonData(baseDataset, comparisonDataset),
-    [baseDataset, comparisonDataset],
-  );
-
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
+    const series = processComparisonData(baseDataset, comparisonDataset);
     return {
       aria: {
         enabled: true,
@@ -82,14 +78,7 @@ const BarComparison: React.FC<ComparisonChartProps> = ({
       },
       series: series as SeriesOption[],
     };
-  }, [
-    baseDataset.label,
-    categories,
-    comparisonDataset.label,
-    series,
-    title,
-    yAxisLabel,
-  ]);
+  }, [baseDataset, categories, comparisonDataset, title, yAxisLabel]);
 
   return (
     <div

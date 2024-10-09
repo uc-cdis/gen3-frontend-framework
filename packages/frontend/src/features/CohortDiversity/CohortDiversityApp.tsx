@@ -4,14 +4,14 @@ import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
 import { getDiversityData } from './statistics/data/data';
 import { CohortDiversityConfig } from './types';
-import ComparisonCharts from './charts/ComparisonCharts';
+import ComparisonCards from './ComparisonCards';
 import StatisticsPanel from './statistics/StatisticsPanel';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();
 
   return (
-    <Stack classNames={{ root: 'w-full border-1 border-gray-200' }}>
+    <Stack classNames={{ root: 'w-full border-1 border-gray-200 m-4' }}>
       <Accordion variant="contained">
         <Accordion.Item value="summaryCharts">
           <Accordion.Control
@@ -37,12 +37,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
-      <ComparisonCharts
-        data={diversityData}
-        comparisonChartsConfig={config.comparisonCharts}
-        datasets={config.datasets}
-      />
-      <StatisticsPanel
+      <ComparisonCards
         data={diversityData}
         comparisonChartsConfig={config.comparisonCharts}
         datasets={config.datasets}

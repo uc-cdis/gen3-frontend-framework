@@ -1,7 +1,7 @@
 import React from 'react';
 import { AggregationsData, fieldNameToTitle } from '@gen3/core';
 import { DiversityChart, GroundWithComparisonDatasets } from '../types';
-import { Grid } from '@mantine/core';
+import { Card, Grid, Text } from '@mantine/core';
 import ChartCard from '../charts/ChartCard';
 import { computeRowSpan } from '../../../components/charts';
 import StatisticsCard from './StatisticsCard';
@@ -19,7 +19,6 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({
   datasets,
   comparisonChartsConfig,
   numColumns = 2,
-  style = 'tile',
 }) => {
   const spans = computeRowSpan(
     Object.keys(comparisonChartsConfig).length,
@@ -36,11 +35,15 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({
             span={spans[indexNum]}
             key={`${indexNum}-charts-${field}-col`}
           >
-            <StatisticsCard
-              baseData={ground[field]}
-              comparisonData={comparison[field]}
-              title={fieldNameToTitle(field)}
-            />
+            <Card shadow="sm" padding="lg" radius="md" withBorder>
+              <Text size="lg" fw={700} mb="md">
+                {fieldNameToTitle(field)}
+              </Text>
+              <StatisticsCard
+                baseData={ground[field]}
+                comparisonData={comparison[field]}
+              />
+            </Card>
           </Grid.Col>
         );
       })}

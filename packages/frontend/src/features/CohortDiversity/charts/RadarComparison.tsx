@@ -57,17 +57,14 @@ const RadarComparison: React.FC<ComparisonChartProps> = ({
   baseDataset,
   comparisonDataset,
   title,
+  yAxisLabel = 'percent',
 }) => {
   const categories = baseDataset.data.map((d: any) =>
     truncateString(processLabel(d.key), 35),
   );
 
-  const series = useMemo(
-    () => processComparisonData(baseDataset, comparisonDataset),
-    [baseDataset, comparisonDataset],
-  );
-
   const chartDefinition = useMemo(() => {
+    const series = processComparisonData(baseDataset, comparisonDataset);
     const option: echarts.EChartsOption = {
       aria: {
         enabled: true,
@@ -95,7 +92,7 @@ const RadarComparison: React.FC<ComparisonChartProps> = ({
     };
 
     return option;
-  }, [baseDataset.label, categories, comparisonDataset.label, series, title]);
+  }, [baseDataset, categories, comparisonDataset, title, yAxisLabel]);
 
   return (
     <div

@@ -101,70 +101,62 @@ const LabeledValueRow: React.FC<LabeledValueProps> = ({ label, value }) => {
 };
 
 interface StatisticsCardProps {
-  title: string;
   baseData: HistogramDataArray;
   comparisonData: HistogramDataArray;
 }
 
 const StatisticsCard: React.FC<StatisticsCardProps> = ({
-  title,
   baseData,
   comparisonData,
 }) => {
   const metrics = computeStatistics(baseData, comparisonData);
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Text size="lg" fw={700} mb="md">
-        {title}
+    <Stack gap="xs">
+      <LabeledValueRow
+        label="Mean Absolute Error (MAE)"
+        value={metrics.mae.toFixed(4)}
+      />
+      <LabeledValueRow
+        label="Root Mean Square Error (RMSE)"
+        value={metrics.rmse.toFixed(4)}
+      />
+      <LabeledValueRow
+        label="Pearson Correlation Coefficient"
+        value={metrics.correlation.toFixed(4)}
+      />
+      <LabeledValueRow
+        label="Robust Chi-Square Statistic"
+        value={metrics.robustChiSquare.toFixed(4)}
+      />
+      <Text fw={600} size="sm" className="uppercase">
+        Chi-Square Contributions by Group
       </Text>
-
-      <Stack gap="xs">
-        <LabeledValueRow
-          label="Mean Absolute Error (MAE)"
-          value={metrics.mae.toFixed(4)}
-        />
-        <LabeledValueRow
-          label="Root Mean Square Error (RMSE)"
-          value={metrics.rmse.toFixed(4)}
-        />
-        <LabeledValueRow
-          label="Pearson Correlation Coefficient"
-          value={metrics.correlation.toFixed(4)}
-        />
-        <LabeledValueRow
-          label="Robust Chi-Square Statistic"
-          value={metrics.robustChiSquare.toFixed(4)}
-        />
-        <Text fw={600} size="sm" className="uppercase">
-          Chi-Square Contributions by Group
-        </Text>
-        <ScrollArea h={300}>
-          <Table
-            striped
-            withTableBorder
-            withColumnBorders
-            stickyHeader
-            stickyHeaderOffset={0}
-          >
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Group</Table.Th>
-                <Table.Th>Contribution</Table.Th>
+      <ScrollArea h={200}>
+        <Table
+          striped
+          withTableBorder
+          withColumnBorders
+          stickyHeader
+          stickyHeaderOffset={0}
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Group</Table.Th>
+              <Table.Th>Contribution</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {metrics.chiSquareContributions.map(({ group, contribution }) => (
+              <Table.Tr key={group}>
+                <Table.Td>{group}</Table.Td>
+                <Table.Td>{contribution.toFixed(4)}</Table.Td>
               </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {metrics.chiSquareContributions.map(({ group, contribution }) => (
-                <Table.Tr key={group}>
-                  <Table.Td>{group}</Table.Td>
-                  <Table.Td>{contribution.toFixed(4)}</Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        </ScrollArea>
-      </Stack>
-    </Card>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
+    </Stack>
   );
 };
 
