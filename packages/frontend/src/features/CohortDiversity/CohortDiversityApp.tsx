@@ -5,7 +5,6 @@ import { Charts } from '../../components/charts';
 import { getDiversityData } from './statistics/data/data';
 import { CohortDiversityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
-import StatisticsPanel from './statistics/StatisticsPanel';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const diversityData = getDiversityData();

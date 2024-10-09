@@ -46,13 +46,6 @@ const computeStatistics = (
   );
   const correlation = numerator / denominator;
 
-  // Chi-Square Statistic
-  const chiSquare = baseValues.reduce((sum, value, index) => {
-    const expected = value;
-    const observed = cmpValues[index];
-    return sum + Math.pow(observed - expected, 2) / expected;
-  }, 0);
-
   const robustChiSquare = baseValues.reduce((sum, expected, index) => {
     const observed = cmpValues[index];
     if (expected === 0 && observed === 0) {

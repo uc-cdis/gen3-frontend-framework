@@ -59,32 +59,7 @@ const ComparisonCard: React.FC<ComparisonCardProps> = ({
   style = 'box',
 }) => {
   const [viewType, setViewType] = useState<string>(config.chartType);
-  /*
-  const chart = useMemo(
-    () =>
-      generateChart(
-        groundData,
-        groundLabel,
-        comparisonData,
-        comparisonLabel,
-        field,
-        {
-          ...config,
-          chartType: viewType,
-        },
-        false,
-      ),
-    [
-      groundData,
-      groundLabel,
-      comparisonData,
-      comparisonLabel,
-      field,
-      config,
-      viewType,
-    ], // <- Add relevant dependencies
-  );
-*/
+
   return (
     <Card shadow="xs" withBorder={style === 'box'} className="h-full">
       <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
