@@ -3,8 +3,8 @@ import { DatalistMembers, DatasetContents } from '../types';
 import {
   CohortItem,
   Datalist,
-  FilesOrCohort,
   isCohortItem,
+  isFileItem,
   RegisteredDataListEntry,
 } from '@gen3/core';
 
@@ -16,8 +16,10 @@ import {
  *                           with a boolean value set to true.
  */
 const getObjectIds = (dataset: DatasetContents): SelectedMembers => {
+  console.log('getObjectIds', dataset);
+
   return [
-    ...dataset.files.map((file) => file.guid),
+    ...dataset.files.map((file) => file.id),
     ...dataset.queries.map((query) => query.id),
   ].reduce((acc: SelectedMembers, key) => {
     acc[key] = true;
@@ -48,12 +50,14 @@ export const selectAllDatasetMembers = (
 const getDatasetMembers = (
   dataSetOrCohort: RegisteredDataListEntry | CohortItem,
 ): SelectedMembers => {
+  console.log('getDatasetMembers', dataSetOrCohort);
   if (isCohortItem(dataSetOrCohort)) {
     return { [dataSetOrCohort.id]: true };
   }
-  return Object.keys(dataSetOrCohort.items).reduce(
-    (acc: SelectedMembers, key) => {
-      acc[key] = true;
+  return Object.entries(dataSetOrCohort.items).reduce(
+    (acc: SelectedMembers, [key, item]) => {
+      console.log('dataset', key, item);
+      if (isFileItem(item)) acc[key] = true;
       return acc;
     },
     {},
@@ -67,6 +71,7 @@ const getDatasetMembers = (
  * @returns {ListMembers} - An object mapping each dataset ID to its respective member objects.
  */
 export const selectAllListItems = (members: Datalist): ListMembers => {
+  console.log('selectAll', members);
   return Object.entries(members.items).reduce(
     (acc: ListMembers, [datasetId, datasetContents]) => {
       acc[datasetId] = {

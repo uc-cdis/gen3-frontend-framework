@@ -6,7 +6,7 @@ import DataLibraryLists from './DataLibraryLists';
 const DataLibraryPanel = () => {
   const { clearLibrary, setAllListsInDataLibrary } = useDataLibrary(false);
   return (
-    <div className="flex flex-col w-full ml-2">
+    <div className="flex flex-col w-full m-4">
       <DataLibraryLists />
       <div className="flex space-x-4 m-2">
         <Button

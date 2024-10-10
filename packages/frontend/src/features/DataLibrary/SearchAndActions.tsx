@@ -5,10 +5,10 @@ import {
   MdDelete as DeleteIcon,
   MdSearch as SearchIcon,
 } from 'react-icons/md';
-import { DataList } from '@gen3/core';
+import { Datalist } from '@gen3/core';
 
 interface SearchAndActionsProps {
-  createList: (item?: Partial<DataList>) => Promise<void>;
+  createList: (item?: Partial<Datalist>) => Promise<void>;
 }
 
 const SearchAndActions: React.FC<SearchAndActionsProps> = ({ createList }) => {

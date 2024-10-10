@@ -28,6 +28,7 @@ const BuildDataSet = (
         ...data,
         itemType: 'Data',
         guid: id,
+        id: id, // TODO fix this hack
       };
     }
     return acc;

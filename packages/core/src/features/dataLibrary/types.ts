@@ -21,6 +21,7 @@ export interface ListItem {
  */
 
 export interface FileItem extends ListItem {
+  id: string;
   guid: string;
   name?: string;
   description?: string;

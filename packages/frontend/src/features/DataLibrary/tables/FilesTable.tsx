@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 import { FileItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
-import { OnChangeFn } from '@tanstack/table-core';
 import { useDataLibrarySelection } from './SelectionContext';
 
 interface FilesTableProps {
@@ -45,6 +44,7 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
   useEffect(() => {
     const sel = selections?.[listId]?.[datasetId]?.objectIds ?? {};
     setRowSelection(sel);
+    console.log('FilesTable useEffect', listId, datasetId, sel);
   }, [listId, datasetId, selections]);
 
   const handleRowSelectionChange = (
@@ -61,12 +61,14 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
     console.log('Files After', selections);
   };
 
+  console.log('FilesTable data', data);
+
   const table = useMantineReactTable({
     columns,
     data: data,
     ...commonTableSettings,
     enableRowActions: false,
-    getRowId: (originalRow) => originalRow.guid,
+    getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
   });

@@ -9,21 +9,21 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useState } from 'react';
-import { useDataLibrary } from '@gen3/core';
 import { getHotkeyHandler } from '@mantine/hooks';
 import {
   MdModeEditOutline as EditIcon,
   MdDelete as DeleteIcon,
 } from 'react-icons/md';
-import { selectAllDatasetMembers } from './tables/selection';
 
-export const DatasetAccordianControl = (
-  props: AccordionControlProps & {
-    listName: string;
-    updateHandler: (update: Record<string, any>) => Promise<void>;
-    deleteListHandler: () => Promise<void>;
-    selectListHandler: (checked: boolean) => void;
-  },
+interface DatasetAccordionControlProps extends AccordionControlProps {
+  listName: string;
+  updateHandler: (update: Record<string, any>) => Promise<void>;
+  deleteListHandler: () => Promise<void>;
+  selectListHandler: (checked: boolean) => void;
+}
+
+export const DatasetAccordionControl = (
+  props: DatasetAccordionControlProps,
 ): JSX.Element => {
   const { listName, updateHandler, deleteListHandler, selectListHandler } =
     props;

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Accordion } from '@mantine/core';
 import DataSetContentsTable from './tables/DatasetContentsTable';
-import { DataLibraryList, DatalistMembers, DatasetContents } from './types';
+import { DatasetContents } from './types';
 import {
   useDataLibrary,
   Datalist,
@@ -13,7 +13,7 @@ import {
   isAdditionalDataItem,
 } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
-import { DatasetAccordianControl } from './DatasetAccordianControl';
+import { DatasetAccordionControl } from './DatasetAccordionControl';
 import { selectAllListItems } from './tables/selection';
 import { useDataLibrarySelection } from './tables/SelectionContext';
 
@@ -53,19 +53,25 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             [] as AdditionalDataItem[],
           ];
 
+          console.log('datasetId', datasetId);
+          console.log('dataItem', dataItem);
+
           // for each dataset in the List
 
           if (isCohortItem(dataItem)) {
             queries.push({
               ...(dataItem as CohortItem),
               description: '',
-              id: datasetId,
+              //  id: datasetId,
             });
           } else {
             // handle RegisteredDataListEntry
-            Object.values(dataItem.items).forEach((item) => {
+            Object.entries(dataItem.items).forEach(([itemId, item]) => {
               if (isFileItem(item)) {
-                files.push(item);
+                files.push({
+                  ...item,
+                  id: itemId,
+                });
               } else if (isAdditionalDataItem(item)) {
                 additionalData.push(item);
               } else {
@@ -113,9 +119,11 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
 
+  console.log('selections', selections);
+
   return (
     <Accordion.Item value={listName} key={listName}>
-      <DatasetAccordianControl
+      <DatasetAccordionControl
         listName={listName}
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
