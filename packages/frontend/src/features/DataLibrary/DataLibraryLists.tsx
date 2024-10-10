@@ -106,6 +106,10 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       listId,
     );
 
+    if (numberOfItemsInList === 0) {
+      setSelectedState(checked ? 'checked' : 'unchecked');
+    }
+
     if (numberOfSelectedItemsInList == 0) setSelectedState('unchecked');
     else if (numberOfSelectedItemsInList == numberOfItemsInList)
       setSelectedState('checked');
@@ -125,6 +129,10 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   };
 
   const handleSelectList = (checked: boolean) => {
+    setChecked(checked);
+    if (numberOfItemsInList === 0) {
+      setSelectedState(checked ? 'checked' : 'unchecked');
+    }
     if (Object.keys(dataList.items).length === 0) {
       return;
     }
@@ -138,8 +146,6 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       dataList, // gets the ids of all the dataset members of list
     );
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
-
-    setChecked(checked);
   };
 
   return (

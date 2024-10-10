@@ -14,7 +14,7 @@ interface SearchAndActionsProps {
 const SearchAndActions: React.FC<SearchAndActionsProps> = ({ createList }) => {
   return (
     <div className="flex flex-col w-full ml-2">
-      <Group grow>
+      <Group justify="space-between" className="mb-2">
         <TextInput
           variant="filled"
           placeholder="Search..."
@@ -27,10 +27,6 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({ createList }) => {
           aria-label="create a new list"
         >
           <PlusIcon size="1.5em" />
-        </Button>
-
-        <Button variant="outline" aria-label="delete selected list">
-          <DeleteIcon size="1.5em" />
         </Button>
       </Group>
     </div>
