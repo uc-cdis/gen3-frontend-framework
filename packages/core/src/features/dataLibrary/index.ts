@@ -16,6 +16,8 @@ import {
   dataLibrarySelectionReducer,
 } from './dataLibrarySelectionSlice';
 
+import { getNumberOfItemsInDatalist } from './utils';
+
 export {
   useGetDataLibraryListQuery,
   useGetDataLibraryListsQuery,
@@ -26,4 +28,5 @@ export {
   setDataLibraryListSelection,
   clearDataLibrarySelection,
   dataLibrarySelectionReducer,
+  getNumberOfItemsInDatalist,
 };

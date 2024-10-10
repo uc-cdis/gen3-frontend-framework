@@ -166,7 +166,7 @@ export const clearDataLibrarySelection = (): Action => ({
   type: 'CLEAR_DATA_LIBRARY_SELECTION',
 });
 
-export const numDatesetItemsSelected = (
+export const getNumberOfDataSetItemsSelected = (
   selections: DataLibrarySelectionState,
   listId: string,
   itemId: string,
@@ -174,13 +174,26 @@ export const numDatesetItemsSelected = (
   return Object.keys(selections?.[listId]?.[itemId]?.objectIds ?? {}).length;
 };
 
-export const numListItemsSelected = (
+export const getNumberOfSelectedItemsInList = (
   selections: DataLibrarySelectionState,
   listId: string,
-) =>
-  Object.keys(selections[listId]).reduce((count: number, datasetId) => {
-    return count + numDatesetItemsSelected(selections, listId, datasetId);
+): number => {
+  if (!(listId in selections) || !selections[listId]) return 0;
+
+  return Object.keys(selections[listId]).reduce((count: number, datasetId) => {
+    try {
+      return (
+        count + getNumberOfDataSetItemsSelected(selections, listId, datasetId)
+      );
+    } catch (error) {
+      console.error(
+        `Failed to get number of selected items for dataset ${datasetId} in list ${listId}:`,
+        error,
+      );
+      return count;
+    }
   }, 0);
+};
 
 // Selector function
 export const selectDataLibrarySelectedItems = (

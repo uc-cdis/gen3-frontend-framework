@@ -14,12 +14,14 @@ import {
   MdModeEditOutline as EditIcon,
   MdDelete as DeleteIcon,
 } from 'react-icons/md';
+import { DataItemSelectedState } from './types';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
   updateHandler: (update: Record<string, any>) => Promise<void>;
   deleteListHandler: () => Promise<void>;
   selectListHandler: (checked: boolean) => void;
+  selectedState: DataItemSelectedState;
 }
 
 export const DatasetAccordionControl = ({
@@ -27,12 +29,10 @@ export const DatasetAccordionControl = ({
   updateHandler,
   deleteListHandler,
   selectListHandler,
+  selectedState,
   ...props
 }: DatasetAccordionControlProps): JSX.Element => {
-  // const { listName, updateHandler, deleteListHandler, selectListHandler } =
-  //   props;
   const [value, setValue] = useState<string | undefined>(undefined);
-
   const handleUpdateName = () => {
     updateHandler({ name: value });
     setValue(undefined);
@@ -44,6 +44,8 @@ export const DatasetAccordionControl = ({
         onChange={(event) => {
           selectListHandler(event.currentTarget.checked);
         }}
+        checked={selectedState == 'checked'}
+        indeterminate={selectedState == 'indeterminate'}
       />
       <Accordion.Control {...props} className="w-4" />
       <div className="flex justify-between w-full items-center ml-4">

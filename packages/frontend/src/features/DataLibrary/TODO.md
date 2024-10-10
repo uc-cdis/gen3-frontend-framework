@@ -2,9 +2,10 @@
 ## v1
 * create new list
 * select lists/datasets
-* show selected lists
+* gather selected items
+* show selected list items in modal
 * show query expression in table
-* remove table headers for selecte/expand/actions
+* remove table headers for select/expand/actions
 * fix styling:
   * icon colors
   * layout

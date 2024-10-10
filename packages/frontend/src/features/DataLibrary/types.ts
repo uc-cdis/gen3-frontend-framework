@@ -15,3 +15,5 @@ export interface DataLibraryList {
   name: string;
   datalistMembers: DatalistMembers;
 }
+
+export type DataItemSelectedState = 'checked' | 'unchecked' | 'indeterminate';

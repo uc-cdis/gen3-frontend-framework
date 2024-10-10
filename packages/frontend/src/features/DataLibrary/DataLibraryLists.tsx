@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Accordion } from '@mantine/core';
 import DataSetContentsTable from './tables/DatasetContentsTable';
-import { DatasetContents } from './types';
+import { DataItemSelectedState, DatasetContents } from './types';
 import {
   useDataLibrary,
   Datalist,
@@ -11,11 +11,15 @@ import {
   isCohortItem,
   isFileItem,
   isAdditionalDataItem,
+  getNumberOfItemsInDatalist,
 } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
 import { selectAllListItems } from './tables/selection';
-import { useDataLibrarySelection } from './tables/SelectionContext';
+import {
+  getNumberOfSelectedItemsInList,
+  useDataLibrarySelection,
+} from './tables/SelectionContext';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
@@ -27,11 +31,14 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   const { updateListInDataLibrary, deleteListFromDataLibrary } =
     useDataLibrary(false);
 
-  const [selectedState, setSelectedState] = useState<
-    'checked' | 'unchecked' | 'indeterminate'
-  >('unchecked');
+  const [selectedState, setSelectedState] =
+    useState<DataItemSelectedState>('unchecked');
 
   const { id: listId, name: listName } = dataList;
+  const numberOfItemsInList = useMemo(() => {
+    console.log('dataList', dataList);
+    return getNumberOfItemsInDatalist(dataList);
+  }, [dataList]);
 
   const { selections, updateSelections } = useDataLibrarySelection();
 
@@ -52,9 +59,6 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             [] as FileItem[],
             [] as AdditionalDataItem[],
           ];
-
-          console.log('datasetId', datasetId);
-          console.log('dataItem', dataItem);
 
           // for each dataset in the List
 
@@ -94,8 +98,25 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     [dataList],
   );
 
+  useEffect(() => {
+    const numberOfSelectedItemsInList = getNumberOfSelectedItemsInList(
+      selections,
+      listId,
+    );
+    console.log(
+      'selectionCount',
+      numberOfSelectedItemsInList,
+      numberOfItemsInList,
+    );
+    if (numberOfSelectedItemsInList == 0) setSelectedState('unchecked');
+    else if (numberOfSelectedItemsInList == numberOfItemsInList)
+      setSelectedState('checked');
+    else setSelectedState('indeterminate');
+  }, [listId, numberOfItemsInList, selections]);
+
   const removeItemFromList = async (itemId: string) => {
-    const { [itemId]: removedKey, ...newObject } = dataList.items;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [itemId]: _removedKey, ...newObject } = dataList.items;
     await updateListInDataLibrary(listId, {
       ...dataList,
       items: newObject,
@@ -114,12 +135,10 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     }
 
     const selectAllDatasets = selectAllListItems(
-      dataList, // gets the ids of all of the dataset members of list
+      dataList, // gets the ids of all the dataset members of list
     );
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
-
-  console.log('selections', selections);
 
   return (
     <Accordion.Item value={listName} key={listName}>
@@ -128,6 +147,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}
+        selectedState={selectedState}
       />
       <Accordion.Panel>
         <DataSetContentsTable

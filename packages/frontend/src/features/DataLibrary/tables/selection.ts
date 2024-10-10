@@ -47,7 +47,19 @@ export const selectAllDatasetMembers = (
   }, {});
 };
 
-const getDatasetMembers = (
+/**
+ * Retrieves the members of a given dataset or cohort.
+ *
+ * This function takes either a dataset or a cohort item and returns an
+ * object representing the selected members. In the case of a cohort item,
+ * it returns an object with the cohort's ID set to true. For a dataset,
+ * it iterates through the dataset items and sets the keys of file items
+ * to true in the returned object.
+ *
+ * @param {RegisteredDataListEntry | CohortItem} dataSetOrCohort - The dataset or cohort item to process.
+ * @returns {SelectedMembers} An object representing the selected members.
+ */
+export const getDatasetMembers = (
   dataSetOrCohort: RegisteredDataListEntry | CohortItem,
 ): SelectedMembers => {
   console.log('getDatasetMembers', dataSetOrCohort);
@@ -65,13 +77,12 @@ const getDatasetMembers = (
 };
 
 /**
- * Function that generates a mapping of dataset IDs to their respective member objects.
+ * Selects all list items from the provided data list and transforms them into a ListMembers structure.
  *
- * @param {Datalist} members - Object containing details about dataset members.
- * @returns {ListMembers} - An object mapping each dataset ID to its respective member objects.
+ * @param {Datalist} members - The data list containing items to be transformed.
+ * @return {ListMembers} - Transformed structure containing the selected list items with dataset IDs and their corresponding object IDs.
  */
 export const selectAllListItems = (members: Datalist): ListMembers => {
-  console.log('selectAll', members);
   return Object.entries(members.items).reduce(
     (acc: ListMembers, [datasetId, datasetContents]) => {
       acc[datasetId] = {

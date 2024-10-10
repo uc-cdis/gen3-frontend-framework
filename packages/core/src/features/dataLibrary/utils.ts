@@ -6,6 +6,8 @@ import {
   Datalist,
   DataListEntry,
   DataSetItems,
+  isCohortItem,
+  isFileItem,
   RegisteredDataListEntry,
 } from './types';
 import { JSONObject } from '../../types/';
@@ -83,4 +85,30 @@ export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
     if (list) acc[listId] = list;
     return acc;
   }, {} as DataLibrary);
+};
+
+/**
+ * Calculates the total number of items within a DataList object.
+ *
+ * @param {DataList} dataList - The DataList object to count items from.
+ * @return {number} The total number of items in the DataList.
+ */
+export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
+  if (!dataList?.items) return 0;
+
+  return Object.values(dataList.items).reduce((count, item) => {
+    if (isCohortItem(item)) {
+      return count + 1;
+    } else {
+      return (
+        count +
+        Object.values(item.items).reduce((fileCount, x) => {
+          if (isFileItem(x)) {
+            return fileCount + 1;
+          }
+          return fileCount;
+        }, 0)
+      );
+    }
+  }, 0);
 };

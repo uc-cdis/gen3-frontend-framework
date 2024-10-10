@@ -13,7 +13,7 @@ import QueriesTable from './QueriesTable';
 import { DatalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
 import {
-  numDatesetItemsSelected,
+  getNumberOfDataSetItemsSelected,
   useDataLibrarySelection,
 } from './SelectionContext';
 import { selectAllDatasetMembers } from './selection';
@@ -139,7 +139,11 @@ const DataSetContentsTable = ({
     enableSelectAll: false,
     state: { rowSelection },
     mantineSelectCheckboxProps: ({ row }) => {
-      const selectedCount = numDatesetItemsSelected(selections, listId, row.id);
+      const selectedCount = getNumberOfDataSetItemsSelected(
+        selections,
+        listId,
+        row.id,
+      );
       const isIndeterminate =
         selectedCount > 0 && selectedCount != row.original.numItems;
       return {
