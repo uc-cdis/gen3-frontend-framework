@@ -23,23 +23,26 @@ import {
 
 interface DatalistAccordionProps {
   dataList: Datalist;
+  updateListInDataLibrary: (id: string, data: Datalist) => Promise<void>;
+  deleteListFromDataLibrary: (id: string) => Promise<void>;
 }
 
 const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
+  updateListInDataLibrary,
+  deleteListFromDataLibrary,
 }) => {
-  const { updateListInDataLibrary, deleteListFromDataLibrary } =
-    useDataLibrary(false);
-
   const [selectedState, setSelectedState] =
     useState<DataItemSelectedState>('unchecked');
+  const [checked, setChecked] = useState<boolean>(false);
 
   const { id: listId, name: listName } = dataList;
   const numberOfItemsInList = useMemo(() => {
     return getNumberOfItemsInDatalist(dataList);
   }, [dataList]);
 
-  const { selections, updateSelections } = useDataLibrarySelection();
+  const { selections, updateSelections, updateListMemberSelections } =
+    useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary(listId, {
@@ -102,6 +105,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       selections,
       listId,
     );
+
     if (numberOfSelectedItemsInList == 0) setSelectedState('unchecked');
     else if (numberOfSelectedItemsInList == numberOfItemsInList)
       setSelectedState('checked');
@@ -116,6 +120,8 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       items: newObject,
       updatedTime: new Date().toISOString(),
     });
+    // update selections
+    updateListMemberSelections(listId, itemId, {});
   };
 
   const handleSelectList = (checked: boolean) => {
@@ -132,6 +138,8 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       dataList, // gets the ids of all the dataset members of list
     );
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
+
+    setChecked(checked);
   };
 
   return (
@@ -155,7 +163,12 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 };
 
 const DataLibraryLists = () => {
-  const { dataLibraryItems, addListToDataLibrary } = useDataLibrary(false);
+  const {
+    dataLibraryItems,
+    addListToDataLibrary,
+    updateListInDataLibrary,
+    deleteListFromDataLibrary,
+  } = useDataLibrary(false);
 
   return (
     <div className="flex flex-col w-full ml-2">
@@ -165,7 +178,12 @@ const DataLibraryLists = () => {
           {dataLibraryItems &&
             Object.values(dataLibraryItems.lists).map((datalist) => {
               return (
-                <DatalistAccordionItem dataList={datalist} key={datalist.id} />
+                <DatalistAccordionItem
+                  dataList={datalist}
+                  key={datalist.id}
+                  updateListInDataLibrary={updateListInDataLibrary}
+                  deleteListFromDataLibrary={deleteListFromDataLibrary}
+                />
               );
             })}
         </Accordion>

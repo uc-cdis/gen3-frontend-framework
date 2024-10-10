@@ -27,10 +27,6 @@ const nextConfig = {
       moduleIdStrategy: 'deterministic',
     },
   },
-  i18n: {
-    locales: ['en-US'],
-    defaultLocale: 'en-US',
-  },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',

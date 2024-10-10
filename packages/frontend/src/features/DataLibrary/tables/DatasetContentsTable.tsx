@@ -44,7 +44,7 @@ const columns = [
 export interface ListsTableProps {
   listId: string;
   data: DatalistMembers;
-  removeList: (listId: string, itemId: string) => void;
+  removeList: (itemId: string) => void;
 }
 
 const DataSetContentsTable = ({
@@ -157,7 +157,7 @@ const DataSetContentsTable = ({
       <ActionIcon
         aria-label={`remove datalist ${row.original.name} from list`}
         onClick={() => {
-          removeList(listId, row.id);
+          removeList(row.id);
         }}
       >
         <RemoveIcon />
