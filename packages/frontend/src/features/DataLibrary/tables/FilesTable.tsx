@@ -44,7 +44,6 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
   useEffect(() => {
     const sel = selections?.[listId]?.[datasetId]?.objectIds ?? {};
     setRowSelection(sel);
-    console.log('FilesTable useEffect', listId, datasetId, sel);
   }, [listId, datasetId, selections]);
 
   const handleRowSelectionChange = (
@@ -55,13 +54,8 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
       value = updater instanceof Function ? updater(prevSelection) : updater;
       return value;
     });
-    console.log('Files Before', selections);
-    console.log('updateListMemberSelections', listId, datasetId, value);
     updateListMemberSelections(listId, datasetId, value);
-    console.log('Files After', selections);
   };
-
-  console.log('FilesTable data', data);
 
   const table = useMantineReactTable({
     columns,

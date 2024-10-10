@@ -16,8 +16,6 @@ import {
  *                           with a boolean value set to true.
  */
 const getObjectIds = (dataset: DatasetContents): SelectedMembers => {
-  console.log('getObjectIds', dataset);
-
   return [
     ...dataset.files.map((file) => file.id),
     ...dataset.queries.map((query) => query.id),
@@ -62,13 +60,11 @@ export const selectAllDatasetMembers = (
 export const getDatasetMembers = (
   dataSetOrCohort: RegisteredDataListEntry | CohortItem,
 ): SelectedMembers => {
-  console.log('getDatasetMembers', dataSetOrCohort);
   if (isCohortItem(dataSetOrCohort)) {
     return { [dataSetOrCohort.id]: true };
   }
   return Object.entries(dataSetOrCohort.items).reduce(
     (acc: SelectedMembers, [key, item]) => {
-      console.log('dataset', key, item);
       if (isFileItem(item)) acc[key] = true;
       return acc;
     },

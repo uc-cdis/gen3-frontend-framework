@@ -36,7 +36,6 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
   const { id: listId, name: listName } = dataList;
   const numberOfItemsInList = useMemo(() => {
-    console.log('dataList', dataList);
     return getNumberOfItemsInDatalist(dataList);
   }, [dataList]);
 
@@ -102,11 +101,6 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     const numberOfSelectedItemsInList = getNumberOfSelectedItemsInList(
       selections,
       listId,
-    );
-    console.log(
-      'selectionCount',
-      numberOfSelectedItemsInList,
-      numberOfItemsInList,
     );
     if (numberOfSelectedItemsInList == 0) setSelectedState('unchecked');
     else if (numberOfSelectedItemsInList == numberOfItemsInList)
