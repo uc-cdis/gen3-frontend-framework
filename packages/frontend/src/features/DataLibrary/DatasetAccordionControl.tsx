@@ -22,11 +22,15 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
   selectListHandler: (checked: boolean) => void;
 }
 
-export const DatasetAccordionControl = (
-  props: DatasetAccordionControlProps,
-): JSX.Element => {
-  const { listName, updateHandler, deleteListHandler, selectListHandler } =
-    props;
+export const DatasetAccordionControl = ({
+  listName,
+  updateHandler,
+  deleteListHandler,
+  selectListHandler,
+  ...props
+}: DatasetAccordionControlProps): JSX.Element => {
+  // const { listName, updateHandler, deleteListHandler, selectListHandler } =
+  //   props;
   const [value, setValue] = useState<string | undefined>(undefined);
 
   const handleUpdateName = () => {
