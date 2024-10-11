@@ -2,7 +2,12 @@ import React, { ComponentType, useEffect } from 'react';
 import { coreStore } from '../../store';
 import { v5 as uuidv5 } from 'uuid';
 import { addGen3AppMetadata, EntityType } from './gen3AppsSlice';
-import { configureStore, AnyAction } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  UnknownAction,
+  Middleware,
+  Dispatch,
+} from '@reduxjs/toolkit';
 import { Store, Action } from 'redux';
 import {
   Provider,
@@ -115,6 +120,7 @@ export interface CreateGEN3AppStore {
   readonly name: string;
   readonly version: string;
   readonly reducers: (...args: any) => any;
+  middleware?: Middleware<unknown, any, Dispatch<UnknownAction>>;
 }
 
 // ----------------------------------------------------------------------------------------
@@ -124,7 +130,7 @@ export interface CreateGEN3AppStore {
 export const createAppStore = (
   options: CreateGEN3AppStore,
 ): Record<any, any> => {
-  const { name, version, reducers } = options;
+  const { name, version, reducers, middleware } = options;
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 
@@ -134,15 +140,35 @@ export const createAppStore = (
       name: `${nameVersion}::${id}`,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
+      middleware
+        ? getDefaultMiddleware({
+            serializableCheck: {
+              ignoredActions: [
+                FLUSH,
+                REHYDRATE,
+                PAUSE,
+                PERSIST,
+                PURGE,
+                REGISTER,
+              ],
+            },
+          }).concat(middleware)
+        : getDefaultMiddleware({
+            serializableCheck: {
+              ignoredActions: [
+                FLUSH,
+                REHYDRATE,
+                PAUSE,
+                PERSIST,
+                PURGE,
+                REGISTER,
+              ],
+            },
+          }),
   });
   type AppState = ReturnType<typeof reducers>;
   const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<AppState, AnyAction>,
+    undefined as unknown as ReactReduxContextValue<AppState, UnknownAction>,
   );
 
   type AppDispatch = typeof store.dispatch;
@@ -163,7 +189,7 @@ export const createAppStore = (
 
 export interface CreateGen3AppWithOwnStoreOptions<
   T extends Record<any, any> = Record<string, any>,
-  A extends Action = AnyAction,
+  A extends Action = UnknownAction,
   S = any,
 > {
   readonly App: ComponentType<T>;
@@ -177,7 +203,7 @@ export interface CreateGen3AppWithOwnStoreOptions<
 
 export const createGen3AppWithOwnStore = <
   T extends Record<any, any> = Record<string, any>,
-  A extends Action = AnyAction,
+  A extends Action = UnknownAction,
   S = any,
 >(
   options: CreateGen3AppWithOwnStoreOptions<T, A, S>,
