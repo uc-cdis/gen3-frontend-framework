@@ -1,9 +1,8 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GEN3_API } from '@gen3/core';
+import { GEN3_API, JSONObject } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import { Middleware, Reducer } from '@reduxjs/toolkit';
 import { appCreateApi } from './appCreateApi';
-import { JSONObject } from '@gen3/core/dist/dts';
 
 export interface DiversityRequestParams {
   dataset: string;
