@@ -25,4 +25,5 @@ export interface CohortDiversityConfig extends Gen3AppConfigData {
   fieldsConfig?: Record<string, Partial<TitleAndDescription>>;
   charts: Record<string, SummaryChart>;
   comparisonCharts: Record<string, DiversityChart>;
+  numberOfColumns?: number;
 }

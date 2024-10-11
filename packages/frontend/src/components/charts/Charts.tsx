@@ -25,6 +25,7 @@ import { createChart } from './createChart';
 import { SummaryChart } from './types';
 
 import { computeRowSpan } from './utils';
+import { ErrorCard } from '../../index';
 
 const DEFAULT_COLS = 3;
 const MAX_LEGEND_ROWS = 4;
@@ -69,6 +70,10 @@ const Charts = ({
   const spans = computeRowSpan(Object.keys(charts).length, numCols);
 
   const chartCard = (field: string, indexNum: number) => {
+    if (!(field in data)) {
+      return <ErrorCard message={`${field} not found in data`} />;
+    }
+
     const LegendRows = ({ data }: { data: HistogramDataArray }) => {
       const moreThanMaxRows = data.length > MAX_LEGEND_ROWS;
       const limitedRows = moreThanMaxRows

@@ -4,30 +4,30 @@ import { AggregationsData } from '@gen3/core';
 import { DiversityChart, GroundWithComparisonDatasets } from './types';
 import { computeRowSpan } from '../../components/charts';
 import ComparisonCard from './ComnparisonCard';
+import comparisonCharts from './charts/ComparisonCharts';
 
 interface ComparisonCardssProps {
-  data: Record<string, AggregationsData>;
-  datasets: GroundWithComparisonDatasets;
+  ground: AggregationsData;
+  groundLabel: string;
+  comparison: AggregationsData;
+  comparisonLabel: string;
   comparisonChartsConfig: Record<string, DiversityChart>;
-  numColumns?: number;
+  numberOfColumns?: number;
   style?: 'tile' | 'box';
 }
 
 const ComparisonCharts: React.FC<ComparisonCardssProps> = ({
-  data,
-  datasets,
+  ground,
+  groundLabel,
+  comparison,
+  comparisonLabel,
   comparisonChartsConfig,
-  numColumns = 2,
+  numberOfColumns = 2,
   style = 'tile',
 }) => {
-  const ground = data[datasets.ground.dataset];
-  const groundTitle = datasets.ground.label;
-  const comparison = data[datasets.comparison[0].dataset];
-  const comparisonTitle = datasets.comparison[0].label;
-
   const spans = computeRowSpan(
     Object.keys(comparisonChartsConfig).length,
-    numColumns,
+    numberOfColumns,
   );
   return (
     <Grid className="w-full">
@@ -41,9 +41,9 @@ const ComparisonCharts: React.FC<ComparisonCardssProps> = ({
               <ComparisonCard
                 config={config}
                 groundData={ground}
-                groundLabel={groundTitle}
+                groundLabel={groundLabel}
                 comparisonData={comparison}
-                comparisonLabel={comparisonTitle}
+                comparisonLabel={comparisonLabel}
                 field={field}
               />
             </Grid.Col>

@@ -4,33 +4,31 @@ import { v5 as uuidv5 } from 'uuid';
 import { addGen3AppMetadata, EntityType } from './gen3AppsSlice';
 import {
   configureStore,
-  UnknownAction,
-  Middleware,
   Dispatch,
+  Middleware,
+  UnknownAction,
 } from '@reduxjs/toolkit';
-import { Store, Action } from 'redux';
+import { Action, Store } from 'redux';
 import {
+  createDispatchHook,
+  createSelectorHook,
+  createStoreHook,
   Provider,
   ReactReduxContextValue,
   TypedUseSelectorHook,
-  createSelectorHook,
-  createDispatchHook,
-  createStoreHook,
 } from 'react-redux';
 import {
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from 'redux-persist';
 import { registerGen3App } from './gen3AppRegistry';
 import { DataStatus } from '../../dataAccess';
 import { CookiesProvider } from 'react-cookie';
-
-// using a random uuid v4 as the namespace
-const GEN3_APP_NAMESPACE = '7bfaa818-c69c-457e-8d87-413cf60c25f0';
+import { GEN3_APP_NAMESPACE } from './constants';
 
 export interface CreateGen3AppOptions<T> {
   readonly App: ComponentType<T>;

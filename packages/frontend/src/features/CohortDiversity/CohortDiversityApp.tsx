@@ -1,13 +1,34 @@
 import React from 'react';
-import { Stack, Accordion, rem } from '@mantine/core';
+import { Stack, Accordion, rem, LoadingOverlay } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
-import { getDiversityData } from './statistics/data/data';
+import { useGetDatasetQuery } from './diversityApi';
 import { CohortDiversityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
+import ErrorCard from '../../components/ErrorCard';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
-  const diversityData = getDiversityData();
+  const {
+    data: groundDataset,
+    isLoading: isGroundLoading,
+    isError: isGroundError,
+    isSuccess: isGroundSuccess,
+  } = useGetDatasetQuery({ dataset: config.datasets.ground.dataset });
+
+  const {
+    data: comparisonDataset,
+    isLoading: isComparisonLoading,
+    isError: isComparisonError,
+    isSuccess: isComparisonSuccess,
+  } = useGetDatasetQuery({ dataset: config.datasets.comparison[0].dataset });
+
+  if (isComparisonError || isGroundError) {
+    return <ErrorCard message={'Unable to get data'} />;
+  }
+
+  if (isGroundLoading || isComparisonLoading) {
+    return <LoadingOverlay visible={true} />;
+  }
 
   return (
     <Stack classNames={{ root: 'w-full border-1 border-gray-200 m-4' }}>
@@ -28,7 +49,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
           </Accordion.Control>
           <Accordion.Panel>
             <Charts
-              data={diversityData[config.datasets.ground.dataset]}
+              data={groundDataset ?? {}}
               charts={config.charts}
               isSuccess={true}
               numCols={2}
@@ -37,9 +58,12 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
         </Accordion.Item>
       </Accordion>
       <ComparisonCards
-        data={diversityData}
+        ground={groundDataset ?? {}}
+        groundLabel={config.datasets.ground.label}
+        comparison={comparisonDataset ?? {}}
+        comparisonLabel={config.datasets.comparison[0].label}
         comparisonChartsConfig={config.comparisonCharts}
-        datasets={config.datasets}
+        numberOfColumns={config?.numberOfColumns}
       />
     </Stack>
   );
