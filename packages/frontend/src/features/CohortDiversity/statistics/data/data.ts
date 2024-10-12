@@ -1,7 +1,7 @@
 import { convertToAggregateData } from './utils';
 
-export const getDiversityData = () =>
-  convertToAggregateData({
+export const getStaticDiversityData = (dataset: string) => {
+  return convertToAggregateData({
     census: {
       Age_at_Index: {
         '0-4 Years': 6,
@@ -80,4 +80,5 @@ export const getDiversityData = () =>
         'Not reported': 0.0296696287,
       },
     },
-  });
+  })[dataset];
+};

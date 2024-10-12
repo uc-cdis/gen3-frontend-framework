@@ -6,27 +6,29 @@ import { useGetDatasetQuery } from './diversityApi';
 import { CohortDiversityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
 import ErrorCard from '../../components/ErrorCard';
+import { getStaticDiversityData } from './statistics/data/data';
+import { useGeneralGQLQuery } from '@gen3/core';
+import { createDiversityQuery } from './statistics/queries';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
-  const {
-    data: groundDataset,
-    isLoading: isGroundLoading,
-    isError: isGroundError,
-    isSuccess: isGroundSuccess,
-  } = useGetDatasetQuery({ dataset: config.datasets.ground.dataset });
+  const groundDataset = getStaticDiversityData(config.datasets.ground.dataset);
 
+  const gqlQuery = createDiversityQuery(); // TODO: add field mapping
   const {
     data: comparisonDataset,
     isLoading: isComparisonLoading,
     isError: isComparisonError,
     isSuccess: isComparisonSuccess,
-  } = useGetDatasetQuery({ dataset: config.datasets.comparison[0].dataset });
+  } = useGeneralGQLQuery({
+    query: gqlQuery.query,
+    variables: JSON.parse(gqlQuery.variables),
+  });
 
-  if (isComparisonError || isGroundError) {
+  if (isComparisonError) {
     return <ErrorCard message={'Unable to get data'} />;
   }
 
-  if (isGroundLoading || isComparisonLoading) {
+  if (isComparisonLoading) {
     return <LoadingOverlay visible={true} />;
   }
 

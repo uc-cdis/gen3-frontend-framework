@@ -35,6 +35,30 @@ const processHistogramResponse = (
   return results as AggregationsData;
 };
 
+export const processHistogramResponseAsPercentage = (
+  data: Record<string, any>,
+): AggregationsData => {
+  const pathData = JSONPath({
+    json: data,
+    path: '$..histogram',
+    resultType: 'all',
+  });
+  const results = pathData.reduce(
+    (acc: AggregationsData, element: Record<string, any>) => {
+      const key = element.pointer
+        .slice(1)
+        .replace(/\/histogram/g, '')
+        .replace(/\//g, '.');
+      return {
+        ...acc,
+        [key]: element.value,
+      };
+    },
+    {} as AggregationsData,
+  );
+  return results as AggregationsData;
+};
+
 export interface GraphQLQuery {
   query: string;
   variables?: Record<string, unknown>;
@@ -233,7 +257,11 @@ const explorerApi = guppyApi.injectEndpoints({
         return queryBody;
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        console.log('transform', response.data._aggregation[args.type]);
+        const results = processHistogramResponse(
+          response.data._aggregation[args.type],
+        );
+        return results;
       },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
