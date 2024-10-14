@@ -3,6 +3,7 @@ import {
   updateDataLibrarySelection,
   updateDataLibraryListMemberSelection,
   clearDataLibrarySelection,
+  removeDataLibrarySelection,
   DataLibrarySelectionState,
   ListMembers,
   SelectedMembers,
@@ -71,7 +72,7 @@ describe('DataLibrarySelection', () => {
     expect(newState).toEqual({});
   });
 
-  test('updateDataLibrarySelection should remove list when empty members are provided', () => {
+  test('removeDataLibrarySelection should remove list when ', () => {
     const initialStateWithList: DataLibrarySelectionState = {
       list1: {
         member1: {
@@ -81,7 +82,7 @@ describe('DataLibrarySelection', () => {
       },
     };
 
-    const action = updateDataLibrarySelection('list1', {});
+    const action = removeDataLibrarySelection('list1');
     const newState = dataLibrarySelectionReducer(initialStateWithList, action);
 
     expect(newState).toEqual({});
@@ -193,6 +194,31 @@ describe('DataLibrarySelection', () => {
           },
         },
       },
+    });
+  });
+
+  test('newState show set list to {} when passed {}', () => {
+    const initialStateWithMember: DataLibrarySelectionState = {
+      list1: {
+        member1: {
+          id: 'member1',
+          objectIds: { obj1: true },
+        },
+        member2: {
+          id: 'member2',
+          objectIds: { obj2: true, obj3: true },
+        },
+      },
+    };
+
+    const action = updateDataLibrarySelection('list1', {});
+    const newState = dataLibrarySelectionReducer(
+      initialStateWithMember,
+      action,
+    );
+
+    expect(newState).toEqual({
+      list1: {},
     });
   });
 });

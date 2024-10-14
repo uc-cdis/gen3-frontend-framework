@@ -9,7 +9,7 @@
 * fix styling:
   * icon colors
   * layout
-  * if no pagination hide table footer
+  * if no pagination, hide table footer
 * default message when subtable is empty
 ## v2
 * show applicable actions to selection

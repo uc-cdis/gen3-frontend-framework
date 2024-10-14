@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
-
 // Define types
 type ListId = string;
 
@@ -25,7 +24,8 @@ type Action =
       type: 'UPDATE_DATALIST_MEMBER_SELECTION';
       payload: { listId: ListId; memberId: string; selection: SelectedMembers };
     }
-  | { type: 'CLEAR_DATA_LIBRARY_SELECTION' };
+  | { type: 'CLEAR_DATA_LIBRARY_SELECTION' }
+  | { type: 'DELETE_DATA_LIBRARY_LIST'; payload: { listId: string } };
 
 interface DataLibraryContextType {
   selections: DataLibrarySelectionState;
@@ -36,6 +36,7 @@ interface DataLibraryContextType {
     selection: SelectedMembers,
   ) => void;
   clearSelections: () => void;
+  removeList: (itemId: string) => void;
   dispatch: Dispatch<Action>;
 }
 
@@ -51,11 +52,6 @@ export const dataLibrarySelectionReducer = (
 ): DataLibrarySelectionState => {
   switch (action.type) {
     case 'UPDATE_DATA_LIBRARY_SELECTION':
-      if (Object.keys(action.payload.members).length === 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [action.payload.listId]: _unused, ...restState } = selections;
-        return restState;
-      }
       return {
         ...selections,
         [action.payload.listId]: action.payload.members,
@@ -92,6 +88,11 @@ export const dataLibrarySelectionReducer = (
           },
         },
       };
+    case 'DELETE_DATA_LIBRARY_LIST': {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [action.payload.listId]: _unused, ...restState } = selections;
+      return restState;
+    }
     case 'CLEAR_DATA_LIBRARY_SELECTION':
       return {};
     default:
@@ -121,6 +122,10 @@ export const DataLibrarySelectionProvider: React.FC<{
     dispatch(clearDataLibrarySelection());
   };
 
+  const removeList = (listId: ListId) => {
+    dispatch(removeDataLibrarySelection(listId));
+  };
+
   return (
     <DataLibrarySelectionContext.Provider
       value={{
@@ -129,6 +134,7 @@ export const DataLibrarySelectionProvider: React.FC<{
         updateSelections,
         updateListMemberSelections,
         clearSelections,
+        removeList,
       }}
     >
       {children}
@@ -166,6 +172,11 @@ export const clearDataLibrarySelection = (): Action => ({
   type: 'CLEAR_DATA_LIBRARY_SELECTION',
 });
 
+export const removeDataLibrarySelection = (listId: ListId): Action => ({
+  type: 'DELETE_DATA_LIBRARY_LIST',
+  payload: { listId },
+});
+
 export const getNumberOfDataSetItemsSelected = (
   selections: DataLibrarySelectionState,
   listId: string,
@@ -178,7 +189,7 @@ export const getNumberOfSelectedItemsInList = (
   selections: DataLibrarySelectionState,
   listId: string,
 ): number => {
-  if (!(listId in selections) || !selections[listId]) return 0;
+  if (!(listId in selections)) return -1; // return -1 indicating there is no listId in selection
 
   return Object.keys(selections[listId]).reduce((count: number, datasetId) => {
     try {
@@ -200,3 +211,8 @@ export const selectDataLibrarySelectedItems = (
   selections: DataLibrarySelectionState,
   listId: ListId,
 ): ListMembers => selections[listId] || [];
+
+export const isListInSelection = (
+  listId: ListId,
+  selections: DataLibrarySelectionState,
+) => listId in selections;

@@ -43,6 +43,7 @@ export const DatasetAccordionControl = ({
       <Checkbox
         onChange={(event) => {
           selectListHandler(event.currentTarget.checked);
+          event.stopPropagation();
         }}
         checked={selectedState == 'checked'}
         indeterminate={selectedState == 'indeterminate'}

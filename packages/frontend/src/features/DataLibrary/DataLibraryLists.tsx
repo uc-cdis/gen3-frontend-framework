@@ -18,6 +18,7 @@ import { DatasetAccordionControl } from './DatasetAccordionControl';
 import { selectAllListItems } from './tables/selection';
 import {
   getNumberOfSelectedItemsInList,
+  isListInSelection,
   useDataLibrarySelection,
 } from './tables/SelectionContext';
 
@@ -34,15 +35,18 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 }) => {
   const [selectedState, setSelectedState] =
     useState<DataItemSelectedState>('unchecked');
-  const [checked, setChecked] = useState<boolean>(false);
 
   const { id: listId, name: listName } = dataList;
   const numberOfItemsInList = useMemo(() => {
     return getNumberOfItemsInDatalist(dataList);
   }, [dataList]);
 
-  const { selections, updateSelections, updateListMemberSelections } =
-    useDataLibrarySelection();
+  const {
+    selections,
+    updateSelections,
+    updateListMemberSelections,
+    removeList,
+  } = useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary(listId, {
@@ -101,19 +105,30 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   );
 
   useEffect(() => {
+    // list is not in selection
+    if (!isListInSelection(listId, selections)) {
+      setSelectedState('unchecked');
+      return;
+    }
+
     const numberOfSelectedItemsInList = getNumberOfSelectedItemsInList(
       selections,
       listId,
     );
 
-    if (numberOfItemsInList === 0) {
-      setSelectedState(checked ? 'checked' : 'unchecked');
+    if (numberOfSelectedItemsInList == numberOfItemsInList) {
+      setSelectedState('checked');
+      return;
     }
 
-    if (numberOfSelectedItemsInList == 0) setSelectedState('unchecked');
-    else if (numberOfSelectedItemsInList == numberOfItemsInList)
-      setSelectedState('checked');
-    else setSelectedState('indeterminate');
+    if (numberOfSelectedItemsInList === 0) {
+      // list is not in selections
+      setSelectedState('unchecked');
+      return;
+    }
+
+    if (numberOfSelectedItemsInList < numberOfItemsInList)
+      setSelectedState('indeterminate');
   }, [listId, numberOfItemsInList, selections]);
 
   const removeItemFromList = async (itemId: string) => {
@@ -129,22 +144,15 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   };
 
   const handleSelectList = (checked: boolean) => {
-    setChecked(checked);
-    if (numberOfItemsInList === 0) {
-      setSelectedState(checked ? 'checked' : 'unchecked');
-    }
-    if (Object.keys(dataList.items).length === 0) {
-      return;
-    }
-
     if (!checked) {
-      updateSelections(listId, {});
+      removeList(listId);
       return;
     }
 
     const selectAllDatasets = selectAllListItems(
       dataList, // gets the ids of all the dataset members of list
     );
+    console.log('selecting all data selectAllDatasets', selectAllDatasets);
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
 
