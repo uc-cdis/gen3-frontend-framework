@@ -30,7 +30,7 @@ const ComparisonCharts: React.FC<ComparisonCardssProps> = ({
     numberOfColumns,
   );
   return (
-    <Grid className="w-full">
+    <Grid className="w-full p-4">
       {Object.entries(comparisonChartsConfig).map(
         ([field, config], indexNum) => {
           return (

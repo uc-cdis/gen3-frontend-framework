@@ -1,5 +1,13 @@
-import React, { useEffect, useMemo } from 'react';
-import { Stack, Accordion, rem, LoadingOverlay } from '@mantine/core';
+import React, { useMemo } from 'react';
+import {
+  Stack,
+  Accordion,
+  rem,
+  LoadingOverlay,
+  AccordionControlProps,
+  Center,
+  Text,
+} from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
 import { CohortDiversityConfig } from './types';
@@ -13,6 +21,14 @@ import {
   normalizeAgeOfIndex,
   alignData,
 } from './statistics/data/utils';
+
+const SummaryChartAccordionControl = (props: AccordionControlProps) => {
+  return (
+    <Center>
+      <Accordion.Control {...props} />
+    </Center>
+  );
+};
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const groundDataset = getStaticDiversityData(config.datasets.ground.dataset);
@@ -49,21 +65,20 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   }
 
   return (
-    <Stack classNames={{ root: 'w-full border-1 border-gray-200 m-4' }}>
-      <Accordion variant="contained">
+    <Stack classNames={{ root: 'w-full m-4 mb-2' }}>
+      <Accordion variant="filled" chevronPosition="left">
         <Accordion.Item value="summaryCharts">
-          <Accordion.Control
-            icon={
+          <Accordion.Control>
+            <div className="flex items-center justify-start space-x-2 text-accent">
               <SummaryChartIcon
                 style={{
-                  color: 'accent.4',
-                  width: rem(20),
-                  height: rem(20),
+                  color: 'secondary.4',
+                  width: rem(32),
+                  height: rem(32),
                 }}
               />
-            }
-          >
-            Summary Charts
+              <Text fw={600}>Summary Charts</Text>
+            </div>
           </Accordion.Control>
           <Accordion.Panel>
             <Charts
