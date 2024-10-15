@@ -48,11 +48,6 @@ const processComparisonData = (
   };
 };
 
-interface DataItem {
-  name: string;
-  [key: string]: number | string;
-}
-
 const RadarComparison: React.FC<ComparisonChartProps> = ({
   baseDataset,
   comparisonDataset,
@@ -82,6 +77,17 @@ const RadarComparison: React.FC<ComparisonChartProps> = ({
           name: group,
           max: Math.max(series.maxBase, series.maxComparison),
         })),
+        axisLine: {
+          lineStyle: {
+            color: '#4e79a7',
+          },
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: ['#8c8989', '#8aa0ae'],
+          },
+        },
         center: ['50%', '50%'],
         radius: '65%',
       },

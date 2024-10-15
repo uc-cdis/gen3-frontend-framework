@@ -7,6 +7,7 @@ import {
   AccordionControlProps,
   Center,
   Text,
+  Title,
 } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
@@ -65,9 +66,15 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   }
 
   return (
-    <Stack classNames={{ root: 'w-full m-4 mb-2' }}>
+    <Stack
+      classNames={{ root: 'w-full m-4 mb-2' }}
+      aria-label="Main Content of Cohort Diversity App"
+    >
+      <Title order={1} size="h3">
+        Cohort Diversity Visualization
+      </Title>
       <Accordion variant="filled" chevronPosition="left">
-        <Accordion.Item value="summaryCharts">
+        <Accordion.Item value="summaryCharts" aria-label="Summary Charts">
           <Accordion.Control>
             <div className="flex items-center justify-start space-x-2 text-accent">
               <SummaryChartIcon

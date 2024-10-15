@@ -65,7 +65,7 @@ const Gen3App = ({
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
-    faroRef.current = initGrafanaFaro();
+    if (!faroRef.current) faroRef.current = initGrafanaFaro();
     // }
   }, []);
 
