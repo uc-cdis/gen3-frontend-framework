@@ -7,8 +7,11 @@ import {
   getNavPageLayoutPropsFromConfig,
 } from '@gen3/frontend';
 import { GetServerSideProps } from 'next';
+import JBrowseView from '../components/JBrowser';
+import GenomicIGV from '@/components/GenomicIGV';
+import IGVViewer from '@/components/IGVViewer';
 
-const GennomicNoSSR = dynamic(() => import('../components/GenomicIGV'), {
+const DynamicIGVViewer = dynamic(() => import('@/components/IGVViewer'), {
   ssr: false,
 });
 
@@ -23,7 +26,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
       }}
     >
       <div className="w-full m-10">
-        <GennomicNoSSR />
+        <DynamicIGVViewer />
       </div>
     </NavPageLayout>
   );

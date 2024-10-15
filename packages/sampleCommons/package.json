@@ -20,9 +20,11 @@
     "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
+    "@jbrowse/react-app": "^2.15.4",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "cookies-next": "^4.0.0",
+    "igv": "^3.0.8",
     "jose": "^4.15.9",
     "mantine-react-table": "^2.0.0-beta.6"
   },

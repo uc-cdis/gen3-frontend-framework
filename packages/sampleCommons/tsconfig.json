@@ -29,7 +29,7 @@
       }
     ]
   },
-  "typeRoots": ["./node_modules/@types", "./src/types"],
+  "typeRoots": ["./node_modules/@types"],
   "include": [
     "next-env.d.ts",
     "**/*.ts",

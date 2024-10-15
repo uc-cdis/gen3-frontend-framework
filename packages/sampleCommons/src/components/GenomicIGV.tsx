@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import * as igv from 'igv';
+import igv from 'igv';
 
 const GenomicIVG = () => {
   const ref = useRef(null);
