@@ -40,7 +40,6 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
     data: rawComparisonDataset,
     isLoading: isComparisonLoading,
     isError: isComparisonError,
-    isSuccess: isComparisonSuccess,
   } = useGeneralGQLQuery({
     query: gqlQuery.query,
     variables: JSON.parse(gqlQuery.variables),
@@ -58,7 +57,9 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   }, [groundDataset, rawComparisonDataset]);
 
   if (isComparisonError) {
-    return <ErrorCard message={'Unable to get data'} />;
+    return (
+      <ErrorCard message={'Unable to get data need for Cohort Diversity'} />
+    );
   }
 
   if (isComparisonLoading) {
