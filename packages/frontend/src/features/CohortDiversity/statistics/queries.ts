@@ -1,4 +1,20 @@
+import { AggregationsData } from '@gen3/core';
+import { JSONPath } from 'jsonpath-plus';
+
 export const processQueryResponse = (data: Record<string, any>) => {};
+
+const convertToValidJSON = (inputString: string): string => {
+  // Remove all newline characters and extra spaces
+  let cleanedString = inputString.replace(/\s+/g, ' ').trim();
+
+  // Add quotes around property names that aren't already quoted
+  cleanedString = cleanedString.replace(/(\w+):/g, '"$1":');
+
+  // Replace single quotes with double quotes (if any)
+  cleanedString = cleanedString.replace(/'/g, '"');
+
+  return cleanedString;
+};
 
 export const createDiversityQuery = (
   fields: Record<string, string> = {
@@ -124,9 +140,7 @@ export const createDiversityQuery = (
     }
   }
 }`,
-    variables: `
-    {
-  "filter_0_4": {
+    variables: convertToValidJSON(`{ "filter_0_4": {
     "AND": [
       {
         ">=": {
@@ -275,6 +289,6 @@ export const createDiversityQuery = (
       }
     ]
   }
-}`,
+}`),
   };
 };

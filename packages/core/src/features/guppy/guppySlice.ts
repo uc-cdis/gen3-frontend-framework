@@ -1,41 +1,17 @@
-import useSWR, { SWRResponse, Fetcher } from 'swr';
+import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
 import {
+  convertFilterSetToGqlFilter,
   FilterSet,
   isFilterEmpty,
-  convertFilterSetToGqlFilter,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 
 const statusEndpoint = '/_status';
 
 const processHistogramResponse = (
-  data: Record<string, any>,
-): AggregationsData => {
-  const pathData = JSONPath({
-    json: data,
-    path: '$..histogram',
-    resultType: 'all',
-  });
-  const results = pathData.reduce(
-    (acc: AggregationsData, element: Record<string, any>) => {
-      const key = element.pointer
-        .slice(1)
-        .replace(/\/histogram/g, '')
-        .replace(/\//g, '.');
-      return {
-        ...acc,
-        [key]: element.value,
-      };
-    },
-    {} as AggregationsData,
-  );
-  return results as AggregationsData;
-};
-
-export const processHistogramResponseAsPercentage = (
   data: Record<string, any>,
 ): AggregationsData => {
   const pathData = JSONPath({
@@ -257,11 +233,7 @@ const explorerApi = guppyApi.injectEndpoints({
         return queryBody;
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        console.log('transform', response.data._aggregation[args.type]);
-        const results = processHistogramResponse(
-          response.data._aggregation[args.type],
-        );
-        return results;
+        return processHistogramResponse(response.data._aggregation[args.type]);
       },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({

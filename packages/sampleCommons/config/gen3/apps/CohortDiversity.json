@@ -12,10 +12,10 @@
     ]
   },
   "fields": [
-    "Age_at_Index",
-    "Sex",
-    "Race",
-    "Ethnicity"
+    "age_at_index",
+    "sex",
+    "race",
+    "ethnicity"
   ],
   "fieldsConfig": {
     "Age_at_Index": {
@@ -23,30 +23,30 @@
     }
   },
   "charts": {
-    "Age_at_Index": {
+    "age_at_index": {
       "chartType": "bar"
     },
-    "Sex": {
+    "sex": {
       "chartType": "bar"
     },
-    "Race": {
+    "race": {
       "chartType": "bar"
     },
-    "Ethnicity": {
+    "ethnicity": {
       "chartType": "bar"
     }
   },
   "comparisonCharts": {
-    "Age_at_Index": {
+    "age_at_index": {
       "chartType": "radarComparison"
     },
-    "Sex": {
+    "sex": {
       "chartType": "barComparison"
     },
-    "Race": {
+    "race": {
       "chartType": "barComparison"
     },
-    "Ethnicity": {
+    "ethnicity": {
       "chartType": "barComparison"
     }
   }

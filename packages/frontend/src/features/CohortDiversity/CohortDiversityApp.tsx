@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Stack, Accordion, rem, LoadingOverlay } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
-import { useGetDatasetQuery } from './diversityApi';
 import { CohortDiversityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
 import ErrorCard from '../../components/ErrorCard';
 import { getStaticDiversityData } from './statistics/data/data';
-import { useGeneralGQLQuery } from '@gen3/core';
+import { AggregationsData, useGeneralGQLQuery } from '@gen3/core';
 import { createDiversityQuery } from './statistics/queries';
+import {
+  processHistogramResponseAsPercentage,
+  normalizeAgeOfIndex,
+  alignData,
+} from './statistics/data/utils';
 
 const CohortDiversityApp = (config: CohortDiversityConfig) => {
   const groundDataset = getStaticDiversityData(config.datasets.ground.dataset);
 
   const gqlQuery = createDiversityQuery(); // TODO: add field mapping
+
   const {
-    data: comparisonDataset,
+    data: rawComparisonDataset,
     isLoading: isComparisonLoading,
     isError: isComparisonError,
     isSuccess: isComparisonSuccess,
@@ -23,6 +28,17 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
     query: gqlQuery.query,
     variables: JSON.parse(gqlQuery.variables),
   });
+
+  const comparisonDataset = useMemo(() => {
+    if (rawComparisonDataset) {
+      const results = processHistogramResponseAsPercentage(
+        rawComparisonDataset.data as Record<string, unknown>,
+      );
+      return alignData(normalizeAgeOfIndex(results), groundDataset);
+    }
+
+    return undefined;
+  }, [groundDataset, rawComparisonDataset]);
 
   if (isComparisonError) {
     return <ErrorCard message={'Unable to get data'} />;
@@ -62,7 +78,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
       <ComparisonCards
         ground={groundDataset ?? {}}
         groundLabel={config.datasets.ground.label}
-        comparison={comparisonDataset ?? {}}
+        comparison={(comparisonDataset as unknown as AggregationsData) ?? {}}
         comparisonLabel={config.datasets.comparison[0].label}
         comparisonChartsConfig={config.comparisonCharts}
         numberOfColumns={config?.numberOfColumns}

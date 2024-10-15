@@ -25,10 +25,6 @@ const nextConfig = {
     instrumentationHook: true,
     optimizePackageImports: ['@gen3/frontend', '@gen3/core'],
   },
-  i18n: {
-    locales: ['en-US'],
-    defaultLocale: 'en-US',
-  },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/frontend'],
   basePath: process.env.BASE_PATH || '',
