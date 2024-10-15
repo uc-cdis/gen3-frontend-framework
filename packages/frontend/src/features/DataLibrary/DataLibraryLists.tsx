@@ -152,7 +152,6 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     const selectAllDatasets = selectAllListItems(
       dataList, // gets the ids of all the dataset members of list
     );
-    console.log('selecting all data selectAllDatasets', selectAllDatasets);
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
 
