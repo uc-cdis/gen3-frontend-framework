@@ -12,12 +12,12 @@ hover:text-primary-lightest
 `;
 
 export const controlsIconStyle =
-  'text-primary-contrast-darker hover:text-primary-lighter';
+  'text-secondary-contrast hover:text-secondary-lighter';
 
 export const FacetText = tw.div`
-text-secondary-contrast font-heading font-semibold text-[1.25em] break-words py-2
+text-secondary-contrast font-heading font-semibold text-sm break-words
 `;
 
 export const FacetHeader = tw.div`
-flex items-start justify-between flex-nowrap bg-secondary px-1.5
+flex items-start justify-between items-center flex-nowrap bg-secondary px-1.5
 `;

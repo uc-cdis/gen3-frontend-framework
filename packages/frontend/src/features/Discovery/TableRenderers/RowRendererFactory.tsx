@@ -36,8 +36,10 @@ export class DiscoveryRowRendererFactory {
     type: string,
     functionName: string,
   ): RowRendererFunction {
-    if (!(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)) {
-      console.log('No row renderer found for type: ', type);
+    if (
+      !(type in DiscoveryRowRendererFactory.getInstance().RowRendererCatalog)
+    ) {
+      console.warn('No row renderer found for type: ', type);
       return defaultRowRenderer;
     }
 
@@ -90,7 +92,9 @@ export const DiscoveryTableRowRenderer = (
     studyPreviewConfig?.renderer ?? 'default',
   );
   if (!func) {
-    throw new Error(`No row renderer found for given config (contentType: ${ studyPreviewConfig?.contentType }, detailRenderer: ${ studyPreviewConfig?.renderer ?? 'default'}`);
+    throw new Error(
+      `No row renderer found for given config (contentType: ${studyPreviewConfig?.contentType}, detailRenderer: ${studyPreviewConfig?.renderer ?? 'default'}`,
+    );
   }
   return (row): ReactElement => func(row, studyPreviewConfig);
 };

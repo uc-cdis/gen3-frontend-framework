@@ -1,4 +1,4 @@
-import { Stack, Table, Text } from '@mantine/core';
+import { Table, Text } from '@mantine/core';
 import { TableDetailsPanelProps } from './types';
 
 export const RowTableDetailsPanel = ({ row }: TableDetailsPanelProps) => {

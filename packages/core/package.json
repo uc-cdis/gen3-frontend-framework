@@ -54,7 +54,7 @@
     "@types/uuid": "^9.0.0"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "1.9.5",
+    "@reduxjs/toolkit": "^2.2.8",
     "flat": "^6.0.1",
     "papaparse": "^5.4.1",
     "queue": "6.0.2",
