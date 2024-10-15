@@ -123,7 +123,6 @@ export const cohortSlice = createSlice({
       };
     },
   },
-  extraReducers: {},
 });
 
 // Filter actions: addFilter, removeFilter, updateFilter

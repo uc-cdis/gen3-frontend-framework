@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.45",
+  "version": "0.10.47",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -51,6 +51,7 @@
   "dependencies": {
     "@graphiql/react": "^0.23.1",
     "@iconify/react": "^4.0.1",
+    "@kbox-labs/react-echarts": "^1.4.0",
     "@mantine/core": "^7.12.1",
     "@mantine/form": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
@@ -59,7 +60,7 @@
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.1",
-    "@reduxjs/toolkit": "^1.9.5",
+    "@reduxjs/toolkit": "^2.2.8",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
@@ -101,6 +102,7 @@
     "react-redux": "^8.1.0",
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
+    "mathjs" : "^13.1.1",
     "remark-gfm": "^4.0.0",
     "stable-hash": "^0.0.3",
     "tailwind-merge": "^2.5.2",
@@ -137,8 +139,8 @@
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.29",
-    "sharp": "^0.33.2",
     "react-what-changed": "^1.1.2",
+    "sharp": "^0.33.2",
     "style-loader": "^3.3.2",
     "swr": "^2.2.5"
   },

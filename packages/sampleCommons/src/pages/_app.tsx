@@ -13,6 +13,8 @@ import {
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
+  registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
 } from '@gen3/frontend';
 import '../styles/globals.css';
 import '@fontsource/montserrat';
@@ -29,6 +31,10 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   const axe = require('@axe-core/react');
   axe(React, ReactDOM, 1000);
 }
+
+// TODO fix app registration
+registerCohortDiscoveryApp();
+registerCohortDiversityApp();
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;
@@ -59,7 +65,7 @@ const Gen3App = ({
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
-    faroRef.current = initGrafanaFaro();
+    if (!faroRef.current) faroRef.current = initGrafanaFaro();
     // }
   }, []);
 

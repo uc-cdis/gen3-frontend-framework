@@ -86,10 +86,11 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-swc3": "^0.11.2",
     "rollup-swc-preserve-directives": "^0.7.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-json-schema-generator": "^2.3.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "ts-json-schema-generator": "^2.3.0",
     "typescript": "^5.6.2"
   },
   "overrides": {

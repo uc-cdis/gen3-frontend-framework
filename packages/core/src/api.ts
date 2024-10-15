@@ -7,7 +7,6 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { useCoreSelector, useCoreStore, useCoreDispatch } from './hooks';
 
-
 /**
  * Creates a custom Redux Toolkit core API
  * See: https://redux-toolkit.js.org/rtk-query/usage/customizing-create-api
@@ -17,9 +16,11 @@ const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
   buildCreateApi(
     coreModule(),
     reactHooksModule({
-      useSelector: useCoreSelector,
-      useStore: useCoreStore as never,
-      useDispatch: useCoreDispatch as never,
+      hooks: {
+        useSelector: useCoreSelector,
+        useStore: useCoreStore as never,
+        useDispatch: useCoreDispatch as never,
+      },
     }),
   );
 

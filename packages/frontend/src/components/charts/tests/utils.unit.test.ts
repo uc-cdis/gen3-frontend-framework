@@ -35,27 +35,31 @@ describe('computeRowSpan', () => {
   it('computes the correct row span', () => {
     const charts: Record<string, SummaryChart> = {
       chart1: { title: 'Chart 1', chartType: 'bar' },
-      chart2: { title: 'Chart 2', chartType: 'line', valueType: 'count' },
-      chart3: { title: 'Chart 3', chartType: 'pie', valueType: 'percent' },
+      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
+      chart3: { title: 'Chart 3', chartType: 'fullPie', valueType: 'percent' },
     };
 
     const numCols = 2;
 
     const expectedRowSpan = [6, 6, 12];
 
-    expect(computeRowSpan(charts, numCols)).toEqual(expectedRowSpan);
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
   });
 
   it('handles edge case where number of charts is divisible by number of columns', () => {
     const charts: Record<string, SummaryChart> = {
       chart1: { title: 'Chart 1', chartType: 'bar' },
-      chart2: { title: 'Chart 2', chartType: 'line', valueType: 'count' },
+      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
     };
 
     const numCols = 2;
 
     const expectedRowSpan = [6, 6];
 
-    expect(computeRowSpan(charts, numCols)).toEqual(expectedRowSpan);
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
   });
 });
