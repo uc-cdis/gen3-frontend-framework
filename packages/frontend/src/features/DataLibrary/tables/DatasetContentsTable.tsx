@@ -15,8 +15,8 @@ import { commonTableSettings } from './tableSettings';
 import {
   getNumberOfDataSetItemsSelected,
   useDataLibrarySelection,
-} from './SelectionContext';
-import { selectAllDatasetMembers } from './selection';
+} from '../selection/SelectionContext';
+import { selectAllDatasetMembers } from '../selection/selection';
 import FilesTable from './FilesTable';
 
 /**

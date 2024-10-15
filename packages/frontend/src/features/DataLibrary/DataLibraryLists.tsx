@@ -15,12 +15,12 @@ import {
 } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
-import { selectAllListItems } from './tables/selection';
+import { selectAllListItems } from './selection/selection';
 import {
   getNumberOfSelectedItemsInList,
   isListInSelection,
   useDataLibrarySelection,
-} from './tables/SelectionContext';
+} from './selection/SelectionContext';
 
 interface DatalistAccordionProps {
   dataList: Datalist;

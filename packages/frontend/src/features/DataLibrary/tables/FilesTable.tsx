@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { FileItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
-import { useDataLibrarySelection } from './SelectionContext';
+import { useDataLibrarySelection } from '../selection/SelectionContext';
 
 interface FilesTableProps {
   datasetId: string;

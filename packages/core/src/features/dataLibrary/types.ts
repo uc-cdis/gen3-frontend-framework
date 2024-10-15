@@ -69,6 +69,7 @@ export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 export interface DataListEntry {
   name: string;
   items: DataSetItems;
+  // TODO move additionalData here
 }
 
 export interface RegisteredDataListEntry extends DataListEntry {
