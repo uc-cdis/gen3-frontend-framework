@@ -127,8 +127,8 @@ const FacetControlsHeader = ({
           <Tooltip label="Search values">
             <FacetIconButton
               onClick={() => {
-                toggleExpandFilter && toggleExpandFilter(field, true);
-                toggleSearch && toggleSearch();
+                if (toggleExpandFilter) toggleExpandFilter(field, true);
+                if (toggleSearch) toggleSearch();
               }}
               aria-label="Search"
             >
@@ -144,8 +144,8 @@ const FacetControlsHeader = ({
           <Tooltip label={isFacetView ? 'Chart view' : 'Selection view'}>
             <FacetIconButton
               onClick={() => {
-                toggleExpandFilter && toggleExpandFilter(field, true);
-                toggleFlip && toggleFlip();
+                if (toggleExpandFilter) toggleExpandFilter(field, true);
+                if (toggleFlip) toggleFlip();
               }}
               aria-pressed={!isFacetView}
               aria-label={isFacetView ? 'Chart view' : 'Selection view'}
