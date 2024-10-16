@@ -11,8 +11,10 @@
   * if no pagination, hide table footer
 * default message when subtable is empty
 * connect explorer
-* connect dicovery
+* connect discovery
 * place on navigation
 * implement zip/download manifest
+* placeholder for other actions
 ## v2
 * show applicable actions to selection
+* implement additional actions
