@@ -17,3 +17,8 @@ export interface DataLibraryList {
 }
 
 export type DataItemSelectedState = 'checked' | 'unchecked' | 'indeterminate';
+
+export interface FileItemWithParentDatasetNameAndID extends FileItem {
+  datasetName: string;
+  datasetId: string;
+}

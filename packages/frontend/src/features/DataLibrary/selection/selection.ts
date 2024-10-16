@@ -81,10 +81,17 @@ export const getDatasetMembers = (
 export const selectAllListItems = (members: Datalist): ListMembers => {
   return Object.entries(members.items).reduce(
     (acc: ListMembers, [datasetId, datasetContents]) => {
-      acc[datasetId] = {
-        id: datasetId,
-        objectIds: getDatasetMembers(datasetContents),
-      };
+      if (isCohortItem(datasetContents)) {
+        acc[datasetId] = {
+          id: datasetId,
+          objectIds: { [datasetId]: true },
+        };
+      } else
+        acc[datasetId] = {
+          id: datasetId,
+          objectIds: getDatasetMembers(datasetContents),
+        };
+
       return acc;
     },
     {},

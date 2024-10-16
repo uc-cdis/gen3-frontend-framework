@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Accordion } from '@mantine/core';
+import { Accordion, Modal, ModalProps, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 import { DataItemSelectedState, DatasetContents } from './types';
 import {
@@ -21,6 +22,17 @@ import {
   isListInSelection,
   useDataLibrarySelection,
 } from './selection/SelectionContext';
+import SelectedItemsTable from './tables/SelectedItemsTable';
+
+type SelectedItemsModelProps = ModalProps;
+
+const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
+  return (
+    <Modal {...props}>
+      <SelectedItemsTable />
+    </Modal>
+  );
+};
 
 interface DatalistAccordionProps {
   dataList: Datalist;
@@ -41,12 +53,8 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     return getNumberOfItemsInDatalist(dataList);
   }, [dataList]);
 
-  const {
-    selections,
-    updateSelections,
-    updateListMemberSelections,
-    removeList,
-  } = useDataLibrarySelection();
+  const { selections, updateSelections, removeListMember, removeList } =
+    useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary(listId, {
@@ -140,7 +148,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       updatedTime: new Date().toISOString(),
     });
     // update selections
-    updateListMemberSelections(listId, itemId, {});
+    removeListMember(listId, itemId);
   };
 
   const handleSelectList = (checked: boolean) => {
@@ -177,19 +185,34 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
 const DataLibraryLists = () => {
   const {
-    dataLibraryItems,
+    dataLibrary,
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
   } = useDataLibrary(false);
+  const [selectedItemsOpen, { open, close }] = useDisclosure(false);
+  const { gatherSelectedItems } = useDataLibrarySelection();
+
+  const gatherData = () => {
+    gatherSelectedItems(dataLibrary);
+    open();
+  };
 
   return (
     <div className="flex flex-col w-full ml-2">
-      <SearchAndActions createList={addListToDataLibrary} />
+      <SelectedItemsModal
+        opened={selectedItemsOpen}
+        onClose={close}
+        size="auto"
+      />
+      <SearchAndActions
+        createList={addListToDataLibrary}
+        gatherData={gatherData}
+      />
       <div className="flex items-center">
         <Accordion chevronPosition="left" classNames={{ root: 'w-full' }}>
-          {dataLibraryItems &&
-            Object.values(dataLibraryItems.lists).map((datalist) => {
+          {dataLibrary &&
+            Object.values(dataLibrary).map((datalist) => {
               return (
                 <DatalistAccordionItem
                   dataList={datalist}

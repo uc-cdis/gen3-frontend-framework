@@ -16,12 +16,10 @@ import {
   updateListIndexDB,
   deleteAll,
 } from './dataLibraryIndexDB';
-import { Datalist, LoadAllListData } from './types';
+import { DataLibrary, Datalist, LoadAllListData } from './types';
 
 export const useDataLibrary = (useApi: boolean) => {
-  const [localLibrary, setLocalLibrary] = useState<Record<string, Datalist>>(
-    {},
-  );
+  const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
 
   const { data: apiLibrary, refetch: refetchLibraryFromApi } =
     useGetDataLibraryListsQuery(undefined, { skip: !useApi });
@@ -37,8 +35,8 @@ export const useDataLibrary = (useApi: boolean) => {
     let uniqueName = baseName;
     let counter = 1;
 
-    const existingNames = dataLibraryItems?.lists
-      ? Object.values(dataLibraryItems?.lists).map((x) => x.name)
+    const existingNames = dataLibrary
+      ? Object.values(dataLibrary).map((x) => x.name)
       : [];
 
     while (existingNames.includes(uniqueName)) {
@@ -128,10 +126,14 @@ export const useDataLibrary = (useApi: boolean) => {
     }
   };
 
-  const dataLibraryItems = useApi ? apiLibrary : { lists: localLibrary };
+  const dataLibrary = useApi
+    ? apiLibrary
+      ? apiLibrary.lists
+      : {}
+    : localLibrary;
 
   return {
-    dataLibraryItems,
+    dataLibrary,
     isError: hasError,
     addListToDataLibrary,
     deleteListFromDataLibrary,

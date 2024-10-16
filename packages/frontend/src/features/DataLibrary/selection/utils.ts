@@ -6,6 +6,7 @@ import {
   isCohortItem,
   isFileItem,
 } from '@gen3/core';
+import { FileItemWithParentDatasetNameAndID } from '../types';
 
 export const getDataLibraryItem = (
   dataLibrary: DataLibrary,
@@ -17,6 +18,7 @@ export const getDataLibraryItem = (
   if (!(dataId in dataLibrary[listId].items)) return undefined;
 
   const datasetOrCohort = dataLibrary[listId].items[dataId];
+  const { name, id } = datasetOrCohort;
   if (isCohortItem(datasetOrCohort)) {
     return datasetOrCohort as CohortItem;
   } else {
@@ -24,7 +26,11 @@ export const getDataLibraryItem = (
     if (!(fileId in datasetOrCohort.items)) return undefined;
 
     if (isFileItem(datasetOrCohort.items[fileId])) {
-      return datasetOrCohort.items[fileId] as FileItem;
+      return {
+        datasetName: name,
+        datasetId: id,
+        ...(datasetOrCohort.items[fileId] as FileItem),
+      } as FileItemWithParentDatasetNameAndID;
     }
     return undefined;
   }
@@ -33,15 +39,15 @@ export const getDataLibraryItem = (
 export interface SelectionPath {
   listId: string;
   memberId: string;
-  objectId?: string; // Now optional
+  objectId?: string;
 }
 
 export const getSelectionPaths = (
-  state: DataLibrarySelectionState,
+  selections: DataLibrarySelectionState,
 ): SelectionPath[] => {
   const paths: SelectionPath[] = [];
 
-  for (const [listId, listMembers] of Object.entries(state)) {
+  for (const [listId, listMembers] of Object.entries(selections)) {
     for (const [memberId, member] of Object.entries(listMembers)) {
       if (Object.keys(member.objectIds).length === 0) {
         // If there are no objectIds, add a path with undefined objectId
@@ -62,6 +68,25 @@ export const getSelectionPaths = (
       }
     }
   }
-
   return paths;
+};
+
+export const getSelectedItemsFromDataLibrary = (
+  selections: DataLibrarySelectionState,
+  dataLibrary: DataLibrary,
+) => {
+  const selectedPaths = getSelectionPaths(selections);
+
+  const selectedItems = selectedPaths.map((path) => {
+    return getDataLibraryItem(
+      dataLibrary,
+      path.listId,
+      path.memberId,
+      path.objectId,
+    );
+  });
+  return selectedItems.filter((item) => item !== undefined) as (
+    | CohortItem
+    | FileItemWithParentDatasetNameAndID
+  )[];
 };

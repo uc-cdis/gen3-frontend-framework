@@ -13,7 +13,6 @@ import {
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
-  registerCohortDiscoveryApp,
   registerCohortDiversityApp,
 } from '@gen3/frontend';
 import '../styles/globals.css';
@@ -33,7 +32,6 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
 }
 
 // TODO fix app registration
-registerCohortDiscoveryApp();
 registerCohortDiversityApp();
 
 interface Gen3AppProps {

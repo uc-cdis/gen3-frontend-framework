@@ -1,15 +1,24 @@
-import React, { createContext, useContext, useReducer, Dispatch } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  Dispatch,
+  useState,
+} from 'react';
+import { getSelectedItemsFromDataLibrary } from './utils';
+import { DataLibrary, CohortItem } from '@gen3/core';
+import { FileItemWithParentDatasetNameAndID } from '../types';
 // Define types
 type ListId = string;
 
 export type SelectedMembers = Record<string, boolean>;
 
-interface ListMember {
+interface DatasetListMember {
   id: string;
   objectIds: SelectedMembers;
 }
 
-export type ListMembers = Record<string, ListMember>;
+export type ListMembers = Record<string, DatasetListMember>;
 
 export interface DataLibrarySelectionState {
   [key: ListId]: ListMembers;
@@ -25,10 +34,15 @@ type Action =
       payload: { listId: ListId; memberId: string; selection: SelectedMembers };
     }
   | { type: 'CLEAR_DATA_LIBRARY_SELECTION' }
-  | { type: 'DELETE_DATA_LIBRARY_LIST'; payload: { listId: string } };
+  | { type: 'DELETE_DATA_LIBRARY_LIST'; payload: { listId: string } }
+  | {
+      type: 'DELETE_DATA_LIBRARY_LIST_MEMBER';
+      payload: { listId: string; memberId: string };
+    };
 
 interface DataLibraryContextType {
   selections: DataLibrarySelectionState;
+  gatheredItems: Array<CohortItem | FileItemWithParentDatasetNameAndID>;
   updateSelections: (listId: ListId, members: ListMembers) => void;
   updateListMemberSelections: (
     listId: ListId,
@@ -37,6 +51,8 @@ interface DataLibraryContextType {
   ) => void;
   clearSelections: () => void;
   removeList: (itemId: string) => void;
+  removeListMember: (listId: ListId, memberId: string) => void;
+  gatherSelectedItems: (dataLibrary: DataLibrary) => void;
   dispatch: Dispatch<Action>;
 }
 
@@ -93,6 +109,22 @@ export const dataLibrarySelectionReducer = (
       const { [action.payload.listId]: _unused, ...restState } = selections;
       return restState;
     }
+    case 'DELETE_DATA_LIBRARY_LIST_MEMBER': {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      if (!(action.payload.listId in selections)) return selections;
+      const {
+        [action.payload.listId]: {
+          [action.payload.memberId]: _unused,
+          ...restState
+        },
+      } = selections;
+      return {
+        ...selections,
+        [action.payload.listId]: {
+          ...restState,
+        },
+      };
+    }
     case 'CLEAR_DATA_LIBRARY_SELECTION':
       return {};
     default:
@@ -105,6 +137,9 @@ export const DataLibrarySelectionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [selections, dispatch] = useReducer(dataLibrarySelectionReducer, {});
+  const [gatheredItems, setGatheredItems] = useState<
+    Array<CohortItem | FileItemWithParentDatasetNameAndID>
+  >([]);
 
   const updateSelections = (listId: ListId, members: ListMembers) => {
     dispatch(updateDataLibrarySelection(listId, members));
@@ -126,15 +161,32 @@ export const DataLibrarySelectionProvider: React.FC<{
     dispatch(removeDataLibrarySelection(listId));
   };
 
+  const removeListMember = (listId: ListId, memberId: string) => {
+    dispatch(removeDataLibraryMemberSelection(listId, memberId));
+  };
+
+  const gatherSelectedItems = (dataLibrary?: DataLibrary) => {
+    if (dataLibrary) {
+      const gatheredItems = getSelectedItemsFromDataLibrary(
+        selections,
+        dataLibrary,
+      );
+      setGatheredItems(gatheredItems);
+    }
+  };
+
   return (
     <DataLibrarySelectionContext.Provider
       value={{
         selections,
+        gatheredItems,
         dispatch,
         updateSelections,
         updateListMemberSelections,
         clearSelections,
         removeList,
+        removeListMember,
+        gatherSelectedItems,
       }}
     >
       {children}
@@ -175,6 +227,14 @@ export const clearDataLibrarySelection = (): Action => ({
 export const removeDataLibrarySelection = (listId: ListId): Action => ({
   type: 'DELETE_DATA_LIBRARY_LIST',
   payload: { listId },
+});
+
+export const removeDataLibraryMemberSelection = (
+  listId: ListId,
+  memberId: string,
+): Action => ({
+  type: 'DELETE_DATA_LIBRARY_LIST_MEMBER',
+  payload: { listId, memberId },
 });
 
 export const getNumberOfDataSetItemsSelected = (
