@@ -17,6 +17,8 @@
   "dependencies": {
     "@fontsource/montserrat": "^5.0.19",
     "@fontsource/poppins": "^5.0.15",
+    "@fontsource/roboto": "^5.0.5",
+    "@jbrowse/react-linear-genome-view": "^2.6.2",
     "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
