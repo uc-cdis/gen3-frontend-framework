@@ -36,6 +36,8 @@ const QueriesTable = ({ data, header }: QueriesTableProps) => {
     ...commonTableSettings,
     getRowId: (originalRow) => originalRow.name,
     enableRowSelection: false,
+    enableBottomToolbar: false,
+    enablePagination: false,
   });
 
   return (

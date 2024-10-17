@@ -112,3 +112,7 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
     }
   }, 0);
 };
+
+export const getTimestamp = () => {
+  return new Date(Date.now()).toLocaleString();
+};

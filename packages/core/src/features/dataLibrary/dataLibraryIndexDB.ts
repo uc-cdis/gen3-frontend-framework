@@ -1,8 +1,9 @@
 import { isArray } from 'lodash';
-import { JSONObject, isJSONObject } from '../../types';
+import { isJSONObject, JSONObject } from '../../types';
 import { type Datalist, LoadAllListData } from './types';
 import { nanoid } from '@reduxjs/toolkit';
-import { openDB, IDBPDatabase } from 'idb';
+import { IDBPDatabase, openDB } from 'idb';
+import { getTimestamp } from './utils';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
@@ -79,7 +80,7 @@ export const deleteAll = async () => {
 export const addListToDataLibraryIndexDB = async (
   body?: Partial<Datalist>,
 ): Promise<ReturnStatus> => {
-  const timestamp = new Date().toJSON();
+  const timestamp = getTimestamp();
   try {
     const db = await getDb();
     const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -119,13 +120,14 @@ export const updateListIndexDB = async (
       throw new Error(`List ${id} does not exist`);
     }
 
-    const timestamp = new Date().toJSON();
+    const timestamp = getTimestamp();
     const version = listData.version ? listData.version + 1 : 0;
     const updated = {
       ...listData,
       ...list,
       version: version,
       updated_time: timestamp,
+      created_time: listData.created_time,
     };
 
     store.put(updated);
@@ -149,7 +151,7 @@ export const addAllListIndexDB = async (
   if (!Object.keys(data).includes('lists') || !isArray(data['lists'])) {
     return { isError: true, status: 'lists not found in request' };
   }
-  const timestamp = new Date().toJSON();
+  const timestamp = getTimestamp();
   const allLists = data['lists'].reduce((acc: JSONObject, x: unknown) => {
     if (!isJSONObject(x)) return acc;
 
@@ -181,6 +183,12 @@ export const addAllListIndexDB = async (
   }
 };
 
+interface DataLibraryFromStore
+  extends Omit<Datalist, 'createdTime' | 'updatedTime'> {
+  created_time: string;
+  updated_time: string;
+}
+
 export const getDataLibraryListIndexDB = async (
   id?: string,
 ): Promise<ReturnStatus> => {
@@ -189,25 +197,48 @@ export const getDataLibraryListIndexDB = async (
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
     if (id !== undefined) {
-      const lists = await store.get(id);
+      const lists = (await store.get(id)) as Array<DataLibraryFromStore>;
       if (lists) {
         return {
           status: 'success',
-          lists: {
-            [id]: lists,
-          },
+          lists: lists.reduce(
+            (acc: Record<string, Datalist>, x: DataLibraryFromStore) => {
+              acc[x.id] = {
+                id: x.id,
+                version: x.version,
+                name: x.name,
+                authz: x.authz,
+                createdTime: x.created_time,
+                updatedTime: x.updated_time,
+                items: x.items,
+              };
+              return acc;
+            },
+            {},
+          ),
         };
       } else {
         return { isError: true, status: `${id} does not exist` };
       }
     } else {
-      const lists = (await store.getAll()) as Array<Datalist>;
+      const lists = (await store.getAll()) as Array<DataLibraryFromStore>;
       return {
         status: 'success',
-        lists: lists.reduce((acc: Record<string, Datalist>, x: Datalist) => {
-          acc[x.id] = x;
-          return acc;
-        }, {}),
+        lists: lists.reduce(
+          (acc: Record<string, Datalist>, x: DataLibraryFromStore) => {
+            acc[x.id] = {
+              id: x.id,
+              version: x.version,
+              name: x.name,
+              authz: x.authz,
+              createdTime: x.created_time,
+              updatedTime: x.updated_time,
+              items: x.items,
+            };
+            return acc;
+          },
+          {},
+        ),
       };
     }
   } catch (error: unknown) {

@@ -80,18 +80,37 @@ export const getSelectedItemsFromDataLibrary = (
   dataLibrary: DataLibrary,
 ) => {
   const selectedPaths = getSelectionPaths(selections);
+  const uniqueItems = new Map<
+    string,
+    CohortItem | FileItemWithParentDatasetNameAndID
+  >();
 
-  const selectedItems = selectedPaths.map((path) => {
-    return getDataLibraryItem(
+  selectedPaths.forEach((path) => {
+    const item = getDataLibraryItem(
       dataLibrary,
       path.listId,
       path.memberId,
       path.objectId,
     );
+
+    if (item) {
+      const key = getUniqueItemKey(item);
+      uniqueItems.set(key, item);
+      console.log(key);
+    }
   });
-  console.log('selectedItems', selectedItems);
-  return selectedItems.filter((item) => item !== undefined) as (
-    | CohortItem
-    | FileItemWithParentDatasetNameAndID
-  )[];
+
+  return Array.from(uniqueItems.values());
+};
+
+const getUniqueItemKey = (
+  item: CohortItem | FileItemWithParentDatasetNameAndID,
+): string => {
+  if (isCohortItem(item)) {
+    // For CohortItems
+    return `cohort_${item.datasetId}`;
+  } else {
+    // For FileItems
+    return `file_${item.datasetId}_${item.guid}`;
+  }
 };

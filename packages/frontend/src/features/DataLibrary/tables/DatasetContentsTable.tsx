@@ -6,7 +6,7 @@ import {
   MRT_Updater,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { ActionIcon } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
 import QueriesTable from './QueriesTable';
@@ -18,6 +18,7 @@ import {
 } from '../selection/SelectionContext';
 import { selectAllDatasetMembers } from '../selection/selection';
 import FilesTable from './FilesTable';
+import EmptyList from '../EmptyList';
 
 /**
  *  Component that manages a List items, which are composed of Dataset and/or Cohorts
@@ -57,7 +58,6 @@ const DataSetContentsTable = ({
   const { selections, updateSelections } = useDataLibrarySelection();
 
   // build the rows
-
   const rows = useDeepCompareMemo(
     () =>
       Object.keys(data).map((key) => {
@@ -69,6 +69,7 @@ const DataSetContentsTable = ({
             (data[key]?.files.length || 0) + (data[key]?.queries.length || 0),
           isAddDataSource:
             data[key]?.additionalData.length !== 0 ? 'True' : 'False',
+          isCohort: data[key]?.queries.length !== 0 ? 'True' : 'False',
         };
       }),
     [data],
@@ -137,7 +138,15 @@ const DataSetContentsTable = ({
     getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
     enableSelectAll: false,
+    enableBottomToolbar: rows.length > 10,
+    enablePagination: rows.length > 10,
+    enableRowSelection: false,
     state: { rowSelection },
+    renderEmptyRowsFallback: () => <EmptyList />,
+    defaultColumn: {
+      minSize: 2, //allow columns to get smaller than default
+      maxSize: 2000, //allow columns to get larger than default
+    },
     mantineSelectCheckboxProps: ({ row }) => {
       const selectedCount = getNumberOfDataSetItemsSelected(
         selections,
@@ -147,27 +156,41 @@ const DataSetContentsTable = ({
       const isIndeterminate =
         selectedCount > 0 && selectedCount != row.original.numItems;
       return {
-        color: 'violet',
-        radius: 'xl',
         indeterminate: isIndeterminate,
         ...(isIndeterminate ? { checked: false } : {}),
       };
     },
     renderRowActions: ({ row }) => (
-      <ActionIcon
-        aria-label={`remove datalist ${row.original.name} from list`}
-        onClick={() => {
-          removeList(row.id);
-        }}
+      <Tooltip
+        label={
+          row.original.isCohort
+            ? 'Remove cohort from list'
+            : 'Remove dataset from list'
+        }
       >
-        <RemoveIcon />
-      </ActionIcon>
+        <Button
+          variant="transparent"
+          aria-label={`remove ${row.original.isCohort ? 'cohort' : 'dataset'}  ${row.original.name} from list`}
+          onClick={() => {
+            removeList(row.id);
+          }}
+        >
+          <RemoveIcon size="1.5rem" />
+          {row.original.itemType}
+        </Button>
+      </Tooltip>
     ),
+    mantineDetailPanelProps: {
+      style: {
+        padding: '0px',
+        margin: '0px',
+      },
+    },
     renderDetailPanel: ({ row }) => {
       const rowData = data[row.id];
 
       return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full gap-y-4 pr-4">
           {rowData?.files.length > 0 && (
             <FilesTable
               header={'Files'}
@@ -191,10 +214,8 @@ const DataSetContentsTable = ({
   });
 
   return (
-    <div className="flex flex-col ml-8 w-full">
-      <div>
-        <MantineReactTable table={table} />
-      </div>
+    <div className="flex flex-col w-full mr-8">
+      <MantineReactTable table={table} />
     </div>
   );
 };

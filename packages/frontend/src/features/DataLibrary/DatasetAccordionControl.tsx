@@ -4,7 +4,7 @@ import {
   ActionIcon,
   Checkbox,
   CloseButton,
-  Group,
+  Tooltip,
   Text,
   TextInput,
 } from '@mantine/core';
@@ -15,9 +15,12 @@ import {
   MdDelete as DeleteIcon,
 } from 'react-icons/md';
 import { DataItemSelectedState } from './types';
+import EmptyList from './EmptyList';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
+  numberOfItems: number;
+  updatedTime: string;
   updateHandler: (update: Record<string, any>) => Promise<void>;
   deleteListHandler: () => Promise<void>;
   selectListHandler: (checked: boolean) => void;
@@ -26,6 +29,8 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
 
 export const DatasetAccordionControl = ({
   listName,
+  numberOfItems,
+  updatedTime,
   updateHandler,
   deleteListHandler,
   selectListHandler,
@@ -39,19 +44,20 @@ export const DatasetAccordionControl = ({
   };
 
   return (
-    <div className="flex items-center">
-      <Checkbox
-        onChange={(event) => {
-          selectListHandler(event.currentTarget.checked);
-          event.stopPropagation();
-        }}
-        checked={selectedState == 'checked'}
-        indeterminate={selectedState == 'indeterminate'}
-      />
-      <Accordion.Control {...props} className="w-4" />
-      <div className="flex justify-between w-full items-center ml-4">
+    <div className="flex justify-start w-full items-center px-4">
+      <div className="flex items-center w-1/4">
+        <Checkbox
+          onChange={(event) => {
+            selectListHandler(event.currentTarget.checked);
+            event.stopPropagation();
+          }}
+          checked={selectedState == 'checked'}
+          indeterminate={selectedState == 'indeterminate'}
+        />
+        <Accordion.Control {...props} className="w-4 mr-3" />
         {value ? (
           <TextInput
+            classNames={{ root: 'ml-2', input: 'font-bold' }}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={getHotkeyHandler([['Enter', handleUpdateName]])}
@@ -64,27 +70,38 @@ export const DatasetAccordionControl = ({
             }
           />
         ) : (
-          <Group>
-            {' '}
-            <Text fw={600} className="ml-2" aria-label={listName}>
+          <span className="flex items-center justify-between">
+            <Text fw={600} className="ml-2 w-100 py-2" aria-label={listName}>
               {listName}
-            </Text>{' '}
-            <ActionIcon
-              color="accent.4"
-              aria-label="Change datalist name"
-              onClick={() => setValue(listName)}
-            >
-              <EditIcon />
-            </ActionIcon>
-          </Group>
+            </Text>
+            <Tooltip label="Change name of list">
+              <ActionIcon
+                color="accent.4"
+                variant="transparent"
+                aria-label="Change datalist name"
+                onClick={() => setValue(listName)}
+              >
+                <EditIcon />
+              </ActionIcon>
+            </Tooltip>
+          </span>
         )}
-        <ActionIcon
-          color="accent.4"
-          aria-label="delete datalist"
-          onClick={() => deleteListHandler()}
-        >
-          <DeleteIcon />
-        </ActionIcon>
+      </div>
+      <div className="flex items-end ml-auto space-x-2">
+        {numberOfItems === 0 && <EmptyList />}
+        <Text fw={500} c="base-contrast.2">
+          {updatedTime}
+        </Text>
+        <Tooltip label={`Delete ${listName}`}>
+          <ActionIcon
+            color="accent.4"
+            variant="transparent"
+            aria-label="delete list"
+            onClick={() => deleteListHandler()}
+          >
+            <DeleteIcon />
+          </ActionIcon>
+        </Tooltip>
       </div>
     </div>
   );

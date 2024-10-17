@@ -7,21 +7,27 @@ export const commonTableSettings: Partial<MRT_TableOptions<any>> = {
   enableTopToolbar: false,
   enableColumnFilters: false,
   enableColumnActions: false,
-  enablePagination: false,
   enableRowActions: true,
-  enableColumnOrdering: true,
+  enableColumnOrdering: false,
   enableFacetedValues: true,
-  enableGrouping: true,
-  enableColumnPinning: true,
+  enableGrouping: false,
+  enableColumnPinning: false,
   enableRowSelection: true,
+  enablePagination: false,
   enableSelectAll: false,
   enableExpandAll: false,
+
   displayColumnDefOptions: {
     'mrt-row-select': {
-      size: 20,
+      size: 5,
+      header: '',
     },
     'mrt-row-expand': {
-      size: 20,
+      size: 5,
+      header: '',
+    },
+    'mrt-row-actions': {
+      header: '',
     },
   },
 
@@ -49,7 +55,6 @@ export const commonTableSettings: Partial<MRT_TableOptions<any>> = {
       backgroundColor: 'var(--mantine-color-table-1)',
       color: 'var(--mantine-color-table-contrast-1)',
       textAlign: 'center',
-      padding: '0 0 0 0',
       fontWeight: 600,
       fontSize: 'var(--mantine-font-size-sm)',
       textTransform: 'uppercase',

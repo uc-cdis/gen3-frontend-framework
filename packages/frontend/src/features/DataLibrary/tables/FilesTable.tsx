@@ -61,6 +61,8 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
     columns,
     data: data,
     ...commonTableSettings,
+    enableBottomToolbar: data.length > 10,
+    enablePagination: data.length > 10,
     enableRowActions: false,
     getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
@@ -68,11 +70,11 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
   });
 
   return (
-    <div className="flex flex-col ml-8">
-      <Text fw={600}>{header}</Text>
-      <div className="mt-2">
-        <MantineReactTable table={table} />
-      </div>
+    <div className="flex flex-col gap-y-1">
+      <Text fw={600} fs="md">
+        {header}
+      </Text>
+      <MantineReactTable table={table} />
     </div>
   );
 };

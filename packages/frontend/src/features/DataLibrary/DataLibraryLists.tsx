@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Accordion, Modal, ModalProps, Title } from '@mantine/core';
+import { Accordion, Modal, ModalProps } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 import { DataItemSelectedState, DatasetContents } from './types';
@@ -13,6 +13,7 @@ import {
   isFileItem,
   isAdditionalDataItem,
   getNumberOfItemsInDatalist,
+  getTimestamp,
 } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
@@ -60,7 +61,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     await updateListInDataLibrary(listId, {
       ...dataList,
       ...update,
-      updatedTime: new Date().toISOString(),
+      updatedTime: getTimestamp(),
     });
   };
 
@@ -145,7 +146,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     await updateListInDataLibrary(listId, {
       ...dataList,
       items: newObject,
-      updatedTime: new Date().toISOString(),
+      updatedTime: getTimestamp(),
     });
     // update selections
     removeListMember(listId, itemId);
@@ -163,10 +164,14 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     updateSelections(listId, selectAllDatasets); // select all the datasets in the list
   };
 
+  console.log('datestest', dataList);
+
   return (
     <Accordion.Item value={listName} key={listName}>
       <DatasetAccordionControl
         listName={listName}
+        numberOfItems={numberOfItemsInList}
+        updatedTime={dataList.updatedTime}
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}
