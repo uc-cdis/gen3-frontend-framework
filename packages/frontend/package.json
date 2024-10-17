@@ -82,7 +82,7 @@
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
-    "jsonpath-plus": "^10.0.3",
+    "jsonpath-plus": "^8.0.0",
     "mantine-react-table": "^2.0.0-beta.7",
     "minisearch": "^6.3.0",
     "next": "^14.2.8",
