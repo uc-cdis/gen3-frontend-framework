@@ -18,9 +18,13 @@ export const getDataLibraryItem = (
   if (!(dataId in dataLibrary[listId].items)) return undefined;
 
   const datasetOrCohort = dataLibrary[listId].items[dataId];
-  const { name, id } = datasetOrCohort;
+  const { name } = datasetOrCohort;
   if (isCohortItem(datasetOrCohort)) {
-    return datasetOrCohort as CohortItem;
+    return {
+      ...datasetOrCohort,
+      datasetId: dataId,
+      datasetName: name,
+    } as CohortItem & { datasetId: string; datasetName: string };
   } else {
     if (!fileId) return undefined;
     if (!(fileId in datasetOrCohort.items)) return undefined;
@@ -28,7 +32,7 @@ export const getDataLibraryItem = (
     if (isFileItem(datasetOrCohort.items[fileId])) {
       return {
         datasetName: name,
-        datasetId: id,
+        datasetId: dataId,
         ...(datasetOrCohort.items[fileId] as FileItem),
       } as FileItemWithParentDatasetNameAndID;
     }
@@ -85,6 +89,7 @@ export const getSelectedItemsFromDataLibrary = (
       path.objectId,
     );
   });
+  console.log('selectedItems', selectedItems);
   return selectedItems.filter((item) => item !== undefined) as (
     | CohortItem
     | FileItemWithParentDatasetNameAndID

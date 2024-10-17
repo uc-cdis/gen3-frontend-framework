@@ -6,11 +6,8 @@ import {
 } from 'mantine-react-table';
 import React, { useEffect, useMemo, useState } from 'react';
 import { isCohortItem } from '@gen3/core';
-import { Text } from '@mantine/core';
-import { commonTableSettings } from './tableSettings';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import { number } from 'echarts';
 
 const columns = [
   {
@@ -60,7 +57,7 @@ const SelectedItemsTable = () => {
           type: item.itemType as string,
           size: undefined,
           datasetName: item.name,
-          datasetId: item.id,
+          datasetId: item.datasetId,
         } as SelectedItemsTableRow;
       }
 
@@ -85,6 +82,8 @@ const SelectedItemsTable = () => {
     enableColumnActions: false,
     enablePagination: true,
     enableRowActions: false,
+    enableStickyFooter: true,
+    enableStickyHeader: true,
     initialState: {
       density: 'xs',
       columnPinning: {
