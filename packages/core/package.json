@@ -58,7 +58,8 @@
     "flat": "^6.0.1",
     "papaparse": "^5.4.1",
     "queue": "6.0.2",
-    "react-redux": "^8.1.0",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "swr": "^2.2.5",
     "uuid": "^9.0.1"
