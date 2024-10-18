@@ -98,5 +98,10 @@
     "rollup-plugin-copy": {
       "globby": "^11.0.0"
     }
-  }
-}
+  },
+  "optionalDependencies": {
+    "@nx/nx-darwin-arm64": "19.4.3",
+    "@nx/nx-darwin-x64": "19.4.3",
+    "@nx/nx-linux-x64-gnu": "19.4.3",
+    "@nx/nx-win32-x64-msvc": "19.4.3"
+  },}
