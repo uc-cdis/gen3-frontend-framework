@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.47",
+  "version": "0.10.48",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -83,6 +83,7 @@
     "js-cookie": "^3.0.5",
     "jsonpath-plus": "^8.0.0",
     "mantine-react-table": "^2.0.0-beta.6",
+    "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
     "next": "^14.2.8",
     "next-compose-plugins": "^2.2.1",
@@ -100,7 +101,6 @@
     "react-redux": "^8.1.0",
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
-    "mathjs" : "^13.1.1",
     "remark-gfm": "^4.0.0",
     "stable-hash": "^0.0.3",
     "tailwind-merge": "^2.5.2",
