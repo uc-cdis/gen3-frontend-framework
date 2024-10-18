@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Accordion, Modal, ModalProps } from '@mantine/core';
+import { Accordion, Button, Modal, ModalProps } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 import { DataItemSelectedState, DatasetContents } from './types';
@@ -24,6 +24,7 @@ import {
   useDataLibrarySelection,
 } from './selection/SelectionContext';
 import SelectedItemsTable from './tables/SelectedItemsTable';
+import { data1 } from './utils';
 
 type SelectedItemsModelProps = ModalProps;
 
@@ -194,6 +195,8 @@ const DataLibraryLists = () => {
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
+    setAllListsInDataLibrary,
+    clearLibrary,
   } = useDataLibrary(false);
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
@@ -202,8 +205,6 @@ const DataLibraryLists = () => {
     gatherSelectedItems(dataLibrary);
     open();
   };
-
-  console.log('dataLibrary', dataLibrary);
 
   return (
     <div className="flex flex-col w-full ml-2">
@@ -230,6 +231,22 @@ const DataLibraryLists = () => {
               );
             })}
         </Accordion>
+      </div>
+      <div className="flex space-x-4 m-2">
+        <Button
+          onClick={() => {
+            setAllListsInDataLibrary(data1 as any);
+          }}
+        >
+          Load Sample List
+        </Button>
+        <Button
+          onClick={() => {
+            clearLibrary();
+          }}
+        >
+          Clear All
+        </Button>
       </div>
     </div>
   );
