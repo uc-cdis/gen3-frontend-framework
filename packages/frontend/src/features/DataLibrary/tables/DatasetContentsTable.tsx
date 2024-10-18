@@ -140,12 +140,28 @@ const DataSetContentsTable = ({
     enableSelectAll: false,
     enableBottomToolbar: rows.length > 10,
     enablePagination: rows.length > 10,
-    enableRowSelection: false,
+    enableRowSelection: true,
     state: { rowSelection },
     renderEmptyRowsFallback: () => <EmptyList />,
     defaultColumn: {
-      minSize: 2, //allow columns to get smaller than default
-      maxSize: 2000, //allow columns to get larger than default
+      minSize: 2,
+    },
+    displayColumnDefOptions: {
+      'mrt-row-select': {
+        size: 10,
+        maxSize: 10,
+        header: '',
+      },
+      'mrt-row-expand': {
+        size: 5,
+        maxSize: 5,
+        padding: 'xs',
+        header: '',
+      },
+      'mrt-row-actions': {
+        size: 10,
+        header: '',
+      },
     },
     mantineSelectCheckboxProps: ({ row }) => {
       const selectedCount = getNumberOfDataSetItemsSelected(
