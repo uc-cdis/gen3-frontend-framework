@@ -10,8 +10,8 @@ text-accent-content-darker
 p-1
 font-bold
 cursor-pointer
-text-sm
-font-content-noto
+text-xs
+font-content
 `;
 
 interface FacetExpanderProps {
