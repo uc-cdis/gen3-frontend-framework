@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.47",
+  "version": "0.10.49",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -24,7 +24,7 @@
     "@mdx-js/react": "^3.0.0",
     "cookies-next": "^4.0.0",
     "jose": "^4.15.9",
-    "mantine-react-table": "^2.0.0-beta.6"
+    "mantine-react-table": "^2.0.0-beta.7"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
