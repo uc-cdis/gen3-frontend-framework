@@ -111,9 +111,9 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
             : remainingValues > 0
               ? Math.min(96, remainingValues * 5 + 40)
               : 24;
-        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+        return `flex-none h-${cardHeight} overflow-y-scroll pl-3`;
       } else {
-        return 'overflow-hidden h-auto';
+        return 'overflow-hidden h-auto mr-3 pl-3';
       }
     },
     [isGroupExpanded],
@@ -359,7 +359,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 data-testid={`checkbox-${value}`}
                                 value={value}
                                 size="xs"
-                                color="accent"
+                                color="accent.4"
                                 onChange={(e) =>
                                   handleChange(
                                     e.currentTarget.value,
@@ -368,7 +368,8 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 }
                                 aria-label={`${value}`}
                                 classNames={{
-                                  input: 'bg-base hover:bg-accent-darker',
+                                  input: 'hover:bg-accent-darker',
+                                  label: 'text-xs font-normal font-content',
                                 }}
                                 checked={
                                   selectedEnums && selectedEnums.includes(value)
@@ -376,15 +377,15 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               />
                             </div>
                             <OverflowTooltippedLabel label={value}>
-                              <span className="text-sm font-normal font-heading">
+                              <span className="text-xs font-normal font-content">
                                 {value}
                               </span>
                             </OverflowTooltippedLabel>
-                            <div className="flex-none text-right w-14 text-sm font-normal font-content">
+                            <div className="flex-none text-right w-14 text-xs font-normal font-content">
                               {count.toLocaleString()}
                             </div>
                             {showPercent ? (
-                              <div className="flex-none text-right w-18 text-sm font-normal font-content">
+                              <div className="flex-none text-right w-18 text-xs font-normal font-content">
                                 (
                                 {(
                                   ((count as number) / totalCount) *
