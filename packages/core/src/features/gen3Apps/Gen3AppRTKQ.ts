@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {
   createDispatchHook,
-  createSelectorHook,
   createStoreHook,
   ReactReduxContextValue,
-  TypedUseSelectorHook,
+  useSelector,
 } from 'react-redux';
 import {
   ApiModules,
@@ -15,7 +14,7 @@ import {
   BaseQueryFn,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { configureStore, UnknownAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -31,13 +30,10 @@ export const createAppApiForRTKQ = (
   reducerPath: string,
   baseQuery?: BaseQueryFn,
 ) => {
-  const appContext = React.createContext(
-    undefined as unknown as ReactReduxContextValue<any, UnknownAction>,
-  );
+  const appContext = React.createContext<ReactReduxContextValue | null>(null);
 
   type AppState = any;
-  const useAppSelector: TypedUseSelectorHook<AppState> =
-    createSelectorHook(appContext);
+  const useAppSelector = useSelector.withTypes<AppState>();
   const useAppDispatch = createDispatchHook(appContext);
   const useAppStore = createStoreHook(appContext);
 

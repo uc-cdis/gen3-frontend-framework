@@ -1,5 +1,5 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
-import { coreCreateApi } from '../../api';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { CoreState } from '../../reducers';
@@ -40,7 +40,7 @@ export interface TablePageOffsetProps {
  * Creates a base class core API for guppy API calls.
  * @returns: guppy core API with guppyAPIFetch base query
  */
-export const guppyApi = coreCreateApi({
+export const guppyApi = createApi({
   reducerPath: 'guppy',
 
   // TODO: refactor to use fetchBaseQuery

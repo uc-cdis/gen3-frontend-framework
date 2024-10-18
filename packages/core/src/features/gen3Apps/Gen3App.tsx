@@ -165,9 +165,7 @@ export const createAppStore = (
           }),
   });
   type AppState = ReturnType<typeof reducers>;
-  const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<AppState, UnknownAction>,
-  );
+  const context = React.createContext<ReactReduxContextValue | null>(null);
 
   type AppDispatch = typeof store.dispatch;
   const useAppSelector: TypedUseSelectorHook<AppState> =
