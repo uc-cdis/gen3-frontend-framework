@@ -44,7 +44,7 @@ COPY ./packages ./packages
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string" \
-    "@rollup/rollup-linux-arm64-gnu"
+    "@rollup/rollup-linux-x64-gnu"
 RUN lerna run --scope @gen3/core build
 RUN lerna run --scope @gen3/frontend build
 RUN lerna run --scope @gen3/toolsff build
