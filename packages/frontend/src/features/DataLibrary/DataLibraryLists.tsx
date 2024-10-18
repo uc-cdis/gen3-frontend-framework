@@ -203,6 +203,8 @@ const DataLibraryLists = () => {
     open();
   };
 
+  console.log('dataLibrary', dataLibrary);
+
   return (
     <div className="flex flex-col w-full ml-2">
       <SelectedItemsModal

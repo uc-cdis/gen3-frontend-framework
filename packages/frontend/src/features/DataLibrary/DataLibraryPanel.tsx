@@ -2,9 +2,13 @@ import { Button } from '@mantine/core';
 import { useDataLibrary } from '@gen3/core';
 import { data1 } from './utils';
 import DataLibraryLists from './DataLibraryLists';
+import { useForceUpdate, randomId } from '@mantine/hooks';
 
 const DataLibraryPanel = () => {
-  const { clearLibrary, setAllListsInDataLibrary } = useDataLibrary(false);
+  const forceUpdate = useForceUpdate();
+  const { dataLibrary, clearLibrary, setAllListsInDataLibrary } =
+    useDataLibrary(false);
+  console.log('draw', dataLibrary);
   return (
     <div className="flex flex-col w-full m-4">
       <DataLibraryLists />
@@ -12,6 +16,7 @@ const DataLibraryPanel = () => {
         <Button
           onClick={() => {
             setAllListsInDataLibrary(data1 as any);
+            forceUpdate();
           }}
         >
           Load Sample List
@@ -19,6 +24,7 @@ const DataLibraryPanel = () => {
         <Button
           onClick={() => {
             clearLibrary();
+            forceUpdate();
           }}
         >
           Clear All
