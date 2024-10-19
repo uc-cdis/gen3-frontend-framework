@@ -2,13 +2,13 @@ import React, { useMemo, useRef, useState, ReactNode } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Loader, Text } from '@mantine/core';
+import { Loader, Text, Button } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
-import { Button } from '@mantine/core';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
+import ChartsPanel from './Charts/ChartsPanel';
 import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
@@ -100,6 +100,9 @@ const DiscoveryIndexPanel = ({
           discoveryConfig?.features?.pageTitle.enabled ? (
             <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
           ) : null}
+          {discoveryConfig.features?.chartsSection?.enabled && (
+            <ChartsPanel config={discoveryConfig.features?.chartsSection}/>
+          )}
           <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             {indexSelector}
             <SummaryStatisticPanel summaries={summaryStatistics} />

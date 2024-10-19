@@ -26,7 +26,7 @@ export const getNavPageLayoutPropsFromConfig =
         `config/${GEN3_COMMONS_NAME}/banner.json`,
       );
     } catch (e) {
-      console.log(
+      console.warn(
         'No banner config found at: ',
         `config/${GEN3_COMMONS_NAME}/banner.json`,
       );

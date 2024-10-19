@@ -9,6 +9,8 @@ import {
   selectGen3AppByName,
 } from './gen3AppsSlice';
 
+import { createAppApiForRTKQ } from './Gen3AppRTKQ';
+
 export {
   createGen3App,
   createGen3AppWithOwnStore,
@@ -16,4 +18,5 @@ export {
   selectGen3AppByName,
   getGen3AppId,
   createAppStore,
+  createAppApiForRTKQ,
 };

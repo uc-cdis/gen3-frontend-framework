@@ -39,10 +39,10 @@ export interface HistogramData {
   count: number;
 }
 
+export type HistogramDataArray = Array<HistogramData>;
+
 const isValidObject = (input: any): boolean =>
   typeof input === 'object' && input !== null;
-
-export type HistogramDataArray = Array<HistogramData>;
 
 export const isHistogramData = (data: any): data is HistogramData => {
   return isValidObject(data) && 'key' in data && 'count' in data;

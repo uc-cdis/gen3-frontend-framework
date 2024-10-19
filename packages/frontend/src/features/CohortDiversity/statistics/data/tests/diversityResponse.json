@@ -1,0 +1,228 @@
+{
+  "data": {
+    "_aggregation": {
+      "case": {
+        "_totalCount": 74055,
+        "sex": {
+          "histogram": [
+            {
+              "key": "Female",
+              "count": 34496
+            },
+            {
+              "key": "Male",
+              "count": 33208
+            },
+            {
+              "key": "Not Reported",
+              "count": 21
+            },
+            {
+              "key": "no data",
+              "count": 6330
+            }
+          ]
+        },
+        "ethnicity": {
+          "histogram": [
+            {
+              "key": "Not Hispanic or Latino",
+              "count": 55040
+            },
+            {
+              "key": "Not Reported",
+              "count": 6695
+            },
+            {
+              "key": "Hispanic or Latino",
+              "count": 5402
+            },
+            {
+              "key": "no data",
+              "count": 6918
+            }
+          ]
+        },
+        "race": {
+          "histogram": [
+            {
+              "key": "White",
+              "count": 33572
+            },
+            {
+              "key": "Black or African American",
+              "count": 20624
+            },
+            {
+              "key": "Not Reported",
+              "count": 5570
+            },
+            {
+              "key": "Asian",
+              "count": 3512
+            },
+            {
+              "key": "Other",
+              "count": 1966
+            },
+            {
+              "key": "American Indian or Alaska Native",
+              "count": 169
+            },
+            {
+              "key": "Native Hawaiian or other Pacific Islander",
+              "count": 158
+            },
+            {
+              "key": "no data",
+              "count": 8484
+            }
+          ]
+        }
+      },
+      "case_0_4": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                0,
+                4
+              ],
+              "count": 568
+            }
+          ]
+        }
+      },
+      "case_5_11": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                5,
+                11
+              ],
+              "count": 308
+            }
+          ]
+        }
+      },
+      "case_12_15": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                12,
+                15
+              ],
+              "count": 243
+            }
+          ]
+        }
+      },
+      "case_16_17": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                16,
+                17
+              ],
+              "count": 244
+            }
+          ]
+        }
+      },
+      "case_18_29": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                18,
+                29
+              ],
+              "count": 5047
+            }
+          ]
+        }
+      },
+      "case_30_39": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                30,
+                39
+              ],
+              "count": 6966
+            }
+          ]
+        }
+      },
+      "case_40_49": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                40,
+                49
+              ],
+              "count": 8354
+            }
+          ]
+        }
+      },
+      "case_50_64": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                50,
+                64
+              ],
+              "count": 19265
+            }
+          ]
+        }
+      },
+      "case_65_74": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                65,
+                74
+              ],
+              "count": 12820
+            }
+          ]
+        }
+      },
+      "case_75_84": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                75,
+                84
+              ],
+              "count": 8764
+            }
+          ]
+        }
+      },
+      "case_85_plus": {
+        "age_at_index": {
+          "histogram": [
+            {
+              "key": [
+                85,
+                89
+              ],
+              "count": 2680
+            }
+          ]
+        }
+      }
+    }
+  }
+}

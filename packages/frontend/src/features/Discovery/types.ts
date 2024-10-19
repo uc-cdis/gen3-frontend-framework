@@ -6,6 +6,7 @@ import {
 import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import { SummaryChart } from '../../components/charts/types';
 
 export interface TagData {
   name: string;
@@ -268,6 +269,17 @@ export interface TagsConfig {
   tagCategories: TagCategory[];
   showUnknownTags?: boolean;
 }
+export interface ChartsSection {
+  enabled: boolean;
+  title?: string;
+  showLegends?: {
+    enabled: boolean;
+    showSwitch?: boolean;
+  };
+  charts?: Array<SummaryChart & {
+      data: string[];
+    }>;
+}
 
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
@@ -282,6 +294,7 @@ export interface DiscoveryIndexConfig {
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
+    chartsSection?: ChartsSection;
   };
   aggregations: SummaryStatisticsConfig[];
   tags: TagsConfig;

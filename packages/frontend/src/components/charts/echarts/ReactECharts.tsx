@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
@@ -53,7 +53,12 @@ const ReactECharts = ({
   }, [rect]);
 
   return (
-    <div ref={chartRef} style={{ width: '100%', height: '100%', ...style }} />
+    <div
+      role="figure"
+      aria-label="Data Chart"
+      ref={chartRef}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
   );
 };
 

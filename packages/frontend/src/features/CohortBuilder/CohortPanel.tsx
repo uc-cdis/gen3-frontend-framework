@@ -338,7 +338,6 @@ export const CohortPanel = ({
             />
           </div>
           <Charts
-            index={index}
             charts={summaryCharts}
             data={data ?? EmptyData}
             counts={counts}

@@ -39,13 +39,12 @@ const NavigationBar = ({
     setCurrent(router.pathname);
   }, [router.pathname]);
 
-  console.log(
-    'gir',
-    `grid grid-cols-${items?.length} ${extractClassName('navigationPanel', mergedClassnames)}`,
-  );
-
   return (
-    <div className={extractClassName('root', mergedClassnames)}>
+    <div
+      role="navigation"
+      aria-label="main site navigation"
+      className={extractClassName('root', mergedClassnames)}
+    >
       <div className={extractClassName('logoAndTitlePanel', mergedClassnames)}>
         {logo && <NavigationLogo {...{ ...logo }} />}
       </div>

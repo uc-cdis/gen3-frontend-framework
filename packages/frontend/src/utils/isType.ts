@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 
 export const isArrayOfString = (value: any): value is Array<string> => {
   return (

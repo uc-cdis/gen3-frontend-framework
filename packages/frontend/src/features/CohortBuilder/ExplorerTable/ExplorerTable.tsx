@@ -70,6 +70,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [selectedRow, setSelectedRow] = useState<
+    MRT_Row<Record<string, any>> | undefined
+  >(undefined);
 
   const DetailsPanel = useMemo(
     () =>
@@ -240,8 +243,10 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             onClick: () => {
               if (Object.keys(rowSelection).includes(row.id)) {
                 setRowSelection({});
+                setSelectedRow(undefined);
               } else {
                 setRowSelection({ [row.id as string]: true });
+                setSelectedRow(row as MRT_Row<JSONObject>); // TODO: fix this typecast
               }
             },
             sx: {
@@ -260,6 +265,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               ? Object.keys(rowSelection).at(0)
               : undefined
           }
+          row={selectedRow}
           onClose={() => setRowSelection({})}
           panel={DetailsPanel}
           classNames={tableConfig?.detailsConfig?.classNames}

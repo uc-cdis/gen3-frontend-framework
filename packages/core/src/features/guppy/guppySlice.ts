@@ -1,11 +1,11 @@
-import useSWR, { SWRResponse, Fetcher } from 'swr';
+import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
 import {
+  convertFilterSetToGqlFilter,
   FilterSet,
   isFilterEmpty,
-  convertFilterSetToGqlFilter,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 
