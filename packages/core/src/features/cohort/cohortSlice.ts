@@ -87,8 +87,6 @@ const newCohort = ({
 
 export const createCohortId = (): string => nanoid();
 
-// TODO: start using this adapter
-
 const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
   sortComparer: (a, b) => {
     if (a.modified_datetime <= b.modified_datetime) return 1;
@@ -261,12 +259,12 @@ export const cohortSlice = createSlice({
  * @hidden
  */
 export const cohortSelectors = cohortsAdapter.getSelectors(
-  (state: CoreState) => state.cohort.availableCohorts,
+  (state: CoreState) => state.cohorts,
 );
 
 const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
-  if (state.cohort.availableCohorts.currentCohort) {
-    return state.cohort.availableCohorts.currentCohort;
+  if (state.cohorts.currentCohort) {
+    return state.cohorts.currentCohort;
   }
   const unsavedCohort = newCohort({ customName: UNSAVED_COHORT_NAME });
   return unsavedCohort.id;
@@ -295,6 +293,22 @@ export const selectCurrentCohort = (state: CoreState): Cohort =>
 
 export const selectCurrentCohortName = (state: CoreState): string =>
   cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state)).name;
+
+/**
+ * Select a filter by its name from the current cohort. If the filter is not found
+ * returns undefined.
+ * @param state - Core
+ * @param index which cohort index to select from
+ * @param name name of the filter to select
+ */
+export const selectIndexedFilterByName = (
+  state: CoreState,
+  index: string,
+  name: string,
+): Operation | undefined => {
+  return cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
+    .filters[index]?.root[name];
+};
 
 /**
  * Returns the cohort's name given the id
@@ -336,7 +350,10 @@ export const selectIndexFilters = (
   state: CoreState,
   index: string,
 ): FilterSet => {
-  return selectCurrentCohort(state).filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
+  return (
+    cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
+      .filters?.[index] ?? EmptyFilterSet
+  ); // TODO: check if this is undefined
 };
 
 export const cohortReducer = cohortSlice.reducer;

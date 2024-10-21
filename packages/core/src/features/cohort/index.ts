@@ -10,6 +10,8 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
+  addNewDefaultUnsavedCohort,
+  removeCohort,
 } from './cohortSlice';
 
 export {
@@ -23,4 +25,6 @@ export {
   updateCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
+  addNewDefaultUnsavedCohort,
+  removeCohort,
 };

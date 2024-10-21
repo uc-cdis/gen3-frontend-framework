@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useGetCSRFQuery } from '@gen3/core';
+import {
+  useGetCSRFQuery,
+  selectCurrentCohortId,
+  useCoreDispatch,
+  useCoreSelector,
+  addNewDefaultUnsavedCohort,
+} from '@gen3/core';
+
+export const useGetCurrentCohort = () => {
+  return useCoreSelector((state) => selectCurrentCohortId(state));
+};
 
 export const CohortBuilder = ({
   explorerConfig,
 }: CohortBuilderConfiguration) => {
   const { isLoading } = useGetCSRFQuery();
+  const dispatch = useCoreDispatch();
+  const currentCohort = useGetCurrentCohort();
+  console.log('currentCohort', currentCohort);
+  useEffect(() => {
+    if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
+  }, [dispatch]);
 
   if (isLoading) {
     return (
