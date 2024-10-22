@@ -43,7 +43,9 @@ describe('computeRowSpan', () => {
 
     const expectedRowSpan = [6, 6, 12];
 
-    expect(computeRowSpan(charts, numCols)).toEqual(expectedRowSpan);
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
   });
 
   it('handles edge case where number of charts is divisible by number of columns', () => {
@@ -56,6 +58,8 @@ describe('computeRowSpan', () => {
 
     const expectedRowSpan = [6, 6];
 
-    expect(computeRowSpan(charts, numCols)).toEqual(expectedRowSpan);
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
   });
 });

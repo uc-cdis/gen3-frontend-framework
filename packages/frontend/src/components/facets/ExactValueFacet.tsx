@@ -55,15 +55,15 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
-  dataHooks,
+  hooks,
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(''); // Handle the state of the TextInput
-  const clearFilters = dataHooks.useClearFilter();
-  const updateFacetFilters = dataHooks.useUpdateFacetFilters();
+  const clearFilters = hooks.useClearFilter();
+  const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
-  const facetValue = dataHooks.useGetFacetFilters(field);
+  const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
 
   const setValues = (values: EnumFilterValue) => {

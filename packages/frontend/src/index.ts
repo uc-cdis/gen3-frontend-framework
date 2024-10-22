@@ -15,6 +15,8 @@ import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/ErrorCard';
+import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
+import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -106,4 +108,6 @@ export {
   CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
+  registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
 };

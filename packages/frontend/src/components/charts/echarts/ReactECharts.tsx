@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { init, getInstanceByDom } from 'echarts';
 import type { CSSProperties } from 'react';
 import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
+import { useResizeObserver } from '@mantine/hooks';
 
 export interface ReactEChartsProps {
   option: EChartsOption;
@@ -19,27 +20,15 @@ const ReactECharts = ({
   loading,
   theme,
 }: ReactEChartsProps): JSX.Element => {
-  const chartRef = useRef<HTMLDivElement>(null);
-
+  const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
+  const [chartRef, rect] = useResizeObserver();
   useDeepCompareEffect(() => {
     // Initialize chart
     let chart: ECharts | undefined;
     if (chartRef.current !== null) {
       chart = init(chartRef.current, theme);
     }
-
-    // Add chart resize listener
-    // ResizeObserver is leading to a bit janky UX
-    function resizeChart(event: any) {
-      chart?.resize();
-    }
-    window.addEventListener('resize', resizeChart);
-
-    // Return cleanup function
-    return () => {
-      chart?.dispose();
-      window.removeEventListener('resize', resizeChart);
-    };
+    setChartRoot(chart);
   }, [theme]);
 
   useDeepCompareEffect(() => {
@@ -59,8 +48,17 @@ const ReactECharts = ({
     }
   }, [loading]);
 
+  useDeepCompareEffect(() => {
+    chartRoot?.resize();
+  }, [rect]);
+
   return (
-    <div ref={chartRef} style={{ width: '100%', height: '100%', ...style }} />
+    <div
+      role="figure"
+      aria-label="Data Chart"
+      ref={chartRef}
+      style={{ width: '100%', height: '100%', ...style }}
+    />
   );
 };
 

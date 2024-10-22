@@ -1,12 +1,4 @@
-import React from 'react';
-import {
-  createDispatchHook,
-  createSelectorHook,
-  createStoreHook,
-  ReactReduxContextValue,
-  TypedUseSelectorHook,
-} from 'react-redux';
-import { Store } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
 import { CoreDispatch } from './store';
 import { CoreState } from './reducers';
 
@@ -22,14 +14,5 @@ import { CoreState } from './reducers';
  * correct opinionated type.
  */
 
-export const CoreContext = React.createContext(
-  undefined as unknown as ReactReduxContextValue<CoreState>,
-);
-
-export const useCoreSelector: TypedUseSelectorHook<CoreState> =
-  createSelectorHook(CoreContext);
-
-export const useCoreDispatch: () => CoreDispatch =
-  createDispatchHook(CoreContext);
-
-export const useCoreStore: () => Store = createStoreHook(CoreContext);
+export const useCoreSelector = useSelector.withTypes<CoreState>();
+export const useCoreDispatch = useDispatch.withTypes<CoreDispatch>();

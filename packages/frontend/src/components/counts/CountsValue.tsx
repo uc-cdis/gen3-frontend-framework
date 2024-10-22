@@ -15,7 +15,7 @@ const CountsValue = ({ label, isSuccess, counts }: CountsValueProps) => {
         shadow="xs"
         p="xs"
         withBorder
-        className="bg-primary font-heading text-md font-semibold"
+        className="bg-primary text-primary-contrast font-heading text-md font-semibold"
       >
         {`${counts?.toLocaleString() ?? '...'} ${label}`}
       </Paper>
