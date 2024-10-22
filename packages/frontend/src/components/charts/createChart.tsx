@@ -1,34 +1,17 @@
 import React from 'react';
-import BarChart from './BarChart';
-import PieChart from './echarts/PieChart';
-import DonutChart from './echarts/DonutChart';
-import HorizontalBarChart from './echarts/HorizontalBarChart';
 import { ChartProps } from './types';
+import ChartRendererFactory from './ChartRendererFactory';
 
 /** createChart selects which type of chart element to create depending on the
-  * values in the exploration page config file.
-  */
+ * values in the exploration page config file.
+ */
 export const createChart = (
   type: string,
-  chartProps: ChartProps
+  chartProps: ChartProps,
+  parameters?: Record<string, any>,
 ): React.ReactNode => {
-    return (
-        <React.Fragment>
-            {
-                {
-                    bar: (
-                        <BarChart {...chartProps} />
-                    ),
-                    horizontalStacked: (
-                      <HorizontalBarChart {...chartProps} />
-                    ),
-                    fullPie: (
-                        <PieChart {...chartProps}/>
-                    ),
-                    donut: (
-                        <DonutChart {...chartProps} />
-                    )
-                }[type as string]
-            }
-        </React.Fragment>);
+  // TODO: add default chart chart for missing chart type
+  const element = ChartRendererFactory().getRenderer('chart', type);
+
+  return element({ ...chartProps }, parameters);
 };

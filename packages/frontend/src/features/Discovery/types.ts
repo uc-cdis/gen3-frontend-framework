@@ -6,6 +6,12 @@ import {
 import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
+import { SummaryChart } from '../../components/charts/types';
+
+export interface TagData {
+  name: string;
+  category: string;
+}
 
 interface KeywordSearch {
   keywords?: string[];
@@ -21,7 +27,7 @@ export interface SearchTerms {
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
-  discoveryConfig: DiscoveryConfig;
+  discoveryConfig: DiscoveryIndexConfig;
 }
 
 export interface DataRequestStatus {
@@ -150,7 +156,7 @@ export interface DownloadLinkFields {
 }
 
 export interface StudyPageConfig {
-  showAllAvailableFields?: boolean,
+  showAllAvailableFields?: boolean;
   header?: {
     field: string;
     className?: string;
@@ -249,8 +255,37 @@ export interface AccessFilters {
   [accessLevel: number]: boolean;
 }
 
+interface DiscoveryIndex {
+  indexName: string;
+}
+
+interface DataLoader {
+  dataFetchFunction?: string;
+  dataFetchArgs?: JSONObject;
+  sortingAndPagination?: 'client' | 'server';
+}
+
+export interface TagsConfig {
+  tagCategories: TagCategory[];
+  showUnknownTags?: boolean;
+}
+export interface ChartsSection {
+  enabled: boolean;
+  title?: string;
+  showLegends?: {
+    enabled: boolean;
+    showSwitch?: boolean;
+  };
+  charts?: Array<SummaryChart & {
+      data: string[];
+    }>;
+}
+
 // TODO: Type the rest of the config
-export interface DiscoveryConfig {
+export interface DiscoveryIndexConfig {
+  guidType?: string;
+  studyField?: string;
+  label?: string;
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
@@ -258,16 +293,21 @@ export interface DiscoveryConfig {
     exportToDataLibrary?: ExportToDataLibrary;
     search?: SearchConfig;
     authorization: DataAuthorization;
-    dataFetchFunction?: string;
+    dataLoader?: DataLoader;
+    chartsSection?: ChartsSection;
   };
   aggregations: SummaryStatisticsConfig[];
-  tagCategories: TagCategory[];
+  tags: TagsConfig;
   tableConfig: DiscoveryTableConfig;
   studyColumns: StudyColumn[];
   studyPreviewField?: StudyDetailsField;
   simpleDetailsView?: StudyPageConfig;
   detailView: StudyDetailView;
   minimalFieldMapping: MinimalFieldMapping;
+}
+
+export interface DiscoveryConfig {
+  metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
 export interface UserAuthMapping {
@@ -287,10 +327,7 @@ export enum AccessLevel {
 }
 
 export interface DiscoveryResource
-  extends Record<
-    string,
-    JSONValue | AccessLevel | TagInfo[] | undefined
-  > {
+  extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }

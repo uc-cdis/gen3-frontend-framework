@@ -91,7 +91,7 @@ export const downloadToManifestAction = async (
         type: 'application/json;charset=utf-8',
       });
       handleDownload(blob, manifestFilename);
-      done && done();
+      if (done) done();
     } catch (err) {
       let resultErr;
       if (typeof err === 'string') resultErr = new Error(err);
@@ -99,7 +99,7 @@ export const downloadToManifestAction = async (
       if (!resultErr)
         resultErr = new Error('unknown error in download manifest');
 
-      onError && onError(resultErr);
+      if (onError) onError(resultErr);
     }
     return;
   }
@@ -168,8 +168,8 @@ export const downloadToManifestAction = async (
       type: 'application/json;charset=utf-8',
     });
     handleDownload(blob, manifestFilename);
-    done && done();
+    if (done) done();
   } catch (err: any) {
-    onError && onError(err);
+    if (onError) onError(err);
   }
 };

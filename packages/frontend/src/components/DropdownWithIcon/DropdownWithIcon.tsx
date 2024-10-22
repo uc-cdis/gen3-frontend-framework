@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Menu } from '@mantine/core';
-import { FloatingPosition } from '@mantine/core/lib/Floating/types';
+import { FloatingPosition } from '@mantine/core';
 import { ReactNode } from 'react';
 import { Tooltip } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
@@ -103,10 +103,10 @@ export const DropdownWithIcon = ({
           color="primary"
           className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
-          rightIcon={RightIcon}
+          rightSection={RightIcon}
           disabled={targetButtonDisabled}
           classNames={{
-            rightIcon: 'border-l pl-1 -mr-2',
+            // rightIcon: 'border-l pl-1 -mr-2',
             root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
@@ -142,11 +142,11 @@ export const DropdownWithIcon = ({
         {dropdownElements?.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
-              onClick && onClick();
+              if (onClick) onClick();
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
-            icon={icon && icon}
+            leftSection={icon && icon}
             disabled={disabled}
           >
             {title}

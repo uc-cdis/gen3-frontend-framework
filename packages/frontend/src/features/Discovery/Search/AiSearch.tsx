@@ -203,7 +203,7 @@ const AiSearch = ({
   return (
     <Tabs color="orange.8" className="w-full" classNames={{
       tab: 'data-[active=true]:font-bold !text-[16px]',
-    }}  value={activeTab} onTabChange={setActiveTab}>
+    }}  value={activeTab} onChange={setActiveTab}>
       <Tabs.List>
         <Tooltip
           label="AI is a powerful tool, but we cannot guarantee the accuracy of any responses. Feel free to copy and paste perceived dataset names or descriptions from the AI response into the real search bar to try and find any datasets the AI is referring to."
@@ -211,7 +211,7 @@ const AiSearch = ({
           withArrow
           arrowSize={6}
           multiline
-          width={300}
+          w={300}
         >
           <Tabs.Tab value="search" rightSection={<MdInfo className="text-[#C7501A]" aria-label="info icon"/>}>Ask AI About Available Data</Tabs.Tab>
         </Tooltip>
@@ -221,7 +221,7 @@ const AiSearch = ({
           withArrow
           arrowSize={6}
           multiline
-          width={300}
+          w={300}
         >
           <Tabs.Tab value="history" rightSection={<MdInfo  className="text-[#C7501A]" aria-label="info icon"/>}>Search History</Tabs.Tab>
         </Tooltip>
@@ -263,7 +263,7 @@ const AiSearch = ({
               type="submit"
               className="m-1"
               size="md"
-              leftIcon={<PiSparkleFill aria-hidden />}
+              leftSection={<PiSparkleFill aria-hidden />}
               onClick={askAi}
               >
               Ask AI

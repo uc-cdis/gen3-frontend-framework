@@ -10,45 +10,56 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
+  fieldNameToTitle,
   AggregationsData,
-  CoreState
+  CoreState,
 } from '@gen3/core';
-import {ClearFacetFunction, FromToRange, UpdateFacetFilterFunction,} from './types';
-import {isArray} from 'lodash';
-import {TabConfig} from '../../features/CohortBuilder/types';
-import { FieldToName } from './types';
+import {
+  ClearFacetFunction,
+  FromToRange,
+  UpdateFacetFilterFunction,
+  FieldToName,
+} from './types';
+import { isArray } from 'lodash';
+import { TabConfig } from '../../features/CohortBuilder/types';
 
 export const getAllFieldsFromFilterConfigs = (
-  filterTabConfigs: ReadonlyArray<TabConfig>
-) => filterTabConfigs.reduce((acc, cur) => acc.concat(cur.fields), [] as string[]);
-
-
+  filterTabConfigs: ReadonlyArray<TabConfig>,
+) =>
+  filterTabConfigs.reduce((acc, cur) => acc.concat(cur.fields), [] as string[]);
 
 interface ExplorerResultsData {
-  [key:string]: Record<string, any>;
+  [key: string]: Record<string, any>;
 }
 export const processBucketData = (
-  data?: HistogramDataArray
+  data?: HistogramDataArray,
 ): Record<string, number> => {
   if (!data) return {};
 
-  return data.reduce((acc : Record<string, number> , curr : HistogramData) => {
-    if (isArray(curr.key)) return acc; // remove this line if you want to support array keys
-    acc[curr.key] = curr.count;
-    return acc;
-  }, {} as Record<string, number>);
+  return data.reduce(
+    (acc: Record<string, number>, curr: HistogramData) => {
+      if (isArray(curr.key)) return acc; // remove this line if you want to support array keys
+      acc[curr.key] = curr.count;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 };
 
 export const processRangeData = (
-  data?: HistogramDataArray
+  data?: HistogramDataArray,
 ): Record<string, number> => {
   if (!data) return {};
 
-  return data.reduce((acc : Record<string, number> , curr : HistogramData) => {
-    // TODO handle this better when keys are undefined
-    acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] = curr.count;
-    return acc;
-  }, {} as Record<string, number>);
+  return data.reduce(
+    (acc: Record<string, number>, curr: HistogramData) => {
+      // TODO handle this better when keys are undefined
+      acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] =
+        curr.count;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 };
 
 /**
@@ -62,7 +73,7 @@ export const updateFacetEnum = (
   fieldName: string,
   values: EnumFilterValue,
   updateFacetFilters: UpdateFacetFilterFunction,
-  clearFilters: ClearFacetFunction
+  clearFilters: ClearFacetFunction,
 ): void => {
   if (values === undefined) return;
   if (values.length > 0) {
@@ -79,49 +90,66 @@ export const updateFacetEnum = (
   }
 };
 
-// Process facets to determine if they are enum or range
+// Process facets to determine if they are enum, exact, or range
 export const classifyFacets = (
   data: AggregationsData,
   index: string,
-  fieldMapping: ReadonlyArray<FieldToName>
+  fieldMapping: ReadonlyArray<FieldToName> = [],
+  facetDefinitionsFromConfig: Record<string, FacetDefinition> = {},
 ): Record<string, FacetDefinition> => {
-  if (!data) return {};
+  if (typeof data !== 'object' || data === null) return {};
 
   // otherwise enum facet
-  return Object.entries(data as AggregationsData).reduce((acc : Record<string, FacetDefinition>, [ fieldKey, value ] : [ string, HistogramDataArray]) => {
+  return Object.entries(data as AggregationsData).reduce(
+    (
+      acc: Record<string, FacetDefinition>,
+      [fieldKey, value]: [string, HistogramDataArray],
+    ) => {
+      if (!value) return acc; // return if no data, which prevents an application crash
+      const dataField = fieldKey.split('.')?.slice(-1)[0] ?? fieldKey;
+      // check if range facet
+      const type =
+        value.length === 1 && isArray(value[0].key) ? 'range' : 'enum';
+      const facetName =
+        fieldMapping.find((x) => x.field === fieldKey)?.name ??
+        fieldNameToTitle(fieldKey);
 
-    if (!value) return acc; // return if no data, which prevents a application crash
-    const dataField = fieldKey.split('.')?.slice(-1)[0] ?? fieldKey;
-    // check if range facet
-    const type = (value.length === 1 && isArray(value[0].key)) ? 'range' : 'enum';
-    const facetName = fieldMapping.find((x) => x.field === fieldKey)?.name ?? undefined;
-    return {
-      ...acc,
-      [fieldKey]: {
-        field: fieldKey,
-        dataField: dataField, // get the last part of nested field name
-        // this is to maintain compatibility with gitops but should be deprecated
-        type: type,
-        index: index,
-        description: 'Not Available',
-        label: facetName,
-        // assumption is that the initial data has the min and max values
-        range: type === 'range' ? {
-          minimum: Math.floor(Number(value[0].key[0])),
-          maximum: Math.ceil(Number(value[0].key[1])),
-        } : undefined,
-      } as FacetDefinition,
-    };
-  }, {} as Record<string, FacetDefinition>);
+      const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
+      return {
+        ...acc,
+        [fieldKey]: {
+          field: fieldKey,
+          dataField: dataField, // get the last part of nested field name
+          // this is to maintain compatibility with gitops but should be deprecated
+          type: facetDef.type ?? type,
+          index: index,
+          description: facetDef.description ?? 'Not Available',
+          label: facetDef.label ?? facetName,
+          // assumption is that the initial data has the min and max values
+          range:
+            (facetDef.range ?? type === 'range')
+              ? {
+                  minimum: Math.floor(Number(value[0].key[0])),
+                  maximum: Math.ceil(Number(value[0].key[1])),
+                }
+              : undefined,
+        } as FacetDefinition,
+      };
+    },
+    {} as Record<string, FacetDefinition>,
+  );
 };
 
-
-export const buildNested = (field: string, leafOperand: Operation) : Operation => {
+export const buildNested = (
+  field: string,
+  leafOperand: Operation,
+): Operation => {
   if (!field.includes('.')) {
-    if (isOperationWithField(leafOperand)) return {
-    ...leafOperand,
-      field: field
-    } as Operation;
+    if (isOperationWithField(leafOperand))
+      return {
+        ...leafOperand,
+        field: field,
+      } as Operation;
     else return leafOperand;
   }
 
@@ -131,13 +159,13 @@ export const buildNested = (field: string, leafOperand: Operation) : Operation =
   return {
     operator: 'nested',
     path: rootField ?? '',
-    operand: buildNested(splitFieldArray.join('.'), leafOperand)
+    operand: buildNested(splitFieldArray.join('.'), leafOperand),
   };
 };
 
 /**
  * Update Guppy filters: process nested fields and have the final
- * leaf be filter
+ * leaf be filtered
  * @param index
  */
 export const useUpdateFilters = (index: string) => {
@@ -146,13 +174,21 @@ export const useUpdateFilters = (index: string) => {
 
   return (field: string, filter: Operation) => {
     dispatch(
-      updateCohortFilter({ index: index, field: field, filter: buildNested(field, filter) })
+      updateCohortFilter({
+        index: index,
+        field: field,
+        filter: buildNested(field, filter),
+      }),
     );
   };
 };
-export const useGetFacetFilters = (index: string, field: string): Operation | undefined => {
-  return useCoreSelector((state : CoreState) =>
-    selectIndexedFilterByName(state, index, field)
+export const useGetFacetFilters = (index: string, field: string): Operation => {
+  return useCoreSelector(
+    (state: CoreState) =>
+      selectIndexedFilterByName(state, index, field) ?? {
+        operator: 'and',
+        operands: [],
+      },
   );
 };
 
@@ -162,26 +198,26 @@ export const useGetFacetFilters = (index: string, field: string): Operation | un
  * @param filter - operation to test
  */
 export const extractRangeValues = <T extends string | number>(
-  filter?: Operation
+  filter?: Operation,
 ): FromToRange<T> | undefined => {
   if (filter !== undefined) {
     switch (filter.operator) {
       case '>':
       case '>=':
         return {
-          from: (filter.operand as T),
+          from: filter.operand as T,
           fromOp: filter.operator,
         };
       case '<':
       case '<=':
         return {
-          to: (filter.operand as T),
+          to: filter.operand as T,
           toOp: filter.operator,
         };
       case 'and': {
         const a = extractRangeValues<T>(filter.operands[0]);
         const b = extractRangeValues<T>(filter.operands[1]);
-        return (a && b ) ? { ...a, ...b } : a ?? b ?? undefined;
+        return a && b ? { ...a, ...b } : (a ?? b ?? undefined);
       }
       default:
         return undefined;
@@ -190,3 +226,7 @@ export const extractRangeValues = <T extends string | number>(
     return undefined;
   }
 };
+
+export const convertToStringArray = (
+  inputArray: (string | number)[],
+): string[] => inputArray.map(String);

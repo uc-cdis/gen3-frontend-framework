@@ -6,9 +6,11 @@ import {
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
   GEN3_AUTHZ_API,
+  GEN3_MDS_API,
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
+  GEN3_CROSSWALK_API,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -20,7 +22,7 @@ export * from './hooks';
 export * from './dataAccess';
 export * from './provider';
 export * from './features/authz';
-export * from './features/metadata/metadataSlice';
+export * from './features/metadata';
 export * from './features/fence';
 export * from './features/gen3Apps';
 export * from './features/graphQL';
@@ -43,8 +45,10 @@ export {
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
   GEN3_AUTHZ_API,
+  GEN3_MDS_API,
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
+  GEN3_CROSSWALK_API,
   Accessibility,
 };

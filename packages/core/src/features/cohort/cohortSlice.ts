@@ -17,8 +17,8 @@ export interface CohortState {
 const initialCohortState: CohortState = {
   cohort: {
     id: 'default',
-    name: 'Default',
-    filters: { },
+    name: 'Filters',
+    filters: {},
     modified_datetime: new Date().toISOString(),
   },
 };
@@ -59,7 +59,7 @@ export const cohortSlice = createSlice({
     // adds a filter to the cohort filter set at the given index
     updateCohortFilter: (
       state: Draft<CohortState>,
-      action: PayloadAction<UpdateFilterParams>
+      action: PayloadAction<UpdateFilterParams>,
     ) => {
       const { index, field, filter } = action.payload;
       return {
@@ -67,7 +67,13 @@ export const cohortSlice = createSlice({
           ...state.cohort,
           filters: {
             ...state.cohort.filters,
-            [index]: { mode: state.cohort.filters?.[index]?.mode ?? 'and', root: { ...state.cohort.filters?.[index]?.root ?? {}, [field]: filter } },
+            [index]: {
+              mode: state.cohort.filters?.[index]?.mode ?? 'and',
+              root: {
+                ...(state.cohort.filters?.[index]?.root ?? {}),
+                [field]: filter,
+              },
+            },
           },
         },
       };
@@ -75,7 +81,7 @@ export const cohortSlice = createSlice({
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (
       state: Draft<CohortState>,
-      action: PayloadAction<RemoveFilterParams>
+      action: PayloadAction<RemoveFilterParams>,
     ) => {
       const { index, field } = action.payload;
       const filters = state.cohort?.filters?.[index]?.root;
@@ -86,17 +92,20 @@ export const cohortSlice = createSlice({
       return {
         cohort: {
           ...state.cohort,
-          filters: { ...state.cohort.filters, [index]: {
-            mode: state.cohort.filters[index].mode,
-            root: updated
-            } },
+          filters: {
+            ...state.cohort.filters,
+            [index]: {
+              mode: state.cohort.filters[index].mode,
+              root: updated,
+            },
+          },
         },
       };
     },
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
       state: Draft<CohortState>,
-      action: PayloadAction<ClearAllFilterParams>
+      action: PayloadAction<ClearAllFilterParams>,
     ) => {
       const { index } = action.payload;
       return {
@@ -104,30 +113,33 @@ export const cohortSlice = createSlice({
           ...state.cohort,
           filters: {
             ...state.cohort.filters,
-            [index]: { // empty filter set
+            [index]: {
+              // empty filter set
               mode: 'and',
               root: {},
-            } as FilterSet
-          }
-        }
+            } as FilterSet,
+          },
+        },
       };
-    }
+    },
   },
-  extraReducers: {},
 });
 
 // Filter actions: addFilter, removeFilter, updateFilter
 export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } =
   cohortSlice.actions;
 
-export const selectCohortFilters = (state: CoreState) : IndexedFilterSet =>
+export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
   state.cohorts.cohort.filters;
 
-export const selectCurrentCohortId = (state: CoreState) : string => state.cohorts.cohort.id;
+export const selectCurrentCohortId = (state: CoreState): string =>
+  state.cohorts.cohort.id;
 
-export const selectCurrentCohort = (state: CoreState) : Cohort => state.cohorts.cohort;
+export const selectCurrentCohort = (state: CoreState): Cohort =>
+  state.cohorts.cohort;
 
-export const selectCurrentCohortName = (state: CoreState) : string => state.cohorts.cohort.name;
+export const selectCurrentCohortName = (state: CoreState): string =>
+  state.cohorts.cohort.name;
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
@@ -139,7 +151,7 @@ export const selectCurrentCohortName = (state: CoreState) : string => state.coho
 export const selectIndexedFilterByName = (
   state: CoreState,
   index: string,
-  name: string
+  name: string,
 ): Operation | undefined => {
   return state.cohorts.cohort.filters[index]?.root[name];
 };
@@ -153,7 +165,7 @@ const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
  */
 export const selectIndexFilters = (
   state: CoreState,
-  index: string
+  index: string,
 ): FilterSet => {
   return state.cohorts.cohort.filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
 };

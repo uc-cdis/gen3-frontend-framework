@@ -81,12 +81,12 @@ const main = () => {
   });
 
   if (!themeFile) {
-    console.log("No themefile found. Please provide a themefile with '-t'.");
+    console.log('No themefile found. Please provide a themefile with \'-t\'.');
     return;
   }
 
   if (themeFile && !existsSync(themeFile)) {
-    console.log("No themefile found. Please provide a themefile with '-t'.");
+    console.log('No themefile found. Please provide a themefile with \'-t\'.');
     return;
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
@@ -118,7 +118,7 @@ const main = () => {
     chart: chartPallet,
     'chart-contrast': create10ColorAccessibleContrast(chartPallet),
     table: tablePallet,
-    'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
+    'table-contrast': create10ColorAccessibleContrast(tablePallet),
   };
 
   writeFileSync(

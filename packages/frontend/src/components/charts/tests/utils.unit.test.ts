@@ -1,7 +1,7 @@
-import { capitalize } from '../utils';
+import { capitalize, computeRowSpan } from '../utils';
+import { SummaryChart } from '../types';
 
 describe('capitalize', () => {
-
   // Should capitalize the first letter of each word in a string
   it('should capitalize the first letter of each word in a string', () => {
     const result = capitalize('hello world');
@@ -29,5 +29,37 @@ describe('capitalize', () => {
     const result = capitalize('   ');
     expect(result).toBe('   ');
   });
+});
 
+describe('computeRowSpan', () => {
+  it('computes the correct row span', () => {
+    const charts: Record<string, SummaryChart> = {
+      chart1: { title: 'Chart 1', chartType: 'bar' },
+      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
+      chart3: { title: 'Chart 3', chartType: 'fullPie', valueType: 'percent' },
+    };
+
+    const numCols = 2;
+
+    const expectedRowSpan = [6, 6, 12];
+
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
+  });
+
+  it('handles edge case where number of charts is divisible by number of columns', () => {
+    const charts: Record<string, SummaryChart> = {
+      chart1: { title: 'Chart 1', chartType: 'bar' },
+      chart2: { title: 'Chart 2', chartType: 'horizontalStacked', valueType: 'count' },
+    };
+
+    const numCols = 2;
+
+    const expectedRowSpan = [6, 6];
+
+    expect(computeRowSpan(Object.keys(charts).length, numCols)).toEqual(
+      expectedRowSpan,
+    );
+  });
 });

@@ -1,4 +1,4 @@
-import { DiscoveryConfig, AccessLevel } from '../types';
+import { DiscoveryIndexConfig, AccessLevel } from '../types';
 import { userHasMethodForServiceOnResource } from '../../../utils';
 
 // place holders for now
@@ -10,7 +10,7 @@ const isEnabled = (feature: string) => {
 
 export const processDataAccess = (
   data: any[],
-  discoveryConfig: DiscoveryConfig,
+  discoveryConfig: DiscoveryIndexConfig,
 ) => {
   if (discoveryConfig.features.authorization.enabled) {
     // mark studies as accessible or inaccessible to user

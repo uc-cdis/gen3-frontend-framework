@@ -16,6 +16,8 @@ import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/ErrorCard';
+import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
+import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -38,8 +40,9 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-import DataDictionaryPage from './pages/DataDictionary/DataDictonary';
-import { DataDictionaryPageGetServerSideProps } from './pages/DataDictionary';
+import DictionaryPage, {
+  DictionaryPageGetServerSideProps,
+} from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -57,6 +60,10 @@ import { AnalysisPageGetServerSideProps } from './pages/Analysis';
 
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
+
+// TODO Replace with AppTool plugin
+import CrosswalkPage from './pages/Crosswalk';
+import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -79,8 +86,8 @@ export {
   LandingPageGetStaticProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
-  DataDictionaryPage,
-  DataDictionaryPageGetServerSideProps,
+  DictionaryPage,
+  DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
   ProfilePage,
@@ -103,6 +110,10 @@ export {
   credentialsLogout,
   AiSearchPage,
   AISearchPageGetServerSideProps,
+  CrosswalkPage,
+  CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
+  registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
 };

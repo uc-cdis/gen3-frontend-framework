@@ -3,29 +3,39 @@
     "tabTitle": "Cases",
     "charts": {
       "race": {
-        "chartType": "donut",
+        "chartType": "fullPie",
         "title": "Race"
       },
       "ethnicity": {
-        "chartType": "donut",
+        "chartType": "horizontalStacked",
         "title": "Ethnicity"
+      },
+      "gender": {
+        "chartType": "bar",
+        "title": "Gender"
       }
     },
     "filters": {
       "tabs": [
         {
           "title": "Study Selection",
-          "fields": ["project_id"]
+          "fields": ["project"]
         },
         {
           "title": "Subjects",
           "fields": [
-            "age_at_enrollment",
+            "study",
             "gender",
             "race",
             "ethnicity",
-            "experimental_group"
-          ]
+            "vital_status",
+            "whatever_lab_result_value"
+          ],
+          "fieldsConfig": {
+            "gender" : {
+              "type" : "multiselect"
+            }
+          }
         }
       ]
     },
@@ -35,52 +45,50 @@
         "panel": "default",
         "mode" : "click",
         "idField": "submitter_id",
-        "title": "Details"
+        "title": "Row Details"
+      },
+      "pageLimit": {
+        "limit": 10000
       },
       "fields": [
-        "project_id",
-        "submitter_id",
-        "age_at_enrollment",
+        "project",
         "gender",
         "race",
         "ethnicity",
-        "experimental_group"
-      ]
+        "whatever_lab_result_value"
+      ],
+      "columns": {
+        "whatever_lab_result_value": {
+          "sortable": false
+        }
+      }
     },
     "dropdowns": {
       "download-table": {
         "title": "Download Table",
+        "leftIcon": "gen3:download",
+        "rightIcon": "gen3:chevron-down",
         "dropdownItems": [
           {
             "enabled": true,
             "type": "data-json",
             "title": "JSON",
-            "dropdownId": "download-table",
             "leftIcon": "datafile",
             "rightIcon": "download",
-            "actionArgs": {
-              "filename": "data_table.json"
-            }
-          },
-          {
-            "enabled": true,
-            "type": "data-tsv",
-            "title": "TSV",
-            "dropdownId": "download-table",
-            "leftIcon": "datafile",
-            "rightIcon": "download",
-            "actionArgs": {
-              "filename": "data_table.tsv"
+            "action": "data-json",
+            "actionArgs" : {
+              "filename": "MIDRC_Series_table.json",
+              "rootPath": "gen3_discovery"
             }
           },
           {
             "enabled": true,
             "type": "data-csv",
             "title": "CSV",
-            "dropdownId": "download-table",
             "leftIcon": "datafile",
             "rightIcon": "download",
-            "actionArgs": {
+            "action": "data-csv",
+            "actionArgs" : {
               "filename": "data_table.csv"
             }
           }
@@ -170,18 +178,18 @@
         "referenceIdFieldInResourceIndex": "subject_id",
         "referenceIdFieldInDataIndex": "subject_id"
       },
-      "accessibleFieldCheckList": ["project_id"],
-      "accessibleValidationField": "project_id"
+      "accessibleFieldCheckList": ["project"],
+      "accessibleValidationField": "project"
     }
   },
   {
     "tabTitle": "Data Files",
     "charts": {
-      "data_type": {
+      "file_type": {
         "chartType": "stackedBar",
         "title": "File Type"
       },
-      "data_format": {
+      "file_format": {
         "chartType": "stackedBar",
         "title": "File Format"
       }
@@ -190,7 +198,7 @@
       "tabs": [
         {
           "title": "File",
-          "fields": ["project_id", "data_type", "data_format", "data_category"]
+          "fields": ["subject_id"]
         }
       ]
     },
@@ -202,13 +210,13 @@
         "idField": "file_name",
         "title": "File Details"
       },
-      "fields": ["project_id", "file_name", "file_size", "object_id"]
+      "fields": ["subject_id", "file_type", "file_size", "object_id"]
     },
     "guppyConfig": {
       "dataType": "file",
       "fieldMapping": [
         {
-          "field": "object_id",
+          "field": "file_id",
           "name": "GUID"
         }
       ],
@@ -219,9 +227,9 @@
         "referenceIdFieldInResourceIndex": "object_id",
         "referenceIdFieldInDataIndex": "object_id"
       },
-      "accessibleFieldCheckList": ["project_id"],
-      "accessibleValidationField": "project_id",
-      "downloadAccessor": "object_id"
+      "accessibleFieldCheckList": ["subject_id"],
+      "accessibleValidationField": "subject_id",
+      "downloadAccessor": "subject_id"
     },
     "buttons": [
       {

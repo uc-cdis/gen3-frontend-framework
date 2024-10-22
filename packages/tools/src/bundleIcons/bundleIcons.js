@@ -31,6 +31,7 @@ const build = async (inpath, outpath, prefix = 'gen3') => {
   console.log(inpath, outpath, prefix);
   const iconSet = await importDirectory(inpath, {
     prefix: prefix,
+    includeSubDirs: true,
   });
 
   // Validate, clean up, fix palette and optimise

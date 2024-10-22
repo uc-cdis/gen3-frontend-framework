@@ -1,13 +1,12 @@
-import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
+import copy from 'rollup-plugin-copy';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import tailwindcss from 'tailwindcss';
-import { default as tailwindConfig } from './src/tailwind.cjs';
 import postcss from 'rollup-plugin-postcss';
+import autoprefixer from 'autoprefixer';
+import postcssImport from 'postcss-import';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const globals = {
   react: 'React',
@@ -29,13 +28,13 @@ const globals = {
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
-  '@mantine/styles': 'mantineStyles',
   '@mantine/hooks': 'mantineHooks',
   '@mantine/core': 'mantineCore',
   '@mantine/form': 'mantineForm',
   '@mantine/modals': 'mantineModals',
-  "@tabler/icons-react": "tablerIcons",
+  '@tabler/icons-react': 'tablerIcons',
   'react-icons/ai': 'reactIcons',
+  'react-icons/bs': 'reactIcons',
   'react-icons/fi': 'reactIcons',
   'react-icons/lu': 'reactIcons',
   'react-icons/md': 'reactIcons',
@@ -46,20 +45,21 @@ const globals = {
   'lodash/uniq': 'lodashUniq',
   'lodash/sum': 'lodashSum',
   'react-cookie': 'reactCookie',
-  'yaml': 'yaml',
+  yaml: 'yaml',
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
-  "jose" : "jose",
-  "cookies-next":"cookies-next",
-  "cookie":"cookie",
-  "next/head":"nextHead",
-  "next/navigation":"nextNavigation",
-  "react-markdown":"reactMarkdown",
-  "remark-gfm":"remark-gfm",
-  "default-composer":"default-composer",
-  "filesize":"filesize",
-  "tailwind-merge":"tailwind-merge",
-  "util":"util"
+  jose: 'jose',
+  'cookies-next': 'cookies-next',
+  cookie: 'cookie',
+  'next/head': 'nextHead',
+  'next/navigation': 'nextNavigation',
+  'react-markdown': 'reactMarkdown',
+  'remark-gfm': 'remark-gfm',
+  'default-composer': 'default-composer',
+  filesize: 'filesize',
+  'tailwind-merge': 'tailwind-merge',
+  util: 'util',
+  swc: 'swc',
 };
 
 const config = [
@@ -70,13 +70,13 @@ const config = [
         dir: 'dist/cjs',
         format: 'cjs',
         globals,
-        sourcemap: true
+        sourcemap: true,
       },
       {
         dir: 'dist/esm',
         format: 'esm',
         globals,
-        sourcemap: true
+        sourcemap: true,
       },
     ],
     external: [
@@ -98,7 +98,8 @@ const config = [
       'mantine-react-table',
       'victory',
       'echarts',
-      '@gen3/core'
+      '@gen3/core',
+      'swr',
     ],
     plugins: [
       peerDepsExternal(),
@@ -107,29 +108,46 @@ const config = [
         config: {
           path: './postcss.config.js',
         },
+        modules: true, // Enable CSS Modules
+        extract: 'styles.css',
         extensions: ['.css'],
-        minimize: true,
+        sourceMap: true, // Generate source map for the CSS
+        plugins: [
+          postcssImport(), // Handle @import rules in CSS
+          autoprefixer(), // Add vendor prefixes automatically
+        ],
         inject: {
           insertAt: 'top',
         },
-        plugins: [tailwindcss(tailwindConfig)],
       }),
       swc(
         {
           sourceMaps: true,
-          include: /\.[mc]?[jt]sx?$/,
+          include: /\.[mc]?[json]?[jt]sx?$/,
           exclude: /node_modules/,
           tsconfig: 'tsconfig.json',
           jsc: {},
         },
-        swcPreserveDirectives()
+        swcPreserveDirectives(),
+        json(),
       ),
     ],
   },
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), postcss(), sourcemaps()],
+    plugins: [
+      dts(),
+      postcss(),
+      copy({
+        targets: [
+          {
+            src: ['dist/esm/styles.css'],
+            dest: 'dist',
+          },
+        ],
+      }),
+    ],
   },
 ];
 

@@ -14,7 +14,7 @@ const MessagePanel = ({ message, isError = false }: Message) => {
         <div className="w-1/2 mx-auto text-center mt-4 bg-base-lightest hover:bg-base-lighter p-4 border-bg-base-light border-r-8">
           <Text
             size="lg"
-            weight="bold"
+            fw="bold"
             color={isError ? 'red' : 'primary-contrast'}
           >
             {message}

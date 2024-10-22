@@ -1,9 +1,22 @@
-import { createGen3App, getGen3AppId } from './Gen3App';
-import { selectGen3AppMetadataById, selectGen3AppById } from './gen3AppsSlice';
+import {
+  createGen3App,
+  getGen3AppId,
+  createAppStore,
+  createGen3AppWithOwnStore,
+} from './Gen3App';
+import {
+  selectGen3AppMetadataByName,
+  selectGen3AppByName,
+} from './gen3AppsSlice';
+
+import { createAppApiForRTKQ } from './Gen3AppRTKQ';
 
 export {
   createGen3App,
-  selectGen3AppMetadataById,
-  selectGen3AppById,
+  createGen3AppWithOwnStore,
+  selectGen3AppMetadataByName,
+  selectGen3AppByName,
   getGen3AppId,
+  createAppStore,
+  createAppApiForRTKQ,
 };

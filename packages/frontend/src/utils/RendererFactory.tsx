@@ -1,14 +1,20 @@
-import { ReactElement } from 'react';
-import { MRT_Cell } from 'mantine-react-table';
+import { ReactNode, RefObject } from 'react';
+import {
+  MRT_Cell,
+  MRT_Column,
+  MRT_Row,
+  MRT_TableInstance,
+} from 'mantine-react-table';
+import { JSONObject } from '@gen3/core';
 
-export type RendererFunction<T> = (props: T, ...params:any[]) => ReactElement;
+export type RendererFunction<T> = (props: T, ...params: any[]) => ReactNode;
 
 export interface RendererFunctionCatalogEntry<T> {
   [key: string]: RendererFunction<T>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function DefaultCellRenderer<T>(_props: T): ReactElement {
+export function DefaultItemRenderer<T>(_props: T): ReactNode {
   return <span>DefaultRenderer</span>;
 }
 
@@ -32,7 +38,7 @@ export class RenderFactoryTypedInstance<T>
 
   constructor() {
     this.catalog = {};
-    this.defaultRenderer = DefaultCellRenderer;
+    this.defaultRenderer = DefaultItemRenderer;
   }
 
   /**
@@ -46,11 +52,11 @@ export class RenderFactoryTypedInstance<T>
   }
 
   getRenderer(type: string, functionName: string): RendererFunction<T> {
-      if (!this.rendererExists(type, functionName)) {
-          return DefaultCellRenderer;
-      }
+    if (!this.rendererExists(type, functionName)) {
+      return DefaultItemRenderer;
+    }
 
-      return this.catalog[type][functionName];
+    return this.catalog[type][functionName];
   }
 
   /**
@@ -60,7 +66,7 @@ export class RenderFactoryTypedInstance<T>
    * @returns boolean indicating if the renderer exists
    */
   rendererExists(type: string, functionName: string): boolean {
-      return type in this.catalog && functionName in this.catalog[type];
+    return type in this.catalog && functionName in this.catalog[type];
   }
 
   /**
@@ -136,7 +142,13 @@ export class RenderFactoryTypedInstance<T>
 /**
  * Represents the props required for a cell renderer function.
  */
-export interface CellRendererFunctionProps {
-  cell: MRT_Cell;
-  params?: Record<string, unknown>;
+export interface CellRendererFunctionProps<
+  T extends Record<string, any> = JSONObject,
+> {
+  cell: MRT_Cell<T>;
+  renderedCellValue: ReactNode;
+  column: MRT_Column<T>;
+  row: MRT_Row<T>;
+  rowRef?: RefObject<HTMLTableRowElement> | undefined;
+  table: MRT_TableInstance<T>;
 }

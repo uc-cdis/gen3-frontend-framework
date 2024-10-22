@@ -95,13 +95,13 @@ const ExternalProviderCard: React.FunctionComponent<
     <Card withBorder radius="sm">
       <Card.Section withBorder inheritPadding py="xs">
         <Center>
-          <Text truncate size="lg" weight={700} color="primary.4">
+          <Text truncate size="lg" fw={700} color="primary.4">
             <span aria-label="provider-name">{provider.name} </span>
           </Text>
         </Center>
       </Card.Section>
       <Card.Section inheritPadding py="md">
-        <Stack spacing="md">
+        <Stack gap="md">
           <div className="flex flex-nowrap justify-between items-center">
             <Text>IDP</Text>
             <Text truncate aria-label="provider-idp">
@@ -146,7 +146,7 @@ const ExternalProviderCard: React.FunctionComponent<
               });
             }}
             aria-label={`provider-button-${provider.name}`}
-            leftIcon={
+            leftSection={
               provider.refresh_token_expiration ? (
                 <ReloadIcon
                   size="1.5rem"

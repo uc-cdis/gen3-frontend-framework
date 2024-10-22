@@ -9,7 +9,14 @@ const WorkspacesPage = ({
   workspaceProps,
 }: WorkspacePageProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Workspace Page',
+        content: 'Workspace page',
+        key: 'gen3-workspace-page',
+      }}
+    >
       <WorkspacesPanel />
     </NavPageLayout>
   );

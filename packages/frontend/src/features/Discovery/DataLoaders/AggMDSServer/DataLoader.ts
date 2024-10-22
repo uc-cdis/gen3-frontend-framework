@@ -24,7 +24,6 @@ interface QueryType {
   combineWith: 'AND' | 'OR';
 }
 
-
 const processAdvancedSearchTerms = (
   advSearchFilters: AdvancedSearchFilters,
   data: JSONObject[],
@@ -58,7 +57,7 @@ interface GetDataProps {
 
 const useGetData = ({
   offset = 0,
-                      pageSize = 10,
+  pageSize = 10,
   guidType = 'discovery_metadata',
   studyField = 'gen3_discovery',
 }: Partial<GetDataProps>) => {
@@ -111,20 +110,16 @@ interface SearchMetadataProps {
   isSuccess: boolean;
 }
 
-
 interface PaginationHookProps {
   data: JSONObject[];
   pagination: MetadataPaginationParams;
 }
-
-
 
 interface AdvancedSearchFilterValuesHookProps {
   data: JSONObject[];
   advancedSearchFilters: AdvancedSearchFilters;
   uidField: string;
 }
-
 
 export const useAggMDSServer = ({
   pagination,
@@ -136,7 +131,8 @@ export const useAggMDSServer = ({
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
-
+  const dataGuidType = discoveryConfig?.guidType ?? guidType;
+  const dataStudyField = discoveryConfig?.studyField ?? studyField;
   const {
     mdsData,
     total,
@@ -147,8 +143,8 @@ export const useAggMDSServer = ({
     isError,
   } = useGetData({
     ...pagination,
-    guidType,
-    studyField,
+    studyField: dataStudyField,
+    guidType: dataGuidType,
   });
 
   return {

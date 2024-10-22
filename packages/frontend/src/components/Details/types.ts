@@ -1,8 +1,10 @@
 import { RendererFunction } from '../../utils/RendererFactory';
+import { MRT_Row } from 'mantine-react-table';
 
 export interface DetailsPanelComponentProps extends Record<string, unknown> {
   id?: string;
   onClose?: (id?: string) => void;
+  row?: MRT_Row<Record<string, any>>;
 }
 
 export type DetailsRendererFunction =
@@ -15,6 +17,7 @@ export interface DetailsComponentProps<
   T extends DetailsPanelComponentProps = DetailsPanelComponentProps,
 > {
   id?: string; // id passed to modal and panel
+  row?: MRT_Row<Record<string, any>>;
   onClose?: (id?: string) => void; // function called when modal/drawer is closed
   panel: RendererFunction<T>; // Panel Component
   panelProps: T; // and properties passed to the Panel Component

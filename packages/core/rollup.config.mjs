@@ -4,7 +4,6 @@ import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import { swc } from 'rollup-plugin-swc3';
 import swcPreserveDirectives from 'rollup-swc-preserve-directives';
-import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const globals = {
   react: 'React',
@@ -18,12 +17,13 @@ const globals = {
   lodash: 'lodash',
   immer: 'immer',
   'react-cookie': 'reactCookie',
-  'swr': 'swr',
+  swr: 'swr',
   'jsonpath-plus': 'jsonpathPlus',
-  'flat': 'flat',
-  'papaparse': 'papaparse',
+  flat: 'flat',
+  papaparse: 'papaparse',
   'redux-persist': 'reduxPersist',
-  'cookies-next': 'cookies-next'
+  'cookies-next': 'cookies-next',
+  queue: 'queue',
 };
 
 const config = [
@@ -41,7 +41,8 @@ const config = [
         format: 'esm',
         globals,
         sourcemap: true,
-      }],
+      },
+    ],
     external: Object.keys(globals),
     plugins: [
       peerDepsExternal(),
@@ -55,13 +56,12 @@ const config = [
         jsc: {},
       }),
       swcPreserveDirectives(),
-      sourcemaps()
     ],
   },
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts(), sourcemaps()],
+    plugins: [dts()],
   },
 ];
 

@@ -1,19 +1,22 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
-  type MRT_SortingState,
   type MRT_PaginationState,
+  type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
 
-import { jsonPathAccessor } from './utils';
+import classes from './style/DiscoveryTable.module.css';
+
+import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
 import StudyDetails from './StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
+import { TableIcons } from '../../components/Tables/TableIcons';
 import {
   OnChangeFn,
   PaginationState,
@@ -21,14 +24,15 @@ import {
 } from '@tanstack/table-core';
 import { DataRequestStatus } from './types';
 import { LoadingOverlay } from '@mantine/core';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
-  ({ cell }: { cell: MRT_Cell }) =>
+  ({ cell }: { cell: MRT_Cell<JSONObject> }) =>
     func({ value: cell.getValue() as never, cell });
 
 interface DiscoveryTableProps {
-  data: JSONObject[];
+  data: Array<Record<string, any>>;
   hits: number;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
@@ -46,13 +50,15 @@ const DiscoveryTable = ({
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
-  const { discoveryConfig: config } = useDiscoveryContext();
+  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
+  const manualSortingAndPagination = getManualSortingAndPagination(config);
 
-  const cols = useMemo(() => {
+  const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
-    return studyColumns.map((columnDef) => {
+    return studyColumns.map((columnDef, idx) => {
       return {
+        key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
         header: columnDef.name,
@@ -80,26 +86,48 @@ const DiscoveryTable = ({
             ),
       };
     });
-  }, []);
+  }, [config.studyColumns]);
 
   const table = useMantineReactTable({
-    columns: cols,
+    columns: cols as any[],
     data: data ?? [],
-    manualSorting: true,
-    manualPagination: true,
+    manualSorting: manualSortingAndPagination,
+    manualPagination: manualSortingAndPagination,
     paginateExpandedRows: false,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    ...(manualSortingAndPagination
+      ? {
+          onPaginationChange: setPagination,
+          onSortingChange: setSorting,
+        }
+      : {}),
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
     rowCount: hits,
+    icons: TableIcons,
     enableTopToolbar: false,
+    enableColumnFilters: false,
+    enableColumnActions: false,
+    enableStickyHeader: true,
+    enableStickyFooter: true,
+
+    // TODO: keep this to explore later
+    // mantineTableContainerProps: ({ table }) => {
+    //   return {
+    //     sx: {
+    //       maxHeight: 'calc(100vh - 560px) !important;',
+    //     },
+    //   };
+    // },
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
     state: {
       isLoading,
-      pagination,
-      sorting,
+      ...(manualSortingAndPagination
+        ? {
+            pagination,
+            sorting,
+          }
+        : {}),
       showProgressBars: isFetching,
       showAlertBanner: isError,
       expanded: config.tableConfig?.expandableRows === true ? true : undefined,
@@ -108,24 +136,34 @@ const DiscoveryTable = ({
       },
     },
     layoutMode: 'semantic',
-    mantineTableHeadCellProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.table[1],
-          color: theme.colors.table[5],
-          textAlign: 'center',
-          padding: theme.spacing.md,
-          fontWeight: 'bold',
-          fontSize: theme.fontSizes.lg,
-          textTransform: 'uppercase',
-        };
+    mantineDetailPanelProps: {
+      style: {
+        boxShadow: '0 -2px 0px 0px var(--table-border-color) inset',
       },
     },
+    mantineTableHeadCellProps: {
+      style: {
+        backgroundColor: 'var(--mantine-color-table-1)',
+        color: 'var(--mantine-color-table-contrast-1)',
+        textAlign: 'center',
+        padding: 'var(--mantine-spacing-md)',
+        fontWeight: 600,
+        fontSize: 'var(--mantine-font-size-sm)',
+        textTransform: 'uppercase',
+      },
+    },
+    mantineTableBodyRowProps: ({ row }) => ({
+      onClick: () => {
+        setStudyDetails(() => {
+          return { ...row.original };
+        });
+      },
+      className: classes.tableRow,
+    }),
     mantineTableProps: {
-      sx: (theme) => {
-        return {
-          backgroundColor: theme.colors.base[1],
-        };
+      style: {
+        backgroundColor: 'var(--mantine-color-base-1)',
+        '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
       },
     },
   });

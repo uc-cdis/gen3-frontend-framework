@@ -6,7 +6,6 @@ import {
   GEN3_GUPPY_API,
   selectHeadersWithCSRFToken,
   useCoreSelector,
-  selectCSRFToken,
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 

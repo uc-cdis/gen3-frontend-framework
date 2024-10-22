@@ -1,9 +1,9 @@
-import { DiscoveryConfig, isTagInfoArray, TagInfo } from '../../types';
+import { DiscoveryIndexConfig, isTagInfoArray, TagInfo } from '../../types';
 import { JSONObject } from '@gen3/core';
 const filterByTags = (
   studies: JSONObject[],
   selectedTags: any,
-  config: DiscoveryConfig,
+  config: DiscoveryIndexConfig,
 ): JSONObject[] => {
   const tagField = config?.minimalFieldMapping?.tagsListFieldName;
   if (!tagField) {

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  Accessibility,
   CoreState,
   fieldNameToTitle,
   JSONObject,
@@ -18,12 +19,16 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
-import { ExplorerTableProps, SummaryTable } from './types';
+import { TableIcons } from '../../../components/Tables/TableIcons';
+import {
+  ExplorerTableProps,
+  SummaryTable,
+  CellRendererFunctionProps,
+} from './types';
 import {
   CellRendererFunction,
   ExplorerTableCellRendererFactory,
 } from './ExplorerTableCellRenderers';
-import { CellRendererFunctionProps } from '../../../utils/RendererFactory';
 import {
   ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
@@ -65,6 +70,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [selectedRow, setSelectedRow] = useState<
+    MRT_Row<Record<string, any>> | undefined
+  >(undefined);
 
   const DetailsPanel = useMemo(
     () =>
@@ -104,8 +112,12 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           cellRendererFunc && columnDef?.params
             ? (cell: CellRendererFunctionProps) =>
                 cellRendererFunc(cell, cellRendererFuncParams)
-            : cellRendererFunc,
+            : cellRendererFunc
+              ? cellRendererFunc
+              : undefined,
+
         size: columnDef?.width,
+        enableSorting: columnDef?.sortable ?? undefined,
       };
     }, [] as MRT_Column<ExplorerColumn>[]);
   }, [tableConfig]);
@@ -143,6 +155,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               return { [x.id]: x.desc ? 'desc' : 'asc' };
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
+      accessibility: Accessibility.ACCESSIBLE,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
@@ -154,9 +167,9 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
           pageLimit,
           data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize,
         )
-      : data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize;
+      : (data?.data._aggregation?.[index]._totalCount ?? pagination.pageSize);
     const limitLabel = tableConfig?.pageLimit
-      ? tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL
+      ? (tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL)
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
@@ -179,8 +192,8 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
-  const table = useMantineReactTable({
-    columns: cols,
+  const table = useMantineReactTable<JSONObject>({
+    columns: cols as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
     manualSorting: true,
     manualPagination: true,
@@ -191,12 +204,29 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     enableTopToolbar: false,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
+    icons: TableIcons,
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
+    },
+    mantineTableHeadCellProps: {
+      style: {
+        '--mrt-base-background-color': 'var(--mantine-color-table-1)',
+        color: `var(--mantine-color-table-contrast-5')`,
+      },
+      // sx: (theme) => {
+      //   return {
+      //     backgroundColor: theme.colors.table[1],
+      //     color: theme.colors['table-contrast'][5],
+      //     textAlign: 'center',
+      //     padding: theme.spacing.md,
+      //     fontWeight: 'bold',
+      //     fontSize: theme.fontSizes.lg,
+      //   };
+      // },
     },
     state: {
       isLoading,
@@ -213,8 +243,10 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             onClick: () => {
               if (Object.keys(rowSelection).includes(row.id)) {
                 setRowSelection({});
+                setSelectedRow(undefined);
               } else {
                 setRowSelection({ [row.id as string]: true });
+                setSelectedRow(row as MRT_Row<JSONObject>); // TODO: fix this typecast
               }
             },
             sx: {
@@ -233,6 +265,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               ? Object.keys(rowSelection).at(0)
               : undefined
           }
+          row={selectedRow}
           onClose={() => setRowSelection({})}
           panel={DetailsPanel}
           classNames={tableConfig?.detailsConfig?.classNames}
