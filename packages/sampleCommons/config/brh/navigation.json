@@ -70,8 +70,8 @@
     ],
     "loginButtonVisibility": "visible",
     "classNames": {
-      "root": "border-base-light",
-      "label": "text-white",
+      "root": "border-base-light text-primary-contrast-dark",
+      "label": "text-primary-contrast",
       "button": "hover:border-white"
     }
   }

@@ -2,7 +2,7 @@
   "primary": {
     "max": "#eaf3fa",
     "lightest": "#bcd7ed",
-    "lighter": "#8ebbe1",
+    "lighter": "#1f839b",
     "light": "#609fd4",
     "DEFAULT": "#3283C8",
     "vivid": "#2584d4",
@@ -26,7 +26,7 @@
   "secondary": {
     "max": "#eaf3fa",
     "lightest": "#bcd7ed",
-    "lighter": "#8ebbe1",
+    "lighter": "#0197e1",
     "light": "#609fd4",
     "DEFAULT": "#3283C8",
     "vivid": "#2584d4",
