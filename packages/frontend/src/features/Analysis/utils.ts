@@ -1,4 +1,6 @@
-export const centerList = [
+import { AnalysisToolConfig } from './types';
+
+export const centerList: AnalysisToolConfig[] = [
   {
     title: 'OmniGenome Commons',
     type: 'application',

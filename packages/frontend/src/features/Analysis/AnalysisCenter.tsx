@@ -1,18 +1,9 @@
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { AnalysisCenterProps } from './types';
-import { Select, Input, Text } from '@mantine/core';
+import { Select, Input } from '@mantine/core';
 import Image from 'next/image';
 import { centerList } from './utils';
 import TextDescription from './TextDescription';
-
-interface AnalysisToolConfig {
-  representativeImage: string; // URL to image
-  typeIcon: string | ReactElement; // URL, IconName as string, ReactElement
-  typeLabel: string;
-  description: string;
-  hasDemo: boolean;
-  requiresLogin: boolean;
-}
 
 const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
   const [cards, setCards] = useState({
@@ -32,10 +23,6 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
     }));
   };
 
-  useEffect(() => {
-    console.log('center', centerList);
-  }, []);
-
   return (
     <div className="w-full bg-gray-100">
       <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
@@ -45,10 +32,12 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
             // todo: data opts
             data={[]}
             value={cards.type}
-            transitionProps={{
-              transition: 'pop-top-left',
-              duration: 50,
-              timingFunction: 'ease',
+            comboboxProps={{
+              transitionProps: {
+                transition: 'pop-top-left',
+                duration: 50,
+                timingFunction: 'ease',
+              },
             }}
             placeholder="Filter by type"
             onChange={(value) => handleCardsFilter('type', value)}
@@ -57,10 +46,12 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
             // todo: data opts
             data={[]}
             value={cards.access}
-            transitionProps={{
-              transition: 'pop-top-left',
-              duration: 50,
-              timingFunction: 'ease',
+            comboboxProps={{
+              transitionProps: {
+                transition: 'pop-top-left',
+                duration: 50,
+                timingFunction: 'ease',
+              },
             }}
             placeholder="Filter by access"
             onChange={(value) => handleCardsFilter('access', value)}

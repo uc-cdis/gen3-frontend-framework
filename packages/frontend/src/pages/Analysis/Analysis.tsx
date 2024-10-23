@@ -8,8 +8,15 @@ const AnalysisPage = ({
   footerProps,
 }: AnalysisPageLayoutProps): JSX.Element => {
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
-      <AnalysisPanel analysis={[]}/>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Analysis Center',
+        content: 'Analysis Center',
+        key: 'gen3-analysis-center',
+      }}
+    >
+      <AnalysisPanel analysis={[]} />
     </NavPageLayout>
   );
 };

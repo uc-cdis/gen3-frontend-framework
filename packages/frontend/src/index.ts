@@ -58,6 +58,9 @@ import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 import AnalysisPage from './pages/Analysis/Analysis';
 import { AnalysisPageGetServerSideProps } from './pages/Analysis';
 
+import AnalysisEditorPage from './pages/admin/analysis/Analysis';
+import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
+
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
@@ -116,4 +119,6 @@ export {
   SubmissionPageGetServerSideProps,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
+  AnalysisEditorPage,
+  AnalysisEditorPageGetServerSideProps,
 };
