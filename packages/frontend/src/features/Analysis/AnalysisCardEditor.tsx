@@ -58,9 +58,6 @@ const AnalysisCardEditor = () => {
     future: [],
   });
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [previewCard, setPreviewCard] = useState<AnalysisToolConfig | null>(
-    null,
-  );
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [searchTerm, setSearchTerm] = useState('');
@@ -195,8 +192,16 @@ const AnalysisCardEditor = () => {
       try {
         const content = e.target?.result as string;
         const imported = JSON.parse(content);
-        if (Array.isArray(imported)) {
-          updateHistory(imported);
+        const withImages = imported.map((card: AnalysisToolConfig) => {
+          return {
+            ...card,
+            iconFile: { preview: card.icon },
+            imageFile: { preview: card.image },
+          };
+        });
+        if (Array.isArray(withImages)) {
+          updateHistory(withImages);
+          console.log('Imported cards:', withImages);
         }
       } catch (error) {
         alert('Invalid file format');
@@ -375,8 +380,8 @@ const AnalysisCardEditor = () => {
       <div className="rounded-sm bg-white w-full">
         <div className="p-0 rounded-sm relative h-48 bg-gray-200">
           {card.imageFile?.preview ? (
-            <img
-              src={card.imageFile.preview}
+            <Image
+              src={`/images/apps/${card.imageFile.preview}`}
               alt="Preview"
               className="w-full h-full object-cover"
             />
@@ -389,8 +394,8 @@ const AnalysisCardEditor = () => {
         <div className="flex -mt-5 relative z-10">
           <div className="p-0.5 rounded-sm bg-gray-100 ml-5 w-10 h-10">
             {card.iconFile?.preview ? (
-              <img
-                src={card.iconFile.preview}
+              <Image
+                src={`/icons/apps/${card.iconFile.preview}`}
                 alt="Icon"
                 className="w-full h-full object-contain"
               />
