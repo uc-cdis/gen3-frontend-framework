@@ -1,9 +1,5 @@
 import { ReactElement } from 'react';
 
-export interface AnalysisCenterProps {
-  analysis?: any;
-}
-
 export interface AnalysisToolConfig {
   title: string;
   image?: string; // URL to image
@@ -12,4 +8,8 @@ export interface AnalysisToolConfig {
   description: string;
   hasDemo?: boolean;
   loginRequired: boolean;
+}
+
+export interface AnalysisCenterConfiguration {
+  analysis: Array<AnalysisToolConfig>;
 }

@@ -438,6 +438,8 @@ const AnalysisCardEditor = () => {
     </div>
   );
 
+  console.log('currentCard', currentCard);
+
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <Stack gap="xl">

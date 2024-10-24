@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import AnalysisCenter from './AnalysisCenter';
+import { AnalysisCenterConfiguration } from './types';
 
-const AnalysisPanel = ({ analysis }: { analysis: any }) => {
-  return <AnalysisCenter analysis={[]} />;
+const AnalysisPanel: React.FC<AnalysisCenterConfiguration> = ({ analysis }) => {
+  return <AnalysisCenter analysis={analysis} />;
 };
 
 export default AnalysisPanel;
