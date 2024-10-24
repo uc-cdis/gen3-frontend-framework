@@ -10,7 +10,7 @@ export const AnalysisPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const analysisConfig: AnalysisCenterConfiguration = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/analysisCenter.json`,
+      `config/${GEN3_COMMONS_NAME}/analysisTools.json`,
     );
 
     return {
@@ -24,7 +24,7 @@ export const AnalysisPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        analysis: [],
+        tools: [],
       },
     };
   }

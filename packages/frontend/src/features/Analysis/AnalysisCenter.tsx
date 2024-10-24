@@ -1,11 +1,12 @@
 import { ReactElement, useState } from 'react';
-import { AnalysisCenterProps } from './types';
-import { Select, Input } from '@mantine/core';
-import Image from 'next/image';
-import { centerList } from './utils';
+import { AnalysisCenterConfiguration } from './types';
+import { Select, Input, Image, Stack } from '@mantine/core';
+import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 
-const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
+const AnalysisCenter = ({
+  tools,
+}: AnalysisCenterConfiguration): ReactElement => {
   const [cards, setCards] = useState({
     type: '' as string,
     access: '' as string,
@@ -24,9 +25,10 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
   };
 
   return (
-    <div className="w-full bg-gray-100">
+    <div className="w-full bg-base-lighter">
       <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
         {/* // todo: for both dropdowns add downwards orange carrot */}
+
         <div className="flex space-x-4">
           <Select
             // todo: data opts
@@ -68,30 +70,46 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
       </div>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mx-4 overflow-y-scroll">
-          {centerList.map(
-            ({ title, description, type, icon, image, loginRequired }, key) => {
+          {tools.map(
+            (
+              {
+                title,
+                description,
+                type,
+                icon,
+                image,
+                hasDemo,
+                loginRequired,
+                href,
+              },
+              key,
+            ) => {
               return (
-                <div key={key} className="flex flex-col items-center">
-                  <div className="rounded-sm bg-white">
+                <Stack key={key}>
+                  <div className="rounded-sm bg-base-max">
                     <div className="p-0 rounded-sm">
                       <Image
+                        component={NextImage}
                         src={`/images/apps/${image}`}
-                        alt="todo"
+                        alt={`${title} image`}
                         height={1000}
                         width={1000}
+                        radius="md"
                       />
                     </div>
                     <div className="flex -mt-5 relative z-10">
-                      <div className="p-0.5 rounded-sm bg-gray-100 ml-5">
+                      <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base">
                         <Image
+                          component={NextImage}
                           src={`/icons/apps/${icon}`}
-                          alt="todo"
+                          alt={`${title} logo`}
                           width={40}
                           height={40}
+                          radius="lg"
                         />
                       </div>
                       <div className="relative mb-0 ml-2">
-                        <span className="absolute bottom-0 left-0 text-xs text-gray-400 w-max">
+                        <span className="absolute bottom-0 left-0 text-xs text-gray-700 w-max">
                           {type === 'application'
                             ? 'Application'
                             : 'Jupyter Notebook'}
@@ -106,25 +124,27 @@ const AnalysisCenter = ({ analysis }: AnalysisCenterProps): ReactElement => {
                       <div className="text-sm p-2 h-fit">
                         <TextDescription description={description} />
                       </div>
-                      <div className="flex mb-4 rounded-b-md h-6">
+                      <div className="flex mb-4 rounded-b-md">
                         {type === 'application' ? (
                           <div className="m-auto">
-                            <button className="bg-blue-500 mr-2 text-white p-1.5 rounded-sm text-sm font-semibold">
+                            <button className="bg-accent text-accent-contrast  mr-2  p-1.5 rounded-sm text-sm font-semibold">
                               Run App
                             </button>
-                            <button className="bg-blue-500 ml-2 text-white p-1.5 rounded-sm text-sm font-semibold">
-                              Demo
-                            </button>
+                            {hasDemo && (
+                              <button className=" ml-2 p-1.5 rounded-sm text-sm font-semibold">
+                                Demo
+                              </button>
+                            )}
                           </div>
                         ) : (
-                          <button className="m-auto bg-blue-500 text-white p-1.5 rounded-sm text-sm font-semibold">
+                          <button className="m-auto bg-accent text-accent-contrast p-1.5 rounded-sm text-sm font-semibold">
                             View Notebook
                           </button>
                         )}
                       </div>
                     </div>
                   </div>
-                </div>
+                </Stack>
               );
             },
           )}

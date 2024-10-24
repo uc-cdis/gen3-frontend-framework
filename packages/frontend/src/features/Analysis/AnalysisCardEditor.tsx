@@ -12,9 +12,7 @@ import {
   Title,
   Group,
   Text,
-  Modal,
   Tabs,
-  Alert,
   MultiSelect,
 } from '@mantine/core';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -74,6 +72,7 @@ const AnalysisCardEditor = () => {
       image: '',
       description: '',
       loginRequired: false,
+      href: '/',
     },
   );
 
@@ -161,6 +160,10 @@ const AnalysisCardEditor = () => {
     }
     if (!currentCard.description.trim()) {
       newErrors.description = 'Description is required';
+    }
+
+    if (!currentCard.href.trim()) {
+      newErrors.description = 'href is required';
     }
 
     setErrors(newErrors);
@@ -297,6 +300,7 @@ const AnalysisCardEditor = () => {
       image: '',
       description: '',
       loginRequired: false,
+      href: '/',
     });
     setEditingIndex(null);
     setErrors({});
@@ -438,8 +442,6 @@ const AnalysisCardEditor = () => {
     </div>
   );
 
-  console.log('currentCard', currentCard);
-
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <Stack gap="xl">
@@ -515,6 +517,20 @@ const AnalysisCardEditor = () => {
                       }))
                     }
                     error={errors.description}
+                  />
+
+                  <TextInput
+                    required
+                    label="href"
+                    placeholder="Enter application path"
+                    value={currentCard.href}
+                    onChange={(e) =>
+                      setCurrentCard((prev) => ({
+                        ...prev,
+                        href: e.target.value,
+                      }))
+                    }
+                    error={errors.href}
                   />
 
                   <Switch

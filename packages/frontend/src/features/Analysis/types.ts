@@ -8,8 +8,9 @@ export interface AnalysisToolConfig {
   description: string;
   hasDemo?: boolean;
   loginRequired: boolean;
+  href: string;
 }
 
 export interface AnalysisCenterConfiguration {
-  analysis: Array<AnalysisToolConfig>;
+  tools: Array<AnalysisToolConfig>;
 }

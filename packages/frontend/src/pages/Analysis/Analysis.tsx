@@ -6,7 +6,7 @@ import { AnalysisPageLayoutProps } from './types';
 const AnalysisPage = ({
   headerProps,
   footerProps,
-  analysis,
+  tools,
 }: AnalysisPageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout
@@ -17,7 +17,7 @@ const AnalysisPage = ({
         key: 'gen3-analysis-center',
       }}
     >
-      <AnalysisPanel analysis={analysis} />
+      <AnalysisPanel tools={tools} />
     </NavPageLayout>
   );
 };
