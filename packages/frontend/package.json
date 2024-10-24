@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "@graphiql/react": "^0.23.1",
+    "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^4.0.1",
     "@kbox-labs/react-echarts": "^1.4.0",
     "@mantine/core": "^7.13.3",
