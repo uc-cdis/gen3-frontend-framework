@@ -35,4 +35,7 @@ yarn-error.log*
 # Ignore DevSpace cache and log folder
 .devspace/
 
-.nx/cache
+# sample configs
+packages/sampleCommons/config/canine
+packages/sampleCommons/config/midrc
+packages/sampleCommons/config/heal

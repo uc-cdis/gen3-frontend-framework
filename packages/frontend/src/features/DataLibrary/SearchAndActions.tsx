@@ -1,13 +1,19 @@
 import React from 'react';
-import { Button, Group, TextInput, Tooltip } from '@mantine/core';
+import {
+  Button,
+  Group,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 import {
   MdAdd as PlusIcon,
   MdDelete as DeleteIcon,
   MdSearch as SearchIcon,
   MdDownload as DownloadIcon,
 } from 'react-icons/md';
-import { BsFillCollectionFill as CollectIcon } from 'react-icons/bs';
 import { Datalist } from '@gen3/core';
+import { Icon } from '@iconify/react';
 
 interface SearchAndActionsProps {
   createList: (item?: Partial<Datalist>) => Promise<void>;
@@ -19,43 +25,46 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
   gatherData,
 }) => {
   return (
-    <div className="flex flex-col w-full ml-2">
-      <div className=" flex mb-2">
-        <TextInput
-          variant="filled"
-          placeholder="Search..."
-          leftSection={<SearchIcon size="1.45em" />}
-        />
+    <div className="flex justify-between p-2 bg-primary-dark text-primary-contrast-dark">
+      <Group>
+        <Tooltip label="Retrieve selections">
+          <Button
+            size="compact-md"
+            variant="outline"
+            onClick={() => gatherData()}
+            aria-label="Retrieve Selected Data"
+            classNames={{ root: 'bg-base-max hover:bg-base-light' }}
+          >
+            Retrieve Selected
+          </Button>
+        </Tooltip>
         <Tooltip label="Create a new empty list">
           <Button
             size="compact-md"
-            variant="transparent"
+            variant="outline"
             onClick={() => createList()}
             aria-label="create a new list"
+            classNames={{ root: 'bg-base-max hover:bg-base-light' }}
           >
             <PlusIcon size="1.5em" />
-          </Button>
-        </Tooltip>
-        <Tooltip label="Gather selections">
-          <Button
-            size="compact-md"
-            variant="transparent"
-            onClick={() => gatherData()}
-            aria-label="Gather Selected Data"
-          >
-            <CollectIcon size="1.5em" />
           </Button>
         </Tooltip>
         <Tooltip label="Download Manifest of selected items">
           <Button
             size="compact-md"
-            variant="transparent"
+            variant="outline"
             aria-label="Download Manifest of Selected Items"
+            classNames={{ root: 'bg-base-max hover:bg-base-light' }}
           >
-            <DownloadIcon size="1.5em" />
+            <Icon icon="gen3:download-alt" height={24} width={24} />
           </Button>
         </Tooltip>
-      </div>
+      </Group>
+      <TextInput
+        variant="filled"
+        placeholder="Search..."
+        leftSection={<SearchIcon size="1.45em" />}
+      />
     </div>
   );
 };

@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@graphiql/react": "^0.23.1",
-    "@iconify/react": "^4.0.1",
+    "@iconify/react": "^5.0.2",
     "@kbox-labs/react-echarts": "^1.4.0",
     "@mantine/core": "^7.13.3",
     "@mantine/dates": "^7.13.3",
@@ -115,7 +115,7 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@iconify/tools": "^2.1.2",
+    "@iconify/tools": "^4.0.7",
     "@iconify/types": "^2.0.0",
     "@svgr/webpack": "^8.1.0",
     "@swc/core": "^1.7.28",

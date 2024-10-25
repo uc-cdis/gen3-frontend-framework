@@ -173,6 +173,7 @@ const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         listName={listName}
         numberOfItems={numberOfItemsInList}
         updatedTime={dataList.updatedTime}
+        createdTime={dataList.createdTime}
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}

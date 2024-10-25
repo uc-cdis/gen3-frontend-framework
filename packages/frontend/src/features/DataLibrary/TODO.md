@@ -19,6 +19,7 @@
 * place on navigation
 * implement zip/download manifest
 * placeholder for other actions
+* sort by file size
 
 ## v2
 * show applicable actions to selection

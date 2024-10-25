@@ -1,10 +1,10 @@
 import { DataLibrarySelectionProvider } from './selection/SelectionContext';
-import DataLibraryPanel from './DataLibraryPanel';
+import DataLibraryLists from './DataLibraryLists';
 
 const DataLibrary = () => {
   return (
     <DataLibrarySelectionProvider>
-      <DataLibraryPanel />
+      <DataLibraryLists />;
     </DataLibrarySelectionProvider>
   );
 };

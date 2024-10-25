@@ -148,14 +148,13 @@ const DataSetContentsTable = ({
     },
     displayColumnDefOptions: {
       'mrt-row-select': {
-        size: 10,
-        maxSize: 10,
+        size: 5,
+        maxSize: 5,
         header: '',
       },
       'mrt-row-expand': {
         size: 5,
         maxSize: 5,
-        padding: 'xs',
         header: '',
       },
       'mrt-row-actions': {

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Accordion,
   AccordionControlProps,
@@ -7,13 +8,10 @@ import {
   Tooltip,
   Text,
   TextInput,
+  useMantineTheme,
 } from '@mantine/core';
-import { useState } from 'react';
+import { Icon } from '@iconify/react';
 import { getHotkeyHandler } from '@mantine/hooks';
-import {
-  MdModeEditOutline as EditIcon,
-  MdDelete as DeleteIcon,
-} from 'react-icons/md';
 import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
 
@@ -21,6 +19,7 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
   numberOfItems: number;
   updatedTime: string;
+  createdTime: string;
   updateHandler: (update: Record<string, any>) => Promise<void>;
   deleteListHandler: () => Promise<void>;
   selectListHandler: (checked: boolean) => void;
@@ -31,6 +30,7 @@ export const DatasetAccordionControl = ({
   listName,
   numberOfItems,
   updatedTime,
+  createdTime,
   updateHandler,
   deleteListHandler,
   selectListHandler,
@@ -42,7 +42,7 @@ export const DatasetAccordionControl = ({
     updateHandler({ name: value });
     setValue(undefined);
   };
-
+  const theme = useMantineTheme();
   return (
     <div className="flex justify-start w-full items-center px-4">
       <div className="flex items-center w-1/4">
@@ -71,7 +71,11 @@ export const DatasetAccordionControl = ({
           />
         ) : (
           <span className="flex items-center justify-between">
-            <Text fw={600} className="ml-2 w-100 py-2" aria-label={listName}>
+            <Text
+              fw={600}
+              className="ml-2 w-100 py-2 mr-2"
+              aria-label={listName}
+            >
               {listName}
             </Text>
             <Tooltip label="Change name of list">
@@ -81,7 +85,12 @@ export const DatasetAccordionControl = ({
                 aria-label="Change datalist name"
                 onClick={() => setValue(listName)}
               >
-                <EditIcon />
+                <Icon
+                  icon="gen3:edit"
+                  height={24}
+                  width={24}
+                  color={theme.colors.primary[5]}
+                />
               </ActionIcon>
             </Tooltip>
           </span>
@@ -89,17 +98,41 @@ export const DatasetAccordionControl = ({
       </div>
       <div className="flex items-end ml-auto space-x-2">
         {numberOfItems === 0 && <EmptyList />}
-        <Text fw={500} c="base-contrast.2">
-          {updatedTime}
-        </Text>
-        <Tooltip label={`Delete ${listName}`}>
+        <div className="flex items-center space-x-2">
+          <Text fw={600} c="base-contrast.2" tt="uppercase">
+            Created:
+          </Text>
+          <Text fw={500} c="base-contrast.2">
+            {createdTime}
+          </Text>
+
+          <Icon
+            icon="gen3:dot"
+            height={16}
+            width={16}
+            color={theme.colors.primary[5]}
+          />
+
+          <Text fw={600} c="base-contrast.2" tt="uppercase">
+            Updated:
+          </Text>
+          <Text fw={500} c="base-contrast.2">
+            {updatedTime}
+          </Text>
+        </div>
+        <Tooltip label={`Delete ${listName}. Will not delete dataset`}>
           <ActionIcon
             color="accent.4"
             variant="transparent"
             aria-label="delete list"
             onClick={() => deleteListHandler()}
           >
-            <DeleteIcon />
+            <Icon
+              icon="gen3:delete"
+              height={24}
+              width={24}
+              color={theme.colors.primary[5]}
+            />
           </ActionIcon>
         </Tooltip>
       </div>
