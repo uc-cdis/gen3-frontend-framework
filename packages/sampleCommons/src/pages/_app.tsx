@@ -14,7 +14,13 @@ import {
   Fonts,
   SessionConfiguration,
   registerCohortDiversityApp,
+  registerCohortBuilderDefaultPreviewRenderers,
+  registerExplorerDefaultCellRenderers,
 } from '@gen3/frontend';
+
+import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
+import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
+
 import '../styles/globals.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
@@ -64,6 +70,10 @@ const Gen3App = ({
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    registerExplorerDefaultCellRenderers();
+    registerCohortBuilderDefaultPreviewRenderers();
+    registerCohortTableCustomCellRenderers();
+    registerCustomExplorerDetailsPanels();
     // }
   }, []);
 

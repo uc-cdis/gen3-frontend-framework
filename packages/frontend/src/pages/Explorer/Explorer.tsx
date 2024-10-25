@@ -3,10 +3,6 @@ import { NavPageLayout } from '../../features/Navigation';
 import { CohortBuilder } from '../../features/CohortBuilder';
 import { ExplorerPageProps } from './types';
 import { Center } from '@mantine/core';
-import {
-  registerExplorerDefaultCellRenderers,
-  registerCohortBuilderDefaultPreviewRenderers,
-} from '../../features/CohortBuilder';
 
 const ExplorerPage = ({
   headerProps,
