@@ -53,6 +53,13 @@ export class RenderFactoryTypedInstance<T>
 
   getRenderer(type: string, functionName: string): RendererFunction<T> {
     if (!this.rendererExists(type, functionName)) {
+      console.warn(
+        '[RenderFactory] Renderer function not found for type: ',
+        type,
+        ' and function name: ',
+        functionName,
+        '. Using default renderer instead.',
+      );
       return DefaultItemRenderer;
     }
 
