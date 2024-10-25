@@ -43,8 +43,9 @@ export const DatasetAccordionControl = ({
     setValue(undefined);
   };
   const theme = useMantineTheme();
+
   return (
-    <div className="flex justify-start w-full items-center px-4">
+    <div className="flex justify-start w-full items-center px-4 group-data-[active]:bg-secondary-lightest">
       <div className="flex items-center w-1/4">
         <Checkbox
           onChange={(event) => {

@@ -39,7 +39,7 @@ const AdditionalDataTableTable = ({
 
   return (
     <div className="flex flex-col w-inherit gap-y-1">
-      <Text fw={600} fs="md">
+      <Text fw={600} fs="md" c="secondary.5" tt="uppercase">
         {header}
       </Text>
       <MantineReactTable table={table} />
