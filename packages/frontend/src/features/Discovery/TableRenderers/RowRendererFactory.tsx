@@ -69,8 +69,8 @@ export class DiscoveryRowRendererFactory {
   static registerRowRendererCatalog(
     catalog: Record<string, RowRendererFunctionCatalogEntry>,
   ): void {
-    Object.keys(catalog).map((type) => {
-      Object.entries(catalog[type]).map(([name, func]) => {
+    Object.keys(catalog).forEach((type) => {
+      Object.entries(catalog[type]).forEach(([name, func]) => {
         DiscoveryRowRendererFactory.registerRowRenderer(type, name, func);
       });
     });
