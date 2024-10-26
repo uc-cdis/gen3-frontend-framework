@@ -1,15 +1,11 @@
-import { MRT_Cell } from 'mantine-react-table';
+import { MRT_Cell, MRT_Column, MRT_Row } from 'mantine-react-table';
 import { isArray } from 'lodash';
 import React, { ReactElement, ReactNode } from 'react';
 import { Badge } from '@mantine/core';
 import Link from 'next/link';
-import { JSONObject } from '@gen3/core';
+import { CellRendererFunctionProps } from './types';
 
 const NullCell = (): ReactElement => <span>NULL</span>;
-
-interface CellRendererFunctionProps {
-  cell: MRT_Cell<JSONObject>;
-}
 
 export type CellRendererFunction = (
   props: CellRendererFunctionProps,

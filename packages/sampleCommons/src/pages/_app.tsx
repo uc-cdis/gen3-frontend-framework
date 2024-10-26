@@ -13,6 +13,7 @@ import {
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
+  registerCohortDiscoveryApp,
   registerCohortDiversityApp,
   registerCohortBuilderDefaultPreviewRenderers,
   registerExplorerDefaultCellRenderers,
@@ -36,9 +37,6 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   const axe = require('@axe-core/react');
   axe(React, ReactDOM, 1000);
 }
-
-// TODO fix app registration
-registerCohortDiversityApp();
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;
@@ -64,12 +62,15 @@ const Gen3App = ({
   const faroRef = useRef<null | Faro>(null);
 
   useEffect(() => {
+    // one time init
     // if (
     //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    registerCohortDiscoveryApp();
+    registerCohortDiversityApp();
     registerExplorerDefaultCellRenderers();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
