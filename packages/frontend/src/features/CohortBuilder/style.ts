@@ -10,7 +10,7 @@ export const getCombinedClassesExpandCollapseQuery = (
   allQueryExpressionsCollapsed: boolean,
 ) => {
   const baseClasses =
-    'flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7';
+    'flex gap-0 items-center border-1 border-base-max rounded-md';
   const dynamicClasses = allQueryExpressionsCollapsed
     ? 'text-primary bg-base-max'
     : 'text-base-max bg-transparent';
@@ -23,8 +23,7 @@ export const getCombinedClassesExpandCollapseQuery = (
 export const getCombinedClassesForRowCollapse = (
   filtersSectionCollapsed: boolean,
 ) => {
-  const baseClasses =
-    'border-1 border-white rounded-md w-7 h-7 flex items-center';
+  const baseClasses = 'border-1 border-white rounded-md flex items-center';
   const dynamicClasses = !filtersSectionCollapsed
     ? 'text-primary bg-base-max'
     : 'text-base-max bg-transparent';
