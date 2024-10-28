@@ -103,10 +103,11 @@ const reducer = (
 };
 
 interface QueryExpressionSectionProps {
-  readonly index: string;
-  readonly filters: FilterSet;
-  readonly currentCohortName: string;
-  readonly currentCohortId: string;
+  index: string;
+  filters: FilterSet;
+  currentCohortName: string;
+  currentCohortId: string;
+  readonly?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
@@ -114,6 +115,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
   currentCohortName,
   currentCohortId,
+  readonly = false,
 }: QueryExpressionSectionProps) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
@@ -176,18 +178,20 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               {currentCohortName}
             </OverflowTooltippedLabel>
             <React.Fragment>
-              <button
-                data-testid="button-clear-all-cohort-filters"
-                className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
-                  noFilters
-                    ? 'hidden'
-                    : 'cursor-pointer text-secondary-contrast-darkest'
-                }`}
-                onClick={clearAllFilters}
-                disabled={noFilters}
-              >
-                Clear All
-              </button>
+              {!readonly && (
+                <button
+                  data-testid="button-clear-all-cohort-filters"
+                  className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
+                    noFilters
+                      ? 'hidden'
+                      : 'cursor-pointer text-secondary-contrast-darkest'
+                  }`}
+                  onClick={clearAllFilters}
+                  disabled={noFilters}
+                >
+                  Clear All
+                </button>
+              )}
               <div className="display flex gap-2 ml-auto mr-3">
                 <Tooltip
                   label={

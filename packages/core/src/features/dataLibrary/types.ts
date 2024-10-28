@@ -36,6 +36,7 @@ export interface CohortItem extends ListItem {
   name: string;
   schemaVersion: string;
   id: string;
+  index: number;
 }
 
 export interface AdditionalDataItem extends ListItem {
