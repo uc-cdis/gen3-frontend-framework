@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps<
 
   try {
     const config: any = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/cohortBuilder/${configId}.json`,
+      `config/${GEN3_COMMONS_NAME}/explorer/${configId}.json`,
     );
 
     return {
