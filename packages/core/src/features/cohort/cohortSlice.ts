@@ -195,20 +195,25 @@ export const cohortSlice = createSlice({
         },
       });
     },
-    setCohortFilter: (
-      state: Draft<CohortState>,
-      action: PayloadAction<SetFilterParams>,
-    ) => {
+    setCohortFilter: (state, action: PayloadAction<SetFilterParams>) => {
       const { index, filters } = action.payload;
-      return {
-        cohort: {
-          ...state.cohort,
+      const currentCohortId = getCurrentCohort(state);
+
+      if (!state.entities[currentCohortId]) {
+        return;
+      }
+
+      cohortsAdapter.updateOne(state, {
+        id: currentCohortId,
+        changes: {
           filters: {
-            ...state.cohort.filters,
+            ...state.entities[currentCohortId].filters,
             [index]: filters,
           },
+          modified: true,
+          modified_datetime: new Date().toISOString(),
         },
-      };
+      });
     },
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (state, action: PayloadAction<RemoveFilterParams>) => {
