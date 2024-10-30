@@ -42,6 +42,20 @@ The configuration for the explorer is stored an array of objects. Each object in
   }
 ]
 ```
+### Multiple Configuration Support
+
+Explorer can also support multiple configurations. To use this create
+one or more configuration files in the directory ```config/COMMONS_NAME/explorer```
+The name of the file is then passed to Explorer as path.
+For example if there are two configuration files:
+```cases.json``` and ```files.json```, the URL for these will be
+```bash
+https://localhost/Explorer/cases
+```
+and
+```bash
+https://localhost/Explorer/files
+```
 
 
 ### Download Table Data
