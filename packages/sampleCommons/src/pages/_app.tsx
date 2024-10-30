@@ -15,7 +15,13 @@ import {
   SessionConfiguration,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
+  registerCohortBuilderDefaultPreviewRenderers,
+  registerExplorerDefaultCellRenderers,
 } from '@gen3/frontend';
+
+import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
+import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
+
 import '../styles/globals.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
@@ -33,8 +39,6 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
 }
 
 // TODO fix app registration
-registerCohortDiscoveryApp();
-registerCohortDiversityApp();
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;
@@ -60,12 +64,19 @@ const Gen3App = ({
   const faroRef = useRef<null | Faro>(null);
 
   useEffect(() => {
+    // one time init
     // if (
     //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    registerCohortDiscoveryApp();
+    registerCohortDiversityApp();
+    registerExplorerDefaultCellRenderers();
+    registerCohortBuilderDefaultPreviewRenderers();
+    registerCohortTableCustomCellRenderers();
+    registerCustomExplorerDetailsPanels();
     // }
   }, []);
 

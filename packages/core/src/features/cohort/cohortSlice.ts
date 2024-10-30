@@ -52,6 +52,11 @@ interface UpdateFilterParams {
   filter: Operation;
 }
 
+interface SetFilterParams {
+  index: string;
+  filters: FilterSet;
+}
+
 interface RemoveFilterParams {
   index: string;
   field: string;
@@ -190,6 +195,21 @@ export const cohortSlice = createSlice({
         },
       });
     },
+    setCohortFilter: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetFilterParams>,
+    ) => {
+      const { index, filters } = action.payload;
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: {
+            ...state.cohort.filters,
+            [index]: filters,
+          },
+        },
+      };
+    },
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (state, action: PayloadAction<RemoveFilterParams>) => {
       const { index, field } = action.payload;
@@ -273,6 +293,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
 // Filter actions: addFilter, removeFilter, updateFilter
 export const {
   updateCohortFilter,
+  setCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
   removeCohort,

@@ -7,28 +7,31 @@ import {
 
 import { useCohortFacetFilters } from './hooks';
 import QueryExpressionSection from './QueryExpressionSection';
+import CohortSelector from './CohortSelector';
 
 interface CohortManagerProps {
-    index: string;
+  index: string;
 }
 
-const CohortManager  = ( { index } : CohortManagerProps) => {
-  const currentCohortId = useCoreSelector((state:CoreState) =>
-    selectCurrentCohortId(state)
+const CohortManager = ({ index }: CohortManagerProps) => {
+  const currentCohortId = useCoreSelector((state: CoreState) =>
+    selectCurrentCohortId(state),
   );
   const currentCohortName = useCoreSelector((state: CoreState) =>
-    selectCurrentCohortName(state)
+    selectCurrentCohortName(state),
   );
   const filters = useCohortFacetFilters(index);
 
-  return <div className="mb-2">
+  return (
+    <div className="mb-2">
       <QueryExpressionSection
-          index={index}
-          filters={filters}
-          currentCohortName={currentCohortName}
-          currentCohortId={currentCohortId}
+        index={index}
+        filters={filters}
+        currentCohortName={currentCohortName}
+        currentCohortId={currentCohortId}
       />
-  </div>;
+    </div>
+  );
 };
 
 export default CohortManager;

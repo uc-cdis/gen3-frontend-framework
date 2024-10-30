@@ -4,8 +4,9 @@ import { JSONObject } from '@gen3/core';
 import { CellRendererFunction } from './types';
 import { toString } from 'lodash';
 
-const defaultCellRenderer : CellRendererFunction = (
-  value, params?: JSONObject,
+const defaultCellRenderer: CellRendererFunction = (
+  value,
+  params?: JSONObject,
 ): ReactElement => {
   if (value === undefined || value === null || toString(value) === '') {
     return (
@@ -74,8 +75,8 @@ export class DiscoveryCellRendererFactory {
   static registerCellRendererCatalog(
     catalog: Record<string, CellRendererFunctionCatalogEntry>,
   ): void {
-    Object.keys(catalog).map((type) => {
-      Object.entries(catalog[type]).map(([name, func]) => {
+    Object.keys(catalog).forEach((type) => {
+      Object.entries(catalog[type]).forEach(([name, func]) => {
         DiscoveryCellRendererFactory.registerCellRenderer(type, name, func);
       });
     });
