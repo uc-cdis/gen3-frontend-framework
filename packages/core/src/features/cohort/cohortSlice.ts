@@ -29,6 +29,11 @@ interface UpdateFilterParams {
   filter: Operation;
 }
 
+interface SetFilterParams {
+  index: string;
+  filters: FilterSet;
+}
+
 interface RemoveFilterParams {
   index: string;
   field: string;
@@ -74,6 +79,21 @@ export const cohortSlice = createSlice({
                 [field]: filter,
               },
             },
+          },
+        },
+      };
+    },
+    setCohortFilter: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetFilterParams>,
+    ) => {
+      const { index, filters } = action.payload;
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: {
+            ...state.cohort.filters,
+            [index]: filters,
           },
         },
       };
@@ -126,8 +146,12 @@ export const cohortSlice = createSlice({
 });
 
 // Filter actions: addFilter, removeFilter, updateFilter
-export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } =
-  cohortSlice.actions;
+export const {
+  updateCohortFilter,
+  setCohortFilter,
+  removeCohortFilter,
+  clearCohortFilters,
+} = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
   state.cohorts.cohort.filters;

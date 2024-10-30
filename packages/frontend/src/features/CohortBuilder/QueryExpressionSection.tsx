@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useRef } from 'react';
-import { Tooltip } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
@@ -7,6 +7,7 @@ import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
+import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit, partial } from 'lodash';
 import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
@@ -23,6 +24,7 @@ import {
 } from './style';
 import { useUpdateFilters } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
+import CohortSelector from './CohortSelector';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -197,6 +199,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
+                <CohortSelector index={index} filters={filters} />
                 <Tooltip
                   label={
                     noFilters
@@ -206,7 +209,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         : 'Collapse all values'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-queries"
                     color="white"
                     onClick={() =>
@@ -228,17 +231,23 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     disabled={noFilters}
                   >
                     {allQueryExpressionsCollapsed ? (
-                      <React.Fragment>
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-expand"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     ) : (
-                      <React.Fragment>
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-contract"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
 
                 <Tooltip
@@ -253,7 +262,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         : 'Display fewer rows'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-filters-section"
                     color="white"
                     onClick={() =>
@@ -280,7 +289,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         <UpArrowIcon size={30} aria-hidden="true" />
                       </React.Fragment>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
               </div>
             </React.Fragment>
