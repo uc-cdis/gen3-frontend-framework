@@ -107,7 +107,8 @@ interface QueryExpressionSectionProps {
   filters: FilterSet;
   currentCohortName: string;
   currentCohortId: string;
-  readonly?: boolean;
+  displayOnly?: boolean;
+  showTitle?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
@@ -115,8 +116,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
   currentCohortName,
   currentCohortId,
-  readonly = false,
-}: QueryExpressionSectionProps) => {
+  displayOnly = false,
+  showTitle = true,
+}: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -171,14 +173,16 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
           >
-            <OverflowTooltippedLabel
-              label={currentCohortName}
-              className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
-            >
-              {currentCohortName}
-            </OverflowTooltippedLabel>
+            {showTitle && (
+              <OverflowTooltippedLabel
+                label={currentCohortName}
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
+              >
+                {currentCohortName}
+              </OverflowTooltippedLabel>
+            )}
             <React.Fragment>
-              {!readonly && (
+              {!displayOnly && (
                 <button
                   data-testid="button-clear-all-cohort-filters"
                   className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
@@ -300,7 +304,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </p>
             ) : (
               Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k], index);
+                return convertFilterToComponent(
+                  filters.root[k],
+                  index,
+                  '.',
+                  displayOnly,
+                );
               })
             )}
           </div>

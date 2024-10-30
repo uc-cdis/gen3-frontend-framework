@@ -1,3 +1,5 @@
+import { FilterSet } from '@gen3/core';
+
 interface DatasetItem {
   dataset_guid?: string;
   description?: string;
@@ -17,18 +19,21 @@ interface Dataset {
   items?: Items;
   type?: string;
   schema_version?: string;
-  data?: {
-    query: string;
-    variables: {
-      filter: {
-        AND: Array<{
-          IN: {
-            [key: string]: string[];
+  index?: string;
+  data?:
+    | {
+        query: string;
+        variables: {
+          filter: {
+            AND: Array<{
+              IN: {
+                [key: string]: string[];
+              };
+            }>;
           };
-        }>;
-      };
-    };
-  };
+        };
+      }
+    | FilterSet;
 }
 
 interface List {
@@ -77,33 +82,36 @@ export const data1: DataSets = {
           name: 'Cohort Filter 1',
           type: 'Gen3GraphQL',
           schema_version: 'c246d0f',
+          index: 'series',
           data: {
-            query:
-              'query ($filter: JSON) { _aggregation { subject (filter: $filter) { file_count { histogram { sum } } } } }',
-            variables: {
-              filter: {
-                AND: [
-                  {
-                    IN: {
-                      annotated_sex: ['male'],
-                    },
-                  },
-                  {
-                    IN: {
-                      data_type: ['Aligned Reads'],
-                    },
-                  },
-                  {
-                    IN: {
-                      data_format: ['CRAM'],
-                    },
-                  },
-                  {
-                    IN: {
-                      race: ['["hispanic"]'],
-                    },
-                  },
-                ],
+            mode: 'and',
+            root: {
+              'gen3_discovery.PatientSex': {
+                operator: 'nested',
+                path: 'gen3_discovery',
+                operand: {
+                  operator: 'in',
+                  field: 'PatientSex',
+                  operands: ['Female', 'Male'],
+                },
+              },
+              'gen3_discovery.BodyPartExamined': {
+                operator: 'nested',
+                path: 'gen3_discovery',
+                operand: {
+                  operator: 'in',
+                  field: 'BodyPartExamined',
+                  operands: ['BREAST', 'PROSTATE', 'PORT CHEST'],
+                },
+              },
+              'gen3_discovery.primary_site': {
+                operator: 'nested',
+                path: 'gen3_discovery',
+                operand: {
+                  operator: 'in',
+                  field: 'primary_site',
+                  operands: ['Lung'],
+                },
               },
             },
           },
@@ -160,6 +168,7 @@ export const data1: DataSets = {
           name: 'Cohort Filter 4',
           type: 'Gen3GraphQL',
           schema_version: 'c246d0f',
+          index: 'cases',
           data: {
             query:
               'query ($filter: JSON) { _aggregation { subject (filter: $filter) { file_count { histogram { sum } } } } }',

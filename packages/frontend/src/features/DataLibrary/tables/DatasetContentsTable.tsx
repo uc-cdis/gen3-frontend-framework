@@ -6,10 +6,9 @@ import {
   MRT_Updater,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Button, Tooltip } from '@mantine/core';
+import { Button, Stack, Text, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 import AdditionalDataTable from './AdditionalDataTable';
-import QueriesTable from './QueriesTable';
 import { DatalistMembers } from '../types';
 import { commonTableSettings } from './tableSettings';
 import {
@@ -19,6 +18,7 @@ import {
 import { selectAllDatasetMembers } from '../selection/selection';
 import FilesTable from './FilesTable';
 import EmptyList from '../EmptyList';
+import QueryDetails from '../QueryDetails';
 
 /**
  *  Component that manages a List items, which are composed of Dataset and/or Cohorts
@@ -220,9 +220,12 @@ const DataSetContentsTable = ({
               data={rowData?.additionalData}
             />
           )}
-          {rowData?.queries.length > 0 && (
-            <QueriesTable header="Queries" data={rowData?.queries} />
-          )}
+          <Stack>
+            <Text fw={600}>Queries</Text>
+            {rowData?.queries.map((query) => (
+              <QueryDetails header="Queries" {...query} key={query.id} />
+            ))}
+          </Stack>
         </div>
       );
     },

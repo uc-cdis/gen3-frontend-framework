@@ -67,7 +67,9 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             queries.push({
               ...(dataItem as CohortItem),
               description: '',
-              //  id: datasetId,
+              schemaVersion: dataItem.schema_version,
+              index: dataItem.index,
+              id: datasetId,
             });
           } else {
             // handle RegisteredDataListEntry
