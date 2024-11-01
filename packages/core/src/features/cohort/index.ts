@@ -18,6 +18,7 @@ import {
   addNewDefaultUnsavedCohort,
   removeCohort,
   setActiveCohort,
+  setActiveCohortList,
 } from './cohortSlice';
 
 export {
@@ -39,4 +40,5 @@ export {
   addNewDefaultUnsavedCohort,
   removeCohort,
   setActiveCohort,
+  setActiveCohortList,
 };

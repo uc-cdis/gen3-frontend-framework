@@ -127,14 +127,9 @@ export const cohortSlice = createSlice({
   name: 'cohort',
   initialState: emptyInitialState,
   reducers: {
-    addNewDefaultUnsavedCohort: (
-      state,
-      action: PayloadAction<{
-        name?: string;
-      }>,
-    ) => {
+    addNewDefaultUnsavedCohort: (state) => {
       const cohort = newCohort({
-        customName: action.payload.name ?? UNSAVED_COHORT_NAME,
+        customName: UNSAVED_COHORT_NAME, // TODO: add generated name
       });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
@@ -280,6 +275,14 @@ export const cohortSlice = createSlice({
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
     },
+    /** @hidden */
+    setCohortList: (state, action: PayloadAction<Cohort[]>) => {
+      if (!action.payload) {
+        cohortsAdapter.removeMany(state, state.ids);
+      } else {
+        cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
+      }
+    },
   },
 });
 
@@ -292,6 +295,15 @@ export const cohortSlice = createSlice({
 export const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohorts,
 );
+
+/**
+ * Returns an array of all the cohorts
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ */
+export const selectAllCohorts = (state: CoreState): Record<CohortId, Cohort> =>
+  cohortSelectors.selectEntities(state);
 
 const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
   if (state.cohorts.currentCohort) {
@@ -310,10 +322,12 @@ export const {
   removeCohort,
   addNewDefaultUnsavedCohort,
   setCurrentCohortId,
+  setCohortList,
 } = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
   const currentCohortId = getCurrentCohortFromCoreState(state);
+  console.log('currentCohortId', currentCohortId, state.entities);
   return state.entities[currentCohortId]?.filters;
 };
 
@@ -443,5 +457,17 @@ export const selectIndexFilters = (
       .filters?.[index] ?? EmptyFilterSet
   ); // TODO: check if this is undefined
 };
+
+export const setActiveCohortList =
+  (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, UnknownAction> =>
+  async (dispatch: CoreDispatch, getState) => {
+    // set the list of all cohorts
+    dispatch(setCohortList(cohorts));
+
+    const availableCohorts = selectAllCohorts(getState());
+    if (Object.keys(availableCohorts).length === 0) {
+      dispatch(addNewDefaultUnsavedCohort());
+    }
+  };
 
 export const cohortReducer = cohortSlice.reducer;

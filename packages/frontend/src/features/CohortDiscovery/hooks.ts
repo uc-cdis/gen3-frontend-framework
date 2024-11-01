@@ -6,9 +6,12 @@ import {
   toggleCategoryFilter,
 } from './FilterExpandSlice';
 import { removeCohortFilter, updateCohortFilter } from './CohortSlice';
-import { Operation } from '@gen3/core';
+import { FilterSet, Operation } from '@gen3/core';
 import { buildNested } from '../../components/facets';
-import { selectIndexedFilterByName } from './CohortSelectors';
+import {
+  selectIndexedFilterByName,
+  selectCohortFilters,
+} from './CohortSelectors';
 
 export const useToggleExpandFilter = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +29,11 @@ export const useFilterExpandedState = (field: string) => {
 export const useAllFiltersCollapsed = () => {
   return useAppSelector((state: AppState) => selectAllFiltersCollapsed(state));
 };
+
+export const useCohortFacetFilters = (index: string): FilterSet => {
+  return useAppSelector((state: AppState) => selectCohortFilters(state)[index]);
+};
+
 export const useClearFilters = (index: string) => {
   const dispatch = useAppDispatch();
 
@@ -33,6 +41,7 @@ export const useClearFilters = (index: string) => {
     dispatch(removeCohortFilter({ index, field }));
   };
 };
+
 /**
  * Update Guppy filters: process nested fields and have the final
  * leaf be filtered
