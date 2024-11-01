@@ -23,7 +23,7 @@ const CohortManager = ({ index }: CohortManagerProps) => {
   const filters = useCohortFacetFilters(index);
 
   return (
-    <div className="mb-2">
+    <div className="flex flex-col mb-2">
       <QueryExpressionSection
         index={index}
         filters={filters}

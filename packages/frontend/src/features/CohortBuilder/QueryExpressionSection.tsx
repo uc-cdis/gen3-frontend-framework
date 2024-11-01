@@ -2,8 +2,6 @@ import React, { useState, useReducer, useRef } from 'react';
 import { Button, Tooltip } from '@mantine/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import {
-  MdOutlineArrowBackIos as LeftArrowIcon,
-  MdOutlineArrowForwardIos as RightArrowIcon,
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';

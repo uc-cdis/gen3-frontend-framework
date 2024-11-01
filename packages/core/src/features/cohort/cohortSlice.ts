@@ -4,8 +4,11 @@ import {
   EntityState,
   type PayloadAction,
   nanoid,
+  ThunkAction,
+  UnknownAction,
 } from '@reduxjs/toolkit';
-import type { CoreState } from '../../reducers';
+import { type CoreState } from '../../reducers';
+import { type CoreDispatch } from '../../store';
 import { Operation, FilterSet, IndexedFilterSet } from '../filters';
 import { defaultCohortNameGenerator } from './utils';
 
@@ -274,6 +277,9 @@ export const cohortSlice = createSlice({
         },
       });
     },
+    setCurrentCohortId: (state, action: PayloadAction<string>) => {
+      state.currentCohort = action.payload;
+    },
   },
 });
 
@@ -303,6 +309,7 @@ export const {
   clearCohortFilters,
   removeCohort,
   addNewDefaultUnsavedCohort,
+  setCurrentCohortId,
 } = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
@@ -349,6 +356,61 @@ export const selectCohortNameById = (
 ): string | undefined => {
   const cohort = cohortSelectors.selectById(state, cohortId);
   return cohort?.name;
+};
+
+/**
+ * a thunk to optionally create a caseSet when switching cohorts.
+ * Note the assumption if the caseset member has ids then the caseset has previously been created.
+ */
+export const setActiveCohort =
+  (cohortId: string): ThunkAction<void, CoreState, undefined, UnknownAction> =>
+  async (dispatch: CoreDispatch /* getState */) => {
+    dispatch(setCurrentCohortId(cohortId));
+  };
+
+/**
+ * Returns all the cohorts in the state
+ * @param state - the CoreState
+ *
+ * @category Cohort
+ * @category Selectors
+ */
+
+export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
+  cohortSelectors.selectAll(state);
+
+/**
+ * Returns if the current cohort is modified
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ * @hidden
+ */
+export const selectCurrentCohortModified = (
+  state: CoreState,
+): boolean | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    getCurrentCohortFromCoreState(state),
+  );
+  return cohort?.modified;
+};
+
+/**
+ * Returns if the current cohort has been saved
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ * @hidden
+ */
+export const selectCurrentCohortSaved = (
+  state: CoreState,
+): boolean | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    getCurrentCohortFromCoreState(state),
+  );
+  return cohort?.saved;
 };
 
 /**

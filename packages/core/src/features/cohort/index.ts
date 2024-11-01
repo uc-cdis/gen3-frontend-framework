@@ -1,5 +1,6 @@
 // import all the components from this directory
 import {
+  type Cohort,
   cohortReducer,
   selectCohortFilters,
   selectIndexFilters,
@@ -7,21 +8,29 @@ import {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
+  selectAvailableCohorts,
+  selectCurrentCohortModified,
+  selectCurrentCohortSaved,
   updateCohortFilter,
   setCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
   addNewDefaultUnsavedCohort,
   removeCohort,
+  setActiveCohort,
 } from './cohortSlice';
 
 export {
+  type Cohort,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
+  selectAvailableCohorts,
+  selectCurrentCohortModified,
+  selectCurrentCohortSaved,
   cohortReducer,
   updateCohortFilter,
   setCohortFilter,
@@ -29,4 +38,5 @@ export {
   clearCohortFilters,
   addNewDefaultUnsavedCohort,
   removeCohort,
+  setActiveCohort,
 };
