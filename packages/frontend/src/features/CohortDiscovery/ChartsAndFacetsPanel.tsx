@@ -1,31 +1,25 @@
-import React, { useMemo } from 'react';
-import { Grid, Transition } from '@mantine/core';
+import React from 'react';
+import { Grid } from '@mantine/core';
 import {
-  CoreState,
   extractEnumFilterValue,
   FacetDefinition,
-  FacetType,
   fieldNameToTitle,
-  selectIndexFilters,
-  useCoreSelector,
   useGetAggsQuery,
-  useGetCountsQuery,
 } from '@gen3/core';
+import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
-  FacetDataHooks,
   processBucketData,
   processRangeData,
-  useGetFacetFilters,
-  useUpdateFilters,
 } from '../../components/facets';
 import { partial } from 'lodash';
-import { useClearFilters } from '../../components/facets/hooks';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { computeRowSpan } from '../../components/charts';
+import { selectIndexFilters } from './CohortSelectors';
+import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -43,7 +37,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,
   facets,
 }) => {
-  const cohortFilters = useCoreSelector((state: CoreState) =>
+  const cohortFilters = useAppSelector((state: AppState) =>
     selectIndexFilters(state, index),
   );
 

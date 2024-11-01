@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
+import { cohortReducer } from './CohortSlice';
 
 const _APP_NAME = 'CohortDiscovery';
 
@@ -21,6 +22,7 @@ const persistConfig = {
 const reducers = combineReducers({
   selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
+  cohorts: cohortReducer,
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =

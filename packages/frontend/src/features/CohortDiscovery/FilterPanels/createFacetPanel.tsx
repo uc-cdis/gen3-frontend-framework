@@ -1,4 +1,4 @@
-import { AggregationsData, FacetDefinition } from '@gen3/core';
+import { FacetDefinition } from '@gen3/core';
 import EnumFacetPanel, { EnumFacetPanelDataHooks } from './EnumFacetPanel';
 import { ReactElement } from 'react';
 

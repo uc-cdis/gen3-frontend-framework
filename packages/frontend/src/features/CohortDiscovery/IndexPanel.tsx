@@ -4,13 +4,9 @@ import { Flex, Stack } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import {
-  CoreState,
-  FacetDefinition,
-  selectIndexFilters,
-  useCoreSelector,
-  useGetAggsQuery,
-} from '@gen3/core';
+import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
+
+import { selectIndexFilters } from './CohortSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
   getAllFieldsFromFilterConfigs,
@@ -21,6 +17,7 @@ import ErrorCard from '../../components/ErrorCard';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
 import CohortManager from '../CohortBuilder/CohortManager';
+import { AppState, useAppSelector } from './appApi';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
@@ -39,7 +36,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
 
   const [categories, setCategories] = useState<TabConfig[]>([]);
 
-  const cohortFilters = useCoreSelector((state: CoreState) =>
+  const cohortFilters = useAppSelector((state: AppState) =>
     selectIndexFilters(state, index),
   );
 
