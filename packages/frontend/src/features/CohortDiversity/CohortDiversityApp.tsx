@@ -13,7 +13,7 @@ import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
 import { CohortDiversityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
-import ErrorCard from '../../components/ErrorCard';
+import { ErrorCard } from '../../components/MessageCards';
 import { getStaticDiversityData } from './statistics/data/data';
 import { AggregationsData, useGeneralGQLQuery } from '@gen3/core';
 import { createDiversityQuery } from './statistics/queries';
