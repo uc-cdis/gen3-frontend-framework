@@ -281,34 +281,45 @@ export const handleGqlOperation = <T>(
   handler: GqlOperationHandler<T>,
   op: GQLFilter,
 ): T => {
-  switch (Object.keys(op)[0]) {
-    case '=':
-      return handler.handleEquals(op as GQLEqual);
-    case '!=':
-      return handler.handleNotEquals(op as GQLNotEqual);
-    case '<':
-      return handler.handleLessThan(op as GQLLessThan);
-    case '<=':
-      return handler.handleLessThanOrEquals(op as GQLLessThanOrEquals);
-    case '>':
-      return handler.handleGreaterThan(op as GQLGreaterThan);
-    case '>=':
-      return handler.handleGreaterThanOrEquals(op as GQLGreaterThanOrEquals);
-    case 'in':
-      return handler.handleIncludes(op as GQLIncludes);
-    case 'exclude':
-      return handler.handleExcludes(op as GQLExcludes);
-    case 'excludeifany':
-      return handler.handleExcludeIfAny(op as GQLExcludeIfAny);
-    case 'and':
-      return handler.handleIntersection(op as GQLIntersection);
-    case 'or':
-      return handler.handleUnion(op as GQLUnion);
-    case 'nested':
-      return handler.handleNestedFilter(op as GQLNestedFilter);
-    default:
-      return assertNever(op as never);
+  const operationKeys = Object.keys(op);
+
+  if (operationKeys.includes('=')) {
+    return handler.handleEquals(op as GQLEqual);
   }
+  if (operationKeys.includes('!=')) {
+    return handler.handleNotEquals(op as GQLNotEqual);
+  }
+  if (operationKeys.includes('<')) {
+    return handler.handleLessThan(op as GQLLessThan);
+  }
+  if (operationKeys.includes('<=')) {
+    return handler.handleLessThanOrEquals(op as GQLLessThanOrEquals);
+  }
+  if (operationKeys.includes('>')) {
+    return handler.handleGreaterThan(op as GQLGreaterThan);
+  }
+  if (operationKeys.includes('>=')) {
+    return handler.handleGreaterThanOrEquals(op as GQLGreaterThanOrEquals);
+  }
+  if (operationKeys.includes('in')) {
+    return handler.handleIncludes(op as GQLIncludes);
+  }
+  if (operationKeys.includes('exclude')) {
+    return handler.handleExcludes(op as GQLExcludes);
+  }
+  if (operationKeys.includes('excludeifany')) {
+    return handler.handleExcludeIfAny(op as GQLExcludeIfAny);
+  }
+  if (operationKeys.includes('and')) {
+    return handler.handleIntersection(op as GQLIntersection);
+  }
+  if (operationKeys.includes('or')) {
+    return handler.handleUnion(op as GQLUnion);
+  }
+  if (operationKeys.includes('nested')) {
+    return handler.handleNestedFilter(op as GQLNestedFilter);
+  }
+  return assertNever(op as never);
 };
 
 export const convertGqlFilterToFilter = (gqlFilter: GQLFilter): Operation => {
@@ -322,7 +333,7 @@ export const convertGqlFilterToFilter = (gqlFilter: GQLFilter): Operation => {
  */
 class ToOperationHandler implements GqlOperationHandler<Operation> {
   handleEquals = (op: GQLEqual): Equals => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['='])[0];
     return {
       operator: '=',
       field: field,
@@ -330,7 +341,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleNotEquals = (op: GQLNotEqual): NotEquals => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['!='])[0];
     return {
       operator: '!=',
       field: field,
@@ -338,7 +349,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleLessThan = (op: GQLLessThan): LessThan => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['<'])[0];
     return {
       operator: '<',
       field: field,
@@ -346,7 +357,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleLessThanOrEquals = (op: GQLLessThanOrEquals): LessThanOrEquals => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['<='])[0];
     return {
       operator: '<=',
       field: field,
@@ -354,7 +365,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleGreaterThan = (op: GQLGreaterThan): GreaterThan => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['>'])[0];
     return {
       operator: '>',
       field: field,
@@ -364,7 +375,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
   handleGreaterThanOrEquals = (
     op: GQLGreaterThanOrEquals,
   ): GreaterThanOrEquals => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op['>='])[0];
     return {
       operator: '>=',
       field: field,
@@ -372,7 +383,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleIncludes = (op: GQLIncludes): Includes => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op.in)[0];
     return {
       operator: 'in',
       field: field,
@@ -380,7 +391,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleExcludes = (op: GQLExcludes): Excludes => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op.exclude)[0];
     return {
       operator: 'excludes',
       field: field,
@@ -388,7 +399,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     };
   };
   handleExcludeIfAny = (op: GQLExcludeIfAny): ExcludeIfAny => {
-    const [field, value] = Object.entries(op)[0];
+    const [field, value] = Object.entries(op.excludeifany)[0];
 
     return {
       operator: 'excludeifany',
