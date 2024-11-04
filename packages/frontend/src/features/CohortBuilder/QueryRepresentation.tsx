@@ -66,7 +66,7 @@ const QueryFieldLabel = tw.div`
 bg-accent-cool-lightest
 text-base-darkest
 uppercase
-px-1
+px-2 pl-1
 border-primary-darkest
 border-r-[1.5px]
 flex
@@ -207,7 +207,7 @@ const IncludeExcludeQueryElement = ({
                   color="accent.5"
                   size="md"
                   pr={0}
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-0 pr-0 hover:bg-accent-darker"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-2 pr-0 hover:bg-accent-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operandsArray.filter((o) => o !== x);

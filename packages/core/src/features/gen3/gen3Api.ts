@@ -1,6 +1,5 @@
 import { Middleware, Reducer } from '@reduxjs/toolkit';
-import { coreCreateApi } from '../../api';
-import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { selectCSRFToken } from '../user/userSliceRTK';
@@ -13,7 +12,7 @@ import { getCookie } from 'cookies-next';
  * @param endpoints - Base API endpoints that should exist in every slice
  * @returns: The generated base API
  */
-export const gen3Api = coreCreateApi({
+export const gen3Api = createApi({
   reducerPath: 'gen3Services',
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,

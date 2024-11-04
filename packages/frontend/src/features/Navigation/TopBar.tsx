@@ -116,7 +116,11 @@ const TopBar = ({
   return (
     <div>
       <header className={extractClassName('root', mergedClassnames)}>
-        <nav className="flex items-center align-middle">
+        <div
+          role="navigation"
+          aria-label="top most navigation"
+          className="flex items-center align-middle"
+        >
           {processTopBarItems(
             items,
             loginButtonVisibility === LoginButtonVisibility.Visible,
@@ -127,7 +131,7 @@ const TopBar = ({
           {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
             <LoginButton visibility={loginButtonVisibility} />
           ) : null}
-        </nav>
+        </div>
       </header>
     </div>
   );

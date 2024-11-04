@@ -1,3 +1,5 @@
+import { JSONObject } from '@gen3/core';
+
 export interface ContentSource {
   get<T extends Record<string, undefined>>(filepath: string): Promise<T>;
   getAll<T extends Record<string, unknown>>(
@@ -26,4 +28,10 @@ export interface Fonts {
   heading: string | string[];
   content: string | string[];
   fontFamily: string;
+}
+
+export interface Gen3AppConfigData {
+  version?: string;
+  description?: string;
+  schema?: JSONObject;
 }

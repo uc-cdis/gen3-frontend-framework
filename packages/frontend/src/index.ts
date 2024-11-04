@@ -15,6 +15,8 @@ import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
+import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
+import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -29,6 +31,7 @@ import LandingPage from './pages/Landing/Landing';
 import { LandingPageGetStaticProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
+import { type ExplorerPageProps } from './pages/Explorer/types';
 import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
 
 import ColorThemePage from './pages/Theme/Colors';
@@ -78,6 +81,7 @@ export {
   type Fonts,
   type RegisteredIcons,
   type SessionConfiguration,
+  type ExplorerPageProps,
   ErrorCard,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
@@ -117,4 +121,6 @@ export {
   SubmissionPageGetServerSideProps,
   NotebookLitePage,
   NotebookLitePageGetStaticProps,
+  registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
 };

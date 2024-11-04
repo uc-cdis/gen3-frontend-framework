@@ -38,6 +38,7 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from 'use-deep-compare';
+import { toDisplayName } from '../../utils';
 
 const EmptyData = {};
 
@@ -248,7 +249,7 @@ export const CohortPanel = ({
       const facetDefs = classifyFacets(
         data,
         index,
-        guppyConfig.fieldMapping,
+        guppyConfig?.fieldMapping ?? [],
         configFacetDefs ?? {},
       );
       setFacetDefinitions(facetDefs);
@@ -330,13 +331,12 @@ export const CohortPanel = ({
             />
 
             <CountsValue
-              label={guppyConfig.nodeCountTitle}
+              label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
               counts={counts}
               isSuccess={isCountSuccess}
             />
           </div>
           <Charts
-            index={index}
             charts={summaryCharts}
             data={data ?? EmptyData}
             counts={counts}

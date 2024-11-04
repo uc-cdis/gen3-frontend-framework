@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useRef } from 'react';
-import { Tooltip } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
@@ -7,21 +7,24 @@ import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
+import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit, partial } from 'lodash';
 import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
-import { QueryExpressionsExpandedContext, CollapsedStateReducerAction } from './QueryExpressionsExpandedContext';
+import {
+  QueryExpressionsExpandedContext,
+  CollapsedStateReducerAction,
+} from './QueryExpressionsExpandedContext';
 
 import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
 } from './style';
-import {
-  useUpdateFilters,
-} from '../../components/facets/utils';
+import { useUpdateFilters } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
+import CohortSelector from './CohortSelector';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -37,11 +40,9 @@ const QueryExpressionContainer = tw.div`
 
 const MAX_HEIGHT_QE_SECTION = 120;
 
-
-
 const reducer = (
   state: Record<string, Record<string, boolean>>,
-  action: CollapsedStateReducerAction
+  action: CollapsedStateReducerAction,
 ) => {
   switch (action.type) {
     case 'init':
@@ -53,19 +54,25 @@ const reducer = (
       if (action.field) {
         return {
           ...state,
-          [action.cohortId]: { ...state[action.cohortId], [action.field]: true },
+          [action.cohortId]: {
+            ...state[action.cohortId],
+            [action.field]: true,
+          },
         };
       } else
-      return {
-        ...state,
-        [action.cohortId]: { ...state[action.cohortId] },
-      };
+        return {
+          ...state,
+          [action.cohortId]: { ...state[action.cohortId] },
+        };
     case 'collapse':
       if (action.field)
-      return {
-        ...state,
-        [action.cohortId]: { ...state[action.cohortId], [action.field]: false },
-      };
+        return {
+          ...state,
+          [action.cohortId]: {
+            ...state[action.cohortId],
+            [action.field]: false,
+          },
+        };
       else
         return {
           ...state,
@@ -104,9 +111,7 @@ interface QueryExpressionSectionProps {
   readonly currentCohortId: string;
 }
 
-
-
-const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
+const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   filters,
   currentCohortName,
@@ -128,8 +133,12 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
   }, [expandedState, filters, filtersRef]);
 
   const clearAllFilters = () => {
-    dispatch(clearCohortFilters({index: index}));
-    setExpandedState({ type: 'clear', cohortId: currentCohortId, field: 'unset' });
+    dispatch(clearCohortFilters({ index: index }));
+    setExpandedState({
+      type: 'clear',
+      cohortId: currentCohortId,
+      field: 'unset',
+    });
   };
   const allQueryExpressionsCollapsed = Object.values(
     expandedState?.[currentCohortId] || {},
@@ -144,7 +153,11 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
 
   useDeepCompareEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
-      setExpandedState({ type: 'init', cohortId: currentCohortId, field: 'unset' });
+      setExpandedState({
+        type: 'init',
+        cohortId: currentCohortId,
+        field: 'unset',
+      });
     }
   }, [currentCohortId, expandedState]);
 
@@ -153,7 +166,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
       <QueryExpressionsExpandedContext.Provider
         value={[expandedState[currentCohortId], setExpandedState]}
       >
-        <div className="flex flex-col w-full bg-primary">
+        <div className="flex flex-col w-full bg-primary-lighter">
           <div
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
@@ -178,6 +191,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                 Clear All
               </button>
               <div className="display flex gap-2 ml-auto mr-3">
+                <CohortSelector index={index} filters={filters} />
                 <Tooltip
                   label={
                     noFilters
@@ -187,19 +201,19 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                         : 'Collapse all values'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-queries"
                     color="white"
                     onClick={() =>
                       allQueryExpressionsCollapsed
                         ? setExpandedState({
-                          type: 'expandAll',
-                          cohortId: currentCohortId,
-                        })
+                            type: 'expandAll',
+                            cohortId: currentCohortId,
+                          })
                         : setExpandedState({
-                          type: 'collapseAll',
-                          cohortId: currentCohortId,
-                        })
+                            type: 'collapseAll',
+                            cohortId: currentCohortId,
+                          })
                     }
                     aria-label="Expand/collapse all queries"
                     aria-expanded={!allQueryExpressionsCollapsed}
@@ -209,30 +223,38 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                     disabled={noFilters}
                   >
                     {allQueryExpressionsCollapsed ? (
-                      <React.Fragment>
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-expand"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     ) : (
-                      <React.Fragment>
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-contract"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
 
                 <Tooltip
                   label={
-                    noFilters || filtersRef.current != null &&
-                    filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                    noFilters ||
+                    (filtersRef.current != null &&
+                      filtersRef?.current?.scrollHeight <=
+                        MAX_HEIGHT_QE_SECTION)
                       ? 'All rows are already displayed'
                       : filtersSectionCollapsed
                         ? 'Display all rows'
                         : 'Display fewer rows'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-filters-section"
                     color="white"
                     onClick={() =>
@@ -241,8 +263,10 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={
-                      noFilters || filtersRef.current != null &&
-                      filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                      noFilters ||
+                      (filtersRef.current != null &&
+                        filtersRef?.current?.scrollHeight <=
+                          MAX_HEIGHT_QE_SECTION)
                     }
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,
@@ -257,7 +281,7 @@ const QueryExpressionSection : React.FC<QueryExpressionSectionProps> = ({
                         <UpArrowIcon size={30} aria-hidden="true" />
                       </React.Fragment>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
               </div>
             </React.Fragment>

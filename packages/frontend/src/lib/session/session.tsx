@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useRouter, NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { Session, SessionProviderProps } from './types';
 import { isUserOnPage } from './utils';
 import {

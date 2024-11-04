@@ -30,7 +30,7 @@ export const createFacetCard = (
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              dataHooks={dataFunctions}
+              hooks={dataFunctions}
               showPercent={false}
             />
           ),
@@ -43,7 +43,7 @@ export const createFacetCard = (
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              dataHooks={dataFunctions}
+              hooks={dataFunctions}
               minimum={facetDefinition.range?.minimum}
               maximum={facetDefinition.range?.maximum}
             />
@@ -56,7 +56,7 @@ export const createFacetCard = (
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              dataHooks={dataFunctions}
+              hooks={dataFunctions}
             />
           ),
           multiselect: (
@@ -67,7 +67,7 @@ export const createFacetCard = (
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              dataHooks={dataFunctions}
+              hooks={dataFunctions}
             />
           ),
         }[type as string]
