@@ -20,10 +20,10 @@ export const CohortBuilder = ({
   const { isLoading } = useGetCSRFQuery();
   const dispatch = useCoreDispatch();
   const currentCohort = useGetCurrentCohort();
-  console.log('currentCohort', currentCohort);
+
   useEffect(() => {
     if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
-  }, [dispatch]);
+  }, [currentCohort, dispatch]);
 
   if (isLoading) {
     return (
