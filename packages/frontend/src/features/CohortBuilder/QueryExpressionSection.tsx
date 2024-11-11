@@ -1,14 +1,14 @@
 import React, { useContext, useState, useReducer, useRef } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
 import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
-import { omit, partial } from 'lodash';
-import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
+import { omit } from 'lodash';
+import { FilterSet } from '@gen3/core';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
@@ -22,9 +22,8 @@ import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
 } from './style';
-import { useUpdateFilters } from '../../components/facets/utils';
-import { useClearFilters } from '../../components/facets/hooks';
-import CohortSelector from './CohortSelector';
+import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
+import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -116,10 +115,15 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const filtersRef = useRef<HTMLDivElement>(null);
   const [QESectionHeight, setQESectionHeight] = useState(0);
 
-  const { cohortName, cohortId, filters, useClearCohortFilters } = useContext(
-    QueryExpressionContext,
-  );
+  const {
+    cohortName,
+    cohortId,
+    filters,
+    useClearCohortFilters,
+    useSetCohortFilters,
+  } = useContext(QueryExpressionContext);
   const clearCohortFilters = useClearCohortFilters();
+  const setCohortFilter = useSetCohortFilters();
 
   useDeepCompareEffect(() => {
     if (filtersRef.current) {
@@ -159,6 +163,18 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     }
   }, [cohortId, expandedState]);
 
+  const getData = useDeepCompareCallback(() => {
+    return filters;
+  }, [filters]);
+
+  const setCohort = useDeepCompareCallback(
+    (data: string) => {
+      const jsonForm = JSON.parse(data);
+      setCohortFilter({ index, filters: jsonForm as FilterSet });
+    },
+    [index],
+  );
+
   return (
     <QueryExpressionContainer>
       <QueryExpressionsExpandedContext.Provider
@@ -176,7 +192,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               {cohortName}
             </OverflowTooltippedLabel>
             <React.Fragment>
-              <button
+              <Button
                 data-testid="button-clear-all-cohort-filters"
                 className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
                   noFilters
@@ -187,9 +203,19 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 disabled={noFilters}
               >
                 Clear All
-              </button>
+              </Button>
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector index={index} filters={filters} />
+                <JSONObjectDownloadButton
+                  getData={getData}
+                  filename="cohort.json"
+                  tooltip="Export Cohort"
+                  disabled={noFilters}
+                />
+                <UploadJSONButton
+                  handleFileChange={setCohort}
+                  tooltip="Import Cohort"
+                />
+
                 <Tooltip
                   label={
                     noFilters

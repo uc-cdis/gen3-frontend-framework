@@ -4,6 +4,7 @@ import {
   FilterSet,
   Operation,
   removeCohortFilter,
+  setCohortFilter,
   updateCohortFilter,
   useCoreDispatch,
 } from '@gen3/core';
@@ -20,6 +21,7 @@ export const QueryExpressionContext = React.createContext<{
     filter: Operation,
   ) => void;
   useRemoveFilter: () => (index: string, field: string) => void;
+  useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
 }>({
   displayOnly: false,
   cohortId: 'default',
@@ -47,6 +49,16 @@ export const QueryExpressionContext = React.createContext<{
           index,
           field: field,
           filter: filter,
+        }),
+      );
+  },
+  useSetCohortFilters: () => {
+    const dispatch = useCoreDispatch();
+    return (index: string, filters: FilterSet) =>
+      dispatch(
+        setCohortFilter({
+          index,
+          filters: filters,
         }),
       );
   },

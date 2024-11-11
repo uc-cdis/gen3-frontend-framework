@@ -1,4 +1,4 @@
-import { Paper, LoadingOverlay, Text } from '@mantine/core';
+import { Paper, LoadingOverlay, Text, Loader } from '@mantine/core';
 
 interface CountsValueProps {
   readonly label: string;
@@ -7,17 +7,30 @@ interface CountsValueProps {
 }
 
 const CountsValue = ({ label, isSuccess, counts }: CountsValueProps) => {
-  // TODO handle case of data.length == 1
+  const adjustedLabel = counts !== 1 ? label : label.slice(0, -1);
   return (
     <div className="mr-4">
-      <LoadingOverlay visible={!isSuccess} />
       <Paper
         shadow="xs"
         p="xs"
         withBorder
-        className="bg-primary text-primary-contrast font-heading text-md font-semibold"
+        className="flex items-center nowrap bg-primary text-primary-contrast font-heading text-md font-semibold overflow-ellipsis"
       >
-        {`${counts?.toLocaleString() ?? '...'} ${label}`}
+        {counts === undefined ? (
+          <>
+            <Loader
+              data-testid="loading-spinner-cohort-case-count"
+              color="gray"
+              size="xs"
+              className="mr-2"
+            />
+            {adjustedLabel}
+          </>
+        ) : (
+          <Text>
+            {counts.toLocaleString()} {adjustedLabel}
+          </Text>
+        )}
       </Paper>
     </div>
   );

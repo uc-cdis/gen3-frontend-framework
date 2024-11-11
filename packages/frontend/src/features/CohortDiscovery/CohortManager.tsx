@@ -1,5 +1,4 @@
-import { Operation } from '@gen3/core';
-
+import { FilterSet, Operation } from '@gen3/core';
 import { useCohortFacetFilters } from './hooks';
 import QueryExpressionSection from '../CohortBuilder/QueryExpressionSection';
 import { QueryExpressionContext } from '../CohortBuilder/QueryExpressionContext';
@@ -12,6 +11,7 @@ import {
   clearCohortFilters,
   removeCohortFilter,
   updateCohortFilter,
+  setCohortFilter,
 } from './CohortSlice';
 
 interface CohortManagerProps {
@@ -57,6 +57,16 @@ const CohortManager = ({ index }: CohortManagerProps) => {
                   index,
                   field: field,
                   filter: filter,
+                }),
+              );
+          },
+          useSetCohortFilters: () => {
+            const dispatch = useAppDispatch();
+            return (index: string, filters: FilterSet) =>
+              dispatch(
+                setCohortFilter({
+                  index,
+                  filters: filters,
                 }),
               );
           },

@@ -8,6 +8,8 @@ import {
   removeCohortFilter,
   Operation,
   updateCohortFilter,
+  FilterSet,
+  setCohortFilter,
 } from '@gen3/core';
 
 import { useCohortFacetFilters } from './hooks';
@@ -57,6 +59,16 @@ const CohortManager = ({ index }: CohortManagerProps) => {
                   index,
                   field: field,
                   filter: filter,
+                }),
+              );
+          },
+          useSetCohortFilters: () => {
+            const dispatch = useCoreDispatch();
+            return (index: string, filters: FilterSet) =>
+              dispatch(
+                setCohortFilter({
+                  index,
+                  filters: filters,
                 }),
               );
           },
