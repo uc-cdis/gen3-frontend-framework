@@ -13,7 +13,6 @@ import {
   Operation,
   OperationHandler,
   Union,
-  useCoreDispatch,
   fieldNameToTitle,
   Exists,
   Missing,
@@ -32,7 +31,7 @@ import tw from 'tailwind-styled-components';
 import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
-import { buildNested } from '../../components/facets/utils';
+import { buildNested } from '../../components/facets';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { QueryExpressionContext } from './QueryExpressionContext';
 
@@ -128,7 +127,7 @@ const IncludeExcludeQueryElement = ({
   operator,
   operands,
 }: IncludeExcludeQueryElementProps) => {
-  const dispatch = useCoreDispatch();
+  // const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );

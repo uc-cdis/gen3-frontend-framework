@@ -12,11 +12,11 @@ import {
 import { useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
-export const useSetupInitialCohorts = (): void => {
-  const [fetched, setFetched] = useState(false);
-  const cohortsListData = undefined;
-  const isSuccess = true;
-  const isError = false;
+export const useSetupInitialCohorts = (): boolean => {
+  // const [fetched, setFetched] = useState(false);
+  // const cohortsListData = undefined;
+  // const isSuccess = true;
+  // const isError = false;
 
   // TODO: load cohorts from DataLibrary
   // const {
@@ -31,6 +31,8 @@ export const useSetupInitialCohorts = (): void => {
   if (cohorts.length === 0) {
     coreDispatch(setActiveCohortList([])); // will create caseSet if needed
   }
+
+  return true;
 
   // const updatedCohortIds = (cohortsListData || []).map(
   //   (cohort: Cohort) => cohort.id,

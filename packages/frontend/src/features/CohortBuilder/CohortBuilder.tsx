@@ -7,8 +7,8 @@ import {
   selectCurrentCohortId,
   useCoreDispatch,
   useCoreSelector,
-  addNewDefaultUnsavedCohort,
 } from '@gen3/core';
+import { useSetupInitialCohorts } from './hooks';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
@@ -21,9 +21,12 @@ export const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   const currentCohort = useGetCurrentCohort();
 
-  useEffect(() => {
-    if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
-  }, [currentCohort, dispatch]);
+  // console.log('before useSetupInitialCohorts');
+  //const initialCohortsFetched = useSetupInitialCohorts();
+
+  // useEffect(() => {
+  //   // if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
+  // }, [currentCohort, dispatch]);
 
   if (isLoading) {
     return (
