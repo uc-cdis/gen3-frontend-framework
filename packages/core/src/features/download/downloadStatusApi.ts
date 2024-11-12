@@ -1,5 +1,6 @@
 import { gen3Api } from '../gen3';
-import { GEN3_API } from '../../constants';
+import { GEN3_SOWER_API } from '../../constants';
+import { JSONObject } from '../../types';
 import { DownloadStatus, JobOutput, JobStatus } from './types';
 import { DOWNLOAD_FAIL_STATUS, DOWNLOAD_SUCCEEDED_MESSAGE } from './constants';
 import { FetchArgs } from '@reduxjs/toolkit/query/react';
@@ -8,9 +9,18 @@ export interface DownloadStatusResponse {
   downloadStatus: DownloadStatus;
 }
 
-type JobListResponse = Array<JobStatus>;
+export interface DispatchJobParams {
+  action: string;
+  input: JSONObject;
+}
 
-const jobAPIPath = `${GEN3_API}job/`;
+export interface DispatchJobResponse {
+  uid: string;
+  name: string;
+  status: string;
+}
+
+type JobListResponse = Array<JobStatus>;
 
 /**
  * Creates a loadingStatusApi for checking the status of a sower data download job
@@ -22,7 +32,20 @@ const jobAPIPath = `${GEN3_API}job/`;
 export const loadingStatusApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getJobList: builder.query<JobListResponse, void>({
-      query: () => `${jobAPIPath}/list`,
+      query: () => `${GEN3_SOWER_API}/list`,
+    }),
+    submitJob: builder.mutation<DispatchJobResponse, DispatchJobParams>({
+      query: (params) => ({
+        url: `${GEN3_SOWER_API}/dispatch`,
+        method: 'POST',
+        body: params,
+      }),
+    }),
+    getJob: builder.query<DispatchJobResponse, string>({
+      query: (uid) => `${GEN3_SOWER_API}/get?UID=${uid}`,
+    }),
+    getOutput: builder.query<DispatchJobResponse, string>({
+      query: (uid) => `${GEN3_SOWER_API}/get?UID=${uid}`,
     }),
     getDownloadStatus: builder.query<DownloadStatus, string | FetchArgs>({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -30,7 +53,7 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
           headers: {
             credentials: 'include',
           },
-          url: `${jobAPIPath}/status?UID=${arg}`,
+          url: `${GEN3_SOWER_API}/status?UID=${arg}`,
         });
 
         if (statusResponse.error)
@@ -62,7 +85,7 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
             headers: {
               credentials: 'include',
             },
-            url: `${jobAPIPath}/output?UID=${arg}`,
+            url: `${GEN3_SOWER_API}/output?UID=${arg}`,
           });
           const { output } = statusResponse.data as JobOutput;
           if (statusResponse.error)
@@ -125,5 +148,9 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useGetJobListQuery, useGetDownloadStatusQuery } =
-  loadingStatusApi;
+export const {
+  useGetJobListQuery,
+  useGetDownloadStatusQuery,
+  useSubmitJobMutation,
+  useLazyGetJobListQuery,
+} = loadingStatusApi;
