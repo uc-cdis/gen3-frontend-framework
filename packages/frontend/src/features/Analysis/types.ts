@@ -13,4 +13,5 @@ export interface AnalysisToolConfig {
 
 export interface AnalysisCenterConfiguration {
   tools: Array<AnalysisToolConfig>;
+  showFilterAndSort?: boolean;
 }

@@ -7,7 +7,7 @@
         "image": "cohort_discovery.png",
         "description": "The cohort discovery application is designed to assist researchers, clinicians, and data scientists in quickly identifying and exploring subsets of individuals from large datasets based on specific criteria.",
         "loginRequired": false,
-        "href": "app/CohortDiscovery"
+        "href": "/app/CohortDiscovery"
       },
       {
         "title": "Cohort Diversity",

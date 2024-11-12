@@ -1,11 +1,13 @@
 import { ReactElement, useState } from 'react';
 import { AnalysisCenterConfiguration } from './types';
-import { Select, Input, Image, Stack } from '@mantine/core';
+import { Select, TextInput, Image, Stack, NavLink } from '@mantine/core';
 import NextImage from 'next/image';
+import Link from 'next/link';
 import TextDescription from './TextDescription';
 
 const AnalysisCenter = ({
   tools,
+  showFilterAndSort = false,
 }: AnalysisCenterConfiguration): ReactElement => {
   const [cards, setCards] = useState({
     type: '' as string,
@@ -24,50 +26,56 @@ const AnalysisCenter = ({
     }));
   };
 
+  const handleCardsSearch = (keyword: string) => {
+    if (!keyword.length) return;
+  };
+
   return (
     <div className="w-full bg-base-lighter">
-      <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
-        {/* // todo: for both dropdowns add downwards orange carrot */}
-
-        <div className="flex space-x-4">
-          <Select
-            // todo: data opts
-            data={[]}
-            value={cards.type}
-            comboboxProps={{
-              transitionProps: {
-                transition: 'pop-top-left',
-                duration: 50,
-                timingFunction: 'ease',
-              },
-            }}
-            placeholder="Filter by type"
-            onChange={(value) => handleCardsFilter('type', value)}
-          />
-          <Select
-            // todo: data opts
-            data={[]}
-            value={cards.access}
-            comboboxProps={{
-              transitionProps: {
-                transition: 'pop-top-left',
-                duration: 50,
-                timingFunction: 'ease',
-              },
-            }}
-            placeholder="Filter by access"
-            onChange={(value) => handleCardsFilter('access', value)}
-          />
+      {showFilterAndSort ? (
+        <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
+          {/* // todo: for both dropdowns add downwards orange carrot */}
+          <div className="flex space-x-4">
+            <Select
+              // todo: data opts
+              data={[]}
+              value={cards.type}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop-top-left',
+                  duration: 50,
+                  timingFunction: 'ease',
+                },
+              }}
+              placeholder="Filter by type"
+              onChange={(value) => handleCardsFilter('type', value)}
+            />
+            <Select
+              // todo: data opts
+              data={[]}
+              value={cards.access}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop-top-left',
+                  duration: 50,
+                  timingFunction: 'ease',
+                },
+              }}
+              placeholder="Filter by access"
+              onChange={(value) => handleCardsFilter('access', value)}
+            />
+          </div>
+          <div>
+            {/* // todo: increase width of this */}
+            <TextInput
+              placeholder="Search in Analysis Center"
+              value={cards.search}
+              size="md"
+              onChange={(event) => handleCardsSearch(event.currentTarget.value)}
+            />
+          </div>
         </div>
-        <div>
-          {/* // todo: increase width of this */}
-          <Input
-            placeholder="Search in Analysis Center"
-            value={cards.search}
-            size="md"
-          />
-        </div>
-      </div>
+      ) : null}
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mx-4 overflow-y-scroll">
           {tools.map(
@@ -127,11 +135,17 @@ const AnalysisCenter = ({
                       <div className="flex mb-4 rounded-b-md">
                         {type === 'application' ? (
                           <div className="m-auto">
-                            <button className="bg-accent text-accent-contrast  mr-2  p-1.5 rounded-sm text-sm font-semibold">
-                              Run App
-                            </button>
+                            <NavLink
+                              component={Link}
+                              href={href ?? '_blank'}
+                              classNames={{
+                                root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
+                                label: 'text-sm font-semibold',
+                              }}
+                              label="Run App"
+                            />
                             {hasDemo && (
-                              <button className=" ml-2 p-1.5 rounded-sm text-sm font-semibold">
+                              <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
                                 Demo
                               </button>
                             )}
