@@ -35,6 +35,7 @@ export * from './features/guppy';
 export * from './features/aiSearch';
 export * from './features/workspace';
 export * from './features/submission';
+export * from './features/sower';
 
 export {
   type CoreState,
