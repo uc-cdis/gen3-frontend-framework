@@ -1,0 +1,40 @@
+{
+  "tools": [
+      {
+        "title": "Cohort Discovery",
+        "type": "application",
+        "icon": "gen3_app.png",
+        "image": "cohort_discovery.png",
+        "description": "The cohort discovery application is designed to assist researchers, clinicians, and data scientists in quickly identifying and exploring subsets of individuals from large datasets based on specific criteria.",
+        "loginRequired": false,
+        "href": "/app/CohortDiscovery"
+      },
+      {
+        "title": "Cohort Diversity",
+        "type": "application",
+        "icon": "gen3_app.png",
+        "image": "cohort_diversity.png",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+        "loginRequired": false,
+        "href": "app/CohortDiversity"
+      },
+      {
+        "title": "Crosswalk",
+        "type": "application",
+        "icon": "gen3_app.png",
+        "image": "crosswalk.png",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+        "loginRequired": false,
+        "href": "Crosswalk"
+      },
+    {
+      "title": "Canine Data Commons Data Visualization Notebook",
+      "type": "notebook",
+      "icon": "jupyter.svg",
+      "image": "canineDataCommons.png",
+      "description": "Download node files, show/select data, and plot with this notebook using data hosted on the Canine Data Commons (https://caninedc.org) stored under the NHGRI project.",
+      "loginRequired": false,
+      "href" : "/"
+    }
+  ]
+}
