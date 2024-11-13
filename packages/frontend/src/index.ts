@@ -8,6 +8,7 @@ export * from './components/charts';
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
+export * from './features/Analysis';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -55,6 +56,12 @@ import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 import WorkspacesPage from './pages/Workspace/Workspaces';
 import { WorkspacesPageGetServerSideProps } from './pages/Workspace/data';
 
+import AnalysisPage from './pages/Analysis/Analysis';
+import { AnalysisPageGetServerSideProps } from './pages/Analysis';
+
+import AnalysisEditorPage from './pages/admin/analysis/Analysis';
+import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
+
 import AiSearchPage from './pages/AiSearch/AiSearch';
 import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
@@ -99,6 +106,8 @@ export {
   AdminAuthZPageGetServerSideProps,
   WorkspacesPage,
   WorkspacesPageGetServerSideProps,
+  AnalysisPage,
+  AnalysisPageGetServerSideProps,
   Custom404Page,
   sessionToken,
   sessionLogout,
@@ -112,4 +121,6 @@ export {
   SubmissionPageGetServerSideProps,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
+  AnalysisEditorPage,
+  AnalysisEditorPageGetServerSideProps,
 };
