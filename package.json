@@ -29,7 +29,6 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@auto-it/upload-assets": "^11.2.1",
     "@grafana/faro-react": "^1.9.1",
     "@grafana/faro-web-sdk": "^1.9.1",
     "@grafana/faro-web-tracing": "^1.9.1",
