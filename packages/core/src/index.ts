@@ -11,6 +11,7 @@ import {
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
+  GEN3_SOWER_API,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -35,6 +36,7 @@ export * from './features/guppy';
 export * from './features/aiSearch';
 export * from './features/workspace';
 export * from './features/submission';
+export * from './features/sower';
 
 export {
   type CoreState,
@@ -50,5 +52,6 @@ export {
   GEN3_WORKSPACE_STATUS_API,
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
+  GEN3_SOWER_API,
   Accessibility,
 };
