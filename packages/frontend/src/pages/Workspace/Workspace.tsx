@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
-import { WorkspacesPanel } from '../../features/Workspace';
-import { WorkspacePageProps } from './types';
+import Workspace from '../../features/Workspace/Workspace';
+import { WorkspacePageLayoutProps } from './types';
 
-const WorkspacesPage = ({
+const WorkspacePage = ({
   headerProps,
   footerProps,
   workspaceProps,
-}: WorkspacePageProps): JSX.Element => {
+}: WorkspacePageLayoutProps): JSX.Element => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -17,9 +17,9 @@ const WorkspacesPage = ({
         key: 'gen3-workspace-page',
       }}
     >
-      <WorkspacesPanel />
+      <Workspace config={workspaceProps} />
     </NavPageLayout>
   );
 };
 
-export default WorkspacesPage;
+export default WorkspacePage;
