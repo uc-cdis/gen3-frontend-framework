@@ -9,7 +9,6 @@ import {
   FooterLinks,
   FooterSectionProps,
 } from './types';
-import { JSONObject } from '@gen3/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { extractClassName } from '../utils';
 import { extractObjectKey } from '../../../utils/values';

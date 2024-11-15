@@ -71,9 +71,12 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
         {bottomContent?.map((content, index) =>
           content?.email ? (
-            <ContactWithEmailContent {...content} key={index} />
+            <ContactWithEmailContent
+              {...content}
+              key={`bottomContent-${index}`}
+            />
           ) : (
-            <TextContent {...content} key={index} />
+            <TextContent {...content} key={`bottomContent-${index}`} />
           ),
         )}
       </div>

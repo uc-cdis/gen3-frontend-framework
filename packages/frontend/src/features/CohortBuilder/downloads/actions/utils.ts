@@ -1,7 +1,3 @@
-
-
-
-
 /**
  * Handles downloading of a Blob object as a file.
  *
@@ -14,6 +10,7 @@ export const handleDownload = (data: Blob, filename: string) => {
   aElement.setAttribute('download', filename);
   aElement.href = href;
   aElement.setAttribute('target', '_blank');
+  aElement.setAttribute('rel', 'noreferrer');
   aElement.click();
   URL.revokeObjectURL(href);
 };
