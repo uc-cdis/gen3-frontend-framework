@@ -17,7 +17,7 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
       <div className="flex justify-items-center w-full">
         <iframe
           allow="cross-origin"
-          src="https://localhost:3010/jupyter/index.html"
+          src="/jupyter/index.html"
           width="100%"
           height="100%"
           title="client notebook"

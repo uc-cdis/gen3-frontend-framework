@@ -133,28 +133,22 @@ const AnalysisCenter = ({
                         <TextDescription description={description} />
                       </div>
                       <div className="flex mb-4 rounded-b-md">
-                        {type === 'application' ? (
-                          <div className="m-auto">
-                            <NavLink
-                              component={Link}
-                              href={href ?? '_blank'}
-                              classNames={{
-                                root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
-                                label: 'text-sm font-semibold',
-                              }}
-                              label="Run App"
-                            />
-                            {hasDemo && (
-                              <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
-                                Demo
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <button className="m-auto bg-accent text-accent-contrast p-1.5 rounded-sm text-sm font-semibold">
-                            View Notebook
-                          </button>
-                        )}
+                        <div className="m-auto">
+                          <NavLink
+                            component={Link}
+                            href={href ?? '_blank'}
+                            classNames={{
+                              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
+                              label: 'text-sm font-semibold',
+                            }}
+                            label="Run"
+                          />
+                          {hasDemo && (
+                            <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
+                              Demo
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

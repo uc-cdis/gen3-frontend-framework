@@ -4,11 +4,13 @@ import BarChart from './echarts/BarChart';
 import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';
 import HorizontalBarChart from './echarts/HorizontalBarChart';
+import VerticalBarChart from './echarts/VerticalBarChart';
 
 const DefaultChartCatalog = {
   chart: {
     bar: BarChart,
     horizontalStacked: HorizontalBarChart,
+    verticalBar: VerticalBarChart,
     fullPie: PieChart,
     donut: DonutChart,
   },
