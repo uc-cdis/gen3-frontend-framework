@@ -35,7 +35,7 @@ export type ChartDataConverter = (
 ) => Record<string, number>;
 
 interface ChartsProps {
-  charts: Record<string, SummaryChart>;
+  charts: Record<string, Readonly<SummaryChart>>;
   counts?: number;
   data: AggregationsData;
   isSuccess: boolean;
@@ -43,6 +43,7 @@ interface ChartsProps {
   numCols?: number;
   style?: 'tile' | 'box';
   showLegends?: boolean;
+  tierLevel?: number;
 }
 //Colors grabbed from echarts src/model/globalDefault.ts
 const chartColors = [
@@ -66,6 +67,7 @@ const Charts = ({
   numCols = DEFAULT_COLS,
   style = 'tile',
   showLegends = false,
+  tierLevel = -1, // turn off tierLevel
 }: ChartsProps) => {
   const spans = computeRowSpan(Object.keys(charts).length, numCols);
 

@@ -2,9 +2,10 @@ import { HistogramDataArray } from '@gen3/core';
 import { TitleAndDescription } from '../../types';
 
 export interface SummaryChart extends Partial<TitleAndDescription> {
-  readonly chartType: string;
-  readonly valueType?: 'count' | 'percent';
-  readonly dataLabels?: Record<string, string>;
+  chartType: string;
+  valueType?: 'count' | 'percent';
+  dataLabels?: Record<string, string>;
+  tierLevel?: number;
 }
 
 export interface ChartProps {
