@@ -78,5 +78,5 @@ USER nextjs
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["./start.sh"]
+# Start the application using bash
+CMD ["/bin/bash", "./start.sh"]
