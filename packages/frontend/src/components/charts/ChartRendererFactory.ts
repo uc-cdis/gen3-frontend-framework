@@ -10,7 +10,6 @@ const DefaultChartCatalog = {
   chart: {
     bar: BarChart,
     horizontalStacked: HorizontalBarChart,
-    verticalBar: VerticalBarChart,
     fullPie: PieChart,
     donut: DonutChart,
   },
