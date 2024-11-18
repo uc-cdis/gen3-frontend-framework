@@ -38,11 +38,10 @@ const processChartData = (
     valueType === 'count' ? ExtractDataCount : ExtractDataPercent;
 
   const results = data.slice(0, maxBins).map((d: any) => ({
-    // TODO: fix type of d
     data: [dataExtractor(d, total)] as number[],
     name: truncateString(processLabel(d.key), 35),
     type: 'bar' as const,
-    stack: 'value',
+    stack: 'chart',
     label: {
       show: true,
       moveOverlap: true,
@@ -51,9 +50,10 @@ const processChartData = (
   return results;
 };
 
-const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
+const VerticalBarChart = ({ data, valueType, total }: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
 
+  console.log('chartData', chartData);
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       tooltip: {
@@ -100,4 +100,4 @@ const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
   );
 };
 
-export default HorizontalBarChart;
+export default VerticalBarChart;
