@@ -45,7 +45,7 @@ const NavigationLogo = ({
           width={width ?? undefined}
           height={height ?? undefined}
           fill={!width && !height}
-          src={`${basePath}${src}`}
+          src={`${src}`}
           alt={description ?? title ?? 'link back to homepage'}
         />
       </HoverLink>

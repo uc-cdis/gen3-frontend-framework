@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import AnalysisCenter from './AnalysisCenter';
 import { AnalysisCenterConfiguration } from './types';
 
