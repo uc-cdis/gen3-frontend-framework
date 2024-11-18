@@ -1,5 +1,5 @@
 # Build stage
-FROM quay.io/cdis/ubuntu:20.04 as builder
+FROM quay.io/cdis/ubuntu:20.04 AS builder
 
 # Build arguments and environment variables
 ARG NODE_VERSION=20
@@ -57,7 +57,7 @@ RUN lerna run --scope @gen3/core build && \
     lerna run --scope @gen3/samplecommons build
 
 # Production stage
-FROM node:20-slim as production
+FROM node:20-slim AS production
 
 WORKDIR /gen3
 
