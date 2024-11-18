@@ -24,7 +24,7 @@ const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
       <div className="flex justify-items-center w-full">
         <iframe
           allow="cross-origin"
-          src={`/jupyter/lab/index.html?path=${notebook}`}
+          src={`${router.basePath}/jupyter/lab/index.html?path=${notebook}`}
           width="100%"
           height="100%"
           title="client notebook"

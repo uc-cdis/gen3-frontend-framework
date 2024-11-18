@@ -98,7 +98,7 @@ const AnalysisCenter = ({
                     <div className="p-0 rounded-sm">
                       <Image
                         component={NextImage}
-                        src={`/images/apps/${image}`}
+                        src={`${image}`}
                         alt={`${title} image`}
                         height={1000}
                         width={1000}
@@ -109,7 +109,7 @@ const AnalysisCenter = ({
                       <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base">
                         <Image
                           component={NextImage}
-                          src={`/icons/apps/${icon}`}
+                          src={`${icon}`}
                           alt={`${title} logo`}
                           width={40}
                           height={40}
