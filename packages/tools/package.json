@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.51",
+  "version": "0.10.52",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
