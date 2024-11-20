@@ -17,6 +17,7 @@ import {
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
+import ExportToPFBButton from '../JobManager/ExportToPFBButton';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -190,6 +191,7 @@ const DownloadsPanel = ({
           />
         );
       })}
+      <ExportToPFBButton filterSet={filter} index={index} />
     </div>
   ) : (
     <React.Fragment></React.Fragment>

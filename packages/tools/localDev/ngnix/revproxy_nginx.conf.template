@@ -102,8 +102,15 @@ http {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # Proxy /lw-workspace
+        # Proxy sower
+        location /job {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
 
+        # Proxy /lw-workspace
         location /lw-workspace/ {
           set $authz_resource "/workspace";
           set $authz_method "access";

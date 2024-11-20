@@ -5,3 +5,5 @@ packages/tools/node_modules
 packages/sampleCommons/node_modules
 packages/sampleCommons/.next
 .git
+.nx
+.next

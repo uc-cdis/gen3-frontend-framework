@@ -7,6 +7,9 @@ import {
   useGetSowerServiceStatusQuery,
 } from './sowerApi';
 
+export * from './selectors';
+export * from './types';
+
 export {
   useGetSowerJobListQuery,
   useLazyGetSowerJobListQuery,
