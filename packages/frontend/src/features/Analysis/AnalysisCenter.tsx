@@ -31,7 +31,7 @@ const AnalysisCenter = ({
   };
 
   return (
-    <div className="w-full bg-base-lighter">
+    <div className="w-full bg-base-lighter p-4">
       {showFilterAndSort ? (
         <div className="flex justify-between items-center w-7/8 mt-2 mx-2">
           {/* // todo: for both dropdowns add downwards orange carrot */}

@@ -26,6 +26,15 @@
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
         "loginRequired": false,
         "href": "Crosswalk"
-      }
+      },
+    {
+      "title": "Canine Data Commons Data Visualization Notebook",
+      "type": "notebook",
+      "icon": "jupyter.svg",
+      "image": "canineDataCommons.png",
+      "description": "Download node files, show/select data, and plot with this notebook using data hosted on the Canine Data Commons (https://caninedc.org) stored under the NHGRI project.",
+      "loginRequired": false,
+      "href": "/notebook/notebook_canine.ipynb"
+    }
   ]
 }
