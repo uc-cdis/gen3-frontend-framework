@@ -36,7 +36,7 @@ interface LoginButtonProps {
 const LoginButton = ({
   icon = <LoginIcon className="pl-1" size={'1.55rem'} />,
   hideText = false,
-  className = 'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent mx-2',
+  className = 'flex flex-nowrap items-center font-content text-secondary-contrast-lighter align-middle border-b-2 hover:border-accent border-transparent mx-2',
   tooltip,
   visibility,
 }: LoginButtonProps) => {

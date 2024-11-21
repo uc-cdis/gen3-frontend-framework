@@ -246,7 +246,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
                 setSelectedRow(undefined);
               } else {
                 setRowSelection({ [row.id as string]: true });
-                setSelectedRow(row as MRT_Row<JSONObject>); // TODO: fix this typecast
+                setSelectedRow(row as any); // TODO: fix this typecast
               }
             },
             sx: {

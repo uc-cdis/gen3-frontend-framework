@@ -1,11 +1,11 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.50",
+  "version": "0.10.54",
   "description": "tools for processing portal content",
   "main": "index.js",
   "type": "module",
   "engines": {
-    "npm": ">=10.2.3",
+    "npm": ">=10.8.2",
     "node": ">=20.11.0"
   },
   "scripts": {

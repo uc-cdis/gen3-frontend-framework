@@ -13,7 +13,7 @@ import {
   classifyFacets,
 } from '../../components/facets';
 import { TabConfig } from '../CohortBuilder/types';
-import ErrorCard from '../../components/ErrorCard';
+import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
 import CohortManager from '../CohortBuilder/CohortManager';
