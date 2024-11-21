@@ -56,6 +56,8 @@ export const BuildList = (
           id: data.guid,
           schemaVersion: data.schemaVersion,
           data: data.data,
+          name: data.name,
+          index: data.index,
         } as CohortItem;
       } else {
         acc.items[id] = BuildDataSet(id, data);

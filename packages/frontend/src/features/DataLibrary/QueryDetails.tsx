@@ -1,9 +1,8 @@
 import React from 'react';
-import { CohortItem, FilterSet } from '@gen3/core';
-import { Group, Stack, Text } from '@mantine/core';
-import ErrorCard from '../../components/ErrorCard';
+import { CohortItem, isFilterSet } from '@gen3/core';
+import { Group, Text } from '@mantine/core';
+import { ErrorCard } from '../../components/MessageCards';
 import QueryExpressionSection from '../CohortBuilder/QueryExpressionSection';
-import { isFilterSet } from '@gen3/core';
 
 interface LabeledTextProps {
   label: string;

@@ -34,7 +34,7 @@ export interface CohortItem extends ListItem {
   itemType: 'Gen3GraphQL';
   data: JSONObject;
   name: string;
-  schema_version: string;
+  schemaVersion: string;
   id: string;
   index: string;
 }
