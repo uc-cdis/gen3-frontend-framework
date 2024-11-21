@@ -1,3 +1,13 @@
-import { useGetJobListQuery, useGetDownloadStatusQuery } from './downloadStatusApi';
+import {
+  useGetJobListQuery,
+  useGetDownloadStatusQuery,
+  useSubmitJobMutation,
+  useLazyGetJobListQuery,
+} from './downloadStatusApi';
 
-export { useGetJobListQuery, useGetDownloadStatusQuery };
+export {
+  useGetJobListQuery,
+  useGetDownloadStatusQuery,
+  useSubmitJobMutation,
+  useLazyGetJobListQuery,
+};

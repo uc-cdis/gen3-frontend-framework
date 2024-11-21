@@ -8,6 +8,7 @@ import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
 import ContactWithEmailContent from '../Content/ContactWithEmailContent';
+import { isArray } from 'lodash';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
   let redirectPath = '';
@@ -44,7 +45,13 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   );
 
   const handleCredentialsLogin = useCallback(async () => {
-    await router.push(filterRedirect(referer));
+    const redirect = !referer ? '/' : isArray(referer) ? referer[0] : referer;
+    router.push(redirect).catch((e) => {
+      showNotification({
+        title: 'Login Error',
+        message: `error logging in ${e.message}`,
+      });
+    });
   }, [referer, router]);
 
   return (
@@ -64,9 +71,12 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
         {bottomContent?.map((content, index) =>
           content?.email ? (
-            <ContactWithEmailContent {...content} key={index} />
+            <ContactWithEmailContent
+              {...content}
+              key={`bottomContent-${index}`}
+            />
           ) : (
-            <TextContent {...content} key={index} />
+            <TextContent {...content} key={`bottomContent-${index}`} />
           ),
         )}
       </div>

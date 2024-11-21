@@ -2,6 +2,10 @@ import { JSONObject } from '@gen3/core';
 
 export interface ContentSource {
   get<T extends Record<string, undefined>>(filepath: string): Promise<T>;
+  getAll<T extends Record<string, unknown>>(
+    filepath: string,
+    filter: string,
+  ): Promise<Array<T>>;
 }
 
 interface Gen3Icon {

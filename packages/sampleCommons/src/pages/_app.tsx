@@ -9,7 +9,6 @@ import {
   Gen3Provider,
   TenStringArray,
   type ModalsConfig,
-  ContentSource,
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
@@ -27,8 +26,9 @@ import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
 
-import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
+import { setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
+import { loadContent } from '../lib/content/loadContent';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
@@ -40,7 +40,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;
-  icons: RegisteredIcons;
+  icons: Array<RegisteredIcons>;
   themeFonts: Fonts;
   modalsConfig: ModalsConfig;
   sessionConfig: SessionConfiguration;
@@ -100,36 +100,10 @@ Gen3App.getInitialProps = async (
   const ctx = await App.getInitialProps(context);
 
   try {
-    const modals = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/modals.json`,
-    );
-    const session = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/session.json`,
-    );
-
-    const fonts = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeFonts.json`,
-    );
-
-    const themeColors = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeColors.json`,
-    );
-
-    const colors = Object.fromEntries(
-      Object.entries(themeColors).map(([key, values]) => [
-        key,
-        Object.values(values) as TenStringArray,
-      ]),
-    );
-
-    const icons = await ContentSource.get('config/icons/gen3.json');
+    const res = await loadContent();
     return {
       ...ctx,
-      modalsConfig: modals,
-      sessionConfig: session,
-      themeFonts: fonts as Fonts,
-      colors: colors,
-      icons: icons as RegisteredIcons,
+      ...res,
     };
   } catch (error: any) {
     console.error('Provider Wrapper error loading config', error.toString());
@@ -143,13 +117,15 @@ Gen3App.getInitialProps = async (
       content: ['Poppins', 'sans-serif'],
       fontFamily: 'Poppins',
     },
-    icons: {
-      prefix: 'gen3',
-      lastModified: 0,
-      icons: {},
-      width: 0,
-      height: 0,
-    },
+    icons: [
+      {
+        prefix: 'gen3',
+        lastModified: 0,
+        icons: {},
+        width: 0,
+        height: 0,
+      },
+    ],
     modalsConfig: {},
     sessionConfig: {},
   };

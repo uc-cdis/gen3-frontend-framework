@@ -17,7 +17,7 @@ import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
-  icons: RegisteredIcons;
+  icons: Array<RegisteredIcons>;
   fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
@@ -95,7 +95,7 @@ const Gen3Provider = ({
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
-    addCollection(icons);
+    icons.forEach((i) => addCollection(i));
   }, [icons]);
 
   const theme = createMantineTheme(fonts, colors);

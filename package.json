@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.50",
+  "version": "0.10.51",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -39,6 +39,7 @@
     "@mantine/dates": "^7.13.3",
     "@mantine/notifications": "^7.13.3",
     "classnames": "^2.3.1",
+    "colorette": "^2.0.20",
     "dom-to-svg": "^0.12.2",
     "isomorphic-fetch": "^3.0.0",
     "react": "^18.2.0",

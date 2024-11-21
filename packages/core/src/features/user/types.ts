@@ -9,7 +9,7 @@ export interface ExternalProvider {
   base_url: string;
   idp: string;
   name: string;
-  refresh_token_expiration: string;
+  refresh_token_expiration: string | null;
   urls: NamedURL[];
 }
 

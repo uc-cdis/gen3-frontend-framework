@@ -23,7 +23,7 @@ export default [
     ],
   },
   {
-    input: './src/bundleIcons/bundleIcons.js',
+    input: './src/bundleIcons/bundleIcons.ts',
     output: [
       {
         file: 'dist/bundleIcons.esm.js',
@@ -70,7 +70,8 @@ export default [
       'node:util',
       'fetch-retry',
       'node-fetch',
-      'path', 'url',
+      'path',
+      'url',
       'graphql',
     ],
     plugins: [peerDepsExternal(), swc(), executable()],
@@ -91,8 +92,9 @@ export default [
       'node:util',
       'fetch-retry',
       'node-fetch',
-      'path', 'url',
+      'path',
+      'url',
     ],
     plugins: [peerDepsExternal(), swc()],
-  }
+  },
 ];

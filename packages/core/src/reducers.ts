@@ -6,6 +6,8 @@ import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
 import { dataLibrarySelectionReducer } from './features/dataLibrary';
+import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,
@@ -20,6 +22,7 @@ export const rootReducer = combineReducers({
   drsHostnames: drsHostnamesReducer,
   modals: modalReducer,
   cohorts: cohortReducer,
+  activeWorkspace: activeWorkspaceReducer,
   dataLibrarySelection: dataLibrarySelectionReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
