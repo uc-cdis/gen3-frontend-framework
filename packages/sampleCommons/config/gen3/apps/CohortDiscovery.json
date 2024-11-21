@@ -9,22 +9,17 @@
       "tabTitle": "Cases",
       "tabs": [
         {
-          "title": "Demographic",
+          "title": "Study Selection",
+          "fields": ["project"]
+        },
+        {
+          "title": "Subjects",
           "fields": [
+            "study",
             "gender",
             "race",
             "ethnicity",
             "vital_status"
-          ]
-        },
-        {
-          "title": "Study",
-          "fields": [
-            "gender",
-            "race",
-            "ethnicity",
-            "vital_status",
-            "project"
           ]
         }
       ]

@@ -104,11 +104,13 @@ const reducer = (
 };
 
 interface QueryExpressionSectionProps {
-  readonly index: string;
+  index: string;
+  hideImportExport?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
+  hideImportExport = true,
 }: QueryExpressionSectionProps) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
@@ -170,7 +172,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const setCohort = useDeepCompareCallback(
     (data: string) => {
       const jsonForm = JSON.parse(data);
-      setCohortFilter({ index, filters: jsonForm as FilterSet });
+      setCohortFilter(index, jsonForm as FilterSet);
     },
     [index],
   );
@@ -194,17 +196,20 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             <React.Fragment>
               <Button
                 data-testid="button-clear-all-cohort-filters"
-                className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
+                className={`text-sm font-content mx-2 px-2 hover:bg-primary-lightest hover:text-primary-content-lightest hover:rounded-md ${
                   noFilters
                     ? 'hidden'
                     : 'cursor-pointer text-secondary-contrast-darkest'
                 }`}
                 onClick={clearAllFilters}
                 disabled={noFilters}
+                variant="light"
               >
                 Clear All
               </Button>
-              <div className="display flex gap-2 ml-auto mr-3">
+              <div
+                className={`flex gap-2 ml-auto mr-3 ${hideImportExport ? 'hidden' : ''}`}
+              >
                 <JSONObjectDownloadButton
                   getData={getData}
                   filename="cohort.json"
