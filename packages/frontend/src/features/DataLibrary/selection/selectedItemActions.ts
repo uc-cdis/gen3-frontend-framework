@@ -25,13 +25,13 @@ interface Rule {
   value: RuleValue;
 }
 
-interface ActionConfig {
+export interface ActionConfig {
   id: string;
-  name: string;
+  label: string;
   rules: Rule[];
 }
 
-type ActionsConfig = Record<string, ActionConfig>;
+export type ActionsConfig = ReadonlyArray<ActionConfig>;
 
 const isArrayField = (value: unknown): value is Array<unknown> =>
   Array.isArray(value);

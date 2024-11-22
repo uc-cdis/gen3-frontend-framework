@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button,
   Group,
@@ -11,19 +11,29 @@ import {
 } from '@mantine/core';
 
 import SelectedItemsTable from '../tables/SelectedItemsTable';
+import { ActionsConfig } from '../selection/selectedItemActions';
+import { useDeepCompareCallback } from 'use-deep-compare';
+import { useDataLibrarySelection } from '../selection/SelectionContext';
 
-type SelectedItemsModelProps = ModalProps;
-
-// TODO replace with selection handlers
-
-const Destinations = [
-  { label: 'Manifest', value: 'manifest' },
-  { label: 'ZIP File', value: 'zipfile' },
-  { label: 'Workspace', value: 'workspace' },
-];
+interface SelectedItemsModelProps extends ModalProps {
+  actions: ActionsConfig;
+}
 
 const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
   const [value, setValue] = useState<ComboboxItem | null>(null);
+  const { actions } = props;
+  const { gatheredItems } = useDataLibrarySelection();
+
+  const destinations = useMemo(() => {
+    return actions.map((action) => {
+      return { label: action.label, value: action.id };
+    });
+  }, [actions]);
+
+  const validateSelections = useDeepCompareCallback(() => {}, [
+    actions,
+    gatheredItems,
+  ]);
 
   return (
     <Modal {...props} title="Retrieve Data" closeOnEscape centered>
@@ -33,7 +43,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
           <Group>
             <Text fw={600}>Destination:</Text>
             <Select
-              data={Destinations}
+              data={destinations}
               value={value ? value.value : null}
               onChange={(_value, option) => setValue(option)}
             />
