@@ -30,6 +30,9 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
     getDataLibraryLists: builder.query<DataLibraryItems, void>({
       query: () => `${GEN3_DATA_LIBRARY_API}`,
       transformResponse: (res: DataLibraryAPIResponse) => {
+        console.log('transformResponse', res);
+        const a = BuildLists(res);
+        console.log('transformResponse', a);
         return { lists: BuildLists(res) };
       },
     }),

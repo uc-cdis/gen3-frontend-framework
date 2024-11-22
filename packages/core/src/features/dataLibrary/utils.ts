@@ -4,14 +4,40 @@ import {
   DataLibrary,
   DataLibraryAPIResponse,
   Datalist,
-  DataListEntry,
+  // DataListEntry,
   DataSetItems,
   isCohortItem,
   isFileItem,
-  RegisteredDataListEntry,
+  // RegisteredDataListEntry,
 } from './types';
 import { JSONObject } from '../../types/';
 
+const processItem = (id: string, data: any) => {
+  if (data?.type === 'AdditionalData') {
+    return {
+      name: data.name,
+      itemType: 'AdditionalData',
+      description: data?.description,
+      documentationUrl: data?.documentationUrl as string,
+      url: data?.url as string,
+    } as AdditionalDataItem;
+  }
+
+  return {
+    ...data,
+    itemType: 'Data',
+    guid: data.id,
+    id: id, // TODO fix this hack
+  };
+};
+
+/**
+ * Builds a record of DataSets. The data are created by grouping
+ * @param setId
+ * @param dataSet
+ * @constructor
+ */
+/*
 const BuildDataSet = (
   setId: string,
   dataSet: DataListEntry,
@@ -41,6 +67,7 @@ const BuildDataSet = (
     items: res,
   };
 };
+*/
 
 export const BuildList = (
   listId: string,
@@ -54,13 +81,22 @@ export const BuildList = (
         acc.items[id] = {
           itemType: 'Gen3GraphQL',
           id: data.guid,
-          schemaVersion: data.schemaVersion,
+          schemaVersion: data.schema_version,
           data: data.data,
           name: data.name,
           index: data.index,
         } as CohortItem;
       } else {
-        acc.items[id] = BuildDataSet(id, data);
+        if (!(data.dataset_guid in acc.items)) {
+          acc.items[data.dataset_guid as string] = {
+            id: data.dataset_guid,
+            name: '',
+            items: { [id]: processItem(id, data) },
+          };
+        } else {
+          (acc.items[data.dataset_guid as string].items as DataSetItems)[id] =
+            processItem(id, data);
+        }
       }
       return acc;
     },
@@ -104,7 +140,7 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
     } else {
       return (
         count +
-        Object.values(item.items).reduce((fileCount, x) => {
+        Object.values(item?.items ?? {}).reduce((fileCount, x) => {
           if (isFileItem(x)) {
             return fileCount + 1;
           }

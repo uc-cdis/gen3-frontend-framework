@@ -64,6 +64,7 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
     enableBottomToolbar: data.length > 10,
     enablePagination: data.length > 10,
     enableRowActions: false,
+    enableHiding: true,
     getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },

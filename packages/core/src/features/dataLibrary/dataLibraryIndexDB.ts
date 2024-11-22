@@ -1,9 +1,9 @@
 import { isArray } from 'lodash';
 import { isJSONObject, JSONObject } from '../../types';
-import { type Datalist, LoadAllListData } from './types';
+import { type Datalist, LibraryAPIItems, LoadAllListData } from './types';
 import { nanoid } from '@reduxjs/toolkit';
 import { IDBPDatabase, openDB } from 'idb';
-import { getTimestamp } from './utils';
+import { BuildLists, getTimestamp } from './utils';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
@@ -184,9 +184,10 @@ export const addAllListIndexDB = async (
 };
 
 interface DataLibraryFromStore
-  extends Omit<Datalist, 'createdTime' | 'updatedTime'> {
+  extends Omit<Datalist, 'createdTime' | 'updatedTime' | 'items'> {
   created_time: string;
   updated_time: string;
+  items: LibraryAPIItems;
 }
 
 export const getDataLibraryListIndexDB = async (
@@ -198,6 +199,7 @@ export const getDataLibraryListIndexDB = async (
     const store = tx.objectStore(STORE_NAME);
     if (id !== undefined) {
       const lists = (await store.get(id)) as Array<DataLibraryFromStore>;
+
       if (lists) {
         return {
           status: 'success',
@@ -210,7 +212,7 @@ export const getDataLibraryListIndexDB = async (
                 authz: x.authz,
                 createdTime: x.created_time,
                 updatedTime: x.updated_time,
-                items: x.items,
+                items: x.items as any,
               };
               return acc;
             },
@@ -222,6 +224,23 @@ export const getDataLibraryListIndexDB = async (
       }
     } else {
       const lists = (await store.getAll()) as Array<DataLibraryFromStore>;
+      console.log('lists', lists);
+      const b = lists.reduce(
+        (acc: Record<string, JSONObject>, x: DataLibraryFromStore) => {
+          acc[x.id] = {
+            ...x,
+            items: x.items as any, // TODO Process items
+          } as unknown as JSONObject;
+          return acc;
+        },
+        {},
+      );
+      const a = BuildLists({ lists: b as any });
+      console.log('a', a);
+      return {
+        status: 'success',
+        lists: a,
+      };
       return {
         status: 'success',
         lists: lists.reduce(
@@ -233,7 +252,7 @@ export const getDataLibraryListIndexDB = async (
               authz: x.authz,
               createdTime: x.created_time,
               updatedTime: x.updated_time,
-              items: x.items,
+              items: x.items as any, // TODO Process items
             };
             return acc;
           },

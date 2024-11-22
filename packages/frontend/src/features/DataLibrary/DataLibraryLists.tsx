@@ -16,7 +16,10 @@ const DataLibraryLists = () => {
     deleteListFromDataLibrary,
     setAllListsInDataLibrary,
     clearLibrary,
-  } = useDataLibrary(false);
+  } = useDataLibrary(true);
+
+  console.log('dataLibrary', dataLibrary);
+
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
 

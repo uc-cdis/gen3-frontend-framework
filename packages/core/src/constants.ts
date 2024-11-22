@@ -29,8 +29,7 @@ export const GEN3_SUBMISSION_API =
 export const GEN3_WTS_API =
   process.env.NEXT_PUBLIC_GEN3_WTS_API || `${GEN3_API}/wts`;
 export const GEN3_DATA_LIBRARY_API =
-  process.env.NEXT_PUBLIC_GEN3_DATA_LIBRARY_API ||
-  `${GEN3_API}/api/v1/data-library/lists`;
+  process.env.NEXT_PUBLIC_GEN3_DATA_LIBRARY_API || `${GEN3_API}/library/lists`;
 export const GEN3_CROSSWALK_API =
   process.env.NEXT_PUBLIC_GEN3_CROSSWALK_API || `${GEN3_API}/mds`;
 export const GEN3_SOWER_API =
