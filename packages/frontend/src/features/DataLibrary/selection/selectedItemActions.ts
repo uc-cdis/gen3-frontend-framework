@@ -3,7 +3,6 @@ import { FileItemWithParentDatasetNameAndID } from '../types';
 
 type SelectableItems = Array<CohortItem | FileItemWithParentDatasetNameAndID>;
 
-// Rule types
 type RuleOperator =
   | 'equals'
   | 'not'
@@ -12,10 +11,18 @@ type RuleOperator =
   | 'greater'
   | 'less';
 
+// Enforce type safety for rule values
+type RuleValue = string | number | boolean;
+
+// Ensure field exists on items
+type ValidField<T> = keyof T;
+type CommonFields = ValidField<CohortItem> &
+  ValidField<FileItemWithParentDatasetNameAndID>;
+
 interface Rule {
-  field: string;
+  field: CommonFields;
   operator: RuleOperator;
-  value: any;
+  value: RuleValue;
 }
 
 interface ActionConfig {
@@ -26,30 +33,56 @@ interface ActionConfig {
 
 type ActionsConfig = Record<string, ActionConfig>;
 
+const isArrayField = (value: unknown): value is Array<unknown> =>
+  Array.isArray(value);
+
+const isNumeric = (value: unknown): value is number =>
+  typeof value === 'number' && !isNaN(value);
+
 export const evaluateRule = (rule: Rule, items: SelectableItems): boolean => {
+  // Early return if no items
+  if (items.length === 0) return false;
+
+  // Validate all items have the field
+  if (!items.every((item) => rule.field in item)) {
+    return false;
+  }
+
   switch (rule.operator) {
     case 'equals':
-      return items.every((item) => item[rule.field] === rule.value);
-    case 'not':
-      return items.every((item) => item[rule.field] !== rule.value);
+    case 'not': {
+      const compareResult = items.every((item) => {
+        const fieldValue = item[rule.field];
+        return rule.operator === 'equals'
+          ? fieldValue === rule.value
+          : fieldValue !== rule.value;
+      });
+      return compareResult;
+    }
+
     case 'includes':
-      return items.every(
-        (item) =>
-          item[rule.field] &&
-          Array.isArray(item[rule.field]) &&
-          (item[rule.field] as Array<unknown>).includes(rule.value),
-      );
-    case 'excludes':
-      return items.every(
-        (item) =>
-          item[rule.field] &&
-          Array.isArray(item[rule.field]) &&
-          !(item[rule.field] as Array<unknown>).includes(rule.value),
-      );
+    case 'excludes': {
+      return items.every((item) => {
+        const fieldValue = item[rule.field];
+        if (!isArrayField(fieldValue)) return false;
+
+        return rule.operator === 'includes'
+          ? fieldValue.includes(rule.value)
+          : !fieldValue.includes(rule.value);
+      });
+    }
+
     case 'greater':
-      return items.every((item) => item[rule.field] > rule.value);
-    case 'less':
-      return items.every((item) => item[rule.field] < rule.value);
+    case 'less': {
+      return items.every((item) => {
+        const fieldValue = item[rule.field];
+        if (isNumeric(fieldValue) && isNumeric(rule.value))
+          return rule.operator === 'greater'
+            ? fieldValue > rule.value
+            : fieldValue < rule.value;
+        return false;
+      });
+    }
     default:
       return false;
   }
@@ -63,11 +96,17 @@ export const validateAction = (
     return { valid: false, errors: ['Action not found'] };
   }
 
+  if (items.length === 0) {
+    return { valid: false, errors: ['No items to validate'] };
+  }
+
   const errors: string[] = [];
 
   for (const rule of action.rules) {
     if (!evaluateRule(rule, items)) {
-      errors.push(`Rule failed: ${rule.field} ${rule.operator} ${rule.value}`);
+      errors.push(
+        `Rule failed: ${rule.field} ${rule.operator} ${rule.value} (${typeof rule.value})`,
+      );
     }
   }
 
