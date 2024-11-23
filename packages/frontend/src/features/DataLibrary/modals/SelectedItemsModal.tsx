@@ -11,7 +11,10 @@ import {
 } from '@mantine/core';
 
 import SelectedItemsTable from '../tables/SelectedItemsTable';
-import { ActionsConfig } from '../selection/selectedItemActions';
+import {
+  ActionsConfig,
+  getFailedActionsForItems,
+} from '../selection/selectedItemActions';
 import { useDeepCompareCallback } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 
@@ -30,10 +33,11 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     });
   }, [actions]);
 
-  const validateSelections = useDeepCompareCallback(() => {}, [
-    actions,
-    gatheredItems,
-  ]);
+  const validateSelections = useDeepCompareCallback(() => {
+    const failedItems = getFailedActionsForItems(actions, gatheredItems);
+
+    console.log(failedItems);
+  }, [actions, gatheredItems]);
 
   return (
     <Modal {...props} title="Retrieve Data" closeOnEscape centered>
@@ -45,7 +49,10 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             <Select
               data={destinations}
               value={value ? value.value : null}
-              onChange={(_value, option) => setValue(option)}
+              onChange={(_value, option) => {
+                validateSelections();
+                setValue(option);
+              }}
             />
           </Group>
           <Button onClick={() => console.log('send')}>Send</Button>

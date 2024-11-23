@@ -1,7 +1,9 @@
 import { CohortItem } from '@gen3/core';
 import { FileItemWithParentDatasetNameAndID } from '../types';
 
-type SelectableItems = Array<CohortItem | FileItemWithParentDatasetNameAndID>;
+export type SelectableItem = CohortItem | FileItemWithParentDatasetNameAndID;
+
+export type SelectableItems = Array<SelectableItem>;
 
 type RuleOperator =
   | 'equals'
@@ -19,10 +21,11 @@ type ValidField<T> = keyof T;
 type CommonFields = ValidField<CohortItem> &
   ValidField<FileItemWithParentDatasetNameAndID>;
 
-interface Rule {
+export interface Rule {
   field: CommonFields;
   operator: RuleOperator;
   value: RuleValue;
+  errorMessage: string;
 }
 
 export interface ActionConfig {
@@ -105,7 +108,8 @@ export const validateAction = (
   for (const rule of action.rules) {
     if (!evaluateRule(rule, items)) {
       errors.push(
-        `Rule failed: ${rule.field} ${rule.operator} ${rule.value} (${typeof rule.value})`,
+        rule.errorMessage ??
+          `Rule failed: ${rule.field} ${rule.operator} ${rule.value} (${typeof rule.value})`,
       );
     }
   }
@@ -121,4 +125,37 @@ export const getAvailableActions = (
   items: SelectableItems,
 ): ActionConfig[] => {
   return actions.filter((action) => validateAction(action, items).valid);
+};
+
+type FailedActionResult = {
+  item: SelectableItem;
+  failedActions: ActionsConfig;
+};
+
+export const getFailedActionsForItems = (
+  actions: ActionsConfig,
+  items: SelectableItems,
+): Array<FailedActionResult> => {
+  // Define the type for the result
+
+  // Helper function to check if an item fails a specific action
+  const doesItemFailAction = (
+    item: CohortItem | FileItemWithParentDatasetNameAndID,
+    action: ActionConfig,
+  ): boolean => {
+    return action.rules.some((rule) => !evaluateRule(rule, [item]));
+  };
+
+  // Iterate over each item and action to find those that fail
+  const failedResults: FailedActionResult[] = items
+    .map((item) => {
+      const failedActions = actions
+        .filter((action) => doesItemFailAction(item, action))
+        .map((action) => action);
+
+      return { item, failedActions };
+    })
+    .filter((result) => result.failedActions.length > 0);
+
+  return failedResults;
 };
