@@ -1,7 +1,5 @@
 import { CohortItem } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
-
-export type SelectableItem = CohortItem | FileItemWithParentDatasetNameAndID;
+import { FileItemWithParentDatasetNameAndID, SelectableItem } from '../types';
 
 export type SelectableItems = Array<SelectableItem>;
 
@@ -12,6 +10,7 @@ type RuleOperator =
   | 'excludes'
   | 'greater'
   | 'less';
+type GroupOperator = 'count';
 
 // Enforce type safety for rule values
 type RuleValue = string | number | boolean;
@@ -21,17 +20,23 @@ type ValidField<T> = keyof T;
 type CommonFields = ValidField<CohortItem> &
   ValidField<FileItemWithParentDatasetNameAndID>;
 
-export interface Rule {
+export interface ItemRule {
   field: CommonFields;
   operator: RuleOperator;
   value: RuleValue;
   errorMessage: string;
 }
 
+export interface GroupRule extends Omit<ItemRule, 'operator'> {
+  operator: GroupOperator;
+  total: RuleValue;
+}
+
 export interface ActionConfig {
   id: string;
   label: string;
-  rules: Rule[];
+  itemRules: Rule[];
+  groupRules: GroupRule[];
 }
 
 export type ActionsConfig = ReadonlyArray<ActionConfig>;
@@ -42,52 +47,50 @@ const isArrayField = (value: unknown): value is Array<unknown> =>
 const isNumeric = (value: unknown): value is number =>
   typeof value === 'number' && !isNaN(value);
 
-export const evaluateRule = (rule: Rule, items: SelectableItems): boolean => {
-  // Early return if no items
-  if (items.length === 0) return false;
-
-  // Validate all items have the field
-  if (!items.every((item) => rule.field in item)) {
-    return false;
-  }
-
+export const evaluateItemRule = (
+  rule: Rule,
+  item: SelectableItems,
+): boolean => {
   switch (rule.operator) {
     case 'equals':
     case 'not': {
-      const compareResult = items.every((item) => {
-        const fieldValue = item[rule.field];
-        return rule.operator === 'equals'
-          ? fieldValue === rule.value
-          : fieldValue !== rule.value;
-      });
-      return compareResult;
+      const fieldValue = item[rule.field];
+      return rule.operator === 'equals'
+        ? fieldValue === rule.value
+        : fieldValue !== rule.value;
     }
-
     case 'includes':
     case 'excludes': {
-      return items.every((item) => {
-        const fieldValue = item[rule.field];
-        if (!isArrayField(fieldValue)) return false;
+      const fieldValue = item[rule.field];
+      if (!isArrayField(fieldValue)) return false;
 
-        return rule.operator === 'includes'
-          ? fieldValue.includes(rule.value)
-          : !fieldValue.includes(rule.value);
-      });
+      return rule.operator === 'includes'
+        ? fieldValue.includes(rule.value)
+        : !fieldValue.includes(rule.value);
     }
-
     case 'greater':
     case 'less': {
-      return items.every((item) => {
-        const fieldValue = item[rule.field];
-        if (isNumeric(fieldValue) && isNumeric(rule.value))
-          return rule.operator === 'greater'
-            ? fieldValue > rule.value
-            : fieldValue < rule.value;
-        return false;
-      });
+      const fieldValue = item[rule.field];
+      if (isNumeric(fieldValue) && isNumeric(rule.value))
+        return rule.operator === 'greater'
+          ? fieldValue > rule.value
+          : fieldValue < rule.value;
+      return false;
     }
     default:
       return false;
+  }
+};
+
+const evaluateGroupRule = (
+  rule: GroupRule,
+  items: SelectableItems,
+): boolean => {
+  switch (rule.operator) {
+    case 'count': {
+      const fieldValue = items.map((item) => item[rule.field]);
+      return fieldValue.length === rule.total;
+    }
   }
 };
 
@@ -106,7 +109,7 @@ export const validateAction = (
   const errors: string[] = [];
 
   for (const rule of action.rules) {
-    if (!evaluateRule(rule, items)) {
+    if (!evaluateItemRule(rule, items)) {
       errors.push(
         rule.errorMessage ??
           `Rule failed: ${rule.field} ${rule.operator} ${rule.value} (${typeof rule.value})`,
@@ -120,6 +123,27 @@ export const validateAction = (
   };
 };
 
+/**
+ * Retrieves an action configuration from a set of actions by its unique identifier.
+ *
+ * @param {ActionsConfig} actions - An array of action configurations.
+ * @param {string} id - The unique identifier of the desired action configuration.
+ * @returns {ActionConfig | undefined} The action configuration with the matching identifier, or undefined if not found.
+ */
+export const getActionById = (
+  actions: ActionsConfig,
+  id: string,
+): ActionConfig | undefined => {
+  return actions.find((action) => action.id === id);
+};
+
+/**
+ * Filters a list of action configurations based on their validity for the provided items.
+ *
+ * @param {ReadonlyArray<ActionConfig>} actions - An array of action configurations to evaluate.
+ * @param {SelectableItems} items - A collection of items to validate actions against.
+ * @returns {ActionConfig[]} An array of action configurations that are valid for the given items.
+ */
 export const getAvailableActions = (
   actions: ReadonlyArray<ActionConfig>,
   items: SelectableItems,
@@ -127,35 +151,44 @@ export const getAvailableActions = (
   return actions.filter((action) => validateAction(action, items).valid);
 };
 
-type FailedActionResult = {
+type ValidatedItem = {
   item: SelectableItem;
-  failedActions: ActionsConfig;
+  failedAction?: ActionConfig;
 };
 
+export const doesItemFailRule = (
+  item: CohortItem | FileItemWithParentDatasetNameAndID,
+  action: ActionConfig,
+): boolean => {
+  return action.itemRules.some((rule) => !evaluateItemRule(rule, item));
+};
+
+export const doesGroupFailRule = (
+  items: Array<SelectableItem>,
+  action: ActionConfig,
+): boolean => {
+  return action.groupRules.some((rule) => !evaluateGroupRule(rule, items));
+};
+
+/**
+ * Identifies the items that fail a given action based on specified rules.
+ *
+ * @param {ActionConfig} action - The configuration of the action to be tested.
+ * @param {SelectableItems} items - A collection of items to be evaluated against the action.
+ * @returns {Array<ValidatedItem>} An array of results containing the items that failed the action and the corresponding action.
+ */
 export const getFailedActionsForItems = (
-  actions: ActionsConfig,
+  action: ActionConfig,
   items: SelectableItems,
-): Array<FailedActionResult> => {
-  // Define the type for the result
-
-  // Helper function to check if an item fails a specific action
-  const doesItemFailAction = (
-    item: CohortItem | FileItemWithParentDatasetNameAndID,
-    action: ActionConfig,
-  ): boolean => {
-    return action.rules.some((rule) => !evaluateRule(rule, [item]));
-  };
-
-  // Iterate over each item and action to find those that fail
-  const failedResults: FailedActionResult[] = items
-    .map((item) => {
-      const failedActions = actions
-        .filter((action) => doesItemFailAction(item, action))
-        .map((action) => action);
-
-      return { item, failedActions };
-    })
-    .filter((result) => result.failedActions.length > 0);
-
-  return failedResults;
+): Array<ValidatedItem> => {
+  // Iterate over each item and test action, for ones that fail add action to
+  // item otherwise just add the item
+  return items.reduce((acc, item) => {
+    if (doesItemFailRule(item, action)) {
+      acc.push({ item, failedAction: action });
+    } else {
+      acc.push({ item });
+    }
+    return acc;
+  }, [] as ValidatedItem[]);
 };

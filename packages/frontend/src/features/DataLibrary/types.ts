@@ -25,3 +25,10 @@ export interface DataLibraryConfig {
   useAPI: boolean;
   actions: ActionsConfig;
 }
+
+export type SelectableItem = CohortItem | FileItemWithParentDatasetNameAndID;
+
+export interface ValidatedSelectedItem extends SelectableItem {
+  valid?: boolean;
+  errors?: string[];
+}

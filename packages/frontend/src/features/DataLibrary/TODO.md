@@ -9,19 +9,25 @@
 * fix styling:
   ~~* icon colors~~
   * layout
+  * Dates format, repsonsiveness
   * ~~if no pagination, hide table footer~~
 ~~* default message when subtable is empty~~
-* connect explorer
-  * save to list
-  * pick from all cohorts
-* connect discovery
-  * save to listpwd
+
+
 * place on navigation
-* implement zip/download manifest
-* placeholder for other actions
+* implement zip, export to terra, export to 7 bridges, download pfb
 * sort by file size
+* add id as column
+* remove id from FileItem
+* hide add new list
+* hide search
 
 ## v2
 * show applicable actions to selection
 * implement additional actions
-* get search working
+* search working
+* connect explorer
+  * save to list
+  * pick from all cohorts
+* connect discovery
+  * save to list

@@ -11,8 +11,8 @@
           "value": "terraform"
         },
         {
-          "field": "_count",
-          "operator": "equals",
+          "field": "type",
+          "operator": "count",
           "value": 1
         }
       ]

@@ -6,15 +6,27 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import React, { useMemo, useState } from 'react';
-import { Box, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { isCohortItem } from '@gen3/core';
-import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { TableIcons } from '../../../components/Tables/TableIcons';
+import { ValidatedSelectedItem } from '../types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const columns = [
   {
     accessorKey: 'name',
     header: 'Name',
+  },
+  {
+    accessorKey: 'valid',
+    header: 'Valid',
+    Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
+      return (
+        <Text fw={400} size="sm" lineClamp={2}>
+          {cell.getValue<boolean>()?.toString()}
+        </Text>
+      );
+    },
   },
   {
     accessorKey: 'description',
@@ -54,12 +66,20 @@ interface SelectedItemsTableRow {
   size?: string;
   name?: string;
   description?: string;
+  valid?: boolean;
 }
 
-const SelectedItemsTable = () => {
-  const { gatheredItems } = useDataLibrarySelection();
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+interface SelectedItemsTableProps {
+  validatedItems: ReaconlyArray<ValidatedSelectedItem>;
+  rowSelection: MRT_RowSelectionState;
+  setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
+}
 
+const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
+  validatedItems,
+  rowSelection,
+  setRowSelection,
+}) => {
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
   ) => {
@@ -70,8 +90,8 @@ const SelectedItemsTable = () => {
     });
   };
 
-  const rows = useMemo(() => {
-    return gatheredItems.map((item) => {
+  const rows = useDeepCompareMemo(() => {
+    return validatedItems.map((item) => {
       if (isCohortItem(item)) {
         return {
           name: item.name,
@@ -80,6 +100,7 @@ const SelectedItemsTable = () => {
           size: undefined,
           datasetName: item.name,
           datasetId: item.datasetId,
+          valid: item.valid,
         } as SelectedItemsTableRow;
       }
 
@@ -90,9 +111,10 @@ const SelectedItemsTable = () => {
         size: item.size,
         datasetId: item.datasetId,
         datasetName: item.datasetName,
+        valid: item.valid,
       } as SelectedItemsTableRow;
     });
-  }, [gatheredItems]);
+  }, [validatedItems]);
 
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
@@ -104,6 +126,8 @@ const SelectedItemsTable = () => {
     enableSelectAll: true,
     enableColumnFilters: false,
     enableColumnActions: false,
+    enableBottomToolbar: rows.length > 10,
+    enablePagination: rows.length > 10,
     enablePagination: true,
     enableRowActions: false,
     enableStickyFooter: true,
