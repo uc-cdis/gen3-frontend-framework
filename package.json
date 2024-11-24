@@ -11,15 +11,15 @@
     "node": ">=20.11.0"
   },
   "scripts": {
-    "lint": "lerna run --parallel lint",
+    "lint": "lerna run lint",
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
-    "dev": "lerna run --parallel dev",
+    "dev": "lerna run dev",
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
-    "start": "lerna run --parallel start",
+    "start": "lerna run  start",
     "build:start": "npm run build && npm run start",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",

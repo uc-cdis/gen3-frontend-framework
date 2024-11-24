@@ -1,11 +1,20 @@
 import React from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
-import { DataLibrary } from '../../features/DataLibrary';
+import {
+  DataLibrary,
+  type DataLibraryConfig,
+} from '../../features/DataLibrary';
+
+interface DataLibraryPageProps extends NavPageLayoutProps {
+  config: DataLibraryConfig;
+}
 
 const DataLibraryPage = ({
   headerProps,
   footerProps,
-}: NavPageLayoutProps): JSX.Element => {
+  config,
+}: DataLibraryPageProps): JSX.Element => {
+  console.log('datalibrary', config);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -15,7 +24,7 @@ const DataLibraryPage = ({
         key: 'gen3-data-library-page',
       }}
     >
-      <DataLibrary />
+      <DataLibrary {...config} />
     </NavPageLayout>
   );
 };

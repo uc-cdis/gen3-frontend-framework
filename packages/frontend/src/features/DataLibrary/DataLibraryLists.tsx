@@ -7,8 +7,9 @@ import { useDataLibrarySelection } from './selection/SelectionContext';
 import SelectedItemsModal from './modals/SelectedItemsModal';
 import { data1 } from './utils';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
+import { DataLibraryConfig } from './types';
 
-const DataLibraryLists = () => {
+const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
   const {
     dataLibrary,
     addListToDataLibrary,
@@ -16,7 +17,8 @@ const DataLibraryLists = () => {
     deleteListFromDataLibrary,
     setAllListsInDataLibrary,
     clearLibrary,
-  } = useDataLibrary(false);
+  } = useDataLibrary(useAPI);
+
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
 
@@ -31,6 +33,7 @@ const DataLibraryLists = () => {
         opened={selectedItemsOpen}
         onClose={close}
         size="auto"
+        actions={actions}
       />
       <SearchAndActions
         createList={addListToDataLibrary}
@@ -57,22 +60,24 @@ const DataLibraryLists = () => {
             })}
         </Accordion>
       </div>
-      <div className="flex space-x-4 m-2">
-        <Button
-          onClick={() => {
-            setAllListsInDataLibrary(data1 as any);
-          }}
-        >
-          Load Sample List
-        </Button>
-        <Button
-          onClick={() => {
-            clearLibrary();
-          }}
-        >
-          Clear All
-        </Button>
-      </div>
+      {!useAPI && (
+        <div className="flex space-x-4 m-2">
+          <Button
+            onClick={() => {
+              setAllListsInDataLibrary(data1 as any);
+            }}
+          >
+            Load Sample List
+          </Button>
+          <Button
+            onClick={() => {
+              clearLibrary();
+            }}
+          >
+            Clear All
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -4,23 +4,50 @@ import {
   MRT_Updater,
   MRT_Cell,
   useMantineReactTable,
+  MRT_Row,
 } from 'mantine-react-table';
-import React, { useMemo, useState } from 'react';
-import { Box, Text } from '@mantine/core';
+import React from 'react';
+import { Text, Tooltip } from '@mantine/core';
+import { Icon } from '@iconify/react';
 import { isCohortItem } from '@gen3/core';
-import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { TableIcons } from '../../../components/Tables/TableIcons';
+import { ValidatedSelectedItem } from '../types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 const columns = [
   {
-    accessorKey: 'name',
-    header: 'Name',
+    accessorKey: 'valid',
+    enableHiding: true,
+    size: 40,
+    maxSize: 50,
+    header: 'Valid',
+    Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
+      if (row.original.valid === false) {
+        return (
+          <Tooltip
+            label={row.original?.messages?.join('\n') ?? 'Unknown Error'}
+          >
+            <Icon icon="gen3:warning" className="text-yellow-400 text-xl">
+              <Text fw={400} size="sm">
+                {row.original?.messages?.length}
+              </Text>
+            </Icon>
+          </Tooltip>
+        );
+      } else {
+        return <Icon icon="gen3:check" className="text-green-400 text-x" />;
+      }
+    },
+  },
+  {
+    accessorKey: 'id',
+    header: 'Id',
   },
   {
     accessorKey: 'description',
     header: 'Description',
-    size: 100,
-    maxSize: 150,
+    size: 150,
+    maxSize: 250,
     Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
       return (
         <Text fw={400} size="sm" lineClamp={2}>
@@ -38,10 +65,6 @@ const columns = [
     header: 'Size',
   },
   {
-    accessorKey: 'datasetName',
-    header: 'Dataset Name',
-  },
-  {
     accessorKey: 'datasetId',
     header: 'Dataset ID',
   },
@@ -54,12 +77,21 @@ interface SelectedItemsTableRow {
   size?: string;
   name?: string;
   description?: string;
+  valid?: boolean;
+  messages?: string[];
 }
 
-const SelectedItemsTable = () => {
-  const { gatheredItems } = useDataLibrarySelection();
-  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+interface SelectedItemsTableProps {
+  validatedItems: ReadonlyArray<ValidatedSelectedItem>;
+  rowSelection: MRT_RowSelectionState;
+  setRowSelection: React.Dispatch<React.SetStateAction<MRT_RowSelectionState>>;
+}
 
+const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
+  validatedItems,
+  rowSelection,
+  setRowSelection,
+}) => {
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
   ) => {
@@ -70,44 +102,58 @@ const SelectedItemsTable = () => {
     });
   };
 
-  const rows = useMemo(() => {
-    return gatheredItems.map((item) => {
+  const tableRows = useDeepCompareMemo(() => {
+    let hasInvalidRows = false;
+    const rows = validatedItems.map((item) => {
+      if (!item.valid) hasInvalidRows = true;
+      console.log(item);
       if (isCohortItem(item)) {
         return {
+          id: item.id,
           name: item.name,
           description: item.description,
           type: item.itemType as string,
           size: undefined,
           datasetName: item.name,
           datasetId: item.datasetId,
+          valid: item.valid,
+          messages: item?.errorMessages,
         } as SelectedItemsTableRow;
       }
 
       return {
+        id: item.id,
         name: item.name,
         description: item.description,
         type: item.type,
         size: item.size,
         datasetId: item.datasetId,
         datasetName: item.datasetName,
+        valid: item.valid,
+        messages: item?.errorMessages,
       } as SelectedItemsTableRow;
     });
-  }, [gatheredItems]);
+
+    return {
+      rows,
+      hasInvalidRows,
+    };
+  }, [validatedItems]);
 
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
-    data: rows,
+    data: tableRows.rows,
     enableColumnResizing: false,
     icons: TableIcons,
     enableTopToolbar: false,
     enableRowSelection: true,
-    enableSelectAll: true,
-    enableColumnFilters: false,
-    enableColumnActions: false,
-    enablePagination: true,
+    enableGrouping: true,
+    enableBottomToolbar: tableRows.rows.length > 10,
+    enablePagination: tableRows.rows.length > 10,
     enableRowActions: false,
     enableStickyFooter: true,
     enableStickyHeader: true,
+    enableHiding: true,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
     initialState: {
@@ -134,7 +180,7 @@ const SelectedItemsTable = () => {
         backgroundColor: 'var(--mantine-color-table-1)',
         color: 'var(--mantine-color-table-contrast-1)',
         textAlign: 'center',
-        padding: '0 0 0 0',
+        padding: '0.25rem 0.5rem 0.25rem 0.5rem',
         fontWeight: 600,
         fontSize: 'var(--mantine-font-size-sm)',
       },

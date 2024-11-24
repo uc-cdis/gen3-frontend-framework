@@ -1,19 +1,7 @@
 import React from 'react';
-import {
-  Button,
-  Group,
-  TextInput,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
-import {
-  MdAdd as PlusIcon,
-  MdDelete as DeleteIcon,
-  MdSearch as SearchIcon,
-  MdDownload as DownloadIcon,
-} from 'react-icons/md';
+import { Button, Group, Tooltip } from '@mantine/core';
+// import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import { Datalist } from '@gen3/core';
-import { Icon } from '@iconify/react';
 
 interface SearchAndActionsProps {
   createList: (item?: Partial<Datalist>) => Promise<void>;
@@ -38,8 +26,10 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             Retrieve Selected
           </Button>
         </Tooltip>
+        {/* ----  TODO: enable these
         <Tooltip label="Create a new empty list">
           <Button
+            hidden={true}
             size="compact-md"
             variant="outline"
             onClick={() => createList()}
@@ -59,12 +49,15 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             <Icon icon="gen3:download-alt" height={24} width={24} />
           </Button>
         </Tooltip>
+        */}
       </Group>
+      {/* ---
       <TextInput
         variant="filled"
         placeholder="Search..."
         leftSection={<SearchIcon size="1.45em" />}
       />
+      --- */}
     </div>
   );
 };

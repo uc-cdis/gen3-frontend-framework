@@ -5,7 +5,12 @@ export interface AuthZAccess {
   authz: string[];
 }
 
-export type ItemValue = string | number | undefined | JSONObject;
+export type ItemValue =
+  | string
+  | number
+  | undefined
+  | Record<string, any>
+  | boolean;
 
 export interface Items {
   [k: string]: ItemValue;
@@ -21,13 +26,14 @@ export interface ListItem {
  */
 
 export interface FileItem extends ListItem {
-  id: string;
+  id: string; // TODO: remove id or guid
   guid: string;
   name?: string;
   description?: string;
   type?: string;
   size?: string;
   itemType: 'Data';
+  datasetGuid: string;
 }
 
 export interface CohortItem extends ListItem {
@@ -45,6 +51,7 @@ export interface AdditionalDataItem extends ListItem {
   url?: string;
   itemType: 'AdditionalData';
   name: string;
+  datasetGuid: string;
 }
 
 export const isFileItem = (item: ListItem): item is FileItem => {
@@ -52,7 +59,7 @@ export const isFileItem = (item: ListItem): item is FileItem => {
 };
 
 export const isAdditionalDataItem = (item: any): item is AdditionalDataItem => {
-  return (item as AdditionalDataItem).type === 'AdditionalData'; // TODO resolve this with type from the api
+  return (item as AdditionalDataItem).itemType === 'AdditionalData'; // TODO resolve this with type from the api
 };
 
 // Type guard for CohortItem
@@ -60,17 +67,20 @@ export const isCohortItem = (item: any): item is CohortItem => {
   return (
     item &&
     'data' in item &&
-    'schema_version' in item &&
-    item.type === 'Gen3GraphQL'
+    'schemaVersion' in item &&
+    item.itemType === 'Gen3GraphQL'
   );
 };
 
 export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
+/**
+ * Represents a DataSet which is created by grouping File
+ * objects with the same dataset_guids
+ */
 export interface DataListEntry {
-  name: string;
+  name?: string; // TODO: figure out how to set name
   items: DataSetItems;
-  // TODO move additionalData here
 }
 
 export interface RegisteredDataListEntry extends DataListEntry {
@@ -80,6 +90,11 @@ export interface RegisteredDataListEntry extends DataListEntry {
 export type FilesOrCohort = Record<
   string,
   RegisteredDataListEntry | CohortItem
+>;
+
+export type LibraryAPIItems = Record<
+  string,
+  FileItem | AdditionalDataItem | CohortItem
 >;
 
 export interface Datalist {

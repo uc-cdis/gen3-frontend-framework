@@ -72,6 +72,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             });
           } else {
             // handle RegisteredDataListEntry
+            console.log('dataItem', dataItem, dataItem.items);
             Object.entries(dataItem.items).forEach(([itemId, item]) => {
               if (isFileItem(item)) {
                 files.push({

@@ -96,7 +96,6 @@ export const getSelectedItemsFromDataLibrary = (
     if (item) {
       const key = getUniqueItemKey(item);
       uniqueItems.set(key, item);
-      console.log(key);
     }
   });
 
@@ -111,6 +110,6 @@ const getUniqueItemKey = (
     return `cohort_${item.datasetId}`;
   } else {
     // For FileItems
-    return `file_${item.datasetId}_${item.guid}`;
+    return `file_${item.datasetId}_${item.id}`;
   }
 };

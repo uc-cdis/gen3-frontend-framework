@@ -1,10 +1,11 @@
 import { DataLibrarySelectionProvider } from './selection/SelectionContext';
 import DataLibraryLists from './DataLibraryLists';
+import { DataLibraryConfig } from './types';
 
-const DataLibrary = () => {
+const DataLibrary = (config: DataLibraryConfig) => {
   return (
     <DataLibrarySelectionProvider>
-      <DataLibraryLists />;
+      <DataLibraryLists {...config} />;
     </DataLibrarySelectionProvider>
   );
 };
