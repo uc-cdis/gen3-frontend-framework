@@ -35,8 +35,8 @@ export interface GroupRule extends Omit<ItemRule, 'operator'> {
 export interface ActionConfig {
   id: string;
   label: string;
-  itemRules: Rule[];
-  groupRules: GroupRule[];
+  itemRules?: Rule[];
+  groupRules?: GroupRule[];
 }
 
 export type ActionsConfig = ReadonlyArray<ActionConfig>;
@@ -94,35 +94,6 @@ const evaluateGroupRule = (
   }
 };
 
-export const validateAction = (
-  action: ActionConfig | undefined,
-  items: SelectableItems,
-): { valid: boolean; errors: string[] } => {
-  if (!action) {
-    return { valid: false, errors: ['Action not found'] };
-  }
-
-  if (items.length === 0) {
-    return { valid: false, errors: ['No items to validate'] };
-  }
-
-  const errors: string[] = [];
-
-  for (const rule of action.rules) {
-    if (!evaluateItemRule(rule, items)) {
-      errors.push(
-        rule.errorMessage ??
-          `Rule failed: ${rule.field} ${rule.operator} ${rule.value} (${typeof rule.value})`,
-      );
-    }
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
-};
-
 /**
  * Retrieves an action configuration from a set of actions by its unique identifier.
  *
@@ -137,58 +108,30 @@ export const getActionById = (
   return actions.find((action) => action.id === id);
 };
 
-/**
- * Filters a list of action configurations based on their validity for the provided items.
- *
- * @param {ReadonlyArray<ActionConfig>} actions - An array of action configurations to evaluate.
- * @param {SelectableItems} items - A collection of items to validate actions against.
- * @returns {ActionConfig[]} An array of action configurations that are valid for the given items.
- */
-export const getAvailableActions = (
-  actions: ReadonlyArray<ActionConfig>,
-  items: SelectableItems,
-): ActionConfig[] => {
-  return actions.filter((action) => validateAction(action, items).valid);
-};
-
-type ValidatedItem = {
-  item: SelectableItem;
-  failedAction?: ActionConfig;
-};
-
 export const doesItemFailRule = (
   item: CohortItem | FileItemWithParentDatasetNameAndID,
   action: ActionConfig,
-): boolean => {
-  return action.itemRules.some((rule) => !evaluateItemRule(rule, item));
+): string[] => {
+  return (
+    action?.itemRules?.reduce((acc: string[], rule) => {
+      if (!evaluateItemRule(rule, item)) {
+        acc.push(rule.message);
+      }
+      return acc;
+    }, []) ?? []
+  );
 };
 
 export const doesGroupFailRule = (
   items: Array<SelectableItem>,
   action: ActionConfig,
-): boolean => {
-  return action.groupRules.some((rule) => !evaluateGroupRule(rule, items));
-};
-
-/**
- * Identifies the items that fail a given action based on specified rules.
- *
- * @param {ActionConfig} action - The configuration of the action to be tested.
- * @param {SelectableItems} items - A collection of items to be evaluated against the action.
- * @returns {Array<ValidatedItem>} An array of results containing the items that failed the action and the corresponding action.
- */
-export const getFailedActionsForItems = (
-  action: ActionConfig,
-  items: SelectableItems,
-): Array<ValidatedItem> => {
-  // Iterate over each item and test action, for ones that fail add action to
-  // item otherwise just add the item
-  return items.reduce((acc, item) => {
-    if (doesItemFailRule(item, action)) {
-      acc.push({ item, failedAction: action });
-    } else {
-      acc.push({ item });
-    }
-    return acc;
-  }, [] as ValidatedItem[]);
+): string[] => {
+  return (
+    action?.groupRules?.reduce((acc: string[], rule) => {
+      if (!evaluateGroupRule(rule, items)) {
+        acc.push(rule.message);
+      }
+      return acc;
+    }, []) ?? []
+  );
 };

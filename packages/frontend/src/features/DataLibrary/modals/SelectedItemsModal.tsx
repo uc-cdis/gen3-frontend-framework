@@ -53,11 +53,12 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     const validItems = gatheredItems.map((item, index) => {
       if (rowSelection[index]) {
         // if selected then validate item rules
-        if (doesItemFailRule(item, action)) {
-          return { ...item, valid: false };
-        }
-        // if group has failed set this item to invalid
-        if (groupFailsRule) return { ...item, valid: false };
+        const itemFailsRule = doesItemFailRule(item, action);
+
+        const itemAndGroupTest = [...itemFailsRule, ...groupFailsRule];
+        if (itemAndGroupTest.length > 0)
+          return { ...item, valid: false, errorMessages: itemAndGroupTest };
+
         // defaults return true
         return { ...item, valid: true };
       } // no selection so all items are valid
@@ -65,7 +66,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     });
 
     return validItems;
-  }, [gatheredItems, rowSelection, actions]);
+  }, [gatheredItems, rowSelection, actions, value]);
 
   return (
     <Modal {...props} title="Retrieve Data" closeOnEscape centered>
@@ -86,7 +87,9 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
               }}
             />
           </Group>
-          <Button onClick={() => console.log('send')}>Send</Button>
+          <Button disabled={!value} onClick={() => console.log('send')}>
+            Send
+          </Button>
         </Group>
       </Stack>
     </Modal>

@@ -5,7 +5,7 @@ import {
   MRT_Cell,
   useMantineReactTable,
 } from 'mantine-react-table';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { Text } from '@mantine/core';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
@@ -14,11 +14,8 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 
 const columns = [
   {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
     accessorKey: 'valid',
+    enableHiding: true,
     header: 'Valid',
     Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
       return (
@@ -27,6 +24,10 @@ const columns = [
         </Text>
       );
     },
+  },
+  {
+    accessorKey: 'id',
+    header: 'Id',
   },
   {
     accessorKey: 'description',
@@ -48,10 +49,6 @@ const columns = [
   {
     accessorKey: 'size',
     header: 'Size',
-  },
-  {
-    accessorKey: 'datasetName',
-    header: 'Dataset Name',
   },
   {
     accessorKey: 'datasetId',
@@ -90,10 +87,13 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     });
   };
 
-  const rows = useDeepCompareMemo(() => {
-    return validatedItems.map((item) => {
+  const tableRows = useDeepCompareMemo(() => {
+    let hasInvalidRows = false;
+    const rows = validatedItems.map((item) => {
+      if (!item.valid) hasInvalidRows = true;
       if (isCohortItem(item)) {
         return {
+          id: item.id,
           name: item.name,
           description: item.description,
           type: item.itemType as string,
@@ -105,6 +105,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
       }
 
       return {
+        id: item.id,
         name: item.name,
         description: item.description,
         type: item.type,
@@ -114,11 +115,16 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         valid: item.valid,
       } as SelectedItemsTableRow;
     });
+
+    return {
+      rows,
+      hasInvalidRows,
+    };
   }, [validatedItems]);
 
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
-    data: rows,
+    data: tableRows.rows,
     enableColumnResizing: false,
     icons: TableIcons,
     enableTopToolbar: false,
@@ -126,12 +132,13 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     enableSelectAll: true,
     enableColumnFilters: false,
     enableColumnActions: false,
-    enableBottomToolbar: rows.length > 10,
-    enablePagination: rows.length > 10,
+    enableBottomToolbar: tableRows.rows.length > 10,
+    enablePagination: tableRows.rows.length > 10,
     enablePagination: true,
     enableRowActions: false,
     enableStickyFooter: true,
     enableStickyHeader: true,
+    enableHiding: true,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
     initialState: {

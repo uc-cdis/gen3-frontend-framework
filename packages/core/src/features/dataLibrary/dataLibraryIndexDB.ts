@@ -224,8 +224,7 @@ export const getDataLibraryListIndexDB = async (
       }
     } else {
       const lists = (await store.getAll()) as Array<DataLibraryFromStore>;
-      console.log('lists', lists);
-      const b = lists.reduce(
+      const listMap = lists.reduce(
         (acc: Record<string, JSONObject>, x: DataLibraryFromStore) => {
           acc[x.id] = {
             ...x,
@@ -235,29 +234,10 @@ export const getDataLibraryListIndexDB = async (
         },
         {},
       );
-      const a = BuildLists({ lists: b as any });
-      console.log('a', a);
+      const datalists = BuildLists({ lists: listMap });
       return {
         status: 'success',
-        lists: a,
-      };
-      return {
-        status: 'success',
-        lists: lists.reduce(
-          (acc: Record<string, Datalist>, x: DataLibraryFromStore) => {
-            acc[x.id] = {
-              id: x.id,
-              version: x.version,
-              name: x.name,
-              authz: x.authz,
-              createdTime: x.created_time,
-              updatedTime: x.updated_time,
-              items: x.items as any, // TODO Process items
-            };
-            return acc;
-          },
-          {},
-        ),
+        lists: datalists,
       };
     }
   } catch (error: unknown) {
