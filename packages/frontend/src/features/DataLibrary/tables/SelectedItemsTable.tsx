@@ -7,7 +7,7 @@ import {
   MRT_Row,
 } from 'mantine-react-table';
 import React from 'react';
-import { Text } from '@mantine/core';
+import { Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
@@ -24,14 +24,18 @@ const columns = [
     Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
       if (row.original.valid === false) {
         return (
-          <Icon icon="gen3:warning" className="text-yellow-400">
-            <Text fw={400} size="sm" lineClamp={2}>
-              {row.original?.messages?.length}
-            </Text>
-          </Icon>
+          <Tooltip
+            label={row.original?.messages?.join('\n') ?? 'Unknown Error'}
+          >
+            <Icon icon="gen3:warning" className="text-yellow-400 text-xl">
+              <Text fw={400} size="sm">
+                {row.original?.messages?.length}
+              </Text>
+            </Icon>
+          </Tooltip>
         );
       } else {
-        return <Icon icon="gen3:warning" className="text-green-400" />;
+        return <Icon icon="gen3:check" className="text-green-400 text-x" />;
       }
     },
   },
@@ -102,6 +106,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     let hasInvalidRows = false;
     const rows = validatedItems.map((item) => {
       if (!item.valid) hasInvalidRows = true;
+      console.log(item);
       if (isCohortItem(item)) {
         return {
           id: item.id,
@@ -112,7 +117,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
           datasetName: item.name,
           datasetId: item.datasetId,
           valid: item.valid,
-          messages: item?.messages,
+          messages: item?.errorMessages,
         } as SelectedItemsTableRow;
       }
 
@@ -125,7 +130,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         datasetId: item.datasetId,
         datasetName: item.datasetName,
         valid: item.valid,
-        messages: item?.messages,
+        messages: item?.errorMessages,
       } as SelectedItemsTableRow;
     });
 
@@ -142,9 +147,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     icons: TableIcons,
     enableTopToolbar: false,
     enableRowSelection: true,
-    enableSelectAll: true,
-    enableColumnFilters: false,
-    enableColumnActions: false,
+    enableGrouping: true,
     enableBottomToolbar: tableRows.rows.length > 10,
     enablePagination: tableRows.rows.length > 10,
     enableRowActions: false,
@@ -177,7 +180,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         backgroundColor: 'var(--mantine-color-table-1)',
         color: 'var(--mantine-color-table-contrast-1)',
         textAlign: 'center',
-        padding: '0 0 0 0',
+        padding: '0.25rem 0.5rem 0.25rem 0.5rem',
         fontWeight: 600,
         fontSize: 'var(--mantine-font-size-sm)',
       },
