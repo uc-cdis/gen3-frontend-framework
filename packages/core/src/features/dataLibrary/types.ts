@@ -5,7 +5,12 @@ export interface AuthZAccess {
   authz: string[];
 }
 
-export type ItemValue = string | number | undefined | Record<string, any>;
+export type ItemValue =
+  | string
+  | number
+  | undefined
+  | Record<string, any>
+  | boolean;
 
 export interface Items {
   [k: string]: ItemValue;

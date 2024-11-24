@@ -4,9 +4,11 @@ import {
   MRT_Updater,
   MRT_Cell,
   useMantineReactTable,
+  MRT_Row,
 } from 'mantine-react-table';
 import React from 'react';
 import { Text } from '@mantine/core';
+import { Icon } from '@iconify/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { ValidatedSelectedItem } from '../types';
@@ -16,13 +18,21 @@ const columns = [
   {
     accessorKey: 'valid',
     enableHiding: true,
+    size: 40,
+    maxSize: 50,
     header: 'Valid',
-    Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
-      return (
-        <Text fw={400} size="sm" lineClamp={2}>
-          {cell.getValue<boolean>()?.toString()}
-        </Text>
-      );
+    Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
+      if (row.original.valid === false) {
+        return (
+          <Icon icon="gen3:warning" className="text-yellow-400">
+            <Text fw={400} size="sm" lineClamp={2}>
+              {row.original?.messages?.length}
+            </Text>
+          </Icon>
+        );
+      } else {
+        return <Icon icon="gen3:warning" className="text-green-400" />;
+      }
     },
   },
   {
@@ -32,8 +42,8 @@ const columns = [
   {
     accessorKey: 'description',
     header: 'Description',
-    size: 100,
-    maxSize: 150,
+    size: 150,
+    maxSize: 250,
     Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
       return (
         <Text fw={400} size="sm" lineClamp={2}>
@@ -64,12 +74,13 @@ interface SelectedItemsTableRow {
   name?: string;
   description?: string;
   valid?: boolean;
+  messages?: string[];
 }
 
 interface SelectedItemsTableProps {
-  validatedItems: ReaconlyArray<ValidatedSelectedItem>;
+  validatedItems: ReadonlyArray<ValidatedSelectedItem>;
   rowSelection: MRT_RowSelectionState;
-  setRowSelection: React.Dispatch<React.SetStateAction<RowSelectionState>>;
+  setRowSelection: React.Dispatch<React.SetStateAction<MRT_RowSelectionState>>;
 }
 
 const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
@@ -101,6 +112,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
           datasetName: item.name,
           datasetId: item.datasetId,
           valid: item.valid,
+          messages: item?.messages,
         } as SelectedItemsTableRow;
       }
 
@@ -113,6 +125,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         datasetId: item.datasetId,
         datasetName: item.datasetName,
         valid: item.valid,
+        messages: item?.messages,
       } as SelectedItemsTableRow;
     });
 
@@ -134,7 +147,6 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     enableColumnActions: false,
     enableBottomToolbar: tableRows.rows.length > 10,
     enablePagination: tableRows.rows.length > 10,
-    enablePagination: true,
     enableRowActions: false,
     enableStickyFooter: true,
     enableStickyHeader: true,

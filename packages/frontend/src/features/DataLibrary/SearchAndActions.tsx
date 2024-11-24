@@ -1,8 +1,7 @@
 import React from 'react';
-import { Button, Group, TextInput, Tooltip } from '@mantine/core';
-import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
+import { Button, Group, Tooltip } from '@mantine/core';
+// import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import { Datalist } from '@gen3/core';
-import { Icon } from '@iconify/react';
 
 interface SearchAndActionsProps {
   createList: (item?: Partial<Datalist>) => Promise<void>;

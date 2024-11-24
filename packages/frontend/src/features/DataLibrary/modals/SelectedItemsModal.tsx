@@ -19,6 +19,7 @@ import {
 } from '../selection/selectedItemActions';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
+import { MRT_RowSelectionState } from 'mantine-react-table';
 
 interface SelectedItemsModelProps extends ModalProps {
   actions: ActionsConfig;
@@ -39,9 +40,9 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
   const validatedLibrarySelections = useDeepCompareMemo(() => {
     // get the action
     const action = getActionById(actions, value?.value);
-    // if there are no actions then everything is valie
+    // if there are no actions then everything is valid
     if (!action)
-      return gatheredItems.map((item, index) => {
+      return gatheredItems.map((item) => {
         return { ...item, valid: true };
       });
     // get all selected items
@@ -87,7 +88,12 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
               }}
             />
           </Group>
-          <Button disabled={!value} onClick={() => console.log('send')}>
+          <Button
+            disabled={
+              !value || validatedLibrarySelections.some((x) => !x.valid)
+            }
+            onClick={() => console.log('send')}
+          >
             Send
           </Button>
         </Group>

@@ -28,7 +28,17 @@ export interface DataLibraryConfig {
 
 export type SelectableItem = CohortItem | FileItemWithParentDatasetNameAndID;
 
-export interface ValidatedSelectedItem extends SelectableItem {
+export interface ValidCohortItem extends CohortItem {
   valid?: boolean;
   errors?: string[];
 }
+
+export interface ValidFileItemWithParentDatasetNameAndID
+  extends FileItemWithParentDatasetNameAndID {
+  valid?: boolean;
+  errors?: string[];
+}
+
+export type ValidatedSelectedItem =
+  | ValidCohortItem
+  | ValidFileItemWithParentDatasetNameAndID;

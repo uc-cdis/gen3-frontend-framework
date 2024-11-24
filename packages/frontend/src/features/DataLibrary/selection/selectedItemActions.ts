@@ -35,7 +35,7 @@ export interface GroupRule extends Omit<ItemRule, 'operator'> {
 export interface ActionConfig {
   id: string;
   label: string;
-  itemRules?: Rule[];
+  itemRules?: ItemRule[];
   groupRules?: GroupRule[];
 }
 
@@ -48,8 +48,8 @@ const isNumeric = (value: unknown): value is number =>
   typeof value === 'number' && !isNaN(value);
 
 export const evaluateItemRule = (
-  rule: Rule,
-  item: SelectableItems,
+  rule: ItemRule,
+  item: SelectableItem,
 ): boolean => {
   switch (rule.operator) {
     case 'equals':
@@ -103,8 +103,9 @@ const evaluateGroupRule = (
  */
 export const getActionById = (
   actions: ActionsConfig,
-  id: string,
+  id?: string,
 ): ActionConfig | undefined => {
+  if (!id) return undefined;
   return actions.find((action) => action.id === id);
 };
 
@@ -115,7 +116,7 @@ export const doesItemFailRule = (
   return (
     action?.itemRules?.reduce((acc: string[], rule) => {
       if (!evaluateItemRule(rule, item)) {
-        acc.push(rule.message);
+        acc.push(rule.errorMessage);
       }
       return acc;
     }, []) ?? []
@@ -129,7 +130,7 @@ export const doesGroupFailRule = (
   return (
     action?.groupRules?.reduce((acc: string[], rule) => {
       if (!evaluateGroupRule(rule, items)) {
-        acc.push(rule.message);
+        acc.push(rule.errorMessage);
       }
       return acc;
     }, []) ?? []
