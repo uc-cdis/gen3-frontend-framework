@@ -48,6 +48,7 @@ export const commonTableSettings: Partial<MRT_TableOptions<any>> = {
     style: {
       backgroundColor: 'var(--mantine-color-base-1)',
       '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
+      fontSize: 'var(--mantine-font-size-xs)',
     },
   },
   mantineTableHeadCellProps: {
@@ -56,7 +57,7 @@ export const commonTableSettings: Partial<MRT_TableOptions<any>> = {
       color: 'var(--mantine-color-table-contrast-1)',
       textAlign: 'center',
       fontWeight: 600,
-      fontSize: 'var(--mantine-font-size-sm)',
+      fontSize: 'var(--mantine-font-size-xs)',
       textTransform: 'uppercase',
     },
   },

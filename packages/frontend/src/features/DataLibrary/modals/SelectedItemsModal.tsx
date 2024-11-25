@@ -12,7 +12,6 @@ import {
 
 import SelectedItemsTable from '../tables/SelectedItemsTable';
 import {
-  ActionsConfig,
   getActionById,
   doesItemFailRule,
   doesGroupFailRule,
@@ -21,6 +20,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { MRT_RowSelectionState } from 'mantine-react-table';
 import { ValidatedSelectedItem } from '../types';
+import { ActionsConfig } from '../selection/types';
 
 interface SelectedItemsModelProps extends ModalProps {
   actions: ActionsConfig;
