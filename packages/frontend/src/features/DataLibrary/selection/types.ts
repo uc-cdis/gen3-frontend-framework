@@ -33,9 +33,10 @@ export interface DataLibraryActionConfig {
   label: string;
   rightIcon?: string;
   leftIcon?: string;
+  actionFunction: string;
   parameters?: Record<string, unknown>;
   itemRules?: ItemRule[];
   groupRules?: GroupRule[];
 }
 
-export type ActionsConfig = ReadonlyArray<DataLibraryActionConfig>;
+export type DataLibraryActionsConfig = ReadonlyArray<DataLibraryActionConfig>;

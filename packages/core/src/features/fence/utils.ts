@@ -63,7 +63,7 @@ interface DownloadFromFenceParameters {
   signal?: AbortSignal; // AbortSignal to use for the request
 }
 
-export const downloadJSONDataFromFence = async ({
+export const fetchFencePresignedURL = async ({
   guid,
   method = 'GET',
   onAbort = () => null,

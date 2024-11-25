@@ -19,7 +19,7 @@ import {
 
 import { useGetJWKKeysQuery } from './jwtApi';
 import { FetchError, Gen3FenceResponse } from './types';
-import { fetchFence, downloadJSONDataFromFence } from './utils';
+import { fetchFence, fetchFencePresignedURL } from './utils';
 
 export {
   type Gen3FenceResponse,
@@ -39,5 +39,5 @@ export {
   useGetLoginProvidersQuery,
   useGetJWKKeysQuery,
   useAuthorizeFromCredentialsMutation,
-  downloadJSONDataFromFence,
+  fetchFencePresignedURL,
 };

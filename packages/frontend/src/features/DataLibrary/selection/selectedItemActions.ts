@@ -1,8 +1,8 @@
 import { CohortItem } from '@gen3/core';
 import { FileItemWithParentDatasetNameAndID, SelectableItem } from '../types';
 import {
-  ActionsConfig,
   DataLibraryActionConfig,
+  DataLibraryActionsConfig,
   GroupRule,
   ItemRule,
 } from './types';
@@ -70,7 +70,7 @@ const evaluateGroupRule = (
  * @returns {DataLibraryActionConfig | undefined} The action configuration with the matching identifier, or undefined if not found.
  */
 export const getActionById = (
-  actions: ActionsConfig,
+  actions: DataLibraryActionsConfig,
   id?: string,
 ): DataLibraryActionConfig | undefined => {
   if (!id) return undefined;

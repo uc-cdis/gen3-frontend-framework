@@ -1,7 +1,7 @@
 import { sendPFBToURL } from './exportActions';
 
 export type DataActionFunction<T = void> = (
-  params: Record<string, any>,
+  params?: Record<string, any>,
   done?: () => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
@@ -10,7 +10,7 @@ export type DataActionFunction<T = void> = (
 
 // create a factory for the action creators
 
-interface ActionCreatorFactoryItem {
+export interface ActionCreatorFactoryItem {
   readonly action: DataActionFunction;
 }
 
