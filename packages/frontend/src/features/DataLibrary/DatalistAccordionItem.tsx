@@ -70,22 +70,29 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
               index: dataItem.index,
               id: datasetId,
             });
+          } else if (isFileItem(dataItem)) {
+            files.push(dataItem);
+          } else if (isAdditionalDataItem(dataItem)) {
+            additionalData.push(dataItem);
           } else {
-            // handle RegisteredDataListEntry
-            console.log('dataItem', dataItem, dataItem.items);
-            Object.entries(dataItem.items).forEach(([itemId, item]) => {
-              if (isFileItem(item)) {
-                files.push({
-                  ...item,
-                  id: itemId,
-                });
-              } else if (isAdditionalDataItem(item)) {
-                additionalData.push(item);
-              } else {
-                console.warn('DataLibrary: unknown item', item);
-              }
-            });
+            console.warn('DataLibrary: unknown item', dataItem);
           }
+
+          // handle RegisteredDataListEntry
+          //   console.log('dataItem', dataItem, dataItem.items);
+          //   Object.entries(dataItem.items).forEach(([itemId, item]) => {
+          //     if (isFileItem(item)) {
+          //       files.push({
+          //         ...item,
+          //         id: itemId,
+          //       });
+          //     } else if (isAdditionalDataItem(item)) {
+          //       additionalData.push(item);
+          //     } else {
+          //       console.warn('DataLibrary: unknown item', item);
+          //     }
+          //   });
+          // }
           // return the
           acc[datasetId] = {
             id: datasetId,

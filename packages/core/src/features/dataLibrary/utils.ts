@@ -5,14 +5,14 @@ import {
   DataLibraryAPIResponse,
   Datalist,
   // DataListEntry,
-  DataSetItems,
+  //DataSetItems,
   isCohortItem,
   isFileItem,
   // RegisteredDataListEntry,
 } from './types';
 import { JSONObject } from '../../types/';
 
-const processItem = (id: string, data: any) => {
+const processItem = (data: any) => {
   if (data?.type === 'AdditionalData') {
     return {
       name: data.name,
@@ -27,7 +27,8 @@ const processItem = (id: string, data: any) => {
     ...data,
     itemType: 'Data',
     guid: data.id,
-    id: id, // TODO fix this hack
+    id: data.id,
+    datasetGuid: data.dataset_guid,
   };
 };
 
@@ -84,19 +85,9 @@ export const BuildList = (
           schemaVersion: data.schema_version,
           data: data.data,
           name: data.name,
-          index: data.index,
         } as CohortItem;
       } else {
-        if (!(data.dataset_guid in acc.items)) {
-          acc.items[data.dataset_guid as string] = {
-            id: data.dataset_guid,
-            name: '',
-            items: { [id]: processItem(id, data) },
-          };
-        } else {
-          (acc.items[data.dataset_guid as string].items as DataSetItems)[id] =
-            processItem(id, data);
-        }
+        acc.items[id] = processItem(data);
       }
       return acc;
     },
@@ -118,11 +109,15 @@ export const BuildList = (
 };
 
 export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
-  return Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
-    const list = BuildList(listId, listData as JSONObject);
-    if (list) acc[listId] = list;
-    return acc;
-  }, {} as DataLibrary);
+  const lists = Object.entries(data?.lists).reduce(
+    (acc, [listId, listData]) => {
+      const list = BuildList(listId, listData as JSONObject);
+      if (list) acc[listId] = list;
+      return acc;
+    },
+    {} as DataLibrary,
+  );
+  return lists;
 };
 
 /**
@@ -138,16 +133,11 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
     if (isCohortItem(item)) {
       return count + 1;
     } else {
-      return (
-        count +
-        Object.values(item?.items ?? {}).reduce((fileCount, x) => {
-          if (isFileItem(x)) {
-            return fileCount + 1;
-          }
-          return fileCount;
-        }, 0)
-      );
+      if (isFileItem(item)) {
+        return count + 1;
+      }
     }
+    return count;
   }, 0);
 };
 

@@ -10,7 +10,6 @@ export const commonTableSettings: Partial<MRT_TableOptions<any>> = {
   enableRowActions: true,
   enableColumnOrdering: false,
   enableFacetedValues: true,
-  enableGrouping: false,
   enableColumnPinning: false,
   enableRowSelection: true,
   enablePagination: false,

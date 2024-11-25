@@ -8,17 +8,17 @@ import {
 } from 'mantine-react-table';
 import { Button, Stack, Text, Tooltip } from '@mantine/core';
 import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
-import AdditionalDataTable from './AdditionalDataTable';
-import { DatalistMembers } from '../types';
-import { commonTableSettings } from './tableSettings';
+import AdditionalDataTable from './tables/AdditionalDataTable';
+import { DatalistMembers } from './types';
+import { commonTableSettings } from './tables/tableSettings';
 import {
   getNumberOfDataSetItemsSelected,
   useDataLibrarySelection,
-} from '../selection/SelectionContext';
-import { selectAllDatasetMembers } from '../selection/selection';
-import FilesTable from './FilesTable';
-import EmptyList from '../EmptyList';
-import QueryDetails from '../QueryDetails';
+} from './selection/SelectionContext';
+import { selectAllDatasetMembers } from './selection/selection';
+import FilesTable from './tables/FilesTable';
+import EmptyList from './EmptyList';
+import QueryDetails from './QueryDetails';
 
 /**
  *  Component that manages a List items, which are composed of Dataset and/or Cohorts

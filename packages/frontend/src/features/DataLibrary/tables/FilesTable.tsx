@@ -34,6 +34,10 @@ const columns = [
     accessorKey: 'size',
     header: 'Size',
   },
+  {
+    accessorKey: 'dataset_guid',
+    header: 'Dataset ID',
+  },
 ];
 
 const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {

@@ -235,6 +235,7 @@ export const getDataLibraryListIndexDB = async (
         {},
       );
       const datalists = BuildLists({ lists: listMap });
+
       return {
         status: 'success',
         lists: datalists,

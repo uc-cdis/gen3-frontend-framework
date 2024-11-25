@@ -72,27 +72,32 @@ export const isCohortItem = (item: any): item is CohortItem => {
   );
 };
 
-export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
+///export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
 /**
  * Represents a DataSet which is created by grouping File
  * objects with the same dataset_guids
  */
-export interface DataListEntry {
-  name?: string; // TODO: figure out how to set name
-  items: DataSetItems;
-}
+// export interface DataListEntry {
+//   name?: string; // TODO: figure out how to set name
+//   items: DataSetItems;
+// }
 
-export interface RegisteredDataListEntry extends DataListEntry {
-  id: string;
-}
+// export interface RegisteredDataListEntry extends DataListEntry {
+//   id: string;
+// }
 
-export type FilesOrCohort = Record<
-  string,
-  RegisteredDataListEntry | CohortItem
->;
+// export type FilesOrCohort = Record<
+//   string,
+//   DataSetItems | CohortItem
+// >;
 
 export type LibraryAPIItems = Record<
+  string,
+  FileItem | AdditionalDataItem | CohortItem
+>;
+
+export type DatalistItems = Record<
   string,
   FileItem | AdditionalDataItem | CohortItem
 >;
@@ -104,7 +109,7 @@ export interface Datalist {
   authz: AuthZAccess;
   version: number;
   name: string;
-  items: FilesOrCohort;
+  items: DatalistItems;
 }
 
 export type DataLibrary = Record<string, Datalist>;
@@ -118,7 +123,7 @@ export type DataLibraryAPIResponse = {
 };
 
 export interface LoadAllListData {
-  lists: Array<DataListEntry>;
+  lists: Array<Datalist>;
 }
 
 export interface AddUpdateListParams {
