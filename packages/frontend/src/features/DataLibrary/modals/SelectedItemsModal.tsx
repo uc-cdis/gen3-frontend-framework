@@ -26,7 +26,6 @@ import {
 } from '../selection/types';
 import {
   ActionCreatorFactoryItem,
-  DataActionFunction,
   findAction,
   NullAction,
 } from '../selection/registeredActions';
