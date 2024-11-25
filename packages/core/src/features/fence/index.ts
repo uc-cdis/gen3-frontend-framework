@@ -4,8 +4,6 @@ import {
   type NameUrl,
   logoutFence,
   useGetLoginProvidersQuery,
-  useGetDownloadQuery,
-  useLazyGetDownloadQuery,
 } from './fenceApi';
 
 import {
@@ -32,8 +30,6 @@ export {
   fetchFence,
   logoutFence,
   useGetCredentialsQuery,
-  useGetDownloadQuery,
-  useLazyGetDownloadQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
   useGetLoginProvidersQuery,
