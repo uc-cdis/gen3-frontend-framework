@@ -33,6 +33,7 @@ export interface DataLibraryActionConfig {
   label: string;
   rightIcon?: string;
   leftIcon?: string;
+  buttonLabel: string;
   actionFunction: string;
   parameters?: Record<string, unknown>;
   itemRules?: ItemRule[];

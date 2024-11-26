@@ -1,9 +1,10 @@
 import { sendPFBToURL } from './exportActions';
+import { HTTPError } from '@gen3/core';
 
 export type DataActionFunction<T = void> = (
   params?: Record<string, any>,
-  done?: () => void,
-  onError?: (error: Error) => void,
+  done?: (arg0?: string) => void,
+  onError?: (error: HTTPError | Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
 ) => Promise<T>;

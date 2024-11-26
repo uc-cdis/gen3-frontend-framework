@@ -1,6 +1,6 @@
 import { isObject, isString, isNotDefined, isArray } from './ts-utils';
 import { prepareUrl } from './url';
-import { fetchFencePresignedURL } from './fetch';
+import { HTTPErrorMessages, HTTPError, fetchFencePresignedURL } from './fetch';
 
 export {
   isObject,
@@ -9,4 +9,6 @@ export {
   isArray,
   prepareUrl,
   fetchFencePresignedURL,
+  HTTPError,
+  HTTPErrorMessages,
 };
