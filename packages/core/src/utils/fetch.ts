@@ -1,4 +1,5 @@
-import { getCsrfToken } from '../features/user/utils';
+import { selectCSRFToken } from '../features/user';
+import { coreStore } from '../store';
 import { prepareUrl } from './url';
 import { GEN3_FENCE_API } from '../constants';
 import { getCookie } from 'cookies-next';
@@ -19,7 +20,7 @@ export const fetchFencePresignedURL = async ({
   onAbort = () => null,
   signal = undefined,
 }: DownloadFromFenceParameters) => {
-  const csrfToken = await getCsrfToken();
+  const csrfToken = selectCSRFToken(coreStore.getState());
 
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
