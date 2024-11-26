@@ -32,6 +32,7 @@ import {
 
 const bindAction = (action: DataLibraryActionConfig) => {
   const actionFunction = findAction(action.actionFunction);
+  console.log('bindAction', actionFunction);
   if (!actionFunction) {
     return NullAction;
   }
@@ -70,6 +71,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             action: action,
             parameters: actionConfig.parameters,
           });
+        return;
       }
 
       setActionFunction({ action: NullAction });

@@ -21,7 +21,7 @@ export interface UserAuthResponse {
   readonly loginStatus: LoginStatus;
 }
 
-const userAuthApi = createApi({
+export const userAuthApi = createApi({
   reducerPath: 'userAuthApi',
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
