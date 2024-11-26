@@ -12,10 +12,11 @@ const isSendPFBToURLParameters = (
   if (!value || typeof value !== 'object') {
     return false;
   }
-
   const candidate = value as Record<string, unknown>;
-
-  return typeof candidate.targetURLTemplate === 'string';
+  return (
+    'targetURLTemplate' in candidate &&
+    typeof candidate.targetURLTemplate === 'string'
+  );
 };
 
 export const sendPFBToURL: DataActionFunction = async (

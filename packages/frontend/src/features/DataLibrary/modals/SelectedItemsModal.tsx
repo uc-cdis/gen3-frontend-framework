@@ -36,7 +36,6 @@ import {
 
 const bindAction = (action: DataLibraryActionConfig) => {
   const actionFunction = findAction(action.actionFunction);
-  console.log('bindAction', actionFunction);
   if (!actionFunction) {
     return NullAction;
   }
