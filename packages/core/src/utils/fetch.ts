@@ -1,8 +1,10 @@
 import { selectCSRFToken } from '../features/user';
 import { coreStore } from '../store';
-import { prepareUrl } from './url';
 import { GEN3_FENCE_API } from '../constants';
 import { getCookie } from 'cookies-next';
+
+const prepareDownloadUrl = (apiUrl: string, guid: string) =>
+  new URL(`${apiUrl}/data/download/${guid}`);
 
 interface DownloadFromFenceParameters {
   guid: string;
@@ -33,7 +35,7 @@ export const fetchFencePresignedURL = async ({
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-  const url = prepareUrl(`${GEN3_FENCE_API}/user/download/${guid}`);
+  const url = prepareDownloadUrl(`${GEN3_FENCE_API}/user`, guid);
 
   try {
     const response = await fetch(url.toString(), {
@@ -49,6 +51,7 @@ export const fetchFencePresignedURL = async ({
     // Abort is handle as an exception
     if (error.name == 'AbortError') {
       // handle abort()
+      console.error('fetchFencePresignedURL error'); // TODO: add better error
       onAbort?.();
     }
     throw new Error(error);

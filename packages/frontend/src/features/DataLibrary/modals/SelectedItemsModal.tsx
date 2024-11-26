@@ -145,7 +145,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
               !value || validatedLibrarySelections.some((x) => !x.valid)
             }
             onClick={async () => {
-              console.log('send');
+              console.log('send', actionFunction);
               await actionFunction.action(actionFunction.parameters);
             }}
           >
