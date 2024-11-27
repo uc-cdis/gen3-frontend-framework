@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Button,
   Group,
@@ -9,10 +9,13 @@ import {
   Select,
   Text,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { Icon } from '@iconify/react';
+import { HTTPError } from '@gen3/core';
+import { HTTPUserFriendlyErrorMessages } from './utils';
 
 import SelectedItemsTable from '../tables/SelectedItemsTable';
 import {
-  ActionsConfig,
   getActionById,
   doesItemFailRule,
   doesGroupFailRule,
@@ -21,9 +24,30 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { MRT_RowSelectionState } from 'mantine-react-table';
 import { ValidatedSelectedItem } from '../types';
+import {
+  DataLibraryActionsConfig,
+  DataLibraryActionConfig,
+} from '../selection/types';
+import {
+  ActionCreatorFactoryItem,
+  findAction,
+  NullAction,
+} from '../selection/registeredActions';
+
+const bindAction = (action: DataLibraryActionConfig) => {
+  const actionFunction = findAction(action.actionFunction);
+  if (!actionFunction) {
+    return NullAction;
+  }
+  return actionFunction.action;
+};
 
 interface SelectedItemsModelProps extends ModalProps {
-  actions: ActionsConfig;
+  actions: DataLibraryActionsConfig;
+}
+
+interface ActionFunctionWithParams extends ActionCreatorFactoryItem {
+  parameters?: Record<string, any>;
 }
 
 const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
@@ -31,12 +55,67 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
   const { actions } = props;
   const { gatheredItems } = useDataLibrarySelection();
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [actionFunction, setActionFunction] =
+    useState<ActionFunctionWithParams>({ action: NullAction });
+  const [actionConfig, setActionConfig] =
+    useState<DataLibraryActionConfig | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
 
   const destinations = useMemo(() => {
     return actions.map((action) => {
       return { label: action.label, value: action.id };
     });
   }, [actions]);
+
+  const onError = (error: HTTPError | Error) => {
+    setIsRunning(false);
+    if (error instanceof HTTPError) {
+      notifications.show({
+        id: 'data-library-selection-action-error',
+        position: 'bottom-center',
+        withCloseButton: true,
+        autoClose: 5000,
+        title: 'Action Error',
+        message: HTTPUserFriendlyErrorMessages[error.status],
+        color: 'red',
+        icon: <Icon icon="gen3:outline-error" />,
+        loading: false,
+      });
+    }
+  };
+
+  const onDone = (arg?: string) => {
+    setIsRunning(false);
+    notifications.show({
+      id: 'data-library-selection-action-done',
+      position: 'bottom-center',
+      withCloseButton: true,
+      autoClose: 5000,
+      title: 'Submission Complete',
+      message: actionConfig
+        ? `${actionConfig.label} completed successfully`
+        : 'Completed successfully',
+      loading: false,
+    });
+  };
+
+  const setSelectionAction = useCallback(
+    (actionId: string) => {
+      const actionConfig = getActionById(actions, actionId);
+      if (actionConfig) {
+        setActionConfig(actionConfig);
+        const action = bindAction(actionConfig);
+        if (action)
+          setActionFunction({
+            action: action,
+            parameters: actionConfig.parameters,
+          });
+        return;
+      }
+      setActionFunction({ action: NullAction });
+    },
+    [actions],
+  );
 
   const validatedLibrarySelections =
     useDeepCompareMemo((): ReadonlyArray<ValidatedSelectedItem> => {
@@ -92,18 +171,33 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             <Select
               data={destinations}
               value={value ? value.value : null}
-              onChange={(_value, option) => {
+              onChange={(value, option) => {
                 setValue(option);
+                if (value) setSelectionAction(value);
+                else setActionFunction({ action: NullAction });
               }}
             />
           </Group>
           <Button
+            loading={isRunning}
+            rightSection={
+              actionConfig?.leftIcon ? (
+                <Icon icon={actionConfig?.leftIcon} />
+              ) : undefined
+            }
             disabled={
               !value || validatedLibrarySelections.some((x) => !x.valid)
             }
-            onClick={() => console.log('send')}
+            onClick={async () => {
+              setIsRunning(true);
+              await actionFunction.action(
+                actionFunction.parameters,
+                onDone,
+                onError,
+              );
+            }}
           >
-            Send
+            {actionConfig ? actionConfig.buttonLabel : 'Submit'}
           </Button>
         </Group>
       </Stack>

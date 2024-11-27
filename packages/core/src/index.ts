@@ -20,6 +20,7 @@ export * from './features/user';
 export * from './types';
 export * from './store';
 export * from './hooks';
+export * from './utils';
 export * from './dataAccess';
 export * from './provider';
 export * from './features/authz';

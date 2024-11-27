@@ -1,45 +1,13 @@
 import { CohortItem } from '@gen3/core';
 import { FileItemWithParentDatasetNameAndID, SelectableItem } from '../types';
+import {
+  DataLibraryActionConfig,
+  DataLibraryActionsConfig,
+  GroupRule,
+  ItemRule,
+} from './types';
 
 export type SelectableItems = Array<SelectableItem>;
-
-type RuleOperator =
-  | 'equals'
-  | 'not'
-  | 'includes'
-  | 'excludes'
-  | 'greater'
-  | 'less';
-type GroupOperator = 'count';
-
-// Enforce type safety for rule values
-type RuleValue = string | number | boolean;
-
-// Ensure field exists on items
-type ValidField<T> = keyof T;
-type CommonFields = ValidField<CohortItem> &
-  ValidField<FileItemWithParentDatasetNameAndID>;
-
-export interface ItemRule {
-  field: CommonFields;
-  operator: RuleOperator;
-  value: RuleValue;
-  errorMessage: string;
-}
-
-export interface GroupRule extends Omit<ItemRule, 'operator'> {
-  operator: GroupOperator;
-  total: RuleValue;
-}
-
-export interface ActionConfig {
-  id: string;
-  label: string;
-  itemRules?: ItemRule[];
-  groupRules?: GroupRule[];
-}
-
-export type ActionsConfig = ReadonlyArray<ActionConfig>;
 
 const isArrayField = (value: unknown): value is Array<unknown> =>
   Array.isArray(value);
@@ -99,19 +67,19 @@ const evaluateGroupRule = (
  *
  * @param {ActionsConfig} actions - An array of action configurations.
  * @param {string} id - The unique identifier of the desired action configuration.
- * @returns {ActionConfig | undefined} The action configuration with the matching identifier, or undefined if not found.
+ * @returns {DataLibraryActionConfig | undefined} The action configuration with the matching identifier, or undefined if not found.
  */
 export const getActionById = (
-  actions: ActionsConfig,
+  actions: DataLibraryActionsConfig,
   id?: string,
-): ActionConfig | undefined => {
+): DataLibraryActionConfig | undefined => {
   if (!id) return undefined;
   return actions.find((action) => action.id === id);
 };
 
 export const doesItemFailRule = (
   item: CohortItem | FileItemWithParentDatasetNameAndID,
-  action: ActionConfig,
+  action: DataLibraryActionConfig,
 ): string[] => {
   return (
     action?.itemRules?.reduce((acc: string[], rule) => {
@@ -125,7 +93,7 @@ export const doesItemFailRule = (
 
 export const doesGroupFailRule = (
   items: Array<SelectableItem>,
-  action: ActionConfig,
+  action: DataLibraryActionConfig,
 ): string[] => {
   return (
     action?.groupRules?.reduce((acc: string[], rule) => {

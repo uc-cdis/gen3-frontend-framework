@@ -1,5 +1,6 @@
 import { AdditionalDataItem, CohortItem, FileItem } from '@gen3/core';
-import { ActionsConfig } from './selection/selectedItemActions';
+
+import { DataLibraryActionsConfig } from './selection/types';
 
 export interface DatasetContents {
   id: string;
@@ -10,7 +11,6 @@ export interface DatasetContents {
 }
 
 export type DatalistMembers = Record<string, DatasetContents>;
-
 export type DataItemSelectedState = 'checked' | 'unchecked' | 'indeterminate';
 
 /**
@@ -23,7 +23,7 @@ export interface FileItemWithParentDatasetNameAndID extends FileItem {
 
 export interface DataLibraryConfig {
   useAPI: boolean;
-  actions: ActionsConfig;
+  actions: DataLibraryActionsConfig;
 }
 
 export type SelectableItem = CohortItem | FileItemWithParentDatasetNameAndID;
