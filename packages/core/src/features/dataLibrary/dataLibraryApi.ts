@@ -57,7 +57,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
     updateDataLibraryList: builder.mutation<void, AddUpdateListParams>({
       query: ({ id, list }) => ({
         url: `${GEN3_DATA_LIBRARY_API}/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: list,
       }),
       invalidatesTags: [TAGS],
