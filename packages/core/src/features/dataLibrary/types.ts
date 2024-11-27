@@ -97,6 +97,11 @@ export type LibraryAPIItems = Record<
   FileItem | AdditionalDataItem | CohortItem
 >;
 
+export interface DatalistUpdate {
+  name: string;
+  items: LibraryAPIItems;
+}
+
 export interface Datalist {
   id: string;
   createdTime: string;
@@ -123,5 +128,5 @@ export interface LoadAllListData {
 
 export interface AddUpdateListParams {
   id: string;
-  list: Datalist;
+  list: DatalistUpdate;
 }

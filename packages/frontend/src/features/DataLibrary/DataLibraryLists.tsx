@@ -5,7 +5,6 @@ import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { useDataLibrarySelection } from './selection/SelectionContext';
 import SelectedItemsModal from './modals/SelectedItemsModal';
-import { data1 } from './utils';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 
@@ -15,8 +14,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
-    setAllListsInDataLibrary,
-    clearLibrary,
   } = useDataLibrary(useAPI);
 
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
@@ -60,24 +57,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
             })}
         </Accordion>
       </div>
-      {!useAPI && (
-        <div className="flex space-x-4 m-2">
-          <Button
-            onClick={() => {
-              setAllListsInDataLibrary(data1 as any);
-            }}
-          >
-            Load Sample List
-          </Button>
-          <Button
-            onClick={() => {
-              clearLibrary();
-            }}
-          >
-            Clear All
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

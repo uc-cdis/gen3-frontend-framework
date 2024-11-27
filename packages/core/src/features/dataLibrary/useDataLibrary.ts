@@ -17,6 +17,7 @@ import {
   deleteAll,
 } from './dataLibraryIndexDB';
 import { DataLibrary, Datalist, LoadAllListData } from './types';
+import { flattenDataList } from './utils';
 
 export const useDataLibrary = (useApi: boolean) => {
   const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
@@ -105,8 +106,9 @@ export const useDataLibrary = (useApi: boolean) => {
   };
 
   const updateListInDataLibrary = async (id: string, data: Datalist) => {
+    const flattend = flattenDataList(data);
     if (useApi) {
-      await updateItemInLibraryApi({ id, list: data });
+      await updateItemInLibraryApi({ id, list: flattend });
       refetchLibraryFromApi();
     } else {
       const { isError } = await updateListIndexDB(id, data);

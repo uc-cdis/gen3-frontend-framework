@@ -27,6 +27,16 @@ interface DatalistAccordionProps {
   deleteListFromDataLibrary: (id: string) => Promise<void>;
 }
 
+/**
+ * Renders an accordion item with data list details.
+ *
+ * @param {Object} dataListAccordionItemParams - Parameters for the DataListAccordionItem.
+ * @param {Object} dataListAccordionItemParams.dataList - The data list to be displayed in the accordion item.
+ * @param {Function} dataListAccordionItemParams.updateListInDataLibrary - Function to update the list in the data library.
+ * @param {Function} dataListAccordionItemParams.deleteListFromDataLibrary - Function to delete the list from the data library.
+ *
+ * @return {JSX.Element} A rendered accordion item component with controls for data list updates and deletions.
+ */
 export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
   updateListInDataLibrary,
@@ -61,8 +71,6 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             [] as AdditionalDataItem[],
           ];
 
-          // for each dataset in the List
-
           if (isCohortItem(dataItem)) {
             queries.push({
               ...(dataItem as CohortItem),
@@ -72,7 +80,6 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             });
           } else {
             // handle RegisteredDataListEntry
-            console.log('dataItem', dataItem, dataItem.items);
             Object.entries(dataItem.items).forEach(([itemId, item]) => {
               if (isFileItem(item)) {
                 files.push({
@@ -113,17 +120,19 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       listId,
     );
 
+    // everything in the list is selected
     if (numberOfSelectedItemsInList == numberOfItemsInList) {
       setSelectedState('checked');
       return;
     }
 
+    // list is not in selections
     if (numberOfSelectedItemsInList === 0) {
-      // list is not in selections
       setSelectedState('unchecked');
       return;
     }
 
+    // some checked items
     if (numberOfSelectedItemsInList < numberOfItemsInList)
       setSelectedState('indeterminate');
   }, [listId, numberOfItemsInList, selections]);

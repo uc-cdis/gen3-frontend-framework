@@ -4,10 +4,12 @@ import {
   DataLibrary,
   DataLibraryAPIResponse,
   Datalist,
+  DatalistUpdate,
   // DataListEntry,
   DataSetItems,
   isCohortItem,
   isFileItem,
+  LibraryAPIItems,
   // RegisteredDataListEntry,
 } from './types';
 import { JSONObject } from '../../types/';
@@ -30,44 +32,6 @@ const processItem = (id: string, data: any) => {
     id: id, // TODO fix this hack
   };
 };
-
-/**
- * Builds a record of DataSets. The data are created by grouping
- * @param setId
- * @param dataSet
- * @constructor
- */
-/*
-const BuildDataSet = (
-  setId: string,
-  dataSet: DataListEntry,
-): RegisteredDataListEntry => {
-  const res = Object.entries(dataSet?.items).reduce((acc, [id, data]) => {
-    if (data?.type === 'AdditionalData') {
-      acc[id] = {
-        name: data.name,
-        itemType: 'AdditionalData',
-        description: data?.description,
-        documentationUrl: data?.documentationUrl as string,
-        url: data?.url as string,
-      } as AdditionalDataItem;
-    } else {
-      acc[id] = {
-        ...data,
-        itemType: 'Data',
-        guid: id,
-        id: id, // TODO fix this hack
-      };
-    }
-    return acc;
-  }, {} as DataSetItems);
-  return {
-    name: dataSet?.name,
-    id: setId,
-    items: res,
-  };
-};
-*/
 
 export const BuildList = (
   listId: string,
@@ -153,4 +117,25 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
 
 export const getTimestamp = () => {
   return new Date(Date.now()).toLocaleString();
+};
+
+export const flattenDataList = (dataList: Datalist) => {
+  // convert datalist into user-data-library for for updating.
+
+  const items = Object.entries(dataList.items).reduce(
+    (acc: LibraryAPIItems, [id, value]) => {
+      if (isCohortItem(value)) {
+        acc[id] = value;
+      } else {
+        return { ...acc, ...value.items };
+      }
+      return acc;
+    },
+    {},
+  );
+
+  return {
+    name: dataList.name,
+    items: items,
+  } as DatalistUpdate;
 };
