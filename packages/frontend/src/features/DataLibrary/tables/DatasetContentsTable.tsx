@@ -65,6 +65,8 @@ const DataSetContentsTable = ({
 
   const { selections, updateSelections } = useDataLibrarySelection();
 
+  console.log('data', data);
+
   // build the rows
   const rows = useDeepCompareMemo(
     () =>
@@ -78,7 +80,6 @@ const DataSetContentsTable = ({
           isAddDataSource:
             data[key]?.additionalData.length !== 0 ? 'True' : 'False',
           isCohort: data[key]?.queries.length !== 0 ? 'True' : 'False',
-          datesetGuid: data[key]?.files?.datasetGuid,
         };
       }),
     [data],
@@ -215,14 +216,13 @@ const DataSetContentsTable = ({
 
       return (
         <div className="flex flex-col w-full gap-y-4 pr-4">
-          {/*rowData?.files.length > 0 && (
+          {rowData?.files.length > 0 && (
             <FilesTable
               header={'Files'}
-              datasetId={rowData.id}
               listId={listId}
               data={rowData?.files}
             />
-          )*/}
+          )}
           {rowData.additionalData.length > 0 && (
             <AdditionalDataTable
               header={'Additional Data'}

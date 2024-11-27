@@ -54,8 +54,8 @@ export interface AdditionalDataItem extends ListItem {
   datasetGuid: string;
 }
 
-export const isFileItem = (item: ListItem): item is FileItem => {
-  return item && 'guid' in item;
+export const isFileItem = (item: any): item is FileItem => {
+  return item && 'itemType' in item && item.itemType === 'Data';
 };
 
 export const isAdditionalDataItem = (item: any): item is AdditionalDataItem => {

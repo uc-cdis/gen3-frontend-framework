@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { DataItemSelectedState, DatasetContents } from './types';
+import { DataItemSelectedState, DatalistContents } from './types';
 import {
   AdditionalDataItem,
   CohortItem,
@@ -20,6 +20,7 @@ import { selectAllListItems } from './selection/selection';
 import { Accordion } from '@mantine/core';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
 import DataSetContentsTable from './tables/DatasetContentsTable';
+import DatalistContentsPanel from './tables/DatalistContentsPanel';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
@@ -51,62 +52,35 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     });
   };
 
-  const tableRowData = useMemo(
-    () =>
-      Object.entries(dataList.items).reduce(
-        (acc: Record<string, DatasetContents>, [datasetId, dataItem]) => {
-          const [queries, files, additionalData] = [
-            [] as CohortItem[],
-            [] as FileItem[],
-            [] as AdditionalDataItem[],
-          ];
+  const tableRowData = useMemo(() => {
+    const [queries, files, additionalData] = [
+      [] as CohortItem[],
+      [] as FileItem[],
+      [] as AdditionalDataItem[],
+    ];
 
-          // for each dataset in the List
+    Object.keys(dataList.items).forEach((key) => {
+      // for each dataset in the List
+      const dataItem = dataList.items[key];
+      if (isCohortItem(dataItem)) {
+        queries.push(dataItem);
+      } else if (isFileItem(dataItem)) {
+        files.push(dataItem);
+      } else if (isAdditionalDataItem(dataItem)) {
+        additionalData.push(dataItem);
+      } else {
+        console.warn('DataLibrary: unknown item', dataItem);
+      }
+    });
 
-          if (isCohortItem(dataItem)) {
-            queries.push({
-              ...(dataItem as CohortItem),
-              description: '',
-              index: dataItem.index,
-              id: datasetId,
-            });
-          } else if (isFileItem(dataItem)) {
-            files.push(dataItem);
-          } else if (isAdditionalDataItem(dataItem)) {
-            additionalData.push(dataItem);
-          } else {
-            console.warn('DataLibrary: unknown item', dataItem);
-          }
-
-          // handle RegisteredDataListEntry
-          //   console.log('dataItem', dataItem, dataItem.items);
-          //   Object.entries(dataItem.items).forEach(([itemId, item]) => {
-          //     if (isFileItem(item)) {
-          //       files.push({
-          //         ...item,
-          //         id: itemId,
-          //       });
-          //     } else if (isAdditionalDataItem(item)) {
-          //       additionalData.push(item);
-          //     } else {
-          //       console.warn('DataLibrary: unknown item', item);
-          //     }
-          //   });
-          // }
-          // return the
-          acc[datasetId] = {
-            id: datasetId,
-            name: dataItem.name,
-            queries: queries,
-            files: files,
-            additionalData: additionalData,
-          };
-          return acc;
-        },
-        {},
-      ),
-    [dataList],
-  );
+    return {
+      id: dataList.id,
+      name: dataList.name,
+      queries: queries,
+      files: files,
+      additionalData: additionalData,
+    };
+  }, [dataList]);
 
   useEffect(() => {
     // list is not in selection
@@ -172,9 +146,9 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         selectedState={selectedState}
       />
       <Accordion.Panel>
-        <DataSetContentsTable
+        <DatalistContentsPanel
           listId={listId}
-          data={tableRowData}
+          contents={tableRowData}
           removeList={removeItemFromList}
         />
       </Accordion.Panel>

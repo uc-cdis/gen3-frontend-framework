@@ -11,7 +11,6 @@ import { commonTableSettings } from './tableSettings';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 
 interface FilesTableProps {
-  datasetId: string;
   listId: string;
   data: Array<FileItem>;
   header: string;
@@ -35,43 +34,49 @@ const columns = [
     header: 'Size',
   },
   {
+    accessorKey: 'size',
+    header: 'Size',
+  },
+  {
     accessorKey: 'dataset_guid',
     header: 'Dataset ID',
   },
 ];
 
-const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
+const FilesTable = ({ listId, data, header }: FilesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   const { selections, updateListMemberSelections } = useDataLibrarySelection();
 
-  useEffect(() => {
-    const sel = selections?.[listId]?.[datasetId]?.objectIds ?? {};
-    setRowSelection(sel);
-  }, [listId, datasetId, selections]);
+  // useEffect(() => {
+  //   const sel = selections?.[listId]?.[datasetId]?.objectIds ?? {};
+  //   setRowSelection(sel);
+  // }, [listId, datasetId, selections]);
 
-  const handleRowSelectionChange = (
-    updater: MRT_Updater<MRT_RowSelectionState>,
-  ) => {
-    let value = {};
-    setRowSelection((prevSelection) => {
-      value = updater instanceof Function ? updater(prevSelection) : updater;
-      return value;
-    });
-    updateListMemberSelections(listId, datasetId, value);
-  };
+  // const handleRowSelectionChange = (
+  //   updater: MRT_Updater<MRT_RowSelectionState>,
+  // ) => {
+  //   let value = {};
+  //   setRowSelection((prevSelection) => {
+  //     value = updater instanceof Function ? updater(prevSelection) : updater;
+  //     return value;
+  //   });
+  //   updateListMemberSelections(listId, datasetId, value);
+  // };
 
   const table = useMantineReactTable({
     columns,
     data: data,
     ...commonTableSettings,
+    enableColumnActions: true,
     enableBottomToolbar: data.length > 10,
     enablePagination: data.length > 10,
     enableRowActions: false,
+    enableGrouping: true,
     enableHiding: true,
     getRowId: (originalRow) => originalRow.id,
-    onRowSelectionChange: handleRowSelectionChange,
-    state: { rowSelection },
+    //  onRowSelectionChange: handleRowSelectionChange,
+    //state: { rowSelection },
   });
 
   return (
