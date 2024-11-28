@@ -5,14 +5,14 @@ import {
   ActionIcon,
   Checkbox,
   CloseButton,
-  Tooltip,
   Text,
   TextInput,
+  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import { getHotkeyHandler } from '@mantine/hooks';
-import { DataItemSelectedState } from './types';
+import { DataItemSelectedState, IconSize } from './types';
 import EmptyList from './EmptyList';
 import { formatDate } from './utils';
 
@@ -25,6 +25,7 @@ interface DatasetAccordionControlProps extends AccordionControlProps {
   deleteListHandler: () => Promise<void>;
   selectListHandler: (checked: boolean) => void;
   selectedState: DataItemSelectedState;
+  size?: string;
 }
 
 export const DatasetAccordionControl = ({
@@ -36,6 +37,7 @@ export const DatasetAccordionControl = ({
   deleteListHandler,
   selectListHandler,
   selectedState,
+  size = 'sm',
   ...props
 }: DatasetAccordionControlProps): JSX.Element => {
   const [value, setValue] = useState<string | undefined>(undefined);
@@ -44,11 +46,12 @@ export const DatasetAccordionControl = ({
     setValue(undefined);
   };
   const theme = useMantineTheme();
-
+  const iconSize = IconSize[size] || IconSize['sm'];
   return (
     <div className="flex justify-start w-full items-center px-4 group-data-[active]:bg-secondary-lightest">
       <div className="flex items-center w-1/4">
         <Checkbox
+          size={size}
           onChange={(event) => {
             selectListHandler(event.currentTarget.checked);
             event.stopPropagation();
@@ -59,6 +62,7 @@ export const DatasetAccordionControl = ({
         <Accordion.Control {...props} className="w-4 mr-3" />
         {value ? (
           <TextInput
+            size={size}
             classNames={{ root: 'ml-2', input: 'font-bold' }}
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -77,6 +81,7 @@ export const DatasetAccordionControl = ({
               fw={600}
               className="ml-2 w-100 py-2 mr-2"
               aria-label={listName}
+              size={size}
             >
               {listName}
             </Text>
@@ -89,8 +94,8 @@ export const DatasetAccordionControl = ({
               >
                 <Icon
                   icon="gen3:edit"
-                  height={24}
-                  width={24}
+                  height={iconSize}
+                  width={iconSize}
                   color={theme.colors.accent[4]}
                 />
               </ActionIcon>
@@ -101,24 +106,24 @@ export const DatasetAccordionControl = ({
       <div className="flex items-end ml-auto space-x-2">
         {numberOfItems === 0 && <EmptyList />}
         <div className="flex items-center space-x-2">
-          <Text fw={600} c="base-contrast.2" tt="uppercase">
+          <Text fw={600} c="base-contrast.2" tt="uppercase" size={size}>
             Created:
           </Text>
-          <Text fw={500} c="base-contrast.2">
+          <Text fw={500} c="base-contrast.2" size={size}>
             {formatDate(createdTime)}
           </Text>
 
           <Icon
             icon="gen3:dot"
-            height={24}
-            width={24}
+            height={iconSize}
+            width={iconSize}
             color={theme.colors.accent[4]}
           />
 
-          <Text fw={600} c="base-contrast.2" tt="uppercase">
+          <Text fw={600} c="base-contrast.2" tt="uppercase" size={size}>
             Updated:
           </Text>
-          <Text fw={500} c="base-contrast.2">
+          <Text fw={500} c="base-contrast.2" size={size}>
             {formatDate(updatedTime)}
           </Text>
         </div>
@@ -131,8 +136,8 @@ export const DatasetAccordionControl = ({
           >
             <Icon
               icon="gen3:delete"
-              height={24}
-              width={24}
+              height={iconSize}
+              width={iconSize}
               color={theme.colors.primary[5]}
             />
           </ActionIcon>

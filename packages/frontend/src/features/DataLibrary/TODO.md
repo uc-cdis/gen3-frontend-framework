@@ -9,9 +9,9 @@
 * fix styling:
   ~~* icon colors~~
   * layout
-  * Dates format
-  * responsiveness
-  * submit modal header matches wireframe
+  * ~~Dates format~~
+  * responsiveness: support size
+  * submit modal table header matches wireframe
   * ~~if no pagination, hide table footer~~
 ~~* default message when subtable is empty~~
 * place controls on navigation
@@ -20,6 +20,7 @@
 * download pfb
 * rename with API
 * remove member with API
+* customize columns File, and Selection
 * ~~add id as column~~
 * remove id from FileItem
 * ~~hide add new list~~
@@ -28,8 +29,10 @@
 ## v2
 * explore using MRT group by feature to replace datasets
 * show applicable actions to selection
-* implement additional actions
-* implement zip
+* implement additional actions:
+  * implement download zip
+  * download PFB
+  * create PFB
 * search working
 * sort by file size
 * connect explorer
@@ -37,3 +40,4 @@
   * pick from all cohorts
 * connect discovery
   * save to list
+* export selections?

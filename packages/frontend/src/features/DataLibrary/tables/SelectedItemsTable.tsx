@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   MantineReactTable,
   MRT_RowSelectionState,
@@ -6,13 +7,66 @@ import {
   useMantineReactTable,
   MRT_Row,
 } from 'mantine-react-table';
-import React from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { ValidatedSelectedItem } from '../types';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { IconSize } from '../types';
+
+interface SelectedItemsTableHeaderProps {
+  numberOfItems: number;
+  numberOfWarnings: number;
+  size?: string;
+}
+
+const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
+  numberOfItems,
+  numberOfWarnings,
+  size = 'sm',
+}) => {
+  const iconSize = IconSize[size] || IconSize['sm'];
+  return (
+    <div className="flex items-center bg-primary-lighter px-4 py-2 text-heading">
+      {numberOfItems > 0 && (
+        <div className="flex items-center flex-nowrap overflow-ellipsis ">
+          <Text fw={600} size={size}>
+            {numberOfItems}{' '}
+          </Text>
+          <Text fw={400} size={size}>
+            selected
+          </Text>
+        </div>
+      )}
+      {numberOfItems > 0 && numberOfWarnings > 0 && (
+        <Icon
+          icon="gen3:dot"
+          className="text-accent m-1"
+          width={iconSize}
+          height={iconSize}
+        />
+      )}
+      {numberOfWarnings > 0 && (
+        <div className="flex items-center flex-nowrap overflow-ellipsis">
+          <Icon
+            icon="gen3:warning"
+            width={iconSize}
+            height={iconSize}
+            className="text-utility-warning m-1"
+          ></Icon>
+          <Text fw={600} size={size}>
+            {numberOfWarnings}
+          </Text>
+          <Text
+            fw={400}
+            size={size}
+          >{`${numberOfWarnings == 1 ? 'warning' : 'warnings'}`}</Text>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const columns = [
   {
@@ -22,7 +76,8 @@ const columns = [
     maxSize: 50,
     header: 'Valid',
     Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
-      if (row.original.valid === false) {
+      if (row.original.valid === undefined) return <span />;
+      if (!row.original.valid) {
         return (
           <Tooltip
             label={row.original?.messages?.join('\n') ?? 'Unknown Error'}
@@ -85,12 +140,14 @@ interface SelectedItemsTableProps {
   validatedItems: ReadonlyArray<ValidatedSelectedItem>;
   rowSelection: MRT_RowSelectionState;
   setRowSelection: React.Dispatch<React.SetStateAction<MRT_RowSelectionState>>;
+  size?: string;
 }
 
 const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
   validatedItems,
   rowSelection,
   setRowSelection,
+  size = 'sm',
 }) => {
   const handleRowSelectionChange = (
     updater: MRT_Updater<MRT_RowSelectionState>,
@@ -106,7 +163,6 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     let hasInvalidRows = false;
     const rows = validatedItems.map((item) => {
       if (!item.valid) hasInvalidRows = true;
-      console.log(item);
       if (isCohortItem(item)) {
         return {
           id: item.id,
@@ -188,6 +244,13 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
 
   return (
     <div className="flex flex-col ml-8">
+      <SelectedItemsTableHeader
+        numberOfItems={Object.keys(rowSelection).length}
+        numberOfWarnings={
+          tableRows.rows.filter((x) => x.valid === false).length
+        }
+        size={size}
+      />
       <div className="mt-2">
         <MantineReactTable table={table} />
       </div>

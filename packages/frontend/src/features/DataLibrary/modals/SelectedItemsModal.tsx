@@ -36,8 +36,10 @@ import {
 
 const ModalHeader = () => {
   return (
-    <div className="flex justify-between items-center bg-blue-500">
-      <Text>Retrieve Data</Text>
+    <div className="flex justify-between items-center">
+      <Text fw={600} className="text-heading">
+        Retrieve Data
+      </Text>
     </div>
   );
 };
@@ -132,7 +134,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       // if there are no actions then everything is valid
       if (!action)
         return gatheredItems.map((item) => {
-          return { ...item, valid: true };
+          return { ...item, valid: undefined };
         });
       // get all selected items
       const selectedActionItems = gatheredItems.filter((_, index) =>
@@ -159,7 +161,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
           // defaults return true
           return { ...item, valid: true };
         } // no selection so all items are valid
-        else return { ...item, valid: true };
+        else return { ...item, valid: undefined };
       });
 
       return validItems;
@@ -171,8 +173,9 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       closeOnEscape
       centered
       withinPortal={false}
+      title={<ModalHeader />}
       classNames={{
-        header: 'm-0 p-2 min-h-10 bg-primary-vivid',
+        header: 'm-0 p-2 min-h-10 bg-primary-lighter',
         content: 'scroll-smooth',
       }}
       overlayProps={{ opacity: 0.5 }}
