@@ -34,6 +34,14 @@ import {
   NullAction,
 } from '../selection/registeredActions';
 
+const ModalHeader = () => {
+  return (
+    <div className="flex justify-between items-center bg-blue-500">
+      <Text>Retrieve Data</Text>
+    </div>
+  );
+};
+
 const bindAction = (action: DataLibraryActionConfig) => {
   const actionFunction = findAction(action.actionFunction);
   if (!actionFunction) {
@@ -158,7 +166,17 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     }, [gatheredItems, rowSelection, actions, value]);
 
   return (
-    <Modal {...props} title="Retrieve Data" closeOnEscape centered>
+    <Modal
+      {...props}
+      closeOnEscape
+      centered
+      withinPortal={false}
+      classNames={{
+        header: 'm-0 p-2 min-h-10 bg-primary-vivid',
+        content: 'scroll-smooth',
+      }}
+      overlayProps={{ opacity: 0.5 }}
+    >
       <Stack>
         <SelectedItemsTable
           validatedItems={validatedLibrarySelections}
@@ -181,8 +199,8 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
           <Button
             loading={isRunning}
             rightSection={
-              actionConfig?.leftIcon ? (
-                <Icon icon={actionConfig?.leftIcon} />
+              actionConfig?.rightIcon ? (
+                <Icon icon={actionConfig?.rightIcon} />
               ) : undefined
             }
             disabled={

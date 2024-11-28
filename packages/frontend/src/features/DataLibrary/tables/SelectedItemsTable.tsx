@@ -147,7 +147,6 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     icons: TableIcons,
     enableTopToolbar: false,
     enableRowSelection: true,
-    enableGrouping: true,
     enableBottomToolbar: tableRows.rows.length > 10,
     enablePagination: tableRows.rows.length > 10,
     enableRowActions: false,

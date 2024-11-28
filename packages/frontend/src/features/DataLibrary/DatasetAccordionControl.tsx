@@ -14,6 +14,7 @@ import { Icon } from '@iconify/react';
 import { getHotkeyHandler } from '@mantine/hooks';
 import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
+import { formatDate } from './utils';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
@@ -90,7 +91,7 @@ export const DatasetAccordionControl = ({
                   icon="gen3:edit"
                   height={24}
                   width={24}
-                  color={theme.colors.primary[5]}
+                  color={theme.colors.accent[4]}
                 />
               </ActionIcon>
             </Tooltip>
@@ -104,21 +105,21 @@ export const DatasetAccordionControl = ({
             Created:
           </Text>
           <Text fw={500} c="base-contrast.2">
-            {createdTime}
+            {formatDate(createdTime)}
           </Text>
 
           <Icon
             icon="gen3:dot"
-            height={16}
-            width={16}
-            color={theme.colors.primary[5]}
+            height={24}
+            width={24}
+            color={theme.colors.accent[4]}
           />
 
           <Text fw={600} c="base-contrast.2" tt="uppercase">
             Updated:
           </Text>
           <Text fw={500} c="base-contrast.2">
-            {updatedTime}
+            {formatDate(updatedTime)}
           </Text>
         </div>
         <Tooltip label={`Delete ${listName}. Will not delete dataset`}>
