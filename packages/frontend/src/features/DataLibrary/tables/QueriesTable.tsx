@@ -43,7 +43,7 @@ const QueriesTable = ({ data, header, size = 'sm' }: QueriesTableProps) => {
 
   return (
     <div className="flex flex-col ml-8">
-      <Text fw={600} size={getNextSize(size, MantineSizeToString)}>
+      <Text fw={600} fs={size} c="secondary.5" tt="uppercase">
         {header}
       </Text>
       <MantineReactTable table={table} />

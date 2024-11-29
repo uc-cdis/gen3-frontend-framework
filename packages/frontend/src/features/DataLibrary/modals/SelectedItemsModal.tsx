@@ -167,6 +167,11 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       return validItems;
     }, [gatheredItems, rowSelection, actions, value]);
 
+  const actionButtonDisabled =
+    actionFunction.action === NullAction ||
+    validatedLibrarySelections.length === 0 ||
+    validatedLibrarySelections.some((x) => x.valid === false);
+
   return (
     <Modal
       {...props}
@@ -206,9 +211,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
                 <Icon icon={actionConfig?.rightIcon} />
               ) : undefined
             }
-            disabled={
-              !value || validatedLibrarySelections.some((x) => !x.valid)
-            }
+            disabled={actionButtonDisabled}
             onClick={async () => {
               setIsRunning(true);
               await actionFunction.action(

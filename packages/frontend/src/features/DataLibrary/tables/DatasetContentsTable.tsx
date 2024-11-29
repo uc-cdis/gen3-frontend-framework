@@ -46,12 +46,14 @@ export interface ListsTableProps {
   listId: string;
   data: DatalistMembers;
   removeList: (itemId: string) => void;
+  size: string;
 }
 
 const DataSetContentsTable = ({
   listId,
   data,
   removeList,
+  size = 'sm',
 }: ListsTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
@@ -134,7 +136,7 @@ const DataSetContentsTable = ({
   const table = useMantineReactTable({
     columns: columns,
     data: rows,
-    ...commonTableSettings,
+    ...commonTableSettings(size),
     getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
     enableSelectAll: false,
@@ -221,7 +223,6 @@ const DataSetContentsTable = ({
             />
           )}
           <Stack>
-            <Text fw={600}>Queries</Text>
             {rowData?.queries.map((query) => (
               <QueryDetails header="Queries" {...query} key={query.id} />
             ))}

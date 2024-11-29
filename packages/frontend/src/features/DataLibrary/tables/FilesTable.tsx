@@ -79,7 +79,7 @@ const FilesTable = ({
 
   return (
     <div className="flex flex-col gap-y-1">
-      <Text fw={600} fs="md" c="secondary.5" tt="uppercase">
+      <Text fw={600} fs={size} c="secondary.5" tt="uppercase">
         {header}
       </Text>
       <MantineReactTable table={table} />
