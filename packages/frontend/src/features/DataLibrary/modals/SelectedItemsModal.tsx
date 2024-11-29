@@ -175,7 +175,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       withinPortal={false}
       title={<ModalHeader />}
       classNames={{
-        header: 'm-0 p-2 min-h-10 bg-primary-lighter',
+        header: 'm-0 p-2 min-h-10 bg-primary-lightest',
         content: 'scroll-smooth',
       }}
       overlayProps={{ opacity: 0.5 }}

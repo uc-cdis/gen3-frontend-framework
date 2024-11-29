@@ -17,6 +17,8 @@
 * place controls on navigation
 *  ~~export to terra~~,
 * ~~export to 7 bridges~~,
+* fix action button disable state
+* add cancel action button?
 * download pfb
 * rename with API
 * remove member with API

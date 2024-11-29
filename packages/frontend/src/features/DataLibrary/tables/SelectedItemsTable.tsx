@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   MantineReactTable,
   MRT_RowSelectionState,
@@ -28,13 +28,17 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
 }) => {
   const iconSize = IconSize[size] || IconSize['sm'];
   return (
-    <div className="flex items-center bg-primary-lighter px-4 py-2 text-heading">
+    <div className="flex items-center bg-primary-darker  px-4 py-2 mt-2 min-h-10 text-heading">
       {numberOfItems > 0 && (
-        <div className="flex items-center flex-nowrap overflow-ellipsis ">
-          <Text fw={600} size={size}>
-            {numberOfItems}{' '}
+        <div className="flex items-center flex-nowrap overflow-ellipsis text-primary-contrast-darker">
+          <Text fw={600} size={size} className="mr-1 ">
+            {numberOfItems}
           </Text>
-          <Text fw={400} size={size}>
+          <Text
+            fw={400}
+            size={size}
+            className="mr-1 text-primary-contrast-lighter"
+          >
             selected
           </Text>
         </div>
@@ -42,7 +46,7 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
       {numberOfItems > 0 && numberOfWarnings > 0 && (
         <Icon
           icon="gen3:dot"
-          className="text-accent m-1"
+          className="text-primary-contrast-lighter"
           width={iconSize}
           height={iconSize}
         />
@@ -55,75 +59,23 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
             height={iconSize}
             className="text-utility-warning m-1"
           ></Icon>
-          <Text fw={600} size={size}>
+          <Text
+            fw={600}
+            size={size}
+            className="mr-1 text-primary-contrast-lighter"
+          >
             {numberOfWarnings}
           </Text>
           <Text
             fw={400}
             size={size}
+            className="text-primary-contrast-lighter"
           >{`${numberOfWarnings == 1 ? 'warning' : 'warnings'}`}</Text>
         </div>
       )}
     </div>
   );
 };
-
-const columns = [
-  {
-    accessorKey: 'valid',
-    enableHiding: true,
-    size: 40,
-    maxSize: 50,
-    header: 'Valid',
-    Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
-      if (row.original.valid === undefined) return <span />;
-      if (!row.original.valid) {
-        return (
-          <Tooltip
-            label={row.original?.messages?.join('\n') ?? 'Unknown Error'}
-          >
-            <Icon icon="gen3:warning" className="text-yellow-400 text-xl">
-              <Text fw={400} size="sm">
-                {row.original?.messages?.length}
-              </Text>
-            </Icon>
-          </Tooltip>
-        );
-      } else {
-        return <Icon icon="gen3:check" className="text-green-400 text-x" />;
-      }
-    },
-  },
-  {
-    accessorKey: 'id',
-    header: 'Id',
-  },
-  {
-    accessorKey: 'description',
-    header: 'Description',
-    size: 150,
-    maxSize: 250,
-    Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
-      return (
-        <Text fw={400} size="sm" lineClamp={2}>
-          {cell.getValue<string>() ?? 'N/A'}
-        </Text>
-      );
-    },
-  },
-  {
-    accessorKey: 'type',
-    header: 'Type',
-  },
-  {
-    accessorKey: 'size',
-    header: 'Size',
-  },
-  {
-    accessorKey: 'datasetId',
-    header: 'Dataset ID',
-  },
-];
 
 interface SelectedItemsTableRow {
   datasetName: string;
@@ -158,6 +110,80 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
       return value;
     });
   };
+
+  const iconSize = IconSize[size] || IconSize['sm'];
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'valid',
+        enableHiding: true,
+        size: 40,
+        maxSize: 50,
+        header: 'Valid',
+        Cell: ({ row }: { row: MRT_Row<SelectedItemsTableRow> }) => {
+          if (row.original.valid === undefined) return <span />;
+          if (!row.original.valid) {
+            return (
+              <Tooltip
+                label={row.original?.messages?.join('\n') ?? 'Unknown Error'}
+              >
+                <Icon
+                  icon="gen3:warning"
+                  width={iconSize}
+                  height={iconSize}
+                  className="text-yellow-400 text-xl"
+                >
+                  <Text fw={400} size={size}>
+                    {row.original?.messages?.length}
+                  </Text>
+                </Icon>
+              </Tooltip>
+            );
+          } else {
+            return (
+              <Icon
+                icon="gen3:check"
+                width={iconSize}
+                height={iconSize}
+                className="text-utility-success"
+              />
+            );
+          }
+        },
+      },
+      {
+        accessorKey: 'id',
+        header: 'Id',
+      },
+      {
+        accessorKey: 'description',
+        header: 'Description',
+        size: 150,
+        maxSize: 250,
+        Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
+          return (
+            <Text fw={400} size={size} lineClamp={2}>
+              {cell.getValue<string>() ?? 'N/A'}
+            </Text>
+          );
+        },
+      },
+      {
+        accessorKey: 'type',
+        header: 'Type',
+      },
+      {
+        accessorKey: 'size',
+        header: 'Size',
+      },
+      {
+        accessorKey: 'datasetId',
+        header: 'Dataset ID',
+      },
+    ],
+    [iconSize, size],
+  );
 
   const tableRows = useDeepCompareMemo(() => {
     let hasInvalidRows = false;

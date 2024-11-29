@@ -5,7 +5,7 @@ import { DataLibraryConfig } from './types';
 const DataLibrary = (config: DataLibraryConfig) => {
   return (
     <DataLibrarySelectionProvider>
-      <DataLibraryLists {...config} />;
+      <DataLibraryLists {...config} />
     </DataLibrarySelectionProvider>
   );
 };

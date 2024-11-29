@@ -76,7 +76,7 @@ export const DatasetAccordionControl = ({
             }
           />
         ) : (
-          <span className="flex items-center justify-between">
+          <div className="flex items-center justify-end">
             <Text
               fw={600}
               className="ml-2 w-100 py-2 mr-2"
@@ -100,10 +100,10 @@ export const DatasetAccordionControl = ({
                 />
               </ActionIcon>
             </Tooltip>
-          </span>
+          </div>
         )}
       </div>
-      <div className="flex items-end ml-auto space-x-2">
+      <div className="flex items-center ml-auto space-x-2">
         {numberOfItems === 0 && <EmptyList />}
         <div className="flex items-center space-x-2">
           <Text fw={600} c="base-contrast.2" tt="uppercase" size={size}>
