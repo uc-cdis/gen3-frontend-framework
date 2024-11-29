@@ -10,6 +10,7 @@ import {
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+import { sowerJobsListSliceReducer } from './features/sower';
 
 import {
   guppyApiReducer,
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducer,
   activeWorkspace: activeWorkspaceReducer,
+  sowerJobsList: sowerJobsListSliceReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });
