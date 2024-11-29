@@ -82,28 +82,3 @@ export const FontSize: Record<string, string> = {
   xl: 'var(--mantine-font-size-xl)',
   'xl-2': 'var(--mantine-font-size-2xl)',
 };
-
-export const getNextSize = <T>(
-  currentSize: keyof Record<string, T>,
-  sizeMap: Record<string, T>,
-): T => {
-  // Get all keys in order
-  const sizes = Object.keys(sizeMap);
-
-  // Find the current index
-  const currentIndex = sizes.indexOf(currentSize);
-
-  // If current size not found, return the first size
-  if (currentIndex === -1) {
-    return sizeMap[sizes[0]];
-  }
-
-  // If we're at or past the last size, return the last size value
-  if (currentIndex >= sizes.length - 1) {
-    return sizeMap[sizes[sizes.length - 1]];
-  }
-
-  // Return the value of the next size
-  const nextSize = sizes[currentIndex + 1];
-  return sizeMap[nextSize];
-};

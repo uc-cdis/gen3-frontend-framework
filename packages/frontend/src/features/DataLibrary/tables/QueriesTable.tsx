@@ -6,7 +6,8 @@ import {
 import { CohortItem } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
-import { MantineSizeToString, getNextSize } from '../types';
+import { MantineSizeToString } from '../types';
+import { getNextSize } from '../utils';
 
 interface QueriesTableProps {
   data: Array<CohortItem>;
