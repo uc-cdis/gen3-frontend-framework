@@ -132,7 +132,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
                   icon="gen3:warning"
                   width={iconSize}
                   height={iconSize}
-                  className="text-yellow-400 text-xl"
+                  className="text-utility-warning text-xl"
                 >
                   <Text fw={400} size={size}>
                     {row.original?.messages?.length}
@@ -143,7 +143,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
           } else {
             return (
               <Icon
-                icon="gen3:check"
+                icon="gen3:check-fill"
                 width={iconSize}
                 height={iconSize}
                 className="text-utility-success"
@@ -263,7 +263,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         textAlign: 'center',
         padding: '0.25rem 0.5rem 0.25rem 0.5rem',
         fontWeight: 600,
-        fontSize: 'var(--mantine-font-size-sm)',
+        fontSize: `var(--mantine-font-size-${size})`,
       },
     },
   });

@@ -3,15 +3,15 @@ import {
   MRT_RowSelectionState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { ColumnResizeMode } from '@tanstack/react-table';
 import { CohortItem } from '@gen3/core';
-import { TableIcons } from '../../../components/Tables/TableIcons';
+import { Text } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
-import { OnChangeFn } from '@tanstack/table-core';
+import { MantineSizeToString, getNextSize } from '../types';
 
 interface QueriesTableProps {
   data: Array<CohortItem>;
   header: string;
+  size?: string;
 }
 
 const columns = [
@@ -29,11 +29,11 @@ const columns = [
   },
 ];
 
-const QueriesTable = ({ data, header }: QueriesTableProps) => {
+const QueriesTable = ({ data, header, size = 'sm' }: QueriesTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: data,
-    ...commonTableSettings,
+    ...commonTableSettings(size),
     getRowId: (originalRow) => originalRow.name,
     enableRowSelection: false,
     enableBottomToolbar: false,
@@ -42,7 +42,9 @@ const QueriesTable = ({ data, header }: QueriesTableProps) => {
 
   return (
     <div className="flex flex-col ml-8">
-      <span className="text-lg font-bold">{header}</span>
+      <Text fw={600} size={getNextSize(size, MantineSizeToString)}>
+        {header}
+      </Text>
       <MantineReactTable table={table} />
     </div>
   );

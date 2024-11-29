@@ -15,6 +15,7 @@ interface FilesTableProps {
   listId: string;
   data: Array<FileItem>;
   header: string;
+  size?: string;
 }
 
 const columns = [
@@ -36,7 +37,13 @@ const columns = [
   },
 ];
 
-const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
+const FilesTable = ({
+  listId,
+  datasetId,
+  data,
+  header,
+  size = 'sm',
+}: FilesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   const { selections, updateListMemberSelections } = useDataLibrarySelection();
@@ -60,7 +67,7 @@ const FilesTable = ({ listId, datasetId, data, header }: FilesTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: data,
-    ...commonTableSettings,
+    ...commonTableSettings(size),
     enableBottomToolbar: data.length > 10,
     enablePagination: data.length > 10,
     enableRowActions: false,

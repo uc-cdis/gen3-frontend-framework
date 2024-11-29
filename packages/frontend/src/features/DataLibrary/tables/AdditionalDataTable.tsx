@@ -21,16 +21,18 @@ const columns = [
 interface AdditionalDataTableTableProps {
   data: any;
   header: string;
+  size?: string;
 }
 
 const AdditionalDataTableTable = ({
   data,
   header,
+  size = 'sm',
 }: AdditionalDataTableTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: data,
-    ...commonTableSettings,
+    ...commonTableSettings(size),
     enableRowActions: false,
     enableRowSelection: false,
     enableBottomToolbar: data.length > 10,
