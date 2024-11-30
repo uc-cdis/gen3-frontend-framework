@@ -18,7 +18,7 @@ export interface NameAndIcon {
 }
 
 export interface TopIconButtonProps extends NameAndIcon {
-  readonly href: string;
+  readonly href?: string;
   readonly tooltip?: string;
   readonly modal?: string;
 }
@@ -145,7 +145,7 @@ const processTopBarItems = (
       if (item?.modal)
         acc.concat(
           <TopIconModalButton
-            key={`${item.href}_${item.name}`}
+            key={item.name}
             name={item.name}
             leftIcon={item.leftIcon}
             rightIcon={item.rightIcon}
@@ -154,23 +154,25 @@ const processTopBarItems = (
             modal={item.modal}
           />,
         );
-      else
-        acc.push(
-          <a
-            className="flex"
-            href={item.href}
-            key={`${item.href}_${item.name}`}
-          >
-            {' '}
-            <TopIconButton
-              name={item.name}
-              leftIcon={item.leftIcon}
-              rightIcon={item.rightIcon}
-              classNames={item.classNames}
-              drawBorder={needsBorder}
-            />{' '}
-          </a>,
-        );
+      else {
+        if (item.href)
+          acc.push(
+            <a
+              className="flex"
+              href={item.href}
+              key={`${item.href}_${item.name}`}
+            >
+              {' '}
+              <TopIconButton
+                name={item.name}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={item.classNames}
+                drawBorder={needsBorder}
+              />{' '}
+            </a>,
+          );
+      }
       return acc;
     },
     [],
