@@ -15,8 +15,10 @@ import { SessionExpiredModal } from './SessionExpiredModal';
 import { ModalsConfig } from './types';
 import { defaultComposer } from 'default-composer';
 import { ContentType } from '../Content/TextContent';
+import { JobsModal } from '../jobs';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useIsAuthenticated } from '../../lib/session/session';
+import { JobManager } from '../jobs';
 
 interface Gen3StandardModalsProviderProps {
   config: ModalsConfig;
@@ -37,6 +39,10 @@ const getModal = (
     }
     case Modals.SessionExpireModal: {
       res = <SessionExpiredModal openModal={true} />;
+      break;
+    }
+    case Modals.JobsModal: {
+      res = <JobsModal openModal={true} />;
       break;
     }
   }
