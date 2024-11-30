@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Icon } from '@iconify/react';
-import { Button } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
@@ -10,17 +10,18 @@ import { StylingOverrideWithMergeControl } from '../../types';
 import { Modals, showModal, useCoreDispatch } from '@gen3/core';
 
 export interface NameAndIcon {
-  readonly name: string;
-  readonly rightIcon?: string;
-  readonly leftIcon?: string;
-  readonly classNames: StylingOverrideWithMergeControl;
-  readonly drawBorder?: boolean;
+  name: string;
+  rightIcon?: string;
+  leftIcon?: string;
+  classNames: StylingOverrideWithMergeControl;
+  drawBorder?: boolean;
+  size?: string;
 }
 
 export interface TopIconButtonProps extends NameAndIcon {
-  readonly href?: string;
-  readonly tooltip?: string;
-  readonly modal?: string;
+  href?: string;
+  tooltip?: string;
+  modal?: string;
 }
 
 const TopIconButton = ({
@@ -29,6 +30,7 @@ const TopIconButton = ({
   rightIcon = undefined,
   classNames = {},
   drawBorder = true,
+  size = 'sm',
 }: NameAndIcon) => {
   const classNamesDefaults = {
     root: `flex items-center align-middle px-2 ${
@@ -36,15 +38,42 @@ const TopIconButton = ({
     } my-2`,
     button:
       'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
-    leftIcon: 'text-secondary-contrast-lighter pr-1',
+    leftIcon: 'text-secondary-contrast-lighter',
     label: 'font-content text-secondary-contrast-lighter block',
-    rightIcon: 'text-secondary-contrast-lighter pl-1',
+    section: 'text-secondary-contrast',
+    rightIcon: 'text-secondary-contrast-lighter',
   };
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
   );
 
+  return (
+    <div
+      className={extractClassName('root', mergedClassnames)}
+      aria-label={name}
+    >
+      <Button
+        size={`compact-${size}`}
+        variant="transparent"
+        color="secondary-contrast.4"
+        classNames={{
+          root: extractClassName('button', mergedClassnames),
+          section: extractClassName('section', mergedClassnames),
+        }}
+        leftSection={leftIcon ? <Icon icon={leftIcon} /> : null}
+        rightSection={rightIcon ? <Icon icon={rightIcon} /> : null}
+        style={{
+          borderWidth: 0,
+          borderBottomWidth: '0.2rem',
+        }}
+      >
+        {name}
+      </Button>
+    </div>
+  );
+};
+/*
   return (
     <div
       className={extractClassName('root', mergedClassnames)}
@@ -60,7 +89,10 @@ const TopIconButton = ({
             className={extractClassName('leftIcon', mergedClassnames)}
           />
         ) : null}
-        <p className={extractClassName('label', mergedClassnames)}> {name} </p>
+        <Text className={extractClassName('label', mergedClassnames)}>
+          {' '}
+          {name}{' '}
+        </Text>
         {rightIcon ? (
           <Icon
             icon={rightIcon}
@@ -71,6 +103,7 @@ const TopIconButton = ({
     </div>
   );
 };
+ */
 
 interface ModalNameAndIcon extends NameAndIcon {
   modal?: string;
@@ -83,6 +116,7 @@ const TopIconModalButton = ({
   classNames = {},
   drawBorder = true,
   modal = undefined,
+  size = 'sm',
 }: ModalNameAndIcon) => {
   const classNamesDefaults = {
     root: `flex items-center align-middle px-2 ${
@@ -90,9 +124,9 @@ const TopIconModalButton = ({
     } my-2`,
     button:
       'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
-    leftIcon: 'text-secondary-contrast-lighter pr-1',
+    leftIcon: 'text-secondary-contrast pr-1',
     label: 'font-content text-secondary-contrast-lighter block',
-    rightIcon: 'text-secondary-contrast-lighter pl-1',
+    rightIcon: 'text-secondary-contrast pl-1',
   };
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
@@ -106,32 +140,40 @@ const TopIconModalButton = ({
   };
 
   return (
-    <Button
-      onClick={onClick}
-      variant="white"
-      leftSection={
-        leftIcon ? (
-          <Icon
-            icon={leftIcon}
-            className={extractClassName('leftIcon', mergedClassnames)}
-          />
-        ) : null
-      }
-      rightSection={
-        rightIcon ? (
-          <Icon
-            icon={rightIcon}
-            className={extractClassName('rightIcon', mergedClassnames)}
-          />
-        ) : null
-      }
-      classNames={{
-        root: extractClassName('root', mergedClassnames),
-        label: extractClassName('label', mergedClassnames),
-      }}
+    <div
+      className={extractClassName('root', mergedClassnames)}
+      aria-label={name}
     >
-      {name}
-    </Button>
+      <Button
+        size={`compact-${size}`}
+        variant="transparent"
+        color="secondary-contrast.4"
+        classNames={{ root: extractClassName('button', mergedClassnames) }}
+        onClick={onClick}
+        leftSection={
+          leftIcon ? (
+            <Icon
+              icon={leftIcon}
+              className={extractClassName('leftIcon', mergedClassnames)}
+            />
+          ) : null
+        }
+        rightSection={
+          rightIcon ? (
+            <Icon
+              icon={rightIcon}
+              className={extractClassName('rightIcon', mergedClassnames)}
+            />
+          ) : null
+        }
+        style={{
+          borderWidth: 0,
+          borderBottomWidth: '0.2rem',
+        }}
+      >
+        {name}
+      </Button>
+    </div>
   );
 };
 
@@ -139,11 +181,12 @@ const processTopBarItems = (
   items: TopIconButtonProps[],
   showLogin: boolean,
 ): ReactElement[] => {
+  console.log(items);
   return items.reduce(
     (acc: ReactElement[], item: TopIconButtonProps, index: number) => {
       const needsBorder = !(index === items.length - 1 && !showLogin);
       if (item?.modal)
-        acc.concat(
+        acc.push(
           <TopIconModalButton
             key={item.name}
             name={item.name}

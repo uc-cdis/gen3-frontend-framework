@@ -39,10 +39,10 @@ const renderButtons = (
                   onClick();
 
                   if (hideModalOnClick) {
-                     dispatch(hideModal());
+                    dispatch(hideModal());
                   }
                 } else {
-                   dispatch(hideModal());
+                  dispatch(hideModal());
                 }
               }}
               className="!bg-primary hover:!bg-primary-darker"
@@ -84,7 +84,7 @@ interface Props {
  * @see https://mantine.dev/core/modal/
  * @returns a mantine modal with a built in button for closing the modal
  */
-export const BaseModal= ({
+export const BaseModal = ({
   openModal,
   title,
   size,
@@ -108,44 +108,11 @@ export const BaseModal= ({
           onClose();
         }
       }}
-      // TODO
-    //   styles={(theme) => ({
-    //     header: {
-    //       fontWeight: 600,
-    //       paddingBottom: '2.5em',
-    //       marginBottom: '2em',
-    //       backgroundColor: theme.colors.primary[4],
-    //       color: theme.colors['primary-contrast'][4],
-    //     },
-    //     close: {
-    //       color: 'base-darker',
-    //     }
-    //   })
-    // }
-      // styles={(theme) => ({
-        // header: {
-        //   fontWeight: 600,
-        //   paddingBottom: '2.5em',
-        //   marginBottom: '2em',
-        //   backgroundColor: theme.colors.primary[4],
-        //   color: theme.colors['primary-contrast'][4],
-        // },
-        // close: {
-        //   color: 'base-darker',
-        // },
-      // })}
-      // styles={(theme) => ({
-        // header: {
-        //   fontWeight: 600,
-        //   paddingBottom: '2.5em',
-        //   marginBottom: '2em',
-        //   backgroundColor: theme.colors.primary[4],
-        //   color: theme.colors['primary-contrast'][4],
-        // },
-        // close: {
-        //   color: 'base-darker',
-        // },
-      // })}
+      classNames={{
+        header:
+          'font-medium font-heading pb-2.5 mb-2 bg-primary text-primary-contrast',
+        close: 'text-accent',
+      }}
       withinPortal={false}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}
@@ -154,8 +121,8 @@ export const BaseModal= ({
     >
       {children}
       <div className="flex justify-between items-center">
-      {leftButtons && renderButtons(leftButtons, dispatch)}
-      {buttons && renderButtons(buttons, dispatch)}
+        {leftButtons && renderButtons(leftButtons, dispatch)}
+        {buttons && renderButtons(buttons, dispatch)}
       </div>
     </Modal>
   );

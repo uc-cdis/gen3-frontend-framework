@@ -1,29 +1,31 @@
 import { createSlice, Draft, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface SowerJobsListState {
-  jobIds: Set<string>;
+  jobIds: string[];
 }
 
 export const sowerJobsListSlice = createSlice({
   name: 'sowerUserJobList',
   initialState: {
-    jobIds: new Set(),
+    jobIds: [],
   } as SowerJobsListState,
   reducers: {
     addJobId: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<string>,
     ) => {
-      state.jobIds.add(action.payload);
+      if (!state.jobIds.includes(action.payload)) {
+        state.jobIds.push(action.payload);
+      }
     },
     removeJobId: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<string>,
     ) => {
-      state.jobIds.delete(action.payload);
+      state.jobIds = state.jobIds.filter((id) => id !== action.payload);
     },
     clearJobsId: (state: Draft<SowerJobsListState>) => {
-      state.jobIds.clear();
+      state.jobIds = [];
     },
   },
 });

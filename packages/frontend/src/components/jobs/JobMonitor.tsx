@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { notifications } from '@mantine/notifications';
 import {
   useCoreSelector,
@@ -20,7 +20,7 @@ export const JobManager = () => {
     if (idsArray.length > 0) {
       refetch();
     }
-  }, [jobIds, refetch]);
+  }, [idsArray.length, jobIds, refetch]);
 
   useEffect(() => {
     if (!jobStatuses) return;
