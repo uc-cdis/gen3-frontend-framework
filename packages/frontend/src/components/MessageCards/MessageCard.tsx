@@ -32,7 +32,7 @@ const MessageCard: React.FunctionComponent<MessageCardProps> = ({
   icon,
   size = 'lg',
   color = 'utility.5',
-  width = 'w-36',
+  width = 'w-1/2',
 }: MessageCardProps): ReactElement => (
   <CardContainer width={width}>
     <ThemeIcon color={color} variant="outline" radius="xl" size={size}>

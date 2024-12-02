@@ -22,7 +22,6 @@
 * download pfb
 * rename with API
 * remove member with API
-* customize columns File, and Selection
 * ~~add id as column~~
 * remove id from FileItem
 * ~~hide add new list~~
@@ -30,6 +29,7 @@
 
 ## v2
 * explore using MRT group by feature to replace datasets
+* customize columns File, and Selection
 * show applicable actions to selection
 * implement additional actions:
   * implement download zip

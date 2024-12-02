@@ -22,8 +22,12 @@ import { flattenDataList } from './utils';
 export const useDataLibrary = (useApi: boolean) => {
   const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
 
-  const { data: apiLibrary, refetch: refetchLibraryFromApi } =
-    useGetDataLibraryListsQuery(undefined, { skip: !useApi });
+  const {
+    data: apiLibrary,
+    refetch: refetchLibraryFromApi,
+    error: apiError,
+    isError: isAPIListError,
+  } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
   const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
@@ -31,6 +35,13 @@ export const useDataLibrary = (useApi: boolean) => {
   const [deleteAllApi] = useDeleteAllDataLibraryMutation();
 
   let hasError = false;
+  let errorData = null;
+
+  // TODO: Add error message from indexedDB
+  if (useApi && isAPIListError) {
+    hasError = true;
+    errorData = apiError;
+  }
 
   const generateUniqueName = (baseName: string = 'List') => {
     let uniqueName = baseName;
@@ -137,6 +148,7 @@ export const useDataLibrary = (useApi: boolean) => {
   return {
     dataLibrary,
     isError: hasError,
+    error: errorData,
     addListToDataLibrary,
     deleteListFromDataLibrary,
     clearLibrary,
