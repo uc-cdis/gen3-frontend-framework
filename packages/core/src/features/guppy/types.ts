@@ -1,5 +1,6 @@
 import { FilterSet } from '../filters';
 import { Accessibility } from '../../constants';
+import { ActionParams } from '../../types';
 
 // Guppy data request parameters
 export interface BaseGuppyDataRequest {
@@ -24,12 +25,9 @@ export interface GuppyActionFunctionParams extends Record<string, any> {
   filter: FilterSet;
 }
 
-export interface GuppyActionParams<T extends Record<string, any>> {
-  parameters: T; // query parameters for the Guppy request
-  onStart?: () => void; // function to call when the download starts
+export interface GuppyActionParams<T extends Record<string, any>>
+  extends Omit<ActionParams<T>, 'onDone'> {
   onDone?: (blob: Blob) => void; // function to call when the download is done
-  onError?: (error: Error) => void; // function to call when the download fails
-  onAbort?: () => void; // function to call when the download is aborted
   signal?: AbortSignal; // AbortSignal to use for the request
 }
 
