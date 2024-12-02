@@ -17,22 +17,7 @@ import {
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
-
-const makeActionArgs = (button: DownloadButtonProps) => {
-  let actionFunction = NullButtonAction;
-  let actionArgs = {} as Record<string, any>; // not required but just for clarity
-  if (button.action) {
-    const actionItem = findButtonAction(button.action);
-    if (actionItem) {
-      const funcArgs = actionItem.args ?? {};
-      const func = actionItem.action;
-      actionFunction = func;
-      actionArgs = funcArgs;
-    }
-  }
-
-  return { actionFunction, actionArgs };
-};
+import CohortSubmitJobActionButton from './downloads/CohortDispatchActionButton';
 
 const createDownloadMenuButton = (
   props: DropdownButtonProps,
@@ -160,8 +145,7 @@ const DownloadsPanel = ({
           const actionItem = findButtonAction(buttonAction);
           if (actionItem) {
             const funcArgs = actionItem.args ?? {};
-            const func = actionItem.action;
-            actionFunction = func;
+            actionFunction = actionItem.action;
             actionArgs = funcArgs ?? ({} as Record<string, any>);
           }
         }
@@ -169,26 +153,45 @@ const DownloadsPanel = ({
           disabled = true;
         }
 
-        return (
-          <CohortActionButton
-            activeText={'Downloading...'}
-            inactiveText={button.title}
-            tooltipText={button.tooltipText}
-            disabled={disabled || !button.enabled}
-            actionFunction={actionFunction}
-            actionArgs={{
-              ...actionArgs,
-              ...(button.actionArgs ?? ({} as Record<string, any>)),
-              type: index,
-              totalCount,
-              fields,
-              filter,
-              accessibility: accessibility ?? Accessibility.ALL,
-              // sort: sort, // TODO add sort
-            }}
-            key={button.title}
-          />
-        );
+        if (button?.needsDispatchJob) {
+          return (
+            // Use Gen3's sower to dispatch jobs
+            <CohortSubmitJobActionButton
+              activeText={'Running...'}
+              inactiveText={button.title}
+              tooltipText={button.tooltipText}
+              disabled={disabled || !button.enabled}
+              actionFunction={actionFunction}
+              actionArgs={{
+                ...actionArgs,
+                ...(button.actionArgs ?? ({} as Record<string, any>)),
+                index: index,
+                filter,
+              }}
+              key={button.title}
+            />
+          );
+        } else
+          return (
+            <CohortActionButton
+              activeText={'Downloading...'}
+              inactiveText={button.title}
+              tooltipText={button.tooltipText}
+              disabled={disabled || !button.enabled}
+              actionFunction={actionFunction}
+              actionArgs={{
+                ...actionArgs,
+                ...(button.actionArgs ?? ({} as Record<string, any>)),
+                type: index,
+                totalCount,
+                fields,
+                filter,
+                accessibility: accessibility ?? Accessibility.ALL,
+                // sort: sort, // TODO add sort
+              }}
+              key={button.title}
+            />
+          );
       })}
     </div>
   ) : (

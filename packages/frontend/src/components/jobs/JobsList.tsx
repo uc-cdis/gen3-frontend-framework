@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import {
   useCoreSelector,
-  selectSowerJobIds,
+  selectSowerJobs,
   useGetSowerJobsStatusQuery,
 } from '@gen3/core';
 import { ErrorCard } from '../MessageCards';
@@ -18,8 +18,8 @@ interface JobsListProps {
 }
 
 const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
-  const jobIds = useCoreSelector(selectSowerJobIds);
-  const idsArray = Array.from(jobIds);
+  const jobIds = useCoreSelector(selectSowerJobs);
+  const idsArray = Object.keys(jobIds);
   const {
     data: jobStatuses,
     isLoading,

@@ -8,16 +8,21 @@ import {
   useLazyGetSowerOutputQuery,
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
+  sowerStatusApi,
+  type DispatchJobParams,
+  type DispatchJobResponse,
 } from './sowerApi';
 
 import {
-  addJobId,
-  removeJobId,
-  clearJobsId,
+  addSowerJob,
+  removeSowerJob,
+  clearSowerJobsId,
   sowerJobsListSliceReducer,
 } from './jobsListSlice';
 
-import { selectSowerJobIds } from './jobsListSelectors';
+import { selectSowerJobId, selectSowerJobs } from './jobsListSelectors';
+
+import { type JobWithActions, type TwoPartActionConfig } from './types';
 
 export {
   useGetSowerJobListQuery,
@@ -29,9 +34,15 @@ export {
   useLazyGetSowerOutputQuery,
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
-  addJobId,
-  removeJobId,
-  clearJobsId,
+  addSowerJob,
+  removeSowerJob,
+  clearSowerJobsId,
+  sowerStatusApi,
   sowerJobsListSliceReducer,
-  selectSowerJobIds,
+  selectSowerJobId,
+  selectSowerJobs,
+  type DispatchJobParams,
+  type DispatchJobResponse,
+  type JobWithActions,
+  type TwoPartActionConfig,
 };

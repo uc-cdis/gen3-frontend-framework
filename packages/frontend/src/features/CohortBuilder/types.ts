@@ -49,8 +49,15 @@ export interface DataTypeConfigWithManifest extends DataTypeConfig {
   fieldMapping?: ReadonlyArray<FieldToName>; // TODO: depreciate this field and use FacetDefinition instead
 }
 
+export interface SowerJobConfig {
+  action: string;
+  input: Record<string, any>;
+  output: Record<string, any>;
+}
+
 export interface DownloadButtonConfig extends DownloadButtonProps {
   dropdownId?: string;
+  needsDispatchJob?: boolean;
 }
 
 export interface DropdownButtonsConfig {
@@ -103,7 +110,7 @@ export type ActionButtonWithArgsFunction = (
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
-) => Promise<void>;
+) => Promise<void> | void;
 
 export interface DownloadButtonPropsWithAction
   extends Omit<DownloadButtonProps, 'action' | 'actionArgs'> {

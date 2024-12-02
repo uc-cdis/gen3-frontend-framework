@@ -4,6 +4,7 @@ import {
 } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 import { downloadToManifestAction } from './downloadManifest';
+import { submitJobAction } from './sowerActions';
 
 // create a factory for the action creators
 
@@ -61,6 +62,10 @@ export const registerDefaultButtonActions = () => {
   registerButtonAction('manifest', {
     action: downloadToManifestAction,
     args: { format: 'manifest' },
+  });
+  registerButtonAction('export-pfb-to-url', {
+    action: submitJobAction,
+    args: { action: 'export-files' },
   });
 };
 

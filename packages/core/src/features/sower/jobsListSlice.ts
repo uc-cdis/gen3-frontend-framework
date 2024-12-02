@@ -1,36 +1,39 @@
 import { createSlice, Draft, type PayloadAction } from '@reduxjs/toolkit';
+import { JobWithActions } from './types';
 
 export interface SowerJobsListState {
-  jobIds: string[];
+  jobIds: Record<string, JobWithActions>;
 }
+
+const initialState: SowerJobsListState = {
+  jobIds: {},
+};
 
 export const sowerJobsListSlice = createSlice({
   name: 'sowerUserJobList',
-  initialState: {
-    jobIds: [],
-  } as SowerJobsListState,
+  initialState: initialState,
   reducers: {
-    addJobId: (
+    addSowerJob: (
       state: Draft<SowerJobsListState>,
-      action: PayloadAction<string>,
+      action: PayloadAction<JobWithActions>,
     ) => {
-      if (!state.jobIds.includes(action.payload)) {
-        state.jobIds.push(action.payload);
+      if (!Object.keys(state.jobIds).includes(action.payload.jobId)) {
+        state.jobIds[action.payload.jobId] = action.payload;
       }
     },
-    removeJobId: (
+    removeSowerJob: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<string>,
     ) => {
-      state.jobIds = state.jobIds.filter((id) => id !== action.payload);
+      delete state.jobIds[action.payload];
     },
-    clearJobsId: (state: Draft<SowerJobsListState>) => {
-      state.jobIds = [];
+    clearSowerJobsId: () => {
+      return initialState;
     },
   },
 });
 
 export const sowerJobsListSliceReducer = sowerJobsListSlice.reducer;
 
-export const { addJobId, removeJobId, clearJobsId } =
+export const { addSowerJob, removeSowerJob, clearSowerJobsId } =
   sowerJobsListSlice.actions;

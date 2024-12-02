@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import { notifications } from '@mantine/notifications';
 import {
   useCoreSelector,
-  selectSowerJobIds,
+  selectSowerJobs,
   useGetSowerJobsStatusQuery,
 } from '@gen3/core';
 
 // Job Manager - handles polling and notifications
 export const JobManager = () => {
-  const jobIds = useCoreSelector(selectSowerJobIds);
-  const idsArray = Array.from(jobIds);
+  const jobIds = useCoreSelector(selectSowerJobs);
+  const idsArray = Object.keys(jobIds);
 
   const { data: jobStatuses, refetch } = useGetSowerJobsStatusQuery(idsArray, {
     skip: idsArray.length === 0,

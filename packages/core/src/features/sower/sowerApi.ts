@@ -1,6 +1,5 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JSONObject } from '../../types';
 import { JobStatus } from './types';
 
 const processResults = (results: any[], ids: string[]) => {
@@ -21,7 +20,7 @@ const processResults = (results: any[], ids: string[]) => {
 
 export interface DispatchJobParams {
   action: string;
-  input: JSONObject;
+  input: Record<string, any>;
 }
 
 export interface DispatchJobResponse {
