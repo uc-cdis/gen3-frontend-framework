@@ -1,7 +1,7 @@
 import { notifications } from '@mantine/notifications';
 import {
   coreStore,
-  sowerStatusApi,
+  sowerApi,
   addSowerJob,
   removeSowerJob,
   type JobWithActions,
@@ -103,7 +103,7 @@ class GlobalJobMonitor {
   private async checkJobStatus(jobId: string, pendingAction: JobWithActions) {
     try {
       const response = await coreStore.dispatch(
-        sowerStatusApi.endpoints.getSowerJobStatus.initiate(jobId),
+        sowerApi.endpoints.getSowerJobStatus.initiate(jobId),
       );
 
       if ('data' in response) {
@@ -130,6 +130,7 @@ class GlobalJobMonitor {
     }
 
     try {
+      // get the objectId of the job
       const action = ActionFactory.getAction(pendingAction.config.part2.action);
       await action(pendingAction.config.part2.params);
 

@@ -39,7 +39,7 @@ type JobsListResponse = Record<string, DispatchJobResponse>;
  * @param getDownloadStatus Shows the status of a selected job
  * @returns: A sower job response dict which returns job information of file downloads
  */
-export const sowerStatusApi = gen3Api.injectEndpoints({
+export const sowerApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
@@ -83,4 +83,4 @@ export const {
   useLazyGetSowerOutputQuery,
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
-} = sowerStatusApi;
+} = sowerApi;

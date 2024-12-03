@@ -8,7 +8,7 @@ import {
   useLazyGetSowerOutputQuery,
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
-  sowerStatusApi,
+  sowerApi,
   type DispatchJobParams,
   type DispatchJobResponse,
 } from './sowerApi';
@@ -37,7 +37,7 @@ export {
   addSowerJob,
   removeSowerJob,
   clearSowerJobsId,
-  sowerStatusApi,
+  sowerApi,
   sowerJobsListSliceReducer,
   selectSowerJobId,
   selectSowerJobs,

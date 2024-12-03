@@ -72,6 +72,22 @@ const CohortSubmitJobActionButton = forwardRef<
     const [isActive, setIsActive] = React.useState(false);
     const { size } = props as ButtonProps;
 
+    const handleSubmitJob = async () => {
+        try {
+          const action = ActionFactory.getAction(config.step1.name);
+          const { jobId } = await submitJob(config.step1.params).unwrap();
+          setJobId(jobId);
+
+          // Register with global monitor
+          GlobalJobMonitor.getInstance().registerJob(jobId, config);
+        } catch (error) {
+          notifications.show({
+            title: 'Error',
+            message: 'Failed to start job',
+            color: 'red',
+          });
+        }
+
     const onSubmit = useCallback(() => {
       actionFunction({ dispatchJob: submitJob, ...actionArgs });
     }, [actionArgs, actionFunction, submitJob]);

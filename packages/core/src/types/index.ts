@@ -180,6 +180,6 @@ export interface ActionParams<T extends Record<string, any>> {
   onAbort?: () => void; // function to call when the download is aborted
 }
 
-export type ActionFunction<T extends Record<string, any>> = (
-  args: ActionParams<T>,
-) => void;
+export type ActionFunction<
+  T extends Record<string, any> = Record<string, any>,
+> = (args: ActionParams<T>) => Promise<T | void>;
