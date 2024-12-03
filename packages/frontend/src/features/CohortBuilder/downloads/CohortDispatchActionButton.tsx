@@ -2,6 +2,7 @@ import React, { forwardRef, ReactElement, useCallback, useEffect } from 'react';
 import { Button, ButtonProps, Text, Tooltip } from '@mantine/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
 import { ActionButtonWithArgsFunction } from '../types';
+import { notifications } from '@mantine/notifications';
 
 interface CohortSubmitJobActionButtonProps {
   actionFunction: ActionButtonWithArgsFunction;
@@ -71,22 +72,6 @@ const CohortSubmitJobActionButton = forwardRef<
     ] = useSubmitSowerJobMutation();
     const [isActive, setIsActive] = React.useState(false);
     const { size } = props as ButtonProps;
-
-    const handleSubmitJob = async () => {
-        try {
-          const action = ActionFactory.getAction(config.step1.name);
-          const { jobId } = await submitJob(config.step1.params).unwrap();
-          setJobId(jobId);
-
-          // Register with global monitor
-          GlobalJobMonitor.getInstance().registerJob(jobId, config);
-        } catch (error) {
-          notifications.show({
-            title: 'Error',
-            message: 'Failed to start job',
-            color: 'red',
-          });
-        }
 
     const onSubmit = useCallback(() => {
       actionFunction({ dispatchJob: submitJob, ...actionArgs });

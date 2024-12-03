@@ -9,8 +9,6 @@ import {
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
   sowerApi,
-  type DispatchJobParams,
-  type DispatchJobResponse,
 } from './sowerApi';
 
 import {
@@ -22,7 +20,17 @@ import {
 
 import { selectSowerJobId, selectSowerJobs } from './jobsListSelectors';
 
-import { type JobWithActions, type TwoPartActionConfig } from './types';
+import {
+  type JobWithActions,
+  type CreateAndExportActionConfig,
+  type ActionParams,
+  type ActionFunction,
+  DispatchJobResponse,
+  DispatchJobParams,
+  type JobBuilderAction,
+  type SendJobOutputAction,
+  type BoundCreateAndExportAction,
+} from './types';
 
 export {
   useGetSowerJobListQuery,
@@ -44,5 +52,10 @@ export {
   type DispatchJobParams,
   type DispatchJobResponse,
   type JobWithActions,
-  type TwoPartActionConfig,
+  type CreateAndExportActionConfig,
+  type ActionFunction,
+  type ActionParams,
+  type JobBuilderAction,
+  type SendJobOutputAction,
+  type BoundCreateAndExportAction,
 };

@@ -5,7 +5,7 @@ import {
   addSowerJob,
   removeSowerJob,
   type JobWithActions,
-  type TwoPartActionConfig,
+  type BoundCreateAndExportAction,
 } from '@gen3/core';
 
 interface JobMonitorConfig {
@@ -59,7 +59,7 @@ class GlobalJobMonitor {
     return { ...this.config };
   }
 
-  registerJob(jobId: string, config: TwoPartActionConfig) {
+  registerJob(jobId: string, config: BoundCreateAndExportAction) {
     coreStore.dispatch(
       addSowerJob({
         jobId,
@@ -124,15 +124,12 @@ class GlobalJobMonitor {
   }
 
   private async executeStep2(pendingAction: JobWithActions) {
-    if (pendingAction.config?.part2 === undefined) {
-      coreStore.dispatch(removeSowerJob(pendingAction.jobId));
-      return;
-    }
-
     try {
       // get the objectId of the job
-      const action = ActionFactory.getAction(pendingAction.config.part2.action);
-      await action(pendingAction.config.part2.params);
+      const action = pendingAction.config.sendJobAction.actionFunction;
+      await action({
+        parameters: pendingAction.config.sendJobAction.parameters,
+      });
 
       notifications.show({
         title: 'Success',
@@ -166,8 +163,8 @@ class GlobalJobMonitor {
           return;
         }
 
-        Object.entries(pendingActions).forEach(([jobId, action]) => {
-          this.checkJobStatus(jobId, action);
+        Object.entries(pendingActions).forEach(async ([jobId, action]) => {
+          await this.checkJobStatus(jobId, action);
         });
       }, this.config.pollingInterval);
 

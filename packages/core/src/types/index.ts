@@ -171,15 +171,3 @@ export function isFetchParseError(error: unknown): error is ParsingError {
 }
 
 export type AggregationsData = Record<string, HistogramDataArray>;
-
-export interface ActionParams<T extends Record<string, any>> {
-  parameters: T; // query parameters for the action
-  onStart?: () => void; // function to call when the action starts
-  onDone?: (arg?: T) => void; // function to call when the action is done
-  onError?: (error: Error) => void; // function to call when the action fails
-  onAbort?: () => void; // function to call when the download is aborted
-}
-
-export type ActionFunction<
-  T extends Record<string, any> = Record<string, any>,
-> = (args: ActionParams<T>) => Promise<T | void>;

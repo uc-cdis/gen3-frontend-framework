@@ -1,6 +1,6 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JobStatus } from './types';
+import { DispatchJobParams, DispatchJobResponse, JobStatus } from './types';
 
 const processResults = (results: any[], ids: string[]) => {
   // Extract Function: Processes the results and handles any errors
@@ -17,17 +17,6 @@ const processResults = (results: any[], ids: string[]) => {
     { data: {}, errors: {} }, // Renaming: combinedResults
   );
 };
-
-export interface DispatchJobParams {
-  action: string;
-  input: Record<string, any>;
-}
-
-export interface DispatchJobResponse {
-  uid: string;
-  name: string;
-  status: string;
-}
 
 type JobListResponse = Array<JobStatus>;
 type JobsListResponse = Record<string, DispatchJobResponse>;

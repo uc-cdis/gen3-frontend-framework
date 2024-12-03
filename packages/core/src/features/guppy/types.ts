@@ -1,6 +1,7 @@
 import { FilterSet } from '../filters';
 import { Accessibility } from '../../constants';
-import { ActionParams } from '../../types';
+
+import { ActionParams } from '../sower';
 
 // Guppy data request parameters
 export interface BaseGuppyDataRequest {
