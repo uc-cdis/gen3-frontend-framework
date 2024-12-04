@@ -5,8 +5,10 @@ import {
   addSowerJob,
   removeSowerJob,
   type JobWithActions,
-  type BoundCreateAndExportAction,
+  type CreateAndExportActionConfig,
 } from '@gen3/core';
+
+import { bindSendResultsAction } from '../features/CohortBuilder/downloads/actions/TwoStepActionButton';
 
 interface JobMonitorConfig {
   pollingInterval?: number; // in milliseconds
@@ -59,7 +61,7 @@ export class SowerJobsMonitor {
     return { ...this.config };
   }
 
-  registerJob(jobId: string, config: BoundCreateAndExportAction) {
+  registerJob(jobId: string, config: CreateAndExportActionConfig) {
     coreStore.dispatch(
       addSowerJob({
         jobId,
@@ -126,7 +128,9 @@ export class SowerJobsMonitor {
   private async executeStep2(pendingAction: JobWithActions) {
     try {
       // get the objectId of the job
-      const action = pendingAction.config.sendJobAction.actionFunction;
+      const action = bindSendResultsAction(
+        pendingAction.config.sendJobAction.actionName,
+      );
       await action({
         parameters: pendingAction.config.sendJobAction.parameters,
       });

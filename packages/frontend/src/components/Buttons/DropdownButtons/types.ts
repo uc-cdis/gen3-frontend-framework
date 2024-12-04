@@ -1,4 +1,5 @@
 import { StylingOverride } from '../../../types/styling';
+import type { CreateAndExportActionConfig } from '@gen3/core';
 
 export interface DownloadButtonProps {
   enabled?: boolean;
@@ -11,7 +12,11 @@ export interface DownloadButtonProps {
   action?: string;
   actionArgs?: Record<string, string>;
   classNames?: StylingOverride;
-  needsDispatchJob?: boolean;
+}
+
+export interface DispatchJobButtonProps
+  extends Omit<DownloadButtonProps, 'action' | 'actionArgs'> {
+  actions: CreateAndExportActionConfig;
 }
 
 export interface DropdownButtonProps

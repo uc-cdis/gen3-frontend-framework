@@ -2,7 +2,6 @@ import React, { forwardRef, ReactElement, useCallback, useEffect } from 'react';
 import { Button, ButtonProps, Text, Tooltip } from '@mantine/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
 import { ActionButtonWithArgsFunction } from '../types';
-import { notifications } from '@mantine/notifications';
 
 interface CohortSubmitJobActionButtonProps {
   actionFunction: ActionButtonWithArgsFunction;

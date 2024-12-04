@@ -7,6 +7,7 @@ import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
 import { Modals, FacetDefinition } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
+import { DispatchJobButtonProps } from '../../components/Buttons/DropdownButtons/types';
 
 export type FacetType =
   | 'enum'
@@ -49,15 +50,8 @@ export interface DataTypeConfigWithManifest extends DataTypeConfig {
   fieldMapping?: ReadonlyArray<FieldToName>; // TODO: depreciate this field and use FacetDefinition instead
 }
 
-export interface SowerJobConfig {
-  action: string;
-  input: Record<string, any>;
-  output: Record<string, any>;
-}
-
 export interface DownloadButtonConfig extends DownloadButtonProps {
   dropdownId?: string;
-  needsDispatchJob?: boolean;
 }
 
 export interface DropdownButtonsConfig {
@@ -69,14 +63,15 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 }
 
 export interface CohortPanelConfig {
-  readonly guppyConfig: DataTypeConfigWithManifest; // guppy config
-  readonly tabTitle: string; // title of the tab
-  readonly charts?: Record<string, SummaryChart>; // grid of charts
-  readonly table?: SummaryTable; // table configuration
-  readonly filters?: TabsConfig; // filters for the fields
-  readonly dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
-  readonly buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
-  readonly loginForDownload?: boolean; // login required for download
+  guppyConfig: DataTypeConfigWithManifest; // guppy config
+  tabTitle: string; // title of the tab
+  charts?: Record<string, SummaryChart>; // grid of charts
+  table?: SummaryTable; // table configuration
+  filters?: TabsConfig; // filters for the fields
+  dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
+  buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
+  jobsButtons?: ReadonlyArray<DispatchJobButtonProps>; // row of buton that require sower
+  loginForDownload?: boolean; // login required for download
 }
 
 export interface CohortBuilderConfiguration {

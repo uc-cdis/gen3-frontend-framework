@@ -17,7 +17,8 @@ import {
 import { Icon } from '@iconify/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
-import CohortSubmitJobActionButton from './downloads/CohortDispatchActionButton';
+import CohortSubmitJobActionButton from './downloads/actions/TwoStepActionButton';
+import { DispatchJobButtonProps } from '../../components/Buttons/DropdownButtons/types';
 
 const createDownloadMenuButton = (
   props: DropdownButtonProps,
@@ -72,6 +73,7 @@ const createDownloadMenuButton = (
 interface DownloadsPanelProps {
   readonly dropdowns: Record<string, DropdownsWithButtonsProps>;
   readonly buttons: ReadonlyArray<DownloadButtonProps>;
+  readonly jobsButtons: ReadonlyArray<DispatchJobButtonProps>;
   readonly loginForDownload?: boolean;
   readonly accessibility?: Accessibility;
   readonly rootPath?: string;
@@ -85,6 +87,7 @@ interface DownloadsPanelProps {
 const DownloadsPanel = ({
   dropdowns,
   buttons,
+  jobsButtons,
   loginForDownload,
   index,
   totalCount,
@@ -121,7 +124,7 @@ const DownloadsPanel = ({
     return dropdownsToRender;
   }, [dropdowns, loginRequired, isUserLoggedIn]);
 
-  return dropdowns || buttons ? (
+  return dropdowns || buttons || jobsButtons ? (
     <div className="flex space-x-1">
       {Object.values(dropdownsToRender).map(
         (dropdown: DropdownsWithButtonsProps) => {
@@ -153,45 +156,51 @@ const DownloadsPanel = ({
           disabled = true;
         }
 
-        if (button?.needsDispatchJob) {
-          return (
-            // Use Gen3's sower to dispatch jobs
-            <CohortSubmitJobActionButton
-              activeText={'Running...'}
-              inactiveText={button.title}
-              tooltipText={button.tooltipText}
-              disabled={disabled || !button.enabled}
-              actionFunction={actionFunction}
-              actionArgs={{
-                ...actionArgs,
-                ...(button.actionArgs ?? ({} as Record<string, any>)),
-                index: index,
-                filter,
-              }}
-              key={button.title}
-            />
-          );
-        } else
-          return (
-            <CohortActionButton
-              activeText={'Downloading...'}
-              inactiveText={button.title}
-              tooltipText={button.tooltipText}
-              disabled={disabled || !button.enabled}
-              actionFunction={actionFunction}
-              actionArgs={{
-                ...actionArgs,
-                ...(button.actionArgs ?? ({} as Record<string, any>)),
-                type: index,
-                totalCount,
-                fields,
-                filter,
-                accessibility: accessibility ?? Accessibility.ALL,
-                // sort: sort, // TODO add sort
-              }}
-              key={button.title}
-            />
-          );
+        return (
+          <CohortActionButton
+            activeText={'Downloading...'}
+            inactiveText={button.title}
+            tooltipText={button.tooltipText}
+            disabled={disabled || !button.enabled}
+            actionFunction={actionFunction}
+            actionArgs={{
+              ...actionArgs,
+              ...(button.actionArgs ?? ({} as Record<string, any>)),
+              type: index,
+              totalCount,
+              fields,
+              filter,
+              accessibility: accessibility ?? Accessibility.ALL,
+              // sort: sort, // TODO add sort
+            }}
+            key={button.title}
+          />
+        );
+      })}
+      {jobsButtons.map((button) => {
+        let disabled = false;
+        if (loginRequired && !isUserLoggedIn) {
+          disabled = true;
+        }
+
+        return (
+          <CohortSubmitJobActionButton
+            activeText={'Downloading...'}
+            inactiveText={button.title}
+            tooltipText={button.tooltipText}
+            disabled={disabled || !button.enabled}
+            actions={button.actions}
+            jobParameters={{
+              index,
+              totalCount,
+              fields,
+              filter,
+              accessibility: accessibility ?? Accessibility.ALL,
+              // sort: sort, // TODO add sort
+            }}
+            key={button.title}
+          />
+        );
       })}
     </div>
   ) : (

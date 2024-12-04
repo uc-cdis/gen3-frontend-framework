@@ -134,6 +134,7 @@ export const CohortPanel = ({
   tabTitle,
   dropdowns,
   buttons,
+  jobsButtons,
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
@@ -323,6 +324,7 @@ export const CohortPanel = ({
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
               buttons={buttons ?? []}
+              jobsButtons={jobsButtons ?? []}
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}

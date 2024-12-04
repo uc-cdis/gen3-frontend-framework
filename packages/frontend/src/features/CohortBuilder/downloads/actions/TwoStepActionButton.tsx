@@ -4,7 +4,6 @@ import {
   type FilterSet,
   useSubmitSowerJobMutation,
   type CreateAndExportActionConfig,
-  type BoundCreateAndExportAction,
   type JobBuilderAction,
   type SendJobOutputAction,
 } from '@gen3/core';
@@ -103,17 +102,16 @@ class SendSowerJobOutputActionFactory {
 }
 
 interface BuildPFBFromCohortParams extends Record<string, unknown> {
-  action: string;
-  filters: FilterSet;
+  filter: FilterSet;
   index: string;
 }
 
 const buildPFBFromCohort: JobBuilderAction = (params) => {
-  const { action, filters, index } = params as BuildPFBFromCohortParams;
+  const { filter, index } = params as BuildPFBFromCohortParams;
   return {
-    action: action,
+    action: 'export-files',
     input: {
-      filters: convertFilterSetToGqlFilter(filters),
+      filters: convertFilterSetToGqlFilter(filter),
       root_node: index,
     },
   };
@@ -126,42 +124,27 @@ SowerJobBuilderActionFactory.register(
 
 SendSowerJobOutputActionFactory.register('handoff-pfb-to-url', sendPFBToURL);
 
-/**
- * A function that binds actions based on a given configuration.
- *
- * This function takes an object of type `ActionConfig` and returns an object of type `BoundActions`.
- * It uses factories to retrieve appropriate action functions, which are then incorporated into the
- * returned actions. The function handles any potential errors that occur during the action retrieval
- * process and logs an error message if an exception is caught.
- *
- * @param {ActionConfig} actionConfig - An object containing the configuration for the actions to be bound.
- * @returns {BoundActions} An object containing the result of binding actions according to the provided configuration.
- * @throws Will throw an error if there is an issue retrieving an action from the factory.
- */
-const bindAction = (
-  actionConfig: CreateAndExportActionConfig,
-): BoundCreateAndExportAction => {
+export const bindCreateJobAction = (actionName: string): JobBuilderAction => {
   try {
-    const createAction = SowerJobBuilderActionFactory.getAction(
-      actionConfig.createAction.actionName,
-    );
-    const sendAction = SendSowerJobOutputActionFactory.getAction(
-      actionConfig.sendJobAction.actionName,
-    );
-
-    return {
-      createAction: {
-        ...actionConfig.createAction,
-        actionFunction: createAction, // Make sure this is of type JobBuilderAction
-      },
-      sendJobAction: {
-        ...actionConfig.sendJobAction,
-        actionFunction: sendAction, // Make sure this is of type SendJobOutputAction
-      },
-    };
+    const createAction = SowerJobBuilderActionFactory.getAction(actionName);
+    return createAction;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Error binding actions:', error.message);
+      console.error(`Error binding action ${actionName}`, error.message);
+    }
+    throw error;
+  }
+};
+
+export const bindSendResultsAction = (
+  actionName: string,
+): SendJobOutputAction => {
+  try {
+    const createAction = SendSowerJobOutputActionFactory.getAction(actionName);
+    return createAction;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(`Error binding action ${actionName}`, error.message);
     }
     throw error;
   }
@@ -169,6 +152,7 @@ const bindAction = (
 
 interface CohortSubmitJobActionButtonProps {
   actions: CreateAndExportActionConfig;
+  jobParameters: Record<string, any>;
   /**
    *   Left Icon for the button, can be undefined too
    */
@@ -192,7 +176,7 @@ interface CohortSubmitJobActionButtonProps {
   /**
    tooltip
    */
-  tooltip?: string;
+  tooltipText?: string;
 
   /**
    * aria-label for the button
@@ -212,7 +196,8 @@ const CohortSubmitJobActionButton = forwardRef<
   (
     {
       actions,
-      tooltip = undefined,
+      jobParameters,
+      tooltipText = undefined,
       disabled = false,
       ...props
     }: CohortSubmitJobActionButtonProps,
@@ -221,17 +206,22 @@ const CohortSubmitJobActionButton = forwardRef<
     const [submitJob, { isLoading, isSuccess }] = useSubmitSowerJobMutation();
 
     // TODO: handle error from binding actions
-    const boundActions = bindAction(actions);
 
     const handleSubmitJob = async () => {
       try {
-        const jobConfig = boundActions.createAction.actionFunction(
-          actions.createAction.parameters,
+        const createJobAction = bindCreateJobAction(
+          actions.createAction.actionName,
         );
-        const { uid, status, name } = await submitJob(jobConfig).unwrap();
+        const jobConfig = createJobAction({
+          ...actions.createAction.parameters,
+          ...jobParameters,
+        });
+
+        console.log('jobConfig', jobConfig);
+        const { uid } = await submitJob(jobConfig).unwrap();
 
         // Register with global monitor
-        SowerJobsMonitor.getInstance().registerJob(uid, boundActions);
+        SowerJobsMonitor.getInstance().registerJob(uid, actions);
       } catch (error: unknown) {
         notifications.show({
           title: 'Error',
@@ -242,7 +232,13 @@ const CohortSubmitJobActionButton = forwardRef<
     };
 
     return (
-      <Button loading={isLoading} onClick={handleSubmitJob} disabled={disabled}>
+      <Button
+        ref={ref}
+        loading={isLoading}
+        onClick={handleSubmitJob}
+        disabled={disabled}
+        {...props}
+      >
         Start Action
       </Button>
     );

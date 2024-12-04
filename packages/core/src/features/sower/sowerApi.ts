@@ -39,7 +39,17 @@ export const sowerApi = gen3Api.injectEndpoints({
         url: `${GEN3_SOWER_API}/dispatch`,
         method: 'POST',
         body: params,
+        validateStatus: (response) => {
+          if ('originalStatus' in response)
+            return response.status === 200 && response.originalStatus === 200;
+          return response.status === 200;
+        },
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { error: response.originalStatus };
+        return { error: response };
+      },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
@@ -47,7 +57,7 @@ export const sowerApi = gen3Api.injectEndpoints({
     getSowerJobsStatus: builder.query<JobsListResponse, string[]>({
       async queryFn(ids, _queryApi, _extraOptions, fetchWithBQ) {
         const results = await Promise.all(
-          ids.map((id) => fetchWithBQ(`items/${id}`)),
+          ids.map((id) => fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${id}`)),
         );
         const combinedResults = processResults(results, ids); // Renamed variable
         return { data: combinedResults };

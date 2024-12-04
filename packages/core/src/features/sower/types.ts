@@ -52,7 +52,7 @@ export interface BoundCreateAndExportAction {
 
 export interface JobWithActions {
   jobId: string;
-  config: BoundCreateAndExportAction;
+  config: CreateAndExportActionConfig;
   part: 1 | 2;
   timestamp: number;
 }
