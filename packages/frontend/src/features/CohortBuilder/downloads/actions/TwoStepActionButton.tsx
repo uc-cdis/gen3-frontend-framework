@@ -11,7 +11,7 @@ import {
 import React, { forwardRef, ReactElement, useState } from 'react';
 import { Button, ButtonProps } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import GlobalJobMonitor from '../../../../services/SowerJobsMonitor';
+import { SowerJobsMonitor } from '../../../../services/SowerJobsMonitor';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -231,7 +231,7 @@ const CohortSubmitJobActionButton = forwardRef<
         const { uid, status, name } = await submitJob(jobConfig).unwrap();
 
         // Register with global monitor
-        GlobalJobMonitor.getInstance().registerJob(uid, boundActions);
+        SowerJobsMonitor.getInstance().registerJob(uid, boundActions);
       } catch (error: unknown) {
         notifications.show({
           title: 'Error',

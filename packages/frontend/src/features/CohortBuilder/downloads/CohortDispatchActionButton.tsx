@@ -34,7 +34,7 @@ interface CohortSubmitJobActionButtonProps {
   /**
    tooltip
    */
-  tooltip?: string;
+  tooltipText?: string;
 
   /**
    * aria-label for the button
@@ -55,7 +55,7 @@ const CohortSubmitJobActionButton = forwardRef<
     {
       actionFunction,
       actionArgs,
-      tooltip = undefined,
+      tooltipText = undefined,
       disabled = false,
       ...props
     }: CohortSubmitJobActionButtonProps,
@@ -84,7 +84,7 @@ const CohortSubmitJobActionButton = forwardRef<
     }, []);
 
     return (
-      <Tooltip disabled={!tooltip} label={tooltip}>
+      <Tooltip disabled={!tooltipText} label={tooltipText}>
         <Button ref={ref} disabled={disabled} {...props} onClick={onSubmit}>
           <Text fs={size} color={isActive ? 'red' : 'blue'}>
             {isActive ? 'Running' : 'Submit'}

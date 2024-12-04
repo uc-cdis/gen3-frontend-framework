@@ -14,21 +14,24 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
     <React.Fragment>
       <Menu>
         <Menu.Target>
-          <Tooltip label={'Action Menu'}
-                   multiline
-                   color="base"
-                   classNames={TooltipStyle}
-                   position="bottom" withArrow>
-          <button>
-            <DotsIcon size={'3.15rem'} />
-          </button>
+          <Tooltip
+            label={'Action Menu'}
+            multiline
+            color="base"
+            classNames={TooltipStyle}
+            position="bottom"
+            withArrow
+          >
+            <button>
+              <DotsIcon size={'3.15rem'} />
+            </button>
           </Tooltip>
         </Menu.Target>
         <Menu.Dropdown>
           {items.map((x, index) => {
             return (
               <Menu.Item key={`${x.name}-${index}`}>
-                <Link href={x.href}>
+                <Link href={x.href ? x.href : '/'}>
                   <Text>{x.name}</Text>
                 </Link>
               </Menu.Item>

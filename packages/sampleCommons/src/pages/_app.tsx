@@ -12,6 +12,7 @@ import {
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
+  SowerJobsMonitor,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
   registerCohortBuilderDefaultPreviewRenderers,
@@ -77,6 +78,13 @@ const Gen3App = ({
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();
+
+    const m = SowerJobsMonitor.getInstance();
+
+    return () => {
+      m.cleanup();
+    };
+
     // }
   }, []);
 

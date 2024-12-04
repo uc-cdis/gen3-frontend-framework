@@ -14,8 +14,8 @@ interface JobMonitorConfig {
   debug?: boolean;
 }
 
-class GlobalJobMonitor {
-  private static instance: GlobalJobMonitor;
+export class SowerJobsMonitor {
+  private static instance: SowerJobsMonitor;
   private pollingInterval: NodeJS.Timeout | null = null;
   private isPolling: boolean = false;
   private config: JobMonitorConfig;
@@ -27,18 +27,18 @@ class GlobalJobMonitor {
   };
 
   private constructor(config: JobMonitorConfig = {}) {
-    this.config = { ...GlobalJobMonitor.DEFAULT_CONFIG, ...config };
+    this.config = { ...SowerJobsMonitor.DEFAULT_CONFIG, ...config };
     this.checkAndUpdatePolling();
   }
 
   static getInstance(config?: JobMonitorConfig) {
-    if (!GlobalJobMonitor.instance) {
-      GlobalJobMonitor.instance = new GlobalJobMonitor(config);
+    if (!SowerJobsMonitor.instance) {
+      SowerJobsMonitor.instance = new SowerJobsMonitor(config);
     } else if (config) {
       // Update config if provided
-      GlobalJobMonitor.instance.updateConfig(config);
+      SowerJobsMonitor.instance.updateConfig(config);
     }
-    return GlobalJobMonitor.instance;
+    return SowerJobsMonitor.instance;
   }
 
   updateConfig(newConfig: Partial<JobMonitorConfig>) {
@@ -194,5 +194,3 @@ class GlobalJobMonitor {
     }
   }
 }
-
-export default GlobalJobMonitor;
