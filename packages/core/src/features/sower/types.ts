@@ -1,6 +1,8 @@
+export type SowerJobState = 'Running' | 'Completed' | 'Failed' | 'Unknown';
+
 export interface JobStatus {
   uid: string;
-  status: 'Running' | 'Completed' | 'Failed' | 'Unknown';
+  status: SowerJobState;
   name: string;
   error?: string;
 }
@@ -54,7 +56,10 @@ export interface JobWithActions {
   jobId: string;
   config: CreateAndExportActionConfig;
   part: 1 | 2;
-  timestamp: number;
+  created: number;
+  updated: number;
+  name: string;
+  status: SowerJobState;
 }
 
 export interface DispatchJobParams {

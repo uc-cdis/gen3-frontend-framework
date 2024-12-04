@@ -13,6 +13,7 @@ import {
 
 import {
   addSowerJob,
+  updateSowerJob,
   removeSowerJob,
   clearSowerJobsId,
   sowerJobsListSliceReducer,
@@ -43,6 +44,7 @@ export {
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
   addSowerJob,
+  updateSowerJob,
   removeSowerJob,
   clearSowerJobsId,
   sowerApi,

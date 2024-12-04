@@ -111,10 +111,10 @@ export class SowerJobsMonitor {
       if ('data' in response) {
         const status = response.data;
 
-        if (status?.status === 'completed' && pendingAction.part === 1) {
+        if (status?.status === 'Completed' && pendingAction.part === 1) {
           this.executeStep2(pendingAction);
           this.stopPollingIfNoJobs();
-        } else if (status?.status === 'failed') {
+        } else if (status?.status === 'Failed') {
           this.handleError(jobId, 'Job failed');
           this.stopPollingIfNoJobs();
         }

@@ -1,6 +1,8 @@
 import { createSlice, Draft, type PayloadAction } from '@reduxjs/toolkit';
 import { JobWithActions } from './types';
 
+type SowerJobUpdatePayload = Omit<JobWithActions, 'created' | 'config'>;
+
 export interface SowerJobsListState {
   jobIds: Record<string, JobWithActions>;
 }
@@ -21,6 +23,18 @@ export const sowerJobsListSlice = createSlice({
         state.jobIds[action.payload.jobId] = action.payload;
       }
     },
+    updateSowerJob: (
+      state: Draft<SowerJobsListState>,
+      action: PayloadAction<SowerJobUpdatePayload>,
+    ) => {
+      if (!Object.keys(state.jobIds).includes(action.payload.jobId)) {
+        state.jobIds[action.payload.jobId] = {
+          ...state.jobIds[action.payload.jobId],
+          ...action.payload,
+          updated: Date.now(),
+        };
+      }
+    },
     removeSowerJob: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<string>,
@@ -35,5 +49,5 @@ export const sowerJobsListSlice = createSlice({
 
 export const sowerJobsListSliceReducer = sowerJobsListSlice.reducer;
 
-export const { addSowerJob, removeSowerJob, clearSowerJobsId } =
+export const { addSowerJob, removeSowerJob, clearSowerJobsId, updateSowerJob } =
   sowerJobsListSlice.actions;
