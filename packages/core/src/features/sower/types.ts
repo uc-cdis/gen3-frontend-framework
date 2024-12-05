@@ -60,6 +60,7 @@ export interface JobWithActions {
   updated: number;
   name: string;
   status: SowerJobState;
+  outputGUID?: string;
 }
 
 export interface DispatchJobParams {

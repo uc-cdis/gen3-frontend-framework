@@ -2,6 +2,7 @@ import { createSlice, Draft, type PayloadAction } from '@reduxjs/toolkit';
 import { JobWithActions } from './types';
 
 type SowerJobUpdatePayload = Pick<JobWithActions, 'status' | 'jobId'>;
+type SowerJobUpdateObjectGUID = Pick<JobWithActions, 'outputGUID' | 'jobId'>;
 
 export interface SowerJobsListState {
   jobIds: Record<string, JobWithActions>;
@@ -35,6 +36,18 @@ export const sowerJobsListSlice = createSlice({
         };
       }
     },
+    updateOutputGUID: (
+      state: Draft<SowerJobsListState>,
+      action: PayloadAction<SowerJobUpdateObjectGUID>,
+    ) => {
+      if (Object.keys(state.jobIds).includes(action.payload.jobId)) {
+        state.jobIds[action.payload.jobId] = {
+          ...state.jobIds[action.payload.jobId],
+          outputGUID: action.payload.outputGUID,
+          updated: Date.now(),
+        };
+      }
+    },
     removeSowerJob: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<string>,
@@ -49,5 +62,10 @@ export const sowerJobsListSlice = createSlice({
 
 export const sowerJobsListSliceReducer = sowerJobsListSlice.reducer;
 
-export const { addSowerJob, removeSowerJob, clearSowerJobsId, updateSowerJob } =
-  sowerJobsListSlice.actions;
+export const {
+  addSowerJob,
+  removeSowerJob,
+  clearSowerJobsId,
+  updateSowerJob,
+  updateOutputGUID,
+} = sowerJobsListSlice.actions;

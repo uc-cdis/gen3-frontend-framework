@@ -66,7 +66,7 @@ const runSendActionb = async (
     });
 
     dispatch(removeSowerJob(pendingAction.jobId));
-  } catch (error) {
+  } catch (error: unknown) {
     handleError(
       dispatch,
       pendingAction.jobId,
@@ -78,8 +78,21 @@ const runSendActionb = async (
 // Job Manager - handles polling and notifications
 export const JobManager = () => {
   const jobIds = useCoreSelector(selectSowerJobs);
-  const idsArray = Object.keys(jobIds);
   const dispatch = useCoreDispatch();
+  const runningJobs = Object.values(jobIds).reduce(
+    (acc, job) => {
+      if (
+        job.part === 1 &&
+        job.status !== 'Completed' &&
+        job.status !== 'Failed'
+      ) {
+        acc[job.jobId] = job;
+      }
+      return acc;
+    },
+    {} as Record<string, JobWithActions>,
+  );
+  const idsArray = Object.keys(runningJobs);
 
   // get updates for the status of all running jobs
 
@@ -122,7 +135,7 @@ export const JobManager = () => {
         );
       }
     });
-  }, [dispatch, jobStatuses]);
+  }, [dispatch, jobIds, jobStatuses]);
 
   return null;
 };
