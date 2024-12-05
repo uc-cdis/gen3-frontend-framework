@@ -13,7 +13,6 @@ import { bindSendResultsAction } from '../features/CohortBuilder/downloads/actio
 
 interface JobMonitorConfig {
   pollingInterval?: number; // in milliseconds
-  maxRetries?: number;
   debug?: boolean;
 }
 
@@ -25,8 +24,7 @@ export class SowerJobsMonitor {
 
   private static DEFAULT_CONFIG: JobMonitorConfig = {
     pollingInterval: 5000, // 5 seconds default
-    maxRetries: 3,
-    debug: false,
+    debug: true,
   };
 
   private constructor(config: JobMonitorConfig = {}) {
@@ -78,7 +76,7 @@ export class SowerJobsMonitor {
     this.startPollingIfNeeded();
   }
 
-  private getPendingActions() {
+  private getPendingActions(): Record<string, JobWithActions> {
     const state = coreStore.getState();
     return state.sowerJobsList.jobIds;
   }
@@ -99,6 +97,7 @@ export class SowerJobsMonitor {
 
   private checkAndUpdatePolling() {
     const pendingActions = this.getPendingActions();
+    console.log('checkAndUpdatePolling: ', pendingActions);
     if (Object.keys(pendingActions).length > 0 && !this.isPolling) {
       this.startMonitoring();
     } else if (Object.keys(pendingActions).length === 0 && this.isPolling) {
@@ -173,7 +172,6 @@ export class SowerJobsMonitor {
       this.isPolling = true;
       this.pollingInterval = setInterval(() => {
         const pendingActions = this.getPendingActions();
-
         if (Object.keys(pendingActions).length === 0) {
           this.stopMonitoring();
           return;

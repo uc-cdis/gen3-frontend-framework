@@ -1,15 +1,87 @@
 import { useEffect } from 'react';
 import { notifications } from '@mantine/notifications';
 import {
+  CoreDispatch,
   useCoreSelector,
   selectSowerJobs,
   useGetSowerJobsStatusQuery,
+  removeSowerJob,
+  useCoreDispatch,
+  type CreateAndExportActionConfig,
+  coreStore,
+  addSowerJob,
+  updateSowerJob,
+  type JobWithActions,
 } from '@gen3/core';
+import { bindSendResultsAction } from '../../features/CohortBuilder/downloads/actions/TwoStepActionButton';
+
+const handleError = (
+  dispatch: CoreDispatch,
+  jobId: string,
+  message: string,
+) => {
+  notifications.show({
+    title: 'Error',
+    message,
+    color: 'red',
+  });
+  coreStore.dispatch(removeSowerJob(jobId));
+};
+
+export const registerJob = (
+  dispatch: CoreDispatch,
+  jobId: string,
+  config: CreateAndExportActionConfig,
+) => {
+  dispatch(
+    addSowerJob({
+      jobId,
+      config,
+      part: 1,
+      created: Date.now(),
+      updated: Date.now(),
+      name: '',
+      status: 'Unknown',
+    }),
+  );
+};
+
+const runSendActionb = async (
+  dispatch: CoreDispatch,
+  pendingAction: JobWithActions,
+) => {
+  try {
+    // get the objectId of the job
+    const action = bindSendResultsAction(
+      pendingAction.config.sendJobAction.actionName,
+    );
+    await action({
+      parameters: pendingAction.config.sendJobAction.parameters,
+    });
+
+    notifications.show({
+      title: 'Success',
+      message: 'Action completed successfully',
+      color: 'green',
+    });
+
+    dispatch(removeSowerJob(pendingAction.jobId));
+  } catch (error) {
+    handleError(
+      dispatch,
+      pendingAction.jobId,
+      'Failed to complete second step',
+    );
+  }
+};
 
 // Job Manager - handles polling and notifications
 export const JobManager = () => {
   const jobIds = useCoreSelector(selectSowerJobs);
   const idsArray = Object.keys(jobIds);
+  const dispatch = useCoreDispatch();
+
+  // get updates for the status of all running jobs
 
   const { data: jobStatuses, refetch } = useGetSowerJobsStatusQuery(idsArray, {
     skip: idsArray.length === 0,
@@ -26,7 +98,9 @@ export const JobManager = () => {
     if (!jobStatuses) return;
 
     Object.entries(jobStatuses).forEach(([id, job]) => {
-      if (job.status === 'Completed') {
+      const sowerJob = jobIds[id];
+      if (job.status === 'Completed' || sowerJob.part === 1) {
+        // need to execute send action
         notifications.show({
           title: 'Job Completed',
           message: `${job.name} (${id}) has finished successfully`,
@@ -38,9 +112,17 @@ export const JobManager = () => {
           message: `${job.name} (${id}) has failed`,
           color: 'red',
         });
+        dispatch(removeSowerJob(id));
+      } else {
+        dispatch(
+          updateSowerJob({
+            jobId: id,
+            status: job?.status || 'Unknown',
+          }),
+        );
       }
     });
-  }, [jobStatuses]);
+  }, [dispatch, jobStatuses]);
 
   return null;
 };

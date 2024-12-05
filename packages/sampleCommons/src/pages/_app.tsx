@@ -79,11 +79,8 @@ const Gen3App = ({
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();
 
-    const m = SowerJobsMonitor.getInstance();
-
-    return () => {
-      m.cleanup();
-    };
+    // start the job manager
+    SowerJobsMonitor.getInstance();
 
     // }
   }, []);

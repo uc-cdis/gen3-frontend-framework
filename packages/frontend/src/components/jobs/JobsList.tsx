@@ -1,11 +1,5 @@
-import {
-  Group,
-  Text,
-  Stack,
-  Badge,
-  Paper,
-  LoadingOverlay,
-} from '@mantine/core';
+import React from 'react';
+import { Group, Text, Stack, Badge, Paper, Table } from '@mantine/core';
 import {
   useCoreSelector,
   selectSowerJobs,
@@ -28,8 +22,6 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
   //   skip: idsArray.length === 0,
   // });
 
-  console.log('jobIds', jobIds);
-
   if (Object.keys(jobIds).length === 0) {
     return (
       <Paper p="md">
@@ -46,40 +38,49 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
   //   );
   // }
 
+  const tableHeader = (
+    <Table.Tr>
+      <Table.Th>Id</Table.Th>
+      <Table.Th>Name</Table.Th>
+      <Table.Th>Status</Table.Th>
+      <Table.Th>Created</Table.Th>
+      <Table.Th>Updated</Table.Th>
+    </Table.Tr>
+  );
+
+  const rows = Object.values(jobIds).map((jobStatus) => {
+    return (
+      <Table.Tr key={jobStatus.jobId}>
+        <Table.Td>{jobStatus.jobId}</Table.Td>
+        <Table.Td>{jobStatus.name}</Table.Td>
+        <Table.Td>
+          {' '}
+          <Badge
+            size={size}
+            color={
+              jobStatus.status === 'Running'
+                ? 'blue'
+                : jobStatus.status === 'Completed'
+                  ? 'green'
+                  : jobStatus.status === 'Failed'
+                    ? 'red'
+                    : 'gray'
+            }
+          >
+            {jobStatus.status || 'Unknown'}
+          </Badge>
+        </Table.Td>
+        <Table.Td>{new Date(jobStatus.created).toLocaleDateString()}</Table.Td>
+        <Table.Td>{new Date(jobStatus.updated).toLocaleDateString()}</Table.Td>
+      </Table.Tr>
+    );
+  });
+
   return (
-    <Paper p="md" withBorder>
-      <Stack gap="sm">
-        {Object.values(jobIds).map((jobStatus) => {
-          const { jobId, name, status } = jobStatus;
-          return (
-            <Group key={jobId} justify="space-between">
-              <Stack gap={0}>
-                <Text size={size} fw={500}>
-                  {name || 'Unknown Job'}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {jobId}
-                </Text>
-              </Stack>
-              <Badge
-                size={size}
-                color={
-                  status === 'Running'
-                    ? 'blue'
-                    : status === 'Completed'
-                      ? 'green'
-                      : status === 'Failed'
-                        ? 'red'
-                        : 'gray'
-                }
-              >
-                {status || 'Unknown'}
-              </Badge>
-            </Group>
-          );
-        })}
-      </Stack>
-    </Paper>
+    <Table striped highlightOnHover withTableBorder>
+      <Table.Thead>{tableHeader}</Table.Thead>
+      <Table.Tbody>{rows}</Table.Tbody>
+    </Table>
   );
 };
 
