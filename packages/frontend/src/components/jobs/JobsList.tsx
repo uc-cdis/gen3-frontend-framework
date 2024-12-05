@@ -19,16 +19,18 @@ interface JobsListProps {
 
 const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
   const jobIds = useCoreSelector(selectSowerJobs);
-  const idsArray = Object.keys(jobIds);
-  const {
-    data: jobStatuses,
-    isLoading,
-    isError,
-  } = useGetSowerJobsStatusQuery(idsArray, {
-    skip: idsArray.length === 0,
-  });
+  // const idsArray = Object.keys(jobIds);
+  // const {
+  //   data: jobStatuses,
+  //   isLoading,
+  //   isError,
+  // } = useGetSowerJobsStatusQuery(idsArray, {
+  //   skip: idsArray.length === 0,
+  // });
 
-  if (idsArray.length === 0) {
+  console.log('jobIds', jobIds);
+
+  if (Object.keys(jobIds).length === 0) {
     return (
       <Paper p="md">
         <Text>No Active Jobs</Text>
@@ -36,43 +38,42 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
     );
   }
 
-  if (isError) {
-    return (
-      <Paper p="md">
-        <ErrorCard message="Error retrieving jobs" />
-      </Paper>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <Paper p="md">
+  //       <ErrorCard message="Error retrieving jobs" />
+  //     </Paper>
+  //   );
+  // }
 
   return (
     <Paper p="md" withBorder>
       <Stack gap="sm">
-        <LoadingOverlay visible={isLoading} />
-        {idsArray.map((id) => {
-          const job = jobStatuses?.[id];
+        {Object.values(jobIds).map((jobStatus) => {
+          const { jobId, name, status } = jobStatus;
           return (
-            <Group key={id} justify="space-between">
+            <Group key={jobId} justify="space-between">
               <Stack gap={0}>
                 <Text size={size} fw={500}>
-                  {job?.name || 'Unknown Job'}
+                  {name || 'Unknown Job'}
                 </Text>
                 <Text size="xs" c="dimmed">
-                  {id}
+                  {jobId}
                 </Text>
               </Stack>
               <Badge
                 size={size}
                 color={
-                  job?.status === 'Running'
+                  status === 'Running'
                     ? 'blue'
-                    : job?.status === 'Completed'
+                    : status === 'Completed'
                       ? 'green'
-                      : job?.status === 'Failed'
+                      : status === 'Failed'
                         ? 'red'
                         : 'gray'
                 }
               >
-                {job?.status || 'Unknown'}
+                {status || 'Unknown'}
               </Badge>
             </Group>
           );

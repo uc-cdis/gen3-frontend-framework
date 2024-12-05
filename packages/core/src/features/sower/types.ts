@@ -70,5 +70,5 @@ export interface DispatchJobParams {
 export interface DispatchJobResponse {
   uid: string;
   name: string;
-  status: string;
+  status: SowerJobState;
 }

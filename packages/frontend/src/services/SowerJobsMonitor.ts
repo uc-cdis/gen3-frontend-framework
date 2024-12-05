@@ -3,6 +3,7 @@ import {
   coreStore,
   sowerApi,
   addSowerJob,
+  updateSowerJob,
   removeSowerJob,
   type JobWithActions,
   type CreateAndExportActionConfig,
@@ -67,7 +68,10 @@ export class SowerJobsMonitor {
         jobId,
         config,
         part: 1,
-        timestamp: Date.now(),
+        created: Date.now(),
+        updated: Date.now(),
+        name: '',
+        status: 'Unknown',
       }),
     );
     // Start polling when a job is registered
@@ -108,6 +112,8 @@ export class SowerJobsMonitor {
         sowerApi.endpoints.getSowerJobStatus.initiate(jobId),
       );
 
+      console.log('checkJobStatus: ', response);
+
       if ('data' in response) {
         const status = response.data;
 
@@ -118,8 +124,14 @@ export class SowerJobsMonitor {
           this.handleError(jobId, 'Job failed');
           this.stopPollingIfNoJobs();
         }
+        coreStore.dispatch(
+          updateSowerJob({
+            jobId,
+            status: status?.status || 'Unknown',
+          }),
+        );
       }
-    } catch (error) {
+    } catch (error: unknown) {
       this.handleError(jobId, 'Failed to check job status');
       this.stopPollingIfNoJobs();
     }
