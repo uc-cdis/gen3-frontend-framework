@@ -27,20 +27,27 @@ export const useDataLibrary = (useApi: boolean) => {
     refetch: refetchLibraryFromApi,
     error: apiError,
     isError: isAPIListError,
+    isLoading: isAPIListLoading,
   } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
   const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
-  const [updateItemInLibraryApi] = useUpdateDataLibraryListMutation();
+  const [updateItemInLibraryApi, { isLoading: isUpdatingLoading }] =
+    useUpdateDataLibraryListMutation();
   const [deleteAllApi] = useDeleteAllDataLibraryMutation();
 
   let hasError = false;
   let errorData = null;
+  let isLoading = false;
 
   // TODO: Add error message from indexedDB
   if (useApi && isAPIListError) {
     hasError = true;
     errorData = apiError;
+  }
+
+  if (useApi && (isUpdatingLoading || isAPIListLoading)) {
+    isLoading = true;
   }
 
   const generateUniqueName = (baseName: string = 'List') => {
@@ -148,6 +155,7 @@ export const useDataLibrary = (useApi: boolean) => {
   return {
     dataLibrary,
     isError: hasError,
+    isLoading,
     error: errorData,
     addListToDataLibrary,
     deleteListFromDataLibrary,

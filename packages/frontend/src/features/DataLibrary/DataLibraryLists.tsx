@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, Center } from '@mantine/core';
+import { Accordion, Center, LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
@@ -8,11 +8,13 @@ import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
+import { HTTPUserFriendlyErrorMessages } from './modals/utils';
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
   const {
     dataLibrary,
     isError,
+    isLoading,
     error: dataLibraryError,
     addListToDataLibrary,
     updateListInDataLibrary,
@@ -28,11 +30,14 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
   };
 
   if (isError) {
-    console.log('Data Library Error', dataLibraryError);
+    let message = 'There was a error getting the library';
+    if (dataLibraryError.status in HTTPUserFriendlyErrorMessages) {
+      message = HTTPUserFriendlyErrorMessages[dataLibraryError.status];
+    }
     return (
       <div className="flex flex-col w-full ml-2">
         <Center>
-          <ErrorCard message={'There was a error getting the library'} />
+          <ErrorCard message={message} />
         </Center>
       </div>
     );
@@ -40,6 +45,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
 
   return (
     <div className="flex flex-col w-full ml-2">
+      <LoadingOverlay visible={isLoading} />
       <SelectedItemsModal
         opened={selectedItemsOpen}
         onClose={close}

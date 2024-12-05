@@ -1,7 +1,7 @@
 export const HTTPUserFriendlyErrorMessages: Record<number, string> = {
   // 4xx Client Errors
   400: 'Sorry, there was a problem with your request. Please check the information you provided and try again.',
-  401: 'Please sign in to continue. Your session may have expired.',
+  401: 'Please sign in to access this content. If you need to create an account, please contact support.',
   402: 'This feature requires payment to continue. Please update your subscription.',
   403: "You don't have permission to access this. If you think this is a mistake, please contact support.",
   404: "We couldn't find what you're looking for. The link might be broken or the content may have been moved.",
