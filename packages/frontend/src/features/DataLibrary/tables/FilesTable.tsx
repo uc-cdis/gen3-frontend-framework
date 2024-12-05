@@ -6,9 +6,10 @@ import {
 } from 'mantine-react-table';
 import React, { useEffect, useState } from 'react';
 import { FileItem } from '@gen3/core';
-import { Text } from '@mantine/core';
+import { Button, Text, Tooltip } from '@mantine/core';
 import { commonTableSettings } from './tableSettings';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
+import { MdOutlineRemoveCircle as RemoveIcon } from 'react-icons/md';
 
 interface FilesTableProps {
   datasetId: string;
@@ -16,6 +17,7 @@ interface FilesTableProps {
   data: Array<FileItem>;
   header: string;
   size?: string;
+  removeList: (itemId: string) => void;
 }
 
 const columns = [
@@ -43,6 +45,7 @@ const FilesTable = ({
   data,
   header,
   size = 'sm',
+  removeList = (itemId: string) => null, //TODO Support removing files from dataset
 }: FilesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
@@ -70,7 +73,7 @@ const FilesTable = ({
     ...commonTableSettings(size),
     enableBottomToolbar: data.length > 10,
     enablePagination: data.length > 10,
-    enableRowActions: false,
+    enableRowActions: true,
     enableHiding: true,
     getRowId: (originalRow) => originalRow.id,
     onRowSelectionChange: handleRowSelectionChange,
