@@ -35,9 +35,15 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   };
 
   if (isError) {
+    console.log('dataLibraryError', dataLibraryError);
     let message = 'There was a error getting the library';
-    if (dataLibraryError?.status in HTTPUserFriendlyErrorMessages) {
-      message = HTTPUserFriendlyErrorMessages[dataLibraryError?.status];
+    if (
+      dataLibraryError &&
+      'data' in dataLibraryError &&
+      dataLibraryError?.status in HTTPUserFriendlyErrorMessages
+    ) {
+      message =
+        HTTPUserFriendlyErrorMessages[dataLibraryError?.status as number];
     }
     return (
       <div className="flex flex-col w-full ml-2">

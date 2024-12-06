@@ -32,6 +32,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       transformResponse: (res: DataLibraryAPIResponse) => {
         return { lists: BuildLists(res) };
       },
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
     }),
     getDataLibraryList: builder.query<Datalist, string>({
       query: (id: string) => `${GEN3_DATA_LIBRARY_API}/${id}`,
@@ -45,6 +50,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         body: lists,
       }),
       invalidatesTags: [TAGS],
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
     }),
     addDataLibraryList: builder.mutation<void, Partial<Datalist> | undefined>({
       query: (list) => ({
@@ -52,6 +62,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         method: 'POST',
         body: list ?? {},
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
       invalidatesTags: [TAGS],
     }),
     updateDataLibraryList: builder.mutation<void, AddUpdateListParams>({
@@ -60,6 +75,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         method: 'PUT',
         body: list,
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
       invalidatesTags: [TAGS],
     }),
     deleteDataLibraryList: builder.mutation<void, string>({
@@ -67,6 +87,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         url: `${GEN3_DATA_LIBRARY_API}/${id}`,
         method: 'DELETE',
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
       invalidatesTags: [TAGS],
     }),
     deleteAllDataLibrary: builder.mutation<void, void>({
@@ -74,6 +99,11 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
         url: `${GEN3_DATA_LIBRARY_API}`,
         method: 'DELETE',
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { status: response.originalStatus, data: response.data };
+        return response;
+      },
       invalidatesTags: [TAGS],
     }),
   }),
