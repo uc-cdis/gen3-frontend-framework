@@ -25,6 +25,7 @@ interface DatalistAccordionProps {
   dataList: Datalist;
   updateListInDataLibrary: (id: string, data: Datalist) => Promise<void>;
   deleteListFromDataLibrary: (id: string) => Promise<void>;
+  size?: string;
 }
 
 /**
@@ -41,6 +42,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
   updateListInDataLibrary,
   deleteListFromDataLibrary,
+  size = 'sm',
 }) => {
   const [selectedState, setSelectedState] =
     useState<DataItemSelectedState>('unchecked');
@@ -172,12 +174,14 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}
         selectedState={selectedState}
+        size={size}
       />
       <Accordion.Panel>
         <DataSetContentsTable
           listId={listId}
           data={tableRowData}
           removeList={removeItemFromList}
+          size={size}
         />
       </Accordion.Panel>
     </Accordion.Item>

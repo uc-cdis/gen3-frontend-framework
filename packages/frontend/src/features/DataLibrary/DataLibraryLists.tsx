@@ -9,8 +9,13 @@ import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
 import { HTTPUserFriendlyErrorMessages } from './modals/utils';
+import { size } from 'lodash';
 
-const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
+const DataLibraryLists: React.FC<DataLibraryConfig> = ({
+  useAPI,
+  actions,
+  size,
+}) => {
   const {
     dataLibrary,
     isError,
@@ -31,8 +36,8 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
 
   if (isError) {
     let message = 'There was a error getting the library';
-    if (dataLibraryError.status in HTTPUserFriendlyErrorMessages) {
-      message = HTTPUserFriendlyErrorMessages[dataLibraryError.status];
+    if (dataLibraryError?.status in HTTPUserFriendlyErrorMessages) {
+      message = HTTPUserFriendlyErrorMessages[dataLibraryError?.status];
     }
     return (
       <div className="flex flex-col w-full ml-2">
@@ -70,6 +75,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({ useAPI, actions }) => {
                 <DatalistAccordionItem
                   dataList={datalist}
                   key={datalist.id}
+                  size={size}
                   updateListInDataLibrary={updateListInDataLibrary}
                   deleteListFromDataLibrary={deleteListFromDataLibrary}
                 />

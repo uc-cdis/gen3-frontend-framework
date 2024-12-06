@@ -17,7 +17,6 @@ interface FilesTableProps {
   data: Array<FileItem>;
   header: string;
   size?: string;
-  removeList: (itemId: string) => void;
 }
 
 const columns = [
@@ -45,7 +44,6 @@ const FilesTable = ({
   data,
   header,
   size = 'sm',
-  removeList = (itemId: string) => null, //TODO Support removing files from dataset
 }: FilesTableProps) => {
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
