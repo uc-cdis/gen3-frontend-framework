@@ -84,7 +84,6 @@
     "gray-matter": "^4.0.3",
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
-    "jsonpath-plus": "^8.0.0",
     "mantine-react-table": "^2.0.0-beta.7",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
