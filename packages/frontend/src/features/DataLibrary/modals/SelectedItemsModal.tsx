@@ -215,6 +215,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             onClick={async () => {
               setIsRunning(true);
               await actionFunction.action(
+                validatedLibrarySelections,
                 actionFunction.parameters,
                 onDone,
                 onError,

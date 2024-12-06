@@ -18,10 +18,10 @@
 *  ~~export to terra~~,
 * ~~export to 7 bridges~~,
 * ~~fix action button disable state~~
+* actions are passed selections
 * add cancel action button?
-* download pfb
-* rename with API
-* remove member with API
+* ~~rename with API~~
+* ~~remove member with API~~
 * ~~add id as column~~
 * remove id from FileItem
 * ~~hide add new list~~

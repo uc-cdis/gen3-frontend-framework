@@ -1,7 +1,9 @@
-import { sendPFBToURL } from './exportActions';
+import { sendExistingPFBToURL } from './exportActions';
 import { HTTPError } from '@gen3/core';
+import { ValidatedSelectedItem } from '../types';
 
 export type DataActionFunction<T = void> = (
+  validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
   params?: Record<string, any>, // function options from the config
   done?: (arg0?: string) => void,
   onError?: (error: HTTPError | Error) => void,
@@ -48,7 +50,7 @@ export const findAction = (
 
 export const registerDefaultDataLibraryActions = () => {
   registerAction('export-pfb-to-url', {
-    action: sendPFBToURL,
+    action: sendExistingPFBToURL,
   });
 };
 

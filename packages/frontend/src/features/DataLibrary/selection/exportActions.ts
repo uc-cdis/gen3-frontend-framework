@@ -1,14 +1,15 @@
 import { DataActionFunction } from './registeredActions';
-import { fetchFencePresignedURL } from '@gen3/core';
+import { fetchFencePresignedURL, FileItem, isFileItem } from '@gen3/core';
+import { notifications } from '@mantine/notifications';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
-interface SendPFBToURLParameters {
+interface SendExistingPFBToURLParameters {
   targetURLTemplate: string;
 }
 
-const isSendPFBToURLParameters = (
+const isSendExistingPFBToURLParameters = (
   value: unknown,
-): value is SendPFBToURLParameters => {
+): value is SendExistingPFBToURLParameters => {
   if (!value || typeof value !== 'object') {
     return false;
   }
@@ -19,23 +20,42 @@ const isSendPFBToURLParameters = (
   );
 };
 
-export const sendPFBToURL: DataActionFunction = async (
+export const sendExistingPFBToURL: DataActionFunction = async (
+  validatedSelections,
   params,
   done = () => null,
   error = () => null,
   onAbort = () => null,
   signal = undefined,
 ) => {
-  if (!isSendPFBToURLParameters(params)) {
+  if (!isSendExistingPFBToURLParameters(params)) {
     console.error('Invalid parameters for sendPFBToURL action:', params);
     return;
   }
-  const { targetURLTemplate } = params as SendPFBToURLParameters;
+  const { targetURLTemplate } = params;
+  // get the selection
+
+  if (validatedSelections.length !== 1 || !isFileItem(validatedSelections[0])) {
+    notifications.show({
+      id: 'data-library-send-existing-pfb-to-url-validate-length',
+      position: 'bottom-center',
+      withCloseButton: true,
+      autoClose: 5000,
+      title: 'Action Error',
+      message: 'Invalid data passed to send PFB to URL',
+      color: 'red',
+      loading: false,
+    });
+    return;
+  }
+
+  const { guid } = validatedSelections[0] as FileItem;
+  console.log('Sending existing PFB to URL:', targetURLTemplate, guid);
 
   // get the presigned URL for the selected PFB
   try {
     const presignedURL = await fetchFencePresignedURL({
-      guid: 'dg.4503/d470e2bc-d4f8-4088-815a-4333780d2bf0',
+      guid: guid,
       onAbort: onAbort,
       signal: signal,
     });
