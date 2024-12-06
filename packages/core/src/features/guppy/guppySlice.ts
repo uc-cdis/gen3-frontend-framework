@@ -28,7 +28,7 @@ const processHistogramResponse = (
 
   const results = pointerData.reduce(
     (acc: AggregationsData, element: Record<string, any>, idx: number) => {
-      const key = element.pointer
+      const key = element
         .slice(1)
         .replace(/\/histogram/g, '')
         .replace(/\//g, '.');
@@ -39,7 +39,6 @@ const processHistogramResponse = (
     },
     {} as AggregationsData,
   );
-  console.log('processHistogramResponse', results);
   return results as AggregationsData;
 };
 
