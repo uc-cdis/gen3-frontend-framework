@@ -14,24 +14,32 @@ const statusEndpoint = '/_status';
 const processHistogramResponse = (
   data: Record<string, any>,
 ): AggregationsData => {
-  const pathData = JSONPath({
+  const valueData = JSONPath({
     json: data,
     path: '$..histogram',
-    resultType: 'all',
+    resultType: 'value',
   });
-  const results = pathData.reduce(
-    (acc: AggregationsData, element: Record<string, any>) => {
+
+  const pointerData = JSONPath({
+    json: data,
+    path: '$..histogram',
+    resultType: 'pointer',
+  });
+
+  const results = pointerData.reduce(
+    (acc: AggregationsData, element: Record<string, any>, idx: number) => {
       const key = element.pointer
         .slice(1)
         .replace(/\/histogram/g, '')
         .replace(/\//g, '.');
       return {
         ...acc,
-        [key]: element.value,
+        [key]: valueData[idx],
       };
     },
     {} as AggregationsData,
   );
+  console.log('processHistogramResponse', results);
   return results as AggregationsData;
 };
 
