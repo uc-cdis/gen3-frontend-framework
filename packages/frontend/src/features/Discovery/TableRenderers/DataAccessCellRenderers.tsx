@@ -11,13 +11,15 @@ import {
 export const DataAccessCellRenderer = ({ value }: CellRenderFunctionProps) => {
   if ((value as AccessLevel) === AccessLevel.PENDING) {
     return (
-      <PendingIcon color="green">You have access to this study.</PendingIcon>
+      <PendingIcon color="yellow">
+        Your access to this study is pending.
+      </PendingIcon>
     );
   }
   if ((value as AccessLevel) === AccessLevel.NOT_AVAILABLE) {
     return (
-      <NotAvailableIcon color="green">
-        You have access to this study.
+      <NotAvailableIcon color="red">
+        Cannot determine access to this study. Please contact the study owner.
       </NotAvailableIcon>
     );
   }
@@ -28,7 +30,7 @@ export const DataAccessCellRenderer = ({ value }: CellRenderFunctionProps) => {
   }
   if ((value as AccessLevel) === AccessLevel.UNACCESSIBLE) {
     return (
-      <LockedIcon color="green">You have access to this study.</LockedIcon>
+      <LockedIcon color="red">You do not have access to this study.</LockedIcon>
     );
   }
   return <React.Fragment />;
