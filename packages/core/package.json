@@ -48,7 +48,6 @@
     "@types/fastestsmallesttextencoderdecoder": "^1.0.2",
     "@types/flat": "^5.0.3",
     "@types/isomorphic-fetch": "^0.0.36",
-    "@types/jsonpath-plus": "5.0.5",
     "@types/lodash": "^4.14.191",
     "@types/papaparse": "^5.3.14",
     "@types/uuid": "^9.0.0"
