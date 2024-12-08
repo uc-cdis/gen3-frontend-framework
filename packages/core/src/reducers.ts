@@ -5,6 +5,9 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
+import { dataLibrarySelectionReducer } from './features/dataLibrary';
+import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,
@@ -25,6 +28,7 @@ export const rootReducer = combineReducers({
   cohorts: cohortReducer,
   activeWorkspace: activeWorkspaceReducer,
   sowerJobsList: sowerJobsListSliceReducer,
+  dataLibrarySelection: dataLibrarySelectionReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });

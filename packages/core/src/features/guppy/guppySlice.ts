@@ -11,7 +11,7 @@ import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 
 const statusEndpoint = '/_status';
 
-const processHistogramResponse = (
+export const processHistogramResponse = (
   data: Record<string, any>,
 ): AggregationsData => {
   const valueData = JSONPath({
