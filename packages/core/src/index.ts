@@ -20,6 +20,7 @@ export * from './features/user';
 export * from './types';
 export * from './store';
 export * from './hooks';
+export * from './utils';
 export * from './dataAccess';
 export * from './provider';
 export * from './features/authz';
@@ -37,6 +38,7 @@ export * from './features/aiSearch';
 export * from './features/workspace';
 export * from './features/submission';
 export * from './features/sower';
+export * from './features/dataLibrary';
 
 export {
   type CoreState,

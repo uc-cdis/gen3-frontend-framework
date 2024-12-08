@@ -50,10 +50,15 @@ const processChartData = (
   return results;
 };
 
+/**
+ * Pending
+ * @param data
+ * @param valueType
+ * @param total
+ * @constructor
+ */
 const VerticalBarChart = ({ data, valueType, total }: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
-
-  console.log('chartData', chartData);
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       tooltip: {

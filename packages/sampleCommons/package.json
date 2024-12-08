@@ -24,7 +24,11 @@
     "@mdx-js/react": "^3.0.0",
     "cookies-next": "^4.0.0",
     "jose": "^4.15.9",
-    "mantine-react-table": "^2.0.0-beta.7"
+    "file-system-db": "^2.1.0",
+    "idb": "^8.0.0",
+    "mantine-react-table": "^2.0.0-beta.7",
+    "postcss-import": "^16.1.0",
+    "postcss-preset-mantine": "^1.17.0"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
@@ -43,6 +47,6 @@
     "tailwindcss": "^3.4.10",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }

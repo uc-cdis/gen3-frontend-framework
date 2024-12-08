@@ -87,6 +87,14 @@ http {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
+        # Proxy /library
+        location /library {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
         # Proxy /_status
         location /_status {
             proxy_pass https://$GEN3_REMOTE_API;
