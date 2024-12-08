@@ -35,7 +35,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   };
 
   if (isError) {
-    console.log('dataLibraryError', dataLibraryError);
     let message = 'There was a error getting the library';
     if (
       dataLibraryError &&

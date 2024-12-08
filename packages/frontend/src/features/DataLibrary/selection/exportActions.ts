@@ -50,9 +50,8 @@ export const sendExistingPFBToURL: DataActionFunction = async (
   }
 
   const { guid } = validatedSelections[0] as FileItem;
-  console.log('Sending existing PFB to URL:', targetURLTemplate, guid);
 
-  // get the presigned URL for the selected PFB
+  // get the pre-signed URL for the selected PFB
   try {
     const presignedURL = await fetchFencePresignedURL({
       guid: guid,
