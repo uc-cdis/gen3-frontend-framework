@@ -3,12 +3,17 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { hashCode } from '../../utils/hash';
+import { twMerge } from 'tailwind-merge';
+import { Anchor } from '@mantine/core';
 
 export enum ContentType {
   Text = 'text',
   TextArray = 'textArray',
   Html = 'html',
   Markdown = 'markdown',
+  TextWithEmail = 'textWithEmail',
+  TextWithLink = 'textWithLink',
+  Link = 'link',
 }
 
 export interface TextContentProps {
@@ -16,11 +21,14 @@ export interface TextContentProps {
   readonly className?: string;
   readonly type?: ContentType;
   readonly email?: string;
+  readonly link?: string;
 }
 const TextContent = ({
   text,
   className = 'inline text-base-contrast color-red-500 font-medium margin-block-start-1 margin-block-end-1',
   type = ContentType.Text,
+  email = undefined,
+  link = undefined,
 }: TextContentProps) => {
   switch (type) {
     case ContentType.Html: {
@@ -32,62 +40,93 @@ const TextContent = ({
         />
       );
     }
-      case ContentType.TextArray: {
-        const textArray = !Array.isArray(text) ? [text] : text;
-        return (
-          <div className={className}>
-            {textArray.map((item) => (
-              <p className="my-2" key={hashCode(item)}>{item}</p>
-            ))}
-          </div>
-        );
-      }
-      case ContentType.Markdown: {
-        const textString = Array.isArray(text) ? text.join('') : text;
-        return (
-          <div>
+    case ContentType.TextArray: {
+      const textArray = !Array.isArray(text) ? [text] : text;
+      return (
+        <div className={className}>
+          {textArray.map((item) => (
+            <p className="my-2" key={hashCode(item)}>
+              {item}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    case ContentType.Markdown: {
+      const textString = Array.isArray(text) ? text.join('') : text;
+      return (
+        <div>
           <Markdown
             remarkPlugins={[remarkGfm]}
             components={{
               // define some formatting for the ai response
-              p(props:any) {
+              p(props: any) {
                 const { node, ...rest } = props;
                 return (
-                  <p
-                    className="text-lg text-primary-contrast my-1"
-                    {...rest}
-                  />
+                  <p className="text-lg text-primary-contrast my-1" {...rest} />
                 );
               },
-              ol(props:any) {
+              ol(props: any) {
                 const { node, ...rest } = props;
-                return (
-                  <ol
-                    className="list-disc list-inside my-1"
-                    {...rest}
-                  />
-                );
+                return <ol className="list-disc list-inside my-1" {...rest} />;
               },
-              ul(props:any) {
+              ul(props: any) {
                 const { node, ...rest } = props;
-                return (
-                  <ul
-                    className="list-disc list-inside my-1"
-                    {...rest}
-                  />
-                );
+                return <ul className="list-disc list-inside my-1" {...rest} />;
               },
-              li(props:any) {
+              li(props: any) {
                 const { node, ...rest } = props;
                 return <li className="text-md" {...rest} />;
               },
             }}
-            >
+          >
             {textString}
           </Markdown>
-          </div>
-        );
-      }
+        </div>
+      );
+    }
+    case ContentType.TextWithEmail: {
+      const DEFAULT_STYLE =
+        'inline color-ink font-medium margin-block-start-1 margin-block-end-1';
+      const mergedClassname = className
+        ? twMerge(DEFAULT_STYLE, className)
+        : DEFAULT_STYLE;
+      const textString = Array.isArray(text) ? text.join('') : text;
+      return (
+        <div className={mergedClassname}>
+          <span>
+            {textString}
+            {email && (
+              <Anchor
+                classNames={{ root: mergedClassname }}
+                href={`mailto:${email}`}
+              >{` ${email}.`}</Anchor>
+            )}
+          </span>
+        </div>
+      );
+    }
+    case ContentType.TextWithLink: {
+      const DEFAULT_STYLE =
+        'inline color-ink font-medium margin-block-start-1 margin-block-end-1';
+      const mergedClassname = className
+        ? twMerge(DEFAULT_STYLE, className)
+        : DEFAULT_STYLE;
+      const textString = Array.isArray(text) ? text.join('') : text;
+      return (
+        <div className={mergedClassname}>
+          <span>
+            {textString}
+            {link && (
+              <Anchor
+                classNames={{ root: mergedClassname }}
+                href={link}
+              >{` ${email}.`}</Anchor>
+            )}
+          </span>
+        </div>
+      );
+    }
     case ContentType.Text:
     default:
       return (
