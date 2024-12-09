@@ -33,8 +33,6 @@ const NavigationBarButton = ({
     ...TooltipStyle,
   };
 
-  console.log('hasNoBasePath: ', noBasePath);
-
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
@@ -43,6 +41,7 @@ const NavigationBarButton = ({
     <React.Fragment>
       <Tooltip
         label={tooltip}
+        disabled={!tooltip}
         multiline
         position="bottom"
         arrowSize={8}
@@ -51,18 +50,20 @@ const NavigationBarButton = ({
         w={220}
       >
         {noBasePath ? (
-          <a
-            className={extractClassName('root', mergedClassnames)}
-            href={`${href}`}
-          >
-            <Icon
-              height={iconHeight}
-              icon={icon}
-              className={extractClassName('icon', mergedClassnames)}
-            />
-            <p className={extractClassName('label', mergedClassnames)}>
-              {name}
-            </p>
+          <a href={`${href}`}>
+            <div
+              className={extractClassName('root', mergedClassnames)}
+              role="navigation"
+            >
+              <Icon
+                height={iconHeight}
+                icon={icon}
+                className={extractClassName('icon', mergedClassnames)}
+              />
+              <p className={extractClassName('label', mergedClassnames)}>
+                {name}
+              </p>
+            </div>
           </a>
         ) : (
           <Link

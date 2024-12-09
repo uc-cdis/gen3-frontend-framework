@@ -216,7 +216,7 @@
     "min": "#fefefe"
   },
   "navigation": {
-    "footer": "#373A3C",
+    "footer": "#000000",
     "topbar_hover": "#FFFFFF",
     "light": "#111111",
     "DEFAULT": "#111111",
