@@ -8,8 +8,15 @@ import {
   isAuthenticated,
   type CoreState,
 } from '@gen3/core';
+import { mergeTailwindClassnameWithDefault } from '../../utils/mergeDefaultTailwindClassnames';
 
-const LoginAccountButton = () => {
+interface LoginAccountButtonProps {
+  className?: string;
+}
+
+const LoginAccountButton = ({
+  className = undefined,
+}: LoginAccountButtonProps) => {
   const router = useRouter();
 
   const handleSelected = async () => {
@@ -23,12 +30,15 @@ const LoginAccountButton = () => {
     selectUserDetails(state),
   );
 
+  const mergedClassname = mergeTailwindClassnameWithDefault(
+    className,
+    'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
+  );
+
   if (userStatus && isAuthenticated(userStatus)) {
     return (
       <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
-        <div className="flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent">
-          {userInfo?.username}
-        </div>
+        <div className={mergedClassname}>{userInfo?.username}</div>
       </UnstyledButton>
     );
   }

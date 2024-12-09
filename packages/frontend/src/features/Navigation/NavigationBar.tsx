@@ -71,6 +71,7 @@ const NavigationBar = ({
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                noBasePath={x?.noBasePath}
               />
             </div>
           );

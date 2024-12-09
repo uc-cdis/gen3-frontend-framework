@@ -107,12 +107,14 @@ const TopBar = ({
 }: TopBarProps) => {
   const classNamesDefaults = {
     root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    login: 'font-content hover:border-accent',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
   );
+
   return (
     <div>
       <header className={extractClassName('root', mergedClassnames)}>
@@ -126,10 +128,15 @@ const TopBar = ({
             loginButtonVisibility === LoginButtonVisibility.Visible,
           )}
           {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
-            <LoginAccountButton />
+            <LoginAccountButton
+              className={extractClassName('login', mergedClassnames)}
+            />
           ) : null}
           {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
-            <LoginButton visibility={loginButtonVisibility} />
+            <LoginButton
+              visibility={loginButtonVisibility}
+              className={extractClassName('login', mergedClassnames)}
+            />
           ) : null}
         </div>
       </header>
