@@ -58,7 +58,7 @@ const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
       const links = item[itemType] as FooterLinks;
       const mergedClassname = mergeTailwindClassnameWithDefault(
         className,
-        'flex flex-no-wrap space-x-1',
+        'flex space-x-1',
       );
 
       return (
