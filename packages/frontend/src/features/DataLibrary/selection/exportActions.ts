@@ -1,6 +1,12 @@
 import { DataActionFunction } from './registeredActions';
-import { fetchFencePresignedURL, FileItem, isFileItem } from '@gen3/core';
+import {
+  fetchFencePresignedURL,
+  FileItem,
+  HTTPError,
+  isFileItem,
+} from '@gen3/core';
 import { notifications } from '@mantine/notifications';
+import { HTTPUserFriendlyErrorMessages } from '../modals/utils';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendExistingPFBToURLParameters {
@@ -50,10 +56,8 @@ export const sendExistingPFBToURL: DataActionFunction = async (
   }
   const { guid, id } = validatedSelections[0] as FileItem;
 
-  console.log('sendExistingPFBToURL', guid, id, targetURLTemplate);
   // get the pre-signed URL for the selected PFB
   try {
-    console.log('fetchFencePresignedURL');
     const presignedURL = await fetchFencePresignedURL({
       guid: guid ?? id, //TODO: fix this to use id only
       onAbort: onAbort,
@@ -68,15 +72,29 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       PRESIGNED_URL_TEMPLATE_VARIABLE,
       signedURL,
     );
-    console.log('targetURL', targetURL);
     return new Promise<void>(() => {
       if (window) window.open(targetURL, '_blank', 'noopener,noreferrer');
       if (done) done(targetURL);
     });
-  } catch (e: unknown) {
-    console.error('Error sending PFB to URL', e);
+  } catch (error: any) {
+    if (error instanceof HTTPError) {
+      notifications.show({
+        id: 'data-library-send-existing-pfb-to-url-validate-length',
+        position: 'bottom-center',
+        withCloseButton: true,
+        autoClose: 5000,
+        title: 'Action Error',
+        message:
+          error.status in HTTPUserFriendlyErrorMessages
+            ? HTTPUserFriendlyErrorMessages[error.status]
+            : 'An error has occured to prevent exporting PFB',
+        color: 'red',
+        loading: false,
+      });
+    }
+    console.error('Error sending PFB to URL', error);
     return new Promise<void>(() => {
-      error(e as Error);
+      error(error as Error);
     });
   }
 };

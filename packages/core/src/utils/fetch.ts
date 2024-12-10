@@ -88,7 +88,6 @@ export const fetchFencePresignedURL = async ({
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-  // const url = prepareDownloadUrl(`${GEN3_FENCE_API}/user`, guid);
 
   const url = `${GEN3_FENCE_API}/user/download/${guid}`;
   try {
@@ -115,8 +114,7 @@ export const fetchFencePresignedURL = async ({
       throw new HTTPError(response.status, errorMessage, errorData);
     }
 
-    const jsonData = await response.json();
-    return jsonData;
+    return await response.json();
   } catch (error: unknown) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
