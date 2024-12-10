@@ -63,7 +63,6 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       onAbort: onAbort,
       signal: signal,
     });
-    console.log('received presignedURL', presignedURL);
 
     // the PFB export target URL is a template URL that should have a {{PRESIGNED_URL}} template
     // variable in it.
@@ -79,7 +78,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
   } catch (error: any) {
     if (error instanceof HTTPError) {
       notifications.show({
-        id: 'data-library-send-existing-pfb-to-url-validate-length',
+        id: 'data-library-send-existing-pfb-to-url-http-error',
         position: 'bottom-center',
         withCloseButton: true,
         autoClose: 5000,
