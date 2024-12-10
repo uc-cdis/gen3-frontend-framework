@@ -28,17 +28,13 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
 }) => {
   const iconSize = IconSize[size] || IconSize['sm'];
   return (
-    <div className="flex items-center bg-primary-darker  px-4 py-2 mt-2 min-h-10 text-heading">
+    <div className="flex items-center bg-primary  px-4 py-2 mt-2 min-h-10 text-heading">
       {numberOfItems > 0 && (
-        <div className="flex items-center flex-nowrap overflow-ellipsis text-primary-contrast-darker">
+        <div className="flex items-center flex-nowrap overflow-ellipsis text-primary-contrast">
           <Text fw={600} size={size} className="mr-1 ">
             {numberOfItems}
           </Text>
-          <Text
-            fw={400}
-            size={size}
-            className="mr-1 text-primary-contrast-lighter"
-          >
+          <Text fw={400} size={size} className="mr-1 text-primary-contrast">
             selected
           </Text>
         </div>
@@ -46,7 +42,7 @@ const SelectedItemsTableHeader: React.FC<SelectedItemsTableHeaderProps> = ({
       {numberOfItems > 0 && numberOfWarnings > 0 && (
         <Icon
           icon="gen3:dot"
-          className="text-primary-contrast-lighter"
+          className="text-primary-contrast"
           width={iconSize}
           height={iconSize}
         />
@@ -155,15 +151,17 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
       {
         accessorKey: 'id',
         header: 'Id',
+        size: 150,
+        maxSize: 250,
       },
       {
         accessorKey: 'description',
         header: 'Description',
-        size: 150,
-        maxSize: 250,
+        size: 100,
+        maxSize: 150,
         Cell: ({ cell }: { cell: MRT_Cell<SelectedItemsTableRow> }) => {
           return (
-            <Text fw={400} size={size} lineClamp={2}>
+            <Text fw={400} size={size} lineClamp={2} truncate="end">
               {cell.getValue<string>() ?? 'N/A'}
             </Text>
           );

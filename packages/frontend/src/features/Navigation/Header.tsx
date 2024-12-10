@@ -20,7 +20,6 @@ const Header = ({
   banners,
   type = 'original',
 }: HeaderProps) => {
-  console.log('top', top);
   return type === 'horizontal' ? (
     <div className="w-full">
       {banners?.map((banner) => <Banner {...banner} key={banner.id} />)}
