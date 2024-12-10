@@ -214,6 +214,8 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             disabled={actionButtonDisabled}
             onClick={async () => {
               setIsRunning(true);
+              console.log('running action:', actionFunction.action.name);
+              console.log('with params:', validatedLibrarySelections);
               await actionFunction.action(
                 validatedLibrarySelections,
                 actionFunction.parameters,

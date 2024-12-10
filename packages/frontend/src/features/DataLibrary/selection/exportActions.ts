@@ -49,13 +49,18 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     return;
   }
   const { guid, id } = validatedSelections[0] as FileItem;
+
+  console.log('sendExistingPFBToURL', guid, id, targetURLTemplate);
   // get the pre-signed URL for the selected PFB
   try {
+    console.log('fetchFencePresignedURL');
     const presignedURL = await fetchFencePresignedURL({
       guid: guid ?? id, //TODO: fix this to use id only
       onAbort: onAbort,
       signal: signal,
     });
+    console.log('received presignedURL', presignedURL);
+
     // the PFB export target URL is a template URL that should have a {{PRESIGNED_URL}} template
     // variable in it.
     const signedURL = encodeURIComponent(presignedURL);
@@ -63,6 +68,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       PRESIGNED_URL_TEMPLATE_VARIABLE,
       signedURL,
     );
+    console.log('targetURL', targetURL);
     return new Promise<void>(() => {
       if (window) window.open(targetURL, '_blank', 'noopener,noreferrer');
       if (done) done(targetURL);
