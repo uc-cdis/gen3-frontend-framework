@@ -49,9 +49,6 @@ export const HTTPErrorMessages: Record<number, string> = {
   511: 'Network Authentication Required',
 };
 
-const prepareDownloadUrl = (apiUrl: string, guid: string) =>
-  new URL(`${apiUrl}/data/download/${guid}`);
-
 export class HTTPError extends Error {
   constructor(
     public status: number,
@@ -91,10 +88,11 @@ export const fetchFencePresignedURL = async ({
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-  const url = prepareDownloadUrl(`${GEN3_FENCE_API}/user`, guid);
+  // const url = prepareDownloadUrl(`${GEN3_FENCE_API}/user`, guid);
 
+  const url = `${GEN3_FENCE_API}/user/download/${guid}`;
   try {
-    const response = await fetch(url.toString(), {
+    const response = await fetch(url, {
       method: method,
       headers: headers,
       ...(signal ? { signal: signal } : {}),
