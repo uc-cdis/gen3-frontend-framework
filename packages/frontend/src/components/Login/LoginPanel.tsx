@@ -69,16 +69,9 @@ const LoginPanel = (loginConfig: LoginConfig) => {
             <CredentialsLogin handleLogin={handleCredentialsLogin} />
           )}
 
-        {bottomContent?.map((content, index) =>
-          content?.email ? (
-            <ContactWithEmailContent
-              {...content}
-              key={`bottomContent-${index}`}
-            />
-          ) : (
-            <TextContent {...content} key={`bottomContent-${index}`} />
-          ),
-        )}
+        {bottomContent?.map((content, index) => (
+          <TextContent {...content} key={`bottomContent-${index}`} />
+        ))}
       </div>
       <TexturedSidePanel url={image} />
     </div>

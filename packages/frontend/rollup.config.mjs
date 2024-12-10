@@ -61,6 +61,8 @@ const globals = {
   'tailwind-merge': 'tailwind-merge',
   util: 'util',
   swc: 'swc',
+  'redux-persist': 'reduxPersist',
+  '@hello-pangea': 'pangea',
 };
 
 const config = [

@@ -1,6 +1,6 @@
 {
   "classNames": {
-    "root": "bg-base-darker",
+    "root": "bg-base-min",
     "layout": "flex items-center justify-end"
   },
   "rightSection": {

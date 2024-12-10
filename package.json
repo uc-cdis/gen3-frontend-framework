@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.51",
+  "version": "0.10.61",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
