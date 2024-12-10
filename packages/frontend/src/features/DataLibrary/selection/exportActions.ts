@@ -74,6 +74,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       if (done) done(targetURL);
     });
   } catch (e: unknown) {
+    console.error('Error sending PFB to URL', e);
     return new Promise<void>(() => {
       error(e as Error);
     });
