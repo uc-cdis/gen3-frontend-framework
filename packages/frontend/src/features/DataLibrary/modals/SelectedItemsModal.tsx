@@ -36,8 +36,8 @@ import {
 
 const ModalHeader = () => {
   return (
-    <div className="flex justify-between items-center">
-      <Text fw={600} className="text-heading">
+    <div className="flex justify-between items-center mx-1">
+      <Text fw={600} className="text-heading" c="secondary-contrast.5">
         Retrieve Data
       </Text>
     </div>
@@ -180,7 +180,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       withinPortal={false}
       title={<ModalHeader />}
       classNames={{
-        header: 'm-0 p-2 min-h-10 bg-primary-lightest',
+        header: 'm-0 p-2 min-h-10 bg-secondary',
         content: 'scroll-smooth',
       }}
       overlayProps={{ opacity: 0.5 }}

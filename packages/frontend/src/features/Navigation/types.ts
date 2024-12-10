@@ -19,7 +19,7 @@ export interface NavigationBarLogo {
   readonly description: string;
   readonly width?: number;
   readonly height?: number;
-  readonly basePath?: string;
+  readonly noBasePath?: boolean;
   readonly divider?: boolean;
   readonly classNames?: StylingOverrideWithMergeControl;
 }

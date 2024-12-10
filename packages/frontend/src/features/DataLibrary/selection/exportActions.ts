@@ -48,13 +48,11 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     });
     return;
   }
-
-  const { guid } = validatedSelections[0] as FileItem;
-
+  const { guid, id } = validatedSelections[0] as FileItem;
   // get the pre-signed URL for the selected PFB
   try {
     const presignedURL = await fetchFencePresignedURL({
-      guid: guid,
+      guid: guid ?? id, //TODO: fix this to use id only
       onAbort: onAbort,
       signal: signal,
     });

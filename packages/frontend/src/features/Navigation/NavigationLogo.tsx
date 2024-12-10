@@ -12,7 +12,7 @@ const NavigationLogo = ({
   width,
   height,
   divider = false,
-  basePath = '',
+  noBasePath = undefined,
   classNames = {},
 }: NavigationBarLogo) => {
   const classNamesDefaults = {
@@ -39,6 +39,7 @@ const NavigationLogo = ({
       <HoverLink
         className={extractClassName('link', mergedClassnames)}
         href="/"
+        noBasePath={noBasePath}
       >
         <Image
           className={extractClassName('logo', mergedClassnames)}
