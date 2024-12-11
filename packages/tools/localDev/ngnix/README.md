@@ -96,26 +96,24 @@ commons pass to ``GEN3_REMOTE_API```.
 
 ## Shell Script
 
-There is a shell script to do the above. To use it copy ```revproxy_nginx.conf.template```:
-
-```bash
-cp revproxy_nginx.conf.template revproxy_nginx_with_certs.template
-```
-
-Edit ```revproxy_nginx_with_certs.template``` and add the path to the cert and key SSL files
+There is a shell script to do the above. Place your certificates in $HOME/ssl-cert as ```cert.pem``` and ```key.pem```.
 Now you can run a shell script to update the config and reload nginx:
 
 ```bash
-./configureNginx.sh <domain name of commons>
+./configureNginx.sh -d <domain name of commons>
 ```
 
 NOTE: do *NOT* add http:// or https:// to the passed domain name, it just need to be the name of the commong.
 For example:
 Do NOT:
 ```bash
-./configureNginx.sh https://gen3.datacommons.io
+./configureNginx.sh -d https://gen3.datacommons.io
 ```
 Instead:
 ```bash
-./configureNginx.sh gen3.datacommons.io
+./configureNginx.sh -d gen3.datacommons.io
 ```
+
+This script will update and test the configuration. If no issues are found it will
+start or restart nginx. You can also specify the path the to cert and key using  ```-c cert_path -k key_path```.
+```./configureNginx.sh -h``` will display help and all of the options.
