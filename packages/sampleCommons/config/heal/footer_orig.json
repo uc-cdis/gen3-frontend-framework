@@ -1,0 +1,155 @@
+{
+  "classNames": {
+    "mode": "replace",
+    "root": "bg-navigation-footer px-8 py-4"
+  },
+  "rightSection": {
+    "className": "flex justify-start items-start",
+    "columns": [
+      {
+        "rows": [
+          {
+            "className": "flex justify-start items-start",
+            "columns": [
+              {
+                "classNames": {
+                  "root": "pl-8",
+                  "heading": "font-bold text-xl text-white font-heading",
+                  "rowItem": "heal-link-footer flex flex-col font-medium text-sm p-0.5 text-white font-content"
+                },
+                "heading": "Contact",
+                "rows": [
+                  {
+                    "text": "About Us",
+                    "href": "/landing/about-us",
+                    "linkType": "gen3ff"
+                  },
+                  {
+                    "text": "Contact",
+                    "href": "/landing/contact",
+                    "linkType": "gen3ff"
+                  }
+                ]
+              },
+              {
+                "classNames": {
+                  "root": "pl-10",
+                  "heading": "font-bold text-xl text-white font-heading",
+                  "rowItem": "heal-link-footer flex flex-col font-medium text-sm p-0.5 text-white font-content"
+                },
+                "heading": "Help",
+                "rows": [
+                  {
+                    "text": "User Guides",
+                    "href": "/documentation"
+                  },
+                  {
+                    "text": "Tutorials",
+                    "href": "/documentation/platform_tutorial_videos"
+                  },
+                  {
+                    "text": "FAQ",
+                    "href": "/documentation/faqs"
+                  }
+                ]
+              },
+              {
+                "classNames": {
+                  "root": "pl-10",
+                  "heading": "font-bold text-xl text-white font-heading",
+                  "rowItem": "heal-link-footer flex flex-col font-medium text-sm p-0.5 text-white font-content"
+                },
+                "heading": "Platform",
+                "rows": [
+                  {
+                    "text": "Workspaces",
+                    "href": "/workspace",
+                    "linkType": "portal"
+                  },
+                  {
+                    "text": "Discovery",
+                    "href": "/discovery",
+                    "linkType": "portal"
+                  },
+                  {
+                    "text": "Profile",
+                    "href": "/identity",
+                    "linkType": "portal"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "className": "pt-1 m-1 text-right text-xs text-white font-content",
+            "links": [
+              {
+                "text": "NIH HEAL Initiative",
+                "href": "https://heal.nih.gov/"
+              },
+              {
+                "text": "HHS Responsible Disclosure Form",
+                "href": "https://hhs.responsibledisclosure.com/hc/en-us"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "leftSection": {
+    "className": "flex items-start",
+    "columns": [
+      {
+        "classNames": {
+          "mode": "replace",
+          "root": "flex flex-col mr-8 justify-between"
+        },
+        "rows": [
+          {
+            "className": "mb-4",
+            "logo": "/icons/gen3.png",
+            "width": 80,
+            "height": 40,
+            "description": "Gen3 Logo"
+          },
+          {
+            "logo": "/icons/createdby.png",
+            "width": 120,
+            "height": 38,
+            "description": "created by CTDS at the University of Chicago"
+          }
+        ]
+      },
+      {
+        "classNames": {
+          "root": "flex flex-col justify-center mr-8"
+        },
+        "rows": [
+          {
+            "logo": "/images/heal/logo.png",
+            "width": 164,
+            "height": 100,
+            "description": "NIH HEAL Logo"
+          }
+        ]
+      },
+      {
+        "classNames": {
+          "mode": "replace",
+          "root": "w-1/5 text-xs text-white text-left font-content"
+        },
+        "rows": [
+          {
+            "className": "p-1",
+            "text": "The HEAL Data Platform is funded by the NIH HEAL Initiative."
+          },
+          {
+            "className": "p-1",
+            "text": "NIH HEAL Initiative and Helping to End Addiction Long-term are service marks of the U.S. Department of Health and Human Services."
+          }
+        ]
+      }
+    ]
+  }
+}

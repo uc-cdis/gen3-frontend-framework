@@ -1,0 +1,16 @@
+[
+    {
+        "message": "[View the latest studies that have shared data with the HEAL Data Platform!](/landing/newly-available-datasets)",
+        "level": "MESSAGE",
+        "dismissible": true,
+        "isExternalLink": false,
+        "id": 0
+    },
+    {
+        "message": "Our helpdesk has moved! Starting 8/21, please contact us at [heal-support@gen3.org](mailto:heal-support@gen3.org)",
+        "level": "MESSAGE",
+        "dismissible": false,
+        "isExternalLink": false,
+        "id": 0
+    }
+]
