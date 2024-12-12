@@ -9,7 +9,6 @@ import {
 } from '@gen3/core';
 import { ErrorCard } from '../../components/MessageCards';
 import NotebookCard from './NotebookCard';
-import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspacePanel = () => {
   const { data, isLoading, isError, isSuccess } = useGetWorkspaceOptionsQuery();
@@ -34,13 +33,18 @@ const WorkspacePanel = () => {
       >
         {(styles) => (
           <div className="px-2 mt-4" style={styles}>
-            <Grid justify="center" align="stretch" gutter="md">
+            <Grid
+              justify="center"
+              align="stretch"
+              gutter="sm"
+              overflow="hidden"
+            >
               {data?.map((card: WorkspaceInfo) => {
                 return (
                   <Grid.Col
                     key={card.id}
                     span="content"
-                    style={{ minHeight: rem(120) }}
+                    style={{ minHeight: rem(150) }}
                   >
                     <NotebookCard info={card} />
                   </Grid.Col>

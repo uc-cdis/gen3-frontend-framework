@@ -21,6 +21,12 @@ import {
   selectRequestedWorkspaceStatus,
 } from './workspaceSlice';
 
+import {
+  setMonitoringEnabled,
+  updateLastStatusCheck,
+  updateLastPaymentCheck,
+} from './workspaceMonitorSlice';
+
 export * from './types';
 export * from './utils';
 
@@ -38,6 +44,9 @@ export {
   setActiveWorkspaceStatus,
   setActiveWorkspace,
   setRequestedWorkspaceStatus,
+  setMonitoringEnabled,
+  updateLastStatusCheck,
+  updateLastPaymentCheck,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
   selectWorkspaceStatusFromService,

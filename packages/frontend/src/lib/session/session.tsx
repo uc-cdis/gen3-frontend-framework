@@ -22,7 +22,8 @@ import {
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
-import { useResourceMonitor } from '../../components/Providers/ResourceMonitor';
+//import { useResourceMonitor } from '../../components/Providers/ResourceMonitor';
+import { useWorkspaceMonitor } from '../../components/Providers/WorkspaceResourceMonitor';
 
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
 const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
@@ -170,7 +171,7 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  useResourceMonitor();
+  useWorkspaceMonitor();
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

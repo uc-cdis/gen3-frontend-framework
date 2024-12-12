@@ -29,7 +29,13 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <Card.Section inheritPadding py="xs">
         <Stack align="center">
           <Icon height={'48px'} icon={'workspace:jupyter'} />
-          <Text ta="center" className="font-header" size="md" fw={500}>
+          <Text
+            ta="center"
+            classNames={{ root: 'h-20 font-header' }}
+            size="md"
+            fw={500}
+            lineClamp={3}
+          >
             {info.name}
           </Text>
         </Stack>
