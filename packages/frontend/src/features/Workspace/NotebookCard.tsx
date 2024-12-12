@@ -59,7 +59,9 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         <Button
           loading={info.id === workspaceId && requestedStatus === 'Launching'}
           disabled={
-            status !== WorkspaceStatus.NotFound || isPayModelNeededToLaunch
+            status !== WorkspaceStatus.NotFound ||
+            isPayModelNeededToLaunch ||
+            (info.id !== workspaceId && requestedStatus === 'Launching')
           }
           onClick={() => {
             startWorkspace(info.id);
@@ -76,15 +78,21 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           duration={400}
           timingFunction="ease"
         >
-          {() => (
-            <Button
-              onClick={() => {
-                stopWorkspace();
-              }}
-            >
-              Shutdown
-            </Button>
-          )}
+          {() => {
+            if (info.id !== workspaceId) {
+              return (
+                <Button
+                  onClick={() => {
+                    stopWorkspace();
+                  }}
+                >
+                  Shutdown
+                </Button>
+              );
+            } else {
+              return <p />;
+            }
+          }}
         </Transition>
       </Group>
     </Card>
