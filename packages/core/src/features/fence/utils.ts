@@ -1,10 +1,6 @@
 import { FetchError, Gen3FenceResponse } from './types';
 import { GEN3_FENCE_API } from '../../constants';
 import { FetchRequest } from './fenceApi';
-// import { selectCSRFToken } from '../user/userSliceRTK';
-// import { coreStore } from '../../store';
-// import { prepareUrl } from '../../utils';
-// import { getCookie } from 'cookies-next';
 
 /**
  * Template for fence error response dict
