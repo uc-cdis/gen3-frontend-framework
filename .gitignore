@@ -33,10 +33,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-
-# Ignore DevSpace cache and log folder
-.devspace/
-
 # sample configs
 packages/sampleCommons/config/canine
 packages/sampleCommons/config/midrc

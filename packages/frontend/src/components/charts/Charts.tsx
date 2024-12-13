@@ -30,10 +30,6 @@ import { ErrorCard } from '../../index';
 const DEFAULT_COLS = 3;
 const MAX_LEGEND_ROWS = 4;
 
-export type ChartDataConverter = (
-  data: Record<string, number>,
-) => Record<string, number>;
-
 interface ChartsProps {
   charts: Record<string, SummaryChart>;
   counts?: number;
@@ -70,7 +66,9 @@ const Charts = ({
   const spans = computeRowSpan(Object.keys(charts).length, numCols);
 
   const chartCard = (field: string, indexNum: number) => {
-    if (!(field in data)) {
+    if (Object.keys(data).length === 0) return null;
+
+    if (Object.keys(data).length > 0 && !(field in data)) {
       return <ErrorCard message={`${field} not found in data`} />;
     }
 
