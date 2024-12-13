@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Text,
-  Tooltip,
-  Transition,
-} from '@mantine/core';
+import { Button, Group, Text, Tooltip, Transition } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';

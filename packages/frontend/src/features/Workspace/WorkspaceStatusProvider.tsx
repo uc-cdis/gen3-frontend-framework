@@ -23,7 +23,6 @@ const getWorkspaceErrorMessage = (
   if (isFetchBaseQueryError(error)) {
     return error.data as string;
   }
-
   return defaultMessage;
 };
 
@@ -85,12 +84,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   } = useGetWorkspacePayModelsQuery();
 
   useDeepCompareEffect(() => {
-    if (isPayModelError) {
-      notifications.show({
-        title: 'Pay Model Error',
-        message: 'Unable to get Pay Model.',
-      });
-    }
     if (isPayModelLoading) {
       setIsPayModelNeededToLaunch(true);
     }
@@ -129,6 +122,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const status = useMemo(() => {
     const startWorkspace = (id: string) => {
       launchTrigger(id);
+      dispatch(setRequestedWorkspaceStatus('Launching'));
       dispatch(
         setActiveWorkspace({
           id: id,

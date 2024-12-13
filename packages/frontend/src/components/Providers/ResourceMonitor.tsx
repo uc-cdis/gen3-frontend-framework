@@ -23,16 +23,6 @@ const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   'Status Error': 0,
 };
 
-const WorkspacePaymentModelPollintgInterval: Record<WorkspaceStatus, number> = {
-  'Not Found': 0,
-  Launching: 10000,
-  Terminating: 10000,
-  Running: 900000,
-  Stopped: 10000,
-  Errored: 0,
-  'Status Error': 0,
-};
-
 const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figure how to configure this
 
 /**

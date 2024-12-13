@@ -4,11 +4,12 @@ import { type WorkspaceId, WorkspaceStatus } from './types';
 
 export const NO_WORKSPACE_ID = 'none';
 
+// the requested state for a workspace
 export type RequestedWorkspaceStatus = 'Launching' | 'Terminating' | 'NotSet';
 export interface WorkspaceState {
   id: string;
-  status: WorkspaceStatus;
-  requestedStatus: RequestedWorkspaceStatus;
+  status: WorkspaceStatus; // current status of the workspace
+  requestedStatus: RequestedWorkspaceStatus; // the goal state for the workspace//
 }
 
 const initialState: WorkspaceState = {

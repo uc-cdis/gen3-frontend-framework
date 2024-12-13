@@ -171,7 +171,7 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  useWorkspaceMonitor();
+  useWorkspaceMonitor(); // monitor workspaces if any are running
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

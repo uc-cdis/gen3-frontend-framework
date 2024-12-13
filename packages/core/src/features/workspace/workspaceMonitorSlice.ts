@@ -4,6 +4,7 @@ export interface MonitoringState {
   isEnabled: boolean;
   lastStatusCheck: number;
   lastPaymentCheck: number;
+  isMonitoring: boolean;
 }
 
 const monitoringSlice = createSlice({
@@ -12,6 +13,7 @@ const monitoringSlice = createSlice({
     isEnabled: false,
     lastStatusCheck: 0,
     lastPaymentCheck: 0,
+    isMonitoring: false,
   } as MonitoringState,
   reducers: {
     setMonitoringEnabled: (state, action: PayloadAction<boolean>) => {
@@ -23,6 +25,9 @@ const monitoringSlice = createSlice({
     updateLastPaymentCheck: (state) => {
       state.lastPaymentCheck = Date.now();
     },
+    setIsMonitoring: (state, action: PayloadAction<boolean>) => {
+      state.isMonitoring = action.payload;
+    },
   },
 });
 
@@ -30,5 +35,8 @@ export const {
   setMonitoringEnabled,
   updateLastStatusCheck,
   updateLastPaymentCheck,
+  setIsMonitoring,
 } = monitoringSlice.actions;
 export const workspaceMonitoringReducer = monitoringSlice.reducer;
+
+// Selector for monitoring state

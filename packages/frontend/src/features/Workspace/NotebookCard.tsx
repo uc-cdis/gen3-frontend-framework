@@ -79,7 +79,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
           timingFunction="ease"
         >
           {() => {
-            if (info.id !== workspaceId) {
+            if (info.id == workspaceId) {
               return (
                 <Button
                   onClick={() => {

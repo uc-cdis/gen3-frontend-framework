@@ -9,7 +9,10 @@ import {
   useGetWorkspacePayModelsQuery,
   useTerminateWorkspaceMutation,
   selectRequestedWorkspaceStatus,
+  setMonitoringEnabled,
   WorkspaceStatus,
+  updateLastStatusCheck,
+  updateLastPaymentCheck,
   setRequestedWorkspaceStatus,
 } from '@gen3/core';
 
@@ -35,40 +38,6 @@ const PAYMENT_POLLING_INTERVALS = {
 } as const;
 
 const WORKSPACE_SHUTDOWN_ALERT_LIMIT = 30000;
-
-// Add monitoring state to Redux
-interface MonitoringState {
-  isEnabled: boolean;
-  lastStatusCheck: number;
-  lastPaymentCheck: number;
-}
-
-const monitoringSlice = createSlice({
-  name: 'workspaceMonitoring',
-  initialState: {
-    isEnabled: false,
-    lastStatusCheck: 0,
-    lastPaymentCheck: 0,
-  } as MonitoringState,
-  reducers: {
-    setMonitoringEnabled: (state, action: PayloadAction<boolean>) => {
-      state.isEnabled = action.payload;
-    },
-    updateLastStatusCheck: (state) => {
-      state.lastStatusCheck = Date.now();
-    },
-    updateLastPaymentCheck: (state) => {
-      state.lastPaymentCheck = Date.now();
-    },
-  },
-});
-
-export const {
-  setMonitoringEnabled,
-  updateLastStatusCheck,
-  updateLastPaymentCheck,
-} = monitoringSlice.actions;
-export const monitoringReducer = monitoringSlice.reducer;
 
 // Persistent monitoring hook
 export const useWorkspaceMonitor = () => {
