@@ -4,19 +4,22 @@ import { Stack, StackProps, Text } from '@mantine/core';
 interface StatisticRendererProps extends StackProps {
   value: any;
   label: string;
+  key: string;
 }
 
 const defaultStatisticRenderer = ({
   value,
   label,
+  key,
   ...props
 }: StatisticRendererProps) => {
+  console.log(value, label, key, props);
   return (
-    <Stack {...props} align="center">
-      <Text size="2rem" color="accent">
+    <Stack {...props} key={key} align="center">
+      <Text size="2rem" c="accent">
         {value}
       </Text>
-      <Text size="sm" color="primary" className="uppercase">
+      <Text size="sm" c="primary" className="uppercase">
         {label}
       </Text>
     </Stack>

@@ -120,6 +120,7 @@ const Charts = ({
                   data: data === undefined ? [] : data,
                   total: counts ?? 1,
                   valueType: chart.valueType ?? 'count',
+                  label: chart.label,
                 })}
               </Grid.Col>
               <Grid.Col span={6} key="modal-col-2">
@@ -206,6 +207,7 @@ const Charts = ({
             data: data === undefined ? [] : data[field],
             total: counts ?? 1,
             valueType: charts[field].valueType ?? 'count',
+            label: charts[field].label,
           })}
           {showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
