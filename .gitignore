@@ -19,6 +19,8 @@ packages/sampleCommons/.next/
 .DS_Store
 *.pem
 .vscode
+.nx
+.idea
 
 # debug
 npm-debug.log*
