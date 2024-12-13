@@ -4,8 +4,12 @@ import { type WorkspaceId, WorkspaceStatus } from './types';
 
 export const NO_WORKSPACE_ID = 'none';
 
+export enum RequestedWorkspaceStatus {
+  Launch = 'Launch',
+  Terminate = 'Terminate',
+  Unset = 'Unset',
+}
 // the requested state for a workspace
-export type RequestedWorkspaceStatus = 'Launching' | 'Terminating' | 'NotSet';
 export interface WorkspaceState {
   id: string;
   status: WorkspaceStatus; // current status of the workspace
@@ -15,7 +19,7 @@ export interface WorkspaceState {
 const initialState: WorkspaceState = {
   id: NO_WORKSPACE_ID,
   status: WorkspaceStatus.NotFound,
-  requestedStatus: 'NotSet',
+  requestedStatus: RequestedWorkspaceStatus.Unset,
 };
 
 const slice = createSlice({

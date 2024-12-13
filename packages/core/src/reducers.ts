@@ -8,7 +8,6 @@ import { cohortReducer } from './features/cohort';
 import { dataLibrarySelectionReducer } from './features/dataLibrary';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
 import { guppyApiReducer, guppyApiSliceReducerPath } from './features/guppy';
-import { workspaceMonitoringReducer } from './features/workspace/workspaceMonitorSlice';
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,
@@ -22,7 +21,6 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducer,
   activeWorkspace: activeWorkspaceReducer,
-  workspaceMonitoring: workspaceMonitoringReducer,
   dataLibrarySelection: dataLibrarySelectionReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,

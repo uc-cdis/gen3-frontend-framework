@@ -9,10 +9,7 @@ import {
   useGetWorkspacePayModelsQuery,
   useTerminateWorkspaceMutation,
   selectRequestedWorkspaceStatus,
-  setMonitoringEnabled,
   WorkspaceStatus,
-  updateLastStatusCheck,
-  updateLastPaymentCheck,
   setRequestedWorkspaceStatus,
 } from '@gen3/core';
 
@@ -102,8 +99,8 @@ export const useWorkspaceMonitor = () => {
         }
       }
 
-      if (requestedStatus === 'Launching') {
-        dispatch(setRequestedWorkspaceStatus('NotSet'));
+      if (requestedStatus === 'Launch') {
+        dispatch(setRequestedWorkspaceStatus('Unset'));
       }
     }
 
