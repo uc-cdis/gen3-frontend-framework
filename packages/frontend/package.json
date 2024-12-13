@@ -87,7 +87,7 @@
     "mantine-react-table": "^2.0.0-beta.7",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.8",
+    "next": "^14.2.15",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
@@ -95,7 +95,7 @@
     "postcss-loader": "^7.3.2",
     "postcss-preset-env": "^8.4.2",
     "react-chartjs-2": "^5.2.0",
-    "react-cookie": "^4.1.1",
+    "react-cookie": "^7.2.2",
     "react-fast-compare": "^3.2.2",
     "react-icons": "^4.10.1",
     "react-markdown": "^9.0.1",
@@ -149,7 +149,7 @@
     "@gen3/core": "^0.10.45",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.16"
   },
   "files": [
     "dist"
