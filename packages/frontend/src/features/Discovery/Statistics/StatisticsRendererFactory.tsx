@@ -13,7 +13,6 @@ const defaultStatisticRenderer = ({
   key,
   ...props
 }: StatisticRendererProps) => {
-  console.log(value, label, key, props);
   return (
     <Stack {...props} key={key} align="center">
       <Text size="2rem" c="accent">

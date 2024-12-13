@@ -163,14 +163,10 @@ export const processChartData = (
 
     // Count occurrences of each value
     // add missing to count null values
-    const counts: { [key: string]: number } = {
-      _missing: 0,
-    };
+    const counts: { [key: string]: number } = {};
     values.forEach((value: any) => {
       if (value && value !== '') {
         counts[value] = (counts[value] || 0) + 1;
-      } else {
-        counts['_missing'] += 1;
       }
     });
 
