@@ -1,19 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { JSONPath } from 'jsonpath-plus';
-import { JSONObject } from '../../types';
-
-// Types
-export type BucketCount = {
-  key: string;
-  count: number;
-};
-
-export type BucketCounts = {
-  [path: string]: BucketCount[];
-};
+import { AggregationsData, JSONObject } from '../../types';
 
 interface BucketCountsState {
-  counts: BucketCounts;
+  counts: AggregationsData;
   loading: boolean;
   error: string | null;
   selectedPaths: string[];
@@ -36,7 +26,7 @@ export const generateBucketCounts = createAsyncThunk(
       const pathsToProcess = Array.isArray(paths) ? paths : [paths];
 
       // Initialize results object
-      const results: BucketCounts = {};
+      const results: AggregationsData = {};
 
       pathsToProcess.forEach((path) => {
         // Use JSONPath to extract all values at the given path
@@ -47,23 +37,26 @@ export const generateBucketCounts = createAsyncThunk(
         });
 
         // Count occurrences of each value
-        const counts: { [key: string]: number } = {};
+        // add missing to count null values
+        const counts: { [key: string]: number } = {
+          _missing: 0,
+        };
         values.forEach((value: any) => {
           if (value && value !== '') {
             counts[value] = (counts[value] || 0) + 1;
+          } else {
+            counts['_missing'] += 1;
           }
         });
 
         // Convert to required format and sort by count
-        const bucketCounts = Object.entries(counts)
+        // Store results using the path as key
+        results[path] = Object.entries(counts)
           .map(([key, count]) => ({
             key,
             count,
           }))
           .sort((a, b) => b.count - a.count);
-
-        // Store results using the path as key
-        results[path] = bucketCounts;
       });
 
       return results;
@@ -82,10 +75,10 @@ const bucketCountsSlice = createSlice({
   name: 'bucketCounts',
   initialState,
   reducers: {
-    setSelectedPaths(state, action: PayloadAction<string[]>) {
+    setMetadataAggregations(state, action: PayloadAction<string[]>) {
       state.selectedPaths = action.payload;
     },
-    clearCounts(state) {
+    clearMetadataAggregations(state) {
       state.counts = {};
       state.selectedPaths = [];
     },
@@ -112,21 +105,13 @@ const bucketCountsSlice = createSlice({
 });
 
 // Actions
-export const { setSelectedPaths, clearCounts } = bucketCountsSlice.actions;
+export const { setMetadataAggregations, clearMetadataAggregations } =
+  bucketCountsSlice.actions;
 
 // Selectors
 export const selectBucketCounts = (state: {
   bucketCounts: BucketCountsState;
 }) => state.bucketCounts.counts;
-export const selectBucketCountsLoading = (state: {
-  bucketCounts: BucketCountsState;
-}) => state.bucketCounts.loading;
-export const selectBucketCountsError = (state: {
-  bucketCounts: BucketCountsState;
-}) => state.bucketCounts.error;
-export const selectSelectedPaths = (state: {
-  bucketCounts: BucketCountsState;
-}) => state.bucketCounts.selectedPaths;
 
 // Helper selector to get counts for a specific path
 export const selectPathCounts = (
