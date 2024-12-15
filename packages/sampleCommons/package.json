@@ -22,7 +22,7 @@
     "@gen3/frontend": "file:../frontend",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
-    "cookies-next": "^4.0.0",
+    "cookies-next": "^4.3.0",
     "file-system-db": "^2.1.0",
     "idb": "^8.0.0",
     "jose": "^4.15.9",
