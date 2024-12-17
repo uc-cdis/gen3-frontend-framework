@@ -1,22 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  RequestedWorkspaceStatus,
+  selectRequestedWorkspaceStatus,
   setActiveWorkspaceStatus,
+  setRequestedWorkspaceStatus,
   useCoreDispatch,
+  useCoreSelector,
+  useGetWorkspacePayModelsQuery,
   useGetWorkspaceStatusQuery,
   useTerminateWorkspaceMutation,
-  selectRequestedWorkspaceStatus,
   WorkspaceStatus,
-  isWorkspaceActive,
-  useCoreSelector,
-  setRequestedWorkspaceStatus,
-  useGetWorkspacePayModelsQuery,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { RequestedWorkspaceStatus } from '@gen3/core/dist/dts/features/workspace/workspaceSlice';
 
-const WORKSPACE_SHUTDOWN_ALERT_LIMIT = 30000;
+const WORKSPACE_SHUTDOWN_ALERT_LIMIT = 30000; // TODO add to config
 
+// TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   'Not Found': 0,
   Launching: 5000,
@@ -27,6 +27,17 @@ const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   'Status Error': 0,
 };
 
+// TODO: convert to seconds/minutes for readability
+const PaymentPollingInterval: Record<WorkspaceStatus, number> = {
+  'Not Found': 0,
+  Launching: 120000, // 2 minutes
+  Terminating: 0,
+  Running: 900000, // 15 minutes
+  Stopped: 0,
+  Errored: 0,
+  'Status Error': 0,
+};
+
 const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figure how to configure this
 
 /**
@@ -34,15 +45,14 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
  *  Currently, handles workspace, payment and idle status
  */
 
-export const useResourceMonitor = () => {
+export const useWorkspaceResourceMonitor = () => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [paymentPollingInterval, setPaymentPollingInterval] =
     useState<number>(0);
   const {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
-    isSuccess: isWorkspaceStatusSuccess,
-    refetch,
+    error: workspaceStatusError,
   } = useGetWorkspaceStatusQuery(undefined, {
     pollingInterval: pollingInterval,
     refetchOnMountOrArgChange: 1800,
@@ -53,7 +63,6 @@ export const useResourceMonitor = () => {
     data: paymentModelData,
     isError: isPaymentModelError,
     error: paymentModelError,
-    refetch: refetchPayment,
   } = useGetWorkspacePayModelsQuery(undefined, {
     pollingInterval: paymentPollingInterval,
     refetchOnMountOrArgChange: true,
@@ -61,41 +70,63 @@ export const useResourceMonitor = () => {
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
   const dispatch = useCoreDispatch();
-  const { idleTimeLimit, lastActivityTime } = workspaceStatusData;
 
-  const handlePaymentModelCheck = () => {
+  useEffect(() => {
+    if (isWorkspaceStatusError) {
+      console.error('Workspace model error: ', workspaceStatusError.toString());
+      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
+      setPollingInterval(0); // stop polling
+      setPaymentPollingInterval(0);
+    }
+  }, [
+    paymentModelData,
+    isPaymentModelError,
+    paymentModelError,
+    isWorkspaceStatusError,
+    workspaceStatusError,
+    dispatch,
+  ]);
+
+  useEffect(() => {
     if (isPaymentModelError) {
       console.error('Payment model error: ', paymentModelError.toString());
     }
     if (paymentModelData?.noPayModel) {
       console.warn('No payment model defined');
     }
-  };
+  }, [paymentModelData, isPaymentModelError, paymentModelError]);
 
   // update the polling based on the requested state
   useDeepCompareEffect(() => {
-    if (requestedStatus === 'Launch') {
+    if (requestedStatus === RequestedWorkspaceStatus.Launch) {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Launching]);
-      refetch();
     }
-    if (requestedStatus === 'Terminate') {
+    if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
     }
   }, [requestedStatus]);
 
   useDeepCompareEffect(() => {
+    if (workspaceStatusData?.status) {
+      setPaymentPollingInterval(
+        PaymentPollingInterval[workspaceStatusData.status],
+      );
+    }
+  }, [workspaceStatusData?.status]);
+
+  useDeepCompareEffect(() => {
     if (!workspaceStatusData) return;
 
-    if (isWorkspaceStatusError) {
-      dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
-      setPollingInterval(0); // stop polling
-    }
-
+    // Check if workspace is running.
+    // If so: need to check workspace idle if set
+    // and ensure the paymodel is queried
     if (workspaceStatusData.status === WorkspaceStatus.Running) {
+      const { idleTimeLimit, lastActivityTime } = workspaceStatusData;
       // in some state other than idle
       if (!idleTimeLimit || idleTimeLimit <= 0) {
         // Do not need to poll
-        dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
+        dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
+        dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Running)); // workspace is running
         setPollingInterval(0);
         return;
       }
@@ -105,7 +136,20 @@ export const useResourceMonitor = () => {
           idleTimeLimit - (Date.now() - lastActivityTime);
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
-          terminateWorkspace();
+          try {
+            terminateWorkspace().unwrap(); // Unwrap mutation response
+          } catch (error) {
+            console.error('Workspace termination failed: ', error);
+            notifications.show({
+              title: 'Error',
+              message: 'Failed to terminate workspace',
+              color: 'red',
+              position: 'top-center',
+            });
+          }
+          dispatch(
+            setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
+          );
           setPollingInterval(
             WorkspacePollingInterval[WorkspaceStatus.Terminating],
           );
@@ -127,29 +171,42 @@ export const useResourceMonitor = () => {
         }
       }
       if (requestedStatus === 'Launch') {
-        // if the workspace is running then
+        // if the workspace is running then requested status has been met
         dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
       }
       if (requestedStatus === 'Terminate') {
-        refetch();
         return;
       }
+
       dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
       setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
       return;
     }
+
     if (workspaceStatusData.status === WorkspaceStatus.NotFound) {
-      if (requestedStatus !== 'Launch') {
-        // need to consider that if in launchState might get a number of NotFound status before Launching
+      console.log(
+        'workspaceStatusData.status',
+        workspaceStatusData.status,
+        ' requested status',
+        requestedStatus,
+      );
+      // NotFound means pod is not running
+      // either starting up
+      // or finally terminated.
+      if (requestedStatus === RequestedWorkspaceStatus.Launch) {
+        // if the workspace become idle to too long after a Launch request switch to
+        // Unset and NotFound.
+        return;
+      } else {
+        // both requested status and workspace pod status are the same so stop all polling
         setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
         dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
       }
-      if (requestedStatus === 'Terminate')
-        dispatch(setRequestedWorkspaceStatus('Unset'));
       return;
     }
 
+    // if here, update active workspace status and polling interval
     dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
-  }, [dispatch, workspaceStatusData, isWorkspaceStatusError, requestedStatus]);
+  }, [dispatch, workspaceStatusData, requestedStatus]);
 };

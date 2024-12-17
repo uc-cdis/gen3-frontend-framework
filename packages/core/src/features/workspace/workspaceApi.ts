@@ -87,7 +87,7 @@ export const workspacesApi = WorkspaceWithTags.injectEndpoints({
             return workspaceStatus;
           }
 
-          // TODO: try to find out IF this is code is required
+          // TODO: Find out IF this is code is required
           const workspaceStatusData =
             workspaceStatus.data as unknown as WorkspaceStatusResponse;
 

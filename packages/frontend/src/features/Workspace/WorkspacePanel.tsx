@@ -23,8 +23,8 @@ const WorkspacePanel = () => {
     isLoading: isLoadingWorkspaceStatus,
   } = useGetWorkspaceStatusQuery(undefined);
 
-  if (isLoading || isFetchingWorkspaceStatus || isLoadingWorkspaceStatus)
-    return <LoadingOverlay />;
+  // if (isLoading || isFetchingWorkspaceStatus || isLoadingWorkspaceStatus)
+  //   return <LoadingOverlay />;
 
   if (isError) {
     return <ErrorCard message="Error loading workspace definitions" />;

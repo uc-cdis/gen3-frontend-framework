@@ -1,16 +1,17 @@
-import React, { useState, useMemo, createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useMemo, useState } from 'react';
 import {
-  WorkspaceStatus,
-  useCoreDispatch,
-  useLaunchWorkspaceMutation,
+  isFetchBaseQueryError,
+  RequestedWorkspaceStatus,
+  selectActiveWorkspaceStatus,
   setActiveWorkspace,
-  useTerminateWorkspaceMutation,
+  setActiveWorkspaceStatus,
+  setRequestedWorkspaceStatus,
+  useCoreDispatch,
   useCoreSelector,
   useGetWorkspacePayModelsQuery,
-  selectActiveWorkspaceStatus,
-  setRequestedWorkspaceStatus,
-  setActiveWorkspaceStatus,
-  isFetchBaseQueryError,
+  useLaunchWorkspaceMutation,
+  useTerminateWorkspaceMutation,
+  WorkspaceStatus,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
@@ -114,7 +115,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
         position: 'top-center',
         containerWidth: '50%',
       });
-      dispatch(setRequestedWorkspaceStatus('NotSet'));
+      dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
     }
   }, [isWorkspaceLaunchError, isTerminateError]);
@@ -122,12 +123,12 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const status = useMemo(() => {
     const startWorkspace = (id: string) => {
       launchTrigger(id);
-      dispatch(setRequestedWorkspaceStatus('Launching'));
+      dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Launch));
       dispatch(
         setActiveWorkspace({
           id: id,
           status: WorkspaceStatus.Launching,
-          requestedStatus: 'Launching',
+          requestedStatus: RequestedWorkspaceStatus.Launch,
         }),
       );
     };
@@ -136,7 +137,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
 
     const stopWorkspace = () => {
       terminateWorkspace();
-      dispatch(setRequestedWorkspaceStatus('Terminating'));
+      dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
     };
 

@@ -19,6 +19,7 @@ import {
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
   selectRequestedWorkspaceStatus,
+  selectRequestedWorkspaceStatusTimestamp,
 } from './workspaceSlice';
 
 export * from './types';
@@ -43,4 +44,5 @@ export {
   selectWorkspaceStatusFromService,
   selectRequestedWorkspaceStatus,
   selectWorkspaceStatus,
+  selectRequestedWorkspaceStatusTimestamp,
 };

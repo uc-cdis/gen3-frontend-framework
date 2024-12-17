@@ -57,11 +57,11 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       <div className="flex mx-8 justify-center border-1 border-base"></div>
       <Group className="mt-2 p-2" justify="center">
         <Button
-          loading={info.id === workspaceId && requestedStatus === 'Launching'}
+          loading={info.id === workspaceId && requestedStatus === 'Launch'}
           disabled={
             status !== WorkspaceStatus.NotFound ||
             isPayModelNeededToLaunch ||
-            (info.id !== workspaceId && requestedStatus === 'Launching')
+            (info.id !== workspaceId && requestedStatus === 'Launch')
           }
           onClick={() => {
             startWorkspace(info.id);
@@ -71,7 +71,7 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
         </Button>
         <Transition
           mounted={
-            (info.id === workspaceId && requestedStatus === 'Launching') ||
+            (info.id === workspaceId && requestedStatus === 'Launch') ||
             status === 'Launching'
           }
           transition="fade"
