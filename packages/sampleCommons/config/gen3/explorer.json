@@ -33,7 +33,11 @@
           ],
           "fieldsConfig": {
             "gender" : {
-              "type" : "multiselect"
+              "type" : "multiselect",
+              "description" : "The gender of a subject"
+            },
+            "study" : {
+              "description" : "A Study in a project"
             }
           }
         }
