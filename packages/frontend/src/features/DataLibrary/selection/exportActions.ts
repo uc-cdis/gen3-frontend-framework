@@ -63,7 +63,6 @@ export const sendExistingPFBToURL: DataActionFunction = async (
       onAbort: onAbort,
       signal: signal,
     });
-    console.log('received presignedURL', presignedURL);
 
     // the PFB export target URL is a template URL that should have a {{PRESIGNED_URL}} template
     // variable in it.
