@@ -10,21 +10,48 @@ import {
   useGetWorkspaceStatusQuery,
   useTerminateWorkspaceMutation,
   WorkspaceStatus,
+  isTimeGreaterThan,
+  selectRequestedWorkspaceStatusTimestamp,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
 
 const WORKSPACE_SHUTDOWN_ALERT_LIMIT = 30000; // TODO add to config
 
+enum NotificationStatus {
+  Info,
+  Warn,
+  Error,
+}
+
+const notifyUser = (
+  title: string,
+  message: string,
+  status = NotificationStatus.Info,
+) => {
+  const NotificationMap: Record<NotificationStatus, string> = {
+    [NotificationStatus.Info]: 'utility.1',
+    [NotificationStatus.Warn]: 'utility.2',
+    [NotificationStatus.Error]: 'utility.4',
+  };
+
+  notifications.show({
+    title,
+    message,
+    color: NotificationMap[status],
+    position: 'top-center',
+  });
+};
+
 // TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
-  'Not Found': 0,
-  Launching: 5000,
-  Terminating: 5000,
-  Running: 300000,
-  Stopped: 5000,
-  Errored: 10000,
-  'Status Error': 0,
+  [WorkspaceStatus.NotFound]: 0,
+  [WorkspaceStatus.Launching]: 5000,
+  [WorkspaceStatus.Terminating]: 5000,
+  [WorkspaceStatus.Running]: 300000,
+  [WorkspaceStatus.Stopped]: 5000,
+  [WorkspaceStatus.Errored]: 10000,
+  [WorkspaceStatus.StatusError]: 0,
 };
 
 // TODO: convert to seconds/minutes for readability
@@ -69,6 +96,9 @@ export const useWorkspaceResourceMonitor = () => {
   });
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
+  const requestedStatusTimestamp = useCoreSelector(
+    selectRequestedWorkspaceStatusTimestamp,
+  ); // last time requested status changed
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -134,19 +164,23 @@ export const useWorkspaceResourceMonitor = () => {
       if (idleTimeLimit && idleTimeLimit > 0 && lastActivityTime > 0) {
         const remainingWorkspaceKernelLife =
           idleTimeLimit - (Date.now() - lastActivityTime);
+
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
+          // so terminate
           try {
             terminateWorkspace().unwrap(); // Unwrap mutation response
           } catch (error) {
-            console.error('Workspace termination failed: ', error);
-            notifications.show({
-              title: 'Error',
-              message: 'Failed to terminate workspace',
-              color: 'red',
-              position: 'top-center',
-            });
+            const errorMessage =
+              (error as Error).message || 'Unknown error occurred';
+            console.error('Workspace termination failed: ', errorMessage);
+            notifyUser(
+              'Workspace Error',
+              `Failed to terminate workspace: ${errorMessage}`,
+              NotificationStatus.Error,
+            );
           }
+
           dispatch(
             setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
           );
@@ -154,27 +188,27 @@ export const useWorkspaceResourceMonitor = () => {
             WorkspacePollingInterval[WorkspaceStatus.Terminating],
           );
           dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Terminating));
-          notifications.show({
-            title: 'Workspace Shutdown',
-            message:
-              'Workspace has been idle for too long. Shutting workspace down',
-            position: 'top-center',
-          });
+          notifyUser(
+            'Workspace Shutdown',
+            'Workspace has been idle for too long. Shutting workspace down',
+            NotificationStatus.Error,
+          );
           return;
         }
         if (remainingWorkspaceKernelLife <= workspaceShutdownAlertLimit) {
-          notifications.show({
-            title: 'Workspace Warning',
-            message: 'Workspace has been idle for too long. Will shutdown soon',
-            position: 'top-center',
-          });
+          notifyUser(
+            'Workspace Warning',
+            'Workspace has been idle for too long. Will shutdown soon',
+            NotificationStatus.Warn,
+          );
         }
       }
-      if (requestedStatus === 'Launch') {
+
+      if (requestedStatus === RequestedWorkspaceStatus.Launch) {
         // if the workspace is running then requested status has been met
         dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
       }
-      if (requestedStatus === 'Terminate') {
+      if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
         return;
       }
 
@@ -184,12 +218,6 @@ export const useWorkspaceResourceMonitor = () => {
     }
 
     if (workspaceStatusData.status === WorkspaceStatus.NotFound) {
-      console.log(
-        'workspaceStatusData.status',
-        workspaceStatusData.status,
-        ' requested status',
-        requestedStatus,
-      );
       // NotFound means pod is not running
       // either starting up
       // or finally terminated.
@@ -201,6 +229,10 @@ export const useWorkspaceResourceMonitor = () => {
         // both requested status and workspace pod status are the same so stop all polling
         setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.NotFound]);
         dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
+        if (requestedStatus === RequestedWorkspaceStatus.Terminate) {
+          // Clean up termination after terminated
+          dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
+        }
       }
       return;
     }
@@ -209,4 +241,17 @@ export const useWorkspaceResourceMonitor = () => {
     dispatch(setActiveWorkspaceStatus(workspaceStatusData.status));
     setPollingInterval(WorkspacePollingInterval[workspaceStatusData.status]);
   }, [dispatch, workspaceStatusData, requestedStatus]);
+
+  if (
+    requestedStatus === RequestedWorkspaceStatus.Launch &&
+    isTimeGreaterThan(requestedStatusTimestamp, 1)
+  ) {
+    terminateWorkspace();
+    dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
+    notifyUser(
+      'Workspace Startup',
+      'Workspace failed to start. Shutting down',
+      NotificationStatus.Error,
+    );
+  }
 };

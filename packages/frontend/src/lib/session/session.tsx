@@ -1,32 +1,31 @@
 import React, {
   useCallback,
-  useEffect,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { Session, SessionProviderProps } from './types';
-import { isUserOnPage } from './utils';
-import {
-  useCoreDispatch,
-  useCoreSelector,
-  type CoreState,
-  showModal,
-  Modals,
-  useLazyFetchUserDetailsQuery,
-  selectUserAuthStatus,
-  GEN3_REDIRECT_URL,
-  GEN3_FENCE_API,
-} from '@gen3/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
-//import { useResourceMonitor } from '../../components/Providers/ResourceMonitor';
-import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
+import { Session, SessionProviderProps } from './types';
+import { isUserOnPage } from './utils';
+import {
+  type CoreState,
+  GEN3_FENCE_API,
+  GEN3_REDIRECT_URL,
+  Modals,
+  selectUserAuthStatus,
+  showModal,
+  useCoreDispatch,
+  useCoreSelector,
+  useLazyFetchUserDetailsQuery,
+} from '@gen3/core';
 
-const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
-const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+import { MinutesToMilliseconds } from '../../utils';
+import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
+///import { useWorkspaceResourceMonitor } from '../../features/Workspace/Monitor/workspaceMonitors';
 
 export const logoutSession = async () => {
   await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, {

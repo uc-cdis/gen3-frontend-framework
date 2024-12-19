@@ -11,6 +11,7 @@ import {
   useGetWorkspacePayModelsQuery,
   useLaunchWorkspaceMutation,
   useTerminateWorkspaceMutation,
+  getCurrentTimestamp,
   WorkspaceStatus,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
@@ -129,6 +130,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
           id: id,
           status: WorkspaceStatus.Launching,
           requestedStatus: RequestedWorkspaceStatus.Launch,
+          requestedStatusTimestamp: getCurrentTimestamp(),
         }),
       );
     };
