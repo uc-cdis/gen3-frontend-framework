@@ -5,7 +5,7 @@ export interface SummaryChart extends Partial<TitleAndDescription> {
   readonly chartType: string;
   readonly valueType?: 'count' | 'percent';
   readonly dataLabels?: Record<string, string>;
-  label: {
+  label?: {
     show?: boolean;
   };
 }
@@ -14,7 +14,7 @@ export interface ChartProps {
   data: HistogramDataArray;
   total: number;
   valueType?: 'count' | 'percent';
-  label: {
+  label?: {
     show?: boolean;
   };
 }
