@@ -71,7 +71,6 @@ const Gen3App = ({
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
     //  registerCohortDiscoveryApp();
     registerCohortDiversityApp();
-    registerExplorerDefaultCellRenderers();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();

@@ -12,11 +12,11 @@ const BuildSummaryStatisticPanel = (summaries: SummaryStatistics = []) => {
         'default',
       );
 
-      return ( element({
+      return element({
         value: summary.value ?? 'N/A',
         label: name,
-        key: `stats-item-${name}-${field}-${type}`,
-      }));
+        key: `stats-item-${name}-${field}`,
+      });
     }
   });
 };
@@ -41,7 +41,9 @@ const columns = [
 
 const SummaryStatisticPanel = ({ summaries }: SummaryStatisticPanelProps) => {
   return (
-    <div className={`grid ${columns[summaries.length]} grow shrink-0 divide-x-2 divide-accent`} >
+    <div
+      className={`grid ${columns[summaries.length]} grow shrink-0 divide-x-2 divide-accent`}
+    >
       {BuildSummaryStatisticPanel(summaries)}
     </div>
   );

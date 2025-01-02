@@ -1,3 +1,5 @@
+# docker build -t ff .
+# docker run -p 3000:3000 -it ff
 # Build stage
 FROM quay.io/cdis/ubuntu:20.04 AS builder
 
