@@ -19,7 +19,7 @@
     "compile": "lerna run compile",
     "dev": "lerna run dev",
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
-    "start": "lerna run  start",
+    "start": "lerna run start",
     "build:start": "npm run build && npm run start",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
