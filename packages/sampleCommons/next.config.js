@@ -26,7 +26,12 @@ const nextConfig = {
     esmExternals: true,
     instrumentationHook: true,
     turbo: {
-      moduleIdStrategy: 'deterministic',
+      loaders: {
+        '.js': ['jsx'],
+        '.jsx': ['jsx'],
+        '.ts': ['tsx'],
+        '.tsx': ['tsx']
+      }
     },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
