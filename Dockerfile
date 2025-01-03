@@ -1,34 +1,12 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM quay.io/cdis/ubuntu:20.04 AS builder
+FROM node:20-slim AS builder
 
 # Build arguments and environment variables
 ARG NODE_VERSION=20
 ARG BASE_PATH
 ARG NEXT_PUBLIC_PORTAL_BASENAME
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH=$PATH:/home/node/.npm-global/bin
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install dependencies in a single layer
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libssl1.1 \
-    libgnutls30 \
-    ca-certificates \
-    curl \
-    git \
-    gnupg \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g npm \
-    && npm install -g lerna@8.1.8 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /gen3
 
@@ -43,6 +21,7 @@ COPY packages/sampleCommons/package.json ./packages/sampleCommons/
 RUN npm ci
 
 # Install additional dependencies
+RUN npm install -g "lerna"
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string" \
@@ -59,7 +38,7 @@ RUN lerna run --scope @gen3/core build && \
     lerna run --scope @gen3/samplecommons build
 
 # Production stage
-FROM node:20.18.1-alpine3.20 AS production
+FROM node:20-slim AS runner
 
 WORKDIR /gen3
 
@@ -68,8 +47,12 @@ RUN addgroup --system --gid 1001 nextjs && \
     adduser --system --uid 1001 nextjs
 
 # Copy built artifacts from builder
-COPY --from=builder --chown=nextjs:nextjs /gen3 .
-
+COPY --from=builder /gen3/node_modules ./node_modules
+COPY --from=builder /gen3/packages/sampleCommons/config ./config
+COPY --from=builder /gen3/packages/sampleCommons/public ./public
+COPY --from=builder /gen3/packages/sampleCommons/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nextjs /gen3/packages/sampleCommons/.next ./.next
+COPY --from=builder /gen3/start.sh /gen3/packages/sampleCommons/package.json ./
 # Set environment variables
 ENV PORT=3000
 ENV NODE_ENV=production
