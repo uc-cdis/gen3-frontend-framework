@@ -25,13 +25,11 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
-    optimizePackageImports: ['@gen3/frontend', '@gen3/core'],
     turbo: {
       moduleIdStrategy: 'deterministic',
     },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  transpilePackages: ['@gen3/frontend'],
   basePath: basePath,
   webpack: (config) => {
     config.infrastructureLogging = {

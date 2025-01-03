@@ -14,7 +14,7 @@ const Dictionary = () => {
     useDictionaryContext();
 
   const { scrollIntoView, targetRef, scrollableRef } =
-    useScrollIntoView<HTMLSpanElement>({
+    useScrollIntoView<HTMLSpanElement, HTMLDivElement>({
       offset: 60,
     });
 
@@ -24,6 +24,7 @@ const Dictionary = () => {
 
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
+      // @ts-expect-error need to refactor this
       targetRef.current = itemRef;
       scrollIntoView();
     },
