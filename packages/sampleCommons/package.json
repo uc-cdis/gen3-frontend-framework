@@ -28,7 +28,8 @@
     "jose": "^4.15.9",
     "mantine-react-table": "^2.0.0-beta.7",
     "postcss-import": "^16.1.0",
-    "postcss-preset-mantine": "^1.17.0"
+    "postcss-preset-mantine": "^1.17.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
