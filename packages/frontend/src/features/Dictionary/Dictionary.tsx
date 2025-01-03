@@ -26,7 +26,6 @@ const Dictionary = () => {
 
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
-      // @ts-expect-error: need to test this
       targetRef.current = itemRef;
       scrollIntoView();
     },

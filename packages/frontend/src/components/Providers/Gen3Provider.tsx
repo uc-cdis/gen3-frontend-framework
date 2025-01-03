@@ -101,8 +101,8 @@ const Gen3Provider = ({
   const theme = createMantineTheme(fonts, colors);
 
   return (
-    <CoreProvider>
-      <MantineProvider theme={theme}>
+    <MantineProvider theme={theme}>
+      <CoreProvider>
         <ModalsProvider>
           <Notifications />
           <SessionProvider {...sessionConfig}>
@@ -111,8 +111,8 @@ const Gen3Provider = ({
             </Gen3ModalsProvider>
           </SessionProvider>
         </ModalsProvider>
-      </MantineProvider>
-    </CoreProvider>
+      </CoreProvider>
+    </MantineProvider>
   );
 };
 
