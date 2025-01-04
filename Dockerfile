@@ -25,7 +25,8 @@ RUN npm install -g "lerna"
 RUN npm install \
     "@swc/core" \
     "@napi-rs/magic-string" \
-    "@rollup"
+    "@rollup/rollup-linux-x64-gnu"
+
 
 # Copy source code
 COPY packages ./packages
