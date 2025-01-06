@@ -3,8 +3,6 @@ import { CoreProvider } from '@gen3/core';
 import {
   createTheme,
   MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
 } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';

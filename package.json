@@ -32,12 +32,12 @@
     "@grafana/faro-react": "^1.9.1",
     "@grafana/faro-web-sdk": "^1.9.1",
     "@grafana/faro-web-tracing": "^1.9.1",
-    "@mantine/core": "^7.13.3",
-    "@mantine/form": "^7.13.3",
-    "@mantine/hooks": "^7.13.3",
-    "@mantine/modals": "^7.13.3",
-    "@mantine/dates": "^7.13.3",
-    "@mantine/notifications": "^7.13.3",
+    "@mantine/core": "^7.15.2",
+    "@mantine/form": "^7.15.2",
+    "@mantine/hooks": "^7.15.2",
+    "@mantine/modals": "^7.15.2",
+    "@mantine/dates": "^7.15.2",
+    "@mantine/notifications": "^7.15.2",
     "jsonpath-plus": "^10.2.0",
     "classnames": "^2.3.1",
     "colorette": "^2.0.20",
@@ -100,5 +100,9 @@
     "rollup-plugin-copy": {
       "globby": "^11.0.0"
     }
+  },
+  "resolutions": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
