@@ -15,6 +15,7 @@ import {
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { convertSecondsToMilliseconds } from '../../utils';
 
 const WORKSPACE_SHUTDOWN_ALERT_LIMIT = 30000; // TODO add to config
 
@@ -46,20 +47,20 @@ const notifyUser = (
 // TODO: convert to seconds/minutes for readability
 const WorkspacePollingInterval: Record<WorkspaceStatus, number> = {
   [WorkspaceStatus.NotFound]: 0,
-  [WorkspaceStatus.Launching]: 5000,
-  [WorkspaceStatus.Terminating]: 5000,
-  [WorkspaceStatus.Running]: 300000,
-  [WorkspaceStatus.Stopped]: 5000,
-  [WorkspaceStatus.Errored]: 10000,
+  [WorkspaceStatus.Launching]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Terminating]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Running]: convertSecondsToMilliseconds(300),
+  [WorkspaceStatus.Stopped]: convertSecondsToMilliseconds(5),
+  [WorkspaceStatus.Errored]: convertSecondsToMilliseconds(10),
   [WorkspaceStatus.StatusError]: 0,
 };
 
 // TODO: convert to seconds/minutes for readability
 const PaymentPollingInterval: Record<WorkspaceStatus, number> = {
   'Not Found': 0,
-  Launching: 120000, // 2 minutes
+  Launching: convertSecondsToMilliseconds(120), // 2 minutes
   Terminating: 0,
-  Running: 900000, // 15 minutes
+  Running: convertSecondsToMilliseconds(900), // 15 minutes
   Stopped: 0,
   Errored: 0,
   'Status Error': 0,
@@ -244,7 +245,7 @@ export const useWorkspaceResourceMonitor = () => {
 
   if (
     requestedStatus === RequestedWorkspaceStatus.Launch &&
-    isTimeGreaterThan(requestedStatusTimestamp, 1)
+    isTimeGreaterThan(requestedStatusTimestamp, 8)
   ) {
     terminateWorkspace();
     dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate));
