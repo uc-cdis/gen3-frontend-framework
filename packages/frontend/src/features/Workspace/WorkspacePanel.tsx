@@ -14,17 +14,7 @@ import NotebookCard from './NotebookCard';
 const WorkspacePanel = () => {
   const { data, isLoading, isError } = useGetWorkspaceOptionsQuery();
 
-  // const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
-
-  const {
-    data: workspaceStatusData,
-    isSuccess: isWorkspaceStatusSuccess,
-    isFetching: isFetchingWorkspaceStatus,
-    isLoading: isLoadingWorkspaceStatus,
-  } = useGetWorkspaceStatusQuery(undefined);
-
-  // if (isLoading || isFetchingWorkspaceStatus || isLoadingWorkspaceStatus)
-  //   return <LoadingOverlay />;
+  const { data: workspaceStatusData } = useGetWorkspaceStatusQuery(undefined);
 
   if (isError) {
     return <ErrorCard message="Error loading workspace definitions" />;
