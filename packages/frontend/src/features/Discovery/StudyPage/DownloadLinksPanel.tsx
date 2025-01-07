@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { DataDownloadLinks, DownloadLinkFields } from '../types';
-import { JSONObject } from '@gen3/core';
+import { GEN3_FENCE_API, JSONObject } from '@gen3/core';
 import { Accordion, Button, Group, Stack, Text } from '@mantine/core';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
@@ -61,11 +61,21 @@ const DownloadLinksPanel = ({
                   ) {
                     return null;
                   }
-                  const id = entry[downloadLinkFields.idField];
+                  const id = entry['idField'];
                   return (
-                    <Group key={id} gap='md'>
+                    <Group justify="space-between" key={id} gap="md">
                       <Text>{entry['titleField'] || ''}</Text>
-                      <Button leftSection={<DownloadIcon />} disabled={!id}>Download File</Button>
+                      <Button
+                        component="a"
+                        href={`${GEN3_FENCE_API}/data/${id}?expires_in=900&redirect`}
+                        target="_blank"
+                        rel="noreferrer"
+                        type="text"
+                        leftSection={<DownloadIcon />}
+                        data-disabled={!id}
+                      >
+                        Download File
+                      </Button>
                     </Group>
                   );
                 },
