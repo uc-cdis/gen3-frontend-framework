@@ -22,6 +22,7 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
