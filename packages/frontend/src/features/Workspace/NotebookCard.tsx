@@ -1,4 +1,12 @@
-import { Button, Card, Group, Stack, Text, Transition } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  Tooltip,
+  Transition,
+} from '@mantine/core';
 import { Icon } from '@iconify/react';
 import {
   selectActiveWorkspaceId,
@@ -9,6 +17,17 @@ import {
   WorkspaceStatus,
 } from '@gen3/core';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
+import { PayModelStatus } from './types';
+
+const LaunchDisabledMessage: Record<PayModelStatus, string> = {
+  NOT_SELECTED: 'A pay model is not selected',
+  NOT_REQUIRED: 'A pay model is not required',
+  VALID: 'Launch Workspace',
+  INVALID: 'A pay model is invalid',
+  ERROR: 'An error occurred getting the pay model status',
+  OVER_LIMIT: 'You have exceeded your pay model limit',
+  GETTING: 'Getting pay model status',
+};
 
 const COMPUTE_PROPS_LABEL_STYLE =
   'text-base-lighter font-medium text-sm opacity-90';
@@ -17,19 +36,20 @@ interface NotebookCardParams {
   info: WorkspaceInfo;
 }
 const NotebookCard = ({ info }: NotebookCardParams) => {
-  const { startWorkspace, stopWorkspace, isPayModelNeededToLaunch } =
+  const { startWorkspace, stopWorkspace, payModelStatus } =
     useWorkspaceStatusContext();
 
   const { status } = useCoreSelector(selectWorkspaceStatusFromService);
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
   const workspaceId = useCoreSelector(selectActiveWorkspaceId);
 
-  console.log(
-    'disabled',
+  const launchDisabled =
     status !== WorkspaceStatus.NotFound ||
-      isPayModelNeededToLaunch ||
-      (info.id !== workspaceId && requestedStatus === 'Launch'),
-  );
+    !(
+      payModelStatus === PayModelStatus.NOT_REQUIRED ||
+      payModelStatus === PayModelStatus.VALID
+    ) ||
+    (info.id !== workspaceId && requestedStatus === 'Launch');
 
   return (
     <Card withBorder radius="xs" className="w-64">
@@ -63,19 +83,18 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
       </Card.Section>
       <div className="flex mx-8 justify-center border-1 border-base"></div>
       <Group className="mt-2 p-2" justify="center">
-        <Button
-          loading={info.id === workspaceId && requestedStatus === 'Launch'}
-          disabled={
-            status !== WorkspaceStatus.NotFound ||
-            isPayModelNeededToLaunch ||
-            (info.id !== workspaceId && requestedStatus === 'Launch')
-          }
-          onClick={() => {
-            startWorkspace(info.id);
-          }}
-        >
-          Launch
-        </Button>
+        <Tooltip label={LaunchDisabledMessage[payModelStatus]}>
+          <Button
+            loading={info.id === workspaceId && requestedStatus === 'Launch'}
+            data-disabled={launchDisabled}
+            onClick={(event) => {
+              event.preventDefault();
+              startWorkspace(info.id);
+            }}
+          >
+            Launch
+          </Button>
+        </Tooltip>
         <Transition
           mounted={
             (info.id === workspaceId && requestedStatus === 'Launch') ||

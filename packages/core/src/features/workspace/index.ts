@@ -9,6 +9,7 @@ import {
   EmptyWorkspaceStatusResponse,
   selectWorkspaceStatusFromService,
   selectWorkspaceStatus,
+  selectPaymodelStatus,
 } from './workspaceApi';
 import {
   setActiveWorkspaceId,
@@ -45,4 +46,5 @@ export {
   selectRequestedWorkspaceStatus,
   selectWorkspaceStatus,
   selectRequestedWorkspaceStatusTimestamp,
+  selectPaymodelStatus,
 };

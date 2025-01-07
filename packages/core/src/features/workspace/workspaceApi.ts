@@ -176,3 +176,11 @@ export const selectWorkspaceStatus = createSelector(
   workspaceStatusSelector,
   (status) => status?.data?.status ?? WorkspaceStatus.NotFound,
 );
+
+export const paymodelStatusSelector =
+  workspacesApi.endpoints.getWorkspacePayModels.select();
+
+export const selectPaymodelStatus = createSelector(
+  paymodelStatusSelector,
+  (status) => status,
+);
