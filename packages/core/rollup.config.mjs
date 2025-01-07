@@ -24,6 +24,7 @@ const globals = {
   'redux-persist': 'reduxPersist',
   'cookies-next': 'cookies-next',
   queue: 'queue',
+  idb: 'idb',
 };
 
 const config = [

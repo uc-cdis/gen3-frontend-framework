@@ -105,13 +105,25 @@ const reducer = (
 
 interface QueryExpressionSectionProps {
   index: string;
+  filters: FilterSet;
+  hideImportExport?: boolean;
+  currentCohortName: string;
+  currentCohortId: string;
+  displayOnly?: boolean;
+  showTitle?: boolean;
+  index: string;
   hideImportExport?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   hideImportExport = true,
-}: QueryExpressionSectionProps) => {
+  filters,
+  currentCohortName,
+  currentCohortId,
+  displayOnly = false,
+  showTitle = true,
+}: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -334,7 +346,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </p>
             ) : (
               Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k], index);
+                return convertFilterToComponent(
+                  filters.root[k],
+                  index,
+                  '.',
+                  displayOnly,
+                );
               })
             )}
           </div>

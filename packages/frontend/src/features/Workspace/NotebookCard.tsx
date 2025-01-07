@@ -24,8 +24,6 @@ const NotebookCard = ({ info }: NotebookCardParams) => {
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus);
   const workspaceId = useCoreSelector(selectActiveWorkspaceId);
 
-  console.log('NotebookCard: ', requestedStatus, workspaceId, status);
-
   return (
     <Card withBorder radius="xs" className="w-64">
       <Card.Section inheritPadding py="xs">

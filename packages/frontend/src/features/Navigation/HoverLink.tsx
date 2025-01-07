@@ -7,7 +7,8 @@ interface ClassProps {
 
 interface HoverLinkProps extends ClassProps {
   children?: React.ReactNode;
-  readonly href: string;
+  href: string;
+  noBasePath?: boolean;
 }
 
 /**
@@ -19,7 +20,19 @@ interface HoverLinkProps extends ClassProps {
  * @param {ReactNode} props.children - The content of the link.
  * @returns {ReactElement} - The rendered HoverLink component.
  */
-const HoverLink = ({ className, href, children }: HoverLinkProps) => {
+const HoverLink = ({
+  className,
+  href,
+  noBasePath,
+  children,
+}: HoverLinkProps) => {
+  if (noBasePath)
+    return (
+      <span className={className}>
+        <a href={href}>{children}</a>
+      </span>
+    );
+
   return (
     <span className={className}>
       <Link href={href} passHref>

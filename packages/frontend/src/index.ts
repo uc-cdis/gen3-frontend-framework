@@ -73,6 +73,10 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 import NotebookLitePage from './pages/NotebookLite/NotebookLite';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
+
+import DataLibraryPage, {
+  DataLibraryPageGetServerSideProps,
+} from './pages/DataLibrary';
 // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
@@ -129,6 +133,8 @@ export {
   CrosswalkPageGetServerSideProps,
   SubmissionPage,
   SubmissionPageGetServerSideProps,
+  DataLibraryPage,
+  DataLibraryPageGetServerSideProps,
   NotebookLitePage,
   NotebookLitePageGetStaticProps,
   registerCohortDiscoveryApp,

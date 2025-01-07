@@ -204,7 +204,6 @@ const AnalysisCardEditor = () => {
         });
         if (Array.isArray(withImages)) {
           updateHistory(withImages);
-          console.log('Imported cards:', withImages);
         }
       } catch (error) {
         alert('Invalid file format');

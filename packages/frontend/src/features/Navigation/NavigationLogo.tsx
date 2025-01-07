@@ -12,11 +12,11 @@ const NavigationLogo = ({
   width,
   height,
   divider = false,
-  basePath = '',
+  noBasePath = undefined,
   classNames = {},
 }: NavigationBarLogo) => {
   const classNamesDefaults = {
-    root: 'relative flex py-2 justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]',
+    root: 'relative flex py-0 justify-start items-center align-middle font-heading font-bold tracking-wide text-xl ml-[5px] mr-[20px]',
     link: 'relative object-contain',
     logo: 'px-3',
     title: 'border-solid border-base-darker ml-1 mr-3',
@@ -39,6 +39,7 @@ const NavigationLogo = ({
       <HoverLink
         className={extractClassName('link', mergedClassnames)}
         href="/"
+        noBasePath={noBasePath}
       >
         <Image
           className={extractClassName('logo', mergedClassnames)}

@@ -73,7 +73,7 @@ Example of a top bar item:
 where:
  * 'visible' - always shown, if logged in shows userId and a logout button
  * 'logoutOnly' - only show the logoutButton when logged in
- * 'hidded' - never show
+ * 'hide' - never show
 
 ```json
   "loginButtonVisibility": "logoutOnly"

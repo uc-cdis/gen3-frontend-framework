@@ -118,6 +118,7 @@ interface IncludeExcludeQueryElementProps
   > {
   index: string;
   path?: string;
+  displayOnly?: boolean;
 }
 
 const IncludeExcludeQueryElement = ({
@@ -126,6 +127,7 @@ const IncludeExcludeQueryElement = ({
   path,
   operator,
   operands,
+  displayOnly = false,
 }: IncludeExcludeQueryElementProps) => {
   // const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
@@ -200,10 +202,10 @@ const IncludeExcludeQueryElement = ({
                   variant="filled"
                   color="accent.5"
                   size="md"
-                  pr={0}
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-2 pr-0 hover:bg-accent-darker"
-                  rightSection={<RemoveButton value={value} />}
+                  className={`normal-case items-center max-w-[162px] cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
+                  rightSection={!displayOnly && <RemoveButton value={value} />}
                   onClick={() => {
+                    if (displayOnly) return;
                     const newOperands = operandsArray.filter((o) => o !== x);
                     const fieldToUpdate =
                       path && path != '.' ? [path, field].join('.') : field;
@@ -246,15 +248,17 @@ const IncludeExcludeQueryElement = ({
 };
 
 interface ComparisonElementProps {
-  readonly index: string;
-  readonly filter: ValueOperation;
-  readonly showLabel?: boolean;
+  index: string;
+  filter: ValueOperation;
+  showLabel?: boolean;
+  displayOnly?: boolean;
 }
 
 const ComparisonElement = ({
   index,
   filter,
   showLabel = true,
+  displayOnly = false,
 }: ComparisonElementProps) => {
   const { useUpdateFilters } = useContext(QueryExpressionContext);
   const updateCohortFilter = useUpdateFilters();
@@ -272,7 +276,10 @@ const ComparisonElement = ({
       <div className="flex flex-row items-center">
         <button
           className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast pb-1"
-          onClick={() => handleKeepMember(filter)}
+          onClick={() => {
+            if (displayOnly) return;
+            handleKeepMember(filter);
+          }}
         >
           {filter.operator}
         </button>
@@ -332,6 +339,7 @@ interface QueryElementProps {
   field: string;
   children?: React.ReactNode;
   path?: string;
+  displayOnly?: boolean;
 }
 
 export const QueryElement = ({
@@ -339,6 +347,7 @@ export const QueryElement = ({
   field,
   path,
   children,
+  displayOnly = false,
 }: QueryElementProps) => {
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
@@ -373,13 +382,15 @@ export const QueryElement = ({
         <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
       </button>
       -- */}
-      <button
-        className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
-        onClick={handleRemoveFilter}
-        aria-label={`remove ${fieldNameToTitle(field)}`}
-      >
-        <ClearIcon size="1.5em" className="px-1" />
-      </button>
+      {!displayOnly && (
+        <button
+          className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
+          onClick={handleRemoveFilter}
+          aria-label={`remove ${fieldNameToTitle(field)}`}
+        >
+          <ClearIcon size="1.5em" className="px-1" />
+        </button>
+      )}
     </QueryItemContainer>
   );
 };
@@ -390,65 +401,171 @@ export const QueryElement = ({
 class CohortFilterToComponent implements OperationHandler<ReactElement> {
   private readonly index: string;
   private readonly path?: string;
+  private readonly displayOnly?: boolean;
 
-  constructor(index: string, path = '.') {
+  constructor(index: string, path = '.', displayOnly = false) {
     this.index = index;
     this.path = path;
+    this.displayOnly = displayOnly;
   }
 
   handleIncludes = (f: Includes) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <IncludeExcludeQueryElement {...f} index={this.index} path={this.path} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <IncludeExcludeQueryElement
+        {...f}
+        index={this.index}
+        path={this.path}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleExcludes = (f: Excludes) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <IncludeExcludeQueryElement {...f} index={this.index} path={this.path} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <IncludeExcludeQueryElement
+        {...f}
+        index={this.index}
+        path={this.path}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleEquals = (f: Equals) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleNotEquals = (f: NotEquals) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleLessThan = (f: LessThan) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleLessThanOrEquals = (f: LessThanOrEquals) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleGreaterThan = (f: GreaterThan) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleGreaterThanOrEquals = (f: GreaterThanOrEquals) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <ComparisonElement filter={f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <ComparisonElement
+        filter={f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
   handleExists = (f: Exists) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
       <ExistsElement {...f} />
     </QueryElement>
   );
   handleMissing = (f: Missing) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
       <ExistsElement {...f} />
     </QueryElement>
   );
   handleExcludeIfAny = (f: ExcludeIfAny) => (
-    <QueryElement key={f.field} {...f} index={this.index} path={this.path}>
-      <IncludeExcludeQueryElement {...f} index={this.index} />
+    <QueryElement
+      key={f.field}
+      {...f}
+      index={this.index}
+      path={this.path}
+      displayOnly={this.displayOnly}
+    >
+      <IncludeExcludeQueryElement
+        {...f}
+        index={this.index}
+        displayOnly={this.displayOnly}
+      />
     </QueryElement>
   );
 
@@ -487,9 +604,15 @@ class CohortFilterToComponent implements OperationHandler<ReactElement> {
         newOp,
         this.index,
         [op.path, op.operand.path].join('.'),
+        this.displayOnly,
       );
     } else {
-      return convertFilterToComponent(op.operand, this.index, op.path);
+      return convertFilterToComponent(
+        op.operand,
+        this.index,
+        op.path,
+        this.displayOnly,
+      );
     }
   };
 }
@@ -498,10 +621,12 @@ export const convertFilterToComponent = (
   filter: Operation,
   index: string,
   path = '.',
+  displayOnly = false,
 ): ReactElement => {
   const handler: OperationHandler<ReactElement> = new CohortFilterToComponent(
     index,
     path,
+    displayOnly,
   );
   return handleOperation(handler, filter);
 };

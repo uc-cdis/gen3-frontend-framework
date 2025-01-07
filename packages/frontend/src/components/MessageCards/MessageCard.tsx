@@ -24,6 +24,7 @@ interface MessageCardProps {
   icon?: ReactElement;
   color?: string;
   size?: string | number;
+  width?: string;
 }
 
 const MessageCard: React.FunctionComponent<MessageCardProps> = ({
@@ -31,8 +32,9 @@ const MessageCard: React.FunctionComponent<MessageCardProps> = ({
   icon,
   size = 'lg',
   color = 'utility.5',
+  width = 'w-1/2',
 }: MessageCardProps): ReactElement => (
-  <CardContainer>
+  <CardContainer width={width}>
     <ThemeIcon color={color} variant="outline" radius="xl" size={size}>
       {icon}
     </ThemeIcon>

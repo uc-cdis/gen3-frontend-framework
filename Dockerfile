@@ -1,3 +1,5 @@
+# docker build -t ff .
+# docker run -p 3000:3000 -it ff
 # Build stage
 FROM quay.io/cdis/ubuntu:20.04 AS builder
 
@@ -57,7 +59,7 @@ RUN lerna run --scope @gen3/core build && \
     lerna run --scope @gen3/samplecommons build
 
 # Production stage
-FROM node:20-slim AS production
+FROM node:20.18.1-alpine3.20 AS production
 
 WORKDIR /gen3
 

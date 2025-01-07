@@ -23,7 +23,7 @@ export class FilesystemContent implements ContentSource {
   ): Promise<T> {
     try {
       return await JSON.parse(
-        fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf-8'),
+        fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
     } catch (err) {
       throw new Error(`Cannot process ${filepath}`);
