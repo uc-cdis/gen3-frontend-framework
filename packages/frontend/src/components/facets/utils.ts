@@ -182,7 +182,6 @@ export const useUpdateFilters = (index: string) => {
     );
   };
 };
-
 export const useGetFacetFilters = (index: string, field: string): Operation => {
   return useCoreSelector(
     (state: CoreState) =>

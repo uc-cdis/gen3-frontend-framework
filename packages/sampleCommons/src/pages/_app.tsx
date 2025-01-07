@@ -12,10 +12,9 @@ import {
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
-  // registerCohortDiscoveryApp,
+  registerCohortDiscoveryApp,
   registerCohortDiversityApp,
   registerCohortBuilderDefaultPreviewRenderers,
-  registerExplorerDefaultCellRenderers,
 } from '@gen3/frontend';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -28,7 +27,7 @@ import '@fontsource/poppins';
 
 import { setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
-import { loadContent } from '../lib/content/loadContent';
+import { loadContent } from '@/lib/content/loadContent';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
@@ -69,7 +68,7 @@ const Gen3App = ({
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
-    //  registerCohortDiscoveryApp();
+    registerCohortDiscoveryApp();
     registerCohortDiversityApp();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();

@@ -105,22 +105,14 @@ const reducer = (
 
 interface QueryExpressionSectionProps {
   index: string;
-  filters: FilterSet;
   hideImportExport?: boolean;
-  currentCohortName: string;
-  currentCohortId: string;
   displayOnly?: boolean;
   showTitle?: boolean;
-  index: string;
-  hideImportExport?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   hideImportExport = true,
-  filters,
-  currentCohortName,
-  currentCohortId,
   displayOnly = false,
   showTitle = true,
 }: Readonly<QueryExpressionSectionProps>) => {
