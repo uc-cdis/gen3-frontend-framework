@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
   type MRT_PaginationState,
   type MRT_SortingState,
+  type MRT_RowSelectionState,
   useMantineReactTable,
 } from 'mantine-react-table';
 
@@ -53,6 +54,7 @@ const DiscoveryTable = ({
   const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -101,6 +103,7 @@ const DiscoveryTable = ({
         }
       : {}),
     enableRowSelection: config.tableConfig?.selectableRows ?? false,
+    onRowSelectionChange: setRowSelection,
     rowCount: hits,
     icons: TableIcons,
     enableTopToolbar: false,
@@ -122,6 +125,7 @@ const DiscoveryTable = ({
       : undefined,
     state: {
       isLoading,
+      rowSelection,
       ...(manualSortingAndPagination
         ? {
             pagination,

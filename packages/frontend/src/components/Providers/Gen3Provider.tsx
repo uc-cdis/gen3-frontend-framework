@@ -14,6 +14,8 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import { AnalysisToolsProvider } from '../../lib/common/analysisToolFramework';
+import { AnalysisToolConfiguration } from '../../lib/common/types';
 
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
@@ -21,6 +23,7 @@ interface Gen3ProviderProps {
   fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
+  analysisToolConfig?: AnalysisToolConfiguration;
   children?: ReactNode | undefined;
 }
 
@@ -92,6 +95,7 @@ const Gen3Provider = ({
   fonts,
   sessionConfig,
   modalsConfig,
+  analysisToolConfig,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -106,9 +110,13 @@ const Gen3Provider = ({
         <ModalsProvider>
           <Notifications />
           <SessionProvider {...sessionConfig}>
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
+            <AnalysisToolsProvider
+              {...(analysisToolConfig ?? { useDataLibraryServiceAPI: false })}
+            >
+              <Gen3ModalsProvider config={modalsConfig}>
+                {children}
+              </Gen3ModalsProvider>
+            </AnalysisToolsProvider>
           </SessionProvider>
         </ModalsProvider>
       </MantineProvider>

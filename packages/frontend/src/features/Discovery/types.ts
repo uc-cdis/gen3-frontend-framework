@@ -209,7 +209,8 @@ export interface DataLibraryActionButton {
     | 'download'
     | 'link'
     | 'externalLink'
-    | 'add-to-workspace';
+    | 'add-to-workspace'
+    | 'add-to-data-library';
   label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
