@@ -15,7 +15,7 @@ import {
   // registerCohortDiscoveryApp,
   registerCohortDiversityApp,
   registerCohortBuilderDefaultPreviewRenderers,
-  registerExplorerDefaultCellRenderers,
+  registerMetadataSchemaApp,
 } from '@gen3/frontend';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -71,6 +71,7 @@ const Gen3App = ({
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
     //  registerCohortDiscoveryApp();
     registerCohortDiversityApp();
+    registerMetadataSchemaApp();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();

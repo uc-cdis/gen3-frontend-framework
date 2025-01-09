@@ -1,0 +1,8 @@
+{
+  "schemas": [
+    {
+      "label": "Subject Metadata",
+      "schemaName": "subject_minimal_metadata_schema"
+    }
+  ]
+}
