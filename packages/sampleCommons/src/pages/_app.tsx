@@ -61,34 +61,32 @@ const Gen3App = ({
 
   const faroRef = useRef<null | Faro>(null);
 
-  useEffect(() => {
-    // one time init
-    // if (
-    //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
-    //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
-    //   !faroRef.current
-    // ) {
-    if (!faroRef.current) faroRef.current = initGrafanaFaro();
-    //  registerCohortDiscoveryApp();
-    registerCohortDiversityApp();
-    registerCohortBuilderDefaultPreviewRenderers();
-    registerCohortTableCustomCellRenderers();
-    registerCustomExplorerDetailsPanels();
-    // }
-  }, []);
+  // useEffect(() => {
+  //   // one time init
+  //   // if (
+  //   //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
+  //   //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
+  //   //   !faroRef.current
+  //   // ) {
+  //   if (!faroRef.current) faroRef.current = initGrafanaFaro();
+  //   //  registerCohortDiscoveryApp();
+  //   registerCohortDiversityApp();
+  //   registerCohortBuilderDefaultPreviewRenderers();
+  //   registerCohortTableCustomCellRenderers();
+  //   registerCustomExplorerDetailsPanels();
+  //   // }
+  // }, []);
 
   return (
-    <FaroErrorBoundary>
-      <Gen3Provider
-        colors={colors}
-        icons={icons}
-        fonts={themeFonts}
-        sessionConfig={sessionConfig}
-        modalsConfig={modalsConfig}
-      >
-        <Component {...pageProps} />
-      </Gen3Provider>
-    </FaroErrorBoundary>
+    <Gen3Provider
+      colors={colors}
+      icons={icons}
+      fonts={themeFonts}
+      sessionConfig={sessionConfig}
+      modalsConfig={modalsConfig}
+    >
+      <Component {...pageProps} />
+    </Gen3Provider>
   );
 };
 
@@ -129,4 +127,5 @@ Gen3App.getInitialProps = async (
     sessionConfig: {},
   };
 };
-export default withFaroProfiler(Gen3App);
+//export default withFaroProfiler(Gen3App);
+export default Gen3App;

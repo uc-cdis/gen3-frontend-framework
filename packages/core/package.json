@@ -48,20 +48,20 @@
     "@types/estree": "^1.0.0",
     "@types/fastestsmallesttextencoderdecoder": "^1.0.2",
     "@types/flat": "^5.0.3",
-    "@types/isomorphic-fetch": "^0.0.36",
+    "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.14.191",
     "@types/papaparse": "^5.3.14",
     "@types/uuid": "^9.0.0"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.8",
+    "@reduxjs/toolkit": "^2.5.0",
     "flat": "^6.0.1",
     "papaparse": "^5.4.1",
     "queue": "6.0.2",
-    "react-redux": "^9.1.2",
+    "react-redux": "^9.2.0",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
-    "swr": "^2.2.5",
+    "swr": "^2.3.0",
     "uuid": "^9.0.1"
   },
   "files": [

@@ -21,7 +21,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": []
+        "dependsOn": ["^build"]
     },
     "build:clean": {
       "dependsOn": [
@@ -50,28 +50,6 @@
     "dev": {
       "dependsOn": [
       ]
-    },
-    "rollup": {
-      "dependsOn": [
-      ]
-    },
-    "copy-tailwind": {
-      "dependsOn": []
-    },
-    "start": {
-      "dependsOn": []
-    },
-    "build:colors": {
-      "dependsOn": []
-    },
-    "build:icons": {
-      "dependsOn": []
-    },
-    "getSchema": {
-      "dependsOn": []
-    },
-    "getDRSToHostname": {
-      "dependsOn": []
     }
   }
 }

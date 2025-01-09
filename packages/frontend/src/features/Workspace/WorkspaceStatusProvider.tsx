@@ -119,7 +119,6 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
             : 'Error stopping workspace',
         ),
         position: 'top-center',
-        containerWidth: '50%',
       });
       dispatch(setRequestedWorkspaceStatus('NotSet'));
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.NotFound));
