@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActionIcon, Button, Group, Tooltip } from '@mantine/core';
-// import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
+import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import { Datalist } from '@gen3/core';
 import { Icon } from '@iconify/react';
 import { IconSize } from './types';
@@ -50,7 +50,7 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             <Icon icon="gen3:clear-list" width={iconSize} height={iconSize} />
           </ActionIcon>
         </Tooltip>
-        {/* ----  TODO: enable these
+
         <Tooltip label="Create a new empty list">
           <Button
             hidden={true}
@@ -73,7 +73,6 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             <Icon icon="gen3:download-alt" height={24} width={24} />
           </Button>
         </Tooltip>
-        */}
       </Group>
       {/* ---
       <TextInput

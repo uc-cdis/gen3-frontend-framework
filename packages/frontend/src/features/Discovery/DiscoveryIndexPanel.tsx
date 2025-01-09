@@ -85,6 +85,7 @@ const DiscoveryIndexPanel = ({
     );
   }
 
+  console.log(dataRequestStatus);
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
