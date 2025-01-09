@@ -1,4 +1,9 @@
-# NGIX Config for remote commons
+# Install NGINX
+```bash
+brew install nginx
+```
+
+# NGINX Config for remote commons
 
 While you can set a remote commons in the ```.env.development file```, for example:
 ```bash
@@ -9,9 +14,10 @@ You will encounter CORS errors. There are ways to resolve this, but one is to ru
 For this, we will need to install ngnix and then configure it. Depending on the system, there are many
 ways to set it up.
 
-Once it is installed, you will need to set up an SSL certificate or use an existing one.
+Once it is installed, you will need to set up a SSL certificate or use an existing one.
+> You can use https://github.com/jsha/minica to set up a SSL certificate
 
-make a copy of ```revproxy_nginx.conf.template``` and add the absolute path to the certificate and key in
+make a copy of ```revproxy_nginx.conf.template``` name it ```revproxy_nginx.conf``` and add the absolute path to the certificate and key in
 this section:
 ```
         ...
@@ -25,7 +31,7 @@ this section:
 you will either find the default location of the ngnix configuration or pass the generated
 config file on the command line.
 
-### Use the default nginx config location
+## 1. Use default location
 
 One way to find the ngnix config file is to run:
 ```bash
@@ -37,7 +43,9 @@ nginx: the configuration file /opt/homebrew/etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /opt/homebrew/etc/nginx/nginx.conf test is successful
 ```
 
-set ```GEN3_REMOTE_API``` in the below command to the domain name for the common you want
+NOTE: This file will be overwrite in the next step; make sure it is backed up if you want to restore it later.
+
+Set ```GEN3_REMOTE_API``` in the below command to the domain name for the common you want
 to access with the Gen3.2 frontend. For this case, it's *gen3.datacommons.io* and are
 writing to the default nginx config file location:
 
@@ -45,7 +53,7 @@ NOTE: This will overwrite the current ngnix config file; make sure it is backed 
 restore it later.
 
 ```base
-GEN3_REMOTE_API=gen3.datacommons.io envsubst "\$GEN3_REMOTE_API" < revproxy_nginx.conf.template > /opt/homebrew/etc/nginx/nginx.conf
+GEN3_REMOTE_API=gen3.datacommons.io envsubst "\$GEN3_REMOTE_API" < revproxy_nginx.conf > /opt/homebrew/etc/nginx/nginx.conf
 ```
 
 to use this with ngnix test it first using the following:
@@ -57,21 +65,11 @@ and if it's okay, you can start nginx with:
 nginx
 ```
 
-Other commands:
-stop nginx:
-```bash
-nginx -s stop
-```
-reload nginx config (if you made changes for example):
-```bash
-nginx -s reload
-```
-
-### Use the custom configuration file location
+## 2. pass the generated config
 Note there is a bash script to do most of the steps below, See [Shell Script](#shell-script)
 
 ```base
-GEN3_REMOTE_API=gen3.datacommons.io envsubst "\$GEN3_REMOTE_API" < revproxy_nginx.conf.template > my_nginx.conf
+GEN3_REMOTE_API=gen3.datacommons.io envsubst "\$GEN3_REMOTE_API" < revproxy_nginx.conf > my_nginx.conf
 ```
 
 To confirm this configuration is valid, you must pass the absolute path to my_ngnix.conf:
@@ -84,14 +82,27 @@ If the config is error free, run nginx using the config with:
 nginx -c /.../gen3/gen3-frontend-framework/packages/tools/localDev/ngnix/my_nginx.conf
 ```
 
+## Other commands:
+stop nginx:
+```bash
+nginx -s stop
+```
+reload nginx config (if you made changes for example):
+```bash
+nginx -s reload
+```
+
 
 ## Test it
 Test if it is running correctly using:
 ```bash
-curl -k  https://localhost:3010/_status
+curl -k  https://localhost:3010/_status 
+```
+Should get a response like
+```bash
 { "message": "Feelin good!", "csrf": "6d0b82e320a1a5fab105b0c152300.0002024-05-23T16:44:36+00:00" }
 ```
-and compare with http://gen3.data.commons/io/_status where gen3.datacommons.io is replaced with the
+and compare with https://gen3.datacommons.io/_status where gen3.datacommons.io is replaced with the
 commons pass to ``GEN3_REMOTE_API```.
 
 ## Shell Script
