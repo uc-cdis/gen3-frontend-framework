@@ -26,6 +26,7 @@ const Dictionary = () => {
 
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
+      // @ts-expect-error need to refactor this
       targetRef.current = itemRef;
       scrollIntoView();
     },

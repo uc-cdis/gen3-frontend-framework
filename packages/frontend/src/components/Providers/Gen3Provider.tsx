@@ -1,11 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  createTheme,
-  MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
-} from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -101,8 +96,8 @@ const Gen3Provider = ({
   const theme = createMantineTheme(fonts, colors);
 
   return (
-    <MantineProvider theme={theme}>
-      <CoreProvider>
+    <CoreProvider>
+      <MantineProvider theme={theme}>
         <ModalsProvider>
           <Notifications />
           <SessionProvider {...sessionConfig}>
@@ -111,8 +106,8 @@ const Gen3Provider = ({
             </Gen3ModalsProvider>
           </SessionProvider>
         </ModalsProvider>
-      </CoreProvider>
-    </MantineProvider>
+      </MantineProvider>
+    </CoreProvider>
   );
 };
 

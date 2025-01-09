@@ -4,7 +4,10 @@
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/frontend",
+    "packages/tools",
+    "packages/sampleCommons"
   ],
   "engines": {
     "npm": ">=10.2.3",
@@ -14,7 +17,7 @@
     "lint": "lerna run lint",
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
-    "build": "lerna run build",
+    "build": "lerna run build --include-dependencies",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run dev",
