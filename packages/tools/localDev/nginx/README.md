@@ -18,9 +18,9 @@ ways to set it up.
 Once it is installed, you will need to set up a SSL certificate or use an existing one.
 > You can use https://github.com/jsha/minica to set up a SSL certificate
 
-## NGINX Config for remote commons Shell Script
+## Shell Script Setup
 
-There is a shell script to do the above. Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
+Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
 Now you can run a shell script to update the config and reload nginx:
 
 ```bash
