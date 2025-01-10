@@ -12,4 +12,6 @@ export interface MetadataElement {
 export interface MetadataPropertiesConfiguration {
   label: string;
   schemaName: string;
+  definitionsFieldName: string;
+  fontSize?: string;
 }

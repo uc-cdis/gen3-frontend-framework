@@ -9,6 +9,7 @@ import {
 import { MetadataElement } from './types';
 import { List } from '@mantine/core';
 import { FaCircle as DiscIcon, FaCheck as Check } from 'react-icons/fa';
+import { TableIcons } from '../../../components/Tables/TableIcons';
 
 type PropertyTableRowData = Pick<
   MetadataElement,
@@ -17,6 +18,7 @@ type PropertyTableRowData = Pick<
 
 interface MetadataPropertiesTableProps {
   elements: Array<MetadataElement>;
+  fontSize?: string;
 }
 
 const buildValueElements = (element: MetadataElement) => {
@@ -43,15 +45,15 @@ const buildValueElements = (element: MetadataElement) => {
         </List>
       );
     case 'number':
-      if (element.minimum && element.maximum) {
+      if (element?.minimum !== undefined && element?.maximum !== undefined) {
         return (
           <span>
             {element.minimum} - {element.maximum}
           </span>
         );
-      } else if (element.minimum) {
+      } else if (element?.minimum !== undefined) {
         return <span>{element.minimum}</span>;
-      } else if (element.maximum) {
+      } else if (element?.maximum !== undefined) {
         return <span>{element.minimum}</span>;
       } else {
         return null;
@@ -63,40 +65,39 @@ const buildValueElements = (element: MetadataElement) => {
 
 const MetadataPropertiesTable = ({
   elements,
+  fontSize = 'sm',
 }: MetadataPropertiesTableProps) => {
   const columns = useMemo<Array<MRT_ColumnDef<MetadataElement>>>(() => {
     return [
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 75,
-        Cell: ({
-          cell,
-          row,
-        }: {
-          cell: MRT_Cell<PropertyTableRowData>;
-          row: MRT_Row<PropertyTableRowData>;
-        }) => {
+        Cell: ({ cell }: { cell: MRT_Cell<PropertyTableRowData> }) => {
           return <span>{cell.getValue<string>()}</span>;
         },
+        size: 120,
+        maxSize: 180,
       },
       {
         accessorKey: 'type',
         header: 'Type',
+        size: 80,
+        maxSize: 120,
       },
       {
         header: 'Values',
         Cell: ({ row }: { row: MRT_Row<PropertyTableRowData> }) => {
           return buildValueElements(row.original);
         },
+        size: 120,
       },
       {
         accessorKey: 'required',
         header: 'Required',
-        size: 60,
+        size: 80,
         Cell: ({ cell }: { cell: MRT_Cell<PropertyTableRowData> }) => {
           if (cell.getValue<boolean>() === true) {
-            return <Check className="text-green-500" />;
+            return <Check className="text-utility-success" />;
           }
         },
       },
@@ -114,15 +115,26 @@ const MetadataPropertiesTable = ({
     enableBottomToolbar: false,
     enableTopToolbar: false,
     enableRowSelection: false,
+    enableColumnActions: false,
+    enableColumnResizing: true,
+    layoutMode: 'grid',
+    icons: TableIcons,
     getRowId: (originalRow: PropertyTableRowData) => originalRow.id,
     mantineTableHeadRowProps: {
       style: {
         '--mrt-base-background-color': 'var(--mantine-color-accent-cool-3)',
+        fontSize: `var(--mantine-font-size-${fontSize})`,
       },
     },
     mantineTableHeadCellProps: {
       style: {
         color: 'var(--mantine-color-accent-contrast-cool-3)',
+        fontSize: `var(--mantine-font-size-${fontSize})`,
+      },
+    },
+    mantineColumnDragHandleProps: {
+      style: {
+        color: '#FF0000',
       },
     },
   });
