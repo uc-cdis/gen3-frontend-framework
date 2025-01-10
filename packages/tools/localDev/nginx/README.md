@@ -107,7 +107,7 @@ commons pass to ``GEN3_REMOTE_API```.
 
 ## Shell Script
 
-There is a shell script to do the above. Place your certificates in $HOME/ssl-cert as ```cert.pem``` and ```key.pem```.
+There is a shell script to do the above. Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
 Now you can run a shell script to update the config and reload nginx:
 
 ```bash
