@@ -3,6 +3,7 @@
 brew install nginx
 ```
 
+
 # NGINX Config for remote commons
 
 While you can set a remote commons in the ```.env.development file```, for example:
@@ -16,6 +17,32 @@ ways to set it up.
 
 Once it is installed, you will need to set up a SSL certificate or use an existing one.
 > You can use https://github.com/jsha/minica to set up a SSL certificate
+
+## NGINX Config for remote commons Shell Script
+
+There is a shell script to do the above. Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
+Now you can run a shell script to update the config and reload nginx:
+
+```bash
+./configureNginx.sh -d <domain name of commons>
+```
+
+NOTE: do *NOT* add http:// or https:// to the passed domain name, it just need to be the name of the commong.
+For example:
+Do NOT:
+```bash
+./configureNginx.sh -d https://gen3.datacommons.io
+```
+Instead:
+```bash
+./configureNginx.sh -d gen3.datacommons.io
+```
+
+This script will update and test the configuration. If no issues are found it will
+start or restart nginx. You can also specify the path the to cert and key using  ```-c cert_path -k key_path```.
+```./configureNginx.sh -h``` will display help and all of the options.
+
+## Manual setup
 
 make a copy of ```revproxy_nginx.conf.template``` name it ```revproxy_nginx.conf``` and add the absolute path to the certificate and key in
 this section:
@@ -104,27 +131,3 @@ Should get a response like
 ```
 and compare with https://gen3.datacommons.io/_status where gen3.datacommons.io is replaced with the
 commons pass to ``GEN3_REMOTE_API```.
-
-## Shell Script
-
-There is a shell script to do the above. Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
-Now you can run a shell script to update the config and reload nginx:
-
-```bash
-./configureNginx.sh -d <domain name of commons>
-```
-
-NOTE: do *NOT* add http:// or https:// to the passed domain name, it just need to be the name of the commong.
-For example:
-Do NOT:
-```bash
-./configureNginx.sh -d https://gen3.datacommons.io
-```
-Instead:
-```bash
-./configureNginx.sh -d gen3.datacommons.io
-```
-
-This script will update and test the configuration. If no issues are found it will
-start or restart nginx. You can also specify the path the to cert and key using  ```-c cert_path -k key_path```.
-```./configureNginx.sh -h``` will display help and all of the options.
