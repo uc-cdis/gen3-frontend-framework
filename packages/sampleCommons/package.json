@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
@@ -27,9 +27,9 @@
     "idb": "^8.0.0",
     "jose": "^4.15.9",
     "mantine-react-table": "^2.0.0-beta.7",
+    "next": "^14.2.15",
     "react": "^18.3.1",
     "react-dom": "18.3.1",
-    "next": "^14.2.15",
     "sharp": "^0.33.5"
   },
   "devDependencies": {

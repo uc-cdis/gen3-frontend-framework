@@ -4,7 +4,10 @@
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/frontend",
+    "packages/tools",
+    "packages/sampleCommons"
   ],
   "engines": {
     "npm": ">=10.2.3",
@@ -14,7 +17,7 @@
     "lint": "lerna run lint",
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
-    "build": "lerna run build",
+    "build": "lerna run build --include-dependencies",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run dev",
@@ -32,13 +35,12 @@
     "@grafana/faro-react": "^1.9.1",
     "@grafana/faro-web-sdk": "^1.9.1",
     "@grafana/faro-web-tracing": "^1.9.1",
-    "@mantine/core": "^7.13.3",
-    "@mantine/dates": "^7.13.3",
-    "@mantine/form": "^7.13.3",
-    "@mantine/hooks": "^7.13.3",
-    "@mantine/modals": "^7.13.3",
-    "@mantine/notifications": "^7.13.3",
-    "@tabler/icons-react": "^3.27.1",
+    "@mantine/core": "^7.14.3",
+    "@mantine/form": "^7.14.3",
+    "@mantine/hooks": "^7.14.3",
+    "@mantine/modals": "^7.14.3",
+    "@mantine/dates": "^7.14.3",
+    "@mantine/notifications": "^7.14.3",
     "classnames": "^2.3.1",
     "colorette": "^2.0.20",
     "cookies-next": "4.3.0",
@@ -101,10 +103,6 @@
     "rollup-plugin-copy": {
       "globby": "^11.0.0"
     }
-  },
-  "resolutions": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
   },
   "optionalDependencies": {
     "@nx/nx-darwin-arm64": "^20.3.0",
