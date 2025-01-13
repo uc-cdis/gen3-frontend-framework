@@ -40,7 +40,7 @@ COPY packages/frontend/package.json ./packages/frontend/
 COPY packages/sampleCommons/package.json ./packages/sampleCommons/
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --include=optional
 
 # Install additional dependencies
 RUN npm install \

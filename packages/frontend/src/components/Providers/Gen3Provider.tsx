@@ -1,11 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  createTheme,
-  MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
-} from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
