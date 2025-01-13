@@ -16,6 +16,7 @@ export const DetailsModal = <
 >({
   title,
   id,
+  row,
   classNames,
   panel,
   panelProps,
@@ -28,11 +29,9 @@ export const DetailsModal = <
   const [opened, { open, close }] = useDisclosure(id !== undefined);
 
   const styling = useMemo(
-    () => mergeDefaultTailwindClassnames(DEFAULT_PROPS, classNames ?? {}, true),
-    [],
+    () => mergeDefaultTailwindClassnames(DEFAULT_PROPS, classNames ?? {}),
+    [classNames],
   );
-
-  console.log('mergedStyles', styling);
 
   useEffect(() => {
     if (id !== undefined) open();
@@ -44,7 +43,7 @@ export const DetailsModal = <
       opened={opened}
       onClose={() => {
         close();
-        onClose && onClose(id);
+        if (onClose) onClose(id);
       }}
       title={title}
       withinPortal={true}
@@ -56,7 +55,7 @@ export const DetailsModal = <
       classNames={styling}
       xOffset={0}
     >
-      {panel({ id: id, onClose, ...panelProps })}
+      {panel({ id, onClose, row, ...panelProps })}
     </Modal>
   );
 };

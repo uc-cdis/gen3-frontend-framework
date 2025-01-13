@@ -1,148 +1,77 @@
 import React, { useMemo, useState } from 'react';
-import { DiscoveryConfig, DiscoveryTableDataHook } from './types';
-import DiscoveryTable from './DiscoveryTable';
-import DiscoveryProvider from './DiscoveryProvider';
-import { Loader, Text } from '@mantine/core';
-import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
-import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
-import { useDisclosure } from '@mantine/hooks';
-import { Button } from '@mantine/core';
-import ActionBar from './ActionBar/ActionBar';
-import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
-import { AdvancedSearchTerms, SearchCombination } from './Search/types';
-import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
-import AiSearch from './Search/AiSearch';
-import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
+import { Select, Tabs } from '@mantine/core';
+import { DiscoveryConfig, DiscoveryIndexConfig } from './types';
+import DiscoveryIndexPanel from './DiscoveryIndexPanel';
+import MessagePanel from '../../components/MessagePanel';
+
+const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
+  c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
 
 export interface DiscoveryProps {
   discoveryConfig: DiscoveryConfig;
 }
 
-const Discovery = ({
-  discoveryConfig,
-}: DiscoveryProps) => {
+const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
+  const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
-  const dataHook = useMemo(() => getDiscoveryDataLoader(discoveryConfig?.features.dataFetchFunction) ?? useLoadAllMDSData, []);
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-
-  const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
-  const [advancedSearchTerms, setAdvancedSearchTerms] =
-    useState<AdvancedSearchTerms>({
-      operation: SearchCombination.and,
-      filters: {},
+  const menuItems = useMemo(() => {
+    return discoveryConfig.metadataConfig.map((n, idx) => {
+      return { value: idx.toString(), label: extractLabel(n, idx) };
     });
+  }, [discoveryConfig.metadataConfig]);
 
-  const searchParam = useMemo(() => {
-    return {
-      keyword: {
-        operator: SearchCombination.and,
-        keywords: searchBarTerm,
-      },
-      advancedSearchTerms: advancedSearchTerms,
-    };
-  }, [searchBarTerm, advancedSearchTerms]);
-
-  // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
-
-  const {
-    data,
-    hits,
-    dataRequestStatus,
-    advancedSearchFilterValues,
-    suggestions,
-    summaryStatistics,
-  } = dataHook({
-    pagination: {
-      offset: pagination.pageIndex * pagination.pageSize,
-      pageSize: pagination.pageSize,
-    },
-    searchTerms: searchParam,
-    discoveryConfig,
-  });
-
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
-    useDisclosure(false);
-
-  if (dataRequestStatus.isLoading) {
-    return (<div className="flex w-full py-24 relative justify-center"><Loader  variant="dots"  /> </div>);
+  if (menuItems.length === 0) {
+    return <MessagePanel message="No discovery configuration" />;
   }
 
-  if (dataRequestStatus.isError) {
+  if (menuItems.length === 1) {
+    // no need for tabs
     return (
-      <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
-      </div>);
+      <DiscoveryIndexPanel
+        discoveryConfig={discoveryConfig.metadataConfig[0]}
+        indexSelector={null}
+      />
+    );
   }
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-      <div className="w-full">
-        <DiscoveryProvider discoveryConfig={discoveryConfig}>
-          {
-            discoveryConfig.features?.pageTitle && discoveryConfig?.features?.pageTitle.enabled ? (
-              <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
-            ) : null
-          }
-          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
-            <SummaryStatisticPanel summaries={summaryStatistics} />
-            <div className="w-3/4 flex flex-col">
-              <SearchInputWithSuggestions
-                suggestions={suggestions}
-                clearSearch={() => {
-                  setSearchBarTerm([]);
-                }}
-                searchChanged={(v) => setSearchBarTerm(v.split(' '))}
-                placeholder={
-                  discoveryConfig?.features?.search?.searchBar?.placeholder ??
-                  'Search...'
-                }
-                label={
-                  discoveryConfig?.features?.search?.searchBar?.inputSubtitle
-                }
-              />
-            </div>
-          </div>
-          {discoveryConfig?.features?.aiSearch && (
-            <div className="mb-4">
-              <div className="flex w-full bg-base-max p-4 rounded-lg">
-                <AiSearch />
-              </div>
-            </div>
-          )}
-          <div className="flex flex-row">
-            {discoveryConfig?.features?.advSearchFilters?.enabled ?
-              <Button onClick={toggleAdvancedSearch} color="accent">
-              Filters
-            </Button> : false }
-            {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
-              <ActionBar config={discoveryConfig.features.exportToDataLibrary} />
-            ) : null}
-          </div>
-          <div className="flex justify-start">
-            { discoveryConfig?.features?.advSearchFilters?.enabled ? <AdvancedSearchPanel
-              advSearchFilters={advancedSearchFilterValues}
-              opened={showAdvancedSearch}
-              setAdvancedSearchFilters={setAdvancedSearchTerms}
-            /> : false }
-            <div className="flex w-full bg-base-max p-4 rounded-lg">
-              <DiscoveryTable
-                data={data}
-                hits={hits}
-                dataRequestStatus={dataRequestStatus}
-                setPagination={setPagination}
-                setSorting={setSorting}
-                pagination={pagination}
-                sorting={sorting}
-              />
-            </div>
-          </div>
-        </DiscoveryProvider>
-      </div>
+      <Tabs
+        className="w-full"
+        defaultValue={metadataIndex}
+        onChange={(v: string | null) => {
+          setMetadataIndex(v ?? '0');
+        }}
+      >
+        <Tabs.List>
+          {menuItems.map((item) => (
+            <Tabs.Tab key={item.value} value={item.value}>
+              {item.label}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+        {menuItems.map((item, i) => (
+          <Tabs.Panel value={item.value} key={item.value}>
+            <DiscoveryIndexPanel
+              discoveryConfig={
+                discoveryConfig.metadataConfig[Number.parseInt(item.value)]
+              }
+              indexSelector={
+                menuItems.length < 0 ? (
+                  <Select
+                    label="Metadata:"
+                    data={menuItems}
+                    value={metadataIndex}
+                    onChange={(v: string | null) => {
+                      setMetadataIndex(v ?? '0');
+                    }}
+                  />
+                ) : null
+              }
+            />
+          </Tabs.Panel>
+        ))}
+      </Tabs>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import {
   selectCurrentCohortName,
   selectCurrentCohort,
   updateCohortFilter,
+  setCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
 } from './cohortSlice';
@@ -21,6 +22,7 @@ export {
   selectCurrentCohort,
   cohortReducer,
   updateCohortFilter,
+  setCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
 };

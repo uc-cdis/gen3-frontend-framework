@@ -5,13 +5,23 @@ import { SummaryTable } from './ExplorerTable/types';
 import { FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals } from '@gen3/core';
+import { Modals, FacetDefinition } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 
+export type FacetType =
+  | 'enum'
+  | 'range'
+  | 'text'
+  | 'number'
+  | 'boolean'
+  | 'date'
+  | 'datetime';
+
 export interface TabConfig {
-  readonly title: string;
-  readonly fields: ReadonlyArray<string>;
-  readonly classNames?: StylingOverride;
+  title: string;
+  fields: ReadonlyArray<string>;
+  fieldsConfig: Record<string, FacetDefinition>;
+  classNames?: StylingOverride;
 }
 
 export interface TabsConfig {
@@ -26,12 +36,17 @@ export interface ManifestFieldsConfig {
 }
 
 export interface DataTypeConfig {
-  readonly dataType: string;
-  readonly nodeCountTitle: string;
-  readonly fieldMapping: ReadonlyArray<FieldToName>;
-  readonly manifestMapping?: ManifestFieldsConfig;
-  readonly accessibleFieldCheckList?: string[];
-  readonly accessibleValidationField?: string;
+  dataType: string;
+  nodeCountTitle?: string;
+  accessibleFieldCheckList?: string[];
+  accessibleValidationField?: string;
+  tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
+  tierAccessLimit?: number; // TODO: same
+}
+
+export interface DataTypeConfigWithManifest extends DataTypeConfig {
+  manifestMapping?: ManifestFieldsConfig;
+  fieldMapping?: ReadonlyArray<FieldToName>; // TODO: depreciate this field and use FacetDefinition instead
 }
 
 export interface DownloadButtonConfig extends DownloadButtonProps {
@@ -47,7 +62,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 }
 
 export interface CohortPanelConfig {
-  readonly guppyConfig: DataTypeConfig; // guppy config
+  readonly guppyConfig: DataTypeConfigWithManifest; // guppy config
   readonly tabTitle: string; // title of the tab
   readonly charts?: Record<string, SummaryChart>; // grid of charts
   readonly table?: SummaryTable; // table configuration

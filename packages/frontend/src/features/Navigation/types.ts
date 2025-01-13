@@ -1,45 +1,17 @@
-import {  ReactElement }  from 'react';
+import { ReactElement } from 'react';
 import { TopBarProps } from './TopBar';
-
-interface BottomLinks {
-  text: string;
-  href: string;
-}
-
-interface ColumnLinks {
-  heading: string;
-  items: ReadonlyArray<{
-    text: string;
-    href?: string;
-    linkType?: 'gen3ff' | 'portal' ;
-  }>;
-}
-
-interface FooterLogo {
-  readonly logo: string;
-  readonly description: string;
-  readonly width: number;
-  readonly height: number;
-}
-
-export interface FooterProps {
-  readonly bottomLinks?: ReadonlyArray<BottomLinks>;
-  readonly columnLinks?: ReadonlyArray<ColumnLinks>;
-  readonly footerLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-  readonly footerRightLogos?: ReadonlyArray<ReadonlyArray<FooterLogo>>;
-  readonly classNames?: Record<string, string>;
-}
+import { BannerProps } from './Banner';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface NavigationButtonProps {
-  readonly icon: string;
-  readonly tooltip: string;
-  readonly href: string;
-  readonly name: string;
-  readonly iconHeight?: string;
-  readonly classNames?: Record<string, string>;
+  icon: string;
+  tooltip: string;
+  href: string;
+  noBasePath?: boolean;
+  name: string;
+  iconHeight?: string;
+  classNames?: StylingOverrideWithMergeControl;
 }
-
-
 
 export interface NavigationBarLogo {
   readonly src: string;
@@ -47,8 +19,9 @@ export interface NavigationBarLogo {
   readonly description: string;
   readonly width?: number;
   readonly height?: number;
-  readonly basePath?: string;
-  readonly classNames?: Record<string, string>;
+  readonly noBasePath?: boolean;
+  readonly divider?: boolean;
+  readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface NavigationProps {
@@ -56,11 +29,30 @@ export interface NavigationProps {
   readonly items?: NavigationButtonProps[];
   readonly title?: string;
   readonly loginIcon?: ReactElement | string;
-  readonly classNames?: Record<string, string>;
+  readonly classNames?: StylingOverrideWithMergeControl;
+}
+
+export interface HeaderData {
+  title: string;
+  content: string;
+  key: string;
+}
+
+/**
+ * Sitewide props that can be passed to Pages
+ */
+interface CommonsData {
+  contactEmail?: string;
 }
 
 export interface HeaderProps {
-  readonly top: TopBarProps;
-  readonly navigation: NavigationProps;
-  readonly type?: 'horizontal' | 'vertical' | 'original';
+  top: TopBarProps;
+  navigation: NavigationProps;
+  banners?: Array<BannerProps>;
+  type?: 'horizontal' | 'vertical' | 'original';
+  readonly siteProps?: CommonsData;
+}
+
+export interface MainContentProps {
+  fixed: boolean;
 }

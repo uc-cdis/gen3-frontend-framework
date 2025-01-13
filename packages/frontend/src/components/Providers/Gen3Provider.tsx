@@ -1,10 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  MantineProvider,
-  createEmotionCache,
-  EmotionCache,
-} from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -14,26 +10,71 @@ import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
-const getEmotionCache = (): EmotionCache => {
-  // Insert mantine styles after global styles
-  const insertionPoint =
-    typeof document !== 'undefined'
-      ? document.querySelectorAll<HTMLElement>(
-          'styles[api-emotion="css-global"]',
-        )?.[-1]
-      : undefined;
-
-  return createEmotionCache({ key: 'mantine', insertionPoint });
-};
-
 interface Gen3ProviderProps {
   colors: Record<string, TenStringArray>;
-  icons: RegisteredIcons;
+  icons: Array<RegisteredIcons>;
   fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   children?: ReactNode | undefined;
 }
+
+// Define theme for mantine v7
+const createMantineTheme = (
+  fonts: Fonts,
+  colors: Record<string, TenStringArray>,
+) => {
+  const theme = createTheme({
+    // use V2 font in MantineProvider
+    fontFamily: fonts.fontFamily,
+    // Override default blue color until styles are determined
+    colors: {
+      white: [
+        // TODO: replace with primary theme color
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+        '#ffffff',
+      ],
+      // Add default color from tailwind config to Mantine theme
+      // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
+      // plugins declaration.
+      // TODO: refactor how the configuration get loaded
+      ...Object.fromEntries(
+        Object.entries(colors).map(([key, values]) => [
+          key,
+          Object.values(values),
+        ]),
+      ),
+    },
+    primaryColor: 'primary',
+    primaryShade: { light: 4, dark: 7 },
+    breakpoints: {
+      xs: '31.25em',
+      sm: '50em',
+      md: '62.5em',
+      lg: '80em',
+      xl: '112.5em',
+    },
+    components: {
+      Modal: {
+        defaultProps: {
+          classNames: {
+            title: 'font-bold',
+          },
+        },
+      },
+    },
+  });
+
+  return theme;
+};
 
 /**
  * Gen3Provider wraps around the entire app and provides general configurations
@@ -49,31 +90,14 @@ const Gen3Provider = ({
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
-    addCollection(icons);
+    icons.forEach((i) => addCollection(i));
   }, [icons]);
+
+  const theme = createMantineTheme(fonts, colors);
 
   return (
     <CoreProvider>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        emotionCache={getEmotionCache()}
-        theme={{
-          fontFamily: fonts.fontFamily,
-          colors: {
-            ...colors,
-          },
-          primaryColor: 'primary',
-          primaryShade: { light: 4, dark: 7 },
-          breakpoints: {
-            xs: '500',
-            sm: '800',
-            md: '1000',
-            lg: '1275',
-            xl: '1800',
-          },
-        }}
-      >
+      <MantineProvider theme={theme}>
         <ModalsProvider>
           <Notifications />
           <SessionProvider {...sessionConfig}>

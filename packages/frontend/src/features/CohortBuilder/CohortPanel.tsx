@@ -14,7 +14,8 @@ import {
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
-import ErrorCard from '../../components/ErrorCard';
+import { ErrorCard } from '../../components/MessageCards';
+import { useMediaQuery } from '@mantine/hooks';
 
 import {
   classifyFacets,
@@ -26,7 +27,7 @@ import {
   useUpdateFilters,
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
-import { FacetRequiredHooks } from '../../components/facets/types';
+import { FacetDataHooks } from '../../components/facets/types';
 import { FiltersPanel } from './FiltersPanel';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
@@ -38,6 +39,7 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from 'use-deep-compare';
+import { toDisplayName } from '../../utils';
 
 const EmptyData = {};
 
@@ -45,7 +47,7 @@ interface TabbablePanelProps {
   filters: TabsConfig;
   tabTitle: string;
   facetDefinitions: Record<string, FacetDefinition>;
-  facetDataHooks: Record<FacetType, FacetRequiredHooks>;
+  facetDataHooks: Record<FacetType, FacetDataHooks>;
 }
 
 const TabbedPanel = ({
@@ -137,8 +139,20 @@ export const CohortPanel = ({
   buttons,
   loginForDownload,
 }: CohortPanelConfig): JSX.Element => {
+  const isSm = useMediaQuery('(min-width: 639px)');
+  const isMd = useMediaQuery('(min-width: 1373px)');
+  const isXl = useMediaQuery('(min-width: 1600px)');
+
+  let numCols = 3;
+  if (isSm) numCols = 1;
+  if (isMd) numCols = 2;
+  if (isXl) numCols = 4;
+
   const index = guppyConfig.dataType;
-  const fields = useMemo(() => getAllFieldsFromFilterConfigs(filters?.tabs ?? []), [filters?.tabs]);
+  const fields = useMemo(
+    () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
+    [filters?.tabs],
+  );
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
@@ -152,7 +166,11 @@ export const CohortPanel = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isSuccess } = useGetAggsQuery({
+  const {
+    data,
+    isSuccess,
+    isError: isAggsQueryError,
+  } = useGetAggsQuery({
     type: index,
     fields: fields,
     filters: cohortFilters,
@@ -186,29 +204,57 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetRequiredHooks> = useDeepCompareMemo(() => {
-    return {
-      enum: {
-        useGetFacetData: getEnumFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useTotalCounts: undefined,
-      },
-      range: {
-        useGetFacetData: getRangeFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useTotalCounts: undefined,
-      },
-    };
-  }, [getEnumFacetData, getRangeFacetData, index]);
+  const facetDataHooks: Record<FacetType, FacetDataHooks> =
+    useDeepCompareMemo(() => {
+      return {
+        // TODO: see if there a better way to do this
+        enum: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        exact: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        multiselect: {
+          useGetFacetData: getEnumFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+        range: {
+          useGetFacetData: getRangeFacetData,
+          useUpdateFacetFilters: partial(useUpdateFilters, index),
+          useGetFacetFilters: partial(useGetFacetFilters, index),
+          useClearFilter: partial(useClearFilters, index),
+          useTotalCounts: undefined,
+        },
+      };
+    }, [getEnumFacetData, getRangeFacetData, index]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
-      const facetDefs = classifyFacets(data, index, guppyConfig.fieldMapping);
+      const configFacetDefs = filters?.tabs.reduce(
+        (acc: Record<string, FacetDefinition>, tab) => {
+          return { ...tab.fieldsConfig, ...acc };
+        },
+        {},
+      );
+
+      const facetDefs = classifyFacets(
+        data,
+        index,
+        guppyConfig?.fieldMapping ?? [],
+        configFacetDefs ?? {},
+      );
       setFacetDefinitions(facetDefs);
 
       // setup summary charts since nested fields can be listed by the split field name
@@ -250,8 +296,8 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
-  if (isError) {
-    return <ErrorCard message="Unable to fetch cohort data" />;
+  if (isError || isAggsQueryError) {
+    return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
   if (isLoading) {
@@ -282,32 +328,32 @@ export const CohortPanel = ({
         <div className="flex flex-col">
           <CohortManager index={index} />
 
-          <div className="flex justify-between mb-1 ml-2">
+          <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
               buttons={buttons ?? []}
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}
-              fields={fields}
+              fields={table?.fields ?? []}
               filter={cohortFilters}
             />
 
             <CountsValue
-              label={guppyConfig.nodeCountTitle}
+              label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
               counts={counts}
               isSuccess={isCountSuccess}
             />
           </div>
           <Charts
-            index={index}
             charts={summaryCharts}
             data={data ?? EmptyData}
             counts={counts}
             isSuccess={isSuccess}
+            numCols={numCols}
           />
           {table?.enabled ? (
-            <div className="flex flex-col">
+            <div className="mt-2 flex flex-col">
               <div className="grid">
                 <ExplorerTable index={index} tableConfig={table} />
               </div>

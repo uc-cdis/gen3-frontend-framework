@@ -1,4 +1,13 @@
 import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
+import {
+  MRT_Cell,
+  MRT_Column,
+  MRT_Row,
+  MRT_TableInstance,
+  MRT_RowData,
+} from 'mantine-react-table';
+import { JSONObject } from '@gen3/core';
+import { ReactNode, RefObject } from 'react';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -44,4 +53,17 @@ export interface SummaryTable {
 export interface ExplorerTableProps {
   index: string;
   tableConfig: SummaryTable;
+}
+
+/**
+ * Represents the props required for a cell renderer function.
+ */
+export interface CellRendererFunctionProps<T extends MRT_RowData = JSONObject> {
+  cell: MRT_Cell<T>;
+  renderedCellValue: ReactNode;
+  column: MRT_Column<T>;
+  row: MRT_Row<T>;
+  rowRef?: RefObject<HTMLTableRowElement> | undefined;
+  table: MRT_TableInstance<T>;
+  params?: Record<string, unknown>;
 }

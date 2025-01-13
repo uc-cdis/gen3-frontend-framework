@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { FromToRangeValues } from './types';
+import { FacetCommonHooks, FromToRangeValues } from './types';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
@@ -20,7 +20,6 @@ import {
 
 import {
   FacetCardProps,
-  FacetHooks,
   GetRangeFacetDataFunction,
   GetTotalCountsFunction,
   UpdateFacetFilterHook,
@@ -48,13 +47,9 @@ const createBucket = (
   ],
 });
 
-
-
-
-export interface RangeFacetHooks extends FacetHooks {
+export interface RangeFacetHooks extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
 }
 
 export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
@@ -62,9 +57,9 @@ export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
   maximum?: number;
 }
 
-const RangeFacet= ({
+const RangeFacet = ({
   field,
-  dataHooks,
+  hooks,
   valueLabel,
   description,
   facetName,
@@ -82,8 +77,8 @@ const RangeFacet= ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-} : RangeFacetCardProps ) => {
-  const { data, rangeFilters, isSuccess } = dataHooks.useGetFacetData(field);
+}: RangeFacetCardProps) => {
+  const { data, rangeFilters, isSuccess } = hooks.useGetFacetData(field);
   const [minMaxValue, setMinMaxValue] = React.useState<
     FromToRangeValues<number>
   >({
@@ -91,7 +86,7 @@ const RangeFacet= ({
     to: maximum,
   });
 
-  const clearRangeFilterFromCohort = dataHooks.useClearFilter();
+  const clearRangeFilterFromCohort = hooks.useClearFilter();
   const clearFilters = useCallback(() => {
     setMinMaxValue({
       from: minimum,
@@ -100,7 +95,7 @@ const RangeFacet= ({
     clearRangeFilterFromCohort(field);
   }, [clearRangeFilterFromCohort, field, maximum, minimum]);
 
-  const updateRangeFilter = dataHooks.useUpdateFacetFilters();
+  const updateRangeFilter = hooks.useUpdateFacetFilters();
   const updateFilters = useCallback(
     (from: number, to: number) => {
       updateRangeFilter(field, createBucket(field, from, to));
@@ -125,7 +120,7 @@ const RangeFacet= ({
             label={description}
             position="bottom-start"
             multiline
-            width={220}
+            w={220}
             withArrow
             disabled={!description}
           >
@@ -164,9 +159,9 @@ const RangeFacet= ({
                 placeholder="min"
                 size="sm"
                 value={rangeFilters ? rangeFilters.from : minMaxValue.from}
-                onChange={(value : number | '') => {
+                onChange={(value: number | string) => {
                   updateFilters(
-                    value === '' ? minimum : value,
+                    value === '' ? minimum : (value as any),
                     minMaxValue.to ?? DEFAULT_MAXIMUM,
                   );
                 }}
@@ -177,7 +172,6 @@ const RangeFacet= ({
               <NumberInput
                 label="Max"
                 placeholder="max"
-                type="number"
                 size="sm"
                 value={rangeFilters ? rangeFilters.to : minMaxValue.to}
                 onChange={(value) => {
@@ -188,7 +182,9 @@ const RangeFacet= ({
                 }}
               />
               <div className="bg-gray mt-4 border-1">
-                {isSuccess && data && Object.values(data).length > 0 ?  Object.values(data)[0] : '...'}
+                {isSuccess && data && Object.values(data).length > 0
+                  ? Object.values(data)[0]
+                  : '...'}
               </div>
             </div>
 

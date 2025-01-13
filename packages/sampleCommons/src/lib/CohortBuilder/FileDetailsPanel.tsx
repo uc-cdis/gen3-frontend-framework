@@ -88,7 +88,7 @@ export const FileDetailsPanel = ({
   });
 
   // handle misconfiguration
-  if (!idField || idField === null) {
+  if (!idField) {
     return (
       <ErrorCard message={'idField not configure in Tables Details Config'} />
     );
@@ -105,7 +105,7 @@ export const FileDetailsPanel = ({
   const rows = Object.entries(queryData).map(([field, value]) => (
     <tr key={field}>
       <td>
-        <Text weight="bold">{field}</Text>
+        <Text fw={700}>{field}</Text>
       </td>
       <td>
         {/*
@@ -130,8 +130,8 @@ export const FileDetailsPanel = ({
   return (
     <Stack>
       <LoadingOverlay visible={isLoading} />
-      <Text color="primary.4">Results for {id}</Text>
-      <Table withBorder withColumnBorders>
+      <Text c="primary.4">Results for {id}</Text>
+      <Table withColumnBorders>
         <thead>
           <tr>
             <th>Field</th>
@@ -140,7 +140,7 @@ export const FileDetailsPanel = ({
         </thead>
         <tbody>{rows}</tbody>
       </Table>
-      <Group position="right">
+      <Group justify="flex-end">
         <CopyButton value={JSON.stringify(queryData)} timeout={2000}>
           {({ copied, copy }) => (
             <Tooltip

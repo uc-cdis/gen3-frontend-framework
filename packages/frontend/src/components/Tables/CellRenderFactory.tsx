@@ -1,9 +1,10 @@
 import { MRT_Cell } from 'mantine-react-table';
 import React, { ReactElement } from 'react';
 import { Text } from '@mantine/core';
+import { JSONObject } from '@gen3/core';
 
 interface CellRenderFunctionProps {
-  cell: MRT_Cell;
+  cell: MRT_Cell<JSONObject>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

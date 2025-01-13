@@ -1,5 +1,5 @@
 export const TooltipStyle = {
   tooltip:
-    'bg-base-darker text-base-contrast-min text-xl border-1 border-base-darkest',
-  arrow: 'bg-base-darker',
+    'bg-base-darker text-base-contrast-darker text-sm border-1 border-base-darker',
+  arrow: 'bg-base-darker ',
 };

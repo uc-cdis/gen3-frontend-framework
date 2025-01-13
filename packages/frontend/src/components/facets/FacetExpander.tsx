@@ -11,7 +11,7 @@ p-1
 font-bold
 cursor-pointer
 text-xs
-font-content-noto
+font-content
 `;
 
 interface FacetExpanderProps {
@@ -32,7 +32,11 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   onShowChanged,
 }: FacetExpanderProps) => {
   return (
-    <div className="mt-3 flex flex-row justify-end border-t-2 p-1.5">
+    <div
+      className={`mt-3 flex flex-row justify-end ${
+        remainingValues > 0 && 'border-t-2'
+      } p-1.5`}
+    >
       {remainingValues > 0 && !isGroupExpanded ? (
         <button
           onClick={() => onShowChanged(!isGroupExpanded)}
@@ -42,7 +46,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <MoreIcon
               className="text-accent"
               key="show-more"
-              size="1.5em"
+              size="1rem"
               aria-hidden="true"
             />
             <ExpanderLabel>{remainingValues} more</ExpanderLabel>
@@ -57,7 +61,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <LessIcon
               className="text-accent"
               key="show-less"
-              size="1.5em"
+              size="1rem"
               onClick={() => onShowChanged(!isGroupExpanded)}
               aria-hidden="true"
             />

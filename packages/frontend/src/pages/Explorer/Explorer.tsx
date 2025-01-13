@@ -3,13 +3,6 @@ import { NavPageLayout } from '../../features/Navigation';
 import { CohortBuilder } from '../../features/CohortBuilder';
 import { ExplorerPageProps } from './types';
 import { Center } from '@mantine/core';
-import {
-  registerExplorerDefaultCellRenderers,
-  registerCohortBuilderDefaultPreviewRenderers,
-} from '../../features/CohortBuilder';
-
-registerExplorerDefaultCellRenderers();
-registerCohortBuilderDefaultPreviewRenderers();
 
 const ExplorerPage = ({
   headerProps,
@@ -25,7 +18,14 @@ const ExplorerPage = ({
   }
 
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Explorer Page',
+        content: 'Explorer Page',
+        key: 'gen3-explorer-page',
+      }}
+    >
       <CohortBuilder explorerConfig={explorerConfig} />
     </NavPageLayout>
   );

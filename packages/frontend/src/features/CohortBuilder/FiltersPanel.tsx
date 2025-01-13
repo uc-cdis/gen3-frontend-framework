@@ -1,10 +1,10 @@
 import React from 'react';
 import { FacetDefinition, FacetType } from '@gen3/core';
 import { createFacetCard } from '../../components/facets/createFacetCard';
-import { FacetRequiredHooks } from '../../components/facets/types';
+import { FacetDataHooks } from '../../components/facets/types';
 
 interface FiltersPanelProps {
-  dataFunctions: Record<FacetType, FacetRequiredHooks>;
+  dataFunctions: Record<FacetType, FacetDataHooks>;
   fields: ReadonlyArray<FacetDefinition>;
   valueLabel: string;
   collapse: boolean;

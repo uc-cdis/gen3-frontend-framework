@@ -16,7 +16,6 @@ const DiscoveryPage = ({
   footerProps,
   discoveryConfig,
 }: DiscoveryPageProps): JSX.Element => {
-
   if (discoveryConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
@@ -26,7 +25,14 @@ const DiscoveryPage = ({
   }
 
   return (
-    <NavPageLayout {...{ headerProps, footerProps }}>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerData={{
+        title: 'Gen3 Discovery Page',
+        content: 'Discovery Data',
+        key: 'gen3-discovery-page',
+      }}
+    >
       <Discovery discoveryConfig={discoveryConfig} />
     </NavPageLayout>
   );

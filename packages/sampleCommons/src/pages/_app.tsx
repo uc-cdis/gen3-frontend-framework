@@ -1,24 +1,46 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+
+import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
+
+import { initGrafanaFaro } from '../lib/Grafana/grafana';
+
 import {
   Gen3Provider,
   TenStringArray,
   type ModalsConfig,
-  ContentSource,
   RegisteredIcons,
   Fonts,
   SessionConfiguration,
+  // registerCohortDiscoveryApp,
+  registerCohortDiversityApp,
+  registerCohortBuilderDefaultPreviewRenderers,
+  registerMetadataSchemaApp,
 } from '@gen3/frontend';
+
+import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
+import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
+
 import '../styles/globals.css';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import 'graphiql/graphiql.css';
-import '@graphiql/react/dist/style.css';
-import { GEN3_COMMONS_NAME, setDRSHostnames } from '@gen3/core';
+import '@fontsource/montserrat';
+import '@fontsource/source-sans-pro';
+import '@fontsource/poppins';
+
+import { setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
+import { loadContent } from '../lib/content/loadContent';
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const ReactDOM = require('react-dom');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const axe = require('@axe-core/react');
+  axe(React, ReactDOM, 1000);
+}
 
 interface Gen3AppProps {
   colors: Record<string, TenStringArray>;
-  icons: RegisteredIcons;
+  icons: Array<RegisteredIcons>;
   themeFonts: Fonts;
   modalsConfig: ModalsConfig;
   sessionConfig: SessionConfiguration;
@@ -37,16 +59,37 @@ const Gen3App = ({
     setDRSHostnames(drsHostnames);
   }, []);
 
+  const faroRef = useRef<null | Faro>(null);
+
+  useEffect(() => {
+    // one time init
+    // if (
+    //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
+    //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
+    //   !faroRef.current
+    // ) {
+    if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    //  registerCohortDiscoveryApp();
+    registerCohortDiversityApp();
+    registerMetadataSchemaApp();
+    registerCohortBuilderDefaultPreviewRenderers();
+    registerCohortTableCustomCellRenderers();
+    registerCustomExplorerDetailsPanels();
+    // }
+  }, []);
+
   return (
-    <Gen3Provider
-      colors={colors}
-      icons={icons}
-      fonts={themeFonts}
-      sessionConfig={sessionConfig}
-      modalsConfig={modalsConfig}
-    >
-      <Component {...pageProps} />
-    </Gen3Provider>
+    <FaroErrorBoundary>
+      <Gen3Provider
+        colors={colors}
+        icons={icons}
+        fonts={themeFonts}
+        sessionConfig={sessionConfig}
+        modalsConfig={modalsConfig}
+      >
+        <Component {...pageProps} />
+      </Gen3Provider>
+    </FaroErrorBoundary>
   );
 };
 
@@ -57,36 +100,10 @@ Gen3App.getInitialProps = async (
   const ctx = await App.getInitialProps(context);
 
   try {
-    const modals = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/modals.json`,
-    );
-    const session = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/session.json`,
-    );
-
-    const fonts = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeFonts.json`,
-    );
-
-    const themeColors = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/themeColors.json`,
-    );
-
-    const colors = Object.fromEntries(
-      Object.entries(themeColors).map(([key, values]) => [
-        key,
-        Object.values(values) as TenStringArray,
-      ]),
-    );
-
-    const icons = await ContentSource.get(`config/icons/gen3.json`);
+    const res = await loadContent();
     return {
       ...ctx,
-      modalsConfig: modals,
-      sessionConfig: session,
-      themeFonts: fonts as Fonts,
-      colors: colors,
-      icons: icons as RegisteredIcons,
+      ...res,
     };
   } catch (error: any) {
     console.error('Provider Wrapper error loading config', error.toString());
@@ -100,15 +117,17 @@ Gen3App.getInitialProps = async (
       content: ['Poppins', 'sans-serif'],
       fontFamily: 'Poppins',
     },
-    icons: {
-      prefix: 'gen3',
-      lastModified: 0,
-      icons: {},
-      width: 0,
-      height: 0,
-    },
+    icons: [
+      {
+        prefix: 'gen3',
+        lastModified: 0,
+        icons: {},
+        width: 0,
+        height: 0,
+      },
+    ],
     modalsConfig: {},
     sessionConfig: {},
   };
 };
-export default Gen3App;
+export default withFaroProfiler(Gen3App);

@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
+import { getThemeColor } from '@mantine/core';
 
 const utility = {
   link: '#155276',
@@ -72,6 +73,11 @@ const main = () => {
         short: 'b',
         default: '#858585',
       },
+      navigation: {
+        type: 'string',
+        short: 'b',
+        default: '#eaeaea',
+      },
       out: {
         type: 'string',
         short: 'o',
@@ -81,12 +87,12 @@ const main = () => {
   });
 
   if (!themeFile) {
-    console.log("No themefile found. Please provide a themefile with '-t'.");
+    console.log("No theme file found. Please provide a theme file with '-t'.");
     return;
   }
 
   if (themeFile && !existsSync(themeFile)) {
-    console.log("No themefile found. Please provide a themefile with '-t'.");
+    console.log("No theme file found. Please provide a theme file with '-t'.");
     return;
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
@@ -118,7 +124,7 @@ const main = () => {
     chart: chartPallet,
     'chart-contrast': create10ColorAccessibleContrast(chartPallet),
     table: tablePallet,
-    'tablePallet-contrast': create10ColorAccessibleContrast(tablePallet),
+    'table-contrast': create10ColorAccessibleContrast(tablePallet),
   };
 
   writeFileSync(

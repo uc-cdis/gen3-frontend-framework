@@ -50,7 +50,7 @@ const DownloadManifestButton = ({
   return (
     <DataLibraryActionButton
       label="Download Manifest"
-      icon={DownloadIcon}
+      icon={<DownloadIcon />}
       toolTip="Download Manifest"
       onClick={() => {
         console.log('Download Manifest');

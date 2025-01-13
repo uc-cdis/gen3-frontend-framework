@@ -26,9 +26,9 @@ const slice = createSlice({
   initialState,
   reducers: {
     addGen3AppMetadata: (state, action: PayloadAction<Gen3AppMetadata>) => {
-      const { id, requiredEntityTypes } = action.payload;
+      const { name, requiredEntityTypes } = action.payload;
 
-      state.gen3Apps[id] = {
+      state.gen3Apps[name] = {
         ...action.payload,
         // need to turn a ReadonlyArray into a mutable array for immer's WritableDraft
         requiredEntityTypes: [...requiredEntityTypes],
@@ -48,10 +48,10 @@ export const selectAllGen3AppMetadata = (
   state: CoreState,
 ): ReadonlyArray<Gen3AppMetadata> => Object.values(state.gen3Apps.gen3Apps);
 
-export const selectGen3AppMetadataById = (
+export const selectGen3AppMetadataByName = (
   state: CoreState,
-  appId: string,
-): Gen3AppMetadata => state.gen3Apps.gen3Apps[appId];
+  appName: string,
+): Gen3AppMetadata => state.gen3Apps.gen3Apps[appName];
 
-export const selectGen3AppById = (appId: string): React.ReactNode =>
-  lookupGen3App(appId); // TODO: memoize this selector
+export const selectGen3AppByName = (appName: string): React.ReactNode =>
+  lookupGen3App(appName); // TODO: memoize this selector

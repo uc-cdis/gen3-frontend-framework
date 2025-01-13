@@ -2,33 +2,36 @@ import React, { ComponentType, useEffect } from 'react';
 import { coreStore } from '../../store';
 import { v5 as uuidv5 } from 'uuid';
 import { addGen3AppMetadata, EntityType } from './gen3AppsSlice';
-import { configureStore, AnyAction } from '@reduxjs/toolkit';
-import { Store, Action } from 'redux';
 import {
+  configureStore,
+  Dispatch,
+  Middleware,
+  UnknownAction,
+} from '@reduxjs/toolkit';
+import { Action, Store } from 'redux';
+import {
+  createDispatchHook,
+  createSelectorHook,
+  createStoreHook,
   Provider,
   ReactReduxContextValue,
   TypedUseSelectorHook,
-  createSelectorHook,
-  createDispatchHook,
-  createStoreHook,
 } from 'react-redux';
 import {
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from 'redux-persist';
 import { registerGen3App } from './gen3AppRegistry';
 import { DataStatus } from '../../dataAccess';
 import { CookiesProvider } from 'react-cookie';
+import { GEN3_APP_NAMESPACE } from './constants';
 
-// using a random uuid v4 as the namespace
-const GEN3_APP_NAMESPACE = '7bfaa818-c69c-457e-8d87-413cf60c25f0';
-
-export interface CreateGen3AppOptions {
-  readonly App: ComponentType;
+export interface CreateGen3AppOptions<T> {
+  readonly App: ComponentType<T>;
   readonly name: string;
   readonly version: string;
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
@@ -40,14 +43,16 @@ export const getGen3AppId = (name: string, version: string): string => {
 };
 
 /**
- *  TODO: can't tell what anything in this directory is doing.
+ *  Creates a Gen3App that is dynamically loaded
  */
-export const createGen3App = ({
+export const createGen3App = <
+  T extends Record<any, any> = Record<string, any>,
+>({
   App,
   name,
   version,
   requiredEntityTypes,
-}: CreateGen3AppOptions): React.FC => {
+}: CreateGen3AppOptions<T>): React.FC<T> => {
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
@@ -60,26 +65,20 @@ export const createGen3App = ({
   // need to register its name, category, path, data requirements
   // this will be used to build page3
   // click app link
-  const store = configureStore({
-    // TODO allow user to pass in a reducer in CreateGen3AppOptions?
-    reducer: (state) => state,
-    devTools: {
-      name: `${nameVersion}::${id}`,
-    },
-  });
+  // const store = configureStore({
+  //   // TODO allow user to pass in a reducer in CreateGen3AppOptions?
+  //   reducer: (state) => state,
+  //   devTools: {
+  //     name: `${nameVersion}::${id}`,
+  //   },
+  // });
 
-  const Gen3AppWrapper: React.FC = () => {
+  const Gen3AppWrapper: React.FC<T> = (props: T) => {
     useEffect(() => {
-      document.title = `GEN3 - ${name}`;
+      document.title = `${name}`;
     });
 
-    return (
-      <Provider store={store}>
-        <CookiesProvider>
-          <App />
-        </CookiesProvider>
-      </Provider>
-    );
+    return <App {...props} />;
   };
 
   // add the app to the store
@@ -91,7 +90,7 @@ export const createGen3App = ({
       requiredEntityTypes,
     }),
   );
-  registerGen3App(id, Gen3AppWrapper as unknown as React.ReactNode);
+  registerGen3App(name, Gen3AppWrapper as unknown as React.ReactNode);
 
   return Gen3AppWrapper;
 };
@@ -119,6 +118,7 @@ export interface CreateGEN3AppStore {
   readonly name: string;
   readonly version: string;
   readonly reducers: (...args: any) => any;
+  middleware?: Middleware<unknown, any, Dispatch<UnknownAction>>;
 }
 
 // ----------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ export interface CreateGEN3AppStore {
 export const createAppStore = (
   options: CreateGEN3AppStore,
 ): Record<any, any> => {
-  const { name, version, reducers } = options;
+  const { name, version, reducers, middleware } = options;
   const nameVersion = `${name}::${version}`;
   const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 
@@ -138,16 +138,34 @@ export const createAppStore = (
       name: `${nameVersion}::${id}`,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
+      middleware
+        ? getDefaultMiddleware({
+            serializableCheck: {
+              ignoredActions: [
+                FLUSH,
+                REHYDRATE,
+                PAUSE,
+                PERSIST,
+                PURGE,
+                REGISTER,
+              ],
+            },
+          }).concat(middleware)
+        : getDefaultMiddleware({
+            serializableCheck: {
+              ignoredActions: [
+                FLUSH,
+                REHYDRATE,
+                PAUSE,
+                PERSIST,
+                PURGE,
+                REGISTER,
+              ],
+            },
+          }),
   });
   type AppState = ReturnType<typeof reducers>;
-  const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<AppState, AnyAction>,
-  );
+  const context = React.createContext<ReactReduxContextValue | null>(null);
 
   type AppDispatch = typeof store.dispatch;
   const useAppSelector: TypedUseSelectorHook<AppState> =
@@ -166,10 +184,11 @@ export const createAppStore = (
 };
 
 export interface CreateGen3AppWithOwnStoreOptions<
-  A extends Action = AnyAction,
+  T extends Record<any, any> = Record<string, any>,
+  A extends Action = UnknownAction,
   S = any,
 > {
-  readonly App: ComponentType;
+  readonly App: ComponentType<T>;
   readonly id: string; // unique id for this app
   readonly name: string; // name of the app
   readonly version: string; // version of the app, should be unique
@@ -179,10 +198,11 @@ export interface CreateGen3AppWithOwnStoreOptions<
 }
 
 export const createGen3AppWithOwnStore = <
-  A extends Action = AnyAction,
+  T extends Record<any, any> = Record<string, any>,
+  A extends Action = UnknownAction,
   S = any,
 >(
-  options: CreateGen3AppWithOwnStoreOptions<A, S>,
+  options: CreateGen3AppWithOwnStoreOptions<T, A, S>,
 ): React.ReactNode => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
@@ -196,7 +216,7 @@ export const createGen3AppWithOwnStore = <
   // this will be used to build page3
   // click app link
 
-  const Gen3AppWrapper = (): React.ReactNode => {
+  const Gen3AppWrapper: React.FC<T> = (props: T) => {
     useEffect(() => {
       document.title = `GEN3 - ${name}`;
     });
@@ -204,7 +224,7 @@ export const createGen3AppWithOwnStore = <
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          <App />
+          <App {...props} />
         </CookiesProvider>
       </Provider>
     );
@@ -219,6 +239,6 @@ export const createGen3AppWithOwnStore = <
       requiredEntityTypes,
     }),
   );
-  registerGen3App(id, Gen3AppWrapper as unknown as React.ReactNode);
+  registerGen3App(name, Gen3AppWrapper as unknown as React.ReactNode);
   return Gen3AppWrapper as unknown as React.ReactNode;
 };

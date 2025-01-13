@@ -1,34 +1,40 @@
-import useSWR, { SWRResponse, Fetcher } from 'swr';
+import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import { JSONPath } from 'jsonpath-plus';
 import {
+  convertFilterSetToGqlFilter,
   FilterSet,
   isFilterEmpty,
-  convertFilterSetToGqlFilter,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { CoreState } from '../../reducers';
 
 const statusEndpoint = '/_status';
 
-const processHistogramResponse = (
+export const processHistogramResponse = (
   data: Record<string, any>,
 ): AggregationsData => {
-  const pathData = JSONPath({
+  const valueData = JSONPath({
     json: data,
     path: '$..histogram',
-    resultType: 'all',
+    resultType: 'value',
   });
-  const results = pathData.reduce(
-    (acc: AggregationsData, element: Record<string, any>) => {
-      const key = element.pointer
+
+  const pointerData = JSONPath({
+    json: data,
+    path: '$..histogram',
+    resultType: 'pointer',
+  });
+
+  const results = pointerData.reduce(
+    (acc: AggregationsData, element: Record<string, any>, idx: number) => {
+      const key = element
         .slice(1)
         .replace(/\/histogram/g, '')
         .replace(/\//g, '.');
       return {
         ...acc,
-        [key]: element.value,
+        [key]: valueData[idx],
       };
     },
     {} as AggregationsData,
@@ -107,6 +113,7 @@ interface QueryForFileCountSummaryParams {
   type: string;
   field: string;
   filters: FilterSet;
+  accessibility?: Accessibility;
 }
 
 /**
@@ -259,8 +266,8 @@ const explorerApi = guppyApi.injectEndpoints({
         } $nestedAggFields: JSON) {
     _aggregation {
       ${type} ( ${
-          gqlFilter ?? 'filter: $filter, filterSelf: false,'
-        } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
+        gqlFilter ?? 'filter: $filter, filterSelf: false,'
+      } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
         ${nestedHistogramQueryStrForEachField(mainField, numericAggAsText)}
       }`;
 
@@ -322,14 +329,19 @@ const explorerApi = guppyApi.injectEndpoints({
       Record<string, any>,
       QueryForFileCountSummaryParams
     >({
-      query: ({ type, field, filters }: QueryForFileCountSummaryParams) => {
+      query: ({
+        type,
+        field,
+        filters,
+        accessibility = Accessibility.ALL,
+      }: QueryForFileCountSummaryParams) => {
         const gqlFilters = convertFilterSetToGqlFilter(filters);
-        const query = `query ($filter: JSON) {
+        const query = `query summary ($filter: JSON) {
         _aggregation {
-          ${type} (filter: $filter) {
+          ${type} (filter: $filter, accessibility: ${accessibility}) {
             ${field} {
               histogram {
-                sum
+                sum,
               }
             }
           }
@@ -441,6 +453,7 @@ export const {
   useGetAccessibleDataQuery,
   useGetAllFieldsForTypeQuery,
   useGetAggsQuery,
+  useLazyGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
@@ -448,14 +461,3 @@ export const {
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
 } = explorerApi;
-
-const EmptyAggData = {};
-
-export const selectAggDataForIndex = (
-  state: CoreState,
-  index: string,
-  field: string,
-) => {
-  const data = state.guppyApi.aggs[index]?.[field]?.histogram;
-  return data ?? EmptyAggData;
-};

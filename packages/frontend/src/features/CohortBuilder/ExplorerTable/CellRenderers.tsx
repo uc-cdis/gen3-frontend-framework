@@ -1,21 +1,21 @@
-import { MRT_Cell } from 'mantine-react-table';
+import { MRT_Cell, MRT_Column, MRT_Row } from 'mantine-react-table';
 import { isArray } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Badge } from '@mantine/core';
 import Link from 'next/link';
+import { CellRendererFunctionProps } from './types';
 
 const NullCell = (): ReactElement => <span>NULL</span>;
 
-interface CellRendererFunctionProps {
-  cell: MRT_Cell;
-}
-
 export type CellRendererFunction = (
-  props: CellRendererFunctionProps, ...args: any[]
-) => ReactElement;
+  props: CellRendererFunctionProps,
+  ...args: any[]
+) => ReactNode;
 
 // TODO need to type this
-export const RenderArrayCell: CellRendererFunction = ({ cell } : CellRendererFunctionProps) => {
+export const RenderArrayCell: CellRendererFunction = ({
+  cell,
+}: CellRendererFunctionProps) => {
   const value = cell.getValue();
   if (isArray(value)) {
     return (
@@ -36,7 +36,9 @@ export const RenderArrayCell: CellRendererFunction = ({ cell } : CellRendererFun
   return <span>value</span>;
 };
 
-export const RenderArrayCellNegativePositive = ({ cell } : CellRendererFunctionProps) => {
+export const RenderArrayCellNegativePositive = ({
+  cell,
+}: CellRendererFunctionProps) => {
   const value = cell.getValue();
   if (isArray(value)) {
     return (
@@ -57,8 +59,8 @@ export const RenderArrayCellNegativePositive = ({ cell } : CellRendererFunctionP
   return <span>value</span>;
 };
 
-const ValueCellRenderer = ( { cell} : CellRendererFunctionProps) => {
-  return (<span>{cell.getValue() as ReactElement}</span>);
+const ValueCellRenderer = ({ cell }: CellRendererFunctionProps) => {
+  return <span>{cell.getValue() as ReactElement}</span>;
 };
 
 export interface CellRendererFunctionCatalogEntry {
@@ -70,11 +72,15 @@ const ArrayCellFunctionCatalog = {
   default: RenderArrayCell,
 };
 
-const RenderLinkCell = ({ cell } : CellRendererFunctionProps, ...args:any[] ) => {
+const RenderLinkCell = (
+  { cell }: CellRendererFunctionProps,
+  ...args: any[]
+) => {
+  if (!cell.getValue()) return <span />;
   return (
     <Link href={`${args[0].baseURL}/${cell.getValue()}`}>
-      {cell.getValue()  as ReactElement } --
-      { args }
+      {cell.getValue() as ReactElement} --
+      {args}
     </Link>
   );
 };
@@ -119,14 +125,14 @@ export const TableCellRenderer = (
         'array',
         functionName,
       );
-      return (cell): ReactElement => func(cell);
+      return (cell): ReactNode => func(cell);
     }
     case 'link': {
       const func = CellRendererFactory.getInstance().getCellRenderer(
         'link',
         functionName,
       );
-      return (cell): ReactElement => func( cell  , ...params);
+      return (cell): ReactNode => func(cell, ...params);
     }
     default:
       return ValueCellRenderer;

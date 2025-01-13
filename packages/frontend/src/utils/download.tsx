@@ -29,7 +29,6 @@ const customKeys = ['expand', 'fields', 'facets'];
 const processParamObj = (key: string, value: any) =>
   includes(customKeys, key) ? [].concat(value).join() : value;
 
-
 /**
  * A notification box that is used to alert the user that their
  * selected file downloads are in progress
@@ -41,7 +40,7 @@ export const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
       <p>Download preparation in progress. Please wait...</p>
       <Button
         variant="white"
-        leftIcon={<CloseIcon aria-hidden="true" />}
+        leftSection={<CloseIcon aria-hidden="true" />}
         style={{ color: '#155276', cursor: 'pointer' }}
         onClick={onClick}
       >

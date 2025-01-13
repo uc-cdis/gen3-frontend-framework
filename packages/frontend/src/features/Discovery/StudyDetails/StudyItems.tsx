@@ -65,7 +65,7 @@ const jsonValueToElement = (value: JSONValue): ReactElement => {
 /**
  * Default style for discovery field.
  */
-const discoveryFieldStyle = 'flex w-full justify-between px-0.5 no-wrap';
+const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap';
 
 /**
  * Renders a block of text.
@@ -83,7 +83,13 @@ const blockTextField = (fieldValue: JSONValue): ReactElement => (
  */
 const label = (labelText?: string): ReactElement =>
   labelText ? (
-    <Text tt="uppercase" weight="500" className="p-0.75 whitespace-pre-wrap break-words">{labelText}</Text>
+    <Text
+      tt="uppercase"
+      fw="500"
+      className="p-0.75 whitespace-pre-wrap break-words"
+    >
+      {labelText}
+    </Text>
   ) : (
     <React.Fragment />
   );
@@ -94,8 +100,12 @@ const label = (labelText?: string): ReactElement =>
  * @param {string} fieldValue - The value to be displayed in the text field.
  * @returns {React.Element} - The rendered text field component.
  */
-const textField = (fieldValue: JSONValue): ReactElement => (
-  <span className="text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</span>
+const textField = (fieldValue: JSONValue, style = ''): ReactElement => (
+  <span
+    className={`text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words ${style}`}
+  >
+    {toString(fieldValue)}
+  </span>
 );
 
 /**
@@ -128,7 +138,9 @@ const linkFieldOnly = (linkValue: string, _?: string) => (
  */
 const linkField = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    <Text color="utility.0" className="underline">{linkValue}</Text>
+    <Text color="utility.0" className="underline">
+      {linkValue}
+    </Text>
   </Link>
 );
 
@@ -136,7 +148,11 @@ const subHeading = (text: string) => (
   <h3 className="discovery-subheading">{text}</h3>
 );
 
-const labeledSingleLinkField = (linkValue: JSONValue, labelText?: string) =>
+const labeledSingleLinkField = (
+  linkValue: JSONValue,
+  labelText?: string,
+  parans?: Record<string, any>,
+) =>
   typeof linkValue !== 'string' ? (
     <React.Fragment />
   ) : (
@@ -200,12 +216,12 @@ const unlabeledMultipleLinkField = (
 const labeledSingleTextField: FieldRendererFunction = (
   fieldValue: JSONValue,
   fieldLabel?: string,
+  params?: Record<string, any>,
 ) => {
   let stringFieldValue = '';
   if (typeof fieldValue === 'number') {
     stringFieldValue = fieldValue.toLocaleString();
-  } else
-      if (typeof fieldValue !== 'string') return <React.Fragment />;
+  } else if (typeof fieldValue !== 'string') return <React.Fragment />;
 
   stringFieldValue = fieldValue as string;
   return (
@@ -213,7 +229,52 @@ const labeledSingleTextField: FieldRendererFunction = (
       className={discoveryFieldStyle}
       key={`study-details-${fieldLabel}-${stringFieldValue}`}
     >
-      {label(fieldLabel)} {textField(stringFieldValue)}
+      {label(fieldLabel)} {textField(stringFieldValue, params?.style ?? '')}
+    </div>
+  );
+};
+
+const labeledYearOfBirthRestricted: FieldRendererFunction = (
+  fieldValue: JSONValue,
+  fieldLabel?: string,
+) => {
+  let stringFieldValue = '';
+  if (typeof fieldValue === 'number') {
+    stringFieldValue = fieldValue.toLocaleString();
+  } else if (typeof fieldValue !== 'string') return <React.Fragment />;
+
+  stringFieldValue = fieldValue as string;
+
+  let displayContent;
+  if (
+    typeof stringFieldValue === 'string' &&
+    !isNaN(Number(stringFieldValue)) &&
+    Number(stringFieldValue) < 1935
+  ) {
+    displayContent = '1935';
+  } else if (isArray(stringFieldValue)) {
+    displayContent = stringFieldValue
+      .map((item) => {
+        if (
+          typeof item === 'string' &&
+          !isNaN(Number(item)) &&
+          Number(item) < 1935
+        ) {
+          return '1935';
+        }
+        return item;
+      })
+      .join(', ');
+  } else {
+    displayContent = stringFieldValue;
+  }
+
+  return (
+    <div
+      className={discoveryFieldStyle}
+      key={`study-details-${fieldLabel}-${displayContent}`}
+    >
+      {label(fieldLabel)} {textField(displayContent)}
     </div>
   );
 };
@@ -231,14 +292,21 @@ const labeledParagraph: FieldRendererFunction = (
       key={`study-details-${fieldLabel}-${stringFieldValue}`}
     >
       {fieldLabel ? (
-      <Text tt="uppercase" weight="500" className="p-0.75 mr-4 whitespace-pre-wrap break-words">{fieldLabel}</Text>
+        <Text
+          tt="uppercase"
+          fw="500"
+          className="p-0.75 mr-4 whitespace-pre-wrap break-words"
+        >
+          {fieldLabel}
+        </Text>
       ) : (
-      <React.Fragment />
+        <React.Fragment />
       )}
 
-      <div >
-      <Text
-      className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">{toString(fieldValue)}</Text>
+      <div>
+        <Text className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">
+          {toString(fieldValue)}
+        </Text>
       </div>
     </div>
   );
@@ -336,8 +404,7 @@ const renderDetailTags: FieldRendererFunction = (
 export const createFieldRendererElement = (
   field: StudyDetailsField | StudyTabTagField,
   resource: JSONValue,
-) : ReactElement | null => {
-
+): ReactElement | null => {
   // determine the value of the field
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
@@ -347,13 +414,13 @@ export const createFieldRendererElement = (
     if (field.valueIfNotAvailable)
       resourceFieldValue = field.valueIfNotAvailable as JSONValue;
   } else
-    resourceFieldValue = resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
+    resourceFieldValue =
+      resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
 
   const label =
     field.includeLabel === undefined || field?.includeLabel
       ? field.name
       : undefined;
-
 
   const studyFieldRenderer = DiscoveryDetailsRenderer(
     field.contentType,
@@ -377,7 +444,10 @@ export const createFieldRendererElement = (
         resourceFieldValue =
           formatResourceValuesWhenNestedArray(resourceFieldValue);
         return studyFieldRenderer(resourceFieldValue, label, field.params);
-      } else if (resourceFieldValue !== undefined || resourceFieldValue !== null)
+      } else if (
+        resourceFieldValue !== undefined ||
+        resourceFieldValue !== null
+      )
         return studyFieldRenderer(resourceFieldValue, label, field.params);
   }
 
@@ -389,7 +459,10 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   FieldRendererFunctionMap
 > = {
   text: { default: labeledSingleTextField },
-  string: { default: labeledSingleTextField },
+  string: {
+    default: labeledSingleTextField,
+    yearOfBirthRestricted: labeledYearOfBirthRestricted,
+  },
   link: { default: labeledSingleLinkField },
   textList: { default: labeledMultipleTextField },
   linkList: {
@@ -400,7 +473,7 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
   accessDescriptor: { default: accessDescriptor },
   tags: { default: renderDetailTags },
   number: { default: labeledNumberField },
-  paragraph: { default: labeledParagraph },
+  paragraphs: { default: labeledParagraph },
 };
 
 StudyFieldRendererFactory.registerFieldRendererCatalog(

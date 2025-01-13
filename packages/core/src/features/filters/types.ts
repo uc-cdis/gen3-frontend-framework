@@ -105,6 +105,23 @@ export interface FilterSet {
   readonly mode: 'and' | 'or';
 }
 
+export const isFilterSet = (input: any): input is FilterSet => {
+  if (typeof input !== 'object' || input === null) {
+    return false;
+  }
+  const { root, mode } = input;
+
+  if (typeof root !== 'object' || root === null) {
+    return false;
+  }
+
+  if (!['and', 'or'].includes(mode)) {
+    return false;
+  }
+
+  return true;
+};
+
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
   handleNotEquals: (op: NotEquals) => T;
@@ -152,7 +169,8 @@ export type FacetType =
   | 'days'
   | 'percent'
   | 'datetime'
-  | 'toggle';
+  | 'toggle' // Note these support alternative UIs
+  | 'multiselect';
 
 export interface AllowableRange {
   readonly minimum?: number;

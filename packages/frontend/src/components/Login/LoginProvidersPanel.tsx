@@ -6,6 +6,7 @@ import {
   useGetLoginProvidersQuery,
 } from '@gen3/core';
 import { LoginSelectedProps } from './types';
+import { ErrorCard } from '../MessageCards';
 
 interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
@@ -15,10 +16,9 @@ const LoginProviderMultipleItems = ({
   provider,
   handleLoginSelected,
 }: LoginProviderItemProps) => {
-
   const [value, setValue] = useState<string | null>(null);
   return (
-    <div className="flex flex-col w-full" key={`${provider.name}-login-item`}>
+    <div className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold" key={`${provider.name}-login-item`}>
       <Select
         data={provider.urls.map((item: NameUrl) => ({
           value: item.url,
@@ -26,7 +26,7 @@ const LoginProviderMultipleItems = ({
         }))}
         classNames={{
           root: 'w-full',
-          item: 'font-medium hover:text-accent-light hover:font-bold',
+          // item: 'font-medium hover:text-accent-light hover:font-bold',
         }}
         onChange={setValue}
         value={value}
@@ -63,7 +63,12 @@ const LoginProviderSingleItem = ({
 };
 
 const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
-  const { data, isSuccess } = useGetLoginProvidersQuery();
+  const { data, isSuccess, isError } = useGetLoginProvidersQuery();
+
+  if (isError) {
+    return <ErrorCard message={'request to authentication service failed'} />;
+  }
+
   if (!isSuccess) {
     return <LoadingOverlay visible={!isSuccess} />;
   }

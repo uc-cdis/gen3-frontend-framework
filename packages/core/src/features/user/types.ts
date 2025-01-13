@@ -9,7 +9,7 @@ export interface ExternalProvider {
   base_url: string;
   idp: string;
   name: string;
-  refresh_token_expiration: string;
+  refresh_token_expiration: string | null;
   urls: NamedURL[];
 }
 
@@ -47,4 +47,21 @@ export interface UserProfile {
 
 export type Gen3User = Partial<UserProfile>;
 
-export type LoginStatus = 'authenticated' | 'unauthenticated' | 'pending';
+export type LoginStatus =
+  | 'authenticated'
+  | 'unauthenticated'
+  | 'pending'
+  | 'not present';
+
+export type JWTSessionStatus =
+  | 'not present'
+  | 'issued'
+  | 'expired'
+  | 'invalid'
+  | 'error';
+
+export interface ExistingSession {
+  expires: number;
+  issued: number;
+  status: JWTSessionStatus;
+}

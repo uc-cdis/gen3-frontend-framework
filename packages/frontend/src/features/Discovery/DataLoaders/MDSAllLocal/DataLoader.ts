@@ -1,40 +1,39 @@
 import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
+  AggregationsData,
   JSONObject,
   MetadataPaginationParams,
-  useGetMDSQuery,
-  useGetAggMDSQuery,
-  useCoreSelector,
   selectAuthzMappingData,
+  useCoreSelector,
+  useGetAggMDSQuery,
+  useGetMDSQuery,
 } from '@gen3/core';
 import { useMiniSearch } from 'react-minisearch';
 import MiniSearch, { Suggestion } from 'minisearch';
 import {
   AdvancedSearchFilters,
   DiscoverDataHookResponse,
-  DiscoveryConfig,
   DiscoveryDataLoaderProps,
   KeyValueSearchFilter,
   SearchTerms,
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
-import { processAllSummaries } from './utils';
+import {
+  processAllSummaries,
+  processAuthorizations,
+  processChartData,
+} from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { processAuthorizations } from './utils';
-import { useDiscoveryContext } from '../../DiscoveryProvider';
+import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
+import { getManualSortingAndPagination } from '../../utils';
+import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
-
-interface QueryType {
-  term: string;
-  fields: string[];
-  combineWith: 'AND' | 'OR';
-}
 
 const buildMiniSearchKeywordQuery = (terms: SearchTerms) => {
   const keywords = terms.keyword.keywords?.filter((x) => x.length > 0) ?? [];
@@ -110,31 +109,16 @@ const processAdvancedSearchTerms = (
     return {
       key,
       keyDisplayName,
-      valueDisplayNames: values.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-      }, {} as Record<string, string>),
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   });
 };
-
-interface GetDataProps {
-  guidType: string;
-  maxStudies: number;
-  studyField: string;
-  discoveryConfig?: DiscoveryConfig;
-}
-
-interface GetDataResponse {
-  mdsData: JSONObject[];
-  isUninitialized: boolean;
-  isFetching: boolean;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-}
-
-type MetadataDataHook = (props: Partial<GetDataProps>) => GetDataResponse;
 
 const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
@@ -157,10 +141,11 @@ const useGetMDSData = ({
     studyField: studyField,
     offset: 0,
     pageSize: maxStudies,
-
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
 
   useEffect(() => {
     if (data && isSuccess) {
@@ -201,7 +186,7 @@ const useGetAggMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
-  discoveryConfig
+  discoveryConfig,
 }: Partial<GetDataProps>): GetDataResponse => {
   const [mdsData, setMDSData] = useState<Array<JSONObject>>([]);
   const [isError, setIsError] = useState(false);
@@ -220,7 +205,9 @@ const useGetAggMDSData = ({
     pageSize: maxStudies,
   });
 
-  const authMapping = useCoreSelector((state) => selectAuthzMappingData(state));
+  const authMapping = useCoreSelector((state: CoreState) =>
+    selectAuthzMappingData(state),
+  );
   useEffect(() => {
     if (data && isSuccess) {
       if (discoveryConfig?.features?.authorization.enabled) {
@@ -261,7 +248,7 @@ const useSearchMetadata = ({
   isSuccess,
 }: SearchMetadataProps) => {
   const searchOverFields =
-    discoveryConfig?.features.search?.searchBar?.searchableTextFields || [];
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
 
   const [searchedData, setSearchedData] = useState<Array<JSONObject>>([]);
@@ -377,16 +364,6 @@ const usePagination = ({ data, pagination }: PaginationHookProps) => {
     updatePaginatedData();
   }, [data, pagination.offset, pagination.pageSize]);
 
-  useEffect(() => {
-    const updatePaginatedData = () => {
-      setPaginatedData(
-        data.slice(pagination.offset, pagination.offset + pagination.pageSize),
-      );
-    };
-
-    updatePaginatedData();
-  }, [data, pagination.offset, pagination.pageSize]);
-
   return {
     paginatedData,
   };
@@ -455,6 +432,12 @@ export const useLoadAllData = ({
   dataHook: MetadataDataHook;
 }): DiscoverDataHookResponse => {
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  const dataGuidType = discoveryConfig?.guidType ?? guidType;
+  const dataStudyField = discoveryConfig?.studyField ?? studyField;
+  const [summaryStatistics, setSummaryStatistics] = useState<SummaryStatistics>(
+    [],
+  );
+  const [chartData, setChartData] = useState<AggregationsData>({});
 
   const {
     mdsData,
@@ -464,11 +447,14 @@ export const useLoadAllData = ({
     isSuccess,
     isError,
   } = dataHook({
-    studyField,
-    guidType,
+    studyField: dataStudyField,
+    guidType: dataGuidType,
     maxStudies,
-    discoveryConfig
+    discoveryConfig,
   });
+
+  const manualSortingAndPagination =
+    getManualSortingAndPagination(discoveryConfig);
 
   const { advancedSearchFilterValues } = useGetAdvancedSearchFilterValues({
     data: mdsData,
@@ -489,23 +475,40 @@ export const useLoadAllData = ({
     isSuccess,
   });
 
+  // TODO: determine if this is even needed
   const { paginatedData } = usePagination({
     data: searchedData,
     pagination,
   });
 
-  const { summaryStatistics } = useGetSummaryStatistics({
-    data: searchedData,
-    aggregationConfig: discoveryConfig?.aggregations,
-  });
+  useEffect(() => {
+    setSummaryStatistics(
+      processAllSummaries(searchedData, discoveryConfig?.aggregations),
+    );
+    if (
+      discoveryConfig.features.chartsSection?.charts &&
+      searchedData.length > 0
+    )
+      setChartData(
+        processChartData(
+          searchedData,
+          Object.keys(discoveryConfig.features.chartsSection.charts),
+        ),
+      );
+  }, [
+    searchedData,
+    discoveryConfig?.aggregations,
+    discoveryConfig.features.chartsSection?.charts,
+  ]);
 
   return {
-    data: paginatedData,
+    data: manualSortingAndPagination ? paginatedData : searchedData,
     hits: searchedData.length ?? -1,
     clearSearch: clearSearchTerms,
     suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
+    charts: chartData,
     dataRequestStatus: {
       isUninitialized,
       isFetching,

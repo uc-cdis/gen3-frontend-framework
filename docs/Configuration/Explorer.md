@@ -42,7 +42,46 @@ The configuration for the explorer is stored an array of objects. Each object in
   }
 ]
 ```
+### Multiple Configuration Support
 
+Explorer can also support multiple configurations. To use this create
+one or more configuration files in the directory ```config/COMMONS_NAME/explorer```
+The name of the file is then passed to Explorer as path.
+For example if there are two configuration files:
+```cases.json``` and ```files.json```, the URL for these will be
+```bash
+https://localhost/Explorer/cases
+```
+and
+```bash
+https://localhost/Explorer/files
+```
+
+### Charts
+The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
+
+```json    
+"charts": {
+      "race": {
+        "chartType": "fullPie",
+        "title": "Race"
+      },
+      "ethnicity": {
+        "chartType": "horizontalStacked",
+        "title": "Ethnicity"
+      },
+      "gender": {
+        "chartType": "bar",
+        "title": "Gender"
+      }
+    }
+```
+    
+The currently supported chart types are:
+* `bar`: a regular vertical bar chart.
+* `horizontalStacked`: horizontal stacked bar chart.
+* `fullPie`: full pie chart.
+* `donut`: pie chart with a hole.
 
 ### Download Table Data
 
@@ -100,7 +139,7 @@ The downloads menu is a dropdown with the following members:
     * `data-json`
 
 ### Download Buttons
-Individual button (horliztonally laid out) can be configured as:
+Individual button (horizontally laid out) can be configured as:
 
 ```json
  "buttons": [
@@ -179,3 +218,43 @@ The details configuration has the following members:
 * closeOnEscape - if true, closed when the esc key is pressed
 * closeOnClickOutside - close when anywhere outside the modal is closed
 * size - size of the modal
+
+## Selection Facet
+
+A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
+quite large. To enable it, in the filters->tabs section of the config file:
+
+```json
+    {
+     "filters": {
+      "tabs": [
+        {
+          "title": "Study Selection",
+          "fields": ["project"]
+        },
+        {
+          "title": "Subjects",
+          "fields": [
+            "study",
+            "gender",
+            "race",
+            "ethnicity",
+            "vital_status",
+            "whatever_lab_result_value"
+          ],
+          "fieldsConfig": {
+            "gender" : {
+              "type" : "multiselect"
+            }
+          }
+        }
+      ]
+    },
+
+```
+
+add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the example above the```gender``` field is
+switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
+is also searchable.
+
+![MultiSelectFacet](images/MultiSelectFacet.png)

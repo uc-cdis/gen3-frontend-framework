@@ -1,5 +1,5 @@
 import ExplorerTable from './ExplorerTable';
-import { type ColumnDefinition } from './types';
+import { type ColumnDefinition, type CellRendererFunctionProps } from './types';
 import {
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
@@ -12,4 +12,5 @@ export {
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
   type ColumnDefinition,
+  type CellRendererFunctionProps,
 };

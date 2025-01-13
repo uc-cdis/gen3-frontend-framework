@@ -4,6 +4,7 @@ import {
   resetUserState,
   fetchUserState,
   isAuthenticated,
+  isPending,
   selectUser,
   selectUserData,
   selectUserLoginStatus,
@@ -22,32 +23,49 @@ import {
   type CSRFToken,
 } from './userSliceRTK';
 
-import { useGetExternalLoginsQuery } from './externalLoginsSlice';
-import { type UserProfile, type LoginStatus, type Gen3User, type ExternalProvider, type NamedURL } from './types';
+import {
+  useGetExternalLoginsQuery,
+  useLazyGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
+} from './externalLoginsSlice';
+import {
+  type UserProfile,
+  type LoginStatus,
+  type Gen3User,
+  type ExternalProvider,
+  type NamedURL,
+  type JWTSessionStatus,
+} from './types';
 
 export {
+  type Gen3User,
+  type LoginStatus,
+  type UserProfile,
+  type JWTSessionStatus,
+  type CSRFToken,
+  type ExternalProvider,
+  type NamedURL,
   useUser,
   useUserAuth,
-  resetUserState,
   selectUser,
   selectUserData,
   selectUserLoginStatus,
   fetchUserState,
   isAuthenticated,
+  isPending,
   useIsUserLoggedIn,
+  resetUserState,
   useGetExternalLoginsQuery,
-  type Gen3User,
-  type LoginStatus,
-  type UserProfile,
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
+  useLazyGetExternalLoginsQuery,
+  useLazyIsExternalConnectedQuery,
+  useIsExternalConnectedQuery,
   selectUserDetails,
   selectUserAuthStatus,
   useGetCSRFQuery,
   selectCSRFToken,
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
-  type CSRFToken,
-  type ExternalProvider,
-  type NamedURL
 };

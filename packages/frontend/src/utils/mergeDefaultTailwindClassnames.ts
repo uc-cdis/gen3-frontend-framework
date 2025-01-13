@@ -1,4 +1,5 @@
 import { twMerge } from 'tailwind-merge';
+import { StylingOverrideWithMergeControl, StylingMergeMode } from '../types';
 
 type RecordType = Record<string, string>;
 
@@ -7,20 +8,36 @@ type RecordType = Record<string, string>;
  *
  * @param {RecordType} defaultValues - The default values for the classnames.
  * @param {RecordType} userValues - The user-defined values for the classnames.
- * @param {boolean} merge - Whether to merge the default and user values. Default is true.
+ * @param {StylingMergeMode} mode - Whether to merge or replace the default and user values. Default is merge.
  * @returns {RecordType} - The merged default and user values for the classnames.
  */
-export const mergeDefaultTailwindClassnames = (defaultValues: RecordType, userValues: RecordType, merge = true): RecordType => {
+export const mergeDefaultTailwindClassnames = (
+  defaultValues: RecordType,
+  { mode = 'merge', ...userValues }: StylingOverrideWithMergeControl,
+): RecordType => {
   const defaultKeys = Object.keys(defaultValues);
-  const mergedValues = { ...defaultValues, ...userValues };
+  const mergedValues = { ...defaultValues };
 
-  if (merge) {
-    defaultKeys.forEach(key => {
+  if (mode === 'merge') {
+    defaultKeys.forEach((key) => {
       if (userValues[key]) {
         mergedValues[key] = twMerge(defaultValues[key], userValues[key]);
       }
     });
   }
 
+  if (mode === 'replace') {
+    defaultKeys.forEach((key) => {
+      if (userValues[key]) {
+        mergedValues[key] = userValues[key];
+      }
+    });
+  }
+
   return mergedValues;
 };
+
+export const mergeTailwindClassnameWithDefault = (
+  userValues: string | undefined,
+  defaultValues: string,
+): string => (userValues ? twMerge(defaultValues, userValues) : defaultValues);
