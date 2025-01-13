@@ -19,6 +19,7 @@ import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
+import { registerMetadataSchemaApp } from './features/Dictionary';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -72,7 +73,6 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
 import NotebookLitePage from './pages/NotebookLite/NotebookLite';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
-
 
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
@@ -139,6 +139,7 @@ export {
   NotebookLitePageGetStaticProps,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
+  registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
 };

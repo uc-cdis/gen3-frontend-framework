@@ -38,3 +38,4 @@ packages/sampleCommons/config/canine
 packages/sampleCommons/config/midrc
 packages/sampleCommons/config/heal
 /packages/frontend/.rollup.cache/
+/packages/sampleCommons/.swc/
