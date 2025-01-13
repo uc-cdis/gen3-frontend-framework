@@ -17,6 +17,8 @@ ways to set it up.
 
 Once it is installed, you will need to set up a SSL certificate or use an existing one.
 > You can use https://github.com/jsha/minica to set up a SSL certificate
+> Make sure to generate as RSA key pair using 
+> minica -domains localhost -ca-alg rsa
 
 ## Shell Script Setup
 
