@@ -19,6 +19,8 @@ Once it is installed, you will need to set up a SSL certificate or use an existi
 > You can use https://github.com/jsha/minica to set up a SSL certificate
 > Make sure to generate as RSA key pair using 
 > minica -domains localhost -ca-alg rsa
+> and make sure add minica.pem to your trusted certificates
+> on mac this is done by double clicking on it in file browser, in keychain select it and goto get info under trusted select trust
 
 ## Shell Script Setup
 
