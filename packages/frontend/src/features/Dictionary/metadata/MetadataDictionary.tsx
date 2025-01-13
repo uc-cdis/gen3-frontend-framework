@@ -33,11 +33,11 @@ const isMetadataSchema = (
 
 const MetadataSchemaPanel = ({
   label,
-  schemaName,
+  schemaID,
   definitionsFieldName,
   fontSize = 'sm',
 }: MetadataPropertiesConfiguration) => {
-  const { data, isLoading, isError } = useGetMetadataByIdQuery(schemaName);
+  const { data, isLoading, isError } = useGetMetadataByIdQuery(schemaID);
 
   if (isLoading) {
     return (
@@ -98,7 +98,7 @@ const MetadataDictionary = ({ schemas }: MetadataDictionaryProps) => {
     return (
       <MetadataSchemaPanel
         label={schemas[0].label}
-        schemaName={schemas[0].schemaName}
+        schemaID={schemas[0].schemaID}
         definitionsFieldName={schemas[0].definitionsFieldName}
       />
     );
@@ -106,22 +106,22 @@ const MetadataDictionary = ({ schemas }: MetadataDictionaryProps) => {
 
   return (
     <Tabs
-      defaultValue={schemas[0].schemaName}
+      defaultValue={schemas[0].schemaID}
       className="w-full"
       keepMounted={false}
     >
       <Tabs.List>
         {schemas.map((schema) => (
-          <Tabs.Tab value={schema.schemaName} key={schema.schemaName}>
+          <Tabs.Tab value={schema.schemaID} key={schema.schemaID}>
             {schema.label}
           </Tabs.Tab>
         ))}
       </Tabs.List>
       {schemas.map((schema) => (
-        <Tabs.Panel value={schema.schemaName} key={schema.schemaName}>
+        <Tabs.Panel value={schema.schemaID} key={schema.schemaID}>
           <MetadataSchemaPanel
             label={schema.label}
-            schemaName={schema.schemaName}
+            schemaID={schema.schemaID}
             definitionsFieldName={schema.definitionsFieldName}
             fontSize={schema.fontSize}
           />

@@ -2,12 +2,12 @@
   "schemas": [
     {
       "label": "Subject Metadata",
-      "schemaName": "subject_minimal_metadata_schema",
+      "schemaID": "subject_minimal_metadata_schema",
       "definitionsFieldName": "subject_metadata_elements"
     },
     {
       "label": "Study Metadata",
-      "schemaName": "study_minimal_metadata_schema",
+      "schemaID": "study_minimal_metadata_schema",
       "definitionsFieldName": "study_metadata_elements"
     }
   ]
