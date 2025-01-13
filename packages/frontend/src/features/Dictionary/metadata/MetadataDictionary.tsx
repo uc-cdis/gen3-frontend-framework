@@ -1,5 +1,5 @@
 import React from 'react';
-import { Group, Loader, Stack, Tabs, Text } from '@mantine/core';
+import { Center, Group, Loader, Stack, Tabs, Text } from '@mantine/core';
 import { useGetMetadataByIdQuery } from '@gen3/core';
 import { MetadataElement, MetadataPropertiesConfiguration } from './types';
 import MetadataPropertiesTable from './MetadataPropertiesTable';
@@ -40,7 +40,11 @@ const MetadataSchemaPanel = ({
   const { data, isLoading, isError } = useGetMetadataByIdQuery(schemaName);
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <Center className="mt-10">
+        <Loader></Loader>
+      </Center>
+    );
   }
 
   if (isError) {

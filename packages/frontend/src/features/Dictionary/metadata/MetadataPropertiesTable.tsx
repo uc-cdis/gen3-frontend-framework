@@ -81,8 +81,7 @@ const MetadataPropertiesTable = ({
       {
         accessorKey: 'type',
         header: 'Type',
-        size: 80,
-        maxSize: 120,
+        size: 120,
       },
       {
         header: 'Values',
@@ -120,21 +119,24 @@ const MetadataPropertiesTable = ({
     layoutMode: 'grid',
     icons: TableIcons,
     getRowId: (originalRow: PropertyTableRowData) => originalRow.id,
+    mantineTableProps: {
+      style: {
+        tableLayout: 'fixed',
+        'mrt-table-head-cell-resize-handle': '#FF0000',
+      },
+    },
     mantineTableHeadRowProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-3)',
+        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-2)',
         fontSize: `var(--mantine-font-size-${fontSize})`,
       },
     },
     mantineTableHeadCellProps: {
       style: {
-        color: 'var(--mantine-color-accent-contrast-cool-3)',
+        color: 'var(--mantine-color-accent-contrast-cool-2)',
         fontSize: `var(--mantine-font-size-${fontSize})`,
-      },
-    },
-    mantineColumnDragHandleProps: {
-      style: {
-        color: '#FF0000',
+        '--mantine-color-placeholder': 'var(--mantine-color-accent-4)',
+        '--resize-handle-thickness': 10,
       },
     },
   });
