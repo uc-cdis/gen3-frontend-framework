@@ -1,4 +1,3 @@
-import terser from '@rollup/plugin-terser';
 import dts from 'rollup-plugin-dts';
 import json from '@rollup/plugin-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -22,6 +21,9 @@ const globals = {
   flat: 'flat',
   papaparse: 'papaparse',
   'redux-persist': 'reduxPersist',
+  'redux-persist/integration/react': 'redux-persist-integration-react',
+  'redux-persist/lib/storage/createWebStorage':
+    'redux-persist-createWebStorage',
   'cookies-next': 'cookies-next',
   queue: 'queue',
   idb: 'idb',

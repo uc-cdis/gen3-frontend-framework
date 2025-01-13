@@ -22,13 +22,15 @@ export interface TextContentProps {
   readonly type?: ContentType;
   readonly email?: string;
   readonly link?: string;
+  readonly linkText?: string;
 }
 const TextContent = ({
   text,
-  className = 'inline text-base-contrast color-red-500 font-medium margin-block-start-1 margin-block-end-1',
+  className = 'inline text-base-contrast-min font-medium margin-block-start-1 margin-block-end-1',
   type = ContentType.Text,
   email = undefined,
   link = undefined,
+  linkText = undefined,
 }: TextContentProps) => {
   switch (type) {
     case ContentType.Html: {
@@ -87,7 +89,7 @@ const TextContent = ({
     }
     case ContentType.TextWithEmail: {
       const DEFAULT_STYLE =
-        'inline color-ink font-medium margin-block-start-1 margin-block-end-1';
+        'inline text-base-contrast-min font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
         ? twMerge(DEFAULT_STYLE, className)
         : DEFAULT_STYLE;
@@ -108,11 +110,15 @@ const TextContent = ({
     }
     case ContentType.TextWithLink: {
       const DEFAULT_STYLE =
-        'inline color-ink font-medium margin-block-start-1 margin-block-end-1';
+        'inline text-base-contrast-min font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
         ? twMerge(DEFAULT_STYLE, className)
         : DEFAULT_STYLE;
       const textString = Array.isArray(text) ? text.join('') : text;
+      if (!link) {
+        return <div className={mergedClassname}> Link is not defined.</div>;
+      }
+
       return (
         <div className={mergedClassname}>
           <span>
@@ -121,7 +127,7 @@ const TextContent = ({
               <Anchor
                 classNames={{ root: mergedClassname }}
                 href={link}
-              >{` ${email}.`}</Anchor>
+              >{` ${linkText ?? link}.`}</Anchor>
             )}
           </span>
         </div>
@@ -131,7 +137,7 @@ const TextContent = ({
     default:
       return (
         <div className={className}>
-          <p>{text}</p>
+          <p>{text.toString()}</p>
         </div>
       );
   }
