@@ -44,7 +44,6 @@ const showErrorNotification = (title: string, message: string) => {
     title,
     message,
     position: 'top-center',
-    containerWidth: '50%',
   });
 };
 

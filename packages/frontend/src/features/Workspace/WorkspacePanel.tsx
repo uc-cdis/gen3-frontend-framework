@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, LoadingOverlay, rem, Transition } from '@mantine/core';
+import { Center, Grid, LoadingOverlay, rem, Transition } from '@mantine/core';
 import {
   selectActiveWorkspaceStatus,
   useCoreSelector,
@@ -17,11 +17,11 @@ const WorkspacePanel = () => {
   const { data: workspaceStatusData } = useGetWorkspaceStatusQuery(undefined);
 
   if (isError) {
-    return <ErrorCard message="Error loading workspace definitions" />;
-  }
-
-  if (isError) {
-    return <ErrorCard message="Error loading workspace definitions" />;
+    return (
+      <Center>
+        <ErrorCard message="Error loading workspace definitions" />
+      </Center>
+    );
   }
 
   const workspaceStatus = workspaceStatusData?.status;
