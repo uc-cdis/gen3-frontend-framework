@@ -49,6 +49,7 @@
     "os": false
   },
   "dependencies": {
+
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^5.0.2",
@@ -84,7 +85,7 @@
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
-    "mantine-react-table": "^2.0.0-beta.7",
+    "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
     "next": "^14.2.23",
@@ -146,7 +147,7 @@
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "latest",
+    "@gen3/core" : "^0.10.71",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16"

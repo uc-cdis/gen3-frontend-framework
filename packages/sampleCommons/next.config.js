@@ -26,14 +26,6 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
-    turbo: {
-      loaders: {
-        '.js': ['jsx'],
-        '.jsx': ['jsx'],
-        '.ts': ['tsx'],
-        '.tsx': ['tsx'],
-      },
-    },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
