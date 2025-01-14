@@ -146,7 +146,7 @@
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "file:../core",
+    "@gen3/core": "0.10.69",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16"
