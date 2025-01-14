@@ -18,7 +18,7 @@
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
     "build": "lerna run build --include-dependencies --stream",
-    "build:pkg": "lerna run build --include-dependencies --stream --ignore packages/sampleCommons",
+    "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run dev",
