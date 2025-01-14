@@ -38,5 +38,5 @@ export interface WorkspaceConfig {
   title?: string;
   workspaceInfo?: Record<string, WorkspaceAdditionalInfo>;
   launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;
-  requiredPayModel?: boolean;
+  requirePayModel?: boolean;
 }
