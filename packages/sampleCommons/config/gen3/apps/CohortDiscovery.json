@@ -1,5 +1,11 @@
 {
   "name": "CohortDiscovery",
+  "emptySelection": {
+    "image": "cohort_none.png",
+    "imageAlt": "three circled portraits connected by lines",
+    "title": "Build Your Cohort",
+    "subHead": "Select the critera on the left to include an item."
+  },
   "dataIndexes": [
     {
       "dataConfig": {

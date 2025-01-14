@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Flex, Stack } from '@mantine/core';
+import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
@@ -18,8 +18,9 @@ import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
 import CohortManager from '../CohortBuilder/CohortManager';
 import { AppState, useAppSelector } from './appApi';
+import Image from 'next/image';
 
-const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
+const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
   >([]);
@@ -113,7 +114,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   return (
     <Stack>
       <CohortManager index={index} />
-      <Flex className="w-full h-full bg-base-light">
+      <Flex className="w-full h-full bg-base-light pb-4">
         <FacetSelectionPanel
           categories={categories}
           selectedFields={activeFieldDefinitions.map((x) => x.field)}
@@ -126,7 +127,22 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
         />
         <Stack className="w-full">
           <ActionButtonGroup />
-          <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+          {activeFieldDefinitions.length > 0 ?
+            <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+          : <Center className="w-full h-full mx-2 bg-base-max">
+              <Box className="text-center m-4">
+                <Image
+                  src={`/images/apps/${emptySelection.image}`}
+                  alt={emptySelection.imageAlt}
+                  width={240}
+                  height={240}
+                  className="inline-block mb-4"
+                />
+                <Title order={3}>{emptySelection.title || ''}</Title>
+                <Text>{emptySelection.subHead || ''}</Text>
+              </Box>
+            </Center>
+          }
         </Stack>
       </Flex>
     </Stack>

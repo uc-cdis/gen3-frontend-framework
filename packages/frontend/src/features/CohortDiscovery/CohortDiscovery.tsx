@@ -28,6 +28,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
             dataConfig={config.dataIndexes[0].dataConfig}
             tabTitle={config.dataIndexes[0].tabTitle}
             tabs={config.dataIndexes[0].tabs}
+            emptySelection={config.emptySelection}
           />
         </div>
       </PersistGate>
