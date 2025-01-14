@@ -17,7 +17,7 @@
     "lint": "lerna run lint",
     "lint-fix": "eslint . --fix",
     "oxlint": "oxlint .",
-    "build": "lerna run build --include-dependencies",
+    "build": "lerna run build --include-dependencies --stream",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
     "dev": "lerna run dev",
