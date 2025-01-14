@@ -1,8 +1,6 @@
 import React from 'react';
 import { Center, Grid, LoadingOverlay, rem, Transition } from '@mantine/core';
 import {
-  selectActiveWorkspaceStatus,
-  useCoreSelector,
   useGetWorkspaceOptionsQuery,
   useGetWorkspaceStatusQuery,
   WorkspaceInfo,
