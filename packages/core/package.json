@@ -2,7 +2,7 @@
   "name": "@gen3/core",
   "version": "0.10.69",
   "author": "CTDS",
-  "description": "Core module for gen3 frontend. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
+  "description": "Core module for Gen3.2. Provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
   "engines": {
     "npm": ">=10.8.2",
