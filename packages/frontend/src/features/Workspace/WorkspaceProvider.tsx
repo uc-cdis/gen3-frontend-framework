@@ -2,7 +2,7 @@ import React, { createContext, ReactNode } from 'react';
 import { WorkspaceConfig } from './types';
 
 const WorkspaceConfigDefaults: WorkspaceConfig = {
-  requiredPayModel: true,
+  requirePayModel: true,
   launchStepIndicatorConfig: {
     steps: [
       { label: 'Requesting', description: 'requesting workspace resources' },
