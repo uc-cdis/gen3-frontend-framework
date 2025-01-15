@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.68",
+  "version": "0.10.73",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -49,16 +49,17 @@
     "os": false
   },
   "dependencies": {
+    "@gen3/core": "^0.10.73",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^5.0.2",
     "@kbox-labs/react-echarts": "^1.4.0",
-    "@mantine/core": "^7.15.2",
-    "@mantine/dates": "^7.15.2",
-    "@mantine/form": "^7.15.2",
-    "@mantine/hooks": "^7.15.2",
-    "@mantine/modals": "^7.15.2",
-    "@mantine/notifications": "^7.15.2",
+    "@mantine/core": "^7.16.0",
+    "@mantine/dates": "^7.16.0",
+    "@mantine/form": "^7.16.0",
+    "@mantine/hooks": "^7.16.0",
+    "@mantine/modals": "^7.16.0",
+    "@mantine/notifications": "^7.16.0",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.1",
@@ -84,10 +85,10 @@
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
-    "mantine-react-table": "^2.0.0-beta.7",
+    "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.15",
+    "next": "^14.2.23",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
@@ -146,7 +147,6 @@
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "file:../core",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16"
