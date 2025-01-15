@@ -11,16 +11,14 @@ import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
 interface Gen3ProviderProps {
-  colors: Record<string, TenStringArray>;
   icons: Array<RegisteredIcons>;
-  fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   children?: ReactNode | undefined;
 }
 
 // Define theme for mantine v7
-const createMantineTheme = (
+export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
 ) => {
@@ -82,9 +80,7 @@ const createMantineTheme = (
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
-  colors,
   icons,
-  fonts,
   sessionConfig,
   modalsConfig,
   children,
@@ -93,20 +89,16 @@ const Gen3Provider = ({
     icons.forEach((i) => addCollection(i));
   }, [icons]);
 
-  const theme = createMantineTheme(fonts, colors);
-
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
-        <ModalsProvider>
-          <Notifications />
-          <SessionProvider {...sessionConfig}>
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
-          </SessionProvider>
-        </ModalsProvider>
-      </MantineProvider>
+      <ModalsProvider>
+        <Notifications />
+        <SessionProvider {...sessionConfig}>
+          <Gen3ModalsProvider config={modalsConfig}>
+            {children}
+          </Gen3ModalsProvider>
+        </SessionProvider>
+      </ModalsProvider>
     </CoreProvider>
   );
 };

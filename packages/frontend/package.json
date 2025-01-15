@@ -49,16 +49,17 @@
     "os": false
   },
   "dependencies": {
+    "@gen3/core": "^0.10.71",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^5.0.2",
     "@kbox-labs/react-echarts": "^1.4.0",
-    "@mantine/core": "^7.15.2",
-    "@mantine/dates": "^7.15.2",
-    "@mantine/form": "^7.15.2",
-    "@mantine/hooks": "^7.15.2",
-    "@mantine/modals": "^7.15.2",
-    "@mantine/notifications": "^7.15.2",
+    "@mantine/core": "^7.16.0",
+    "@mantine/dates": "^7.16.0",
+    "@mantine/form": "^7.16.0",
+    "@mantine/hooks": "^7.16.0",
+    "@mantine/modals": "^7.16.0",
+    "@mantine/notifications": "^7.16.0",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.1",
@@ -114,6 +115,7 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
+
     "@iconify/tools": "^4.0.7",
     "@iconify/types": "^2.0.0",
     "@svgr/webpack": "^8.1.0",
@@ -146,7 +148,7 @@
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "^0.10.71",
+
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16"
