@@ -199,7 +199,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector index={index} filters={filters} />
+                <CohortSelector />
                 <Tooltip
                   label={
                     noFilters
