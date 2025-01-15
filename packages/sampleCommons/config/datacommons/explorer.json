@@ -19,17 +19,14 @@
       "tabs": [
         {
           "title": "Study Selection",
-          "fields": ["project"]
+          "fields": ["project_id"]
         },
         {
           "title": "Subjects",
           "fields": [
-            "study",
             "gender",
             "race",
-            "ethnicity",
-            "vital_status",
-            "whatever_lab_result_value"
+            "ethnicity"
           ],
           "fieldsConfig": {
             "gender" : {
@@ -51,11 +48,10 @@
         "limit": 10000
       },
       "fields": [
-        "project",
+        "project_id",
         "gender",
         "race",
-        "ethnicity",
-        "whatever_lab_result_value"
+        "ethnicity"
       ],
       "columns": {
         "whatever_lab_result_value": {
