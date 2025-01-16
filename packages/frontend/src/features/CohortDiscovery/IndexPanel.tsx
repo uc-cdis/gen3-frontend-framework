@@ -114,7 +114,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscov
   return (
     <Stack>
       <CohortManager index={index} />
-      <Flex className="w-full h-full bg-base-light pb-4">
+      <Flex className="flex h-full bg-base-light pb-4 ml-4">
         <FacetSelectionPanel
           categories={categories}
           selectedFields={activeFieldDefinitions.map((x) => x.field)}
@@ -129,7 +129,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscov
           <ActionButtonGroup />
           {activeFieldDefinitions.length > 0 ?
             <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
-          : <Center className="w-full h-full mx-2 bg-base-max">
+          : <Center className="h-full mx-2 bg-base-max">
               <Box className="text-center m-4">
                 <Image
                   src={`/images/apps/${emptySelection.image}`}
@@ -137,7 +137,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscov
                   width={240}
                   height={240}
                   className="inline-block mb-4"
-                />
+                />{/*TODO make config file for tabs*/}
                 <Title order={3}>{emptySelection.title || ''}</Title>
                 <Text>{emptySelection.subHead || ''}</Text>
               </Box>

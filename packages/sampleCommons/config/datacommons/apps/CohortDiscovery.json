@@ -6,6 +6,23 @@
     "title": "Build Your Cohort",
     "subHead": "Select the critera on the left to include an item."
   },
+  "leftNav": {
+    "build": {
+      "image": "/images/apps/cohort_none.png",
+      "imageAlt": "",
+      "title": "Build Cohorts"
+    },
+    "saved": {
+      "image": "/images/apps/cohort_saved.png",
+      "imageAlt": "",
+      "title": "Saved Cohorts"
+    },
+    "request": {
+      "image": "/images/apps/cohort_requests.png",
+      "imageAlt": "",
+      "title": "Request"
+    }
+  },
   "dataIndexes": [
     {
       "dataConfig": {

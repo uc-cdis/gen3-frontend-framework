@@ -32,6 +32,14 @@ const createMantineTheme = (
   const theme = createTheme({
     // use V2 font in MantineProvider
     fontFamily: fonts.fontFamily,
+    headings: {
+      // properties for individual headings
+      sizes: {
+        h1: {
+          fontSize: '1.5rem',
+        },
+      },
+    },
     // Override default blue color until styles are determined
     colors: {
       white: [

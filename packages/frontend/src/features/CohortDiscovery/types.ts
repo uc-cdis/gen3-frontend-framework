@@ -8,6 +8,18 @@ interface EmptySelection {
   subHead?: string;
 }
 
+interface LeftNavItem {
+  image: string;
+  imageAlt: string;
+  title: string;
+}
+
+interface LeftNav {
+  build: LeftNavItem;
+  saved: LeftNavItem;
+  rquest: LeftNavItem;
+}
+
 export interface CohortDiscoveryGroup {
   readonly dataConfig: DataTypeConfig; // database config
   readonly tabTitle: string; // title of the tab
@@ -18,6 +30,7 @@ export interface CohortDiscoveryGroup {
 export interface CohortDiscoveryConfig extends Gen3AppConfigData {
   dataIndexes: Array<CohortDiscoveryGroup>;
   emptySelection: EmptySelection;
+  leftNav: LeftNav;
 }
 
 export type SupportedFacetTypes = 'enum';
