@@ -40,7 +40,7 @@ COPY packages/frontend/package.json ./packages/frontend/
 COPY packages/sampleCommons/package.json ./packages/sampleCommons/
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --include=optional
 
 # Install additional dependencies
 RUN npm install \
@@ -69,7 +69,7 @@ RUN addgroup --system --gid 1001 nextjs && \
 
 # Copy built artifacts from builder
 COPY --from=builder --chown=nextjs:nextjs /gen3 .
-
+RUN apk add --no-cache bash
 # Set environment variables
 ENV PORT=3000
 ENV NODE_ENV=production

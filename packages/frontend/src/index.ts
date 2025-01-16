@@ -19,10 +19,13 @@ import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
+import { registerMetadataSchemaApp } from './features/Dictionary';
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
-import Gen3Provider from './components/Providers/Gen3Provider';
+import Gen3Provider, {
+  createMantineTheme,
+} from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/Discovery';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
@@ -72,7 +75,6 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
 import NotebookLitePage from './pages/NotebookLite/NotebookLite';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
-
 
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
@@ -127,6 +129,7 @@ export {
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  createMantineTheme,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   CrosswalkPage,
@@ -139,6 +142,7 @@ export {
   NotebookLitePageGetStaticProps,
   registerCohortDiscoveryApp,
   registerCohortDiversityApp,
+  registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
 };

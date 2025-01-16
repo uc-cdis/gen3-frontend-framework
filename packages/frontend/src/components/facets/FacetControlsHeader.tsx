@@ -80,6 +80,16 @@ const FacetControlsHeader = ({
     }
   }, [field, isFilterExpanded, toggleExpandFilter]);
 
+  console.log(
+    'FacetControlsHeader: ',
+    field,
+    description,
+    facetName,
+    showSearch,
+    showFlip,
+    showClearSelection,
+  );
+
   return (
     <header.Panel>
       <div className="flex flex-row items-center">

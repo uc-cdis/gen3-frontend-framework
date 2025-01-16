@@ -1,11 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  createTheme,
-  MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
-} from '@mantine/core';
+import { createTheme } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -18,9 +13,7 @@ import { AnalysisToolsProvider } from '../../lib/common/analysisToolFramework';
 import { AnalysisToolConfiguration } from '../../lib/common/types';
 
 interface Gen3ProviderProps {
-  colors: Record<string, TenStringArray>;
   icons: Array<RegisteredIcons>;
-  fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   analysisToolConfig?: AnalysisToolConfiguration;
@@ -28,7 +21,7 @@ interface Gen3ProviderProps {
 }
 
 // Define theme for mantine v7
-const createMantineTheme = (
+export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
 ) => {
@@ -90,9 +83,7 @@ const createMantineTheme = (
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
-  colors,
   icons,
-  fonts,
   sessionConfig,
   modalsConfig,
   analysisToolConfig,
@@ -102,24 +93,20 @@ const Gen3Provider = ({
     icons.forEach((i) => addCollection(i));
   }, [icons]);
 
-  const theme = createMantineTheme(fonts, colors);
-
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
-        <ModalsProvider>
-          <Notifications />
-          <SessionProvider {...sessionConfig}>
-            <AnalysisToolsProvider
-              {...(analysisToolConfig ?? { useDataLibraryServiceAPI: false })}
-            >
-              <Gen3ModalsProvider config={modalsConfig}>
-                {children}
-              </Gen3ModalsProvider>
-            </AnalysisToolsProvider>
-          </SessionProvider>
-        </ModalsProvider>
-      </MantineProvider>
+      <AnalysisToolsProvider
+        {...(analysisToolConfig ?? { useDataLibraryServiceAPI: false })}
+      >
+      <ModalsProvider>
+        <Notifications />
+        <SessionProvider {...sessionConfig}>
+          <Gen3ModalsProvider config={modalsConfig}>
+            {children}
+          </Gen3ModalsProvider>
+        </SessionProvider>
+      </ModalsProvider>
+      </AnalysisToolsProvider>
     </CoreProvider>
   );
 };
