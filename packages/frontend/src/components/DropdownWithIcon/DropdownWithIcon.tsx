@@ -1,24 +1,21 @@
-import React from 'react';
-import { Button, Menu } from '@mantine/core';
-import { FloatingPosition } from '@mantine/core';
-import { ReactNode } from 'react';
-import { Tooltip } from '@mantine/core';
-import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
+import { ReactNode, useRef } from 'react';
+import { Button, Menu, Tooltip, FloatingPosition } from '@mantine/core';
 import { focusStyles } from '../../utils';
+import { DropdownIcon } from '../../utils/icons';
 
 interface DropdownWithIconProps {
   /**
    *    if true, doesn't set width to be "target"
    */
-  disableTargetWidth?: string;
+  disableTargetWidth?: boolean;
   /**
-   *   Left Icon for the taret button, can be undefined too
+   *   Left Section for the target button, can be undefined too
    */
-  LeftIcon?: JSX.Element;
+  LeftSection?: JSX.Element;
   /**
-   *   Right Icon for the taret button, can be undefined too (default to dropdown icon)
+   *   Right Section for the target button, can be undefined too (default to dropdown icon)
    */
-  RightIcon?: JSX.Element;
+  RightSection?: JSX.Element;
   /**
    *    Content for target button
    */
@@ -53,16 +50,12 @@ interface DropdownWithIconProps {
    */
   fullHeight?: boolean;
   /**
-   *   custom z-index for Menu, defaults to undefined
-   */
-  zIndex?: number;
-  /**
    * custom test id
    */
   customDataTestId?: string;
 
   /**
-    tooltip
+   tooltip
    */
   tooltip?: string;
 
@@ -74,9 +67,15 @@ interface DropdownWithIconProps {
 
 export const DropdownWithIcon = ({
   disableTargetWidth,
-  LeftIcon,
-  RightIcon = (
-    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown-icon" />
+  LeftSection,
+  RightSection = (
+    <div className="border-l pl-1 -mr-2">
+      <DropdownIcon
+        size="1.25em"
+        aria-hidden="true"
+        data-testid="dropdown-icon"
+      />
+    </div>
   ),
   TargetButtonChildren,
   targetButtonDisabled,
@@ -85,30 +84,30 @@ export const DropdownWithIcon = ({
   menuLabelCustomClass,
   customPosition,
   fullHeight,
-  zIndex = undefined,
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
+  const targetRef = useRef<HTMLButtonElement | null>(null);
   return (
     <Menu
-      width={disableTargetWidth ?? 'target'}
+      width={!disableTargetWidth ? 'target' : null}
       {...(customPosition && { position: customPosition })}
       data-testid={customDataTestId ?? 'menu-elem'}
-      zIndex={zIndex}
+      zIndex={9000} //dropdown should be on top of everything when open
     >
       <Menu.Target>
         <Button
           variant="outline"
           color="primary"
           className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
-          {...(LeftIcon && { leftIcon: LeftIcon })}
-          rightSection={RightIcon}
+          {...(LeftSection && { leftSection: LeftSection })}
+          rightSection={RightSection}
           disabled={targetButtonDisabled}
           classNames={{
-            // rightIcon: 'border-l pl-1 -mr-2',
-            root: fullHeight ? 'h-full' : undefined,
+            root: `${fullHeight ? 'h-full' : undefined}`,
           }}
+          ref={targetRef}
           aria-label={buttonAriaLabel}
         >
           <div>
@@ -129,7 +128,7 @@ export const DropdownWithIcon = ({
         className="border-1 border-secondary"
       >
         {menuLabelText && (
-          <React.Fragment>
+          <>
             <Menu.Label
               className={menuLabelCustomClass ?? 'font-bold'}
               data-testid="menu-label"
@@ -137,12 +136,19 @@ export const DropdownWithIcon = ({
               {menuLabelText}
             </Menu.Label>
             <Menu.Divider />
-          </React.Fragment>
+          </>
         )}
-        {dropdownElements?.map(({ title, onClick, icon, disabled }, idx) => (
+        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
-              if (onClick) onClick();
+              if (onClick) {
+                onClick();
+              }
+              // This is done inorder to set the last focused element as the menu target element
+              // This is done to return focus to the target element if the modal is closed with ESC
+              if (targetRef?.current) {
+                targetRef?.current?.focus();
+              }
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}

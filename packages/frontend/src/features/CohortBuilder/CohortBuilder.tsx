@@ -5,10 +5,10 @@ import { CohortPanel } from './CohortPanel';
 import {
   useGetCSRFQuery,
   selectCurrentCohortId,
+  addNewDefaultUnsavedCohort,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
-import { useSetupInitialCohorts } from './hooks';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
@@ -24,9 +24,9 @@ export const CohortBuilder = ({
   // console.log('before useSetupInitialCohorts');
   //const initialCohortsFetched = useSetupInitialCohorts();
 
-  // useEffect(() => {
-  //   // if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
-  // }, [currentCohort, dispatch]);
+  useEffect(() => {
+    if (!currentCohort) dispatch(addNewDefaultUnsavedCohort());
+  }, [currentCohort, dispatch]);
 
   if (isLoading) {
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Select, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify/react';
-import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
+import JSONObjectDownloadButton from '../../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
 import {
   type Cohort,
   type FilterSet,
@@ -15,12 +15,12 @@ import {
   selectCurrentCohortId,
 } from '@gen3/core';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
-import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
+import UploadJSONButton from '../../../components/Buttons/UploadJSONButton';
 
 export const UnsavedIcon = ({ label }: { label: string }): JSX.Element => (
   <Tooltip label={label} withArrow>
     <span className="leading-0 pointer-events-auto">
-      <Icon icon="gen3:cohort-unsaved" aria-hidden="true" height="1.5rem" />
+      <Icon icon="gen3:cohort-unsaved" aria-hidden="true" height="1.0rem" />
     </span>
   </Tooltip>
 );
@@ -79,7 +79,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
   );
 
   return (
-    <Group>
+    <div className="flex flex-col pt-5" data-testid="cohort-list-dropdown">
       <Select
         data={cohortList}
         searchable
@@ -93,7 +93,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
         classNames={{
           root: 'border-secondary-darkest w-56 md:w-80 z-[290]',
           input:
-            'text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2',
+            'text-heading font-medium text-primary-darkest rounded-l-none h-[45px] border-primary border-l-2',
           option:
             'text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5',
         }}
@@ -104,7 +104,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
             {!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}
             <Icon
               icon="gen3:caret-down"
-              height="1.5rem"
+              height="1.0rem"
               className="text-primary"
             />
           </div>
@@ -112,13 +112,14 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
         rightSectionWidth={!isSavedUnchanged ? 45 : 30}
         styles={{ section: { pointerEvents: 'none' } }}
       />
-      <JSONObjectDownloadButton
-        getData={getData}
-        filename="cohort.json"
-        tooltip="Export Cohort"
-      />
-      <UploadJSONButton handleFileChange={setCohort} tooltip="Import Cohort" />
-    </Group>
+      <div
+        className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
+          !isSavedUnchanged ? 'visible' : 'invisible'
+        }`}
+      >
+        {cohortStatusMessage}
+      </div>
+    </div>
   );
 };
 

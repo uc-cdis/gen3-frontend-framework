@@ -16,7 +16,7 @@ import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
-import CohortManager from '../CohortBuilder/CohortManager';
+import CohortManager from '../CohortBuilder/CohortManager/CohortManager';
 import { AppState, useAppSelector } from './appApi';
 
 const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {

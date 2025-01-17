@@ -9,7 +9,7 @@ import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit } from 'lodash';
 import { FilterSet } from '@gen3/core';
-import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
+import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
   QueryExpressionsExpandedContext,
@@ -21,9 +21,9 @@ import { QueryExpressionContext } from './QueryExpressionContext';
 import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
-} from './style';
-import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
-import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
+} from '../style';
+import JSONObjectDownloadButton from '../../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
+import UploadJSONButton from '../../../components/Buttons/UploadJSONButton';
 
 const QueryExpressionContainer = tw.div`
   flex

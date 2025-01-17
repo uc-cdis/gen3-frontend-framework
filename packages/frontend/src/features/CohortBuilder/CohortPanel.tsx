@@ -29,7 +29,7 @@ import {
 import { useClearFilters } from '../../components/facets/hooks';
 import { FacetDataHooks } from '../../components/facets/types';
 import { FiltersPanel } from './FiltersPanel';
-import CohortManager from './CohortManager';
+import CohortManager from './CohortManager/CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';

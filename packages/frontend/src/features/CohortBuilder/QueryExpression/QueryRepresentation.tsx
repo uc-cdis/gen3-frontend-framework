@@ -28,10 +28,10 @@ import {
   MdOutlineArrowForward as RightArrow,
 } from 'react-icons/md';
 import tw from 'tailwind-styled-components';
-import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
+import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
-import { buildNested } from '../../components/facets';
+import { buildNested } from '../../../components/facets';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { QueryExpressionContext } from './QueryExpressionContext';
 

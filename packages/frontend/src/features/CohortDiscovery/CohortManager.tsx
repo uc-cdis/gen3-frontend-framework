@@ -1,7 +1,7 @@
 import { FilterSet, Operation } from '@gen3/core';
 import { useCohortFacetFilters } from './hooks';
-import QueryExpressionSection from '../CohortBuilder/QueryExpressionSection';
-import { QueryExpressionContext } from '../CohortBuilder/QueryExpressionContext';
+import QueryExpressionSection from '../CohortBuilder/QueryExpression/QueryExpressionSection';
+import { QueryExpressionContext } from '../CohortBuilder/QueryExpression/QueryExpressionContext';
 import { useAppSelector, AppState, useAppDispatch } from './appApi';
 import {
   selectCurrentCohortId,
