@@ -16,6 +16,7 @@ import { useCohortFacetFilters } from '../hooks';
 import QueryExpressionSection from '../QueryExpression/QueryExpressionSection';
 import { QueryExpressionContext } from '../QueryExpression/QueryExpressionContext';
 import CohortSelector from './CohortSelector';
+import CohortActions from './CohortActions';
 
 interface CohortManagerProps {
   index: string;
@@ -30,9 +31,18 @@ const CohortManager = ({ index }: CohortManagerProps) => {
   );
   const filters = useCohortFacetFilters(index);
 
+  const onSave = () => {};
+  const onSaveAs = () => {};
+  const onDelete = () => {};
   return (
-    <div className="flex flex-col mb-2">
+    <div className="flex items-center gap-2 md:gap-4 mb-2 bg-secondary-lighter px-2">
       <CohortSelector index={index} filters={filters} />
+      <CohortActions
+        onSave={onSave}
+        onSaveAs={onSaveAs}
+        onDelete={onDelete}
+        index={index}
+      />
     </div>
   );
 };

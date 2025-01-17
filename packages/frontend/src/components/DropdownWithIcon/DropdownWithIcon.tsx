@@ -94,13 +94,12 @@ export const DropdownWithIcon = ({
       width={!disableTargetWidth ? 'target' : null}
       {...(customPosition && { position: customPosition })}
       data-testid={customDataTestId ?? 'menu-elem'}
-      zIndex={9000} //dropdown should be on top of everything when open
     >
       <Menu.Target>
         <Button
-          variant="outline"
+          variant="subtle"
           color="primary"
-          className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
+          className={`bg-base-max border-primary border-0 data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftSection && { leftSection: LeftSection })}
           rightSection={RightSection}
           disabled={targetButtonDisabled}

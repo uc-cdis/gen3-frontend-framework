@@ -10,7 +10,6 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
-  fieldNameToTitle,
 } from '@gen3/core';
 import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -40,6 +39,7 @@ import {
   useDeepCompareMemo,
 } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
+import QueryExpression from './QueryExpression/QueryExpression';
 
 const EmptyData = {};
 
@@ -319,7 +319,7 @@ export const CohortPanel = ({
       <div className="w-full relative">
         <div className="flex flex-col">
           <CohortManager index={index} />
-
+          <QueryExpression index={index} />
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}

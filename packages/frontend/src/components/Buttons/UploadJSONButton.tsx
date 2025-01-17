@@ -33,10 +33,10 @@ const UploadJSONButton: React.FC<UploadJSONButtonProps> = ({
         <Tooltip label={tooltip} disabled={!tooltip}>
           <Button
             loading={processingFile}
-            variant="outline"
-            classNames={{ root: 'bg-base-max' }}
+            variant="subtle"
+            classNames={{ root: 'bg-base-max w-[48px] h-[48px] p-0' }}
           >
-            <Icon icon={icon} height="1.5rem"></Icon>
+            <Icon icon={icon} width="2rem" height="2rem"></Icon>
           </Button>
         </Tooltip>
       )}

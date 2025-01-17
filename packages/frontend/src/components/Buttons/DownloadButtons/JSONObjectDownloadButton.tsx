@@ -53,14 +53,13 @@ const JSONObjectDownloadButton: React.FC<JsonFileSaverProps> = ({
   return (
     <Tooltip label={tooltip} disabled={!tooltip}>
       <Button
-        variant="outline"
+        variant="subtle"
         onClick={saveToJSONFile}
         disabled={isDownloading || disabled}
         loading={isDownloading}
-        classNames={{ root: 'bg-base-max' }}
-        className="flex items-center gap-2"
+        classNames={{ root: 'bg-base-max w-[48px] h-[48px] p-0' }}
       >
-        <Icon icon={icon} height="1.5rem"></Icon>
+        <Icon icon={icon} width="2rem" height="2rem"></Icon>
       </Button>
     </Tooltip>
   );

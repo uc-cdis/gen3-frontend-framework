@@ -93,7 +93,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
         classNames={{
           root: 'border-secondary-darkest w-56 md:w-80 z-[290]',
           input:
-            'text-heading font-medium text-primary-darkest rounded-l-none h-[45px] border-primary border-l-2',
+            'text-heading font-medium text-primary-darkest rounded-l-none h-[48px] border-primary border-l-2',
           option:
             'text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5',
         }}
