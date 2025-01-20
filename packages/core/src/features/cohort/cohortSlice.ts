@@ -11,6 +11,12 @@ import { type CoreState } from '../../reducers';
 import { type CoreDispatch } from '../../store';
 import { Operation, FilterSet, IndexedFilterSet } from '../filters';
 import { defaultCohortNameGenerator } from './utils';
+import {
+  clearAllStoredCohorts,
+  loadStoredCohorts,
+  persistCurrentCohort,
+  removeStoredCohort,
+} from './cohortPersistenceActions';
 
 /**
  *  Cohorts in Gen3 are defined as a set of filters for each index in the data.
@@ -291,6 +297,32 @@ export const cohortSlice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(persistCurrentCohort.pending, (state) => {
+        state.message = ['Saving cohort...'];
+      })
+      .addCase(persistCurrentCohort.fulfilled, (state, action) => {
+        const cohortId = action.payload;
+        if (state.entities[cohortId]) {
+          state.entities[cohortId].saved = true;
+          state.entities[cohortId].modified = false;
+        }
+        state.message = ['Cohort saved successfully'];
+      })
+      .addCase(persistCurrentCohort.rejected, (state, action) => {
+        state.message = [`Failed to save cohort: ${action.payload}`];
+      })
+      .addCase(loadStoredCohorts.rejected, (state, action) => {
+        state.message = [`Failed to load cohorts: ${action.payload}`];
+      })
+      .addCase(removeStoredCohort.rejected, (state, action) => {
+        state.message = [`Failed to delete cohort: ${action.payload}`];
+      })
+      .addCase(clearAllStoredCohorts.rejected, (state, action) => {
+        state.message = [`Failed to clear cohorts: ${action.payload}`];
+      });
   },
 });
 

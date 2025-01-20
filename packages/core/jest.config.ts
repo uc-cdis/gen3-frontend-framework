@@ -1,17 +1,20 @@
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
+import type { JestConfigWithTsJest } from 'ts-jest';
+
+const jestConfig: JestConfigWithTsJest = {
+  roots: ['<rootDir>/src'],
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+  testEnvironment: 'node',
   transform: {
-    'node_modules/(flat|jsonpath-plus)/.+\\.(j|t)s?$': 'ts-jest',
+    '^.+\\.(ts|tsx)?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.test.json',
+        isolatedModules: true,
+      },
+    ],
+    'node_modules/(flat|jsonpath-plus)/.+\\.(j|t)sx?$': ['ts-jest', {}],
   },
-  transformIgnorePatterns: ['node_modules/(?!flat|jsonpath-plus)/'],
-  globalSetup: '<rootDir>/setupTests.ts',
-  moduleNameMapper: {
-    '^@/core/(.*)$': '<rootDir>/src/$1',
-  },
-  modulePaths: ['<rootDir>'],
-  globals: {
-    fetch: global.fetch,
-  },
+  transformIgnorePatterns: ['/node_modules/(?!(flat|jsonpath-plus))'],
 };
+
+export default jestConfig;

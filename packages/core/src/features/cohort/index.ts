@@ -21,6 +21,15 @@ import {
   setActiveCohortList,
 } from './cohortSlice';
 
+import {
+  saveCohort,
+  loadCohortById,
+  getCohortList,
+  deleteCohort,
+  findCohortByName,
+  deleteAllCohorts,
+} from './cohortPersistenceService';
+
 export {
   type Cohort,
   selectCohortFilters,
@@ -41,4 +50,10 @@ export {
   removeCohort,
   setActiveCohort,
   setActiveCohortList,
+  saveCohort,
+  loadCohortById,
+  getCohortList,
+  deleteCohort,
+  findCohortByName,
+  deleteAllCohorts,
 };
