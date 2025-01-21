@@ -54,7 +54,6 @@ const NoPayModel = () => {
       >
         No pay model defined
       </Text>
-      <StatusAndControls />
     </Group>
   );
 };
