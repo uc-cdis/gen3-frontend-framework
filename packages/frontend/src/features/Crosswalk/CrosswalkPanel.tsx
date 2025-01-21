@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Group, Stack, Button, Textarea } from '@mantine/core';
+import { Group, Stack, Button, Textarea, Tooltip } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useLazyGetCrosswalkDataQuery, CrosswalkInfo } from '@gen3/core';
 import { type CrosswalkConfig, CrosswalkMapping } from './types';
 import CrosswalkTable from './CrosswalkTable';
 
-const MIN_ROWS = 18;
+const MIN_ROWS = 22;
 
 /**
  *
@@ -19,8 +19,8 @@ const buildCSVData = (
     // add the header
     includeSourceId
       ? `${mapping.source.label},${mapping.external
-        .map((x) => x.label)
-        .join(',')}`
+          .map((x) => x.label)
+          .join(',')}`
       : mapping.external.map((x) => x.label).join(','),
     // add data
     ...data.map((x) => {
@@ -44,6 +44,7 @@ const downloadData = (data: string) => {
 const CrosswalkPanel = ({
   mapping,
   showSubmittedIdInTable,
+  idEntryPlaceholderText,
 }: CrosswalkConfig) => {
   const [query, setQuery] = useState<string>('');
   const [sourceIds, setSourceIds] = useState<string>('');
@@ -97,32 +98,35 @@ const CrosswalkPanel = ({
 
   return (
     <Group
-      wrap='nowrap'
+      wrap="nowrap"
       className="w-full items-start justify-start bg-base-lightest"
       align="stretch"
     >
-      <Stack align="stretch" justify="flex-start" className="p-2 w-1/4">
-        <Group
-          wrap='nowrap'>
-          <Button
-            size="md"
-            color="secondary.4"
-            disabled={sourceIds.length == 0}
-            onClick={() => onSubmit()}
-          >
-            Submit
-          </Button>
-          <Button
-            size="md"
-            color="secondary.4"
-            disabled={sourceIds.length == 0}
-            onClick={() => clear()}
-          >
-            Clear
-          </Button>
+      <Stack align="stretch" justify="flex-start" className="p-2 w-1/4 h-full">
+        <Group wrap="nowrap">
+          <Tooltip label="Submit IDs to crosswalk service">
+            <Button
+              size="md"
+              color="secondary.4"
+              disabled={sourceIds.length == 0}
+              onClick={() => onSubmit()}
+            >
+              Submit
+            </Button>
+          </Tooltip>
+          <Tooltip label="Clear all Ids">
+            <Button
+              size="md"
+              color="secondary.4"
+              disabled={sourceIds.length == 0}
+              onClick={() => clear()}
+            >
+              Clear
+            </Button>
+          </Tooltip>
         </Group>
         <Textarea
-          placeholder="IDs..."
+          placeholder={idEntryPlaceholderText}
           radius="md"
           size="md"
           required
@@ -144,33 +148,37 @@ const CrosswalkPanel = ({
         className="w-full p-2 border-0"
       >
         <Group justify="flex-end">
-          <Button
-            variant="outline"
-            size="md"
-            color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
-            onClick={() => {
-              if (data)
-                clipboard.copy(
-                  buildCSVData(data, mapping, showSubmittedIdInTable),
-                );
-            }}
-            disabled={!data || data.length == 0}
-          >
-            Copy
-          </Button>
-          <Button
-            variant="outline"
-            size="md"
-            onClick={() => {
-              if (data)
-                downloadData(
-                  buildCSVData(data, mapping, showSubmittedIdInTable),
-                );
-            }}
-            disabled={!data || data.length == 0}
-          >
-            Download
-          </Button>
+          <Tooltip label="Copy mapping to clipboard">
+            <Button
+              variant="outline"
+              size="md"
+              color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
+              onClick={() => {
+                if (data)
+                  clipboard.copy(
+                    buildCSVData(data, mapping, showSubmittedIdInTable),
+                  );
+              }}
+              disabled={!data || data.length == 0}
+            >
+              Copy
+            </Button>
+          </Tooltip>
+          <Tooltip label="Download mapping">
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => {
+                if (data)
+                  downloadData(
+                    buildCSVData(data, mapping, showSubmittedIdInTable),
+                  );
+              }}
+              disabled={!data || data.length == 0}
+            >
+              Download
+            </Button>
+          </Tooltip>
         </Group>
         <CrosswalkTable
           mapping={mapping}
