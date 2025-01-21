@@ -14,6 +14,7 @@ export interface CrosswalkMapping {
 }
 
 export interface CrosswalkConfig {
-  showSubmittedIdInTable?: boolean;
-  mapping: CrosswalkMapping;
+  showSubmittedIdInTable?: boolean; // add submitted id column in results table
+  mapping: CrosswalkMapping; // mapping configuration for crosswalk
+  idEntryPlaceholderText?: string; // Placeholder text for id entry field
 }
