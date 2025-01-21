@@ -44,7 +44,6 @@ const showErrorNotification = (title: string, message: string) => {
     title,
     message,
     position: 'top-center',
-    containerWidth: '50%',
   });
 };
 
@@ -85,7 +84,7 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     PayModelStatus.INVALID,
   );
 
-  const { requiredPayModel } = useWorkspaceContext();
+  const { requirePayModel } = useWorkspaceContext();
 
   const [
     launchTrigger,
@@ -111,11 +110,11 @@ const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
     if (isPayModelLoading) {
       setPayModelStatus(PayModelStatus.GETTING);
     }
-    if (isPayModelError && requiredPayModel) {
+    if (isPayModelError && requirePayModel) {
       setPayModelStatus(PayModelStatus.ERROR);
       showErrorNotification('Payment Error', 'Unable to get payment model');
-    } else if (!requiredPayModel) setPayModelStatus(PayModelStatus.VALID);
-  }, [isPayModelLoading, isPayModelError, payModelStatus, requiredPayModel]);
+    } else if (!requirePayModel) setPayModelStatus(PayModelStatus.VALID);
+  }, [isPayModelLoading, isPayModelError, payModelStatus, requirePayModel]);
 
   useEffect(() => {
     if (payModels) {
