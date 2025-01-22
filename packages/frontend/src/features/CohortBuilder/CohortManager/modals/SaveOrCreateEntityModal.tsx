@@ -1,8 +1,8 @@
-import { upperFirst } from "lodash";
-import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import ErrorMessage from "../ErrorMessage";
-import { WarningIconMessage } from "@/utils/icons";
+import { upperFirst } from 'lodash';
+import { Box, Button, Group, Modal, TextInput, Loader } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import ErrorMessage from '../../../../components/ErrorMessage';
+import { WarningIconMessage } from '../../../../utils/icons';
 
 interface SaveOrCreateEntityModalProps {
   entity: string;
@@ -18,8 +18,8 @@ interface SaveOrCreateEntityModalProps {
 }
 export const SaveOrCreateEntityModal = ({
   entity,
-  action = "Save",
-  initialName = "",
+  action = 'Save',
+  initialName = '',
   opened,
   onClose,
   onActionClick,
@@ -66,9 +66,8 @@ interface SaveOrCreateEntityBodyProps {
 }
 
 export const SaveOrCreateEntityBody = ({
-  entity,
-  action = "Save",
-  initialName = "",
+  action = 'Save',
+  initialName = '',
   onClose,
   onActionClick,
   onNameChange,
@@ -79,9 +78,9 @@ export const SaveOrCreateEntityBody = ({
   disallowedNames = [],
 }: SaveOrCreateEntityBodyProps): JSX.Element => {
   const validationMessages = {
-    emptyField: "Please fill out this field.",
+    emptyField: 'Please fill out this field.',
     invalidName: (value: string) =>
-      `${value} is not a valid name for a saved ${entity}. Please try another name.`,
+      `${value} is not a valid name for a saved cohort. Please try another name.`,
   };
 
   const form = useForm({
@@ -101,7 +100,7 @@ export const SaveOrCreateEntityBody = ({
   });
 
   // ignoring this error object as new one is being defined below
-  const { error: _, ...inputProps } = form.getInputProps("name");
+  const { error: _, ...inputProps } = form.getInputProps('name');
 
   const validationError = form.errors.name;
   const error = validationError && (
@@ -110,10 +109,10 @@ export const SaveOrCreateEntityBody = ({
 
   const description =
     Object.keys(form.errors).length === 0 &&
-    (onNameChange && !onNameChange((form?.values?.name || "").trim()) ? (
+    (onNameChange && !onNameChange((form?.values?.name || '').trim()) ? (
       <span className="text-warningColorText">
-        <WarningIconMessage className="text-warningColor inline mr-0.5" />A{" "}
-        {entity} with the same name already exists.{" "}
+        <WarningIconMessage className="text-warningColor inline mr-0.5" />A{' '}
+        Cohort with the same name already exists.{' '}
         {additionalDuplicateMessage && additionalDuplicateMessage}
       </span>
     ) : (
@@ -122,7 +121,7 @@ export const SaveOrCreateEntityBody = ({
 
   const handleActionClick = () => {
     if (form.validate().hasErrors || loading) return;
-    onActionClick((form?.values?.name || "").trim());
+    onActionClick((form?.values?.name || '').trim());
     if (closeOnAction) {
       onClose();
     }
@@ -137,18 +136,18 @@ export const SaveOrCreateEntityBody = ({
         <TextInput
           withAsterisk
           label="Name"
-          placeholder={`New ${upperFirst(entity)} Name`}
+          placeholder={`New Cohort Name`}
           description={description}
           classNames={{
-            description: "mt-1",
+            description: 'mt-1',
             input:
-              "font-content data-[invalid=true]:text-utility-error data-[invalid=true]:border-utility-error",
-            error: "text-utility-error",
+              'font-content data-[invalid=true]:text-utility-error data-[invalid=true]:border-utility-error',
+            error: 'text-utility-error',
           }}
           data-autofocus
           maxLength={100}
           error={error}
-          inputWrapperOrder={["label", "input", "error", "description"]}
+          inputWrapperOrder={['label', 'input', 'error', 'description']}
           {...inputProps}
           aria-required
           data-testid="textbox-name-input-field"
@@ -156,9 +155,9 @@ export const SaveOrCreateEntityBody = ({
       </Box>
       <Box
         style={{
-          backgroundColor: "var(--mantine-color-base-1)",
-          padding: "var(--mantine-spacing-md)",
-          borderRadius: "var(--mantine-radius-md)",
+          backgroundColor: 'var(--mantine-color-base-1)',
+          padding: 'var(--mantine-spacing-md)',
+          borderRadius: 'var(--mantine-radius-md)',
           borderTopRightRadius: 0,
           borderTopLeftRadius: 0,
         }}
@@ -167,7 +166,7 @@ export const SaveOrCreateEntityBody = ({
           <Button
             data-testid="button-cancel-save"
             variant="outline"
-            classNames={{ root: "bg-base-max" }}
+            classNames={{ root: 'bg-base-max' }}
             color="secondary"
             onClick={onClose}
           >

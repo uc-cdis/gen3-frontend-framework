@@ -30,6 +30,11 @@ import {
   deleteAllCohorts,
 } from './cohortPersistenceService';
 
+import {
+  persistCohort,
+  persistCurrentCohort,
+} from './cohortPersistenceActions';
+
 export {
   type Cohort,
   selectCohortFilters,
@@ -56,4 +61,6 @@ export {
   deleteCohort,
   findCohortByName,
   deleteAllCohorts,
+  persistCohort,
+  persistCurrentCohort,
 };

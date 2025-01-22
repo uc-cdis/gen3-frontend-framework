@@ -2,17 +2,17 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { CoreState } from '../../reducers';
 import type { Cohort } from './cohortSlice';
 import {
-  setCurrentCohortId,
-  setCohortList,
-  removeCohort,
   addNewDefaultUnsavedCohort,
+  removeCohort,
+  setCohortList,
+  setCurrentCohortId,
 } from './cohortSlice';
 import {
-  saveCohort,
-  loadCohorts,
-  deleteCohort,
   deleteAllCohorts,
+  deleteCohort,
   loadCohortById,
+  loadCohorts,
+  saveCohort,
 } from './cohortPersistenceService';
 
 /**
@@ -20,7 +20,7 @@ import {
  */
 export const persistCurrentCohort = createAsyncThunk(
   'cohort/persistCurrent',
-  async (_, { getState, rejectWithValue }) => {
+  async (name: string, { getState, rejectWithValue }) => {
     try {
       const state = getState() as CoreState;
       const currentCohortId = state.cohorts.currentCohort;
@@ -28,8 +28,10 @@ export const persistCurrentCohort = createAsyncThunk(
         throw new Error('No current cohort to save');
       }
       const currentCohort = state.cohorts.entities[currentCohortId];
-      const cohortId = await saveCohort(currentCohort);
-      return cohortId;
+      return await saveCohort({
+        ...currentCohort,
+        name: name || currentCohort.name,
+      });
     } catch (error) {
       if (error instanceof Error) return rejectWithValue(error.message);
       else return rejectWithValue('Unknown error saving cohort.');
@@ -44,8 +46,7 @@ export const persistCohort = createAsyncThunk(
   'cohort/persist',
   async (cohort: Cohort, { rejectWithValue }) => {
     try {
-      const cohortId = await saveCohort(cohort);
-      return cohortId;
+      return await saveCohort(cohort);
     } catch (error) {
       if (error instanceof Error) return rejectWithValue(error.message);
       else return rejectWithValue('Unknown error saving cohort.');
@@ -55,18 +56,19 @@ export const persistCohort = createAsyncThunk(
 
 /**
  * Load all cohorts from IndexDB and update the Redux store
+ * TODO: replace with DataLibrary?
  */
 export const loadStoredCohorts = createAsyncThunk(
   'cohort/loadAll',
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const cohorts = await loadCohorts();
+      const savedCohorts = await loadCohorts();
 
-      if (cohorts.length > 0) {
+      if (savedCohorts.length > 0) {
         // Update the cohort list in Redux
-        dispatch(setCohortList(cohorts));
+        dispatch(setCohortList(savedCohorts));
         // Set the most recently modified cohort as current
-        const mostRecent = cohorts.reduce((prev, current) => {
+        const mostRecent = savedCohorts.reduce((prev, current) => {
           return new Date(prev.modified_datetime) >
             new Date(current.modified_datetime)
             ? prev
@@ -78,7 +80,7 @@ export const loadStoredCohorts = createAsyncThunk(
         dispatch(addNewDefaultUnsavedCohort());
       }
 
-      return cohorts;
+      return savedCohorts;
     } catch (error) {
       if (error instanceof Error) return rejectWithValue(error.message);
       else return rejectWithValue('Unknown error loading cohort.');

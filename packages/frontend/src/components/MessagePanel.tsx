@@ -15,7 +15,7 @@ const MessagePanel = ({ message, isError = false }: Message) => {
           <Text
             size="lg"
             fw="bold"
-            color={isError ? 'red' : 'primary-contrast'}
+            color={isError ? 'utility.3' : 'primary-contrast'}
           >
             {message}
           </Text>
@@ -24,6 +24,5 @@ const MessagePanel = ({ message, isError = false }: Message) => {
     </div>
   );
 };
-
 
 export default MessagePanel;
