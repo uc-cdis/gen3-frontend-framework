@@ -16,7 +16,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (arg0: string) => void;
-
+    readonly collapse: boolean;
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
     readonly Label: ComponentType<{ children: ReactNode }>; // optional facet label component

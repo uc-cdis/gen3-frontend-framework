@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { Loader, Select } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -10,8 +10,9 @@ import {
   extractEnumFilterValue,
   CoreState,
   useGetCountsQuery,
+  useGetFieldsForIndexQuery,
 } from '@gen3/core';
-import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
+import { type CohortPanelConfig, type TabsConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
@@ -55,44 +56,40 @@ const TabbedPanel = ({
   facetDefinitions,
   facetDataHooks,
 }: TabbablePanelProps) => {
+  const [tab, setTab] = useState(filters?.tabs[0].title ?? 'Filters');
+  const [collapse, setCollapse] = useState(false);
+  const filterOptions = [...filters.tabs.map(({ title }) => title)];
+  const handleTabChange = (tabValue: string) => {
+    if (!tabValue) return;
+    setTab(tabValue);
+  };
+  const toggleCollapse = () => {
+    setCollapse(c => !c);
+  };
   return (
-    <div>
-      <Tabs
-        variant="pills"
-        orientation="vertical"
-        keepMounted={false}
-        defaultValue={filters?.tabs[0].title ?? 'Filters'}
-      >
-        <Tabs.List>
-          {filters.tabs.map((tab: TabConfig) => {
-            return (
-              <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
-                {tab.title}
-              </Tabs.Tab>
-            );
-          })}
-        </Tabs.List>
-
-        {filters.tabs.map((tab: TabConfig) => {
-          return (
-            <Tabs.Panel
-              value={tab.title}
-              key={`filter-${tab.title}-tabPanel`}
-              className="w-1/4"
-            >
-              {Object.keys(facetDefinitions).length > 0 ? (
-                <FiltersPanel
-                  fields={tab.fields.reduce((acc, field) => {
-                    return [...acc, facetDefinitions[field]];
-                  }, [] as FacetDefinition[])}
-                  dataFunctions={facetDataHooks}
-                  valueLabel={tabTitle}
-                />
-              ) : null}
-            </Tabs.Panel>
-          );
-        })}
-      </Tabs>
+    <div className="flex flex-col">
+      <div className="flex justify-between mb-2">
+        <h3 className="font-bold text-md">Filter Set</h3>
+        <button className="text-blue-300 text-sm" onClick={toggleCollapse}>Collapse All</button>
+      </div>
+      <Select
+        data={filterOptions}
+        value={tab}
+        transitionProps={{ transition: 'pop-top-left', duration: 50, timingFunction: 'ease' }}
+        onChange={handleTabChange}
+      />
+      <div className="mt-2">
+        {Object.keys(facetDefinitions).length > 0 ? (
+          <FiltersPanel
+            fields={filters?.tabs?.[filterOptions.indexOf(tab)].fields.reduce((acc, field) => {
+              return [...acc, facetDefinitions[field]];
+            }, [] as FacetDefinition[])}
+            dataFunctions={facetDataHooks}
+            valueLabel={tabTitle}
+            collapse={collapse}
+          />
+        ) : null}
+      </div>
     </div>
   );
 };
@@ -103,8 +100,13 @@ const SinglePanel = ({
   facetDefinitions,
   facetDataHooks,
 }: TabbablePanelProps) => {
+  const [collapse, setCollapse] = useState(false);
+  const toggleCollapse = () => {
+    setCollapse(c => !c);
+  };
   return (
     <div>
+      <button onClick={toggleCollapse}>Collapse All</button>
       {Object.keys(facetDefinitions).length > 0 ? (
         <FiltersPanel
           fields={filters.tabs[0].fields.reduce((acc, field) => {
@@ -112,6 +114,7 @@ const SinglePanel = ({
           }, [] as FacetDefinition[])}
           dataFunctions={facetDataHooks}
           valueLabel={tabTitle}
+          collapse={collapse}
         />
       ) : null}
     </div>
@@ -287,6 +290,7 @@ export const CohortPanel = ({
     data: counts,
     isSuccess: isCountSuccess,
     isError,
+    isLoading,
   } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
@@ -296,9 +300,13 @@ export const CohortPanel = ({
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex w-100 h-100 relative justify-center"><Loader variant="dots" /> </div>);
+  }
   return (
-    <div className="flex mt-3 relative">
-      <div>
+    <div className="flex mt-3">
+      <div className="w-1/5">
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
           <TabbedPanel
             filters={filters}
@@ -315,7 +323,8 @@ export const CohortPanel = ({
           />
         )}
       </div>
-      <div className="w-full relative">
+      <div className="w-4/5 relative">
+
         <div className="flex flex-col">
           <CohortManager index={index} />
 
@@ -349,9 +358,7 @@ export const CohortPanel = ({
                 <ExplorerTable index={index} tableConfig={table} />
               </div>
             </div>
-          ) : (
-            false
-          )}
+          ) : false}
         </div>
       </div>
     </div>

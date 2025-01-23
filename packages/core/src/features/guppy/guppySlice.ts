@@ -242,6 +242,9 @@ const explorerApi = guppyApi.injectEndpoints({
       transformResponse: (response: Record<string, any>, _meta, args) => {
         return processHistogramResponse(response.data._aggregation[args.type]);
       },
+      transformErrorResponse: ({ data, ...response }) => {
+        return { ...response, ...data };
+      },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
       query: ({
@@ -318,6 +321,9 @@ const explorerApi = guppyApi.injectEndpoints({
       ): number => {
         return response.data._aggregation[args.type]._totalCount;
       },
+      transformErrorResponse: ({ data, ...response }) => {
+        return { ...response, ...data };
+      },
     }),
     getFieldCountSummary: builder.query<
       Record<string, any>,
@@ -349,7 +355,7 @@ const explorerApi = guppyApi.injectEndpoints({
             }),
           },
         };
-      },
+      }
     }),
     getFieldsForIndex: builder.query({
       query: (index: string) => {

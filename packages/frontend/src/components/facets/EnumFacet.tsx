@@ -26,6 +26,7 @@ const EnumFacet = ({
   showFlip = false,
   startShowingData = true,
   dismissCallback = undefined,
+  collapse = false,
   width = undefined,
   header = {
     Panel: FacetHeader,

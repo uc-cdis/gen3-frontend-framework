@@ -7,12 +7,14 @@ interface FiltersPanelProps {
   dataFunctions: Record<FacetType, FacetDataHooks>;
   fields: ReadonlyArray<FacetDefinition>;
   valueLabel: string;
+  collapse: boolean;
 }
 
 export const FiltersPanel = ({
   fields,
   dataFunctions,
   valueLabel,
+  collapse
 }: FiltersPanelProps): JSX.Element => {
   return (
     <div
@@ -27,6 +29,7 @@ export const FiltersPanel = ({
           'filters-panel',
           undefined,
           false,
+          collapse,
           facetDefinition.label,
           'w-64',
         );
