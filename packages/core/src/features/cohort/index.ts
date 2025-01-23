@@ -14,6 +14,11 @@ import {
   clearCohortFilters,
 } from './cohortSlice';
 
+import {
+  toggleCohortBuilderCategoryFilter,
+  toggleCohortBuilderAllFilters,
+} from './filterExpandSlice';
+
 export {
   selectCohortFilters,
   selectIndexFilters,
@@ -27,4 +32,6 @@ export {
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
+  toggleCohortBuilderCategoryFilter,
+  toggleCohortBuilderAllFilters,
 };
