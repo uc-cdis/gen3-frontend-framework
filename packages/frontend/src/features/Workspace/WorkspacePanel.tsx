@@ -1,25 +1,28 @@
 import React from 'react';
-import { Grid, rem, Transition } from '@mantine/core';
+import { Center, Grid, LoadingOverlay, rem, Transition } from '@mantine/core';
 import {
-  selectActiveWorkspaceStatus,
-  useCoreSelector,
   useGetWorkspaceOptionsQuery,
+  useGetWorkspaceStatusQuery,
   WorkspaceInfo,
   WorkspaceStatus,
 } from '@gen3/core';
 import { ErrorCard } from '../../components/MessageCards';
 import NotebookCard from './NotebookCard';
-import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 
 const WorkspacePanel = () => {
-  const { data, isLoading, isError, isSuccess } = useGetWorkspaceOptionsQuery();
+  const { data, isLoading, isError } = useGetWorkspaceOptionsQuery();
 
-  const workspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
+  const { data: workspaceStatusData } = useGetWorkspaceStatusQuery(undefined);
 
   if (isError) {
-    return <ErrorCard message="Error loading workspace definitions" />;
+    return (
+      <Center>
+        <ErrorCard message="Error loading workspace definitions" />
+      </Center>
+    );
   }
 
+  const workspaceStatus = workspaceStatusData?.status;
   return (
     <>
       <Transition
@@ -34,13 +37,19 @@ const WorkspacePanel = () => {
       >
         {(styles) => (
           <div className="px-2 mt-4" style={styles}>
-            <Grid justify="center" align="stretch" gutter="md">
+            <LoadingOverlay visible={isLoading} />
+            <Grid
+              justify="center"
+              align="stretch"
+              gutter="sm"
+              overflow="hidden"
+            >
               {data?.map((card: WorkspaceInfo) => {
                 return (
                   <Grid.Col
                     key={card.id}
                     span="content"
-                    style={{ minHeight: rem(120) }}
+                    style={{ minHeight: rem(150) }}
                   >
                     <NotebookCard info={card} />
                   </Grid.Col>

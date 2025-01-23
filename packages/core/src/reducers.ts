@@ -7,13 +7,11 @@ import { modalReducer } from './features/modals/modalsSlice';
 import { cohortReducer } from './features/cohort';
 import { dataLibrarySelectionReducer } from './features/dataLibrary';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
-
+import { guppyApiReducer, guppyApiSliceReducerPath } from './features/guppy';
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
-
-import { guppyApiReducer, guppyApiSliceReducerPath } from './features/guppy';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,

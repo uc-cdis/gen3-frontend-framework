@@ -69,7 +69,7 @@ RUN addgroup --system --gid 1001 nextjs && \
 
 # Copy built artifacts from builder
 COPY --from=builder --chown=nextjs:nextjs /gen3 .
-
+RUN apk add --no-cache bash
 # Set environment variables
 ENV PORT=3000
 ENV NODE_ENV=production
