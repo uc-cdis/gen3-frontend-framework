@@ -1,0 +1,137 @@
+events {}
+
+http {
+    server {
+        listen 3010 ssl;
+        listen [::]:3010 ssl;
+        server_name localhost;
+
+        access_log  /tmp/ssl_localhost_access.log;
+        error_log  /tmp/ssl_localhost_error.log;
+
+        # SSL configuration
+        ## Set the SSL certificate here
+        ssl_certificate     <absolute path to>/cert.pem;
+        ssl_certificate_key <absolute path to>>/key.pem;
+
+        # Default proxy to http://localhost:3000
+        location / {
+            proxy_pass http://localhost:3000;
+            proxy_buffering off;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+        }
+
+        location /api/guppy/download {
+            proxy_pass http://$GEN3_REMOTE_API;
+            proxy_buffering off;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+        }
+
+        # Proxy /_next/webpack-hmr to support hot reloading
+        location /_next/webpack-hmr {
+            proxy_pass http://localhost:3000/_next/webpack-hmr;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+
+        # Proxy /ask
+        location /ai-search/ask {
+            proxy_pass http://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /user
+        location /user {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /mds
+        location /mds {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /guppy
+        location /guppy {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /authz
+        location /authz {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /api
+        location /api/v0 {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /_status
+        location /_status {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        # Proxy /wts
+        location /wts {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy sower
+        location /job {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /library
+        location /library {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Proxy /lw-workspace
+        location /lw-workspace {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # proxy ambassador
+        location /lw-workspace/proxy/ {
+            proxy_pass https://$GEN3_REMOTE_API;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+         }
+    }
+}

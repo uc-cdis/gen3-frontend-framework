@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Button, LoadingOverlay, Select, Stack } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Center,
+  LoadingOverlay,
+  Select,
+  Stack,
+} from '@mantine/core';
 import {
   type Gen3LoginProvider,
   type NameUrl,
   useGetLoginProvidersQuery,
 } from '@gen3/core';
 import { LoginSelectedProps } from './types';
+import { ErrorCard } from '../MessageCards';
 
 interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
@@ -15,10 +23,12 @@ const LoginProviderMultipleItems = ({
   provider,
   handleLoginSelected,
 }: LoginProviderItemProps) => {
-
   const [value, setValue] = useState<string | null>(null);
   return (
-    <div className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold" key={`${provider.name}-login-item`}>
+    <div
+      className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold"
+      key={`${provider.name}-login-item`}
+    >
       <Select
         data={provider.urls.map((item: NameUrl) => ({
           value: item.url,
@@ -63,23 +73,44 @@ const LoginProviderSingleItem = ({
 };
 
 const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
-  const { data, isSuccess } = useGetLoginProvidersQuery();
-  if (!isSuccess) {
+  const { data, isSuccess, isError, isLoading, isFetching } =
+    useGetLoginProvidersQuery();
+
+  if (isError) {
+    return (
+      <Center>
+        <ErrorCard message={'request to authentication service failed'} />
+      </Center>
+    );
+  }
+
+  if (isLoading || isFetching) {
     return <LoadingOverlay visible={!isSuccess} />;
   }
+
+  if (isSuccess && !data) {
+    return (
+      <Center>
+        <ErrorCard message={'no logins defined'} />
+      </Center>
+    );
+  }
+
   return (
     <Box className="flex flex-col items-center justify-center">
       <Stack align="center" className="w-1/3">
-        {data.default_provider.urls.length > 1 ? (
+        {data && data.default_provider.urls.length > 1 ? (
           <LoginProviderMultipleItems
             provider={data.default_provider}
             handleLoginSelected={handleLoginSelected}
           />
         ) : (
-          <LoginProviderSingleItem
-            provider={data.default_provider}
-            handleLoginSelected={handleLoginSelected}
-          />
+          data && (
+            <LoginProviderSingleItem
+              provider={data.default_provider}
+              handleLoginSelected={handleLoginSelected}
+            />
+          )
         )}
         {data?.providers
           .filter((x: any) => x.name !== data.default_provider.name)

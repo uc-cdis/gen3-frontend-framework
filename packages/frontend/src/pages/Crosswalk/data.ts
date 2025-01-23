@@ -24,28 +24,45 @@ export interface InitialCrosswalkConfig {
 export const CrosswalkPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  const initialConfig: InitialCrosswalkConfig = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/crosswalk.json`,
-  );
-  const regex = /->/g;
-  const processedConfig = {
-    showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
-    mapping: {
-      source: initialConfig.mapping.source,
-      external: initialConfig.mapping.external.map((entry) => ({
-        ...entry,
-        dataPath: entry.dataPath
-          .split(regex)
-          .map((x) => JSON.stringify([x]))
-          .join('.'), // To Support JSONPath when a key is a URL
-      })),
-    },
-  };
+  try {
+    const initialConfig: InitialCrosswalkConfig = await ContentSource.get(
+      `config/${GEN3_COMMONS_NAME}/crosswalk.json`,
+    );
+    const regex = /->/g;
+    const processedConfig = {
+      showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
+      idEntryPlaceholderText:
+        initialConfig?.showSubmittedIdInTable ||
+        'Enter IDs, one per line.\nExample:\nD334343\nC343433',
+      mapping: {
+        source: initialConfig.mapping.source,
+        external: initialConfig.mapping.external.map((entry) => ({
+          ...entry,
+          dataPath: entry.dataPath
+            .split(regex)
+            .map((x) => JSON.stringify([x]))
+            .join('.'), // To Support JSONPath when a key is a URL
+        })),
+      },
+    };
 
-  return {
-    props: {
-      ...(await getNavPageLayoutPropsFromConfig()),
-      config: processedConfig,
-    },
-  };
+    return {
+      props: {
+        ...(await getNavPageLayoutPropsFromConfig()),
+        config: processedConfig,
+      },
+    };
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : 'Unknown error in crosswalk config';
+    console.error(errorMessage);
+    return {
+      props: {
+        ...(await getNavPageLayoutPropsFromConfig()),
+        config: undefined,
+      },
+    };
+  }
 };

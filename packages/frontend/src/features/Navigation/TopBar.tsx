@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Icon } from '@iconify/react';
+import { Divider } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import LoginButton from '../../components/Login/LoginButton';
 import LoginAccountButton from '../../components/Login/LoginAccountButton';
@@ -28,9 +29,7 @@ const TopIconButton = ({
   drawBorder = true,
 }: NameAndIcon) => {
   const classNamesDefaults = {
-    root: `flex items-center align-middle px-2 ${
-      drawBorder && 'border-r-2 border-accent'
-    } my-2`,
+    root: `flex items-center align-middle px-2 my-2`,
     button:
       'flex flex-nowrap items-center align-middle border-b-2 hover:border-accent border-transparent',
     leftIcon: 'text-secondary-contrast-lighter pr-1',
@@ -86,6 +85,12 @@ const processTopBarItems = (
             classNames={item.classNames}
             drawBorder={needsBorder}
           />{' '}
+          <Divider
+            size="md"
+            color="accent.4"
+            orientation="vertical"
+            classNames={{ root: 'my-2' }}
+          />
         </a>,
       );
       return acc;
@@ -107,12 +112,14 @@ const TopBar = ({
 }: TopBarProps) => {
   const classNamesDefaults = {
     root: 'flex justify-end items-center align-middle w-100 bg-secondary-lighter',
+    login: 'font-content hover:border-accent',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
   );
+
   return (
     <div>
       <header className={extractClassName('root', mergedClassnames)}>
@@ -125,11 +132,21 @@ const TopBar = ({
             items,
             loginButtonVisibility === LoginButtonVisibility.Visible,
           )}
-          {loginButtonVisibility != LoginButtonVisibility.Visible ? (
-            <LoginAccountButton />
+          {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
+            <div className="flex items-center">
+              <LoginAccountButton
+                className={extractClassName('login', mergedClassnames)}
+              />
+              <Divider size="md" color="accent.4" orientation="vertical" />
+            </div>
           ) : null}
           {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
-            <LoginButton visibility={loginButtonVisibility} />
+            <div className="flex items-center">
+              <LoginButton
+                visibility={loginButtonVisibility}
+                className={extractClassName('login', mergedClassnames)}
+              />
+            </div>
           ) : null}
         </div>
       </header>

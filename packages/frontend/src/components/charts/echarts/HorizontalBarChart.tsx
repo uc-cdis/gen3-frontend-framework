@@ -1,7 +1,7 @@
-import React, {useMemo} from 'react';
-import {processLabel, truncateString} from '../utils';
+import React, { useMemo } from 'react';
+import { processLabel, truncateString } from '../utils';
 import { ChartProps } from '../types';
-import ReactECharts, { ReactEChartsProps} from './ReactECharts';
+import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramData, HistogramDataArray } from '@gen3/core';
 
 interface BarChartData {
@@ -14,47 +14,54 @@ interface BarChartData {
   };
 }
 
-const ExtractDataCount = (d:HistogramData, _:number | undefined = undefined) : number => d.count;
-const ExtractDataPercent = (d:HistogramData, total?:number) : number => total? Math.round((((d.count / total) * 100.0) + Number.EPSILON)*100)/100 : 0;
+const ExtractDataCount = (
+  d: HistogramData,
+  _: number | undefined = undefined,
+): number => d.count;
+const ExtractDataPercent = (d: HistogramData, total?: number): number =>
+  total
+    ? Math.round(((d.count / total) * 100.0 + Number.EPSILON) * 100) / 100
+    : 0;
 
 const processChartData = (
   facetData: HistogramDataArray,
   valueType = 'count',
   total?: number,
   maxBins = 100,
-) : BarChartData[]  => {
-
+): BarChartData[] => {
   if (!facetData) {
     return [];
   }
-  const data =facetData.filter((d:any) => d.key !== '_missing');
+  const data = facetData.filter((d: any) => d.key !== '_missing');
 
-  const dataExtractor = valueType === 'count' ? ExtractDataCount : ExtractDataPercent;
+  const dataExtractor =
+    valueType === 'count' ? ExtractDataCount : ExtractDataPercent;
 
-  const results = data.slice(0, maxBins)
-    .map((d:any) => ({ // TODO: fix type of d
-      data: [dataExtractor(d, total)] as number[],
-      name: truncateString(processLabel(d.key), 35),
-      type: 'bar' as const,
-      stack: 'value',
-      label: {
-        show: true
-      },
-    }));
+  const results = data.slice(0, maxBins).map((d: any) => ({
+    // TODO: fix type of d
+    data: [dataExtractor(d, total)] as number[],
+    name: truncateString(processLabel(d.key), 35),
+    type: 'bar' as const,
+    stack: 'value',
+    label: {
+      show: true,
+      moveOverlap: true,
+    },
+  }));
   return results;
 };
 
-const HorizontalBarChart  = ({ data, valueType, total } : ChartProps) => {
+const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
 
-  const chartDefinition = useMemo(() : ReactEChartsProps['option'] => {
+  const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
           // Use axis to trigger tooltip
-          type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-        }
+          type: 'shadow', // 'shadow' as default; can also be 'line' or 'shadow'
+        },
       },
       legend: {
         orient: 'vertical',
@@ -72,14 +79,19 @@ const HorizontalBarChart  = ({ data, valueType, total } : ChartProps) => {
       xAxis: {
         type: 'value',
         max: 'dataMax',
+        axisLine: {
+          lineStyle: {
+            color: '--mantine-color-base-9',
+          },
+        },
       },
       yAxis: {
         type: 'category',
-        data: ['']
+        data: [''],
       },
       series: chartData,
-
-    }; }, [chartData]);
+    };
+  }, [chartData]);
 
   return (
     <div className="w-full h-64">

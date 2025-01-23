@@ -1,11 +1,11 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.50",
-  "description": "tools for processing portal content",
+  "version": "0.10.74",
+  "description": "tools for processing Gen3 commons content: color theme, icons",
   "main": "index.js",
   "type": "module",
   "engines": {
-    "npm": ">=10.2.3",
+    "npm": ">=10.8.2",
     "node": ">=20.11.0"
   },
   "scripts": {
@@ -24,7 +24,7 @@
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
-    "@iconify/tools": "^2.1.2",
+    "@iconify/tools": "^4.0.7",
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {

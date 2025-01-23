@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: revproxy-dev
+spec:
+  tls:
+  - secretName: gen3-chart
+  rules:
+  - host: "gen3-chart.local"
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: revproxy-service
+              port:
+                number: 80
