@@ -35,7 +35,9 @@ const EnumFacet = ({
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-
+  const isFilterExpanded =
+    hooks.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
   const toggleSearch = () => {
     setIsSearching(!isSearching);
   };
@@ -66,16 +68,21 @@ const EnumFacet = ({
           header={header}
         />
       </div>
-      <FacetEnumList
-        field={field}
-        facetName={facetName}
-        valueLabel={valueLabel}
-        hooks={hooks}
-        isFacetView={isFacetView}
-        isSearching={isSearching}
-        hideIfEmpty={hideIfEmpty}
-        showPercent={showPercent}
-      />
+      <div
+        className={showFilters ? 'h-full' : 'h-0 invisible'}
+        aria-hidden={!showFilters}
+      >
+        <FacetEnumList
+          field={field}
+          facetName={facetName}
+          valueLabel={valueLabel}
+          hooks={hooks}
+          isFacetView={isFacetView}
+          isSearching={isSearching}
+          hideIfEmpty={hideIfEmpty}
+          showPercent={showPercent}
+        />
+      </div>
     </div>
   );
 };

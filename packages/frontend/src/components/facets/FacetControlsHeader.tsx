@@ -80,16 +80,6 @@ const FacetControlsHeader = ({
     }
   }, [field, isFilterExpanded, toggleExpandFilter]);
 
-  console.log(
-    'FacetControlsHeader: ',
-    field,
-    description,
-    facetName,
-    showSearch,
-    showFlip,
-    showClearSelection,
-  );
-
   return (
     <header.Panel>
       <div className="flex flex-row items-center">
@@ -97,7 +87,10 @@ const FacetControlsHeader = ({
           <Tooltip label={isFilterExpanded ? 'Collapse card' : 'Expand card'}>
             <ActionIcon
               variant="subtle"
-              onClick={() => toggleExpandFilter(field, !isFilterExpanded)}
+              onClick={() => {
+                console.log('toggleExpandFilter', field, isFilterExpanded);
+                toggleExpandFilter(field, !isFilterExpanded);
+              }}
               className="mt-0.5 -ml-1.5"
               aria-expanded={isFilterExpanded}
               aria-label={isFilterExpanded ? 'Collapse card' : 'Expand card'}

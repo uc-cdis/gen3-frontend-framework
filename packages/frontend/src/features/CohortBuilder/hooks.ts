@@ -5,27 +5,29 @@ import {
   FilterSet,
   selectCohortFilters,
   toggleCohortBuilderCategoryFilter,
+  selectAllCohortFiltersCollapsed,
+  selectCohortFilterExpanded,
 } from '@gen3/core';
 
 export const useCohortFacetFilters = (index: string): FilterSet => {
   return useCoreSelector((state) => selectCohortFilters(state)[index]);
 };
 
-export const useToggleExpandFilter = () => {
+export const useToggleExpandFilter = (index: string) => {
   const dispatch = useCoreDispatch();
   return (field: string, expanded: boolean) => {
-    dispatch(toggleCohortBuilderCategoryFilter({ field, expanded }));
+    dispatch(toggleCohortBuilderCategoryFilter({ index, field, expanded }));
   };
 };
 
-export const useFilterExpandedState = (field: string) => {
+export const useFilterExpandedState = (index: string, field: string) => {
   return useCoreSelector((state: CoreState) =>
-    selectFilterExpanded(state, field),
+    selectCohortFilterExpanded(state, index, field),
   );
 };
 
-export const useAllFiltersCollapsed = () => {
+export const useAllFiltersCollapsed = (index: string) => {
   return useCoreSelector((state: CoreState) =>
-    selectAllFiltersCollapsed(state),
+    selectAllCohortFiltersCollapsed(state, index),
   );
 };

@@ -21,6 +21,7 @@ const expandSlice = createSlice({
       return {
         ...state,
         [action.payload.index]: {
+          ...state[action.payload.index],
           [action.payload.field]: action.payload.expanded,
         },
       };

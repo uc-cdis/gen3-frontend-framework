@@ -39,6 +39,7 @@ import {
   useDeepCompareMemo,
 } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
+import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
 const EmptyData = {};
 
@@ -210,6 +211,8 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
         exact: {
@@ -217,6 +220,7 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -224,6 +228,7 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
           useTotalCounts: undefined,
         },
         range: {
@@ -231,6 +236,7 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
           useTotalCounts: undefined,
         },
       };
