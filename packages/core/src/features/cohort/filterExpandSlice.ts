@@ -50,13 +50,13 @@ export const {
   toggleCohortBuilderAllFilters,
 } = expandSlice.actions;
 
-export const selectFilterExpanded = (
+export const selectCohortFilterExpanded = (
   state: CoreState,
   index: string,
   field: string,
 ): boolean => state.cohortFiltersExpanded?.[index]?.[field];
 
-export const selectAllFiltersCollapsed = (
+export const selectAllCohortFiltersCollapsed = (
   state: CoreState,
   index: string,
 ): boolean =>

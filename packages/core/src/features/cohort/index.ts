@@ -17,6 +17,8 @@ import {
 import {
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
+  selectCohortFilterExpanded,
+  selectAllCohortFiltersCollapsed,
 } from './filterExpandSlice';
 
 export {
@@ -34,4 +36,6 @@ export {
   clearCohortFilters,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
+  selectCohortFilterExpanded,
+  selectAllCohortFiltersCollapsed,
 };

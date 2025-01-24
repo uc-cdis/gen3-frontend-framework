@@ -15,6 +15,7 @@ interface InitialCrosswalkInfo extends CrosswalkName {
 
 export interface InitialCrosswalkConfig {
   showSubmittedIdInTable?: boolean;
+  idEntryPlaceholderText?: string;
   mapping: {
     source: CrosswalkName;
     external: Array<InitialCrosswalkInfo>;
@@ -32,7 +33,7 @@ export const CrosswalkPageGetServerSideProps: GetServerSideProps<
     const processedConfig = {
       showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
       idEntryPlaceholderText:
-        initialConfig?.showSubmittedIdInTable ||
+        initialConfig?.idEntryPlaceholderText ||
         'Enter IDs, one per line.\nExample:\nD334343\nC343433',
       mapping: {
         source: initialConfig.mapping.source,
