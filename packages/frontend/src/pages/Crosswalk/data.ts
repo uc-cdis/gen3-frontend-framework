@@ -7,15 +7,13 @@ import {
 } from '../../features/Crosswalk';
 import { type NavPageLayoutProps } from '../../features/Navigation';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
-import { CrosswalkMapping } from '../../features/Crosswalk/types';
 
 interface InitialCrosswalkInfo extends CrosswalkName {
   dataPath: string;
 }
 
-export interface InitialCrosswalkConfig {
-  showSubmittedIdInTable?: boolean;
-  idEntryPlaceholderText?: string;
+export interface InitialCrosswalkConfig
+  extends Omit<CrosswalkConfig, 'mapping'> {
   mapping: {
     source: CrosswalkName;
     external: Array<InitialCrosswalkInfo>;
