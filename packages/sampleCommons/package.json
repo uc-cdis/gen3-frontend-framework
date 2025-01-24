@@ -1,5 +1,6 @@
 {
   "name": "@gen3/samplecommons",
+  "version": "0.10.76",
   "version": "0.10.75",
   "private": true,
   "scripts": {
