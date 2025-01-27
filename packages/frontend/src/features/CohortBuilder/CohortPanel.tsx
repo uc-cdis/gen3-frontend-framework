@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { Accordion, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -94,6 +94,42 @@ const TabbedPanel = ({
           );
         })}
       </Tabs>
+    </div>
+  );
+};
+
+const AccordionPanel = ({
+  filters,
+  tabTitle,
+  facetDefinitions,
+  facetDataHooks,
+}: TabbablePanelProps) => {
+  return (
+    <div>
+      <Accordion
+        chevronPosition="left"
+        multiple={true}
+        defaultValue={[filters?.tabs[0].title ?? 'Filters']}
+      >
+        {filters.tabs.map((tab: TabConfig) => {
+          return (
+            <Accordion.Item value={tab.title} key={`${tab.title}`}>
+              <Accordion.Control>{tab.title}</Accordion.Control>
+              <Accordion.Panel>
+                {Object.keys(facetDefinitions).length > 0 ? (
+                  <FiltersPanel
+                    fields={tab.fields.reduce((acc, field) => {
+                      return [...acc, facetDefinitions[field]];
+                    }, [] as FacetDefinition[])}
+                    dataFunctions={facetDataHooks}
+                    valueLabel={tabTitle}
+                  />
+                ) : null}
+              </Accordion.Panel>
+            </Accordion.Item>
+          );
+        })}
+      </Accordion>
     </div>
   );
 };
@@ -221,6 +257,7 @@ export const CohortPanel = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -229,6 +266,7 @@ export const CohortPanel = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
         range: {
@@ -237,6 +275,7 @@ export const CohortPanel = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
       };
@@ -306,7 +345,7 @@ export const CohortPanel = ({
     <div className="flex mt-3 relative">
       <div>
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
-          <TabbedPanel
+          <AccordionPanel
             filters={filters}
             tabTitle={tabTitle}
             facetDefinitions={facetDefinitions}

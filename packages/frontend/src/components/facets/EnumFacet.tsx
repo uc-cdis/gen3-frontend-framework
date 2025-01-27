@@ -53,21 +53,20 @@ const EnumFacet = ({
       } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
-      <div>
-        <FacetControlsHeader
-          field={field}
-          description={description}
-          hooks={hooks}
-          facetName={facetName}
-          showSearch={showSearch}
-          showFlip={showFlip}
-          isFacetView={isFacetView}
-          toggleFlip={toggleFlip}
-          toggleSearch={toggleSearch}
-          dismissCallback={dismissCallback}
-          header={header}
-        />
-      </div>
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        showSearch={showSearch}
+        showFlip={showFlip}
+        isFacetView={isFacetView}
+        toggleFlip={toggleFlip}
+        toggleSearch={toggleSearch}
+        dismissCallback={dismissCallback}
+        header={header}
+      />
+
       <div
         className={showFilters ? 'h-full' : 'h-0 invisible'}
         aria-hidden={!showFilters}
