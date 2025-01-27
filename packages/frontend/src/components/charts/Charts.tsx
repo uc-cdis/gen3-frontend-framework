@@ -176,8 +176,7 @@ const Charts = ({
         </React.Fragment>
       );
     };
-
-    const dataKeys = Object.keys(data[field][0]);
+    const dataKeys = data[field].length > 0 ? Object.keys(data[field][0]) : [];
 
     const chartTitle = charts[field].title ?? fieldNameToTitle(field);
 
@@ -256,7 +255,9 @@ const Charts = ({
   };
 
   return (
-    <Grid className="w-full">{data && Object.keys(charts).map(chartCard)}</Grid>
+    <Grid className="w-full">
+      {data && Object.keys(charts)?.map(chartCard)}
+    </Grid>
   );
 };
 

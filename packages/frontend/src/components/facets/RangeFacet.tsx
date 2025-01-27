@@ -181,16 +181,21 @@ const RangeFacet = ({
                   );
                 }}
               />
+              {
+                // TODO: add updated counts
+                /*
               <div className="bg-gray mt-4 border-1">
                 {isSuccess && data && Object.values(data).length > 0
                   ? Object.values(data)[0]
                   : '...'}
               </div>
+               */
+              }
             </div>
 
             <RangeSlider
               mt="md"
-              color="blue"
+              color="accent.4"
               thumbSize={20}
               value={[minMaxValue.from ?? minimum, minMaxValue.to ?? maximum]}
               min={minimum}
