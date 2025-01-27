@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useDebouncedValue } from '@mantine/hooks';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import { FacetCommonHooks, FromToRangeValues } from './types';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
@@ -26,6 +27,10 @@ import {
 } from './types';
 
 import { fieldNameToTitle, Intersection } from '@gen3/core';
+
+const clamp = (num: number, lower: number, upper: number) => {
+  return Math.min(Math.max(num, lower), upper);
+};
 
 const createBucket = (
   field: string,
@@ -107,6 +112,8 @@ const RangeFacet = ({
     [field, updateRangeFilter],
   );
 
+  console.log('rangeFilters', rangeFilters);
+
   return (
     <div
       className={`flex flex-col ${
@@ -160,8 +167,9 @@ const RangeFacet = ({
                 size="sm"
                 value={rangeFilters ? rangeFilters.from : minMaxValue.from}
                 onChange={(value: number | string) => {
+                  const clampedValue = Math.min(value as number, maximum);
                   updateFilters(
-                    value === '' ? minimum : (value as any),
+                    value === '' ? minimum : (clampedValue as any),
                     minMaxValue.to ?? DEFAULT_MAXIMUM,
                   );
                 }}
@@ -175,22 +183,40 @@ const RangeFacet = ({
                 size="sm"
                 value={rangeFilters ? rangeFilters.to : minMaxValue.to}
                 onChange={(value) => {
+                  const clampedValue = Math.max(
+                    value as number,
+                    (rangeFilters ? rangeFilters.from : minMaxValue.from) ??
+                      maximum,
+                  );
+                  console.log(
+                    'Max',
+                    value,
+                    clampedValue,
+                    minimum,
+                    maximum,
+                    minMaxValue,
+                  );
                   updateFilters(
                     minMaxValue.from ?? minimum,
-                    value ? Number(value) : maximum,
+                    value ? Number(clampedValue) : maximum,
                   );
                 }}
               />
+              {
+                // TODO: add updated counts
+                /*
               <div className="bg-gray mt-4 border-1">
                 {isSuccess && data && Object.values(data).length > 0
                   ? Object.values(data)[0]
                   : '...'}
               </div>
+               */
+              }
             </div>
 
             <RangeSlider
               mt="md"
-              color="blue"
+              color="accent.4"
               thumbSize={20}
               value={[minMaxValue.from ?? minimum, minMaxValue.to ?? maximum]}
               min={minimum}
