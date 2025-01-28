@@ -88,7 +88,7 @@
     "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.23",
+    "next": "^15.1.6",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
@@ -107,7 +107,7 @@
     "recharts": "^2.4.3",
     "remark-gfm": "^4.0.0",
     "stable-hash": "^0.0.3",
-    "tailwind-merge": "^2.5.2",
+    "tailwind-merge": "^2.6.0",
     "tailwind-styled-components": "^2.2.0",
     "use-deep-compare": "^1.1.0",
     "victory": "^36.6.11",
@@ -144,7 +144,7 @@
     "react-what-changed": "^1.1.2",
     "sharp": "^0.33.2",
     "style-loader": "^3.3.2",
-    "swr": "^2.2.5"
+    "swr": "^2.3.0"
   },
   "peerDependencies": {
     "react": "^18.3.1",
