@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedState } from '@mantine/hooks';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import { FacetCommonHooks, FromToRangeValues } from './types';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
@@ -84,12 +84,18 @@ const RangeFacet = ({
   },
 }: RangeFacetCardProps) => {
   const { data, rangeFilters, isSuccess } = hooks.useGetFacetData(field);
-  const [minMaxValue, setMinMaxValue] = React.useState<
+
+  const [debouncedMinimum, setDebouncedMinimum] = React.useState(minimum);
+
+  const [minMaxValue, setMinMaxValue] = useDebouncedState<
     FromToRangeValues<number>
-  >({
-    from: minimum,
-    to: maximum,
-  });
+  >(
+    {
+      from: minimum,
+      to: maximum,
+    },
+    200,
+  );
 
   const clearRangeFilterFromCohort = hooks.useClearFilter();
   const clearFilters = useCallback(() => {
@@ -112,7 +118,7 @@ const RangeFacet = ({
     [field, updateRangeFilter],
   );
 
-  console.log('rangeFilters', rangeFilters);
+  console.log('rangeFilters', data, rangeFilters);
 
   return (
     <div

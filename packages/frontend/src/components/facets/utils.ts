@@ -200,6 +200,7 @@ export const useGetFacetFilters = (index: string, field: string): Operation => {
 export const extractRangeValues = <T extends string | number>(
   filter?: Operation,
 ): FromToRange<T> | undefined => {
+  console.log('extractRangeValues', filter);
   if (filter !== undefined) {
     switch (filter.operator) {
       case '>':
@@ -217,6 +218,8 @@ export const extractRangeValues = <T extends string | number>(
       case 'and': {
         const a = extractRangeValues<T>(filter.operands[0]);
         const b = extractRangeValues<T>(filter.operands[1]);
+        const c = a && b ? { ...a, ...b } : (a ?? b ?? undefined);
+        console.log('extractRangeValues', a, b, c);
         return a && b ? { ...a, ...b } : (a ?? b ?? undefined);
       }
       default:

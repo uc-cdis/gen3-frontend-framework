@@ -189,9 +189,14 @@ export const CohortPanel = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
+      console.log('passed to extract', cohortFilters.root[field]);
+      console.log(
+        'extractRangeValues',
+        extractRangeValues(cohortFilters.root[field]),
+      );
       return {
         data: processRangeData(data?.[field]),
-        filters: extractRangeValues(cohortFilters.root[field]),
+        rangeFilters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };
     },
