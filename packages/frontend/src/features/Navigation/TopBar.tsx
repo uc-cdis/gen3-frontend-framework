@@ -102,12 +102,14 @@ const processTopBarItems = (
 export interface TopBarProps {
   readonly items: TopIconButtonProps[];
   readonly loginButtonVisibility?: LoginButtonVisibility;
+  readonly externalLoginUrl?: string;
   readonly classNames?: StylingOverrideWithMergeControl;
 }
 
 const TopBar = ({
   items,
   loginButtonVisibility = LoginButtonVisibility.Hidden,
+  externalLoginUrl,
   classNames = {},
 }: TopBarProps) => {
   const classNamesDefaults = {
@@ -144,6 +146,7 @@ const TopBar = ({
             <div className="flex items-center">
               <LoginButton
                 visibility={loginButtonVisibility}
+                externalLoginUrl={externalLoginUrl}
                 className={extractClassName('login', mergedClassnames)}
               />
             </div>
