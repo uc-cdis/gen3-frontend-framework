@@ -88,7 +88,6 @@ const FacetControlsHeader = ({
             <ActionIcon
               variant="subtle"
               onClick={() => {
-                console.log('toggleExpandFilter', field, isFilterExpanded);
                 toggleExpandFilter(field, !isFilterExpanded);
               }}
               className="mt-0.5 -ml-1.5"
@@ -98,13 +97,13 @@ const FacetControlsHeader = ({
               {isFilterExpanded ? (
                 <ExpandLessIcon
                   size="3em"
-                  color="accent.4"
+                  className={header.iconStyle}
                   aria-hidden="true"
                 />
               ) : (
                 <ExpandMoreIcon
                   size="3em"
-                  color="accent.4"
+                  className={header.iconStyle}
                   aria-hidden="true"
                 />
               )}
