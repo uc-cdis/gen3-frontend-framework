@@ -38,6 +38,5 @@ packages/sampleCommons/config/canine
 packages/sampleCommons/config/midrc
 packages/sampleCommons/config/heal
 packages/sampleCommons/config/bdc
-packages/sampleCommons/.env.development
 /packages/frontend/.rollup.cache/
 /packages/sampleCommons/.swc/
