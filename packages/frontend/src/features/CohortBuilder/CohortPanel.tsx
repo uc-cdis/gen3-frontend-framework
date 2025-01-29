@@ -1,17 +1,16 @@
 import React, { useMemo, useState } from 'react';
-import { Accordion, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
+  CoreState,
+  extractEnumFilterValue,
   type FacetDefinition,
+  FacetType,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
-  FacetType,
-  extractEnumFilterValue,
-  CoreState,
   useGetCountsQuery,
 } from '@gen3/core';
-import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
+import { type CohortPanelConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
@@ -27,7 +26,6 @@ import {
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
 import { FacetDataHooks } from '../../components/facets/types';
-import { FiltersPanel } from './FiltersPanel';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
@@ -40,120 +38,10 @@ import {
 } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
+import { TabbedPanel } from './Panels/TabbedPanel';
+import { AccordionPanel } from './Panels/AccordianPanel';
 
 const EmptyData = {};
-
-interface TabbablePanelProps {
-  filters: TabsConfig;
-  tabTitle: string;
-  facetDefinitions: Record<string, FacetDefinition>;
-  facetDataHooks: Record<FacetType, FacetDataHooks>;
-}
-
-const TabbedPanel = ({
-  filters,
-  tabTitle,
-  facetDefinitions,
-  facetDataHooks,
-}: TabbablePanelProps) => {
-  return (
-    <div>
-      <Tabs
-        variant="pills"
-        orientation="vertical"
-        keepMounted={false}
-        defaultValue={filters?.tabs[0].title ?? 'Filters'}
-      >
-        <Tabs.List>
-          {filters.tabs.map((tab: TabConfig) => {
-            return (
-              <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
-                {tab.title}
-              </Tabs.Tab>
-            );
-          })}
-        </Tabs.List>
-
-        {filters.tabs.map((tab: TabConfig) => {
-          return (
-            <Tabs.Panel
-              value={tab.title}
-              key={`filter-${tab.title}-tabPanel`}
-              className="w-1/4"
-            >
-              {Object.keys(facetDefinitions).length > 0 ? (
-                <FiltersPanel
-                  fields={tab.fields.reduce((acc, field) => {
-                    return [...acc, facetDefinitions[field]];
-                  }, [] as FacetDefinition[])}
-                  dataFunctions={facetDataHooks}
-                  valueLabel={tabTitle}
-                />
-              ) : null}
-            </Tabs.Panel>
-          );
-        })}
-      </Tabs>
-    </div>
-  );
-};
-
-const AccordionPanel = ({
-  filters,
-  tabTitle,
-  facetDefinitions,
-  facetDataHooks,
-}: TabbablePanelProps) => {
-  return (
-    <div>
-      <Accordion
-        chevronPosition="left"
-        multiple={true}
-        defaultValue={[filters?.tabs[0].title ?? 'Filters']}
-      >
-        {filters.tabs.map((tab: TabConfig) => {
-          return (
-            <Accordion.Item value={tab.title} key={`${tab.title}`}>
-              <Accordion.Control>{tab.title}</Accordion.Control>
-              <Accordion.Panel>
-                {Object.keys(facetDefinitions).length > 0 ? (
-                  <FiltersPanel
-                    fields={tab.fields.reduce((acc, field) => {
-                      return [...acc, facetDefinitions[field]];
-                    }, [] as FacetDefinition[])}
-                    dataFunctions={facetDataHooks}
-                    valueLabel={tabTitle}
-                  />
-                ) : null}
-              </Accordion.Panel>
-            </Accordion.Item>
-          );
-        })}
-      </Accordion>
-    </div>
-  );
-};
-
-const SinglePanel = ({
-  filters,
-  tabTitle,
-  facetDefinitions,
-  facetDataHooks,
-}: TabbablePanelProps) => {
-  return (
-    <div>
-      {Object.keys(facetDefinitions).length > 0 ? (
-        <FiltersPanel
-          fields={filters.tabs[0].fields.reduce((acc, field) => {
-            return [...acc, facetDefinitions[field]];
-          }, [] as FacetDefinition[])}
-          dataFunctions={facetDataHooks}
-          valueLabel={tabTitle}
-        />
-      ) : null}
-    </div>
-  );
-};
 
 /**
  * The main component that houses the charts, tabs, modals
@@ -352,7 +240,7 @@ export const CohortPanel = ({
             facetDataHooks={facetDataHooks}
           />
         ) : (
-          <SinglePanel
+          <TabbedPanel
             filters={filters}
             tabTitle={tabTitle}
             facetDefinitions={facetDefinitions}
