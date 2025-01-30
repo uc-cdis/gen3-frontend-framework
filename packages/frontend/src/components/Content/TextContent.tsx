@@ -61,15 +61,16 @@ const TextContent = ({
         <p
           className={className}
           dangerouslySetInnerHTML={{ __html: textString }}
+          aria-label="HTML content" // Provide context for HTML rendered content
         />
       );
     }
     case ContentType.TextArray: {
       const textArray = !Array.isArray(text) ? [text] : text;
       return (
-        <div className={className}>
+        <div className={className} role="list" aria-label="Text array">
           {textArray.map((item) => (
-            <p className="my-2" key={hashCode(item)}>
+            <p className="my-2" key={hashCode(item)} role="listitem">
               {item}
             </p>
           ))}
@@ -79,11 +80,10 @@ const TextContent = ({
     case ContentType.Markdown: {
       const textString = Array.isArray(text) ? text.join('') : text;
       return (
-        <div>
+        <div aria-label="Markdown content">
           <Markdown
             remarkPlugins={[remarkGfm]}
             components={{
-              // define some formatting for the ai response
               p(props: any) {
                 const { node, ...rest } = props;
                 return <p className="text-lg my-1" {...rest} />;
@@ -122,7 +122,10 @@ const TextContent = ({
               <Anchor
                 classNames={{ root: mergedClassname }}
                 href={`mailto:${email}`}
-              >{` ${email}.`}</Anchor>
+                aria-label={`Send an email to ${email}`} // Provide label for email purpose
+              >
+                {` ${email}.`}
+              </Anchor>
             )}
           </span>
         </div>
@@ -136,7 +139,11 @@ const TextContent = ({
         : DEFAULT_STYLE;
       const textString = Array.isArray(text) ? text.join('') : text;
       if (!link) {
-        return <div className={mergedClassname}> Link is not defined.</div>;
+        return (
+          <div className={mergedClassname} aria-label="No link defined">
+            Link is not defined.
+          </div>
+        );
       }
 
       return (
@@ -147,7 +154,10 @@ const TextContent = ({
               <Anchor
                 classNames={{ root: mergedClassname }}
                 href={link}
-              >{` ${linkText ?? link}.`}</Anchor>
+                aria-label={`Visit the link: ${linkText || link}`} // Label to clarify the link purpose
+              >
+                {` ${linkText ?? link}.`}
+              </Anchor>
             )}
           </span>
         </div>
@@ -156,11 +166,10 @@ const TextContent = ({
     case ContentType.Text:
     default:
       return (
-        <div className={className}>
+        <div className={className} aria-label="Plain text content">
           <p>{text.toString()}</p>
         </div>
       );
   }
 };
-
 export default TextContent;
