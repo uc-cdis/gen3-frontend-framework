@@ -25,7 +25,7 @@
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run start",
     "build:start": "npm run build && npm run start",
-    "setProxy" : "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
+    "setProxy": "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces"
@@ -72,7 +72,7 @@
     "eslint": "8.57.0",
     "eslint-config-next": "^14.2.15",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.36.1",

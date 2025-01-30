@@ -26,6 +26,9 @@ const nextConfig = {
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
+    experimental: {
+      optimizePackageImports: ['@gen3/core', '@gen3/frontend'],
+    },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   transpilePackages: ['@gen3/core', '@gen3/frontend'],

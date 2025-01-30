@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
-import { MdClose as CloseIcon } from 'react-icons/md';
 import { FacetCommonHooks, FromToRangeValues } from './types';
-import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
 import {
