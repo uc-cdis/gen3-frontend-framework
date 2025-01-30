@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, Stack } from '@mantine/core';
+import { Group, Select, Stack, Text } from '@mantine/core';
 import type { TabConfig } from '../types';
 import { FiltersPanel } from '../FiltersPanel';
 import type { FacetDefinition } from '@gen3/core';
@@ -17,22 +17,15 @@ export const DropdownPanel = ({
     return { label: tab.title, value: idx.toString() };
   });
 
-  console.log('items', items);
-  console.log(
-    'filters.tabs',
-    filters,
-    Number(value),
-    filters.tabs[Number(value)].fields,
-    facetDefinitions,
-  );
-
   const fields = filters.tabs[Number(value)].fields.reduce((acc, field) => {
     return [...acc, facetDefinitions[field]];
   }, [] as FacetDefinition[]);
 
-  console.log('fields', fields);
   return (
-    <Stack>
+    <Stack className="px-2">
+      <Group>
+        <Text fw={800}>Filters</Text>
+      </Group>
       <Select
         label="Filters"
         data={items}

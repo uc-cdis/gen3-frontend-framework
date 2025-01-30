@@ -231,7 +231,7 @@ export const CohortPanel = ({
   }
 
   return (
-    <div className="flex flex-col mt-3 relative bg-base-light">
+    <div className="flex flex-col mt-3 relative px-4 bg-base-light">
       <CohortManager index={index} />
       <div className="flex">
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
@@ -249,7 +249,7 @@ export const CohortPanel = ({
             facetDataHooks={facetDataHooks}
           />
         )}
-        <div className="flex flex-col  w-full">
+        <div className="flex flex-col w-full">
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
