@@ -205,7 +205,6 @@ const DataSetContentsTable = ({
     },
     renderDetailPanel: ({ row }) => {
       const rowData = data[row.id];
-
       return (
         <div className="flex flex-col w-full gap-y-4 pr-4">
           {rowData?.files.length > 0 && (
@@ -216,7 +215,7 @@ const DataSetContentsTable = ({
               data={rowData?.files}
             />
           )}
-          {rowData.additionalData.length > 0 && (
+          {rowData?.additionalData.length > 0 && (
             <AdditionalDataTable
               header={'Additional Data'}
               data={rowData?.additionalData}
