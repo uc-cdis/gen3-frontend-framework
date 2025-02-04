@@ -21,7 +21,8 @@ const handleSelected = async (
   endSession?: () => void,
   externalLoginUrl?: string,
 ) => {
-  if (!isAuthenticated) await router.push(externalLoginUrl || `Login?redirect=${referrer}`);
+  if (!isAuthenticated)
+    await router.push(externalLoginUrl || `Login?redirect=${referrer}`);
   else {
     if (endSession) endSession();
   }
@@ -77,7 +78,13 @@ const LoginButton = ({
     >
       <UnstyledButton
         onClick={() =>
-          handleSelected(authenticated, router, pathname, endSession, externalLoginUrl)
+          handleSelected(
+            authenticated,
+            router,
+            pathname,
+            endSession,
+            externalLoginUrl,
+          )
         }
       >
         <div className={mergedClassname}>
