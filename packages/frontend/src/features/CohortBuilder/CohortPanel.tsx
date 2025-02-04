@@ -39,7 +39,6 @@ import {
 import { toDisplayName } from '../../utils';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 import { TabbedPanel } from './Panels/TabbedPanel';
-import { AccordionPanel } from './Panels/AccordianPanel';
 import DropdownPanel from './Panels/DropdownPanel';
 
 const EmptyData = {};
@@ -231,24 +230,28 @@ export const CohortPanel = ({
   }
 
   return (
-    <div className="flex flex-col mt-3 relative px-4 bg-base-light">
+    <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
       <CohortManager index={index} />
-      <div className="flex">
-        {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
-          <DropdownPanel
-            filters={filters}
-            tabTitle={tabTitle}
-            facetDefinitions={facetDefinitions}
-            facetDataHooks={facetDataHooks}
-          />
-        ) : (
-          <TabbedPanel
-            filters={filters}
-            tabTitle={tabTitle}
-            facetDefinitions={facetDefinitions}
-            facetDataHooks={facetDataHooks}
-          />
-        )}
+      <div className="flex w-full">
+        <div className="flex w-1/3">
+          {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
+            <DropdownPanel
+              index={index}
+              filters={filters}
+              tabTitle={tabTitle}
+              facetDefinitions={facetDefinitions}
+              facetDataHooks={facetDataHooks}
+            />
+          ) : (
+            <TabbedPanel
+              index={index}
+              filters={filters}
+              tabTitle={tabTitle}
+              facetDefinitions={facetDefinitions}
+              facetDataHooks={facetDataHooks}
+            />
+          )}
+        </div>
         <div className="flex flex-col w-full">
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel

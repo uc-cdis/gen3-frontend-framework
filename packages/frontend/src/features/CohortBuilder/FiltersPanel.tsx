@@ -15,10 +15,7 @@ export const FiltersPanel = ({
   valueLabel,
 }: FiltersPanelProps): JSX.Element => {
   return (
-    <div
-      data-testid="filters-facets"
-      className="flex flex-col gap-y-4 px-4 w-full"
-    >
+    <div data-testid="filters-facets" className="flex flex-col gap-y-4 w-full">
       {fields.map((facetDefinition) => {
         return createFacetCard(
           facetDefinition,
@@ -28,7 +25,7 @@ export const FiltersPanel = ({
           undefined,
           false,
           facetDefinition.label,
-          'w-64',
+          'w-full',
         );
       })}
     </div>

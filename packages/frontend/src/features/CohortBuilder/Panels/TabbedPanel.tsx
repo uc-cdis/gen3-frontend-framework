@@ -6,6 +6,7 @@ import React from 'react';
 import { TabbablePanelProps } from './types';
 
 const VerticalTabbedPanel = ({
+  index,
   filters,
   tabTitle,
   facetDefinitions,
@@ -75,6 +76,7 @@ const SinglePanel = ({
 };
 
 export const TabbedPanel = ({
+  index,
   filters,
   tabTitle,
   facetDefinitions,
@@ -82,6 +84,7 @@ export const TabbedPanel = ({
 }: TabbablePanelProps) => {
   return filters.tabs.length > 1 ? (
     <VerticalTabbedPanel
+      index={index}
       filters={filters}
       tabTitle={tabTitle}
       facetDefinitions={facetDefinitions}
@@ -89,6 +92,7 @@ export const TabbedPanel = ({
     />
   ) : (
     <SinglePanel
+      index={index}
       filters={filters}
       tabTitle={tabTitle}
       facetDefinitions={facetDefinitions}
