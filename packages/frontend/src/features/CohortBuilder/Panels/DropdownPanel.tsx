@@ -78,6 +78,11 @@ export const DropdownPanel = ({
           <Switch />
         </Group>
         <Select
+          classNames={{
+            options: 'border-1 border-base-dark',
+            option: 'hover:bg-primary-lightest',
+          }}
+          withCheckIcon={false}
           data={items}
           value={value === null ? '0' : value}
           onChange={setValue}
