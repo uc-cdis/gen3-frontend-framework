@@ -16,6 +16,7 @@ import {
   FacetHeader,
 } from './components';
 import { FacetCardProps, FacetCommonHooks } from './types';
+import { Icon } from '@iconify/react';
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetCommonHooks>,
@@ -29,9 +30,11 @@ type FacetHeaderProps = Pick<
   | 'isFacetView'
   | 'header'
 > & {
+  showSettings?: boolean;
   showClearSelection?: boolean;
   toggleFlip?: () => void;
   toggleSearch?: () => void;
+  toggleSettings?: () => void;
 };
 
 /**
@@ -40,6 +43,7 @@ type FacetHeaderProps = Pick<
  * @param description - describes information about the facet
  * @param hooks - object defining the hooks required by this facet component
  * @param facetName - name of the Facet in human-readable form
+ * @param showSettings - show filter settings AND/OR
  * @param showSearch - if the search icon show be displayed
  * @param showFlip - if the flip icon should be displayed
  * @param showClearSelection - if the clear selection icon should be displayed
@@ -54,10 +58,12 @@ const FacetControlsHeader = ({
   description,
   hooks,
   facetName,
+  showSettings = true,
   showSearch = false,
   showFlip = false,
   showClearSelection = true,
   isFacetView = false,
+  toggleSettings = undefined,
   toggleFlip = undefined,
   toggleSearch = undefined,
   dismissCallback = undefined,
@@ -125,6 +131,24 @@ const FacetControlsHeader = ({
         </Tooltip>
       </div>
       <div className="flex flex-row">
+        {showSettings ? (
+          <Tooltip label="Filter Settings">
+            <FacetIconButton
+              onClick={() => {
+                if (toggleExpandFilter) toggleExpandFilter(field, true);
+                if (toggleSettings) toggleSettings();
+              }}
+              aria-label="Search"
+            >
+              <Icon
+                width={12}
+                height={12}
+                icon="gen3:settings"
+                aria-hidden="true"
+              />
+            </FacetIconButton>
+          </Tooltip>
+        ) : null}
         {showSearch ? (
           <Tooltip label="Search values">
             <FacetIconButton

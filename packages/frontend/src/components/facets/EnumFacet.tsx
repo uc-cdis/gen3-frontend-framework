@@ -33,17 +33,22 @@ const EnumFacet = ({
     iconStyle: controlsIconStyle,
   },
 }: FacetCardProps<EnumFacetHooks>) => {
+  const [isSettings, setIsSessings] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const isFilterExpanded =
     hooks.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
   const toggleSearch = () => {
-    setIsSearching(!isSearching);
+    setIsSearching((isSearching) => !isSearching);
+  };
+
+  const toggleSettings = () => {
+    setIsSessings((isSettings) => !isSettings);
   };
 
   const toggleFlip = () => {
-    setIsFacetView(!isFacetView);
+    setIsFacetView((isFacetView) => !isFacetView);
   };
 
   return (
@@ -63,6 +68,7 @@ const EnumFacet = ({
         isFacetView={isFacetView}
         toggleFlip={toggleFlip}
         toggleSearch={toggleSearch}
+        toggleSettings={toggleSettings}
         dismissCallback={dismissCallback}
         header={header}
       />
@@ -76,6 +82,7 @@ const EnumFacet = ({
           facetName={facetName}
           valueLabel={valueLabel}
           hooks={hooks}
+          isSettings={isSettings}
           isFacetView={isFacetView}
           isSearching={isSearching}
           hideIfEmpty={hideIfEmpty}

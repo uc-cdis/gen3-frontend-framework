@@ -1,5 +1,11 @@
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
-import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Checkbox,
+  LoadingOverlay,
+  SegmentedControl,
+  TextInput,
+} from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
 import { fieldNameToTitle } from '@gen3/core';
@@ -17,6 +23,7 @@ interface FacetEnumListProps {
   facetName?: string;
   valueLabel: string;
   hooks: EnumFacetHooks;
+  isSettings?: boolean;
   isSearching?: boolean;
   isFacetView?: boolean;
   showPercent?: boolean;
@@ -29,6 +36,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   facetName,
   hooks,
   valueLabel,
+  isSettings = false,
   isFacetView = true,
   isSearching = false,
   showPercent = false,
@@ -38,7 +46,9 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const settingRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [combineMode, setCombineMode] = useState<'or' | 'and'>('and');
   const { data, enumFilters, isSuccess, error } = hooks.useGetFacetData(field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters ?? []);
   const totalCount = hooks?.useTotalCounts ? hooks.useTotalCounts() : 1;
@@ -62,6 +72,12 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       setSearchTerm('');
     }
   }, [isSearching, searchTerm]);
+
+  useEffect(() => {
+    if (isSettings) {
+      settingRef?.current?.focus();
+    }
+  }, [settingRef, isSettings]);
 
   useDeepCompareEffect(() => {
     setSelectedEnums(enumFilters ?? []);
@@ -305,6 +321,21 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                 ) : undefined
               }
             />
+          )}
+          {isSettings && (
+            <div className="flex w-full justify-center">
+              <SegmentedControl
+                ref={settingRef}
+                value={combineMode}
+                onChange={(value: string) =>
+                  setCombineMode(value as 'and' | 'or')
+                }
+                data={[
+                  { label: 'AND', value: 'and' },
+                  { label: 'OR', value: 'or' },
+                ]}
+              />
+            </div>
           )}
           <div
             className={
