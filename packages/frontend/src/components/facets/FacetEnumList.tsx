@@ -5,6 +5,7 @@ import {
   LoadingOverlay,
   SegmentedControl,
   TextInput,
+  Tooltip, useMantineTheme,
 } from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
@@ -17,6 +18,7 @@ import { EnumFacetHooks } from './EnumFacet';
 import { SortType } from './types';
 import { updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { Icon } from '@iconify/react';
 
 interface FacetEnumListProps {
   field: string;
@@ -64,6 +66,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     type: 'alpha',
     direction: 'asc',
   });
+  const theme = useMantineTheme();
 
   useEffect(() => {
     if (isSearching) {
@@ -324,7 +327,13 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
           )}
           {isSettings && (
             <div className="flex w-full justify-center">
+              <div className="flex items-center space-x-1 mt-1">
               <SegmentedControl
+                classNames = {{
+                  root: 'border-1 border-accent rounded-l-md rounded-r-md',
+                  control: 'p-0 m-0',
+                  indicator: 'bg-accent text-accent-contrast'
+                }}
                 ref={settingRef}
                 value={combineMode}
                 onChange={(value: string) =>
@@ -335,6 +344,15 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                   { label: 'OR', value: 'or' },
                 ]}
               />
+                <Tooltip label="Combine filters with AND or OR">
+                <Icon
+                  icon="gen3:info"
+                  height={12}
+                  width={12}
+                  color={theme.colors.accent[4]}
+                />
+                </Tooltip>
+              </div>
             </div>
           )}
           <div

@@ -60,7 +60,7 @@ https://localhost/Explorer/files
 ### Charts
 The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
 
-```json    
+```json
 "charts": {
       "race": {
         "chartType": "fullPie",
@@ -76,7 +76,7 @@ The charts section configures data visualizations for the explorer page. Each ch
       }
     }
 ```
-    
+
 The currently supported chart types are:
 * `bar`: a regular vertical bar chart.
 * `horizontalStacked`: horizontal stacked bar chart.
