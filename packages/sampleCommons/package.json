@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
