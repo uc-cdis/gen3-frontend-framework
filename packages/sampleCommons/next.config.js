@@ -22,16 +22,13 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
-    optimizePackageImports: ['@gen3/frontend', '@gen3/core'],
-    turbo: {
-      moduleIdStrategy: 'deterministic',
-    },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  transpilePackages: ['@gen3/frontend'],
+  transpilePackages: ['@gen3/core', '@gen3/frontend'],
   basePath: basePath,
   webpack: (config) => {
     config.infrastructureLogging = {

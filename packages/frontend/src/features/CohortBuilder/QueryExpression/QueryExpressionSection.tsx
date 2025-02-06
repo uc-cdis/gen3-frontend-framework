@@ -198,33 +198,22 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               {cohortName}
             </OverflowTooltippedLabel>
             <React.Fragment>
-              <Button
-                data-testid="button-clear-all-cohort-filters"
-                className={`text-sm font-content mx-2 px-2 hover:bg-primary-lightest hover:text-primary-content-lightest hover:rounded-md ${
-                  noFilters
-                    ? 'hidden'
-                    : 'cursor-pointer text-secondary-contrast-darkest'
-                }`}
-                onClick={clearAllFilters}
-                disabled={noFilters}
-                variant="light"
-              >
-                Clear All
-              </Button>
-              <div
-                className={`flex gap-2 ml-auto mr-3 ${hideImportExport ? 'hidden' : ''}`}
-              >
-                <JSONObjectDownloadButton
-                  getData={getData}
-                  filename="cohort.json"
-                  tooltip="Export Cohort"
+              {!displayOnly && (
+                <button
+                  data-testid="button-clear-all-cohort-filters"
+                  className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
+                    noFilters
+                      ? 'hidden'
+                      : 'cursor-pointer text-secondary-contrast-darkest'
+                  }`}
+                  onClick={clearAllFilters}
                   disabled={noFilters}
-                />
-                <UploadJSONButton
-                  handleFileChange={setCohort}
-                  tooltip="Import Cohort"
-                />
-
+                >
+                  Clear All
+                </button>
+              )}
+              <div className="display flex gap-2 ml-auto mr-3">
+                <CohortSelector />
                 <Tooltip
                   label={
                     noFilters

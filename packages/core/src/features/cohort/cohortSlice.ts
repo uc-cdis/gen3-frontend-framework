@@ -56,6 +56,13 @@ export interface CurrentCohortState {
   message?: string[];
 }
 
+export const EmptyCohort: Cohort = {
+  id: 'default',
+  name: 'Filters',
+  filters: {},
+  modified_datetime: new Date().toISOString(),
+};
+
 interface UpdateFilterParams {
   index: string;
   field: string;
@@ -65,6 +72,10 @@ interface UpdateFilterParams {
 interface SetFilterParams {
   index: string;
   filters: FilterSet;
+}
+
+interface SetAllIndexFiltersParams {
+  filters: IndexedFilterSet;
 }
 
 interface RemoveFilterParams {
@@ -225,6 +236,18 @@ export const cohortSlice = createSlice({
         },
       });
     },
+    setCohortIndexFilters: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetAllIndexFiltersParams>,
+    ) => {
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: { ...action.payload.filters },
+        },
+      };
+    },
+
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (state, action: PayloadAction<RemoveFilterParams>) => {
       const { index, field } = action.payload;
@@ -359,6 +382,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
 export const {
   updateCohortFilter,
   setCohortFilter,
+  setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
   removeCohort,
@@ -483,6 +507,7 @@ export const selectAvailableCohortByName = (
     .find((cohort: Cohort) => cohort.name === name);
 
 const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
+
 /**
  * Select a filter from the index.
  * returns undefined.

@@ -1,10 +1,10 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.68",
+  "version": "0.10.78",
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
@@ -20,15 +20,21 @@
     "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
+    "@mantine/core": "^7.16.0",
+    "@mantine/dates": "^7.16.0",
+    "@mantine/form": "^7.16.0",
+    "@mantine/hooks": "^7.16.0",
+    "@mantine/modals": "^7.16.0",
+    "@mantine/notifications": "^7.16.0",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "cookies-next": "^4.3.0",
     "file-system-db": "^2.1.0",
     "idb": "^8.0.0",
     "jose": "^4.15.9",
-    "mantine-react-table": "^2.0.0-beta.7",
-    "postcss-import": "^16.1.0",
-    "postcss-preset-mantine": "^1.17.0"
+    "mantine-react-table": "^2.0.0-beta.8",
+    "next": "^14.2.23",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
@@ -37,11 +43,9 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@welldone-software/why-did-you-render": "^8.0.3",
-    "next": "^14.2.15",
     "postcss-import": "^16.1.0",
     "postcss-preset-mantine": "^1.17.0",
-    "react": "^18.3.1",
-    "react-dom": "18.3.1"
+    "postcss-simple-vars": "^7.0.1"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.16",

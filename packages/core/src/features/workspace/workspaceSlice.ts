@@ -1,20 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CoreState } from '../../reducers';
-import { type WorkspaceId, WorkspaceStatus } from './types';
+import {
+  RequestedWorkspaceStatus,
+  type WorkspaceId,
+  WorkspaceStatus,
+} from './types';
+import { getCurrentTimestamp } from '../../utils/time';
 
 export const NO_WORKSPACE_ID = 'none';
 
-export type RequestedWorkspaceStatus = 'Launching' | 'Terminating' | 'NotSet';
+// the requested state for a workspace
 export interface WorkspaceState {
   id: string;
-  status: WorkspaceStatus;
-  requestedStatus: RequestedWorkspaceStatus;
+  status: WorkspaceStatus; // current status of the workspace
+  requestedStatus: RequestedWorkspaceStatus; // the goal state for the workspace
+  requestedStatusTimestamp: number;
 }
 
 const initialState: WorkspaceState = {
   id: NO_WORKSPACE_ID,
   status: WorkspaceStatus.NotFound,
-  requestedStatus: 'NotSet',
+  requestedStatus: RequestedWorkspaceStatus.Unset,
+  requestedStatusTimestamp: getCurrentTimestamp(),
 };
 
 const slice = createSlice({
@@ -38,7 +45,11 @@ const slice = createSlice({
       state,
       action: PayloadAction<RequestedWorkspaceStatus>,
     ) => {
-      return { ...state, requestedStatus: action.payload };
+      return {
+        ...state,
+        requestedStatus: action.payload,
+        requestedStatusTimestamp: getCurrentTimestamp(),
+      };
     },
     setActiveWorkspace: (_state, action: PayloadAction<WorkspaceState>) => {
       return { ...action.payload };
@@ -65,3 +76,7 @@ export const selectActiveWorkspaceStatus = (
 export const selectRequestedWorkspaceStatus = (
   state: CoreState,
 ): RequestedWorkspaceStatus => state.activeWorkspace.requestedStatus;
+
+export const selectRequestedWorkspaceStatusTimestamp = (
+  state: CoreState,
+): number => state.activeWorkspace.requestedStatusTimestamp;

@@ -1,8 +1,7 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
-import React, { useEffect, useRef } from 'react';
-
+import React, { useEffect, useMemo, useRef } from 'react';
+import { MantineProvider } from '@mantine/core';
 import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-
 import { initGrafanaFaro } from '../lib/Grafana/grafana';
 
 import {
@@ -11,10 +10,12 @@ import {
   type ModalsConfig,
   RegisteredIcons,
   Fonts,
+  createMantineTheme,
   SessionConfiguration,
-  registerCohortDiscoveryApp,
+  // registerCohortDiscoveryApp,
   registerCohortDiversityApp,
   registerCohortBuilderDefaultPreviewRenderers,
+  registerMetadataSchemaApp,
 } from '@gen3/frontend';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -68,25 +69,31 @@ const Gen3App = ({
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
-    registerCohortDiscoveryApp();
+    //  registerCohortDiscoveryApp();
     registerCohortDiversityApp();
+    registerMetadataSchemaApp();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();
     // }
   }, []);
 
+  const theme = useMemo(
+    () => createMantineTheme(themeFonts, colors),
+    [themeFonts, colors],
+  );
+
   return (
     <FaroErrorBoundary>
-      <Gen3Provider
-        colors={colors}
-        icons={icons}
-        fonts={themeFonts}
-        sessionConfig={sessionConfig}
-        modalsConfig={modalsConfig}
-      >
-        <Component {...pageProps} />
-      </Gen3Provider>
+      <MantineProvider theme={theme}>
+        <Gen3Provider
+          icons={icons}
+          sessionConfig={sessionConfig}
+          modalsConfig={modalsConfig}
+        >
+          <Component {...pageProps} />
+        </Gen3Provider>
+      </MantineProvider>
     </FaroErrorBoundary>
   );
 };

@@ -75,7 +75,11 @@ const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
         color="black"
         size="md"
         className="w-1/3"
-        label={<Text size="md">Authorize with credentials</Text>}
+        label={
+          <Text size="md" c="primary.4">
+            Authorize with credentials
+          </Text>
+        }
         labelPosition="center"
       />
       <Group>

@@ -13,10 +13,12 @@ const Dictionary = () => {
   const { dictionary, categories, visibleCategories, config } =
     useDictionaryContext();
 
-  const { scrollIntoView, targetRef, scrollableRef } =
-    useScrollIntoView<HTMLSpanElement>({
-      offset: 60,
-    });
+  const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView<
+    HTMLSpanElement,
+    HTMLDivElement
+  >({
+    offset: 60,
+  });
 
   const scrollTo = useCallback((item: MatchingSearchResult) => {
     setSelectedId(() => SearchPathToPropertyIdString(item));
@@ -24,6 +26,7 @@ const Dictionary = () => {
 
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
+      // @ts-expect-error need to refactor this
       targetRef.current = itemRef;
       scrollIntoView();
     },
