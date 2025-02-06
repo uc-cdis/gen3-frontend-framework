@@ -22,8 +22,7 @@ import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
 } from '../style';
-import JSONObjectDownloadButton from '../../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
-import UploadJSONButton from '../../../components/Buttons/UploadJSONButton';
+import CohortSelector from '../CohortSelector';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -213,7 +212,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector />
+                <CohortSelector index={index} filters={filters} />
                 <Tooltip
                   label={
                     noFilters
