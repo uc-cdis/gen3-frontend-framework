@@ -8,7 +8,6 @@ import {
   UnknownAction,
 } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
-import { type CoreDispatch } from '../../store';
 import { Operation, FilterSet, IndexedFilterSet } from '../filters';
 import { defaultCohortNameGenerator } from './utils';
 import {
@@ -237,15 +236,19 @@ export const cohortSlice = createSlice({
       });
     },
     setCohortIndexFilters: (
-      state: Draft<CohortState>,
+      state,
       action: PayloadAction<SetAllIndexFiltersParams>,
     ) => {
-      return {
-        cohort: {
-          ...state.cohort,
-          filters: { ...action.payload.filters },
+      const { filters } = action.payload;
+      const currentCohortId = getCurrentCohort(state);
+      cohortsAdapter.updateOne(state, {
+        id: currentCohortId,
+        changes: {
+          filters: filters,
+          modified: true,
+          modified_datetime: new Date().toISOString(),
         },
-      };
+      });
     },
 
     // removes a filter to the cohort filter set at the given index
@@ -443,7 +446,7 @@ export const selectCohortNameById = (
  */
 export const setActiveCohort =
   (cohortId: string): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch: CoreDispatch /* getState */) => {
+  async (dispatch) => {
     dispatch(setCurrentCohortId(cohortId));
   };
 
@@ -532,7 +535,7 @@ export const setActiveCohortList =
   (
     cohorts?: Cohort[],
   ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch: CoreDispatch, getState) => {
+  async (dispatch, getState) => {
     // set the list of all cohorts
     if (cohorts) {
       dispatch(setCohortList(cohorts));
