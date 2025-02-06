@@ -1,34 +1,34 @@
 {
   "navigation": {
+    "classNames": {
+      "root": "pl-1 mr-6 bg-base-max text-primary opacity-100 hover:opacity-100",
+      "item": "py-2 px-4 hover:bg-base-lightest hover:text-base-contrast",
+      "navigationPanel": "bg-base-max text-primary"
+    },
     "logo": {
       "src": "/images/brh/logo.png",
       "height": 256,
+      "width": 320,
       "href": "/Discovery"
     },
     "items": [
       {
         "icon": "gen3:query",
-        "href": "https://brh.data-commons.org/discovery",
+        "href": "/Discovery",
         "name": "Discovery",
         "tooltip": "Use free-text search and tags to rapidly find relevant studies, discover new datasets across multiple resources, and easily export selected data files to the analysis workspace."
       },
       {
-        "icon": "gen3:aisearch",
-        "href": "https://brh.data-commons.org/ff/Discovery",
-        "name": "Search",
-        "tooltip": "Use free-text search and tags to rapidly find relevant studies, discover new datasets across multiple resources, and easily export selected data files to the analysis workspace."
-      },
-      {
         "name": "Workspace",
-        "link": "https://brh.data-commons.org/workspace",
+        "href": "/Workspace",
         "icon": "gen3:workspace",
         "tooltip": "Gen3 workspaces are secure data analysis environments in the cloud that can access data from one or more data resources."
       },
       {
-        "name": "Example Analysis",
-        "link": "https://brh.data-commons.org/resource-browser",
-        "icon": "gen3:bar-chart",
-        "tooltip": "Learn how to use Jupyter Notebooks to explore and visualize data discovered in the Biomedical Research Hub by running a static tutorial notebook, or use one of these examples as a launching point for your own custom analysis."
+        "name": "Notebooks",
+        "href": "/NotebookLite",
+        "icon": "gen3:notebook",
+        "tooltip": "Notebooks for basic analysis"
       },
       {
         "icon": "gen3:profile",
@@ -68,9 +68,11 @@
         }
       }
     ],
-    "showLogin": true,
+    "loginButtonVisibility": "visible",
     "classNames": {
-      "root": "bg-primary"
+      "root": "border-base-light text-primary-contrast-dark",
+      "label": "text-primary-contrast",
+      "button": "hover:border-white"
     }
   }
 }

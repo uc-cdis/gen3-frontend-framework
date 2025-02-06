@@ -33,7 +33,9 @@ const getSubPath = (argPath = ''): SubPath => {
     }
     return {
       valid: 'ok',
-      commonsSubPath: addSlash(process.env.GEN3_SUBMISSION_URL || commonsDefaultPath),
+      commonsSubPath: addSlash(
+        process.env.GEN3_SUBMISSION_URL || commonsDefaultPath,
+      ),
     };
   }
   const arg1 = argPath;
@@ -54,7 +56,6 @@ const getSubPath = (argPath = ''): SubPath => {
   return { valid: 'ok', commonsSubPath: addSlash(arg1) };
 };
 
-
 const httpAgent = new HTTPAgent();
 const httpsAgent = new HTTPSAgent({
   rejectUnauthorized: false,
@@ -62,7 +63,6 @@ const httpsAgent = new HTTPSAgent({
 
 const fetchJson = async (url: string) => {
   console.log(`Fetching ${url}`);
-
 
   return fetchWithRetry(url, {
     // TODO: fix the typing to remove the ts-ignore
@@ -90,7 +90,6 @@ type ActionList = Array<Promise<void>>;
 const main = () => {
   const {
     values: { url, out },
-
   } = parseArgs({
     options: {
       url: {
@@ -102,7 +101,7 @@ const main = () => {
         short: 'o',
         default: `${__dirname}`,
       },
-    }
+    },
   });
 
   const { valid, commonsSubPath } = getSubPath(url);

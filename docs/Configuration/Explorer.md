@@ -42,7 +42,46 @@ The configuration for the explorer is stored an array of objects. Each object in
   }
 ]
 ```
+### Multiple Configuration Support
 
+Explorer can also support multiple configurations. To use this create
+one or more configuration files in the directory ```config/COMMONS_NAME/explorer```
+The name of the file is then passed to Explorer as path.
+For example if there are two configuration files:
+```cases.json``` and ```files.json```, the URL for these will be
+```bash
+https://localhost/Explorer/cases
+```
+and
+```bash
+https://localhost/Explorer/files
+```
+
+### Charts
+The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
+
+```json    
+"charts": {
+      "race": {
+        "chartType": "fullPie",
+        "title": "Race"
+      },
+      "ethnicity": {
+        "chartType": "horizontalStacked",
+        "title": "Ethnicity"
+      },
+      "gender": {
+        "chartType": "bar",
+        "title": "Gender"
+      }
+    }
+```
+    
+The currently supported chart types are:
+* `bar`: a regular vertical bar chart.
+* `horizontalStacked`: horizontal stacked bar chart.
+* `fullPie`: full pie chart.
+* `donut`: pie chart with a hole.
 
 ### Download Table Data
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
+  AggregationsData,
   JSONObject,
   MetadataPaginationParams,
   selectAuthzMappingData,
@@ -19,7 +20,11 @@ import {
 } from '../../types';
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
-import { processAllSummaries, processAuthorizations } from '../utils';
+import {
+  processAllSummaries,
+  processAuthorizations,
+  processChartData,
+} from '../utils';
 import { SummaryStatisticsConfig } from '../../Statistics';
 import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
@@ -104,10 +109,13 @@ const processAdvancedSearchTerms = (
     return {
       key,
       keyDisplayName,
-      valueDisplayNames: values.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-      }, {} as Record<string, string>),
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   });
 };
@@ -429,6 +437,7 @@ export const useLoadAllData = ({
   const [summaryStatistics, setSummaryStatistics] = useState<SummaryStatistics>(
     [],
   );
+  const [chartData, setChartData] = useState<AggregationsData>({});
 
   const {
     mdsData,
@@ -476,12 +485,21 @@ export const useLoadAllData = ({
     setSummaryStatistics(
       processAllSummaries(searchedData, discoveryConfig?.aggregations),
     );
-  }, [searchedData, discoveryConfig?.aggregations]);
-
-  // const { summaryStatistics } = useGetSummaryStatistics({
-  //   data: searchedData,
-  //   aggregationConfig: discoveryConfig?.aggregations,
-  // });
+    if (
+      discoveryConfig.features.chartsSection?.charts &&
+      searchedData.length > 0
+    )
+      setChartData(
+        processChartData(
+          searchedData,
+          Object.keys(discoveryConfig.features.chartsSection.charts),
+        ),
+      );
+  }, [
+    searchedData,
+    discoveryConfig?.aggregations,
+    discoveryConfig.features.chartsSection?.charts,
+  ]);
 
   return {
     data: manualSortingAndPagination ? paginatedData : searchedData,
@@ -490,6 +508,7 @@ export const useLoadAllData = ({
     suggestions: suggestions,
     advancedSearchFilterValues,
     summaryStatistics,
+    charts: chartData,
     dataRequestStatus: {
       isUninitialized,
       isFetching,

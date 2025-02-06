@@ -1,11 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  createTheme,
-  MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
-} from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -16,16 +11,14 @@ import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
 interface Gen3ProviderProps {
-  colors: Record<string, TenStringArray>;
-  icons: RegisteredIcons;
-  fonts: Fonts;
+  icons: Array<RegisteredIcons>;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   children?: ReactNode | undefined;
 }
 
 // Define theme for mantine v7
-const createMantineTheme = (
+export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
 ) => {
@@ -87,31 +80,25 @@ const createMantineTheme = (
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
-  colors,
   icons,
-  fonts,
   sessionConfig,
   modalsConfig,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
-    addCollection(icons);
+    icons.forEach((i) => addCollection(i));
   }, [icons]);
-
-  const theme = createMantineTheme(fonts, colors);
 
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
-        <ModalsProvider>
-          <Notifications />
-          <SessionProvider {...sessionConfig}>
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
-          </SessionProvider>
-        </ModalsProvider>
-      </MantineProvider>
+      <ModalsProvider>
+        <Notifications />
+        <SessionProvider {...sessionConfig}>
+          <Gen3ModalsProvider config={modalsConfig}>
+            {children}
+          </Gen3ModalsProvider>
+        </SessionProvider>
+      </ModalsProvider>
     </CoreProvider>
   );
 };

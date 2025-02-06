@@ -7,7 +7,7 @@ import React from 'react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { labelEnd } from 'micromark-core-commonmark';
 
-const RenderDiacomLink = ({ cell }: CellRendererFunctionProps) => {
+const RenderDicomLink = ({ cell }: CellRendererFunctionProps) => {
   if (!cell?.getValue() || cell?.getValue() === '') {
     return <span></span>;
   } else
@@ -44,8 +44,13 @@ const JoinFields = (
 export const registerCohortTableCustomCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRenderer(
     'link',
-    'DiacomLink',
-    RenderDiacomLink,
+    'DicomLink',
+    RenderDicomLink,
+  );
+  ExplorerTableCellRendererFactory().registerRenderer(
+    'string',
+    'JoinFields',
+    JoinFields,
   );
   ExplorerTableCellRendererFactory().registerRenderer(
     'string',

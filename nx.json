@@ -1,0 +1,55 @@
+{
+  "targetDefaults": {
+    "lint": {
+      "cache": true,
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "compile": {
+      "cache": true,
+      "dependsOn": [
+        "^compile"
+      ]
+    },
+    "clean": {
+      "dependsOn": []
+    },
+    "types": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "build": {
+      "cache": true,
+        "dependsOn": ["^build"]
+    },
+    "build:clean": {
+      "dependsOn": [
+      ]
+    },
+    "build:watch": {
+      "dependsOn": [
+      ]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "test:watch": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "test:int": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "test:all": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "dev": {
+      "dependsOn": [
+      ]
+    }
+  }
+}

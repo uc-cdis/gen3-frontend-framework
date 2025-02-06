@@ -8,11 +8,9 @@ import type { NavPageLayoutProps } from '../../features/Navigation';
 export const ExplorerPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (_context) => {
-
   try {
-    const cohortBuilderProps: CohortBuilderConfiguration = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/explorer.json`,
-    );
+    const cohortBuilderProps: CohortBuilderConfiguration =
+      await ContentSource.get(`config/${GEN3_COMMONS_NAME}/explorer.json`);
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

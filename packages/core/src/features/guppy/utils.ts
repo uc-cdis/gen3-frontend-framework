@@ -28,7 +28,7 @@ export type FetchConfig = {
  * @param {string} apiUrl - The base URL to be used for preparing the download URL.
  * @returns {URL} - The prepared download URL as a URL object.
  */
-const prepareUrl = (apiUrl: string) => new URL(apiUrl + '/download');
+const prepareUrl = (apiUrl: string) => `${apiUrl}/download`;
 
 /**
  * Prepares a fetch configuration object for downloading files from Guppy.

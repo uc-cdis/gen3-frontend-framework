@@ -22,6 +22,7 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: true,
   experimental: {
     esmExternals: true,
     instrumentationHook: true,
@@ -31,7 +32,7 @@ const nextConfig = {
     },
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  transpilePackages: ['@gen3/frontend'],
+  transpilePackages: ['@gen3/core', '@gen3/frontend'],
   basePath: basePath,
   webpack: (config) => {
     config.infrastructureLogging = {
@@ -48,6 +49,23 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
+          },
+        ],
+      },
+      {
+        source: '/jupyter/(.*)?',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
           },
         ],
       },

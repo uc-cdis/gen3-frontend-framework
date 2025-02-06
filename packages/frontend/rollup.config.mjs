@@ -25,6 +25,7 @@ const globals = {
   tinycolot2: 'tinyColor',
   fs: 'fs',
   path: 'path',
+  glob: 'glob',
   '@gen3/core': 'gen3Core',
   'jsonpath-plus': 'jsonpathPlus',
   '@mantine/notifications': 'mantineNotifications',
@@ -60,6 +61,8 @@ const globals = {
   'tailwind-merge': 'tailwind-merge',
   util: 'util',
   swc: 'swc',
+  'redux-persist': 'reduxPersist',
+  '@hello-pangea': 'pangea',
 };
 
 const config = [

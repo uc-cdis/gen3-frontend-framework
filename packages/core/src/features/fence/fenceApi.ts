@@ -32,10 +32,17 @@ export const loginProvidersApi = gen3Api.injectEndpoints({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
       query: () => `${GEN3_FENCE_API}/user/login`,
     }),
+    getDownload: builder.query<Gen3FenceLoginProviders, string>({
+      query: (guid) => `${GEN3_FENCE_API}/user/data/download/${guid}`,
+    }),
   }),
 });
 
-export const { useGetLoginProvidersQuery } = loginProvidersApi;
+export const {
+  useGetLoginProvidersQuery,
+  useGetDownloadQuery,
+  useLazyGetDownloadQuery,
+} = loginProvidersApi;
 
 export interface FetchRequest {
   readonly endpoint: string;

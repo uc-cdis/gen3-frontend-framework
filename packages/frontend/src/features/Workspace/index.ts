@@ -1,7 +1,4 @@
-import WorkspacesPanel from './WorkspacesPanel';
-import { type WorkspaceConfiguration } from './types';
+import Workspace from './Workspace';
+import { type WorkspaceConfig } from './types';
 
-export {
-  type WorkspaceConfiguration,
-  WorkspacesPanel
-};
+export { Workspace, type WorkspaceConfig };

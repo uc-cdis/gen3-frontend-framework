@@ -30,10 +30,6 @@ import { ErrorCard } from '../../index';
 const DEFAULT_COLS = 3;
 const MAX_LEGEND_ROWS = 4;
 
-export type ChartDataConverter = (
-  data: Record<string, number>,
-) => Record<string, number>;
-
 interface ChartsProps {
   charts: Record<string, SummaryChart>;
   counts?: number;
@@ -70,7 +66,9 @@ const Charts = ({
   const spans = computeRowSpan(Object.keys(charts).length, numCols);
 
   const chartCard = (field: string, indexNum: number) => {
-    if (!(field in data)) {
+    if (Object.keys(data).length === 0) return null;
+
+    if (Object.keys(data).length > 0 && !(field in data)) {
       return <ErrorCard message={`${field} not found in data`} />;
     }
 
@@ -122,6 +120,7 @@ const Charts = ({
                   data: data === undefined ? [] : data,
                   total: counts ?? 1,
                   valueType: chart.valueType ?? 'count',
+                  label: chart.label,
                 })}
               </Grid.Col>
               <Grid.Col span={6} key="modal-col-2">
@@ -177,8 +176,7 @@ const Charts = ({
         </React.Fragment>
       );
     };
-
-    const dataKeys = Object.keys(data[field][0]);
+    const dataKeys = data[field].length > 0 ? Object.keys(data[field][0]) : [];
 
     const chartTitle = charts[field].title ?? fieldNameToTitle(field);
 
@@ -208,6 +206,7 @@ const Charts = ({
             data: data === undefined ? [] : data[field],
             total: counts ?? 1,
             valueType: charts[field].valueType ?? 'count',
+            label: charts[field].label,
           })}
           {showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
@@ -256,7 +255,9 @@ const Charts = ({
   };
 
   return (
-    <Grid className="w-full">{data && Object.keys(charts).map(chartCard)}</Grid>
+    <Grid className="w-full">
+      {data && Object.keys(charts)?.map(chartCard)}
+    </Grid>
   );
 };
 

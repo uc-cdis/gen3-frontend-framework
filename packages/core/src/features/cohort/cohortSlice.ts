@@ -14,19 +14,30 @@ export interface CohortState {
   cohort: Cohort;
 }
 
+export const EmptyCohort: Cohort = {
+  id: 'default',
+  name: 'Filters',
+  filters: {},
+  modified_datetime: new Date().toISOString(),
+};
+
 const initialCohortState: CohortState = {
-  cohort: {
-    id: 'default',
-    name: 'Filters',
-    filters: {},
-    modified_datetime: new Date().toISOString(),
-  },
+  cohort: { ...EmptyCohort },
 };
 
 interface UpdateFilterParams {
   index: string;
   field: string;
   filter: Operation;
+}
+
+interface SetFilterParams {
+  index: string;
+  filters: FilterSet;
+}
+
+interface SetAllIndexFiltersParams {
+  filters: IndexedFilterSet;
 }
 
 interface RemoveFilterParams {
@@ -78,6 +89,33 @@ export const cohortSlice = createSlice({
         },
       };
     },
+    setCohortFilter: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetFilterParams>,
+    ) => {
+      const { index, filters } = action.payload;
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: {
+            ...state.cohort.filters,
+            [index]: filters,
+          },
+        },
+      };
+    },
+    setCohortIndexFilters: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetAllIndexFiltersParams>,
+    ) => {
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: { ...action.payload.filters },
+        },
+      };
+    },
+
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (
       state: Draft<CohortState>,
@@ -126,8 +164,13 @@ export const cohortSlice = createSlice({
 });
 
 // Filter actions: addFilter, removeFilter, updateFilter
-export const { updateCohortFilter, removeCohortFilter, clearCohortFilters } =
-  cohortSlice.actions;
+export const {
+  updateCohortFilter,
+  setCohortFilter,
+  setCohortIndexFilters,
+  removeCohortFilter,
+  clearCohortFilters,
+} = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
   state.cohorts.cohort.filters;
@@ -157,6 +200,7 @@ export const selectIndexedFilterByName = (
 };
 
 const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
+
 /**
  * Select a filter from the index.
  * returns undefined.

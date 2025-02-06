@@ -8,9 +8,10 @@ import {
   GEN3_AUTHZ_API,
   GEN3_MDS_API,
   GEN3_REDIRECT_URL,
-  GEN3_WORKSPACE_STATUS_API,
+  GEN3_WORKSPACE_API,
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
+  GEN3_SOWER_API,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -19,6 +20,7 @@ export * from './features/user';
 export * from './types';
 export * from './store';
 export * from './hooks';
+export * from './utils';
 export * from './dataAccess';
 export * from './provider';
 export * from './features/authz';
@@ -35,6 +37,8 @@ export * from './features/guppy';
 export * from './features/aiSearch';
 export * from './features/workspace';
 export * from './features/submission';
+export * from './features/sower';
+export * from './features/dataLibrary';
 
 export {
   type CoreState,
@@ -47,8 +51,9 @@ export {
   GEN3_AUTHZ_API,
   GEN3_MDS_API,
   GEN3_REDIRECT_URL,
-  GEN3_WORKSPACE_STATUS_API,
+  GEN3_WORKSPACE_API,
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
+  GEN3_SOWER_API,
   Accessibility,
 };

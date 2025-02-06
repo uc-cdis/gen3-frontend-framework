@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useRef } from 'react';
-import { Tooltip } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
@@ -7,6 +7,7 @@ import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
+import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit, partial } from 'lodash';
 import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
@@ -23,6 +24,7 @@ import {
 } from './style';
 import { useUpdateFilters } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
+import CohortSelector from './CohortSelector';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -103,10 +105,12 @@ const reducer = (
 };
 
 interface QueryExpressionSectionProps {
-  readonly index: string;
-  readonly filters: FilterSet;
-  readonly currentCohortName: string;
-  readonly currentCohortId: string;
+  index: string;
+  filters: FilterSet;
+  currentCohortName: string;
+  currentCohortId: string;
+  displayOnly?: boolean;
+  showTitle?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
@@ -114,7 +118,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
   currentCohortName,
   currentCohortId,
-}: QueryExpressionSectionProps) => {
+  displayOnly = false,
+  showTitle = true,
+}: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -169,26 +175,31 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
           >
-            <OverflowTooltippedLabel
-              label={currentCohortName}
-              className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
-            >
-              {currentCohortName}
-            </OverflowTooltippedLabel>
-            <React.Fragment>
-              <button
-                data-testid="button-clear-all-cohort-filters"
-                className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
-                  noFilters
-                    ? 'hidden'
-                    : 'cursor-pointer text-secondary-contrast-darkest'
-                }`}
-                onClick={clearAllFilters}
-                disabled={noFilters}
+            {showTitle && (
+              <OverflowTooltippedLabel
+                label={currentCohortName}
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
               >
-                Clear All
-              </button>
+                {currentCohortName}
+              </OverflowTooltippedLabel>
+            )}
+            <React.Fragment>
+              {!displayOnly && (
+                <button
+                  data-testid="button-clear-all-cohort-filters"
+                  className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
+                    noFilters
+                      ? 'hidden'
+                      : 'cursor-pointer text-secondary-contrast-darkest'
+                  }`}
+                  onClick={clearAllFilters}
+                  disabled={noFilters}
+                >
+                  Clear All
+                </button>
+              )}
               <div className="display flex gap-2 ml-auto mr-3">
+                <CohortSelector />
                 <Tooltip
                   label={
                     noFilters
@@ -198,7 +209,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         : 'Collapse all values'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-queries"
                     color="white"
                     onClick={() =>
@@ -220,17 +231,23 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     disabled={noFilters}
                   >
                     {allQueryExpressionsCollapsed ? (
-                      <React.Fragment>
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-expand"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     ) : (
-                      <React.Fragment>
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                      </React.Fragment>
+                      <Icon
+                        icon="gen3:chevron-contract"
+                        aria-hidden="true"
+                        height="1.5rem"
+                      >
+                        {' '}
+                      </Icon>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
 
                 <Tooltip
@@ -245,7 +262,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         : 'Display fewer rows'
                   }
                 >
-                  <button
+                  <Button
                     data-testid="button-expand-collapse-cohort-filters-section"
                     color="white"
                     onClick={() =>
@@ -272,7 +289,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         <UpArrowIcon size={30} aria-hidden="true" />
                       </React.Fragment>
                     )}
-                  </button>
+                  </Button>
                 </Tooltip>
               </div>
             </React.Fragment>
@@ -296,7 +313,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </p>
             ) : (
               Object.keys(filters.root).map((k) => {
-                return convertFilterToComponent(filters.root[k], index);
+                return convertFilterToComponent(
+                  filters.root[k],
+                  index,
+                  '.',
+                  displayOnly,
+                );
               })
             )}
           </div>
