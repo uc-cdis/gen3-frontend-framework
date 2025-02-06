@@ -213,22 +213,20 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       const compareKeysAscending = (
         [a]: [string | number, number],
         [b]: [string | number, number],
-      ): number =>
-        typeof a === 'string' && typeof b === 'string'
-          ? a.localeCompare(b)
-          : typeof a === 'number' && typeof b === 'number'
-            ? a - b
-            : 0;
+      ): number => {
+        const aStr = a.toString();
+        const bStr = b.toString();
+        return aStr.localeCompare(bStr);
+      };
 
       const compareKeysDescending = (
         [a]: [string | number, number],
         [b]: [string | number, number],
-      ): number =>
-        typeof a === 'string' && typeof b === 'string'
-          ? b.localeCompare(a)
-          : typeof a === 'number' && typeof b === 'number'
-            ? b - a
-            : 0;
+      ): number => {
+        const aStr = a.toString();
+        const bStr = b.toString();
+        return bStr.localeCompare(aStr);
+      };
 
       let comparisonFn;
 
@@ -254,12 +252,6 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
           },
           {} as Record<string | number, number>,
         );
-
-      const val = Object.fromEntries(
-        [...facetChartData.filteredData]
-          .sort(comparisonFn)
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
-      );
 
       setSortedData(obj);
     }
