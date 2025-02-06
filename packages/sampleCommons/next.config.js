@@ -27,7 +27,6 @@ const nextConfig = {
   },
   productionBrowserSourceMaps: true,
   experimental: {
-    esmExternals: true,
     instrumentationHook: true,
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
