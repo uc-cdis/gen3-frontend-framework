@@ -13,7 +13,7 @@ import {
   createMantineTheme,
   SessionConfiguration,
   // registerCohortDiscoveryApp,
-  registerCohortDiversityApp,
+  registerCohortDistanceApp,
   registerCohortBuilderDefaultPreviewRenderers,
   registerMetadataSchemaApp,
 } from '@gen3/frontend';
@@ -70,7 +70,7 @@ const Gen3App = ({
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
     //  registerCohortDiscoveryApp();
-    registerCohortDiversityApp();
+    registerCohortDistanceApp();
     registerMetadataSchemaApp();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();

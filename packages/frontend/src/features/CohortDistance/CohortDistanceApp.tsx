@@ -11,12 +11,12 @@ import {
 } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
-import { CohortDiversityConfig } from './types';
+import { CohortDistanceConfig } from './types';
 import ComparisonCards from './ComparisonCards';
 import { ErrorCard } from '../../components/MessageCards';
-import { getStaticDiversityData } from './statistics/data/data';
+import { getStaticDistanceData } from './statistics/data/data';
 import { AggregationsData, useGeneralGQLQuery } from '@gen3/core';
-import { createDiversityQuery } from './statistics/queries';
+import { createDistanceQuery } from './statistics/queries';
 import {
   processHistogramResponseAsPercentage,
   normalizeAgeOfIndex,
@@ -31,10 +31,10 @@ const SummaryChartAccordionControl = (props: AccordionControlProps) => {
   );
 };
 
-const CohortDiversityApp = (config: CohortDiversityConfig) => {
-  const groundDataset = getStaticDiversityData(config.datasets.ground.dataset);
+const CohortDistanceApp = (config: CohortDistanceConfig) => {
+  const groundDataset = getStaticDistanceData(config.datasets.ground.dataset);
 
-  const gqlQuery = createDiversityQuery(); // TODO: add field mapping
+  const gqlQuery = createDistanceQuery(); // TODO: add field mapping
 
   const {
     data: rawComparisonDataset,
@@ -58,7 +58,7 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
 
   if (isComparisonError) {
     return (
-      <ErrorCard message={'Unable to get data need for Cohort Diversity'} />
+      <ErrorCard message={'Unable to get data need for Cohort Distance'} />
     );
   }
 
@@ -69,10 +69,10 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   return (
     <Stack
       classNames={{ root: 'w-full m-4 mb-2' }}
-      aria-label="Main Content of Cohort Diversity App"
+      aria-label="Main Content of Cohort Distance App"
     >
       <Title order={1} size="h3">
-        Cohort Diversity Visualization
+        Cohort Distance Visualization
       </Title>
       <Accordion variant="filled" chevronPosition="left">
         <Accordion.Item value="summaryCharts" aria-label="Summary Charts">
@@ -110,4 +110,4 @@ const CohortDiversityApp = (config: CohortDiversityConfig) => {
   );
 };
 
-export default CohortDiversityApp;
+export default CohortDistanceApp;
