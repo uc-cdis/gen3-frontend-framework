@@ -1,5 +1,5 @@
-import diversityData from './diversityResponse.json';
-import { getStaticDiversityData } from '../data';
+import distanceData from './distanceResponse.json';
+import { getStaticDistanceData } from '../data';
 // Import all required packages
 import { AggregationsData } from '@gen3/core';
 import {
@@ -11,7 +11,7 @@ import {
 // Define the test
 describe('Testing the processHistogramResponseAsPercentage function', () => {
   it('Should correctly process percentage data', () => {
-    const result = processHistogramResponseAsPercentage(diversityData.data);
+    const result = processHistogramResponseAsPercentage(distanceData.data);
 
     const expectedResult: AggregationsData = {
       age_at_index: [
@@ -136,7 +136,7 @@ describe('Testing the processHistogramResponseAsPercentage function', () => {
   });
 
   it('Should normalize the results', () => {
-    const result = processHistogramResponseAsPercentage(diversityData.data);
+    const result = processHistogramResponseAsPercentage(distanceData.data);
     const normalized = normalizeAgeOfIndex(result);
 
     const expectedResult: AggregationsData = {
@@ -262,9 +262,9 @@ describe('Testing the processHistogramResponseAsPercentage function', () => {
   });
 
   it('Should align the source data with the ground data', () => {
-    const result = processHistogramResponseAsPercentage(diversityData.data);
+    const result = processHistogramResponseAsPercentage(distanceData.data);
     const normalized = normalizeAgeOfIndex(result);
-    const ground = getStaticDiversityData('census');
+    const ground = getStaticDistanceData('census');
     const aligned = alignData(normalized, ground);
 
     const expectedResult: AggregationsData = {

@@ -1,12 +1,12 @@
 import { Card, Group, Text, SegmentedControl } from '@mantine/core';
 import React, { useState, ReactNode } from 'react';
-import { DiversityChart } from '../types';
+import { DistanceChart } from '../types';
 import { AggregationsData, fieldNameToTitle } from '@gen3/core';
-import DiversityChartsFactory, {
+import CohortDistanceChartsFactory, {
   DefaultComparisonChart,
-} from './diversityChartsFactory';
+} from './cohortDistanceChartsFactory';
 
-DiversityChartsFactory();
+CohortDistanceChartsFactory();
 
 export const generateChart = (
   groundData: AggregationsData,
@@ -14,7 +14,7 @@ export const generateChart = (
   comparisonData: AggregationsData,
   comparisonLabel: string,
   field: string,
-  config: DiversityChart,
+  config: DistanceChart,
   showTitle: boolean = true,
 ): ReactNode => {
   // Check if the field exists in the datasets
@@ -23,7 +23,7 @@ export const generateChart = (
     return <span>Error: Data field missing</span>;
   }
 
-  const chartRenderer = DiversityChartsFactory().getRenderer(
+  const chartRenderer = CohortDistanceChartsFactory().getRenderer(
     'comparison',
     config.chartType,
   );
@@ -44,7 +44,7 @@ export const generateChart = (
 
 interface ChartCardProps {
   style?: string;
-  config: DiversityChart;
+  config: DistanceChart;
   groundData: AggregationsData;
   groundLabel: string;
   comparisonData: AggregationsData;

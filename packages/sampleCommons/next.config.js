@@ -26,9 +26,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   productionBrowserSourceMaps: true,
-  experimental: {
-    instrumentationHook: true,
-  },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
   webpack: (config) => {

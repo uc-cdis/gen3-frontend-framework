@@ -1,6 +1,6 @@
 import { convertToAggregateData } from './utils';
 
-export const getStaticDiversityData = (dataset: string) => {
+export const getStaticDistanceData = (dataset: string) => {
   return convertToAggregateData({
     census: {
       age_at_index: {
