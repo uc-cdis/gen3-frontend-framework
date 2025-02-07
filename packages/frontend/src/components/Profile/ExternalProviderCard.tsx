@@ -7,40 +7,37 @@ import {
 } from 'react-icons/io';
 import Link from 'next/link';
 import { useDisclosure } from '@mantine/hooks';
+import {
+  QueryActionCreatorResult,
+  QueryDefinition,
+} from '@reduxjs/toolkit/query';
 
 /**
  * Open a new window for authentication.
  * @param url - URL to open
  * @param title - Title of the window
+ * @param refetch - refetch the external status if successful
  */
-const openAuthWindow = (url: string, title: string): Promise<unknown> => {
+const openAuthWindow = (
+  url: string,
+  title: string,
+  refetch: () => QueryActionCreatorResult<
+    QueryDefinition<any, any, any, any, string>
+  >,
+): Promise<unknown> => {
   const pollInterval = 500;
   return new Promise((resolve, reject) => {
     if (window.navigator.cookieEnabled) {
+      const width = Math.max(1024, window.innerWidth / 2);
+      const height = Math.max(1024, window.innerHeight / 2);
       const dualScreenLeft = window.screenLeft ?? window.screenX;
       const dualScreenTop = window.screenTop ?? window.screenY;
-
-      const width =
-        window.innerWidth ??
-        document.documentElement.clientWidth ??
-        screen.width;
-
-      const height =
-        window.innerHeight ??
-        document.documentElement.clientHeight ??
-        screen.height;
-
-      const systemZoom = width / window.screen.availWidth;
-
-      const left = (width - 500) / 2 / systemZoom + dualScreenLeft;
-      const top = (height - 550) / 2 / systemZoom + dualScreenTop;
-
+      const left = dualScreenLeft + (window.innerWidth - width) / 2;
+      const top = dualScreenTop + (window.innerHeight - height) / 2;
       const win = window.open(
         url,
         title,
-        `width=${500 / systemZoom},height=${
-          550 / systemZoom
-        },top=${top},left=${left}`,
+        `width=${width},height=${height},left=${left},top=${top}`,
       );
 
       if (!win) {
@@ -65,9 +62,11 @@ const openAuthWindow = (url: string, title: string): Promise<unknown> => {
               reject('login_error');
               return;
             }
+            refetch();
             resolve('success');
           }
-        } catch (err) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_err: unknown) {
           // We just want to catch it and not reject it. Rejecting the promise leads to unexpected behavior
           // where the logged-in status isn't reflected immediately as the program moves ahead w/o users
           // having a chance to log in, requiring a manual screen refresh to update. By catching errors
@@ -85,11 +84,14 @@ const openAuthWindow = (url: string, title: string): Promise<unknown> => {
 
 interface ExternalProviderCardProps extends HTMLAttributes<HTMLDivElement> {
   provider: ExternalProvider;
+  refetch: () => QueryActionCreatorResult<
+    QueryDefinition<any, any, any, any, string>
+  >;
 }
 
 const ExternalProviderCard: React.FunctionComponent<
   ExternalProviderCardProps
-> = ({ provider }) => {
+> = ({ provider, refetch }) => {
   const [loading, handler] = useDisclosure();
   return (
     <Card withBorder radius="sm">
@@ -141,6 +143,7 @@ const ExternalProviderCard: React.FunctionComponent<
               openAuthWindow(
                 `${providerUrl.url}${queryChar}redirect=${window.location.pathname}`,
                 provider.name,
+                refetch,
               ).finally(() => {
                 handler.close();
               });

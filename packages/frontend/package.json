@@ -26,7 +26,7 @@
     "copy-tailwind": "cp src/tailwind.cjs dist/tailwind.cjs",
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
-    "build:watch": "npm run rollup -- --watch",
+    "build:watch": "npm run compile && npm run rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -88,7 +88,7 @@
     "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.23",
+    "next": "^15.1.6",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
