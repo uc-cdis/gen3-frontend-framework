@@ -161,15 +161,18 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         <MultiSelect
           data-testid="multiselect-add-filter-value"
           size="sm"
+          comboboxProps={{ shadow: 'md' }}
           placeholder={`Enter ${facetTitle}`}
-          classNames={{ root: 'grow', input: 'border-r-0 rounded-r-none py-1' }}
           aria-label="enter value to add filter"
           value={selectedValues}
           onChange={setSelectedValues}
           data={dataValues}
-          limit={5}
+          limit={10}
           searchable
-          maxDropdownHeight={200}
+          hidePickedOptions
+          withScrollArea={false}
+          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
+          mt="md"
         />
       </div>
     </div>
