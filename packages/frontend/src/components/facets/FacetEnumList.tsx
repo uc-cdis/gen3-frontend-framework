@@ -12,6 +12,36 @@ import { SortType } from './types';
 import { updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 
+const compareKeysAscending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a - b;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return -1;
+  if (typeof b === 'number') return 1;
+  // If both are strings, sort alphabetically
+  return a.localeCompare(b);
+};
+
+const compareKeysDescending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return b - a;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return 1;
+  if (typeof b === 'number') return -1;
+  // If both are strings, sort alphabetically
+  return b.localeCompare(a);
+};
+
 interface FacetEnumListProps {
   field: string;
   facetName?: string;
@@ -47,9 +77,9 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
-  const [sortedData, setSortedData] = useState<Record<string | number, number>>(
-    {},
-  );
+  const [sortedData, setSortedData] = useState<
+    Array<[string | number, number]>
+  >([]);
   const [sortType, setSortType] = useState<SortType>({
     type: 'alpha',
     direction: 'asc',
@@ -202,57 +232,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
 
   useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
-      const compareValuesAscending = (
-        [, a]: [string | number, number],
-        [, b]: [string | number, number],
-      ): number => a - b;
-      const compareValuesDescending = (
-        [, a]: [string | number, number],
-        [, b]: [string | number, number],
-      ): number => b - a;
-      const compareKeysAscending = (
-        [a]: [string | number, number],
-        [b]: [string | number, number],
-      ): number => {
-        const aStr = a.toString();
-        const bStr = b.toString();
-        return aStr.localeCompare(bStr);
-      };
-
-      const compareKeysDescending = (
-        [a]: [string | number, number],
-        [b]: [string | number, number],
-      ): number => {
-        const aStr = a.toString();
-        const bStr = b.toString();
-        return bStr.localeCompare(aStr);
-      };
-
-      let comparisonFn;
-
-      if (sortType.type === 'value') {
-        comparisonFn =
-          sortType.direction === 'dsc'
-            ? compareValuesDescending
-            : compareValuesAscending;
-      } else {
-        comparisonFn =
-          sortType.direction === 'dsc'
-            ? compareKeysDescending
-            : compareKeysAscending;
-      }
-
       const obj = [...facetChartData.filteredData]
-        .sort(comparisonFn)
-        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
-        .reduce(
-          (acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-          },
-          {} as Record<string | number, number>,
-        );
-
+        .sort(
+          sortType.type === 'value'
+            ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
+            : ([a], [b]) =>
+                sortType.direction === 'dsc'
+                  ? compareKeysDescending(a, b)
+                  : compareKeysAscending(a, b),
+        )
+        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
       setSortedData(obj);
     }
   }, [
@@ -337,10 +326,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                       {BAD_DATA_MESSAGE}
                     </div>
                   ) : isSuccess ? (
-                    !sortedData || Object.entries(sortedData).length === 0 ? (
+                    !sortedData || sortedData.length === 0 ? (
                       <div className="mx-4">No results found</div>
                     ) : (
-                      Object.entries(sortedData ?? {}).map(([value, count]) => {
+                      sortedData.map(([value, count]) => {
                         return (
                           <div
                             key={`${field}-${value}`}
@@ -368,7 +357,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 }
                               />
                             </div>
-                            <OverflowTooltippedLabel label={value}>
+                            <OverflowTooltippedLabel label={value.toString()}>
                               <span className="text-xs font-normal font-content">
                                 {value}
                               </span>
