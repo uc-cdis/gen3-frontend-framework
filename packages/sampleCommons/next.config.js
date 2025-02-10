@@ -30,13 +30,11 @@ const nextConfig = {
     instrumentationHook: true,
   },
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  transpilePackages: ['@gen3/core', '@gen3/frontend'],
   basePath: basePath,
   webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
     };
-
     return config;
   },
   async headers() {

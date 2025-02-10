@@ -25,7 +25,7 @@
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run start",
     "build:start": "npm run build && npm run start",
-    "setProxy": "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
+    "setProxy" : "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces"
@@ -51,12 +51,11 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-responsive-carousel": "^3.2.23",
-    "undici": "^6.21.1",
     "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
-    "@next/eslint-plugin-next": "^14.2.8",
+    "@next/eslint-plugin-next": "^15.1.6",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.0",
@@ -70,20 +69,20 @@
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "8.57.0",
-    "eslint-config-next": "^14.2.15",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.1.6",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.36.1",
-    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
     "lerna": "^8.1.8",
     "nx": "19.4.3 ",
-    "oxlint": "^0.9.8",
+    "oxlint": "^0.15.8",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^6.0.0",
     "postcss-preset-mantine": "^1.17.0",
@@ -105,13 +104,6 @@
   "overrides": {
     "rollup-plugin-copy": {
       "globby": "^11.0.0"
-    },
-    "@gen3/toolsff": {
-      "@iconify/tools": {
-        "cheerio": {
-          "undici": "^6.21.1"
-        }
-      }
     }
   },
   "optionalDependencies": {

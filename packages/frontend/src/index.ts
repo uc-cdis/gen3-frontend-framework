@@ -18,7 +18,7 @@ import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
-import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
+import { registerCohortDistanceApp } from './features/CohortDistance/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
 import '@gen3/core';
 
@@ -141,7 +141,7 @@ export {
   NotebookLitePage,
   NotebookLitePageGetStaticProps,
   registerCohortDiscoveryApp,
-  registerCohortDiversityApp,
+  registerCohortDistanceApp,
   registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { LoadingOverlay, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   CoreState,
@@ -91,6 +92,7 @@ export const CohortPanel = ({
   const {
     data,
     isSuccess,
+    isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useGetAggsQuery({
     type: index,
@@ -231,6 +233,7 @@ export const CohortPanel = ({
 
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
+      <LoadingOverlay visible={isAggsQueryFetching} />
       <CohortManager index={index} />
       <div className="flex w-full">
         <div className="flex w-1/3">
