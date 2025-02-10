@@ -236,7 +236,7 @@ export const CohortPanel = ({
       <LoadingOverlay visible={isAggsQueryFetching} />
       <CohortManager index={index} />
       <div className="flex w-full">
-        <div className="flex w-1/3">
+        <div className="flex w-1/4">
           {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
             <DropdownPanel
               index={index}
@@ -246,7 +246,7 @@ export const CohortPanel = ({
               facetDataHooks={facetDataHooks}
             />
           ) : (
-            <TabbedPanel
+            <DropdownPanel
               index={index}
               filters={filters}
               tabTitle={tabTitle}
@@ -255,7 +255,7 @@ export const CohortPanel = ({
             />
           )}
         </div>
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full ml-4 ">
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}

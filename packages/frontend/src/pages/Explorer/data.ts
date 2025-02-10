@@ -14,7 +14,8 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        explorerConfig: cohortBuilderProps,
+        tabsLayout: cohortBuilderProps?.tabsLayout ?? 'left',
+        explorerConfig: cohortBuilderProps.explorerConfig,
       },
     };
   } catch (err) {
