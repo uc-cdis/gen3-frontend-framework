@@ -24,8 +24,9 @@
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
-    "@iconify/tools": "^4.0.7",
-    "tinycolor2": "^1.6.0"
+    "@iconify/tools": "^4.1.1",
+    "tinycolor2": "^1.6.0",
+    "undici": "^6.21.1"
   },
   "devDependencies": {
     "rollup-plugin-executable": "^1.6.3"
@@ -35,5 +36,11 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "overrides": {
+    "@iconify/tools": {
+      "cheerio": "^1.0.0-rc.12",
+      "undici": "^6.21.1"
+    }
+  }
 }
