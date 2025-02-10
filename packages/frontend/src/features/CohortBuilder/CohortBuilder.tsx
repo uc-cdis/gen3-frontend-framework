@@ -4,12 +4,35 @@ import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import { useGetCSRFQuery } from '@gen3/core';
 
+const TabsLayoutToComponentProp = (
+  tabsLayout?: 'left' | 'right' | 'center',
+) => {
+  if (!tabsLayout) {
+    return 'flex-start';
+  }
+  switch (tabsLayout) {
+    case 'left': {
+      return 'flex-start';
+    }
+    case 'right': {
+      return 'flex-end';
+    }
+    case 'center': {
+      return 'center';
+    }
+    default: {
+      return 'flex-start';
+    }
+  }
+};
+
 export const CohortBuilder = ({
   explorerConfig,
+  tabsLayout = 'left',
 }: CohortBuilderConfiguration) => {
-  const { isLoading } = useGetCSRFQuery();
+  const { isFetching } = useGetCSRFQuery();
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <Center maw={400} h={100} mx="auto">
         <Loader variant="dots" />
@@ -24,7 +47,10 @@ export const CohortBuilder = ({
         keepMounted={false}
         defaultValue={explorerConfig[0].tabTitle}
       >
-        <Tabs.List>
+        <Tabs.List
+          className="w-full"
+          justify={TabsLayoutToComponentProp(tabsLayout)}
+        >
           {explorerConfig.map((panelConfig: CohortPanelConfig) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}

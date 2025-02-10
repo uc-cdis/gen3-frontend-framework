@@ -7,6 +7,7 @@ import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
 import { Modals, FacetDefinition } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
+import { ConfigVersionAndName } from '../../types';
 
 export type FacetType =
   | 'enum'
@@ -72,7 +73,8 @@ export interface CohortPanelConfig {
   readonly loginForDownload?: boolean; // login required for download
 }
 
-export interface CohortBuilderConfiguration {
+export interface CohortBuilderConfiguration extends ConfigVersionAndName {
+  tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
   explorerConfig: Array<CohortPanelConfig>;
 }
 
