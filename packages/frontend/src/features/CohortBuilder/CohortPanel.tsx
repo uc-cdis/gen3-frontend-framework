@@ -235,17 +235,12 @@ export const CohortPanel = ({
     <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
       <LoadingOverlay visible={isAggsQueryFetching} />
       <CohortManager index={index} />
+
+      {/* Flex container to ensure proper 25/75 split */}
       <div className="flex w-full">
-        <div className="flex w-1/4">
-          {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
-            <DropdownPanel
-              index={index}
-              filters={filters}
-              tabTitle={tabTitle}
-              facetDefinitions={facetDefinitions}
-              facetDataHooks={facetDataHooks}
-            />
-          ) : (
+        {/* Left panel - 25% */}
+        <div id="cohort-filters-content" className="flex-shrink-0 w-1/4 ">
+          {filters?.tabs && (
             <DropdownPanel
               index={index}
               filters={filters}
@@ -255,7 +250,10 @@ export const CohortPanel = ({
             />
           )}
         </div>
-        <div className="flex flex-col w-full ml-4 ">
+
+        {/* Right content - 75% */}
+        <div id="cohort-builder-content" className="flex flex-col w-3/4 pl-4">
+          {/* Top row with DownloadsPanel and CountsValue */}
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
@@ -266,13 +264,14 @@ export const CohortPanel = ({
               fields={table?.fields ?? []}
               filter={cohortFilters}
             />
-
             <CountsValue
               label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
               counts={counts}
               isSuccess={isCountSuccess}
             />
           </div>
+
+          {/* Charts Section */}
           <Charts
             charts={summaryCharts}
             data={data ?? EmptyData}
@@ -280,14 +279,14 @@ export const CohortPanel = ({
             isSuccess={isSuccess}
             numCols={numCols}
           />
-          {table?.enabled ? (
+
+          {/* Table Section */}
+          {table?.enabled && (
             <div className="mt-2 flex flex-col">
               <div className="grid">
                 <ExplorerTable index={index} tableConfig={table} />
               </div>
             </div>
-          ) : (
-            false
           )}
         </div>
       </div>

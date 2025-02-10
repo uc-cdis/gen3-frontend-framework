@@ -46,7 +46,7 @@ export const DropdownPanel = ({
   }, [] as FacetDefinition[]);
 
   return (
-    <Stack align="flex-start" className="mx-3 w-full">
+    <Stack align="flex-start">
       <Group justify="space-between" className="w-full">
         <Text size="xl" fw={800}>
           Filters
@@ -58,7 +58,7 @@ export const DropdownPanel = ({
           {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
         </button>
       </Group>
-      <Stack className="w-full bg-base-max py-4 px-2 h-full">
+      <Stack className="bg-base-max py-4 px-2 h-full w-full">
         <Group gap="xs" justify="space-between">
           <div className="flex items-center space-x-1">
             <Icon

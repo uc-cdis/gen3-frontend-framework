@@ -12,8 +12,7 @@ import {
   Fonts,
   createMantineTheme,
   SessionConfiguration,
-  // registerCohortDiscoveryApp,
-  registerCohortDistanceApp,
+  registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
   registerMetadataSchemaApp,
 } from '@gen3/frontend';
@@ -65,13 +64,13 @@ const Gen3App = ({
     // one time init
     // if (
     //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
-    //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
+    //   process.env.NEXT_PBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
     if (!faroRef.current) faroRef.current = initGrafanaFaro();
     //  registerCohortDiscoveryApp();
-    registerCohortDistanceApp();
     registerMetadataSchemaApp();
+    registerExplorerDefaultCellRenderers();
     registerCohortBuilderDefaultPreviewRenderers();
     registerCohortTableCustomCellRenderers();
     registerCustomExplorerDetailsPanels();

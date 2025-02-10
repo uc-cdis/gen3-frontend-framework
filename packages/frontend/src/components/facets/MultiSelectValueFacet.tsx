@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
 import { MultiSelect, Tooltip } from '@mantine/core';
 import {
@@ -108,6 +108,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
 
   useDeepCompareEffect(() => {
     if (!facetValue || isFacetEmpty(facetValue)) {
+      console.log('filters', '[]');
       setSelectedValues([]);
     } else if (instanceOfIncludesExcludes(facetValue)) {
       const filters = facetValue.operands.map((x: number | string) =>
@@ -117,42 +118,13 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
     }
   }, [facetValue]);
 
-  // useDeepCompareEffect(() => {
-  //   const setValues = (values: string[]) => {
-  //     if (values.length > 0) {
-  //       if (facetValue && instanceOfIncludesExcludes(facetValue)) {
-  //         // updating facet value
-  //         updateFacetFilters(field, {
-  //           ...facetValue,
-  //           operands: values,
-  //         });
-  //       }
-  //       if (facetValue === undefined) {
-  //         // TODO: Assuming Includes by default but this might change to Include|Excludes
-  //         updateFacetFilters(field, {
-  //           operator: 'in',
-  //           field: field,
-  //           operands: values,
-  //         });
-  //       }
-  //     }
-  //     // no values remove the filter
-  //     else {
-  //       clearFilters(field);
-  //     }
-  //   };
-  //
-  //   setValues(selectedValues);
-  // }, [selectedValues]);
-
-  useDeepCompareEffect(() => {
-    const setValues = (values: string[]) => {
+  // update the filter which will also update selected values
+  const updateFilters = useCallback(
+    (values: string[]) => {
       updateFacetEnum(field, values, updateFacetFilters, clearFilters);
-    };
-
-    console.log('selectedValues: ', selectedValues);
-    setValues(selectedValues);
-  }, [selectedValues]);
+    },
+    [clearFilters, field, updateFacetFilters],
+  );
 
   return (
     <div
@@ -184,7 +156,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             comboboxProps={{ shadow: 'md' }}
             aria-label="enter value to add filter"
             value={selectedValues}
-            onChange={setSelectedValues}
+            onChange={updateFilters}
             searchable
             data={dataValues}
             limit={10}
