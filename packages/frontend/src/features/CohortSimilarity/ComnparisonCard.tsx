@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DistanceChart } from './types';
+import { SimilarityChart } from './types';
 import { AggregationsData, fieldNameToTitle } from '@gen3/core';
 import { generateChart } from './charts/ChartCard';
 import { Card, Group, SegmentedControl, Text } from '@mantine/core';
@@ -7,7 +7,7 @@ import StatisticsCard from './statistics/StatisticsCard';
 
 interface ComparisonChartProps {
   style?: string;
-  config: DistanceChart;
+  config: SimilarityChart;
   groundData: AggregationsData;
   groundLabel: string;
   comparisonData: AggregationsData;
@@ -40,7 +40,7 @@ const ComparisonChart: React.FC<ComparisonChartProps> = ({
 };
 
 interface ComparisonCardProps {
-  config: DistanceChart;
+  config: SimilarityChart;
   groundData: AggregationsData;
   groundLabel: string;
   comparisonData: AggregationsData;

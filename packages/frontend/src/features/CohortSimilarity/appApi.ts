@@ -1,7 +1,7 @@
 import { createAppApiForRTKQ } from '@gen3/core';
 
 export const {
-  appApi: cohortDistanceApi,
+  appApi: cohortSimilarityApi,
   appStore,
   appContext,
-} = createAppApiForRTKQ('cohortDistance');
+} = createAppApiForRTKQ('cohortSimilarity');

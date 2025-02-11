@@ -1,6 +1,6 @@
 import React from 'react';
 import { AggregationsData, fieldNameToTitle } from '@gen3/core';
-import { DistanceChart, GroundWithComparisonDatasets } from '../types';
+import { SimilarityChart, GroundWithComparisonDatasets } from '../types';
 import { Card, Grid, Text } from '@mantine/core';
 import { computeRowSpan } from '../../../components/charts';
 import StatisticsCard from './StatisticsCard';
@@ -8,7 +8,7 @@ import StatisticsCard from './StatisticsCard';
 interface StatisticsPanelProps {
   data: Record<string, AggregationsData>;
   datasets: GroundWithComparisonDatasets;
-  comparisonChartsConfig: Record<string, DistanceChart>;
+  comparisonChartsConfig: Record<string, SimilarityChart>;
   numColumns?: number;
   style?: 'tile' | 'box';
 }
