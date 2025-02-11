@@ -6,6 +6,7 @@ import {
   extractEnumFilterValue,
   type FacetDefinition,
   FacetType,
+  isUnion,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
@@ -22,11 +23,12 @@ import {
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
+  removeUnion,
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
-import { FacetDataHooks } from '../../components/facets/types';
+import { CombineMode, FacetDataHooks } from '../../components/facets/types';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
@@ -102,12 +104,24 @@ export const CohortPanel = ({
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
+      let filters = undefined;
+      let combineMode: CombineMode = 'or';
+      if (field in cohortFilters.root) {
+        if (isUnion(cohortFilters.root[field])) {
+          const unionFilters = removeUnion(cohortFilters.root[field]);
+          if (unionFilters) {
+            filters = extractEnumFilterValue(unionFilters);
+            combineMode = 'and';
+          }
+        } else {
+          filters = extractEnumFilterValue(cohortFilters.root[field]);
+        }
+      }
+
       return {
         data: processBucketData(data?.[field]),
-        enumFilters:
-          field in cohortFilters.root
-            ? extractEnumFilterValue(cohortFilters.root[field])
-            : undefined,
+        enumFilters: filters,
+        combineMode: combineMode,
         isSuccess: isSuccess,
       };
     },

@@ -5,6 +5,7 @@ import {
   HistogramDataArray,
   Includes,
   Operation,
+  isUnion,
   selectIndexedFilterByName,
   isOperationWithField,
   updateCohortFilter,
@@ -19,6 +20,7 @@ import {
   FromToRange,
   UpdateFacetFilterFunction,
   FieldToName,
+  CombineMode,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -31,6 +33,7 @@ export const getAllFieldsFromFilterConfigs = (
 interface ExplorerResultsData {
   [key: string]: Record<string, any>;
 }
+
 export const processBucketData = (
   data?: HistogramDataArray,
 ): Record<string, number> => {
@@ -74,15 +77,30 @@ export const updateFacetEnum = (
   values: EnumFilterValue,
   updateFacetFilters: UpdateFacetFilterFunction,
   clearFilters: ClearFacetFunction,
+  combineMode: CombineMode = 'or',
 ): void => {
   if (values === undefined) return;
   if (values.length > 0) {
     // TODO: Assuming Includes by default but this might change to Include|Excludes
-    updateFacetFilters(fieldName, {
-      operator: 'in',
-      field: fieldName,
-      operands: values,
-    } as Includes);
+    updateFacetFilters(
+      fieldName,
+      combineMode === 'and'
+        ? {
+            operator: 'and',
+            operands: [
+              {
+                operator: 'in',
+                field: fieldName,
+                operands: values,
+              } as Includes,
+            ],
+          }
+        : ({
+            operator: 'in',
+            field: fieldName,
+            operands: values,
+          } as Includes),
+    );
   }
   // no values remove the filter
   else {
@@ -173,6 +191,7 @@ export const useUpdateFilters = (index: string) => {
   // update the filter for this facet
 
   return (field: string, filter: Operation) => {
+    console.log('useUpdateFilters', index, filter);
     dispatch(
       updateCohortFilter({
         index: index,
@@ -230,3 +249,33 @@ export const extractRangeValues = <T extends string | number>(
 export const convertToStringArray = (
   inputArray: (string | number)[],
 ): string[] => inputArray.map(String);
+
+/**
+ * This function creates a new operation by combining the provided filter
+ * with an 'and' logical operator. The resulting operation contains the filter
+ * as its sole operand initially.
+ *
+ * @param {Operation} filter - The operation to be added as the first operand.
+ * @returns {Operation} A new operation object with an 'and' operator and the given filter as its operand.
+ */
+export const addUnion = (filter: Operation): Operation => {
+  return {
+    operator: 'and',
+    operands: [filter],
+  };
+};
+
+/**
+ * Removes a union operation and returns the sole operand if the union
+ * operation contains only one operand. If the union operation has multiple
+ * operands or if the input is not a union, returns undefined.
+ *
+ * @param {Operation} filter - The operation to evaluate and possibly modify, expected to be a union.
+ * @returns {Operation | undefined} The sole operand of the union if it contains only one, or undefined otherwise.
+ */
+export const removeUnion = (filter: Operation): Operation | undefined => {
+  if (isUnion(filter) && filter.operands.length === 1) {
+    return filter.operands[0];
+  }
+  return undefined;
+};

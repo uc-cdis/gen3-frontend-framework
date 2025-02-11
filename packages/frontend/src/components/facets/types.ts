@@ -37,6 +37,8 @@ export type FacetType =
   | 'datetime'
   | 'toggle';
 
+export type CombineMode = 'and' | 'or';
+
 // required functions
 export type ClearFacetFunction = (field: string) => void;
 export type ClearIndexedFacetFunction = (index: string, field: string) => void;
@@ -83,6 +85,7 @@ export interface FacetResponse {
 
 export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: EnumFilterValue;
+  readonly combineMode?: CombineMode;
 }
 
 export function isEnumFacetResponse(

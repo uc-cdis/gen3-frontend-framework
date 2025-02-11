@@ -176,7 +176,11 @@ const Charts = ({
         </React.Fragment>
       );
     };
-    const dataKeys = data[field].length > 0 ? Object.keys(data[field][0]) : [];
+    console.log(field, data);
+    const dataKeys =
+      field in data && data?.[field].length > 0
+        ? Object.keys(data[field][0])
+        : [];
 
     const chartTitle = charts[field].title ?? fieldNameToTitle(field);
 
