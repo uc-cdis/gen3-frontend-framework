@@ -46,6 +46,7 @@ export const createFacetCard = (
               hooks={dataFunctions}
               minimum={facetDefinition.range?.minimum}
               maximum={facetDefinition.range?.maximum}
+              showSettings={false}
             />
           ),
           exact: (
