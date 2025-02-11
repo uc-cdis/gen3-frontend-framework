@@ -22,8 +22,13 @@ export interface Gen3FenceLoginProviders {
   readonly providers: Array<Gen3LoginProvider>;
 }
 
+interface PresignedUrlRequest {
+  readonly guid: string;
+  readonly what: string;
+}
+
 /**
- * Creates a fence API endpoint for handling login processes
+ * Creates a fence API endpoint for handling login/data processes
  * @param endpoints - defined endpoint query for logging in
  * @returns: The generated fence login API slice
  */
@@ -35,6 +40,12 @@ export const loginProvidersApi = gen3Api.injectEndpoints({
     getDownload: builder.query<Gen3FenceLoginProviders, string>({
       query: (guid) => `${GEN3_FENCE_API}/user/data/download/${guid}`,
     }),
+    getPresignedUrl: builder.query<
+      Gen3FenceLoginProviders,
+      PresignedUrlRequest
+    >({
+      query: ({ guid, what }) => `${GEN3_FENCE_API}/user/data/${what}/${guid}`,
+    }),
   }),
 });
 
@@ -42,6 +53,8 @@ export const {
   useGetLoginProvidersQuery,
   useGetDownloadQuery,
   useLazyGetDownloadQuery,
+  useGetPresignedUrlQuery,
+  useLazyGetPresignedUrlQuery,
 } = loginProvidersApi;
 
 export interface FetchRequest {
