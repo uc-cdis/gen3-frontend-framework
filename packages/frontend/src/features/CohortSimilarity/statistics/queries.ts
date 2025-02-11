@@ -16,7 +16,7 @@ const convertToValidJSON = (inputString: string): string => {
   return cleanedString;
 };
 
-export const createDistanceQuery = (
+export const createSimilarityQuery = (
   fields: Record<string, string> = {
     age_at_index: 'age_at_index',
     sex: 'sex',
