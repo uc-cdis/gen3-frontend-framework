@@ -88,7 +88,7 @@
     "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^15.1.6",
+    "next": "^15.1.7",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
