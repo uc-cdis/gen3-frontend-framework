@@ -1,17 +1,16 @@
 import React from 'react';
 import { Grid } from '@mantine/core';
 import { AggregationsData } from '@gen3/core';
-import { DistanceChart, GroundWithComparisonDatasets } from './types';
+import { SimilarityChart } from './types';
 import { computeRowSpan } from '../../components/charts';
 import ComparisonCard from './ComnparisonCard';
-import comparisonCharts from './charts/ComparisonCharts';
 
 interface ComparisonCardssProps {
   ground: AggregationsData;
   groundLabel: string;
   comparison: AggregationsData;
   comparisonLabel: string;
-  comparisonChartsConfig: Record<string, DistanceChart>;
+  comparisonChartsConfig: Record<string, SimilarityChart>;
   numberOfColumns?: number;
   style?: 'tile' | 'box';
 }

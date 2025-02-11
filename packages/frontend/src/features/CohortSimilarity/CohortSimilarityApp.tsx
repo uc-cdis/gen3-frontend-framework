@@ -11,12 +11,12 @@ import {
 } from '@mantine/core';
 import { FaChartPie as SummaryChartIcon } from 'react-icons/fa';
 import { Charts } from '../../components/charts';
-import { CohortDistanceConfig } from './types';
+import { CohortSimilarityConfig } from './types';
 import ComparisonCards from './ComparisonCards';
 import { ErrorCard } from '../../components/MessageCards';
-import { getStaticDistanceData } from './statistics/data/data';
+import { getStaticSimilarityData } from './statistics/data/data';
 import { AggregationsData, useGeneralGQLQuery } from '@gen3/core';
-import { createDistanceQuery } from './statistics/queries';
+import { createSimilarityQuery } from './statistics/queries';
 import {
   processHistogramResponseAsPercentage,
   normalizeAgeOfIndex,
@@ -31,10 +31,10 @@ const SummaryChartAccordionControl = (props: AccordionControlProps) => {
   );
 };
 
-const CohortDistanceApp = (config: CohortDistanceConfig) => {
-  const groundDataset = getStaticDistanceData(config.datasets.ground.dataset);
+const CohortSimilarityApp = (config: CohortSimilarityConfig) => {
+  const groundDataset = getStaticSimilarityData(config.datasets.ground.dataset);
 
-  const gqlQuery = createDistanceQuery(); // TODO: add field mapping
+  const gqlQuery = createSimilarityQuery(); // TODO: add field mapping
 
   const {
     data: rawComparisonDataset,
@@ -58,7 +58,7 @@ const CohortDistanceApp = (config: CohortDistanceConfig) => {
 
   if (isComparisonError) {
     return (
-      <ErrorCard message={'Unable to get data need for Cohort Distance'} />
+      <ErrorCard message={'Unable to get data need for Cohort Similarity'} />
     );
   }
 
@@ -69,10 +69,10 @@ const CohortDistanceApp = (config: CohortDistanceConfig) => {
   return (
     <Stack
       classNames={{ root: 'w-full m-4 mb-2' }}
-      aria-label="Main Content of Cohort Distance App"
+      aria-label="Main Content of Cohort Similarity App"
     >
       <Title order={1} size="h3">
-        Cohort Distance Visualization
+        Cohort Similarity Visualization
       </Title>
       <Accordion variant="filled" chevronPosition="left">
         <Accordion.Item value="summaryCharts" aria-label="Summary Charts">
@@ -110,4 +110,4 @@ const CohortDistanceApp = (config: CohortDistanceConfig) => {
   );
 };
 
-export default CohortDistanceApp;
+export default CohortSimilarityApp;
