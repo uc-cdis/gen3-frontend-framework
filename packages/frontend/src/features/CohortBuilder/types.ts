@@ -36,6 +36,11 @@ export interface ManifestFieldsConfig {
   referenceIdFieldInDataIndex: string;
 }
 
+export interface SharedFilter {
+  filter: string;
+  sharedWith: Record<string, string>;
+}
+
 export interface DataTypeConfig {
   dataType: string;
   nodeCountTitle?: string;
@@ -75,6 +80,7 @@ export interface CohortPanelConfig {
 
 export interface CohortBuilderConfiguration extends ConfigVersionAndName {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
+  sharedFilters?: Record<string, SharedFilter>; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfig>;
 }
 

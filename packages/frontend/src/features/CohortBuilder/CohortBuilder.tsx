@@ -40,6 +40,8 @@ export const CohortBuilder = ({
     );
   }
 
+  console.log(TabsLayoutToComponentProp(tabsLayout));
+
   return (
     <div className="w-full">
       <Tabs

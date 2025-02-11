@@ -111,7 +111,7 @@ const RangeFacet = ({
     <div
       className={`flex flex-col ${
         width ? width : 'mx-1'
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <FacetControlsHeader
@@ -127,7 +127,9 @@ const RangeFacet = ({
       <div className="card-face bg-base-max">
         <div className="overflow-hidden px-3.5 h-auto">
           <LoadingOverlay visible={!isSuccess} />
-          <div className="flex flex-col gap-y-2 pb-2">
+          <div
+            className={`flex flex-col gap-y-2 pb-2 ${showFilters ? 'h-full' : 'h-0 invisible'}`}
+          >
             <div className="flex gap-x-4 items-center">
               <NumberInput
                 label="Min"
@@ -167,22 +169,17 @@ const RangeFacet = ({
                */
               }
             </div>
-            <div
-              className={showFilters ? 'h-full' : 'h-0 invisible'}
-              aria-hidden={!showFilters}
-            >
-              <RangeSlider
-                mt="md"
-                color="accent.5"
-                thumbSize={20}
-                value={[minMaxValue.from ?? minimum, minMaxValue.to ?? maximum]}
-                min={minimum}
-                max={maximum}
-                onChange={(value) => {
-                  updateFilters(value[0], value[1]);
-                }}
-              />
-            </div>
+            <RangeSlider
+              mt="md"
+              color="accent.5"
+              thumbSize={20}
+              value={[minMaxValue.from ?? minimum, minMaxValue.to ?? maximum]}
+              min={minimum}
+              max={maximum}
+              onChange={(value) => {
+                updateFilters(value[0], value[1]);
+              }}
+            />
           </div>
         </div>
       </div>
