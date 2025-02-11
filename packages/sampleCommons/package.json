@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.79",
+  "version": "0.10.80",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -33,12 +33,12 @@
     "idb": "^8.0.0",
     "jose": "^4.15.9",
     "mantine-react-table": "^2.0.0-beta.8",
-    "next": "^15.1.6",
+    "next": "^15.1.7",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
-    "@next/mdx": "^15.1.6",
+    "@next/mdx": "^15.1.7",
     "@types/mdx": "^2.0.13",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
