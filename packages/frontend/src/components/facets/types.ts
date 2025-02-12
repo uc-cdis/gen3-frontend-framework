@@ -1,4 +1,9 @@
-import { EnumFilterValue, FacetDefinition, Operation } from '@gen3/core';
+import {
+  EnumFilterValue,
+  FacetDefinition,
+  Operation,
+  CombineMode,
+} from '@gen3/core';
 import { ReactNode, ComponentType } from 'react';
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
@@ -37,8 +42,6 @@ export type FacetType =
   | 'datetime'
   | 'toggle';
 
-export type CombineMode = 'and' | 'or';
-
 // required functions
 export type ClearFacetFunction = (field: string) => void;
 export type ClearIndexedFacetFunction = (index: string, field: string) => void;
@@ -63,6 +66,11 @@ export type GetFacetDataFunction = (
 ) => EnumFacetResponse | RangeFacetResponse;
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
+export type GetFacetCombineModeFunction = (field: string) => CombineMode;
+export type SetFacetCombineModeFunction = (
+  field: string,
+  combineMode: CombineMode,
+) => void;
 
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
@@ -75,6 +83,11 @@ export interface FacetDataHooks extends FacetCommonHooks {
   useGetFacetFilters: SelectFacetFilterFunction;
   useGetFacetData: GetFacetDataFunction; // gets data for EnumFacets and ToggleFacet
   useTotalCounts?: GetTotalCountsFunction;
+}
+
+export interface EnumFacetDataHooks extends FacetDataHooks {
+  useGetCombineMode: GetFacetCombineModeFunction;
+  useUpdateCombineMode: SetFacetCombineModeFunction;
 }
 
 export interface FacetResponse {

@@ -10,13 +10,13 @@ import {
 } from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle, type CombineMode } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
-import { SortType, CombineMode } from './types';
+import { SortType } from './types';
 import { updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify/react';
@@ -156,7 +156,6 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       clearFilters,
       mode,
     );
-    console.log('set mode', mode);
   };
 
   const [facetChartData, setFacetChartData] = useState<{
@@ -343,15 +342,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                   }}
                   ref={settingRef}
                   value={combineMode}
-                  onChange={(value: string) =>
-                    handleCombineModeChange(value as 'and' | 'or')
-                  }
+                  onChange={(value: string) => {
+                    console.log('set combine mode to');
+                    handleCombineModeChange(value as 'and' | 'or');
+                  }}
                   data={[
                     { label: 'AND', value: 'and' },
                     { label: 'OR', value: 'or' },
                   ]}
                 />
-                <Tooltip label="Combine filters with AND or OR">
+                <Tooltip label="Combine filters with AND or OR 2">
                   <Icon
                     icon="gen3:info"
                     height={12}

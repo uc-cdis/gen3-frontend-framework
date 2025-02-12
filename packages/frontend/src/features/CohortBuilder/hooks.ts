@@ -7,6 +7,9 @@ import {
   toggleCohortBuilderCategoryFilter,
   selectAllCohortFiltersCollapsed,
   selectCohortFilterExpanded,
+  selectCohortFilterCombineMode,
+  CombineMode,
+  setCohortFilterCombineMode,
 } from '@gen3/core';
 
 export const useCohortFacetFilters = (index: string): FilterSet => {
@@ -30,4 +33,21 @@ export const useAllFiltersCollapsed = (index: string) => {
   return useCoreSelector((state: CoreState) =>
     selectAllCohortFiltersCollapsed(state, index),
   );
+};
+
+export const useCohortFilterCombineState = (index: string, field: string) => {
+  return useCoreSelector((state: CoreState) =>
+    selectCohortFilterCombineMode(state, index, field),
+  );
+};
+
+export const useSetCohortFilterCombineState = (
+  index: string,
+  field: string,
+  mode: CombineMode,
+) => {
+  const dispatch = useCoreDispatch();
+  return (field: string, mode: CombineMode) => {
+    dispatch(setCohortFilterCombineMode({ index, field, mode }));
+  };
 };

@@ -1,16 +1,17 @@
 import React, { useMemo, useState } from 'react';
-import { LoadingOverlay, Tabs } from '@mantine/core';
+import { LoadingOverlay } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   CoreState,
   extractEnumFilterValue,
   type FacetDefinition,
   FacetType,
-  isUnion,
+  isIntersection,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
+  CombineMode,
 } from '@gen3/core';
 import { type CohortPanelConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -23,12 +24,15 @@ import {
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
-  removeUnion,
+  removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
-import { CombineMode, FacetDataHooks } from '../../components/facets/types';
+import {
+  EnumFacetDataHooks,
+  FacetDataHooks,
+} from '../../components/facets/types';
 import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
@@ -40,7 +44,12 @@ import {
   useDeepCompareMemo,
 } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
-import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
+import {
+  useCohortFilterCombineState,
+  useFilterExpandedState,
+  useSetCohortFilterCombineState,
+  useToggleExpandFilter,
+} from './hooks';
 import { TabbedPanel } from './Panels/TabbedPanel';
 import DropdownPanel from './Panels/DropdownPanel';
 
@@ -106,15 +115,22 @@ export const CohortPanel = ({
     (field: string) => {
       let filters = undefined;
       let combineMode: CombineMode = 'or';
+      console.log('getEnumFacetData: cohortFilters', cohortFilters);
       if (field in cohortFilters.root) {
-        if (isUnion(cohortFilters.root[field])) {
-          const unionFilters = removeUnion(cohortFilters.root[field]);
-          if (unionFilters) {
-            filters = extractEnumFilterValue(unionFilters);
+        console.log('getEnumFacetData: field', field);
+        if (isIntersection(cohortFilters.root[field])) {
+          const intersectionFilters = removeIntersectionFromEnum(
+            cohortFilters.root[field],
+          );
+          console.log('getEnumFacetData: unionFilters', intersectionFilters);
+          if (intersectionFilters) {
+            filters = extractEnumFilterValue(intersectionFilters);
             combineMode = 'and';
+            console.log('getEnumFacetData: filters', filters);
           }
         } else {
           filters = extractEnumFilterValue(cohortFilters.root[field]);
+          console.log('getEnumFacetData: filters', filters);
         }
       }
 
@@ -142,7 +158,7 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetDataHooks> =
+  const facetDataHooks: Record<FacetType, FacetDataHooks | EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
@@ -153,6 +169,8 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
+          useGetCombineMode: partial(useCohortFilterCombineState, index),
+          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
           useTotalCounts: undefined,
         },
         exact: {

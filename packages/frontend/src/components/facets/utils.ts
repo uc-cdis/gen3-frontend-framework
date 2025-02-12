@@ -4,6 +4,7 @@ import {
   HistogramData,
   HistogramDataArray,
   Includes,
+  Intersection,
   Operation,
   isUnion,
   selectIndexedFilterByName,
@@ -14,13 +15,16 @@ import {
   fieldNameToTitle,
   AggregationsData,
   CoreState,
+  extractEnumFilterValue,
+  isOperatorWithFieldAndArrayOfOperands,
+  OperatorWithFieldAndArrayOfOperands,
+  CombineMode,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
   FromToRange,
   UpdateFacetFilterFunction,
   FieldToName,
-  CombineMode,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -85,16 +89,11 @@ export const updateFacetEnum = (
     updateFacetFilters(
       fieldName,
       combineMode === 'and'
-        ? {
-            operator: 'and',
-            operands: [
-              {
-                operator: 'in',
-                field: fieldName,
-                operands: values,
-              } as Includes,
-            ],
-          }
+        ? addIntersectionToIncludes({
+            operator: 'in',
+            field: fieldName,
+            operands: values,
+          } as Includes)
         : ({
             operator: 'in',
             field: fieldName,
@@ -201,6 +200,7 @@ export const useUpdateFilters = (index: string) => {
     );
   };
 };
+
 export const useGetFacetFilters = (index: string, field: string): Operation => {
   return useCoreSelector(
     (state: CoreState) =>
@@ -278,4 +278,56 @@ export const removeUnion = (filter: Operation): Operation | undefined => {
     return filter.operands[0];
   }
   return undefined;
+};
+
+/**
+ * Represents a function that adds an intersection filter operation.
+ *
+ * @param {Operation} filter - The filter operation to be intersected with.
+ * @returns {Operation} An object representing a new operation that combines
+ *                      the provided filter with an "and" logical operator.
+ */
+export const addIntersectionToIncludes = (filter: Includes): Operation => {
+  if (!isOperatorWithFieldAndArrayOfOperands(filter)) return filter;
+
+  const values: EnumFilterValue = extractEnumFilterValue(filter);
+
+  // if (!values || values.length === 0) return filter;
+
+  return {
+    operator: 'and',
+    operands: values.map((x) => {
+      return {
+        operator: filter.operator,
+        operands: [x],
+        field: filter.field,
+      } as Includes;
+    }),
+  };
+};
+
+/**
+ * Removes the intersection from a filter operation if the intersection contains only one operand.
+ *
+ * @param {Operation} filter - The filter operation to be evaluated.
+ * @returns {Operation|undefined} The single operand of the intersection if the intersection has only one operand, otherwise undefined.
+ */
+export const removeIntersectionFromEnum = (
+  filter: Intersection,
+): OperatorWithFieldAndArrayOfOperands | undefined => {
+  if (filter.operands.length === 0) return undefined;
+  if (!filter.operands.every((x) => isOperationWithField(x))) return undefined;
+
+  const values = filter.operands.reduce(
+    (acc, x) => {
+      extractEnumFilterValue(x).map((y) => acc.push(y));
+      return acc;
+    },
+    [] as Array<string | number>,
+  );
+  return {
+    operator: filter.operands[0].operator,
+    field: filter.operands[0].field,
+    operands: values,
+  } as OperatorWithFieldAndArrayOfOperands;
 };

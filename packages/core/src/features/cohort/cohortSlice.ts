@@ -173,16 +173,16 @@ export const {
 } = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
-  state.cohorts.cohort.filters;
+  state.cohort.cohort.cohort.filters;
 
 export const selectCurrentCohortId = (state: CoreState): string =>
-  state.cohorts.cohort.id;
+  state.cohort.cohort.cohort.id;
 
 export const selectCurrentCohort = (state: CoreState): Cohort =>
-  state.cohorts.cohort;
+  state.cohort.cohort.cohort;
 
 export const selectCurrentCohortName = (state: CoreState): string =>
-  state.cohorts.cohort.name;
+  state.cohort.cohort.cohort.name;
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
@@ -196,7 +196,7 @@ export const selectIndexedFilterByName = (
   index: string,
   name: string,
 ): Operation | undefined => {
-  return state.cohorts.cohort.filters[index]?.root[name];
+  return state.cohort.cohort.cohort.filters[index]?.root[name];
 };
 
 const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
@@ -211,7 +211,7 @@ export const selectIndexFilters = (
   state: CoreState,
   index: string,
 ): FilterSet => {
-  return state.cohorts.cohort.filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
+  return state.cohort.cohort.cohort.filters?.[index] ?? EmptyFilterSet; // TODO: check if this is undefined
 };
 
 export const cohortReducer = cohortSlice.reducer;

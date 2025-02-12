@@ -1,6 +1,5 @@
 // import all the components from this directory
 import {
-  cohortReducer,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
@@ -20,6 +19,12 @@ import {
   selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
 } from './filterExpandSlice';
+import { type CombineMode } from './types';
+
+import {
+  setCohortFilterCombineMode,
+  selectCohortFilterCombineMode,
+} from './filterCombineModeSlice';
 
 export {
   selectCohortFilters,
@@ -28,7 +33,9 @@ export {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
-  cohortReducer,
+  selectCohortFilterExpanded,
+  selectAllCohortFiltersCollapsed,
+  selectCohortFilterCombineMode,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
@@ -36,6 +43,6 @@ export {
   clearCohortFilters,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
-  selectCohortFilterExpanded,
-  selectAllCohortFiltersCollapsed,
+  setCohortFilterCombineMode,
+  type CombineMode,
 };

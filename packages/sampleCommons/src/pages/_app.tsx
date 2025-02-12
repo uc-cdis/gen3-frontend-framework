@@ -2,7 +2,7 @@ import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-import { initGrafanaFaro } from '../lib/Grafana/grafana';
+// import { initGrafanaFaro } from '../lib/Grafana/grafana';
 
 import {
   Gen3Provider,
@@ -67,7 +67,7 @@ const Gen3App = ({
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
-    if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    // if (!faroRef.current) faroRef.current = initGrafanaFaro();
     registerMetadataSchemaApp();
     registerExplorerDefaultCellRenderers();
     registerCohortBuilderDefaultPreviewRenderers();
@@ -82,17 +82,15 @@ const Gen3App = ({
   );
 
   return (
-    <FaroErrorBoundary>
-      <MantineProvider theme={theme}>
-        <Gen3Provider
-          icons={icons}
-          sessionConfig={sessionConfig}
-          modalsConfig={modalsConfig}
-        >
-          <Component {...pageProps} />
-        </Gen3Provider>
-      </MantineProvider>
-    </FaroErrorBoundary>
+    <MantineProvider theme={theme}>
+      <Gen3Provider
+        icons={icons}
+        sessionConfig={sessionConfig}
+        modalsConfig={modalsConfig}
+      >
+        <Component {...pageProps} />
+      </Gen3Provider>
+    </MantineProvider>
   );
 };
 
@@ -133,4 +131,6 @@ Gen3App.getInitialProps = async (
     sessionConfig: {},
   };
 };
-export default withFaroProfiler(Gen3App);
+export default Gen3App;
+//
+//export default withFaroProfiler(Gen3App);

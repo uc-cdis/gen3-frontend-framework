@@ -55,12 +55,12 @@ export const selectCohortFilterExpanded = (
   state: CoreState,
   index: string,
   field: string,
-): boolean => state.cohortFiltersExpanded?.[index]?.[field];
+): boolean => state.cohort.filtersExpanded?.[index]?.[field];
 
 export const selectAllCohortFiltersCollapsed = (
   state: CoreState,
   index: string,
 ): boolean =>
   index in state.cohortFiltersExpanded
-    ? Object.values(state.cohortFiltersExpanded?.[index]).every((e) => !e)
+    ? Object.values(state.cohort.filtersExpanded?.[index]).every((e) => !e)
     : false;
