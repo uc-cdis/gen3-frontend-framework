@@ -27,7 +27,7 @@ export const useDataLibrary = (useApi: boolean) => {
     refetch: refetchLibraryFromApi,
     error: apiError,
     isError: isAPIListError,
-    isLoading: isAPIListLoading,
+    isFetching: isAPIListLoading,
   } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();

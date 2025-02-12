@@ -101,7 +101,10 @@ export const addListToDataLibraryIndexDB = async (
     await tx.done;
     return { status: 'list added' };
   } catch (error: unknown) {
-    return { isError: true, status: `unable to add list` };
+    return {
+      isError: true,
+      status: `unable to add list ${body?.name ?? 'New List'}`,
+    };
   }
 };
 
