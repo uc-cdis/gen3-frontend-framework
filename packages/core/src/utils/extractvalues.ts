@@ -8,10 +8,16 @@ export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
 
 import { JSONPath } from 'jsonpath-plus';
 
-export const extractValuesFromObject = (jsonPathMappings: JsonPathMapping, obj: JSONObject): JSONObject =>{
+export const extractValuesFromObject = (
+  jsonPathMappings: JsonPathMapping,
+  obj: JSONObject,
+): JSONObject => {
   const result: { [key: string]: any } = {};
 
-  const extractObjectValue = (jsonPath: string, obj: JSONObject): JSONValue | undefined => {
+  const extractObjectValue = (
+    jsonPath: string,
+    obj: JSONObject,
+  ): JSONValue | undefined => {
     const extractedValues = JSONPath({ path: jsonPath, json: obj });
     return extractedValues.length > 0 ? extractedValues[0] : undefined;
   };

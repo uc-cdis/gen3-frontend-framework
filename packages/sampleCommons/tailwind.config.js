@@ -63,6 +63,8 @@ module.exports = {
         content: themeFonts.content,
       },
       fontSize: {
+        xxxs: '0.4rem',
+        xxs: '0.5rem',
         tiny: '0.625rem',
       },
       borderWidth: {
@@ -168,6 +170,6 @@ module.exports = {
       });
     }),
   ],
-  // Add any colors used in a json config file here
-  safelist: [],
+  // Add any colors. fontSize, height used in a json config file here
+  safelist: ['text-tiny', 'text-xxs', 'text-xxxs', 'h-20'],
 };

@@ -10,13 +10,18 @@ const ExternalProvidersPanel = () => {
     isLoading,
     isError,
     isSuccess,
+    refetch,
   } = useGetExternalLoginsQuery();
 
   const providerCards = useMemo(
     () =>
       externalProviders
         ? externalProviders.providers.map((provider: ExternalProvider) => (
-            <ExternalProviderCard key={provider.base_url} provider={provider} />
+            <ExternalProviderCard
+              key={provider.base_url}
+              provider={provider}
+              refetch={refetch}
+            />
           ))
         : null,
     [externalProviders],

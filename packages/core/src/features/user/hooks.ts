@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useGetExternalLoginsQuery } from './externalLoginsSlice';
-import { FileMetadata } from './types';
+import { ExternalProvider, FileMetadata } from './types';
 import { GUID_PREFIX_PATTERN } from '../../constants';
 import { resolveDRSObjectId } from '../drsResolver/utils';
 
@@ -91,7 +92,7 @@ interface FederatedLoginStatusParams {
   selectedFiles: ReadonlyArray<FileMetadata>;
 }
 
-const useGetFederatedLoginStatus = async ({
+const useGetFederatedLoginStatus = ({
   selectedFiles,
 }: FederatedLoginStatusParams) => {
   const {
@@ -100,44 +101,71 @@ const useGetFederatedLoginStatus = async ({
     error: wtsError,
   } = useGetExternalLoginsQuery();
 
-  if (wtsError || wtsResults === undefined) {
-    return { error: wtsError };
-  }
+  // State to manage the asynchronous results
+  const [result, setResult] = useState<{
+    providersToAuthenticate?: ExternalProvider[];
+    missingProviders?: ExternalProvider[];
+    error?: Error;
+  } | null>(null);
 
-  const providers = wtsResults.providers ?? [];
+  useEffect(() => {
+    const fetchData = async () => {
+      if (wtsError || !wtsResults) {
+        if (wtsError instanceof Error) setResult({ error: wtsError });
+        else setResult({ error: new Error('Unknown error') });
+        return;
+      }
 
-  const unauthenticatedProviders = providers.filter(
-    (provider) => !provider.refresh_token_expiration,
-  );
+      const providers = wtsResults.providers ?? [];
+      const unauthenticatedProviders = providers.filter(
+        (provider) => !provider.refresh_token_expiration,
+      );
 
-  const guidResolutions = await resolveGUIDsInSelectedFiles(selectedFiles);
-  const providersToAuthenticate = unauthenticatedProviders.filter(
-    (unauthenticatedProvider) =>
-      Object(guidResolutions.externalHosts)
-        .values()
-        .includes(new URL(unauthenticatedProvider.base_url).hostname),
-  );
+      try {
+        const guidResolutions =
+          await resolveGUIDsInSelectedFiles(selectedFiles);
+        const providersToAuthenticate = unauthenticatedProviders.filter(
+          (unauthenticatedProvider) =>
+            Object.values(guidResolutions.externalHosts).includes(
+              new URL(unauthenticatedProvider.base_url).hostname,
+            ),
+        );
 
-  const missingProviders = providersToAuthenticate.filter(
-    (provider) =>
-      !Object(guidResolutions.externalHosts)
-        .values()
-        .includes(new URL(provider.base_url).hostname),
-  );
-  if (missingProviders.length > 0) {
-    throw new Error(
-      `Could not find DRS server hostname for providers: ${missingProviders
-        .map((provider) => provider.name)
-        .join(', ')}`,
-    );
-  }
+        const missingProviders = providersToAuthenticate.filter(
+          (provider) =>
+            !Object.values(guidResolutions.externalHosts).includes(
+              new URL(provider.base_url).hostname,
+            ),
+        );
+
+        if (missingProviders.length > 0) {
+          throw new Error(
+            `Could not find DRS server hostname for providers: ${missingProviders
+              .map((provider) => provider.name)
+              .join(', ')}`,
+          );
+        }
+
+        setResult({
+          providersToAuthenticate,
+          missingProviders,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) setResult({ error });
+        else setResult({ error: new Error('Unknown error') });
+      }
+    };
+
+    // Only run if there's data to act on
+    if (!wstIsLoading && wtsResults) {
+      fetchData();
+    }
+  }, [selectedFiles, wstIsLoading, wtsError, wtsResults]);
 
   return {
-    data: wtsResults,
     isLoading: wstIsLoading,
-    error: wtsError,
-    providersToAuthenticate: providersToAuthenticate,
-    missingProviders: missingProviders,
+    data: result,
+    error: result?.error || wtsError,
   };
 };
 

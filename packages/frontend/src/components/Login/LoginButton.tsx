@@ -12,14 +12,17 @@ import {
 } from '@gen3/core';
 import { TooltipStyle } from '../../features/Navigation/style';
 import { LoginButtonVisibility } from './types';
+import { mergeTailwindClassnameWithDefault } from '../../utils/mergeDefaultTailwindClassnames';
 
 const handleSelected = async (
   isAuthenticated: boolean,
   router: NextRouter,
   referrer: string,
   endSession?: () => void,
+  externalLoginUrl?: string,
 ) => {
-  if (!isAuthenticated) await router.push(`Login?redirect=${referrer}`);
+  if (!isAuthenticated)
+    await router.push(externalLoginUrl || `Login?redirect=${referrer}`);
   else {
     if (endSession) endSession();
   }
@@ -31,14 +34,16 @@ interface LoginButtonProps {
   className?: string;
   tooltip?: string;
   visibility: LoginButtonVisibility;
+  externalLoginUrl?: string;
 }
 
 const LoginButton = ({
   icon = <LoginIcon className="pl-1" size={'1.55rem'} />,
   hideText = false,
-  className = 'flex flex-nowrap items-center font-content text-secondary-contrast-lighter align-middle border-b-2 hover:border-accent border-transparent mx-2',
+  className = undefined,
   tooltip,
   visibility,
+  externalLoginUrl,
 }: LoginButtonProps) => {
   const router = useRouter();
 
@@ -56,6 +61,11 @@ const LoginButton = ({
   if (visibility === LoginButtonVisibility.LogoutOnly && !authenticated)
     return null;
 
+  const mergedClassname = mergeTailwindClassnameWithDefault(
+    className,
+    'flex flex-nowrap items-center font-content text-secondary-contrast-lighter align-middle border-b-2 hover:border-accent border-transparent mx-2',
+  );
+
   return (
     <Tooltip
       label={tooltip}
@@ -68,12 +78,16 @@ const LoginButton = ({
     >
       <UnstyledButton
         onClick={() =>
-          handleSelected(authenticated, router, pathname, endSession)
+          handleSelected(
+            authenticated,
+            router,
+            pathname,
+            endSession,
+            externalLoginUrl,
+          )
         }
       >
-        <div
-          className={`flex items-center font-medium font-heading ${className}`}
-        >
+        <div className={mergedClassname}>
           {!hideText ? (authenticated ? 'Logout' : 'Login') : null}
           {icon}
         </div>

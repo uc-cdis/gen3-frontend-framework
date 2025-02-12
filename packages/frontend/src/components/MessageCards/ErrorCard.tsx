@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { BsExclamationTriangle as IconAlertTriangle } from 'react-icons/bs';
 import MessageCard, { type MessageTextProps } from './MessageCard';
 
 const ErrorCard: React.FunctionComponent<MessageTextProps> = ({

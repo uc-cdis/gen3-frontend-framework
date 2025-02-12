@@ -15,7 +15,9 @@ The configuration for the Discovery Page is divided into several sections:
 - `tagsDisplayName`: Name for the tag categories displayed.
 - `tagColumnWidth`: Width settings for the tag columns.
 - `minimalFieldMapping`: Essential field mappings required by the page.
-- `tagCategories`: Definitions for the categorization and display of tags.
+- `tags`: Definitions for the categorization and display of tags.
+  - `tagCategories`: Definitions for the categorization and display of tags.
+  - `showUnknownTags`: Defaults to False
 
 ### 2. Detailed Configuration Sections
 

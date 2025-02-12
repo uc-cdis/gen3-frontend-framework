@@ -21,7 +21,7 @@ export interface UserAuthResponse {
   readonly loginStatus: LoginStatus;
 }
 
-const userAuthApi = createApi({
+export const userAuthApi = createApi({
   reducerPath: 'userAuthApi',
   refetchOnMountOrArgChange: 1800,
   refetchOnReconnect: true,
@@ -42,7 +42,8 @@ const userAuthApi = createApi({
 
     try {
       results = await fetchFence({ endpoint, headers });
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_e: unknown) {
       /*
         Because an "error" response is valid for the auth requests we don't want to
         put the request in an error state, or it will attempt the request over and over again

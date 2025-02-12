@@ -4,12 +4,13 @@ import { BannerProps } from './Banner';
 import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface NavigationButtonProps {
-  readonly icon: string;
-  readonly tooltip: string;
-  readonly href: string;
-  readonly name: string;
-  readonly iconHeight?: string;
-  readonly classNames?: StylingOverrideWithMergeControl;
+  icon: string;
+  tooltip: string;
+  href: string;
+  noBasePath?: boolean;
+  name: string;
+  iconHeight?: string;
+  classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface NavigationBarLogo {
@@ -18,7 +19,7 @@ export interface NavigationBarLogo {
   readonly description: string;
   readonly width?: number;
   readonly height?: number;
-  readonly basePath?: string;
+  readonly noBasePath?: boolean;
   readonly divider?: boolean;
   readonly classNames?: StylingOverrideWithMergeControl;
 }

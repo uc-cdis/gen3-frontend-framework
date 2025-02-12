@@ -1,7 +1,7 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.54",
-  "description": "tools for processing portal content",
+  "version": "0.10.80",
+  "description": "tools for processing Gen3 commons content: color theme, icons",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -24,8 +24,9 @@
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
-    "@iconify/tools": "^2.1.2",
-    "tinycolor2": "^1.6.0"
+    "@iconify/tools": "^4.1.1",
+    "tinycolor2": "^1.6.0",
+    "undici": "^6.21.1"
   },
   "devDependencies": {
     "rollup-plugin-executable": "^1.6.3"
@@ -35,5 +36,11 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "overrides": {
+    "@iconify/tools": {
+      "cheerio": "^1.0.0-rc.12",
+      "undici": "^6.21.1"
+    }
+  }
 }

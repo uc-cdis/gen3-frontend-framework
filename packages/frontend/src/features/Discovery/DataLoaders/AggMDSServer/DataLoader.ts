@@ -40,10 +40,13 @@ const processAdvancedSearchTerms = (
     return {
       key,
       keyDisplayName,
-      valueDisplayNames: values.reduce((acc, cur) => {
-        acc[cur] = cur;
-        return acc;
-      }, {} as Record<string, string>),
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
     };
   });
 };
@@ -152,6 +155,7 @@ export const useAggMDSServer = ({
     hits: total,
     suggestions: [],
     summaryStatistics: [],
+    charts: {},
     advancedSearchFilterValues: [],
     dataRequestStatus: {
       isUninitialized,

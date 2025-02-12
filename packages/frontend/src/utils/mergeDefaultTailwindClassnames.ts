@@ -36,3 +36,8 @@ export const mergeDefaultTailwindClassnames = (
 
   return mergedValues;
 };
+
+export const mergeTailwindClassnameWithDefault = (
+  userValues: string | undefined,
+  defaultValues: string,
+): string => (userValues ? twMerge(defaultValues, userValues) : defaultValues);
