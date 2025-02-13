@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -39,6 +39,7 @@ interface DiscoveryTableProps {
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
+  setSelection: (selection: Array<string>) => void;
 }
 
 const DiscoveryTable = ({
@@ -47,6 +48,7 @@ const DiscoveryTable = ({
   dataRequestStatus,
   setSorting,
   setPagination,
+  setSelection,
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
@@ -108,7 +110,8 @@ const DiscoveryTable = ({
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
-
+    getRowId: (originalRow) =>
+      config.studyField ? originalRow[config.studyField] : originalRow.id,
     // TODO: keep this to explore later
     // mantineTableContainerProps: ({ table }) => {
     //   return {
@@ -167,6 +170,13 @@ const DiscoveryTable = ({
       },
     },
   });
+
+  const { rowSelection } = table.getState().rowSelection;
+
+  useEffect(() => {
+    //fetch data based on row selection state or something
+    setSelection(Object.keys(rowSelection));
+  }, [rowSelection, setSelection]);
 
   return (
     <React.Fragment>

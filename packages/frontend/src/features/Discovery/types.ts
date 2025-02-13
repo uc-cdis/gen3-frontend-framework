@@ -202,7 +202,7 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-export interface DataLibraryActionButton {
+export interface ExportFromDiscoveryActionButton {
   type:
     | 'manifest'
     | 'zip'
@@ -239,12 +239,15 @@ export interface AuthorizationValues {
   menuText: string;
 }
 
-export interface ExportToDataLibrary {
-  buttons: DataLibraryActionButton[];
+export interface ExportFromDiscoveryActions {
+  buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   loginRequireForAllButtons?: boolean;
   manifestFieldName?: string;
+  dataObjectFieldName: string;
+  datesetIdFieldName: string;
+  dataObjectIdField: string;
 }
 
 export interface DataAuthorization {
@@ -286,6 +289,13 @@ export interface ChartsSection {
   charts?: Record<string, SummaryChartWithField>;
 }
 
+export interface ExportToDataLibraryConfiguration {
+  enabled: boolean;
+  dataObjectFieldName: string;
+  datesetIdFieldName: string;
+  dataObjectIdField: string;
+}
+
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -295,7 +305,8 @@ export interface DiscoveryIndexConfig {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
-    exportToDataLibrary?: ExportToDataLibrary;
+    exportFromDiscovery?: ExportFromDiscoveryActions;
+    exportToDataLibrary: ExportToDataLibraryConfiguration;
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;

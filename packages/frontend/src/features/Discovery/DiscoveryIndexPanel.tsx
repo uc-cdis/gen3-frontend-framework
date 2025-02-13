@@ -93,6 +93,10 @@ const DiscoveryIndexPanel = ({
     );
   }
 
+  const updateSelection = (ids: Array<string>) => {
+    console.log('ids updated', ids);
+  };
+
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
@@ -168,6 +172,7 @@ const DiscoveryIndexPanel = ({
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}
+                setSelection={updateSelection}
                 pagination={pagination}
                 sorting={sorting}
               />

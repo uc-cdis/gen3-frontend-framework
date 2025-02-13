@@ -1,10 +1,10 @@
 import React from 'react';
-import { ExportToDataLibrary } from '../types';
+import { ExportFromDiscoveryActions } from '../types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 import DataLibraryActionButton from './DataLibraryActionButton';
 
 interface ActionBarProps {
-  config: ExportToDataLibrary;
+  config: ExportFromDiscoveryActions;
 }
 
 const ActionBar = ({ config }: ActionBarProps) => {
