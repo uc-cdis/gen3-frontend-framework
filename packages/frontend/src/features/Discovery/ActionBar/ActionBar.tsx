@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExportFromDiscoveryActions } from '../types';
-import { FiDownload as DownloadIcon } from 'react-icons/fi';
+import { Icon } from '@iconify/react';
 import DataLibraryActionButton from './DataLibraryActionButton';
 
 interface ActionBarProps {
@@ -16,7 +16,7 @@ const ActionBar = ({ config }: ActionBarProps) => {
         return (
           <DataLibraryActionButton
             label={button.label}
-            icon={<DownloadIcon />}
+            icon={<Icon icon={button.icon ?? 'gen3:download'} />}
             toolTip={button.tooltip}
             loginRequired={config?.loginRequireForAllButtons ?? true}
             onClick={() => {

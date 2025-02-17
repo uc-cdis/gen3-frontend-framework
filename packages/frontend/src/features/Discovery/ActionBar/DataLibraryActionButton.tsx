@@ -35,7 +35,7 @@ const DataLibraryActionButton = forwardRef<
     // TODO Test what idp was used to login and restrict actions to that idp or all or none
     const requiresLogin = !useIsUserLoggedIn() && loginRequired;
 
-    const buttonUcon = active ? (
+    const buttonIcon = active ? (
       <Loader size="sm" className="p-1" />
     ) : (
       <DownloadIcon title="download" size={16} />
@@ -47,7 +47,7 @@ const DataLibraryActionButton = forwardRef<
           ref={ref}
           onClick={onClick}
           disabled={disabled || requiresLogin}
-          leftSection={showIcon ? buttonUcon : undefined}
+          leftSection={showIcon ? buttonIcon : undefined}
           {...buttonProps}
         >
           {label}

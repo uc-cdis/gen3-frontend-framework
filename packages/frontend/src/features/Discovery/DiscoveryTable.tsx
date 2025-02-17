@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
   type MRT_PaginationState,
   type MRT_SortingState,
+  type MRT_RowSelectionState,
   useMantineReactTable,
 } from 'mantine-react-table';
+
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 import classes from './style/DiscoveryTable.module.css';
 
@@ -55,6 +58,7 @@ const DiscoveryTable = ({
   const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -111,7 +115,10 @@ const DiscoveryTable = ({
     enableStickyHeader: true,
     enableStickyFooter: true,
     getRowId: (originalRow) =>
-      config.studyField ? originalRow[config.studyField] : originalRow.id,
+      config?.minimalFieldMapping?.uid &&
+      config.minimalFieldMapping.uid in originalRow
+        ? originalRow[config.minimalFieldMapping.uid]
+        : (originalRow?.id ?? undefined),
     // TODO: keep this to explore later
     // mantineTableContainerProps: ({ table }) => {
     //   return {
@@ -123,7 +130,9 @@ const DiscoveryTable = ({
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
+    onRowSelectionChange: setRowSelection,
     state: {
+      rowSelection,
       isLoading,
       ...(manualSortingAndPagination
         ? {
@@ -171,11 +180,10 @@ const DiscoveryTable = ({
     },
   });
 
-  const { rowSelection } = table.getState().rowSelection;
-
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     //fetch data based on row selection state or something
-    setSelection(Object.keys(rowSelection));
+
+    setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 
   return (

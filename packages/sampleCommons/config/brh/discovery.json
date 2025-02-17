@@ -130,7 +130,7 @@
         },
         {
           "name": "ID Number",
-          "field": "study_id",
+          "field": "project_id",
           "errorIfNotAvailable": false,
           "valueIfNotAvailable": "n/a",
           "width": "152px",

@@ -209,7 +209,8 @@ export interface ExportFromDiscoveryActionButton {
     | 'download'
     | 'link'
     | 'externalLink'
-    | 'add-to-workspace';
+    | 'add-to-workspace'
+    | 'add-to-data-library';
   label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
@@ -289,13 +290,6 @@ export interface ChartsSection {
   charts?: Record<string, SummaryChartWithField>;
 }
 
-export interface ExportToDataLibraryConfiguration {
-  enabled: boolean;
-  dataObjectFieldName: string;
-  datesetIdFieldName: string;
-  dataObjectIdField: string;
-}
-
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -306,7 +300,6 @@ export interface DiscoveryIndexConfig {
     aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
     exportFromDiscovery?: ExportFromDiscoveryActions;
-    exportToDataLibrary: ExportToDataLibraryConfiguration;
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;

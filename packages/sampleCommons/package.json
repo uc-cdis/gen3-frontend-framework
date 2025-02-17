@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "next lint",
     "dev": "NODE_OPTIONS='--inspect' next dev",
+    "devssh" : "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",

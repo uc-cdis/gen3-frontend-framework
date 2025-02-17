@@ -38,6 +38,7 @@ const DiscoveryIndexPanel = ({
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
+  const [selections, setSelections] = useState<string[]>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -93,10 +94,6 @@ const DiscoveryIndexPanel = ({
     );
   }
 
-  const updateSelection = (ids: Array<string>) => {
-    console.log('ids updated', ids);
-  };
-
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
@@ -146,9 +143,9 @@ const DiscoveryIndexPanel = ({
             ) : (
               false
             )}
-            {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
+            {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
               <ActionBar
-                config={discoveryConfig.features.exportToDataLibrary}
+                config={discoveryConfig.features.exportFromDiscovery}
               />
             ) : null}
           </div>
@@ -172,7 +169,7 @@ const DiscoveryIndexPanel = ({
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}
-                setSelection={updateSelection}
+                setSelection={setSelections}
                 pagination={pagination}
                 sorting={sorting}
               />
