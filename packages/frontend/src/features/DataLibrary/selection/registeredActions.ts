@@ -1,15 +1,5 @@
 import { sendExistingPFBToURL } from './exportActions';
-import { HTTPError } from '@gen3/core';
-import { ValidatedSelectedItem } from '../types';
-
-export type DataActionFunction<T = void> = (
-  validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
-  params?: Record<string, any>, // function options from the config
-  done?: (arg0?: string) => void,
-  onError?: (error: HTTPError | Error) => void,
-  onAbort?: () => void,
-  signal?: AbortSignal,
-) => Promise<T>;
+import { DataActionFunction } from './types';
 
 // create a factory for the action creators
 

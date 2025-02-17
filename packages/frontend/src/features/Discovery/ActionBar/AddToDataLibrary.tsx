@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, ComboboxItem, Group, Select } from '@mantine/core';
 import { useDataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { ExportToDataLibraryConfiguration } from '../types';
 
 const extractListNameAndId = (data: any): ComboboxItem[] =>
   Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
