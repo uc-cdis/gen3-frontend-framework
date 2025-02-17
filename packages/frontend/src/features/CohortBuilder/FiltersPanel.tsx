@@ -28,7 +28,7 @@ export const FiltersPanel = ({
           undefined,
           false,
           facetDefinition.label,
-          'w-64',
+          'w-80',
         );
       })}
     </div>

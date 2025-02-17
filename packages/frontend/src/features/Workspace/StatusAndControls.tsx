@@ -7,6 +7,7 @@ import { Icon } from '@iconify/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import {
   isWorkspaceRunningOrStopping,
+  RequestedWorkspaceStatus,
   selectActiveWorkspaceStatus,
   selectRequestedWorkspaceStatus,
   useCoreSelector,
@@ -37,10 +38,9 @@ const StatusAndControls = () => {
       {(styles) => (
         <div style={styles}>
           <Group>
-            <Icon height={'2.0rem'} icon={'workspace:jupyter'} />
             <Tooltip label="Stop Workspace">
               <Button
-                loading={requestedStatus === 'Terminate'}
+                loading={requestedStatus === RequestedWorkspaceStatus.Terminate}
                 size="md"
                 color="accent.5"
                 variant="default"

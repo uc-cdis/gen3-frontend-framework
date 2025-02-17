@@ -2,16 +2,20 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
+import { SessionExpiredModalConfig } from "./types";
 
+interface SessionExpiredModalProps {
+  readonly openModal: boolean;
+  config: SessionExpiredModalConfig | undefined;
+}
 export const SessionExpiredModal = ({
   openModal,
-}: {
-  openModal: boolean;
-}): JSX.Element => {
+  config
+}: SessionExpiredModalProps): JSX.Element => {
 
   const router = useRouter();
   const onLogout = useCallback(() => {
-    router.push('/Login');
+    router.push(config?.externalLoginUrl || '/Login');
   }, [router]);
 
   return (

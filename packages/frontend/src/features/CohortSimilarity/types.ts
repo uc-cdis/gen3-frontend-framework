@@ -3,27 +3,27 @@ import { SummaryChart } from '../../components/charts';
 import { TitleAndDescription } from '../../types';
 import { Gen3AppConfigData } from '../../lib/content/types';
 
-export interface DiversityChart extends TitleAndDescription {
+export interface SimilarityChart extends TitleAndDescription {
   chartType: string;
   valueLabel?: string;
   parameters?: JSONObject;
 }
 
-export interface DiversityData {
+export interface SimilarityData {
   dataset: string;
   label: string;
 }
 
 export interface GroundWithComparisonDatasets {
-  ground: DiversityData;
-  comparison: Array<DiversityData>;
+  ground: SimilarityData;
+  comparison: Array<SimilarityData>;
 }
 
-export interface CohortDiversityConfig extends Gen3AppConfigData {
+export interface CohortSimilarityConfig extends Gen3AppConfigData {
   datasets: GroundWithComparisonDatasets;
   fields: ReadonlyArray<string>;
   fieldsConfig?: Record<string, Partial<TitleAndDescription>>;
   charts: Record<string, SummaryChart>;
-  comparisonCharts: Record<string, DiversityChart>;
+  comparisonCharts: Record<string, SimilarityChart>;
   numberOfColumns?: number;
 }

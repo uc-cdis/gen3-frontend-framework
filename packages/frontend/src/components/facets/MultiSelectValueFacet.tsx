@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
-import { ActionIcon, Group, MultiSelect, Tooltip } from '@mantine/core';
+import { MultiSelect, Tooltip } from '@mantine/core';
 import {
   controlsIconStyle,
   FacetIconButton,
@@ -16,6 +16,7 @@ import {
   trimFirstFieldNameToTitle,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { updateFacetEnum } from './utils';
 
 type ExactValueProps = Omit<
   FacetCardProps<FacetDataHooks>,
@@ -24,6 +25,23 @@ type ExactValueProps = Omit<
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ['in'].includes(op.operator); // TODO: Guppy does not support excludes
+
+interface OperandsObject {
+  operands: unknown[];
+}
+
+const isOperandsObject = (obj: unknown): obj is OperandsObject => {
+  return (
+    !!obj && // Ensure obj is not null or undefined
+    typeof obj === 'object' &&
+    'operands' in obj &&
+    Array.isArray((obj as OperandsObject).operands)
+  );
+};
+
+const isFacetEmpty = (op: object | null): boolean => {
+  return isOperandsObject(op) && op.operands.length === 0;
+};
 
 /**
  * Extracts the operands if the operation isIncludes or Excludes. Returns an empty Array
@@ -79,7 +97,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   }, [facetDataValues?.data]);
 
   useDeepCompareEffect(() => {
-    if (!facetValue) {
+    if (!facetValue || isFacetEmpty(facetValue)) {
       setSelectedValues([]);
     } else if (instanceOfIncludesExcludes(facetValue)) {
       const filters = facetValue.operands.map((x: number | string) =>
@@ -91,29 +109,10 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
 
   useDeepCompareEffect(() => {
     const setValues = (values: string[]) => {
-      if (values.length > 0) {
-        if (facetValue && instanceOfIncludesExcludes(facetValue)) {
-          // updating facet value
-          updateFacetFilters(field, {
-            ...facetValue,
-            operands: values,
-          });
-        }
-        if (facetValue === undefined) {
-          // TODO: Assuming Includes by default but this might change to Include|Excludes
-          updateFacetFilters(field, {
-            operator: 'in',
-            field: field,
-            operands: values,
-          });
-        }
-      }
-      // no values remove the filter
-      else {
-        clearFilters(field);
-      }
+      updateFacetEnum(field, values, updateFacetFilters, clearFilters);
     };
 
+    console.log('selectedValues: ', selectedValues);
     setValues(selectedValues);
   }, [selectedValues]);
 
@@ -162,14 +161,18 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         <MultiSelect
           data-testid="multiselect-add-filter-value"
           size="sm"
+          comboboxProps={{ shadow: 'md' }}
           placeholder={`Enter ${facetTitle}`}
-          classNames={{ root: 'grow', input: 'border-r-0 rounded-r-none py-1' }}
           aria-label="enter value to add filter"
           value={selectedValues}
           onChange={setSelectedValues}
           data={dataValues}
+          limit={10}
           searchable
-          maxDropdownHeight={200}
+          hidePickedOptions
+          withScrollArea={false}
+          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
+          mt="md"
         />
       </div>
     </div>
