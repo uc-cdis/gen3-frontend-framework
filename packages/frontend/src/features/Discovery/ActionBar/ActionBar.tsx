@@ -5,9 +5,10 @@ import DataLibraryActionButton from './DataLibraryActionButton';
 
 interface ActionBarProps {
   config: ExportFromDiscoveryActions;
+  handler: () => void;
 }
 
-const ActionBar = ({ config }: ActionBarProps) => {
+const ActionBar = ({ config, handler }: ActionBarProps) => {
   const { buttons } = config;
 
   return (
@@ -20,12 +21,11 @@ const ActionBar = ({ config }: ActionBarProps) => {
             toolTip={button.tooltip}
             loginRequired={config?.loginRequireForAllButtons ?? true}
             onClick={() => {
-              console.log('Download $[button.label]');
+              handler();
             }}
             key={`action-button-${index}`}
           />
         );
-        // }
       })}
     </div>
   );

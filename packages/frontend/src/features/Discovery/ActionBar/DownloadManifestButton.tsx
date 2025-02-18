@@ -3,19 +3,24 @@ import FileSaver from 'file-saver';
 import { GEN3_DOMAIN } from '@gen3/core';
 import { ActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
+import { notifications } from '@mantine/notifications';
 
 const MANIFEST_FILENAME = 'manifest.json';
 
 const handleDownloadManifestClick = <
   T extends Record<string, any> = Record<string, any>,
 >({
-  manifestFieldName,
+  exportDataFields,
   selectedResources,
 }: ActionButtonProps<T>) => {
-  if (!manifestFieldName) {
-    throw new Error(
-      'Missing required configuration field `config.features.exportToWorkspace.manifestFieldName`',
-    );
+  const { manifestFieldName } = exportDataFields;
+  if (manifestFieldName === undefined) {
+    notifications.show({
+      title: 'Error notification',
+      message:
+        'Missing required configuration field `config.features.export.manifestFieldName',
+    });
+    return;
   }
 
   // combine manifests from all selected studies
@@ -45,7 +50,7 @@ const handleDownloadManifestClick = <
 
 const DownloadManifestButton = ({
   selectedResources,
-  manifestFieldName,
+  exportDataFields,
 }: ActionButtonProps) => {
   return (
     <DataLibraryActionButton
@@ -53,7 +58,10 @@ const DownloadManifestButton = ({
       icon={<DownloadIcon />}
       toolTip="Download Manifest"
       onClick={() => {
-        console.log('Download Manifest');
+        handleDownloadManifestClick({
+          selectedResources: selectedResources,
+          exportDataFields: exportDataFields,
+        });
       }}
     />
   );

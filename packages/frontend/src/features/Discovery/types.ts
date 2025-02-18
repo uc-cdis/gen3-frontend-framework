@@ -240,15 +240,18 @@ export interface AuthorizationValues {
   menuText: string;
 }
 
-export interface ExportFromDiscoveryActions {
-  buttons: ExportFromDiscoveryActionButton[];
-  enabled?: boolean;
-  verifyExternalLogins?: boolean;
-  loginRequireForAllButtons?: boolean;
+export interface ExportDataFields {
   manifestFieldName?: string;
   dataObjectFieldName: string;
   datesetIdFieldName: string;
   dataObjectIdField: string;
+}
+
+export interface ExportFromDiscoveryActions extends ExportDataFields {
+  buttons: ExportFromDiscoveryActionButton[];
+  enabled?: boolean;
+  verifyExternalLogins?: boolean;
+  loginRequireForAllButtons?: boolean;
 }
 
 export interface DataAuthorization {

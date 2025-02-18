@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { Button, ComboboxItem, Group, Select } from '@mantine/core';
 import { useDataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { ExportDataFields } from '../types';
 
 const extractListNameAndId = (data: any): ComboboxItem[] =>
   Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
 
 interface DiscoveryAddToDataLibraryProps {
   selectedResources: Record<string, any>;
-  exportToDataLibrary: ExportToDataLibraryConfiguration;
+  exportDataFields: ExportDataFields;
 }
 
 const DiscoveryDataLibrary = ({
   selectedResources,
-  exportToDataLibrary,
+  exportDataFields,
 }: DiscoveryAddToDataLibraryProps) => {
   const [data, setData] = useState<ComboboxItem[]>([]);
   const [currentList, setCurrentList] = useState<ComboboxItem | null>(null);
@@ -36,12 +37,12 @@ const DiscoveryDataLibrary = ({
     if (selectedResources.length === 0) return;
     const items = selectedResources.reduce(
       (acc: Record<string, any>, resource: Record<string, any>) => {
-        const dataObjects = resource[exportToDataLibrary.dataObjectFieldName];
-        const datasetId = resource[exportToDataLibrary.datesetIdFieldName];
+        const dataObjects = resource[exportDataFields.dataObjectFieldName];
+        const datasetId = resource[exportDataFields.datesetIdFieldName];
 
         const datafiles = dataObjects.reduce(
           (dataAcc: Record<string, any>, dataObject: any) => {
-            const guid = dataObject[exportToDataLibrary.dataObjectIdField];
+            const guid = dataObject[exportDataFields.dataObjectIdField];
             return {
               ...dataAcc,
               [guid]: {
