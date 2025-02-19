@@ -20,12 +20,12 @@ print_message() {
 
 # Check if nginx is running
 check_nginx_status() {
-    if ps aux | grep "nginx" | grep -v grep >/dev/null; then
-        return 0
-    else
-        return 1
-    fi
-}
+         if pgrep "nginx" >/dev/null; then
+             return 0
+         else
+             return 1
+         fi
+     }
 
 # Create SSL certificate directory if it doesn't exist
 setup_ssl_directory() {

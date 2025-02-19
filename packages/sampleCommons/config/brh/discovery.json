@@ -6,7 +6,9 @@
         "expandableRows": true
       },
       "features": {
-        "dataFetchFunction": "AggMDSAllLocal",
+        "dataLoader": {
+          "dataFetchFunction": "AggMDSAllLocal"
+        },
         "aiSearch": true,
         "advSearchFilters": {
           "enabled": false,
@@ -53,6 +55,19 @@
           "tagSearchDropdown": {
             "enabled": true,
             "collapsibleButtonText": "Data Commons"
+          }
+        },
+          "exportFromDiscovery" : {
+            "enabled" : "true",
+            "exportDataFields" : {
+              "dataObjectFieldName": "__manifest"
+            },
+            "buttons": [
+              {
+                "type" : "manifest",
+                "label" : "Manifest"
+              }
+            ]
           },
           "exportToWorkspace": {
             "enabled": true,
@@ -63,7 +78,6 @@
               "gen3Client": "https://gen3.org/resources/user/gen3-client/",
               "gen3Workspaces": "https://gen3.org/resources/user/analyze-data/"
             }
-          }
         },
         "authorization": {
           "enabled": true,

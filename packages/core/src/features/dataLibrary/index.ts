@@ -8,7 +8,7 @@ import {
   useUpdateDataLibraryListMutation,
 } from './dataLibraryApi';
 
-import useDataLibrary from './hooks/useDataLibrary';
+import useDataLibrary from './useDataLibrary';
 
 import {
   setDataLibraryListSelection,

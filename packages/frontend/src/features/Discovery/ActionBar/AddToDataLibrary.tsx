@@ -3,19 +3,16 @@ import { Button, ComboboxItem, Group, Select } from '@mantine/core';
 import { useDataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportDataFields } from '../types';
+import { ExportActionButtonProps } from './types';
 
 const extractListNameAndId = (data: any): ComboboxItem[] =>
   Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
 
-interface DiscoveryAddToDataLibraryProps {
-  selectedResources: Record<string, any>;
-  exportDataFields: ExportDataFields;
-}
-
 const DiscoveryDataLibrary = ({
+  buttonConfig,
   selectedResources,
   exportDataFields,
-}: DiscoveryAddToDataLibraryProps) => {
+}: ExportActionButtonProps) => {
   const [data, setData] = useState<ComboboxItem[]>([]);
   const [currentList, setCurrentList] = useState<ComboboxItem | null>(null);
   const [loading, setLoading] = useState(false);
@@ -62,7 +59,7 @@ const DiscoveryDataLibrary = ({
     );
 
     if (listId) {
-      updateListInDataLibrary(listId, items);
+      updateListInDataLibrary(listId, { ...dataLibrary[listId], items });
     } else {
       addListToDataLibrary(items);
     }
@@ -84,7 +81,7 @@ const DiscoveryDataLibrary = ({
 
   return (
     <React.Fragment>
-      <Group>
+      <Group data-testid="add-to-data-library">
         <Select
           data={data}
           onChange={(value, option) => setCurrentList(option)}

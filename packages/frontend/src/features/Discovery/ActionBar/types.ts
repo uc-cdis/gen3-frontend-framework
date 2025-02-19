@@ -1,12 +1,18 @@
-import { ExportDataFields } from '../types';
+import { ExportDataFields, ExportFromDiscoveryActionButton } from '../types';
 
-export interface ActionButtonProps<
+export interface ExportActionProps<
   T extends Record<string, any> = Record<string, any>,
 > {
   selectedResources: Array<T>;
   exportDataFields: ExportDataFields;
 }
 
+export interface ExportActionButtonProps<
+  T extends Record<string, any> = Record<string, any>,
+> extends ExportActionProps<T> {
+  buttonConfig: ExportFromDiscoveryActionButton;
+}
+
 export type ActionButtonFunction<
   T extends Record<string, any> = Record<string, any>,
-> = (props: ActionButtonProps<T>) => void;
+> = (props: ExportActionProps<T>) => void;

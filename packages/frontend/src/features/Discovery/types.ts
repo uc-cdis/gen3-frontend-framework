@@ -210,12 +210,12 @@ export interface ExportFromDiscoveryActionButton {
     | 'link'
     | 'externalLink'
     | 'add-to-workspace'
-    | 'add-to-data-library';
+    | 'addToDataLibrary';
   label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
   tooltip?: string; // tooltip text
-  actionFunction: string;
+  disabled?: boolean;
 }
 
 export interface SearchBar {
@@ -241,17 +241,17 @@ export interface AuthorizationValues {
 }
 
 export interface ExportDataFields {
-  manifestFieldName?: string;
-  dataObjectFieldName: string;
-  datesetIdFieldName: string;
-  dataObjectIdField: string;
+  dataObjectFieldName: string; // member that stores the id of the object that stores the id.
+  datesetIdFieldName: string; // member that stores the id of the "dataset" will default to uid
+  dataObjectIdField: string; // field in data object
 }
 
-export interface ExportFromDiscoveryActions extends ExportDataFields {
+export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   loginRequireForAllButtons?: boolean;
+  exportDataFields: ExportDataFields;
 }
 
 export interface DataAuthorization {

@@ -191,7 +191,7 @@ export const RenderLinkWithURL: CellRendererFunction = (
       rel="noreferrer"
     >
       <Text c="utility.0" tt={ttValue}>
-        {content} fgh
+        {content}
       </Text>
     </a>
   );

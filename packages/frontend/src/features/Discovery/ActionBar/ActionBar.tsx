@@ -2,30 +2,54 @@ import React from 'react';
 import { ExportFromDiscoveryActions } from '../types';
 import { Icon } from '@iconify/react';
 import DataLibraryActionButton from './DataLibraryActionButton';
+import { ExportActionButtonProps } from './types';
+import DownloadManifestButton from './DownloadManifestButton';
 
-interface ActionBarProps {
-  config: ExportFromDiscoveryActions;
-  handler: () => void;
+const createActionButton = ({
+  buttonConfig,
+  selectedResources,
+  exportDataFields,
+}: ExportActionButtonProps) => {
+  return {
+    manifest: (
+      <DownloadManifestButton
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
+        key={buttonConfig.type}
+      />
+    ),
+    addToDataLibrary: (
+      <DataLibraryActionButton
+        label={buttonConfig.label}
+        icon={<Icon icon={buttonConfig.icon ?? 'gen3:download'} />}
+        toolTip={buttonConfig.tooltip}
+        key={buttonConfig.type}
+      />
+    ),
+  }[buttonConfig.type as string];
+};
+
+interface ActionBarProps extends ExportFromDiscoveryActions {
+  selectedResources: any[];
 }
 
-const ActionBar = ({ config, handler }: ActionBarProps) => {
-  const { buttons } = config;
-
+const ActionBar: React.FC<ActionBarProps> = ({
+  buttons,
+  selectedResources,
+  exportDataFields,
+  verifyExternalLogins,
+  loginRequireForAllButtons = true,
+}) => {
+  console.log('buttons', buttons, exportDataFields);
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
-      {buttons?.map((button, index) => {
-        return (
-          <DataLibraryActionButton
-            label={button.label}
-            icon={<Icon icon={button.icon ?? 'gen3:download'} />}
-            toolTip={button.tooltip}
-            loginRequired={config?.loginRequireForAllButtons ?? true}
-            onClick={() => {
-              handler();
-            }}
-            key={`action-button-${index}`}
-          />
-        );
+      {buttons?.map((button) => {
+        return createActionButton({
+          buttonConfig: button,
+          selectedResources,
+          exportDataFields,
+        });
       })}
     </div>
   );
