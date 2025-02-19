@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, ComboboxItem, Group, Select } from '@mantine/core';
 import { useDataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { ExportDataFields } from '../types';
+import { useIsAuthenticated } from '../../../lib/session/session';
 import { ExportActionButtonProps } from './types';
 
 const extractListNameAndId = (data: any): ComboboxItem[] =>
@@ -18,6 +18,7 @@ const DiscoveryDataLibrary = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Record<string, any> | null>(null);
 
+  const { isAuthenticated } = useIsAuthenticated();
   const {
     dataLibrary,
     updateListInDataLibrary,
@@ -25,7 +26,7 @@ const DiscoveryDataLibrary = ({
     isLoading,
     isError,
     error: dataLibraryError,
-  } = useDataLibrary(false);
+  } = useDataLibrary(isAuthenticated);
 
   const saveToList = (
     listname: string,
@@ -112,7 +113,7 @@ const DiscoveryDataLibrary = ({
           }}
         >
           {' '}
-          Save to List
+          {buttonConfig?.label ?? 'Save to List'}
         </Button>
       </Group>
     </React.Fragment>

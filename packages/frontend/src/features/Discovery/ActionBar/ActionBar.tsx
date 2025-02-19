@@ -41,7 +41,8 @@ const ActionBar: React.FC<ActionBarProps> = ({
   verifyExternalLogins,
   loginRequireForAllButtons = true,
 }) => {
-  console.log('buttons', buttons, exportDataFields);
+  const { isAuthenticated } = useIsAuthenticated();
+
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
       {buttons?.map((button) => {

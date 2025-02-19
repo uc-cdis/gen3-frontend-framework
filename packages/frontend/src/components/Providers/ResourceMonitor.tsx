@@ -104,7 +104,6 @@ export const useWorkspaceResourceMonitor = () => {
 
   useEffect(() => {
     if (isWorkspaceStatusError) {
-      console.error('Workspace model error: ', workspaceStatusError.toString());
       dispatch(setActiveWorkspaceStatus(WorkspaceStatus.StatusError));
       setPollingInterval(0); // stop polling
       setPaymentPollingInterval(0);
