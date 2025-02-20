@@ -367,7 +367,6 @@ const explorerApi = guppyApi.injectEndpoints({
     }),
     getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
       query: (indices: string[]) => {
-        console.log('indices', indices);
         return {
           query: `{
             _mapping { ${indices.join(' ')} }
@@ -375,7 +374,6 @@ const explorerApi = guppyApi.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>) => {
-        console.log('response', response);
         if ('_mapping' in response.data) {
           return groupSharedFields(response.data['_mapping']);
         }

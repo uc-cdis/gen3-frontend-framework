@@ -9,7 +9,7 @@ const ExplorerPage = ({
   footerProps,
   explorerConfig,
   tabsLayout,
-  sharedFilters,
+  sharedFiltersMap,
 }: ExplorerPageProps): JSX.Element => {
   if (explorerConfig === undefined) {
     return (
@@ -31,7 +31,7 @@ const ExplorerPage = ({
       <CohortBuilder
         tabsLayout={tabsLayout}
         explorerConfig={explorerConfig}
-        sharedFilters={sharedFilters}
+        sharedFiltersMap={sharedFiltersMap}
       />
     </NavPageLayout>
   );

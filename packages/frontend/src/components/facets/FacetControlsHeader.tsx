@@ -90,6 +90,8 @@ const FacetControlsHeader = ({
     }
   }, [field, isFilterExpanded, toggleExpandFilter]);
 
+  console.log('Shared', sharedWithIndices);
+
   return (
     <header.Panel>
       <div className="flex flex-row items-center">
@@ -100,7 +102,6 @@ const FacetControlsHeader = ({
               onClick={() => {
                 toggleExpandFilter(field, !isFilterExpanded);
               }}
-              className="mt-0.5 -ml-1.5"
               aria-expanded={isFilterExpanded}
               aria-label={isFilterExpanded ? 'Collapse card' : 'Expand card'}
             >
@@ -124,9 +125,9 @@ const FacetControlsHeader = ({
           <Tooltip label="Shared with indices">
             <Icon
               icon="gen3:share"
-              className={header.iconStyle}
-              width={12}
-              height={12}
+              className={`${header.iconStyle} mx-0.5 mr-2`}
+              width={9}
+              height={9}
             />
           </Tooltip>
         )}

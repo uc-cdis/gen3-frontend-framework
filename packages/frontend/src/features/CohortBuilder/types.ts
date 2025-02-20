@@ -84,6 +84,11 @@ export interface CohortBuilderConfiguration extends ConfigVersionAndName {
   explorerConfig: Array<CohortPanelConfig>;
 }
 
+export interface CohortBuilderProps
+  extends Omit<CohortBuilderConfiguration, 'sharedFilters'> {
+  sharedFiltersMap?: SharedFieldMapping;
+}
+
 // to do add buttons, options,  menus, etc
 
 export interface CohortConfig {

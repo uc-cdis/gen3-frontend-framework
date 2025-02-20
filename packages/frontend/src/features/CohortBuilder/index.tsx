@@ -1,5 +1,8 @@
 import { CohortBuilder } from './CohortBuilder';
-import { type CohortBuilderConfiguration } from './types';
+import {
+  type CohortBuilderConfiguration,
+  type CohortBuilderProps,
+} from './types';
 
 import {
   ExplorerTableCellRendererFactory,
@@ -13,6 +16,7 @@ import {
 export {
   CohortBuilder,
   type CohortBuilderConfiguration,
+  type CohortBuilderProps,
   type TableDetailsPanelProps,
   type CellRendererFunctionProps,
   ExplorerTableCellRendererFactory,

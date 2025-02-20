@@ -1,4 +1,8 @@
-import { DownloadFromGuppyParams, GuppyDownloadDataParams } from './types';
+import {
+  DownloadFromGuppyParams,
+  GuppyDownloadDataParams,
+  IndexAndField,
+} from './types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { selectCSRFToken } from '../user';
 import { coreStore } from '../../store';
@@ -185,10 +189,13 @@ export const groupSharedFields = (data: Record<string, string[]>) => {
   return Object.entries(reverseIndex).reduce(
     (acc, [field, indexSet]) => {
       if (indexSet.size > 1) {
-        acc[field] = Array.from(indexSet);
+        acc[field] = Array.from(indexSet).map((x) => ({
+          index: x,
+          field: field,
+        }));
       }
       return acc;
     },
-    {} as Record<string, Array<string>>,
+    {} as Record<string, Array<IndexAndField>>,
   );
 };

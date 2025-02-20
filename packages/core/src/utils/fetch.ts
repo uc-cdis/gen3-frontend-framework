@@ -1,6 +1,6 @@
 import { selectCSRFToken } from '../features/user';
 import { coreStore } from '../store';
-import { GEN3_FENCE_API } from '../constants';
+import { GEN3_FENCE_API, GEN3_API } from '../constants';
 import { getCookie } from 'cookies-next';
 
 export const HTTPErrorMessages: Record<number, string> = {
@@ -80,14 +80,16 @@ export const fetchFencePresignedURL = async ({
 
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
-  let accessToken = undefined;
+
   if (process.env.NODE_ENV === 'development') {
     // NOTE: This cookie can only be accessed from the client side
     // in development mode. Otherwise, the cookie is set as httpOnly
-    accessToken = getCookie('credentials_token');
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    }
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
-  if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
 
   const url = `${GEN3_FENCE_API}/user/data/download/${guid}`;
   try {
@@ -123,4 +125,48 @@ export const fetchFencePresignedURL = async ({
     }
     throw error;
   }
+};
+
+export const fetchJSONDataFromURL = async (
+  url: string,
+  requiresCSRF: boolean = false,
+  method: string = 'GET',
+  body: unknown = undefined,
+) => {
+  const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
+
+  // get csrf token if needed
+  if (requiresCSRF) {
+    const response = await fetch(`${GEN3_API}/_status`, {
+      headers: headers,
+    } as RequestInit);
+    if (!response.ok) {
+      throw new HTTPError(response.status, response.statusText);
+    }
+    const data = await response.json();
+    const csrfToken = data['csrf_token'];
+    if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
+  }
+
+  console.log(headers);
+  console.log('POST' === method ? JSON.stringify(body) : null);
+  console.log(url);
+
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+  }
+
+  const response = await fetch(url, {
+    method: method,
+    headers: headers,
+    body: 'POST' === method ? JSON.stringify(body) : null,
+  } as RequestInit);
+  if (!response.ok) {
+    throw new HTTPError(response.status, response.statusText);
+  }
+  return await response.json();
 };

@@ -3,6 +3,8 @@ import {
   FacetDefinition,
   Operation,
   CombineMode,
+  SharedFieldMapping,
+  IndexAndField,
 } from '@gen3/core';
 import { ReactNode, ComponentType } from 'react';
 
@@ -22,7 +24,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (arg0: string) => void;
-  readonly sharedWithIndices?: ReadonlyArray<string>;
+  readonly sharedWithIndices?: Array<IndexAndField>;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
