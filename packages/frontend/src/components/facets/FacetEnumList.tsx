@@ -16,8 +16,8 @@ import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
-import { SortType } from './types';
-import { updateFacetEnum } from './utils';
+import { FacetSortType, SortType } from './types';
+import { mapFacetSortToSortType, updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify/react';
 
@@ -62,6 +62,7 @@ interface FacetEnumListProps {
   showPercent?: boolean;
   hideIfEmpty?: boolean;
   showSorting?: boolean;
+  sort?: FacetSortType;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -75,6 +76,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   showPercent = false,
   hideIfEmpty = false,
   showSorting = true,
+  sort = 'value-dsc',
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -95,10 +97,9 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const [sortedData, setSortedData] = useState<
     Array<[string | number, number]>
   >([]);
-  const [sortType, setSortType] = useState<SortType>({
-    type: 'alpha',
-    direction: 'asc',
-  });
+  const [sortType, setSortType] = useState<SortType>(
+    mapFacetSortToSortType(sort),
+  );
   const theme = useMantineTheme();
 
   useEffect(() => {
@@ -343,7 +344,6 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                   ref={settingRef}
                   value={combineMode}
                   onChange={(value: string) => {
-                    console.log('set combine mode to');
                     handleCombineModeChange(value as 'and' | 'or');
                   }}
                   data={[

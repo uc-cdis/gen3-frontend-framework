@@ -204,6 +204,7 @@ export interface FacetDefinition {
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean; // does this facet have data
   readonly label?: string; // label for facet
+  readonly sharedWithIndices?: Array<string>; // if this filter is denormalized across indices
 }
 
 export type IndexedFilterSet = Record<string, FilterSet>;

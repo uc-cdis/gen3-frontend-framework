@@ -11,9 +11,11 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
   try {
     const cohortBuilderProps: CohortBuilderConfiguration =
       await ContentSource.get(`config/${GEN3_COMMONS_NAME}/explorer.json`);
+    console.log('cohortBuilderProps', cohortBuilderProps);
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
+        sharedFilters: cohortBuilderProps?.sharedFilters,
         tabsLayout: cohortBuilderProps?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderProps.explorerConfig,
       },

@@ -32,6 +32,7 @@ export const createFacetCard = (
               width={width}
               hooks={dataFunctions}
               showPercent={false}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
           range: (

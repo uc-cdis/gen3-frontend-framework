@@ -29,6 +29,7 @@ type FacetHeaderProps = Pick<
   | 'dismissCallback'
   | 'isFacetView'
   | 'header'
+  | 'sharedWithIndices'
 > & {
   showSettings?: boolean;
   showClearSelection?: boolean;
@@ -48,9 +49,11 @@ type FacetHeaderProps = Pick<
  * @param showFlip - if the flip icon should be displayed
  * @param showClearSelection - if the clear selection icon should be displayed
  * @param isFacetView - if the facet selection view (and not the chart view) is displayed
+ * @param toggleSettings - toggle is setting button is visible
  * @param toggleFlip - function to switch the facet/chart view
  * @param toggleSearch - function to switch if the search bart is displayed
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
+ * @param sharedWithIndices
  * @param header - object containing the display components to use for the header
  */
 const FacetControlsHeader = ({
@@ -67,6 +70,7 @@ const FacetControlsHeader = ({
   toggleFlip = undefined,
   toggleSearch = undefined,
   dismissCallback = undefined,
+  sharedWithIndices = undefined,
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -114,6 +118,16 @@ const FacetControlsHeader = ({
                 />
               )}
             </ActionIcon>
+          </Tooltip>
+        )}
+        {sharedWithIndices && (
+          <Tooltip label="Shared with indices">
+            <Icon
+              icon="gen3:share"
+              className={header.iconStyle}
+              width={12}
+              height={12}
+            />
           </Tooltip>
         )}
         <Tooltip

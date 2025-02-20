@@ -2,10 +2,10 @@
 
 import { SummaryChart } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
-import { FieldToName } from '../../components/facets/types';
+import { FieldToName, FacetSortType } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals, FacetDefinition } from '@gen3/core';
+import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { ConfigVersionAndName } from '../../types';
 
@@ -23,6 +23,7 @@ export interface TabConfig {
   fields: ReadonlyArray<string>;
   fieldsConfig: Record<string, FacetDefinition>;
   classNames?: StylingOverride;
+  defaultSort?: FacetSortType;
 }
 
 export interface TabsConfig {
@@ -34,11 +35,6 @@ export interface ManifestFieldsConfig {
   resourceIdField: string;
   referenceIdFieldInResourceIndex: string;
   referenceIdFieldInDataIndex: string;
-}
-
-export interface SharedFilter {
-  filter: string;
-  sharedWith: Record<string, string>;
 }
 
 export interface DataTypeConfig {
@@ -68,19 +64,23 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 }
 
 export interface CohortPanelConfig {
-  readonly guppyConfig: DataTypeConfigWithManifest; // guppy config
-  readonly tabTitle: string; // title of the tab
-  readonly charts?: Record<string, SummaryChart>; // grid of charts
-  readonly table?: SummaryTable; // table configuration
-  readonly filters?: TabsConfig; // filters for the fields
-  readonly dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
-  readonly buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
-  readonly loginForDownload?: boolean; // login required for download
+  guppyConfig: DataTypeConfigWithManifest; // guppy config
+  tabTitle: string; // title of the tab
+  charts?: Record<string, SummaryChart>; // grid of charts
+  table?: SummaryTable; // table configuration
+  filters?: TabsConfig; // filters for the fields
+  dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
+  buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
+  loginForDownload?: boolean; // login required for download
+  sharedFiltersMap?: SharedFieldMapping;
 }
 
 export interface CohortBuilderConfiguration extends ConfigVersionAndName {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
-  sharedFilters?: Record<string, SharedFilter>; // enabled for sharing filters across indexes for denormalized data.
+  sharedFilters?: {
+    defined?: SharedFieldMapping;
+    autoCreate?: boolean;
+  }; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfig>;
 }
 

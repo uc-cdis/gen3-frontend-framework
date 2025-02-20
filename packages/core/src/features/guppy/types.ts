@@ -45,3 +45,5 @@ export type GuppyActionFunction<T extends Record<string, any>> = (
 
 export type DownloadFromGuppyParams =
   GuppyActionParams<GuppyDownloadDataParams>;
+
+export type SharedFieldMapping = Record<string, Array<string>>;

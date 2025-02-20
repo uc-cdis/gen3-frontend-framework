@@ -24,10 +24,11 @@ const EnumFacet = ({
   hideIfEmpty = true,
   showSearch = true,
   showFlip = false,
-  showSettings = true,
+  showSettings = false, // TODO: change to true with support for combine ops is completed
   startShowingData = true,
   dismissCallback = undefined,
   width = undefined,
+  sharedWithIndices = undefined,
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -72,6 +73,7 @@ const EnumFacet = ({
         toggleSearch={toggleSearch}
         toggleSettings={toggleSettings}
         dismissCallback={dismissCallback}
+        sharedWithIndices={sharedWithIndices}
         header={header}
       />
 

@@ -37,4 +37,4 @@ export const selectCohortFilterCombineMode = (
   state: CoreState,
   index: string,
   field: string,
-): CombineMode => state.cohort.filtersCombineMode?.[index]?.[field] ?? 'or';
+): CombineMode => state.cohorts.filtersCombineMode?.[index]?.[field] ?? 'or';

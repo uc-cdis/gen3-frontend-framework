@@ -2,7 +2,7 @@ import React from 'react';
 import { CohortPanelConfig, CohortBuilderConfiguration } from './types';
 import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useGetCSRFQuery } from '@gen3/core';
+import { useGetCSRFQuery, useGetSharedFieldsForIndexQuery } from '@gen3/core';
 
 const TabsLayoutToComponentProp = (
   tabsLayout?: 'left' | 'right' | 'center',
@@ -28,19 +28,32 @@ const TabsLayoutToComponentProp = (
 
 export const CohortBuilder = ({
   explorerConfig,
+  sharedFilters = undefined,
   tabsLayout = 'left',
 }: CohortBuilderConfiguration) => {
   const { isFetching } = useGetCSRFQuery();
+  const {
+    data: sharedFilterMap,
+    isFetching: isSharedFetching,
+    isError: isSharedError,
+  } = useGetSharedFieldsForIndexQuery(
+    explorerConfig.map((tab) => tab.guppyConfig.dataType),
+  );
 
-  if (isFetching) {
+  console.log(
+    'sharedFilters',
+    sharedFilterMap,
+    isSharedFetching,
+    isSharedError,
+  );
+
+  if (isFetching || isSharedFetching) {
     return (
       <Center maw={400} h={100} mx="auto">
         <Loader variant="dots" />
       </Center>
     );
   }
-
-  console.log(TabsLayoutToComponentProp(tabsLayout));
 
   return (
     <div className="w-full">
@@ -70,6 +83,7 @@ export const CohortBuilder = ({
           >
             <CohortPanel
               {...panelConfig}
+              sharedFiltersMap={sharedFilters ? sharedFilterMap : undefined}
               key={`${panelConfig.tabTitle}-CohortPanel`}
             />
           </Tabs.Panel>

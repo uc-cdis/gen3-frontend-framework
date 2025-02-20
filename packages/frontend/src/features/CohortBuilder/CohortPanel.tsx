@@ -50,7 +50,6 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import { TabbedPanel } from './Panels/TabbedPanel';
 import DropdownPanel from './Panels/DropdownPanel';
 
 const EmptyData = {};
@@ -72,6 +71,7 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
+  sharedFiltersMap = undefined,
 }: CohortPanelConfig): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
@@ -115,22 +115,17 @@ export const CohortPanel = ({
     (field: string) => {
       let filters = undefined;
       let combineMode: CombineMode = 'or';
-      console.log('getEnumFacetData: cohortFilters', cohortFilters);
       if (field in cohortFilters.root) {
-        console.log('getEnumFacetData: field', field);
         if (isIntersection(cohortFilters.root[field])) {
           const intersectionFilters = removeIntersectionFromEnum(
             cohortFilters.root[field],
           );
-          console.log('getEnumFacetData: unionFilters', intersectionFilters);
           if (intersectionFilters) {
             filters = extractEnumFilterValue(intersectionFilters);
             combineMode = 'and';
-            console.log('getEnumFacetData: filters', filters);
           }
         } else {
           filters = extractEnumFilterValue(cohortFilters.root[field]);
-          console.log('getEnumFacetData: filters', filters);
         }
       }
 
@@ -218,6 +213,7 @@ export const CohortPanel = ({
         index,
         guppyConfig?.fieldMapping ?? [],
         configFacetDefs ?? {},
+        sharedFiltersMap,
       );
       setFacetDefinitions(facetDefs);
 

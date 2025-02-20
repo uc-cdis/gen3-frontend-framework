@@ -9,6 +9,7 @@ const ExplorerPage = ({
   footerProps,
   explorerConfig,
   tabsLayout,
+  sharedFilters,
 }: ExplorerPageProps): JSX.Element => {
   if (explorerConfig === undefined) {
     return (
@@ -27,7 +28,11 @@ const ExplorerPage = ({
         key: 'gen3-explorer-page',
       }}
     >
-      <CohortBuilder tabsLayout={tabsLayout} explorerConfig={explorerConfig} />
+      <CohortBuilder
+        tabsLayout={tabsLayout}
+        explorerConfig={explorerConfig}
+        sharedFilters={sharedFilters}
+      />
     </NavPageLayout>
   );
 };

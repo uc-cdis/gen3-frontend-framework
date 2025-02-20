@@ -22,6 +22,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (arg0: string) => void;
+  readonly sharedWithIndices?: ReadonlyArray<string>;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -129,8 +130,15 @@ export interface FieldToName {
   readonly name: string;
 }
 
+// compact string representation of SortType for config file
+export type FacetSortType =
+  | 'value-asc'
+  | 'value-dsc'
+  | 'label-asc'
+  | 'label-desc';
+
 /**
- * Sort type for range buckets
+ * Sort type for enum buckets
  */
 export interface SortType {
   type: 'value' | 'alpha';

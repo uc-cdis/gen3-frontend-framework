@@ -8,6 +8,8 @@ import {
   isFilterEmpty,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
+import { SharedFieldMapping } from './types';
+import { groupSharedFields } from './utils';
 
 const statusEndpoint = '/_status';
 
@@ -132,7 +134,7 @@ interface QueryForFileCountSummaryParams {
  * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
  * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
  * @param getCounts - Returns total counts of a vertex type
- * @returns: A guppy API endpoint for templating queriable data displayed on the exploration page
+ * @returns: A guppy API endpoint for templating queryable data displayed on the exploration page
  */
 const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -355,12 +357,29 @@ const explorerApi = guppyApi.injectEndpoints({
       query: (index: string) => {
         return {
           query: `{
-            _mapping ${index}
+            _mapping { ${index} }
           }`,
         };
       },
       transformResponse: (response: Record<string, any>) => {
         return response['_mapping'];
+      },
+    }),
+    getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
+      query: (indices: string[]) => {
+        console.log('indices', indices);
+        return {
+          query: `{
+            _mapping { ${indices.join(' ')} }
+          }`,
+        };
+      },
+      transformResponse: (response: Record<string, any>) => {
+        console.log('response', response);
+        if ('_mapping' in response.data) {
+          return groupSharedFields(response.data['_mapping']);
+        }
+        return {};
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -452,6 +471,7 @@ export const {
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
   useGetFieldsForIndexQuery,
+  useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
 } = explorerApi;

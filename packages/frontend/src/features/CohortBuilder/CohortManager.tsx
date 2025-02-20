@@ -7,7 +7,6 @@ import {
 
 import { useCohortFacetFilters } from './hooks';
 import QueryExpressionSection from './QueryExpressionSection';
-import CohortSelector from './CohortSelector';
 
 interface CohortManagerProps {
   index: string;

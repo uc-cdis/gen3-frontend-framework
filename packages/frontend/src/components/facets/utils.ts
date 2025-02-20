@@ -19,12 +19,15 @@ import {
   isOperatorWithFieldAndArrayOfOperands,
   OperatorWithFieldAndArrayOfOperands,
   CombineMode,
+  SharedFieldMapping,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
   FromToRange,
   UpdateFacetFilterFunction,
   FieldToName,
+  FacetSortType,
+  SortType,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -113,6 +116,7 @@ export const classifyFacets = (
   index: string,
   fieldMapping: ReadonlyArray<FieldToName> = [],
   facetDefinitionsFromConfig: Record<string, FacetDefinition> = {},
+  sharedFieldMapping?: SharedFieldMapping,
 ): Record<string, FacetDefinition> => {
   if (typeof data !== 'object' || data === null) return {};
 
@@ -143,6 +147,8 @@ export const classifyFacets = (
           description: facetDef.description ?? 'Not Available',
           label: facetDef.label ?? facetName,
           // assumption is that the initial data has the min and max values
+          sharedWithIndices:
+            (sharedFieldMapping && sharedFieldMapping[fieldKey]) ?? undefined,
           range:
             (facetDef.range ?? type === 'range')
               ? {
@@ -157,6 +163,17 @@ export const classifyFacets = (
   );
 };
 
+/**
+ * Constructs a nested operation object based on the provided field and leaf operand.
+ * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
+ * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
+ * creates a "nested" operation for the root field, and recursively constructs the nested structure
+ * for the remaining portion of the field.
+ *
+ * @param {string} field - The hierarchical field path, with segments separated by dots (e.g., "root.child").
+ * @param {Operation} leafOperand - The operation to be nested within the specified path.
+ * @returns {Operation} A nested operation object that represents the structured path and operand.
+ */
 export const buildNested = (
   field: string,
   leafOperand: Operation,
@@ -330,4 +347,18 @@ export const removeIntersectionFromEnum = (
     field: filter.operands[0].field,
     operands: values,
   } as OperatorWithFieldAndArrayOfOperands;
+};
+
+/**
+ * Maps a facet sort type to a corresponding sort type.
+ *
+ * @param {FacetSortType} facetSort - The facet sort type represented as a string in the format "type-direction".
+ * @returns {SortType} - The mapped sort type object containing type and direction.
+ */
+export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
+  const [type, direction] = facetSort.split('-');
+  return {
+    type: type === 'label' ? 'alpha' : 'value',
+    direction: direction as 'asc' | 'dsc',
+  };
 };
