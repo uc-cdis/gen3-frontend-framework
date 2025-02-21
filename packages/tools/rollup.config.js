@@ -37,8 +37,8 @@ export default [
       '@iconify/tools/src/colors/parse',
       '@iconify/tools/src/optimise/svgo',
       'fs',
-      'node:path',
-      'node:util',
+      'path',
+      'node:fs',
       '@iconify/tools/lib/colors/parse',
       '@iconify/tools/lib/import/directory',
       '@iconify/tools/lib/svg/cleanup',
@@ -95,6 +95,18 @@ export default [
       'path',
       'url',
     ],
+    plugins: [peerDepsExternal(), swc()],
+  },
+  {
+    input: './src/validator/index.ts',
+    output: [
+      {
+        file: 'dist/validator.esm.js',
+        format: 'esm',
+        name: 'validator',
+      },
+    ],
+    external: ['fs', 'node:util', 'path', 'ajv', 'ajv-formats'],
     plugins: [peerDepsExternal(), swc()],
   },
 ];

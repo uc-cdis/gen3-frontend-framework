@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Agent as HTTPSAgent } from 'https';
 import { Agent as HTTPAgent } from 'http';
 import { buildClientSchema, printSchema } from 'graphql';

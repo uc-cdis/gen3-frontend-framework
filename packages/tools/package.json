@@ -19,12 +19,15 @@
     "buildColors": "./dist/buildColors.esm.js",
     "bundleIcons": "./dist/bundleIcons.esm.js",
     "getSchema": "./dist/getSchema.esm.js",
-    "getDRSToHostname": "./dist/getDRSToHostname.esm.js"
+    "getDRSToHostname": "./dist/getDRSToHostname.esm.js",
+    "validator": "./dist/validator.esm.js"
   },
   "author": "Craig Barnes",
   "license": "Apache-2.0",
   "dependencies": {
     "@iconify/tools": "^4.1.1",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "tinycolor2": "^1.6.0",
     "undici": "^6.21.1"
   },
