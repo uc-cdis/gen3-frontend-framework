@@ -35,16 +35,16 @@ interface PresignedUrlRequest {
 export const loginProvidersApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
-      query: () => `${GEN3_FENCE_API}/user/login`,
+      query: () => `${GEN3_FENCE_API}/login`,
     }),
     getDownload: builder.query<Gen3FenceLoginProviders, string>({
-      query: (guid) => `${GEN3_FENCE_API}/user/data/download/${guid}`,
+      query: (guid) => `${GEN3_FENCE_API}/data/download/${guid}`,
     }),
     getPresignedUrl: builder.query<
       Gen3FenceLoginProviders,
       PresignedUrlRequest
     >({
-      query: ({ guid, what }) => `${GEN3_FENCE_API}/user/data/${what}/${guid}`,
+      query: ({ guid, what }) => `${GEN3_FENCE_API}/data/${what}/${guid}`,
     }),
   }),
 });
@@ -71,6 +71,6 @@ export interface FetchRequest {
 
 export const logoutFence = async (redirect = '/') =>
   await fetchFence({
-    endpoint: `${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
+    endpoint: `${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
     method: 'GET',
   });
