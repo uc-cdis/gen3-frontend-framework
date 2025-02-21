@@ -28,7 +28,7 @@ import { useWorkspaceResourceMonitor } from '../../components/Providers/Resource
 ///import { useWorkspaceResourceMonitor } from '../../features/Workspace/Monitor/workspaceMonitors';
 
 export const logoutSession = async () => {
-  await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, {
+  await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
     cache: 'no-store',
   });
 };
