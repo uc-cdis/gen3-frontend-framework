@@ -100,7 +100,7 @@ export const fetchFencePresignedURL = async ({
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
 
-  const url = `${GEN3_FENCE_API}/user/data/download/${guid}`;
+  const url = `${GEN3_FENCE_API}/data/download/${guid}`;
   try {
     const response = await fetch(url, {
       method: method,

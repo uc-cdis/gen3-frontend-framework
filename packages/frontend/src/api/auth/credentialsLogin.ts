@@ -11,24 +11,26 @@ import { GEN3_FENCE_API } from '@gen3/core';
  * @param res - NextApiResponse
  */
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-
   const params = req.body;
 
-  const response = await fetch(`${GEN3_FENCE_API}/user/credentials/api/access_token`,
-      {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-      api_key: params.api_key,
-      key_id: params.key_id,
-  }),
-});
+  const response = await fetch(
+    `${GEN3_FENCE_API}/credentials/api/access_token`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        api_key: params.api_key,
+        key_id: params.key_id,
+      }),
+    },
+  );
 
   if (response.status !== 200) {
-    deleteCookie( 'credentials_token', {
-      req, res,
+    deleteCookie('credentials_token', {
+      req,
+      res,
       sameSite: 'lax',
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
@@ -37,25 +39,28 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   }
 
   const json = await response.json();
-  const {
-    access_token
-  } = json;
+  const { access_token } = json;
 
   // TODO: validate the token
   const payload = decodeJwt(access_token) as JWTPayload;
 
   if (!payload) {
-    deleteCookie( 'credentials_token', {
-      req, res,
+    deleteCookie('credentials_token', {
+      req,
+      res,
       sameSite: 'lax',
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
     });
     return res.status(400).json({ message: 'Invalid token' });
   }
-  setCookie( 'credentials_token', access_token, {
-    req, res,
-    maxAge: payload && payload.exp && payload.iat ? payload.exp - payload.iat : 60 * 60 * 20,
+  setCookie('credentials_token', access_token, {
+    req,
+    res,
+    maxAge:
+      payload && payload.exp && payload.iat
+        ? payload.exp - payload.iat
+        : 60 * 60 * 20,
     sameSite: 'lax',
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',
