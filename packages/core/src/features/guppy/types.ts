@@ -47,8 +47,9 @@ export type DownloadFromGuppyParams =
   GuppyActionParams<GuppyDownloadDataParams>;
 
 export type IndexAndField = {
-  index: string;
-  field: string;
+  index: string; // guppyIndex
+  indexAlias?: string; // alias for index, e.g. tabTitle
+  field: string; // name of field in index
 };
 
 export type SharedFieldMapping = Record<string, Array<IndexAndField>>;

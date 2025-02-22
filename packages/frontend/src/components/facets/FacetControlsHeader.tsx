@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ActionIcon, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Text, Tooltip } from '@mantine/core';
 import {
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
@@ -122,7 +122,24 @@ const FacetControlsHeader = ({
           </Tooltip>
         )}
         {sharedWithIndices && (
-          <Tooltip label="Shared with indices">
+          <Tooltip
+            transitionProps={{ duration: 200, transition: 'fade' }}
+            label={
+              <div className="flex items-center x-gap-2">
+                <Text className="mr-1">Shared with:</Text>
+                {sharedWithIndices.map((x) => (
+                  <Badge
+                    variant="white"
+                    radius="xs"
+                    color="accent.3"
+                    key={x.index}
+                  >
+                    {x.indexAlias}
+                  </Badge>
+                ))}{' '}
+              </div>
+            }
+          >
             <Icon
               icon="gen3:share"
               className={`${header.iconStyle} mx-0.5 mr-2`}

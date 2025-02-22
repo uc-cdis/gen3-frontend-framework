@@ -6,11 +6,13 @@ import {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
+  selectShareFilters,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
+  setShareFilters,
 } from './cohortSlice';
 
 import {
@@ -36,6 +38,7 @@ export {
   selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
   selectCohortFilterCombineMode,
+  selectShareFilters,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
@@ -44,5 +47,6 @@ export {
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
+  setShareFilters,
   type CombineMode,
 };

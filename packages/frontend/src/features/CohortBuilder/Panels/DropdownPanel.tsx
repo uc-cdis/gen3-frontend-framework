@@ -7,6 +7,7 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
+import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
 import type { TabConfig } from '../types';
 import { FiltersPanel } from '../FiltersPanel';
@@ -15,6 +16,8 @@ import {
   selectAllCohortFiltersCollapsed,
   toggleCohortBuilderAllFilters,
   useCoreDispatch,
+  selectShareFilters,
+  setShareFilters,
   type FacetDefinition,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
@@ -30,6 +33,9 @@ export const DropdownPanel = ({
   const allFiltersCollapsed = useCoreSelector((state) =>
     selectAllCohortFiltersCollapsed(state, index),
   );
+
+  const shareFilters = useCoreSelector((state) => selectShareFilters(state));
+
   const theme = useMantineTheme();
   const coreDispatch = useCoreDispatch();
 
@@ -44,6 +50,21 @@ export const DropdownPanel = ({
   const fields = filters.tabs[Number(value)].fields.reduce((acc, field) => {
     return [...acc, facetDefinitions[field]];
   }, [] as FacetDefinition[]);
+
+  const handleSharedFiltersChange = (value: boolean) => {
+    modals.openConfirmModal({
+      title: 'Confirm change of shared filters mode',
+      children: (
+        <Text size="sm">
+          {value
+            ? 'Switching to Shared Filters mode will apply all selected filters across all indices.'
+            : 'Switching to Unshared Filters mode will stop syncing filters but will not remove them.'}
+        </Text>
+      ),
+      labels: { confirm: 'Confirm', cancel: 'Cancel' },
+      onConfirm: () => coreDispatch(setShareFilters(value)),
+    });
+  };
 
   return (
     <Stack align="flex-start">
@@ -75,7 +96,12 @@ export const DropdownPanel = ({
               color={theme.colors.accent[4]}
             />
           </div>
-          <Switch />
+          <Switch
+            checked={shareFilters}
+            onChange={(event) =>
+              handleSharedFiltersChange(event.currentTarget.checked)
+            }
+          />
         </Group>
         <Select
           classNames={{

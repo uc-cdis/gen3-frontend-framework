@@ -3,7 +3,6 @@ import {
   FacetDefinition,
   Operation,
   CombineMode,
-  SharedFieldMapping,
   IndexAndField,
 } from '@gen3/core';
 import { ReactNode, ComponentType } from 'react';

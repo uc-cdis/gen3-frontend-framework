@@ -12,6 +12,7 @@ export interface Cohort {
 
 export interface CohortState {
   cohort: Cohort;
+  shareFilters: boolean; // if set filters will be added to all indexes when changed
 }
 
 export const EmptyCohort: Cohort = {
@@ -23,6 +24,7 @@ export const EmptyCohort: Cohort = {
 
 const initialCohortState: CohortState = {
   cohort: { ...EmptyCohort },
+  shareFilters: false,
 };
 
 interface UpdateFilterParams {
@@ -74,6 +76,7 @@ export const cohortSlice = createSlice({
     ) => {
       const { index, field, filter } = action.payload;
       return {
+        shareFilters: state.shareFilters,
         cohort: {
           ...state.cohort,
           filters: {
@@ -95,6 +98,7 @@ export const cohortSlice = createSlice({
     ) => {
       const { index, filters } = action.payload;
       return {
+        shareFilters: state.shareFilters,
         cohort: {
           ...state.cohort,
           filters: {
@@ -109,6 +113,7 @@ export const cohortSlice = createSlice({
       action: PayloadAction<SetAllIndexFiltersParams>,
     ) => {
       return {
+        shareFilters: state.shareFilters,
         cohort: {
           ...state.cohort,
           filters: { ...action.payload.filters },
@@ -128,6 +133,7 @@ export const cohortSlice = createSlice({
       }
       const { [field]: _a, ...updated } = filters;
       return {
+        shareFilters: state.shareFilters,
         cohort: {
           ...state.cohort,
           filters: {
@@ -147,6 +153,7 @@ export const cohortSlice = createSlice({
     ) => {
       const { index } = action.payload;
       return {
+        shareFilters: state.shareFilters,
         cohort: {
           ...state.cohort,
           filters: {
@@ -160,6 +167,13 @@ export const cohortSlice = createSlice({
         },
       };
     },
+    setShareFilters: (
+      state: Draft<CohortState>,
+      action: PayloadAction<boolean>,
+    ) => {
+      state.shareFilters = action.payload;
+      return state;
+    },
   },
 });
 
@@ -170,6 +184,7 @@ export const {
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
+  setShareFilters,
 } = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
@@ -183,6 +198,9 @@ export const selectCurrentCohort = (state: CoreState): Cohort =>
 
 export const selectCurrentCohortName = (state: CoreState): string =>
   state.cohorts.cohort.cohort.name;
+
+export const selectShareFilters = (state: CoreState): boolean =>
+  state.cohorts.cohort.shareFilters;
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found

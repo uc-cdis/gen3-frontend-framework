@@ -4,6 +4,7 @@ import ContentSource from '../../lib/content';
 import {
   CohortBuilderConfiguration,
   CohortBuilderProps,
+  CohortPanelConfig,
 } from '../../features/CohortBuilder';
 import {
   GEN3_COMMONS_NAME,
@@ -24,7 +25,9 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
     let sharedFiltersMap: SharedFieldMapping | undefined = undefined;
 
     if (cohortBuilderConfiguration?.sharedFilters) {
+      // have shared filters defined
       if (cohortBuilderConfiguration?.sharedFilters?.autoCreate) {
+        // create shared filter from Gen3 graphql mapping
         const indices = cohortBuilderConfiguration?.explorerConfig.map(
           (tab) => tab.guppyConfig.dataType,
         );
@@ -41,12 +44,29 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            console.warn('Unable to get mapping data from guppy');
+            console.warn('Unable to get mapping data from guppy:', err);
           }
         }
       }
       if (cohortBuilderConfiguration?.sharedFilters?.defined) {
-        sharedFiltersMap = cohortBuilderConfiguration?.sharedFilters?.defined;
+        sharedFiltersMap = cohortBuilderConfiguration?.sharedFilters?.defined; // manually defined mapping
+      }
+      if (sharedFiltersMap) {
+        const indexToAlias = Object.values(
+          cohortBuilderConfiguration?.explorerConfig,
+        ).reduce((acc: Record<string, string>, panel: CohortPanelConfig) => {
+          acc[panel.guppyConfig.dataType] = panel.tabTitle;
+          return acc;
+        }, {});
+
+        const updatedSharedFiltersMap: SharedFieldMapping = {};
+        for (const [field, values] of Object.entries(sharedFiltersMap)) {
+          updatedSharedFiltersMap[field] = values.map((x) => ({
+            ...x,
+            indexAlias: indexToAlias[x.index],
+          }));
+        }
+        sharedFiltersMap = updatedSharedFiltersMap;
       }
     }
 

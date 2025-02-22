@@ -148,7 +148,9 @@ export const classifyFacets = (
           label: facetDef.label ?? facetName,
           // assumption is that the initial data has the min and max values
           sharedWithIndices:
-            (sharedFieldMapping && sharedFieldMapping[fieldKey]) ?? undefined,
+            (sharedFieldMapping &&
+              sharedFieldMapping[fieldKey].filter((x) => x.index !== index)) ??
+            undefined,
           range:
             (facetDef.range ?? type === 'range')
               ? {
