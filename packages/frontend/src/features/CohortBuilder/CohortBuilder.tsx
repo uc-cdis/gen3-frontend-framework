@@ -2,7 +2,7 @@ import React from 'react';
 import { CohortPanelConfig, CohortBuilderProps } from './types';
 import { Center, Loader, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useGetCSRFQuery } from '@gen3/core';
+import { useCoreDispatch, useGetCSRFQuery, setSharedFilters } from '@gen3/core';
 
 const TabsLayoutToComponentProp = (
   tabsLayout?: 'left' | 'right' | 'center',
@@ -32,6 +32,10 @@ export const CohortBuilder = ({
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
   const { isFetching } = useGetCSRFQuery();
+
+  const dispatch = useCoreDispatch();
+
+  dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
   if (isFetching) {
     return (
@@ -69,7 +73,6 @@ export const CohortBuilder = ({
           >
             <CohortPanel
               {...panelConfig}
-              sharedFiltersMap={sharedFiltersMap}
               key={`${panelConfig.tabTitle}-CohortPanel`}
             />
           </Tabs.Panel>

@@ -20,6 +20,9 @@ import {
   OperatorWithFieldAndArrayOfOperands,
   CombineMode,
   SharedFieldMapping,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  IndexAndField,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
@@ -149,6 +152,7 @@ export const classifyFacets = (
           // assumption is that the initial data has the min and max values
           sharedWithIndices:
             (sharedFieldMapping &&
+              fieldKey in sharedFieldMapping &&
               sharedFieldMapping[fieldKey].filter((x) => x.index !== index)) ??
             undefined,
           range:
@@ -208,15 +212,31 @@ export const useUpdateFilters = (index: string) => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
 
+  const shouldShareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
+
   return (field: string, filter: Operation) => {
-    console.log('useUpdateFilters', index, filter);
-    dispatch(
-      updateCohortFilter({
-        index: index,
-        field: field,
-        filter: buildNested(field, filter),
-      }),
-    );
+    if (shouldShareFilters && field in sharedFilters) {
+      sharedFilters[field].forEach((x: IndexAndField) => {
+        dispatch(
+          updateCohortFilter({
+            index: x.index,
+            field: x.field,
+            filter: buildNested(x.field, filter),
+          }),
+        );
+      });
+    } else {
+      dispatch(
+        updateCohortFilter({
+          index: index,
+          field: field,
+          filter: buildNested(field, filter),
+        }),
+      );
+    }
   };
 };
 

@@ -155,6 +155,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     useClearFilter: partial(useClearFilters, index),
   };
 
+  console.log('filters', filters);
+
   useDeepCompareEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
       setExpandedState({

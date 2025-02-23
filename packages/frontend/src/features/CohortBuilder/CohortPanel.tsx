@@ -12,6 +12,7 @@ import {
   useGetAggsQuery,
   useGetCountsQuery,
   CombineMode,
+  selectSharedFilters,
 } from '@gen3/core';
 import { type CohortPanelConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -71,11 +72,14 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
-  sharedFiltersMap = undefined,
 }: CohortPanelConfig): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');
+
+  const sharedFiltersMap = useCoreSelector((state: CoreState) =>
+    selectSharedFilters(state),
+  );
 
   let numCols = 3;
   if (isSm) numCols = 1;

@@ -6,13 +6,11 @@ import {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
-  selectShareFilters,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
-  setShareFilters,
 } from './cohortSlice';
 
 import {
@@ -21,6 +19,14 @@ import {
   selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
 } from './filterExpandSlice';
+
+import {
+  setSharedFilters,
+  setShouldShareFilters,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  selectSharedFiltersForFields,
+} from './sharedFiltersSlice';
 import { type CombineMode } from './types';
 
 import {
@@ -38,7 +44,9 @@ export {
   selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
   selectCohortFilterCombineMode,
-  selectShareFilters,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  selectSharedFiltersForFields,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
@@ -47,6 +55,7 @@ export {
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
-  setShareFilters,
+  setSharedFilters,
+  setShouldShareFilters,
   type CombineMode,
 };

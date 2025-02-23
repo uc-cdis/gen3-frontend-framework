@@ -16,8 +16,8 @@ import {
   selectAllCohortFiltersCollapsed,
   toggleCohortBuilderAllFilters,
   useCoreDispatch,
-  selectShareFilters,
-  setShareFilters,
+  selectShouldShareFilters,
+  setShouldShareFilters,
   type FacetDefinition,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
@@ -34,7 +34,9 @@ export const DropdownPanel = ({
     selectAllCohortFiltersCollapsed(state, index),
   );
 
-  const shareFilters = useCoreSelector((state) => selectShareFilters(state));
+  const shareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
 
   const theme = useMantineTheme();
   const coreDispatch = useCoreDispatch();
@@ -62,7 +64,7 @@ export const DropdownPanel = ({
         </Text>
       ),
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => coreDispatch(setShareFilters(value)),
+      onConfirm: () => coreDispatch(setShouldShareFilters(value)),
     });
   };
 

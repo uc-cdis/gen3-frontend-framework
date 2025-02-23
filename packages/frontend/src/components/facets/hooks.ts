@@ -6,6 +6,8 @@ import {
   selectIndexedFilterByName,
   extractEnumFilterValue,
   CoreState,
+  selectShouldShareFilters,
+  selectSharedFilters,
 } from '@gen3/core';
 
 import { FromToRange } from './types';
@@ -15,8 +17,17 @@ import { extractRangeValues } from './utils';
 export const useClearFilters = (index: string) => {
   const dispatch = useCoreDispatch();
 
+  const shouldShareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
+
   return (field: string) => {
-    dispatch(removeCohortFilter({ index, field }));
+    if (shouldShareFilters && field in sharedFilters) {
+      sharedFilters[field].forEach((x) => {
+        dispatch(removeCohortFilter({ index: x.index, field: x.field }));
+      });
+    } else dispatch(removeCohortFilter({ index, field }));
   };
 };
 
