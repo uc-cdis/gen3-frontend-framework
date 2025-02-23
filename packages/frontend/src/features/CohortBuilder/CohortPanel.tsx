@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { LoadingOverlay, Tabs } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   type FacetDefinition,
@@ -167,6 +167,7 @@ export const CohortPanel = ({
   const {
     data,
     isSuccess,
+    isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useGetAggsQuery({
     type: index,
@@ -299,6 +300,7 @@ export const CohortPanel = ({
 
   return (
     <div className="flex mt-3 relative">
+      <LoadingOverlay visible={isAggsQueryFetching} />
       <div>
         {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
           <TabbedPanel

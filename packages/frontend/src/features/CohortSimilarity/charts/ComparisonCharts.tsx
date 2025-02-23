@@ -1,14 +1,14 @@
 import React from 'react';
 import { Grid } from '@mantine/core';
-import { AggregationsData, } from '@gen3/core';
-import { DiversityChart, GroundWithComparisonDatasets } from '../types';
+import { AggregationsData } from '@gen3/core';
+import { SimilarityChart, GroundWithComparisonDatasets } from '../types';
 import { computeRowSpan } from '../../../components/charts';
 import ChartCard from './ChartCard';
 
 interface ComparisonChartsProps {
   data: Record<string, AggregationsData>;
   datasets: GroundWithComparisonDatasets;
-  comparisonChartsConfig: Record<string, DiversityChart>;
+  comparisonChartsConfig: Record<string, SimilarityChart>;
   numColumns?: number;
   style?: 'tile' | 'box';
 }

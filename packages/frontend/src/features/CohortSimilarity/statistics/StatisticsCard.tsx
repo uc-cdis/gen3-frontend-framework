@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Text, Group, Stack, ScrollArea, Table } from '@mantine/core';
+import { Text, Group, Stack, ScrollArea, Table } from '@mantine/core';
 import { HistogramDataArray } from '@gen3/core';
 
 // Compute statistics

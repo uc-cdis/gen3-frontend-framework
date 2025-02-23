@@ -18,7 +18,7 @@ const DefaultRendererCatalog = {
   },
 };
 
-const DiversityChartsFactory =
+const CohortSimilarityChartsFactory =
   (): RenderFactoryTypedInstance<ComparisonChartProps> => {
     if (!instance) {
       instance = new RenderFactoryTypedInstance<ComparisonChartProps>();
@@ -27,4 +27,4 @@ const DiversityChartsFactory =
     return instance;
   };
 
-export default DiversityChartsFactory;
+export default CohortSimilarityChartsFactory;

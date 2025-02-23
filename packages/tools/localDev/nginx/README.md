@@ -24,6 +24,11 @@ Once it is installed, you will need to set up a SSL certificate or use an existi
 
 ## Shell Script Setup
 
+NOTE: to run this you need to have a command called ```envsubst```. This can be installed using:
+```bash
+brew install gettext
+```
+
 Place your certificates in $HOME/ssl_certs as ```cert.pem``` and ```key.pem```.
 Now you can run a shell script to update the config and reload nginx:
 

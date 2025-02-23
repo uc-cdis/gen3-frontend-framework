@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.78",
+  "version": "0.10.80",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -26,7 +26,7 @@
     "copy-tailwind": "cp src/tailwind.cjs dist/tailwind.cjs",
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
-    "build:watch": "npm run rollup -- --watch",
+    "build:watch": "npm run compile && npm run rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -49,7 +49,7 @@
     "os": false
   },
   "dependencies": {
-    "@gen3/core": "^0.10.78",
+    "@gen3/core": "^0.10.80",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^5.0.2",
@@ -73,7 +73,7 @@
     "chart.js": "^4.0.1",
     "colorette": "^2.0.20",
     "default-composer": "^0.6.0",
-    "dompurify": "^3.1.6",
+    "dompurify": "3.2.4",
     "echarts": "^5.5.1",
     "fetch-retry": "^5.0.6",
     "file-saver": "^2.0.5",
@@ -88,7 +88,7 @@
     "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.23",
+    "next": "^15.1.7",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
@@ -115,7 +115,6 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@iconify/tools": "^4.0.7",
     "@iconify/types": "^2.0.0",
     "@svgr/webpack": "^8.1.0",
     "@swc/core": "^1.7.28",

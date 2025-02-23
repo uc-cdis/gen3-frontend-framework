@@ -1,10 +1,10 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.78",
+  "version": "0.10.80",
   "private": true,
   "scripts": {
     "lint": "next lint",
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
@@ -33,12 +33,12 @@
     "idb": "^8.0.0",
     "jose": "^4.15.9",
     "mantine-react-table": "^2.0.0-beta.8",
-    "next": "^14.2.23",
+    "next": "^15.1.7",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@gen3/toolsff": "file:../tools",
-    "@next/mdx": "^14.2.15",
+    "@next/mdx": "^15.1.7",
     "@types/mdx": "^2.0.13",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",

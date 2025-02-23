@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.10.78",
+  "version": "0.10.80",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
