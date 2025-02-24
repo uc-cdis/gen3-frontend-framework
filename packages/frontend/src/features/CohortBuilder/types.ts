@@ -86,7 +86,7 @@ export interface CohortBuilderConfiguration extends ConfigVersionAndName {
 
 export interface CohortBuilderProps
   extends Omit<CohortBuilderConfiguration, 'sharedFilters'> {
-  sharedFiltersMap?: SharedFieldMapping;
+  sharedFiltersMap: SharedFieldMapping | null;
 }
 
 // to do add buttons, options,  menus, etc

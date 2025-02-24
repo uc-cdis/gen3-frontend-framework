@@ -28,13 +28,12 @@ const TabsLayoutToComponentProp = (
 
 export const CohortBuilder = ({
   explorerConfig,
-  sharedFiltersMap = undefined,
+  sharedFiltersMap = null,
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
   const { isFetching } = useGetCSRFQuery();
 
   const dispatch = useCoreDispatch();
-
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
   if (isFetching) {

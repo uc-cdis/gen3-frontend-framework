@@ -19,6 +19,7 @@ import {
   selectShouldShareFilters,
   setShouldShareFilters,
   type FacetDefinition,
+  selectSharedFilters,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
 
@@ -33,6 +34,8 @@ export const DropdownPanel = ({
   const allFiltersCollapsed = useCoreSelector((state) =>
     selectAllCohortFiltersCollapsed(state, index),
   );
+
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
 
   const shareFilters = useCoreSelector((state) =>
     selectShouldShareFilters(state),
@@ -82,29 +85,31 @@ export const DropdownPanel = ({
         </button>
       </Group>
       <Stack className="bg-base-max py-4 px-2 h-full w-full">
-        <Group gap="xs" justify="space-between">
-          <div className="flex items-center space-x-1">
-            <Icon
-              icon="gen3:share"
-              height={16}
-              width={16}
-              color={theme.colors.accent[4]}
+        {Object.keys(sharedFilters).length > 0 && (
+          <Group gap="xs" justify="space-between">
+            <div className="flex items-center space-x-1">
+              <Icon
+                icon="gen3:share"
+                height={16}
+                width={16}
+                color={theme.colors.accent[4]}
+              />
+              <Text size="sm">Set the shared filters for all</Text>
+              <Icon
+                icon="gen3:info"
+                height={12}
+                width={12}
+                color={theme.colors.accent[4]}
+              />
+            </div>
+            <Switch
+              checked={shareFilters}
+              onChange={(event) =>
+                handleSharedFiltersChange(event.currentTarget.checked)
+              }
             />
-            <Text size="sm">Set the shared filters for all</Text>
-            <Icon
-              icon="gen3:info"
-              height={12}
-              width={12}
-              color={theme.colors.accent[4]}
-            />
-          </div>
-          <Switch
-            checked={shareFilters}
-            onChange={(event) =>
-              handleSharedFiltersChange(event.currentTarget.checked)
-            }
-          />
-        </Group>
+          </Group>
+        )}
         <Select
           classNames={{
             options: 'border-1 border-base-dark',

@@ -176,7 +176,6 @@ const Charts = ({
         </React.Fragment>
       );
     };
-    console.log(field, data);
     const dataKeys =
       field in data && data?.[field].length > 0
         ? Object.keys(data[field][0])

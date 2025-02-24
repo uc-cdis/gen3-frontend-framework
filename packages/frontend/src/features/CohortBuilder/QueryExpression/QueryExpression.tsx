@@ -27,14 +27,11 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
     selectCurrentCohortName(state),
   );
 
-  const filters = useCohortFacetFilters(index);
-
   return (
     <QueryExpressionContext.Provider
       value={{
         cohortName: currentCohortName,
         cohortId: currentCohortId,
-        filters: filters,
         displayOnly: false,
         useClearCohortFilters: () => {
           const dispatch = useCoreDispatch();
@@ -70,6 +67,9 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
                 filters: filters,
               }),
             );
+        },
+        useGetFilters: (index: string) => {
+          return useCohortFacetFilters(index);
         },
       }}
     >

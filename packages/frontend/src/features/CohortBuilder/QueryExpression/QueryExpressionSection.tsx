@@ -8,7 +8,7 @@ import {
 import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit } from 'lodash';
-import { FilterSet } from '@gen3/core';
+import { FilterSet, Operation } from '@gen3/core';
 import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
@@ -102,6 +102,17 @@ const reducer = (
   }
 };
 
+interface QueryExpressionHooks {
+  useClearCohortFilters: () => (index: string) => void;
+  useUpdateFilters: () => (
+    index: string,
+    field: string,
+    filter: Operation,
+  ) => void;
+  useRemoveFilter: () => (index: string, field: string) => void;
+  useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
+}
+
 interface QueryExpressionSectionProps {
   index: string;
   hideImportExport?: boolean;
@@ -113,23 +124,17 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   hideImportExport = true,
   displayOnly = false,
-  showTitle = true,
+  showTitle = false,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
   const [QESectionHeight, setQESectionHeight] = useState(0);
 
-  const {
-    cohortName,
-    cohortId,
-    filters,
-    useClearCohortFilters,
-    useSetCohortFilters,
-  } = useContext(QueryExpressionContext);
+  const { cohortName, cohortId, useClearCohortFilters, useGetFilters } =
+    useContext(QueryExpressionContext);
   const clearCohortFilters = useClearCohortFilters();
-  const setCohortFilter = useSetCohortFilters();
-
+  const filters = useGetFilters(index);
   useDeepCompareEffect(() => {
     if (filtersRef.current) {
       const height = filtersRef.current.scrollHeight;
@@ -153,11 +158,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
-  // const dataFunctions = {
-  //   useUpdateFacetFilters: partial(useUpdateFilters, index),
-  //   useClearFilter: partial(useClearFilters, index),
-  // };
-
   useDeepCompareEffect(() => {
     if (expandedState?.[cohortId] === undefined) {
       setExpandedState({
@@ -167,18 +167,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       });
     }
   }, [cohortId, expandedState]);
-
-  const getData = useDeepCompareCallback(() => {
-    return filters;
-  }, [filters]);
-
-  const setCohort = useDeepCompareCallback(
-    (data: string) => {
-      const jsonForm = JSON.parse(data);
-      setCohortFilter(index, jsonForm as FilterSet);
-    },
-    [index],
-  );
 
   return (
     <QueryExpressionContainer>
@@ -190,12 +178,14 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
           >
-            <OverflowTooltippedLabel
-              label={cohortName}
-              className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
-            >
-              {cohortName}
-            </OverflowTooltippedLabel>
+            {showTitle && (
+              <OverflowTooltippedLabel
+                label={cohortName}
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
+              >
+                {cohortName}
+              </OverflowTooltippedLabel>
+            )}
             <React.Fragment>
               {!displayOnly && (
                 <button

@@ -90,8 +90,6 @@ const FacetControlsHeader = ({
     }
   }, [field, isFilterExpanded, toggleExpandFilter]);
 
-  console.log('Shared', sharedWithIndices);
-
   return (
     <header.Panel>
       <div className="flex flex-row items-center">

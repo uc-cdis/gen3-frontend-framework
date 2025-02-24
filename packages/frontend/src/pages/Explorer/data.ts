@@ -22,7 +22,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
     const cohortBuilderConfiguration: CohortBuilderConfiguration =
       await ContentSource.get(`config/${GEN3_COMMONS_NAME}/explorer.json`);
 
-    let sharedFiltersMap: SharedFieldMapping | undefined = undefined;
+    let sharedFiltersMap: SharedFieldMapping | null = null;
 
     if (cohortBuilderConfiguration?.sharedFilters) {
       // have shared filters defined
