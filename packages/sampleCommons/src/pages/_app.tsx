@@ -79,6 +79,8 @@ const Gen3App = ({
     [themeFonts, colors],
   );
 
+  console.log("sessionConfig:", sessionConfig);
+
   return (
     <FaroErrorBoundary>
       <MantineProvider theme={theme}>

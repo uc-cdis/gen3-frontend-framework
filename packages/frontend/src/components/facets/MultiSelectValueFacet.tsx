@@ -112,7 +112,6 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
       updateFacetEnum(field, values, updateFacetFilters, clearFilters);
     };
 
-    console.log('selectedValues: ', selectedValues);
     setValues(selectedValues);
   }, [selectedValues]);
 

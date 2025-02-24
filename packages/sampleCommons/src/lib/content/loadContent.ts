@@ -32,7 +32,7 @@ export const loadContent = async () => {
   const icons = await ContentSource.getAll(`config/icons/`, '\\.json');
   return {
     modalsConfig: modals,
-    sessionConfig: session,
+    sessionConfig: session.sessionConfig,
     themeFonts: fonts as Fonts,
     colors: colors,
     icons: icons as RegisteredIcons[],
