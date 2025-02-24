@@ -6,7 +6,7 @@ import {
 } from '@gen3/core';
 
 import { useCohortFacetFilters } from './hooks';
-import QueryExpressionSection from './QueryExpressionSection';
+import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 
 interface CohortManagerProps {
   index: string;
@@ -23,12 +23,7 @@ const CohortManager = ({ index }: CohortManagerProps) => {
 
   return (
     <div className="mb-2">
-      <QueryExpressionSection
-        index={index}
-        filters={filters}
-        currentCohortName={currentCohortName}
-        currentCohortId={currentCohortId}
-      />
+      <QueryExpressionSection index={index} />
     </div>
   );
 };
