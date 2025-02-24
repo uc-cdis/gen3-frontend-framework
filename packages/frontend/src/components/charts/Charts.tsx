@@ -25,7 +25,7 @@ import { createChart } from './createChart';
 import { SummaryChart } from './types';
 
 import { computeRowSpan } from './utils';
-import { ErrorCard } from '../../index';
+import ErrorCard from '../../components/MessageCards/ErrorCard';
 
 const DEFAULT_COLS = 3;
 const MAX_LEGEND_ROWS = 4;
