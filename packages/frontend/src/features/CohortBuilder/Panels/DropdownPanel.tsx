@@ -22,6 +22,7 @@ import {
   selectSharedFilters,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export const DropdownPanel = ({
   index,
@@ -48,13 +49,21 @@ export const DropdownPanel = ({
     coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
   };
 
-  const items = filters.tabs.map((tab: TabConfig, idx) => {
-    return { label: tab.title, value: idx.toString() };
-  });
+  const items = useDeepCompareMemo(
+    () =>
+      filters.tabs.map((tab: TabConfig, idx) => {
+        return { label: tab.title, value: idx.toString() };
+      }),
+    [filters.tabs],
+  );
 
-  const fields = filters.tabs[Number(value)].fields.reduce((acc, field) => {
-    return [...acc, facetDefinitions[field]];
-  }, [] as FacetDefinition[]);
+  const fields = useDeepCompareMemo(
+    () =>
+      filters.tabs[Number(value)].fields.reduce((acc, field) => {
+        return [...acc, facetDefinitions[field]];
+      }, [] as FacetDefinition[]),
+    [filters.tabs, value],
+  );
 
   const handleSharedFiltersChange = (value: boolean) => {
     modals.openConfirmModal({

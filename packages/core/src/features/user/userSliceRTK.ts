@@ -55,7 +55,7 @@ export const userAuthApi = createApi({
   },
   endpoints: (builder) => ({
     fetchUserDetails: builder.query<UserAuthResponse, void>({
-      query: () => ({ endpoint: '/user/user' }),
+      query: () => ({ endpoint: '/user' }),
       transformResponse(response: Gen3FenceResponse<Gen3User>) {
         return {
           data: response.data,

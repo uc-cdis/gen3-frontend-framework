@@ -242,7 +242,9 @@ const explorerApi = guppyApi.injectEndpoints({
         return queryBody;
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
       },
     }),
     getAggsNoFilterSelf: builder.query<AggregationsData, QueryAggsParams>({
@@ -274,7 +276,9 @@ const explorerApi = guppyApi.injectEndpoints({
         return queryBody;
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
       },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
@@ -313,7 +317,9 @@ const explorerApi = guppyApi.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
       },
     }),
     getCounts: builder.query<number, QueryCountsParams>({

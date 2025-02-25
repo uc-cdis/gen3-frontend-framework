@@ -53,6 +53,7 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from './Panels/DropdownPanel';
+import AccordianPanel from './Panels/AccordianPanel';
 
 const EmptyData = {};
 
