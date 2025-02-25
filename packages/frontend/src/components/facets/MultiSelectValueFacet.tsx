@@ -1,14 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
-import { MultiSelect, Tooltip } from '@mantine/core';
-import {
-  controlsIconStyle,
-  FacetIconButton,
-  FacetText,
-  FacetHeader,
-} from './components';
-import { MdClose as CloseIcon } from 'react-icons/md';
-import { FaUndo as UndoIcon, FaPlus as PlusIcon } from 'react-icons/fa';
+import { MultiSelect } from '@mantine/core';
+import { controlsIconStyle, FacetText, FacetHeader } from './components';
 import {
   Operation,
   Excludes,
