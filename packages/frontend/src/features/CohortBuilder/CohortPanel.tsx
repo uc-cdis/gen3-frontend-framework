@@ -13,6 +13,7 @@ import {
   useGetCountsQuery,
   CombineMode,
   selectSharedFilters,
+  useGetAggsNoFilterSelfQuery,
 } from '@gen3/core';
 import { type CohortPanelConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -112,6 +113,17 @@ export const CohortPanel = ({
   } = useGetAggsQuery({
     type: index,
     fields: fields,
+    filters: cohortFilters,
+  });
+
+  const {
+    data: chartData,
+    isSuccess: isChartSuccess,
+    isFetching: isChartFetching,
+    isError: isChartError,
+  } = useGetAggsNoFilterSelfQuery({
+    type: index,
+    fields: Object.keys(charts),
     filters: cohortFilters,
   });
 
@@ -265,7 +277,6 @@ export const CohortPanel = ({
 
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
-      <LoadingOverlay visible={isAggsQueryFetching} />
       <CohortManager index={index} />
 
       {/* Flex container to ensure proper 25/75 split */}
@@ -306,9 +317,9 @@ export const CohortPanel = ({
           {/* Charts Section */}
           <Charts
             charts={summaryCharts}
-            data={data ?? EmptyData}
+            data={chartData ?? EmptyData}
             counts={counts}
-            isSuccess={isSuccess}
+            isSuccess={isChartSuccess}
             numCols={numCols}
           />
 

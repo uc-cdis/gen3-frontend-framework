@@ -37,6 +37,7 @@ const QueryExpressionContainer = tw.div`
 `;
 
 const MAX_HEIGHT_QE_SECTION = 120;
+const MIN_HEIGHT_QE_SECTION = 75;
 
 const reducer = (
   state: Record<string, Record<string, boolean>>,
@@ -115,14 +116,14 @@ interface QueryExpressionHooks {
 
 interface QueryExpressionSectionProps {
   index: string;
-  hideImportExport?: boolean;
+  showImportExport?: boolean;
   displayOnly?: boolean;
   showTitle?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
-  hideImportExport = true,
+  showImportExport = false,
   displayOnly = false,
   showTitle = false,
 }: Readonly<QueryExpressionSectionProps>) => {
@@ -139,7 +140,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     if (filtersRef.current) {
       const height = filtersRef.current.scrollHeight;
       setQESectionHeight(
-        height > MAX_HEIGHT_QE_SECTION ? MAX_HEIGHT_QE_SECTION : height,
+        height > MAX_HEIGHT_QE_SECTION
+          ? MAX_HEIGHT_QE_SECTION
+          : height === 0
+            ? MIN_HEIGHT_QE_SECTION
+            : height,
       );
     }
   }, [expandedState, filters, filtersRef]);
@@ -202,7 +207,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector />
+                {showImportExport && <CohortSelector />}
                 <Tooltip
                   label={
                     noFilters
@@ -310,7 +315,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             {noFilters ? (
               <p
                 data-testid="text-no-active-cohort-filter"
-                className="font-content"
+                className="flex items-center font-content h-10"
               >
                 No filters currently applied.
               </p>

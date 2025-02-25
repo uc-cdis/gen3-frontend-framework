@@ -245,6 +245,38 @@ const explorerApi = guppyApi.injectEndpoints({
         return processHistogramResponse(response.data._aggregation[args.type]);
       },
     }),
+    getAggsNoFilterSelf: builder.query<AggregationsData, QueryAggsParams>({
+      query: ({
+        type,
+        fields,
+        filters,
+        accessibility = Accessibility.ALL,
+      }: QueryAggsParams) => {
+        const queryStart = isFilterEmpty(filters)
+          ? `
+              query getAggs {
+              _aggregation {
+              ${type} (accessibility: ${accessibility}) {`
+          : `query getAggs ($filter: JSON) {
+               _aggregation {
+                      ${type} (filter: $filter, filterSelf: true, accessibility: ${accessibility}) {`;
+        const query = `${queryStart}
+                  ${fields.map((field: string) =>
+                    histogramQueryStrForEachField(field),
+                  )}
+                }
+              }
+            }`;
+        const queryBody: GraphQLQuery = {
+          query: query,
+          variables: { filter: convertFilterSetToGqlFilter(filters) },
+        };
+        return queryBody;
+      },
+      transformResponse: (response: Record<string, any>, _meta, args) => {
+        return processHistogramResponse(response.data._aggregation[args.type]);
+      },
+    }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
       query: ({
         type,
@@ -464,6 +496,7 @@ export const {
   useGetAccessibleDataQuery,
   useGetAllFieldsForTypeQuery,
   useGetAggsQuery,
+  useGetAggsNoFilterSelfQuery,
   useLazyGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,

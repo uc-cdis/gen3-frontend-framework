@@ -68,6 +68,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
+  showSettings = false, // TODO: change to true with support for combine ops is completed
   hooks,
   header = {
     Panel: FacetHeader,
@@ -131,6 +132,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         facetName={facetName}
         dismissCallback={dismissCallback}
         header={header}
+        showSettings={showSettings}
       />
       <div
         className={showFilters ? 'h-full' : 'h-0 invisible'}

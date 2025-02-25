@@ -241,12 +241,13 @@ export const useUpdateFilters = (index: string) => {
 };
 
 export const useGetFacetFilters = (index: string, field: string): Operation => {
-  return useCoreSelector(
-    (state: CoreState) =>
-      selectIndexedFilterByName(state, index, field) ?? {
-        operator: 'and',
-        operands: [],
-      },
+  return (
+    useCoreSelector((state: CoreState) =>
+      selectIndexedFilterByName(state, index, field),
+    ) ?? {
+      operator: 'and',
+      operands: [],
+    }
   );
 };
 

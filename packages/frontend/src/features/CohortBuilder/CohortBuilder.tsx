@@ -48,7 +48,7 @@ export const CohortBuilder = ({
     <div className="w-full">
       <Tabs
         color="primary.4"
-        keepMounted={false}
+        keepMounted={true}
         defaultValue={explorerConfig[0].tabTitle}
       >
         <Tabs.List

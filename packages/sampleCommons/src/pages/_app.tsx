@@ -54,10 +54,8 @@ const Gen3App = ({
   sessionConfig,
   modalsConfig,
 }: AppProps & Gen3AppProps) => {
-  useEffect(() => {
-    setDRSHostnames(drsHostnames);
-  }, []);
-
+  useEffect(() => {}, []);
+  const isFirstRender = useRef(true);
   const faroRef = useRef<null | Faro>(null);
 
   useEffect(() => {
@@ -67,12 +65,18 @@ const Gen3App = ({
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
+    // Note: not using faro for development
     // if (!faroRef.current) faroRef.current = initGrafanaFaro();
-    registerMetadataSchemaApp();
-    registerExplorerDefaultCellRenderers();
-    registerCohortBuilderDefaultPreviewRenderers();
-    registerCohortTableCustomCellRenderers();
-    registerCustomExplorerDetailsPanels();
+    if (isFirstRender.current) {
+      setDRSHostnames(drsHostnames);
+      registerMetadataSchemaApp();
+      registerExplorerDefaultCellRenderers();
+      registerCohortBuilderDefaultPreviewRenderers();
+      registerCohortTableCustomCellRenderers();
+      registerCustomExplorerDetailsPanels();
+      isFirstRender.current = false;
+      console.log('Gen3 App initialized');
+    }
     // }
   }, []);
 
@@ -80,8 +84,6 @@ const Gen3App = ({
     () => createMantineTheme(themeFonts, colors),
     [themeFonts, colors],
   );
-
-  console.log("sessionConfig:", sessionConfig);
 
   return (
     <MantineProvider theme={theme}>
@@ -134,5 +136,3 @@ Gen3App.getInitialProps = async (
   };
 };
 export default Gen3App;
-//
-//export default withFaroProfiler(Gen3App);
