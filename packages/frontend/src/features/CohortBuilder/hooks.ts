@@ -41,11 +41,7 @@ export const useCohortFilterCombineState = (index: string, field: string) => {
   );
 };
 
-export const useSetCohortFilterCombineState = (
-  index: string,
-  field: string,
-  mode: CombineMode,
-) => {
+export const useSetCohortFilterCombineState = (index: string) => {
   const dispatch = useCoreDispatch();
   return (field: string, mode: CombineMode) => {
     dispatch(setCohortFilterCombineMode({ index, field, mode }));

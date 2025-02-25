@@ -48,6 +48,7 @@ export const createFacetCard = (
               minimum={facetDefinition.range?.minimum}
               maximum={facetDefinition.range?.maximum}
               showSettings={false}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
           exact: (
@@ -59,6 +60,7 @@ export const createFacetCard = (
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
           multiselect: (
@@ -70,6 +72,7 @@ export const createFacetCard = (
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
         }[type as string]
