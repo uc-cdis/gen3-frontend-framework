@@ -148,7 +148,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             comboboxProps={{ shadow: 'md' }}
             aria-label="enter value to add filter"
             value={selectedValues}
-            onChange={updateFilters}
+            onChange={setSelectedValues}
             searchable
             data={dataValues}
             limit={10}
