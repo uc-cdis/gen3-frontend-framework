@@ -42,9 +42,14 @@ export interface SessionConfiguration {
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
   logoutInactiveUsers?: boolean;
+
+  /**
+   *  should workspaces be monitored
+   */
+
+  monitorWorkspace?: boolean;
 }
 
 export interface SessionProviderProps extends SessionConfiguration {
   children: React.ReactNode;
-  session?: Session;
 }

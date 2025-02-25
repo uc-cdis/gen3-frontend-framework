@@ -108,7 +108,6 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
 
   useDeepCompareEffect(() => {
     if (!facetValue || isFacetEmpty(facetValue)) {
-      console.log('filters', '[]');
       setSelectedValues([]);
     } else if (instanceOfIncludesExcludes(facetValue)) {
       const filters = facetValue.operands.map((x: number | string) =>
@@ -118,13 +117,13 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
     }
   }, [facetValue]);
 
-  // update the filter which will also update selected values
-  const updateFilters = useCallback(
-    (values: string[]) => {
+  useDeepCompareEffect(() => {
+    const setValues = (values: string[]) => {
       updateFacetEnum(field, values, updateFacetFilters, clearFilters);
-    },
-    [clearFilters, field, updateFacetFilters],
-  );
+    };
+
+    setValues(selectedValues);
+  }, [selectedValues]);
 
   return (
     <div
