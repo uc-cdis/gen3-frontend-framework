@@ -5,34 +5,7 @@ import { cleanupSVG } from '@iconify/tools/lib/svg/cleanup';
 import { runSVGO } from '@iconify/tools/lib/optimise/svgo';
 import { isEmptyColor, parseColors } from '@iconify/tools/lib/colors/parse';
 import { getSubdirectories } from './utils';
-import { IconSet } from '@iconify/tools';
-
-interface Args extends Record<string, string | boolean> {
-  inpath: string;
-  outpath: string;
-  prefix: string;
-}
-
-const getArgs = (defaults: Args): Args => {
-  const args: Args = defaults;
-  process.argv.slice(2, process.argv.length).forEach((arg) => {
-    // long arg
-    if (arg.slice(0, 2) === '--') {
-      const longArg = arg.split('=');
-      const longArgFlag = longArg[0].slice(2, longArg[0].length);
-      const longArgValue = longArg.length > 1 ? longArg[1] : true;
-      args[longArgFlag] = longArgValue;
-    }
-    // flags
-    else if (arg[0] === '-') {
-      const flags = arg.slice(1, arg.length).split('');
-      flags.forEach((flag) => {
-        args[flag] = true;
-      });
-    }
-  });
-  return args;
-};
+import { Args, getArgs } from '../utils';
 
 const processIconSet = async (inpath: string, prefix: string) => {
   const iconSet = await importDirectory(inpath, {
@@ -132,7 +105,13 @@ const build = async (inpath: string, outpath: string, prefix = 'gen3') => {
 ---*/
 };
 
-const { inpath, outpath, prefix } = getArgs({
+interface IconArgs extends Args {
+  inpath: string;
+  outpath: string;
+  prefix: string;
+}
+
+const { inpath, outpath, prefix }: IconArgs = getArgs({
   inpath: './',
   outpath: './',
   prefix: 'gen3',
