@@ -285,7 +285,7 @@ export const CohortPanel = ({
         {/* Left panel - 25% */}
         <div
           id="cohort-builder-filters"
-          className="flex-shrink-0 w-1/4 max-w-96"
+          className="flex-shrink-0 md:w-1/4 lg:w-1/5"
         >
           {filters?.tabs && (
             <DropdownPanel
@@ -299,7 +299,10 @@ export const CohortPanel = ({
         </div>
 
         {/* Right content - 75% */}
-        <div id="cohort-builder-content" className="flex flex-col w-3/4 pl-4">
+        <div
+          id="cohort-builder-content"
+          className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
+        >
           {/* Top row with DownloadsPanel and CountsValue */}
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
