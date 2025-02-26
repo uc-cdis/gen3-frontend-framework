@@ -283,7 +283,10 @@ export const CohortPanel = ({
       {/* Flex container to ensure proper 25/75 split */}
       <div className="flex w-full">
         {/* Left panel - 25% */}
-        <div id="cohort-builder-filters" className="flex-shrink-0 w-1/4 ">
+        <div
+          id="cohort-builder-filters"
+          className="flex-shrink-0 w-1/4 max-w-96"
+        >
           {filters?.tabs && (
             <DropdownPanel
               index={index}

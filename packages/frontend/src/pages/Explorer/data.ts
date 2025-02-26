@@ -13,6 +13,7 @@ import {
   groupSharedFields,
   SharedFieldMapping,
 } from '@gen3/core';
+import { isArray } from 'lodash';
 import type { NavPageLayoutProps } from '../../features/Navigation';
 
 export const ExplorerPageGetServerSideProps: GetServerSideProps<
@@ -21,6 +22,17 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
   try {
     const cohortBuilderConfiguration: CohortBuilderConfiguration =
       await ContentSource.get(`config/${GEN3_COMMONS_NAME}/explorer.json`);
+
+    if (isArray(cohortBuilderConfiguration)) {
+      // older config layout
+      // TODO: remove this
+      return {
+        props: {
+          ...(await getNavPageLayoutPropsFromConfig()),
+          explorerConfig: cohortBuilderConfiguration,
+        },
+      };
+    }
 
     let sharedFiltersMap: SharedFieldMapping | null = null;
 

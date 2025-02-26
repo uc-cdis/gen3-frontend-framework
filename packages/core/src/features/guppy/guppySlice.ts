@@ -356,7 +356,19 @@ const explorerApi = guppyApi.injectEndpoints({
         _meta,
         args,
       ): number => {
-        return response.data._aggregation[args.type]._totalCount;
+        if (!response.data || !response.data._aggregation) {
+          throw new Error(
+            'Invalid response: Missing data or _aggregation field',
+          );
+        }
+
+        if (!(args.type in response.data._aggregation)) {
+          throw new Error(
+            `Invalid response: Missing expected key '${args.type}' in _aggregation`,
+          );
+        }
+
+        return response.data._aggregation[args.type]._totalCount ?? 0;
       },
     }),
     getFieldCountSummary: builder.query<

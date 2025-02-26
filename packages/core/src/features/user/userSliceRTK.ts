@@ -6,6 +6,7 @@ import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { GEN3_API } from '../../constants';
 
 interface StatusWithCSRFTokenResponse {
   csrf: string;
@@ -69,7 +70,7 @@ export const userAuthApi = createApi({
       },
     }),
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => ({ endpoint: '/_status' }),
+      query: () => ({ url: `${GEN3_API}/_status}` }),
       transformResponse: (
         response: Gen3FenceResponse<StatusWithCSRFTokenResponse>,
       ): CSRFToken => {

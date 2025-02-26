@@ -123,12 +123,12 @@ const FacetControlsHeader = ({
           <Tooltip
             transitionProps={{ duration: 200, transition: 'fade' }}
             label={
-              <div className="flex items-center x-gap-2">
-                <Text className="mr-1">Shared with:</Text>
+              <div className="flex items-center gap-x-2">
+                <Text className="mr-2">Shared with:</Text>
                 {sharedWithIndices.map((x) => (
                   <Badge
-                    variant="white"
-                    radius="xs"
+                    variant="outline"
+                    radius="sm"
                     color="accent.3"
                     key={x.index}
                   >

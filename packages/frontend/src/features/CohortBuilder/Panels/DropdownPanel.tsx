@@ -5,6 +5,7 @@ import {
   Stack,
   Switch,
   Text,
+  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
@@ -57,13 +58,9 @@ export const DropdownPanel = ({
     [filters.tabs],
   );
 
-  const fields = useDeepCompareMemo(
-    () =>
-      filters.tabs[Number(value)].fields.reduce((acc, field) => {
-        return [...acc, facetDefinitions[field]];
-      }, [] as FacetDefinition[]),
-    [filters.tabs, value],
-  );
+  const fields = filters.tabs[Number(value)].fields.reduce((acc, field) => {
+    return [...acc, facetDefinitions[field]];
+  }, [] as FacetDefinition[]);
 
   const handleSharedFiltersChange = (value: boolean) => {
     modals.openConfirmModal({
@@ -104,12 +101,18 @@ export const DropdownPanel = ({
                 color={theme.colors.accent[4]}
               />
               <Text size="sm">Set the shared filters for all</Text>
-              <Icon
-                icon="gen3:info"
-                height={12}
-                width={12}
-                color={theme.colors.accent[4]}
-              />
+              <Tooltip
+                label="If enabled any filter set on this tab will be applied to every tab where occurs."
+                position="top"
+                withArrow
+              >
+                <Icon
+                  icon="gen3:info"
+                  height={12}
+                  width={12}
+                  color={theme.colors.accent[4]}
+                />
+              </Tooltip>
             </div>
             <Switch
               checked={shareFilters}
@@ -119,16 +122,18 @@ export const DropdownPanel = ({
             />
           </Group>
         )}
-        <Select
-          classNames={{
-            options: 'border-1 border-base-dark',
-            option: 'hover:bg-primary-lightest',
-          }}
-          withCheckIcon={false}
-          data={items}
-          value={value === null ? '0' : value}
-          onChange={setValue}
-        />
+        {filters.tabs.length > 1 && (
+          <Select
+            classNames={{
+              options: 'border-1 border-base-dark',
+              option: 'hover:bg-primary-lightest',
+            }}
+            withCheckIcon={false}
+            data={items}
+            value={value === null ? '0' : value}
+            onChange={setValue}
+          />
+        )}
         {Object.keys(facetDefinitions).length > 0 ? (
           <FiltersPanel
             fields={fields}
