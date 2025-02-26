@@ -146,7 +146,7 @@ export const DropdownWithIcon = ({
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
-            leftSection={icon && icon}
+            leftSection={icon}
             disabled={disabled}
           >
             {title}

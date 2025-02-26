@@ -12,7 +12,7 @@ export const TruncatedStringWithTooltip: DataItemRendererFunction = ({
   let limit = 15;
   if (
     typeof params?.maxLength === 'string' &&
-    !isNaN(Number(params?.maxLength))
+    !Number.isNaN(Number(params?.maxLength))
   ) {
     limit = parseInt(params?.maxLength, 10);
   } else if (typeof params?.maxLength === 'number') {

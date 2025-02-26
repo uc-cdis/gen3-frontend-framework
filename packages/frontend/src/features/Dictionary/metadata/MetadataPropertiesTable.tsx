@@ -54,7 +54,7 @@ const buildValueElements = (element: MetadataElement) => {
       } else if (element?.minimum !== undefined) {
         return <span>{element.minimum}</span>;
       } else if (element?.maximum !== undefined) {
-        return <span>{element.minimum}</span>;
+        return <span>{element.maximum}</span>;
       } else {
         return null;
       }

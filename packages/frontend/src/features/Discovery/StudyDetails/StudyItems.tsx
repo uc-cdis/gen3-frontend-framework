@@ -124,7 +124,7 @@ const linkFieldWithOptionalLabel = (
   </Link>
 );
 
-const linkFieldOnly = (linkValue: string, _?: string) => (
+const linkFieldOnly = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
     {linkValue}
   </Link>
@@ -151,7 +151,8 @@ const subHeading = (text: string) => (
 const labeledSingleLinkField = (
   linkValue: JSONValue,
   labelText?: string,
-  parans?: Record<string, any>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _params?: Record<string, any>,
 ) =>
   typeof linkValue !== 'string' ? (
     <React.Fragment />
@@ -245,22 +246,24 @@ const labeledYearOfBirthRestricted: FieldRendererFunction = (
 
   stringFieldValue = fieldValue as string;
 
+  const dt = new Date();
+  const yearCutoff = dt.getFullYear() - 89;
+
   let displayContent;
   if (
-    typeof stringFieldValue === 'string' &&
-    !isNaN(Number(stringFieldValue)) &&
-    Number(stringFieldValue) < 1935
+    !Number.isNaN(stringFieldValue) &&
+    Number(stringFieldValue) < yearCutoff
   ) {
-    displayContent = '1935';
+    displayContent = yearCutoff;
   } else if (isArray(stringFieldValue)) {
     displayContent = stringFieldValue
       .map((item) => {
         if (
           typeof item === 'string' &&
-          !isNaN(Number(item)) &&
-          Number(item) < 1935
+          !Number.isNaN(item) &&
+          Number(item) < yearCutoff
         ) {
-          return '1935';
+          return yearCutoff;
         }
         return item;
       })

@@ -13,7 +13,7 @@ const isArrayField = (value: unknown): value is Array<unknown> =>
   Array.isArray(value);
 
 const isNumeric = (value: unknown): value is number =>
-  typeof value === 'number' && !isNaN(value);
+  typeof value === 'number' && !Number.isNaN(value);
 
 export const evaluateItemRule = (
   rule: ItemRule,

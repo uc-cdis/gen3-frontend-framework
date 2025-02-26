@@ -9,7 +9,7 @@
  */
 export const formatDate = (datestr: string): string => {
   const timestamp = Date.parse(datestr);
-  if (isNaN(timestamp)) {
+  if (Number.isNaN(timestamp)) {
     throw new Error('Invalid date string');
   }
 

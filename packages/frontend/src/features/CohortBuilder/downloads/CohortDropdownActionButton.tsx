@@ -205,7 +205,7 @@ const CohortDropdownActionButton = ({
             <GuppyDropdownMenuItem
               key={`${title}-${idx}`}
               data-testid={`${title}-${idx}`}
-              leftSection={icon && icon}
+              leftSection={icon}
               disabled={disabled}
               title={title}
               idx={idx}

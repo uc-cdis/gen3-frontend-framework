@@ -106,7 +106,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
               placeholder="Search"
               ref={searchInputRef}
               rightSection={
-                searchTerm.length > 0 && (
+                searchTerm?.length > 0 && (
                   <ActionIcon
                     onClick={() => {
                       setSearchTerm('');

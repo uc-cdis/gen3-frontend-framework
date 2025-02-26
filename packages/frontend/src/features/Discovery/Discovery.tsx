@@ -57,7 +57,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
                 discoveryConfig.metadataConfig[Number.parseInt(item.value)]
               }
               indexSelector={
-                menuItems.length < 0 ? (
+                menuItems.length > 0 ? (
                   <Select
                     label="Metadata:"
                     data={menuItems}

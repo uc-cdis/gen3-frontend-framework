@@ -131,10 +131,9 @@ export class RenderFactoryTypedInstance<T>
               try {
                 this.registerRenderer(type, name, func);
               } catch (error) {
-                new Error(
+                throw new Error(
                   `Error registering renderer ${name} for type ${type}: ${error}`,
                 );
-                return false;
               }
             }
           });

@@ -62,8 +62,8 @@ export class TableCellRendererFactory<T = CellRendererFunctionCatalogEntry> {
   static registerCellRendererCatalog(
     catalog: Record<string, CellRendererFunctionCatalogEntry>,
   ): void {
-    Object.keys(catalog).map((type) => {
-      Object.entries(catalog[type]).map(([name, func]) => {
+    Object.keys(catalog).forEach((type) => {
+      Object.entries(catalog[type]).forEach(([name, func]) => {
         TableCellRendererFactory.registerCellRenderer(type, name, func);
       });
     });

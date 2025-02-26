@@ -34,7 +34,7 @@ export const processDataAccess = (
       } else if (supportedValues?.notAvailable?.enabled && !study[authzField]) {
         accessible = AccessLevel.NOT_AVAILABLE;
       } else {
-        let authMapping;
+        const authMapping = {};
         // TODO Continue to refactor this code
         // if (isEnabled('discoveryUseAggWTS')) {
         //   authMapping =
