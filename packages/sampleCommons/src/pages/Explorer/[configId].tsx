@@ -48,3 +48,5 @@ const CohortBuilderPage = ({
 };
 
 export default CohortBuilderPage;
+
+export { getServerSideProps };

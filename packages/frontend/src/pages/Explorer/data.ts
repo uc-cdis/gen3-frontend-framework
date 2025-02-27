@@ -117,6 +117,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
   NavPageLayoutProps | CohortBuilderProps
 > = async (context) => {
   const configId = context.query.configId as string;
+  console.log('configId', configId);
 
   try {
     const cohortBuilderConfiguration: CohortBuilderConfiguration =
