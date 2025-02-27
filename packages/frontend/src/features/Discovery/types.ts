@@ -250,7 +250,6 @@ export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
-  loginRequireForAllButtons?: boolean;
   exportDataFields: ExportDataFields;
 }
 
