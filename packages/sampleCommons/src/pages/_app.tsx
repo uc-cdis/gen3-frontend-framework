@@ -2,7 +2,7 @@ import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-import { initGrafanaFaro } from '../lib/Grafana/grafana';
+// import { initGrafanaFaro } from '../lib/Grafana/grafana';
 
 import {
   Gen3Provider,
@@ -12,6 +12,7 @@ import {
   Fonts,
   createMantineTheme,
   SessionConfiguration,
+  registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
   registerMetadataSchemaApp,
 } from '@gen3/frontend';
@@ -53,10 +54,8 @@ const Gen3App = ({
   sessionConfig,
   modalsConfig,
 }: AppProps & Gen3AppProps) => {
-  useEffect(() => {
-    setDRSHostnames(drsHostnames);
-  }, []);
-
+  useEffect(() => {}, []);
+  const isFirstRender = useRef(true);
   const faroRef = useRef<null | Faro>(null);
 
   useEffect(() => {
@@ -66,11 +65,18 @@ const Gen3App = ({
     //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
     //   !faroRef.current
     // ) {
-    if (!faroRef.current) faroRef.current = initGrafanaFaro();
-    registerMetadataSchemaApp();
-    registerCohortBuilderDefaultPreviewRenderers();
-    registerCohortTableCustomCellRenderers();
-    registerCustomExplorerDetailsPanels();
+    // Note: not using faro for development
+    // if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    if (isFirstRender.current) {
+      setDRSHostnames(drsHostnames);
+      registerMetadataSchemaApp();
+      registerExplorerDefaultCellRenderers();
+      registerCohortBuilderDefaultPreviewRenderers();
+      registerCohortTableCustomCellRenderers();
+      registerCustomExplorerDetailsPanels();
+      isFirstRender.current = false;
+      console.log('Gen3 App initialized');
+    }
     // }
   }, []);
 
@@ -80,17 +86,15 @@ const Gen3App = ({
   );
 
   return (
-    <FaroErrorBoundary>
-      <MantineProvider theme={theme}>
-        <Gen3Provider
-          icons={icons}
-          sessionConfig={sessionConfig}
-          modalsConfig={modalsConfig}
-        >
-          <Component {...pageProps} />
-        </Gen3Provider>
-      </MantineProvider>
-    </FaroErrorBoundary>
+    <MantineProvider theme={theme}>
+      <Gen3Provider
+        icons={icons}
+        sessionConfig={sessionConfig}
+        modalsConfig={modalsConfig}
+      >
+        <Component {...pageProps} />
+      </Gen3Provider>
+    </MantineProvider>
   );
 };
 
@@ -131,4 +135,4 @@ Gen3App.getInitialProps = async (
     sessionConfig: {},
   };
 };
-export default withFaroProfiler(Gen3App);
+export default Gen3App;

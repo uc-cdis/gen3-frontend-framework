@@ -6,6 +6,8 @@ import {
   removeCohortFilter,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  selectSharedFilters,
+  selectShouldShareFilters,
   setCohortFilter,
   updateCohortFilter,
   useCoreDispatch,
@@ -34,32 +36,91 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
       value={{
         cohortName: currentCohortName,
         cohortId: currentCohortId,
-        filters: filters,
         displayOnly: false,
         useClearCohortFilters: () => {
           const dispatch = useCoreDispatch();
-          return (index: string) => dispatch(clearCohortFilters({ index }));
+          const shouldShareFilters = useCoreSelector((state) =>
+            selectShouldShareFilters(state),
+          );
+          const sharedFilters = useCoreSelector((state) =>
+            selectSharedFilters(state),
+          );
+
+          const filters = useCohortFacetFilters(index);
+
+          return (index: string) => {
+            if (shouldShareFilters) {
+              // get all filters on this index
+              // remove them from all other indexes
+              // clear this index
+              const fields = Object.keys(filters.root);
+              fields.forEach((field) => {
+                sharedFilters[field].forEach((x) => {
+                  dispatch(
+                    removeCohortFilter({ index: x.index, field: x.field }),
+                  );
+                });
+              });
+            } else dispatch(clearCohortFilters({ index }));
+          };
         },
         useRemoveFilter: () => {
           const dispatch = useCoreDispatch();
-          return (index: string, field: string) =>
-            dispatch(
-              removeCohortFilter({
-                index: index,
-                field: field,
-              }),
-            );
+          const shouldShareFilters = useCoreSelector((state) =>
+            selectShouldShareFilters(state),
+          );
+          const sharedFilters = useCoreSelector((state) =>
+            selectSharedFilters(state),
+          );
+
+          return (index: string, field: string) => {
+            if (shouldShareFilters && field in sharedFilters) {
+              sharedFilters[field].forEach((x) => {
+                dispatch(
+                  removeCohortFilter({
+                    index: x.index,
+                    field: field,
+                  }),
+                );
+              });
+            } else
+              dispatch(
+                removeCohortFilter({
+                  index: index,
+                  field: field,
+                }),
+              );
+          };
         },
         useUpdateFilters: () => {
           const dispatch = useCoreDispatch();
-          return (index: string, field: string, filter: Operation) =>
-            dispatch(
-              updateCohortFilter({
-                index,
-                field: field,
-                filter: filter,
-              }),
-            );
+          const shouldShareFilters = useCoreSelector((state) =>
+            selectShouldShareFilters(state),
+          );
+          const sharedFilters = useCoreSelector((state) =>
+            selectSharedFilters(state),
+          );
+
+          return (index: string, field: string, filter: Operation) => {
+            if (shouldShareFilters && field in sharedFilters) {
+              sharedFilters[field].forEach((x) => {
+                dispatch(
+                  updateCohortFilter({
+                    index: x.index,
+                    field: field,
+                    filter: filter,
+                  }),
+                );
+              });
+            } else
+              dispatch(
+                updateCohortFilter({
+                  index,
+                  field: field,
+                  filter: filter,
+                }),
+              );
+          };
         },
         useSetCohortFilters: () => {
           const dispatch = useCoreDispatch();
@@ -71,6 +132,7 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
               }),
             );
         },
+        useGetFilters: useCohortFacetFilters,
       }}
     >
       <QueryExpressionSection index={index} />

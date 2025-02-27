@@ -8,7 +8,7 @@ import {
 import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
 import { omit } from 'lodash';
-import { FilterSet } from '@gen3/core';
+import { FilterSet, Operation } from '@gen3/core';
 import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
@@ -37,6 +37,7 @@ const QueryExpressionContainer = tw.div`
 `;
 
 const MAX_HEIGHT_QE_SECTION = 120;
+const MIN_HEIGHT_QE_SECTION = 75;
 
 const reducer = (
   state: Record<string, Record<string, boolean>>,
@@ -102,39 +103,48 @@ const reducer = (
   }
 };
 
+interface QueryExpressionHooks {
+  useClearCohortFilters: () => (index: string) => void;
+  useUpdateFilters: () => (
+    index: string,
+    field: string,
+    filter: Operation,
+  ) => void;
+  useRemoveFilter: () => (index: string, field: string) => void;
+  useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
+}
+
 interface QueryExpressionSectionProps {
   index: string;
-  hideImportExport?: boolean;
+  showImportExport?: boolean;
   displayOnly?: boolean;
   showTitle?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
-  hideImportExport = true,
+  showImportExport = false,
   displayOnly = false,
-  showTitle = true,
+  showTitle = false,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
   const [QESectionHeight, setQESectionHeight] = useState(0);
 
-  const {
-    cohortName,
-    cohortId,
-    filters,
-    useClearCohortFilters,
-    useSetCohortFilters,
-  } = useContext(QueryExpressionContext);
+  const { cohortName, cohortId, useClearCohortFilters, useGetFilters } =
+    useContext(QueryExpressionContext);
   const clearCohortFilters = useClearCohortFilters();
-  const setCohortFilter = useSetCohortFilters();
-
+  const filters = useGetFilters(index);
   useDeepCompareEffect(() => {
     if (filtersRef.current) {
       const height = filtersRef.current.scrollHeight;
       setQESectionHeight(
-        height > MAX_HEIGHT_QE_SECTION ? MAX_HEIGHT_QE_SECTION : height,
+        height > MAX_HEIGHT_QE_SECTION
+          ? MAX_HEIGHT_QE_SECTION
+          : height === 0
+            ? MIN_HEIGHT_QE_SECTION
+            : height,
       );
     }
   }, [expandedState, filters, filtersRef]);
@@ -153,11 +163,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
-  // const dataFunctions = {
-  //   useUpdateFacetFilters: partial(useUpdateFilters, index),
-  //   useClearFilter: partial(useClearFilters, index),
-  // };
-
   useDeepCompareEffect(() => {
     if (expandedState?.[cohortId] === undefined) {
       setExpandedState({
@@ -167,18 +172,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       });
     }
   }, [cohortId, expandedState]);
-
-  const getData = useDeepCompareCallback(() => {
-    return filters;
-  }, [filters]);
-
-  const setCohort = useDeepCompareCallback(
-    (data: string) => {
-      const jsonForm = JSON.parse(data);
-      setCohortFilter(index, jsonForm as FilterSet);
-    },
-    [index],
-  );
 
   return (
     <QueryExpressionContainer>
@@ -190,12 +183,14 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             data-testid="text-cohort-filters-top-row"
             className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
           >
-            <OverflowTooltippedLabel
-              label={cohortName}
-              className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
-            >
-              {cohortName}
-            </OverflowTooltippedLabel>
+            {showTitle && (
+              <OverflowTooltippedLabel
+                label={cohortName}
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
+              >
+                {cohortName}
+              </OverflowTooltippedLabel>
+            )}
             <React.Fragment>
               {!displayOnly && (
                 <button
@@ -212,7 +207,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector index={index} filters={filters} />
+                {showImportExport && <CohortSelector />}
                 <Tooltip
                   label={
                     noFilters
@@ -320,7 +315,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             {noFilters ? (
               <p
                 data-testid="text-no-active-cohort-filter"
-                className="font-content"
+                className="flex items-center font-content h-10"
               >
                 No filters currently applied.
               </p>

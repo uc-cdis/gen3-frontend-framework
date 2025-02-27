@@ -1,17 +1,21 @@
 import React, { useMemo, useState } from 'react';
-import { LoadingOverlay, Tabs } from '@mantine/core';
+import { LoadingOverlay } from '@mantine/core';
 import { partial } from 'lodash';
 import {
+  CoreState,
+  extractEnumFilterValue,
   type FacetDefinition,
+  FacetType,
+  isIntersection,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
-  FacetType,
-  extractEnumFilterValue,
-  CoreState,
   useGetCountsQuery,
+  CombineMode,
+  selectSharedFilters,
+  useGetAggsNoFilterSelfQuery,
 } from '@gen3/core';
-import { type CohortPanelConfig, type TabConfig, TabsConfig } from './types';
+import { type CohortPanelConfig } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
@@ -22,13 +26,16 @@ import {
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
+  removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets/utils';
 import { useClearFilters } from '../../components/facets/hooks';
-import { FacetDataHooks } from '../../components/facets/types';
-import { FiltersPanel } from './FiltersPanel';
-import CohortManager from './CohortManager/CohortManager';
+import {
+  EnumFacetDataHooks,
+  FacetDataHooks,
+} from '../../components/facets/types';
+import CohortManager from './CohortManager';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
@@ -39,85 +46,16 @@ import {
   useDeepCompareMemo,
 } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
-import QueryExpression from './QueryExpression/QueryExpression';
+import {
+  useCohortFilterCombineState,
+  useFilterExpandedState,
+  useSetCohortFilterCombineState,
+  useToggleExpandFilter,
+} from './hooks';
+import DropdownPanel from './Panels/DropdownPanel';
+import AccordianPanel from './Panels/AccordianPanel';
 
 const EmptyData = {};
-
-interface TabbablePanelProps {
-  filters: TabsConfig;
-  tabTitle: string;
-  facetDefinitions: Record<string, FacetDefinition>;
-  facetDataHooks: Record<FacetType, FacetDataHooks>;
-}
-
-const TabbedPanel = ({
-  filters,
-  tabTitle,
-  facetDefinitions,
-  facetDataHooks,
-}: TabbablePanelProps) => {
-  return (
-    <div>
-      <Tabs
-        variant="pills"
-        orientation="vertical"
-        keepMounted={false}
-        defaultValue={filters?.tabs[0].title ?? 'Filters'}
-      >
-        <Tabs.List>
-          {filters.tabs.map((tab: TabConfig) => {
-            return (
-              <Tabs.Tab value={tab.title} key={`${tab.title}-tab`}>
-                {tab.title}
-              </Tabs.Tab>
-            );
-          })}
-        </Tabs.List>
-
-        {filters.tabs.map((tab: TabConfig) => {
-          return (
-            <Tabs.Panel
-              value={tab.title}
-              key={`filter-${tab.title}-tabPanel`}
-              className="w-1/4"
-            >
-              {Object.keys(facetDefinitions).length > 0 ? (
-                <FiltersPanel
-                  fields={tab.fields.reduce((acc, field) => {
-                    return [...acc, facetDefinitions[field]];
-                  }, [] as FacetDefinition[])}
-                  dataFunctions={facetDataHooks}
-                  valueLabel={tabTitle}
-                />
-              ) : null}
-            </Tabs.Panel>
-          );
-        })}
-      </Tabs>
-    </div>
-  );
-};
-
-const SinglePanel = ({
-  filters,
-  tabTitle,
-  facetDefinitions,
-  facetDataHooks,
-}: TabbablePanelProps) => {
-  return (
-    <div>
-      {Object.keys(facetDefinitions).length > 0 ? (
-        <FiltersPanel
-          fields={filters.tabs[0].fields.reduce((acc, field) => {
-            return [...acc, facetDefinitions[field]];
-          }, [] as FacetDefinition[])}
-          dataFunctions={facetDataHooks}
-          valueLabel={tabTitle}
-        />
-      ) : null}
-    </div>
-  );
-};
 
 /**
  * The main component that houses the charts, tabs, modals
@@ -140,6 +78,10 @@ export const CohortPanel = ({
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');
+
+  const sharedFiltersMap = useCoreSelector((state: CoreState) =>
+    selectSharedFilters(state),
+  );
 
   let numCols = 3;
   if (isSm) numCols = 1;
@@ -175,14 +117,39 @@ export const CohortPanel = ({
     filters: cohortFilters,
   });
 
+  const {
+    data: chartData,
+    isSuccess: isChartSuccess,
+    isFetching: isChartFetching,
+    isError: isChartError,
+  } = useGetAggsNoFilterSelfQuery({
+    type: index,
+    fields: Object.keys(charts),
+    filters: cohortFilters,
+  });
+
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
+      let filters = undefined;
+      let combineMode: CombineMode = 'or';
+      if (field in cohortFilters.root) {
+        if (isIntersection(cohortFilters.root[field])) {
+          const intersectionFilters = removeIntersectionFromEnum(
+            cohortFilters.root[field],
+          );
+          if (intersectionFilters) {
+            filters = extractEnumFilterValue(intersectionFilters);
+            combineMode = 'and';
+          }
+        } else {
+          filters = extractEnumFilterValue(cohortFilters.root[field]);
+        }
+      }
+
       return {
         data: processBucketData(data?.[field]),
-        enumFilters:
-          field in cohortFilters.root
-            ? extractEnumFilterValue(cohortFilters.root[field])
-            : undefined,
+        enumFilters: filters,
+        combineMode: combineMode,
         isSuccess: isSuccess,
       };
     },
@@ -203,7 +170,7 @@ export const CohortPanel = ({
   // Set up the hooks for the facet components to use based on the required index
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetDataHooks> =
+  const facetDataHooks: Record<FacetType, FacetDataHooks | EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
@@ -212,6 +179,10 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
+          useGetCombineMode: partial(useCohortFilterCombineState, index),
+          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
           useTotalCounts: undefined,
         },
         exact: {
@@ -219,6 +190,8 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -226,6 +199,8 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
         range: {
@@ -233,6 +208,8 @@ export const CohortPanel = ({
           useUpdateFacetFilters: partial(useUpdateFilters, index),
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
+          useFilterExpanded: partial(useFilterExpandedState, index),
+          useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useTotalCounts: undefined,
         },
       };
@@ -253,6 +230,7 @@ export const CohortPanel = ({
         index,
         guppyConfig?.fieldMapping ?? [],
         configFacetDefs ?? {},
+        sharedFiltersMap,
       );
       setFacetDefinitions(facetDefs);
 
@@ -299,29 +277,33 @@ export const CohortPanel = ({
   }
 
   return (
-    <div className="flex mt-3 relative">
-      <LoadingOverlay visible={isAggsQueryFetching} />
-      <div>
-        {filters?.tabs === undefined ? null : filters?.tabs.length > 1 ? (
-          <TabbedPanel
-            filters={filters}
-            tabTitle={tabTitle}
-            facetDefinitions={facetDefinitions}
-            facetDataHooks={facetDataHooks}
-          />
-        ) : (
-          <SinglePanel
-            filters={filters}
-            tabTitle={tabTitle}
-            facetDefinitions={facetDefinitions}
-            facetDataHooks={facetDataHooks}
-          />
-        )}
-      </div>
-      <div className="w-full relative">
-        <div className="flex flex-col">
-          <CohortManager index={index} />
-          <QueryExpression index={index} />
+    <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
+      <CohortManager index={index} />
+
+      {/* Flex container to ensure proper 25/75 split */}
+      <div className="flex w-full">
+        {/* Left panel - 25% */}
+        <div
+          id="cohort-builder-filters"
+          className="flex-shrink-0 md:w-1/4 lg:w-1/5"
+        >
+          {filters?.tabs && (
+            <DropdownPanel
+              index={index}
+              filters={filters}
+              tabTitle={tabTitle}
+              facetDefinitions={facetDefinitions}
+              facetDataHooks={facetDataHooks}
+            />
+          )}
+        </div>
+
+        {/* Right content - 75% */}
+        <div
+          id="cohort-builder-content"
+          className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
+        >
+          {/* Top row with DownloadsPanel and CountsValue */}
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
               dropdowns={dropdowns ?? {}}
@@ -332,28 +314,29 @@ export const CohortPanel = ({
               fields={table?.fields ?? []}
               filter={cohortFilters}
             />
-
             <CountsValue
               label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
               counts={counts}
               isSuccess={isCountSuccess}
             />
           </div>
+
+          {/* Charts Section */}
           <Charts
             charts={summaryCharts}
-            data={data ?? EmptyData}
+            data={chartData ?? EmptyData}
             counts={counts}
-            isSuccess={isSuccess}
+            isSuccess={isChartSuccess}
             numCols={numCols}
           />
-          {table?.enabled ? (
+
+          {/* Table Section */}
+          {table?.enabled && (
             <div className="mt-2 flex flex-col">
               <div className="grid">
                 <ExplorerTable index={index} tableConfig={table} />
               </div>
             </div>
-          ) : (
-            false
           )}
         </div>
       </div>

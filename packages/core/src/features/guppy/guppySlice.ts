@@ -8,6 +8,8 @@ import {
   isFilterEmpty,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
+import { SharedFieldMapping } from './types';
+import { groupSharedFields } from './utils';
 
 const statusEndpoint = '/_status';
 
@@ -132,7 +134,7 @@ interface QueryForFileCountSummaryParams {
  * @param getAggs - An aggregated histogram counts query which outputs vertex property frequencies
  * @param getSubAggs - TODO: not sure what this one does. Looks like nested aggregation
  * @param getCounts - Returns total counts of a vertex type
- * @returns: A guppy API endpoint for templating queriable data displayed on the exploration page
+ * @returns: A guppy API endpoint for templating queryable data displayed on the exploration page
  */
 const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -240,7 +242,43 @@ const explorerApi = guppyApi.injectEndpoints({
         return queryBody;
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
+      },
+    }),
+    getAggsNoFilterSelf: builder.query<AggregationsData, QueryAggsParams>({
+      query: ({
+        type,
+        fields,
+        filters,
+        accessibility = Accessibility.ALL,
+      }: QueryAggsParams) => {
+        const queryStart = isFilterEmpty(filters)
+          ? `
+              query getAggs {
+              _aggregation {
+              ${type} (accessibility: ${accessibility}) {`
+          : `query getAggs ($filter: JSON) {
+               _aggregation {
+                      ${type} (filter: $filter, filterSelf: true, accessibility: ${accessibility}) {`;
+        const query = `${queryStart}
+                  ${fields.map((field: string) =>
+                    histogramQueryStrForEachField(field),
+                  )}
+                }
+              }
+            }`;
+        const queryBody: GraphQLQuery = {
+          query: query,
+          variables: { filter: convertFilterSetToGqlFilter(filters) },
+        };
+        return queryBody;
+      },
+      transformResponse: (response: Record<string, any>, _meta, args) => {
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
       },
     }),
     getSubAggs: builder.query<AggregationsData, QueryForSubAggsParams>({
@@ -279,7 +317,9 @@ const explorerApi = guppyApi.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(response.data._aggregation[args.type]);
+        return processHistogramResponse(
+          response?.data?._aggregation[args.type] ?? {},
+        );
       },
     }),
     getCounts: builder.query<number, QueryCountsParams>({
@@ -316,7 +356,19 @@ const explorerApi = guppyApi.injectEndpoints({
         _meta,
         args,
       ): number => {
-        return response.data._aggregation[args.type]._totalCount;
+        if (!response.data || !response.data._aggregation) {
+          throw new Error(
+            'Invalid response: Missing data or _aggregation field',
+          );
+        }
+
+        if (!(args.type in response.data._aggregation)) {
+          throw new Error(
+            `Invalid response: Missing expected key '${args.type}' in _aggregation`,
+          );
+        }
+
+        return response.data._aggregation[args.type]._totalCount ?? 0;
       },
     }),
     getFieldCountSummary: builder.query<
@@ -355,12 +407,27 @@ const explorerApi = guppyApi.injectEndpoints({
       query: (index: string) => {
         return {
           query: `{
-            _mapping ${index}
+            _mapping { ${index} }
           }`,
         };
       },
       transformResponse: (response: Record<string, any>) => {
         return response['_mapping'];
+      },
+    }),
+    getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
+      query: (indices: string[]) => {
+        return {
+          query: `{
+            _mapping { ${indices.join(' ')} }
+          }`,
+        };
+      },
+      transformResponse: (response: Record<string, any>) => {
+        if ('_mapping' in response.data) {
+          return groupSharedFields(response.data['_mapping']);
+        }
+        return {};
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -447,11 +514,13 @@ export const {
   useGetAccessibleDataQuery,
   useGetAllFieldsForTypeQuery,
   useGetAggsQuery,
+  useGetAggsNoFilterSelfQuery,
   useLazyGetAggsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,
   useGetFieldsForIndexQuery,
+  useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
 } = explorerApi;

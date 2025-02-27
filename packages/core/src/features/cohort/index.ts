@@ -8,9 +8,6 @@ import {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
-  selectAvailableCohorts,
-  selectCurrentCohortModified,
-  selectCurrentCohortSaved,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
@@ -35,6 +32,52 @@ import {
   persistCohort,
   persistCurrentCohort,
 } from './cohortPersistenceActions';
+
+import {
+  toggleCohortBuilderCategoryFilter,
+  toggleCohortBuilderAllFilters,
+  selectCohortFilterExpanded,
+  selectAllCohortFiltersCollapsed,
+} from './filterExpandSlice';
+
+import {
+  setSharedFilters,
+  setShouldShareFilters,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  selectSharedFiltersForFields,
+} from './sharedFiltersSlice';
+import { type CombineMode } from './types';
+
+import {
+  setCohortFilterCombineMode,
+  selectCohortFilterCombineMode,
+} from './filterCombineModeSlice';
+
+export {
+  selectCohortFilters,
+  selectIndexFilters,
+  selectIndexedFilterByName,
+  selectCurrentCohortId,
+  selectCurrentCohortName,
+  selectCurrentCohort,
+  selectCohortFilterExpanded,
+  selectAllCohortFiltersCollapsed,
+  selectCohortFilterCombineMode,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  selectSharedFiltersForFields,
+  updateCohortFilter,
+  setCohortFilter,
+  setCohortIndexFilters,
+  removeCohortFilter,
+  clearCohortFilters,
+  toggleCohortBuilderCategoryFilter,
+  toggleCohortBuilderAllFilters,
+  setCohortFilterCombineMode,
+  setSharedFilters,
+  setShouldShareFilters,
+  type CombineMode,
 
 export {
   type Cohort,

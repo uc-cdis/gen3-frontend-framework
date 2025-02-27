@@ -25,7 +25,6 @@ import {
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-///import { useWorkspaceResourceMonitor } from '../../features/Workspace/Monitor/workspaceMonitors';
 
 export const logoutSession = async () => {
   await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
@@ -161,16 +160,16 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
  */
 export const SessionProvider = ({
   children,
-  session,
   updateSessionTime = 5,
   inactiveTimeLimit = 20,
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
+  monitorWorkspace = true,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  useWorkspaceResourceMonitor(); // monitor workspaces if any are running
+  useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

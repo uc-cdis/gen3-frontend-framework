@@ -129,7 +129,6 @@ const IncludeExcludeQueryElement = ({
   operands,
   displayOnly = false,
 }: IncludeExcludeQueryElementProps) => {
-  // const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
