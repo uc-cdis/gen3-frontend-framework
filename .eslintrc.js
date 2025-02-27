@@ -21,7 +21,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['jsx-a11y', 'react', 'react-hooks', '@typescript-eslint'],
+  plugins: ['jsx-a11y', 'react', 'react-hooks', '@typescript-eslint', 'import'],
   rules: {
     'no-underscore-dangle': 'off',
     'import/prefer-default-export': 'off',
@@ -36,6 +36,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/no-explicit-any': ['warn'],
     '@typescript-eslint/no-unused-vars': ['warn'],
+    'import/no-cycle': 'error',
   },
   overrides: [
     {

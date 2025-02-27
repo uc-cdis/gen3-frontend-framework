@@ -73,7 +73,7 @@ const workspaceShutdownAlertLimit = 30000; // 5 minutes: 5 * 60 * 1000 TODO Figu
  *  Currently, handles workspace, payment and idle status
  */
 
-export const useWorkspaceResourceMonitor = () => {
+export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
   const [pollingInterval, setPollingInterval] = useState<number>(0);
   const [paymentPollingInterval, setPaymentPollingInterval] =
     useState<number>(0);
@@ -81,20 +81,22 @@ export const useWorkspaceResourceMonitor = () => {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
     error: workspaceStatusError,
-  } = useGetWorkspaceStatusQuery(undefined, {
+  } = useGetWorkspaceStatusQuery(undefined, monitorWorkspace ? {
     pollingInterval: pollingInterval,
     refetchOnMountOrArgChange: 1800,
     refetchOnFocus: true,
+  } : {
+    skip: true,
   });
 
   const {
     data: paymentModelData,
     isError: isPaymentModelError,
     error: paymentModelError,
-  } = useGetWorkspacePayModelsQuery(undefined, {
+  } = useGetWorkspacePayModelsQuery(undefined,  monitorWorkspace ?  {
     pollingInterval: paymentPollingInterval,
     refetchOnMountOrArgChange: true,
-  });
+  } : { skip: true });
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
   const requestedStatusTimestamp = useCoreSelector(

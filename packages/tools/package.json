@@ -19,7 +19,9 @@
     "buildColors": "./dist/buildColors.esm.js",
     "bundleIcons": "./dist/bundleIcons.esm.js",
     "getSchema": "./dist/getSchema.esm.js",
-    "getDRSToHostname": "./dist/getDRSToHostname.esm.js"
+    "getSharedMapping": "./dist/getSharedMapping.esm.js",
+    "getDRSToHostname": "./dist/getDRSToHostname.esm.js",
+    "getSharedFilters": "./dist/getSharedFilters.esm.js"
   },
   "author": "Craig Barnes",
   "license": "Apache-2.0",

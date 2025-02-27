@@ -89,6 +89,7 @@ const Gen3Provider = ({
     icons.forEach((i) => addCollection(i));
   }, [icons]);
 
+
   return (
     <CoreProvider>
       <ModalsProvider>

@@ -5,14 +5,12 @@ import cookie from 'cookie';
 import { deleteCookie } from 'cookies-next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-
-   await fetch(`${GEN3_FENCE_API}/user/logout`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  await fetch(`${GEN3_FENCE_API}/logout`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
   res.setHeader('Set-Cookie', [
     cookie.serialize('fence', '', {
@@ -38,8 +36,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       expires: new Date(0),
     }),
   ]);
-  deleteCookie( 'credentials_token', {
-    req, res,
+  deleteCookie('credentials_token', {
+    req,
+    res,
     sameSite: 'lax',
     httpOnly: process.env.NODE_ENV === 'production',
     secure: process.env.NODE_ENV === 'production',

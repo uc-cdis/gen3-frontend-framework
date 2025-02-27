@@ -1,4 +1,10 @@
-import { EnumFilterValue, FacetDefinition, Operation } from '@gen3/core';
+import {
+  EnumFilterValue,
+  FacetDefinition,
+  Operation,
+  CombineMode,
+  IndexAndField,
+} from '@gen3/core';
 import { ReactNode, ComponentType } from 'react';
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
@@ -10,12 +16,14 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly facetBtnToolTip?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;
+  readonly showSettings?: boolean;
   readonly isFacetView?: boolean;
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (arg0: string) => void;
+  readonly sharedWithIndices?: Array<IndexAndField>;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -60,6 +68,11 @@ export type GetFacetDataFunction = (
 ) => EnumFacetResponse | RangeFacetResponse;
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
+export type GetFacetCombineModeFunction = (field: string) => CombineMode;
+export type SetFacetCombineModeFunction = (
+  field: string,
+  combineMode: CombineMode,
+) => void;
 
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
@@ -74,6 +87,11 @@ export interface FacetDataHooks extends FacetCommonHooks {
   useTotalCounts?: GetTotalCountsFunction;
 }
 
+export interface EnumFacetDataHooks extends FacetDataHooks {
+  useGetCombineMode: GetFacetCombineModeFunction;
+  useUpdateCombineMode: SetFacetCombineModeFunction;
+}
+
 export interface FacetResponse {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;
@@ -82,6 +100,7 @@ export interface FacetResponse {
 
 export interface EnumFacetResponse extends FacetResponse {
   readonly enumFilters?: EnumFilterValue;
+  readonly combineMode?: CombineMode;
 }
 
 export function isEnumFacetResponse(
@@ -112,8 +131,15 @@ export interface FieldToName {
   readonly name: string;
 }
 
+// compact string representation of SortType for config file
+export type FacetSortType =
+  | 'value-asc'
+  | 'value-dsc'
+  | 'label-asc'
+  | 'label-desc';
+
 /**
- * Sort type for range buckets
+ * Sort type for enum buckets
  */
 export interface SortType {
   type: 'value' | 'alpha';

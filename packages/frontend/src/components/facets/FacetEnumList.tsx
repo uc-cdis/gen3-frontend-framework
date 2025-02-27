@@ -1,16 +1,25 @@
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
-import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Checkbox,
+  LoadingOverlay,
+  SegmentedControl,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle, type CombineMode } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
-import { SortType } from './types';
-import { updateFacetEnum } from './utils';
+import { FacetSortType, SortType } from './types';
+import { mapFacetSortToSortType, updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { Icon } from '@iconify/react';
 
 const compareKeysAscending = (
   a: string | number,
@@ -47,11 +56,13 @@ interface FacetEnumListProps {
   facetName?: string;
   valueLabel: string;
   hooks: EnumFacetHooks;
+  isSettings?: boolean;
   isSearching?: boolean;
   isFacetView?: boolean;
   showPercent?: boolean;
   hideIfEmpty?: boolean;
   showSorting?: boolean;
+  sort?: FacetSortType;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -59,17 +70,23 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   facetName,
   hooks,
   valueLabel,
+  isSettings = false,
   isFacetView = true,
   isSearching = false,
   showPercent = false,
   hideIfEmpty = false,
   showSorting = true,
+  sort = 'value-dsc',
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const settingRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const { data, enumFilters, isSuccess, error } = hooks.useGetFacetData(field);
+  // const [combineMode, setCombineMode] = useState<'or' | 'and'>('or');
+
+  const { data, enumFilters, combineMode, isSuccess, error } =
+    hooks.useGetFacetData(field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters ?? []);
   const totalCount = hooks?.useTotalCounts ? hooks.useTotalCounts() : 1;
   const clearFilters = hooks.useClearFilter();
@@ -80,10 +97,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const [sortedData, setSortedData] = useState<
     Array<[string | number, number]>
   >([]);
-  const [sortType, setSortType] = useState<SortType>({
-    type: 'alpha',
-    direction: 'asc',
-  });
+  const [sortType, setSortType] = useState<SortType>(
+    mapFacetSortToSortType(sort),
+  );
+  const theme = useMantineTheme();
 
   useEffect(() => {
     if (isSearching) {
@@ -92,6 +109,12 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       setSearchTerm('');
     }
   }, [isSearching, searchTerm]);
+
+  useEffect(() => {
+    if (isSettings) {
+      settingRef?.current?.focus();
+    }
+  }, [settingRef, isSettings]);
 
   useDeepCompareEffect(() => {
     setSelectedEnums(enumFilters ?? []);
@@ -107,11 +130,33 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     });
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+      updateFacetEnum(
+        field,
+        updated,
+        updateFacetFilters,
+        clearFilters,
+        combineMode,
+      );
     } else {
       const updated = selectedEnums?.filter((x) => x != value);
-      updateFacetEnum(field, updated ?? [], updateFacetFilters, clearFilters);
+      updateFacetEnum(
+        field,
+        updated ?? [],
+        updateFacetFilters,
+        clearFilters,
+        combineMode,
+      );
     }
+  };
+
+  const handleCombineModeChange = (mode: CombineMode) => {
+    updateFacetEnum(
+      field,
+      selectedEnums ?? [],
+      updateFacetFilters,
+      clearFilters,
+      mode,
+    );
   };
 
   const [facetChartData, setFacetChartData] = useState<{
@@ -286,6 +331,36 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                 ) : undefined
               }
             />
+          )}
+          {isSettings && (
+            <div className="flex w-full justify-center">
+              <div className="flex items-center space-x-1 mt-1">
+                <SegmentedControl
+                  classNames={{
+                    root: 'border-1 border-accent rounded-l-md rounded-r-md',
+                    control: 'p-0 m-0',
+                    indicator: 'bg-accent text-accent-contrast',
+                  }}
+                  ref={settingRef}
+                  value={combineMode}
+                  onChange={(value: string) => {
+                    handleCombineModeChange(value as 'and' | 'or');
+                  }}
+                  data={[
+                    { label: 'AND', value: 'and' },
+                    { label: 'OR', value: 'or' },
+                  ]}
+                />
+                <Tooltip label="Combine filters with AND or OR 2">
+                  <Icon
+                    icon="gen3:info"
+                    height={12}
+                    width={12}
+                    color={theme.colors.accent[4]}
+                  />
+                </Tooltip>
+              </div>
+            </div>
           )}
           <div
             className={
