@@ -1,14 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
-import { MultiSelect, Tooltip } from '@mantine/core';
-import {
-  controlsIconStyle,
-  FacetIconButton,
-  FacetText,
-  FacetHeader,
-} from './components';
-import { MdClose as CloseIcon } from 'react-icons/md';
-import { FaUndo as UndoIcon, FaPlus as PlusIcon } from 'react-icons/fa';
+import { MultiSelect } from '@mantine/core';
+import { controlsIconStyle, FacetText, FacetHeader } from './components';
 import {
   Operation,
   Excludes,
@@ -17,6 +10,7 @@ import {
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { updateFacetEnum } from './utils';
+import FacetControlsHeader from './FacetControlsHeader';
 
 type ExactValueProps = Omit<
   FacetCardProps<FacetDataHooks>,
@@ -65,6 +59,7 @@ const extractValues = (
  * @param dismissCallback - callback function to dismiss the facet
  * @param width - width of the facet
  * @param hooks - hooks to use for the facet
+ * @param header - header components
  * @category Facets
  */
 const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
@@ -73,7 +68,13 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
+  showSettings = false, // TODO: change to true with support for combine ops is completed
   hooks,
+  header = {
+    Panel: FacetHeader,
+    Label: FacetText,
+    iconStyle: controlsIconStyle,
+  },
 }: ExactValueProps) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]); // Handle the state of the TextInput
   const clearFilters = hooks.useClearFilter();
@@ -83,6 +84,9 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
     : trimFirstFieldNameToTitle(field, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const facetDataValues = hooks.useGetFacetData(field) as EnumFacetResponse;
+  const isFilterExpanded =
+    hooks.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const dataValues = useMemo(() => {
     if (facetDataValues?.data) {
@@ -121,58 +125,41 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         width ? width : 'mx-0'
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
-      <FacetHeader>
-        <Tooltip
-          disabled={!description}
-          label={description}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: 'fade' }}
-        >
-          <FacetText>{facetTitle}</FacetText>
-        </Tooltip>
-        <div className="flex flex-row">
-          <Tooltip label="Clear selection">
-            <FacetIconButton
-              onClick={() => setSelectedValues([])}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.15em" className={controlsIconStyle} />
-            </FacetIconButton>
-          </Tooltip>
-          {dismissCallback && (
-            <Tooltip label="Remove the facet">
-              <FacetIconButton
-                onClick={() => {
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" className={controlsIconStyle} />
-              </FacetIconButton>
-            </Tooltip>
-          )}
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        dismissCallback={dismissCallback}
+        header={header}
+        showSettings={showSettings}
+      />
+      <div
+        className={showFilters ? 'h-full' : 'h-0 invisible'}
+        aria-hidden={!showFilters}
+      >
+        <div className="flex flex-nowrap items-center p-2">
+          <MultiSelect
+            data-testid="multiselect-add-filter-value"
+            size="sm"
+            placeholder={`Enter ${facetTitle}`}
+            classNames={{
+              root: 'grow',
+              input: 'border-r-0 rounded-r-none py-1',
+            }}
+            comboboxProps={{ shadow: 'md' }}
+            aria-label="enter value to add filter"
+            value={selectedValues}
+            onChange={setSelectedValues}
+            searchable
+            data={dataValues}
+            limit={10}
+            maxDropdownHeight={200}
+            hidePickedOptions
+            withScrollArea={false}
+            mt="md"
+          />
         </div>
-      </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2">
-        <MultiSelect
-          data-testid="multiselect-add-filter-value"
-          size="sm"
-          comboboxProps={{ shadow: 'md' }}
-          placeholder={`Enter ${facetTitle}`}
-          aria-label="enter value to add filter"
-          value={selectedValues}
-          onChange={setSelectedValues}
-          data={dataValues}
-          limit={10}
-          searchable
-          hidePickedOptions
-          withScrollArea={false}
-          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
-          mt="md"
-        />
       </div>
     </div>
   );

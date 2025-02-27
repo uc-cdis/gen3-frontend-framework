@@ -2,7 +2,6 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
-import { getThemeColor } from '@mantine/core';
 
 const utility = {
   link: '#155276',

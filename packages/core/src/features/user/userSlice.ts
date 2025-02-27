@@ -41,7 +41,7 @@ export const fetchUserState = createAsyncThunk<
   }
 
   return await fetchFence({
-    endpoint: '/user/user',
+    endpoint: '/user',
     method: 'GET',
     headers: {
       Accept: 'application/json',

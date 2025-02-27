@@ -1,4 +1,4 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
-import { CohortBuilderConfiguration } from '../../features/CohortBuilder/types';
+import { CohortBuilderProps } from '../../features/CohortBuilder';
 
-export type ExplorerPageProps = NavPageLayoutProps & CohortBuilderConfiguration;
+export type ExplorerPageProps = NavPageLayoutProps & CohortBuilderProps;
