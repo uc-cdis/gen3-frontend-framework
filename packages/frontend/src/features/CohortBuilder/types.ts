@@ -75,12 +75,14 @@ export interface CohortPanelConfig {
   sharedFiltersMap?: SharedFieldMapping;
 }
 
+export interface SharedFieldConfiguration {
+  defined?: SharedFieldMapping;
+  autoCreate?: boolean;
+}
+
 export interface CohortBuilderConfiguration extends ConfigVersionAndName {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
-  sharedFilters?: {
-    defined?: SharedFieldMapping;
-    autoCreate?: boolean;
-  }; // enabled for sharing filters across indexes for denormalized data.
+  sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfig>;
 }
 
