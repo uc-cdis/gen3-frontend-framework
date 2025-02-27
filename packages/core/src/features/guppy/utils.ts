@@ -10,7 +10,6 @@ import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
 import { isJSONObject } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
-import { useGetFieldsForIndexQuery } from './guppySlice';
 
 /**
  * Represents a configuration for making a fetch request.
@@ -37,7 +36,7 @@ const prepareUrl = (apiUrl: string) => `${apiUrl}/download`;
 /**
  * Prepares a fetch configuration object for downloading files from Guppy.
  *
- * @param {GuppyFileDownloadRequestParams} parameters - The parameters to include in the request body.
+ * @param {GuppyDownloadDataParams} parameters - The parameters to include in the request body.
  * @param {string} csrfToken - The CSRF token to include in the request headers.
  * @returns {FetchConfig} - The prepared fetch configuration object.
  */
@@ -166,11 +165,6 @@ export const downloadJSONDataFromGuppy = async ({
     }
     throw new Error(error);
   }
-};
-
-export const useGetIndexFields = (index: string) => {
-  const { data } = useGetFieldsForIndexQuery(index);
-  return data ?? [];
 };
 
 export const groupSharedFields = (data: Record<string, string[]>) => {
