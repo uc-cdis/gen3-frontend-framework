@@ -19,7 +19,7 @@ import {
 
 import { useGetJWKKeysQuery } from './jwtApi';
 import { FetchError, Gen3FenceResponse } from './types';
-import { fetchFence } from './utils';
+import { fetchFence, isFetchError } from './utils';
 
 export {
   type Gen3FenceResponse,
@@ -31,6 +31,7 @@ export {
   type NameUrl,
   fetchFence,
   logoutFence,
+  isFetchError,
   useGetCredentialsQuery,
   useGetDownloadQuery,
   useLazyGetDownloadQuery,

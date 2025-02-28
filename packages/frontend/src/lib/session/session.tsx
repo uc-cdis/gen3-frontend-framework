@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
+import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
@@ -27,6 +28,12 @@ import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
 export const logoutSession = async () => {
+  // logged in using credentials then execute credentials logout first
+  const accessToken = getCookie('credentials_token');
+  if (accessToken) {
+    await fetch('/api/auth/credentialsLogout');
+  }
+
   await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
     cache: 'no-store',
   });
