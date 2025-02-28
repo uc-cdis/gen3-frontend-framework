@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCookie } from 'cookies-next';
-import { decodeJwt, JWTPayload } from 'jose';
+import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
+import { fetchJWTKey } from './utils';
+import { getWebTokenErrorResponse } from './errorHandler';
 
 export const isExpired = (value: number) => value - Date.now() > 0;
 
@@ -14,26 +16,36 @@ export interface JWTPayloadAndUser extends JWTPayload {
  * @param res
  */
 export default async function (req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const access_token = getCookie('access_token', { req, res });
+    if (access_token) {
+      const jwtKey = await fetchJWTKey();
+      if (!jwtKey) {
+        res.status(500).json({
+          message: 'No JWT Key to verify token',
+        });
+        return res;
+      }
+      // validate the token
+      const publicKey = await importSPKI(jwtKey, 'RS256');
+      await jwtVerify(access_token, publicKey);
+      const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
+      return res.status(200).json({
+        issued: decodedAccessToken.iat,
+        expires: decodedAccessToken.exp,
+        userContext: decodedAccessToken.context.user,
+        status: decodedAccessToken.exp
+          ? isExpired(decodedAccessToken.exp)
+            ? 'expired'
+            : 'issued'
+          : 'invalid',
+      });
+    }
 
-  const access_token = getCookie('access_token', { req, res });
-  if (access_token) {
-    // TODO: validate the token
-    const decodedAccessToken = decodeJwt(
-      access_token as string
-    ) as unknown as JWTPayloadAndUser;
     return res.status(200).json({
-      issued: decodedAccessToken.iat,
-      expires: decodedAccessToken.exp,
-      userContext: decodedAccessToken.context.user,
-      status: decodedAccessToken.exp
-        ? isExpired(decodedAccessToken.exp)
-          ? 'expired'
-          : 'issued'
-        : 'invalid',
+      status: 'not present',
     });
+  } catch (error: unknown) {
+    return getWebTokenErrorResponse(error, res);
   }
-
-  return res.status(200).json({
-    status: 'not present',
-  });
 }
