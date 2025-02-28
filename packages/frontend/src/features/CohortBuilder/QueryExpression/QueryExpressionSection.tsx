@@ -1,30 +1,28 @@
-import React, { useState, useReducer, useRef } from 'react';
+import React, { useContext, useState, useReducer, useRef } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import {
-  MdOutlineArrowBackIos as LeftArrowIcon,
-  MdOutlineArrowForwardIos as RightArrowIcon,
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
 import { Icon } from '@iconify/react';
 import tw from 'tailwind-styled-components';
-import { omit, partial } from 'lodash';
-import { useCoreDispatch, clearCohortFilters, FilterSet } from '@gen3/core';
-import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
+import { omit } from 'lodash';
+import { FilterSet, Operation } from '@gen3/core';
+import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
   QueryExpressionsExpandedContext,
   CollapsedStateReducerAction,
 } from './QueryExpressionsExpandedContext';
 
+import { QueryExpressionContext } from './QueryExpressionContext';
+
 import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
-} from './style';
-import { useUpdateFilters } from '../../components/facets/utils';
-import { useClearFilters } from '../../components/facets/hooks';
-import CohortSelector from './CohortSelector';
+} from '../style';
+import CohortSelector from '../CohortSelector';
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -39,6 +37,7 @@ const QueryExpressionContainer = tw.div`
 `;
 
 const MAX_HEIGHT_QE_SECTION = 120;
+const MIN_HEIGHT_QE_SECTION = 75;
 
 const reducer = (
   state: Record<string, Record<string, boolean>>,
@@ -104,71 +103,80 @@ const reducer = (
   }
 };
 
+interface QueryExpressionHooks {
+  useClearCohortFilters: () => (index: string) => void;
+  useUpdateFilters: () => (
+    index: string,
+    field: string,
+    filter: Operation,
+  ) => void;
+  useRemoveFilter: () => (index: string, field: string) => void;
+  useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
+}
+
 interface QueryExpressionSectionProps {
   index: string;
-  filters: FilterSet;
-  currentCohortName: string;
-  currentCohortId: string;
+  showImportExport?: boolean;
   displayOnly?: boolean;
   showTitle?: boolean;
 }
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
-  filters,
-  currentCohortName,
-  currentCohortId,
+  showImportExport = false,
   displayOnly = false,
-  showTitle = true,
+  showTitle = false,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
   const [QESectionHeight, setQESectionHeight] = useState(0);
-  const dispatch = useCoreDispatch();
 
+  const { cohortName, cohortId, useClearCohortFilters, useGetFilters } =
+    useContext(QueryExpressionContext);
+  const clearCohortFilters = useClearCohortFilters();
+  const filters = useGetFilters(index);
   useDeepCompareEffect(() => {
     if (filtersRef.current) {
       const height = filtersRef.current.scrollHeight;
       setQESectionHeight(
-        height > MAX_HEIGHT_QE_SECTION ? MAX_HEIGHT_QE_SECTION : height,
+        height > MAX_HEIGHT_QE_SECTION
+          ? MAX_HEIGHT_QE_SECTION
+          : height === 0
+            ? MIN_HEIGHT_QE_SECTION
+            : height,
       );
     }
   }, [expandedState, filters, filtersRef]);
 
   const clearAllFilters = () => {
-    dispatch(clearCohortFilters({ index: index }));
+    clearCohortFilters(index);
     setExpandedState({
       type: 'clear',
-      cohortId: currentCohortId,
+      cohortId: cohortId,
       field: 'unset',
     });
   };
   const allQueryExpressionsCollapsed = Object.values(
-    expandedState?.[currentCohortId] || {},
+    expandedState?.[cohortId] || {},
   ).every((q) => !q);
 
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
-  const dataFunctions = {
-    useUpdateFacetFilters: partial(useUpdateFilters, index),
-    useClearFilter: partial(useClearFilters, index),
-  };
-
   useDeepCompareEffect(() => {
-    if (expandedState?.[currentCohortId] === undefined) {
+    if (expandedState?.[cohortId] === undefined) {
       setExpandedState({
         type: 'init',
-        cohortId: currentCohortId,
+        cohortId: cohortId,
         field: 'unset',
       });
     }
-  }, [currentCohortId, expandedState]);
+  }, [cohortId, expandedState]);
 
   return (
     <QueryExpressionContainer>
       <QueryExpressionsExpandedContext.Provider
-        value={[expandedState[currentCohortId], setExpandedState]}
+        value={[expandedState[cohortId], setExpandedState]}
       >
         <div className="flex flex-col w-full bg-primary-lighter">
           <div
@@ -177,10 +185,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           >
             {showTitle && (
               <OverflowTooltippedLabel
-                label={currentCohortName}
+                label={cohortName}
                 className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
               >
-                {currentCohortName}
+                {cohortName}
               </OverflowTooltippedLabel>
             )}
             <React.Fragment>
@@ -199,7 +207,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </button>
               )}
               <div className="display flex gap-2 ml-auto mr-3">
-                <CohortSelector />
+                {showImportExport && <CohortSelector />}
                 <Tooltip
                   label={
                     noFilters
@@ -216,11 +224,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                       allQueryExpressionsCollapsed
                         ? setExpandedState({
                             type: 'expandAll',
-                            cohortId: currentCohortId,
+                            cohortId: cohortId,
                           })
                         : setExpandedState({
                             type: 'collapseAll',
-                            cohortId: currentCohortId,
+                            cohortId: cohortId,
                           })
                     }
                     aria-label="Expand/collapse all queries"
@@ -307,7 +315,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             {noFilters ? (
               <p
                 data-testid="text-no-active-cohort-filter"
-                className="font-content"
+                className="flex items-center font-content h-10"
               >
                 No filters currently applied.
               </p>

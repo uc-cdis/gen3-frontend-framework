@@ -1,9 +1,4 @@
-import React, {
-  PropsWithChildren,
-  ReactElement,
-  useContext,
-  useEffect,
-} from 'react';
+import React, { PropsWithChildren, ReactElement, useContext } from 'react';
 import { get } from 'lodash';
 import {
   Equals,
@@ -17,19 +12,13 @@ import {
   NotEquals,
   Operation,
   OperationHandler,
-  removeCohortFilter,
   Union,
-  useCoreDispatch,
   fieldNameToTitle,
-  useCoreSelector,
-  selectCurrentCohortId,
-  updateCohortFilter,
   Exists,
   Missing,
   ExcludeIfAny,
   Excludes,
   NestedFilter,
-  CoreState,
 } from '@gen3/core';
 import { ActionIcon, Badge, Divider, Group } from '@mantine/core';
 import { isArray } from 'lodash';
@@ -39,11 +28,12 @@ import {
   MdOutlineArrowForward as RightArrow,
 } from 'react-icons/md';
 import tw from 'tailwind-styled-components';
-import OverflowTooltippedLabel from '../../components/OverflowTooltippedLabel';
+import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
-import { buildNested } from '../../components/facets/utils';
+import { buildNested } from '../../../components/facets';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { QueryExpressionContext } from './QueryExpressionContext';
 
 const RemoveButton = ({ value }: { value: string }) => (
   <ActionIcon
@@ -139,14 +129,17 @@ const IncludeExcludeQueryElement = ({
   operands,
   displayOnly = false,
 }: IncludeExcludeQueryElementProps) => {
-  const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohortId = useCoreSelector((state: CoreState) =>
-    selectCurrentCohortId(state),
-  );
+  const {
+    cohortId: currentCohortId,
+    useRemoveFilter,
+    useUpdateFilters,
+  } = useContext(QueryExpressionContext);
 
+  const removeCohortFilter = useRemoveFilter();
+  const updateCohortFilter = useUpdateFilters();
   useDeepCompareEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
       setQueryExpressionsExpanded({
@@ -222,22 +215,16 @@ const IncludeExcludeQueryElement = ({
                         cohortId: currentCohortId,
                         field: fieldToUpdate,
                       });
-                      dispatch(
-                        removeCohortFilter({
-                          field: fieldToUpdate,
-                          index: index,
-                        }),
-                      );
+
+                      removeCohortFilter(index, fieldToUpdate);
                     } else {
-                      dispatch(
-                        updateCohortFilter({
-                          index,
-                          field: fieldToUpdate,
-                          filter: buildNested(fieldToUpdate, {
-                            operator: operator,
-                            field: field,
-                            operands: newOperands,
-                          }),
+                      updateCohortFilter(
+                        index,
+                        fieldToUpdate,
+                        buildNested(fieldToUpdate, {
+                          operator: operator,
+                          field: field,
+                          operands: newOperands,
                         }),
                       );
                     }
@@ -271,14 +258,13 @@ const ComparisonElement = ({
   filter,
   showLabel = true,
   displayOnly = false,
-}: Readonly<ComparisonElementProps>) => {
-  const coreDispatch = useCoreDispatch();
+}: ComparisonElementProps) => {
+  const { useUpdateFilters } = useContext(QueryExpressionContext);
+  const updateCohortFilter = useUpdateFilters();
 
   // fix the code below
   const handleKeepMember = (keep: ValueOperation) => {
-    coreDispatch(
-      updateCohortFilter({ field: keep.field, filter: keep, index: index }),
-    );
+    updateCohortFilter(index, keep.field, keep);
   };
 
   return (
@@ -361,23 +347,24 @@ export const QueryElement = ({
   path,
   children,
   displayOnly = false,
-}: Readonly<QueryElementProps>) => {
-  const coreDispatch = useCoreDispatch();
+}: QueryElementProps) => {
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohortId = useCoreSelector((state: CoreState) =>
-    selectCurrentCohortId(state),
+
+  const { cohortId: currentCohortId, useRemoveFilter } = useContext(
+    QueryExpressionContext,
   );
+
+  const removeCohortFilter = useRemoveFilter();
+
+  // const currentCohortId = useCoreSelector((state: CoreState) =>
+  //   selectCurrentCohortId(state),
+  // );
 
   const fieldName = path && path != '.' ? [path, field].join('.') : field;
   const handleRemoveFilter = () => {
-    coreDispatch(
-      removeCohortFilter({
-        index: index,
-        field: fieldName,
-      }),
-    );
+    removeCohortFilter(index, fieldName);
     setQueryExpressionsExpanded({
       type: 'clear',
       cohortId: currentCohortId,

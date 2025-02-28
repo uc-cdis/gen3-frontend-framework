@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
+import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
@@ -25,10 +26,15 @@ import {
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-///import { useWorkspaceResourceMonitor } from '../../features/Workspace/Monitor/workspaceMonitors';
 
 export const logoutSession = async () => {
-  await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, {
+  // logged in using credentials then execute credentials logout first
+  const accessToken = getCookie('credentials_token');
+  if (accessToken) {
+    await fetch('/api/auth/credentialsLogout');
+  }
+
+  await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
     cache: 'no-store',
   });
 };
@@ -161,16 +167,16 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
  */
 export const SessionProvider = ({
   children,
-  session,
   updateSessionTime = 5,
   inactiveTimeLimit = 20,
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
+  monitorWorkspace = true,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  useWorkspaceResourceMonitor(); // monitor workspaces if any are running
+  useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

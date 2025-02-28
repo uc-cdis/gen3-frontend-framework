@@ -36,8 +36,11 @@ import LandingPage from './pages/Landing/Landing';
 import { LandingPageGetStaticProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
-import { type ExplorerPageProps } from './pages/Explorer/types';
-import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
+import {
+  type ExplorerPageProps,
+  ExplorerPageGetServerSideProps,
+  ExplorerPageGetServerSidePropsForConfigId,
+} from './pages/Explorer';
 
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
@@ -109,6 +112,7 @@ export {
   DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
+  ExplorerPageGetServerSidePropsForConfigId,
   ProfilePage,
   ProfilePageGetServerSideProps,
   LoginPage,
