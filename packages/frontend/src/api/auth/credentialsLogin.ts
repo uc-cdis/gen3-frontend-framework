@@ -1,12 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { deleteCookie, setCookie } from 'cookies-next';
-import {
-  decodeJwt,
-  jwtVerify,
-  importSPKI,
-  JWTPayload,
-  errors as joseErrors,
-} from 'jose';
+import { decodeJwt, jwtVerify, importSPKI, JWTPayload } from 'jose';
 import { fetchFence } from '@gen3/core';
 import { getWebTokenErrorResponse } from './errorHandler';
 import { fetchJWTKey } from './utils';
