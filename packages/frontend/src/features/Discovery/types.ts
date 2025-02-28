@@ -209,7 +209,6 @@ export interface ExportFromDiscoveryActionButton {
     | 'download'
     | 'link'
     | 'externalLink'
-    | 'add-to-workspace'
     | 'addToDataLibrary';
   label?: string; // label for the action button
   icon?: string;

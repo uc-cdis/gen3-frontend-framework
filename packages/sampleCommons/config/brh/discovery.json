@@ -66,6 +66,9 @@
               {
                 "type" : "manifest",
                 "label" : "Manifest"
+              },
+              {
+                "type" : "addToDataLibrary"
               }
             ]
           },

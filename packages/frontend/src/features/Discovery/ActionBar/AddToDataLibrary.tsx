@@ -6,7 +6,9 @@ import { useIsAuthenticated } from '../../../lib/session/session';
 import { ExportActionButtonProps } from './types';
 
 const extractListNameAndId = (data: any): ComboboxItem[] =>
-  Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
+  !data
+    ? []
+    : Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
 
 const DiscoveryDataLibrary = ({
   buttonConfig,
@@ -93,6 +95,16 @@ const DiscoveryDataLibrary = ({
           }
           disabled={notLoggedIn}
           value={currentList?.value}
+          leftSection={
+            data?.length === 0 ? (
+              <Button
+                variant="transparent"
+                onClick={() => saveToList('New List')}
+              >
+                +
+              </Button>
+            ) : null
+          }
         />
         <Button
           loading={loading}
@@ -112,7 +124,6 @@ const DiscoveryDataLibrary = ({
             }
           }}
         >
-          {' '}
           {buttonConfig?.label ?? 'Save to List'}
         </Button>
       </Group>

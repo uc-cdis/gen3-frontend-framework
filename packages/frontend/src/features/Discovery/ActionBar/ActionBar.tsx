@@ -4,12 +4,14 @@ import { Icon } from '@iconify/react';
 import DataLibraryActionButton from './DataLibraryActionButton';
 import { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
+import DiscoveryDataLibrary from './AddToDataLibrary';
 
 const createActionButton = ({
   buttonConfig,
   selectedResources,
   exportDataFields,
 }: ExportActionButtonProps) => {
+  console.log(buttonConfig);
   return {
     manifest: (
       <DownloadManifestButton
@@ -20,10 +22,10 @@ const createActionButton = ({
       />
     ),
     addToDataLibrary: (
-      <DataLibraryActionButton
-        label={buttonConfig.label}
-        icon={<Icon icon={buttonConfig.icon ?? 'gen3:download'} />}
-        toolTip={buttonConfig.tooltip}
+      <DiscoveryDataLibrary
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
         key={buttonConfig.type}
       />
     ),
