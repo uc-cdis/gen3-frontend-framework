@@ -1,4 +1,12 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
+
+export interface DataLibraryAPIModeState {
+  useRestAPI: boolean;
+}
 
 const initialState = {
   useRestAPI: false,
@@ -17,3 +25,13 @@ const DataLibraryAPIModeSlice = createSlice({
 export const { setDataLibraryAPIMode } = DataLibraryAPIModeSlice.actions;
 
 export const setDataLibraryAPIModeReducer = DataLibraryAPIModeSlice.reducer;
+
+export const selectDataLibraryAPIModeSelector = (
+  state: DataLibraryAPIModeState,
+) => state.useRestAPI;
+
+// Memoized selector for getting data library items for a specific root object
+export const selectDataLibraryAPIMode = createSelector(
+  [selectDataLibraryAPIModeSelector],
+  (dataLibraryAPIMode) => dataLibraryAPIMode.useRestAPI,
+);

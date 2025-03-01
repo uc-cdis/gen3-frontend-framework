@@ -10,10 +10,11 @@ import {
 
 import useDataLibrary from './hooks/useDataLibrary';
 
+import { dataLibraryReducers } from './reducers';
+
 import {
   setDataLibraryListSelection,
   clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
 } from './dataLibrarySelectionSlice';
 
 import { getNumberOfItemsInDatalist, getTimestamp } from './utils';
@@ -27,7 +28,7 @@ export {
   useDataLibrary,
   setDataLibraryListSelection,
   clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
+  dataLibraryReducers,
   getNumberOfItemsInDatalist,
   getTimestamp,
 };
