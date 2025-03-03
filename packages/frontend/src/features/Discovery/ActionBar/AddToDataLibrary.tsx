@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Button, ComboboxItem, Group, Select } from '@mantine/core';
+import {
+  Button,
+  ComboboxItem,
+  Group,
+  Select,
+  Combobox,
+  InputBase,
+  useCombobox,
+} from '@mantine/core';
+
 import { useDataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useIsAuthenticated } from '../../../lib/session/session';
@@ -19,6 +28,11 @@ const DiscoveryDataLibrary = ({
   const [currentList, setCurrentList] = useState<ComboboxItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Record<string, any> | null>(null);
+  const [value, setValue] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
 
   const { isAuthenticated } = useIsAuthenticated();
   const {
@@ -68,6 +82,19 @@ const DiscoveryDataLibrary = ({
     }
   };
 
+  const exactOptionMatch = data.some((item) => item.label === search);
+  const filteredOptions = exactOptionMatch
+    ? data
+    : data.filter((item) =>
+        item.label.toLowerCase().includes(search.toLowerCase().trim()),
+      );
+
+  const options = filteredOptions.map((item) => (
+    <Combobox.Option value={item.value} key={item.value}>
+      {item.label}
+    </Combobox.Option>
+  ));
+
   useDeepCompareEffect(() => {
     if (dataLibrary && !isError) {
       const listItems = extractListNameAndId(dataLibrary.lists);
@@ -85,27 +112,52 @@ const DiscoveryDataLibrary = ({
   return (
     <React.Fragment>
       <Group data-testid="add-to-data-library">
-        <Select
-          data={data}
-          onChange={(value, option) => setCurrentList(option)}
-          placeholder={
-            notLoggedIn
-              ? 'Login to save to a list'
-              : 'Select/create a list to save to'
-          }
-          disabled={notLoggedIn}
-          value={currentList?.value}
-          leftSection={
-            data?.length === 0 ? (
-              <Button
-                variant="transparent"
-                onClick={() => saveToList('New List')}
-              >
-                +
-              </Button>
-            ) : null
-          }
-        />
+        <Combobox
+          store={combobox}
+          withinPortal={false}
+          onOptionSubmit={(val) => {
+            if (val === '$create') {
+              setData((current) => [...current, search]);
+              setValue(search);
+            } else {
+              setValue(val);
+              setSearch(val);
+            }
+
+            combobox.closeDropdown();
+          }}
+        >
+          <Combobox.Target>
+            <InputBase
+              rightSection={<Combobox.Chevron />}
+              value={search}
+              onChange={(event) => {
+                combobox.openDropdown();
+                combobox.updateSelectedOptionIndex();
+                setSearch(event.currentTarget.value);
+              }}
+              onClick={() => combobox.openDropdown()}
+              onFocus={() => combobox.openDropdown()}
+              onBlur={() => {
+                combobox.closeDropdown();
+                setSearch(value || '');
+              }}
+              placeholder="Search value"
+              rightSectionPointerEvents="none"
+            />
+          </Combobox.Target>
+
+          <Combobox.Dropdown>
+            <Combobox.Options>
+              {options}
+              {!exactOptionMatch && search.trim().length > 0 && (
+                <Combobox.Option value="$create">
+                  + Create {search}
+                </Combobox.Option>
+              )}
+            </Combobox.Options>
+          </Combobox.Dropdown>
+        </Combobox>
         <Button
           loading={loading}
           disabled={
