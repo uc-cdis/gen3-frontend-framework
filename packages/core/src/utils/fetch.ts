@@ -210,7 +210,7 @@ export const fetchJSONDataFromURL = async (
   return response.json();
 };
 
-const buildRequestHeaders = () => {
+const buildRequestHeaders = async () => {
   const requestHeaders = new Headers({
     [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
   });
@@ -234,14 +234,16 @@ const buildRequestHeaders = () => {
 };
 
 export const getAuthZResources = async (): Promise<any> => {
-  const requestHeaders = buildRequestHeaders();
   try {
+    const requestHeaders = await buildRequestHeaders();
     // get authz for
     const url = new URL(`${GEN3_FENCE_API}/authz/resources`);
     const response = await fetch(url, {
       method: 'GET',
       headers: requestHeaders,
     } as RequestInit);
+
+    return await response.json();
   } catch (error: unknown) {
     if (error instanceof HTTPError) {
       throw error;
