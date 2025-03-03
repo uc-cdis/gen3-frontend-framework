@@ -87,24 +87,24 @@ export const fetchFencePresignedURL = async ({
 }: FetchFencePresignedURLParameters) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
 
-  const headers = new Headers();
-  headers.set('Content-Type', 'application/json');
+  const requestHeaders = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
 
   if (process.env.NODE_ENV === 'development') {
     // NOTE: This cookie can only be accessed from the client side
     // in development mode. Otherwise, the cookie is set as httpOnly
     const accessToken = getCookie('credentials_token');
     if (accessToken) {
-      headers.set('Authorization', `Bearer ${accessToken}`);
+      requestHeaders.set('Authorization', `Bearer ${accessToken}`);
     }
   }
-  if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
+  if (csrfToken) requestHeaders.set('X-CSRF-Token', csrfToken);
 
   const url = `${GEN3_FENCE_API}/data/download/${guid}`;
   try {
     const response = await fetch(url, {
       method: method,
-      headers: headers,
+      headers: requestHeaders,
       ...(signal ? { signal: signal } : {}),
     } as RequestInit);
 
@@ -207,6 +207,45 @@ export const fetchJSONDataFromURL = async (
   if (!response.ok) {
     throw new HTTPError(response.status, response.statusText);
   }
-
   return response.json();
+};
+
+const buildRequestHeaders = () => {
+  const requestHeaders = new Headers({
+    [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
+  });
+
+  const csrfToken = await getCSRFToken();
+  if (csrfToken) {
+    requestHeaders.set('X-CSRF-Token', csrfToken);
+  } else {
+    console.warn('CSRF token not found');
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      requestHeaders.set('Authorization', `Bearer ${accessToken}`);
+    }
+  }
+  return requestHeaders;
+};
+
+export const getAuthZResources = async (): Promise<any> => {
+  const requestHeaders = buildRequestHeaders();
+  try {
+    // get authz for
+    const url = new URL(`${GEN3_FENCE_API}/authz/resources`);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: requestHeaders,
+    } as RequestInit);
+  } catch (error: unknown) {
+    if (error instanceof HTTPError) {
+      throw error;
+    }
+    throw new HTTPError(500, 'Internal Server Error');
+  }
 };
