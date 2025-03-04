@@ -3,9 +3,9 @@ import {
   Button,
   ComboboxItem,
   Group,
-  Select,
+  ScrollArea,
   Combobox,
-  InputBase,
+  TextInput,
   useCombobox,
 } from '@mantine/core';
 
@@ -113,49 +113,42 @@ const DiscoveryDataLibrary = ({
     <React.Fragment>
       <Group data-testid="add-to-data-library">
         <Combobox
-          store={combobox}
-          withinPortal={false}
-          onOptionSubmit={(val) => {
-            if (val === '$create') {
-              setData((current) => [...current, search]);
-              setValue(search);
-            } else {
-              setValue(val);
-              setSearch(val);
-            }
-
+          onOptionSubmit={(optionValue) => {
+            setValue(optionValue);
             combobox.closeDropdown();
           }}
+          store={combobox}
+          withinPortal={false}
         >
           <Combobox.Target>
-            <InputBase
-              rightSection={<Combobox.Chevron />}
-              value={search}
+            <TextInput
+              label="Pick value or type anything"
+              placeholder="Pick value or type anything"
+              value={value ?? ''}
               onChange={(event) => {
+                setValue(event.currentTarget.value);
                 combobox.openDropdown();
                 combobox.updateSelectedOptionIndex();
-                setSearch(event.currentTarget.value);
               }}
               onClick={() => combobox.openDropdown()}
               onFocus={() => combobox.openDropdown()}
-              onBlur={() => {
-                combobox.closeDropdown();
-                setSearch(value || '');
-              }}
-              placeholder="Search value"
-              rightSectionPointerEvents="none"
+              onBlur={() => combobox.closeDropdown()}
             />
           </Combobox.Target>
 
           <Combobox.Dropdown>
             <Combobox.Options>
-              {options}
-              {!exactOptionMatch && search.trim().length > 0 && (
-                <Combobox.Option value="$create">
-                  + Create {search}
-                </Combobox.Option>
-              )}
+              <ScrollArea.Autosize mah={200} type="scroll">
+                {options.length === 0 ? (
+                  <Combobox.Empty>Nothing found</Combobox.Empty>
+                ) : (
+                  options
+                )}
+              </ScrollArea.Autosize>
             </Combobox.Options>
+            <Combobox.Footer>
+              <Button>Create List</Button>
+            </Combobox.Footer>
           </Combobox.Dropdown>
         </Combobox>
         <Button
