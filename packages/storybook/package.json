@@ -31,15 +31,20 @@
     "@storybook/test": "^8.6.3",
     "@storybook/test-runner": "^0.21.0",
     "axe-playwright": "^2.1.0",
-    "msw-storybook-addon": "^2.0.4",
     "@storybook/react": "^8.6.3",
-    "@storybook/nextjs": "^8.6.3"
-
+    "@storybook/nextjs": "^8.6.3",
+    "msw": "^2.7.0",
+    "msw-storybook-addon": "^2.0.4"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.16",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
