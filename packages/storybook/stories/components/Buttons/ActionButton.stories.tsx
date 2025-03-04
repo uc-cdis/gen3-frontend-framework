@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
 import { ActionButton } from '@gen3/frontend';
 
 const meta = {

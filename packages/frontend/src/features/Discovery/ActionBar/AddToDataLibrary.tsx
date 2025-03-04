@@ -122,7 +122,6 @@ const DiscoveryDataLibrary = ({
         >
           <Combobox.Target>
             <TextInput
-              label="Pick value or type anything"
               placeholder="Pick value or type anything"
               value={value ?? ''}
               onChange={(event) => {

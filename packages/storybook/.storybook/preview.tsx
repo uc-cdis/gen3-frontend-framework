@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
 import { MantineProvider } from '@mantine/core';
+import { Gen3Provider } from '@gen3/frontend';
 import '../src/styles/globals.css';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
@@ -10,6 +11,21 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
  * to learn how to customize it
  */
 initialize();
+
+// TODO att option to configure the storybook per commons
+const config = {
+  icons: [
+    {
+      prefix: 'gen3',
+      lastModified: 0,
+      icons: {},
+      width: 0,
+      height: 0,
+    },
+  ],
+  modalsConfig: {},
+  sessionConfig: {},
+};
 
 const preview: Preview = {
   parameters: {
@@ -24,7 +40,13 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <MantineProvider>
-        <Story />
+        <Gen3Provider
+          icons={config.icons}
+          sessionConfig={config.sessionConfig}
+          modalsConfig={config.modalsConfig}
+        >
+          <Story />
+        </Gen3Provider>
       </MantineProvider>
     ),
   ],

@@ -1,7 +1,5 @@
 import React from 'react';
 import { ExportFromDiscoveryActions } from '../types';
-import { Icon } from '@iconify/react';
-import DataLibraryActionButton from './DataLibraryActionButton';
 import { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
 import DiscoveryDataLibrary from './AddToDataLibrary';
@@ -11,7 +9,6 @@ const createActionButton = ({
   selectedResources,
   exportDataFields,
 }: ExportActionButtonProps) => {
-  console.log(buttonConfig);
   return {
     manifest: (
       <DownloadManifestButton

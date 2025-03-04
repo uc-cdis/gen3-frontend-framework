@@ -25,6 +25,7 @@
     "dev": "lerna run dev",
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run start",
+    "storybook": "lerna run storybook",
     "build:start": "npm run build && npm run start",
     "setProxy" : "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
     "test": "npm run test --workspaces",
