@@ -7,6 +7,10 @@
     "storybook",
     "testing"
   ],
+  "engines": {
+    "npm": ">=10.2.3",
+    "node": ">=20.11.0"
+  },
   "author": "craigrbarnes <craig.barnes@intelligentlight.com>",
   "license": "Apache-2.0",
   "main": ".storybook/main.ts",
