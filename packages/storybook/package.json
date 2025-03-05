@@ -1,6 +1,6 @@
 {
   "name": "storybook-gen3",
-  "version": "0.10.80",
+  "version": "0.10.81",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -28,11 +28,11 @@
     "@storybook/addon-interactions": "^8.6.3",
     "@storybook/addon-onboarding": "^8.6.3",
     "@storybook/blocks": "^8.6.3",
+    "@storybook/nextjs": "^8.6.3",
+    "@storybook/react": "^8.6.3",
     "@storybook/test": "^8.6.3",
     "@storybook/test-runner": "^0.21.0",
     "axe-playwright": "^2.1.0",
-    "@storybook/react": "^8.6.3",
-    "@storybook/nextjs": "^8.6.3",
     "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4"
   },
