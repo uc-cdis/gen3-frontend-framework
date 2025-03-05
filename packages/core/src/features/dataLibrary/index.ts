@@ -10,12 +10,6 @@ import {
 
 import useDataLibrary from './useDataLibrary';
 
-import {
-  setDataLibraryListSelection,
-  clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
-} from './dataLibrarySelectionSlice';
-
 import { getNumberOfItemsInDatalist, getTimestamp } from './utils';
 
 export {
@@ -25,9 +19,6 @@ export {
   useDeleteDataLibraryListMutation,
   useUpdateDataLibraryListMutation,
   useDataLibrary,
-  setDataLibraryListSelection,
-  clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
   getNumberOfItemsInDatalist,
   getTimestamp,
 };

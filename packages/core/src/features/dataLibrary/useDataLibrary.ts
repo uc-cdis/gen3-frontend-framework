@@ -19,56 +19,70 @@ import {
 import { DataLibrary, Datalist, LoadAllListData } from './types';
 import { flattenDataList } from './utils';
 
+const generateUniqueName = (
+  baseName: string = 'List',
+  dataLibrary: DataLibrary,
+) => {
+  let uniqueName = baseName;
+  let counter = 1;
+
+  const existingNames = dataLibrary
+    ? Object.values(dataLibrary).map((x) => x.name)
+    : [];
+
+  while (existingNames.includes(uniqueName)) {
+    uniqueName = `${baseName} ${counter}`;
+    counter++;
+  }
+
+  return uniqueName;
+};
+
 export const useDataLibrary = (useApi: boolean) => {
-  const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [library, setLibrary] = useState<DataLibrary>({});
+
+  const handleAPIMutation = async <T>(
+    operation: () => Promise<T>,
+  ): Promise<T | void> => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const result = await operation();
+      return result;
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error('Unknown error occurred'),
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const {
     data: apiLibrary,
     refetch: refetchLibraryFromApi,
-    error: apiError,
-    isError: isAPIListError,
-    isFetching: isAPIListLoading,
+    error: errorGetDatalistAPI,
+    isError: isErrorGetDatalistAPI,
+    isFetching: isFetchingDataListFromAPI,
   } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
+
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
-  const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
-  const [updateItemInLibraryApi, { isLoading: isUpdatingLoading }] =
-    useUpdateDataLibraryListMutation();
+  const [
+    deleteItemInLibraryApi,
+    { isLoading: isLoadingDeleteListAPI, isError: isErrorDeleteListAPI },
+  ] = useDeleteDataLibraryListMutation();
+  const [
+    updateItemInLibraryApi,
+    { isLoading: isLoadingUpdateItemAPI, isError: isErrorUpdateItemAPI },
+  ] = useUpdateDataLibraryListMutation();
   const [deleteAllApi] = useDeleteAllDataLibraryMutation();
-
-  let hasError = false;
-  let errorData = null;
-  let isLoading = false;
-
-  // TODO: Add error message from indexedDB
-  if (useApi && isAPIListError) {
-    hasError = true;
-    errorData = apiError;
-  }
-
-  if (useApi && (isUpdatingLoading || isAPIListLoading)) {
-    isLoading = true;
-  }
-
-  const generateUniqueName = (baseName: string = 'List') => {
-    let uniqueName = baseName;
-    let counter = 1;
-
-    const existingNames = dataLibrary
-      ? Object.values(dataLibrary).map((x) => x.name)
-      : [];
-
-    while (existingNames.includes(uniqueName)) {
-      uniqueName = `${baseName} ${counter}`;
-      counter++;
-    }
-
-    return uniqueName;
-  };
 
   const refetchLocalLists = async () => {
     const { isError, lists } = await getDataLibraryListIndexDB();
-    setLocalLibrary(lists ?? {});
+    setLibrary(lists ?? {});
     hasError = isError === true;
   };
 
@@ -77,7 +91,7 @@ export const useDataLibrary = (useApi: boolean) => {
       if (!useApi) {
         const { isError, lists } = await getDataLibraryListIndexDB();
         if (!isError) {
-          setLocalLibrary(lists ?? {});
+          setLibrary(lists ?? {});
         }
       }
     };
@@ -88,7 +102,7 @@ export const useDataLibrary = (useApi: boolean) => {
   const addListToDataLibrary = async (item?: Partial<Datalist>) => {
     const adjustedData = {
       ...(item ?? {}),
-      name: generateUniqueName(item?.name ?? 'List'),
+      name: generateUniqueName(item?.name ?? 'List', dataLibrary),
     };
 
     if (useApi) {
@@ -146,11 +160,7 @@ export const useDataLibrary = (useApi: boolean) => {
     }
   };
 
-  const dataLibrary = useApi
-    ? apiLibrary
-      ? apiLibrary.lists
-      : {}
-    : localLibrary;
+  const dataLibrary = useApi ? (apiLibrary ? apiLibrary.lists : {}) : library;
 
   return {
     dataLibrary,
