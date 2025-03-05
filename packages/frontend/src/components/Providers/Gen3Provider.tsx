@@ -1,6 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import { createTheme, MantineProvider } from '@mantine/core';
+import { createTheme, Pagination, Modal } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -25,32 +25,12 @@ export const createMantineTheme = (
   const theme = createTheme({
     // use V2 font in MantineProvider
     fontFamily: fonts.fontFamily,
-    // Override default blue color until styles are determined
-    colors: {
-      white: [
-        // TODO: replace with primary theme color
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-      ],
-      // Add default color from tailwind config to Mantine theme
-      // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
-      // plugins declaration.
-      // TODO: refactor how the configuration get loaded
-      ...Object.fromEntries(
-        Object.entries(colors).map(([key, values]) => [
-          key,
-          Object.values(values),
-        ]),
-      ),
-    },
+    colors: Object.fromEntries(
+      Object.entries(colors).map(([key, values]) => (values? [
+        key,
+        Object.values(values),
+      ]: [])),
+    ),
     primaryColor: 'primary',
     primaryShade: { light: 4, dark: 7 },
     breakpoints: {
@@ -61,13 +41,32 @@ export const createMantineTheme = (
       xl: '112.5em',
     },
     components: {
-      Modal: {
+      Modal: Modal.extend({
         defaultProps: {
           classNames: {
             title: 'font-bold',
           },
         },
-      },
+      }),
+      Pagination: Pagination.extend({
+        defaultProps: { //Add 508 localization to Pagination
+          getControlProps: (control) => {
+            if (control === 'first') {
+              return { "aria-label": "First" };
+            }
+            if (control === 'last') {
+              return { "aria-label": "Last" };
+            }
+            if (control === 'next') {
+              return { "aria-label": "Next" };
+            }
+            if (control === 'previous') {
+              return { "aria-label": "Previous" };
+            }
+            return {};
+          },
+        },
+      }),
     },
   });
 
