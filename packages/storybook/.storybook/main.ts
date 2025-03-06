@@ -5,9 +5,8 @@ const nextJsPresetPath = require.resolve('@storybook/nextjs');
 
 const config: StorybookConfig = {
   stories: [
-    '../stories/**/*.mdx',
-    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../../frontend/src/pages/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     '@storybook/addon-onboarding',
@@ -15,6 +14,7 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
+    'storybook-addon-deep-controls',
   ],
   typescript: {
     check: false,
