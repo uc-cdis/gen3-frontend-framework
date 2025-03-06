@@ -1,32 +1,22 @@
 import {
   createEntityAdapter,
   createSlice,
-  EntityState,
-  nanoid,
   type PayloadAction,
-  createAsyncThunk,
-  ThunkAction,
-  UnknownAction,
 } from '@reduxjs/toolkit';
 import { DataLibrary, Datalist } from '../types';
 
-interface DataLibraryState {
-  lists: DataLibrary;
+export interface DataLibraryState {
   isLoading: boolean;
   error: string | null;
   lastSyncTime: number | null;
 }
 
-const initialState: DataLibraryState = {
-  lists: {},
-  isLoading: false,
-  error: null,
-  lastSyncTime: null,
-};
-
 type DataLibraryId = string;
 
-const dataLibraryListAdapater = createEntityAdapter<Datalist, DataLibraryId>({
+export const dataLibraryListAdapter = createEntityAdapter<
+  Datalist,
+  DataLibraryId
+>({
   sortComparer: (a, b) => {
     if (a.updatedTime <= b.updatedTime) return 1;
     else return -1;
@@ -34,44 +24,31 @@ const dataLibraryListAdapater = createEntityAdapter<Datalist, DataLibraryId>({
   selectId: (list: Datalist): DataLibraryId => list.id,
 });
 
+const initialState = dataLibraryListAdapter.getInitialState<DataLibraryState>({
+  isLoading: false,
+  error: null,
+  lastSyncTime: null,
+});
+
 const dataLibrarySlice = createSlice({
   name: 'dataLibrary',
   initialState,
   reducers: {
     setLists: (state, action: PayloadAction<DataLibrary>) => {
-      return {
-        ...state,
-        lists: action.payload,
-      };
+      // @ts-expect-error have issue with deep object
+      dataLibraryListAdapter.setAll(state, Object.values(action.payload));
     },
     addList: (state, action: PayloadAction<Datalist>) => {
-      const { id } = action.payload;
-      return {
-        ...state,
-        lists: {
-          ...state.lists,
-          [id]: action.payload,
-        },
-      };
+      dataLibraryListAdapter.addOne(state, action.payload);
     },
-    // updateList: (state, action: PayloadAction<Datalist>) => {
-    //   return {
-    //     ...state,
-    //     lists: {
-    //       ...state.lists,
-    //       [action.payload.id]: action.payload
-    //     }
-    //   };
-    // },
+    updateList: (state, action: PayloadAction<Datalist>) => {
+      dataLibraryListAdapter.upsertOne(state, action.payload);
+    },
     clearLists: (state) => {
-      return {
-        ...state,
-        lists: {},
-      };
+      dataLibraryListAdapter.removeAll(state);
     },
-    deleteList: (state, action: PayloadAction<string>) => {
-      const { [action.payload]: _, ...updatedLists } = state.lists;
-      state.lists = updatedLists;
+    deleteList: (state, action: PayloadAction<DataLibraryId>) => {
+      dataLibraryListAdapter.removeOne(state, action.payload);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -96,4 +73,4 @@ export const {
   setSyncTime,
 } = dataLibrarySlice.actions;
 
-export default dataLibrarySlice.reducer;
+export const dataLibraryReducer = dataLibrarySlice.reducer;

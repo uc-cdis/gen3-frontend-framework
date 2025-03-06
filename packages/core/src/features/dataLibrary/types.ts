@@ -79,7 +79,7 @@ export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
  * objects with the same dataset_guids
  */
 export interface DataListEntry {
-  name?: string; // TODO: figure out how to set name
+  name?: string;
   items: DataSetItems;
 }
 

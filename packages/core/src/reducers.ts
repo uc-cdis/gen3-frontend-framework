@@ -11,6 +11,7 @@ import {
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
+import { dataLibraryReducer } from './features/dataLibrary/new/dataLibrarySlice';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -20,6 +21,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
+  dataLibrary: dataLibraryReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });

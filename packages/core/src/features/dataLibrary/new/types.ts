@@ -1,4 +1,4 @@
-import { DataLibrary } from '../types';
+import { DataLibrary, Datalist } from '../types';
 import { JSONObject } from '../../../types';
 
 export interface ReturnStatus {
@@ -10,6 +10,8 @@ export interface ReturnStatus {
 export type DataLibraryAPIResponse = {
   lists: Record<string, JSONObject>;
 };
+
+export type DataLibraryId = string;
 
 export const isDataLibraryAPIResponse = (
   value: unknown,
