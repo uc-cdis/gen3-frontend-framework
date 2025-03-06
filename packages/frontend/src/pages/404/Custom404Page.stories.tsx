@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Custom404Page } from '@gen3/frontend';
+import Custom404Page from './Custom404Page';
 
 const meta = {
   title: 'Pages/404',
