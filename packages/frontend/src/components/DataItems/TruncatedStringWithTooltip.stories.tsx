@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { TruncatedStringWithTooltip } from './TruncatedStringWithTooltip';
 
 const meta = {
-  title: 'Gen3 components/TruncatedStringWithTooltip',
+  title: 'Visual Data Components/TruncatedStringWithTooltip',
   component: TruncatedStringWithTooltip,
   parameters: {
     deepControls: { enabled: true },
