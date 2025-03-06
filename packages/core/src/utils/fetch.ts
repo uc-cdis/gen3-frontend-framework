@@ -3,7 +3,14 @@ import { coreStore } from '../store';
 import { GEN3_FENCE_API, GEN3_API } from '../constants';
 import { getCookie } from 'cookies-next';
 
-const DEFAULT_METHOD = 'GET';
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
+
+const DEFAULT_METHOD = HttpMethod.GET;
 const CONTENT_TYPE_HEADER = 'Content-Type';
 const CONTENT_TYPE_JSON = 'application/json';
 
@@ -177,7 +184,7 @@ const getCSRFToken = async (): Promise<string | null> => {
 export const fetchJSONDataFromURL = async (
   url: string,
   requiresCSRF: boolean = false,
-  method: string = DEFAULT_METHOD,
+  method: HttpMethod = DEFAULT_METHOD,
   body: unknown = undefined,
 ): Promise<any> => {
   const requestHeaders = new Headers({
@@ -201,7 +208,9 @@ export const fetchJSONDataFromURL = async (
   const response = await fetch(url, {
     method,
     headers: requestHeaders,
-    body: method === 'POST' ? JSON.stringify(body) : null,
+    body: ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())
+      ? JSON.stringify(body)
+      : undefined,
   } as RequestInit);
 
   if (!response.ok) {

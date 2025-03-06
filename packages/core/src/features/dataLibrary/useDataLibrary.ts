@@ -18,6 +18,8 @@ import {
 } from './dataLibraryIndexDB';
 import { DataLibrary, Datalist, LoadAllListData } from './types';
 import { flattenDataList } from './utils';
+import { useSelector } from 'react-redux';
+import { useIsUserLoggedIn } from '../user';
 
 const generateUniqueName = (
   baseName: string = 'List',
@@ -38,27 +40,14 @@ const generateUniqueName = (
   return uniqueName;
 };
 
-export const useDataLibrary = (useApi: boolean) => {
+export const useDataLibrary = () => {
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [library, setLibrary] = useState<DataLibrary>({});
+  const [library, setLibrary] = useState<DataLibrary>({}); // current state of the library
 
-  const handleAPIMutation = async <T>(
-    operation: () => Promise<T>,
-  ): Promise<T | void> => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const result = await operation();
-      return result;
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error('Unknown error occurred'),
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const isLoggedIn = useIsUserLoggedIn();
+
+  const useApi = isLoggedIn;
 
   const {
     data: apiLibrary,
@@ -78,12 +67,14 @@ export const useDataLibrary = (useApi: boolean) => {
     updateItemInLibraryApi,
     { isLoading: isLoadingUpdateItemAPI, isError: isErrorUpdateItemAPI },
   ] = useUpdateDataLibraryListMutation();
-  const [deleteAllApi] = useDeleteAllDataLibraryMutation();
+  const [
+    deleteAllApi,
+    { isLoading: isLoadingDeleteAllAPI, isError: isErrorDeleteAllAPI },
+  ] = useDeleteAllDataLibraryMutation();
 
   const refetchLocalLists = async () => {
     const { isError, lists } = await getDataLibraryListIndexDB();
     setLibrary(lists ?? {});
-    hasError = isError === true;
   };
 
   useEffect(() => {
