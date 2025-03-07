@@ -1,5 +1,5 @@
+import React, { useState, ReactElement } from 'react';
 import { Text } from '@mantine/core';
-import { useState, ReactElement } from 'react';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,

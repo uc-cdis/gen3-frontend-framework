@@ -1,3 +1,4 @@
+import React from 'react';
 import { useCoreSelector, selectCurrentMessage } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';

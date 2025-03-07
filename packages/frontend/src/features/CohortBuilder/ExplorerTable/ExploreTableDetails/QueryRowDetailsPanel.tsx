@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
 import { useGeneralGQLQuery } from '@gen3/core';
 import ErrorCard from '../../../../components/MessageCards/ErrorCard';

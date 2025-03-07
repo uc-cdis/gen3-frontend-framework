@@ -1,3 +1,4 @@
+import React from 'react';
 import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import { Stack, StackProps, Text } from '@mantine/core';
 

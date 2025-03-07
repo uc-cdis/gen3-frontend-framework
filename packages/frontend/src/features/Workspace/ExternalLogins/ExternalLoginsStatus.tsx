@@ -1,5 +1,6 @@
+import React from 'react';
 import { useGetExternalLoginsQuery } from '@gen3/core';
-import { Badge, Center, Group, Loader, Stack, Text } from '@mantine/core';
+import { Badge, Group, Loader, Stack, Text } from '@mantine/core';
 
 const ExternalLoginsStatus = () => {
   const {

@@ -1,9 +1,10 @@
+import React from 'react';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
 
 export const NoAccessModal = ({
-                                         openModal,
-                                       }: {
+  openModal,
+}: {
   openModal: boolean;
 }): JSX.Element => {
   return (
