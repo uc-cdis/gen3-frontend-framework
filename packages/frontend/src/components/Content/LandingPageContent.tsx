@@ -125,7 +125,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                 return (
                   <div key={index} className="h-full relative">
                     <Image
-                      src={`${basePath}${obj.image.src}`}
+                      src={obj.image.src}
                       alt={obj.image.alt}
                       fill
                     />
