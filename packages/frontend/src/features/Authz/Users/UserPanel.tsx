@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import React, { useState } from 'react';
 import { useDeepCompareCallback } from 'use-deep-compare';
 import UserTable from './UserTable';
 import NewUserPanel from './NewUserPanel';
@@ -22,16 +22,28 @@ const NullUser: User = {
 
 const UserPanel = () => {
   const [mode, setMode] = useState<UserPanelMode>(UserPanelMode.UserTable);
-  const [ currentUser, setCurrentUser ] = useState<User>(NullUser);
-  const panel = useDeepCompareCallback( () => {
-    switch(mode) {
+  const [currentUser, setCurrentUser] = useState<User>(NullUser);
+  const panel = useDeepCompareCallback(() => {
+    switch (mode) {
       case UserPanelMode.NewUserPanel:
-        return <NewUserPanel closePanel={() => setMode(UserPanelMode.UserTable)} />;
+        return (
+          <NewUserPanel closePanel={() => setMode(UserPanelMode.UserTable)} />
+        );
       case UserPanelMode.UserDetailPanel:
-        return <UserDetailPanel user={currentUser} closePanel={() => setMode(UserPanelMode.UserTable)} />;
+        return (
+          <UserDetailPanel
+            user={currentUser}
+            closePanel={() => setMode(UserPanelMode.UserTable)}
+          />
+        );
       case UserPanelMode.UserTable:
       default:
-        return <UserTable setCurrentUser={setCurrentUser} setPanelToUserDetail={()=>setMode(UserPanelMode.UserDetailPanel)}/>;
+        return (
+          <UserTable
+            setCurrentUser={setCurrentUser}
+            setPanelToUserDetail={() => setMode(UserPanelMode.UserDetailPanel)}
+          />
+        );
     }
   }, [mode, currentUser, setCurrentUser, setMode]);
   return (
@@ -44,10 +56,11 @@ const UserPanel = () => {
         >
           Create New User
         </Button>
-        <Button aria-label="delete user" color="secondary" >Delete User</Button>
-
+        <Button aria-label="delete user" color="secondary">
+          Delete User
+        </Button>
       </div>
-      { panel() }
+      {panel()}
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import React from 'react';
 import { DataLibrarySelectionProvider } from './selection/SelectionContext';
 import DataLibraryLists from './DataLibraryLists';
 import { DataLibraryConfig } from './types';

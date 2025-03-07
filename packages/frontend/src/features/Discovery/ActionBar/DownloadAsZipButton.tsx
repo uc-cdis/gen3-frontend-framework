@@ -1,3 +1,4 @@
+import React from 'react';
 import DataLibraryActionButton from './DataLibraryActionButton';
 import { ExportActionButtonProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';

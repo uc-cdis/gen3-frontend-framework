@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Modals, showModal, useCoreDispatch } from '@gen3/core';
 import { GuppyActionButtonProps } from '../types';
 import { cleanNotifications, showNotification } from '@mantine/notifications';

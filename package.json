@@ -25,9 +25,9 @@
     "dev": "lerna run dev",
     "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
     "start": "lerna run start",
-    "storybook": "lerna run storybook",
+    "storybook": "lerna run storybook --scope @gen3/storybook",
     "build:start": "npm run build && npm run start",
-    "setProxy" : "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
+    "setProxy": "(cd ./packages/tools/localDev/nginx/; ./configureNginx.sh -d $npm_config_domain)",
     "test": "npm run test --workspaces",
     "test:int": "npm run test:int --workspaces",
     "test:all": "npm run test:all --workspaces"
@@ -71,14 +71,15 @@
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "^15.1.6",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
+    "eslint": "^9.21.0",
+    "eslint-config-next": "^15.1.7",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
@@ -101,8 +102,8 @@
     "ts-json-schema-generator": "^2.3.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.26.0"
   },
   "overrides": {
     "rollup-plugin-copy": {

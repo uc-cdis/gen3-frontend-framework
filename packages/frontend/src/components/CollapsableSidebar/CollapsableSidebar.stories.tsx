@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { CollapsableSidebar } from '@gen3/frontend';
+import { CollapsableSidebar } from './CollapsableSidebar';
 import { Group, Text } from '@mantine/core';
 
 const meta: Meta<typeof CollapsableSidebar> = {

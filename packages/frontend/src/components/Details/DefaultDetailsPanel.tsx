@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Group, Stack, Text } from '@mantine/core';
 import { DetailsPanelComponentProps } from './types';
 

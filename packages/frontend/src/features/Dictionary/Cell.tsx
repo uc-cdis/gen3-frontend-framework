@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Cell = ({ cell, key }: { cell: any; key: string }) => {
   return (
     <div>
