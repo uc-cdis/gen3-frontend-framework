@@ -1,3 +1,4 @@
+import React from 'react';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
 import FileSaver from 'file-saver';
@@ -27,9 +28,8 @@ export const CreateCredentialsAPIKeyModal = ({
   openModal,
   credentials,
 }: CreateCredentialsAPIKeyModalProps): JSX.Element => {
-
   const clipboard = useClipboard({ timeout: 500 });
-const copyToClipboard = (credentials:APICredentials) => {
+  const copyToClipboard = (credentials: APICredentials) => {
     clipboard.copy(JSON.stringify(credentials));
   };
 

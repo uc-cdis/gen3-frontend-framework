@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from 'react';
+import React, { ReactNode, RefObject } from 'react';
 import {
   MRT_Cell,
   MRT_Column,

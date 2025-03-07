@@ -1,3 +1,4 @@
+import React from 'react';
 import QueryExpression from './QueryExpression';
 
 interface CohortManagerProps {

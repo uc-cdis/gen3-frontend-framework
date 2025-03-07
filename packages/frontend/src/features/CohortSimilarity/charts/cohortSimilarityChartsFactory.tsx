@@ -1,3 +1,4 @@
+import React from 'react';
 import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import BarComparison from './BarComparison';
 import { ComparisonChartProps } from './types';
