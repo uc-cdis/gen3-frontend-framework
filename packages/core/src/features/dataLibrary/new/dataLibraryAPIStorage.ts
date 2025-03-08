@@ -13,6 +13,7 @@ import {
   ReturnStatus,
   StorageService,
 } from './types';
+import { NamedDataItems } from '../types';
 
 interface FetchJSONResponse {
   data?: unknown;
@@ -135,7 +136,7 @@ export class ApiService implements StorageService {
 
   // Additional methods for more complex operations
 
-  async setAllLists(lists: Record<string, Datalist>): Promise<ReturnStatus> {
+  async setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,
       HttpMethod.POST,

@@ -1,153 +1,136 @@
 // useDataLibrary.ts
-import { useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
-import {
-  setLists, addList, updateList, deleteList,
-  setLoading, setError, setSyncTime
-} from './dataLibrarySlice';
-import { createStorageService } from './dataLibraryStorage';
-import { DataLibrary, Datalist } from '../types';
-import { useCoreSelector } from '../../../hooks';
-import { selectDataLibraryLists } from './dataLibrarySelectors';
-
-
-const generateUniqueName = (
-  baseName: string = 'List',
-  dataLibrary: DataLibrary,
-) => {
-  let uniqueName = baseName;
-  let counter = 1;
-
-  const existingNames = dataLibrary
-    ? Object.values(dataLibrary).map((x) => x.name)
-    : [];
-
-  while (existingNames.includes(uniqueName)) {
-    uniqueName = `${baseName} ${counter}`;
-    counter++;
-  }
-
-  return uniqueName;
-};
-
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Datalist, DataLibrary, NamedDataItems } from '../types';
+import { CachedAPIService } from './dataLibraryCachedAPI';
+import { StorageError } from './types';
 
 interface UseDataLibraryOptions {
   requiresAPI: boolean;
 }
 
-export function useDataLibrary(
-  options: UseDataLibraryOptions = { requiresAPI: false }
-) {
-  const dispatch = useDispatch();
-  const lists = useSelector(state => state.dataLibrary.lists);
-  const isLoading = useSelector(state => state.dataLibrary.isLoading);
-  const error = useSelector(state => state.dataLibrary.error);
-  const lastSyncTime = useSelector(state => state.dataLibrary.lastSyncTime);
-
+export const useDataLibrary = (
+  options: UseDataLibraryOptions = { requiresAPI: false },
+) => {
   // Track login state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<StorageError | null>(null);
+  const [lists, setLists] = useState<DataLibrary>({});
 
-  // Get the appropriate storage service
-  const storageService = createStorageService(
-    options.requiresAPI,
-    isLoggedIn
+  // Ref to track if initial load has happened
+  const initialLoadRef = useRef(false);
+
+  // Create storage services (we'll need both for syncing)
+  const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
+
+  const handleErrorOrSetLists = useCallback(
+    async (isError?: boolean, status?: string) => {
+      if (isError) {
+        setError({ isError, status });
+      } else {
+        const {
+          lists,
+          isError: isCacheError,
+          status: cacheStatus,
+        } = await dataLibraryStoreAPI.getLists();
+        // Set initial data from localStorage
+        if (isCacheError) {
+          setError({ isError: isCacheError, status: cacheStatus });
+        } else {
+          setLists(lists ?? {});
+          setError(null);
+        }
+      }
+    },
+    [dataLibraryStoreAPI],
   );
 
-  // Initialize data from storage
+  // Get the appropriate storage service based on current status;
+
+  // Initialize data from storage on first load
   useEffect(() => {
     const loadData = async () => {
-      dispatch(setLoading(true));
+      if (!initialLoadRef.current) {
+        setIsLoading(true);
 
-        const { lists, isError, status }  = await storageService.getLists();
-        if (!isError && lists) {
-          dispatch(setLists(lists));
-          dispatch(setError(null));
-        } else
-        dispatch(setError(status || 'Failed add to library'));
-        dispatch(setLoading(false));
+        // Always start by loading from localStorage
+        const { lists, isError, status } = await dataLibraryStoreAPI.getLists();
+
+        if (isError) {
+          setError({ isError, status });
+        } else {
+          // Set initial data from localStorage
+          setLists(lists ?? {});
+          setError(null);
+        }
+        setIsLoading(false);
+      }
     };
 
     loadData();
-  }, [storageService, dispatch]);
+  }, [dataLibraryStoreAPI]);
 
-  // Sync logic when login state changes
+  // Sync logic when using API and logged in
   useEffect(() => {
-    if (options.requiresAPI && isLoggedIn) {
-      // Sync localStorage with API
-      // This is where you'd implement the sync logic
-    }
-  }, [isLoggedIn, options.requiresAPI]);
+    const handleLogin = async () => {
+      setIsLoading(true);
+      await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
+      setIsLoading(false);
+    };
 
-  const dataLists = useCoreSelector((state) => selectDataLibraryLists(state));
+    handleLogin();
+  }, [dataLibraryStoreAPI, isLoggedIn, options.requiresAPI]);
 
   // CRUD operations
-  const addListToDataLibrary = useCallback(async (item: Partial<Datalist>) => {
+  const addListToDataLibrary = useCallback(
+    async (list?: Partial<Datalist>) => {
+      setIsLoading(true);
 
-    const adjustedData = {
-      ...(item ?? {}),
-      name: generateUniqueName(item?.name ?? 'List', dataLists),
-    };
-    dispatch(setLoading(true));
+      const { isError, status } = await dataLibraryStoreAPI.addList(list);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(false);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
 
-    const { lists, isError, status }  = await storageService.addList(adjustedData);
-      dispatch(setError(null));
-      return savedList;
-    } catch (err) {
-      dispatch(setError(err.message || 'Failed to add list'));
-      throw err;
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [storageService, dispatch]);
+  const updateListInDataLibrary = useCallback(
+    async (listData: Datalist) => {
+      setIsLoading(true);
+      const { isError, status } =
+        await dataLibraryStoreAPI.updateList(listData);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(true);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
 
-  const updateListInDataLibrary = useCallback(async (id: string, listData: Datalist) => {
-    dispatch(setLoading(true));
-    try {
-      const list = {
-        ...listData,
-        updatedTime: new Date().toISOString()
-      };
-
-      const updatedList = await storageService.updateList(list);
-      dispatch(updateList(updatedList));
-      dispatch(setError(null));
-      return updatedList;
-    } catch (err) {
-      dispatch(setError(err.message || 'Failed to update list'));
-      throw err;
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [storageService, dispatch]);
-
-  const deleteListFromDataLibrary = useCallback(async (id: string) => {
-    dispatch(setLoading(true));
-    try {
-      await storageService.deleteList(id);
-      dispatch(deleteList(id));
-      dispatch(setError(null));
-    } catch (err) {
-      dispatch(setError(err.message || 'Failed to delete list'));
-      throw err;
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [storageService, dispatch]);
+  const deleteListFromDataLibrary = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.deleteList(id);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(true);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
 
   const clearLibrary = useCallback(async () => {
-    dispatch(setLoading(true));
-    try {
-      await storageService.clearLists();
-      dispatch(setLists({}));
-      dispatch(setError(null));
-    } catch (err) {
-      dispatch(setError(err.message || 'Failed to clear library'));
-      throw err;
-    } finally {
-      dispatch(setLoading(false));
-    }
-  }, [storageService, dispatch]);
+    setIsLoading(true);
+    const { isError, status } = await dataLibraryStoreAPI.clearLists();
+    await handleErrorOrSetLists(isError, status);
+    setIsLoading(true);
+  }, []);
+
+  // Handle setting all lists at once (like when loading sample data)
+  const setAllListsInDataLibrary = useCallback(
+    async (data: Array<NamedDataItems>) => {
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.setAllLists(data);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(true);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
 
   // Login state management
   const setLoginState = useCallback((loggedIn: boolean) => {
@@ -162,6 +145,8 @@ export function useDataLibrary(
     updateListInDataLibrary,
     deleteListFromDataLibrary,
     clearLibrary,
-    setLoginState
+    setAllListsInDataLibrary,
+    setLoginState,
+    isLoggedIn,
   };
-}
+};

@@ -1,9 +1,12 @@
-import { DataLibrary, Datalist } from '../types';
+import { DataLibrary, Datalist, NamedDataItems } from '../types';
 import { JSONObject } from '../../../types';
 
-export interface ReturnStatus {
+export interface StorageError {
   isError?: boolean;
   status?: string;
+}
+
+export interface ReturnStatus extends StorageError {
   lists?: DataLibrary;
 }
 
@@ -31,6 +34,7 @@ export interface StorageService {
   getLists(): Promise<ReturnStatus>;
   getList(id: string): Promise<ReturnStatus>;
   addList(list?: Partial<Datalist>): Promise<ReturnStatus>;
+  setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus>;
   updateList(list: Datalist): Promise<ReturnStatus>;
   deleteList(id: string): Promise<ReturnStatus>;
   clearLists(): Promise<ReturnStatus>;

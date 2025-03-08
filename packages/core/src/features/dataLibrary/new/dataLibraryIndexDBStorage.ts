@@ -1,9 +1,10 @@
 import { IDBPDatabase, openDB } from 'idb';
 import { ReturnStatus, StorageService } from './types';
-import { LibraryAPIItems, Datalist } from '../types';
+import { LibraryAPIItems, Datalist, NamedDataItems } from '../types';
 import { BuildLists, getTimestamp } from '../utils';
-import { JSONObject } from '../../../types';
+import { isJSONObject, JSONObject } from '../../../types';
 import { nanoid } from '@reduxjs/toolkit';
+import { isArray } from 'lodash';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
@@ -25,6 +26,39 @@ export class LocalStorageService implements StorageService {
       },
     });
   }
+
+  setAllLists = async (data: Array<NamedDataItems>): Promise<ReturnStatus> => {
+    const timestamp = getTimestamp();
+    const allLists = data.reduce((acc: JSONObject, x: unknown) => {
+      if (!isJSONObject(x)) return acc;
+
+      const id = nanoid(10);
+      acc[id] = {
+        ...(x as JSONObject),
+        version: 0,
+        created_time: timestamp,
+        updated_time: timestamp,
+        creator: '{{subject_id}}',
+        authz: {
+          version: 0,
+          authz: [`/users/{{subject_id}}/user-library/lists/${id}`],
+        },
+      };
+      return acc;
+    }, {} as JSONObject);
+
+    try {
+      const db = await this.getDb();
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      for (const [id, list] of Object.entries(allLists)) {
+        tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
+      }
+      await tx.done;
+      return { status: 'success' };
+    } catch (error: unknown) {
+      return { isError: true, status: 'unable to add lists' };
+    }
+  };
 
   async getList(id: string): Promise<ReturnStatus> {
     const db = await this.getDb();
@@ -180,6 +214,37 @@ export class LocalStorageService implements StorageService {
       return {
         isError: true,
         status: `unable to clear library. Error: ${errorMessage}`,
+      };
+    }
+  }
+
+  async cacheLists(data: Record<string, Datalist>): Promise<ReturnStatus> {
+    if (!Object.keys(data).includes('lists') || !isArray(data['lists'])) {
+      return { isError: true, status: 'lists not found in request' };
+    }
+    const allLists = data['lists'].reduce((acc: JSONObject, x: Datalist) => {
+      if (!isJSONObject(x)) return acc;
+
+      acc[x.id] = {
+        ...(x as JSONObject),
+      };
+      return acc;
+    }, {} as JSONObject);
+
+    try {
+      const db = await this.getDb();
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      for (const [id, list] of Object.entries(allLists)) {
+        tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
+      }
+      await tx.done;
+      return { status: 'success' };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        isError: true,
+        status: `unable to cache library to local storage. Error: ${errorMessage}`,
       };
     }
   }

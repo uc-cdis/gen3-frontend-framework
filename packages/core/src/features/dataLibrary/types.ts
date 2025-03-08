@@ -102,14 +102,17 @@ export interface DatalistUpdate {
   items: LibraryAPIItems;
 }
 
-export interface Datalist {
+export interface NamedDataItems {
+  name: string;
+  items: FilesOrCohort;
+}
+
+export interface Datalist extends NamedDataItems {
   id: string;
   createdTime: string;
   updatedTime: string;
   authz: AuthZAccess;
   version: number;
-  name: string;
-  items: FilesOrCohort;
 }
 
 export type DataLibrary = Record<string, Datalist>;
