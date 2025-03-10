@@ -1,4 +1,3 @@
-import { Datalist } from '@gen3/core';
 import { nanoid } from '@reduxjs/toolkit';
 import {
   fetchJSONDataFromURL,
@@ -13,7 +12,7 @@ import {
   ReturnStatus,
   StorageService,
 } from './types';
-import { NamedDataItems } from '../types';
+import { NamedDataItems, UpdateDataLibraryListParams } from '../types';
 
 interface FetchJSONResponse {
   data?: unknown;
@@ -93,11 +92,11 @@ export class ApiService implements StorageService {
     return { lists: {}, status: 'no list returned' };
   }
 
-  async addList(list?: Partial<Datalist>): Promise<ReturnStatus> {
+  async addList(list: NamedDataItems): Promise<ReturnStatus> {
     // If the list doesn't have an ID, generate one
     const listToAdd = {
       ...list,
-      id: list?.id || nanoid(),
+      id: nanoid(),
     };
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}/${listToAdd.id}`,
@@ -108,7 +107,7 @@ export class ApiService implements StorageService {
     return responseFromMutation(response);
   }
 
-  async updateList(list: Datalist): Promise<ReturnStatus> {
+  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}/${list.id}`,
       HttpMethod.PUT,

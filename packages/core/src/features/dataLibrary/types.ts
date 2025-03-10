@@ -42,7 +42,6 @@ export interface CohortItem extends ListItem {
   name: string;
   schemaVersion: string;
   id: string;
-  index: string;
 }
 
 export interface AdditionalDataItem extends ListItem {
@@ -83,14 +82,11 @@ export interface DataListEntry {
   items: DataSetItems;
 }
 
-export interface RegisteredDataListEntry extends DataListEntry {
+export interface DataLibraryDataset extends DataListEntry {
   id: string;
 }
 
-export type FilesOrCohort = Record<
-  string,
-  RegisteredDataListEntry | CohortItem
->;
+export type FilesOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
 export type LibraryAPIItems = Record<
   string,
@@ -129,7 +125,7 @@ export interface LoadAllListData {
   lists: Array<DataListEntry>;
 }
 
-export interface AddUpdateListParams {
+export interface UpdateDataLibraryListParams {
   id: string;
   list: DatalistUpdate;
 }

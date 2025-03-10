@@ -2,7 +2,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { gen3Api } from '../gen3';
 import { GEN3_DATA_LIBRARY_API } from '../../constants';
 import {
-  AddUpdateListParams,
+  UpdateDataLibraryListParams,
   DataLibraryItems,
   Datalist,
   LoadAllListData,
@@ -69,7 +69,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       },
       invalidatesTags: [TAGS],
     }),
-    updateDataLibraryList: builder.mutation<void, AddUpdateListParams>({
+    updateDataLibraryList: builder.mutation<void, UpdateDataLibraryListParams>({
       query: ({ id, list }) => ({
         url: `${GEN3_DATA_LIBRARY_API}/${id}`,
         method: 'PUT',

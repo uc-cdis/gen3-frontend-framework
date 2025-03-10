@@ -1,4 +1,8 @@
-import { DataLibrary, Datalist, NamedDataItems } from '../types';
+import {
+  DataLibrary,
+  NamedDataItems,
+  UpdateDataLibraryListParams,
+} from '../types';
 import { JSONObject } from '../../../types';
 
 export interface StorageError {
@@ -33,9 +37,9 @@ export const isDataLibraryAPIResponse = (
 export interface StorageService {
   getLists(): Promise<ReturnStatus>;
   getList(id: string): Promise<ReturnStatus>;
-  addList(list?: Partial<Datalist>): Promise<ReturnStatus>;
+  addList(list?: NamedDataItems): Promise<ReturnStatus>;
   setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus>;
-  updateList(list: Datalist): Promise<ReturnStatus>;
+  updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus>;
   deleteList(id: string): Promise<ReturnStatus>;
   clearLists(): Promise<ReturnStatus>;
 }

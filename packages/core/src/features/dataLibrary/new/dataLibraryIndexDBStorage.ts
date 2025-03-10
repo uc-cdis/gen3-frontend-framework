@@ -1,6 +1,11 @@
 import { IDBPDatabase, openDB } from 'idb';
 import { ReturnStatus, StorageService } from './types';
-import { LibraryAPIItems, Datalist, NamedDataItems } from '../types';
+import {
+  LibraryAPIItems,
+  Datalist,
+  NamedDataItems,
+  UpdateDataLibraryListParams,
+} from '../types';
 import { BuildLists, getTimestamp } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
 import { nanoid } from '@reduxjs/toolkit';
@@ -112,7 +117,7 @@ export class LocalStorageService implements StorageService {
     };
   }
 
-  async addList(list?: Partial<Datalist>): Promise<ReturnStatus> {
+  async addList(list: NamedDataItems): Promise<ReturnStatus> {
     const timestamp = getTimestamp();
     try {
       const db = await this.getDb();
@@ -141,7 +146,7 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async updateList(list: Datalist): Promise<ReturnStatus> {
+  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
     const { id } = list;
     try {
       const db = await this.getDb();

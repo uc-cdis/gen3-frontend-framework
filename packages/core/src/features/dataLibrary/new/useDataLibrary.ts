@@ -1,6 +1,6 @@
 // useDataLibrary.ts
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Datalist, DataLibrary, NamedDataItems } from '../types';
+import { Datalist, DataLibrary, NamedDataItems, FilesOrCohort } from '../types';
 import { CachedAPIService } from './dataLibraryCachedAPI';
 import { StorageError } from './types';
 
@@ -22,6 +22,25 @@ export const useDataLibrary = (
 
   // Create storage services (we'll need both for syncing)
   const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
+
+  const generateUniqueName = useCallback(
+    (baseName: string = 'List') => {
+      let uniqueName = baseName;
+      let counter = 1;
+
+      const existingNames = lists
+        ? Object.values(lists).map((x) => x.name)
+        : [];
+
+      while (existingNames.includes(uniqueName)) {
+        uniqueName = `${baseName} ${counter}`;
+        counter++;
+      }
+
+      return uniqueName;
+    },
+    [lists],
+  );
 
   const handleErrorOrSetLists = useCallback(
     async (isError?: boolean, status?: string) => {
@@ -77,16 +96,19 @@ export const useDataLibrary = (
       await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
       setIsLoading(false);
     };
-
     handleLogin();
   }, [dataLibraryStoreAPI, isLoggedIn, options.requiresAPI]);
 
   // CRUD operations
   const addListToDataLibrary = useCallback(
-    async (list?: Partial<Datalist>) => {
-      setIsLoading(true);
+    async (items: FilesOrCohort, name?: string) => {
+      const namedItems = {
+        items: items,
+        name: generateUniqueName(name ?? 'List'),
+      };
 
-      const { isError, status } = await dataLibraryStoreAPI.addList(list);
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.addList(namedItems);
       await handleErrorOrSetLists(isError, status);
       setIsLoading(false);
     },

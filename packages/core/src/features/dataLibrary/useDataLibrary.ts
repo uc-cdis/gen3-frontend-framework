@@ -18,63 +18,58 @@ import {
 } from './dataLibraryIndexDB';
 import { DataLibrary, Datalist, LoadAllListData } from './types';
 import { flattenDataList } from './utils';
-import { useSelector } from 'react-redux';
-import { useIsUserLoggedIn } from '../user';
 
-const generateUniqueName = (
-  baseName: string = 'List',
-  dataLibrary: DataLibrary,
-) => {
-  let uniqueName = baseName;
-  let counter = 1;
-
-  const existingNames = dataLibrary
-    ? Object.values(dataLibrary).map((x) => x.name)
-    : [];
-
-  while (existingNames.includes(uniqueName)) {
-    uniqueName = `${baseName} ${counter}`;
-    counter++;
-  }
-
-  return uniqueName;
-};
-
-export const useDataLibrary = () => {
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [library, setLibrary] = useState<DataLibrary>({}); // current state of the library
-
-  const isLoggedIn = useIsUserLoggedIn();
-
-  const useApi = isLoggedIn;
+export const useDataLibrary = (useApi: boolean) => {
+  const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
 
   const {
     data: apiLibrary,
     refetch: refetchLibraryFromApi,
-    error: errorGetDatalistAPI,
-    isError: isErrorGetDatalistAPI,
-    isFetching: isFetchingDataListFromAPI,
+    error: apiError,
+    isError: isAPIListError,
+    isFetching: isAPIListLoading,
   } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
-
   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
-  const [
-    deleteItemInLibraryApi,
-    { isLoading: isLoadingDeleteListAPI, isError: isErrorDeleteListAPI },
-  ] = useDeleteDataLibraryListMutation();
-  const [
-    updateItemInLibraryApi,
-    { isLoading: isLoadingUpdateItemAPI, isError: isErrorUpdateItemAPI },
-  ] = useUpdateDataLibraryListMutation();
-  const [
-    deleteAllApi,
-    { isLoading: isLoadingDeleteAllAPI, isError: isErrorDeleteAllAPI },
-  ] = useDeleteAllDataLibraryMutation();
+  const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
+  const [updateItemInLibraryApi, { isLoading: isUpdatingLoading }] =
+    useUpdateDataLibraryListMutation();
+  const [deleteAllApi] = useDeleteAllDataLibraryMutation();
+
+  let hasError = false;
+  let errorData = null;
+  let isLoading = false;
+
+  // TODO: Add error message from indexedDB
+  if (useApi && isAPIListError) {
+    hasError = true;
+    errorData = apiError;
+  }
+
+  if (useApi && (isUpdatingLoading || isAPIListLoading)) {
+    isLoading = true;
+  }
+
+  const generateUniqueName = (baseName: string = 'List') => {
+    let uniqueName = baseName;
+    let counter = 1;
+
+    const existingNames = dataLibrary
+      ? Object.values(dataLibrary).map((x) => x.name)
+      : [];
+
+    while (existingNames.includes(uniqueName)) {
+      uniqueName = `${baseName} ${counter}`;
+      counter++;
+    }
+
+    return uniqueName;
+  };
 
   const refetchLocalLists = async () => {
     const { isError, lists } = await getDataLibraryListIndexDB();
-    setLibrary(lists ?? {});
+    setLocalLibrary(lists ?? {});
+    hasError = isError === true;
   };
 
   useEffect(() => {
@@ -82,7 +77,7 @@ export const useDataLibrary = () => {
       if (!useApi) {
         const { isError, lists } = await getDataLibraryListIndexDB();
         if (!isError) {
-          setLibrary(lists ?? {});
+          setLocalLibrary(lists ?? {});
         }
       }
     };
@@ -93,7 +88,7 @@ export const useDataLibrary = () => {
   const addListToDataLibrary = async (item?: Partial<Datalist>) => {
     const adjustedData = {
       ...(item ?? {}),
-      name: generateUniqueName(item?.name ?? 'List', dataLibrary),
+      name: generateUniqueName(item?.name ?? 'List'),
     };
 
     if (useApi) {
@@ -151,7 +146,11 @@ export const useDataLibrary = () => {
     }
   };
 
-  const dataLibrary = useApi ? (apiLibrary ? apiLibrary.lists : {}) : library;
+  const dataLibrary = useApi
+    ? apiLibrary
+      ? apiLibrary.lists
+      : {}
+    : localLibrary;
 
   return {
     dataLibrary,

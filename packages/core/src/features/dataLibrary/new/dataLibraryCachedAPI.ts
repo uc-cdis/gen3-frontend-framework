@@ -1,5 +1,10 @@
 import { ReturnStatus, StorageService } from './types';
-import { DataLibrary, Datalist, NamedDataItems } from '../types';
+import {
+  DataLibrary,
+  Datalist,
+  NamedDataItems,
+  UpdateDataLibraryListParams,
+} from '../types';
 import { LocalStorageService } from './dataLibraryIndexDBStorage';
 import { ApiService } from './dataLibraryAPIStorage';
 
@@ -62,11 +67,7 @@ export class CachedAPIService implements StorageService {
 
     // Wait for all API operations to complete
     await Promise.all(syncPromises);
-
-    // 5. Update local storage with merged data
-    for (const list of Object.values(mergedData)) {
-      await this.localStorageDataLibrary.updateList(list);
-    }
+    await this.localStorageDataLibrary.cacheLists(mergedData);
   }
 
   async getLists(): Promise<ReturnStatus> {
@@ -100,7 +101,7 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.setAllLists(lists ?? {});
   }
 
-  async addList(list?: Partial<Datalist>): Promise<ReturnStatus> {
+  async addList(list: NamedDataItems): Promise<ReturnStatus> {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.addList(list);
       if (apiResults.isError) {
@@ -110,7 +111,7 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.addList(list);
   }
 
-  async updateList(list: Datalist): Promise<ReturnStatus> {
+  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.updateList(list);
       if (apiResults.isError) {
