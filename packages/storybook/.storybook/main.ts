@@ -6,6 +6,7 @@ const nextJsPresetPath = require.resolve('@storybook/nextjs');
 const config: StorybookConfig = {
   stories: [
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../../frontend/src/features/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../../frontend/src/pages/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [

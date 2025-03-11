@@ -4,6 +4,12 @@ import { MantineProvider } from '@mantine/core';
 import { Gen3Provider } from '@gen3/frontend';
 import '../src/styles/globals.css';
 import { initialize, mswLoader } from 'msw-storybook-addon';
+import theme from '../src/mantineTheme';
+
+import '../src/styles/globals.css';
+import '@fontsource/montserrat';
+import '@fontsource/source-sans-pro';
+import '@fontsource/poppins';
 
 /*
  * Initializes MSW
@@ -39,7 +45,7 @@ const preview: Preview = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <MantineProvider>
+      <MantineProvider theme={theme}>
         <Gen3Provider
           icons={config.icons}
           sessionConfig={config.sessionConfig}
