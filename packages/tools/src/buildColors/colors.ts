@@ -74,35 +74,43 @@ const colorType = [
 
 export const create10ColorPallet = (
   mainColor: string,
+  shiftAmount: number = 90,
+  saturation: number = 20,
 ): Record<string, string> => {
   const darkColors = getColorsList(
     DEFAULT_NUM_DARK_COLORS,
-    90,
+    shiftAmount,
     tinycolor('#000000'),
-    20,
+    saturation,
     tinycolor(mainColor),
   ).map((color) => color);
   const lightColors = getColorsList(
     DEFAULT_NUM_LIGHT_COLORS,
-    90,
+    shiftAmount,
     tinycolor('#ffffff'),
-    20,
+    saturation,
     tinycolor(mainColor),
   )
     .reverse()
     .map((color) => color);
 
   return {
-    ...lightColors.reduce((obj, c: Instance, idx) => {
-      obj[colorType[9 - idx]] = c.toHexString();
-      return obj;
-    }, {} as Record<string, string>),
+    ...lightColors.reduce(
+      (obj, c: Instance, idx) => {
+        obj[colorType[9 - idx]] = c.toHexString();
+        return obj;
+      },
+      {} as Record<string, string>,
+    ),
     DEFAULT: mainColor,
     vivid: tinycolor(mainColor).saturate(10).toHexString(),
-    ...darkColors.reduce((obj, c: Instance, idx) => {
-      obj[colorType[3 - idx]] = c.toHexString();
-      return obj;
-    }, {} as Record<string, string>),
+    ...darkColors.reduce(
+      (obj, c: Instance, idx) => {
+        obj[colorType[3 - idx]] = c.toHexString();
+        return obj;
+      },
+      {} as Record<string, string>,
+    ),
   };
 };
 
