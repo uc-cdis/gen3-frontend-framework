@@ -1,6 +1,10 @@
-// useDataLibrary.ts
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Datalist, DataLibrary, NamedDataItems, FilesOrCohort } from '../types';
+import {
+  DataLibrary,
+  NamedDataItems,
+  FilesOrCohort,
+  UpdateDataLibraryListParams,
+} from '../types';
 import { CachedAPIService } from './dataLibraryCachedAPI';
 import { StorageError } from './types';
 
@@ -112,14 +116,13 @@ export const useDataLibrary = (
       await handleErrorOrSetLists(isError, status);
       setIsLoading(false);
     },
-    [dataLibraryStoreAPI, handleErrorOrSetLists],
+    [dataLibraryStoreAPI, generateUniqueName, handleErrorOrSetLists],
   );
 
   const updateListInDataLibrary = useCallback(
-    async (listData: Datalist) => {
+    async (list: UpdateDataLibraryListParams) => {
       setIsLoading(true);
-      const { isError, status } =
-        await dataLibraryStoreAPI.updateList(listData);
+      const { isError, status } = await dataLibraryStoreAPI.updateList(list);
       await handleErrorOrSetLists(isError, status);
       setIsLoading(true);
     },
