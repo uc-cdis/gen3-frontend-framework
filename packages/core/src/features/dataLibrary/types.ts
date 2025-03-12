@@ -71,6 +71,40 @@ export const isCohortItem = (item: any): item is CohortItem => {
   );
 };
 
+// Type guard for DatalistAPI
+export const isDatalistAPI = (value: unknown): value is DatalistAPI => {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const data = value as Partial<DatalistAPI>;
+
+  // Check required properties in DataItemBaseData
+  if (
+    typeof data.name !== 'string' ||
+    typeof data.id !== 'string' ||
+    typeof data.createdTime !== 'string' ||
+    typeof data.updatedTime !== 'string' ||
+    typeof data.version !== 'number' ||
+    typeof data.authz !== 'object' ||
+    data.authz === null ||
+    !Array.isArray(data.authz.authz)
+  ) {
+    return false;
+  }
+
+  // Check required properties in DatalistAsItems
+  if (
+    typeof data.items !== 'object' ||
+    data.items === null ||
+    typeof (data.items as Record<string, unknown>) !== 'object'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
 
 /**
@@ -93,17 +127,8 @@ export type LibraryAPIItems = Record<
   FileItem | AdditionalDataItem | CohortItem
 >;
 
-export interface DatalistUpdate {
+export interface DataItemBaseData {
   name: string;
-  items: LibraryAPIItems;
-}
-
-export interface NamedDataItems {
-  name: string;
-  items: FilesOrCohort;
-}
-
-export interface Datalist extends NamedDataItems {
   id: string;
   createdTime: string;
   updatedTime: string;
@@ -111,21 +136,36 @@ export interface Datalist extends NamedDataItems {
   version: number;
 }
 
+export interface DatalistAsItems {
+  name: string;
+  items: LibraryAPIItems;
+}
+
+export interface GroupedDataItems {
+  name: string;
+  items: FilesOrCohort;
+}
+
+export type Datalist = DataItemBaseData & GroupedDataItems;
+export type DatalistAPI = DataItemBaseData & DatalistAsItems;
+// Data Library has been combine into data sets using BuildList
 export type DataLibrary = Record<string, Datalist>;
 
-export type DataLibraryItems = {
-  lists: DataLibrary;
-};
+// Data Library as represented by  the API
+export type DataLibraryAPI = Record<string, DatalistAPI>;
 
 export type DataLibraryAPIResponse = {
   lists: Record<string, JSONObject>;
+};
+
+export type DataLibraryGroupedResponse = {
+  lists: DataLibrary;
 };
 
 export interface LoadAllListData {
   lists: Array<DataListEntry>;
 }
 
-export interface UpdateDataLibraryListParams {
+export interface UpdateDataLibraryListParams extends DatalistAsItems {
   id: string;
-  list: DatalistUpdate;
 }

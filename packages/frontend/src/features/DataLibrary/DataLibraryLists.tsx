@@ -8,7 +8,6 @@ import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
-import { HTTPUserFriendlyErrorMessages } from './modals/utils';
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   useAPI,
@@ -17,13 +16,12 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
 }) => {
   const {
     dataLibrary,
-    isError,
     isLoading,
     error: dataLibraryError,
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
-  } = useDataLibrary(useAPI);
+  } = useDataLibrary({ requiresAPI: true });
 
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
@@ -33,16 +31,9 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     open();
   };
 
-  if (isError) {
-    let message = 'There was a error getting the library';
-    if (
-      dataLibraryError &&
-      'data' in dataLibraryError &&
-      dataLibraryError?.status in HTTPUserFriendlyErrorMessages
-    ) {
-      message =
-        HTTPUserFriendlyErrorMessages[dataLibraryError?.status as number];
-    }
+  if (dataLibraryError?.isError) {
+    const message =
+      dataLibraryError?.status ?? 'There was a error getting the library';
     return (
       <div className="flex flex-col w-full ml-2">
         <Center>
@@ -54,7 +45,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
 
   return (
     <div className="flex flex-col w-full ml-2">
-      <LoadingOverlay visible={isLoading} />
       <SelectedItemsModal
         opened={selectedItemsOpen}
         onClose={close}

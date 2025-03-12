@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   DataLibrary,
-  NamedDataItems,
+  GroupedDataItems,
   FilesOrCohort,
   UpdateDataLibraryListParams,
 } from '../types';
@@ -12,7 +12,7 @@ interface UseDataLibraryOptions {
   requiresAPI: boolean;
 }
 
-export const useDataLibrary = (
+const useDataLibrary = (
   options: UseDataLibraryOptions = { requiresAPI: false },
 ) => {
   // Track login state
@@ -21,11 +21,15 @@ export const useDataLibrary = (
   const [error, setError] = useState<StorageError | null>(null);
   const [lists, setLists] = useState<DataLibrary>({});
 
+  console.log('useDataLibrary', lists);
+
   // Ref to track if initial load has happened
   const initialLoadRef = useRef(false);
 
   // Create storage services (we'll need both for syncing)
   const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
+
+  dataLibraryStoreAPI.setUseAPI(options.requiresAPI);
 
   const generateUniqueName = useCallback(
     (baseName: string = 'List') => {
@@ -124,7 +128,7 @@ export const useDataLibrary = (
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.updateList(list);
       await handleErrorOrSetLists(isError, status);
-      setIsLoading(true);
+      setIsLoading(false);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
   );
@@ -134,7 +138,7 @@ export const useDataLibrary = (
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.deleteList(id);
       await handleErrorOrSetLists(isError, status);
-      setIsLoading(true);
+      setIsLoading(false);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
   );
@@ -143,21 +147,20 @@ export const useDataLibrary = (
     setIsLoading(true);
     const { isError, status } = await dataLibraryStoreAPI.clearLists();
     await handleErrorOrSetLists(isError, status);
-    setIsLoading(true);
+    setIsLoading(false);
   }, []);
 
   // Handle setting all lists at once (like when loading sample data)
   const setAllListsInDataLibrary = useCallback(
-    async (data: Array<NamedDataItems>) => {
+    async (data: Array<GroupedDataItems>) => {
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.setAllLists(data);
       await handleErrorOrSetLists(isError, status);
-      setIsLoading(true);
+      setIsLoading(false);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
   );
 
-  // Login state management
   const setLoginState = useCallback((loggedIn: boolean) => {
     setIsLoggedIn(loggedIn);
   }, []);
@@ -175,3 +178,5 @@ export const useDataLibrary = (
     isLoggedIn,
   };
 };
+
+export default useDataLibrary;

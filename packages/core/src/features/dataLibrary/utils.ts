@@ -4,14 +4,14 @@ import {
   DataLibrary,
   DataLibraryAPIResponse,
   Datalist,
-  DatalistUpdate,
+  DatalistAsItems,
   // DataListEntry,
   DataSetItems,
   isCohortItem,
   isFileItem,
   LibraryAPIItems,
-  // RegisteredDataListEntry,
 } from './types';
+import { parse } from 'graphql';
 import { JSONObject } from '../../types/';
 
 const processItem = (id: string, data: any) => {
@@ -137,5 +137,25 @@ export const flattenDataList = (dataList: Datalist) => {
   return {
     name: dataList.name,
     items: items,
-  } as DatalistUpdate;
+  } as DatalistAsItems;
+};
+
+export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
+  try {
+    const parsedQuery = parse(query['query'] as string);
+    const aggregationField = parsedQuery.definitions
+      .filter((def) => def.kind === 'OperationDefinition')
+      .flatMap((def) => def.selectionSet.selections)
+      .find((sel) => sel.kind === 'Field' && sel.name.value === '_aggregation');
+
+    if (aggregationField && 'selectionSet' in aggregationField) {
+      const indexField = aggregationField?.selectionSet?.selections.find(
+        (sel) => sel.kind === 'Field',
+      );
+      return indexField ? indexField.name.value : null;
+    }
+  } catch (error) {
+    console.error('Invalid GraphQL query:', error);
+  }
+  return null;
 };

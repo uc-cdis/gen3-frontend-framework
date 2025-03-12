@@ -1,8 +1,9 @@
 import { ReturnStatus, StorageService } from './types';
 import {
-  DataLibrary,
-  Datalist,
-  NamedDataItems,
+  DataLibraryAPI,
+  // DataLibrary,
+  // Datalist,
+  GroupedDataItems,
   UpdateDataLibraryListParams,
 } from '../types';
 import { LocalStorageService } from './dataLibraryIndexDBStorage';
@@ -21,64 +22,72 @@ export class CachedAPIService implements StorageService {
 
   async setUseAPI(useAPI: boolean) {
     this.useAPI = useAPI;
-    if (useAPI) {
-      await this.syncApiAndLocal();
-    }
+    //if (useAPI) {
+    //  await this.syncApiAndLocal();
+    // }
   }
 
-  private async syncApiAndLocal() {
-    const { lists: localData, isError: localError } =
-      await this.localStorageDataLibrary.getLists();
-    const { lists: apiData, isError: apiError } =
-      await this.apiDataLibrary.getLists();
-
-    if (localError || apiError) {
-      return;
-    }
-
-    const mergedData: Record<string, Datalist> = { ...localData };
-
-    // First, update any existing items with newer versions from API
-    Object.values(apiData?.lists ?? {}).forEach((apiList) => {
-      const id = apiList.id as keyof DataLibrary;
-      const localList = localData?.[id];
-      if (
-        !localList ||
-        new Date(apiList.updatedTime) > new Date(localList.updatedTime)
-      ) {
-        mergedData[id] = apiList;
-      }
-    });
-
-    //  Push local-only changes to API
-    const syncPromises: Promise<any>[] = [];
-
-    for (const [id, localList] of Object.entries(localData?.lists ?? {})) {
-      if (!apiData?.[id]) {
-        // This list exists locally but not in API, so push it to API
-        syncPromises.push(this.apiDataLibrary.addList(localList));
-      } else if (
-        new Date(localList.updatedTime) > new Date(apiData[id].updatedTime)
-      ) {
-        // Local list is newer than API, so update API
-        syncPromises.push(this.apiDataLibrary.updateList(localList));
-      }
-    }
-
-    // Wait for all API operations to complete
-    await Promise.all(syncPromises);
-    await this.localStorageDataLibrary.cacheLists(mergedData);
-  }
+  // private async syncApiAndLocal() {
+  //   const { lists: localData, isError: localError } =
+  //     await this.localStorageDataLibrary.getLists();
+  //   const { lists: apiData, isError: apiError } =
+  //     await this.apiDataLibrary.getLists();
+  //
+  //   if (localError || apiError) {
+  //     return;
+  //   }
+  //
+  //   const mergedData: Record<string, Datalist> = { ...localData };
+  //
+  //   // First, update any existing items with newer versions from API
+  //   Object.values(apiData?.lists ?? {}).forEach((apiList) => {
+  //     const id = apiList.id as keyof DataLibrary;
+  //     const localList = localData?.[id];
+  //     if (
+  //       !localList ||
+  //       new Date(apiList.updatedTime) > new Date(localList.updatedTime)
+  //     ) {
+  //       mergedData[id] = apiList;
+  //     }
+  //   });
+  //
+  //   //  Push local-only changes to API
+  //   const syncPromises: Promise<any>[] = [];
+  //
+  //   for (const [id, localList] of Object.entries(localData?.lists ?? {})) {
+  //     if (!apiData?.[id]) {
+  //       // This list exists locally but not in API, so push it to API
+  //       syncPromises.push(this.apiDataLibrary.addList(localList));
+  //     } else if (
+  //       new Date(localList.updatedTime) > new Date(apiData[id].updatedTime)
+  //     ) {
+  //       // Local list is newer than API, so update API
+  //       syncPromises.push(this.apiDataLibrary.updateList(localList));
+  //     }
+  //   }
+  //
+  //   // Wait for all API operations to complete
+  //   await Promise.all(syncPromises);
+  //   await this.localStorageDataLibrary.cacheLists({ lists: mergedData });
+  // }
 
   async getLists(): Promise<ReturnStatus> {
     if (this.useAPI) {
       // do a network request to get the library
       // get the remote list
-      const apiResults = await this.apiDataLibrary.getLists();
+      const apiResults = await this.apiDataLibrary.getListAPIs();
+
+      console.log('api results', apiResults);
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
-      await this.localStorageDataLibrary.cacheLists(apiResults.lists ?? {});
+      const cacheResults = await this.localStorageDataLibrary.cacheLists({
+        lists: apiResults?.lists ?? {},
+      });
+      console.log('cache results', cacheResults);
     }
     return await this.localStorageDataLibrary.getLists();
   }
@@ -91,22 +100,31 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.getList(id);
   }
 
-  async setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus> {
+  async setAllLists(
+    lists: Array<GroupedDataItems>,
+  ): Promise<ReturnStatus<DataLibraryAPI>> {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.setAllLists(lists);
       if (apiResults.isError) {
         return apiResults;
       }
+      await this.localStorageDataLibrary.cacheLists({
+        lists: apiResults?.lists ?? {},
+      });
     }
     return await this.localStorageDataLibrary.setAllLists(lists ?? {});
   }
 
-  async addList(list: NamedDataItems): Promise<ReturnStatus> {
+  async addList(list: GroupedDataItems): Promise<ReturnStatus> {
     if (this.useAPI) {
+      // update the API list
       const apiResults = await this.apiDataLibrary.addList(list);
       if (apiResults.isError) {
         return apiResults;
       }
+      return await this.localStorageDataLibrary.cacheLists({
+        lists: apiResults?.lists ?? {},
+      });
     }
     return await this.localStorageDataLibrary.addList(list);
   }
@@ -117,7 +135,11 @@ export class CachedAPIService implements StorageService {
       if (apiResults.isError) {
         return apiResults;
       }
+      return await this.localStorageDataLibrary.cacheLists({
+        lists: apiResults?.lists ?? {},
+      });
     }
+    console.log('updating local list', list);
     return await this.localStorageDataLibrary.updateList(list);
   }
 

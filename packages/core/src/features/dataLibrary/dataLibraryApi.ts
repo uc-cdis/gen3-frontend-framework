@@ -3,10 +3,10 @@ import { gen3Api } from '../gen3';
 import { GEN3_DATA_LIBRARY_API } from '../../constants';
 import {
   UpdateDataLibraryListParams,
-  DataLibraryItems,
   Datalist,
   LoadAllListData,
   DataLibraryAPIResponse,
+  DataLibraryGroupedResponse,
 } from './types';
 import { BuildLists } from './utils';
 
@@ -27,7 +27,7 @@ export const dataLibraryTags = gen3Api.enhanceEndpoints({
  */
 export const dataLibraryApi = dataLibraryTags.injectEndpoints({
   endpoints: (builder) => ({
-    getDataLibraryLists: builder.query<DataLibraryItems, void>({
+    getDataLibraryLists: builder.query<DataLibraryGroupedResponse, void>({
       query: () => `${GEN3_DATA_LIBRARY_API}`,
       transformResponse: (res: DataLibraryAPIResponse) => {
         return { lists: BuildLists(res) };
@@ -70,10 +70,10 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       invalidatesTags: [TAGS],
     }),
     updateDataLibraryList: builder.mutation<void, UpdateDataLibraryListParams>({
-      query: ({ id, list }) => ({
+      query: ({ id, items }) => ({
         url: `${GEN3_DATA_LIBRARY_API}/${id}`,
         method: 'PUT',
-        body: list,
+        body: items,
       }),
       transformErrorResponse(response) {
         if ('originalStatus' in response)

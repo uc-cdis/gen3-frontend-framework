@@ -7,6 +7,11 @@ import {
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const loadContent = async () => {
+  console.log(
+    'loading content',
+    GEN3_COMMONS_NAME,
+    process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME,
+  );
   const modals = await ContentSource.get(
     `config/${GEN3_COMMONS_NAME}/modals.json`,
   );

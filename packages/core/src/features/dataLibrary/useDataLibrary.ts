@@ -126,7 +126,11 @@ export const useDataLibrary = (useApi: boolean) => {
   const updateListInDataLibrary = async (id: string, data: Datalist) => {
     const flattend = flattenDataList(data);
     if (useApi) {
-      await updateItemInLibraryApi({ id, list: flattend });
+      await updateItemInLibraryApi({
+        id,
+        name: flattend.name,
+        items: flattend.items,
+      });
       refetchLibraryFromApi();
     } else {
       const { isError } = await updateListIndexDB(id, data);

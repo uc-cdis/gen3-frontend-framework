@@ -1,6 +1,7 @@
 import {
   DataLibrary,
-  NamedDataItems,
+  DataLibraryAPI,
+  GroupedDataItems,
   UpdateDataLibraryListParams,
 } from '../types';
 import { JSONObject } from '../../../types';
@@ -10,8 +11,8 @@ export interface StorageError {
   status?: string;
 }
 
-export interface ReturnStatus extends StorageError {
-  lists?: DataLibrary;
+export interface ReturnStatus<T = DataLibrary> extends StorageError {
+  lists?: T;
 }
 
 export type DataLibraryAPIResponse = {
@@ -37,9 +38,13 @@ export const isDataLibraryAPIResponse = (
 export interface StorageService {
   getLists(): Promise<ReturnStatus>;
   getList(id: string): Promise<ReturnStatus>;
-  addList(list?: NamedDataItems): Promise<ReturnStatus>;
-  setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus>;
-  updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus>;
+  addList(list?: GroupedDataItems): Promise<ReturnStatus>;
+  setAllLists(
+    lists: Array<GroupedDataItems>,
+  ): Promise<ReturnStatus<DataLibraryAPI>>;
+  updateList(
+    list: UpdateDataLibraryListParams,
+  ): Promise<ReturnStatus<DataLibraryAPI>>;
   deleteList(id: string): Promise<ReturnStatus>;
   clearLists(): Promise<ReturnStatus>;
 }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { ActionIcon, Button, Group, Tooltip } from '@mantine/core';
 import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
-import { Datalist } from '@gen3/core';
+import { FilesOrCohort } from '@gen3/core';
 import { Icon } from '@iconify/react';
 import { IconSize } from './types';
 import { useDataLibrarySelection } from './selection/SelectionContext';
 
 interface SearchAndActionsProps {
-  createList: (item?: Partial<Datalist>) => Promise<void>;
+  createList: (items: FilesOrCohort, name?: string) => Promise<void>;
   gatherData: () => void;
   size?: string;
 }
@@ -56,7 +56,7 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
             hidden={true}
             size="compact-md"
             variant="outline"
-            onClick={() => createList()}
+            onClick={() => createList({})} // add a empty object to represent an empty list
             aria-label="create a new list"
             classNames={{ root: 'bg-base-max hover:bg-base-light' }}
           >

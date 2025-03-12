@@ -3,13 +3,15 @@ import { ReturnStatus, StorageService } from './types';
 import {
   LibraryAPIItems,
   Datalist,
-  NamedDataItems,
+  DatalistAPI,
+  DataLibraryAPI,
+  GroupedDataItems,
   UpdateDataLibraryListParams,
+  isDatalistAPI,
 } from '../types';
 import { BuildLists, getTimestamp } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
 import { nanoid } from '@reduxjs/toolkit';
-import { isArray } from 'lodash';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
@@ -32,7 +34,9 @@ export class LocalStorageService implements StorageService {
     });
   }
 
-  setAllLists = async (data: Array<NamedDataItems>): Promise<ReturnStatus> => {
+  setAllLists = async (
+    data: Array<GroupedDataItems>,
+  ): Promise<ReturnStatus<DataLibraryAPI>> => {
     const timestamp = getTimestamp();
     const allLists = data.reduce((acc: JSONObject, x: unknown) => {
       if (!isJSONObject(x)) return acc;
@@ -117,7 +121,7 @@ export class LocalStorageService implements StorageService {
     };
   }
 
-  async addList(list: NamedDataItems): Promise<ReturnStatus> {
+  async addList(list: GroupedDataItems): Promise<ReturnStatus> {
     const timestamp = getTimestamp();
     try {
       const db = await this.getDb();
@@ -146,8 +150,8 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
-    const { id } = list;
+  async updateList(update: UpdateDataLibraryListParams): Promise<ReturnStatus> {
+    const { id, name, items } = update;
     try {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -162,7 +166,7 @@ export class LocalStorageService implements StorageService {
       const version = listData.version ? listData.version + 1 : 0;
       const updated = {
         ...listData,
-        ...list,
+        ...{ name, items },
         version: version,
         updated_time: timestamp,
         created_time: listData.created_time,
@@ -223,18 +227,28 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async cacheLists(data: Record<string, Datalist>): Promise<ReturnStatus> {
-    if (!Object.keys(data).includes('lists') || !isArray(data['lists'])) {
-      return { isError: true, status: 'lists not found in request' };
-    }
-    const allLists = data['lists'].reduce((acc: JSONObject, x: Datalist) => {
-      if (!isJSONObject(x)) return acc;
+  async cacheLists(data: { lists: DataLibraryAPI }): Promise<ReturnStatus> {
+    console.log(data);
+    console.log(data['lists']);
 
-      acc[x.id] = {
-        ...(x as JSONObject),
+    if (!data.lists || typeof data.lists !== 'object') {
+      return {
+        isError: true,
+        status: 'Invalid or missing lists property in request',
       };
-      return acc;
-    }, {} as JSONObject);
+    }
+
+    const allLists = Object.values(data.lists).reduce(
+      (acc, x: DatalistAPI) => {
+        if (!isDatalistAPI(x)) return acc;
+
+        acc[x.id] = {
+          ...x,
+        };
+        return acc;
+      },
+      {} as Record<string, DatalistAPI>,
+    );
 
     try {
       const db = await this.getDb();

@@ -6,10 +6,10 @@ import {
   Datalist,
   FileItem,
   getNumberOfItemsInDatalist,
-  getTimestamp,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
+  UpdateDataLibraryListParams,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -23,7 +23,9 @@ import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (id: string, data: Datalist) => Promise<void>;
+  updateListInDataLibrary: (
+    update: UpdateDataLibraryListParams,
+  ) => Promise<void>;
   deleteListFromDataLibrary: (id: string) => Promise<void>;
   size?: string;
 }
@@ -56,10 +58,10 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
-    await updateListInDataLibrary(listId, {
-      ...dataList,
+    await updateListInDataLibrary({
+      id: listId,
+      ...{ name: listName, items: dataList.items },
       ...update,
-      updatedTime: getTimestamp(),
     });
   };
 
@@ -142,10 +144,9 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   const removeItemFromList = async (itemId: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [itemId]: _removedKey, ...newObject } = dataList.items;
-    await updateListInDataLibrary(listId, {
+    await updateListInDataLibrary({
       ...dataList,
       items: newObject,
-      updatedTime: getTimestamp(),
     });
     // update selections
     removeListMember(listId, itemId);

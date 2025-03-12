@@ -12,7 +12,12 @@ import {
   ReturnStatus,
   StorageService,
 } from './types';
-import { NamedDataItems, UpdateDataLibraryListParams } from '../types';
+import {
+  GroupedDataItems,
+  UpdateDataLibraryListParams,
+  DataLibrary,
+  DataLibraryAPI,
+} from '../types';
 
 interface FetchJSONResponse {
   data?: unknown;
@@ -53,9 +58,9 @@ export const fetchFromDataLibraryAPI = async (
   }
 };
 
-const responseFromMutation = (
+const responseFromMutation = <T = DataLibrary>(
   responseReceived: FetchJSONResponse,
-): ReturnStatus => {
+): ReturnStatus<T> => {
   if (responseReceived.error) {
     console.error(`Error in getLists: ${responseReceived.error.message}`);
     return {
@@ -75,7 +80,7 @@ export class ApiService implements StorageService {
     this.apiBaseUrl = apiBaseUrl;
   }
 
-  async getLists(): Promise<ReturnStatus> {
+  async getLists(): Promise<ReturnStatus<DataLibrary>> {
     const { data, error } = await fetchFromDataLibraryAPI(this.apiBaseUrl);
     if (error) {
       return {
@@ -92,7 +97,24 @@ export class ApiService implements StorageService {
     return { lists: {}, status: 'no list returned' };
   }
 
-  async addList(list: NamedDataItems): Promise<ReturnStatus> {
+  async getListAPIs(): Promise<ReturnStatus<DataLibraryAPI>> {
+    const { data, error } = await fetchFromDataLibraryAPI(this.apiBaseUrl);
+    if (error) {
+      return {
+        isError: true,
+        status: error.message,
+      };
+    }
+    if (data && isDataLibraryAPIResponse(data)) {
+      return {
+        lists: data as unknown as DataLibraryAPI,
+        status: 'success',
+      };
+    }
+    return { lists: {}, status: 'no list returned' };
+  }
+
+  async addList(list: GroupedDataItems): Promise<ReturnStatus> {
     // If the list doesn't have an ID, generate one
     const listToAdd = {
       ...list,
@@ -107,7 +129,9 @@ export class ApiService implements StorageService {
     return responseFromMutation(response);
   }
 
-  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
+  async updateList(
+    list: UpdateDataLibraryListParams,
+  ): Promise<ReturnStatus<DataLibraryAPI>> {
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}/${list.id}`,
       HttpMethod.PUT,
@@ -135,7 +159,9 @@ export class ApiService implements StorageService {
 
   // Additional methods for more complex operations
 
-  async setAllLists(lists: Array<NamedDataItems>): Promise<ReturnStatus> {
+  async setAllLists(
+    lists: Array<GroupedDataItems>,
+  ): Promise<ReturnStatus<DataLibraryAPI>> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,
       HttpMethod.POST,
