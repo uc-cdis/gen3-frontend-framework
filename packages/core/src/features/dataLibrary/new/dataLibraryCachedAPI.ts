@@ -1,6 +1,5 @@
 import { ReturnStatus, StorageService } from './types';
 import {
-  DataLibraryAPI,
   // DataLibrary,
   // Datalist,
   GroupedDataItems,
@@ -75,7 +74,7 @@ export class CachedAPIService implements StorageService {
     if (this.useAPI) {
       // do a network request to get the library
       // get the remote list
-      const apiResults = await this.apiDataLibrary.getListAPIs();
+      const apiResults = await this.apiDataLibrary.getLists();
 
       console.log('api results', apiResults);
       if (apiResults.isError) {
@@ -100,13 +99,14 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.getList(id);
   }
 
-  async setAllLists(
-    lists: Array<GroupedDataItems>,
-  ): Promise<ReturnStatus<DataLibraryAPI>> {
+  async setAllLists(lists: Array<GroupedDataItems>): Promise<ReturnStatus> {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.setAllLists(lists);
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
       await this.localStorageDataLibrary.cacheLists({
         lists: apiResults?.lists ?? {},
@@ -120,11 +120,18 @@ export class CachedAPIService implements StorageService {
       // update the API list
       const apiResults = await this.apiDataLibrary.addList(list);
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
-      return await this.localStorageDataLibrary.cacheLists({
+      const cacheResults = await this.localStorageDataLibrary.cacheLists({
         lists: apiResults?.lists ?? {},
       });
+      return {
+        ...cacheResults,
+        lists: undefined,
+      };
     }
     return await this.localStorageDataLibrary.addList(list);
   }
@@ -133,7 +140,10 @@ export class CachedAPIService implements StorageService {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.updateList(list);
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
       return await this.localStorageDataLibrary.cacheLists({
         lists: apiResults?.lists ?? {},
@@ -147,7 +157,10 @@ export class CachedAPIService implements StorageService {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.deleteList(id);
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
     }
     return await this.localStorageDataLibrary.deleteList(id);
@@ -157,7 +170,10 @@ export class CachedAPIService implements StorageService {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.clearLists();
       if (apiResults.isError) {
-        return apiResults;
+        return {
+          ...apiResults,
+          lists: undefined,
+        };
       }
     }
     return await this.localStorageDataLibrary.clearLists();

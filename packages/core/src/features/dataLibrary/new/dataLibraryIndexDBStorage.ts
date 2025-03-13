@@ -1,13 +1,12 @@
 import { IDBPDatabase, openDB } from 'idb';
 import { ReturnStatus, StorageService } from './types';
 import {
-  LibraryAPIItems,
-  Datalist,
   DatalistAPI,
   DataLibraryAPI,
   GroupedDataItems,
   UpdateDataLibraryListParams,
   isDatalistAPI,
+  DataLibrary,
 } from '../types';
 import { BuildLists, getTimestamp } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
@@ -16,12 +15,12 @@ import { nanoid } from '@reduxjs/toolkit';
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
 
-interface DataLibraryFromStore
-  extends Omit<Datalist, 'createdTime' | 'updatedTime' | 'items'> {
-  created_time: string;
-  updated_time: string;
-  items: LibraryAPIItems;
-}
+// interface DataLibraryFromStore
+//   extends Omit<Datalist, 'createdTime' | 'updatedTime' | 'items'> {
+//   created_time: string;
+//   updated_time: string;
+//   items: LibraryAPIItems;
+// }
 
 export class LocalStorageService implements StorageService {
   private getDb(): Promise<IDBPDatabase> {
@@ -36,7 +35,7 @@ export class LocalStorageService implements StorageService {
 
   setAllLists = async (
     data: Array<GroupedDataItems>,
-  ): Promise<ReturnStatus<DataLibraryAPI>> => {
+  ): Promise<ReturnStatus> => {
     const timestamp = getTimestamp();
     const allLists = data.reduce((acc: JSONObject, x: unknown) => {
       if (!isJSONObject(x)) return acc;
@@ -73,25 +72,17 @@ export class LocalStorageService implements StorageService {
     const db = await this.getDb();
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
-    const lists = (await store.get(id)) as Array<DataLibraryFromStore>;
+    const lists = (await store.get(id)) as Array<DatalistAPI>;
     if (lists) {
       return {
         status: 'success',
-        lists: lists.reduce(
-          (acc: Record<string, Datalist>, x: DataLibraryFromStore) => {
-            acc[x.id] = {
-              id: x.id,
-              version: x.version,
-              name: x.name,
-              authz: x.authz,
-              createdTime: x.created_time,
-              updatedTime: x.updated_time,
-              items: x.items as any,
-            };
-            return acc;
-          },
-          {},
-        ),
+        lists: lists.reduce((acc: DataLibrary, x: DatalistAPI) => {
+          acc[x.id] = {
+            ...x,
+            items: x.items as any,
+          };
+          return acc;
+        }, {}),
       };
     } else {
       return { isError: true, status: `${id} does not exist` };
@@ -103,17 +94,11 @@ export class LocalStorageService implements StorageService {
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
 
-    const lists = (await store.getAll()) as Array<DataLibraryFromStore>;
-    const listMap = lists.reduce(
-      (acc: Record<string, JSONObject>, x: DataLibraryFromStore) => {
-        acc[x.id] = {
-          ...x,
-          items: x.items as any, // TODO Process items
-        } as unknown as JSONObject;
-        return acc;
-      },
-      {},
-    );
+    const lists = (await store.getAll()) as Array<DatalistAPI>;
+    const listMap = lists.reduce((acc: DataLibraryAPI, x: DatalistAPI) => {
+      acc[x.id] = x;
+      return acc;
+    }, {});
     const datalists = BuildLists({ lists: listMap });
     return {
       status: 'success',

@@ -33,7 +33,10 @@ export interface FileItem extends ListItem {
   type?: string;
   size?: string;
   itemType: 'Data';
-  datasetGuid: string;
+}
+
+export interface FileItemAPI extends FileItem {
+  dataset_guid: string;
 }
 
 export interface CohortItem extends ListItem {
@@ -83,8 +86,8 @@ export const isDatalistAPI = (value: unknown): value is DatalistAPI => {
   if (
     typeof data.name !== 'string' ||
     typeof data.id !== 'string' ||
-    typeof data.createdTime !== 'string' ||
-    typeof data.updatedTime !== 'string' ||
+    typeof data.created_time !== 'string' ||
+    typeof data.updated_time !== 'string' ||
     typeof data.version !== 'number' ||
     typeof data.authz !== 'object' ||
     data.authz === null ||
@@ -124,14 +127,14 @@ export type FilesOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
 export type LibraryAPIItems = Record<
   string,
-  FileItem | AdditionalDataItem | CohortItem
+  FileItemAPI | AdditionalDataItem | CohortItem
 >;
 
 export interface DataItemBaseData {
   name: string;
   id: string;
-  createdTime: string;
-  updatedTime: string;
+  created_time: string;
+  updated_time: string;
   authz: AuthZAccess;
   version: number;
 }
@@ -155,7 +158,21 @@ export type DataLibrary = Record<string, Datalist>;
 export type DataLibraryAPI = Record<string, DatalistAPI>;
 
 export type DataLibraryAPIResponse = {
-  lists: Record<string, JSONObject>;
+  lists: DataLibraryAPI;
+};
+
+/**
+ * Type guard for DataLibraryAPIResponse
+ */
+export const isDataLibraryAPIResponse = (
+  obj: unknown,
+): obj is DataLibraryAPIResponse => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'lists' in obj &&
+    typeof (obj as DataLibraryAPIResponse).lists === 'object'
+  );
 };
 
 export type DataLibraryGroupedResponse = {

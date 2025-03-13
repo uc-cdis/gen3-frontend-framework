@@ -4,12 +4,12 @@ import {
   DataLibrary,
   DataLibraryAPIResponse,
   Datalist,
+  DatalistAPI,
   DatalistAsItems,
   // DataListEntry,
   DataSetItems,
   isCohortItem,
   isFileItem,
-  LibraryAPIItems,
 } from './types';
 import { parse } from 'graphql';
 import { JSONObject } from '../../types/';
@@ -35,7 +35,7 @@ const processItem = (id: string, data: any) => {
 
 export const BuildList = (
   listId: string,
-  listData: JSONObject,
+  listData: DatalistAPI,
 ): Datalist | undefined => {
   if (!Object.keys(listData).includes('items')) return undefined;
 
@@ -51,9 +51,11 @@ export const BuildList = (
           index: data.index,
         } as CohortItem;
       } else {
-        if (!(data.dataset_guid in acc.items)) {
+        if (
+          !(data?.dataset_guid && (data.dataset_guid as string) in acc.items)
+        ) {
           acc.items[data.dataset_guid as string] = {
-            id: data.dataset_guid,
+            id: data.dataset_guid as string,
             name: '',
             items: { [id]: processItem(id, data) },
           };
@@ -68,14 +70,11 @@ export const BuildList = (
     {
       items: {},
       version: listData?.version ?? 0,
-      createdTime: listData?.created_time,
-      updatedTime: listData?.updated_time,
+      created_time: listData?.created_time,
+      updated_time: listData?.updated_time,
       name: listData?.name ?? listId,
       id: listId,
-      authz: {
-        version: (listData.authz as JSONObject).version,
-        authz: (listData as JSONObject).authz,
-      },
+      authz: listData?.authz,
     } as Datalist,
   );
   return items;
@@ -83,7 +82,7 @@ export const BuildList = (
 
 export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
   return Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
-    const list = BuildList(listId, listData as JSONObject);
+    const list = BuildList(listId, listData);
     if (list) acc[listId] = list;
     return acc;
   }, {} as DataLibrary);
@@ -123,7 +122,7 @@ export const flattenDataList = (dataList: Datalist) => {
   // convert datalist into user-data-library for for updating.
 
   const items = Object.entries(dataList.items).reduce(
-    (acc: LibraryAPIItems, [id, value]) => {
+    (acc: any, [id, value]) => {
       if (isCohortItem(value)) {
         acc[id] = value;
       } else {
@@ -137,7 +136,7 @@ export const flattenDataList = (dataList: Datalist) => {
   return {
     name: dataList.name,
     items: items,
-  } as DatalistAsItems;
+  } as unknown as DatalistAsItems;
 };
 
 export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
