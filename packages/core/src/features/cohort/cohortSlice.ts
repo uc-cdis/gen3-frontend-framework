@@ -61,6 +61,10 @@ interface SetFilterParams {
   filters: FilterSet;
 }
 
+interface SetAllIndexFiltersParams {
+  filters: IndexedFilterSet;
+}
+
 interface RemoveFilterParams {
   index: string;
   field: string;
@@ -219,6 +223,18 @@ export const cohortSlice = createSlice({
         },
       });
     },
+    setCohortIndexFilters: (
+      state: Draft<CohortState>,
+      action: PayloadAction<SetAllIndexFiltersParams>,
+    ) => {
+      return {
+        cohort: {
+          ...state.cohort,
+          filters: { ...action.payload.filters },
+        },
+      };
+    },
+
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (state, action: PayloadAction<RemoveFilterParams>) => {
       const { index, field } = action.payload;
@@ -232,6 +248,7 @@ export const cohortSlice = createSlice({
       if (!filters) {
         return;
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [field]: _a, ...updated } = filters;
 
       cohortsAdapter.updateOne(state, {
@@ -327,6 +344,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
 export const {
   updateCohortFilter,
   setCohortFilter,
+  setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
   removeCohort,
@@ -339,6 +357,8 @@ export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
   const currentCohortId = getCurrentCohortFromCoreState(state);
   return state.cohorts.entities[currentCohortId]?.filters;
 };
+export const selectCohortFilters = (state: CoreState): IndexedFilterSet =>
+  state.cohorts.cohort.cohort.filters;
 
 export const selectCurrentCohortId = (state: CoreState): CohortId => {
   return getCurrentCohort(state.cohorts);
@@ -451,6 +471,7 @@ export const selectAvailableCohortByName = (
     .find((cohort: Cohort) => cohort.name === name);
 
 const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };
+
 /**
  * Select a filter from the index.
  * returns undefined.

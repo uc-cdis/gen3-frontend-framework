@@ -1,6 +1,7 @@
-import { loadEnvConfig } from "@next/env";
+import type { Config } from 'jest';
 
-export default async () => {
-  const projectDir = process.cwd();
-  loadEnvConfig(projectDir);
+export default async (): Promise<Config> => {
+  return {
+    verbose: true,
+  };
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ResourcesFilters from './ResourcesFilters';
 import ResourcesTable from './ResourcesTable';
 import ResourcesProvider from './ResourcesProvider';

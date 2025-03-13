@@ -3,8 +3,6 @@
     "rootDir": "src",
     "outDir": "dist/dts",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "declarationMap": true,
-    "declaration": true,
     "emitDeclarationOnly": false,
     "allowJs": true,
     "module": "esnext",
@@ -19,6 +17,8 @@
     "resolveJsonModule": true,
     "incremental": true,
     "noEmitOnError": true,
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     // "noUnusedLocals": true, // TODO: enable
     // "noUnusedParameters": true,

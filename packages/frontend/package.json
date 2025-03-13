@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.68",
+  "version": "0.10.82",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -26,7 +26,7 @@
     "copy-tailwind": "cp src/tailwind.cjs dist/tailwind.cjs",
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
-    "build:watch": "npm run rollup -- --watch",
+    "build:watch": "npm run compile --stream && npm run rollup -- --watch",
     "dev": "npm run build:watch"
   },
   "exports": {
@@ -49,20 +49,21 @@
     "os": false
   },
   "dependencies": {
+    "@gen3/core": "^0.10.81",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify/react": "^5.0.2",
     "@kbox-labs/react-echarts": "^1.4.0",
-    "@mantine/core": "^7.13.3",
-    "@mantine/dates": "^7.13.3",
-    "@mantine/form": "^7.13.3",
-    "@mantine/hooks": "^7.13.3",
-    "@mantine/modals": "^7.13.3",
-    "@mantine/notifications": "^7.13.3",
+    "@mantine/core": "^7.16.0",
+    "@mantine/dates": "^7.16.0",
+    "@mantine/form": "^7.16.0",
+    "@mantine/hooks": "^7.16.0",
+    "@mantine/modals": "^7.16.0",
+    "@mantine/notifications": "^7.16.0",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
     "@next/mdx": "^14.1.1",
-    "@reduxjs/toolkit": "^2.2.8",
+    "@reduxjs/toolkit": "^2.5.0",
     "@tabler/icons-react": "^3.19.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
@@ -72,7 +73,7 @@
     "chart.js": "^4.0.1",
     "colorette": "^2.0.20",
     "default-composer": "^0.6.0",
-    "dompurify": "^3.1.6",
+    "dompurify": "3.2.4",
     "echarts": "^5.5.1",
     "fetch-retry": "^5.0.6",
     "file-saver": "^2.0.5",
@@ -84,10 +85,10 @@
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
-    "mantine-react-table": "^2.0.0-beta.7",
+    "mantine-react-table": "^2.0.0-beta.8",
     "mathjs": "^13.1.1",
     "minisearch": "^6.3.0",
-    "next": "^14.2.15",
+    "next": "^15.1.7",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
@@ -114,8 +115,8 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@iconify/tools": "^4.0.7",
     "@iconify/types": "^2.0.0",
+    "@storybook/react": "^8.6.4",
     "@svgr/webpack": "^8.1.0",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
@@ -146,7 +147,6 @@
     "swr": "^2.2.5"
   },
   "peerDependencies": {
-    "@gen3/core": "^0.10.68",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.16"

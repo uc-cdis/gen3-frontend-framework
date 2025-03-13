@@ -42,6 +42,9 @@ export interface WorkspacePayModelResponse {
   noPayModel: boolean;
 }
 
+/**
+ * Workspace Pod status
+ */
 export enum WorkspaceStatus {
   Launching = 'Launching',
   Running = 'Running',
@@ -50,6 +53,15 @@ export enum WorkspaceStatus {
   NotFound = 'Not Found',
   Errored = 'Errored',
   StatusError = 'Status Error',
+}
+
+/**
+ * requested state of pod, either by user or workspace monitor
+ */
+export enum RequestedWorkspaceStatus {
+  Launch = 'Launch',
+  Terminate = 'Terminate',
+  Unset = 'Unset', // same
 }
 
 export enum PodConditionType {

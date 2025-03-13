@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { AnalysisCenterConfiguration } from './types';
 import { Select, TextInput, Image, Stack, NavLink } from '@mantine/core';
 import NextImage from 'next/image';

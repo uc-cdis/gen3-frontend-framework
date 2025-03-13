@@ -4,6 +4,7 @@ import {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
   useGetIndexFields,
+  groupSharedFields,
 } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
 export * from './types';
@@ -13,4 +14,5 @@ export {
   downloadJSONDataFromGuppy,
   useDownloadFromGuppyMutation,
   useGetIndexFields,
+  groupSharedFields,
 };

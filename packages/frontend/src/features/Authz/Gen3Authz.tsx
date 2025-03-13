@@ -1,3 +1,4 @@
+import React from 'react';
 import { Tabs } from '@mantine/core';
 import UserPanel from './Users/UserPanel';
 import { Authz } from './types';

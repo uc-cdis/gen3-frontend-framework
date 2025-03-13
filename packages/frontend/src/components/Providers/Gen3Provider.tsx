@@ -1,11 +1,6 @@
 import React, { useEffect, ReactNode } from 'react';
 import { CoreProvider } from '@gen3/core';
-import {
-  createTheme,
-  MantineProvider,
-  // createEmotionCache,
-  // EmotionCache,
-} from '@mantine/core';
+import { createTheme, Pagination, Modal } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
@@ -16,56 +11,26 @@ import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 
 interface Gen3ProviderProps {
-  colors: Record<string, TenStringArray>;
   icons: Array<RegisteredIcons>;
-  fonts: Fonts;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   children?: ReactNode | undefined;
 }
 
 // Define theme for mantine v7
-const createMantineTheme = (
+export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
 ) => {
   const theme = createTheme({
     // use V2 font in MantineProvider
     fontFamily: fonts.fontFamily,
-    headings: {
-      // properties for individual headings
-      sizes: {
-        h1: {
-          fontSize: '1.5rem',
-        },
-      },
-    },
-    // Override default blue color until styles are determined
-    colors: {
-      white: [
-        // TODO: replace with primary theme color
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-        '#ffffff',
-      ],
-      // Add default color from tailwind config to Mantine theme
-      // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
-      // plugins declaration.
-      // TODO: refactor how the configuration get loaded
-      ...Object.fromEntries(
-        Object.entries(colors).map(([key, values]) => [
-          key,
-          Object.values(values),
-        ]),
-      ),
-    },
+    colors: Object.fromEntries(
+      Object.entries(colors).map(([key, values]) => (values? [
+        key,
+        Object.values(values),
+      ]: [])),
+    ),
     primaryColor: 'primary',
     primaryShade: { light: 4, dark: 7 },
     breakpoints: {
@@ -76,13 +41,32 @@ const createMantineTheme = (
       xl: '112.5em',
     },
     components: {
-      Modal: {
+      Modal: Modal.extend({
         defaultProps: {
           classNames: {
             title: 'font-bold',
           },
         },
-      },
+      }),
+      Pagination: Pagination.extend({
+        defaultProps: { //Add 508 localization to Pagination
+          getControlProps: (control) => {
+            if (control === 'first') {
+              return { "aria-label": "First" };
+            }
+            if (control === 'last') {
+              return { "aria-label": "Last" };
+            }
+            if (control === 'next') {
+              return { "aria-label": "Next" };
+            }
+            if (control === 'previous') {
+              return { "aria-label": "Previous" };
+            }
+            return {};
+          },
+        },
+      }),
     },
   });
 
@@ -95,9 +79,7 @@ const createMantineTheme = (
  * inactivity limits for session timeouts.
  */
 const Gen3Provider = ({
-  colors,
   icons,
-  fonts,
   sessionConfig,
   modalsConfig,
   children,
@@ -106,20 +88,17 @@ const Gen3Provider = ({
     icons.forEach((i) => addCollection(i));
   }, [icons]);
 
-  const theme = createMantineTheme(fonts, colors);
 
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
-        <ModalsProvider>
-          <Notifications />
-          <SessionProvider {...sessionConfig}>
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
-          </SessionProvider>
-        </ModalsProvider>
-      </MantineProvider>
+      <ModalsProvider>
+        <Notifications />
+        <SessionProvider {...sessionConfig}>
+          <Gen3ModalsProvider config={modalsConfig}>
+            {children}
+          </Gen3ModalsProvider>
+        </SessionProvider>
+      </ModalsProvider>
     </CoreProvider>
   );
 };

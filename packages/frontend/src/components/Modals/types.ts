@@ -12,7 +12,11 @@ export interface FirstTimeModalConfig extends BaseModalConfig{
   expireDays?: number;
 }
 
+export interface SessionExpiredModalConfig extends BaseModalConfig{
+  externalLoginUrl?: string;
+}
 
 export interface ModalsConfig {
   systemUseModal?: FirstTimeModalConfig;
+  sessionExpiredModal?: SessionExpiredModalConfig;
 }

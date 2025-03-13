@@ -1,6 +1,7 @@
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
   Accordion,
+  Center,
   Group,
   Loader,
   Select,
@@ -27,7 +28,7 @@ import {
   FaExclamationCircle as InactiveIcon,
 } from 'react-icons/fa';
 import { PaymentNumberToString } from '../utils';
-import { WarningCard, ErrorCard } from '../../../components/MessageCards';
+import { ErrorCard } from '../../../components/MessageCards';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
 import StatusAndControls from '../StatusAndControls';
@@ -46,10 +47,13 @@ const NoPayModel = () => {
       className="p-2 border-1 border-l-0 border-r-0 border-base-lighter w-full h-16"
       justify="space-between"
     >
-      <Text className="pl-4" size="md" classNames={{ root: 'font-heading' }}>
+      <Text
+        className="pl-4"
+        size="md"
+        classNames={{ root: 'font-heading text-utility-warning' }}
+      >
         No pay model defined
       </Text>
-      <StatusAndControls />
     </Group>
   );
 };
@@ -134,7 +138,12 @@ const PaymentPanel = () => {
   if (isError) {
     if (isNoPayModelError(error)) {
       return <NoPayModel />;
-    } else return <ErrorCard message="Unable to get Payment information" />;
+    } else
+      return (
+        <Center>
+          <ErrorCard message="Unable to get Payment information" />
+        </Center>
+      );
   }
 
   return (

@@ -1,7 +1,11 @@
 import { selectCSRFToken } from '../features/user';
 import { coreStore } from '../store';
-import { GEN3_FENCE_API } from '../constants';
+import { GEN3_FENCE_API, GEN3_API } from '../constants';
 import { getCookie } from 'cookies-next';
+
+const DEFAULT_METHOD = 'GET';
+const CONTENT_TYPE_HEADER = 'Content-Type';
+const CONTENT_TYPE_JSON = 'application/json';
 
 export const HTTPErrorMessages: Record<number, string> = {
   // 4xx Client Errors
@@ -49,6 +53,11 @@ export const HTTPErrorMessages: Record<number, string> = {
   511: 'Network Authentication Required',
 };
 
+/**
+ * Represents an error that occurs during an HTTP request.
+ * Extends the built-in `Error` class to provide additional information
+ * about the HTTP status code and optional response data.
+ */
 export class HTTPError extends Error {
   constructor(
     public status: number,
@@ -60,7 +69,7 @@ export class HTTPError extends Error {
   }
 }
 
-interface DownloadFromFenceParameters {
+interface FetchFencePresignedURLParameters {
   guid: string;
   method?: 'GET' | 'POST';
   onStart?: () => void; // function to call when the download starts
@@ -75,21 +84,23 @@ export const fetchFencePresignedURL = async ({
   method = 'GET',
   onAbort = () => null,
   signal = undefined,
-}: DownloadFromFenceParameters) => {
+}: FetchFencePresignedURLParameters) => {
   const csrfToken = selectCSRFToken(coreStore.getState());
 
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
-  let accessToken = undefined;
+
   if (process.env.NODE_ENV === 'development') {
     // NOTE: This cookie can only be accessed from the client side
     // in development mode. Otherwise, the cookie is set as httpOnly
-    accessToken = getCookie('credentials_token');
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    }
   }
   if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
-  if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
 
-  const url = `${GEN3_FENCE_API}/user/data/download/${guid}`;
+  const url = `${GEN3_FENCE_API}/data/download/${guid}`;
   try {
     const response = await fetch(url, {
       method: method,
@@ -110,10 +121,8 @@ export const fetchFencePresignedURL = async ({
         // If JSON parsing fails, use status text
         errorMessage = response.statusText;
       }
-
       throw new HTTPError(response.status, errorMessage, errorData);
     }
-
     return (await response.json())['url'];
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -123,4 +132,81 @@ export const fetchFencePresignedURL = async ({
     }
     throw error;
   }
+};
+
+/**
+ * Retrieves a CSRF token from the server.
+ *
+ * This asynchronous function sends a GET request to the server's status endpoint
+ * to fetch the CSRF token in the response. The token is expected to be included
+ * in the JSON response under the `csrf_token` field.
+ *
+ * @returns {Promise<string | null>} A promise that resolves to the CSRF token as a string if successfully retrieved,
+ * or null if the token is not present in the response.
+ * @throws {HTTPError} Throws an HTTPError if the server response is not successful.
+ */
+const getCSRFToken = async (): Promise<string | null> => {
+  const requestHeaders = new Headers({
+    [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
+  });
+  const response = await fetch(`${GEN3_API}/_status`, {
+    headers: requestHeaders,
+  });
+
+  if (!response.ok) {
+    throw new HTTPError(response.status, response.statusText);
+  }
+
+  const { csrf_token: csrfToken } = await response.json();
+  return csrfToken || null;
+};
+
+/**
+ * Fetches JSON data from a specified URL using the Fetch API.
+ *
+ * @param {string} url - The URL to fetch the JSON data from.
+ * @param {boolean} [requiresCSRF=false] - Indicates whether a CSRF token is required for the request.
+ *                                         If true, the CSRF token will be added to the request headers.
+ * @param {string} [method=DEFAULT_METHOD] - The HTTP method to use for the request (e.g., 'GET', 'POST').
+ * @param {unknown} [body=undefined] - The request body to send, applicable when using methods like 'POST'.
+ *
+ * @returns {Promise<any>} A promise that resolves to the parsed JSON data from the response.
+ *
+ * @throws {HTTPError} Throws an error if the HTTP response status indicates a failure.
+ */
+export const fetchJSONDataFromURL = async (
+  url: string,
+  requiresCSRF: boolean = false,
+  method: string = DEFAULT_METHOD,
+  body: unknown = undefined,
+): Promise<any> => {
+  const requestHeaders = new Headers({
+    [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
+  });
+
+  if (requiresCSRF) {
+    const csrfToken = await getCSRFToken();
+    if (csrfToken) {
+      requestHeaders.set('X-CSRF-Token', csrfToken);
+    }
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      requestHeaders.set('Authorization', `Bearer ${accessToken}`);
+    }
+  }
+
+  const response = await fetch(url, {
+    method,
+    headers: requestHeaders,
+    body: method === 'POST' ? JSON.stringify(body) : null,
+  } as RequestInit);
+
+  if (!response.ok) {
+    throw new HTTPError(response.status, response.statusText);
+  }
+
+  return response.json();
 };

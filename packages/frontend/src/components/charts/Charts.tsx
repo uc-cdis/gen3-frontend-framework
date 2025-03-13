@@ -25,7 +25,7 @@ import { createChart } from './createChart';
 import { SummaryChart } from './types';
 
 import { computeRowSpan } from './utils';
-import { ErrorCard } from '../../index';
+import ErrorCard from '../../components/MessageCards/ErrorCard';
 
 const DEFAULT_COLS = 3;
 const MAX_LEGEND_ROWS = 4;
@@ -176,8 +176,10 @@ const Charts = ({
         </React.Fragment>
       );
     };
-
-    const dataKeys = Object.keys(data[field][0]);
+    const dataKeys =
+      field in data && data?.[field].length > 0
+        ? Object.keys(data[field][0])
+        : [];
 
     const chartTitle = charts[field].title ?? fieldNameToTitle(field);
 
@@ -256,7 +258,9 @@ const Charts = ({
   };
 
   return (
-    <Grid className="w-full">{data && Object.keys(charts).map(chartCard)}</Grid>
+    <Grid className="w-full">
+      {data && Object.keys(charts)?.map(chartCard)}
+    </Grid>
   );
 };
 

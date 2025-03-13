@@ -37,3 +37,6 @@ yarn-error.log*
 packages/sampleCommons/config/canine
 packages/sampleCommons/config/midrc
 packages/sampleCommons/config/heal
+packages/sampleCommons/config/bdc
+/packages/frontend/.rollup.cache/
+/packages/sampleCommons/.swc/

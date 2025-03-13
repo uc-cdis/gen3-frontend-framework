@@ -1,27 +1,68 @@
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
-import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Checkbox,
+  LoadingOverlay,
+  SegmentedControl,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle, type CombineMode } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
-import { SortType } from './types';
-import { updateFacetEnum } from './utils';
+import { FacetSortType, SortType } from './types';
+import { mapFacetSortToSortType, updateFacetEnum } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { Icon } from '@iconify/react';
+
+const compareKeysAscending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a - b;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return -1;
+  if (typeof b === 'number') return 1;
+  // If both are strings, sort alphabetically
+  return a.localeCompare(b);
+};
+
+const compareKeysDescending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return b - a;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return 1;
+  if (typeof b === 'number') return -1;
+  // If both are strings, sort alphabetically
+  return b.localeCompare(a);
+};
 
 interface FacetEnumListProps {
   field: string;
   facetName?: string;
   valueLabel: string;
   hooks: EnumFacetHooks;
+  isSettings?: boolean;
   isSearching?: boolean;
   isFacetView?: boolean;
   showPercent?: boolean;
   hideIfEmpty?: boolean;
   showSorting?: boolean;
+  sort?: FacetSortType;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -29,17 +70,23 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   facetName,
   hooks,
   valueLabel,
+  isSettings = false,
   isFacetView = true,
   isSearching = false,
   showPercent = false,
   hideIfEmpty = false,
   showSorting = true,
+  sort = 'value-dsc',
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const settingRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const { data, enumFilters, isSuccess, error } = hooks.useGetFacetData(field);
+  // const [combineMode, setCombineMode] = useState<'or' | 'and'>('or');
+
+  const { data, enumFilters, combineMode, isSuccess, error } =
+    hooks.useGetFacetData(field);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters ?? []);
   const totalCount = hooks?.useTotalCounts ? hooks.useTotalCounts() : 1;
   const clearFilters = hooks.useClearFilter();
@@ -47,13 +94,13 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
-  const [sortedData, setSortedData] = useState<Record<string | number, number>>(
-    {},
+  const [sortedData, setSortedData] = useState<
+    Array<[string | number, number]>
+  >([]);
+  const [sortType, setSortType] = useState<SortType>(
+    mapFacetSortToSortType(sort),
   );
-  const [sortType, setSortType] = useState<SortType>({
-    type: 'alpha',
-    direction: 'asc',
-  });
+  const theme = useMantineTheme();
 
   useEffect(() => {
     if (isSearching) {
@@ -62,6 +109,12 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
       setSearchTerm('');
     }
   }, [isSearching, searchTerm]);
+
+  useEffect(() => {
+    if (isSettings) {
+      settingRef?.current?.focus();
+    }
+  }, [settingRef, isSettings]);
 
   useDeepCompareEffect(() => {
     setSelectedEnums(enumFilters ?? []);
@@ -77,11 +130,33 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     });
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+      updateFacetEnum(
+        field,
+        updated,
+        updateFacetFilters,
+        clearFilters,
+        combineMode,
+      );
     } else {
       const updated = selectedEnums?.filter((x) => x != value);
-      updateFacetEnum(field, updated ?? [], updateFacetFilters, clearFilters);
+      updateFacetEnum(
+        field,
+        updated ?? [],
+        updateFacetFilters,
+        clearFilters,
+        combineMode,
+      );
     }
+  };
+
+  const handleCombineModeChange = (mode: CombineMode) => {
+    updateFacetEnum(
+      field,
+      selectedEnums ?? [],
+      updateFacetFilters,
+      clearFilters,
+      mode,
+    );
   };
 
   const [facetChartData, setFacetChartData] = useState<{
@@ -202,65 +277,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
 
   useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
-      const compareValuesAscending = (
-        [, a]: [string | number, number],
-        [, b]: [string | number, number],
-      ): number => a - b;
-      const compareValuesDescending = (
-        [, a]: [string | number, number],
-        [, b]: [string | number, number],
-      ): number => b - a;
-      const compareKeysAscending = (
-        [a]: [string | number, number],
-        [b]: [string | number, number],
-      ): number =>
-        typeof a === 'string' && typeof b === 'string'
-          ? a.localeCompare(b)
-          : typeof a === 'number' && typeof b === 'number'
-            ? a - b
-            : 0;
-
-      const compareKeysDescending = (
-        [a]: [string | number, number],
-        [b]: [string | number, number],
-      ): number =>
-        typeof a === 'string' && typeof b === 'string'
-          ? b.localeCompare(a)
-          : typeof a === 'number' && typeof b === 'number'
-            ? b - a
-            : 0;
-
-      let comparisonFn;
-
-      if (sortType.type === 'value') {
-        comparisonFn =
-          sortType.direction === 'dsc'
-            ? compareValuesDescending
-            : compareValuesAscending;
-      } else {
-        comparisonFn =
-          sortType.direction === 'dsc'
-            ? compareKeysDescending
-            : compareKeysAscending;
-      }
-
       const obj = [...facetChartData.filteredData]
-        .sort(comparisonFn)
-        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined)
-        .reduce(
-          (acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-          },
-          {} as Record<string | number, number>,
-        );
-
-      const val = Object.fromEntries(
-        [...facetChartData.filteredData]
-          .sort(comparisonFn)
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
-      );
-
+        .sort(
+          sortType.type === 'value'
+            ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
+            : ([a], [b]) =>
+                sortType.direction === 'dsc'
+                  ? compareKeysDescending(a, b)
+                  : compareKeysAscending(a, b),
+        )
+        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
       setSortedData(obj);
     }
   }, [
@@ -306,6 +332,36 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
               }
             />
           )}
+          {isSettings && (
+            <div className="flex w-full justify-center">
+              <div className="flex items-center space-x-1 mt-1">
+                <SegmentedControl
+                  classNames={{
+                    root: 'border-1 border-accent rounded-l-md rounded-r-md',
+                    control: 'p-0 m-0',
+                    indicator: 'bg-accent text-accent-contrast',
+                  }}
+                  ref={settingRef}
+                  value={combineMode}
+                  onChange={(value: string) => {
+                    handleCombineModeChange(value as 'and' | 'or');
+                  }}
+                  data={[
+                    { label: 'AND', value: 'and' },
+                    { label: 'OR', value: 'or' },
+                  ]}
+                />
+                <Tooltip label="Combine filters with AND or OR 2">
+                  <Icon
+                    icon="gen3:info"
+                    height={12}
+                    width={12}
+                    color={theme.colors.accent[4]}
+                  />
+                </Tooltip>
+              </div>
+            </div>
+          )}
           <div
             className={
               isFacetView
@@ -345,10 +401,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                       {BAD_DATA_MESSAGE}
                     </div>
                   ) : isSuccess ? (
-                    !sortedData || Object.entries(sortedData).length === 0 ? (
+                    !sortedData || sortedData.length === 0 ? (
                       <div className="mx-4">No results found</div>
                     ) : (
-                      Object.entries(sortedData ?? {}).map(([value, count]) => {
+                      sortedData.map(([value, count]) => {
                         return (
                           <div
                             key={`${field}-${value}`}
@@ -376,7 +432,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 }
                               />
                             </div>
-                            <OverflowTooltippedLabel label={value}>
+                            <OverflowTooltippedLabel label={value.toString()}>
                               <span className="text-xs font-normal font-content">
                                 {value}
                               </span>

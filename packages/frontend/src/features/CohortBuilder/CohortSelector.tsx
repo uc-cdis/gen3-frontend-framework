@@ -5,6 +5,7 @@ import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/J
 import {
   type Cohort,
   type FilterSet,
+  type IndexedFilterSet,
   useCoreDispatch,
   setCohortFilter,
   useCoreSelector,
@@ -12,6 +13,7 @@ import {
   selectCurrentCohortModified,
   selectCurrentCohortSaved,
   setActiveCohort,
+  setCohortIndexFilters,
   selectCurrentCohortId,
 } from '@gen3/core';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -45,6 +47,16 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
   const getData = useDeepCompareCallback(() => {
     return filters;
   }, [filters]);
+
+  const setCohort = useDeepCompareCallback(
+    (data: string) => {
+      const jsonForm = JSON.parse(data);
+      coreDispatch(
+        setCohortIndexFilters({ filters: jsonForm as IndexedFilterSet }),
+      );
+    },
+    [coreDispatch],
+  );
 
   const handleCohortChange = useDeepCompareCallback(
     (id: string) => {

@@ -36,7 +36,7 @@ const getModal = (
       break;
     }
     case Modals.SessionExpireModal: {
-      res = <SessionExpiredModal openModal={true} />;
+      res = <SessionExpiredModal openModal={true} config={config.sessionExpiredModal}/>;
       break;
     }
   }

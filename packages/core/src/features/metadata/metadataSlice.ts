@@ -158,6 +158,9 @@ export const metadataApi = gen3Api.injectEndpoints({
     getData: builder.query<Metadata, string>({
       query: (params) => ({ url: `metadata?${params}` }),
     }),
+    getMetadataById: builder.query<JSONObject, string>({
+      query: (params) => ({ url: `${GEN3_MDS_API}/metadata/${params}` }),
+    }),
     // TODO: Move this to own slice
     getCrosswalkData: builder.query<CrosswalkArray, CrossWalkParams>({
       queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -223,6 +226,7 @@ export const {
   useGetMDSQuery,
   useGetTagsQuery,
   useGetDataQuery,
+  useGetMetadataByIdQuery,
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
   useGetIndexAggMDSQuery,

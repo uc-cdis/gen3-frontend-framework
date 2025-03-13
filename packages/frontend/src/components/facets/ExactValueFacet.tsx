@@ -16,6 +16,7 @@ import {
   trimFirstFieldNameToTitle,
   EnumFilterValue,
 } from '@gen3/core';
+import FacetControlsHeader from './FacetControlsHeader';
 
 type ExactValueProps = Omit<
   FacetCardProps<FacetDataHooks>,
@@ -47,6 +48,7 @@ const extractValues = (
  * @param dismissCallback - callback function to dismiss the facet
  * @param width - width of the facet
  * @param hooks - hooks to use for the facet
+ * @param header - header components
  * @category Facets
  */
 const ExactValueFacet: React.FC<ExactValueProps> = ({
@@ -56,6 +58,11 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   dismissCallback = undefined,
   width = undefined,
   hooks,
+  header = {
+    Panel: FacetHeader,
+    Label: FacetText,
+    iconStyle: controlsIconStyle,
+  },
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(''); // Handle the state of the TextInput
   const clearFilters = hooks.useClearFilter();
@@ -65,6 +72,9 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     : trimFirstFieldNameToTitle(field, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
+  const isFilterExpanded =
+    hooks.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const setValues = (values: EnumFilterValue) => {
     if (values.length > 0) {
@@ -117,80 +127,61 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         width ? width : 'mx-0'
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
-      <FacetHeader>
-        <Tooltip
-          disabled={!description}
-          label={description}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: 'fade' }}
-        >
-          <FacetText>{facetTitle}</FacetText>
-        </Tooltip>
-        <div className="flex flex-row">
-          <Tooltip label="Clear selection">
-            <FacetIconButton
-              onClick={() => clearFilters(field)}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.15em" className={controlsIconStyle} />
-            </FacetIconButton>
-          </Tooltip>
-          {dismissCallback && (
-            <Tooltip label="Remove the facet">
-              <FacetIconButton
-                onClick={() => {
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" className={controlsIconStyle} />
-              </FacetIconButton>
-            </Tooltip>
-          )}
-        </div>
-      </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2">
-        <TextInput
-          data-testid="textbox-add-filter-value"
-          size="sm"
-          placeholder={`Enter ${facetTitle}`}
-          classNames={{ root: 'grow', input: 'border-r-0 rounded-r-none py-1' }}
-          aria-label="enter value to add filter"
-          value={textValue}
-          onChange={(event) => setTextValue(event.currentTarget.value)}
-        />
-        <ActionIcon
-          size="lg"
-          aria-label="add string value"
-          className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
-          onClick={() => {
-            if (textValue.length > 0) addValue(textValue.trim());
-          }}
-        >
-          <PlusIcon />
-        </ActionIcon>
-      </div>
-      {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
-      <Group
-        gap="xs"
-        className="px-2 py-2 max-h-96 overflow-y-auto"
-        data-testid="values group"
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        dismissCallback={dismissCallback}
+        header={header}
+      />
+      <div
+        className={showFilters ? 'h-full' : 'h-0 invisible'}
+        aria-hidden={!showFilters}
       >
-        {textValues.map((x) => (
-          <Badge
+        <div className="flex flex-nowrap items-center p-2">
+          <TextInput
+            data-testid="textbox-add-filter-value"
             size="sm"
-            variant="filled"
-            color="accent"
-            key={x}
-            rightSection={removeButton(x)}
+            placeholder={`Enter ${facetTitle}`}
+            classNames={{
+              root: 'grow',
+              input: 'border-r-0 rounded-r-none py-1',
+            }}
+            aria-label="enter value to add filter"
+            value={textValue}
+            onChange={(event) => setTextValue(event.currentTarget.value)}
+          />
+          <ActionIcon
+            size="lg"
+            aria-label="add string value"
+            className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
+            onClick={() => {
+              if (textValue.length > 0) addValue(textValue.trim());
+            }}
           >
-            {x}
-          </Badge>
-        ))}
-      </Group>
+            <PlusIcon />
+          </ActionIcon>
+        </div>
+        {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
+        <Group
+          gap="xs"
+          className="px-2 py-2 max-h-96 overflow-y-auto"
+          data-testid="values group"
+        >
+          {textValues.map((x) => (
+            <Badge
+              size="sm"
+              variant="filled"
+              color="accent"
+              key={x}
+              rightSection={removeButton(x)}
+            >
+              {x}
+            </Badge>
+          ))}
+        </Group>
+      </div>
     </div>
   );
 };

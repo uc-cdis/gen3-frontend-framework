@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ActionIcon, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Text, Tooltip } from '@mantine/core';
 import {
   MdFlip as FlipIcon,
   MdSearch as SearchIcon,
@@ -16,6 +16,7 @@ import {
   FacetHeader,
 } from './components';
 import { FacetCardProps, FacetCommonHooks } from './types';
+import { Icon } from '@iconify/react';
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetCommonHooks>,
@@ -28,10 +29,13 @@ type FacetHeaderProps = Pick<
   | 'dismissCallback'
   | 'isFacetView'
   | 'header'
+  | 'sharedWithIndices'
 > & {
+  showSettings?: boolean;
   showClearSelection?: boolean;
   toggleFlip?: () => void;
   toggleSearch?: () => void;
+  toggleSettings?: () => void;
 };
 
 /**
@@ -40,13 +44,16 @@ type FacetHeaderProps = Pick<
  * @param description - describes information about the facet
  * @param hooks - object defining the hooks required by this facet component
  * @param facetName - name of the Facet in human-readable form
+ * @param showSettings - show filter settings AND/OR
  * @param showSearch - if the search icon show be displayed
  * @param showFlip - if the flip icon should be displayed
  * @param showClearSelection - if the clear selection icon should be displayed
  * @param isFacetView - if the facet selection view (and not the chart view) is displayed
+ * @param toggleSettings - toggle is setting button is visible
  * @param toggleFlip - function to switch the facet/chart view
  * @param toggleSearch - function to switch if the search bart is displayed
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
+ * @param sharedWithIndices
  * @param header - object containing the display components to use for the header
  */
 const FacetControlsHeader = ({
@@ -54,13 +61,16 @@ const FacetControlsHeader = ({
   description,
   hooks,
   facetName,
+  showSettings = true,
   showSearch = false,
   showFlip = false,
   showClearSelection = true,
   isFacetView = false,
+  toggleSettings = undefined,
   toggleFlip = undefined,
   toggleSearch = undefined,
   dismissCallback = undefined,
+  sharedWithIndices = undefined,
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -87,25 +97,53 @@ const FacetControlsHeader = ({
           <Tooltip label={isFilterExpanded ? 'Collapse card' : 'Expand card'}>
             <ActionIcon
               variant="subtle"
-              onClick={() => toggleExpandFilter(field, !isFilterExpanded)}
-              className="mt-0.5 -ml-1.5"
+              onClick={() => {
+                toggleExpandFilter(field, !isFilterExpanded);
+              }}
               aria-expanded={isFilterExpanded}
               aria-label={isFilterExpanded ? 'Collapse card' : 'Expand card'}
             >
               {isFilterExpanded ? (
                 <ExpandLessIcon
                   size="3em"
-                  color="accent.4"
+                  className={header.iconStyle}
                   aria-hidden="true"
                 />
               ) : (
                 <ExpandMoreIcon
                   size="3em"
-                  color="accent.4"
+                  className={header.iconStyle}
                   aria-hidden="true"
                 />
               )}
             </ActionIcon>
+          </Tooltip>
+        )}
+        {sharedWithIndices && (
+          <Tooltip
+            transitionProps={{ duration: 200, transition: 'fade' }}
+            label={
+              <div className="flex items-center gap-x-2">
+                <Text className="mr-2">Shared with:</Text>
+                {sharedWithIndices.map((x) => (
+                  <Badge
+                    variant="outline"
+                    radius="sm"
+                    color="accent.3"
+                    key={x.index}
+                  >
+                    {x.indexAlias}
+                  </Badge>
+                ))}{' '}
+              </div>
+            }
+          >
+            <Icon
+              icon="gen3:share"
+              className={`${header.iconStyle} mx-0.5 mr-2`}
+              width={9}
+              height={9}
+            />
           </Tooltip>
         )}
         <Tooltip
@@ -123,6 +161,24 @@ const FacetControlsHeader = ({
         </Tooltip>
       </div>
       <div className="flex flex-row">
+        {showSettings ? (
+          <Tooltip label="Filter Settings">
+            <FacetIconButton
+              onClick={() => {
+                if (toggleExpandFilter) toggleExpandFilter(field, true);
+                if (toggleSettings) toggleSettings();
+              }}
+              aria-label="Search"
+            >
+              <Icon
+                width={12}
+                height={12}
+                icon="gen3:settings"
+                aria-hidden="true"
+              />
+            </FacetIconButton>
+          </Tooltip>
+        ) : null}
         {showSearch ? (
           <Tooltip label="Search values">
             <FacetIconButton

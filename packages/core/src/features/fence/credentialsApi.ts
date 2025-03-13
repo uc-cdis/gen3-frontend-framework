@@ -39,7 +39,7 @@ export interface AuthTokenResponse {
 export const credentialsApi = credentialsWithTags.injectEndpoints({
   endpoints: (builder) => ({
     getCredentials: builder.query<ReadonlyArray<APIKey>, void>({
-      query: () => `${GEN3_FENCE_API}/user/credentials/api`,
+      query: () => `${GEN3_FENCE_API}/credentials/api`,
       transformResponse: (
         response: Gen3FenceCredentials,
       ): ReadonlyArray<APIKey> => response['jtis'], // the response is a JSON object with a single key,
@@ -49,7 +49,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     addNewCredential: builder.mutation({
       query: (csrfToken: string) => ({
-        url: `${GEN3_FENCE_API}/user/credentials/api`,
+        url: `${GEN3_FENCE_API}/credentials/api`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
     }),
     removeCredential: builder.mutation<void, DeleteCredentialParams>({
       query: ({ csrfToken, id }) => ({
-        url: `${GEN3_FENCE_API}/user/credentials/api/${id}`,
+        url: `${GEN3_FENCE_API}/credentials/api/${id}`,
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -72,9 +72,12 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
       }),
       invalidatesTags: ['Credentials'],
     }),
-    authorizeFromCredentials: builder.mutation<AuthTokenResponse, AuthorizeFromCredentialsParams>({
+    authorizeFromCredentials: builder.mutation<
+      AuthTokenResponse,
+      AuthorizeFromCredentialsParams
+    >({
       query: (params) => ({
-        url: `${GEN3_FENCE_API}/user/credentials/api/access_token`,
+        url: `${GEN3_FENCE_API}/credentials/api/access_token`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,12 +88,12 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
         },
       }),
     }),
-  })
+  }),
 });
 
 export const {
   useGetCredentialsQuery,
   useAddNewCredentialMutation,
   useRemoveCredentialMutation,
-  useAuthorizeFromCredentialsMutation
+  useAuthorizeFromCredentialsMutation,
 } = credentialsApi;
