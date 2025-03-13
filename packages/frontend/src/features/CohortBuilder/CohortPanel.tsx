@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { LoadingOverlay } from '@mantine/core';
 import { partial } from 'lodash';
 import {
   CoreState,

@@ -1,8 +1,7 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { MantineProvider } from '@mantine/core';
-import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-// import { initGrafanaFaro } from '../lib/Grafana/grafana';
+import { Faro } from '@grafana/faro-react';
 
 import {
   Gen3Provider,

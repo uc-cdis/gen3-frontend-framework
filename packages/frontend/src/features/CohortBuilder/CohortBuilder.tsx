@@ -1,21 +1,18 @@
 import React from 'react';
 import { CohortPanelConfig, CohortBuilderProps } from './types';
-import { Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
-import { CohortPanel } from './CohortPanel';
-import { useCoreDispatch, useGetCSRFQuery, setSharedFilters } from '@gen3/core';
+import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
   useGetCSRFQuery,
   selectCurrentCohortId,
   useCoreDispatch,
   useCoreSelector,
+  setSharedFilters,
 } from '@gen3/core';
-import { useSetupInitialCohorts } from './hooks';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
 };
-
 
 const TabsLayoutToComponentProp = (
   tabsLayout?: 'left' | 'right' | 'center',

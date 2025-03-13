@@ -1,6 +1,6 @@
 import React, { useContext, useState, useReducer, useRef } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
@@ -172,19 +172,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       });
     }
   }, [cohortId, expandedState]);
-  }, [cohortId, expandedState]);
-
-  const getData = useDeepCompareCallback(() => {
-    return filters;
-  }, [filters]);
-
-  const setCohort = useDeepCompareCallback(
-    (data: string) => {
-      const jsonForm = JSON.parse(data);
-      setCohortFilter(index, jsonForm as FilterSet);
-    },
-    [index],
-  );
 
   return (
     <QueryExpressionContainer>

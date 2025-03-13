@@ -16,11 +16,16 @@ import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
-import CohortManager from '../CohortBuilder/CohortManager';
+import CohortManager from '../CohortDiscovery/CohortManager';
 import { AppState, useAppSelector } from './appApi';
 import Image from 'next/image';
 
-const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscoveryGroup) => {
+const IndexPanel = ({
+  dataConfig,
+  tabs,
+  tabTitle,
+  emptySelection,
+}: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
   >([]);
@@ -127,9 +132,13 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscov
         />
         <Stack className="w-full">
           <ActionButtonGroup />
-          {activeFieldDefinitions.length > 0 ?
-            <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
-          : <Center className="h-full mx-2 bg-base-max">
+          {activeFieldDefinitions.length > 0 ? (
+            <ChartsAndFacetsPanel
+              index={index}
+              facets={activeFieldDefinitions}
+            />
+          ) : (
+            <Center className="h-full mx-2 bg-base-max">
               <Box className="text-center m-4">
                 <Image
                   src={`/images/apps/${emptySelection.image}`}
@@ -137,12 +146,13 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle, emptySelection }: CohortDiscov
                   width={240}
                   height={240}
                   className="inline-block mb-4"
-                />{/*TODO make config file for tabs*/}
+                />
+                {/*TODO make config file for tabs*/}
                 <Title order={3}>{emptySelection.title || ''}</Title>
                 <Text>{emptySelection.subHead || ''}</Text>
               </Box>
             </Center>
-          }
+          )}
         </Stack>
       </Flex>
     </Stack>

@@ -7,7 +7,6 @@ import {
   type FilterSet,
   type IndexedFilterSet,
   useCoreDispatch,
-  setCohortFilter,
   useCoreSelector,
   selectAvailableCohorts,
   selectCurrentCohortModified,
@@ -15,6 +14,7 @@ import {
   setActiveCohort,
   setCohortIndexFilters,
   selectCurrentCohortId,
+  selectCohortFilters,
 } from '@gen3/core';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
@@ -29,14 +29,15 @@ export const UnsavedIcon = ({ label }: { label: string }): JSX.Element => (
 
 interface CohortSelectorProps {
   showSelectedCohorts?: boolean;
-  readonly index: string;
-  readonly filters: FilterSet;
 }
 
-const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
+const CohortSelector: React.FC<CohortSelectorProps> = ({
+  showSelectedCohorts = true,
+}) => {
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector(selectAvailableCohorts);
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
+  const filters: IndexedFilterSet = useCoreSelector(selectCohortFilters);
   const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
   const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
   const cohortStatusMessage = currentCohortSaved
@@ -80,14 +81,6 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({ index, filters }) => {
             : 'Cohort not saved',
         })),
     [cohorts],
-  );
-
-  const setCohort = useDeepCompareCallback(
-    (data: string) => {
-      const jsonForm = JSON.parse(data);
-      coreDispatch(setCohortFilter({ index, filters: jsonForm as FilterSet }));
-    },
-    [index, coreDispatch],
   );
 
   return (

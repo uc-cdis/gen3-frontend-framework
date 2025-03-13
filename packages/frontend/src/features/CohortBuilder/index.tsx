@@ -14,6 +14,10 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
 } from './ExplorerTable';
 
+import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext';
+import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
+import QueryExpression from './QueryExpression/QueryExpression';
+
 export {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
@@ -25,4 +29,7 @@ export {
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
+  QueryExpressionContext,
+  QueryExpression,
+  QueryExpressionSection,
 };

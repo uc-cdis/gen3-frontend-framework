@@ -1,7 +1,10 @@
+import React from 'react';
 import { FilterSet, Operation } from '@gen3/core';
 import { useCohortFacetFilters } from './hooks';
-import QueryExpressionSection from '../CohortBuilder/QueryExpressionSection';
-import { QueryExpressionContext } from '../CohortBuilder/QueryExpressionContext';
+import {
+  QueryExpressionContext,
+  QueryExpressionSection,
+} from '../CohortBuilder';
 import { useAppSelector, AppState, useAppDispatch } from './appApi';
 import {
   selectCurrentCohortId,
@@ -25,7 +28,6 @@ const CohortManager = ({ index }: CohortManagerProps) => {
   const currentCohortName = useAppSelector((state: AppState) =>
     selectCurrentCohortName(state),
   );
-  const filters = useCohortFacetFilters(index);
 
   return (
     <div className="flex flex-col mb-2">
@@ -33,7 +35,6 @@ const CohortManager = ({ index }: CohortManagerProps) => {
         value={{
           cohortName: currentCohortName,
           cohortId: currentCohortId,
-          filters: filters,
           displayOnly: false,
           useClearCohortFilters: () => {
             const dispatch = useAppDispatch();
@@ -70,6 +71,7 @@ const CohortManager = ({ index }: CohortManagerProps) => {
                 }),
               );
           },
+          useGetFilters: useCohortFacetFilters,
         }}
       >
         <QueryExpressionSection index={index} />

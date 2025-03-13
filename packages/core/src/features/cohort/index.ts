@@ -45,6 +45,7 @@ import {
 
 export {
   type Cohort,
+  type CombineMode,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
