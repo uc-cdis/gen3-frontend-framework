@@ -23,9 +23,11 @@ import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (
-    update: UpdateDataLibraryListParams,
-  ) => Promise<void>;
+  updateListInDataLibrary: (payload: {
+    id: string;
+    name: string;
+    items: Datalist;
+  }) => Promise<void>;
   deleteListFromDataLibrary: (id: string) => Promise<void>;
   size?: string;
 }
@@ -59,9 +61,9 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary({
-      id: listId,
       ...{ name: listName, items: dataList.items },
-      ...update,
+      ...({ update } as any),
+      id: listId,
     });
   };
 
@@ -145,7 +147,8 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [itemId]: _removedKey, ...newObject } = dataList.items;
     await updateListInDataLibrary({
-      ...dataList,
+      id: itemId,
+      name: dataList.name,
       items: newObject,
     });
     // update selections
@@ -169,8 +172,8 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
       <DatasetAccordionControl
         listName={listName}
         numberOfItems={numberOfItemsInList}
-        updatedTime={dataList.updatedTime}
-        createdTime={dataList.createdTime}
+        updatedTime={dataList.updated_time}
+        createdTime={dataList.created_time}
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}

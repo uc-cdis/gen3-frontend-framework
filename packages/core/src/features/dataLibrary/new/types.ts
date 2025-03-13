@@ -22,3 +22,7 @@ export interface StorageService<T = DataLibrary> {
   deleteList(id: string): Promise<ReturnStatus<T>>;
   clearLists(): Promise<ReturnStatus<T>>;
 }
+
+export interface UpdateListParams extends GroupedDataItems {
+  id: string;
+}

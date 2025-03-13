@@ -1,12 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import {
-  DataLibrary,
-  GroupedDataItems,
-  FilesOrCohort,
-  UpdateDataLibraryListParams,
-} from '../types';
+import { DataLibrary, GroupedDataItems, FilesOrCohort } from '../types';
+import { flattenDataList } from '../utils';
 import { CachedAPIService } from './dataLibraryCachedAPI';
-import { StorageError } from './types';
+import { StorageError, UpdateListParams } from './types';
 
 interface UseDataLibraryOptions {
   requiresAPI: boolean;
@@ -124,9 +120,15 @@ const useDataLibrary = (
   );
 
   const updateListInDataLibrary = useCallback(
-    async (list: UpdateDataLibraryListParams) => {
+    async (payload: UpdateListParams) => {
+      const flattend = flattenDataList(payload.items);
+
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.updateList(list);
+      const { isError, status } = await dataLibraryStoreAPI.updateList({
+        id: payload.id,
+        name: payload.name,
+        items: flattend.items,
+      });
       await handleErrorOrSetLists(isError, status);
       setIsLoading(false);
     },

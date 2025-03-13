@@ -1,10 +1,12 @@
 import { JSONObject } from '../../types';
 
+// represents the auth access control for a DataList
 export interface AuthZAccess {
   version: number;
   authz: string[];
 }
 
+// Possible values of an Item: File, Additional Value, Cohort
 export type ItemValue =
   | string
   | number
@@ -12,10 +14,7 @@ export type ItemValue =
   | Record<string, any>
   | boolean;
 
-export interface Items {
-  [k: string]: ItemValue;
-}
-
+// Object representing an Item with its type
 export interface ListItem {
   itemType: 'Data' | 'AdditionalData' | 'Gen3GraphQL';
   [k: string]: ItemValue;
@@ -33,10 +32,7 @@ export interface FileItem extends ListItem {
   type?: string;
   size?: string;
   itemType: 'Data';
-}
-
-export interface FileItemAPI extends FileItem {
-  dataset_guid: string;
+  dataset_guid?: string;
 }
 
 export interface CohortItem extends ListItem {
@@ -53,7 +49,7 @@ export interface AdditionalDataItem extends ListItem {
   url?: string;
   itemType: 'AdditionalData';
   name: string;
-  datasetGuid: string;
+  dataset_guid?: string;
 }
 
 export const isFileItem = (item: ListItem): item is FileItem => {
@@ -108,26 +104,23 @@ export const isDatalistAPI = (value: unknown): value is DatalistAPI => {
   return true;
 };
 
-export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
+export type DataSetMembers = Record<string, FileItem | AdditionalDataItem>;
 
 /**
  * Represents a DataSet which is created by grouping File
  * objects with the same dataset_guids
  */
-export interface DataListEntry {
-  name?: string;
-  items: DataSetItems;
-}
-
-export interface DataLibraryDataset extends DataListEntry {
+export interface DataLibraryDataset {
   id: string;
+  name?: string;
+  members: DataSetMembers;
 }
 
 export type FilesOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
 export type LibraryAPIItems = Record<
   string,
-  FileItemAPI | AdditionalDataItem | CohortItem
+  FileItem | AdditionalDataItem | CohortItem
 >;
 
 export interface DataItemBaseData {
@@ -174,14 +167,6 @@ export const isDataLibraryAPIResponse = (
     typeof (obj as DataLibraryAPIResponse).lists === 'object'
   );
 };
-
-export type DataLibraryGroupedResponse = {
-  lists: DataLibrary;
-};
-
-export interface LoadAllListData {
-  lists: Array<DataListEntry>;
-}
 
 export interface UpdateDataLibraryListParams extends DatalistAsItems {
   id: string;

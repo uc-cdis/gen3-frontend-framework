@@ -7,7 +7,7 @@ import {
   DatalistAPI,
   DatalistAsItems,
   // DataListEntry,
-  DataSetItems,
+  DataSetMembers,
   isCohortItem,
   isFileItem,
 } from './types';
@@ -57,11 +57,12 @@ export const BuildList = (
           acc.items[data.dataset_guid as string] = {
             id: data.dataset_guid as string,
             name: '',
-            items: { [id]: processItem(id, data) },
+            members: { [id]: processItem(id, data) },
           };
         } else {
-          (acc.items[data.dataset_guid as string].items as DataSetItems)[id] =
-            processItem(id, data);
+          (acc.items[data.dataset_guid as string].members as DataSetMembers)[
+            id
+          ] = processItem(id, data);
         }
       }
       return acc;
@@ -103,7 +104,7 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
     } else {
       return (
         count +
-        Object.values(item?.items ?? {}).reduce((fileCount, x) => {
+        Object.values(item?.members ?? {}).reduce((fileCount, x) => {
           if (isFileItem(x)) {
             return fileCount + 1;
           }
@@ -126,7 +127,7 @@ export const flattenDataList = (dataList: Datalist) => {
       if (isCohortItem(value)) {
         acc[id] = value;
       } else {
-        return { ...acc, ...value.items };
+        return { ...acc, ...value.members };
       }
       return acc;
     },
