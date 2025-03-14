@@ -30,6 +30,8 @@ import {
   UploadJSONButton,
 } from './components/Buttons';
 
+import TopBar from './features/Navigation/TopBar';
+
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -117,6 +119,7 @@ export {
   UploadJSONButton,
   ActionButton,
   ErrorCard,
+  TopBar,
   // Pages
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,

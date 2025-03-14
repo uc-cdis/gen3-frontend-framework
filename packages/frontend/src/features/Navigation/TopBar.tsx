@@ -12,7 +12,7 @@ export interface NameAndIcon {
   readonly name: string;
   readonly rightIcon?: string;
   readonly leftIcon?: string;
-  readonly classNames: StylingOverrideWithMergeControl;
+  readonly classNames?: StylingOverrideWithMergeControl;
   readonly drawBorder?: boolean;
 }
 
