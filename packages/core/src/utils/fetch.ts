@@ -205,7 +205,7 @@ export const fetchJSONDataFromURL = async (
   } as RequestInit);
 
   if (!response.ok) {
-    throw new HTTPError(response.status, response.statusText);
+    throw new HTTPError(response.status, response.statusText, response.text());
   }
 
   return response.json();

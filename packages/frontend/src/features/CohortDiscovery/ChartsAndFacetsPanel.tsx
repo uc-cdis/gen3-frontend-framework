@@ -4,7 +4,6 @@ import {
   extractEnumFilterValue,
   FacetDefinition,
   fieldNameToTitle,
-  useGetAggsQuery,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -20,6 +19,7 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { computeRowSpan } from '../../components/charts';
 import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
+import { useGetAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;

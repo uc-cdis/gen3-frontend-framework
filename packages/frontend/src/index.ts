@@ -102,6 +102,7 @@ import sessionToken from './api/auth/sessionToken';
 import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
+import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
 
 export {
   ContentSource,
@@ -162,9 +163,12 @@ export {
   DataLibraryPageGetServerSideProps,
   NotebookLitePage,
   NotebookLitePageGetStaticProps,
-  registerCohortDiscoveryApp,
-  registerCohortSimilarityApp,
   registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
+  // apps
+  registerCohortDiscoveryApp,
+  registerCohortSimilarityApp,
+  // appApis
+  analysisApiCohortDiscovery,
 };

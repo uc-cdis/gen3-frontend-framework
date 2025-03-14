@@ -14,7 +14,7 @@ import {
   BaseQueryFn,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, Reducer } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -28,6 +28,7 @@ import { getCookie } from 'cookies-next';
 
 export const createAppApiForRTKQ = (
   reducerPath: string,
+  additionalReducers?: Reducer,
   baseQuery?: BaseQueryFn,
 ) => {
   const appContext = React.createContext<ReactReduxContextValue | null>(null);
@@ -57,14 +58,14 @@ export const createAppApiForRTKQ = (
         baseUrl: `${GEN3_API}`,
         prepareHeaders: (headers) => {
           headers.set('Content-Type', 'application/json');
-          let accessToken = undefined;
           if (process.env.NODE_ENV === 'development') {
             // NOTE: This cookie can only be accessed from the client side
             // in development mode. Otherwise, the cookie is set as httpOnly
-            accessToken = getCookie('credentials_token');
+            const accessToken = getCookie('credentials_token');
+            if (accessToken)
+              headers.set('Authorization', `Bearer ${accessToken}`);
           }
-          if (accessToken)
-            headers.set('Authorization', `Bearer ${accessToken}`);
+
           return headers;
         },
       }),
@@ -72,10 +73,13 @@ export const createAppApiForRTKQ = (
   });
 
   const appMiddleware = appRTKQApi.middleware;
+
+  const reducers = combineReducers({
+    [appRTKQApi.reducerPath]: appRTKQApi.reducer,
+    ...additionalReducers,
+  });
   const appStore = configureStore({
-    reducer: {
-      [appRTKQApi.reducerPath]: appRTKQApi.reducer,
-    },
+    reducer: reducers,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
@@ -92,5 +96,6 @@ export const createAppApiForRTKQ = (
     appApi: appRTKQApi,
     appContext: appContext,
     appStore: appStore,
+    appReducers: reducers,
   };
 };

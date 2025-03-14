@@ -39,12 +39,12 @@ export const processRangeKeyLabel = (key: [number, number]): string => {
  * Computes the row span for each item in the charts object.
  *
  * @param { number } numItems - The charts object containing summary charts.
- * @param {number} [numCols=3] - The number of columns per row.
+ * @param {number} [numCols=2] - The number of columns per row.
  * @returns {number[]} - An array of row spans for each item in the charts object.
  */
 export const computeRowSpan = (
   numItems: number,
-  numCols: number = 3,
+  numCols: number = 2,
 ): Array<number> => {
   // compute the number of rows
   const numRows = Math.ceil(numItems / numCols);

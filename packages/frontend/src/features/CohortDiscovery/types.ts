@@ -24,6 +24,7 @@ export interface CohortDiscoveryGroup {
   readonly dataConfig: DataTypeConfig; // database config
   readonly tabTitle: string; // title of the tab
   readonly tabs: ReadonlyArray<TabConfig>; // filters for the fields
+  readonly numColumns?: number;
   readonly emptySelection: EmptySelection; // What to show when no filters are selected
 }
 

@@ -22,6 +22,8 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
   const router = useRouter();
   const appName = getAppName(router);
 
+  console.log('AppName', appName);
+
   const GdcApp = useCoreSelector(
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
@@ -52,7 +54,7 @@ export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
   const appName = context.query.appName as string;
-
+  console.log('getServerSideProps appName', appName);
   try {
     const config: any = await ContentSource.get(
       `config/${GEN3_COMMONS_NAME}/apps/${appName}.json`,
