@@ -1,18 +1,21 @@
 import { combineReducers } from 'redux';
-// import { persistReducer } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist/lib/storage';
 import { createAppApiForRTKQ } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
 import { cohortReducer } from './CohortSlice';
 import { getCookie } from 'cookies-next';
+import { persistReducer } from 'redux-persist';
 
-// const persistConfig = {
-//   key: _APP_NAME,
-//   version: 1,
-//   storage,
-//   whitelist: ['filterExpandState'],
-// };
+export const _APP_NAME = 'CohortDiscovery'; // This wil be the route name of the app
+export const _APP_VERSION = '1.0.0';
+
+const persistConfig = {
+  key: _APP_NAME,
+  version: 1,
+  storage,
+  whitelist: ['filterExpandState'],
+};
 
 export interface GraphQLRequest {
   readonly query: string;
@@ -24,6 +27,8 @@ const reducers = combineReducers({
   filtersExpandedState: filtersExpandedReducer,
   cohorts: cohortReducer,
 });
+
+const persistedReducers = persistReducer(persistConfig, reducers);
 
 // create the store, context and selector for the Cohort Discovery app
 // Note the project app has a local store and context which isolates
@@ -38,7 +43,7 @@ export const {
   appReducers,
 } = createAppApiForRTKQ(
   'cohortDiscovery',
-  reducers,
+  persistedReducers,
   async (query: GraphQLRequest) => {
     let accessToken = undefined;
     if (process.env.NODE_ENV === 'development') {

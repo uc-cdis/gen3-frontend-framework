@@ -25,6 +25,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   console.log('CohortDiscovery render');
   return (
     <React.Fragment>
+      <p>Cohort Discovery</p>
       <PersistGate persistor={persistor}>
         <Title order={1} className="absolute top-6 left-[154px]">
           Cohort Discovery
