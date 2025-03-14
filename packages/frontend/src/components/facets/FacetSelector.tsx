@@ -14,7 +14,7 @@ interface SelectedFields {
   category: string;
   fields: Array<FacetDefinition>;
   selectedFields: Array<string>;
-  updateSelectedField: (facet: string) => void;
+  updateSelectedField: (facet: string, checked: boolean) => void;
 }
 
 type FacetSelectorCardProps = Omit<
@@ -148,7 +148,12 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                             selectedFields &&
                             selectedFields.includes(facet.field)
                           }
-                          onChange={() => updateSelectedField(facet.field)}
+                          onChange={(event) =>
+                            updateSelectedField(
+                              facet.field,
+                              event.target.checked,
+                            )
+                          }
                         />
                       </div>
                     );

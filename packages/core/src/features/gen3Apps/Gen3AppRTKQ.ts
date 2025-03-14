@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   createDispatchHook,
   createStoreHook,
+  createSelectorHook,
   ReactReduxContextValue,
-  useSelector,
 } from 'react-redux';
 import {
   ApiModules,
@@ -14,7 +14,12 @@ import {
   BaseQueryFn,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { combineReducers, configureStore, Reducer } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  Reducer,
+  ReducersMapObject,
+  //  Action,
+} from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -26,15 +31,22 @@ import {
 import { GEN3_API } from '../../constants';
 import { getCookie } from 'cookies-next';
 
+// function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
+//   key: string;
+//   payload: any;
+//   err: unknown;
+// } {
+//   return action.type === REHYDRATE;
+// }
+
 export const createAppApiForRTKQ = (
   reducerPath: string,
-  additionalReducers?: Reducer,
+  additionalReducers?: Reducer | ReducersMapObject,
   baseQuery?: BaseQueryFn,
 ) => {
   const appContext = React.createContext<ReactReduxContextValue | null>(null);
 
-  type AppState = any;
-  const useAppSelector = useSelector.withTypes<AppState>();
+  const useAppSelector = createSelectorHook(appContext);
   const useAppDispatch = createDispatchHook(appContext);
   const useAppStore = createStoreHook(appContext);
 
@@ -69,17 +81,28 @@ export const createAppApiForRTKQ = (
           return headers;
         },
       }),
+    // extractRehydrationInfo(action, { reducerPath }): any {
+    //   console.log('extractRehydrationInfo', action);
+    //   if (isHydrateAction(action)) {
+    //     console.log('action', action);
+    //     // when persisting the api reducer
+    //     if (action.key === 'key used with redux-persist') {
+    //       return action.payload;
+    //     }
+    //
+    //     // When persisting the root reducer
+    //     return action.payload[reducerPath];
+    //   }
+    // },
     endpoints: () => ({}),
   });
 
   const appMiddleware = appRTKQApi.middleware;
-
-  const reducers = combineReducers({
-    [appRTKQApi.reducerPath]: appRTKQApi.reducer,
-    ...additionalReducers,
-  });
   const appStore = configureStore({
-    reducer: reducers,
+    reducer: {
+      [appRTKQApi.reducerPath]: appRTKQApi.reducer,
+      ...additionalReducers,
+    },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
@@ -96,6 +119,5 @@ export const createAppApiForRTKQ = (
     appApi: appRTKQApi,
     appContext: appContext,
     appStore: appStore,
-    appReducers: reducers,
   };
 };

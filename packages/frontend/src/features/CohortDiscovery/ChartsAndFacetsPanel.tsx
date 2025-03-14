@@ -19,7 +19,8 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { computeRowSpan } from '../../components/charts';
 import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-import { useGetAggsQuery } from './queryApi';
+//import { useGetAggsQuery } from './queryApi';
+import { useGetAggsQuery } from '@gen3/core';
 
 interface ChartsAndFacetsPanelProps {
   index: string;

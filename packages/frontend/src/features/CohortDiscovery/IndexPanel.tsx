@@ -17,8 +17,13 @@ import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtonGroup';
 import CohortManager from '../CohortDiscovery/CohortManager';
-import { AppState, useAppSelector } from './appApi';
+import { AppState, useAppSelector, useAppDispatch } from './appApi';
 import Image from 'next/image';
+import {
+  selectSelectedFacetsFromIndex,
+  removeFacetSelection,
+  addFacetSelection,
+} from './SelectedFacetsSlice';
 
 const IndexPanel = ({
   dataConfig,
@@ -29,6 +34,8 @@ const IndexPanel = ({
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
   >([]);
+
+  const appDispatch = useAppDispatch();
 
   const index = dataConfig.dataType;
   const fields = useMemo(
@@ -41,6 +48,24 @@ const IndexPanel = ({
   >({});
 
   const [categories, setCategories] = useState<TabConfig[]>([]);
+
+  const selectedFacets: string[] =
+    useAppSelector((state: AppState) =>
+      selectSelectedFacetsFromIndex(state, index),
+    ) ?? [];
+
+  /**
+   * When selection changes, update active list of FacetDefinitions
+   */
+  useDeepCompareEffect(() => {
+    const selectFacetDefinitions = selectedFacets.reduce((acc, field) => {
+      if (field in facetDefinitions) {
+        acc.push(facetDefinitions[field]);
+      }
+      return acc;
+    }, [] as Array<FacetDefinition>);
+    setActiveFieldDefinitions(selectFacetDefinitions);
+  }, [selectedFacets, facetDefinitions]);
 
   const cohortFilters = useAppSelector((state: AppState) =>
     selectIndexFilters(state, index),
@@ -64,22 +89,17 @@ const IndexPanel = ({
   );
 
   const updateFields = useDeepCompareCallback(
-    (field: string) => {
-      if (activeFieldDefinitions.some((facetDef) => facetDef.field === field)) {
-        setActiveFieldDefinitions((prevState) => {
-          return prevState.filter((f) => f.field !== field);
-        });
-      } else {
-        setActiveFieldDefinitions((prevState) => [
-          ...prevState,
-          facetDefinitions[field],
-        ]);
+    (field: string, checked: boolean) => {
+      if (!checked) {
+        appDispatch(removeFacetSelection({ index, field }));
+      }
+      if (checked) {
+        appDispatch(addFacetSelection({ index, field }));
       }
     },
-    [activeFieldDefinitions, facetDefinitions],
+    [selectedFacets, index, appDispatch],
   );
 
-  // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
       const configFacetDefs = tabs.reduce(
@@ -122,7 +142,7 @@ const IndexPanel = ({
       <Flex className="flex h-full bg-base-light pb-4 ml-4">
         <FacetSelectionPanel
           categories={categories}
-          selectedFields={activeFieldDefinitions.map((x) => x.field)}
+          selectedFields={selectedFacets}
           updateSelectedField={updateFields}
           hooks={{
             useClearFilter: () => (field: string) => null,
@@ -132,7 +152,7 @@ const IndexPanel = ({
         />
         <Stack className="w-full">
           <ActionButtonGroup />
-          {activeFieldDefinitions.length > 0 ? (
+          {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}
               facets={activeFieldDefinitions}

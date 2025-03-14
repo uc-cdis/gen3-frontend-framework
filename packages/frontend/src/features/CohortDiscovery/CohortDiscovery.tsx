@@ -2,7 +2,7 @@ import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { useGetCSRFQuery } from '@gen3/core';
-import { Title, Center, Loader, Tabs } from '@mantine/core';
+import { Title, Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
 import { CohortDiscoveryConfig } from './types';
 import IndexPanel from './IndexPanel';
 import { AppStore } from './appApi';
@@ -13,7 +13,6 @@ const persistor = persistStore(AppStore);
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const { isFetching } = useGetCSRFQuery(); // need for Guppy
 
-  console.log('CohortDiscovery config:', config, isFetching);
   if (isFetching) {
     return (
       <Center maw={400} h={100} mx="auto">
@@ -22,11 +21,12 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
     );
   }
 
-  console.log('CohortDiscovery render');
   return (
     <React.Fragment>
-      <p>Cohort Discovery</p>
-      <PersistGate persistor={persistor}>
+      <PersistGate
+        persistor={persistor}
+        loading={<LoadingOverlay visible={true} />}
+      >
         <Title order={1} className="absolute top-6 left-[154px]">
           Cohort Discovery
         </Title>

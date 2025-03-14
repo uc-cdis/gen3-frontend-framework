@@ -6,7 +6,7 @@ type ExpandedFiltersState = Record<string, boolean>;
 const initialState: ExpandedFiltersState = {};
 
 const expandSlice = createSlice({
-  name: 'CohortDiscovery/filterExpand',
+  name: 'CohortDiscovery/expandedCategory',
   initialState: initialState,
   reducers: {
     toggleCategoryFilter: (

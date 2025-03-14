@@ -5,6 +5,7 @@ import {
   selectFilterExpanded,
   toggleCategoryFilter,
 } from './FilterExpandSlice';
+import { selectSelectedFacetsFromIndex } from './SelectedFacetsSlice';
 import { removeCohortFilter, updateCohortFilter } from './CohortSlice';
 import { FilterSet, Operation } from '@gen3/core';
 import { buildNested } from '../../components/facets';
@@ -40,6 +41,10 @@ export const useClearFilters = (index: string) => {
   return (field: string) => {
     dispatch(removeCohortFilter({ index, field }));
   };
+};
+
+export const useGetSelectFacets = (state: AppState, index: string) => {
+  return selectSelectedFacetsFromIndex(state, index);
 };
 
 /**

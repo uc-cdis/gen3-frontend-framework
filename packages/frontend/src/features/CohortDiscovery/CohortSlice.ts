@@ -47,7 +47,7 @@ interface ClearAllFilterParams {
  */
 
 export const cohortSlice = createSlice({
-  name: 'cohort',
+  name: 'CohortDiscovery/cohorts',
   initialState: initialCohortState,
   reducers: {
     // adds a filter to the cohort filter set at the given index

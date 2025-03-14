@@ -9,7 +9,7 @@ interface FacetSelectionPanelProps {
   categories: ReadonlyArray<TabConfig>;
   hooks: FacetCommonHooks;
   selectedFields: Array<string>;
-  updateSelectedField: (facet: string) => void;
+  updateSelectedField: (facet: string, checked: boolean) => void;
 }
 
 const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({

@@ -37,7 +37,7 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['cohort', 'activeWorkspace'],
+  whitelist: ['cohorts', 'activeWorkspace'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
