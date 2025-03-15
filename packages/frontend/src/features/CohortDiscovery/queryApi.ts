@@ -1,3 +1,157 @@
+import React, { useState } from 'react';
+import {
+  Accessibility,
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  isFilterEmpty,
+  AggregationsData,
+  RawDataAndTotalCountsParams,
+  GraphQLQuery,
+  JSONObject,
+} from '@gen3/core';
+import { getCookie } from 'cookies-next';
+
+interface ErrorDetails {
+  status: string;
+  message: string;
+}
+
+interface UsePostDataState<TResponse> {
+  data: TResponse | null;
+  isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  error: ErrorDetails | null;
+}
+
+function usePostData<TResponse = unknown, TBody = unknown>(url: string) {
+  const [state, setState] = useState<UsePostDataState<TResponse>>({
+    data: null,
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
+    error: null,
+  });
+
+  const handleFetchError = (error: Error): ErrorDetails => ({
+    status: error.message.match(/\d+/)?.[0] || 'Unknown',
+    message: error.message,
+  });
+
+  const postData = async (body: TBody): Promise<void> => {
+    setState((prevState) => ({
+      ...prevState,
+      isLoading: true,
+      isSuccess: false,
+      isError: false,
+      error: null,
+    }));
+
+    try {
+      const headers = new Headers();
+      headers.set('Content-Type', 'application/json');
+      if (process.env.NODE_ENV === 'development') {
+        // NOTE: This cookie can only be accessed from the client side
+        // in development mode. Otherwise, the cookie is set as httpOnly
+        const accessToken = getCookie('credentials_token');
+        if (accessToken) {
+          headers.set('Authorization', `Bearer ${accessToken}`);
+        }
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result: TResponse = await response.json();
+      setState((prevState) => ({
+        ...prevState,
+        data: result,
+        isSuccess: true,
+      }));
+    } catch (err) {
+      if (err instanceof Error) {
+        setState((prevState) => ({
+          ...prevState,
+          isError: true,
+          error: handleFetchError(err),
+        }));
+      }
+    } finally {
+      setState((prevState) => ({
+        ...prevState,
+        isLoading: false,
+      }));
+    }
+  };
+
+  return { postData, ...state };
+}
+
+interface QueryAggsParams {
+  type: string;
+  fields: ReadonlyArray<string>;
+  filters: FilterSet;
+  accessibility?: Accessibility;
+}
+
+const histogramQueryStrForEachField = (field: string): string => {
+  const splittedFieldArray = field.split('.');
+  const splittedField = splittedFieldArray.shift();
+  if (splittedFieldArray.length === 0) {
+    return `
+    ${splittedField} {
+      histogram {
+        key
+        count
+      }
+    }`;
+  }
+  return `
+  ${splittedField} {
+    ${histogramQueryStrForEachField(splittedFieldArray.join('.'))}
+  }`;
+};
+
+const { postData, data, isError, error, isLoading, isSuccess } = usePostData(
+  '/api/analysis/cohortDiscovery',
+);
+
+export const buildGetAggreationQuery = ({
+  type,
+  fields,
+  filters,
+  accessibility = Accessibility.ALL,
+}: QueryAggsParams): GraphQLQuery => {
+  const queryStart = isFilterEmpty(filters)
+    ? `
+              query getAggs {
+              _aggregation {
+              ${type} (accessibility: ${accessibility}) {`
+    : `query getAggs ($filter: JSON) {
+               _aggregation {
+                      ${type} (filter: $filter, filterSelf: false, accessibility: ${accessibility}) {`;
+  const query = `${queryStart}
+                  ${fields.map((field: string) =>
+                    histogramQueryStrForEachField(field),
+                  )}
+                }
+              }
+            }`;
+  const queryBody: GraphQLQuery = {
+    query: query,
+    variables: { filter: convertFilterSetToGqlFilter(filters) },
+  };
+
+  return queryBody;
+};
+
 // import { cohortDiscoveryApi } from './appApi';
 //
 // import {

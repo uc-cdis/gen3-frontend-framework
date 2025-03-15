@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
 import { cohortReducer } from './CohortSlice';
+
+import storage from './storage-persist';
 
 const _APP_NAME = 'CohortDiscovery';
 

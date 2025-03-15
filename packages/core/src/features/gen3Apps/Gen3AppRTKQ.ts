@@ -14,12 +14,7 @@ import {
   BaseQueryFn,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import {
-  configureStore,
-  Reducer,
-  ReducersMapObject,
-  //  Action,
-} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -30,6 +25,8 @@ import {
 } from 'redux-persist';
 import { GEN3_API } from '../../constants';
 import { getCookie } from 'cookies-next';
+import { v5 as uuidv5 } from 'uuid';
+import { GEN3_APP_NAMESPACE } from './constants';
 
 // function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
 //   key: string;
@@ -41,11 +38,15 @@ import { getCookie } from 'cookies-next';
 
 export const createAppApiForRTKQ = (
   reducerPath: string,
-  additionalReducers?: Reducer | ReducersMapObject,
+  name: string,
+  version: string,
+  additionalReducers?: (...args: any) => any,
   baseQuery?: BaseQueryFn,
 ) => {
-  const appContext = React.createContext<ReactReduxContextValue | null>(null);
+  const nameVersion = `${name}::${version}`;
+  const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 
+  const appContext = React.createContext<ReactReduxContextValue | null>(null);
   const useAppSelector = createSelectorHook(appContext);
   const useAppDispatch = createDispatchHook(appContext);
   const useAppStore = createStoreHook(appContext);
@@ -99,6 +100,9 @@ export const createAppApiForRTKQ = (
 
   const appMiddleware = appRTKQApi.middleware;
   const appStore = configureStore({
+    devTools: {
+      name: `${nameVersion}::${id}`,
+    },
     reducer: {
       [appRTKQApi.reducerPath]: appRTKQApi.reducer,
       ...additionalReducers,

@@ -22,11 +22,16 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
   const router = useRouter();
   const appName = getAppName(router);
 
-  console.log('AppName', appName);
-
   const GdcApp = useCoreSelector(
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
+
+  if (!GdcApp)
+    return (
+      <div className="text-utility-warning font-bold m-10 border-base-darkest">
+        App not found
+      </div>
+    );
 
   return (
     <NavPageLayout

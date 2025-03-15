@@ -1,9 +1,6 @@
 import { createGen3AppWithOwnStore, getGen3AppId } from '@gen3/core';
 import CohortSimilarityApp from './CohortSimilarityApp';
-import { appStore, appContext } from './appApi';
-
-const _APP_NAME = 'CohortSimilarity'; // This wil be the route name of the app
-const _APP_VERSION = '1.0.0';
+import { _APP_NAME, _APP_VERSION, appContext, appStore } from './appApi';
 
 const AppId = getGen3AppId(_APP_NAME, _APP_VERSION);
 export const registerCohortSimilarityApp = () =>
