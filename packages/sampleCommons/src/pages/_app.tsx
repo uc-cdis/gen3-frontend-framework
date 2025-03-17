@@ -2,7 +2,7 @@ import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-import { initGrafanaFaro } from '../lib/Grafana/grafana';
+// import { initGrafanaFaro } from '../lib/Grafana/grafana';
 import mantinetheme from '../mantineTheme';
 
 import {
