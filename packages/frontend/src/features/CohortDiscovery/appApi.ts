@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
+import { facetDefinitionsReducer } from './FacetDefinitionsSlice';
 import { cohortReducer } from './CohortSlice';
 
 import storage from './storage-persist';
@@ -22,6 +23,7 @@ const persistConfig = {
 const reducers = combineReducers({
   selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
+  facetDefinitionState: facetDefinitionsReducer,
   cohorts: cohortReducer,
 });
 

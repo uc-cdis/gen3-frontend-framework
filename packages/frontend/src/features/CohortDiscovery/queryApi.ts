@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import {
   Accessibility,
   convertFilterSetToGqlFilter,
   FilterSet,
   isFilterEmpty,
-  AggregationsData,
-  RawDataAndTotalCountsParams,
   GraphQLQuery,
-  JSONObject,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 
@@ -15,6 +13,64 @@ interface ErrorDetails {
   status: string;
   message: string;
 }
+
+export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
+  url: string,
+  body: TBody,
+) => {
+  // Create a fetcher function that handles the GraphQL POST request
+  const fetcher = async (fetchUrl: string, fetchBody: TBody) => {
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+
+    if (process.env.NODE_ENV === 'development') {
+      // NOTE: This cookie can only be accessed from the client side
+      // in development mode. Otherwise, the cookie is set as httpOnly
+      const accessToken = getCookie('credentials_token');
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+    }
+
+    const response = await fetch(fetchUrl, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(fetchBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  };
+
+  // Use SWR with the fetcher
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    TResponse,
+    Error
+  >([url, body], ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody), {
+    revalidateOnFocus: false, // Disable auto revalidation on window focus
+    // Add any other SWR options you need here
+  });
+
+  // Format error to match your ErrorDetails interface
+  const formattedError = error
+    ? ({
+        status: error.message.match(/\d+/)?.[0] || 'Unknown',
+        message: error.message,
+      } as ErrorDetails)
+    : null;
+
+  return {
+    data,
+    isLoading,
+    isSuccess: !!data && !error,
+    isError: !!error,
+    error: formattedError,
+    mutate, // Allow manual revalidation if needed
+  };
+};
 
 interface UsePostDataState<TResponse> {
   data: TResponse | null;
@@ -24,7 +80,9 @@ interface UsePostDataState<TResponse> {
   error: ErrorDetails | null;
 }
 
-function usePostData<TResponse = unknown, TBody = unknown>(url: string) {
+export const usePostData = <TResponse = unknown, TBody = unknown>(
+  url: string,
+) => {
   const [state, setState] = useState<UsePostDataState<TResponse>>({
     data: null,
     isLoading: false,
@@ -92,7 +150,7 @@ function usePostData<TResponse = unknown, TBody = unknown>(url: string) {
   };
 
   return { postData, ...state };
-}
+};
 
 interface QueryAggsParams {
   type: string;
@@ -119,16 +177,12 @@ const histogramQueryStrForEachField = (field: string): string => {
   }`;
 };
 
-const { postData, data, isError, error, isLoading, isSuccess } = usePostData(
-  '/api/analysis/cohortDiscovery',
-);
-
-export const buildGetAggreationQuery = ({
-  type,
-  fields,
-  filters,
+export const buildGetAggregationQuery = (
+  type: string,
+  fields: ReadonlyArray<string>,
+  filters: FilterSet,
   accessibility = Accessibility.ALL,
-}: QueryAggsParams): GraphQLQuery => {
+): GraphQLQuery => {
   const queryStart = isFilterEmpty(filters)
     ? `
               query getAggs {

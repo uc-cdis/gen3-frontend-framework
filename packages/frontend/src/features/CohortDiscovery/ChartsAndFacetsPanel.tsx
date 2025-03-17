@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@mantine/core';
 import {
   extractEnumFilterValue,
@@ -21,6 +21,11 @@ import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 //import { useGetAggsQuery } from './queryApi';
 import { useGetAggsQuery } from '@gen3/core';
+import {
+  buildGetAggreationQuery,
+  buildGetAggregationQuery,
+  usePostData,
+} from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -51,6 +56,25 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     fields: facets.map((x) => x.field),
     filters: cohortFilters,
   });
+
+  // const {
+  //   postData,
+  //   data: aggssData,
+  //   isError: isAggsError,
+  //   error,
+  //   isLoading: isAgggsLoading,
+  //   isSuccess: isAggsSucces,
+  // } = usePostData('/api/analysis/cohortDiscovery');
+
+  // useEffect(() => {
+  //   const query = buildGetAggregationQuery(
+  //     index,
+  //     facets.map((x) => x.field),
+  //     cohortFilters,
+  //   );
+  //   console.log('query', query);
+  //   postData(query);
+  // }, [index, facets, cohortFilters]);
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {

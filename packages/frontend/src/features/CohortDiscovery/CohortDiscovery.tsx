@@ -23,10 +23,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
 
   return (
     <React.Fragment>
-      <PersistGate
-        persistor={persistor}
-        loading={<LoadingOverlay visible={true} />}
-      >
+      <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
         <Title order={1} className="absolute top-6 left-[154px]">
           Cohort Discovery
         </Title>
