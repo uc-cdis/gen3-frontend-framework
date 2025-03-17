@@ -60,7 +60,8 @@ const Gen3App = ({
     //   !faroRef.current
     // ) {
 
-    if (!faroRef.current) faroRef.current = initGrafanaFaro();
+    // Note: not using faro for development
+    // if (!faroRef.current) faroRef.current = initGrafanaFaro();
     if (isFirstRender.current) {
       setDRSHostnames(drsHostnames);
       registerMetadataSchemaApp();
