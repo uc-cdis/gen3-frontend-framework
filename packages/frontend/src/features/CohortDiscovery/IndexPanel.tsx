@@ -15,7 +15,7 @@ import {
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
-import ActionButtonGroup from './ActionButtonGroup';
+import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
 import CohortManager from '../CohortDiscovery/CohortManager';
 import { AppState, useAppSelector, useAppDispatch } from './appApi';
 import Image from 'next/image';

@@ -9,7 +9,6 @@ import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
 import { HTTPUserFriendlyErrorMessages } from './modals/utils';
-import { size } from 'lodash';
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   useAPI,

@@ -7,6 +7,7 @@ import { facetDefinitionsReducer } from './FacetDefinitionsSlice';
 import { cohortReducer } from './CohortSlice';
 
 import storage from './storage-persist';
+import { cohortPersistenceReducer } from './CohortManagerSlice';
 
 const _APP_NAME = 'CohortDiscovery';
 
@@ -25,6 +26,7 @@ const reducers = combineReducers({
   filtersExpandedState: filtersExpandedReducer,
   facetDefinitionState: facetDefinitionsReducer,
   cohorts: cohortReducer,
+  savedCohorts: cohortPersistenceReducer,
 });
 
 const persistedReducers = persistReducer(persistConfig, reducers);

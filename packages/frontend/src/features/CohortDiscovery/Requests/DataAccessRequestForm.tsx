@@ -1,0 +1,159 @@
+import React, { useState } from 'react';
+import {
+  Textarea,
+  TextInput,
+  Button,
+  Group,
+  Box,
+  Title,
+  Text,
+  Paper,
+  Divider,
+  Stack,
+} from '@mantine/core';
+import { useForm, isNotEmpty, isEmail, matches } from '@mantine/form';
+import { DataAccessRequestUserInformation } from '../types';
+import { useAppDispatch, useAppSelector, AppState } from '../appApi';
+import {
+  selectCohortById,
+  requestCohortDataAccess,
+} from '../CohortManagerSlice';
+import { Cohort } from '../types';
+
+interface DataAccessRequestFormParams {
+  cohortId: string;
+  close: () => void;
+}
+
+export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
+  cohortId,
+  close,
+}) => {
+  const [submitted, setSubmitted] = useState(false);
+  const cohort: Cohort = useAppSelector((state: AppState) =>
+    selectCohortById(state, cohortId),
+  );
+
+  const appDispatch = useAppDispatch();
+
+  const form = useForm<DataAccessRequestUserInformation>({
+    initialValues: {
+      name: '',
+      institution: '',
+      department: '',
+      address: '',
+      email: '',
+      phone: '',
+    },
+
+    validate: {
+      name: isNotEmpty('Name is required'),
+      institution: isNotEmpty('Institution is required'),
+      department: isNotEmpty('Department is required'),
+      address: isNotEmpty('Address is required'),
+      email: isEmail('Please provide a valid email'),
+      phone: matches(
+        /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+        'Please provide a valid phone number',
+      ),
+    },
+  });
+
+  const handleSubmit = (values: DataAccessRequestUserInformation) => {
+    // Here you would typically send the form data to your backend
+    console.log('Form values:', values);
+    appDispatch(
+      requestCohortDataAccess({ cohortId, userAccessInformation: values }),
+    );
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <Paper shadow="md" p="xl" radius="md">
+        <Title order={2} mb="md" ta="center">
+          Request Submitted
+        </Title>
+        <Text ta="center">
+          Thank you for your data access request. We will review your submission
+          and contact you shortly.
+        </Text>
+        <Group justify="center" mt="xl">
+          <Button onClick={() => close()}>Dismiss</Button>
+        </Group>
+      </Paper>
+    );
+  }
+
+  return (
+    <Paper radius="md">
+      <Title order={2} mb="xs">
+        Data Access Request
+      </Title>
+      <Text c="dimmed" mb="lg">
+        Please complete all fields to request access to our research data.
+      </Text>
+      <Divider mb="lg" />
+
+      <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+        <Stack gap="md">
+          <TextInput
+            label="Full Name"
+            placeholder="John Doe"
+            withAsterisk
+            {...form.getInputProps('name')}
+          />
+
+          <TextInput
+            label="Institution"
+            placeholder="University, Organization, or Company"
+            withAsterisk
+            {...form.getInputProps('institution')}
+          />
+
+          <TextInput
+            label="Department"
+            placeholder="Research Department"
+            {...form.getInputProps('department')}
+          />
+
+          <Textarea
+            label="Address"
+            placeholder="Full institutional address"
+            withAsterisk
+            autosize
+            minRows={2}
+            maxRows={4}
+            {...form.getInputProps('address')}
+          />
+
+          <TextInput
+            label="Email"
+            placeholder="your.email@institution.edu"
+            withAsterisk
+            {...form.getInputProps('email')}
+          />
+
+          <TextInput
+            label="Phone"
+            placeholder="+1 (123) 456-7890"
+            withAsterisk
+            {...form.getInputProps('phone')}
+          />
+
+          <Group justify="flex-end">
+            <Button type="reset" variant="outline" onClick={() => form.reset()}>
+              Reset
+            </Button>
+            <Button variant="outline" onClick={() => close()}>
+              {submitted ? 'Close' : 'Cancel'}
+            </Button>
+            {!submitted && <Button type="submit">Submit Request</Button>}
+          </Group>
+        </Stack>
+      </Box>
+    </Paper>
+  );
+};
+
+export default DataAccessRequestForm;

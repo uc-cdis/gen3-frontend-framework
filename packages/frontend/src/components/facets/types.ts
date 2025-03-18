@@ -74,6 +74,10 @@ export type SetFacetCombineModeFunction = (
   combineMode: CombineMode,
 ) => void;
 
+export type EnumFacetDataChangedFunction = (
+  data: Array<[string | number, number]>,
+) => void;
+
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;

@@ -1,19 +1,12 @@
 import React from 'react';
 import { Button, Group } from '@mantine/core';
 
+import SaveActionButton from './SaveActionButton';
+
 const ActionButtonGroup = () => {
   return (
     <Group gap="xs" className="flex pt-4 pl-2">
-      <Button
-        size="sm"
-        variant="outline"
-        color="secondary.4"
-        classNames={{
-          root: 'bg-base-max',
-        }}
-      >
-        Save Cohort
-      </Button>
+      <SaveActionButton />
       <Button
         size="sm"
         variant="outline"

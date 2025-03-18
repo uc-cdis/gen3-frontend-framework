@@ -4,6 +4,7 @@ import {
   extractEnumFilterValue,
   FacetDefinition,
   fieldNameToTitle,
+  AggregationsData,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -19,13 +20,9 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { computeRowSpan } from '../../components/charts';
 import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-//import { useGetAggsQuery } from './queryApi';
+// //import { useGetAggsQuery } from './queryApi';
 import { useGetAggsQuery } from '@gen3/core';
-import {
-  buildGetAggreationQuery,
-  buildGetAggregationQuery,
-  usePostData,
-} from './queryApi';
+import { buildGetAggregationQuery, usePostData } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -59,14 +56,15 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   // const {
   //   postData,
-  //   data: aggssData,
+  //   data: aggsData,
   //   isError: isAggsError,
   //   error,
-  //   isLoading: isAgggsLoading,
+  //   isLoading: isAggsLoading,
   //   isSuccess: isAggsSucces,
   // } = usePostData('/api/analysis/cohortDiscovery');
-
+  //
   // useEffect(() => {
+  //   console.log('postData', facets);
   //   const query = buildGetAggregationQuery(
   //     index,
   //     facets.map((x) => x.field),
@@ -79,7 +77,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
-        data: processBucketData(data?.[field]),
+        data: processBucketData((data as AggregationsData)?.[field]),
         enumFilters:
           field in cohortFilters.root
             ? extractEnumFilterValue(cohortFilters.root[field])
@@ -87,18 +85,18 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
         isSuccess: isSuccess,
       };
     },
-    [cohortFilters, cohortFilters.root, data, isSuccess],
+    [cohortFilters, cohortFilters.root, data],
   );
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
-        data: processRangeData(data?.[field]),
+        data: processRangeData((data as AggregationsData)?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };
     },
-    [data, cohortFilters.root, isSuccess],
+    [data, cohortFilters.root],
   );
 
   const facetHooks: Record<SupportedFacetTypes, EnumFacetPanelDataHooks> =

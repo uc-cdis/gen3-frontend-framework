@@ -10,46 +10,21 @@ import {
 } from '@mantine/core';
 import { MdClose as CloseIcon } from 'react-icons/md';
 import FacetSortPanel from './FacetSortPanel';
-import { fieldNameToTitle, type CombineMode } from '@gen3/core';
+import { type CombineMode, fieldNameToTitle } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
 import { FacetSortType, SortType } from './types';
-import { mapFacetSortToSortType, updateFacetEnum } from './utils';
+import {
+  compareKeysAscending,
+  compareKeysDescending,
+  mapFacetSortToSortType,
+  updateFacetEnum,
+} from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify/react';
-
-const compareKeysAscending = (
-  a: string | number,
-  b: string | number,
-): number => {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return a - b;
-  }
-  // If only one value is a number, move numbers to one end
-  // (in this case, numbers will come before strings)
-  if (typeof a === 'number') return -1;
-  if (typeof b === 'number') return 1;
-  // If both are strings, sort alphabetically
-  return a.localeCompare(b);
-};
-
-const compareKeysDescending = (
-  a: string | number,
-  b: string | number,
-): number => {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return b - a;
-  }
-  // If only one value is a number, move numbers to one end
-  // (in this case, numbers will come before strings)
-  if (typeof a === 'number') return 1;
-  if (typeof b === 'number') return -1;
-  // If both are strings, sort alphabetically
-  return b.localeCompare(a);
-};
 
 interface FacetEnumListProps {
   field: string;
@@ -101,6 +76,8 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     mapFacetSortToSortType(sort),
   );
   const theme = useMantineTheme();
+
+  const updateVisibleValues = hooks?.updateVisibleValues;
 
   useEffect(() => {
     if (isSearching) {
@@ -288,6 +265,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         )
         .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
       setSortedData(obj);
+      if (updateVisibleValues) updateVisibleValues(obj);
     }
   }, [
     facetChartData.filteredData,

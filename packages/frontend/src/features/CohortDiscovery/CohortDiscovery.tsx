@@ -7,8 +7,12 @@ import { CohortDiscoveryConfig } from './types';
 import IndexPanel from './IndexPanel';
 import { AppStore } from './appApi';
 import Image from 'next/image';
+import SavedCohortsPanel from './SaveCohorts/SavedCohortsPanel';
+import RequestsPanel from './Requests/RequestsPanel';
 
 const persistor = persistStore(AppStore);
+
+const useGetDefinitions = (config: CohortDiscoveryConfig) => {};
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const { isFetching } = useGetCSRFQuery(); // need for Guppy
@@ -67,9 +71,13 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
             />
           </Tabs.Panel>
 
-          <Tabs.Panel value="saved">Saved Cohorts tab content</Tabs.Panel>
+          <Tabs.Panel value="saved">
+            <SavedCohortsPanel />
+          </Tabs.Panel>
 
-          <Tabs.Panel value="request">Request tab content</Tabs.Panel>
+          <Tabs.Panel value="request">
+            <RequestsPanel />
+          </Tabs.Panel>
         </Tabs>
       </PersistGate>
     </React.Fragment>

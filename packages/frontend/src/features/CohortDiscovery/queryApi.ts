@@ -14,7 +14,7 @@ interface ErrorDetails {
   message: string;
 }
 
-export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
+export const useGraphQLData = <TResponse = unknown, TBody = any>(
   url: string,
   body: TBody,
 ) => {
@@ -49,10 +49,14 @@ export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
   const { data, error, isLoading, isValidating, mutate } = useSWR<
     TResponse,
     Error
-  >([url, body], ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody), {
-    revalidateOnFocus: false, // Disable auto revalidation on window focus
-    // Add any other SWR options you need here
-  });
+  >(
+    [url, body],
+    ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody as TBody),
+    {
+      revalidateOnFocus: false, // Disable auto revalidation on window focus
+      // Add any other SWR options you need here
+    },
+  );
 
   // Format error to match your ErrorDetails interface
   const formattedError = error
@@ -162,6 +166,7 @@ interface QueryAggsParams {
 const histogramQueryStrForEachField = (field: string): string => {
   const splittedFieldArray = field.split('.');
   const splittedField = splittedFieldArray.shift();
+  console.log('splittedFieldArray', splittedFieldArray);
   if (splittedFieldArray.length === 0) {
     return `
     ${splittedField} {
