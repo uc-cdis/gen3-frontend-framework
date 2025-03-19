@@ -8,6 +8,7 @@ import { cohortReducer } from './CohortSlice';
 
 import storage from './storage-persist';
 import { cohortPersistenceReducer } from './CohortManagerSlice';
+import { dataAccessRequestsReducer } from './RequestManagerSlice';
 
 const _APP_NAME = 'CohortDiscovery';
 
@@ -27,6 +28,7 @@ const reducers = combineReducers({
   facetDefinitionState: facetDefinitionsReducer,
   cohorts: cohortReducer,
   savedCohorts: cohortPersistenceReducer,
+  dataAccessRequests: dataAccessRequestsReducer,
 });
 
 const persistedReducers = persistReducer(persistConfig, reducers);

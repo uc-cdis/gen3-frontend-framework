@@ -10,32 +10,50 @@ import { TableIcons } from '../../../components/Tables/TableIcons';
 
 import { selectAllCohorts } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
-import { Cohort } from '../types';
+import { Cohort, DataAccessRequest } from '../types';
 
+interface RequestWithCohort extends DataAccessRequest {
+  cohortName: string;
+}
 const RequestsTable = () => {
-  const columns = useMemo<MRT_ColumnDef<Cohort>[]>(
+  const columns = useMemo<MRT_ColumnDef<RequestWithCohort>[]>(
     () => [
       {
-        accessorKey: 'name', //access nested data with dot notation
-        header: 'Name',
+        accessorKey: 'request_datetime',
+        header: 'Request Date',
       },
       {
-        accessorKey: 'created_datetime',
-        header: 'Modified Date',
+        accessorKey: 'cohortName',
+        header: 'Cohort',
       },
       {
-        accessorKey: 'modified_datetime', //normal accessorKey
-        header: 'Created Date',
+        accessorKey: 'status', //normal accessorKey
+        header: 'Status',
+        cellProps: {
+          style: {
+            textTransform: 'capitalize',
+          },
+        },
       },
     ],
     [],
   );
 
-  const data = useAppSelector((state: AppState) => selectAllCohorts(state));
+  const cohorts: Cohort[] = useAppSelector((state: AppState) =>
+    selectAllCohorts(state),
+  );
 
-  const table = useMantineReactTable({
+  const requests: RequestWithCohort[] = cohorts
+    .map((cohort) =>
+      cohort.dataAccessRequest
+        ? { ...cohort?.dataAccessRequest, cohortName: cohort.name }
+        : null,
+    )
+    .filter((request) => request !== null) as RequestWithCohort[];
+
+  const table = useMantineReactTable<RequestWithCohort>({
     columns,
-    data,
+    data: requests,
     icons: TableIcons,
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],

@@ -14,11 +14,7 @@ import {
 import { useForm, isNotEmpty, isEmail, matches } from '@mantine/form';
 import { DataAccessRequestUserInformation } from '../types';
 import { useAppDispatch, useAppSelector, AppState } from '../appApi';
-import {
-  selectCohortById,
-  requestCohortDataAccess,
-} from '../CohortManagerSlice';
-import { Cohort } from '../types';
+import { addDataAccessRequest } from '../RequestManagerSlice';
 
 interface DataAccessRequestFormParams {
   cohortId: string;
@@ -30,10 +26,6 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
   close,
 }) => {
   const [submitted, setSubmitted] = useState(false);
-  const cohort: Cohort = useAppSelector((state: AppState) =>
-    selectCohortById(state, cohortId),
-  );
-
   const appDispatch = useAppDispatch();
 
   const form = useForm<DataAccessRequestUserInformation>({
@@ -49,7 +41,6 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
     validate: {
       name: isNotEmpty('Name is required'),
       institution: isNotEmpty('Institution is required'),
-      department: isNotEmpty('Department is required'),
       address: isNotEmpty('Address is required'),
       email: isEmail('Please provide a valid email'),
       phone: matches(
@@ -63,8 +54,9 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
     // Here you would typically send the form data to your backend
     console.log('Form values:', values);
     appDispatch(
-      requestCohortDataAccess({ cohortId, userAccessInformation: values }),
+      addDataAccessRequest({ cohortId, userAccessInformation: values }),
     );
+    console.log('submitting request', cohortId, values);
     setSubmitted(true);
   };
 

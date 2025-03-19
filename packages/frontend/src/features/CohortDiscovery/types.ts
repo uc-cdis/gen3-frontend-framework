@@ -48,7 +48,8 @@ export interface Cohort {
   modified?: boolean; // flag which is set to true if modified and unsaved
   modified_datetime: string; // last time cohort was modified
   created_datetime: string;
-  dataAccessRequests?: DataAccessRequest;
+  requestedAccess: boolean;
+  requestId: string;
 }
 
 export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
@@ -60,6 +61,8 @@ export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
     filters: filters,
     modified_datetime: ts,
     created_datetime: ts,
+    requestedAccess: false,
+    requestId: 'no_request_id',
   };
 };
 
@@ -72,7 +75,7 @@ export interface DataAccessRequestUserInformation {
   phone: string;
 }
 
-enum DataAccessRequestStatus {
+export enum DataAccessRequestStatus {
   pending = 'pending',
   approved = 'approved',
   rejected = 'rejected',
@@ -82,18 +85,21 @@ export interface DataAccessRequest extends DataAccessRequestUserInformation {
   id: string;
   request_datetime: string;
   status: DataAccessRequestStatus;
-  cohort: Cohort;
+  cohortId: CohortId;
+  cohortName: string;
 }
 
 export const newDataAccessRequest = (
   userInformation: DataAccessRequestUserInformation,
-  cohort: Cohort,
+  cohortId: CohortId,
+  cohortName: string,
 ) => {
   return {
     id: createRequestId(),
     request_datetime: new Date().toISOString(),
     status: 'pending',
-    cohort: cohort,
+    cohortId,
+    cohortName,
     ...userInformation,
   } as DataAccessRequest;
 };

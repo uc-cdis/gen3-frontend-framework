@@ -15,16 +15,6 @@ const persistor = persistStore(AppStore);
 const useGetDefinitions = (config: CohortDiscoveryConfig) => {};
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
-  const { isFetching } = useGetCSRFQuery(); // need for Guppy
-
-  if (isFetching) {
-    return (
-      <Center maw={400} h={100} mx="auto">
-        <Loader variant="dots" />
-      </Center>
-    );
-  }
-
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
@@ -32,6 +22,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
           Cohort Discovery
         </Title>
         <Tabs
+          keepMounted={true}
           defaultValue="build"
           orientation="vertical"
           classNames={{

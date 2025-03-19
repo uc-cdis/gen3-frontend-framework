@@ -1,4 +1,5 @@
 import {
+  createSelector,
   createEntityAdapter,
   createSlice,
   EntityState,
@@ -29,11 +30,6 @@ interface AddCohortParams {
   filters: IndexedFilterSet;
 }
 
-interface DataAccessRequestForCohort {
-  cohortId: CohortId;
-  userAccessInformation: DataAccessRequestUserInformation;
-}
-
 // Create a slice with reducers
 export const cohortPersistenceSlice = createSlice({
   name: 'CohortDiscovery/CohortManager',
@@ -44,22 +40,6 @@ export const cohortPersistenceSlice = createSlice({
       const cohort = newCohort(action.payload.name, action.payload.filters);
       cohortsAdapter.setOne(state, cohort);
     },
-    requestCohortDataAccess: (
-      state,
-      action: PayloadAction<DataAccessRequestForCohort>,
-    ) => {
-      const { cohortId, userAccessInformation } = action.payload;
-      const cohort = state.entities[cohortId];
-      if (!cohort) return;
-
-      const updatedCohort = {
-        ...cohort,
-        dataAccessRequests: newDataAccessRequest(userAccessInformation, cohort),
-      };
-
-      cohortsAdapter.setOne(state, updatedCohort);
-    },
-
     // Remove a cohort
     removeCohort: cohortsAdapter.removeOne,
     // Remove multiple cohorts
@@ -69,12 +49,8 @@ export const cohortPersistenceSlice = createSlice({
 });
 
 // Export actions
-export const {
-  saveCohort,
-  removeCohort,
-  removeCohorts,
-  requestCohortDataAccess,
-} = cohortPersistenceSlice.actions;
+export const { saveCohort, removeCohort, removeCohorts } =
+  cohortPersistenceSlice.actions;
 
 // Export selectors
 export const {

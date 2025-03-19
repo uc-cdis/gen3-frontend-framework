@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AppState, useAppDispatch } from '../appApi';
 import {
   MantineReactTable,
@@ -15,21 +15,20 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { useDisclosure } from '@mantine/hooks';
 import { Icon } from '@iconify/react';
 import { IconSize } from '../../../utils/sizes';
 import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
 import { Cohort } from '../types';
-import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 
 interface SavedCohortsTableProps {
+  openModal: (id: string) => void;
   size?: string;
 }
 const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
+  openModal,
   size = 'md',
 }) => {
-  const [opened, { close, open }] = useDisclosure(false);
   const appDispatch = useAppDispatch();
 
   const columns = useMemo<MRT_ColumnDef<Cohort>[]>(
@@ -69,7 +68,9 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
             color="accent.4"
             variant="transparent"
             aria-label="Submit Data Access Request"
-            onClick={open}
+            onClick={() => {
+              openModal(row.id);
+            }}
           >
             <Icon
               icon="gen3:request"
@@ -127,18 +128,6 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
 
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={close}
-        radius="md"
-        size="auto"
-        title="Request Access to Cohort"
-        classNames={{
-          header: 'p-1 px-4 border-base-lighter border-b-1 uppercase font-bold',
-        }}
-      >
-        <DataAccessRequestForm cohortId={1} close={close} />
-      </Modal>
       <div className="inline-block overflow-x-scroll w-full">
         <MantineReactTable table={table} />
       </div>
