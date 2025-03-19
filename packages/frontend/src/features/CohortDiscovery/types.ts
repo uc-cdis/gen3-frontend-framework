@@ -100,3 +100,7 @@ export const newDataAccessRequest = (
     ...userInformation,
   } as DataAccessRequest;
 };
+
+export interface ActionButtonProps {
+  index: string;
+}

@@ -5,8 +5,9 @@ import { useAppSelector, useAppDispatch, AppState } from '../appApi';
 import { selectCohortFilters } from '../CohortSelectors';
 import { saveCohort } from '../CohortManagerSlice';
 import { IndexedFilterSet } from '@gen3/core';
+import { ActionButtonProps } from '../types';
 
-const SaveActionButton = () => {
+const SaveActionButton: React.FC<ActionButtonProps> = ({ index }) => {
   const [opened, { close, open }] = useDisclosure(false);
   const filters: IndexedFilterSet = useAppSelector((state: AppState) =>
     selectCohortFilters(state),
@@ -58,6 +59,7 @@ const SaveActionButton = () => {
         size="sm"
         variant="outline"
         color="secondary.4"
+        disabled={Object.keys(filters[index].root).length == 0}
         classNames={{
           root: 'bg-base-max',
         }}

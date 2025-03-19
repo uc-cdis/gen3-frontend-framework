@@ -151,7 +151,7 @@ const IndexPanel = ({
           }}
         />
         <Stack className="w-full">
-          <ActionButtonGroup />
+          <ActionButtonGroup index={index} />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}
