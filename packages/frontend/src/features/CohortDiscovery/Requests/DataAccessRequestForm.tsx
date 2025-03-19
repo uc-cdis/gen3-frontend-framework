@@ -13,20 +13,22 @@ import {
 } from '@mantine/core';
 import { useForm, isNotEmpty, isEmail, matches } from '@mantine/form';
 import { DataAccessRequestUserInformation } from '../types';
-import { useAppDispatch, useAppSelector, AppState } from '../appApi';
-import { addDataAccessRequest } from '../RequestManagerSlice';
 
-interface DataAccessRequestFormParams {
+export interface DataAccessRequestFormParams {
   cohortId: string;
+  submitFunction: (
+    cohortId: string,
+    values: DataAccessRequestUserInformation,
+  ) => void;
   close: () => void;
 }
 
 export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
   cohortId,
+  submitFunction,
   close,
 }) => {
   const [submitted, setSubmitted] = useState(false);
-  const appDispatch = useAppDispatch();
 
   const form = useForm<DataAccessRequestUserInformation>({
     initialValues: {
@@ -50,13 +52,8 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
     },
   });
 
-  const handleSubmit = (values: DataAccessRequestUserInformation) => {
-    // Here you would typically send the form data to your backend
-    console.log('Form values:', values);
-    appDispatch(
-      addDataAccessRequest({ cohortId, userAccessInformation: values }),
-    );
-    console.log('submitting request', cohortId, values);
+  const handleSubmit = async (values: DataAccessRequestUserInformation) => {
+    submitFunction(cohortId, values);
     setSubmitted(true);
   };
 

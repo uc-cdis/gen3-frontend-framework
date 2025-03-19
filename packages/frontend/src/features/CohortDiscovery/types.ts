@@ -86,20 +86,17 @@ export interface DataAccessRequest extends DataAccessRequestUserInformation {
   request_datetime: string;
   status: DataAccessRequestStatus;
   cohortId: CohortId;
-  cohortName: string;
 }
 
 export const newDataAccessRequest = (
   userInformation: DataAccessRequestUserInformation,
   cohortId: CohortId,
-  cohortName: string,
 ) => {
   return {
     id: createRequestId(),
     request_datetime: new Date().toISOString(),
     status: 'pending',
     cohortId,
-    cohortName,
     ...userInformation,
   } as DataAccessRequest;
 };

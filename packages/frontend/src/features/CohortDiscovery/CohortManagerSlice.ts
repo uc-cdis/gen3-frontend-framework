@@ -59,5 +59,15 @@ export const {
   selectById: selectCohortById,
 } = cohortsAdapter.getSelectors((state: AppState) => state.savedCohorts);
 
+export const selectCohortIdToNameMap = createSelector(
+  [selectAllCohorts],
+  (cohorts) => {
+    return cohorts.reduce<Record<CohortId, string>>((acc, cohort) => {
+      acc[cohort.id] = cohort.name;
+      return acc;
+    }, {});
+  },
+);
+
 // Export reducer
 export const cohortPersistenceReducer = cohortPersistenceSlice.reducer;

@@ -1,18 +1,44 @@
 import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-import { useGetCSRFQuery } from '@gen3/core';
-import { Title, Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
-import { CohortDiscoveryConfig } from './types';
+import { Title, Loader, Tabs } from '@mantine/core';
+import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import {
+  CohortDiscoveryConfig,
+  DataAccessRequestUserInformation,
+} from './types';
 import IndexPanel from './IndexPanel';
 import { AppStore } from './appApi';
 import Image from 'next/image';
 import SavedCohortsPanel from './SaveCohorts/SavedCohortsPanel';
 import RequestsPanel from './Requests/RequestsPanel';
+import DataAccessRequestForm, {
+  DataAccessRequestFormParams,
+} from './Requests/DataAccessRequestForm';
 
 const persistor = persistStore(AppStore);
 
 const useGetDefinitions = (config: CohortDiscoveryConfig) => {};
+
+const DataRequestModal = ({
+  context,
+  id,
+  innerProps,
+}: ContextModalProps<{
+  cohortId: string;
+  submitFunction: (
+    cohortId: string,
+    values: DataAccessRequestUserInformation,
+  ) => void;
+}>) => (
+  <>
+    <DataAccessRequestForm
+      cohortId={innerProps.cohortId}
+      submitFunction={innerProps.submitFunction}
+      close={() => context.closeModal(id)}
+    />
+  </>
+);
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   return (

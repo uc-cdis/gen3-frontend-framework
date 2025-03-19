@@ -19,7 +19,9 @@ import { Icon } from '@iconify/react';
 import { IconSize } from '../../../utils/sizes';
 import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
-import { Cohort } from '../types';
+import { Cohort, DataAccessRequestUserInformation } from '../types';
+import { addDataAccessRequest } from '../RequestManagerSlice';
+import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 
 interface SavedCohortsTableProps {
   openModal: (id: string) => void;
@@ -53,6 +55,25 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
   const theme = useMantineTheme();
   const data = useAppSelector((state: AppState) => selectAllCohorts(state));
 
+  const handleSubmission = (
+    cohortId: string,
+    values: DataAccessRequestUserInformation,
+  ) => {
+    if (cohortId && values) {
+      console.log(values);
+      try {
+        appDispatch(
+          addDataAccessRequest({ cohortId, userAccessInformation: values }),
+        );
+        // Close the modal after successful dispatch
+        close();
+      } catch (error) {
+        console.error('Error dispatching addDataAccessRequest action:', error);
+        // Handle the error appropriately
+      }
+    }
+  };
+
   const table = useMantineReactTable({
     columns,
     data,
@@ -66,10 +87,19 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
         <Tooltip label="Submit Data Access Request" withArrow>
           <ActionIcon
             color="accent.4"
-            variant="transparent"
+            variant="dataRequestModal"
             aria-label="Submit Data Access Request"
             onClick={() => {
-              openModal(row.id);
+              const modelId = modals.open({
+                title: 'Test modal from context',
+                children: (
+                  <DataAccessRequestForm
+                    cohortId={row.id}
+                    submitFunction={handleSubmission}
+                    close={() => modals.close(modelId)}
+                  />
+                ),
+              });
             }}
           >
             <Icon

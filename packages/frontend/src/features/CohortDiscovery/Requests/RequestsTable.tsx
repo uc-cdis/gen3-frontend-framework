@@ -7,24 +7,28 @@ import {
   MRT_ColumnDef,
 } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-
-import { selectAllCohorts } from '../CohortManagerSlice';
+import { selectCohortIdToNameMap } from '../CohortManagerSlice';
+import { selectAllDataAccessRequests } from '../RequestManagerSlice';
 import { useAppSelector } from '../appApi';
-import { Cohort, DataAccessRequest } from '../types';
+import { DataAccessRequest } from '../types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface RequestWithCohort extends DataAccessRequest {
   cohortName: string;
 }
 const RequestsTable = () => {
+  const requests: Array<DataAccessRequest> = useAppSelector(
+    selectAllDataAccessRequests,
+  );
   const columns = useMemo<MRT_ColumnDef<RequestWithCohort>[]>(
     () => [
       {
-        accessorKey: 'request_datetime',
-        header: 'Request Date',
-      },
-      {
         accessorKey: 'cohortName',
         header: 'Cohort',
+      },
+      {
+        accessorKey: 'request_datetime',
+        header: 'Request Date',
       },
       {
         accessorKey: 'status', //normal accessorKey
@@ -36,24 +40,25 @@ const RequestsTable = () => {
         },
       },
     ],
-    [],
+    [requests],
   );
 
-  const cohorts: Cohort[] = useAppSelector((state: AppState) =>
-    selectAllCohorts(state),
-  );
+  const cohortIdToNameMap = useAppSelector(selectCohortIdToNameMap);
 
-  const requests: RequestWithCohort[] = cohorts
-    .map((cohort) =>
-      cohort.dataAccessRequest
-        ? { ...cohort?.dataAccessRequest, cohortName: cohort.name }
-        : null,
-    )
-    .filter((request) => request !== null) as RequestWithCohort[];
+  const requestsWithCohorts = useDeepCompareMemo(
+    () =>
+      requests.map((request) => {
+        return {
+          ...request,
+          cohortName: cohortIdToNameMap[request.cohortId] || 'Unknown',
+        };
+      }),
+    [requests, cohortIdToNameMap],
+  );
 
   const table = useMantineReactTable<RequestWithCohort>({
     columns,
-    data: requests,
+    data: requestsWithCohorts,
     icons: TableIcons,
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
