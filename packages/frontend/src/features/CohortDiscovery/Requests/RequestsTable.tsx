@@ -14,6 +14,7 @@ import { DataAccessRequest } from '../types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
+import { commonTableSettings } from '../tableSettings';
 
 interface RequestWithCohort extends DataAccessRequest {
   cohortName: string;
@@ -64,31 +65,7 @@ const RequestsTable = () => {
   const table = useMantineReactTable<RequestWithCohort>({
     columns,
     data: requestsWithCohorts,
-    icons: TableIcons,
-    enableTopToolbar: false,
-    enableStickyHeader: true,
-    mantinePaginationProps: {
-      rowsPerPageOptions: ['5', '10', '20', '40', '100'],
-      withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
-    },
-    mantineTableHeadCellProps: {
-      style: {
-        '--mrt-base-background-color': 'var(--mantine-color-table-1)',
-        color: `var(--mantine-color-table-contrast-5')`,
-      },
-    },
-    mantineTableHeadRowProps: {
-      style: {
-        '--mrt-base-background-color': 'var(--mantine-color-secondary-2)',
-        borderColor: 'var(--mantine-color-secondary-2)',
-        borderWidth: '1px',
-        boxShadow: 'none',
-        align: 'center',
-        fontSize: 'var(--mantine-font-size-sm)',
-        fontWeight: 600,
-        color: 'var(--mantine-color-secondary-contrast-2)',
-      },
-    },
+    ...commonTableSettings(),
   });
 
   return (

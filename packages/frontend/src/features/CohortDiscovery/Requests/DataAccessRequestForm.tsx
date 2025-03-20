@@ -76,9 +76,6 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
 
   return (
     <Paper radius="md">
-      <Title order={2} mb="xs">
-        Data Access Request
-      </Title>
       <Text c="dimmed" mb="lg">
         Please complete all fields to request access to our research data.
       </Text>

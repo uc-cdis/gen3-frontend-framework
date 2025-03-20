@@ -5,6 +5,7 @@ import {
   useMantineReactTable,
   MRT_ColumnDef,
 } from 'mantine-react-table';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ActionIcon,
@@ -26,7 +27,7 @@ import {
 } from '../RequestManagerSlice';
 import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 import { formatDate } from '../../../utils/date';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { commonTableSettings } from '../tableSettings';
 
 interface CohortWithRequested extends Cohort {
   requested: string;
@@ -62,9 +63,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
         header: 'Requested',
         Cell: ({ cell }) =>
           cell.getValue() === 'true' && (
-            <Center>
-              <Icon icon="gen3:check" />
-            </Center>
+            <Icon icon="gen3:check" height="2em" width="2em" color="green" />
           ),
       },
     ],
@@ -102,9 +101,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
     columns,
     data: tData,
     getRowId: (originalRow) => originalRow.id,
-    enableRowActions: true,
-    enableTopToolbar: false,
-    enableStickyHeader: true,
+    ...commonTableSettings(),
     positionActionsColumn: 'last',
     renderRowActions: ({ row }) => (
       <Group wrap="nowrap" gap="xs">
@@ -182,29 +179,6 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
         </Tooltip>
       </Group>
     ),
-    icons: TableIcons,
-    mantinePaginationProps: {
-      rowsPerPageOptions: ['5', '10', '20', '40', '100'],
-      withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
-    },
-    mantineTableHeadCellProps: {
-      style: {
-        '--mrt-base-background-color': 'var(--mantine-color-table-1)',
-        color: `var(--mantine-color-table-contrast-5')`,
-      },
-    },
-    mantineTableHeadRowProps: {
-      style: {
-        '--mrt-base-background-color': 'var(--mantine-color-secondary-2)',
-        borderColor: 'var(--mantine-color-secondary-2)',
-        borderWidth: '1px',
-        boxShadow: 'none',
-        align: 'center',
-        fontSize: 'var(--mantine-font-size-sm)',
-        fontWeight: 600,
-        color: 'var(--mantine-color-secondary-contrast-2)',
-      },
-    },
   });
 
   return (
