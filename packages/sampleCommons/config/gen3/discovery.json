@@ -235,20 +235,18 @@
         "dataAvailabilityField": "data_availability",
         "uid": "_hdp_uid"
       },
-      "tags": {
-        "tagCategories": [
-          {
-            "name": "Condition",
-            "color": "#532565",
-            "display": false
-          },
-          {
-            "name": "Data Type",
-            "color": "#982568",
-            "display": false
-          }
-        ]
-      }
+      "tagCategories": [
+        {
+          "name": "Condition",
+          "color": "#532565",
+          "display": false
+        },
+        {
+          "name": "Data Type",
+          "color": "#982568",
+          "display": false
+        }
+      ]
     }
   ]
 }
