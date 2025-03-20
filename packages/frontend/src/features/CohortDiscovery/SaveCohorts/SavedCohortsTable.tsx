@@ -112,7 +112,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
             aria-label="Submit Data Access Request"
             onClick={() => {
               const modelId = modals.open({
-                title: 'Data Access Request',
+                title: 'DATA ACCESS REQUEST',
                 children: (
                   <DataAccessRequestForm
                     cohortId={row.id}

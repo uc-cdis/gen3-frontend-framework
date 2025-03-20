@@ -25,7 +25,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     );
     // Parse and return the response as JSON
     const data = await response.json();
-    console.log('api', data);
+
     res.status(200).json(data);
   } catch (error) {
     if (error instanceof HTTPError)

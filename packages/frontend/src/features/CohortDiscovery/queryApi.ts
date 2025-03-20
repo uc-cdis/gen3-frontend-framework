@@ -166,7 +166,6 @@ interface QueryAggsParams {
 const histogramQueryStrForEachField = (field: string): string => {
   const splittedFieldArray = field.split('.');
   const splittedField = splittedFieldArray.shift();
-  console.log('splittedFieldArray', splittedFieldArray);
   if (splittedFieldArray.length === 0) {
     return `
     ${splittedField} {

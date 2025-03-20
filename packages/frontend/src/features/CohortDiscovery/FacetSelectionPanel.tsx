@@ -37,7 +37,7 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
     });
   }, [categories, selectedFields, updateSelectedField, hooks]);
 
-  return <div className="w-1/3 flex flex-col p-4 gap-y-6">{panels}</div>;
+  return <div className="w-1/3 flex flex-col grow-0 p-4 gap-y-6">{panels}</div>;
 };
 
 export default FacetSelectionPanel;

@@ -14,7 +14,7 @@ const SavedCohortsPanel = () => {
     <>
       <Stack className="w-100 m-2">
         <Group className="w-100 bg-base-light p-4">
-          <SavedCohortsTable openModal={openModal} />
+          <SavedCohortsTable />
         </Group>
       </Stack>
     </>

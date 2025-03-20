@@ -29,6 +29,8 @@ interface ChartsAndFacetsPanelProps {
   facets: Array<FacetDefinition>;
 }
 
+const NUM_COLS = 2; // TODO: add to config
+
 /**
  * CartsAndFacetsPanel component
  *
@@ -125,15 +127,28 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     );
   }, [facets, index, facetHooks.enum]);
 
-  const spans = computeRowSpan(panels.length);
+  const colSpan = Math.floor(12 / NUM_COLS);
+  const numLastRow = panels.length % NUM_COLS;
+
+  const placeholderPanels = [];
+  for (let i = 0; i < numLastRow; i++) {
+    placeholderPanels.push(
+      <div key={`placeholder-${i}`} className="invisible" />,
+    );
+  }
 
   return (
-    <Grid className="w-full mx-2 bg-base-max p-4">
+    <Grid className="w-full mx-2 bg-base-max p-4 transition-[height] ease-in-out duration-300">
       {panels.map((panel, index) => (
         <Grid.Col
-          span={spans[index]}
+          span={colSpan}
           key={`${index}-charts-${facets[index].field}-col`}
         >
+          {panel}
+        </Grid.Col>
+      ))}
+      {placeholderPanels.map((panel, index) => (
+        <Grid.Col span={colSpan} key={`${index}-charts-placeholder-col`}>
           {panel}
         </Grid.Col>
       ))}

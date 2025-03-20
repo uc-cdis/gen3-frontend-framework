@@ -28,14 +28,6 @@ import { getCookie } from 'cookies-next';
 import { v5 as uuidv5 } from 'uuid';
 import { GEN3_APP_NAMESPACE } from './constants';
 
-// function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
-//   key: string;
-//   payload: any;
-//   err: unknown;
-// } {
-//   return action.type === REHYDRATE;
-// }
-
 export const createAppApiForRTKQ = (
   reducerPath: string,
   name: string,
@@ -82,19 +74,6 @@ export const createAppApiForRTKQ = (
           return headers;
         },
       }),
-    // extractRehydrationInfo(action, { reducerPath }): any {
-    //   console.log('extractRehydrationInfo', action);
-    //   if (isHydrateAction(action)) {
-    //     console.log('action', action);
-    //     // when persisting the api reducer
-    //     if (action.key === 'key used with redux-persist') {
-    //       return action.payload;
-    //     }
-    //
-    //     // When persisting the root reducer
-    //     return action.payload[reducerPath];
-    //   }
-    // },
     endpoints: () => ({}),
   });
 

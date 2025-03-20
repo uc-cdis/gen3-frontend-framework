@@ -150,7 +150,7 @@ const IndexPanel = ({
             useFilterExpanded: useFilterExpandedState,
           }}
         />
-        <Stack className="w-full">
+        <Stack className="w-2/3 mr-2 min-h-[500px]">
           <ActionButtonGroup index={index} />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel

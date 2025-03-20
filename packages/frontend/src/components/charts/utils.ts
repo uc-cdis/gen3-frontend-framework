@@ -46,8 +46,6 @@ export const computeRowSpan = (
   numItems: number,
   numCols: number = 2,
 ): Array<number> => {
-  // compute the number of rows
-  const numRows = Math.ceil(numItems / numCols);
   // compute the row span for the last row
   const numLastRow = numItems % numCols;
 

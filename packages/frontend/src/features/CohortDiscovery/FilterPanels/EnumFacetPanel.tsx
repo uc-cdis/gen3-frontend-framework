@@ -37,7 +37,6 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
 
   const updateVisibleItems = useCallback(
     (data: Array<[string | number, number]>) => {
-      console.log('updateVisibleItems', data);
       setVisibleData(
         data.reduce((acc, elm) => {
           acc.push({ key: String(elm[0]), count: elm[1] });
