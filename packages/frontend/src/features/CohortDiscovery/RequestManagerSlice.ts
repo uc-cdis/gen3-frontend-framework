@@ -3,6 +3,7 @@ import {
   EntityState,
   createSlice,
   PayloadAction,
+  createSelector,
 } from '@reduxjs/toolkit';
 import {
   DataAccessRequest,
@@ -12,6 +13,7 @@ import {
   newDataAccessRequest,
 } from './types';
 import { AppState } from './appApi';
+import { selectAllCohorts } from './CohortManagerSlice';
 
 // Create the entity adapter
 export const dataAccessRequestsAdapter = createEntityAdapter<
@@ -97,6 +99,16 @@ export const selectDataAccessRequestsByStatus = (
     (request) => request.status === status,
   );
 };
+
+export const selectCohortToRequestId = createSelector(
+  [selectAllDataAccessRequests],
+  (requests) => {
+    return requests.reduce<Record<CohortId, string>>((acc, request) => {
+      acc[request.cohortId] = request.id;
+      return acc;
+    }, {});
+  },
+);
 
 // Export reducer
 export const dataAccessRequestsReducer = dataAccessRequestsSlice.reducer;

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { AppState, useAppDispatch } from '../appApi';
+import React, { useMemo } from 'react';
+import { useAppDispatch } from '../appApi';
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -8,8 +8,8 @@ import {
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ActionIcon,
+  Center,
   Group,
-  Modal,
   Text,
   Tooltip,
   useMantineTheme,
@@ -20,32 +20,52 @@ import { IconSize } from '../../../utils/sizes';
 import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
 import { Cohort, DataAccessRequestUserInformation } from '../types';
-import { addDataAccessRequest } from '../RequestManagerSlice';
+import {
+  addDataAccessRequest,
+  selectCohortToRequestId,
+} from '../RequestManagerSlice';
 import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
+import { formatDate } from '../../../utils/date';
+import { useDeepCompareMemo } from 'use-deep-compare';
+
+interface CohortWithRequested extends Cohort {
+  requested: string;
+}
 
 interface SavedCohortsTableProps {
-  openModal: (id: string) => void;
   size?: string;
 }
 const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
-  openModal,
   size = 'md',
 }) => {
   const appDispatch = useAppDispatch();
 
-  const columns = useMemo<MRT_ColumnDef<Cohort>[]>(
+  const columns = useMemo<MRT_ColumnDef<CohortWithRequested, string>[]>(
     () => [
       {
         accessorKey: 'name', //access nested data with dot notation
         header: 'Name',
+        Cell: ({ cell }) => <Text>{cell.getValue()} </Text>,
       },
       {
         accessorKey: 'created_datetime',
         header: 'Modified Date',
+        Cell: ({ cell }) => <Text>{formatDate(cell.getValue())} </Text>,
       },
       {
         accessorKey: 'modified_datetime', //normal accessorKey
         header: 'Created Date',
+        Cell: ({ cell }) => <Text>{formatDate(cell.getValue())} </Text>,
+      },
+      {
+        accessorKey: 'requested', //normal accessorKey
+        header: 'Requested',
+        Cell: ({ cell }) =>
+          cell.getValue() === 'true' && (
+            <Center>
+              <Icon icon="gen3:check" />
+            </Center>
+          ),
       },
     ],
     [],
@@ -53,45 +73,49 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
 
   const iconSize = IconSize[size] || IconSize['sm'];
   const theme = useMantineTheme();
-  const data = useAppSelector((state: AppState) => selectAllCohorts(state));
+  const data: Cohort[] = useAppSelector(selectAllCohorts);
+  const requestByCohortId = useAppSelector(selectCohortToRequestId);
+
+  const tData = useDeepCompareMemo(
+    () =>
+      data.map((cohort) => ({
+        ...cohort,
+        requested: requestByCohortId[cohort.id] ? 'true' : 'false',
+      })),
+    [data, requestByCohortId],
+  );
 
   const handleSubmission = (
     cohortId: string,
     values: DataAccessRequestUserInformation,
   ) => {
     if (cohortId && values) {
-      console.log(values);
-      try {
-        appDispatch(
-          addDataAccessRequest({ cohortId, userAccessInformation: values }),
-        );
-        // Close the modal after successful dispatch
-        close();
-      } catch (error) {
-        console.error('Error dispatching addDataAccessRequest action:', error);
-        // Handle the error appropriately
-      }
+      appDispatch(
+        addDataAccessRequest({ cohortId, userAccessInformation: values }),
+      );
+      // Close the modal after successful dispatch
+      close();
     }
   };
 
-  const table = useMantineReactTable({
+  const table = useMantineReactTable<CohortWithRequested>({
     columns,
-    data,
+    data: tData,
     getRowId: (originalRow) => originalRow.id,
     enableRowActions: true,
     enableTopToolbar: false,
     enableStickyHeader: true,
     positionActionsColumn: 'last',
     renderRowActions: ({ row }) => (
-      <Group>
+      <Group wrap="nowrap" gap="xs">
         <Tooltip label="Submit Data Access Request" withArrow>
           <ActionIcon
             color="accent.4"
-            variant="dataRequestModal"
+            variant="transparent"
             aria-label="Submit Data Access Request"
             onClick={() => {
               const modelId = modals.open({
-                title: 'Test modal from context',
+                title: 'Data Access Request',
                 children: (
                   <DataAccessRequestForm
                     cohortId={row.id}
@@ -104,6 +128,21 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
           >
             <Icon
               icon="gen3:request"
+              height={iconSize}
+              width={iconSize}
+              color={theme.colors.secondary[4]}
+            />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="Select Cohort" withArrow>
+          <ActionIcon
+            color="accent.4"
+            variant="transparent"
+            aria-label="Select cohort"
+            onClick={() => {}}
+          >
+            <Icon
+              icon="gen3:cohort"
               height={iconSize}
               width={iconSize}
               color={theme.colors.secondary[4]}
@@ -152,6 +191,18 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
       style: {
         '--mrt-base-background-color': 'var(--mantine-color-table-1)',
         color: `var(--mantine-color-table-contrast-5')`,
+      },
+    },
+    mantineTableHeadRowProps: {
+      style: {
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-2)',
+        borderColor: 'var(--mantine-color-secondary-2)',
+        borderWidth: '1px',
+        boxShadow: 'none',
+        align: 'center',
+        fontSize: 'var(--mantine-font-size-sm)',
+        fontWeight: 600,
+        color: 'var(--mantine-color-secondary-contrast-2)',
       },
     },
   });

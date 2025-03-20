@@ -14,8 +14,8 @@ import { Icon } from '@iconify/react';
 import { getHotkeyHandler } from '@mantine/hooks';
 import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
-import { formatDate } from './utils';
 import { IconSize } from '../../utils/sizes';
+import { formatDate } from '../../utils/date';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;

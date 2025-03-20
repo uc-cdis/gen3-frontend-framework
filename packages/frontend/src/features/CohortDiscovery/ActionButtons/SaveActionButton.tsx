@@ -59,7 +59,9 @@ const SaveActionButton: React.FC<ActionButtonProps> = ({ index }) => {
         size="sm"
         variant="outline"
         color="secondary.4"
-        disabled={Object.keys(filters[index].root).length == 0}
+        disabled={
+          !(index in filters) || Object.keys(filters[index].root).length == 0
+        }
         classNames={{
           root: 'bg-base-max',
         }}
