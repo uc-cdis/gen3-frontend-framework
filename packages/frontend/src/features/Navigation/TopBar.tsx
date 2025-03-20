@@ -41,6 +41,8 @@ const TopIconButton = ({
     classNames,
   );
 
+  console.log('leftIcon: ', leftIcon);
+  console.log('rightIcon: ', rightIcon);
   return (
     <div
       className={extractClassName('root', mergedClassnames)}
@@ -57,12 +59,16 @@ const TopIconButton = ({
           />
         ) : null}
         <p className={extractClassName('label', mergedClassnames)}> {name} </p>
-        {rightIcon ? (
+        {rightIcon && rightIcon.length > 0 ? (
           <Icon
+            width={16}
+            height={16}
             icon={rightIcon}
             className={extractClassName('rightIcon', mergedClassnames)}
           />
-        ) : null}
+        ) : (
+          "Nothin' here"
+        )}
       </div>
     </div>
   );
