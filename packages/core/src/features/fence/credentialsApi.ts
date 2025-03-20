@@ -83,7 +83,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
           'Content-Type': 'application/json',
         },
         body: {
-          api_key: params.api_key,
+          api_key: params.api_key, // pragma: allowlist secret
           key_id: params.key_id,
         },
       }),

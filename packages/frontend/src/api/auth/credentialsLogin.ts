@@ -23,7 +23,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         'Content-Type': 'application/json',
       },
       body: {
-        api_key: params.api_key,
+        api_key: params.api_key, // pragma: allowlist secret
         key_id: params.key_id,
       },
     });
