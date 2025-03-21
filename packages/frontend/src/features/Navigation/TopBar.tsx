@@ -90,8 +90,6 @@ const processTopBarItems = (
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
-
-      console.log('processTopBarItems mergedClassnames', mergedClassnames);
       acc.push(
         <a className="flex" href={item.href} key={`${item.href}_${item.name}`}>
           {' '}
@@ -155,8 +153,6 @@ const TopBar = ({
     itemClassnameDefaults,
     itemClassnames,
   );
-
-  console.log('itemClassnames', mergedItemClassnames);
 
   return (
     <div>

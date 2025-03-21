@@ -188,5 +188,14 @@ module.exports = {
       pattern:
         /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
+    {
+      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
+    {
+      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
+    {
+      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
   ],
 };
