@@ -4,11 +4,12 @@ import { MantineProvider } from '@mantine/core';
 import '../src/styles/globals.css';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import theme from '../src/mantineTheme';
-
 import '../src/styles/globals.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
+import { Gen3Provider } from '@gen3/frontend';
+import icons from './loadIcons';
 
 /*
  * Initializes MSW
@@ -16,6 +17,22 @@ import '@fontsource/poppins';
  * to learn how to customize it
  */
 initialize();
+
+const modalsConfig = {
+  systemUseModal: {
+    enabled: false,
+    content: {
+      text: [],
+    },
+  },
+};
+
+const sessionConfig = {
+  updateSessionTime: 5,
+  inactiveTimeLimit: 20,
+  logoutInactiveUsers: false,
+  monitorWorkspace: false,
+};
 
 const preview: Preview = {
   parameters: {
@@ -30,7 +47,13 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <MantineProvider theme={theme}>
-        <Story />
+        <Gen3Provider
+          icons={icons}
+          sessionConfig={sessionConfig}
+          modalsConfig={modalsConfig}
+        >
+          <Story />
+        </Gen3Provider>
       </MantineProvider>
     ),
   ],

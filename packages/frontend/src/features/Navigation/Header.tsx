@@ -48,6 +48,7 @@ const Header = ({
         loginButtonVisibility={top?.loginButtonVisibility}
         externalLoginUrl={top?.externalLoginUrl}
         classNames={{ ...top.classNames }}
+        itemClassnames={{ ...top.itemClassnames }}
       />
       {banners?.map((banner) => <Banner {...banner} key={banner.id} />)}
       <NavigationBar
