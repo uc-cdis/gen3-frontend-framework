@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.10.82",
+  "version": "0.10.83",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -35,10 +35,10 @@
     "axe-playwright": "^2.1.0",
     "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4",
-    "storybook-addon-deep-controls": "^0.9.2",
     "postcss-import": "^16.1.0",
     "postcss-preset-mantine": "^1.17.0",
-    "postcss-simple-vars": "^7.0.1"
+    "postcss-simple-vars": "^7.0.1",
+    "storybook-addon-deep-controls": "^0.9.2"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.16",
