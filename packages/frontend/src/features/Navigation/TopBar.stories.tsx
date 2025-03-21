@@ -29,6 +29,8 @@ export const Default: Story = {
       },
     ],
     loginButtonVisibility: LoginButtonVisibility.Visible,
-    classNames: {},
+    classNames: {
+      divider: 'border-primary',
+    },
   },
 };

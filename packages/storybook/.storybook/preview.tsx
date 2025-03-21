@@ -9,6 +9,7 @@ import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
 import { Gen3Provider } from '@gen3/frontend';
+import icons from './loadIcons';
 
 /*
  * Initializes MSW
@@ -17,17 +18,21 @@ import { Gen3Provider } from '@gen3/frontend';
  */
 initialize();
 
-const icons = [
-  {
-    prefix: 'gen3',
-    lastModified: 0,
-    icons: {},
-    width: 0,
-    height: 0,
+const modalsConfig = {
+  systemUseModal: {
+    enabled: false,
+    content: {
+      text: [],
+    },
   },
-];
-const sessionConfig = {};
-const modalsConfig = {};
+};
+
+const sessionConfig = {
+  updateSessionTime: 5,
+  inactiveTimeLimit: 20,
+  logoutInactiveUsers: false,
+  monitorWorkspace: false,
+};
 
 const preview: Preview = {
   parameters: {
