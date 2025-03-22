@@ -2,8 +2,8 @@ import React from 'react';
 import { Menu, Text, Tooltip } from '@mantine/core';
 import { PiDotsThreeCircleThin as DotsIcon } from 'react-icons/pi';
 import Link from 'next/link';
-import { TopIconButtonProps } from './TopBar';
 import { TooltipStyle } from './style';
+import { TopIconButtonProps } from './TopIconButton';
 
 interface ActionMenuProps {
   items: TopIconButtonProps[];
@@ -14,14 +14,17 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
     <React.Fragment>
       <Menu>
         <Menu.Target>
-          <Tooltip label={'Action Menu'}
-                   multiline
-                   color="base"
-                   classNames={TooltipStyle}
-                   position="bottom" withArrow>
-          <button>
-            <DotsIcon size={'3.15rem'} />
-          </button>
+          <Tooltip
+            label={'Action Menu'}
+            multiline
+            color="base"
+            classNames={TooltipStyle}
+            position="bottom"
+            withArrow
+          >
+            <button>
+              <DotsIcon size={'3.15rem'} />
+            </button>
           </Tooltip>
         </Menu.Target>
         <Menu.Dropdown>

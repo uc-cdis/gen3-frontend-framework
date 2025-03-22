@@ -56,3 +56,11 @@ export interface HeaderProps {
 export interface MainContentProps {
   fixed: boolean;
 }
+
+export interface NameAndIcon {
+  readonly name: string;
+  readonly iconSize?: string;
+  readonly rightIcon?: string;
+  readonly leftIcon?: string;
+  readonly classNames?: StylingOverrideWithMergeControl;
+}

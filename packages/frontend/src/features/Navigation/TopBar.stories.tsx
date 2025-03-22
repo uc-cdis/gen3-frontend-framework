@@ -19,18 +19,33 @@ export const Default: Story = {
   args: {
     items: [
       {
-        rightIcon: 'gen3:upload',
-        href: '/submission',
-        name: 'Browse Data',
+        rightIcon: 'gen3:video',
+        href: '/',
+        name: 'Video Guides',
       },
       {
-        href: 'https://gen3.org/resources/user/',
+        rightIcon: 'gen3:feedback',
+        href: '/',
+        name: 'Send Feedback',
+      },
+      {
+        rightIcon: 'gen3:documentation',
+        href: '/',
         name: 'Documentation',
       },
+      {
+        rightIcon: 'gen3:library',
+        href: '/',
+        name: 'My Data Library',
+      },
     ],
-    loginButtonVisibility: LoginButtonVisibility.Visible,
+    loginButtonVisibility: 'visible' as any,
     classNames: {
-      divider: 'border-primary',
+      divider: 'border-base-min border-1',
+      login: 'hover:border-base-max',
+    },
+    itemClassnames: {
+      button: 'hover:border-base-max',
     },
   },
 };
