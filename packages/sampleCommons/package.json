@@ -1,11 +1,11 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.10.82",
+  "version": "0.10.83",
   "private": true,
   "scripts": {
     "lint": "next lint",
     "lint-fix": "next lint --fix",
-"dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
     "start": "next start",
