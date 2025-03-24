@@ -1,5 +1,5 @@
 import React from 'react';
-import TopBar from './TopBar';
+import TopBar from './TopBar/TopBar';
 import NavigationBar from './NavigationBar';
 import { Banner } from './Banner';
 import { HeaderProps } from './types';

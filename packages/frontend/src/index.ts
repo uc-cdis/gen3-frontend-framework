@@ -30,7 +30,7 @@ import {
   UploadJSONButton,
 } from './components/Buttons';
 
-import TopBar from './features/Navigation/TopBar';
+import TopBar from './features/Navigation/TopBar/TopBar';
 
 import '@gen3/core';
 

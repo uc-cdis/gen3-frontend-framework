@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import TopBar from './TopBar';
-import { LoginButtonVisibility } from '../../components/Login/types';
+import { LoginButtonVisibility } from '../../../components/Login/types';
 
 const meta = {
   component: TopBar,

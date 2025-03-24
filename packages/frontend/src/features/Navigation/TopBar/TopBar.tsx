@@ -1,41 +1,49 @@
 import React, { ReactElement } from 'react';
 import { Divider } from '@mantine/core';
-import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-import LoginButton from '../../components/Login/LoginButton';
-import LoginAccountButton from '../../components/Login/LoginAccountButton';
-import { extractClassName } from './utils';
-import { LoginButtonVisibility } from '../../components/Login/types';
-import { StylingOverrideWithMergeControl } from '../../types';
-import { TopIconButton, TopIconButtonProps } from './TopIconButton';
+import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
+import LoginAccountButton from '../../../components/Login/LoginAccountButton';
+import { extractClassName } from '../utils';
+import { LoginButtonVisibility } from '../../../components/Login/types';
+import { StylingOverrideWithMergeControl } from '../../../types';
+import {
+  IconButton,
+  TopIconButtonProps,
+  TopIconButtonPropsWithLink,
+} from './IconButton';
+import { AccountButton } from './AccountButton';
+import { LoginButton } from './LoginButton';
 
 const processTopBarItems = (
-  items: TopIconButtonProps[],
-  showLogin: boolean,
+  items: TopIconButtonPropsWithLink[],
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce(
-    (acc: ReactElement[], item: TopIconButtonProps, index: number) => {
-      const needsBorder = !(index === items.length - 1 && !showLogin);
+    (acc: ReactElement[], item: TopIconButtonPropsWithLink, index: number) => {
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
       acc.push(
-        <a className="flex" href={item.href} key={`${item.href}_${item.name}`}>
-          {' '}
-          <TopIconButton
-            name={item.name}
-            iconSize={item.iconSize}
-            leftIcon={item.leftIcon}
-            rightIcon={item.rightIcon}
-            classNames={mergedClassnames}
-          />{' '}
+        <>
+          <a
+            className="flex"
+            href={item.href}
+            key={`${item.href}_${item.name}`}
+          >
+            <IconButton
+              name={item.name}
+              iconSize={item.iconSize}
+              leftIcon={item.leftIcon}
+              rightIcon={item.rightIcon}
+              classNames={mergedClassnames}
+            />
+          </a>
           <Divider
             size="md"
             orientation="vertical"
             classNames={{ root: dividerClassname }}
           />
-        </a>,
+        </>,
       );
       return acc;
     },
@@ -44,7 +52,7 @@ const processTopBarItems = (
 };
 
 export interface TopBarProps {
-  readonly items: TopIconButtonProps[];
+  readonly items: TopIconButtonPropsWithLink[];
   readonly loginButtonVisibility?: LoginButtonVisibility;
   readonly externalLoginUrl?: string;
   readonly classNames?: StylingOverrideWithMergeControl;
@@ -93,32 +101,27 @@ const TopBar = ({
         >
           {processTopBarItems(
             items,
-            loginButtonVisibility === LoginButtonVisibility.Visible,
             mergedItemClassnames,
             extractClassName('divider', mergedClassnames),
           )}
           {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
-            <div className="flex items-center [&>*:only-child]:hidden">
-              <LoginAccountButton
-                className={extractClassName('login', mergedClassnames)}
-              />
-              <Divider
-                size="md"
-                classNames={{
-                  root: extractClassName('divider', mergedClassnames),
-                }}
-                orientation="vertical"
-              />
-            </div>
-          ) : null}
-          {loginButtonVisibility != LoginButtonVisibility.Hidden ? (
-            <div className="flex items-center">
+            <>
+              <span className="flex items-center align-middle [&>*:only-child]:hidden">
+                <AccountButton classNames={mergedItemClassnames} />
+                <Divider
+                  size="md"
+                  classNames={{
+                    root: extractClassName('divider', mergedClassnames),
+                  }}
+                  orientation="vertical"
+                />
+              </span>
               <LoginButton
                 visibility={loginButtonVisibility}
                 externalLoginUrl={externalLoginUrl}
-                className={extractClassName('login', mergedClassnames)}
+                classNames={mergedItemClassnames}
               />
-            </div>
+            </>
           ) : null}
         </div>
       </header>

@@ -56,6 +56,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       'react/prop-types': 'warn',
+      '@typescript-eslint/semi': ['error'],
     },
   },
 ];

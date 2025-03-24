@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { TopBarProps } from './TopBar';
+import { TopBarProps } from './TopBar/TopBar';
 import { BannerProps } from './Banner';
 import { StylingOverrideWithMergeControl } from '../../types';
 
@@ -58,7 +58,7 @@ export interface MainContentProps {
 }
 
 export interface NameAndIcon {
-  readonly name: string;
+  readonly name?: string;
   readonly iconSize?: string;
   readonly rightIcon?: string;
   readonly leftIcon?: string;
