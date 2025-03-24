@@ -26,7 +26,7 @@ export const IconButton = ({
   classNames = {},
   clickHandler = undefined,
   ariaLabel = undefined,
-}: Readonly<TopIconButtonProps>) => {
+}: TopIconButtonProps) => {
   const classNamesDefaults = {
     root: `flex items-center align-middle px-2 my-2`,
     button:
@@ -44,10 +44,7 @@ export const IconButton = ({
   const iconSz = IconSize[iconSize] ?? iconSize;
 
   return (
-    <div
-      className={extractClassName('root', mergedClassnames)}
-      aria-label={ariaLabel ?? name}
-    >
+    <div className={extractClassName('root', mergedClassnames)}>
       <Tooltip
         label={tooltip}
         position="bottom"
@@ -60,6 +57,7 @@ export const IconButton = ({
         <div
           className={extractClassName('button', mergedClassnames)}
           role="button"
+          aria-label={ariaLabel ?? name}
           onClick={(event) => clickHandler && clickHandler()}
         >
           {leftIcon ? (
