@@ -9,6 +9,8 @@ export interface AnalysisToolConfig {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
+  counts?: number;
+  countUnits?: string;
 }
 
 export interface AnalysisCenterConfiguration {

@@ -16,9 +16,11 @@ const TextDescription = ({
   return (
     <>
       {!extend ? (
-        <Text lineClamp={4}>{description}</Text>
+        <Text size="xs" lineClamp={4}>
+          {description}
+        </Text>
       ) : (
-        <Text>{description}</Text>
+        <Text size="xs">{description}</Text>
       )}
       {
         <button onClick={() => setExtend((extend) => !extend)}>
