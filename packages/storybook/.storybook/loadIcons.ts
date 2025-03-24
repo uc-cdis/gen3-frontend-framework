@@ -13,7 +13,7 @@ const dictionaryIcons: RegisteredIcons = require(
 );
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const workspaceIcons: RegisteredIcons = require(
-  `../../sampleCommons/config/icons/workspace`,
+  `../../sampleCommons/config/icons/workspace.json`,
 );
 
 const icons: RegisteredIcons[] = [
