@@ -3,9 +3,9 @@ import { Image, NavLink, Stack } from '@mantine/core';
 import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
-import { AnalysisToolConfig } from './types';
+import { AnalysisToolConfiguration } from './types';
 
-const AnalysisCard: React.FC<AnalysisToolConfig> = ({
+const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   title,
   description,
   type,
@@ -14,8 +14,6 @@ const AnalysisCard: React.FC<AnalysisToolConfig> = ({
   hasDemo,
   loginRequired,
   href,
-  counts,
-  countUnits,
 }) => {
   return (
     <Stack key={title}>

@@ -1,9 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { AnalysisCenterConfiguration } from './types';
-import { Select, TextInput, Image, Stack, NavLink } from '@mantine/core';
-import NextImage from 'next/image';
-import Link from 'next/link';
-import TextDescription from './TextDescription';
+import { Select, TextInput } from '@mantine/core';
 import AnalysisCard from './AnalysisCard';
 
 const AnalysisCenter = ({
@@ -105,6 +102,7 @@ const AnalysisCenter = ({
                     hasDemo,
                     loginRequired,
                     href,
+                    cardType: 'regular',
                   }}
                 />
               );

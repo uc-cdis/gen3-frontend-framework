@@ -15,6 +15,7 @@ const gen3Theme = createMantineTheme(
   },
   themeColors,
 );
+
 const localTheme = createTheme({
   components: {
     /*Add components overrides here},*/

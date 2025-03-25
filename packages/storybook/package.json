@@ -33,6 +33,7 @@
     "@storybook/test": "^8.6.3",
     "@storybook/test-runner": "^0.21.0",
     "axe-playwright": "^2.1.0",
+    "dotenv": "^16.4.7",
     "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4",
     "postcss-import": "^16.1.0",

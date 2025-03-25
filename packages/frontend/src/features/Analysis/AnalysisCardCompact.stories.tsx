@@ -1,9 +1,18 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import AnalysisCardCompact from './AnalysisCardCompact';
 
 const meta = {
   component: AnalysisCardCompact,
+  decorators: [
+    (Story) => (
+      <div className="bg-primary-lighter p-4">
+        {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof AnalysisCardCompact>;
 
 export default meta;
