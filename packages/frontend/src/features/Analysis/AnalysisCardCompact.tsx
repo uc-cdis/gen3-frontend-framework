@@ -23,14 +23,18 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
   hasDemo = false,
   loginRequired = false,
   href,
-  counts,
+  count,
   countUnits,
 }) => {
   return (
-    <Stack key={title}>
-      <div className="rounded-sm bg-primary border-b-8 border-accent h-10" />
-      <div className="flex -mt-8 relative z-10">
-        <div className="p-0.5 relative rounded-sm bg-base-lightest ml-5 border-2 border-base w-1/4 aspect-square">
+    <Stack
+      gap="xs"
+      key={title}
+      classNames={{ root: 'rounded-lg border-2 border-base' }}
+    >
+      <div className="rounded-t-lg bg-primary border-b-8 border-accent h-10" />
+      <div className="flex relative -mt-12 z-10 p-2">
+        <div className="relative rounded-lg bg-base-lightest ml-5 border-4 border-base-light mx-2 w-1/4 aspect-square">
           <Image
             component={NextImage}
             src={`${icon}`}
@@ -41,9 +45,14 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
           />
         </div>
       </div>
-      <div className="flex flex-col mt-2 ml-2">
-        <Text fw="bold">{title}</Text>
-        <div className="p-2 h-fit">
+      <div className="flex flex-col ml-2 px-4 pb-2">
+        <Text size="xl" fw="bold">
+          {title}
+        </Text>
+        <Text size="md" fw="semibold" c="base-contrast.5">
+          {count?.toLocaleString()} {countUnits}
+        </Text>
+        <div className="py-2 h-3/4">
           <TextDescription description={description} />
         </div>
         <Group>

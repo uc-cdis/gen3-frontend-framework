@@ -9,7 +9,7 @@ export interface AnalysisToolConfig {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
-  counts?: number;
+  count?: number;
   countUnits?: string;
 }
 

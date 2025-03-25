@@ -16,15 +16,15 @@ const TextDescription = ({
   return (
     <>
       {!extend ? (
-        <Text size="xs" lineClamp={4}>
+        <Text size="sm" lineClamp={4}>
           {description}
         </Text>
       ) : (
-        <Text size="xs">{description}</Text>
+        <Text size="sm">{description}</Text>
       )}
       {
         <button onClick={() => setExtend((extend) => !extend)}>
-          <div className="flex text-xs font-semibold text-gray-400">
+          <div className="flex text-xs font-semibold text-base-contrast-light">
             {!extend ? 'Extend Text' : 'Collapse Text'}{' '}
             <div className="my-auto">
               {!extend ? <DownArrowIcon /> : <UpArrowIcon />}

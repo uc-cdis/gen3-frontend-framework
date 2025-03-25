@@ -20,7 +20,7 @@ export const Default: Story = {
       'Visualize most frequently mutated genes and somatic mutations.',
     icon: '/images/apps/MutationFrequency.svg',
     href: '/',
-    counts: 1000,
+    count: 1000,
     countUnits: 'Cases',
   },
 };

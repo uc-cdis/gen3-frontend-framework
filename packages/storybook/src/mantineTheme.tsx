@@ -19,6 +19,13 @@ const localTheme = createTheme({
   components: {
     /*Add components overrides here},*/
   },
+  breakpoints: {
+    xs: '30em',
+    sm: '48em',
+    md: '64em',
+    lg: '74em',
+    xl: '90em',
+  },
 });
 
 export default mergeThemeOverrides(gen3Theme, localTheme);
