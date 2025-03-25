@@ -1,5 +1,6 @@
 export * from './components/Profile';
 export * from './components/Login';
+
 export * from './components/Modals';
 export * from './components/charts';
 export * from './components/Protected';
@@ -20,6 +21,17 @@ import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
+import { CollapsableSidebar } from './components/CollapsableSidebar';
+import {
+  ActionButton,
+  DropdownButton,
+  Gen3Button,
+  Gen3ButtonReverse,
+  UploadJSONButton,
+} from './components/Buttons';
+
+import TopBar from './features/Navigation/TopBar/TopBar';
+
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -99,7 +111,16 @@ export {
   type RegisteredIcons,
   type SessionConfiguration,
   type ExplorerPageProps,
+  // components
+  CollapsableSidebar,
+  DropdownButton,
+  Gen3Button,
+  Gen3ButtonReverse,
+  UploadJSONButton,
+  ActionButton,
   ErrorCard,
+  TopBar,
+  // Pages
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,

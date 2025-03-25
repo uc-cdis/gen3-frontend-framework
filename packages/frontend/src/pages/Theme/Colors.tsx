@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 
 import ColorTheme from '../../features/Theme/ColorTheme';

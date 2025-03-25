@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Modal } from '@mantine/core';
 import { DetailsComponentProps, DetailsPanelComponentProps } from './types';

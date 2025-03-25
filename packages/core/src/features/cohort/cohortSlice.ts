@@ -126,6 +126,7 @@ export const cohortSlice = createSlice({
       if (!filters) {
         return;
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [field]: _a, ...updated } = filters;
       return {
         cohort: {

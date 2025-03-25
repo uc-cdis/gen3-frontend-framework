@@ -1,9 +1,10 @@
+import React, { useState } from 'react';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
 import ResultList from './ResultList';
-import { useState } from 'react';
+
 import { MatchingSearchResult } from './types';
 
 const MAX_UNEXPANDED_ITEMS = 4;

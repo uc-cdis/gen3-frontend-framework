@@ -8,11 +8,6 @@ import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 
-interface StatusWithCSRFTokenResponse {
-  csrf: string;
-  message?: string;
-}
-
 export interface CSRFToken {
   readonly csrfToken: string;
 }
@@ -70,11 +65,33 @@ export const userAuthApi = createApi({
       },
     }),
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => ({ url: `${GEN3_API}/_status}` }),
-      transformResponse: (
-        response: Gen3FenceResponse<StatusWithCSRFTokenResponse>,
-      ): CSRFToken => {
-        return { csrfToken: response?.data?.csrf ?? '' };
+      queryFn: async () => {
+        const headers: Record<string, string> = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        };
+        try {
+          const res = await fetch(`${GEN3_API}/_status`, {
+            headers: headers,
+          });
+
+          if (res.ok) {
+            const jsonData = await res.json();
+            const token = jsonData?.data?.csrf ?? '';
+            return {
+              data: { csrfToken: token },
+            };
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            return {
+              error: error,
+            };
+          }
+        }
+        return {
+          error: 'Unknown Error',
+        };
       },
     }),
   }),

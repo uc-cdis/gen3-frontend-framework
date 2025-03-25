@@ -46,6 +46,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       status: 'not present',
     });
   } catch (error: unknown) {
-    return getWebTokenErrorResponse(error, res);
+    getWebTokenErrorResponse(error, res); // will update the res object with error
   }
 }

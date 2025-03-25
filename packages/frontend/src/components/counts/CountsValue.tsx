@@ -1,4 +1,5 @@
-import { Paper, LoadingOverlay, Text } from '@mantine/core';
+import React from 'react';
+import { Paper, LoadingOverlay } from '@mantine/core';
 
 interface CountsValueProps {
   readonly label: string;

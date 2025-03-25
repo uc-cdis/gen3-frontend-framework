@@ -1,3 +1,4 @@
+import React from 'react';
 import Cookies from 'universal-cookie';
 import { CoreDispatch, Modals, showModal } from '@gen3/core';
 import { Button } from '@mantine/core';

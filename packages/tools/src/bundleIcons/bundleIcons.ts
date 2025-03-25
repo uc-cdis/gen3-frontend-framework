@@ -49,6 +49,7 @@ const processIconSet = async (inpath: string, prefix: string) => {
   return iconSet;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const build = async (inpath: string, outpath: string, prefix = 'gen3') => {
   // Import icons
 

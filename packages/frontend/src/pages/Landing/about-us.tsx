@@ -90,7 +90,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
         <div className="flex flex-col pr-8 pt-40">
           <Image
             className="align-middle"
-            src={`${basePath}/icons/gen3-dark.png`}
+            src="/icons/gen3-dark.png"
             fill
             alt="Gen3 Logo"
           />
