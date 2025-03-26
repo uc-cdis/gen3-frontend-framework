@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.10.84",
+  "version": "0.10.85",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
