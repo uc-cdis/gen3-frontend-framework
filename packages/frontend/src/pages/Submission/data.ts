@@ -9,9 +9,10 @@ export const SubmissionPageGetServerSideProps: GetServerSideProps<
   SubmissionsPageLayoutProps
 > = async () => {
   try {
-    const submissionConfig: SubmissionConfig = await ContentSource.get(
-      `${GEN3_COMMONS_NAME}/submission.json`,
-    );
+    const submissionConfig: SubmissionConfig =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/submission.json`,
+      );
 
     return {
       props: {

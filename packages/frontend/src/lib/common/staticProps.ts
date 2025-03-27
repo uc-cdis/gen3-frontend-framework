@@ -16,13 +16,13 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
  */
 export const getNavPageLayoutPropsFromConfig =
   async (): Promise<NavPageLayoutProps> => {
-    const navigationConfigJSON = await ContentSource.get(
+    const navigationConfigJSON = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/navigation.json`,
     );
 
     let bannerConfigJSON: Array<BannerProps> = [];
     try {
-      bannerConfigJSON = await ContentSource.get(
+      bannerConfigJSON = await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/banner.json`,
       );
     } catch (e) {
@@ -39,9 +39,10 @@ export const getNavPageLayoutPropsFromConfig =
       banners: bannerConfigJSON,
       type,
     };
-    const footerProps: FooterProps = await ContentSource.get(
-      `${GEN3_COMMONS_NAME}/footer.json`,
-    );
+    const footerProps: FooterProps =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/footer.json`,
+      );
     return {
       headerProps,
       footerProps,

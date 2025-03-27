@@ -41,7 +41,7 @@ const ResourcePage = ({
 // should move this thing into _app.tsx and make a dedicated layout component after https://github.com/vercel/next.js/discussions/10949 is addressed
 export const getStaticProps: GetStaticProps<ResourcePageProps> = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const resourcePageConfig = (await ContentSource.get(
+  const resourcePageConfig = (await ContentSource.getContentDatabase().get(
     `${GEN3_COMMONS_NAME}/resource.json`,
   )) as unknown as ResourcePageConfig;
   return {

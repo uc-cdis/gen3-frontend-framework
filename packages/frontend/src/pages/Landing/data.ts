@@ -6,7 +6,7 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const LandingPageGetServerSideProps: GetServerSideProps = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
-  const landingPage = await ContentSource.get(
+  const landingPage = await ContentSource.getContentDatabase().get(
     `${GEN3_COMMONS_NAME}/landingPage.json`,
   );
   return {

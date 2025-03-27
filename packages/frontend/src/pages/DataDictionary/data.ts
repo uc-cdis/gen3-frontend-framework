@@ -14,7 +14,9 @@ export const DictionaryPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const cohortBuilderProps: CohortBuilderConfiguration =
-      await ContentSource.get(`${GEN3_COMMONS_NAME}/dictionary.json`);
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/dictionary.json`,
+      );
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

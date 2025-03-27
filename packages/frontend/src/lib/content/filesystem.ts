@@ -26,7 +26,7 @@ export class FilesystemContent implements ContentSource {
         fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
     } catch (err) {
-      throw new Error(`Cannot process ${filepath}`);
+      throw new Error(`Cannot process ${filepath} `);
     }
   }
   public async getAll<T extends Record<string, any>>(
@@ -36,12 +36,12 @@ export class FilesystemContent implements ContentSource {
     try {
       const files = myGlob(path.join(this.rootPath, filepath), filter);
       return Promise.all(
-        files.map((file) =>
-          this.get<T>(path.join(this.rootPath, filepath, file)),
-        ),
+        files.map((file) => this.get<T>(path.join(filepath, file))),
       );
     } catch (err) {
-      throw new Error(`getAllCannot process ${filepath}/${filter}`);
+      throw new Error(
+        `getAllCannot process ${path.join(this.rootPath, filepath)}/${filter}`,
+      );
     }
   }
 }

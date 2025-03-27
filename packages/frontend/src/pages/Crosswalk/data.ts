@@ -24,9 +24,10 @@ export const CrosswalkPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    const initialConfig: InitialCrosswalkConfig = await ContentSource.get(
-      `${GEN3_COMMONS_NAME}/crosswalk.json`,
-    );
+    const initialConfig: InitialCrosswalkConfig =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/crosswalk.json`,
+      );
     const regex = /->/g;
     const processedConfig = {
       showSubmittedIdInTable: initialConfig.showSubmittedIdInTable,
