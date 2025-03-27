@@ -37,9 +37,9 @@ RUN addgroup --system --gid 1001 nextjs && \
     adduser --system --uid 1001 nextjs
 
 COPY --from=builder /gen3/packages/sampleCommons/public ./public
-COPY --from=builder /gen3/packages/sampleCommons/.next/ ./
+COPY --from=builder /gen3/packages/sampleCommons/.next/ ./.next
 COPY --from=builder /gen3/start.sh ./start.sh
-RUN chown nextjs:nextjs /gen3/.next
+RUN chown -R nextjs:nextjs /gen3/.next
 VOLUME /gen3/.next
 VOLUME /config
 
