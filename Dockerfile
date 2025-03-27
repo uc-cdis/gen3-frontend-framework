@@ -30,7 +30,7 @@ RUN lerna run --scope @gen3/core build && \
 
 # Production stage
 FROM node:20.18.2-alpine3.20 AS runner
-
+RUN apk add bash
 WORKDIR /gen3
 
 RUN addgroup --system --gid 1001 nextjs && \
