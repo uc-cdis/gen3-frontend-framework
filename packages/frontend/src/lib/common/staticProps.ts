@@ -7,7 +7,7 @@ import {
   type BannerProps,
 } from '../../features/Navigation';
 import ContentSource from '../content';
-import { JSONObject, GEN3_COMMONS_NAME } from '@gen3/core';
+import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 /**
  * Retrieves navigation page layout properties from configuration.
