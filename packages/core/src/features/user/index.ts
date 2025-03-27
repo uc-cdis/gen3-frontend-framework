@@ -1,5 +1,4 @@
 import {
-  useUser,
   useUserAuth,
   resetUserState,
   fetchUserState,
@@ -46,7 +45,6 @@ export {
   type CSRFToken,
   type ExternalProvider,
   type NamedURL,
-  useUser,
   useUserAuth,
   selectUser,
   selectUserData,
