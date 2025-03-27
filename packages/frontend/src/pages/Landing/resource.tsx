@@ -42,7 +42,7 @@ const ResourcePage = ({
 export const getStaticProps: GetStaticProps<ResourcePageProps> = async () => {
   const navPageLayoutProps = await getNavPageLayoutPropsFromConfig();
   const resourcePageConfig = (await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/resource.json`,
+    `${GEN3_COMMONS_NAME}/resource.json`,
   )) as unknown as ResourcePageConfig;
   return {
     props: {

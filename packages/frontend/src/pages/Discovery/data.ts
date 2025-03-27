@@ -10,7 +10,7 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const discoveryConfig: DiscoveryProps = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/discovery.json`,
+      `${GEN3_COMMONS_NAME}/discovery.json`,
     );
     return {
       props: {

@@ -75,7 +75,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const cohortBuilderConfiguration: CohortBuilderConfiguration =
-      await ContentSource.get(`config/${GEN3_COMMONS_NAME}/explorer.json`);
+      await ContentSource.get(`${GEN3_COMMONS_NAME}/explorer.json`);
 
     if (isArray(cohortBuilderConfiguration)) {
       // older config layout
@@ -119,9 +119,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
   const configId = context.query.configId as string;
   try {
     const cohortBuilderConfiguration: CohortBuilderConfiguration =
-      await ContentSource.get(
-        `config/${GEN3_COMMONS_NAME}/explorer/${configId}.json`,
-      );
+      await ContentSource.get(`${GEN3_COMMONS_NAME}/explorer/${configId}.json`);
 
     if (isArray(cohortBuilderConfiguration)) {
       // older config layout

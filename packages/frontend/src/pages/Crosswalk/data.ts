@@ -25,7 +25,7 @@ export const CrosswalkPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const initialConfig: InitialCrosswalkConfig = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/crosswalk.json`,
+      `${GEN3_COMMONS_NAME}/crosswalk.json`,
     );
     const regex = /->/g;
     const processedConfig = {

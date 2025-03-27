@@ -112,8 +112,11 @@
     }
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "^20.3.0",
-    "@nx/nx-linux-arm64-gnu": "^20.3.0",
-    "@nx/nx-linux-x64-gnu": "^20.3.0"
+      "@nx/nx-darwin-arm64": "^20.6.0",
+      "@nx/nx-linux-arm64-gnu": "^20.6.0",
+      "@nx/nx-linux-x64-gnu": "^20.6.0",
+      "@swc/nx-darwin-arm64" : "^1.11.10",
+      "@swc/nx-linux-arm64-gnu" : "^1.11.10",
+      "@swc/core-linux-x64-gnu" : "^1.11.10"
   }
 }

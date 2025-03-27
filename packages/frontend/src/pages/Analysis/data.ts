@@ -15,7 +15,7 @@ export const AnalysisPageGetServerSideProps: GetServerSideProps<
     const analysisConfig:
       | AnalysisCenterConfiguration
       | AnalysisCenterWithSectionsConfiguration = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/analysisTools.json`,
+      `${GEN3_COMMONS_NAME}/analysisTools.json`,
     );
 
     return {

@@ -45,7 +45,7 @@ import QueryPage from './pages/Query/Query';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
 import LandingPage from './pages/Landing/Landing';
-import { LandingPageGetStaticProps } from './pages/Landing/data';
+import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
 import {
@@ -126,7 +126,7 @@ export {
   QueryPage,
   QueryPageGetServerSideProps,
   LandingPage,
-  LandingPageGetStaticProps,
+  LandingPageGetServerSideProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
   DictionaryPage,

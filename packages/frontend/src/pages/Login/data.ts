@@ -9,13 +9,13 @@ export const LoginPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   const loginConfig: LoginConfig = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/login.json`,
+    `${GEN3_COMMONS_NAME}/login.json`,
   );
 
   return {
     props: {
       ...(await getNavPageLayoutPropsFromConfig()),
-      ...{ loginConfig : loginConfig },
+      ...{ loginConfig: loginConfig },
     },
   };
 };

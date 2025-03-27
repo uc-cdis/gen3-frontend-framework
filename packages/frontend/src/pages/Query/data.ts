@@ -9,7 +9,7 @@ export const QueryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   const queryProps: QueryProps = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/query.json`,
+    `${GEN3_COMMONS_NAME}/query.json`,
   );
 
   return {

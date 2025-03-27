@@ -10,7 +10,7 @@ export const DataLibraryPageGetServerSideProps: GetServerSideProps<
 > = async () => {
   try {
     const datalibraryConfig: DataLibraryConfig = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/dataLibrary.json`,
+      `${GEN3_COMMONS_NAME}/dataLibrary.json`,
     );
 
     return {

@@ -6,7 +6,7 @@ import { getNavPageLayoutPropsFromConfig } from '../../../lib/common/staticProps
 import { convertUserYAMLToAuthz } from '../../../features/Authz';
 
 export const AdminAuthZPageGetServerSideProps = async () => {
-  const rootPath = `config/${GEN3_COMMONS_NAME}/`;
+  const rootPath = `${GEN3_COMMONS_NAME}/`;
   const filepath = 'user.yaml';
   let data: Record<string, any> = {};
 

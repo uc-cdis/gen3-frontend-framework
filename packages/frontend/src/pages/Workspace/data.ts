@@ -11,7 +11,7 @@ export const WorkspacePageGetServerSideProps: GetServerSideProps<
   WorkspacePageLayoutProps
 > = async (_context) => {
   const workspaceProps: WorkspaceConfig = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/workspace.json`,
+    `${GEN3_COMMONS_NAME}/workspace.json`,
   );
   try {
     return {

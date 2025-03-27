@@ -7,19 +7,13 @@ import {
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const loadContent = async () => {
-  const modals = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/modals.json`,
-  );
-  const session = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/session.json`,
-  );
+  const modals = await ContentSource.get(`${GEN3_COMMONS_NAME}/modals.json`);
+  const session = await ContentSource.get(`${GEN3_COMMONS_NAME}/session.json`);
 
-  const fonts = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/themeFonts.json`,
-  );
+  const fonts = await ContentSource.get(`${GEN3_COMMONS_NAME}/themeFonts.json`);
 
   const themeColors = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/themeColors.json`,
+    `${GEN3_COMMONS_NAME}/themeColors.json`,
   );
 
   const colors = Object.fromEntries(
@@ -29,7 +23,7 @@ export const loadContent = async () => {
     ]),
   );
 
-  const icons = await ContentSource.getAll(`config/icons/`, '\\.json');
+  const icons = await ContentSource.getAll(`icons/`, '\\.json');
   return {
     modalsConfig: modals,
     sessionConfig: 'sessionConfig' in session ? session.sessionConfig : session,

@@ -8,9 +8,8 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 export const ProfilePageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-
   const profileConfig: QueryProps = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/profile.json`,
+    `${GEN3_COMMONS_NAME}/profile.json`,
   );
 
   return {
