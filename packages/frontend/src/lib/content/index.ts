@@ -7,10 +7,6 @@ export class ContentSource {
   private contentDatabase: ContentDatabase;
 
   private constructor() {
-    console.log(
-      'Reading configuration from ',
-      GEN3_FRONTEND_CONFIGURATION_ROOT,
-    );
     const config = {
       store: new FilesystemContent({
         rootPath: GEN3_FRONTEND_CONFIGURATION_ROOT,
