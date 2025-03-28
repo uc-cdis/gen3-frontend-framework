@@ -80,7 +80,10 @@ import {
 } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
-import { AnalysisPageGetServerSideProps } from './pages/Analysis';
+import {
+  AnalysisPageGetServerSideProps,
+  type AnalysisPageLayoutProps,
+} from './pages/Analysis';
 
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
@@ -111,6 +114,7 @@ export {
   type RegisteredIcons,
   type SessionConfiguration,
   type ExplorerPageProps,
+  type AnalysisPageLayoutProps,
   // components
   CollapsableSidebar,
   DropdownButton,
