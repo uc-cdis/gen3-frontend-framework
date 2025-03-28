@@ -34,11 +34,11 @@ const TextDescription = ({
   return (
     <>
       {!extend ? (
-        <Text ref={textRef} size="sm" lineClamp={4}>
+        <Text ref={textRef} size="md" lineClamp={4}>
           {description}
         </Text>
       ) : (
-        <Text size="sm">{description}</Text>
+        <Text size="md">{description}</Text>
       )}
       {isClamped && (
         <button onClick={() => setExtend((extend) => !extend)}>

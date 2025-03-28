@@ -14,6 +14,8 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
 } from './ExplorerTable';
 
+import CohortManager from './CohortManager';
+
 export {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
@@ -21,6 +23,7 @@ export {
   type CellRendererFunctionProps,
   type CohortPanelConfig,
   CohortBuilder,
+  CohortManager,
   ExplorerTableCellRendererFactory,
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
