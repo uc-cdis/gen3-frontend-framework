@@ -25,8 +25,8 @@ const AnalysisCenterWithSections: React.FC<
   AnalysisCenterWithSectionsConfiguration
 > = ({ sections, classNames }): ReactElement => {
   const rootClassNamesDefaults = {
-    title: 'font-header font-bold text-2xl uppercase',
-    divider: 'text-accent w-[100px] border-accent mb-4',
+    title: 'font-header font-bold text-2xl uppercase mt-2',
+    divider: 'text-accent w-[70px] border-accent mb-4',
   };
   const mergedGlobalClassnames = mergeDefaultTailwindClassnames(
     rootClassNamesDefaults,
@@ -43,7 +43,10 @@ const AnalysisCenterWithSections: React.FC<
 
         return (
           <Stack key={section.label} gap="xs">
-            <Text classNames={{ root: sectionClassnames['title'] }}>
+            <Text
+              color="primary.4"
+              classNames={{ root: sectionClassnames['title'] }}
+            >
               {section.label}
             </Text>
             <Divider
@@ -65,6 +68,6 @@ const AnalysisCenterWithSections: React.FC<
     [sections],
   );
 
-  return <Stack>{sectionPanels}</Stack>;
+  return <Stack gap="xl">{sectionPanels}</Stack>;
 };
 export default AnalysisCenterWithSections;
