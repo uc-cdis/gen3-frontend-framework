@@ -28,8 +28,6 @@ export const Default: Story = {
               'Explore the available projects and select those for further investigation and analysis.',
             icon: '/icons/apps/Projects.svg',
             href: '/',
-            count: 1000,
-            countUnits: 'Cases',
           },
           {
             title: 'Cohort Builder',
@@ -40,8 +38,6 @@ export const Default: Story = {
               'Build and define your custom cohorts using a variety of clinical and biospecimen features.',
             icon: '/icons/apps/CohortBuilder.svg',
             href: '/',
-            count: 1000,
-            countUnits: 'Cases',
           },
           {
             title: 'Repository',
@@ -52,8 +48,6 @@ export const Default: Story = {
               'Browse and download the files associated with your cohort for more sophisticated analysis.',
             icon: '/icons/apps/Repository.svg',
             href: '/',
-            count: 1000,
-            countUnits: 'Cases',
           },
         ],
       },

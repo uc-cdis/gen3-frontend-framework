@@ -16,7 +16,7 @@ Here's an overview of the main configuration option:
 The `rightSection` contain an array of columns. Each column contains an array of rows of footer items.
 Footer items can be:
 * Icon - image file to display
-* Text - text to display
+* Label - text to display
 * Link - link to a page
 * Links - a row of links
 * Section - which allows for rows of columns allowing more complex layouts

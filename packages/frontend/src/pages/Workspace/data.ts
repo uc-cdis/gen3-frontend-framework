@@ -10,9 +10,10 @@ import { LaunchStepIndicatorConfiguration } from '../../features/Workspace/types
 export const WorkspacePageGetServerSideProps: GetServerSideProps<
   WorkspacePageLayoutProps
 > = async (_context) => {
-  const workspaceProps: WorkspaceConfig = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/workspace.json`,
-  );
+  const workspaceProps: WorkspaceConfig =
+    await ContentSource.getContentDatabase().get(
+      `${GEN3_COMMONS_NAME}/workspace.json`,
+    );
   try {
     return {
       props: {
