@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, FileButton, Loader, Tooltip } from '@mantine/core';
+import { Button, FileButton, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify/react';
 
 interface UploadJSONButtonProps {
@@ -29,9 +29,10 @@ const UploadJSONButton: React.FC<UploadJSONButtonProps> = ({
       }}
       accept="application/json"
     >
-      {() => (
+      {(props) => (
         <Tooltip label={tooltip} disabled={!tooltip}>
           <Button
+            {...props}
             loading={processingFile}
             variant="outline"
             classNames={{ root: 'bg-base-max' }}

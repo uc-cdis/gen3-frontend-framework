@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
+import { Center, Stack } from '@mantine/core';
 import TexturedSidePanel from '../Layout/TexturedSidePanel';
 import LoginProvidersPanel from './LoginProvidersPanel';
 import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
-import ContactWithEmailContent from '../Content/ContactWithEmailContent';
 import { isArray } from 'lodash';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
@@ -68,10 +68,13 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           process.env.NODE_ENV === 'development' && (
             <CredentialsLogin handleLogin={handleCredentialsLogin} />
           )}
-
-        {bottomContent?.map((content, index) => (
-          <TextContent {...content} key={`bottomContent-${index}`} />
-        ))}
+        <Center>
+          <Stack>
+            {bottomContent?.map((content, index) => (
+              <TextContent {...content} key={`bottomContent-${index}`} />
+            ))}
+          </Stack>
+        </Center>
       </div>
       <TexturedSidePanel url={image} />
     </div>

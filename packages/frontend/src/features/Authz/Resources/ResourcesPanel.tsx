@@ -1,9 +1,8 @@
-import  ResourcesTable from './ResourcesTable';
+import React from 'react';
+import ResourcesTable from './ResourcesTable';
 
 const ResourcesPanel = () => {
-  return (
-    <ResourcesTable />
-  );
+  return <ResourcesTable />;
 };
 
 export default ResourcesPanel;

@@ -20,11 +20,36 @@ import {
   Union,
 } from './types';
 
+export type OperatorWithFieldAndArrayOfOperands =
+  | Includes
+  | Excludes
+  | ExcludeIfAny;
+
 export const isOperationWithField = (
   operation: OperationWithField | Operation,
 ): operation is OperationWithField => {
   return (operation as OperationWithField)?.field !== undefined;
 };
+
+export const isOperatorWithFieldAndArrayOfOperands = (
+  operation: unknown,
+): operation is OperatorWithFieldAndArrayOfOperands => {
+  if (
+    typeof operation === 'object' &&
+    operation !== null &&
+    'operands' in operation &&
+    Array.isArray((operation as any).operands) &&
+    'field' in operation &&
+    typeof (operation as any).field === 'string' // Assuming `field` should be a string
+  ) {
+    const { operator } = (operation as any).operator;
+    return (
+      operator === 'in' || operator === 'exclude' || operator === 'excludeifany'
+    );
+  }
+  return false;
+};
+
 export const extractFilterValue = (op: Operation): FilterValue => {
   const valueExtractorHandler = new ValueExtractorHandler();
   return handleOperation<FilterValue>(valueExtractorHandler, op);

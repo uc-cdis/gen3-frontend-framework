@@ -1,10 +1,10 @@
 import { TextContentProps } from '../Content/TextContent';
 
 export interface Gen3LoginPanelConfig {
-  title: string;
-  subtitle: string;
-  text: string;
-  contact: string;
+  title: string; // Main title for Login page
+  subtitle: string; // a sub title
+  text: string; // text string below the login buttons
+  contact: string; // contact message
   email: string;
   image: string;
   className: string;

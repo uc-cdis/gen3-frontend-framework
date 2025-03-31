@@ -1,7 +1,10 @@
 # Setting up Kind
 To use kind instead of rancher-desktop.
 
-- Install kind
+- Install kind: https://kind.sigs.k8s.io/docs/user/quick-start
+
+There are kind config files in ```packages/tools/localDev/kind``` or:
+
 - Add the following config file (```kind-config.yaml```):
 ```yaml
 kind: Cluster
@@ -53,12 +56,13 @@ confirm secret:
 ```
 kubectl get secrets --namespace default
 ```
-Create a file ```ingress.yaml```:
+
+use ```packages/tools/localDev/kind/ingress-kind.yaml``` or create a file ```ingress-kind.yaml```:
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ngress-nginx-controller
+  name: ingress-nginx-controller
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -82,7 +86,7 @@ spec:
 ```
 add to cluster:
 ```bash
-  kubectl apply -f ingress.yaml
+  kubectl apply -f ingress-kind.yaml
 ```
 
 ### Workspace support
@@ -92,14 +96,19 @@ these instructions to update the Content-Security-Policy:
 ```
  kubectl edit configmap ingress-nginx-controller -n ingress-nginx
 ```
-add:
+add to the end of the file:
 ```
-apiVersion: v1
-    data:
-      allow-snippet-annotations: "true"
+data:
+  allow-snippet-annotations: "true"
+  annotations-risk-level: Critical
 ```
 
-write the config and exit: It will reload and allow snippets used in the alternate config below:
+write the config and exit: It will reload and allow snippets used 
+by running 
+```bash
+ kubectl apply -f ingress-local-dev.yaml       
+```
+or use in the alternate config below:
 
 ```
 #
@@ -112,6 +121,7 @@ write the config and exit: It will reload and allow snippets used in the alterna
 #     apiVersion: v1
 #     data:
 #       allow-snippet-annotations: "true"
+#       annotations-risk-level: Critical
 #
 #   write the config and exit: It will reload and allow snippets used below.
 #
@@ -167,3 +177,12 @@ delete ingress
 ```bash
 kubectl delete ingress revproxy-dev
 ```
+
+delete secret
+```bash
+ kubectl delete secret gen3-certs --namespace default
+```
+
+If you have certificate issues confirm secret is correct by
+viewing the ingress config and confirm the secret name is the same in the
+configuration

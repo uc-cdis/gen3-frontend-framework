@@ -1,6 +1,12 @@
 import { isObject, isString, isNotDefined, isArray } from './ts-utils';
 import { prepareUrl } from './url';
-import { HTTPErrorMessages, HTTPError, fetchFencePresignedURL } from './fetch';
+import {
+  type HTTPErrorMessages,
+  HTTPError,
+  fetchFencePresignedURL,
+  fetchJSONDataFromURL,
+} from './fetch';
+import { getCurrentTimestamp, isTimeGreaterThan } from './time';
 
 export {
   isObject,
@@ -9,6 +15,9 @@ export {
   isArray,
   prepareUrl,
   fetchFencePresignedURL,
+  fetchJSONDataFromURL,
   HTTPError,
-  HTTPErrorMessages,
+  type HTTPErrorMessages,
+  getCurrentTimestamp,
+  isTimeGreaterThan,
 };

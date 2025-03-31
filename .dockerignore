@@ -1,7 +1,16 @@
 node_modules
 packages/core/node_modules
+packages/core/dist
 packages/frontend/node_modules
+packages/frontend/.rollup-cache
+packages/frontend/dist
 packages/tools/node_modules
+packages/tools/dist
 packages/sampleCommons/node_modules
 packages/sampleCommons/.next
+packages/sampleCommons/.swc
+packages/storybook
 .git
+.nx
+docs
+.npmrc

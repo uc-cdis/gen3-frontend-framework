@@ -1,5 +1,6 @@
 export * from './components/Profile';
 export * from './components/Login';
+
 export * from './components/Modals';
 export * from './components/charts';
 export * from './components/Protected';
@@ -18,11 +19,25 @@ import { type SessionConfiguration } from './lib/session/types';
 import { type Fonts, type RegisteredIcons } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
-import { registerCohortDiversityApp } from './features/CohortDiversity/registerApp';
+import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
+import { registerMetadataSchemaApp } from './features/Dictionary';
+import { CollapsableSidebar } from './components/CollapsableSidebar';
+import {
+  ActionButton,
+  DropdownButton,
+  Gen3Button,
+  Gen3ButtonReverse,
+  UploadJSONButton,
+} from './components/Buttons';
+
+import TopBar from './features/Navigation/TopBar/TopBar';
+
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
-import Gen3Provider from './components/Providers/Gen3Provider';
+import Gen3Provider, {
+  createMantineTheme,
+} from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/Discovery';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
@@ -30,11 +45,14 @@ import QueryPage from './pages/Query/Query';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
 import LandingPage from './pages/Landing/Landing';
-import { LandingPageGetStaticProps } from './pages/Landing/data';
+import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
-import { type ExplorerPageProps } from './pages/Explorer/types';
-import { ExplorerPageGetServerSideProps } from './pages/Explorer/data';
+import {
+  type ExplorerPageProps,
+  ExplorerPageGetServerSideProps,
+  ExplorerPageGetServerSidePropsForConfigId,
+} from './pages/Explorer';
 
 import ColorThemePage from './pages/Theme/Colors';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
@@ -62,7 +80,10 @@ import {
 } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
-import { AnalysisPageGetServerSideProps } from './pages/Analysis';
+import {
+  AnalysisPageGetServerSideProps,
+  type AnalysisPageLayoutProps,
+} from './pages/Analysis';
 
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
@@ -72,7 +93,6 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 
 import NotebookLitePage from './pages/NotebookLite/NotebookLite';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
-
 
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
@@ -96,19 +116,30 @@ export {
   type SessionConfiguration,
   type ExplorerPageProps,
   SowerJobsMonitor,
+  type AnalysisPageLayoutProps,
+  // components
+  CollapsableSidebar,
+  DropdownButton,
+  Gen3Button,
+  Gen3ButtonReverse,
+  UploadJSONButton,
+  ActionButton,
   ErrorCard,
+  TopBar,
+  // Pages
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,
   QueryPageGetServerSideProps,
   LandingPage,
-  LandingPageGetStaticProps,
+  LandingPageGetServerSideProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
   DictionaryPage,
   DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
+  ExplorerPageGetServerSidePropsForConfigId,
   ProfilePage,
   ProfilePageGetServerSideProps,
   LoginPage,
@@ -129,6 +160,7 @@ export {
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  createMantineTheme,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   CrosswalkPage,
@@ -140,7 +172,8 @@ export {
   NotebookLitePage,
   NotebookLitePageGetStaticProps,
   registerCohortDiscoveryApp,
-  registerCohortDiversityApp,
+  registerCohortSimilarityApp,
+  registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
 };

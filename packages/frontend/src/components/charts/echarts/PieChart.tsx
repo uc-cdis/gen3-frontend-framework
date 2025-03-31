@@ -25,13 +25,9 @@ const processChartData = (
   return results;
 };
 
-const PieChart = ({ data }: ChartProps) => {
+const PieChart = ({ data, label }: ChartProps) => {
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
-      label: {
-        show: true,
-        fontSize: '14',
-      },
       emphasis: {
         label: {
           show: true,
@@ -47,6 +43,7 @@ const PieChart = ({ data }: ChartProps) => {
           radius: '60%',
           data: processChartData(data),
           label: {
+            show: label?.show !== undefined ? label.show : true,
             fontSize: '14',
             fontWeight: 'bold',
             overflow: 'break',

@@ -22,7 +22,7 @@ const histogramData = {
         count: 2504,
       },
       {
-        key: 'tutorial-synthetic_data_set_controlled_access_1',
+        key: 'tutorial-synthetic_data_set_controlled_access_1', // pragma: allowlist secret
         count: 2504,
       },
       {
@@ -294,7 +294,7 @@ const results = {
       count: 2504,
     },
     {
-      key: 'tutorial-synthetic_data_set_controlled_access_1',
+      key: 'tutorial-synthetic_data_set_controlled_access_1', // pragma: allowlist secret
       count: 2504,
     },
     {

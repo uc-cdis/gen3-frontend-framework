@@ -1,3 +1,4 @@
+import React from 'react';
 import { UnstyledButton, Text, Highlight } from '@mantine/core';
 import { MatchingSearchResult } from './types';
 import { snakeSplit } from './utils';

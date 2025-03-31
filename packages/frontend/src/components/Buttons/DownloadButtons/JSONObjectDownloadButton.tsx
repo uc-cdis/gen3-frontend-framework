@@ -8,12 +8,14 @@ interface JsonFileSaverProps {
   label?: string;
   tooltip?: string;
   icon?: string;
+  disabled?: boolean;
 }
 
 const JSONObjectDownloadButton: React.FC<JsonFileSaverProps> = ({
   getData,
   filename = 'data.json',
   icon = 'gen3:download',
+  disabled = false,
   tooltip,
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -53,7 +55,7 @@ const JSONObjectDownloadButton: React.FC<JsonFileSaverProps> = ({
       <Button
         variant="outline"
         onClick={saveToJSONFile}
-        disabled={isDownloading}
+        disabled={isDownloading || disabled}
         loading={isDownloading}
         classNames={{ root: 'bg-base-max' }}
         className="flex items-center gap-2"

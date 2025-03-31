@@ -4,7 +4,9 @@ import {
   HistogramData,
   HistogramDataArray,
   Includes,
+  Intersection,
   Operation,
+  isUnion,
   selectIndexedFilterByName,
   isOperationWithField,
   updateCohortFilter,
@@ -13,12 +15,22 @@ import {
   fieldNameToTitle,
   AggregationsData,
   CoreState,
+  extractEnumFilterValue,
+  isOperatorWithFieldAndArrayOfOperands,
+  OperatorWithFieldAndArrayOfOperands,
+  CombineMode,
+  SharedFieldMapping,
+  selectShouldShareFilters,
+  selectSharedFilters,
+  IndexAndField,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
   FromToRange,
   UpdateFacetFilterFunction,
   FieldToName,
+  FacetSortType,
+  SortType,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -31,6 +43,7 @@ export const getAllFieldsFromFilterConfigs = (
 interface ExplorerResultsData {
   [key: string]: Record<string, any>;
 }
+
 export const processBucketData = (
   data?: HistogramDataArray,
 ): Record<string, number> => {
@@ -74,15 +87,25 @@ export const updateFacetEnum = (
   values: EnumFilterValue,
   updateFacetFilters: UpdateFacetFilterFunction,
   clearFilters: ClearFacetFunction,
+  combineMode: CombineMode = 'or',
 ): void => {
   if (values === undefined) return;
   if (values.length > 0) {
     // TODO: Assuming Includes by default but this might change to Include|Excludes
-    updateFacetFilters(fieldName, {
-      operator: 'in',
-      field: fieldName,
-      operands: values,
-    } as Includes);
+    updateFacetFilters(
+      fieldName,
+      combineMode === 'and'
+        ? addIntersectionToIncludes({
+            operator: 'in',
+            field: fieldName,
+            operands: values,
+          } as Includes)
+        : ({
+            operator: 'in',
+            field: fieldName,
+            operands: values,
+          } as Includes),
+    );
   }
   // no values remove the filter
   else {
@@ -96,6 +119,7 @@ export const classifyFacets = (
   index: string,
   fieldMapping: ReadonlyArray<FieldToName> = [],
   facetDefinitionsFromConfig: Record<string, FacetDefinition> = {},
+  sharedFieldMapping?: SharedFieldMapping,
 ): Record<string, FacetDefinition> => {
   if (typeof data !== 'object' || data === null) return {};
 
@@ -126,6 +150,11 @@ export const classifyFacets = (
           description: facetDef.description ?? 'Not Available',
           label: facetDef.label ?? facetName,
           // assumption is that the initial data has the min and max values
+          sharedWithIndices:
+            (sharedFieldMapping &&
+              fieldKey in sharedFieldMapping &&
+              sharedFieldMapping[fieldKey].filter((x) => x.index !== index)) ??
+            undefined,
           range:
             (facetDef.range ?? type === 'range')
               ? {
@@ -140,6 +169,17 @@ export const classifyFacets = (
   );
 };
 
+/**
+ * Constructs a nested operation object based on the provided field and leaf operand.
+ * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
+ * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
+ * creates a "nested" operation for the root field, and recursively constructs the nested structure
+ * for the remaining portion of the field.
+ *
+ * @param {string} field - The hierarchical field path, with segments separated by dots (e.g., "root.child").
+ * @param {Operation} leafOperand - The operation to be nested within the specified path.
+ * @returns {Operation} A nested operation object that represents the structured path and operand.
+ */
 export const buildNested = (
   field: string,
   leafOperand: Operation,
@@ -172,23 +212,42 @@ export const useUpdateFilters = (index: string) => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
 
+  const shouldShareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
+
   return (field: string, filter: Operation) => {
-    dispatch(
-      updateCohortFilter({
-        index: index,
-        field: field,
-        filter: buildNested(field, filter),
-      }),
-    );
+    if (shouldShareFilters && field in sharedFilters) {
+      sharedFilters[field].forEach((x: IndexAndField) => {
+        dispatch(
+          updateCohortFilter({
+            index: x.index,
+            field: x.field,
+            filter: buildNested(x.field, filter),
+          }),
+        );
+      });
+    } else {
+      dispatch(
+        updateCohortFilter({
+          index: index,
+          field: field,
+          filter: buildNested(field, filter),
+        }),
+      );
+    }
   };
 };
+
 export const useGetFacetFilters = (index: string, field: string): Operation => {
-  return useCoreSelector(
-    (state: CoreState) =>
-      selectIndexedFilterByName(state, index, field) ?? {
-        operator: 'and',
-        operands: [],
-      },
+  return (
+    useCoreSelector((state: CoreState) =>
+      selectIndexedFilterByName(state, index, field),
+    ) ?? {
+      operator: 'and',
+      operands: [],
+    }
   );
 };
 
@@ -230,3 +289,99 @@ export const extractRangeValues = <T extends string | number>(
 export const convertToStringArray = (
   inputArray: (string | number)[],
 ): string[] => inputArray.map(String);
+
+/**
+ * This function creates a new operation by combining the provided filter
+ * with an 'and' logical operator. The resulting operation contains the filter
+ * as its sole operand initially.
+ *
+ * @param {Operation} filter - The operation to be added as the first operand.
+ * @returns {Operation} A new operation object with an 'and' operator and the given filter as its operand.
+ */
+export const addUnion = (filter: Operation): Operation => {
+  return {
+    operator: 'and',
+    operands: [filter],
+  };
+};
+
+/**
+ * Removes a union operation and returns the sole operand if the union
+ * operation contains only one operand. If the union operation has multiple
+ * operands or if the input is not a union, returns undefined.
+ *
+ * @param {Operation} filter - The operation to evaluate and possibly modify, expected to be a union.
+ * @returns {Operation | undefined} The sole operand of the union if it contains only one, or undefined otherwise.
+ */
+export const removeUnion = (filter: Operation): Operation | undefined => {
+  if (isUnion(filter) && filter.operands.length === 1) {
+    return filter.operands[0];
+  }
+  return undefined;
+};
+
+/**
+ * Represents a function that adds an intersection filter operation.
+ *
+ * @param {Operation} filter - The filter operation to be intersected with.
+ * @returns {Operation} An object representing a new operation that combines
+ *                      the provided filter with an "and" logical operator.
+ */
+export const addIntersectionToIncludes = (filter: Includes): Operation => {
+  if (!isOperatorWithFieldAndArrayOfOperands(filter)) return filter;
+
+  const values: EnumFilterValue = extractEnumFilterValue(filter);
+
+  // if (!values || values.length === 0) return filter;
+
+  return {
+    operator: 'and',
+    operands: values.map((x) => {
+      return {
+        operator: filter.operator,
+        operands: [x],
+        field: filter.field,
+      } as Includes;
+    }),
+  };
+};
+
+/**
+ * Removes the intersection from a filter operation if the intersection contains only one operand.
+ *
+ * @param {Operation} filter - The filter operation to be evaluated.
+ * @returns {Operation|undefined} The single operand of the intersection if the intersection has only one operand, otherwise undefined.
+ */
+export const removeIntersectionFromEnum = (
+  filter: Intersection,
+): OperatorWithFieldAndArrayOfOperands | undefined => {
+  if (filter.operands.length === 0) return undefined;
+  if (!filter.operands.every((x) => isOperationWithField(x))) return undefined;
+
+  const values = filter.operands.reduce(
+    (acc, x) => {
+      extractEnumFilterValue(x).map((y) => acc.push(y));
+      return acc;
+    },
+    [] as Array<string | number>,
+  );
+  return {
+    operator: filter.operands[0].operator,
+    field: filter.operands[0].field,
+    operands: values,
+  } as OperatorWithFieldAndArrayOfOperands;
+};
+
+/**
+ * Maps a facet sort type to a corresponding sort type.
+ *
+ * @param {FacetSortType} facetSort - The facet sort type represented as a string in the format "type-direction".
+ * @returns {SortType} - The mapped sort type object containing type and direction.
+ */
+export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
+  const [type, direction] = facetSort.split('-');
+  return {
+    type: type === 'label' ? 'alpha' : 'value',
+    direction: direction as 'asc' | 'dsc',
+  };
+};

@@ -1,6 +1,6 @@
+import React, { ReactNode } from 'react';
 import { hideModal, useCoreDispatch, CoreDispatch } from '@gen3/core';
 import { Button, Modal } from '@mantine/core';
-import { ReactNode } from 'react';
 
 interface ButtonOptions {
   onClick?: () => void;

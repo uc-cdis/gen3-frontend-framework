@@ -1,3 +1,4 @@
+import React from 'react';
 import { MRT_Icons } from 'mantine-react-table';
 import {
   TiArrowUnsorted as Unsorted,

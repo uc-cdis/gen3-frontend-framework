@@ -63,6 +63,7 @@ const DiscoveryIndexPanel = ({
     advancedSearchFilterValues,
     suggestions,
     summaryStatistics,
+    charts: chartData,
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -101,7 +102,10 @@ const DiscoveryIndexPanel = ({
             <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
           ) : null}
           {discoveryConfig.features?.chartsSection?.enabled && (
-            <ChartsPanel config={discoveryConfig.features?.chartsSection}/>
+            <ChartsPanel
+              config={discoveryConfig.features?.chartsSection}
+              data={chartData}
+            />
           )}
           <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
             {indexSelector}

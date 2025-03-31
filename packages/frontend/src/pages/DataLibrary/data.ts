@@ -9,9 +9,10 @@ export const DataLibraryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    const datalibraryConfig: DataLibraryConfig = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/dataLibrary.json`,
-    );
+    const datalibraryConfig: DataLibraryConfig =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/dataLibrary.json`,
+      );
 
     return {
       props: {

@@ -11,7 +11,6 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "declaration": true,
     "emitDeclarationOnly": true,
     "strictNullChecks": true,
     "module": "esnext",
@@ -24,6 +23,8 @@
     "target": "esnext",
     "resolveJsonModule": true,
     "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "skipLibCheck": true,
     "lib": [

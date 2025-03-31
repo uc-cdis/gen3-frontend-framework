@@ -1,10 +1,21 @@
 import { FetchError, Gen3FenceResponse } from './types';
 import { GEN3_FENCE_API } from '../../constants';
 import { FetchRequest } from './fenceApi';
-// import { selectCSRFToken } from '../user/userSliceRTK';
-// import { coreStore } from '../../store';
-// import { prepareUrl } from '../../utils';
-// import { getCookie } from 'cookies-next';
+
+export const isFetchError = <T>(obj: unknown): obj is FetchError<T> => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  const { url, status, statusText, text } = obj as Partial<FetchError<T>>;
+
+  return (
+    typeof url === 'string' &&
+    typeof status === 'number' &&
+    typeof statusText === 'string' &&
+    typeof text === 'string'
+  );
+};
 
 /**
  * Template for fence error response dict

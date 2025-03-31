@@ -1,6 +1,6 @@
+import React from 'react';
 import type { MDXComponents } from 'mdx/types';
 import Image, { ImageProps } from 'next/image';
-
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -14,10 +14,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {...(props as ImageProps)}
       />
     ),
-    ol:({children}) => (
+    ol: ({ children }) => (
       <ol className="list-decimal list-inside">{children}</ol>
     ),
-    il:({children}) => (
+    il: ({ children }) => (
       <ol className="list-decimal list-inside">{children}</ol>
     ),
     ...components,

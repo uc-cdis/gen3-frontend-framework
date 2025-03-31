@@ -2,11 +2,11 @@ import React from 'react';
 import { Menu, Text, Tooltip } from '@mantine/core';
 import { PiDotsThreeCircleThin as DotsIcon } from 'react-icons/pi';
 import Link from 'next/link';
-import { TopIconButtonProps } from './TopBar';
 import { TooltipStyle } from './style';
+import { TopIconButtonPropsWithLink } from './TopBar/IconButton';
 
 interface ActionMenuProps {
-  items: TopIconButtonProps[];
+  items: TopIconButtonPropsWithLink[];
 }
 
 const ActionMenu = ({ items }: ActionMenuProps) => {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useReducedMotion } from '@mantine/hooks';
 import {
   Box,

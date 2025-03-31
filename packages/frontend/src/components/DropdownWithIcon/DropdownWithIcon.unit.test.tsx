@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from '@testing-library/react';
 import { DropdownWithIcon } from './DropdownWithIcon';
 import userEvent from '@testing-library/user-event';

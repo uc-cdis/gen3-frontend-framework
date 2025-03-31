@@ -2,11 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchFence, Gen3FenceResponse } from '../fence';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from '../../dataAccess';
+import { CoreDataSelectorResponse, DataStatus } from '../../dataAccess';
 import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { Gen3User, LoginStatus } from './types';
@@ -29,7 +25,7 @@ export interface Gen3UserLoginResponse<T> {
  * @returns: A fence response dict containing user details
  */
 export const fetchUserState = createAsyncThunk<
-  Gen3FenceResponse<Gen3User>,
+  Gen3FenceResponse<Gen3User> | undefined,
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user/user', async (_, meta) => {
@@ -41,7 +37,7 @@ export const fetchUserState = createAsyncThunk<
   }
 
   return await fetchFence({
-    endpoint: '/user/user',
+    endpoint: '/user',
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -87,7 +83,7 @@ const slice = createSlice({
     builder
       .addCase(fetchUserState.fulfilled, (_, action) => {
         const response = action.payload;
-        if (response.status !== 200) {
+        if (response?.status !== 200) {
           return {
             status: 'rejected',
             loginStatus: 'unauthenticated',
@@ -128,8 +124,6 @@ export const selectUser = (state: CoreState): Gen3UserState => state.user;
 
 export const selectUserLoginStatus = (state: CoreState): LoginStatus =>
   state.user.loginStatus;
-
-export const useUser = createUseCoreDataHook(fetchUserState, selectUserData);
 
 export const useIsUserLoggedIn = (): boolean => {
   return useCoreSelector((state) =>

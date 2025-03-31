@@ -1,3 +1,4 @@
+import React from 'react';
 import ProtectedContent from '../../components/Protected/ProtectedContent';
 import Credentials from '../../components/Profile/Credentials';
 import { Accordion } from '@mantine/core';

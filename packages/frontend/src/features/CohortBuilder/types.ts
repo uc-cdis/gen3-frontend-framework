@@ -2,12 +2,12 @@
 
 import { SummaryChart } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
-import { FieldToName } from '../../components/facets/types';
+import { FieldToName, FacetSortType } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals, FacetDefinition } from '@gen3/core';
+import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
-import { DispatchJobButtonProps } from '../../components/Buttons/DropdownButtons/types';
+import { ConfigVersionAndName } from '../../types';
 
 export type FacetType =
   | 'enum'
@@ -23,6 +23,7 @@ export interface TabConfig {
   fields: ReadonlyArray<string>;
   fieldsConfig: Record<string, FacetDefinition>;
   classNames?: StylingOverride;
+  defaultSort?: FacetSortType;
 }
 
 export interface TabsConfig {
@@ -70,12 +71,24 @@ export interface CohortPanelConfig {
   filters?: TabsConfig; // filters for the fields
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
-  jobsButtons?: ReadonlyArray<DispatchJobButtonProps>; // row of buton that require sower
   loginForDownload?: boolean; // login required for download
+  sharedFiltersMap?: SharedFieldMapping;
 }
 
-export interface CohortBuilderConfiguration {
+export interface SharedFieldConfiguration {
+  defined?: SharedFieldMapping;
+  autoCreate?: boolean;
+}
+
+export interface CohortBuilderConfiguration extends ConfigVersionAndName {
+  tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
+  sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfig>;
+}
+
+export interface CohortBuilderProps
+  extends Omit<CohortBuilderConfiguration, 'sharedFilters'> {
+  sharedFiltersMap: SharedFieldMapping | null;
 }
 
 // to do add buttons, options,  menus, etc

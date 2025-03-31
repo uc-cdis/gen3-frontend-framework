@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
 import { ChartsSection } from '../types';
-import { Accordion, Switch, Divider, Box } from '@mantine/core';
+import { Accordion, Center, Switch, Divider, Box } from '@mantine/core';
 import { Charts } from '../../../components/charts';
-import { SummaryChart } from '../../../components/charts/types';
+import { AggregationsData } from '@gen3/core';
+import { ErrorCard } from '../../../components/MessageCards';
 
-const ChartsPanel = ({ config }: { config: ChartsSection }) => {
+interface ChartsPanelProps {
+  config: ChartsSection;
+  data: AggregationsData;
+}
+
+const ChartsPanel = ({ config, data }: ChartsPanelProps) => {
   const [showLegends, setShowLegends] = useState(config.showLegends?.enabled);
-  if (!(config?.charts && config.charts.length > 0)) {
-    console.error('Discovery Charts Section not setup properly');
-    return;
+
+  if (!(config?.charts && Object.keys(config.charts).length > 0)) {
+    return (
+      <Center>
+        <ErrorCard message="Discovery Charts Section not setup properly" />
+      </Center>
+    );
   }
-  const chartsProperties = () => {
-    const chartDataTemp: Record<string, SummaryChart> = {};
-    config?.charts?.forEach((chart, index) => {
-      chartDataTemp[`testName${index}`] = {
-        //TODO use from data
-        title: chart.title,
-        chartType: chart.chartType,
-        valueType: chart.valueType,
-        dataLabels: chart.dataLabels, //TODO get from code and not from setup
-      };
-    });
-    return chartDataTemp;
-  };
+
   return (
     <Accordion
       unstyled
@@ -61,105 +59,8 @@ const ChartsPanel = ({ config }: { config: ChartsSection }) => {
             <Charts
               showLegends={showLegends}
               style="box"
-              charts={chartsProperties()}
-              data={{
-                testName0: [
-                  {
-                    key: 'a',
-                    count: 11,
-                  },
-                  {
-                    key: 'b',
-                    count: 9,
-                  },
-                  {
-                    key: 'c',
-                    count: 3,
-                  },
-                  {
-                    key: 'd',
-                    count: 1,
-                  },
-                  {
-                    key: 'e',
-                    count: 0,
-                  },
-                ],
-                testName1: [
-                  {
-                    key: 'a',
-                    count: 11,
-                  },
-                  {
-                    key: 'b',
-                    count: 9,
-                  },
-                  {
-                    key: 'c',
-                    count: 3,
-                  },
-                ],
-                testName2: [
-                  {
-                    key: 'a',
-                    count: 11,
-                  },
-                  {
-                    key: 'b',
-                    count: 9,
-                  },
-                  {
-                    key: 'c',
-                    count: 3,
-                  },
-                ],
-                testName3: [
-                  {
-                    key: 'a',
-                    count: 1,
-                  },
-                  {
-                    key: 'b',
-                    count: 2,
-                  },
-                  {
-                    key: 'c',
-                    count: 3,
-                  },
-                  {
-                    key: 'd',
-                    count: 4,
-                  },
-                  {
-                    key: 'e',
-                    count: 5,
-                  },
-                  {
-                    key: 'f',
-                    count: 6,
-                  },
-                  {
-                    key: 'g',
-                    count: 7,
-                  },
-                  {
-                    key: 'h',
-                    count: 8,
-                  },
-                  {
-                    key: 'i',
-                    count: 9,
-                  },
-                  {
-                    key: 'j',
-                    count: 10,
-                  },
-                  {
-                    key: 'k',
-                    count: 11,
-                  },
-                ],
-              }}
+              charts={config.charts}
+              data={data}
               counts={2}
               isSuccess={true}
               numCols={4}

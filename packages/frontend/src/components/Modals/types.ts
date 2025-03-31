@@ -4,7 +4,7 @@ export interface BaseModalConfig {
   title?: string;
 }
 
-export interface FirstTimeModalConfig extends BaseModalConfig{
+export interface FirstTimeModalConfig extends BaseModalConfig {
   enabled?: boolean;
   content: TextContentProps;
   scrollToEnableAccept?: boolean;
@@ -12,7 +12,11 @@ export interface FirstTimeModalConfig extends BaseModalConfig{
   expireDays?: number;
 }
 
+export interface SessionExpiredModalConfig extends BaseModalConfig {
+  externalLoginUrl?: string;
+}
 
 export interface ModalsConfig {
   systemUseModal?: FirstTimeModalConfig;
+  sessionExpiredModal?: SessionExpiredModalConfig;
 }

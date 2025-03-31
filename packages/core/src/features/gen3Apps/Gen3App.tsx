@@ -75,7 +75,7 @@ export const createGen3App = <
 
   const Gen3AppWrapper: React.FC<T> = (props: T) => {
     useEffect(() => {
-      document.title = `GEN3 - ${name}`;
+      document.title = `${name}`;
     });
 
     return <App {...props} />;

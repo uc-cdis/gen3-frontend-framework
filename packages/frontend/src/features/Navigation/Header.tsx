@@ -1,5 +1,5 @@
 import React from 'react';
-import TopBar from './TopBar';
+import TopBar from './TopBar/TopBar';
 import NavigationBar from './NavigationBar';
 import { Banner } from './Banner';
 import { HeaderProps } from './types';
@@ -46,7 +46,9 @@ const Header = ({
       <TopBar
         items={top.items}
         loginButtonVisibility={top?.loginButtonVisibility}
+        externalLoginUrl={top?.externalLoginUrl}
         classNames={{ ...top.classNames }}
+        itemClassnames={{ ...top.itemClassnames }}
       />
       {banners?.map((banner) => <Banner {...banner} key={banner.id} />)}
       <NavigationBar

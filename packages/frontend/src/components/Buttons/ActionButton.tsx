@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Tooltip } from '@mantine/core';
 import { DownloadButtonProps } from './DropdownButtons';
 import { Icon } from '@iconify/react';
@@ -17,15 +18,15 @@ const ActionButton = ({
       withArrow
       multiline
       disabled={tooltipText === undefined}
-      >
-    <Button
-      color="secondary"
-      disabled={enabled !== undefined ? !enabled : true}
-      leftSection={leftIcon ? <Icon icon={leftIcon} /> : null}
-      rightSection={rightIcon ? <Icon icon={rightIcon} /> : null}
     >
-      {title}
-    </Button>
+      <Button
+        color="secondary"
+        disabled={enabled !== undefined ? !enabled : true}
+        leftSection={leftIcon ? <Icon icon={leftIcon} /> : null}
+        rightSection={rightIcon ? <Icon icon={rightIcon} /> : null}
+      >
+        {title}
+      </Button>
     </Tooltip>
   );
 };

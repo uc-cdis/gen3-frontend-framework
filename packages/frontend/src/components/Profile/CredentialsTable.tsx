@@ -56,7 +56,7 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) =>
+        accessorFn: (apiKey: APIKeyStatus) => // pragma: allowlist secret
           unixTimeToString(
             // pragma: allowlist-secret
             apiKey.expiration,
@@ -67,23 +67,16 @@ const CredentialsTable = () => {
         header: 'Actions',
         Cell: ({ row }: MRT_Cell<APIKeyStatus>) => (
           <div className="flex items-center">
-            {row.original.actions === 'delete' ? (
-              <ActionIcon
-                onClick={() =>
-                  removeCredential({
-                    csrfToken: csrfToken?.csrfToken,
-                    id: row.original.key,
-                  })
-                }
-              >
-                <DeleteIcon />
-              </ActionIcon>
-            ) : (
-              <span>
-                {' '}
-                <RefreshIcon /> <DeleteIcon />
-              </span>
-            )}
+            <ActionIcon
+              onClick={() =>
+                removeCredential({
+                  csrfToken: csrfToken?.csrfToken,
+                  id: row.original.key,
+                })
+              }
+            >
+              <DeleteIcon />
+            </ActionIcon>
           </div>
         ),
       },

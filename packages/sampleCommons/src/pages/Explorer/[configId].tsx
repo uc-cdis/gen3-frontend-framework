@@ -1,25 +1,30 @@
 import {
   ContentSource,
   getNavPageLayoutPropsFromConfig,
+  ExplorerPageGetServerSidePropsForConfigId,
   NavPageLayout,
   NavPageLayoutProps,
 } from '@gen3/frontend';
 
 import React from 'react';
-import { CohortBuilder, ExplorerPageProps } from '@gen3/frontend';
+import {
+  CohortBuilder,
+  ExplorerPageProps,
+  ExplorerPageGetServerSidePropsForConfigId as getServerSideProps,
+} from '@gen3/frontend';
 import { Center } from '@mantine/core';
-import { GetServerSideProps } from 'next';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 const CohortBuilderPage = ({
   headerProps,
   footerProps,
   explorerConfig,
+  tabsLayout,
+  sharedFiltersMap,
 }: ExplorerPageProps): JSX.Element => {
   if (explorerConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
-        <div>Cohort config is not defined. Page disabled</div>
+        <div>Explorer config is not defined. Page disabled</div>
       </Center>
     );
   }
@@ -33,36 +38,15 @@ const CohortBuilderPage = ({
         key: 'gen3-cohort-builder-page',
       }}
     >
-      <CohortBuilder explorerConfig={explorerConfig} />
+      <CohortBuilder
+        tabsLayout={tabsLayout}
+        explorerConfig={explorerConfig}
+        sharedFiltersMap={sharedFiltersMap}
+      />
     </NavPageLayout>
   );
 };
 
-export const getServerSideProps: GetServerSideProps<
-  NavPageLayoutProps
-> = async (context) => {
-  const configId = context.query.configId as string;
-
-  try {
-    const config: any = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/explorer/${configId}.json`,
-    );
-
-    return {
-      props: {
-        ...(await getNavPageLayoutPropsFromConfig()),
-        explorerConfig: config,
-      },
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      props: {
-        ...(await getNavPageLayoutPropsFromConfig()),
-        explorerConfig: undefined,
-      },
-    };
-  }
-};
-
 export default CohortBuilderPage;
+
+export { getServerSideProps };

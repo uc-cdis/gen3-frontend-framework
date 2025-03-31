@@ -1,3 +1,5 @@
+import { IndexAndField } from '../guppy';
+
 export interface Intersection {
   operator: 'and';
   operands: ReadonlyArray<Operation>;
@@ -122,6 +124,24 @@ export const isFilterSet = (input: any): input is FilterSet => {
   return true;
 };
 
+export function isUnion(value: unknown): value is Union {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as Union).operator === 'or' &&
+    Array.isArray((value as Union).operands)
+  );
+}
+
+export function isIntersection(value: unknown): value is Intersection {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as Intersection).operator === 'and' &&
+    Array.isArray((value as Intersection).operands)
+  );
+}
+
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
   handleNotEquals: (op: NotEquals) => T;
@@ -186,6 +206,7 @@ export interface FacetDefinition {
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean; // does this facet have data
   readonly label?: string; // label for facet
+  readonly sharedWithIndices?: Array<IndexAndField>; // if this filter is denormalized across indices
 }
 
 export type IndexedFilterSet = Record<string, FilterSet>;

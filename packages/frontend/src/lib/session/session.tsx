@@ -1,34 +1,40 @@
 import React, {
   useCallback,
-  useEffect,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { Session, SessionProviderProps } from './types';
-import { isUserOnPage } from './utils';
-import {
-  useCoreDispatch,
-  useCoreSelector,
-  type CoreState,
-  showModal,
-  Modals,
-  useLazyFetchUserDetailsQuery,
-  selectUserAuthStatus,
-  GEN3_REDIRECT_URL,
-  GEN3_FENCE_API,
-} from '@gen3/core';
+import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
-import { useResourceMonitor } from '../../components/Providers/ResourceMonitor';
+import { Session, SessionProviderProps } from './types';
+import { isUserOnPage } from './utils';
+import {
+  type CoreState,
+  GEN3_FENCE_API,
+  GEN3_REDIRECT_URL,
+  Modals,
+  selectUserAuthStatus,
+  showModal,
+  useCoreDispatch,
+  useCoreSelector,
+  useLazyFetchUserDetailsQuery,
+} from '@gen3/core';
 
-const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
-const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;
+import { MinutesToMilliseconds } from '../../utils';
+import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
 export const logoutSession = async () => {
-  await fetch(`${GEN3_FENCE_API}/user/logout?next=${GEN3_REDIRECT_URL}/`, {
+  // logged in using credentials then execute credentials logout first
+  const accessToken = getCookie('credentials_token');
+  if (accessToken) {
+    await fetch('/api/auth/credentialsLogout');
+  }
+
+  await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
     cache: 'no-store',
   });
 };
@@ -161,16 +167,16 @@ const UPDATE_SESSION_LIMIT = MinutesToMilliseconds(5);
  */
 export const SessionProvider = ({
   children,
-  session,
   updateSessionTime = 5,
   inactiveTimeLimit = 20,
   workspaceInactivityTimeLimit = 0,
   logoutInactiveUsers = true,
+  monitorWorkspace = true,
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  useResourceMonitor();
+  useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

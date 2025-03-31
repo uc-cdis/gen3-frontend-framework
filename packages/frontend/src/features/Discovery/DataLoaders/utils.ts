@@ -1,12 +1,15 @@
 import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
-import { type AuthzMapping, JSONObject } from '@gen3/core';
+import {
+  type AuthzMapping,
+  type JSONObject,
+  type AggregationsData,
+} from '@gen3/core';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
 import { DiscoveryIndexConfig, AccessLevel } from '../types';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
-
 /**
  * Check for non-numeric items in an array and convert them to numbers.
  * Handles strings, numbers, and nested arrays.
@@ -141,4 +144,41 @@ export const processAuthorizations = (
       __accessible: accessible,
     };
   });
+};
+
+export const processChartData = (
+  data: JSONObject[],
+  pathsToProcess: string[],
+) => {
+  // Initialize results object
+  const results: AggregationsData = {};
+
+  pathsToProcess.forEach((path) => {
+    // Use JSONPath to extract all values at the given path
+    const values = JSONPath({
+      path: `$[*].${path}`,
+      json: data,
+      flatten: true,
+    });
+
+    // Count occurrences of each value
+    // add missing to count null values
+    const counts: { [key: string]: number } = {};
+    values.forEach((value: any) => {
+      if (value && value !== '') {
+        counts[value] = (counts[value] || 0) + 1;
+      }
+    });
+
+    // Convert to required format and sort by count
+    // Store results using the path as key
+    results[path] = Object.entries(counts)
+      .map(([key, count]) => ({
+        key,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
+  });
+
+  return results;
 };

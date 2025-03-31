@@ -1,3 +1,4 @@
+import React from 'react';
 import { UseFormReturnType } from '@mantine/form';
 import { TextInput, Switch } from '@mantine/core';
 
@@ -7,18 +8,24 @@ export interface NewUserFormValues {
   email: string;
 }
 
-export const UserId = ({ form }: { form: UseFormReturnType<NewUserFormValues> }) => {
-  return <TextInput {...form.getInputProps('userId')} label="User Id" withAsterisk />;
+export const UserId = ({
+  form,
+}: {
+  form: UseFormReturnType<NewUserFormValues>;
+}) => {
+  return (
+    <TextInput {...form.getInputProps('userId')} label="User Id" withAsterisk />
+  );
 };
 export const NameInput = ({
-  form
+  form,
 }: {
   form: UseFormReturnType<NewUserFormValues>;
 }) => {
   return <TextInput {...form.getInputProps('name')} label="Full name" />;
 };
 export const EmailInput = ({
-  form
+  form,
 }: {
   form: UseFormReturnType<NewUserFormValues>;
 }) => {
@@ -26,7 +33,7 @@ export const EmailInput = ({
 };
 
 export const IsAdminInput = ({
-  form
+  form,
 }: {
   form: UseFormReturnType<NewUserFormValues>;
 }) => {

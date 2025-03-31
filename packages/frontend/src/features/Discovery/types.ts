@@ -2,6 +2,7 @@ import {
   JSONValue,
   JSONObject,
   type MetadataPaginationParams,
+  type AggregationsData,
 } from '@gen3/core';
 import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
@@ -43,7 +44,8 @@ export interface DiscoverDataHookResponse {
   hits: number;
   advancedSearchFilterValues: ReadonlyArray<KeyValueSearchFilter>;
   dataRequestStatus: DataRequestStatus;
-  summaryStatistics: SummaryStatistics;
+  summaryStatistics: SummaryStatistics; // counts and sums
+  charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
 }
@@ -269,6 +271,11 @@ export interface TagsConfig {
   tagCategories: TagCategory[];
   showUnknownTags?: boolean;
 }
+
+interface SummaryChartWithField extends SummaryChart {
+  field: string;
+}
+
 export interface ChartsSection {
   enabled: boolean;
   title?: string;
@@ -276,9 +283,7 @@ export interface ChartsSection {
     enabled: boolean;
     showSwitch?: boolean;
   };
-  charts?: Array<SummaryChart & {
-      data: string[];
-    }>;
+  charts?: Record<string, SummaryChartWithField>;
 }
 
 // TODO: Type the rest of the config
