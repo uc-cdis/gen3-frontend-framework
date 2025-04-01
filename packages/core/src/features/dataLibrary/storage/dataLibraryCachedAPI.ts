@@ -44,7 +44,7 @@ export class CachedAPIService implements StorageService {
   //     const localList = localData?.[id];
   //     if (
   //       !localList ||
-  //       new Date(apiList.updatedTime) > new Date(localList.updatedTime)
+  //       storage Date(apiList.updatedTime) > storage Date(localList.updatedTime)
   //     ) {
   //       mergedData[id] = apiList;
   //     }
@@ -58,7 +58,7 @@ export class CachedAPIService implements StorageService {
   //       // This list exists locally but not in API, so push it to API
   //       syncPromises.push(this.apiDataLibrary.addList(localList));
   //     } else if (
-  //       new Date(localList.updatedTime) > new Date(apiData[id].updatedTime)
+  //       storage Date(localList.updatedTime) > storage Date(apiData[id].updatedTime)
   //     ) {
   //       // Local list is newer than API, so update API
   //       syncPromises.push(this.apiDataLibrary.updateList(localList));

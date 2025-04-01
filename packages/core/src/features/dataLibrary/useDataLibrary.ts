@@ -1,172 +1,187 @@
-// import { useEffect, useState } from 'react';
-// import {
-//   useGetDataLibraryListsQuery,
-//   useAddDataLibraryListMutation,
-//   useDeleteDataLibraryListMutation,
-//   useAddAllDataLibraryListsMutation,
-//   useUpdateDataLibraryListMutation,
-//   useDeleteAllDataLibraryMutation,
-// } from './dataLibraryApi';
-//
-// import {
-//   getDataLibraryListIndexDB,
-//   addListToDataLibraryIndexDB,
-//   deleteListIndexDB,
-//   addAllListIndexDB,
-//   updateListIndexDB,
-//   deleteAll,
-// } from './dataLibraryIndexDB';
-// import { DataLibrary, Datalist, LoadAllListData } from './types';
-// import { flattenDataList } from './utils';
-//
-// export const useDataLibrary = (useApi: boolean) => {
-//   const [localLibrary, setLocalLibrary] = useState<DataLibrary>({});
-//
-//   const {
-//     data: apiLibrary,
-//     refetch: refetchLibraryFromApi,
-//     error: apiError,
-//     isError: isAPIListError,
-//     isFetching: isAPIListLoading,
-//   } = useGetDataLibraryListsQuery(undefined, { skip: !useApi });
-//   const [addItemToLibraryApi] = useAddDataLibraryListMutation();
-//   const [addAllItemsToLibraryApi] = useAddAllDataLibraryListsMutation();
-//   const [deleteItemInLibraryApi] = useDeleteDataLibraryListMutation();
-//   const [updateItemInLibraryApi, { isLoading: isUpdatingLoading }] =
-//     useUpdateDataLibraryListMutation();
-//   const [deleteAllApi] = useDeleteAllDataLibraryMutation();
-//
-//   let hasError = false;
-//   let errorData = null;
-//   let isLoading = false;
-//
-//   // TODO: Add error message from indexedDB
-//   if (useApi && isAPIListError) {
-//     hasError = true;
-//     errorData = apiError;
-//   }
-//
-//   if (useApi && (isUpdatingLoading || isAPIListLoading)) {
-//     isLoading = true;
-//   }
-//
-//   const generateUniqueName = (baseName: string = 'List') => {
-//     let uniqueName = baseName;
-//     let counter = 1;
-//
-//     const existingNames = dataLibrary
-//       ? Object.values(dataLibrary).map((x) => x.name)
-//       : [];
-//
-//     while (existingNames.includes(uniqueName)) {
-//       uniqueName = `${baseName} ${counter}`;
-//       counter++;
-//     }
-//
-//     return uniqueName;
-//   };
-//
-//   const refetchLocalLists = async () => {
-//     const { isError, lists } = await getDataLibraryListIndexDB();
-//     setLocalLibrary(lists ?? {});
-//     hasError = isError === true;
-//   };
-//
-//   useEffect(() => {
-//     const fetchLibrary = async () => {
-//       if (!useApi) {
-//         const { isError, lists } = await getDataLibraryListIndexDB();
-//         if (!isError) {
-//           setLocalLibrary(lists ?? {});
-//         }
-//       }
-//     };
-//
-//     fetchLibrary();
-//   }, [useApi]);
-//
-//   const addListToDataLibrary = async (item?: Partial<Datalist>) => {
-//     const adjustedData = {
-//       ...(item ?? {}),
-//       name: generateUniqueName(item?.name ?? 'List'),
-//     };
-//
-//     if (useApi) {
-//       await addItemToLibraryApi(adjustedData);
-//       refetchLibraryFromApi();
-//     } else {
-//       const { isError } = await addListToDataLibraryIndexDB(adjustedData);
-//       await refetchLocalLists();
-//       hasError = isError === true;
-//     }
-//   };
-//
-//   const deleteListFromDataLibrary = async (id: string) => {
-//     if (useApi) {
-//       await deleteItemInLibraryApi(id);
-//       refetchLibraryFromApi();
-//     } else {
-//       const { isError } = await deleteListIndexDB(id);
-//       refetchLocalLists();
-//       hasError = isError === true;
-//     }
-//   };
-//
-//   const setAllListsInDataLibrary = async (data: LoadAllListData) => {
-//     if (useApi) {
-//       await addAllItemsToLibraryApi(data);
-//       refetchLibraryFromApi();
-//     } else {
-//       const { isError } = await addAllListIndexDB(data);
-//       refetchLocalLists();
-//       hasError = isError === true;
-//     }
-//   };
-//
-//   const updateListInDataLibrary = async (id: string, data: Datalist) => {
-//     const flattend = flattenDataList(data);
-//     if (useApi) {
-//       await updateItemInLibraryApi({
-//         id,
-//         name: flattend.name,
-//         items: flattend.items,
-//       });
-//       refetchLibraryFromApi();
-//     } else {
-//       const { isError } = await updateListIndexDB(id, data);
-//       refetchLocalLists();
-//       hasError = isError === true;
-//     }
-//   };
-//
-//   const clearLibrary = async () => {
-//     if (useApi) {
-//       await deleteAllApi();
-//       refetchLibraryFromApi();
-//     } else {
-//       const { isError } = await deleteAll();
-//       refetchLocalLists();
-//       hasError = isError === true;
-//     }
-//   };
-//
-//   const dataLibrary = useApi
-//     ? apiLibrary
-//       ? apiLibrary.lists
-//       : {}
-//     : localLibrary;
-//
-//   return {
-//     dataLibrary,
-//     isError: hasError,
-//     isLoading,
-//     error: errorData,
-//     addListToDataLibrary,
-//     deleteListFromDataLibrary,
-//     clearLibrary,
-//     setAllListsInDataLibrary,
-//     updateListInDataLibrary,
-//   };
-// };
-//
-// export default useDataLibrary;
+import { useEffect, useState, useCallback, useRef } from 'react';
+import {
+  DataLibrary,
+  GroupedDataItems,
+  FilesOrCohort,
+  DataListUpdate,
+} from './types';
+import { flattenDataList } from './utils';
+import { CachedAPIService } from './storage/dataLibraryCachedAPI';
+import { StorageError } from './storage/types';
+
+interface UseDataLibraryOptions {
+  requiresAPI: boolean;
+}
+
+const useDataLibrary = (
+  options: UseDataLibraryOptions = { requiresAPI: false },
+) => {
+  // Track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<StorageError | null>(null);
+  const [lists, setLists] = useState<DataLibrary>({});
+
+  // Ref to track if initial load has happened
+  const initialLoadRef = useRef(false);
+
+  // Create storage services (we'll need both for syncing)
+  const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
+
+  dataLibraryStoreAPI.setUseAPI(options.requiresAPI);
+
+  const generateUniqueName = useCallback(
+    (baseName: string = 'List') => {
+      let uniqueName = baseName;
+      let counter = 1;
+
+      const existingNames = lists
+        ? Object.values(lists).map((x) => x.name)
+        : [];
+
+      while (existingNames.includes(uniqueName)) {
+        uniqueName = `${baseName} ${counter}`;
+        counter++;
+      }
+
+      return uniqueName;
+    },
+    [lists],
+  );
+
+  const handleErrorOrSetLists = useCallback(
+    async (isError?: boolean, status?: string) => {
+      if (isError) {
+        setError({ isError, status });
+      } else {
+        const {
+          lists,
+          isError: isCacheError,
+          status: cacheStatus,
+        } = await dataLibraryStoreAPI.getLists();
+        // Set initial data from localStorage
+        if (isCacheError) {
+          setError({ isError: isCacheError, status: cacheStatus });
+        } else {
+          setLists(lists ?? {});
+          setError(null);
+        }
+      }
+    },
+    [dataLibraryStoreAPI],
+  );
+
+  // Get the appropriate storage service based on current status;
+
+  // Initialize data from storage on first load
+  useEffect(() => {
+    const loadData = async () => {
+      if (!initialLoadRef.current) {
+        setIsLoading(true);
+
+        // Always start by loading from localStorage
+        const { lists, isError, status } = await dataLibraryStoreAPI.getLists();
+
+        if (isError) {
+          setError({ isError, status });
+        } else {
+          // Set initial data from localStorage
+          setLists(lists ?? {});
+          setError(null);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [dataLibraryStoreAPI]);
+
+  // Sync logic when using API and logged in
+  useEffect(() => {
+    const handleLogin = async () => {
+      setIsLoading(true);
+      await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
+      setIsLoading(false);
+    };
+    handleLogin();
+  }, [dataLibraryStoreAPI, isLoggedIn, options.requiresAPI]);
+
+  // CRUD operations
+  const addListToDataLibrary = useCallback(
+    async (items: FilesOrCohort, name?: string) => {
+      const namedItems = {
+        items: items,
+        name: generateUniqueName(name ?? 'List'),
+      };
+
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.addList(namedItems);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(false);
+    },
+    [dataLibraryStoreAPI, generateUniqueName, handleErrorOrSetLists],
+  );
+
+  const updateListInDataLibrary = useCallback(
+    async (payload: DataListUpdate) => {
+      const flattend = flattenDataList(payload);
+
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.updateList({
+        id: payload.id,
+        name: payload.name,
+        items: flattend.items,
+      });
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(false);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
+
+  const deleteListFromDataLibrary = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.deleteList(id);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(false);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
+
+  const clearLibrary = useCallback(async () => {
+    setIsLoading(true);
+    const { isError, status } = await dataLibraryStoreAPI.clearLists();
+    await handleErrorOrSetLists(isError, status);
+    setIsLoading(false);
+  }, []);
+
+  // Handle setting all lists at once (like when loading sample data)
+  const setAllListsInDataLibrary = useCallback(
+    async (data: Array<GroupedDataItems>) => {
+      setIsLoading(true);
+      const { isError, status } = await dataLibraryStoreAPI.setAllLists(data);
+      await handleErrorOrSetLists(isError, status);
+      setIsLoading(false);
+    },
+    [dataLibraryStoreAPI, handleErrorOrSetLists],
+  );
+
+  const setLoginState = useCallback((loggedIn: boolean) => {
+    setIsLoggedIn(loggedIn);
+  }, []);
+
+  return {
+    dataLibrary: lists,
+    isLoading,
+    error,
+    addListToDataLibrary,
+    updateListInDataLibrary,
+    deleteListFromDataLibrary,
+    clearLibrary,
+    setAllListsInDataLibrary,
+    setLoginState,
+    isLoggedIn,
+  };
+};
+
+export default useDataLibrary;

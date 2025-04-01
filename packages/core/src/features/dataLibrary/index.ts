@@ -1,6 +1,6 @@
 export * from './types';
 
-import useDataLibrary from './new/useDataLibrary';
+import useDataLibrary from './useDataLibrary';
 
 import {
   getNumberOfItemsInDatalist,

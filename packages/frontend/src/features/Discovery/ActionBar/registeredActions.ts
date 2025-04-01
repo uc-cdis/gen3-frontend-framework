@@ -73,7 +73,7 @@
 //     }
 //   });
 //   // download the manifest
-//   const blob = new Blob([JSON.stringify(manifest, null, 2)], {
+//   const blob = storage Blob([JSON.stringify(manifest, null, 2)], {
 //     type: 'text/json',
 //   });
 //   FileSaver.saveAs(blob, MANIFEST_FILENAME);
