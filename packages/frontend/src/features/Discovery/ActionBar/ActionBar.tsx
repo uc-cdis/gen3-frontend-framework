@@ -2,7 +2,7 @@ import React from 'react';
 import { ExportFromDiscoveryActions } from '../types';
 import { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
-import DiscoveryDataLibrary from './AddToDataLibrary';
+import AddToDataLibrary from './AddToDataLibrary';
 
 const createActionButton = ({
   buttonConfig,
@@ -19,7 +19,7 @@ const createActionButton = ({
       />
     ),
     addToDataLibrary: (
-      <DiscoveryDataLibrary
+      <AddToDataLibrary
         buttonConfig={buttonConfig}
         selectedResources={selectedResources}
         exportDataFields={exportDataFields}

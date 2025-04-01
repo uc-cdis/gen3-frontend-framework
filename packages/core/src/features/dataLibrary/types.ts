@@ -142,6 +142,10 @@ export interface GroupedDataItems {
   items: FilesOrCohort;
 }
 
+export interface DataListUpdate extends GroupedDataItems {
+  id: string;
+}
+
 export type Datalist = DataItemBaseData & GroupedDataItems;
 export type DatalistAPI = DataItemBaseData & DatalistAsItems;
 // Data Library has been combine into data sets using BuildList

@@ -5,6 +5,7 @@ import {
   CohortItem,
   Datalist,
   FileItem,
+  type DataListUpdate,
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
@@ -23,11 +24,7 @@ import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (payload: {
-    id: string;
-    name: string;
-    items: Datalist;
-  }) => Promise<void>;
+  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
   deleteListFromDataLibrary: (id: string) => Promise<void>;
   size?: string;
 }
@@ -86,7 +83,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             });
           } else {
             // handle RegisteredDataListEntry
-            Object.entries(dataItem.items).forEach(([itemId, item]) => {
+            Object.entries(dataItem.members).forEach(([itemId, item]) => {
               if (isFileItem(item)) {
                 files.push({
                   ...item,

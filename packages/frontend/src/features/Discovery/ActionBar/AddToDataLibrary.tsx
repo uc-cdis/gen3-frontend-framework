@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActionIcon,
   Button,
-  ComboboxItem,
+  CloseButton,
   Group,
   ScrollArea,
   Combobox,
@@ -11,34 +11,33 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 
-import { Icon } from '@iconify/react';
-
-import { FilesOrCohort, useDataLibrary } from '@gen3/core';
+import { FilesOrCohort, useDataLibrary, type DataLibrary } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { useIsAuthenticated } from '../../../lib/session/session';
 import { ExportActionButtonProps } from './types';
 
-const extractListNameAndId = (data: any): ComboboxItem[] =>
-  !data
-    ? []
-    : Object.keys(data).map((id) => ({ value: id, label: data[id].name }));
+type SelectOptions = Record<string, string>;
 
-const DiscoveryDataLibrary = ({
+const extractIdToLabel = (data: DataLibrary): SelectOptions =>
+  !data
+    ? {}
+    : Object.keys(data).reduce((acc: SelectOptions, id) => {
+        acc[id] = data[id].name;
+        return acc;
+      }, {});
+
+const AddToDataLibrary = ({
   buttonConfig,
   selectedResources,
   exportDataFields,
 }: ExportActionButtonProps) => {
-  const [data, setData] = useState<ComboboxItem[]>([]);
-  const [currentList, setCurrentList] = useState<ComboboxItem | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [selectItems, setSelectItems] = useState<SelectOptions>({});
+  const [currentList, setCurrentList] = useState<string | null>(null);
   const [error, setError] = useState<Record<string, any> | null>(null);
-  const [value, setValue] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
+  const [currentListName, setCurrentListName] = useState<string>('');
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const { isAuthenticated } = useIsAuthenticated();
   const {
     dataLibrary,
     updateListInDataLibrary,
@@ -46,8 +45,6 @@ const DiscoveryDataLibrary = ({
     isLoading,
     error: dataLibraryError,
   } = useDataLibrary();
-
-  const theme = useMantineTheme();
 
   const saveToList = (
     listname: string,
@@ -87,103 +84,105 @@ const DiscoveryDataLibrary = ({
         items: { ...dataLibrary[listId].items, ...items },
       });
     } else {
-      addListToDataLibrary(items);
+      addListToDataLibrary(items, listname);
     }
   };
 
-  const exactOptionMatch = data.some((item) => item.label === search);
+  const exactOptionMatch = Object.values(selectItems).some(
+    (listName) => listName === currentListName,
+  );
   const filteredOptions = exactOptionMatch
-    ? data
-    : data.filter((item) =>
-        item.label.toLowerCase().includes(search.toLowerCase().trim()),
-      );
+    ? selectItems
+    : Object.entries(selectItems).reduce((acc, [listId, listName]) => {
+        if (
+          listName.toLowerCase().includes(currentListName.toLowerCase().trim())
+        ) {
+          acc[listId] = listName;
+        }
+        return acc;
+      }, {} as SelectOptions);
 
-  const options = filteredOptions.map((item) => (
-    <Combobox.Option value={item.value} key={item.value}>
-      {item.label}
-    </Combobox.Option>
-  ));
+  const options = useMemo(
+    () =>
+      Object.entries(filteredOptions).map(([listId, listName]) => (
+        <Combobox.Option value={listId} key={listId}>
+          {listName}
+        </Combobox.Option>
+      )),
+    [filteredOptions],
+  );
+
+  useEffect(() => {
+    if (options.length === 0) setCurrentList(null);
+  }, [options]);
 
   useDeepCompareEffect(() => {
     if (dataLibrary && !dataLibraryError) {
-      const listItems = extractListNameAndId(dataLibrary.lists);
-      setData(listItems);
+      const listItems = extractIdToLabel(dataLibrary);
+      setSelectItems(listItems);
     }
     setError(dataLibraryError);
   }, [dataLibrary, dataLibraryError]);
 
-  // fetch the list
-
-  const notLoggedIn = false;
-
   return (
-    <React.Fragment>
-      <Group data-testid="add-to-data-library">
-        <Combobox
-          onOptionSubmit={(optionValue) => {
-            setValue(optionValue);
-            combobox.closeDropdown();
-          }}
-          store={combobox}
-          withinPortal={false}
-        >
-          <Combobox.Target>
-            <TextInput
-              placeholder="Pick value or type anything"
-              value={value ?? ''}
-              onChange={(event) => {
-                setValue(event.currentTarget.value);
-                combobox.openDropdown();
-                combobox.updateSelectedOptionIndex();
-              }}
-              onClick={() => combobox.openDropdown()}
-              onFocus={() => combobox.openDropdown()}
-              onBlur={() => combobox.closeDropdown()}
-            />
-          </Combobox.Target>
-
-          <Combobox.Dropdown>
-            <Combobox.Options>
-              <ScrollArea.Autosize mah={200} type="scroll">
-                {options.length === 0 ? (
-                  <Combobox.Empty>Nothing found</Combobox.Empty>
-                ) : (
-                  options
-                )}
-              </ScrollArea.Autosize>
-            </Combobox.Options>
-          </Combobox.Dropdown>
-        </Combobox>
-        <ActionIcon color={theme.colors.base[0]}>
-          <Icon
-            icon="gen3:plus"
-            height={32}
-            width={32}
-            color={theme.colors.accent[5]}
+    <Group data-testid="add-to-data-library" wrap="nowrap">
+      <Combobox
+        onOptionSubmit={(selectedValue) => {
+          setCurrentList(selectedValue);
+          setCurrentListName(selectItems[selectedValue]);
+          combobox.closeDropdown();
+        }}
+        store={combobox}
+        withinPortal={false}
+      >
+        <Combobox.Target>
+          <TextInput
+            placeholder="Select/Search/Create List"
+            value={currentListName ?? ''}
+            className={'w-full'}
+            onChange={(event) => {
+              setCurrentListName(event.currentTarget.value);
+              combobox.openDropdown();
+              combobox.updateSelectedOptionIndex();
+            }}
+            onClick={() => combobox.openDropdown()}
+            onFocus={() => combobox.openDropdown()}
+            onBlur={() => combobox.closeDropdown()}
           />
-        </ActionIcon>
-        <Button
-          loading={loading}
-          disabled={
-            error !== null ||
-            data?.length === 0 ||
-            currentList === undefined ||
-            selectedResources.length === 0 ||
-            notLoggedIn
+        </Combobox.Target>
+
+        <Combobox.Dropdown>
+          <Combobox.Options>
+            <ScrollArea.Autosize mah={200} type="scroll">
+              {options.length === 0 ? (
+                <Combobox.Empty>Click button to create new list</Combobox.Empty>
+              ) : (
+                options
+              )}
+            </ScrollArea.Autosize>
+          </Combobox.Options>
+        </Combobox.Dropdown>
+      </Combobox>
+      <Button
+        loading={isLoading}
+        classNames={{ root: 'w-1/4' }}
+        disabled={
+          error !== null || selectedResources.length === 0 || !currentListName
+        }
+        onClick={() => {
+          if (currentList) {
+            saveToList(selectItems[currentList], currentList);
+          } else {
+            saveToList(currentListName, undefined);
           }
-          onClick={() => {
-            if (currentList) {
-              saveToList(currentList.label, currentList.value);
-            } else {
-              saveToList('New List');
-            }
-          }}
-        >
-          {buttonConfig?.label ?? 'Save to List'}
-        </Button>
-      </Group>
-    </React.Fragment>
+        }}
+      >
+        {options.length === 0 && currentListName.length > 0
+          ? 'Save to New List'
+          : (buttonConfig?.label ?? 'Save to List')}
+      </Button>
+    </Group>
   );
 };
 
-export default DiscoveryDataLibrary;
+export default AddToDataLibrary;

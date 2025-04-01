@@ -3,7 +3,7 @@ import {
   DataLibrary,
   GroupedDataItems,
   FilesOrCohort,
-  Datalist,
+  DataListUpdate,
 } from '../types';
 import { flattenDataList } from '../utils';
 import { CachedAPIService } from './dataLibraryCachedAPI';
@@ -21,8 +21,6 @@ const useDataLibrary = (
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<StorageError | null>(null);
   const [lists, setLists] = useState<DataLibrary>({});
-
-  console.log('useDataLibrary', lists);
 
   // Ref to track if initial load has happened
   const initialLoadRef = useRef(false);
@@ -125,7 +123,7 @@ const useDataLibrary = (
   );
 
   const updateListInDataLibrary = useCallback(
-    async (payload: Datalist) => {
+    async (payload: DataListUpdate) => {
       const flattend = flattenDataList(payload);
 
       setIsLoading(true);

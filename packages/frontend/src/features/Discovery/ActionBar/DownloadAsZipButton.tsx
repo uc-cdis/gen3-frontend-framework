@@ -12,7 +12,7 @@ const DownloadAsZipButton = ({
     <DataLibraryActionButton
       label="Download Zip"
       icon={<DownloadIcon />}
-      toolTip="Download Zip"
+      tooltip="Download Zip"
       onClick={() => {
         console.log('Download Zip');
       }}

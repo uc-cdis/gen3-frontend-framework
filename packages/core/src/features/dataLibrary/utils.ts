@@ -8,6 +8,7 @@ import {
   DatalistAsItems,
   // DataListEntry,
   DataSetMembers,
+  GroupedDataItems,
   isCohortItem,
   isFileItem,
 } from './types';
@@ -119,7 +120,7 @@ export const getTimestamp = () => {
   return new Date(Date.now()).toLocaleString();
 };
 
-export const flattenDataList = (dataList: Datalist) => {
+export const flattenDataList = (dataList: GroupedDataItems) => {
   // convert datalist into user-data-library for for updating.
 
   const items = Object.entries(dataList.items).reduce(

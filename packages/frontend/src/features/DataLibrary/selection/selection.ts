@@ -63,7 +63,7 @@ export const getDatasetMembers = (
   if (isCohortItem(dataSetOrCohort)) {
     return { [dataSetOrCohort.id]: true };
   }
-  return Object.entries(dataSetOrCohort.items).reduce(
+  return Object.entries(dataSetOrCohort.members).reduce(
     (acc: SelectedMembers, [key, item]) => {
       if (isFileItem(item)) acc[key] = true;
       return acc;

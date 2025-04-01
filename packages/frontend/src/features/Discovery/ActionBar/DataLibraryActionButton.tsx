@@ -7,7 +7,7 @@ export interface ExportActionButtonProps {
   label?: string;
   icon?: ReactNode;
   disabled?: boolean;
-  toolTip?: string;
+  tooltip?: string;
   active?: boolean;
   showIcon?: boolean;
   loginRequired?: boolean;
@@ -23,7 +23,7 @@ const DataLibraryActionButton = forwardRef<
       label = undefined,
       icon = undefined,
       disabled = false,
-      toolTip = undefined,
+      tooltip = undefined,
       onClick = () => null,
       active = false,
       showIcon = true,
@@ -42,7 +42,7 @@ const DataLibraryActionButton = forwardRef<
     );
 
     return (
-      <Tooltip disabled={!toolTip} label={toolTip}>
+      <Tooltip disabled={!tooltip} label={tooltip}>
         <Button
           ref={ref}
           onClick={onClick}
