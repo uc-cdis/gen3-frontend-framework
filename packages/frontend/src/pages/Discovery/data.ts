@@ -9,9 +9,10 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
   try {
-    const discoveryConfig: DiscoveryProps = await ContentSource.get(
-      `config/${GEN3_COMMONS_NAME}/discovery.json`,
-    );
+    const discoveryConfig: DiscoveryProps =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/discovery.json`,
+      );
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

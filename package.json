@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.76",
+  "version": "0.10.85",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -23,8 +23,9 @@
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
-    "dev": "lerna run dev",
-    "dev:watch": " lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME",
+    "dev": "NODE_OPTIONS='--max_old_space_size=4096' lerna run dev",
+    "dev:watch": "lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME --include-dependencies",
+    "dev:app": "lerna run dev --scope=@gen3/samplecommons",
     "start": "lerna run start",
     "storybook": "lerna run storybook --scope @gen3/storybook",
     "build:start": "npm run build && npm run start",
@@ -58,7 +59,7 @@
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
-    "@next/eslint-plugin-next": "^15.1.6",
+    "@next/eslint-plugin-next": "^15.2.4",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.0",
@@ -73,7 +74,7 @@
     "@typescript-eslint/parser": "^8.7.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.21.0",
-    "eslint-config-next": "^15.1.7",
+    "eslint-config-next": "^15.2.4",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -113,8 +114,11 @@
     }
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "^20.3.0",
-    "@nx/nx-linux-arm64-gnu": "^20.3.0",
-    "@nx/nx-linux-x64-gnu": "^20.3.0"
+      "@nx/nx-darwin-arm64": "^20.6.0",
+      "@nx/nx-linux-arm64-gnu": "^20.6.0",
+      "@nx/nx-linux-x64-gnu": "^20.6.0",
+      "@swc/nx-darwin-arm64" : "^1.11.10",
+      "@swc/nx-linux-arm64-gnu" : "^1.11.10",
+      "@swc/core-linux-x64-gnu" : "^1.11.10"
   }
 }

@@ -32,7 +32,6 @@ export const createMantineTheme = (
       ]: [])),
     ),
     primaryColor: 'primary',
-    primaryShade: { light: 4, dark: 7 },
     breakpoints: {
       xs: '31.25em',
       sm: '50em',
@@ -49,8 +48,8 @@ export const createMantineTheme = (
         },
       }),
       Pagination: Pagination.extend({
-        defaultProps: { //Add 508 localization to Pagination
-          getControlProps: (control) => {
+        defaultProps: { 
+          getControlProps: (control) => {//Add 508 localization to Pagination, not needed if using react table 
             if (control === 'first') {
               return { "aria-label": "First" };
             }

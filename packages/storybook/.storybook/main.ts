@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
 const nextJsPresetPath = require.resolve('@storybook/nextjs');
@@ -34,7 +35,7 @@ const config: StorybookConfig = {
       nextConfigPath: path.resolve(__dirname, '../next.config.js'),
     },
   },
-  staticDirs: ['../public'],
+  staticDirs: ['../../sampleCommons/public'],
   webpackFinal: async (config) => {
     const imageRule = config.module?.rules?.find((rule) => {
       const test = (rule as { test: RegExp }).test;
@@ -52,6 +53,17 @@ const config: StorybookConfig = {
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    config.plugins.push(
+      new webpack.DefinePlugin(
+        Object.keys(process.env)
+          .filter((key) => key.startsWith('NEXT_PUBLIC_'))
+          .reduce(
+            (state, nextKey) => ({ ...state, [nextKey]: process.env[nextKey] }),
+            {},
+          ),
+      ),
+    );
 
     return config;
   },
