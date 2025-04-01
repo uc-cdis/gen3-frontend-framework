@@ -1,16 +1,26 @@
-import { Card, Grid, Group,  Stack, Text, Switch } from '@mantine/core';
+import React from 'react';
+import { Card, Grid, Group, Stack, Text, Switch } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { User } from '../../types';
-import { EmailInput, IsAdminInput, NameInput, NewUserFormValues, UserId } from '../Inputs';
+import {
+  EmailInput,
+  IsAdminInput,
+  NameInput,
+  NewUserFormValues,
+  UserId,
+} from '../Inputs';
 
 interface UserDetailsProps {
   user: User;
 }
 
 const UserDetails = ({ user }: UserDetailsProps) => {
-
   const form = useForm<NewUserFormValues>({
-    initialValues: { userId: user.id, name: user.tags?.name ?? '', email: user.tags?.email ?? ''},
+    initialValues: {
+      userId: user.id,
+      name: user.tags?.name ?? '',
+      email: user.tags?.email ?? '',
+    },
   });
 
   return (

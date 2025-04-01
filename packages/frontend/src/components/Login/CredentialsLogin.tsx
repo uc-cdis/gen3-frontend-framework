@@ -13,60 +13,77 @@ import { MdClose as CloseIcon } from 'react-icons/md';
 import { SessionContext } from '../../lib/session/session';
 import { useRouter } from 'next/router';
 
+const CREDENTIALS_LOGIN_ERROR = 'Credentials Login Error';
+const FORMAT_ERROR = 'Format Error';
+const INVALID_JSON_MESSAGE = 'JSON is not valid';
+
 interface CredentialsLoginProps {
   handleLogin: () => void;
 }
 
+/**
+ * Reads the content of a given file and executes a callback with the file's text content.
+ *
+ * @param {File} file - The file to be read.
+ * @param {function(string): void} callback - A callback function that is invoked with the file content as a string.
+ */
+const readFileContent = (file: File, callback: (content: string) => void) => {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    if (event.target?.result) callback(event.target.result as string);
+  };
+  reader.readAsText(file);
+};
+
 const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
   const sessionContext = useContext(SessionContext);
   const [credentials, setCredentials] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [isCredentialsPending, setIsCredentialsPending] = useState(false);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { basePath } = useRouter();
 
   useEffect(() => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) setCredentials(event.target.result as string);
-      };
-      reader.readAsText(file);
+    if (selectedFile) {
+      readFileContent(selectedFile, setCredentials);
     }
-  }, [file]);
+  }, [selectedFile]);
 
   const handleCredentialsLogin = useCallback(
     async (credentials: string) => {
-      setIsCredentialsPending(true);
+      setIsLoading(true);
       const updateSession = sessionContext?.updateSession ?? (() => null);
+      const loginEndpoint = basePath
+        ? `/${basePath}/api/auth/credentialsLogin`
+        : '/api/auth/credentialsLogin';
       try {
-        //     setIsCredentialsPending(true);
-        const json = await JSON.parse(credentials);
-
-        await fetch(
-          basePath
-            ? `/${basePath}/api/auth/credentialsLogin`
-            : '/api/auth/credentialsLogin',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(json),
-          },
-        );
-        updateSession();
-        handleLogin();
-      } catch (e) {
-        notifications.show({
-          title: 'Format Error',
-          message: 'JSON is not valid',
+        const parsedCredentials = JSON.parse(credentials);
+        const response = await fetch(loginEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsedCredentials),
         });
+
+        if (!response.ok) {
+          notifications.show({
+            title: CREDENTIALS_LOGIN_ERROR,
+            message: response.statusText,
+          });
+        } else {
+          updateSession();
+          handleLogin();
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          notifications.show({
+            title: FORMAT_ERROR,
+            message: INVALID_JSON_MESSAGE,
+          });
+        }
       } finally {
-        setIsCredentialsPending(false); // Set loading to false once fetch is done (success or fail)
+        setIsLoading(false);
       }
     },
-    [handleLogin, sessionContext?.updateSession],
+    [handleLogin, sessionContext?.updateSession, basePath],
   );
 
   return (
@@ -85,36 +102,28 @@ const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
       <Group>
         <Textarea
           value={credentials ?? ''}
-          onChange={(event) => {
-            setCredentials(event.target.value);
-          }}
-          classNames={{
-            input: 'focus:border-2 focus:border-primary text-sm',
-          }}
+          onChange={(e) => setCredentials(e.target.value)}
+          classNames={{ input: 'focus:border-2 focus:border-primary text-sm' }}
           size="sm"
           rightSection={
             credentials &&
-            credentials?.length > 0 && (
+            credentials.length > 0 && (
               <CloseIcon
-                onClick={() => {
-                  setCredentials('');
-                }}
+                onClick={() => setCredentials('')}
                 className="cursor-pointer"
                 data-testid="search-input-clear-search"
               />
             )
           }
-        ></Textarea>
-        <FileButton onChange={setFile} accept="application/json">
-          {(props) => <Button {...props}>...</Button>}
+        />
+        <FileButton onChange={setSelectedFile} accept="application/json">
+          {(props) => <Button {...props}>Upload File</Button>}
         </FileButton>
         <Button
           color="primary.5"
-          loading={isCredentialsPending}
-          onClick={async () => {
-            await handleCredentialsLogin(credentials ?? '');
-          }}
-          disabled={credentials === null || credentials === ''}
+          loading={isLoading}
+          onClick={() => handleCredentialsLogin(credentials ?? '')}
+          disabled={!credentials}
         >
           Authorize
         </Button>

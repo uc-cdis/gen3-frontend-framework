@@ -25,7 +25,7 @@ const ReactECharts = ({
   useDeepCompareEffect(() => {
     // Initialize chart
     let chart: ECharts | undefined;
-    if (chartRef.current !== null) {
+    if (chartRoot === undefined && chartRef.current !== null) {
       chart = init(chartRef.current, theme);
     }
     setChartRoot(chart);
@@ -49,7 +49,9 @@ const ReactECharts = ({
   }, [loading]);
 
   useDeepCompareEffect(() => {
-    chartRoot?.resize();
+    if (chartRoot && rect.height && rect.width) {
+      chartRoot.resize();
+    }
   }, [rect]);
 
   return (

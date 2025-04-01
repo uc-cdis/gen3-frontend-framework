@@ -1,5 +1,5 @@
+import React, { useMemo } from 'react';
 import { useGetExternalLoginsQuery, type ExternalProvider } from '@gen3/core';
-import { useMemo } from 'react';
 
 import ExternalProviderCard from './ExternalProviderCard';
 import { LoadingOverlay } from '@mantine/core';

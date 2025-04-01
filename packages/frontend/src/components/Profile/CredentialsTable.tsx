@@ -56,7 +56,7 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) =>
+        accessorFn: (apiKey: APIKeyStatus) => // pragma: allowlist secret
           unixTimeToString(
             // pragma: allowlist-secret
             apiKey.expiration,

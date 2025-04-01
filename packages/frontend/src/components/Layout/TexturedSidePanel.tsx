@@ -1,9 +1,9 @@
+import React from 'react';
 
 interface TexturedSidePanelProps {
   readonly url?: string;
 }
 const TexturedSidePanel = ({ url }: TexturedSidePanelProps) => {
-
   return (
     <div
       aria-label={'background image'}

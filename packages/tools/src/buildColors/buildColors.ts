@@ -2,7 +2,6 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
-import { getThemeColor } from '@mantine/core';
 
 const utility = {
   link: '#155276',
@@ -32,7 +31,7 @@ const utilityContrast = {
 
 const main = () => {
   const {
-    values: { themeFile, out },
+    values: { themeFile, out, colorShift, colorSaturation },
   } = parseArgs({
     options: {
       themeFile: {
@@ -70,12 +69,10 @@ const main = () => {
       },
       table: {
         type: 'string',
-        short: 'b',
         default: '#858585',
       },
       navigation: {
         type: 'string',
-        short: 'b',
         default: '#eaeaea',
       },
       out: {
@@ -83,8 +80,19 @@ const main = () => {
         short: 'o',
         default: '../',
       },
+      colorShift: {
+        type: 'string',
+        default: '90',
+      },
+      colorSaturation: {
+        type: 'string',
+        default: '20',
+      },
     },
   });
+
+  const shift = Number(colorShift);
+  const saturation = Number(colorSaturation);
 
   if (!themeFile) {
     console.log("No theme file found. Please provide a theme file with '-t'.");
@@ -97,15 +105,43 @@ const main = () => {
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
-  const primaryPallet = create10ColorPallet(themeColors.primary);
-  const secondaryPallet = create10ColorPallet(themeColors.secondary);
-  const accentPallet = create10ColorPallet(themeColors.accent);
-  const accentPalletWarm = create10ColorPallet(themeColors.accentWarm);
-  const accentPalletCool = create10ColorPallet(themeColors.accentCool);
-  const basePallet = create10ColorPallet(themeColors.base);
-  const chartPallet = create10ColorPallet(themeColors.chart);
-  const tablePallet = create10ColorPallet(themeColors?.table ?? '#ffffff');
-
+  const primaryPallet = create10ColorPallet(
+    themeColors.primary,
+    shift,
+    saturation,
+  );
+  const secondaryPallet = create10ColorPallet(
+    themeColors.secondary,
+    shift,
+    saturation,
+  );
+  const accentPallet = create10ColorPallet(
+    themeColors.accent,
+    shift,
+    saturation,
+  );
+  const accentPalletWarm = create10ColorPallet(
+    themeColors.accentWarm,
+    shift,
+    saturation,
+  );
+  const accentPalletCool = create10ColorPallet(
+    themeColors.accentCool,
+    shift,
+    saturation,
+  );
+  const basePallet = create10ColorPallet(themeColors.base, shift, saturation);
+  const chartPallet = create10ColorPallet(themeColors.chart, shift, saturation);
+  const tablePallet = create10ColorPallet(
+    themeColors?.table ?? '#ffffff',
+    shift,
+    saturation,
+  );
+  const navigationPallet = create10ColorPallet(
+    themeColors?.navigation ?? '#ffffff',
+    shift,
+    saturation,
+  );
   const theme = {
     primary: primaryPallet,
     'primary-contrast': create10ColorAccessibleContrast(primaryPallet),
@@ -125,6 +161,8 @@ const main = () => {
     'chart-contrast': create10ColorAccessibleContrast(chartPallet),
     table: tablePallet,
     'table-contrast': create10ColorAccessibleContrast(tablePallet),
+    navigation: navigationPallet,
+    'navigation-contrast': create10ColorAccessibleContrast(navigationPallet),
   };
 
   writeFileSync(

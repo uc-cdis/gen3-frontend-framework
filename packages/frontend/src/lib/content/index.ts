@@ -2,13 +2,32 @@ import { FilesystemContent } from './filesystem';
 import { ContentDatabase } from './ContentDatabase';
 import { GEN3_FRONTEND_CONFIGURATION_ROOT } from './constants';
 
-const ContentRoot = GEN3_FRONTEND_CONFIGURATION_ROOT;
+export class ContentSource {
+  private static instance: ContentSource | null = null;
+  private contentDatabase: ContentDatabase;
 
-const setup = () => {
-  const config = { store: new FilesystemContent({ rootPath: ContentRoot }) };
-  return new ContentDatabase(config);
-};
+  private constructor() {
+    const config = {
+      store: new FilesystemContent({
+        rootPath: GEN3_FRONTEND_CONFIGURATION_ROOT,
+      }),
+    };
+    this.contentDatabase = new ContentDatabase(config);
+  }
 
-const ContentSource = setup();
+  public static getInstance(): ContentSource {
+    if (!ContentSource.instance) {
+      ContentSource.instance = new ContentSource();
+    }
+    return ContentSource.instance;
+  }
 
-export default ContentSource;
+  // Add methods to access the ContentDatabase functionality
+  // For example:
+  public getContentDatabase(): ContentDatabase {
+    return this.contentDatabase;
+  }
+}
+
+// Export a singleton instance
+export default ContentSource.getInstance();

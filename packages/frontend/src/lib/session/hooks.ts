@@ -4,8 +4,9 @@ import useSWR from 'swr';
 import { AuthTokenData } from './types';
 import type { IncomingMessage } from 'http';
 import { getCookie } from 'cookies-next';
-import { decodeJwt } from 'jose';
+import { decodeJwt, importSPKI, jwtVerify } from 'jose';
 import { isExpired, JWTPayloadAndUser } from '../../api/auth/sessionToken';
+import { fetchJWTKey } from '../../api/auth/';
 import { type LoginStatus, type JWTSessionStatus } from '@gen3/core';
 
 const fetcher = (url: string) =>
@@ -21,30 +22,65 @@ export const useAuthSession = (): AuthTokenData => {
     : sessionToken;
 };
 
+interface AuthSessionResponse {
+  status: 'expired' | 'issued' | 'invalid' | 'not present';
+  issued?: number;
+  expires?: number;
+  user?: string;
+}
+
 /**
- * For server side rendering only
- * @param ctx
+ * Asynchronously retrieves and validates an authentication session based on the provided request.
+ *
+ * This function extracts an access token from the request's cookies and validates it using a public key
+ * retrieved from a JWKS source. If the token is valid, decodes it to extract user and session information.
+ * If the token is missing, invalid, expired, or if an error occurs during validation, it returns a status
+ * indicating the token is not present or invalid.
+ *
+ * @param {IncomingMessage} req - The incoming HTTP request object containing cookies.
+ * @returns {Promise<AuthSessionResponse>} A promise resolving to an authentication session response containing:
+ * - `issued`: The timestamp when the token was issued.
+ * - `expires`: The timestamp when the token expires.
+ * - `user`: The user information extracted from the token's context.
+ * - `status`: The status of the token, which can be 'issued', 'expired', or 'invalid'.
  */
-export const getAuthSession = async (req: IncomingMessage) => {
+export const getAuthSession = async (
+  req: IncomingMessage,
+): Promise<AuthSessionResponse> => {
   const access_token = getCookie('access_token', { req });
 
   if (access_token && typeof access_token === 'string') {
-    // TODO get secret and verify JWT
-    const decodedAccessToken = (await decodeJwt(
-      access_token,
-    )) as unknown as JWTPayloadAndUser;
-    return {
-      issued: decodedAccessToken.iat,
-      expires: decodedAccessToken.exp,
-      user: decodedAccessToken.context.user,
-      status: decodedAccessToken.exp
-        ? isExpired(decodedAccessToken.exp)
-          ? 'expired'
-          : 'issued'
-        : 'invalid',
-    };
-  }
+    if (access_token) {
+      try {
+        const jwtKey = await fetchJWTKey();
+        if (!jwtKey) {
+          return {
+            status: 'not present',
+          };
+        }
+        // validate the token
+        const publicKey = await importSPKI(jwtKey, 'RS256');
+        await jwtVerify(access_token, publicKey);
+        const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
 
+        return {
+          issued: decodedAccessToken.iat,
+          expires: decodedAccessToken.exp,
+          user: decodedAccessToken.context.user,
+          status: decodedAccessToken.exp
+            ? isExpired(decodedAccessToken.exp)
+              ? 'expired'
+              : 'issued'
+            : 'invalid',
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_error: unknown) {
+        return {
+          status: 'not present',
+        };
+      }
+    }
+  }
   return {
     status: 'not present',
   };

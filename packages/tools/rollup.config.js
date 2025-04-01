@@ -97,4 +97,25 @@ export default [
     ],
     plugins: [peerDepsExternal(), swc()],
   },
+  {
+    input: './src/getSharedFilters/index.ts',
+    output: [
+      {
+        file: 'dist/getSharedFilters.esm.js',
+        format: 'esm',
+        name: 'getSharedFilters',
+      },
+    ],
+    external: [
+      'https',
+      'http',
+      'fs',
+      'node:util',
+      'fetch-retry',
+      'node-fetch',
+      '@gen3/core',
+      'url',
+    ],
+    plugins: [peerDepsExternal(), swc()],
+  },
 ];

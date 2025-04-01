@@ -6,11 +6,7 @@ import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
-
-interface StatusWithCSRFTokenResponse {
-  csrf: string;
-  message?: string;
-}
+import { GEN3_API } from '../../constants';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -55,7 +51,7 @@ export const userAuthApi = createApi({
   },
   endpoints: (builder) => ({
     fetchUserDetails: builder.query<UserAuthResponse, void>({
-      query: () => ({ endpoint: '/user/user' }),
+      query: () => ({ endpoint: '/user' }),
       transformResponse(response: Gen3FenceResponse<Gen3User>) {
         return {
           data: response.data,
@@ -69,11 +65,33 @@ export const userAuthApi = createApi({
       },
     }),
     getCSRF: builder.query<CSRFToken, void>({
-      query: () => ({ endpoint: '/_status' }),
-      transformResponse: (
-        response: Gen3FenceResponse<StatusWithCSRFTokenResponse>,
-      ): CSRFToken => {
-        return { csrfToken: response?.data?.csrf ?? '' };
+      queryFn: async () => {
+        const headers: Record<string, string> = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        };
+        try {
+          const res = await fetch(`${GEN3_API}/_status`, {
+            headers: headers,
+          });
+
+          if (res.ok) {
+            const jsonData = await res.json();
+            const token = jsonData?.data?.csrf ?? '';
+            return {
+              data: { csrfToken: token },
+            };
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            return {
+              error: error,
+            };
+          }
+        }
+        return {
+          error: 'Unknown Error',
+        };
       },
     }),
   }),

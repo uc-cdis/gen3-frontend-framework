@@ -42,36 +42,28 @@
     "items": [
       {
         "link": "https://uc-cdis.github.io/BRH-documentation/",
-        "name": "Documentation",
-        "classNames": {
-          "root": "border-base-light",
-          "label": "text-white",
-          "button": "hover:border-white"
-        }
+        "name": "Documentation"
       },
       {
         "link": "brhsupport@datacommons.io",
-        "name": "Email Support",
-        "classNames": {
-          "root": "border-base-light",
-          "label": "text-white",
-          "button": "hover:border-white"
-        }
+        "name": "Email Support"
       },
       {
         "link": "https://uc-cdis.github.io/platform-citation/brh-cite/",
-        "name": "Cite BRH",
-        "classNames": {
-          "root": "border-base-light",
-          "label": "text-white",
-          "button": "hover:border-white"
-        }
+        "name": "Cite BRH"
       }
     ],
     "loginButtonVisibility": "visible",
     "classNames": {
       "root": "border-base-light text-primary-contrast-dark",
       "label": "text-primary-contrast",
+      "button": "hover:border-white",
+      "divider": "accent-dark",
+      "login" : "text-white hover:border-white"
+    },
+    "itemClassnames": {
+      "root": "border-base-light",
+      "label": "text-white",
       "button": "hover:border-white"
     }
   }

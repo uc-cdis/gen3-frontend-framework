@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
-import { MdClose as CloseIcon } from 'react-icons/md';
 import { FacetCommonHooks, FromToRangeValues } from './types';
-import { FaUndo as UndoIcon } from 'react-icons/fa';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
 import {
@@ -26,6 +24,7 @@ import {
 } from './types';
 
 import { fieldNameToTitle, Intersection } from '@gen3/core';
+import FacetControlsHeader from './FacetControlsHeader';
 
 const createBucket = (
   field: string,
@@ -65,11 +64,9 @@ const RangeFacet = ({
   facetName,
   minimum = DEFAULT_MINIMUM,
   maximum = DEFAULT_MAXIMUM,
-  showPercent = true,
-  hideIfEmpty = true,
-  showSearch = true,
-  showFlip = true,
-  startShowingData = true,
+  showSearch = false,
+  showFlip = false,
+  showSettings = false,
   dismissCallback = undefined,
   width = undefined,
   header = {
@@ -107,52 +104,34 @@ const RangeFacet = ({
     [field, updateRangeFilter],
   );
 
+  const isFilterExpanded =
+    hooks.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+
   return (
     <div
       className={`flex flex-col ${
         width ? width : 'mx-1'
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
-      <div>
-        <header.Panel>
-          <Tooltip
-            label={description}
-            position="bottom-start"
-            multiline
-            w={220}
-            withArrow
-            disabled={!description}
-          >
-            <header.Label>
-              {facetName ? facetName : fieldNameToTitle(field)}
-            </header.Label>
-          </Tooltip>
-          <div className="flex flex-row">
-            <FacetIconButton
-              onClick={() => clearFilters()}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.25em" className={header.iconStyle} />
-            </FacetIconButton>
-            {dismissCallback ? (
-              <FacetIconButton
-                onClick={() => {
-                  clearFilters();
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" className={header.iconStyle} />
-              </FacetIconButton>
-            ) : null}
-          </div>
-        </header.Panel>
-      </div>
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        showSearch={showSearch}
+        showSettings={showSettings}
+        showFlip={showFlip}
+        dismissCallback={dismissCallback}
+        header={header}
+      />
       <div className="card-face bg-base-max">
         <div className="overflow-hidden px-3.5 h-auto">
           <LoadingOverlay visible={!isSuccess} />
-          <div className="flex flex-col gap-y-2 pb-2">
+          <div
+            className={`flex flex-col gap-y-2 pb-2 ${showFilters ? 'h-full' : 'h-0 invisible'}`}
+          >
             <div className="flex gap-x-4 items-center">
               <NumberInput
                 label="Min"
@@ -192,10 +171,9 @@ const RangeFacet = ({
                */
               }
             </div>
-
             <RangeSlider
               mt="md"
-              color="accent.4"
+              color="accent.5"
               thumbSize={20}
               value={[minMaxValue.from ?? minimum, minMaxValue.to ?? maximum]}
               min={minimum}

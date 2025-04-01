@@ -42,12 +42,12 @@ export interface FooterLink extends FooterText {
   linkType?: 'gen3ff' | 'portal';
 }
 
-export interface FooterLogo extends FooterText {
+export interface FooterLogo {
   logo: string;
   description: string;
   width: number;
   height: number;
-  href: string;
+  className?: string;
 }
 
 export type FooterRow =

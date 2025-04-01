@@ -5,6 +5,8 @@ For example, "Cases", "Images", "Data Files".
 
 ## Configuration
 
+
+
 The configuration for the explorer is stored an array of objects. Each object in the array represents a tab in the explorer. The following is an example of a tab configuration:
 
 ```json
@@ -57,10 +59,77 @@ and
 https://localhost/Explorer/files
 ```
 
+### Shared Filters
+Explorer is configured to provide a horizontal tabs for
+each data index (each entry in the configuration array). Each tab represents
+a separate data index. Depending on the data schema. Depending on how
+the data is defined, some field entries are duplicated
+across on some or all of the other tabs. Typically, each filter set (the filter panels)
+is independent of the other tabs. Gen3.2 has support for **sharing** filters across the tabs.
+
+To enable this, add the following to the root of the config file:
+
+```json
+{
+"sharedFilters": {
+  "defined": {
+    "primary_site": [
+      { "index": "imaging_study", "field": "primary_site" },
+      { "index": "subject", "field": "primary_site" },
+      { "index": "imaging_series", "field": "primary_site" }
+   ],
+  "project_id": [
+    { "index": "imaging_study", "field": "project_id" },
+    { "index": "subject", "field": "project_id" },
+    { "index": "imaging_series", "field": "project_id" }
+    ]
+  }
+},
+"explorerConfig" : [
+   // rest of config file
+]
+}
+```
+or
+```json
+"sharedFilters": {
+   "autoCreate" :  true
+},
+```
+
+In the first config the shared filters are explicitly set. This allow to share filters on other tabs where the
+field names are not the same across the tabs/indexes.
+The second config will query the database API to build the sharing configuration automatically. This can be used when the
+filter names are identical.
+
+If sharing is enabled and there are shared filters, the filters panel will have a Shared Filters switch:
+
+![Shared filters mode switch](./images/Explorer/Explorer_shared_filters_switch.png)
+
+When Filter Sharing is enabled:
+* all currently selected filters will be added to their shared tabs.
+* all changes to a shared filter will also be updated on all shared tabs
+* Editing the query expression will change all shared filters
+
+When changing from shared to no-shared:
+* all shred filters remain
+* all changes to a filter on one tab will no longer changes shared filters on other tabs.
+
+
+When switching modes the following dialog will appear:
+
+![Shared filters mode chage dialog](./images/Explorer/Explorer_shared_filters_change_mode_dialog.png)
+
+
+To see the other tabs for a shared filters, hover over the share icon:
+
+![Shared filters tooltip](./images/Explorer/Explorer_shared_filters_tooltip.png)
+
+
 ### Charts
 The charts section configures data visualizations for the explorer page. Each chart is defined by its `chartType` and `title`.
 
-```json    
+```json
 "charts": {
       "race": {
         "chartType": "fullPie",
@@ -76,7 +145,7 @@ The charts section configures data visualizations for the explorer page. Each ch
       }
     }
 ```
-    
+
 The currently supported chart types are:
 * `bar`: a regular vertical bar chart.
 * `horizontalStacked`: horizontal stacked bar chart.
@@ -187,7 +256,7 @@ This is similar to the configuration for Gen3's data-portal except the `actionAr
 There is support for a details modal that appears when the table is clicked. The modal's content is rendered using the
 default or a registered ```DetailsPanel```.
 
-![Explorer Details Modal](./images/ExplorerTable_Details_Modal.png)
+![Explorer Details Modal](images/Explorer/ExplorerTable_Details_Modal.png)
 
 The basic configuration is:
 
@@ -257,4 +326,4 @@ add a ```fieldsConfig``` entry. The format is _field_ name then _type_. In the e
 switch to use ```multiselect```. Note that ```multiselect``` is the only type supported. The selection is a dropdown that
 is also searchable.
 
-![MultiSelectFacet](images/MultiSelectFacet.png)
+![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)

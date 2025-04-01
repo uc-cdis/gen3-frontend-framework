@@ -2,7 +2,7 @@ import React from 'react';
 import { CohortItem, isFilterSet } from '@gen3/core';
 import { Group, Text } from '@mantine/core';
 import { ErrorCard } from '../../components/MessageCards';
-import QueryExpressionSection from '../CohortBuilder/QueryExpressionSection';
+import QueryExpressionSection from '../CohortBuilder/QueryExpression/QueryExpressionSection';
 
 interface LabeledTextProps {
   label: string;
@@ -44,10 +44,7 @@ const QueryDetails: React.FC<CohortItem> = ({
       <div className="p-2 overflow-scroll w-full bg-base-lighter rounded-b-lg border-2 border-t-0 border-base-light">
         {isFilterSet(data) ? (
           <QueryExpressionSection
-            currentCohortId={id}
             index={index}
-            currentCohortName={name}
-            filters={data}
             displayOnly={true}
             showTitle={false}
           ></QueryExpressionSection>

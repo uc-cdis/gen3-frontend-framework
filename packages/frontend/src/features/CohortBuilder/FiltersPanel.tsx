@@ -15,11 +15,14 @@ export const FiltersPanel = ({
   valueLabel,
 }: FiltersPanelProps): JSX.Element => {
   return (
-    <div
-      data-testid="filters-facets"
-      className="flex flex-col gap-y-4 h-full overflow-y-scroll px-4 w-full"
-    >
+    <div data-testid="filters-facets" className="flex flex-col gap-y-4 w-full">
       {fields.map((facetDefinition) => {
+        if (facetDefinition?.type === undefined) {
+          console.warn('Facet definition missing type', facetDefinition);
+          return null;
+        }
+        if (!(facetDefinition.type in dataFunctions)) return null;
+
         return createFacetCard(
           facetDefinition,
           valueLabel,
@@ -28,7 +31,7 @@ export const FiltersPanel = ({
           undefined,
           false,
           facetDefinition.label,
-          'w-80',
+          undefined,
         );
       })}
     </div>
