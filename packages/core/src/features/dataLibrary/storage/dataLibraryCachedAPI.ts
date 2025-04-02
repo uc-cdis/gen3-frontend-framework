@@ -76,17 +76,15 @@ export class CachedAPIService implements StorageService {
       // get the remote list
       const apiResults = await this.apiDataLibrary.getLists();
 
-      console.log('api results', apiResults);
       if (apiResults.isError) {
         return {
           ...apiResults,
           lists: undefined,
         };
       }
-      const cacheResults = await this.localStorageDataLibrary.cacheLists({
+      await this.localStorageDataLibrary.cacheLists({
         lists: apiResults?.lists ?? {},
       });
-      console.log('cache results', cacheResults);
     }
     return await this.localStorageDataLibrary.getLists();
   }
@@ -149,7 +147,6 @@ export class CachedAPIService implements StorageService {
         lists: apiResults?.lists ?? {},
       });
     }
-    console.log('updating local list', list);
     return await this.localStorageDataLibrary.updateList(list);
   }
 

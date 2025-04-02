@@ -175,3 +175,9 @@ export const isDataLibraryAPIResponse = (
 export interface UpdateDataLibraryListParams extends DatalistAsItems {
   id: string;
 }
+
+export enum DataLibraryStoreMode {
+  ApiOnly = 'apiOnly',
+  ApiAndLocal = 'apiAndLocal',
+  LocalOnly = 'localOnly',
+}

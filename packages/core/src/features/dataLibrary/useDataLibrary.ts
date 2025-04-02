@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DataLibrary,
-  GroupedDataItems,
-  FilesOrCohort,
+  DataLibraryStoreMode,
   DataListUpdate,
+  FilesOrCohort,
+  GroupedDataItems,
 } from './types';
 import { flattenDataList } from './utils';
 import { CachedAPIService } from './storage/dataLibraryCachedAPI';
@@ -11,10 +12,14 @@ import { StorageError } from './storage/types';
 
 interface UseDataLibraryOptions {
   requiresAPI: boolean;
+  storageMode: DataLibraryStoreMode;
 }
 
 const useDataLibrary = (
-  options: UseDataLibraryOptions = { requiresAPI: false },
+  options: UseDataLibraryOptions = {
+    requiresAPI: false,
+    storageMode: DataLibraryStoreMode.ApiAndLocal,
+  },
 ) => {
   // Track login state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +31,7 @@ const useDataLibrary = (
   const initialLoadRef = useRef(false);
 
   // Create storage services (we'll need both for syncing)
+
   const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
 
   dataLibraryStoreAPI.setUseAPI(options.requiresAPI);
@@ -113,6 +119,8 @@ const useDataLibrary = (
         items: items,
         name: generateUniqueName(name ?? 'List'),
       };
+
+      console.log('addListToDataLibrary', namedItems);
 
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.addList(namedItems);
