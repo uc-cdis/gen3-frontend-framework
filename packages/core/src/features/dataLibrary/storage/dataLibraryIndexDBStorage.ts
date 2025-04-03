@@ -65,7 +65,6 @@ export class LocalStorageService implements StorageService {
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
     const lists = (await store.get(id)) as DatalistAPI;
-    console.log(lists);
     if (lists) {
       return {
         status: 'success',
@@ -199,7 +198,7 @@ export class LocalStorageService implements StorageService {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       tx.objectStore(STORE_NAME).clear();
       await tx.done;
-      return { status: 'list added' };
+      return { status: 'list cleared' };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
