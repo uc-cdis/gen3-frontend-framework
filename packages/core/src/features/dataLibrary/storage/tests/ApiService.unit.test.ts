@@ -18,24 +18,6 @@ jest.mock('@reduxjs/toolkit', () => {
   };
 });
 
-const mockSuccessResponse = {
-  lists: {
-    'list-id-1': {
-      id: 'list-id-1',
-      name: 'Test List 1',
-      items: {
-        'item-1': { id: 'item-1', name: 'Item 1' },
-      },
-    },
-    'list-id-2': {
-      id: 'list-id-2',
-      name: 'Test List 2',
-      items: {
-        'item-2': { id: 'item-2', name: 'Item 2' },
-      },
-    },
-  },
-};
 const csrfData = {
   message: 'Feelin good!', // User message
   csrf: '11ff0e613e5c782d5cf29c5b565be2258880.0002025-03-26T22:32:39+00:00', // CSRF token
