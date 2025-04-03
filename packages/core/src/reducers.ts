@@ -5,7 +5,10 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
-import { guppyApiReducer, guppyApiSliceReducerPath } from './features/guppy';
+import {
+  guppyApiReducer,
+  guppyApiSliceReducerPath,
+} from './features/guppy/guppyApi'; // Do not shorten
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,

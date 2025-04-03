@@ -70,7 +70,7 @@ const responseFromMutation = <T = DataLibrary>(
   };
 };
 
-export class ApiService implements StorageService<DataLibraryAPI> {
+export class APIStorageService implements StorageService<DataLibraryAPI> {
   private readonly apiBaseUrl: string;
 
   constructor(apiBaseUrl = `${GEN3_DATA_LIBRARY_API}`) {
@@ -78,9 +78,7 @@ export class ApiService implements StorageService<DataLibraryAPI> {
   }
 
   async getLists(): Promise<ReturnStatus<DataLibraryAPI>> {
-    const { data, error } = await fetchFromDataLibraryAPI(
-      `${this.apiBaseUrl}/lists`,
-    );
+    const { data, error } = await fetchFromDataLibraryAPI(`${this.apiBaseUrl}`);
     if (error) {
       return {
         isError: true,
@@ -103,7 +101,7 @@ export class ApiService implements StorageService<DataLibraryAPI> {
       id: nanoid(),
     };
     const response = await fetchFromDataLibraryAPI(
-      `${this.apiBaseUrl}/lists`,
+      `${this.apiBaseUrl}`,
       HttpMethod.PUT,
       JSON.stringify(listToAdd),
     );

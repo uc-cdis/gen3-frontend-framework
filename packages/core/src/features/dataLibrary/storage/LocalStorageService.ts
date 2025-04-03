@@ -210,9 +210,6 @@ export class LocalStorageService implements StorageService {
   }
 
   async cacheLists(data: { lists: DataLibraryAPI }): Promise<ReturnStatus> {
-    console.log(data);
-    console.log(data['lists']);
-
     if (!data.lists || typeof data.lists !== 'object') {
       return {
         isError: true,

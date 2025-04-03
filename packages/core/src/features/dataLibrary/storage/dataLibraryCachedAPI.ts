@@ -5,18 +5,18 @@ import {
   GroupedDataItems,
   UpdateDataLibraryListParams,
 } from '../types';
-import { LocalStorageService } from './dataLibraryIndexDBStorage';
-import { ApiService } from './dataLibraryAPIStorage';
+import { LocalStorageService } from './LocalStorageService';
+import { APIStorageService } from './APIStorageService';
 
 export class CachedAPIService implements StorageService {
   private useAPI: boolean;
   private localStorageDataLibrary: LocalStorageService;
-  private apiDataLibrary: ApiService;
+  private apiDataLibrary: APIStorageService;
 
   constructor() {
     this.useAPI = false;
     this.localStorageDataLibrary = new LocalStorageService(); // always update local storage
-    this.apiDataLibrary = new ApiService();
+    this.apiDataLibrary = new APIStorageService();
   }
 
   async setUseAPI(useAPI: boolean) {
