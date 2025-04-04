@@ -28,6 +28,7 @@ export const Default: Story = {
               'Explore the available projects and select those for further investigation and analysis.',
             icon: '/icons/apps/Projects.svg',
             href: '/',
+            btnText: 'Test Btn Text',
           },
           {
             title: 'Cohort Builder',

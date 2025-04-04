@@ -14,6 +14,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   hasDemo,
   loginRequired,
   href,
+  btnText,
 }) => {
   return (
     <Stack key={title}>
@@ -62,7 +63,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
                   root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
                   label: 'text-sm font-semibold',
                 }}
-                label={`Run ${type === 'application' ? 'App' : 'Notebook'}`}
+                label={btnText ? btnText : `Run ${type === 'application' ? 'App' : 'Notebook'}`}
               />
               {hasDemo && (
                 <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">

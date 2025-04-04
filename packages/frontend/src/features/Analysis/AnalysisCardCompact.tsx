@@ -25,6 +25,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
   href,
   count,
   countUnits,
+  btnText,
 }) => {
   return (
     <Stack
@@ -68,7 +69,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
         </div>
         <Group className="mb-6">
           <Button color="primary.4">
-            Run {type === 'application' ? 'App' : 'Notebook'}
+            {btnText ? btnText : `Run ${type === 'application' ? 'App' : 'Notebook'}`}
           </Button>
           {hasDemo && (
             <Button variant="outline" color="primary.4">
