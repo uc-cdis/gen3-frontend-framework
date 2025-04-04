@@ -144,7 +144,7 @@ export const flattenDataList = (dataList: GroupedDataItems) => {
       if (isCohortItem(value)) {
         acc[id] = value;
       } else {
-        return { ...acc, ...value.members };
+        return { ...acc, ...value.members }; // TODO: might need to convert this to the API version
       }
       return acc;
     },
@@ -179,17 +179,17 @@ export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
 
 /**
  *  Takes a list of file items from anb array of manifest entries
- *  and creates a Object of Files grouped by their dataset guid, which is
+ *  and creates an Object of Files grouped by their dataset guid, which is
  *  used to add these to a Data Library List
  * @param data
  * @param dataFieldMapping
  * @constructor
  */
-export const groupDatasetsInRecords = (
+export const extractFileDatasetsInRecords = (
   data: Array<Record<string, any>>,
   dataFieldMapping: ExportDatasetFields,
 ) => {
-  const items = data.reduce(
+  const items: DataSetMembers = data.reduce(
     (acc: DatasetOrCohort, resource: Record<string, any>) => {
       const dataObjects = resource[dataFieldMapping.dataObjectField];
 
@@ -199,30 +199,25 @@ export const groupDatasetsInRecords = (
       }
 
       const datasetId = resource[dataFieldMapping.datasetIdField] as string; // Note: typo still preserved
-      const datasetName =
-        dataFieldMapping.datasetNameField &&
-        dataFieldMapping.datasetNameField in resource
-          ? resource[dataFieldMapping.datasetNameField]
-          : undefined;
       if (datasetId === undefined) {
         return acc; // Skip if dataset ID is missing
       }
 
       const datafiles = dataObjects.reduce(
         (dataAcc: DatasetOrCohort, dataObject: Record<string, unknown>) => {
-          const guid = dataObject[dataFieldMapping.dataObjectIdField];
+          const fileId = dataObject[dataFieldMapping.dataObjectIdField];
 
           // Skip items without a valid ID
-          if (typeof guid !== 'string' || !guid) {
+          if (typeof fileId !== 'string' || !fileId) {
             return dataAcc;
           }
 
           return {
             ...dataAcc,
-            [guid]: {
+            [fileId]: {
               dataset_guid: datasetId as string,
-              dataset_name: datasetName,
-              guid: guid,
+              id: fileId,
+              guid: fileId,
               itemType: 'Data',
               ...dataObject,
             } satisfies FileItem,
@@ -231,16 +226,12 @@ export const groupDatasetsInRecords = (
         {},
       );
 
-      if (Object.keys(datafiles).length > 0)
-        acc[datasetId] = {
-          id: datasetId,
-          members: datafiles,
-          itemType: 'Dataset',
-        } satisfies DataLibraryDataset;
-
-      return acc;
+      return {
+        ...acc,
+        ...datafiles,
+      };
     },
-    {} as DatasetOrCohort,
+    {} as DataSetMembers,
   );
 
   return items;

@@ -1,12 +1,11 @@
 import { ExportDatasetFields } from '../types';
-import { groupDatasetsInRecords } from '../utils';
+import { extractFileDatasetsInRecords } from '../utils';
 
 describe('groupDatasetItems', () => {
   const dataFieldMapping: ExportDatasetFields = {
     dataObjectField: 'dataFiles',
     datasetIdField: 'datasetId',
     dataObjectIdField: 'fileId',
-    datasetNameField: 'studyName',
   };
 
   it('should group data objects by their dataset ID', () => {
@@ -27,45 +26,33 @@ describe('groupDatasetItems', () => {
     ];
 
     const expectedResult = {
-      dataset1: {
-        id: 'dataset1',
-        itemType: 'Dataset',
-        members: {
-          file1: {
-            dataset_guid: 'dataset1',
-            dataset_name: 'study1',
-            fileId: 'file1',
-            guid: 'file1',
-            itemType: 'Data',
-            name: 'file1.txt',
-          },
-          file2: {
-            dataset_guid: 'dataset1',
-            dataset_name: 'study1',
-            fileId: 'file2',
-            guid: 'file2',
-            itemType: 'Data',
-            name: 'file2.txt',
-          },
-        },
+      file1: {
+        dataset_guid: 'dataset1',
+        fileId: 'file1',
+        guid: 'file1',
+        id: 'file1',
+        itemType: 'Data',
+        name: 'file1.txt',
       },
-      dataset2: {
-        id: 'dataset2',
-        itemType: 'Dataset',
-        members: {
-          file3: {
-            dataset_guid: 'dataset2',
-            dataset_name: 'study2',
-            fileId: 'file3',
-            guid: 'file3',
-            itemType: 'Data',
-            name: 'file3.txt',
-          },
-        },
+      file2: {
+        dataset_guid: 'dataset1',
+        fileId: 'file2',
+        guid: 'file2',
+        id: 'file2',
+        itemType: 'Data',
+        name: 'file2.txt',
+      },
+      file3: {
+        dataset_guid: 'dataset2',
+        fileId: 'file3',
+        guid: 'file3',
+        id: 'file3',
+        itemType: 'Data',
+        name: 'file3.txt',
       },
     };
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual(expectedResult);
   });
@@ -77,7 +64,7 @@ describe('groupDatasetItems', () => {
       },
     ];
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual({});
   });
@@ -89,7 +76,7 @@ describe('groupDatasetItems', () => {
       },
     ];
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual({});
   });
@@ -102,7 +89,7 @@ describe('groupDatasetItems', () => {
       },
     ];
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual({});
   });
@@ -110,7 +97,7 @@ describe('groupDatasetItems', () => {
   it('should handle empty input data', () => {
     const data: Array<Record<string, unknown>> = [];
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual({});
   });
@@ -121,7 +108,7 @@ describe('groupDatasetItems', () => {
       { datasetId: 'dataset2' },
     ];
 
-    const result = groupDatasetsInRecords(data, dataFieldMapping);
+    const result = extractFileDatasetsInRecords(data, dataFieldMapping);
 
     expect(result).toEqual({});
   });

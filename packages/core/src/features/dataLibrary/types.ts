@@ -25,7 +25,8 @@ export interface ListItem {
  */
 
 export interface FileItem extends ListItem {
-  guid: string;
+  id: string; // TODO: remove id or guid
+  guid?: string;
   name?: string;
   description?: string;
   type?: string;
@@ -185,6 +186,5 @@ export enum DataLibraryStoreMode {
 export interface ExportDatasetFields {
   dataObjectField: string; // member that stores the id of the object that stores the id.
   datasetIdField: string; // member that stores the id of the "dataset" will default to uid
-  datasetNameField: string; //  name of dateset
   dataObjectIdField: string; // field in data object
 }

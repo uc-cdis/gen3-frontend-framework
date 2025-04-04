@@ -58,7 +58,6 @@ const responseFromMutation = <T = DataLibrary>(
   responseReceived: FetchJSONResponse,
 ): ReturnStatus<T> => {
   if (responseReceived.error) {
-    console.error(`Error in getLists: ${responseReceived.error.message}`);
     return {
       isError: true,
       status: `DataLibraryAPI error: ${responseReceived.error.status} ${responseReceived.error.message}`,

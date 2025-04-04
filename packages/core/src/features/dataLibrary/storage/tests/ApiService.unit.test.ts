@@ -6,7 +6,7 @@ import {
 } from '../APIStorageService';
 import { GEN3_API, GEN3_DATA_LIBRARY_API } from '../../../../constants';
 import { APIListData, ListToAdd } from './data';
-import { GroupedDataItems } from '../../types';
+import { GroupedDataItems, UpdateDataLibraryListParams } from '../../types';
 
 jest.mock('@reduxjs/toolkit', () => {
   const actualToolkit = jest.requireActual('@reduxjs/toolkit');
@@ -24,7 +24,7 @@ const csrfData = {
 
 // Set up MSW server
 const server = setupServer(
-  // GET /lists endpoint
+  // mock the _status call for CSRF token
 
   http.get(`${GEN3_API}/_status`, () => {
     return HttpResponse.json(csrfData);
@@ -238,193 +238,235 @@ describe('ApiService', () => {
 
   describe('addList', () => {
     it('should add a list successfully', async () => {
-      const result = await apiService.addList(ListToAdd as unknown as GroupedDataItems);
+      server.use(
+        http.put(`${GEN3_DATA_LIBRARY_API}`, () => {
+          return HttpResponse.json({
+            lists: {
+              name: 'test-list',
+              items: ListToAdd.items,
+            },
+          });
+        }),
+      );
+
+      const result = await apiService.addList(
+        ListToAdd as unknown as GroupedDataItems,
+      );
 
       expect(result.status).toBe('success');
       expect(result.lists).toBeDefined();
-      // The generated ID will be random due to nanoid, so we can't check the exact value
-      const listsObject = result.lists as any;
-      expect(Object.values(listsObject).length).toBeGreaterThan(
-        Object.values(mockSuccessResponse.lists).length - 1,
-      );
     });
-  //
-  //   it('should handle API errors when adding a list', async () => {
-  //     server.use(
-  //      http.put(`${GEN3_DATA_LIBRARY_API}/lists`, () => {
-  //         return res(ctx.status(500), ctx.json({ message: 'Server error' }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.addList(ListToAdd);
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toContain('DataLibraryAPI error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // describe('updateList', () => {
-  //   it('should update a list successfully', async () => {
-  //     const updatedList = {
-  //       id: 'list-id-1',
-  //       name: 'Updated List Name',
-  //       items: mockSuccessResponse.lists['list-id-1'].items,
-  //     };
-  //
-  //     const result = await apiService.updateList(updatedList);
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //   });
-  //
-  //   it('should handle API errors when updating a list', async () => {
-  //     server.use(
-  //      http.put(`${GEN3_DATA_LIBRARY_API}/invalid-id`, () => {
-  //         return res(ctx.status(404), ctx.json({ message: 'List not found' }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.updateList({
-  //       id: 'invalid-id',
-  //       name: 'New Name',
-  //     });
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toContain('DataLibraryAPI error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // describe('deleteList', () => {
-  //   it('should delete a list successfully', async () => {
-  //     const result = await apiService.deleteList('list-id-1');
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //     const listsObject = result.lists as any;
-  //     expect(listsObject['list-id-1']).toBeUndefined();
-  //   });
-  //
-  //   it('should handle API errors when deleting a list', async () => {
-  //     server.use(
-  //      http.delete(`${GEN3_DATA_LIBRARY_API}/nonexistent`, () => {
-  //         return res(ctx.status(404), ctx.json({ message: 'List not found' }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.deleteList('nonexistent');
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toContain('DataLibraryAPI error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // describe('clearLists', () => {
-  //   it('should clear all lists successfully', async () => {
-  //     const result = await apiService.clearLists();
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toEqual({});
-  //   });
-  //
-  //   it('should handle API errors when clearing lists', async () => {
-  //     server.use(
-  //      http.delete(`${GEN3_DATA_LIBRARY_API}`, () => {
-  //         return res(ctx.status(500), ctx.json({ message: 'Server error' }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.clearLists();
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toContain('DataLibraryAPI error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // describe('setAllLists', () => {
-  //   it('should set all lists successfully', async () => {
-  //     const listsToSet = [ListToAdd, SecondList];
-  //
-  //     const result = await apiService.setAllLists(listsToSet);
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //   });
-  //
-  //   it('should handle API errors when setting all lists', async () => {
-  //     server.use(
-  //      http.post(`${GEN3_DATA_LIBRARY_API}`, () => {
-  //         return res(ctx.status(500), ctx.json({ message: 'Server error' }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.setAllLists([ListToAdd]);
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toContain('DataLibraryAPI error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // describe('getList', () => {
-  //   it('should get a specific list successfully', async () => {
-  //     const result = await apiService.getList('list-id-1');
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //     const listsObject = result.lists as any;
-  //     expect(listsObject['list-id-1']).toEqual(
-  //       mockSuccessResponse.lists['list-id-1'],
-  //     );
-  //   });
-  //
-  //   it('should handle API errors when getting a specific list', async () => {
-  //     const result = await apiService.getList('nonexistent');
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toBe('Not Found');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  //
-  //   it('should handle invalid response data', async () => {
-  //     server.use(
-  //      http.get(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
-  //         return res(ctx.status(200), ctx.json({ invalidData: true }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.getList('list-id-1');
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toBe('Unknown error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  // });
-  //
-  // // Custom implementation tests
-  // describe('with custom base URL', () => {
-  //   const customBaseUrl = 'https://custom-api.example.com';
-  //   let customApiService: APIStorageService;
-  //
-  //   beforeEach(() => {
-  //     customApiService = new APIStorageService(customBaseUrl);
-  //
-  //     // Update handlers for custom base URL
-  //     server.use(
-  //      http.get(`${customBaseUrl}/lists`, () => {
-  //         return res(ctx.status(200), ctx.json(mockSuccessResponse));
-  //       }),
-  //     );
-  //   });
-  //
-  //   it('should use custom base URL when fetching lists', async () => {
-  //     const result = await customApiService.getLists();
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toEqual(mockSuccessResponse.lists);
-  //   });
-  // });
+
+    it('should handle API errors when adding a list', async () => {
+      server.use(
+        http.put(`${GEN3_DATA_LIBRARY_API}`, () => {
+          return HttpResponse.json(
+            { message: 'Server error' },
+            {
+              status: 500,
+            },
+          );
+        }),
+      );
+
+      const result = await apiService.addList(
+        ListToAdd as unknown as GroupedDataItems,
+      );
+
+      expect(result.isError).toBe(true);
+      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.lists).toBeUndefined();
+    });
+  });
+
+  describe('updateList', () => {
+    it('should update a list successfully', async () => {
+      const updatedList: UpdateDataLibraryListParams = {
+        id: 'list-id-1',
+        name: 'Updated List Name',
+        items: ListToAdd.items,
+      };
+
+      server.use(
+        http.put(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
+          return HttpResponse.json({
+            lists: {
+              'list-id-1': {
+                updated_time: '2025-04-04T19:35:52.557718+00:00',
+                authz: {
+                  authz: [
+                    '/users/2192/user-data-library/lists/4d5c53d1-1318-4320-bff6-7faf5af1710e',
+                  ],
+                  version: 0,
+                },
+                id: 'list-id-1',
+                version: 0,
+                created_time: '2025-04-04T18:55:21.195457+00:00',
+                items: ListToAdd.items,
+              },
+            },
+          });
+        }),
+      );
+
+      const result = await apiService.updateList(updatedList);
+
+      expect(result.status).toBe('success');
+      expect(result.lists).toBeDefined();
+    });
+
+    it('should handle API errors when updating a list', async () => {
+      server.use(
+        http.put(`${GEN3_DATA_LIBRARY_API}/invalid-id`, () => {
+          new HttpResponse('Not found', {
+            status: 404,
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+          });
+        }),
+      );
+
+      const result = await apiService.updateList({
+        id: 'invalid-id',
+        name: 'New Name',
+        items: ListToAdd.items,
+      });
+
+      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.lists).toBeUndefined();
+    });
+  });
 });
+// describe('deleteList', () => {
+//   it('should delete a list successfully', async () => {
+//     const result = await apiService.deleteList('list-id-1');
+//
+//     expect(result.status).toBe('success');
+//     expect(result.lists).toBeDefined();
+//     const listsObject = result.lists as any;
+//     expect(listsObject['list-id-1']).toBeUndefined();
+//   });
+//
+//   it('should handle API errors when deleting a list', async () => {
+//     server.use(
+//      http.delete(`${GEN3_DATA_LIBRARY_API}/nonexistent`, () => {
+//         return res(ctx.status(404), ctx.json({ message: 'List not found' }));
+//       }),
+//     );
+//
+//     const result = await apiService.deleteList('nonexistent');
+//
+//     expect(result.isError).toBe(true);
+//     expect(result.status).toContain('DataLibraryAPI error');
+//     expect(result.lists).toBeUndefined();
+//   });
+// });
+//
+// describe('clearLists', () => {
+//   it('should clear all lists successfully', async () => {
+//     const result = await apiService.clearLists();
+//
+//     expect(result.status).toBe('success');
+//     expect(result.lists).toEqual({});
+//   });
+//
+//   it('should handle API errors when clearing lists', async () => {
+//     server.use(
+//      http.delete(`${GEN3_DATA_LIBRARY_API}`, () => {
+//         return res(ctx.status(500), ctx.json({ message: 'Server error' }));
+//       }),
+//     );
+//
+//     const result = await apiService.clearLists();
+//
+//     expect(result.isError).toBe(true);
+//     expect(result.status).toContain('DataLibraryAPI error');
+//     expect(result.lists).toBeUndefined();
+//   });
+// });
+//
+// describe('setAllLists', () => {
+//   it('should set all lists successfully', async () => {
+//     const listsToSet = [ListToAdd, SecondList];
+//
+//     const result = await apiService.setAllLists(listsToSet);
+//
+//     expect(result.status).toBe('success');
+//     expect(result.lists).toBeDefined();
+//   });
+//
+//   it('should handle API errors when setting all lists', async () => {
+//     server.use(
+//      http.post(`${GEN3_DATA_LIBRARY_API}`, () => {
+//         return res(ctx.status(500), ctx.json({ message: 'Server error' }));
+//       }),
+//     );
+//
+//     const result = await apiService.setAllLists([ListToAdd]);
+//
+//     expect(result.isError).toBe(true);
+//     expect(result.status).toContain('DataLibraryAPI error');
+//     expect(result.lists).toBeUndefined();
+//   });
+// });
+//
+// describe('getList', () => {
+//   it('should get a specific list successfully', async () => {
+//     const result = await apiService.getList('list-id-1');
+//
+//     expect(result.status).toBe('success');
+//     expect(result.lists).toBeDefined();
+//     const listsObject = result.lists as any;
+//     expect(listsObject['list-id-1']).toEqual(
+//       mockSuccessResponse.lists['list-id-1'],
+//     );
+//   });
+//
+//   it('should handle API errors when getting a specific list', async () => {
+//     const result = await apiService.getList('nonexistent');
+//
+//     expect(result.isError).toBe(true);
+//     expect(result.status).toBe('Not Found');
+//     expect(result.lists).toBeUndefined();
+//   });
+//
+//   it('should handle invalid response data', async () => {
+//     server.use(
+//      http.get(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
+//         return res(ctx.status(200), ctx.json({ invalidData: true }));
+//       }),
+//     );
+//
+//     const result = await apiService.getList('list-id-1');
+//
+//     expect(result.isError).toBe(true);
+//     expect(result.status).toBe('Unknown error');
+//     expect(result.lists).toBeUndefined();
+//   });
+// });
+//
+// // Custom implementation tests
+// describe('with custom base URL', () => {
+//   const customBaseUrl = 'https://custom-api.example.com';
+//   let customApiService: APIStorageService;
+//
+//   beforeEach(() => {
+//     customApiService = new APIStorageService(customBaseUrl);
+//
+//     // Update handlers for custom base URL
+//     server.use(
+//      http.get(`${customBaseUrl}/lists`, () => {
+//         return res(ctx.status(200), ctx.json(mockSuccessResponse));
+//       }),
+//     );
+//   });
+//
+//   it('should use custom base URL when fetching lists', async () => {
+//     const result = await customApiService.getLists();
+//
+//     expect(result.status).toBe('success');
+//     expect(result.lists).toEqual(mockSuccessResponse.lists);
+//   });
+// });
+// });

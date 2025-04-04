@@ -1,22 +1,31 @@
-export const ListToAdd = {
-  name: 'test-list',
-  items: {
-    'dg.5555/8d84511c': {
-      dataset_guid: '1010',
-      md5sum: 'a1890eb3da180416a3a1e2c4e4527356', // pragma: allowlist secret
-      file_name: 'teach.sav',
-      file_size: 1291786,
-      object_id: 'dg.5555/8d84511c',
-    },
-    'dg.5555/3ca7d38-': {
-      dataset_guid: '1010',
-      md5sum: '32d8152b09a2ed05a0fde2f21ff46479', // pragma: allowlist secret
-      file_name: 'Teaching.zip',
-      file_size: 2565265,
-      object_id: 'dg.5555/3ca7d38-',
-    },
+import { LibraryAPIItems } from '../../types';
+
+export const ListItems: LibraryAPIItems = {
+  'dg.5555/8d84511c': {
+    dataset_guid: '1010',
+    md5sum: 'a1890eb3da180416a3a1e2c4e4527356', // pragma: allowlist secret
+    name: 'teach.sav',
+    file_size: 1291786,
+    id: 'dg.5555/8d84511c',
+    type: 'GA4GH_DRS',
+    itemType: 'Data',
+  },
+  'dg.5555/3ca7d38-': {
+    dataset_guid: '1010',
+    md5sum: '32d8152b09a2ed05a0fde2f21ff46479', // pragma: allowlist secret
+    name: 'Teaching.zip',
+    file_size: 2565265,
+    id: 'dg.5555/3ca7d38-',
+    type: 'GA4GH_DRS',
+    itemType: 'Data',
   },
 };
+
+export const ListToAdd = {
+  name: 'test-list',
+  items: ListItems,
+};
+
 export const SecondList = {
   name: 'test-list-2',
   'dg.5555/0c8df5e3': {
