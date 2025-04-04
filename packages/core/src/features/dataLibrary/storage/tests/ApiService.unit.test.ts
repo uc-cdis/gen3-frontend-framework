@@ -6,7 +6,10 @@ import {
 } from '../APIStorageService';
 import { GEN3_API, GEN3_DATA_LIBRARY_API } from '../../../../constants';
 import { APIListData, ListToAdd } from './data';
-import { GroupedDataItems, UpdateDataLibraryListParams } from '../../types';
+import {
+  LibraryListItemsGroupedByDataset,
+  UpdateDataLibraryListParams,
+} from '../../types';
 
 jest.mock('@reduxjs/toolkit', () => {
   const actualToolkit = jest.requireActual('@reduxjs/toolkit');
@@ -250,7 +253,7 @@ describe('ApiService', () => {
       );
 
       const result = await apiService.addList(
-        ListToAdd as unknown as GroupedDataItems,
+        ListToAdd as unknown as LibraryListItemsGroupedByDataset,
       );
 
       expect(result.status).toBe('success');
@@ -270,7 +273,7 @@ describe('ApiService', () => {
       );
 
       const result = await apiService.addList(
-        ListToAdd as unknown as GroupedDataItems,
+        ListToAdd as unknown as LibraryListItemsGroupedByDataset,
       );
 
       expect(result.isError).toBe(true);

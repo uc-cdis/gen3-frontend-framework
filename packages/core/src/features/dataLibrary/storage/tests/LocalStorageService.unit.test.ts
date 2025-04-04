@@ -1,6 +1,9 @@
 import 'fake-indexeddb/auto';
 import { LocalStorageService } from '../LocalStorageService';
-import { GroupedDataItems, LibraryAPIItems } from '../../types';
+import {
+  LibraryListItemsGroupedByDataset,
+  LibraryListItemsAPI,
+} from '../../types';
 import { ListToAdd, SecondList } from './data';
 
 jest.mock('@reduxjs/toolkit', () => {
@@ -18,14 +21,14 @@ describe('LocalStorageService', () => {
 
   it('should add a list', async () => {
     const result = await service.addList(
-      ListToAdd as unknown as GroupedDataItems,
+      ListToAdd as unknown as LibraryListItemsGroupedByDataset,
     );
     expect(result.status).toBe('list added');
   });
 
   it('should add a second list', async () => {
     const result = await service.addList(
-      SecondList as unknown as GroupedDataItems,
+      SecondList as unknown as LibraryListItemsGroupedByDataset,
     );
     expect(result.status).toBe('list added');
   });
@@ -53,7 +56,7 @@ describe('LocalStorageService', () => {
     const result = await service.updateList({
       id: 'mocked-nanoid-0',
       name: 'Updated List',
-      items: ListToAdd.items as unknown as LibraryAPIItems,
+      items: ListToAdd.items as unknown as LibraryListItemsAPI,
     });
     expect(result.status).toBe('success');
     const resultList = await service.getList('mocked-nanoid-0');

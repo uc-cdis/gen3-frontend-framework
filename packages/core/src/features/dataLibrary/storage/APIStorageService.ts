@@ -8,7 +8,7 @@ import {
 import { GEN3_DATA_LIBRARY_API } from '../../../constants';
 import { ReturnStatus, StorageService } from './types';
 import {
-  GroupedDataItems,
+  LibraryListItemsGroupedByDataset,
   UpdateDataLibraryListParams,
   isDataLibraryAPIResponse,
   DataLibrary,
@@ -93,7 +93,9 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
     return { lists: {}, status: 'no list returned' };
   }
 
-  async addList(list: GroupedDataItems): Promise<ReturnStatus<DataLibraryAPI>> {
+  async addList(
+    list: LibraryListItemsGroupedByDataset,
+  ): Promise<ReturnStatus<DataLibraryAPI>> {
     const listToAdd = {
       ...list,
       id: nanoid(),
@@ -138,7 +140,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
   // Additional methods for more complex operations
 
   async setAllLists(
-    lists: Array<GroupedDataItems>,
+    lists: Array<LibraryListItemsGroupedByDataset>,
   ): Promise<ReturnStatus<DataLibraryAPI>> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,

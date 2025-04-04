@@ -119,7 +119,7 @@ export interface DataLibraryDataset {
 
 export type DatasetOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
-export type LibraryAPIItems = Record<
+export type LibraryListItemsAPI = Record<
   string,
   FileItem | AdditionalDataItem | CohortItem
 >;
@@ -135,19 +135,19 @@ export interface DatalistBase {
 
 export interface DatalistAsAPIItems {
   name: string;
-  items: LibraryAPIItems;
+  items: LibraryListItemsAPI;
 }
 
-export interface GroupedDataItems {
+export interface LibraryListItemsGroupedByDataset {
   name: string;
   items: DatasetOrCohort; // a record of datasets and cohorts
 }
 
-export interface DataListUpdate extends GroupedDataItems {
+export interface DataListUpdate extends LibraryListItemsGroupedByDataset {
   id: string;
 }
 
-export type Datalist = DatalistBase & GroupedDataItems;
+export type Datalist = DatalistBase & LibraryListItemsGroupedByDataset;
 export type DatalistAPI = DatalistBase & DatalistAsAPIItems;
 // DataLibrary has been combined into data sets using BuildList
 export type DataLibrary = Record<string, Datalist>;

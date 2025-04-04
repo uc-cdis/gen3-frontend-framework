@@ -1,17 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  ActionIcon,
   Button,
-  CloseButton,
   Group,
   ScrollArea,
   Combobox,
   TextInput,
   useCombobox,
-  useMantineTheme,
 } from '@mantine/core';
 
-import { FilesOrCohort, useDataLibrary, type DataLibrary } from '@gen3/core';
+import {
+  extractFileDatasetsInRecords,
+  useDataLibrary,
+  buildListItemsGroupedByDataset,
+  type DataLibrary,
+} from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportActionButtonProps } from './types';
 
@@ -51,31 +53,34 @@ const AddToDataLibrary = ({
     listId: string | undefined = undefined,
   ) => {
     if (selectedResources.length === 0) return;
-    const items: FilesOrCohort = selectedResources.reduce(
-      (acc: FilesOrCohort, resource: Record<string, any>) => {
-        const dataObjects = resource[exportDataFields.dataObjectFieldName];
-        const datasetId = resource[exportDataFields.datesetIdFieldName];
-
-        const datafiles = dataObjects.reduce(
-          (dataAcc: FilesOrCohort, dataObject: any) => {
-            const guid = dataObject[exportDataFields.dataObjectIdField];
-            return {
-              ...dataAcc,
-              [guid]: {
-                dataset_guid: datasetId,
-                ...dataObject,
-              },
-            };
-          },
-          {} as FilesOrCohort,
-        );
-        return {
-          ...acc,
-          ...datafiles,
-        };
-      },
-      {} as FilesOrCohort,
+    const items = buildListItemsGroupedByDataset(
+      extractFileDatasetsInRecords(selectedResources, exportDataFields),
     );
+    // const items: FilesOrCohort = selectedResources.reduce(
+    //   (acc: FilesOrCohort, resource: Record<string, any>) => {
+    //     const dataObjects = resource[exportDataFields.dataObjectFieldName];
+    //     const datasetId = resource[exportDataFields.datesetIdFieldName];
+    //
+    //     const datafiles = dataObjects.reduce(
+    //       (dataAcc: FilesOrCohort, dataObject: any) => {
+    //         const guid = dataObject[exportDataFields.dataObjectIdField];
+    //         return {
+    //           ...dataAcc,
+    //           [guid]: {
+    //             dataset_guid: datasetId,
+    //             ...dataObject,
+    //           },
+    //         };
+    //       },
+    //       {} as FilesOrCohort,
+    //     );
+    //     return {
+    //       ...acc,
+    //       ...datafiles,
+    //     };
+    //   },
+    //   {} as FilesOrCohort,
+    // );
 
     if (listId) {
       updateListInDataLibrary({

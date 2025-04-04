@@ -1,6 +1,6 @@
-import { LibraryAPIItems } from '../../types';
+import { LibraryListItemsAPI } from '../../types';
 
-export const ListItems: LibraryAPIItems = {
+export const ListItems: LibraryListItemsAPI = {
   'dg.5555/8d84511c': {
     dataset_guid: '1010',
     md5sum: 'a1890eb3da180416a3a1e2c4e4527356', // pragma: allowlist secret

@@ -7,10 +7,10 @@ import {
   DatalistAPI,
   DataSetMembers,
   ExportDatasetFields,
-  GroupedDataItems,
+  LibraryListItemsGroupedByDataset,
   isCohortItem,
   isFileItem,
-  LibraryAPIItems,
+  LibraryListItemsAPI,
   DatasetOrCohort,
   DataLibraryDataset,
   FileItem,
@@ -37,17 +37,14 @@ const processItem = (id: string, data: any) => {
   };
 };
 
-export const BuildList = (
-  listId: string,
-  listData: DatalistAPI,
-): Datalist | undefined => {
-  if (!Object.keys(listData).includes('items')) return undefined;
-
-  const items = Object.entries(listData?.items).reduce(
-    (acc, [id, data]) => {
+export const buildListItemsGroupedByDataset = (
+  listData: LibraryListItemsAPI,
+): DatasetOrCohort => {
+  const items: DatasetOrCohort = Object.entries(listData).reduce(
+    (acc: DatasetOrCohort, [id, data]) => {
       if (data?.type === 'Gen3GraphQL') {
         // is cohort
-        acc.items[id] = {
+        acc[id] = {
           itemType: 'Gen3GraphQL',
           id: data.guid,
           schemaVersion: data.schema_version,
@@ -60,31 +57,41 @@ export const BuildList = (
         if (
           !(data?.dataset_guid && (data.dataset_guid as string) in acc.items)
         ) {
-          acc.items[data.dataset_guid as string] = {
+          acc[data.dataset_guid as string] = {
             id: data.dataset_guid as string,
             name: '',
             members: { [id]: processItem(id, data) },
           } as DataLibraryDataset;
         } else {
-          (acc.items[data.dataset_guid as string].members as DataSetMembers)[
-            id
-          ] = processItem(id, data);
+          (acc[data.dataset_guid as string].members as DataSetMembers)[id] =
+            processItem(id, data);
         }
       }
       return acc;
     },
-
-    {
-      items: {},
-      version: listData?.version ?? 0,
-      created_time: listData?.created_time,
-      updated_time: listData?.updated_time,
-      name: listData?.name ?? listId,
-      id: listId,
-      authz: listData?.authz,
-    } as Datalist,
+    {},
   );
+
   return items;
+};
+
+export const BuildList = (
+  listId: string,
+  listData: DatalistAPI,
+): Datalist | undefined => {
+  if (!Object.keys(listData).includes('items')) return undefined;
+
+  const items = buildListItemsGroupedByDataset(listData?.items ?? {});
+
+  return {
+    items: items,
+    version: listData?.version ?? 0,
+    created_time: listData?.created_time,
+    updated_time: listData?.updated_time,
+    name: listData?.name ?? listId,
+    id: listId,
+    authz: listData?.authz,
+  };
 };
 
 /**
@@ -136,10 +143,10 @@ export const getTimestamp = () => {
   return new Date(Date.now()).toLocaleString();
 };
 
-export const flattenDataList = (dataList: GroupedDataItems) => {
+export const flattenDataList = (dataList: LibraryListItemsGroupedByDataset) => {
   // convert datalist into user-data-library API for for updating.
 
-  const items: LibraryAPIItems = Object.entries(dataList.items).reduce(
+  const items: LibraryListItemsAPI = Object.entries(dataList.items).reduce(
     (acc: any, [id, value]) => {
       if (isCohortItem(value)) {
         acc[id] = value;
@@ -189,7 +196,7 @@ export const extractFileDatasetsInRecords = (
   data: Array<Record<string, any>>,
   dataFieldMapping: ExportDatasetFields,
 ) => {
-  const items: DataSetMembers = data.reduce(
+  const items: LibraryListItemsAPI = data.reduce(
     (acc: DatasetOrCohort, resource: Record<string, any>) => {
       const dataObjects = resource[dataFieldMapping.dataObjectField];
 

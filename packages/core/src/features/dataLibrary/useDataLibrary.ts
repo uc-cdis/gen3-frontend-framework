@@ -4,7 +4,7 @@ import {
   DataLibraryStoreMode,
   DataListUpdate,
   DatasetOrCohort,
-  GroupedDataItems,
+  LibraryListItemsGroupedByDataset,
 } from './types';
 import { flattenDataList } from './utils';
 import { CachedAPIService } from './storage/dataLibraryCachedAPI';
@@ -165,7 +165,7 @@ const useDataLibrary = (
 
   // Handle setting all lists at once (like when loading sample data)
   const setAllListsInDataLibrary = useCallback(
-    async (data: Array<GroupedDataItems>) => {
+    async (data: Array<LibraryListItemsGroupedByDataset>) => {
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.setAllLists(data);
       await handleErrorOrSetLists(isError, status);

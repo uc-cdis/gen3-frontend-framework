@@ -1,10 +1,11 @@
-import { ExportDataFields, ExportFromDiscoveryActionButton } from '../types';
+import { ExportDatasetFields } from '@gen3/core';
+import { ExportFromDiscoveryActionButton } from '../types';
 
 export interface ExportActionProps<
   T extends Record<string, any> = Record<string, any>,
 > {
   selectedResources: Array<T>;
-  exportDataFields: ExportDataFields;
+  exportDataFields: ExportDatasetFields;
 }
 
 export interface ExportActionButtonProps<

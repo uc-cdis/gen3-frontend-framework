@@ -6,6 +6,8 @@ import {
   getNumberOfItemsInDatalist,
   getTimestamp,
   extractIndexFromDataLibraryCohort,
+  extractFileDatasetsInRecords,
+  buildListItemsGroupedByDataset,
 } from './utils';
 
 export {
@@ -13,4 +15,6 @@ export {
   getNumberOfItemsInDatalist,
   getTimestamp,
   extractIndexFromDataLibraryCohort,
+  extractFileDatasetsInRecords,
+  buildListItemsGroupedByDataset,
 };

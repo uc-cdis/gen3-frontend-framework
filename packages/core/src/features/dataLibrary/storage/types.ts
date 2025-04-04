@@ -1,6 +1,6 @@
 import {
   DataLibrary,
-  GroupedDataItems,
+  LibraryListItemsGroupedByDataset,
   UpdateDataLibraryListParams,
 } from '../types';
 
@@ -16,13 +16,15 @@ export interface ReturnStatus<T = DataLibrary> extends StorageError {
 export interface StorageService<T = DataLibrary> {
   getLists(): Promise<ReturnStatus<T>>;
   getList(id: string): Promise<ReturnStatus<T>>;
-  addList(list?: GroupedDataItems): Promise<ReturnStatus<T>>;
-  setAllLists(lists: Array<GroupedDataItems>): Promise<ReturnStatus<T>>;
+  addList(list?: LibraryListItemsGroupedByDataset): Promise<ReturnStatus<T>>;
+  setAllLists(
+    lists: Array<LibraryListItemsGroupedByDataset>,
+  ): Promise<ReturnStatus<T>>;
   updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus<T>>;
   deleteList(id: string): Promise<ReturnStatus<T>>;
   clearLists(): Promise<ReturnStatus<T>>;
 }
 
-export interface UpdateListParams extends GroupedDataItems {
+export interface UpdateListParams extends LibraryListItemsGroupedByDataset {
   id: string;
 }
