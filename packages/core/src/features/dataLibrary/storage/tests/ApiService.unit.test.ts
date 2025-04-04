@@ -5,9 +5,8 @@ import {
   fetchFromDataLibraryAPI,
 } from '../APIStorageService';
 import { GEN3_API, GEN3_DATA_LIBRARY_API } from '../../../../constants';
-import { APIListData } from './data';
-
-console.log('GEN3_API: ', GEN3_API);
+import { APIListData, ListToAdd } from './data';
+import { GroupedDataItems } from '../../types';
 
 jest.mock('@reduxjs/toolkit', () => {
   const actualToolkit = jest.requireActual('@reduxjs/toolkit');
@@ -237,18 +236,18 @@ describe('ApiService', () => {
     });
   });
 
-  // describe('addList', () => {
-  //   it('should add a list successfully', async () => {
-  //     const result = await apiService.addList(ListToAdd);
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //     // The generated ID will be random due to nanoid, so we can't check the exact value
-  //     const listsObject = result.lists as any;
-  //     expect(Object.values(listsObject).length).toBeGreaterThan(
-  //       Object.values(mockSuccessResponse.lists).length - 1,
-  //     );
-  //   });
+  describe('addList', () => {
+    it('should add a list successfully', async () => {
+      const result = await apiService.addList(ListToAdd as unknown as GroupedDataItems);
+
+      expect(result.status).toBe('success');
+      expect(result.lists).toBeDefined();
+      // The generated ID will be random due to nanoid, so we can't check the exact value
+      const listsObject = result.lists as any;
+      expect(Object.values(listsObject).length).toBeGreaterThan(
+        Object.values(mockSuccessResponse.lists).length - 1,
+      );
+    });
   //
   //   it('should handle API errors when adding a list', async () => {
   //     server.use(

@@ -3,7 +3,7 @@ import {
   DataLibrary,
   DataLibraryStoreMode,
   DataListUpdate,
-  FilesOrCohort,
+  DatasetOrCohort,
   GroupedDataItems,
 } from './types';
 import { flattenDataList } from './utils';
@@ -114,7 +114,7 @@ const useDataLibrary = (
 
   // CRUD operations
   const addListToDataLibrary = useCallback(
-    async (items: FilesOrCohort, name?: string) => {
+    async (items: DatasetOrCohort, name?: string) => {
       const namedItems = {
         items: items,
         name: generateUniqueName(name ?? 'List'),

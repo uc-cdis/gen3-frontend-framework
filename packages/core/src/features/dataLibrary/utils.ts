@@ -5,12 +5,15 @@ import {
   DataLibraryAPIResponse,
   Datalist,
   DatalistAPI,
-  DatalistAsItems,
-  // DataListEntry,
   DataSetMembers,
+  ExportDatasetFields,
   GroupedDataItems,
   isCohortItem,
   isFileItem,
+  LibraryAPIItems,
+  DatasetOrCohort,
+  DataLibraryDataset,
+  FileItem,
 } from './types';
 import { parse } from 'graphql';
 import { JSONObject } from '../../types/';
@@ -43,6 +46,7 @@ export const BuildList = (
   const items = Object.entries(listData?.items).reduce(
     (acc, [id, data]) => {
       if (data?.type === 'Gen3GraphQL') {
+        // is cohort
         acc.items[id] = {
           itemType: 'Gen3GraphQL',
           id: data.guid,
@@ -52,6 +56,7 @@ export const BuildList = (
           index: data.index,
         } as CohortItem;
       } else {
+        // Dataset
         if (
           !(data?.dataset_guid && (data.dataset_guid as string) in acc.items)
         ) {
@@ -59,7 +64,7 @@ export const BuildList = (
             id: data.dataset_guid as string,
             name: '',
             members: { [id]: processItem(id, data) },
-          };
+          } as DataLibraryDataset;
         } else {
           (acc.items[data.dataset_guid as string].members as DataSetMembers)[
             id
@@ -82,6 +87,17 @@ export const BuildList = (
   return items;
 };
 
+/**
+ * Constructs a `DataLibrary` object by transforming the input `DataLibraryAPIResponse`.
+ *
+ * This function takes an API response containing lists and processes each list entry.
+ * It uses `BuildList` to build individual list objects for each entry in the provided data.
+ * The resulting lists are accumulated and structured into a `DataLibrary` object. which
+ * groups File Object by dataset_guid.
+ *
+ * @param {DataLibraryAPIResponse} data - The API response containing the lists to process.
+ * @returns {DataLibrary} A structured `DataLibrary` object containing the processed lists.
+ */
 export const BuildLists = (data: DataLibraryAPIResponse): DataLibrary => {
   return Object.entries(data?.lists).reduce((acc, [listId, listData]) => {
     const list = BuildList(listId, listData);
@@ -121,9 +137,9 @@ export const getTimestamp = () => {
 };
 
 export const flattenDataList = (dataList: GroupedDataItems) => {
-  // convert datalist into user-data-library for for updating.
+  // convert datalist into user-data-library API for for updating.
 
-  const items = Object.entries(dataList.items).reduce(
+  const items: LibraryAPIItems = Object.entries(dataList.items).reduce(
     (acc: any, [id, value]) => {
       if (isCohortItem(value)) {
         acc[id] = value;
@@ -138,7 +154,7 @@ export const flattenDataList = (dataList: GroupedDataItems) => {
   return {
     name: dataList.name,
     items: items,
-  } as unknown as DatalistAsItems;
+  };
 };
 
 export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
@@ -159,4 +175,73 @@ export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
     console.error('Invalid GraphQL query:', error);
   }
   return null;
+};
+
+/**
+ *  Takes a list of file items from anb array of manifest entries
+ *  and creates a Object of Files grouped by their dataset guid, which is
+ *  used to add these to a Data Library List
+ * @param data
+ * @param dataFieldMapping
+ * @constructor
+ */
+export const groupDatasetsInRecords = (
+  data: Array<Record<string, any>>,
+  dataFieldMapping: ExportDatasetFields,
+) => {
+  const items = data.reduce(
+    (acc: DatasetOrCohort, resource: Record<string, any>) => {
+      const dataObjects = resource[dataFieldMapping.dataObjectField];
+
+      // Check if dataObjects exists and is an array
+      if (!dataObjects || !Array.isArray(dataObjects)) {
+        return acc;
+      }
+
+      const datasetId = resource[dataFieldMapping.datasetIdField] as string; // Note: typo still preserved
+      const datasetName =
+        dataFieldMapping.datasetNameField &&
+        dataFieldMapping.datasetNameField in resource
+          ? resource[dataFieldMapping.datasetNameField]
+          : undefined;
+      if (datasetId === undefined) {
+        return acc; // Skip if dataset ID is missing
+      }
+
+      const datafiles = dataObjects.reduce(
+        (dataAcc: DatasetOrCohort, dataObject: Record<string, unknown>) => {
+          const guid = dataObject[dataFieldMapping.dataObjectIdField];
+
+          // Skip items without a valid ID
+          if (typeof guid !== 'string' || !guid) {
+            return dataAcc;
+          }
+
+          return {
+            ...dataAcc,
+            [guid]: {
+              dataset_guid: datasetId as string,
+              dataset_name: datasetName,
+              guid: guid,
+              itemType: 'Data',
+              ...dataObject,
+            } satisfies FileItem,
+          };
+        },
+        {},
+      );
+
+      if (Object.keys(datafiles).length > 0)
+        acc[datasetId] = {
+          id: datasetId,
+          members: datafiles,
+          itemType: 'Dataset',
+        } satisfies DataLibraryDataset;
+
+      return acc;
+    },
+    {} as DatasetOrCohort,
+  );
+
+  return items;
 };

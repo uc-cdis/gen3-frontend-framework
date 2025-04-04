@@ -25,7 +25,6 @@ export interface ListItem {
  */
 
 export interface FileItem extends ListItem {
-  id: string; // TODO: remove id or guid
   guid: string;
   name?: string;
   description?: string;
@@ -113,17 +112,18 @@ export type DataSetMembers = Record<string, FileItem | AdditionalDataItem>;
 export interface DataLibraryDataset {
   id: string;
   name?: string;
-  members: DataSetMembers;
+  members: DataSetMembers; // Files and Additional Information
+  itemType: 'Dataset';
 }
 
-export type FilesOrCohort = Record<string, DataLibraryDataset | CohortItem>;
+export type DatasetOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
 export type LibraryAPIItems = Record<
   string,
   FileItem | AdditionalDataItem | CohortItem
 >;
 
-export interface DataItemBaseData {
+export interface DatalistBase {
   name: string;
   id: string;
   created_time: string;
@@ -132,26 +132,26 @@ export interface DataItemBaseData {
   version: number;
 }
 
-export interface DatalistAsItems {
+export interface DatalistAsAPIItems {
   name: string;
   items: LibraryAPIItems;
 }
 
 export interface GroupedDataItems {
   name: string;
-  items: FilesOrCohort;
+  items: DatasetOrCohort; // a record of datasets and cohorts
 }
 
 export interface DataListUpdate extends GroupedDataItems {
   id: string;
 }
 
-export type Datalist = DataItemBaseData & GroupedDataItems;
-export type DatalistAPI = DataItemBaseData & DatalistAsItems;
-// Data Library has been combine into data sets using BuildList
+export type Datalist = DatalistBase & GroupedDataItems;
+export type DatalistAPI = DatalistBase & DatalistAsAPIItems;
+// DataLibrary has been combined into data sets using BuildList
 export type DataLibrary = Record<string, Datalist>;
 
-// Data Library as represented by  the API
+// Data Library as represented in the Storage API
 export type DataLibraryAPI = Record<string, DatalistAPI>;
 
 export type DataLibraryAPIResponse = {
@@ -172,7 +172,7 @@ export const isDataLibraryAPIResponse = (
   );
 };
 
-export interface UpdateDataLibraryListParams extends DatalistAsItems {
+export interface UpdateDataLibraryListParams extends DatalistAsAPIItems {
   id: string;
 }
 
@@ -180,4 +180,11 @@ export enum DataLibraryStoreMode {
   ApiOnly = 'apiOnly',
   ApiAndLocal = 'apiAndLocal',
   LocalOnly = 'localOnly',
+}
+
+export interface ExportDatasetFields {
+  dataObjectField: string; // member that stores the id of the object that stores the id.
+  datasetIdField: string; // member that stores the id of the "dataset" will default to uid
+  datasetNameField: string; //  name of dateset
+  dataObjectIdField: string; // field in data object
 }

@@ -95,7 +95,6 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
   }
 
   async addList(list: GroupedDataItems): Promise<ReturnStatus<DataLibraryAPI>> {
-    // If the list doesn't have an ID, generate one
     const listToAdd = {
       ...list,
       id: nanoid(),

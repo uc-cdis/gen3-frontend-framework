@@ -7,8 +7,6 @@ export const ListToAdd = {
       file_name: 'teach.sav',
       file_size: 1291786,
       object_id: 'dg.5555/8d84511c',
-      itemType: 'Data',
-      id: 'dg.5555/8d84511c',
     },
     'dg.5555/3ca7d38-': {
       dataset_guid: '1010',
@@ -16,8 +14,6 @@ export const ListToAdd = {
       file_name: 'Teaching.zip',
       file_size: 2565265,
       object_id: 'dg.5555/3ca7d38-',
-      itemType: 'Data',
-      id: 'dg.5555/3ca7d38-',
     },
   },
 };
@@ -29,8 +25,6 @@ export const SecondList = {
     file_name: 'tutorial.zip',
     file_size: 94535,
     object_id: 'dg.5555/0c8df5e3',
-    itemType: 'Data',
-    id: 'dg.5555/0c8df5e3',
   },
   'dg.5555/03ed62aa': {
     dataset_guid: '1010',
@@ -39,7 +33,6 @@ export const SecondList = {
     file_size: 932272,
     object_id: 'dg.5555/03ed62aa',
     itemType: 'Data',
-    id: 'dg.5555/03ed62aa',
   },
 };
 
@@ -157,3 +150,59 @@ export const APIListData = {
     },
   },
 };
+
+export const SelectedStudies = [
+  {
+    'tutorial-synthetic_data_set_1': {
+      _unique_id: 'tutorial-synthetic_data_set_1',
+      study_id: 'tutorial-synthetic_data_set_1',
+      commons: 'Test Commons',
+      _subjects_count: 2504,
+      __manifest: [
+        {
+          md5sum: '7204a6a585eab709f58d7173d6b45860', // pragma: allowlist secret
+          file_name:
+            'ALL.chr8.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.bi_maf001.vcf.bgz.gds',
+          file_size: 15769211,
+          object_id: 'dg.5555/93f98458-e816-4e56-9bea-013dc6c0ea4b',
+        },
+        {
+          md5sum: 'cdb26235b79473d3da3f88959e849c65', // pragma: allowlist secret
+          file_name:
+            'ALL.chr18.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.bi_maf001.vcf.bgz',
+          file_size: 158422243,
+          object_id: 'dg.5555/0fbb8b5d-81a5-4928-a42d-7cac707f746e',
+        },
+      ],
+    },
+    'tutorial-synthetic_data_set_2': {
+      _unique_id: 'tutorial-synthetic_data_set_2',
+      study_id: 'tutorial-synthetic_data_set_2',
+      commons: 'Test Commons',
+      _subjects_count: 2504,
+      __manifest: [
+        {
+          md5sum: 'e4001829e6e59f1f37db39c08a29dd97', // pragma: allowlist secret
+          file_name:
+            'ALL.chr1.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.bi_maf001.vcf.bgz.gds',
+          file_size: 21134780,
+          object_id: 'dg.4503/73f904d1-de54-4ee3-9ae3-ba8af9d0aa7a',
+        },
+        {
+          md5sum: '34ec3657c883d673e1f8f74ee7ab7109', // pragma: allowlist secret
+          file_name:
+            'ALL.chr13.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.bi_maf001.vcf.bgz',
+          file_size: 55828550,
+          object_id: 'dg.4503/b4a7afff-d8ba-41e7-ab12-b046768252df',
+        },
+        {
+          md5sum: 'd3e8f13cfeaec0560757295493773620', // pragma: allowlist secret
+          file_name:
+            'ALL.chr14.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.bi_maf001.vcf.bgz',
+          file_size: 61024080,
+          object_id: 'dg.4503/80cb7adc-9e5e-4a55-9795-97015f2eaa7c',
+        },
+      ],
+    },
+  },
+];
