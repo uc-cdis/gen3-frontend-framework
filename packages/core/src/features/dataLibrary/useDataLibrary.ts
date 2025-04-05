@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DataLibrary,
-  DataLibraryStoreMode,
+ // DataLibraryStoreMode,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
@@ -12,13 +12,13 @@ import { StorageError } from './storage/types';
 
 interface UseDataLibraryOptions {
   requiresAPI: boolean;
-  storageMode: DataLibraryStoreMode;
+ // storageMode: DataLibraryStoreMode;
 }
 
 const useDataLibrary = (
   options: UseDataLibraryOptions = {
     requiresAPI: false,
-    storageMode: DataLibraryStoreMode.ApiAndLocal,
+   // storageMode: DataLibraryStoreMode.ApiAndLocal,
   },
 ) => {
   // Track login state
@@ -119,8 +119,6 @@ const useDataLibrary = (
         items: items,
         name: generateUniqueName(name ?? 'List'),
       };
-
-      console.log('addListToDataLibrary', namedItems);
 
       setIsLoading(true);
       const { isError, status } = await dataLibraryStoreAPI.addList(namedItems);

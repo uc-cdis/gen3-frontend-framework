@@ -1,13 +1,13 @@
 import React from 'react';
 import { ActionIcon, Button, Group, Tooltip } from '@mantine/core';
 import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
-import { FilesOrCohort } from '@gen3/core';
+import { DatasetOrCohort } from '@gen3/core';
 import { Icon } from '@iconify/react';
 import { IconSize } from './types';
 import { useDataLibrarySelection } from './selection/SelectionContext';
 
 interface SearchAndActionsProps {
-  createList: (items: FilesOrCohort, name?: string) => Promise<void>;
+  createList: (items: DatasetOrCohort, name?: string) => Promise<void>;
   gatherData: () => void;
   size?: string;
 }
@@ -74,7 +74,7 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
           </Button>
         </Tooltip>
       </Group>
-      {/* ---
+      {/* --- // TODO: support search
       <TextInput
         variant="filled"
         placeholder="Search..."

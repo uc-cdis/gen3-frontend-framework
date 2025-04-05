@@ -51,8 +51,8 @@ const handleDownloadManifestClick = <
   exportDataFields,
   selectedResources,
 }: ExportActionProps<T>) => {
-  const { dataObjectFieldName } = exportDataFields;
-  if (dataObjectFieldName === undefined) {
+  const { dataObjectField } = exportDataFields;
+  if (dataObjectField === undefined) {
     notifications.show({
       title: 'Error notification',
       message:
@@ -65,18 +65,19 @@ const handleDownloadManifestClick = <
   const manifest: Array<T> = [];
 
   selectedResources.forEach((study) => {
-    if (study[dataObjectFieldName]) {
+    if (study[dataObjectField]) {
+      const studyDataObject = study[dataObjectField];
       if ('commons_url' in study && !GEN3_DOMAIN?.includes(study.commons_url)) {
         // PlanX addition to allow hostname based DRS in manifest download clients
         // like FUSE
         manifest.push(
-          ...study[dataObjectFieldName].map((x: Record<string, unknown>) => ({
+          ...studyDataObject.map((x: Record<string, unknown>) => ({
             ...x,
             commons_url: 'commons_url' in x ? x.commons_url : study.commons_url,
           })),
         );
       } else {
-        manifest.push(...study[dataObjectFieldName]);
+        manifest.push(...studyDataObject);
       }
     }
   });

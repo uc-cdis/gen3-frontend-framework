@@ -3,14 +3,13 @@ import { DataItemSelectedState, DatasetContents } from './types';
 import {
   AdditionalDataItem,
   CohortItem,
-  Datalist,
+  Datalist, DatasetOrCohort,
   FileItem,
-  type DataListUpdate,
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
-  UpdateDataLibraryListParams,
+  DataListUpdate,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,

@@ -52,8 +52,8 @@ export const Default: Story = {
       },
     ],
     exportDataFields: {
-      dataObjectFieldName: '__manifest',
-      datesetIdFieldName: 'dataset_id',
+      dataObjectField: '__manifest',
+      datasetIdField: 'dataset_id',
       dataObjectIdField: 'object_id',
     },
   },

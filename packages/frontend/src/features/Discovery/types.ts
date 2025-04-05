@@ -3,8 +3,9 @@ import {
   JSONObject,
   type MetadataPaginationParams,
   type AggregationsData,
+  type ExportDatasetFields,
 } from '@gen3/core';
-import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
+
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
@@ -239,17 +240,12 @@ export interface AuthorizationValues {
   menuText: string;
 }
 
-export interface ExportDataFields {
-  dataObjectFieldName: string; // member that stores the id of the object that stores the id.
-  datesetIdFieldName: string; // member that stores the id of the "dataset" will default to uid
-  dataObjectIdField: string; // field in data object
-}
 
 export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
-  exportDataFields: ExportDataFields;
+  exportDataFields: ExportDatasetFields;
 }
 
 export interface DataAuthorization {
