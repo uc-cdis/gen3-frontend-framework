@@ -8,11 +8,11 @@ import {
 import { GEN3_DATA_LIBRARY_API } from '../../../constants';
 import { ReturnStatus, StorageService } from './types';
 import {
-  LibraryListItemsGroupedByDataset,
   UpdateDataLibraryListParams,
   isDataLibraryAPIResponse,
   DataLibrary,
   DataLibraryAPI,
+  DatalistAsAPIItems,
 } from '../types';
 
 interface FetchJSONResponse {
@@ -40,7 +40,7 @@ export const fetchFromDataLibraryAPI = async (
           message:
             HTTPErrorMessages[error.status] ||
             error.responseData?.message ||
-            'Unknown Error',
+            'No HTTP Error Message',
         },
       };
     } else {
@@ -94,7 +94,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
   }
 
   async addList(
-    list: LibraryListItemsGroupedByDataset,
+    list: DatalistAsAPIItems,
   ): Promise<ReturnStatus<DataLibraryAPI>> {
     const listToAdd = {
       ...list,
@@ -140,7 +140,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
   // Additional methods for more complex operations
 
   async setAllLists(
-    lists: Array<LibraryListItemsGroupedByDataset>,
+    lists: Array<DatalistAsAPIItems>,
   ): Promise<ReturnStatus<DataLibraryAPI>> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,

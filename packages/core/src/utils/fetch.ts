@@ -217,5 +217,8 @@ export const fetchJSONDataFromURL = async (
     throw new HTTPError(response.status, response.statusText);
   }
 
+  if (response.status === 204) {
+    return;
+  }
   return response.json();
 };

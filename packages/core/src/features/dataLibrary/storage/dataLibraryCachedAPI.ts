@@ -1,10 +1,5 @@
 import { ReturnStatus, StorageService } from './types';
-import {
-  // DataLibrary,
-  // Datalist,
-  LibraryListItemsGroupedByDataset,
-  UpdateDataLibraryListParams,
-} from '../types';
+import { DatalistAsAPIItems, UpdateDataLibraryListParams } from '../types';
 import { LocalStorageService } from './LocalStorageService';
 import { APIStorageService } from './APIStorageService';
 
@@ -97,9 +92,7 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.getList(id);
   }
 
-  async setAllLists(
-    lists: Array<LibraryListItemsGroupedByDataset>,
-  ): Promise<ReturnStatus> {
+  async setAllLists(lists: Array<DatalistAsAPIItems>): Promise<ReturnStatus> {
     if (this.useAPI) {
       const apiResults = await this.apiDataLibrary.setAllLists(lists);
       if (apiResults.isError) {
@@ -115,7 +108,7 @@ export class CachedAPIService implements StorageService {
     return await this.localStorageDataLibrary.setAllLists(lists ?? {});
   }
 
-  async addList(list: LibraryListItemsGroupedByDataset): Promise<ReturnStatus> {
+  async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
     if (this.useAPI) {
       // update the API list
       const apiResults = await this.apiDataLibrary.addList(list);

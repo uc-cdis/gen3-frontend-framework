@@ -1,4 +1,4 @@
-import { LibraryListItemsAPI } from '../../types';
+import { DatalistAsAPIItems, LibraryListItemsAPI } from '../../types';
 
 export const ListItems: LibraryListItemsAPI = {
   'dg.5555/8d84511c': {
@@ -21,28 +21,35 @@ export const ListItems: LibraryListItemsAPI = {
   },
 };
 
-export const ListToAdd = {
+export const ListToAdd: DatalistAsAPIItems = {
   name: 'test-list',
   items: ListItems,
 };
 
-export const SecondList = {
-  name: 'test-list-2',
+export const SecondListItems: LibraryListItemsAPI = {
   'dg.5555/0c8df5e3': {
-    dataset_guid: '1010',
     md5sum: 'dde1b1d86b3b4ed88fa5b42974ecfd79', // pragma: allowlist secret
     file_name: 'tutorial.zip',
     file_size: 94535,
-    object_id: 'dg.5555/0c8df5e3',
+    id: 'dg.5555/0c8df5e3',
+    dataset_guid: '1020',
+    type: 'GA4GH_DRS',
+    itemType: 'Data',
   },
   'dg.5555/03ed62aa': {
-    dataset_guid: '1010',
     md5sum: '8f5b9b28004210865a0c1d7fc9834b1a', // pragma: allowlist secret
     file_name: 'teach.csv',
     file_size: 932272,
-    object_id: 'dg.5555/03ed62aa',
+    id: 'dg.5555/03ed62aa',
     itemType: 'Data',
+    type: 'GA4GH_DRS',
+    dataset_guid: '1020',
   },
+};
+
+export const SecondList: DatalistAsAPIItems = {
+  name: 'another-list',
+  items: SecondListItems,
 };
 
 export const APIListData = {

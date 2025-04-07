@@ -1,9 +1,6 @@
 import 'fake-indexeddb/auto';
 import { LocalStorageService } from '../LocalStorageService';
-import {
-  LibraryListItemsGroupedByDataset,
-  LibraryListItemsAPI,
-} from '../../types';
+import { LibraryListItemsAPI } from '../../types';
 import { ListToAdd, SecondList } from './data';
 
 jest.mock('@reduxjs/toolkit', () => {
@@ -20,16 +17,12 @@ describe('LocalStorageService', () => {
   const service = new LocalStorageService();
 
   it('should add a list', async () => {
-    const result = await service.addList(
-      ListToAdd as unknown as LibraryListItemsGroupedByDataset,
-    );
+    const result = await service.addList(ListToAdd);
     expect(result.status).toBe('list added');
   });
 
   it('should add a second list', async () => {
-    const result = await service.addList(
-      SecondList as unknown as LibraryListItemsGroupedByDataset,
-    );
+    const result = await service.addList(SecondList);
     expect(result.status).toBe('list added');
   });
 

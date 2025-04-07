@@ -54,9 +54,7 @@ export const buildListItemsGroupedByDataset = (
         } as CohortItem;
       } else {
         // Dataset
-        if (
-          !(data?.dataset_guid && (data.dataset_guid as string) in acc.items)
-        ) {
+        if (!(data?.dataset_guid && (data.dataset_guid as string) in acc)) {
           acc[data.dataset_guid as string] = {
             id: data.dataset_guid as string,
             name: '',

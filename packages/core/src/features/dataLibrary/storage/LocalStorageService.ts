@@ -3,9 +3,9 @@ import { ReturnStatus, StorageService } from './types';
 import {
   DatalistAPI,
   DataLibraryAPI,
-  LibraryListItemsGroupedByDataset,
   UpdateDataLibraryListParams,
   isDatalistAPI,
+  DatalistAsAPIItems,
 } from '../types';
 import { BuildLists, getTimestamp } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
@@ -26,7 +26,7 @@ export class LocalStorageService implements StorageService {
   }
 
   setAllLists = async (
-    data: Array<LibraryListItemsGroupedByDataset>,
+    data: Array<DatalistAsAPIItems>,
   ): Promise<ReturnStatus> => {
     const timestamp = getTimestamp();
     const allLists = data.reduce((acc: JSONObject, x: unknown) => {
@@ -103,7 +103,7 @@ export class LocalStorageService implements StorageService {
     };
   }
 
-  async addList(list: LibraryListItemsGroupedByDataset): Promise<ReturnStatus> {
+  async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
     const timestamp = getTimestamp();
     try {
       const db = await this.getDb();
