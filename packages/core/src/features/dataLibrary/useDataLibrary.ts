@@ -1,24 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DataLibrary,
- // DataLibraryStoreMode,
+  // DataLibraryStoreMode,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
 } from './types';
-import { flattenDataList } from './utils';
+import {
+  convertDatasetOrCohortToLibraryListItemsAPI,
+  flattenDataList,
+} from './utils';
 import { CachedAPIService } from './storage/dataLibraryCachedAPI';
 import { StorageError } from './storage/types';
 
 interface UseDataLibraryOptions {
   requiresAPI: boolean;
- // storageMode: DataLibraryStoreMode;
+  // storageMode: DataLibraryStoreMode;
 }
 
 const useDataLibrary = (
   options: UseDataLibraryOptions = {
     requiresAPI: false,
-   // storageMode: DataLibraryStoreMode.ApiAndLocal,
+    // storageMode: DataLibraryStoreMode.ApiAndLocal,
   },
 ) => {
   // Track login state
@@ -115,8 +118,9 @@ const useDataLibrary = (
   // CRUD operations
   const addListToDataLibrary = useCallback(
     async (items: DatasetOrCohort, name?: string) => {
+      const apiItems = convertDatasetOrCohortToLibraryListItemsAPI(items);
       const namedItems = {
-        items: items,
+        items: apiItems,
         name: generateUniqueName(name ?? 'List'),
       };
 
@@ -164,8 +168,10 @@ const useDataLibrary = (
   // Handle setting all lists at once (like when loading sample data)
   const setAllListsInDataLibrary = useCallback(
     async (data: Array<LibraryListItemsGroupedByDataset>) => {
+      const lists = data.map((x) => flattenDataList(x));
+
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.setAllLists(data);
+      const { isError, status } = await dataLibraryStoreAPI.setAllLists(lists);
       await handleErrorOrSetLists(isError, status);
       setIsLoading(false);
     },

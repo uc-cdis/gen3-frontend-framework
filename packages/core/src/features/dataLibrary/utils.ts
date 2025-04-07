@@ -162,6 +162,53 @@ export const flattenDataList = (dataList: LibraryListItemsGroupedByDataset) => {
   };
 };
 
+export const convertDatasetOrCohortToLibraryListItemsAPI = (
+  list: DatasetOrCohort,
+): LibraryListItemsAPI => {
+  const result: LibraryListItemsAPI = {};
+
+  // Iterate through each entry in the DatasetOrCohort object
+  Object.entries(list).forEach(([datasetId, item]) => {
+    if (isCohortItem(item)) {
+      // Handle cohort items
+      result[datasetId] = {
+        itemType: 'Gen3GraphQL',
+        id: item.id,
+        schemaVersion: item.schemaVersion,
+        data: item.data,
+        name: item.name,
+        index: item.index,
+      } as CohortItem;
+    } else {
+      // Handle dataset items
+      const members = item.members || {};
+
+      // Process each member of the dataset
+      Object.entries(members).forEach(([memberId, memberData]) => {
+        if (isFileItem(memberData)) {
+          result[memberId] = {
+            ...memberData,
+            dataset_guid: datasetId,
+            id: memberData.guid,
+          } as FileItem;
+        } else if (memberData.itemType === 'AdditionalData') {
+          // Handle additional data items
+          result[memberId] = {
+            itemType: 'AdditionalData',
+            name: memberData.name,
+            description: memberData.description,
+            documentationUrl: memberData.documentationUrl,
+            url: memberData.url,
+            dataset_guid: datasetId,
+          } as AdditionalDataItem;
+        }
+      });
+    }
+  });
+
+  return result;
+};
+
 export const extractIndexFromDataLibraryCohort = (query: JSONObject) => {
   try {
     const parsedQuery = parse(query['query'] as string);
