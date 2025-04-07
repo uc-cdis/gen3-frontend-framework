@@ -344,37 +344,61 @@ describe('ApiService', () => {
     });
   });
 
-  // describe('getList', () => {
-  //   it('should get a specific list successfully', async () => {
-  //     const result = await apiService.getList('list-id-1');
-  //
-  //     expect(result.status).toBe('success');
-  //     expect(result.lists).toBeDefined();
-  //     const listsObject = result.lists as any;
-  //     expect(listsObject['list-id-1']).toEqual(
-  //       mockSuccessResponse.lists['list-id-1'],
-  //     );
-  //   });
-  //
-  //   it('should handle API errors when getting a specific list', async () => {
-  //     const result = await apiService.getList('nonexistent');
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toBe('Not Found');
-  //     expect(result.lists).toBeUndefined();
-  //   });
-  //
-  //   it('should handle invalid response data', async () => {
-  //     server.use(
-  //      http.get(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
-  //         return res(ctx.status(200), ctx.json({ invalidData: true }));
-  //       }),
-  //     );
-  //
-  //     const result = await apiService.getList('list-id-1');
-  //
-  //     expect(result.isError).toBe(true);
-  //     expect(result.status).toBe('Unknown error');
-  //     expect(result.lists).toBeUndefined();
-  //   });
+  describe('getList', () => {
+    it('should get a specific list successfully', async () => {
+      server.use(
+        http.get(`${GEN3_DATA_LIBRARY_API}/test-list`, () => {
+          return HttpResponse.json({
+            lists: {
+              name: 'test-list',
+              items: ListToAdd.items,
+            },
+          });
+        }),
+      );
+
+      const result = await apiService.getList('test-list');
+
+      expect(result.status).toBe('success');
+      expect(result.lists).toBeDefined();
+    });
+
+    it('should handle API errors when getting a specific list', async () => {
+      server.use(
+        http.get(`${GEN3_DATA_LIBRARY_API}/invalid-id`, () => {
+          return HttpResponse.json(
+            { message: 'Not Found' },
+            {
+              status: 404,
+            },
+          );
+        }),
+      );
+
+      const result = await apiService.getList('invalid-id');
+
+      expect(result.isError).toBe(true);
+      expect(result.status).toBe('Not Found');
+      expect(result.lists).toBeUndefined();
+    });
+
+    it('should handle invalid response data', async () => {
+      server.use(
+        http.get(`${GEN3_DATA_LIBRARY_API}/list-id-1`, () => {
+          new HttpResponse('Server Error', {
+            status: 500,
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+          });
+        }),
+      );
+
+      const result = await apiService.getList('list-id-1');
+
+      expect(result.isError).toBe(true);
+      expect(result.status).toBe('Unknown Error');
+      expect(result.lists).toBeUndefined();
+    });
+  });
 });
