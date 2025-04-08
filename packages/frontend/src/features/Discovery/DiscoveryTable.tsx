@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
+  MRT_Row,
   type MRT_PaginationState,
   type MRT_SortingState,
   type MRT_RowSelectionState,
   useMantineReactTable,
+  MRT_RowData,
 } from 'mantine-react-table';
 
 import { useDeepCompareEffect } from 'use-deep-compare';
@@ -28,11 +30,12 @@ import {
 import { DataRequestStatus } from './types';
 import { LoadingOverlay } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { ExplorerTableCellRendererFactory } from '../CohortBuilder';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
-  ({ cell }: { cell: MRT_Cell<JSONObject> }) =>
-    func({ value: cell.getValue() as never, cell });
+  ({ cell, row }: { cell: MRT_Cell<JSONObject>; row: MRT_Row<MRT_RowData> }) =>
+    func({ value: cell.getValue() as never, cell, row });
 
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;

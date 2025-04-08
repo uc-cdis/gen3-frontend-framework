@@ -10,28 +10,49 @@ import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
 import { DiscoveryIndexConfig, AccessLevel } from '../types';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
+import { METADATA_ITEM_AUTHORIZATION_FIELD } from '../constants';
+
 /**
- * Check for non-numeric items in an array and convert them to numbers.
- * Handles strings, numbers, and nested arrays.
- * It will silently convert any non-numeric items to 0 so as not to break the sum.
- * @param fields - array of fields to check
+ * Parses a single value into a number
+ * @param item - Value to convert
+ * @returns Numeric representation of the value
  */
-const checkForNonNumericItems = (fields: (number | string | any)[]): number[] =>
-  fields.map((item) => {
-    if (typeof item === 'number') {
-      return item;
-    }
-    // parse any string representation of an integer
-    if (typeof item === 'string') {
-      return parseInt(item, 10) || 0;
-    }
-    // if it's an array, recurse and sum the result
-    if (Array.isArray(item)) {
-      return sum(checkForNonNumericItems(item));
-    }
-    // if it's not a number, return 0 so as not to break the sum
-    return 0;
-  });
+const parseNumericValue = (item: unknown): number => {
+  const DEFAULT_VALUE = 0;
+
+  // Handle undefined values
+  if (item === undefined) {
+    return DEFAULT_VALUE;
+  }
+
+  // Numbers can be used directly
+  if (typeof item === 'number' && !Number.isNaN(item)) {
+    return item;
+  }
+
+  // Parse string representations of numbers
+  if (typeof item === 'string') {
+    const parsedValue = parseInt(item, 10);
+    return Number.isNaN(parsedValue) ? DEFAULT_VALUE : parsedValue;
+  }
+
+  // Recursively handle arrays by summing their numeric values
+  if (Array.isArray(item)) {
+    return convertToNumbers(item).reduce((acc, val) => acc + val, 0);
+  }
+
+  // Return default for any other types
+  return DEFAULT_VALUE;
+};
+
+/**
+ * Converts various types of values to numbers
+ * @param fields - Array of values to convert
+ * @returns Array of numbers, with non-numeric values converted to 0
+ */
+const convertToNumbers = <T>(fields: T[]): number[] => {
+  return fields.map(parseNumericValue);
+};
 
 /**
  * Process a summary statistic using the provided data and summary config
@@ -51,7 +72,7 @@ export const processSummary = (
   switch (type) {
     case 'sum': {
       // parse any string representation of an integer
-      fields = checkForNonNumericItems(fields);
+      fields = convertToNumbers(fields);
       return sum(fields).toLocaleString();
     }
     case 'count':
@@ -124,6 +145,7 @@ export const processAuthorizations = (
       accessible = AccessLevel.NOT_AVAILABLE;
     } else if (supportedValues?.waiting?.enabled && !study[authzField]) {
       accessible = AccessLevel.WAITING;
+    } else {
       let authMapping = {};
       if (isMesh) {
         let commonsURL = study.commons_url as string; // TODO: configure this value
@@ -135,6 +157,7 @@ export const processAuthorizations = (
       } else {
         authMapping = Object.values(userAuthMapping)[0];
       }
+      // TODO: This needs to be configurable GFF-294
       const isAuthorized =
         userHasMethodForServiceOnResource(
           'read',
@@ -178,7 +201,7 @@ export const processAuthorizations = (
     }
     return {
       ...study,
-      __accessible: accessible,
+      [METADATA_ITEM_AUTHORIZATION_FIELD]: accessible,
     };
   });
   return studiesWithAccessibleField;

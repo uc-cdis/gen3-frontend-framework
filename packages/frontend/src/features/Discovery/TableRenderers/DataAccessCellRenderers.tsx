@@ -1,46 +1,100 @@
 import React from 'react';
 import { CellRenderFunctionProps } from './types';
 import { AccessLevel } from '../types';
-import { Group } from '@mantine/core';
+import { Divider, Group, Stack, Text, Tooltip } from '@mantine/core';
 import {
   LuClock as PendingIcon,
   LuUnlock as UnlockedIcon,
   LuLock as LockedIcon,
   LuCircleSlash as NotAvailableIcon,
 } from 'react-icons/lu';
+import { getAccessLevelFromNumber } from '../utils';
+import { JSONObject } from '@gen3/core';
+import { isArray } from 'lodash';
 
-export const DataAccessCellRenderer = ({ value }: CellRenderFunctionProps) => {
-  if ((value as AccessLevel) === AccessLevel.WAITING) {
+const buildTooltip = (mainMessage: string, secondaryMessage?: string) => {
+  return (
+    <div className="flex flex-col">
+      <Text size="sm"> {mainMessage} </Text>
+      {secondaryMessage ? (
+        <div className="flex flex-col items-start my-1">
+          <Divider />
+          <Text size="xs">{secondaryMessage}</Text>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+export const DataAccessCellRenderer = (
+  { cell, row }: CellRenderFunctionProps,
+  params?: JSONObject,
+) => {
+  const authzField = (params?.authzField as string) || 'authz';
+  let value = cell?.getValue<number>();
+  const authorization = (row?.original?.[authzField] as string) || undefined;
+  if (isArray(value)) value = value[0];
+  const accessLevel = getAccessLevelFromNumber(value);
+
+  if (!accessLevel) {
     return (
-      <PendingIcon color="yellow">
-        Your access to this study is pending.
-      </PendingIcon>
-    );
-  }
-  if ((value as AccessLevel) === AccessLevel.MIXED) {
-    return (
-      <Group>
-        <LockedIcon color="yellow"></LockedIcon>
-        <UnlockedIcon color="green">You have mixed to this study.</UnlockedIcon>
-      </Group>
+      <Tooltip label={buildTooltip('Unable to determine access level')}>
+        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+      </Tooltip>
     );
   }
 
-  if ((value as AccessLevel) === AccessLevel.NOT_AVAILABLE) {
+  if (accessLevel === AccessLevel.WAITING) {
     return (
-      <NotAvailableIcon color="red">
-        Cannot determine access to this study. Please contact the study owner.
-      </NotAvailableIcon>
+      <Tooltip label={buildTooltip('Data are not yet available')}>
+        <PendingIcon className="text-utility-warning"></PendingIcon>
+      </Tooltip>
     );
   }
-  if ((value as AccessLevel) === AccessLevel.ACCESSIBLE) {
+  if (accessLevel === AccessLevel.MIXED) {
     return (
-      <UnlockedIcon color="green">You have access to this study.</UnlockedIcon>
+      <Tooltip label={buildTooltip('You have mixed acccess')}>
+        <Group>
+          <LockedIcon color="utility.3"></LockedIcon>
+          <UnlockedIcon className="text-utility-success"></UnlockedIcon>
+        </Group>
+      </Tooltip>
     );
   }
-  if ((value as AccessLevel) === AccessLevel.UNACCESSIBLE) {
+
+  if (accessLevel === AccessLevel.NOT_AVAILABLE) {
     return (
-      <LockedIcon color="red">You do not have access to this study.</LockedIcon>
+      <Tooltip label={buildTooltip('No data is shared')}>
+        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+      </Tooltip>
+    );
+  }
+  if (accessLevel === AccessLevel.ACCESSIBLE) {
+    return (
+      <Tooltip
+        label={buildTooltip(
+          'You have access to this study',
+          `read access to ${authorization}`,
+        )}
+      >
+        <div>
+          <UnlockedIcon className="text-utility-success"></UnlockedIcon>
+        </div>
+      </Tooltip>
+    );
+  }
+  if (accessLevel === AccessLevel.UNACCESSIBLE) {
+    return (
+      <Tooltip
+        label={buildTooltip(
+          'You have access to this study',
+          `read access to ${authorization}`,
+        )}
+      >
+        <div>
+          <LockedIcon co className="text-utility-error"></LockedIcon>
+        </div>
+      </Tooltip>
     );
   }
   return <React.Fragment />;
