@@ -4,3 +4,5 @@ export interface ServiceAndMethod {
 }
 
 export type AuthzMapping = Record<string, ServiceAndMethod[]>;
+
+export type ResourceAuthzMapping = Record<string, AuthzMapping>;

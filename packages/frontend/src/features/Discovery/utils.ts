@@ -20,9 +20,16 @@ export interface TagInfo {
 
 export const getTagInfo = (
   tagData: TagData,
-  tagsConfig: TagsConfig,
+  tagsConfig?: TagsConfig,
 ): TagInfo => {
-  const categoryConfig = tagsConfig.tagCategories.find(
+  if (tagData.category === undefined) {
+    return {
+      color: 'darkgray',
+      display: tagsConfig?.showUnknownTags ?? false,
+      label: tagData.name,
+    };
+  }
+  const categoryConfig = tagsConfig?.tagCategories.find(
     (category) => category.name === tagData.category,
   );
   if (categoryConfig === undefined)

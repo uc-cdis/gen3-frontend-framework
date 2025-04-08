@@ -70,7 +70,7 @@ interface AuthzProviderProps {
   authz: Authz;
 }
 
-export const AuthzProvider = ({
+export const AuthzAdminProvider = ({
   children,
   authz = {
     users: [],

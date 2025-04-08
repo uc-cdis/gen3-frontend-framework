@@ -42,7 +42,7 @@ const DetailsWithTagsRowRenderer = (
 
         <div className="flex space-x-6 space-y-6 flex-wrap">
           {row.original?.tags?.map((tagInfo: TagData) => {
-            const { color, display, label } = getTagInfo(tagInfo, config.tags);
+            const { color, display, label } = getTagInfo(tagInfo, config?.tags);
 
             if (tagInfo.name === '') return null; // no tag
             if (!display) return null;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs } from '@mantine/core';
 import UserPanel from './Users/UserPanel';
 import { Authz } from './types';
-import { AuthzProvider } from './Provider';
+import { AuthzAdminProvider } from './AuthzAdminProvider';
 import RolesPanel from './Roles/RolesPanel';
 import PoliciesPanel from './Policies/PoliciesPanel';
 import ResourcesPanel from './Resources/ResourcesPanel';
@@ -15,7 +15,7 @@ const Gen3Authz = ({ authz }: Gen3AuthzProps) => {
   return (
     <div className="w-full">
       <h1>Gen3 Authz</h1>
-      <AuthzProvider authz={authz}>
+      <AuthzAdminProvider authz={authz}>
         <Tabs orientation="vertical" defaultValue="users">
           <Tabs.List>
             <Tabs.Tab value="users">Users</Tabs.Tab>
@@ -38,7 +38,7 @@ const Gen3Authz = ({ authz }: Gen3AuthzProps) => {
             <RolesPanel />
           </Tabs.Panel>
         </Tabs>
-      </AuthzProvider>
+      </AuthzAdminProvider>
     </div>
   );
 };

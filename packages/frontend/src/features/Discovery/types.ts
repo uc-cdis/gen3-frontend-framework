@@ -240,7 +240,6 @@ export interface AuthorizationValues {
   menuText: string;
 }
 
-
 export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
@@ -251,6 +250,7 @@ export interface ExportFromDiscoveryActions {
 export interface DataAuthorization {
   columnTooltip?: string;
   supportedValues?: Record<string, AuthorizationValues>;
+  isMesh?: boolean;
   enabled?: boolean;
 }
 
@@ -316,20 +316,16 @@ export interface DiscoveryConfig {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
-export interface UserAuthMapping {
-  service: string;
-  method: string;
-}
-
 export const accessibleFieldName = '__accessible';
 const ARBORIST_READ_PRIV = 'read';
 
 export enum AccessLevel {
   ACCESSIBLE = 1,
   UNACCESSIBLE = 2,
-  PENDING = 3,
+  WAITING = 3,
   NOT_AVAILABLE = 4,
   OTHER = 5,
+  MIXED = 6,
 }
 
 export interface DiscoveryResource

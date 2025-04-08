@@ -2,7 +2,7 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import {
-  type AuthzMapping,
+  type ResourceAuthzMapping,
   type JSONObject,
   type AggregationsData,
 } from '@gen3/core';
@@ -88,51 +88,88 @@ export const processAllSummaries = (
 export const processAuthorizations = (
   data: Array<JSONObject>,
   config: DiscoveryIndexConfig,
-  authMapping: AuthzMapping,
+  userAuthMapping: ResourceAuthzMapping,
 ): Array<JSONObject> => {
-  const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
-  const { supportedValues } = config.features.authorization;
+  const { enabled } = config.features.authorization;
 
-  return data.map((study) => {
-    if (typeof study[authzField] !== 'string') return study;
-    const studyAuthz = study[authzField] as string;
-    let accessible: AccessLevel;
+  if (!enabled) {
+    return data;
+  }
+
+  if (!userAuthMapping) {
+    throw new Error(
+      'Arborist must be enabled for the Discovery page to work if authorization is enabled in the Discovery page. Set `useArboristUI: true` in the portal config.',
+    );
+  }
+
+  const hostnameWithSubdomain = window.location.hostname; // TODO: replace this with useRouter
+
+  // mark studies as accessible or inaccessible to user
+  const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
+  const { supportedValues, isMesh } = config.features.authorization;
+
+  const studiesWithAccessibleField = data.map((study) => {
+    let accessible: AccessLevel = AccessLevel.NOT_AVAILABLE;
     if (
-      supportedValues?.pending?.enabled &&
+      supportedValues?.unaccessible?.enabled &&
       dataAvailabilityField &&
-      study[dataAvailabilityField] === 'pending'
+      study[dataAvailabilityField] === 'unaccessible'
     ) {
-      accessible = AccessLevel.PENDING;
-    } else if (supportedValues?.notAvailable?.enabled && !study[authzField]) {
+      accessible = AccessLevel.UNACCESSIBLE;
+    } else if (
+      supportedValues?.notAvailable?.enabled &&
+      dataAvailabilityField &&
+      study[dataAvailabilityField] === 'not_available'
+    ) {
       accessible = AccessLevel.NOT_AVAILABLE;
-    } else {
+    } else if (supportedValues?.waiting?.enabled && !study[authzField]) {
+      accessible = AccessLevel.WAITING;
+      let authMapping = {};
+      if (isMesh) {
+        let commonsURL = study.commons_url as string; // TODO: configure this value
+        if (commonsURL && commonsURL.startsWith('http')) {
+          commonsURL = new URL(commonsURL).hostname;
+        }
+        authMapping =
+          userAuthMapping[commonsURL || hostnameWithSubdomain] || {};
+      } else {
+        authMapping = Object.values(userAuthMapping)[0];
+      }
       const isAuthorized =
         userHasMethodForServiceOnResource(
           'read',
           '*',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read',
           'peregrine',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read',
           'guppy',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read-storage',
           'fence',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         );
       if (supportedValues?.accessible?.enabled && isAuthorized) {
-        accessible = AccessLevel.ACCESSIBLE;
+        if (
+          supportedValues?.mixed?.enabled &&
+          dataAvailabilityField &&
+          study[dataAvailabilityField] === 'mixed_availability'
+        ) {
+          accessible = AccessLevel.MIXED;
+        } else {
+          accessible = AccessLevel.ACCESSIBLE;
+        }
       } else if (supportedValues?.unaccessible?.enabled && !isAuthorized) {
         accessible = AccessLevel.UNACCESSIBLE;
       } else {
@@ -144,6 +181,7 @@ export const processAuthorizations = (
       __accessible: accessible,
     };
   });
+  return studiesWithAccessibleField;
 };
 
 export const processChartData = (

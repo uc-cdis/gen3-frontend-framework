@@ -1,4 +1,4 @@
-import { UserAuthMapping } from '../features/Discovery/types';
+import { ServiceAndMethod } from '@gen3/core';
 
 export const resourcePathFromProjectID = (projectID: string) => {
   const split = projectID.split('-');
@@ -11,7 +11,7 @@ export const userHasMethodForServiceOnResource = (
   method: string,
   service: string,
   resourcePath: string,
-  userAuthMapping: Record<string, Array<UserAuthMapping>> = {},
+  userAuthMapping: Record<string, Array<ServiceAndMethod>> = {},
 ) => {
   const actions = userAuthMapping[resourcePath];
   // accommodate for '*' logic

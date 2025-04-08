@@ -266,7 +266,7 @@ describe('ApiService', () => {
         }),
       );
 
-      const result = await apiService.deleteList('nonexistent');
+      const result = await apiService.deleteList('invalid-id');
 
       expect(result.isError).toBe(true);
       expect(result.status).toContain('DataLibraryAPI error');
