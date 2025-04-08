@@ -12,6 +12,7 @@ export interface AnalysisToolConfiguration {
   count?: number; // TODO replace with function
   countUnits?: string;
   cardType?: 'regular' | 'compact';
+  btnText?: string;
 }
 
 export interface AnalysisCenterConfiguration {
