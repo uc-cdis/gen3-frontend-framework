@@ -1,7 +1,6 @@
 import {
   DataLibrary,
   DatalistAsAPIItems,
-  LibraryListItemsGroupedByDataset,
   UpdateDataLibraryListParams,
 } from '../types';
 
@@ -22,8 +21,4 @@ export interface StorageService<T = DataLibrary> {
   updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus<T>>;
   deleteList(id: string): Promise<ReturnStatus<T>>;
   clearLists(): Promise<ReturnStatus<T>>;
-}
-
-export interface UpdateListParams extends LibraryListItemsGroupedByDataset {
-  id: string;
 }

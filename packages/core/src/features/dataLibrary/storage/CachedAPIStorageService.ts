@@ -1,21 +1,25 @@
 import { ReturnStatus, StorageService } from './types';
-import { DatalistAsAPIItems, UpdateDataLibraryListParams } from '../types';
+import {
+  DataLibraryStoreMode,
+  DatalistAsAPIItems,
+  UpdateDataLibraryListParams,
+} from '../types';
 import { LocalStorageService } from './LocalStorageService';
 import { APIStorageService } from './APIStorageService';
 
 export class CachedAPIService implements StorageService {
-  private useAPI: boolean;
+  private storageMode: DataLibraryStoreMode;
   private localStorageDataLibrary: LocalStorageService;
   private apiDataLibrary: APIStorageService;
 
-  constructor() {
-    this.useAPI = false;
+  constructor(mode: DataLibraryStoreMode = DataLibraryStoreMode.ApiOnly) {
+    this.storageMode = mode;
     this.localStorageDataLibrary = new LocalStorageService(); // always update local storage
     this.apiDataLibrary = new APIStorageService();
   }
 
-  async setUseAPI(useAPI: boolean) {
-    this.useAPI = useAPI;
+  async setStorageMode(mode: DataLibraryStoreMode) {
+    this.storageMode = mode;
     //if (useAPI) {
     //  await this.syncApiAndLocal();
     // }
@@ -77,9 +81,10 @@ export class CachedAPIService implements StorageService {
           lists: undefined,
         };
       }
-      await this.localStorageDataLibrary.cacheLists({
-        lists: apiResults?.lists ?? {},
-      });
+      if (this.storageMode === DataLibraryStoreMode.ApiAndLocal)
+        await this.localStorageDataLibrary.cacheLists({
+          lists: apiResults?.lists ?? {},
+        });
     }
     return await this.localStorageDataLibrary.getLists();
   }

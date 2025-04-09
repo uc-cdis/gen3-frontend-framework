@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DataLibrary,
-  // DataLibraryStoreMode,
+  DataLibraryStoreMode,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
@@ -10,18 +10,16 @@ import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
-import { CachedAPIService } from './storage/dataLibraryCachedAPI';
+import { CachedAPIService } from './storage/CachedAPIStorageService';
 import { StorageError } from './storage/types';
 
 interface UseDataLibraryOptions {
-  requiresAPI: boolean;
-  // storageMode: DataLibraryStoreMode;
+  storageMode: DataLibraryStoreMode;
 }
 
 const useDataLibrary = (
   options: UseDataLibraryOptions = {
-    requiresAPI: false,
-    // storageMode: DataLibraryStoreMode.ApiAndLocal,
+    storageMode: DataLibraryStoreMode.ApiOnly,
   },
 ) => {
   // Track login state

@@ -14,6 +14,7 @@ import {
   DataLibraryAPI,
   DatalistAsAPIItems,
 } from '../types';
+import { BuildLists } from '../utils';
 
 interface FetchJSONResponse {
   data?: unknown;
@@ -162,8 +163,9 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
       };
     }
     if (isDataLibraryAPIResponse(data)) {
+      const datalists = BuildLists(data);
       return {
-        lists: data.lists,
+        lists: datalists,
         status: 'success',
       };
     }
