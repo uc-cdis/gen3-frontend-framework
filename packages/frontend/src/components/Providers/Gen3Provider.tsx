@@ -22,14 +22,6 @@ export const createMantineTheme = (
   fonts: Fonts,
   colors: Record<string, TenStringArray>,
 ) => {
-  console.log(
-    'colors',
-    Object.fromEntries(
-      Object.entries(colors).map(([key, values]) =>
-        values ? [key, Object.values(values)] : [],
-      ),
-    ),
-  );
   const theme = createTheme({
     // use V2 font in MantineProvider
     fontFamily: fonts.fontFamily,

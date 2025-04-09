@@ -55,8 +55,8 @@ export const DataAccessCellRenderer = (
     return (
       <Tooltip label={buildTooltip('You have mixed acccess')}>
         <Group>
-          <LockedIcon color="utility.3"></LockedIcon>
-          <UnlockedIcon className="text-utility-success"></UnlockedIcon>
+          <LockedIcon className="text-utility-warning"></LockedIcon>
+          <UnlockedIcon className="text-utility-warning"></UnlockedIcon>
         </Group>
       </Tooltip>
     );
@@ -87,12 +87,12 @@ export const DataAccessCellRenderer = (
     return (
       <Tooltip
         label={buildTooltip(
-          'You have access to this study',
-          `read access to ${authorization}`,
+          'You currently do not have access to this study',
+          `you need read access to ${authorization}`,
         )}
       >
         <div>
-          <LockedIcon co className="text-utility-error"></LockedIcon>
+          <LockedIcon className="text-utility-error"></LockedIcon>
         </div>
       </Tooltip>
     );
