@@ -1,8 +1,13 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { gen3Api } from '../gen3';
 import { GEN3_DATA_LIBRARY_API } from '../../constants';
-import { DataLibraryItems, Datalist, DataLibraryAPIResponse } from './types';
+import { DataLibrary, Datalist, DataLibraryAPIResponse } from './types';
 import { BuildLists } from './utils';
+
+interface AddUpdateListParams {
+  id: string;
+  list: DatalistUpdate;
+}
 
 const TAGS = 'dataLibrary';
 
@@ -21,7 +26,7 @@ export const dataLibraryTags = gen3Api.enhanceEndpoints({
  */
 export const dataLibraryApi = dataLibraryTags.injectEndpoints({
   endpoints: (builder) => ({
-    getDataLibraryLists: builder.query<DataLibraryItems, void>({
+    getDataLibraryLists: builder.query<ReturnStatus, void>({
       query: () => `${GEN3_DATA_LIBRARY_API}`,
       transformResponse: (res: DataLibraryAPIResponse) => {
         return { lists: BuildLists(res) };
