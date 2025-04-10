@@ -25,6 +25,7 @@ const useDataLibrary = (
   // Track login state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState<string | null>(null);
   const [error, setError] = useState<StorageError | null>(null);
   const [lists, setLists] = useState<DataLibrary>({});
 
@@ -57,18 +58,17 @@ const useDataLibrary = (
   );
 
   const handleErrorOrSetLists = useCallback(
-    async (isError?: boolean, status?: string) => {
-      if (isError) {
-        setError({ isError, status });
+    async (error: StorageError) => {
+      if (error.isError) {
+        setError(error);
       } else {
         const {
           lists,
           isError: hasGetListsError,
-          status: ghetListsStatus,
+          status: getListsStatus,
         } = await dataLibraryStoreAPI.getLists();
-        // Set initial data from localStorage
         if (hasGetListsError) {
-          setError({ isError: hasGetListsError, status: ghetListsStatus });
+          setError({ isError: hasGetListsError, status: getListsStatus });
         } else {
           setLists(lists ?? {});
           setError(null);
@@ -92,7 +92,6 @@ const useDataLibrary = (
         if (isError) {
           setError({ isError, status });
         } else {
-          // Set initial data from localStorage
           setLists(lists ?? {});
           setError(null);
         }
@@ -123,8 +122,8 @@ const useDataLibrary = (
       };
 
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.addList(namedItems);
-      await handleErrorOrSetLists(isError, status);
+      const error = await dataLibraryStoreAPI.addList(namedItems);
+      await handleErrorOrSetLists(error);
       setIsLoading(false);
     },
     [dataLibraryStoreAPI, generateUniqueName, handleErrorOrSetLists],
@@ -134,13 +133,13 @@ const useDataLibrary = (
     async (payload: DataListUpdate) => {
       const flattend = flattenDataList(payload);
 
-      setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.updateList(
-        payload.id,
-        { name: payload.name, items: flattend.items },
-      );
-      await handleErrorOrSetLists(isError, status);
-      setIsLoading(false);
+      setIsUpdating(payload.id);
+      const error = await dataLibraryStoreAPI.updateList(payload.id, {
+        name: payload.name,
+        items: flattend.items,
+      });
+      await handleErrorOrSetLists(error);
+      setIsUpdating(null);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
   );
@@ -148,8 +147,8 @@ const useDataLibrary = (
   const deleteListFromDataLibrary = useCallback(
     async (id: string) => {
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.deleteList(id);
-      await handleErrorOrSetLists(isError, status);
+      const error = await dataLibraryStoreAPI.deleteList(id);
+      await handleErrorOrSetLists(error);
       setIsLoading(false);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
@@ -157,10 +156,18 @@ const useDataLibrary = (
 
   const clearLibrary = useCallback(async () => {
     setIsLoading(true);
-    const { isError, status } = await dataLibraryStoreAPI.clearLists();
-    await handleErrorOrSetLists(isError, status);
+    const error = await dataLibraryStoreAPI.clearLists();
+    await handleErrorOrSetLists(error);
     setIsLoading(false);
-  }, []);
+  }, [dataLibraryStoreAPI, handleErrorOrSetLists]);
+
+  const getDatalist = useCallback(
+    (id: string) => {
+      console.log('lists', lists);
+      return lists[id];
+    },
+    [lists],
+  );
 
   // Handle setting all lists at once (like when loading sample data)
   const setAllListsInDataLibrary = useCallback(
@@ -168,8 +175,8 @@ const useDataLibrary = (
       const lists = data.map((x) => flattenDataList(x));
 
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.setAllLists(lists);
-      await handleErrorOrSetLists(isError, status);
+      const error = await dataLibraryStoreAPI.setAllLists(lists);
+      await handleErrorOrSetLists(error);
       setIsLoading(false);
     },
     [dataLibraryStoreAPI, handleErrorOrSetLists],
@@ -182,6 +189,7 @@ const useDataLibrary = (
   return {
     dataLibrary: lists,
     isLoading,
+    isUpdating,
     error,
     addListToDataLibrary,
     updateListInDataLibrary,
@@ -189,7 +197,7 @@ const useDataLibrary = (
     clearLibrary,
     setAllListsInDataLibrary,
     setLoginState,
-    isLoggedIn,
+    getDatalist,
   };
 };
 

@@ -103,7 +103,7 @@ describe('ApiService', () => {
       const result = await apiService.getLists();
 
       expect(result.isError).toBeUndefined();
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
       expect(result.lists).toEqual(
         BuildLists(APIListData as unknown as DataLibraryAPIResponse),
       );
@@ -124,7 +124,7 @@ describe('ApiService', () => {
       const result = await apiService.getLists();
 
       expect(result.isError).toBe(true);
-      expect(result.status).toBe('Internal Server Error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
 
@@ -142,7 +142,7 @@ describe('ApiService', () => {
 
       const result = await apiService.getLists();
 
-      expect(result.status).toBe('no list returned');
+      expect(result.message).toBe('no list returned');
       expect(result.lists).toEqual({});
     });
   });
@@ -162,7 +162,7 @@ describe('ApiService', () => {
 
       const result = await apiService.addList(ListToAdd);
 
-      expect(result.status).toBe('success');
+      expect(result.message).toBe('success');
       expect(result.lists).toBeDefined();
     });
 
@@ -181,7 +181,7 @@ describe('ApiService', () => {
       const result = await apiService.addList(ListToAdd);
 
       expect(result.isError).toBe(true);
-      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -217,7 +217,7 @@ describe('ApiService', () => {
 
       const result = await apiService.updateList('list-id-1', updatedList);
 
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
       expect(result.lists).toBeDefined();
     });
 
@@ -238,7 +238,7 @@ describe('ApiService', () => {
         items: ListToAdd.items,
       });
 
-      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.status).toBe(404);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -252,7 +252,7 @@ describe('ApiService', () => {
       );
 
       const result = await apiService.deleteList('list-id-1');
-      expect(result.status).toBe('success');
+      expect(result.message).toBe('success');
     });
 
     it('should handle API errors when deleting a list', async () => {
@@ -270,7 +270,7 @@ describe('ApiService', () => {
       const result = await apiService.deleteList('invalid-id');
 
       expect(result.isError).toBe(true);
-      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -287,7 +287,8 @@ describe('ApiService', () => {
 
       const result = await apiService.clearLists();
 
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
+      expect(result.message).toBe('success');
     });
 
     it('should handle API errors when clearing lists', async () => {
@@ -305,7 +306,7 @@ describe('ApiService', () => {
       const result = await apiService.clearLists();
 
       expect(result.isError).toBe(true);
-      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -322,7 +323,7 @@ describe('ApiService', () => {
         }),
       );
       const result = await apiService.setAllLists(listsToSet);
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
     });
 
     it('should handle API errors when setting all lists', async () => {
@@ -340,7 +341,7 @@ describe('ApiService', () => {
       const result = await apiService.setAllLists([ListToAdd]);
 
       expect(result.isError).toBe(true);
-      expect(result.status).toContain('DataLibraryAPI error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
   });
@@ -360,7 +361,8 @@ describe('ApiService', () => {
 
       const result = await apiService.getList('test-list');
 
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
+      expect(result.message).toBe('success');
       expect(result.lists).toBeDefined();
     });
 
@@ -379,7 +381,7 @@ describe('ApiService', () => {
       const result = await apiService.getList('invalid-id');
 
       expect(result.isError).toBe(true);
-      expect(result.status).toBe('Not Found');
+      expect(result.status).toBe(404);
       expect(result.lists).toBeUndefined();
     });
 
@@ -398,7 +400,7 @@ describe('ApiService', () => {
       const result = await apiService.getList('list-id-1');
 
       expect(result.isError).toBe(true);
-      expect(result.status).toBe('Unknown Error');
+      expect(result.status).toBe(500);
       expect(result.lists).toBeUndefined();
     });
   });

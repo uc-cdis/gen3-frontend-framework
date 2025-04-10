@@ -1,6 +1,7 @@
 import React from 'react';
 import { Accordion, Center, LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { useDataLibrarySelection } from './selection/SelectionContext';
@@ -17,11 +18,14 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   const {
     dataLibrary,
     isLoading,
+    isUpdating,
     error: dataLibraryError,
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
   } = useDataLibrary();
+
+  console.log(dataLibrary);
 
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
@@ -32,15 +36,22 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   };
 
   if (dataLibraryError?.isError) {
-    const message =
-      dataLibraryError?.status ?? 'There was a error getting the library';
-    return (
-      <div className="flex flex-col w-full ml-2">
-        <Center>
-          <ErrorCard message={message} />
-        </Center>
-      </div>
-    );
+    if (dataLibraryError?.status === 401)
+      return (
+        <div className="flex flex-col w-full ml-2">
+          <Center>
+            <ErrorCard message="You are not authorized to access the library. Try logging in again." />
+          </Center>
+        </div>
+      );
+    else
+      notifications.show({
+        position: 'top-center',
+        color: 'red',
+        title: 'Data Library Error',
+        message: dataLibraryError?.message,
+        autoClose: 2000,
+      });
   }
 
   return (
@@ -56,6 +67,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
         gatherData={gatherData}
       />
       <div className="flex items-center">
+        <LoadingOverlay visible={isLoading} />
         <Accordion
           chevronPosition="left"
           classNames={{
@@ -70,6 +82,9 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
                   dataList={datalist}
                   key={datalist.id}
                   size={size}
+                  isUpdating={isUpdating}
+                  updateListInDataLibrary={updateListInDataLibrary}
+                  deleteListFromDataLibrary={deleteListFromDataLibrary}
                 />
               );
             })}

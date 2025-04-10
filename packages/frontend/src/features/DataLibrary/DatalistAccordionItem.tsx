@@ -4,14 +4,12 @@ import {
   AdditionalDataItem,
   CohortItem,
   Datalist,
-  DatasetOrCohort,
   FileItem,
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
   DataListUpdate,
-  useDataLibrary,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -19,12 +17,15 @@ import {
   useDataLibrarySelection,
 } from './selection/SelectionContext';
 import { selectAllListItems } from './selection/selection';
-import { Accordion, Loader } from '@mantine/core';
+import { Accordion, LoadingOverlay } from '@mantine/core';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
+  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
+  deleteListFromDataLibrary: (id: string) => Promise<void>;
+  isUpdating: string | null;
   size?: string;
 }
 
@@ -38,6 +39,9 @@ interface DatalistAccordionProps {
  */
 export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
+  updateListInDataLibrary,
+  deleteListFromDataLibrary,
+  isUpdating,
   size = 'sm',
 }) => {
   const [selectedState, setSelectedState] =
@@ -50,9 +54,6 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
 
   const { selections, updateSelections, removeListMember, removeList } =
     useDataLibrarySelection();
-
-  const { isLoading, updateListInDataLibrary, deleteListFromDataLibrary } =
-    useDataLibrary();
 
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary({
@@ -142,7 +143,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [itemId]: _removedKey, ...newObject } = dataList.items;
     await updateListInDataLibrary({
-      id: itemId,
+      id: listId,
       name: dataList.name,
       items: newObject,
     });
@@ -163,7 +164,13 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   };
 
   return (
-    <Accordion.Item value={listName} key={listName} className="group">
+    <Accordion.Item
+      value={listName}
+      key={listName}
+      className="group"
+      pos="relative"
+    >
+      <LoadingOverlay visible={isUpdating === listId} />
       <DatasetAccordionControl
         listName={listName}
         numberOfItems={numberOfItemsInList}

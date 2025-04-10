@@ -1,12 +1,13 @@
 import { nanoid } from '@reduxjs/toolkit';
-import { gen3Api } from '../gen3';
-import { GEN3_DATA_LIBRARY_API } from '../../constants';
-import { DataLibrary, Datalist, DataLibraryAPIResponse } from './types';
-import { BuildLists } from './utils';
+import { gen3Api } from '../../gen3';
+import { GEN3_DATA_LIBRARY_API } from '../../../constants';
+import { Datalist, DataLibraryAPIResponse, DatalistAsAPIItems } from '../types';
+import { BuildLists } from '../utils';
+import { ReturnStatus } from './types';
 
 interface AddUpdateListParams {
   id: string;
-  list: DatalistUpdate;
+  list: DatalistAsAPIItems;
 }
 
 const TAGS = 'dataLibrary';
@@ -24,7 +25,7 @@ export const dataLibraryTags = gen3Api.enhanceEndpoints({
  * @param updateList args: id ListItemDefinition updates a list
  * @param deleteList args: id deletes the list by id
  */
-export const dataLibraryApi = dataLibraryTags.injectEndpoints({
+export const RTKQ_APIStorageService = dataLibraryTags.injectEndpoints({
   endpoints: (builder) => ({
     getDataLibraryLists: builder.query<ReturnStatus, void>({
       query: () => `${GEN3_DATA_LIBRARY_API}`,
@@ -42,7 +43,7 @@ export const dataLibraryApi = dataLibraryTags.injectEndpoints({
       transformResponse: (res: DataLibraryAPIResponse) =>
         BuildLists(res)?.lists,
     }),
-    addAllDataLibraryLists: builder.mutation<void, LoadAllListData>({
+    addAllDataLibraryLists: builder.mutation<void, Array<DatalistAsAPIItems>>({
       query: (lists) => ({
         url: `${GEN3_DATA_LIBRARY_API}`,
         method: 'POST',
@@ -116,4 +117,4 @@ export const {
   useDeleteDataLibraryListMutation,
   useDeleteAllDataLibraryMutation,
   useUpdateDataLibraryListMutation,
-} = dataLibraryApi;
+} = RTKQ_APIStorageService;

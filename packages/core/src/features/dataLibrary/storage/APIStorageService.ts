@@ -1,4 +1,3 @@
-import { nanoid } from '@reduxjs/toolkit';
 import {
   fetchJSONDataFromURL,
   HTTPError,
@@ -59,44 +58,73 @@ const responseFromMutation = <T = DataLibrary>(
   if (responseReceived.error) {
     return {
       isError: true,
-      status: `DataLibraryAPI error: ${responseReceived.error.status} ${responseReceived.error.message}`,
+      ...responseReceived.error,
     };
   }
   return {
     lists: responseReceived.data as unknown as T,
-    status: 'success',
+    message: 'success',
+    status: 200,
   };
 };
 
 export class APIStorageService implements StorageService<DataLibrary> {
   private readonly apiBaseUrl: string;
+  private pendingRequests: Map<string, Promise<FetchJSONResponse>> = new Map();
 
   constructor(apiBaseUrl = `${GEN3_DATA_LIBRARY_API}`) {
     this.apiBaseUrl = apiBaseUrl;
   }
 
+  private async dedupedRequest(
+    url: string,
+    method: HttpMethod = HttpMethod.GET,
+    body: unknown = undefined,
+  ): Promise<FetchJSONResponse> {
+    // Create a unique key for this request
+    const requestKey = `${method}:${url}:${body ? JSON.stringify(body) : ''}`;
+
+    // If this exact request is already in progress, return the pending promise
+    if (this.pendingRequests.has(requestKey)) {
+      return this.pendingRequests.get(requestKey)!;
+    }
+
+    // Otherwise, make the request and store the promise
+    const requestPromise = fetchFromDataLibraryAPI(url, method, body);
+    this.pendingRequests.set(requestKey, requestPromise);
+
+    try {
+      // Wait for the request to complete
+      const result = await requestPromise;
+      return result;
+    } finally {
+      // Remove the request from pending requests after it completes
+      this.pendingRequests.delete(requestKey);
+    }
+  }
+
   async getLists(): Promise<ReturnStatus> {
-    const { data, error } = await fetchFromDataLibraryAPI(`${this.apiBaseUrl}`);
+    const { data, error } = await this.dedupedRequest(`${this.apiBaseUrl}`);
     if (error) {
       return {
         isError: true,
-        status: error.message,
+        ...error,
       };
     }
     if (data && isDataLibraryAPIResponse(data)) {
       const datalists = BuildLists(data);
       return {
         lists: datalists,
-        status: 'success',
+        status: 200,
+        message: 'success',
       };
     }
-    return { lists: {}, status: 'no list returned' };
+    return { lists: {}, status: 200, message: 'no list returned' };
   }
 
   async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
     const listToAdd = {
       ...list,
-      id: nanoid(),
     };
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}`,
@@ -136,8 +164,6 @@ export class APIStorageService implements StorageService<DataLibrary> {
     return responseFromMutation(response);
   }
 
-  // Additional methods for more complex operations
-
   async setAllLists(lists: Array<DatalistAsAPIItems>): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,
@@ -155,19 +181,21 @@ export class APIStorageService implements StorageService<DataLibrary> {
     if (error) {
       return {
         isError: true,
-        status: error.message,
+        ...error,
       };
     }
     if (isDataLibraryAPIResponse(data)) {
       const datalists = BuildLists(data);
       return {
         lists: datalists,
-        status: 'success',
+        status: 200,
+        message: 'success',
       };
     }
     return {
       isError: true,
-      status: 'Unknown error',
+      status: 500,
+      message: `Unknown error getting list ${id}`,
     };
   }
 }

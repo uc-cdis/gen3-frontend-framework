@@ -54,9 +54,10 @@ export class LocalStorageService implements StorageService {
         tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
       }
       await tx.done;
-      return { status: 'success' };
-    } catch (error: unknown) {
-      return { isError: true, status: 'unable to add lists' };
+      return { status: 200, message: 'success' };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error: unknown) {
+      return { isError: true, status: 500, message: 'unable to add lists' };
     }
   };
 
@@ -67,7 +68,8 @@ export class LocalStorageService implements StorageService {
     const lists = (await store.get(id)) as DatalistAPI;
     if (lists) {
       return {
-        status: 'success',
+        status: 200,
+        message: 'success',
         lists: {
           [id]: {
             id: id,
@@ -77,7 +79,7 @@ export class LocalStorageService implements StorageService {
         },
       };
     } else {
-      return { isError: true, status: `${id} does not exist` };
+      return { isError: true, status: 500, message: `${id} does not exist` };
     }
   }
 
@@ -90,7 +92,8 @@ export class LocalStorageService implements StorageService {
     if (!lists) {
       return {
         isError: true,
-        status: 'no lists returned',
+        status: 500,
+        message: 'no lists returned',
       };
     }
     const listMap = lists.reduce((acc: DataLibraryAPI, x) => {
@@ -100,7 +103,8 @@ export class LocalStorageService implements StorageService {
     }, {});
     const datalists = BuildLists({ lists: listMap });
     return {
-      status: 'success',
+      status: 200,
+      message: 'success',
       lists: datalists,
     };
   }
@@ -125,11 +129,12 @@ export class LocalStorageService implements StorageService {
         updated_time: timestamp,
       });
       await tx.done;
-      return { status: 'list added' };
+      return { status: 200, message: 'list added' };
     } catch (_error: unknown) {
       return {
         isError: true,
-        status: `unable to add list ${list?.name ?? 'New List'}`,
+        status: 500,
+        message: `unable to add list ${list?.name ?? 'New List'}`,
       };
     }
   }
@@ -161,7 +166,7 @@ export class LocalStorageService implements StorageService {
 
       store.put(updated);
       await tx.done;
-      return { status: 'success' };
+      return { status: 200, message: 'success' };
     } catch (error: unknown) {
       let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
@@ -169,7 +174,8 @@ export class LocalStorageService implements StorageService {
       }
       return {
         isError: true,
-        status: `Unable to update list: ${id}. Error: ${errorMessage}`,
+        status: 500,
+        message: `Unable to update list: ${id}. Error: ${errorMessage}`,
       };
     }
   }
@@ -187,13 +193,14 @@ export class LocalStorageService implements StorageService {
 
       store.delete(id);
       await tx.done;
-      return { status: `${id} deleted` };
+      return { status: 200, message: `${id} deleted` };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       return {
         isError: true,
-        status: `Unable to delete list: ${id}. Error: ${errorMessage}`,
+        status: 500,
+        message: `Unable to delete list: ${id}. Error: ${errorMessage}`,
       };
     }
   }
@@ -203,13 +210,14 @@ export class LocalStorageService implements StorageService {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       tx.objectStore(STORE_NAME).clear();
       await tx.done;
-      return { status: 'list cleared' };
+      return { status: 200, message: 'list cleared' };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       return {
         isError: true,
-        status: `unable to clear library. Error: ${errorMessage}`,
+        status: 500,
+        message: `Unable to clear library. Error: ${errorMessage}`,
       };
     }
   }
@@ -218,7 +226,8 @@ export class LocalStorageService implements StorageService {
     if (!data || typeof data !== 'object') {
       return {
         isError: true,
-        status: 'Invalid or missing lists property in request',
+        status: 500,
+        message: 'Invalid or missing lists property in request',
       };
     }
 
@@ -241,13 +250,14 @@ export class LocalStorageService implements StorageService {
         tx.objectStore(STORE_NAME).put({ id, ...(list as object) });
       }
       await tx.done;
-      return { status: 'success' };
+      return { status: 200, message: 'success' };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       return {
         isError: true,
-        status: `unable to cache library to local storage. Error: ${errorMessage}`,
+        status: 200,
+        message: `unable to cache library to local storage. Error: ${errorMessage}`,
       };
     }
   }
@@ -256,7 +266,8 @@ export class LocalStorageService implements StorageService {
     if (!data || typeof data !== 'object') {
       return {
         isError: true,
-        status: 'Invalid or missing lists property in request',
+        status: 500,
+        message: 'Invalid or missing lists property in request',
       };
     }
     try {
@@ -264,13 +275,14 @@ export class LocalStorageService implements StorageService {
       const tx = db.transaction(STORE_NAME, 'readwrite');
       tx.objectStore(STORE_NAME).put({ id: id, ...(data as object) });
       await tx.done;
-      return { status: 'success' };
+      return { status: 200, message: 'success' };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       return {
         isError: true,
-        status: `unable to clear library. Error: ${errorMessage}`,
+        status: 500,
+        message: `unable to clear library. Error: ${errorMessage}`,
       };
     }
   }
