@@ -57,7 +57,6 @@ export const guppyApi = createApi({
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
       ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };

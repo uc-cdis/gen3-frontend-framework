@@ -81,7 +81,6 @@ export const isDatalistAPI = (value: unknown): value is DatalistAPI => {
   // Check required properties in DataItemBaseData
   if (
     typeof data.name !== 'string' ||
-    typeof data.id !== 'string' ||
     typeof data.created_time !== 'string' ||
     typeof data.updated_time !== 'string' ||
     typeof data.version !== 'number' ||
@@ -126,7 +125,6 @@ export type LibraryListItemsAPI = Record<
 
 export interface DatalistBase {
   name: string;
-  id: string;
   created_time: string;
   updated_time: string;
   authz: AuthZAccess;
@@ -147,8 +145,10 @@ export interface DataListUpdate extends LibraryListItemsGroupedByDataset {
   id: string;
 }
 
-export type Datalist = DatalistBase & LibraryListItemsGroupedByDataset;
+export type Datalist = DatalistBase &
+  LibraryListItemsGroupedByDataset & { id: string };
 export type DatalistAPI = DatalistBase & DatalistAsAPIItems;
+export type DatalistWithIdAPI = DatalistAPI & { id: string };
 // DataLibrary has been combined into data sets using BuildList
 export type DataLibrary = Record<string, Datalist>;
 

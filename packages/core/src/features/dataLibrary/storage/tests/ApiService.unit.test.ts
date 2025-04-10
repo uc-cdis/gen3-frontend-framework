@@ -6,7 +6,8 @@ import {
 } from '../APIStorageService';
 import { GEN3_API, GEN3_DATA_LIBRARY_API } from '../../../../constants';
 import { APIListData, ListToAdd, SecondList } from './data';
-import { DatalistAsAPIItems, UpdateDataLibraryListParams } from '../../types';
+import { DataLibraryAPIResponse, DatalistAsAPIItems } from '../../types';
+import { BuildLists } from '../../utils';
 
 jest.mock('@reduxjs/toolkit', () => {
   const actualToolkit = jest.requireActual('@reduxjs/toolkit');
@@ -95,7 +96,7 @@ describe('ApiService', () => {
     it('should return all lists successfully', async () => {
       server.use(
         http.get(`${GEN3_DATA_LIBRARY_API}`, () => {
-          return HttpResponse.json({ lists: APIListData });
+          return HttpResponse.json(APIListData);
         }),
       );
 
@@ -103,7 +104,9 @@ describe('ApiService', () => {
 
       expect(result.isError).toBeUndefined();
       expect(result.status).toBe('success');
-      expect(result.lists).toEqual(APIListData);
+      expect(result.lists).toEqual(
+        BuildLists(APIListData as unknown as DataLibraryAPIResponse),
+      );
     });
 
     it('should handle API errors', async () => {
@@ -185,8 +188,7 @@ describe('ApiService', () => {
 
   describe('updateList', () => {
     it('should update a list successfully', async () => {
-      const updatedList: UpdateDataLibraryListParams = {
-        id: 'list-id-1',
+      const updatedList = {
         name: 'Updated List Name',
         items: ListToAdd.items,
       };
@@ -213,7 +215,7 @@ describe('ApiService', () => {
         }),
       );
 
-      const result = await apiService.updateList(updatedList);
+      const result = await apiService.updateList('list-id-1', updatedList);
 
       expect(result.status).toBe('success');
       expect(result.lists).toBeDefined();
@@ -231,8 +233,7 @@ describe('ApiService', () => {
         }),
       );
 
-      const result = await apiService.updateList({
-        id: 'invalid-id',
+      const result = await apiService.updateList('invalid-id', {
         name: 'New Name',
         items: ListToAdd.items,
       });

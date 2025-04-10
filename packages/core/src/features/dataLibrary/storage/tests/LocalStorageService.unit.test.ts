@@ -1,6 +1,5 @@
 import 'fake-indexeddb/auto';
 import { LocalStorageService } from '../LocalStorageService';
-import { LibraryListItemsAPI } from '../../types';
 import { ListToAdd, SecondList } from './data';
 
 jest.mock('@reduxjs/toolkit', () => {
@@ -46,10 +45,9 @@ describe('LocalStorageService', () => {
   });
 
   it('should update an existing list', async () => {
-    const result = await service.updateList({
-      id: 'mocked-nanoid-0',
+    const result = await service.updateList('mocked-nanoid-0', {
       name: 'Updated List',
-      items: ListToAdd.items as unknown as LibraryListItemsAPI,
+      items: ListToAdd.items,
     });
     expect(result.status).toBe('success');
     const resultList = await service.getList('mocked-nanoid-0');
@@ -59,8 +57,7 @@ describe('LocalStorageService', () => {
   });
 
   it('should fail to update a non-existent list', async () => {
-    const result = await service.updateList({
-      id: 'non-existent-id',
+    const result = await service.updateList('non-existent-id', {
       name: 'New Name',
       items: {},
     });
@@ -108,7 +105,7 @@ describe('LocalStorageService', () => {
         },
       },
     };
-    const result = await service.cacheLists({ lists });
+    const result = await service.cacheLists(lists);
     expect(result.status).toBe('success');
     const resultList = await service.getLists();
     expect(resultList.status).toBe('success');

@@ -209,7 +209,7 @@ export const fetchJSONDataFromURL = async (
     method,
     headers: requestHeaders,
     body: ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())
-      ? JSON.stringify(body)
+      ? body
       : undefined,
   } as RequestInit);
 

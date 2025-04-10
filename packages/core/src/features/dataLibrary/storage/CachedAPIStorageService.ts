@@ -1,92 +1,34 @@
 import { ReturnStatus, StorageService } from './types';
-import {
-  DataLibraryStoreMode,
-  DatalistAsAPIItems,
-  UpdateDataLibraryListParams,
-} from '../types';
+import { DatalistAsAPIItems } from '../types';
 import { LocalStorageService } from './LocalStorageService';
 import { APIStorageService } from './APIStorageService';
+import { convertDataLibraryToDataLibraryAPI } from '../utils';
 
 export class CachedAPIService implements StorageService {
-  private storageMode: DataLibraryStoreMode;
   private localStorageDataLibrary: LocalStorageService;
   private apiDataLibrary: APIStorageService;
-
-  constructor(mode: DataLibraryStoreMode = DataLibraryStoreMode.ApiOnly) {
-    this.storageMode = mode;
+  constructor() {
     this.localStorageDataLibrary = new LocalStorageService(); // always update local storage
     this.apiDataLibrary = new APIStorageService();
   }
 
-  async setStorageMode(mode: DataLibraryStoreMode) {
-    this.storageMode = mode;
-    //if (useAPI) {
-    //  await this.syncApiAndLocal();
-    // }
-  }
-
-  // private async syncApiAndLocal() {
-  //   const { lists: localData, isError: localError } =
-  //     await this.localStorageDataLibrary.getLists();
-  //   const { lists: apiData, isError: apiError } =
-  //     await this.apiDataLibrary.getLists();
-  //
-  //   if (localError || apiError) {
-  //     return;
-  //   }
-  //
-  //   const mergedData: Record<string, Datalist> = { ...localData };
-  //
-  //   // First, update any existing items with newer versions from API
-  //   Object.values(apiData?.lists ?? {}).forEach((apiList) => {
-  //     const id = apiList.id as keyof DataLibrary;
-  //     const localList = localData?.[id];
-  //     if (
-  //       !localList ||
-  //       storage Date(apiList.updatedTime) > storage Date(localList.updatedTime)
-  //     ) {
-  //       mergedData[id] = apiList;
-  //     }
-  //   });
-  //
-  //   //  Push local-only changes to API
-  //   const syncPromises: Promise<any>[] = [];
-  //
-  //   for (const [id, localList] of Object.entries(localData?.lists ?? {})) {
-  //     if (!apiData?.[id]) {
-  //       // This list exists locally but not in API, so push it to API
-  //       syncPromises.push(this.apiDataLibrary.addList(localList));
-  //     } else if (
-  //       storage Date(localList.updatedTime) > storage Date(apiData[id].updatedTime)
-  //     ) {
-  //       // Local list is newer than API, so update API
-  //       syncPromises.push(this.apiDataLibrary.updateList(localList));
-  //     }
-  //   }
-  //
-  //   // Wait for all API operations to complete
-  //   await Promise.all(syncPromises);
-  //   await this.localStorageDataLibrary.cacheLists({ lists: mergedData });
-  // }
-
   async getLists(): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      // do a network request to get the library
-      // get the remote list
-      const apiResults = await this.apiDataLibrary.getLists();
+    // do a network request to get the library
+    // get the remote list
+    const apiResults = await this.apiDataLibrary.getLists();
 
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
-      if (this.storageMode === DataLibraryStoreMode.ApiAndLocal)
-        await this.localStorageDataLibrary.cacheLists({
-          lists: apiResults?.lists ?? {},
-        });
+    if (apiResults.isError) {
+      return {
+        ...apiResults,
+        lists: undefined,
+      };
     }
-    return await this.localStorageDataLibrary.getLists();
+
+    const dataLibrary = convertDataLibraryToDataLibraryAPI(
+      apiResults?.lists ?? {},
+    );
+    await this.localStorageDataLibrary.cacheLists(dataLibrary);
+    return apiResults;
   }
 
   async getList(id: string): Promise<ReturnStatus> {
@@ -98,80 +40,73 @@ export class CachedAPIService implements StorageService {
   }
 
   async setAllLists(lists: Array<DatalistAsAPIItems>): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      const apiResults = await this.apiDataLibrary.setAllLists(lists);
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
-      await this.localStorageDataLibrary.cacheLists({
-        lists: apiResults?.lists ?? {},
-      });
-    }
-    return await this.localStorageDataLibrary.setAllLists(lists ?? {});
-  }
-
-  async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      // update the API list
-      const apiResults = await this.apiDataLibrary.addList(list);
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
-      const cacheResults = await this.localStorageDataLibrary.cacheLists({
-        lists: apiResults?.lists ?? {},
-      });
+    const apiResults = await this.apiDataLibrary.setAllLists(lists);
+    if (apiResults.isError) {
       return {
-        ...cacheResults,
+        ...apiResults,
         lists: undefined,
       };
     }
-    return await this.localStorageDataLibrary.addList(list);
+    const dataLibrary = convertDataLibraryToDataLibraryAPI(
+      apiResults?.lists ?? {},
+    );
+    await this.localStorageDataLibrary.cacheLists(dataLibrary);
+
+    return apiResults;
   }
 
-  async updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      const apiResults = await this.apiDataLibrary.updateList(list);
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
-      return await this.localStorageDataLibrary.cacheLists({
-        lists: apiResults?.lists ?? {},
-      });
+  async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
+    // update the API list
+    const apiResults = await this.apiDataLibrary.addList(list);
+    if (apiResults.isError) {
+      return {
+        ...apiResults,
+        lists: undefined,
+      };
     }
-    return await this.localStorageDataLibrary.updateList(list);
+    const cacheResults = await this.localStorageDataLibrary.addList(list);
+    return {
+      ...cacheResults,
+      lists: undefined,
+    };
+  }
+
+  async updateList(
+    id: string,
+    list: DatalistAsAPIItems,
+  ): Promise<ReturnStatus> {
+    const apiResults = await this.apiDataLibrary.updateList(id, list);
+    if (apiResults.isError) {
+      return {
+        ...apiResults,
+        lists: undefined,
+      };
+    }
+
+    return await this.localStorageDataLibrary.cacheList(
+      id,
+      (apiResults.lists as any) ?? {},
+    );
   }
 
   async deleteList(id: string): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      const apiResults = await this.apiDataLibrary.deleteList(id);
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
+    const apiResults = await this.apiDataLibrary.deleteList(id);
+    if (apiResults.isError) {
+      return {
+        ...apiResults,
+        lists: undefined,
+      };
     }
     return await this.localStorageDataLibrary.deleteList(id);
   }
 
   async clearLists(): Promise<ReturnStatus> {
-    if (this.useAPI) {
-      const apiResults = await this.apiDataLibrary.clearLists();
-      if (apiResults.isError) {
-        return {
-          ...apiResults,
-          lists: undefined,
-        };
-      }
+    const apiResults = await this.apiDataLibrary.clearLists();
+    if (apiResults.isError) {
+      return {
+        ...apiResults,
+        lists: undefined,
+      };
     }
     return await this.localStorageDataLibrary.clearLists();
   }

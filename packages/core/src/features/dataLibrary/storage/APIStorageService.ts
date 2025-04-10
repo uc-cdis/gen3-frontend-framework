@@ -8,10 +8,8 @@ import {
 import { GEN3_DATA_LIBRARY_API } from '../../../constants';
 import { ReturnStatus, StorageService } from './types';
 import {
-  UpdateDataLibraryListParams,
   isDataLibraryAPIResponse,
   DataLibrary,
-  DataLibraryAPI,
   DatalistAsAPIItems,
 } from '../types';
 import { BuildLists } from '../utils';
@@ -70,14 +68,14 @@ const responseFromMutation = <T = DataLibrary>(
   };
 };
 
-export class APIStorageService implements StorageService<DataLibraryAPI> {
+export class APIStorageService implements StorageService<DataLibrary> {
   private readonly apiBaseUrl: string;
 
   constructor(apiBaseUrl = `${GEN3_DATA_LIBRARY_API}`) {
     this.apiBaseUrl = apiBaseUrl;
   }
 
-  async getLists(): Promise<ReturnStatus<DataLibraryAPI>> {
+  async getLists(): Promise<ReturnStatus> {
     const { data, error } = await fetchFromDataLibraryAPI(`${this.apiBaseUrl}`);
     if (error) {
       return {
@@ -86,17 +84,16 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
       };
     }
     if (data && isDataLibraryAPIResponse(data)) {
+      const datalists = BuildLists(data);
       return {
-        lists: data.lists,
+        lists: datalists,
         status: 'success',
       };
     }
     return { lists: {}, status: 'no list returned' };
   }
 
-  async addList(
-    list: DatalistAsAPIItems,
-  ): Promise<ReturnStatus<DataLibraryAPI>> {
+  async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
     const listToAdd = {
       ...list,
       id: nanoid(),
@@ -111,17 +108,18 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
   }
 
   async updateList(
-    list: UpdateDataLibraryListParams,
-  ): Promise<ReturnStatus<DataLibraryAPI>> {
+    id: string,
+    list: DatalistAsAPIItems,
+  ): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
-      `${this.apiBaseUrl}/${list.id}`,
+      `${this.apiBaseUrl}/${id}`,
       HttpMethod.PUT,
       JSON.stringify(list),
     );
     return responseFromMutation(response);
   }
 
-  async deleteList(id: string): Promise<ReturnStatus<DataLibraryAPI>> {
+  async deleteList(id: string): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}/${id}`,
       HttpMethod.DELETE,
@@ -130,7 +128,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
     return responseFromMutation(response);
   }
 
-  async clearLists(): Promise<ReturnStatus<DataLibraryAPI>> {
+  async clearLists(): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,
       HttpMethod.DELETE,
@@ -140,9 +138,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
 
   // Additional methods for more complex operations
 
-  async setAllLists(
-    lists: Array<DatalistAsAPIItems>,
-  ): Promise<ReturnStatus<DataLibraryAPI>> {
+  async setAllLists(lists: Array<DatalistAsAPIItems>): Promise<ReturnStatus> {
     const response = await fetchFromDataLibraryAPI(
       this.apiBaseUrl,
       HttpMethod.POST,
@@ -151,7 +147,7 @@ export class APIStorageService implements StorageService<DataLibraryAPI> {
     return responseFromMutation(response);
   }
 
-  async getList(id: string): Promise<ReturnStatus<DataLibraryAPI>> {
+  async getList(id: string): Promise<ReturnStatus<DataLibrary>> {
     const { data, error } = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}/${id}`,
     );

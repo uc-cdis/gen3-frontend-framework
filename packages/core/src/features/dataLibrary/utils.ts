@@ -14,6 +14,7 @@ import {
   DatasetOrCohort,
   DataLibraryDataset,
   FileItem,
+  DataLibraryAPI,
 } from './types';
 import { parse } from 'graphql';
 import { JSONObject } from '../../types/';
@@ -206,6 +207,23 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
     }
   });
 
+  return result;
+};
+
+export const convertDataLibraryToDataLibraryAPI = (
+  dataLibrary: DataLibrary,
+): DataLibraryAPI => {
+  const result: DataLibraryAPI = {};
+  Object.entries(dataLibrary).forEach(([listId, list]) => {
+    result[listId] = {
+      name: list.name,
+      items: convertDatasetOrCohortToLibraryListItemsAPI(list.items),
+      version: list.version,
+      created_time: list.created_time,
+      updated_time: list.updated_time,
+      authz: list.authz,
+    };
+  });
   return result;
 };
 

@@ -3,9 +3,9 @@ import { ReturnStatus, StorageService } from './types';
 import {
   DatalistAPI,
   DataLibraryAPI,
-  UpdateDataLibraryListParams,
   isDatalistAPI,
   DatalistAsAPIItems,
+  DatalistWithIdAPI,
 } from '../types';
 import { BuildLists, getTimestamp } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
@@ -69,7 +69,8 @@ export class LocalStorageService implements StorageService {
       return {
         status: 'success',
         lists: {
-          [lists.id]: {
+          [id]: {
+            id: id,
             ...lists,
             items: lists.items as any,
           },
@@ -85,15 +86,16 @@ export class LocalStorageService implements StorageService {
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
 
-    const lists = (await store.getAll()) as Array<DatalistAPI>;
+    const lists = (await store.getAll()) as Array<DatalistWithIdAPI>;
     if (!lists) {
       return {
         isError: true,
         status: 'no lists returned',
       };
     }
-    const listMap = lists.reduce((acc: DataLibraryAPI, x: DatalistAPI) => {
-      acc[x.id] = x;
+    const listMap = lists.reduce((acc: DataLibraryAPI, x) => {
+      const { id } = x;
+      acc[id] = x;
       return acc;
     }, {});
     const datalists = BuildLists({ lists: listMap });
@@ -132,8 +134,11 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async updateList(update: UpdateDataLibraryListParams): Promise<ReturnStatus> {
-    const { id, name, items } = update;
+  async updateList(
+    id: string,
+    update: DatalistAsAPIItems,
+  ): Promise<ReturnStatus> {
+    const { name, items } = update;
     try {
       const db = await this.getDb();
       const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -209,19 +214,19 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  async cacheLists(data: { lists: DataLibraryAPI }): Promise<ReturnStatus> {
-    if (!data.lists || typeof data.lists !== 'object') {
+  async cacheLists(data: DataLibraryAPI): Promise<ReturnStatus> {
+    if (!data || typeof data !== 'object') {
       return {
         isError: true,
         status: 'Invalid or missing lists property in request',
       };
     }
 
-    const allLists = Object.values(data.lists).reduce(
-      (acc, x: DatalistAPI) => {
+    const allLists = Object.entries(data).reduce(
+      (acc, [id, x]) => {
         if (!isDatalistAPI(x)) return acc;
 
-        acc[x.id] = {
+        acc[id] = {
           ...x,
         };
         return acc;
@@ -243,6 +248,29 @@ export class LocalStorageService implements StorageService {
       return {
         isError: true,
         status: `unable to cache library to local storage. Error: ${errorMessage}`,
+      };
+    }
+  }
+
+  async cacheList(id: string, data: DatalistAPI): Promise<ReturnStatus> {
+    if (!data || typeof data !== 'object') {
+      return {
+        isError: true,
+        status: 'Invalid or missing lists property in request',
+      };
+    }
+    try {
+      const db = await this.getDb();
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put({ id: id, ...(data as object) });
+      await tx.done;
+      return { status: 'success' };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        isError: true,
+        status: `unable to clear library. Error: ${errorMessage}`,
       };
     }
   }

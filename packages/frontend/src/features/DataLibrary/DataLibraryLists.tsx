@@ -21,7 +21,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
-  } = useDataLibrary({ requiresAPI: true });
+  } = useDataLibrary();
 
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
@@ -70,8 +70,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
                   dataList={datalist}
                   key={datalist.id}
                   size={size}
-                  updateListInDataLibrary={updateListInDataLibrary}
-                  deleteListFromDataLibrary={deleteListFromDataLibrary}
                 />
               );
             })}

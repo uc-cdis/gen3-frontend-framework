@@ -10,8 +10,8 @@ import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
-import { CachedAPIService } from './storage/CachedAPIStorageService';
 import { StorageError } from './storage/types';
+import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
 
 interface UseDataLibraryOptions {
   storageMode: DataLibraryStoreMode;
@@ -33,9 +33,9 @@ const useDataLibrary = (
 
   // Create storage services (we'll need both for syncing)
 
-  const dataLibraryStoreAPI = useRef(new CachedAPIService()).current;
-
-  dataLibraryStoreAPI.setUseAPI(options.requiresAPI);
+  const dataLibraryStoreAPI = useRef(
+    new DataLibraryStorageService(options.storageMode),
+  ).current;
 
   const generateUniqueName = useCallback(
     (baseName: string = 'List') => {
@@ -63,12 +63,12 @@ const useDataLibrary = (
       } else {
         const {
           lists,
-          isError: isCacheError,
-          status: cacheStatus,
+          isError: hasGetListsError,
+          status: ghetListsStatus,
         } = await dataLibraryStoreAPI.getLists();
         // Set initial data from localStorage
-        if (isCacheError) {
-          setError({ isError: isCacheError, status: cacheStatus });
+        if (hasGetListsError) {
+          setError({ isError: hasGetListsError, status: ghetListsStatus });
         } else {
           setLists(lists ?? {});
           setError(null);
@@ -107,11 +107,11 @@ const useDataLibrary = (
   useEffect(() => {
     const handleLogin = async () => {
       setIsLoading(true);
-      await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
+      // await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
       setIsLoading(false);
     };
     handleLogin();
-  }, [dataLibraryStoreAPI, isLoggedIn, options.requiresAPI]);
+  }, [dataLibraryStoreAPI, isLoggedIn]);
 
   // CRUD operations
   const addListToDataLibrary = useCallback(
@@ -135,11 +135,10 @@ const useDataLibrary = (
       const flattend = flattenDataList(payload);
 
       setIsLoading(true);
-      const { isError, status } = await dataLibraryStoreAPI.updateList({
-        id: payload.id,
-        name: payload.name,
-        items: flattend.items,
-      });
+      const { isError, status } = await dataLibraryStoreAPI.updateList(
+        payload.id,
+        { name: payload.name, items: flattend.items },
+      );
       await handleErrorOrSetLists(isError, status);
       setIsLoading(false);
     },

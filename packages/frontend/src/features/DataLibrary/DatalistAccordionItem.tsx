@@ -3,13 +3,15 @@ import { DataItemSelectedState, DatasetContents } from './types';
 import {
   AdditionalDataItem,
   CohortItem,
-  Datalist, DatasetOrCohort,
+  Datalist,
+  DatasetOrCohort,
   FileItem,
   getNumberOfItemsInDatalist,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
   DataListUpdate,
+  useDataLibrary,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -17,14 +19,12 @@ import {
   useDataLibrarySelection,
 } from './selection/SelectionContext';
 import { selectAllListItems } from './selection/selection';
-import { Accordion } from '@mantine/core';
+import { Accordion, Loader } from '@mantine/core';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
-  deleteListFromDataLibrary: (id: string) => Promise<void>;
   size?: string;
 }
 
@@ -33,15 +33,11 @@ interface DatalistAccordionProps {
  *
  * @param {Object} dataListAccordionItemParams - Parameters for the DataListAccordionItem.
  * @param {Object} dataListAccordionItemParams.dataList - The data list to be displayed in the accordion item.
- * @param {Function} dataListAccordionItemParams.updateListInDataLibrary - Function to update the list in the data library.
- * @param {Function} dataListAccordionItemParams.deleteListFromDataLibrary - Function to delete the list from the data library.
  *
  * @return {JSX.Element} A rendered accordion item component with controls for data list updates and deletions.
  */
 export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
-  updateListInDataLibrary,
-  deleteListFromDataLibrary,
   size = 'sm',
 }) => {
   const [selectedState, setSelectedState] =
@@ -55,10 +51,13 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   const { selections, updateSelections, removeListMember, removeList } =
     useDataLibrarySelection();
 
+  const { isLoading, updateListInDataLibrary, deleteListFromDataLibrary } =
+    useDataLibrary();
+
   const updateList = async (update: Record<string, any>) => {
     await updateListInDataLibrary({
       ...{ name: listName, items: dataList.items },
-      ...({ update } as any),
+      ...update,
       id: listId,
     });
   };

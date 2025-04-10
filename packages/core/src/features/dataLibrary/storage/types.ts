@@ -1,8 +1,4 @@
-import {
-  DataLibrary,
-  DatalistAsAPIItems,
-  UpdateDataLibraryListParams,
-} from '../types';
+import { DataLibrary, DatalistAsAPIItems } from '../types';
 
 export interface StorageError {
   isError?: boolean;
@@ -18,7 +14,7 @@ export interface StorageService<T = DataLibrary> {
   getList(id: string): Promise<ReturnStatus<T>>;
   addList(list?: DatalistAsAPIItems): Promise<ReturnStatus<T>>;
   setAllLists(lists: Array<DatalistAsAPIItems>): Promise<ReturnStatus<T>>;
-  updateList(list: UpdateDataLibraryListParams): Promise<ReturnStatus<T>>;
+  updateList(id: string, list: DatalistAsAPIItems): Promise<ReturnStatus<T>>;
   deleteList(id: string): Promise<ReturnStatus<T>>;
   clearLists(): Promise<ReturnStatus<T>>;
 }
