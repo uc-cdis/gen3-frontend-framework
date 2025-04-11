@@ -9,9 +9,10 @@ import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
+import { useIsAuthenticated } from '../../lib/session/session';
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({
-  useAPI,
+  requiresLogin = true,
   actions,
   size,
 }) => {
@@ -25,8 +26,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     deleteListFromDataLibrary,
   } = useDataLibrary();
 
-  console.log(dataLibrary);
-
+  const { isAuthenticated } = useIsAuthenticated();
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
 
@@ -36,16 +36,24 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   };
 
   if (dataLibraryError?.isError) {
-    console.log(dataLibraryError);
-    if (dataLibraryError?.status === 401)
+    if (dataLibraryError?.status === 401) {
+      let message = 'You are not authorized to access the library.';
+      if (requiresLogin) {
+        if (!isAuthenticated)
+          message = 'Data Library requires login. Please log in to continue.';
+        else
+          message =
+            'You are not authorized to access the library. Please contact your site administrator.';
+      }
+
       return (
         <div className="flex flex-col w-full ml-2">
           <Center>
-            <ErrorCard message="You are not authorized to access the library. Try logging in again." />
+            <ErrorCard message={message} />
           </Center>
         </div>
       );
-    else
+    } else
       notifications.show({
         position: 'top-center',
         color: 'red',

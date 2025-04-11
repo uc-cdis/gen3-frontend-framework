@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Datalist,
   DataLibrary,
   DataLibraryStoreMode,
   DataListUpdate,
@@ -13,15 +14,28 @@ import {
 import { StorageOperationResults } from './storage/types';
 import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
 
+const EMPTY_LIST: Datalist = {
+  items: {},
+  version: 0,
+  created_time: 'not_set',
+  updated_time: 'not_set',
+  name: '',
+  id: '',
+  authz: {
+    version: -1,
+    authz: [],
+  },
+};
+
 interface UseDataLibraryOptions {
   storageMode: DataLibraryStoreMode;
 }
 
 interface UseDataLibraryResult {
-  dataLibrary: DataLibrary;
-  isLoading: boolean;
-  isUpdating: string | null;
-  error: StorageOperationResults | null;
+  dataLibrary: DataLibrary; // the current contents of the DataLibrary
+  isLoading: boolean; // Loading all lists
+  isUpdating: string | null; // single list update will contain ListId if updating
+  error: StorageOperationResults | null; // null if there is no error
   addListToDataLibrary: (
     items: DatasetOrCohort,
     name?: string,
@@ -33,7 +47,7 @@ interface UseDataLibraryResult {
     data: Array<LibraryListItemsGroupedByDataset>,
   ) => Promise<void>;
   setLoginState: (loggedIn: boolean) => void;
-  getDatalist: (id: string) => any;
+  getDatalist: (id: string) => Datalist;
 }
 
 const DEFAULT_LIST_NAME = 'List';
@@ -58,28 +72,21 @@ const useDataLibrary = (
     new DataLibraryStorageService(options.storageMode),
   ).current;
 
-  // Helper functions
-  const loadLists = useCallback(async () => {
-    const error = await dataLibraryStoreAPI.getLists();
-    if (error?.isError) {
-      setError(error);
-      return false;
-    } else {
-      setLists(lists ?? {});
-      setError(null);
-      return true;
-    }
-  }, [dataLibraryStoreAPI, lists]);
-
   const handleErrorOrSetLists = useCallback(
     async (error: StorageOperationResults) => {
-      if (error?.isError) {
+      if (error.isError) {
         setError(error);
       } else {
-        await loadLists();
+        const getListResults = await dataLibraryStoreAPI.getLists();
+        if (getListResults.isError) {
+          setError(getListResults);
+        } else {
+          setLists(getListResults.lists ?? {});
+          setError(null);
+        }
       }
     },
-    [loadLists],
+    [dataLibraryStoreAPI],
   );
 
   const generateUniqueName = useCallback(
@@ -92,7 +99,6 @@ const useDataLibrary = (
         uniqueName = `${baseName} ${counter}`;
         counter++;
       }
-
       return uniqueName;
     },
     [lists],
@@ -107,18 +113,11 @@ const useDataLibrary = (
 
       if (updateId) {
         setIsUpdating(updateId);
-      } else {
-        setIsLoading(true);
-      }
-
+      } else setIsLoading(true);
       const operationError = await operation();
       await handleErrorOrSetLists(operationError);
-
-      if (updateId) {
-        setIsUpdating(null);
-      } else {
-        setIsLoading(false);
-      }
+      if (updateId) setIsUpdating(null);
+      else setIsLoading(false);
     },
     [handleErrorOrSetLists],
   );
@@ -129,20 +128,22 @@ const useDataLibrary = (
       if (!initialLoadRef.current) {
         setError(null);
         setIsLoading(true);
-        await loadLists();
+        const results = await dataLibraryStoreAPI.getLists(); // get the initial lists
+        if (results.isError) setError(results);
+        else setLists(results.lists ?? {});
         setIsLoading(false);
         initialLoadRef.current = true;
       }
     };
 
     initializeData();
-  }, [loadLists]);
+  }, [dataLibraryStoreAPI]);
 
   useEffect(() => {
     const handleLogin = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       // await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
-      setIsLoading(false);
+      // setIsLoading(false);
     };
 
     handleLogin();
@@ -202,7 +203,18 @@ const useDataLibrary = (
     [dataLibraryStoreAPI, performLibraryOperation],
   );
 
-  const getDatalist = useCallback((id: string) => lists[id], [lists]);
+  const getDatalist = useCallback(
+    (id: string) => {
+      if (id in lists) return lists[id];
+      setError({
+        isError: true,
+        status: 404,
+        message: `List not found. Returning empty list.`,
+      });
+      return EMPTY_LIST;
+    },
+    [lists],
+  );
 
   const setLoginState = useCallback(
     (loggedIn: boolean) => setIsLoggedIn(loggedIn),

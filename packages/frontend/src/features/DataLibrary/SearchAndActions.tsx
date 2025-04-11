@@ -10,12 +10,16 @@ interface SearchAndActionsProps {
   createList: (items: DatasetOrCohort, name?: string) => Promise<void>;
   gatherData: () => void;
   size?: string;
+  enableCreateNewList?: boolean;
+  enableDownloadManifest?: boolean;
 }
 
 const SearchAndActions: React.FC<SearchAndActionsProps> = ({
   createList,
   gatherData,
   size = 'sm',
+  enableCreateNewList = false,
+  enableDownloadManifest = false,
 }) => {
   const { selections, clearSelections } = useDataLibrarySelection();
   const retrieveDisabled = Object.keys(selections).length === 0;
@@ -51,28 +55,32 @@ const SearchAndActions: React.FC<SearchAndActionsProps> = ({
           </ActionIcon>
         </Tooltip>
 
-        <Tooltip label="Create a new empty list">
-          <Button
-            hidden={true}
-            size="compact-md"
-            variant="outline"
-            onClick={() => createList({})} // add a empty object to represent an empty list
-            aria-label="create a new list"
-            classNames={{ root: 'bg-base-max hover:bg-base-light' }}
-          >
-            <PlusIcon size="1.5em" />
-          </Button>
-        </Tooltip>
-        <Tooltip label="Download Manifest of selected items">
-          <Button
-            size="compact-md"
-            variant="outline"
-            aria-label="Download Manifest of Selected Items"
-            classNames={{ root: 'bg-base-max hover:bg-base-light' }}
-          >
-            <Icon icon="gen3:download-alt" height={24} width={24} />
-          </Button>
-        </Tooltip>
+        {enableCreateNewList && (
+          <Tooltip label="Create a new empty list">
+            <Button
+              hidden={true}
+              size="compact-md"
+              variant="outline"
+              onClick={() => createList({})} // add an empty object to represent an empty list
+              aria-label="create a new list"
+              classNames={{ root: 'bg-base-max hover:bg-base-light' }}
+            >
+              <PlusIcon size="1.5em" />
+            </Button>
+          </Tooltip>
+        )}
+        {enableCreateNewList && (
+          <Tooltip label="Download Manifest of selected items">
+            <Button
+              size="compact-md"
+              variant="outline"
+              aria-label="Download Manifest of Selected Items"
+              classNames={{ root: 'bg-base-max hover:bg-base-light' }}
+            >
+              <Icon icon="gen3:download-alt" height={24} width={24} />
+            </Button>
+          </Tooltip>
+        )}
       </Group>
       {/* --- // TODO: support search
       <TextInput

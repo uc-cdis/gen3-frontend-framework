@@ -29,6 +29,7 @@ export interface TableColumnsConfig {
 
 export interface DataLibraryConfig {
   useAPI: boolean;
+  requiresLogin?: boolean;
   size?: string;
   actions: DataLibraryActionsConfig;
   fileTable?: {
