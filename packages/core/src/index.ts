@@ -12,6 +12,7 @@ import {
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
+  GEN3_MANIFEST_API,
   Accessibility,
 } from './constants';
 import { type CoreState } from './reducers';
@@ -57,5 +58,6 @@ export {
   GEN3_SUBMISSION_API,
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
+  GEN3_MANIFEST_API,
   Accessibility,
 };

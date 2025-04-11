@@ -10,6 +10,9 @@ export const manifestTags = gen3Api.enhanceEndpoints({
 
 export const manifestApi = manifestTags.injectEndpoints({
   endpoints: (builder) => ({
+    getManifestServiceStatus: builder.query<string, void>({
+      query: () => `${GEN3_MANIFEST_API}/_status`,
+    }),
     getFileManifest: builder.query<Manifest, void>({
       query: () => `${GEN3_MANIFEST_API}`,
     }),
@@ -62,6 +65,8 @@ export const manifestApi = manifestTags.injectEndpoints({
 });
 
 export const {
+  useGetManifestServiceStatusQuery,
+  useLazyGetManifestServiceStatusQuery,
   useGetFileManifestQuery,
   useGetCohortManifestQuery,
   useGetMetadataManifestQuery,
