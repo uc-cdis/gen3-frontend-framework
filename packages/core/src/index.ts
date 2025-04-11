@@ -23,22 +23,24 @@ export * from './hooks';
 export * from './utils';
 export * from './dataAccess';
 export * from './provider';
+// Gen3 services API's
+export * from './features/aiSearch';
 export * from './features/authz';
-export * from './features/metadata';
+export * from './features/cohort';
+export * from './features/dataLibrary';
+export * from './features/drsResolver';
 export * from './features/fence';
+export * from './features/filters';
+export * from './features/gen3';
 export * from './features/gen3Apps';
 export * from './features/graphQL';
-export * from './features/gen3';
-export * from './features/drsResolver';
-export * from './features/modals';
-export * from './features/cohort';
-export * from './features/filters';
 export * from './features/guppy';
-export * from './features/aiSearch';
-export * from './features/workspace';
-export * from './features/submission';
+export * from './features/manifest';
+export * from './features/metadata';
+export * from './features/modals';
 export * from './features/sower';
-export * from './features/dataLibrary';
+export * from './features/submission';
+export * from './features/workspace';
 
 export {
   type CoreState,
