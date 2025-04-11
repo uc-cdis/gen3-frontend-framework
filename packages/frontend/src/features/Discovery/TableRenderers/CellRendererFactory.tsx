@@ -19,7 +19,7 @@ const defaultCellRenderer: CellRendererFunction = (
       </Text>
     );
   }
-  return <Text>{toString(value)}dfdsfdsf</Text>;
+  return <Text>{toString(value)}</Text>;
 };
 
 export interface CellRendererFunctionCatalogEntry {

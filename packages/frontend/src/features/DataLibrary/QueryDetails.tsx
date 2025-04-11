@@ -1,5 +1,9 @@
 import React from 'react';
-import { CohortItem, isFilterSet } from '@gen3/core';
+import {
+  CohortItem,
+  isFilterSet,
+  extractIndexFromDataLibraryCohort,
+} from '@gen3/core';
 import { Group, Text } from '@mantine/core';
 import { ErrorCard } from '../../components/MessageCards';
 import QueryExpressionSection from '../CohortBuilder/QueryExpression/QueryExpressionSection';
@@ -21,12 +25,17 @@ const LabeledText: React.FC<LabeledTextProps> = ({ label, text }) => {
 const QueryDetails: React.FC<CohortItem> = ({
   name,
   schemaVersion,
-  index,
   data,
   id,
 }) => {
   if (!data) {
     return <ErrorCard message="No cohort query" />;
+  }
+
+  const index = extractIndexFromDataLibraryCohort(data);
+
+  if (!index) {
+    return <ErrorCard message="Not able to extract index from cohort query" />;
   }
 
   return (

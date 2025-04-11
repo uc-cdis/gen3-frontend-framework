@@ -160,7 +160,9 @@ const useGetMDSData = ({
 
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(studyData, discoveryConfig, authMapping),
+          processAuthorizations(studyData, discoveryConfig, {
+            default: authMapping,
+          }),
         );
       } else setMDSData(studyData);
     }
@@ -212,7 +214,9 @@ const useGetAggMDSData = ({
     if (data && isSuccess) {
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(data.data, discoveryConfig, authMapping),
+          processAuthorizations(data.data, discoveryConfig, {
+            default: authMapping,
+          }),
         );
       } else setMDSData(data.data);
     }

@@ -6,7 +6,7 @@ import {
 } from 'mantine-react-table';
 
 import { Role } from '../types';
-import { AuthzContext } from '../Provider';
+import { AuthzContext } from '../AuthzAdminProvider';
 import { Table, Menu, Stack } from '@mantine/core';
 import PermissionDetailRow from './PermissionnDetailsRow';
 

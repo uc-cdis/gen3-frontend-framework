@@ -27,13 +27,13 @@ export const getDataLibraryItem = (
     } as CohortItem & { datasetId: string; datasetName: string };
   } else {
     if (!fileId) return undefined;
-    if (!(fileId in datasetOrCohort.items)) return undefined;
+    if (!(fileId in datasetOrCohort.members)) return undefined;
 
-    if (isFileItem(datasetOrCohort.items[fileId])) {
+    if (isFileItem(datasetOrCohort.members[fileId])) {
       return {
         datasetName: name,
         datasetId: dataId,
-        ...(datasetOrCohort.items[fileId] as FileItem),
+        ...(datasetOrCohort.members[fileId] as FileItem),
       } as FileItemWithParentDatasetNameAndID;
     }
     return undefined;

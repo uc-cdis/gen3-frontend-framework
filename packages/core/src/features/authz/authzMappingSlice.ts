@@ -17,11 +17,12 @@ export const authzApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useGetAuthzMappingsQuery } = authzApi;
+export const { useGetAuthzMappingsQuery, useLazyGetAuthzMappingsQuery } =
+  authzApi;
 
-export const selectAuthzMapping= authzApi.endpoints.getAuthzMappings.select();
+export const selectAuthzMapping = authzApi.endpoints.getAuthzMappings.select();
 
 export const selectAuthzMappingData = createSelector(
   selectAuthzMapping,
-  authzMapping => authzMapping?.data ?? { mappings: [] }
+  (authzMapping) => authzMapping?.data ?? { mappings: [] },
 );

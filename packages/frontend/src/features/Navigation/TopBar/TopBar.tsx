@@ -5,11 +5,7 @@ import LoginAccountButton from '../../../components/Login/LoginAccountButton';
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { StylingOverrideWithMergeControl } from '../../../types';
-import {
-  IconButton,
-  TopIconButtonProps,
-  TopIconButtonPropsWithLink,
-} from './IconButton';
+import { IconButton, TopIconButtonPropsWithLink } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
 
