@@ -6,7 +6,7 @@ import {
 } from 'mantine-react-table';
 
 import { Resource } from '../types';
-import { AuthzContext } from '../Provider';
+import { AuthzContext } from '../AuthzAdminProvider';
 
 type ResourceTableData = {
   name: string;
@@ -56,11 +56,7 @@ const ResourcesTable = () => {
     paginateExpandedRows: false,
   });
 
-  return (
-    <MantineReactTable
-      table={table}
-    />
-  );
+  return <MantineReactTable table={table} />;
 };
 
 export default ResourcesTable;

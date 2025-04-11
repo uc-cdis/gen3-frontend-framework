@@ -177,26 +177,29 @@ const DataSetContentsTable = ({
         ...(isIndeterminate ? { checked: false } : {}),
       };
     },
-    renderRowActions: ({ row }) => (
-      <Tooltip
-        label={
-          row.original.isCohort
-            ? 'Remove cohort from list'
-            : 'Remove dataset from list'
-        }
-      >
-        <Button
-          variant="transparent"
-          aria-label={`remove ${row.original.isCohort ? 'cohort' : 'dataset'}  ${row.original.name} from list`}
-          onClick={() => {
-            removeList(row.id);
-          }}
+    renderRowActions: ({ row }) => {
+      return (
+        <Tooltip
+          label={
+            row.original.isCohort === 'True'
+              ? 'Remove cohort from list'
+              : 'Remove dataset from list'
+          }
         >
-          <RemoveIcon size="1.5rem" />
-          {row.original.itemType}
-        </Button>
-      </Tooltip>
-    ),
+          <Button
+            variant="transparent"
+            aria-label={`remove ${row.original.isCohort === 'True' ? 'cohort' : 'dataset'}  ${row.original.name} from list`}
+            onClick={() => {
+              removeList(row.id);
+            }}
+          >
+            <RemoveIcon size="1.5rem" />
+            {row.original.itemType}
+          </Button>
+        </Tooltip>
+      );
+    },
+
     mantineDetailPanelProps: {
       style: {
         padding: '0px',

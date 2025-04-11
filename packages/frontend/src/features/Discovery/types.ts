@@ -3,8 +3,9 @@ import {
   JSONObject,
   type MetadataPaginationParams,
   type AggregationsData,
+  type ExportDatasetFields,
 } from '@gen3/core';
-import DataLibraryActionButton from './ActionBar/DataLibraryActionButton';
+
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
@@ -202,19 +203,19 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-export interface DataLibraryActionButton {
+export interface ExportFromDiscoveryActionButton {
   type:
     | 'manifest'
     | 'zip'
     | 'download'
     | 'link'
     | 'externalLink'
-    | 'add-to-workspace';
+    | 'addToDataLibrary';
   label?: string; // label for the action button
   icon?: string;
   requiresLogin?: boolean; // set to true if the action requires login
   tooltip?: string; // tooltip text
-  actionFunction: string;
+  disabled?: boolean;
 }
 
 export interface SearchBar {
@@ -239,17 +240,17 @@ export interface AuthorizationValues {
   menuText: string;
 }
 
-export interface ExportToDataLibrary {
-  buttons: DataLibraryActionButton[];
+export interface ExportFromDiscoveryActions {
+  buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
-  loginRequireForAllButtons?: boolean;
-  manifestFieldName?: string;
+  exportDataFields: ExportDatasetFields;
 }
 
 export interface DataAuthorization {
   columnTooltip?: string;
   supportedValues?: Record<string, AuthorizationValues>;
+  isMesh?: boolean;
   enabled?: boolean;
 }
 
@@ -295,7 +296,7 @@ export interface DiscoveryIndexConfig {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
     pageTitle: DiscoveryPageTitle;
-    exportToDataLibrary?: ExportToDataLibrary;
+    exportFromDiscovery?: ExportFromDiscoveryActions;
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
@@ -315,20 +316,16 @@ export interface DiscoveryConfig {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
-export interface UserAuthMapping {
-  service: string;
-  method: string;
-}
-
 export const accessibleFieldName = '__accessible';
 const ARBORIST_READ_PRIV = 'read';
 
 export enum AccessLevel {
   ACCESSIBLE = 1,
   UNACCESSIBLE = 2,
-  PENDING = 3,
+  WAITING = 3,
   NOT_AVAILABLE = 4,
   OTHER = 5,
+  MIXED = 6,
 }
 
 export interface DiscoveryResource

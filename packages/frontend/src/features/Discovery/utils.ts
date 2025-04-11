@@ -5,6 +5,7 @@ import {
   type TagCategory,
   type TagData,
   type TagsConfig,
+  AccessLevel,
 } from './types';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
@@ -20,9 +21,16 @@ export interface TagInfo {
 
 export const getTagInfo = (
   tagData: TagData,
-  tagsConfig: TagsConfig,
+  tagsConfig?: TagsConfig,
 ): TagInfo => {
-  const categoryConfig = tagsConfig.tagCategories.find(
+  if (tagData.category === undefined) {
+    return {
+      color: 'darkgray',
+      display: tagsConfig?.showUnknownTags ?? false,
+      label: tagData.name,
+    };
+  }
+  const categoryConfig = tagsConfig?.tagCategories.find(
     (category) => category.name === tagData.category,
   );
   if (categoryConfig === undefined)
@@ -52,4 +60,31 @@ export const getManualSortingAndPagination = (config: DiscoveryIndexConfig) => {
   const sortingAndPagination =
     config?.features?.dataLoader?.sortingAndPagination ?? defaultFeature;
   return sortingAndPagination === 'server';
+};
+
+/**
+ * Converts a numeric value to its equivalent AccessLevel enum value
+ * @param value - The numeric value to convert (1-6)
+ * @returns The corresponding AccessLevel enum value or undefined if not found
+ */
+export const getAccessLevelFromNumber = (
+  value?: number,
+): AccessLevel | undefined => {
+  if (value === undefined) return undefined;
+  switch (value) {
+    case AccessLevel.ACCESSIBLE:
+      return AccessLevel.ACCESSIBLE;
+    case AccessLevel.UNACCESSIBLE:
+      return AccessLevel.UNACCESSIBLE;
+    case AccessLevel.WAITING:
+      return AccessLevel.WAITING;
+    case AccessLevel.NOT_AVAILABLE:
+      return AccessLevel.NOT_AVAILABLE;
+    case AccessLevel.OTHER:
+      return AccessLevel.OTHER;
+    case AccessLevel.MIXED:
+      return AccessLevel.MIXED;
+    default:
+      return undefined;
+  }
 };

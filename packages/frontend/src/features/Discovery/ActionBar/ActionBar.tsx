@@ -1,31 +1,52 @@
 import React from 'react';
-import { ExportToDataLibrary } from '../types';
-import { FiDownload as DownloadIcon } from 'react-icons/fi';
-import DataLibraryActionButton from './DataLibraryActionButton';
+import { ExportFromDiscoveryActions } from '../types';
+import { ExportActionButtonProps } from './types';
+import DownloadManifestButton from './DownloadManifestButton';
+import AddToDataLibrary from './AddToDataLibrary';
 
-interface ActionBarProps {
-  config: ExportToDataLibrary;
+const createActionButton = ({
+  buttonConfig,
+  selectedResources,
+  exportDataFields,
+}: ExportActionButtonProps) => {
+  return {
+    manifest: (
+      <DownloadManifestButton
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
+        key={buttonConfig.type}
+      />
+    ),
+    addToDataLibrary: (
+      <AddToDataLibrary
+        buttonConfig={buttonConfig}
+        selectedResources={selectedResources}
+        exportDataFields={exportDataFields}
+        key={buttonConfig.type}
+      />
+    ),
+  }[buttonConfig.type as string];
+};
+
+interface ActionBarProps extends ExportFromDiscoveryActions {
+  selectedResources: any[];
 }
 
-const ActionBar = ({ config }: ActionBarProps) => {
-  const { buttons } = config;
-
+const ActionBar: React.FC<ActionBarProps> = ({
+  buttons,
+  selectedResources,
+  exportDataFields,
+  verifyExternalLogins,
+}) => {
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
-      {buttons?.map((button, index) => {
-        return (
-          <DataLibraryActionButton
-            label={button.label}
-            icon={<DownloadIcon />}
-            toolTip={button.tooltip}
-            loginRequired={config?.loginRequireForAllButtons ?? true}
-            onClick={() => {
-              console.log('Download $[button.label]');
-            }}
-            key={`action-button-${index}`}
-          />
-        );
-        // }
+      {buttons?.map((button) => {
+        return createActionButton({
+          buttonConfig: button,
+          selectedResources,
+          exportDataFields,
+        });
       })}
     </div>
   );

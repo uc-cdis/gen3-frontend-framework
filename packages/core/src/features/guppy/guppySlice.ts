@@ -9,6 +9,7 @@ import {
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { SharedFieldMapping } from './types';
+
 import { groupSharedFields } from './utils';
 
 const statusEndpoint = '/_status';
@@ -507,6 +508,11 @@ export const useGetArrayTypes = () => {
     }
     return data ? data['indices'] : {};
   }
+};
+
+export const useGetIndexFields = (index: string) => {
+  const { data } = useGetFieldsForIndexQuery(index);
+  return data ?? [];
 };
 
 export const {

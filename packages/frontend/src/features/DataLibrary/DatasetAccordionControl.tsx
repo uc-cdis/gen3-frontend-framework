@@ -127,7 +127,9 @@ export const DatasetAccordionControl = ({
             {formatDate(updatedTime)}
           </Text>
         </div>
-        <Tooltip label={`Delete ${listName}. Will not delete dataset`}>
+        <Tooltip
+          label={`Delete list ${listName}. Will not delete the actual dataset`}
+        >
           <ActionIcon
             color="accent.4"
             variant="transparent"

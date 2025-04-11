@@ -6,7 +6,7 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { User } from '../types';
-import { AuthzContext } from '../Provider';
+import { AuthzContext } from '../AuthzAdminProvider';
 import { Menu } from '@mantine/core';
 
 interface UserTableProps {

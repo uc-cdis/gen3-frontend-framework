@@ -7,7 +7,6 @@ module.exports = {
       'ts-jest',
       {
         tsconfig: 'tsconfig.test.json',
-        isolatedModules: true,
       },
     ],
     'node_modules/(flat|jsonpath-plus)/.+\\.(j|t)s?$': 'ts-jest',

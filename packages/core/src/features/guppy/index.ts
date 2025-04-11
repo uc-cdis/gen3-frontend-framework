@@ -3,7 +3,6 @@ export * from './guppySlice';
 import {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
-  useGetIndexFields,
   groupSharedFields,
 } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
@@ -13,6 +12,5 @@ export {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
   useDownloadFromGuppyMutation,
-  useGetIndexFields,
   groupSharedFields,
 };

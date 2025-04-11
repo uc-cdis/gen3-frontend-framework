@@ -1,5 +1,8 @@
-import { CohortItem } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
+import { CohortItem, HTTPError } from '@gen3/core';
+import {
+  FileItemWithParentDatasetNameAndID,
+  ValidatedSelectedItem,
+} from '../types';
 
 type RuleOperator =
   | 'equals'
@@ -41,3 +44,12 @@ export interface DataLibraryActionConfig {
 }
 
 export type DataLibraryActionsConfig = ReadonlyArray<DataLibraryActionConfig>;
+
+export type DataActionFunction<T = void> = (
+  validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
+  params?: Record<string, any>, // function options from the config
+  done?: (arg0?: string) => void,
+  onError?: (error: HTTPError | Error) => void,
+  onAbort?: () => void,
+  signal?: AbortSignal,
+) => Promise<T>;
