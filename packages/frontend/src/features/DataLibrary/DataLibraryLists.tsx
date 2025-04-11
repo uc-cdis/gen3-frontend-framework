@@ -36,6 +36,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
   };
 
   if (dataLibraryError?.isError) {
+    console.log(dataLibraryError);
     if (dataLibraryError?.status === 401)
       return (
         <div className="flex flex-col w-full ml-2">

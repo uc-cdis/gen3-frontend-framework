@@ -1,12 +1,12 @@
 import { DataLibrary, DatalistAsAPIItems } from '../types';
 
-export interface StorageError {
+export interface StorageOperationResults {
   isError?: boolean;
-  status?: number;
-  message?: string;
+  status: number;
+  message: string;
 }
 
-export interface ReturnStatus<T = DataLibrary> extends StorageError {
+export interface ReturnStatus<T = DataLibrary> extends StorageOperationResults {
   lists?: T;
 }
 

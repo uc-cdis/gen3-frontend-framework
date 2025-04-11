@@ -10,42 +10,83 @@ import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
-import { StorageError } from './storage/types';
+import { StorageOperationResults } from './storage/types';
 import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
 
 interface UseDataLibraryOptions {
   storageMode: DataLibraryStoreMode;
 }
 
+interface UseDataLibraryResult {
+  dataLibrary: DataLibrary;
+  isLoading: boolean;
+  isUpdating: string | null;
+  error: StorageOperationResults | null;
+  addListToDataLibrary: (
+    items: DatasetOrCohort,
+    name?: string,
+  ) => Promise<void>;
+  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
+  deleteListFromDataLibrary: (id: string) => Promise<void>;
+  clearLibrary: () => Promise<void>;
+  setAllListsInDataLibrary: (
+    data: Array<LibraryListItemsGroupedByDataset>,
+  ) => Promise<void>;
+  setLoginState: (loggedIn: boolean) => void;
+  getDatalist: (id: string) => any;
+}
+
+const DEFAULT_LIST_NAME = 'List';
+
 const useDataLibrary = (
   options: UseDataLibraryOptions = {
     storageMode: DataLibraryStoreMode.ApiOnly,
   },
-) => {
-  // Track login state
+): UseDataLibraryResult => {
+  // State management
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
-  const [error, setError] = useState<StorageError | null>(null);
+  const [error, setError] = useState<StorageOperationResults | null>(null);
   const [lists, setLists] = useState<DataLibrary>({});
 
-  // Ref to track if initial load has happened
+  // Refs
   const initialLoadRef = useRef(false);
 
-  // Create storage services (we'll need both for syncing)
-
+  // Services
   const dataLibraryStoreAPI = useRef(
     new DataLibraryStorageService(options.storageMode),
   ).current;
 
+  // Helper functions
+  const loadLists = useCallback(async () => {
+    const error = await dataLibraryStoreAPI.getLists();
+    if (error?.isError) {
+      setError(error);
+      return false;
+    } else {
+      setLists(lists ?? {});
+      setError(null);
+      return true;
+    }
+  }, [dataLibraryStoreAPI, lists]);
+
+  const handleErrorOrSetLists = useCallback(
+    async (error: StorageOperationResults) => {
+      if (error?.isError) {
+        setError(error);
+      } else {
+        await loadLists();
+      }
+    },
+    [loadLists],
+  );
+
   const generateUniqueName = useCallback(
-    (baseName: string = 'List') => {
+    (baseName: string = DEFAULT_LIST_NAME) => {
       let uniqueName = baseName;
       let counter = 1;
-
-      const existingNames = lists
-        ? Object.values(lists).map((x) => x.name)
-        : [];
+      const existingNames = Object.values(lists).map((x) => x.name);
 
       while (existingNames.includes(uniqueName)) {
         uniqueName = `${baseName} ${counter}`;
@@ -57,58 +98,53 @@ const useDataLibrary = (
     [lists],
   );
 
-  const handleErrorOrSetLists = useCallback(
-    async (error: StorageError) => {
-      if (error.isError) {
-        setError(error);
+  const performLibraryOperation = useCallback(
+    async (
+      operation: () => Promise<StorageOperationResults>,
+      updateId?: string,
+    ) => {
+      setError(null);
+
+      if (updateId) {
+        setIsUpdating(updateId);
       } else {
-        const {
-          lists,
-          isError: hasGetListsError,
-          status: getListsStatus,
-        } = await dataLibraryStoreAPI.getLists();
-        if (hasGetListsError) {
-          setError({ isError: hasGetListsError, status: getListsStatus });
-        } else {
-          setLists(lists ?? {});
-          setError(null);
-        }
+        setIsLoading(true);
+      }
+
+      const operationError = await operation();
+      await handleErrorOrSetLists(operationError);
+
+      if (updateId) {
+        setIsUpdating(null);
+      } else {
+        setIsLoading(false);
       }
     },
-    [dataLibraryStoreAPI],
+    [handleErrorOrSetLists],
   );
 
-  // Get the appropriate storage service based on current status;
-
-  // Initialize data from storage on first load
+  // Lifecycle effects
   useEffect(() => {
-    const loadData = async () => {
+    const initializeData = async () => {
       if (!initialLoadRef.current) {
+        setError(null);
         setIsLoading(true);
-
-        // Always start by loading from localStorage
-        const { lists, isError, status } = await dataLibraryStoreAPI.getLists();
-
-        if (isError) {
-          setError({ isError, status });
-        } else {
-          setLists(lists ?? {});
-          setError(null);
-        }
+        await loadLists();
         setIsLoading(false);
+        initialLoadRef.current = true;
       }
     };
 
-    loadData();
-  }, [dataLibraryStoreAPI]);
+    initializeData();
+  }, [loadLists]);
 
-  // Sync logic when using API and logged in
   useEffect(() => {
     const handleLogin = async () => {
       setIsLoading(true);
       // await dataLibraryStoreAPI.setUseAPI(options.requiresAPI && isLoggedIn);
       setIsLoading(false);
     };
+
     handleLogin();
   }, [dataLibraryStoreAPI, isLoggedIn]);
 
@@ -118,73 +154,60 @@ const useDataLibrary = (
       const apiItems = convertDatasetOrCohortToLibraryListItemsAPI(items);
       const namedItems = {
         items: apiItems,
-        name: generateUniqueName(name ?? 'List'),
+        name: generateUniqueName(name ?? DEFAULT_LIST_NAME),
       };
 
-      setIsLoading(true);
-      const error = await dataLibraryStoreAPI.addList(namedItems);
-      await handleErrorOrSetLists(error);
-      setIsLoading(false);
+      await performLibraryOperation(() =>
+        dataLibraryStoreAPI.addList(namedItems),
+      );
     },
-    [dataLibraryStoreAPI, generateUniqueName, handleErrorOrSetLists],
+    [dataLibraryStoreAPI, generateUniqueName, performLibraryOperation],
   );
 
   const updateListInDataLibrary = useCallback(
     async (payload: DataListUpdate) => {
-      const flattend = flattenDataList(payload);
+      const flattened = flattenDataList(payload);
 
-      setIsUpdating(payload.id);
-      const error = await dataLibraryStoreAPI.updateList(payload.id, {
-        name: payload.name,
-        items: flattend.items,
-      });
-      await handleErrorOrSetLists(error);
-      setIsUpdating(null);
+      await performLibraryOperation(
+        () =>
+          dataLibraryStoreAPI.updateList(payload.id, {
+            name: payload.name,
+            items: flattened.items,
+          }),
+        payload.id,
+      );
     },
-    [dataLibraryStoreAPI, handleErrorOrSetLists],
+    [dataLibraryStoreAPI, performLibraryOperation],
   );
 
   const deleteListFromDataLibrary = useCallback(
     async (id: string) => {
-      setIsLoading(true);
-      const error = await dataLibraryStoreAPI.deleteList(id);
-      await handleErrorOrSetLists(error);
-      setIsLoading(false);
+      await performLibraryOperation(() => dataLibraryStoreAPI.deleteList(id));
     },
-    [dataLibraryStoreAPI, handleErrorOrSetLists],
+    [dataLibraryStoreAPI, performLibraryOperation],
   );
 
   const clearLibrary = useCallback(async () => {
-    setIsLoading(true);
-    const error = await dataLibraryStoreAPI.clearLists();
-    await handleErrorOrSetLists(error);
-    setIsLoading(false);
-  }, [dataLibraryStoreAPI, handleErrorOrSetLists]);
+    await performLibraryOperation(() => dataLibraryStoreAPI.clearLists());
+  }, [dataLibraryStoreAPI, performLibraryOperation]);
 
-  const getDatalist = useCallback(
-    (id: string) => {
-      console.log('lists', lists);
-      return lists[id];
-    },
-    [lists],
-  );
-
-  // Handle setting all lists at once (like when loading sample data)
   const setAllListsInDataLibrary = useCallback(
     async (data: Array<LibraryListItemsGroupedByDataset>) => {
-      const lists = data.map((x) => flattenDataList(x));
+      const flattenedLists = data.map((x) => flattenDataList(x));
 
-      setIsLoading(true);
-      const error = await dataLibraryStoreAPI.setAllLists(lists);
-      await handleErrorOrSetLists(error);
-      setIsLoading(false);
+      await performLibraryOperation(() =>
+        dataLibraryStoreAPI.setAllLists(flattenedLists),
+      );
     },
-    [dataLibraryStoreAPI, handleErrorOrSetLists],
+    [dataLibraryStoreAPI, performLibraryOperation],
   );
 
-  const setLoginState = useCallback((loggedIn: boolean) => {
-    setIsLoggedIn(loggedIn);
-  }, []);
+  const getDatalist = useCallback((id: string) => lists[id], [lists]);
+
+  const setLoginState = useCallback(
+    (loggedIn: boolean) => setIsLoggedIn(loggedIn),
+    [],
+  );
 
   return {
     dataLibrary: lists,
