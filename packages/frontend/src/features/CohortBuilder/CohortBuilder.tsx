@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { CohortPanelConfig, CohortBuilderProps } from './types';
 import { Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
@@ -37,6 +37,7 @@ export const CohortBuilder = ({
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
   return (
+    isFetching ? <Loader /> :
     <div className="w-full">
       <Tabs
         color="primary.4"
