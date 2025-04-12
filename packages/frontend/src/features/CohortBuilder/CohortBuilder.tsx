@@ -31,13 +31,12 @@ export const CohortBuilder = ({
   sharedFiltersMap = null,
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
-  const { isFetching } = useGetCSRFQuery();
+  useGetCSRFQuery();
 
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
   return (
-    isFetching ? <Loader /> :
     <div className="w-full">
       <Tabs
         color="primary.4"
