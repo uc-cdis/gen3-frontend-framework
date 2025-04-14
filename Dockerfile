@@ -33,15 +33,14 @@ WORKDIR /gen3
 
 RUN addgroup --system --gid 1001 nextjs && \
     adduser --system --uid 1001 nextjs
-
-COPY --from=builder /gen3/packages/sampleCommons/public ./public
-COPY --from=builder /gen3/packages/sampleCommons/.next/standalone ./
-COPY --from=builder /gen3/packages/sampleCommons/.next/static ./.next/static
-RUN rm -rf /gen3/config
+COPY --from=builder --link --chown=nextjs:nodejs /gen3/packages/sampleCommons/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs  /gen3/packages/sampleCommons/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /gen3/packages/sampleCommons/.next/static packages/sampleCommons/
 COPY --from=builder /gen3/start.sh ./start.sh
-RUN chown -R nextjs:nextjs /gen3/.next
 VOLUME /gen3/config
 VOLUME /gen3/public
+RUN ln -s /gen3/config packages/sampleCommons/gen3
+RUN ln -s /gen3/public packages/sampleCommons/pubic
 
 USER nextjs:nextjs
 ENV PORT=3000
