@@ -47,7 +47,7 @@ export const registerDefaultDataLibraryActions = () => {
   registerAction('export-from-discovery-to-manifest', {
     action: exportToManifest,
   });
-  registerAction('export--from-discovery-to-workspace', {
+  registerAction('export-from-discovery-to-workspace', {
     action: exportMetadataToWorkspace,
   });
 };
