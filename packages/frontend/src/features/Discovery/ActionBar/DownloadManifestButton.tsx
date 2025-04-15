@@ -1,12 +1,12 @@
 import React from 'react';
 import DataLibraryActionButton from './DataLibraryActionButton';
 import FileSaver from 'file-saver';
-import { GEN3_DOMAIN, isAuthenticated } from '@gen3/core';
+import { GEN3_DOMAIN } from '@gen3/core';
 import { ExportActionButtonProps, ExportActionProps } from './types';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 import { notifications } from '@mantine/notifications';
 import { useIsAuthenticated } from '../../../lib/session/session';
-const MANIFEST_FILENAME = 'manifest.json';
+import { MANIFEST_FILENAME } from '../../../types/constants';
 
 /**
  * Determines the disabled state and the reason for disabling based on authentication status,

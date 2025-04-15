@@ -1,4 +1,5 @@
 import { sendExistingPFBToURL } from './exportActions';
+import { exportToManifest } from './actions/exportToManifest';
 import { DataActionFunction } from './types';
 
 // create a factory for the action creators
@@ -41,6 +42,9 @@ export const findAction = (
 export const registerDefaultDataLibraryActions = () => {
   registerAction('export-pfb-to-url', {
     action: sendExistingPFBToURL,
+  });
+  registerAction('export-to-manifest', {
+    action: exportToManifest,
   });
 };
 

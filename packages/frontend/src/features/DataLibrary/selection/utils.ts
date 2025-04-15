@@ -5,8 +5,13 @@ import {
   FileItem,
   isCohortItem,
   isFileItem,
+  ManifestItem,
 } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
+import {
+  FileItemWithParentDatasetNameAndID,
+  isValidFileItemWithParentDatasetNameAndID,
+  ValidatedSelectedItem,
+} from '../types';
 
 export const getDataLibraryItem = (
   dataLibrary: DataLibrary,
@@ -112,4 +117,32 @@ const getUniqueItemKey = (
     // For FileItems
     return `file_${item.datasetId}_${item.id}`;
   }
+};
+
+export const selectionToManifest = (
+  dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
+) => {
+  return dataLibrarySelections.reduce((acc, item) => {
+    if (isValidFileItemWithParentDatasetNameAndID(item)) {
+      acc.push({
+        object_id: item.id,
+        ...(item.name ? { file_name: item.name } : {}),
+        ...(item.size ? { file_size: Number(item.size) } : {}),
+        dataset_id: item.datasetId,
+      });
+    }
+
+    return acc;
+  }, [] as Array<ManifestItem>);
+};
+
+export const extractDatasetIds = (
+  dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
+) => {
+  return dataLibrarySelections.reduce((acc, item) => {
+    if (isFileItem(item)) {
+      acc.push(item.datasetId);
+    }
+    return acc;
+  }, [] as Array<string>);
 };

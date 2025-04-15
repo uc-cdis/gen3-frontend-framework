@@ -171,3 +171,14 @@ export function isFetchParseError(error: unknown): error is ParsingError {
 }
 
 export type AggregationsData = Record<string, HistogramDataArray>;
+
+/**
+ * Represents a manifest item.
+ * @interface ManifestItem
+ */
+export interface ManifestItem {
+  [k: string]: string | number | undefined;
+  object_id: string;
+  file_size?: number;
+  file_name?: string;
+}

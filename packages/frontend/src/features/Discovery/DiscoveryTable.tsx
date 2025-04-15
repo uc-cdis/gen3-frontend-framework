@@ -30,7 +30,6 @@ import {
 import { DataRequestStatus } from './types';
 import { LoadingOverlay } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { ExplorerTableCellRendererFactory } from '../CohortBuilder';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
