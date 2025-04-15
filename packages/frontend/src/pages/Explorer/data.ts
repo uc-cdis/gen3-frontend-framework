@@ -31,7 +31,7 @@ const GetSharedFieldMapping = async (
       );
 
       try {
-        const data = await fetchJSONDataFromURL(
+        const data = await fetchJSONDataFromURL<any>(
           `${GEN3_GUPPY_API}/graphql`,
           true,
           HttpMethod.POST,
