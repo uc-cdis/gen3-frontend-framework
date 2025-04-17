@@ -17,11 +17,10 @@ export const exportToManifest: DataActionFunction = async (
       type: 'text/json',
     });
     FileSaver.saveAs(blob, MANIFEST_FILENAME);
+    onDone?.();
   } catch (error: unknown) {
     if (error instanceof Error) {
       onError?.(error);
     } else onError?.(new Error('unknown error saving file'));
-  } finally {
-    onDone?.();
   }
 };

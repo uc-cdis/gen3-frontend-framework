@@ -22,12 +22,23 @@ const removeKeys = (obj: object, keysToRemove: Array<string>) => {
   return obj;
 };
 
+/**
+ * Processes and assembles metadata by cloning objects, removing specified keys, and optionally accessing a defined metadata root.
+ *
+ * @param {Array<string>} keysToRemove - A list of keys to remove from each object in the selected resources after cloning.
+ * @param {Array<Record<string, unknown>>} selectedResources - An array of resource objects to process and format.
+ * @param {string} metadataRoot - The root key that holds the metadata in the objects. If present, this root is used as a starting point.
+ * @returns {Array<Record<string, unknown>>} A new array of processed objects with the specified keys removed and metadata root applied when applicable.
+ */
 const assembleMetadata = (
-  keysToRemove: Array<string>,
   selectedResources: Array<Record<string, unknown>>,
+  metadataRoot: string,
+  keysToRemove?: Array<string>,
 ) => {
   return selectedResources.map((obj) => {
-    const clonedObj = cloneDeep(obj);
+    const clonedObj = cloneDeep(
+      !obj[metadataRoot] ? obj : (obj[metadataRoot] as typeof obj),
+    );
     // if there are keysToRemove, remove them
     if (keysToRemove) {
       return removeKeys(clonedObj, keysToRemove);
@@ -37,9 +48,15 @@ const assembleMetadata = (
   });
 };
 
+interface ExportMetadataToWorkspaceParameters {
+  keysToRemove: Array<string>;
+  metadataRoot: string;
+  useAggMDS: boolean;
+}
+
 export const exportMetadataToWorkspace: DataActionFunction = async (
   validatedSelections,
-  params,
+  params?: Partial<ExportMetadataToWorkspaceParameters>,
   onDone = () => null,
   onError = () => null,
   onAbort = () => null,
@@ -47,39 +64,45 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
 ) => {
   // first need to get file manifest
   try {
-    console.log('exporting metadata to workspace', params);
     const fileManifest = selectionToManifest(validatedSelections);
 
     // next get the metadata from the dataset id
     const metadataIds = extractDatasetIds(validatedSelections);
-    const metadata = queryMultipleMDSRecords(
+    const metadata = await queryMultipleMDSRecords(
       metadataIds,
       params?.useAggMDS,
       signal,
     );
 
+    const metadataObjects = Object.values(metadata).map(
+      (metadataObj) => metadataObj as Record<string, unknown>,
+    );
+
     const filteredMetadata = assembleMetadata(
+      metadataObjects,
+      params?.metadataRoot ?? 'gen3_discovery',
       params?.keysToRemove,
-      Object.values(metadata),
+    );
+
+    // save the metadata
+    await fetchJSONDataFromURL(
+      `${GEN3_MANIFEST_API}/metadata`,
+      true,
+      'POST' as HttpMethod,
+      JSON.stringify(filteredMetadata),
+      signal,
     );
 
     // save files manifest
     await fetchJSONDataFromURL(
-      `${GEN3_MANIFEST_API}`,
+      `${GEN3_MANIFEST_API}/`,
       true,
       'POST' as HttpMethod,
       JSON.stringify(fileManifest),
       signal,
     );
 
-    // save the metadata
-    await fetchJSONDataFromURL(
-      `${GEN3_MANIFEST_API}`,
-      true,
-      'POST' as HttpMethod,
-      JSON.stringify(filteredMetadata),
-      signal,
-    );
+    onDone?.();
   } catch (error: unknown) {
     if (error instanceof Error) {
       if (error.name == 'AbortError') {
@@ -87,7 +110,5 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
       }
       onError?.(error);
     } else onError?.(new Error('unknown error'));
-  } finally {
-    onDone?.();
   }
 };
