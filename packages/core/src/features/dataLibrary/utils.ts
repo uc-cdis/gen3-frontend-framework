@@ -44,14 +44,14 @@ export const buildListItemsGroupedByDataset = (
   const items: DatasetOrCohort = Object.entries(listData).reduce(
     (acc: DatasetOrCohort, [id, data]) => {
       if (data?.type === 'Gen3GraphQL') {
-        // is cohort
+        const cohortData = data as CohortItem;
         acc[id] = {
           itemType: 'Gen3GraphQL',
           id: data.guid,
-          schemaVersion: data.schema_version,
-          data: data.data,
+          schemaVersion: cohortData.schema_version,
+          data: cohortData.data,
           name: data.name,
-          index: data.index,
+          index: cohortData.index,
         } as CohortItem;
       } else {
         // Dataset
@@ -188,9 +188,15 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
       Object.entries(members).forEach(([memberId, memberData]) => {
         if (isFileItem(memberData)) {
           result[memberId] = {
-            ...memberData,
+            ...(memberData.guid && { guid: memberData.guid }),
+            ...(memberData.name && { name: memberData.name }),
+            ...(memberData.name && { name: memberData.name }),
+            ...(memberData.description && {
+              description: memberData.description,
+            }),
+            ...(memberData.type && { type: memberData.type }),
             dataset_guid: datasetId,
-            id: memberData.guid,
+            itemType: 'Data', // Required by the FileItem interface
           } as FileItem;
         } else if (memberData.itemType === 'AdditionalData') {
           // Handle additional data items

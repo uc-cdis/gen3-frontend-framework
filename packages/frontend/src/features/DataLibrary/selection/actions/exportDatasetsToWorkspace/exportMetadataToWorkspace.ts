@@ -53,7 +53,7 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
     const metadataIds = extractDatasetIds(validatedSelections);
     const metadata = queryMultipleMDSRecords(
       metadataIds,
-      params?.mds_version,
+      params?.useAggMDS,
       signal,
     );
 

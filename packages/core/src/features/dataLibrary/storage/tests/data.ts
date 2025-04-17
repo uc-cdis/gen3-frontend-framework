@@ -5,7 +5,7 @@ export const ListItems: LibraryListItemsAPI = {
     dataset_guid: '1010',
     md5sum: 'a1890eb3da180416a3a1e2c4e4527356', // pragma: allowlist secret
     name: 'teach.sav',
-    file_size: 1291786,
+    size: 1291786,
     id: 'dg.5555/8d84511c',
     type: 'GA4GH_DRS',
     itemType: 'Data',
@@ -14,7 +14,7 @@ export const ListItems: LibraryListItemsAPI = {
     dataset_guid: '1010',
     md5sum: '32d8152b09a2ed05a0fde2f21ff46479', // pragma: allowlist secret
     name: 'Teaching.zip',
-    file_size: 2565265,
+    size: 2565265,
     id: 'dg.5555/3ca7d38-',
     type: 'GA4GH_DRS',
     itemType: 'Data',
@@ -29,8 +29,8 @@ export const ListToAdd: DatalistAsAPIItems = {
 export const SecondListItems: LibraryListItemsAPI = {
   'dg.5555/0c8df5e3': {
     md5sum: 'dde1b1d86b3b4ed88fa5b42974ecfd79', // pragma: allowlist secret
-    file_name: 'tutorial.zip',
-    file_size: 94535,
+    name: 'tutorial.zip',
+    size: 94535,
     id: 'dg.5555/0c8df5e3',
     dataset_guid: '1020',
     type: 'GA4GH_DRS',
@@ -38,8 +38,8 @@ export const SecondListItems: LibraryListItemsAPI = {
   },
   'dg.5555/03ed62aa': {
     md5sum: '8f5b9b28004210865a0c1d7fc9834b1a', // pragma: allowlist secret
-    file_name: 'teach.csv',
-    file_size: 932272,
+    name: 'teach.csv',
+    size: 932272,
     id: 'dg.5555/03ed62aa',
     itemType: 'Data',
     type: 'GA4GH_DRS',

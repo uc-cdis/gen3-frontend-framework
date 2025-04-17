@@ -31,8 +31,15 @@ export interface FileItem extends ListItem {
   description?: string;
   type?: string;
   size?: string;
+  md5sum?: string;
+  url?: string;
+  documentationUrl?: string;
   itemType: 'Data';
   dataset_guid?: string;
+}
+
+export interface FileItemAPI extends Omit<FileItem, 'id'> {
+  display_name?: string;
 }
 
 export interface CohortItem extends ListItem {
@@ -120,7 +127,7 @@ export type DatasetOrCohort = Record<string, DataLibraryDataset | CohortItem>;
 
 export type LibraryListItemsAPI = Record<
   string,
-  FileItem | AdditionalDataItem | CohortItem
+  FileItemAPI | AdditionalDataItem | CohortItem
 >;
 
 export interface DatalistBase {
