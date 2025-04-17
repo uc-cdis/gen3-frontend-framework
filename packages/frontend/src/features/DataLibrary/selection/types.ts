@@ -11,7 +11,7 @@ type RuleOperator =
   | 'excludes'
   | 'greater'
   | 'less';
-type GroupOperator = 'count';
+type GroupOperator = 'count' | 'greater';
 // Enforce type safety for rule values
 type RuleValue = string | number | boolean;
 // Ensure field exists on items
