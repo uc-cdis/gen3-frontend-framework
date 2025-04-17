@@ -37,7 +37,6 @@ const DiscoveryIndexPanel = ({
   discoveryConfig,
   indexSelector,
 }: DiscoveryIndexPanelProps) => {
-  console.log(discoveryConfig);
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(

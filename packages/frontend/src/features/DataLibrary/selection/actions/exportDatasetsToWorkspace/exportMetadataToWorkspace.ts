@@ -47,6 +47,7 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
 ) => {
   // first need to get file manifest
   try {
+    console.log('exporting metadata to workspace', params);
     const fileManifest = selectionToManifest(validatedSelections);
 
     // next get the metadata from the dataset id

@@ -96,6 +96,7 @@ const AddToDataLibrary = ({
     updateListInDataLibrary,
     addListToDataLibrary,
     isLoading,
+    isUpdating,
     error: dataLibraryError,
   } = useDataLibrary();
 
@@ -108,44 +109,69 @@ const AddToDataLibrary = ({
       extractFileDatasetsInRecords(selectedResources, exportDataFields),
     );
 
+    if (Object.keys(items).length === 0) {
+      notifications.show({
+        id: 'update-datalibrary-no-items-to-update-notification',
+        position: 'top-center',
+        withCloseButton: true,
+        autoClose: 5000,
+        title: 'Save to list',
+        message: `No data objects selected to save to list ${listname}.`,
+        loading: false,
+      });
+      return;
+    }
+
     if (listId) {
-      if (Object.keys(items).length === 0) {
-        notifications.show({
-          id: 'update-datalibrary-no-items-to-update-notification',
-          position: 'top-center',
-          withCloseButton: true,
-          autoClose: 5000,
-          title: 'Save to list',
-          message: `No data objects selected to save to list ${listname}.`,
-          loading: false,
-        });
-        return;
-      }
+      // updating list
       updateListInDataLibrary({
         id: listId,
         name: listname,
         items: { ...dataLibrary[listId].items, ...items },
-      });
-
-      notifications.show({
-        id: 'update-datalibrary-list-notification',
-        position: 'top-center',
-        withCloseButton: true,
-        autoClose: 5000,
-        title: 'Save to list',
-        message: `${Object.values(items)} saved to list ${listname} successfully.`,
-        loading: isLoading,
+      }).then((results) => {
+        if (results.isError)
+          notifications.show({
+            id: 'update-datalibrary-list-error-notification',
+            position: 'top-center',
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Save to list',
+            message: `Error saving to list ${listname}.`,
+            loading: isUpdating !== null,
+          });
+        else
+          notifications.show({
+            id: 'update-datalibrary-list-notification',
+            position: 'top-center',
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Save to list',
+            message: `${Object.values(items).length} datasets saved to list ${listname}.`,
+            loading: isUpdating !== null,
+          });
       });
     } else {
-      addListToDataLibrary(items, listname);
-      notifications.show({
-        id: 'update-datalibrary-list-notification',
-        position: 'top-center',
-        withCloseButton: true,
-        autoClose: 5000,
-        title: 'Save to list',
-        message: `${Object.values(items)} saved to list ${listname} successfully.`,
-        loading: isLoading,
+      addListToDataLibrary(items, listname).then((results) => {
+        if (results.isError)
+          notifications.show({
+            id: 'update-datalibrary-list-error-notification',
+            position: 'top-center',
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Save to list',
+            message: `Error saving to list ${listname}.`,
+            loading: isUpdating !== null,
+          });
+        else
+          notifications.show({
+            id: 'update-datalibrary-list-notification',
+            position: 'top-center',
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Save to list',
+            message: `${Object.values(items).length} datasets saved to list ${listname}.`,
+            loading: isLoading,
+          });
       });
     }
   };
@@ -179,22 +205,13 @@ const AddToDataLibrary = ({
   }, [options]);
 
   useDeepCompareEffect(() => {
-    if (dataLibrary && !dataLibraryError) {
-      const listItems = extractIdToLabel(dataLibrary);
-      setSelectItems(listItems);
-    }
-    setError(dataLibraryError);
-    if (dataLibraryError) {
-      notifications.show({
-        id: 'update-datalibrary-error-notification',
-        position: 'top-center',
-        withCloseButton: true,
-        autoClose: 5000,
-        title: 'Error',
-        message: `Error saving to data library. Please try again later.`,
-        loading: false,
-      });
-    }
+    if (dataLibrary)
+      if (!dataLibraryError) {
+        const listItems = extractIdToLabel(dataLibrary);
+        setSelectItems(listItems);
+      } else {
+        setError(dataLibraryError);
+      }
   }, [dataLibrary, dataLibraryError]);
 
   return (

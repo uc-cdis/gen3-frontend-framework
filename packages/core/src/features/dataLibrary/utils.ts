@@ -14,6 +14,7 @@ import {
   DatasetOrCohort,
   DataLibraryDataset,
   FileItem,
+  FileItemAPI,
   DataLibraryAPI,
 } from './types';
 import { parse } from 'graphql';
@@ -179,7 +180,7 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
         data: item.data,
         name: item.name,
         index: item.index,
-      } as CohortItem;
+      } satisfies CohortItem;
     } else {
       // Handle dataset items
       const members = item.members || {};
@@ -196,8 +197,7 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
             }),
             ...(memberData.type && { type: memberData.type }),
             dataset_guid: datasetId,
-            itemType: 'Data', // Required by the FileItem interface
-          } as FileItem;
+          } satisfies FileItemAPI;
         } else if (memberData.itemType === 'AdditionalData') {
           // Handle additional data items
           result[memberId] = {
