@@ -177,7 +177,7 @@ const getCSRFToken = async (): Promise<string | null> => {
  * @param {string} [method=DEFAULT_METHOD] - The HTTP method to use for the request (e.g., 'GET', 'POST').
  * @param {unknown} [body=undefined] - The request body to send, applicable when using methods like 'POST'.
  *
- * @param {signal} - pass Abort Signal to support stopping fetch
+ * @param signal - Abort fetch
  * @returns {Promise<T>} A promise that resolves to the parsed JSON data from the response.
  *
  * @throws {HTTPError} Throws an error if the HTTP response status indicates a failure.
@@ -188,7 +188,7 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   method: HttpMethod = DEFAULT_METHOD,
   body: unknown = undefined,
   signal?: AbortSignal,
-): Promise<T | null> => {
+): Promise<Awaited<T | null | void>> => {
   const requestHeaders = new Headers({
     [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
   });

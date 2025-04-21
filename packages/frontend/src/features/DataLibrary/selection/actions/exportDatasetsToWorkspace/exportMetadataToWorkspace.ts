@@ -52,6 +52,7 @@ interface ExportMetadataToWorkspaceParameters {
   keysToRemove: Array<string>;
   metadataRoot: string;
   useAggMDS: boolean;
+  verifyExternalLogins: boolean;
 }
 
 export const exportMetadataToWorkspace: DataActionFunction = async (
@@ -65,6 +66,17 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
   // first need to get file manifest
   try {
     const fileManifest = selectionToManifest(validatedSelections);
+
+    if (params?.verifyExternalLogins) {
+      const externalLogins = fileManifest.filter(
+        (file) => file.type === 'file' && file.external_login,
+      );
+      if (externalLogins.length > 0) {
+        throw new Error(
+          'Cannot export metadata for files with external logins. Please remove external logins before exporting metadata.',
+        );
+      }
+    }
 
     // next get the metadata from the dataset id
     const metadataIds = extractDatasetIds(validatedSelections);
