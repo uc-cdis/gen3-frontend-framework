@@ -37,6 +37,8 @@ import {
   type JWTSessionStatus,
 } from './types';
 
+import { getFederatedLoginStatus, useGetFederatedLoginStatus } from './hooks';
+
 export {
   type Gen3User,
   type LoginStatus,
@@ -66,4 +68,6 @@ export {
   selectCSRFToken,
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
+  getFederatedLoginStatus,
+  useGetFederatedLoginStatus,
 };

@@ -3,7 +3,7 @@ import { useGetExternalLoginsQuery } from './externalLoginsSlice';
 import { ExternalProvider, FileMetadata } from './types';
 import { GUID_PREFIX_PATTERN } from '../../constants';
 import { resolveDRSObjectId } from '../drsResolver/utils';
-import { queryWTSFederatedLoginStatus } from './queryWTSFederatedLoginStatus';
+import { queryWTSFederatedLoginStatus } from './utils';
 
 /**
  * Input is a list of files selected for download.
@@ -136,7 +136,7 @@ interface FederatedLoginStatusParams {
   selectedFiles: ReadonlyArray<FileMetadata>;
 }
 
-const useGetFederatedLoginStatus = ({
+export const useGetFederatedLoginStatus = ({
   selectedFiles,
 }: FederatedLoginStatusParams) => {
   const {
@@ -183,5 +183,3 @@ export const getFederatedLoginStatus = async (
   const providers = await queryWTSFederatedLoginStatus();
   return await fetchExternalLogins(providers.providers, selectedFiles);
 };
-
-export default useGetFederatedLoginStatus;

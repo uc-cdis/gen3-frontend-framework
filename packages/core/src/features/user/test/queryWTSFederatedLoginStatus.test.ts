@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { GEN3_WTS_API } from '../../../constants';
-import { queryWTSFederatedLoginStatus } from '../queryWTSFederatedLoginStatus';
+import { queryWTSFederatedLoginStatus } from '../utils';
 
 // Define the MSW server and handlers
 const mockURL = `${GEN3_WTS_API}/external_oidc/`;
