@@ -1,13 +1,17 @@
+import React from 'react';
 import { DataActionFunction } from '../../types';
 import { extractDatasetIds, selectionToManifest } from '../../utils';
-
 import {
   fetchJSONDataFromURL,
   GEN3_MANIFEST_API,
   HttpMethod,
   queryMultipleMDSRecords,
+  getFederatedLoginStatus,
 } from '@gen3/core';
+import { Stack } from '@mantine/core';
 import { get, unset, cloneDeep } from 'lodash';
+import { modals } from '@mantine/modals';
+import { ProvidersErrorPanel } from './providerErrorNotification';
 
 const removeKeys = (obj: object, keysToRemove: Array<string>) => {
   keysToRemove.forEach((key) => {
@@ -68,13 +72,70 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
     const fileManifest = selectionToManifest(validatedSelections);
 
     if (params?.verifyExternalLogins) {
-      const externalLogins = fileManifest.filter(
-        (file) => file.type === 'file' && file.external_login,
-      );
-      if (externalLogins.length > 0) {
-        throw new Error(
-          'Cannot export metadata for files with external logins. Please remove external logins before exporting metadata.',
-        );
+      const results = await getFederatedLoginStatus(fileManifest);
+
+      const {
+        error: providersError,
+        providersToAuthenticate,
+        missingProviders,
+      } = results;
+      if (providersError) {
+        onError?.(providersError);
+        return;
+      }
+      if (
+        providersToAuthenticate &&
+        providersToAuthenticate?.length > 0 &&
+        missingProviders &&
+        missingProviders?.length > 0
+      ) {
+        modals.open({
+          id: 'export-dicovery-to-workspace-providers-to-authenticate-modal',
+          title: 'Error: Export to Workspace',
+          withCloseButton: true,
+          children: (
+            <Stack>
+              <ProvidersErrorPanel
+                message="The following providers need to be authenticated"
+                providers={providersToAuthenticate}
+              />
+              <ProvidersErrorPanel
+                message="The following providers need to be authenticated"
+                providers={providersToAuthenticate}
+              />
+            </Stack>
+          ),
+        });
+        return;
+      }
+      if (providersToAuthenticate && providersToAuthenticate?.length > 0) {
+        modals.open({
+          id: 'export-dicovery-to-workspace-providers-to-authenticate-modal',
+          title: 'Error: Export to Workspace',
+          withCloseButton: true,
+          children: (
+            <ProvidersErrorPanel
+              message="The following providers need to be authenticated"
+              providers={providersToAuthenticate}
+            />
+          ),
+        });
+        return;
+      } else {
+        if (missingProviders && missingProviders?.length > 0) {
+          modals.open({
+            id: 'export-dicovery-to-workspace-providers-to-authenticate-modal',
+            title: 'Error: Export to Workspace',
+            withCloseButton: true,
+            children: (
+              <ProvidersErrorPanel
+                message="The following providers are missing"
+                providers={missingProviders}
+              />
+            ),
+          });
+          return;
+        }
       }
     }
 
@@ -120,7 +181,6 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
       if (error.name == 'AbortError') {
         onAbort?.();
       }
-      onError?.(error);
     } else onError?.(new Error('unknown error'));
   }
 };

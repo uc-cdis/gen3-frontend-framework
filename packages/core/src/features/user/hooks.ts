@@ -177,9 +177,8 @@ export const useGetFederatedLoginStatus = ({
 };
 
 export const getFederatedLoginStatus = async (
-  params: FederatedLoginStatusParams,
+  selectedFiles: ReadonlyArray<FileMetadata>,
 ) => {
-  const { selectedFiles } = params;
   const providers = await queryWTSFederatedLoginStatus();
   return await fetchExternalLogins(providers.providers, selectedFiles);
 };

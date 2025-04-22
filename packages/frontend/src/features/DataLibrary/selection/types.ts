@@ -1,4 +1,4 @@
-import { CohortItem, HTTPError } from '@gen3/core';
+import { CohortItem, HTTPError, ExtendedError } from '@gen3/core';
 import {
   FileItemWithParentDatasetNameAndID,
   ValidatedSelectedItem,
@@ -49,7 +49,7 @@ export type DataActionFunction<T = void> = (
   validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
   params?: Record<string, any>, // function options from the config
   onDone?: (arg0?: string) => void,
-  onError?: (error: HTTPError | Error) => void,
+  onError?: (error: HTTPError | ExtendedError | Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
 ) => Promise<T>;
