@@ -77,6 +77,7 @@ const AddToDataLibrary = ({
     selectedResources.length === 0 ||
     !currentListName ||
     (buttonConfig?.requiresLogin && !isLoggedIn);
+
   const tooltipLabel = createTooltipLabel(
     error,
     isLoggedIn,

@@ -139,10 +139,11 @@ export const selectionToManifest = (
 export const extractDatasetIds = (
   dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
 ) => {
-  return dataLibrarySelections.reduce((acc, item) => {
+  const metadataIds = dataLibrarySelections.reduce((acc, item) => {
     if (isFileItem(item)) {
-      acc.push(item.datasetId);
+      acc.add(item.datasetId);
     }
     return acc;
-  }, [] as Array<string>);
+  }, new Set<string>() as Set<string>);
+  return Array.from(metadataIds);
 };

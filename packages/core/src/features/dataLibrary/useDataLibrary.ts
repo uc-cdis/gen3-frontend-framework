@@ -81,8 +81,6 @@ const useDataLibrary = (
         setError(error);
       } else {
         const getListResults = await dataLibraryStoreAPI.getLists();
-
-        console.log('getListResults: ', getListResults);
         if (getListResults.isError) {
           setError(getListResults);
         } else {
@@ -230,8 +228,6 @@ const useDataLibrary = (
     (loggedIn: boolean) => setIsLoggedIn(loggedIn),
     [],
   );
-
-  console.log('useDataLibrary Error: ', error);
 
   const results = useDeepCompareMemo(
     () => ({

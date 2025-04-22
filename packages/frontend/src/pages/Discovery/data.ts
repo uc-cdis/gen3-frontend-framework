@@ -20,7 +20,6 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
         `${GEN3_COMMONS_NAME}/dataLibrary.json`,
       );
 
-    console.log('Discovery ', discoveryConfig);
     discoveryConfig.metadataConfig?.forEach((index) => {
       if (index.features.exportFromDiscovery)
         index.features.exportFromDiscovery.dataLibraryStoreMode =

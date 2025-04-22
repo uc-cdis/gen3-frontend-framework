@@ -288,6 +288,37 @@ export const extractFileDatasetsInRecords = (
             return dataAcc;
           }
 
+          const name =
+            (dataObject[
+              dataFieldMapping?.dataObjectNameField ?? 'name'
+            ] as string) ?? 'No Name';
+          const size =
+            dataObject[dataFieldMapping?.dataObjectSizeField ?? 'size'];
+          let sizeString = 'N/A';
+          if (typeof size === 'number') {
+            sizeString = size.toString();
+          }
+          if (typeof size === 'string') {
+            sizeString = size;
+          }
+          const md5Sum =
+            (dataObject[
+              dataFieldMapping?.dataObjectMd5sumField ?? 'md5sum'
+            ] as string) ?? 'N/A';
+          const url =
+            (dataObject[
+              dataFieldMapping?.dataObjectUrlField ?? 'url'
+            ] as string) ?? 'N/A';
+
+          let fileType = 'GA4GH_DRS';
+          if (dataFieldMapping?.dataObjectFileTypeValue)
+            fileType = dataFieldMapping.dataObjectFileTypeValue;
+
+          if (dataFieldMapping?.dataObjectFileTypeField)
+            fileType = dataObject[
+              dataFieldMapping?.dataObjectFileTypeField
+            ] as string;
+
           return {
             ...dataAcc,
             [fileId]: {
@@ -295,7 +326,11 @@ export const extractFileDatasetsInRecords = (
               id: fileId,
               guid: fileId,
               itemType: 'Data',
-              ...dataObject,
+              name: name,
+              size: sizeString,
+              md5sum: md5Sum,
+              type: fileType,
+              url: url,
             } satisfies FileItem,
           };
         },

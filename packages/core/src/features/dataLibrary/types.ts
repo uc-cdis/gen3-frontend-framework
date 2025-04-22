@@ -194,4 +194,10 @@ export interface ExportDatasetFields {
   dataObjectField: string; // member that stores the id of the object that stores the id.
   datasetIdField: string; // member that stores the id of the "dataset" will default to uid
   dataObjectIdField: string; // field in data object
+  dataObjectNameField?: string;
+  dataObjectSizeField?: string;
+  dataObjectMd5sumField?: string;
+  dataObjectUrlField?: string;
+  dataObjectFileTypeValue?: string;
+  dataObjectFileTypeField?: string;
 }
