@@ -1,5 +1,9 @@
-import { AdditionalDataItem, CohortItem, FileItem } from '@gen3/core';
-
+import {
+  AdditionalDataItem,
+  CohortItem,
+  FileItem,
+  DataLibraryStoreMode,
+} from '@gen3/core';
 import { DataLibraryActionsConfig } from './selection/types';
 
 export interface DatasetContents {
@@ -28,7 +32,7 @@ export interface TableColumnsConfig {
 }
 
 export interface DataLibraryConfig {
-  useAPI: boolean;
+  storageMode: DataLibraryStoreMode;
   requiresLogin?: boolean;
   size?: string;
   actions: DataLibraryActionsConfig;

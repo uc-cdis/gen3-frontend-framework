@@ -19,6 +19,7 @@ import {
   type CoreState,
   selectUserAuthStatus,
   isAuthenticated,
+  DataLibraryStoreMode,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportActionButtonProps } from './types';
@@ -55,6 +56,7 @@ const AddToDataLibrary = ({
   buttonConfig,
   selectedResources,
   exportDataFields,
+  dataLibraryStoreMode = DataLibraryStoreMode.ApiOnly,
   classNames = {},
 }: ExportActionButtonProps) => {
   const [selectItems, setSelectItems] = useState<SelectOptions>({});
@@ -98,7 +100,7 @@ const AddToDataLibrary = ({
     isLoading,
     isUpdating,
     error: dataLibraryError,
-  } = useDataLibrary();
+  } = useDataLibrary({ storageMode: dataLibraryStoreMode });
 
   const saveToList = (
     listname: string,

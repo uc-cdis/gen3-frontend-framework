@@ -3,11 +3,14 @@ import { ExportFromDiscoveryActions } from '../types';
 import { ExportActionButtonProps } from './types';
 import DownloadManifestButton from './DownloadManifestButton';
 import AddToDataLibrary from './AddToDataLibrary';
+import { DataLibraryStoreMode } from '@gen3/core';
 
 const createActionButton = ({
   buttonConfig,
   selectedResources,
   exportDataFields,
+  verifyExternalLogins,
+  dataLibraryStoreMode,
 }: ExportActionButtonProps) => {
   return {
     manifest: (
@@ -24,6 +27,8 @@ const createActionButton = ({
         selectedResources={selectedResources}
         exportDataFields={exportDataFields}
         key={buttonConfig.type}
+        verifyExternalLogins={verifyExternalLogins}
+        dataLibraryStoreMode={dataLibraryStoreMode}
       />
     ),
   }[buttonConfig.type as string];
@@ -38,6 +43,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
   selectedResources,
   exportDataFields,
   verifyExternalLogins,
+  dataLibraryStoreMode = DataLibraryStoreMode.ApiOnly,
 }) => {
   return (
     <div className="flex items-center justify-end py-1 px-2 mb-1 w-full gap-x-1.5 ">
@@ -46,6 +52,8 @@ const ActionBar: React.FC<ActionBarProps> = ({
           buttonConfig: button,
           selectedResources,
           exportDataFields,
+          verifyExternalLogins,
+          dataLibraryStoreMode,
         });
       })}
     </div>

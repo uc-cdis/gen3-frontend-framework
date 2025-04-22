@@ -1,4 +1,4 @@
-import { ExportDatasetFields } from '@gen3/core';
+import { DataLibraryStoreMode, ExportDatasetFields } from '@gen3/core';
 import { ExportFromDiscoveryActionButton } from '../types';
 import { StylingOverride } from '../../../types';
 
@@ -7,6 +7,8 @@ export interface ExportActionProps<
 > {
   selectedResources: Array<T>;
   exportDataFields: ExportDatasetFields;
+  verifyExternalLogins?: boolean;
+  dataLibraryStoreMode?: DataLibraryStoreMode;
 }
 
 export interface ExportActionButtonProps<

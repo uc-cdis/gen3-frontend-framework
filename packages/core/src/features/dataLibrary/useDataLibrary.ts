@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   DataLibrary,
   DataLibraryStoreMode,
@@ -80,6 +81,8 @@ const useDataLibrary = (
         setError(error);
       } else {
         const getListResults = await dataLibraryStoreAPI.getLists();
+
+        console.log('getListResults: ', getListResults);
         if (getListResults.isError) {
           setError(getListResults);
         } else {
@@ -228,19 +231,38 @@ const useDataLibrary = (
     [],
   );
 
-  return {
-    dataLibrary: lists,
-    isLoading,
-    isUpdating,
-    error,
-    addListToDataLibrary,
-    updateListInDataLibrary,
-    deleteListFromDataLibrary,
-    clearLibrary,
-    setAllListsInDataLibrary,
-    setLoginState,
-    getDatalist,
-  };
+  console.log('useDataLibrary Error: ', error);
+
+  const results = useDeepCompareMemo(
+    () => ({
+      dataLibrary: lists,
+      isLoading,
+      isUpdating,
+      error,
+      addListToDataLibrary,
+      updateListInDataLibrary,
+      deleteListFromDataLibrary,
+      clearLibrary,
+      setAllListsInDataLibrary,
+      setLoginState,
+      getDatalist,
+    }),
+    [
+      addListToDataLibrary,
+      clearLibrary,
+      deleteListFromDataLibrary,
+      error,
+      getDatalist,
+      isLoading,
+      isUpdating,
+      lists,
+      setAllListsInDataLibrary,
+      setLoginState,
+      updateListInDataLibrary,
+    ],
+  );
+
+  return results;
 };
 
 export default useDataLibrary;

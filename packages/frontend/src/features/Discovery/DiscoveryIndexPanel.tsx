@@ -176,6 +176,10 @@ const DiscoveryIndexPanel = ({
                   discoveryConfig.features.exportFromDiscovery
                     .verifyExternalLogins
                 }
+                dataLibraryStoreMode={
+                  discoveryConfig.features.exportFromDiscovery
+                    .dataLibraryStoreMode
+                }
               />
             ) : null}
           </div>
