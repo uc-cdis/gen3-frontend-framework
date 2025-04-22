@@ -143,6 +143,7 @@ export const extractDatasetIds = (
     if (isFileItem(item)) {
       acc.add(item.datasetId);
     }
+    ('');
     return acc;
   }, new Set<string>() as Set<string>);
   return Array.from(metadataIds);
