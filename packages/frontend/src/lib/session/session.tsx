@@ -21,6 +21,7 @@ import {
   showModal,
   useCoreDispatch,
   useCoreSelector,
+  useGetCSRFQuery,
   useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 
@@ -175,7 +176,7 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-
+  useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -250,10 +251,12 @@ export const SessionProvider = ({
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
+    window.addEventListener('updateUserActivity', updateUserActivity);
 
     return () => {
       window.removeEventListener('mousedown', updateUserActivity);
       window.removeEventListener('keypress', updateUserActivity);
+      window.removeEventListener('updateUserActivity', updateUserActivity);
     };
   }, []); // only call on mount/dismount
 

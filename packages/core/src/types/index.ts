@@ -143,7 +143,7 @@ interface ParsingError {
   error: string;
 }
 
-interface HttpError {
+export interface HttpError {
   status: number;
   data: unknown;
 }

@@ -6,4 +6,4 @@ set -e
 export NODE_ENV=production
 echo "running NextJS server"
 HOSTNAME=0.0.0.0
-node server.js
+node packages/sampleCommons/server.js
