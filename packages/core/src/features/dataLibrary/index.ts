@@ -2,6 +2,8 @@ export * from './types';
 
 import useDataLibrary from './useDataLibrary';
 
+import { type StorageOperationResults } from './storage/types';
+
 import {
   getNumberOfItemsInDatalist,
   getTimestamp,
@@ -17,4 +19,5 @@ export {
   extractIndexFromDataLibraryCohort,
   extractFileDatasetsInRecords,
   buildListItemsGroupedByDataset,
+  type StorageOperationResults,
 };

@@ -14,6 +14,7 @@ import {
   DatasetOrCohort,
   DataLibraryDataset,
   FileItem,
+  FileItemAPI,
   DataLibraryAPI,
 } from './types';
 import { parse } from 'graphql';
@@ -44,14 +45,14 @@ export const buildListItemsGroupedByDataset = (
   const items: DatasetOrCohort = Object.entries(listData).reduce(
     (acc: DatasetOrCohort, [id, data]) => {
       if (data?.type === 'Gen3GraphQL') {
-        // is cohort
+        const cohortData = data as CohortItem;
         acc[id] = {
           itemType: 'Gen3GraphQL',
           id: data.guid,
-          schemaVersion: data.schema_version,
-          data: data.data,
+          schemaVersion: cohortData.schema_version,
+          data: cohortData.data,
           name: data.name,
-          index: data.index,
+          index: cohortData.index,
         } as CohortItem;
       } else {
         // Dataset
@@ -179,7 +180,7 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
         data: item.data,
         name: item.name,
         index: item.index,
-      } as CohortItem;
+      } satisfies CohortItem;
     } else {
       // Handle dataset items
       const members = item.members || {};
@@ -188,10 +189,15 @@ export const convertDatasetOrCohortToLibraryListItemsAPI = (
       Object.entries(members).forEach(([memberId, memberData]) => {
         if (isFileItem(memberData)) {
           result[memberId] = {
-            ...memberData,
+            ...(memberData.guid && { guid: memberData.guid }),
+            ...(memberData.name && { name: memberData.name }),
+            ...(memberData.name && { name: memberData.name }),
+            ...(memberData.description && {
+              description: memberData.description,
+            }),
+            ...(memberData.type && { type: memberData.type }),
             dataset_guid: datasetId,
-            id: memberData.guid,
-          } as FileItem;
+          } satisfies FileItemAPI;
         } else if (memberData.itemType === 'AdditionalData') {
           // Handle additional data items
           result[memberId] = {
@@ -282,6 +288,37 @@ export const extractFileDatasetsInRecords = (
             return dataAcc;
           }
 
+          const name =
+            (dataObject[
+              dataFieldMapping?.dataObjectNameField ?? 'name'
+            ] as string) ?? 'No Name';
+          const size =
+            dataObject[dataFieldMapping?.dataObjectSizeField ?? 'size'];
+          let sizeString = 'N/A';
+          if (typeof size === 'number') {
+            sizeString = size.toString();
+          }
+          if (typeof size === 'string') {
+            sizeString = size;
+          }
+          const md5Sum =
+            (dataObject[
+              dataFieldMapping?.dataObjectMd5sumField ?? 'md5sum'
+            ] as string) ?? 'N/A';
+          const url =
+            (dataObject[
+              dataFieldMapping?.dataObjectUrlField ?? 'url'
+            ] as string) ?? 'N/A';
+
+          let fileType = 'GA4GH_DRS';
+          if (dataFieldMapping?.dataObjectFileTypeValue)
+            fileType = dataFieldMapping.dataObjectFileTypeValue;
+
+          if (dataFieldMapping?.dataObjectFileTypeField)
+            fileType = dataObject[
+              dataFieldMapping?.dataObjectFileTypeField
+            ] as string;
+
           return {
             ...dataAcc,
             [fileId]: {
@@ -289,7 +326,11 @@ export const extractFileDatasetsInRecords = (
               id: fileId,
               guid: fileId,
               itemType: 'Data',
-              ...dataObject,
+              name: name,
+              size: sizeString,
+              md5sum: md5Sum,
+              type: fileType,
+              url: url,
             } satisfies FileItem,
           };
         },

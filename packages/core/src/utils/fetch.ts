@@ -177,16 +177,18 @@ const getCSRFToken = async (): Promise<string | null> => {
  * @param {string} [method=DEFAULT_METHOD] - The HTTP method to use for the request (e.g., 'GET', 'POST').
  * @param {unknown} [body=undefined] - The request body to send, applicable when using methods like 'POST'.
  *
- * @returns {Promise<any>} A promise that resolves to the parsed JSON data from the response.
+ * @param signal - Abort fetch
+ * @returns {Promise<T>} A promise that resolves to the parsed JSON data from the response.
  *
  * @throws {HTTPError} Throws an error if the HTTP response status indicates a failure.
  */
-export const fetchJSONDataFromURL = async (
+export const fetchJSONDataFromURL = async <T = unknown>(
   url: string,
   requiresCSRF: boolean = false,
   method: HttpMethod = DEFAULT_METHOD,
   body: unknown = undefined,
-): Promise<any> => {
+  signal?: AbortSignal,
+): Promise<Awaited<T | null | void>> => {
   const requestHeaders = new Headers({
     [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
   });
@@ -211,6 +213,7 @@ export const fetchJSONDataFromURL = async (
     body: ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase())
       ? body
       : undefined,
+    ...(signal ? { signal: signal } : {}),
   } as RequestInit);
 
   if (!response.ok) {
@@ -218,7 +221,8 @@ export const fetchJSONDataFromURL = async (
   }
 
   if (response.status === 204) {
-    return;
+    // no content so return null
+    return null;
   }
   return response.json();
 };

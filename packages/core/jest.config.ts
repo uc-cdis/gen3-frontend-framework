@@ -11,10 +11,14 @@ module.exports = {
     ],
     'node_modules/(flat|jsonpath-plus)/.+\\.(j|t)s?$': 'ts-jest',
   },
-  transformIgnorePatterns: ['node_modules/(?!flat|jsonpath-plus)/'],
+  transformIgnorePatterns: [
+    'node_modules/(?!flat|jsonpath-plus)/'
+  ],
   globalSetup: '<rootDir>/setupTests.ts',
   moduleNameMapper: {
     '^@/core/(.*)$': '<rootDir>/src/$1',
+    'jsonpath-plus': '<rootDir>/../../node_modules/jsonpath-plus',
+    'flat': '<rootDir>/../../node_modules/flat',
   },
   modulePaths: ['<rootDir>'],
   globals: {

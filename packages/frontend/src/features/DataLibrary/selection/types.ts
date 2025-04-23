@@ -11,7 +11,7 @@ type RuleOperator =
   | 'excludes'
   | 'greater'
   | 'less';
-type GroupOperator = 'count';
+type GroupOperator = 'count' | 'greater';
 // Enforce type safety for rule values
 type RuleValue = string | number | boolean;
 // Ensure field exists on items
@@ -48,7 +48,7 @@ export type DataLibraryActionsConfig = ReadonlyArray<DataLibraryActionConfig>;
 export type DataActionFunction<T = void> = (
   validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
   params?: Record<string, any>, // function options from the config
-  done?: (arg0?: string) => void,
+  onDone?: (arg0?: string) => void,
   onError?: (error: HTTPError | Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,

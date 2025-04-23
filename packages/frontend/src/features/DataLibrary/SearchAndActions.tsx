@@ -1,13 +1,16 @@
 import React from 'react';
 import { ActionIcon, Button, Group, Tooltip } from '@mantine/core';
 import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
-import { DatasetOrCohort } from '@gen3/core';
+import { DatasetOrCohort, StorageOperationResults } from '@gen3/core';
 import { Icon } from '@iconify/react';
 import { IconSize } from './types';
 import { useDataLibrarySelection } from './selection/SelectionContext';
 
 interface SearchAndActionsProps {
-  createList: (items: DatasetOrCohort, name?: string) => Promise<void>;
+  createList: (
+    items: DatasetOrCohort,
+    name?: string,
+  ) => Promise<StorageOperationResults>;
   gatherData: () => void;
   size?: string;
   enableCreateNewList?: boolean;

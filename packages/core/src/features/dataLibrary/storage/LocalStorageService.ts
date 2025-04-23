@@ -187,6 +187,8 @@ export class LocalStorageService implements StorageService {
       const store = tx.objectStore(STORE_NAME);
       const item = await store.get(id);
 
+      console.log('Delete list item: ', item);
+
       if (!item) {
         throw new Error(`List ${id} does not exist`);
       }

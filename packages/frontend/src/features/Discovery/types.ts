@@ -4,6 +4,7 @@ import {
   type MetadataPaginationParams,
   type AggregationsData,
   type ExportDatasetFields,
+  DataLibraryStoreMode,
 } from '@gen3/core';
 
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
@@ -244,6 +245,7 @@ export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
+  dataLibraryStoreMode?: DataLibraryStoreMode;
   exportDataFields: ExportDatasetFields;
 }
 

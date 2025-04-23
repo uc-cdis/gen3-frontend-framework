@@ -37,7 +37,6 @@ const DiscoveryIndexPanel = ({
   discoveryConfig,
   indexSelector,
 }: DiscoveryIndexPanelProps) => {
-  console.log(discoveryConfig);
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(
@@ -96,6 +95,8 @@ const DiscoveryIndexPanel = ({
       );
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
+
+  console.log('selectedRecords', selectedRecords);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
@@ -176,6 +177,10 @@ const DiscoveryIndexPanel = ({
                 verifyExternalLogins={
                   discoveryConfig.features.exportFromDiscovery
                     .verifyExternalLogins
+                }
+                dataLibraryStoreMode={
+                  discoveryConfig.features.exportFromDiscovery
+                    .dataLibraryStoreMode
                 }
               />
             ) : null}

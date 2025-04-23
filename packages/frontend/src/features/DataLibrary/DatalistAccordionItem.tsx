@@ -10,6 +10,7 @@ import {
   isCohortItem,
   isFileItem,
   DataListUpdate,
+  StorageOperationResults,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -23,8 +24,10 @@ import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
-  deleteListFromDataLibrary: (id: string) => Promise<void>;
+  updateListInDataLibrary: (
+    payload: DataListUpdate,
+  ) => Promise<StorageOperationResults>;
+  deleteListFromDataLibrary: (id: string) => Promise<StorageOperationResults>;
   isUpdating: string | null;
   size?: string;
 }
@@ -56,7 +59,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
-    await updateListInDataLibrary({
+    return await updateListInDataLibrary({
       ...{ name: listName, items: dataList.items },
       ...update,
       id: listId,

@@ -31,7 +31,6 @@ import { PaymentNumberToString } from '../utils';
 import { ErrorCard } from '../../../components/MessageCards';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { SerializedError } from '@reduxjs/toolkit';
-import StatusAndControls from '../StatusAndControls';
 
 const isNoPayModelError = (error: FetchBaseQueryError | SerializedError) => {
   return (
@@ -108,7 +107,7 @@ const PaymentPanel = () => {
         usersPayModels,
         workspaceName:
           data.currentPayModel.bmh_workspace_id.length > 0
-            ? data.currentPayModel.bmh_workspace_id.length
+            ? data.currentPayModel.bmh_workspace_id
             : data.currentPayModel.workspace_type,
         totalUsage: data.currentPayModel['total-usage'],
         hardLimit: data.currentPayModel['hard-limit'],
@@ -117,6 +116,7 @@ const PaymentPanel = () => {
 
   const PayModelSelectItem: SelectProps['renderOption'] = ({ option }) => {
     const menuItem = usersPayModels[Number(option.value)];
+    if (!menuItem) return null;
     return (
       <div>
         <Group wrap="nowrap">

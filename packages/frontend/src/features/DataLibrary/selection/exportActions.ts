@@ -29,8 +29,8 @@ const isSendExistingPFBToURLParameters = (
 export const sendExistingPFBToURL: DataActionFunction = async (
   validatedSelections,
   params,
-  done = () => null,
-  error = () => null,
+  onDone = () => null,
+  onError = () => null,
   onAbort = () => null,
   signal = undefined,
 ) => {
@@ -73,9 +73,9 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     );
     return new Promise<void>(() => {
       if (window) window.open(targetURL, '_blank', 'noopener,noreferrer');
-      if (done) done(targetURL);
+      if (onDone) onDone(targetURL);
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof HTTPError) {
       notifications.show({
         id: 'data-library-send-existing-pfb-to-url-validate-length',
@@ -91,9 +91,14 @@ export const sendExistingPFBToURL: DataActionFunction = async (
         loading: false,
       });
     }
-    console.error('Error sending PFB to URL', error);
-    return new Promise<void>(() => {
-      error(error as Error);
-    });
+    if (error instanceof Error) {
+      if (error.name == 'AbortError') {
+        onAbort?.();
+      }
+
+      return new Promise<void>(() => {
+        onError?.(error as Error);
+      });
+    }
   }
 };

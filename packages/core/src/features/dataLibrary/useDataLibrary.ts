@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
-  Datalist,
   DataLibrary,
   DataLibraryStoreMode,
+  Datalist,
   DataListUpdate,
   DatasetOrCohort,
   LibraryListItemsGroupedByDataset,
@@ -39,13 +40,15 @@ interface UseDataLibraryResult {
   addListToDataLibrary: (
     items: DatasetOrCohort,
     name?: string,
-  ) => Promise<void>;
-  updateListInDataLibrary: (payload: DataListUpdate) => Promise<void>;
-  deleteListFromDataLibrary: (id: string) => Promise<void>;
-  clearLibrary: () => Promise<void>;
+  ) => Promise<StorageOperationResults>;
+  updateListInDataLibrary: (
+    payload: DataListUpdate,
+  ) => Promise<StorageOperationResults>;
+  deleteListFromDataLibrary: (id: string) => Promise<StorageOperationResults>;
+  clearLibrary: () => Promise<StorageOperationResults>;
   setAllListsInDataLibrary: (
     data: Array<LibraryListItemsGroupedByDataset>,
-  ) => Promise<void>;
+  ) => Promise<StorageOperationResults>;
   setLoginState: (loggedIn: boolean) => void;
   getDatalist: (id: string) => Datalist;
 }
@@ -114,10 +117,11 @@ const useDataLibrary = (
       if (updateId) {
         setIsUpdating(updateId);
       } else setIsLoading(true);
-      const operationError = await operation();
-      await handleErrorOrSetLists(operationError);
+      const operationResults = await operation();
+      await handleErrorOrSetLists(operationResults);
       if (updateId) setIsUpdating(null);
       else setIsLoading(false);
+      return operationResults;
     },
     [handleErrorOrSetLists],
   );
@@ -158,7 +162,7 @@ const useDataLibrary = (
         name: generateUniqueName(name ?? DEFAULT_LIST_NAME),
       };
 
-      await performLibraryOperation(() =>
+      return await performLibraryOperation(() =>
         dataLibraryStoreAPI.addList(namedItems),
       );
     },
@@ -169,7 +173,7 @@ const useDataLibrary = (
     async (payload: DataListUpdate) => {
       const flattened = flattenDataList(payload);
 
-      await performLibraryOperation(
+      return await performLibraryOperation(
         () =>
           dataLibraryStoreAPI.updateList(payload.id, {
             name: payload.name,
@@ -183,20 +187,24 @@ const useDataLibrary = (
 
   const deleteListFromDataLibrary = useCallback(
     async (id: string) => {
-      await performLibraryOperation(() => dataLibraryStoreAPI.deleteList(id));
+      return await performLibraryOperation(() =>
+        dataLibraryStoreAPI.deleteList(id),
+      );
     },
     [dataLibraryStoreAPI, performLibraryOperation],
   );
 
   const clearLibrary = useCallback(async () => {
-    await performLibraryOperation(() => dataLibraryStoreAPI.clearLists());
+    return await performLibraryOperation(() =>
+      dataLibraryStoreAPI.clearLists(),
+    );
   }, [dataLibraryStoreAPI, performLibraryOperation]);
 
   const setAllListsInDataLibrary = useCallback(
     async (data: Array<LibraryListItemsGroupedByDataset>) => {
       const flattenedLists = data.map((x) => flattenDataList(x));
 
-      await performLibraryOperation(() =>
+      return await performLibraryOperation(() =>
         dataLibraryStoreAPI.setAllLists(flattenedLists),
       );
     },
@@ -221,19 +229,36 @@ const useDataLibrary = (
     [],
   );
 
-  return {
-    dataLibrary: lists,
-    isLoading,
-    isUpdating,
-    error,
-    addListToDataLibrary,
-    updateListInDataLibrary,
-    deleteListFromDataLibrary,
-    clearLibrary,
-    setAllListsInDataLibrary,
-    setLoginState,
-    getDatalist,
-  };
+  const results = useDeepCompareMemo(
+    () => ({
+      dataLibrary: lists,
+      isLoading,
+      isUpdating,
+      error,
+      addListToDataLibrary,
+      updateListInDataLibrary,
+      deleteListFromDataLibrary,
+      clearLibrary,
+      setAllListsInDataLibrary,
+      setLoginState,
+      getDatalist,
+    }),
+    [
+      addListToDataLibrary,
+      clearLibrary,
+      deleteListFromDataLibrary,
+      error,
+      getDatalist,
+      isLoading,
+      isUpdating,
+      lists,
+      setAllListsInDataLibrary,
+      setLoginState,
+      updateListInDataLibrary,
+    ],
+  );
+
+  return results;
 };
 
 export default useDataLibrary;

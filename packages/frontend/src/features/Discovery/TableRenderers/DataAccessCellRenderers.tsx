@@ -11,6 +11,7 @@ import {
 import { getAccessLevelFromNumber } from '../utils';
 import { JSONObject } from '@gen3/core';
 import { isArray } from 'lodash';
+import { useDiscoveryContext } from '../DiscoveryProvider';
 
 const buildTooltip = (mainMessage: string, secondaryMessage?: string) => {
   return (
@@ -30,12 +31,28 @@ export const DataAccessCellRenderer = (
   { cell, row }: CellRenderFunctionProps,
   params?: JSONObject,
 ) => {
-  const authzField = (params?.authzField as string) || 'authz';
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();
   const authorization = (row?.original?.[authzField] as string) || undefined;
+  const dataObjectField =
+    config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
+  const numFileobject = row?.original?.num_fileobject || 0;
   if (isArray(value)) value = value[0];
   const accessLevel = getAccessLevelFromNumber(value);
 
+  const numFileObjects =
+    dataObjectField && row?.original?.[dataObjectField]
+      ? row?.original?.[dataObjectField]
+      : 0;
+
+  if (numFileObjects === 0) {
+    return (
+      <Tooltip label={buildTooltip('No data attached to this study')}>
+        <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
+      </Tooltip>
+    );
+  }
   if (!accessLevel) {
     return (
       <Tooltip label={buildTooltip('Unable to determine access level')}>

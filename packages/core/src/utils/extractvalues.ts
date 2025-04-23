@@ -1,3 +1,5 @@
+import { JSONPath } from 'jsonpath-plus';
+
 type JsonPathMapping = { [key: string]: string };
 
 export interface JSONObject {
@@ -5,8 +7,6 @@ export interface JSONObject {
 }
 
 export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
-
-import { JSONPath } from 'jsonpath-plus';
 
 export const extractValuesFromObject = (
   jsonPathMappings: JsonPathMapping,

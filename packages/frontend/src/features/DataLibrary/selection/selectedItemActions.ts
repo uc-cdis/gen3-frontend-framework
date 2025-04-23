@@ -59,6 +59,10 @@ const evaluateGroupRule = (
       const fieldValue = items.map((item) => item[rule.field]);
       return fieldValue.length === rule.total;
     }
+    case 'greater': {
+      const fieldValue = items.map((item) => item[rule.field]);
+      return fieldValue.length > (rule.total as number);
+    }
   }
 };
 

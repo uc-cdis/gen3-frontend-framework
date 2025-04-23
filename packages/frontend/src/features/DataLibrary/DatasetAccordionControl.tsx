@@ -15,14 +15,17 @@ import { getHotkeyHandler } from '@mantine/hooks';
 import { DataItemSelectedState, IconSize } from './types';
 import EmptyList from './EmptyList';
 import { formatDate } from './utils';
+import { StorageOperationResults } from '@gen3/core';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
   numberOfItems: number;
   updatedTime: string;
   createdTime: string;
-  updateHandler: (update: Record<string, any>) => Promise<void>;
-  deleteListHandler: () => Promise<void>;
+  updateHandler: (
+    update: Record<string, any>,
+  ) => Promise<StorageOperationResults>;
+  deleteListHandler: () => Promise<StorageOperationResults>;
   selectListHandler: (checked: boolean) => void;
   selectedState: DataItemSelectedState;
   size?: string;

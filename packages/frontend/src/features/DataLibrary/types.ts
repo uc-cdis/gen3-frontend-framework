@@ -1,5 +1,9 @@
-import { AdditionalDataItem, CohortItem, FileItem } from '@gen3/core';
-
+import {
+  AdditionalDataItem,
+  CohortItem,
+  FileItem,
+  DataLibraryStoreMode,
+} from '@gen3/core';
 import { DataLibraryActionsConfig } from './selection/types';
 
 export interface DatasetContents {
@@ -28,7 +32,7 @@ export interface TableColumnsConfig {
 }
 
 export interface DataLibraryConfig {
-  useAPI: boolean;
+  storageMode: DataLibraryStoreMode;
   requiresLogin?: boolean;
   size?: string;
   actions: DataLibraryActionsConfig;
@@ -56,6 +60,33 @@ export interface ValidFileItemWithParentDatasetNameAndID
 export type ValidatedSelectedItem =
   | ValidCohortItem
   | ValidFileItemWithParentDatasetNameAndID;
+
+/**
+ * Type guard for ValidFileItemWithParentDatasetNameAndID
+ * Checks if the object has the properties that define this interface
+ */
+export const isValidFileItemWithParentDatasetNameAndID = (
+  item: unknown,
+): item is ValidFileItemWithParentDatasetNameAndID => {
+  if (!item || typeof item !== 'object') {
+    return false;
+  }
+
+  const fileItem = item as Partial<ValidFileItemWithParentDatasetNameAndID>;
+
+  // Check required properties from FileItemWithParentDatasetNameAndID
+  if (
+    typeof fileItem.datasetName !== 'string' ||
+    typeof fileItem.datasetId !== 'string'
+  ) {
+    return false;
+  }
+
+  // We can assume it's a FileItem if it has the required properties from parent interfaces
+  // Additional checks could be added if FileItem has required properties
+
+  return true;
+};
 
 export const MantineSizeToString: Record<string, string> = {
   xs: 'xs',

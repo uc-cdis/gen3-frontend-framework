@@ -1,5 +1,7 @@
 import { sendExistingPFBToURL } from './exportActions';
+import { exportToManifest } from './actions/exportToManifest';
 import { DataActionFunction } from './types';
+import { exportMetadataToWorkspace } from './actions/exportDatasetsToWorkspace/exportMetadataToWorkspace';
 
 // create a factory for the action creators
 
@@ -41,6 +43,12 @@ export const findAction = (
 export const registerDefaultDataLibraryActions = () => {
   registerAction('export-pfb-to-url', {
     action: sendExistingPFBToURL,
+  });
+  registerAction('export-from-discovery-to-manifest', {
+    action: exportToManifest,
+  });
+  registerAction('export-from-discovery-to-workspace', {
+    action: exportMetadataToWorkspace,
   });
 };
 

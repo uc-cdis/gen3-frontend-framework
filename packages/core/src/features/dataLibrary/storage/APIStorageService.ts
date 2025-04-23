@@ -123,13 +123,12 @@ export class APIStorageService implements StorageService<DataLibrary> {
   }
 
   async addList(list: DatalistAsAPIItems): Promise<ReturnStatus> {
-    const listToAdd = {
-      ...list,
-    };
     const response = await fetchFromDataLibraryAPI(
       `${this.apiBaseUrl}`,
       HttpMethod.PUT,
-      JSON.stringify(listToAdd),
+      JSON.stringify({
+        lists: [list],
+      }),
     );
 
     return responseFromMutation(response);

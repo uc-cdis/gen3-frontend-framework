@@ -216,7 +216,7 @@ export const SessionProvider = ({
 
   const sessionInfo = useManageSession(userStatus);
 
-  // for now we are using the user status to determine if the user is logged in
+  // for now, we are using the user status to determine if the user is logged in
   const updateSession = useCallback(
     () => updateSessionWithUserStatus(),
     [updateSessionWithUserStatus],

@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import type { NavPageLayoutProps } from '../../features/Navigation';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import ContentSource from '../../lib/content';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { DataLibraryStoreMode, GEN3_COMMONS_NAME } from '@gen3/core';
 import { DataLibraryConfig } from '../../features/DataLibrary';
 
 export const DataLibraryPageGetServerSideProps: GetServerSideProps<
@@ -26,7 +26,7 @@ export const DataLibraryPageGetServerSideProps: GetServerSideProps<
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
         config: {
-          useAPI: false,
+          storageMode: DataLibraryStoreMode.ApiOnly,
           actions: [],
         },
       },
