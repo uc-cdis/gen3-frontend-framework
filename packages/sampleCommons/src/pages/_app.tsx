@@ -13,6 +13,7 @@ import {
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
   registerMetadataSchemaApp,
+  registerCohortDiscoveryApp,
 } from '@gen3/frontend';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';

@@ -56,7 +56,8 @@ const RequestsTable = () => {
       requests.map((request) => {
         return {
           ...request,
-          cohortName: cohortIdToNameMap[request.cohortId] || 'Unknown',
+          cohortName: (cohortIdToNameMap[request.cohortId] ||
+            'Unknown') as string,
         };
       }),
     [requests, cohortIdToNameMap],

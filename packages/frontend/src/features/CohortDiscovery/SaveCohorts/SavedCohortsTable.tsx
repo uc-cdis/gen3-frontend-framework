@@ -79,7 +79,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
     () =>
       data.map((cohort) => ({
         ...cohort,
-        requested: requestByCohortId[cohort.id] ? 'true' : 'false',
+        requested: (requestByCohortId[cohort.id] ? 'true' : 'false') as string,
       })),
     [data, requestByCohortId],
   );

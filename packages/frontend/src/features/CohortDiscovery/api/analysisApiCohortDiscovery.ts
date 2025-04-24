@@ -1,5 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { GEN3_GUPPY_API, fetchJSONDataFromURL, HTTPError } from '@gen3/core';
+import {
+  fetchJSONDataFromURL,
+  GEN3_GUPPY_API,
+  HTTPError,
+  HttpMethod,
+} from '@gen3/core';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   // Ensure this API route only accepts POST requests
@@ -20,11 +25,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const response = await fetchJSONDataFromURL(
       `${GEN3_GUPPY_API}/graphql`,
       true,
-      'POST',
+      HttpMethod.POST,
       JSON.stringify({ query, variables }),
     );
     // Parse and return the response as JSON
-    const data = await response.json();
+    const data = response;
 
     res.status(200).json(data);
   } catch (error) {

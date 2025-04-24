@@ -188,7 +188,7 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   method: HttpMethod = DEFAULT_METHOD,
   body: unknown = undefined,
   signal?: AbortSignal,
-): Promise<Awaited<T | null | void>> => {
+): Promise<T | null> => {
   const requestHeaders = new Headers({
     [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
   });
@@ -224,5 +224,5 @@ export const fetchJSONDataFromURL = async <T = unknown>(
     // no content so return null
     return null;
   }
-  return response.json();
+  return await response.json();
 };
