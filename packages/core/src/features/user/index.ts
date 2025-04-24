@@ -1,5 +1,4 @@
 import {
-  useUser,
   useUserAuth,
   resetUserState,
   fetchUserState,
@@ -38,6 +37,8 @@ import {
   type JWTSessionStatus,
 } from './types';
 
+import { getFederatedLoginStatus, useGetFederatedLoginStatus } from './hooks';
+
 export {
   type Gen3User,
   type LoginStatus,
@@ -46,7 +47,6 @@ export {
   type CSRFToken,
   type ExternalProvider,
   type NamedURL,
-  useUser,
   useUserAuth,
   selectUser,
   selectUserData,
@@ -68,4 +68,6 @@ export {
   selectCSRFToken,
   selectCSRFTokenData,
   selectHeadersWithCSRFToken,
+  getFederatedLoginStatus,
+  useGetFederatedLoginStatus,
 };

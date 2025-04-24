@@ -14,6 +14,7 @@ const DataLibraryPage = ({
   footerProps,
   config,
 }: DataLibraryPageProps): JSX.Element => {
+  console.log('DataLibraryPage', config);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}

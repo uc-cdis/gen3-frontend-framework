@@ -1,2 +1,2 @@
 export { default } from './Landing';
-export { LandingPageGetStaticProps } from './data';
+export { LandingPageGetServerSideProps } from './data';

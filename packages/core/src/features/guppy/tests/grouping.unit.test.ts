@@ -1,4 +1,5 @@
 import { describe } from '@jest/globals';
+
 import { groupSharedFields } from '../utils';
 
 const data = {

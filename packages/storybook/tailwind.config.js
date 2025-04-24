@@ -20,45 +20,6 @@ module.exports = {
     extend: {
       colors: {
         footer: '#373A3C',
-        heal: {
-          primary: '#99286B',
-          secondary: '#402264',
-          light_purple: '#F6EFF1',
-          purple: '#532565',
-          magenta: '#982568',
-          red: '#981F32',
-          coral: '#BF362E',
-          orange: '#E07C3E',
-          dark_gray: '#373A3C',
-          medium_gray: '#818A91',
-          light_gray: '#DDDDDD',
-          blue: '#0044B3',
-        },
-        midrc: {
-          secondary: '#421C52',
-        },
-        gen3: {
-          secondary: '#3283C8',
-          primary: '#05B8EE',
-          lime: '#7EC500',
-          iris: '#AD91FF',
-          rose: '#E74C3C',
-          bee: '#F4B940',
-          pink: '#FF7ABC',
-          highlight_orange: '#EF8523',
-          highlight_orange_light: '#FF9635',
-          mint: '#26D9B1',
-          coal: '#4A4A4A',
-          cloud: '#F5F5F5',
-          gray: '#606060',
-          lightgray: '#9B9B9B',
-          smoke: '#D1D1D1',
-          silver: '#E7E7E7',
-          black: '#000000',
-          white: '#FFFFFF',
-          titanium: '#707070',
-          obsidian: '#757575',
-        },
         ...themeColors,
       },
       fontFamily: {
@@ -174,5 +135,32 @@ module.exports = {
     }),
   ],
   // Add any colors. fontSize, height used in a json config file here
-  safelist: ['text-tiny', 'text-xxs', 'text-xxxs', 'h-20'],
+  safelist: [
+    'accent-warm',
+    'text-tiny',
+    'text-xxs',
+    'text-xxxs',
+    'h-20',
+    {
+      pattern:
+        /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+    },
+    {
+      pattern:
+        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+    },
+    {
+      pattern:
+        /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+    },
+    {
+      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
+    {
+      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
+    {
+      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+    },
+  ],
 };

@@ -8,8 +8,8 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
 export const QueryPageGetServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async () => {
-  const queryProps: QueryProps = await ContentSource.get(
-    `config/${GEN3_COMMONS_NAME}/query.json`,
+  const queryProps: QueryProps = await ContentSource.getContentDatabase().get(
+    `${GEN3_COMMONS_NAME}/query.json`,
   );
 
   return {

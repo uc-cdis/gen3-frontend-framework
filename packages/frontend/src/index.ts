@@ -30,6 +30,8 @@ import {
   UploadJSONButton,
 } from './components/Buttons';
 
+import TopBar from './features/Navigation/TopBar/TopBar';
+
 import '@gen3/core';
 
 // export Gen3 data UI standard pages
@@ -43,7 +45,7 @@ import QueryPage from './pages/Query/Query';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
 import LandingPage from './pages/Landing/Landing';
-import { LandingPageGetStaticProps } from './pages/Landing/data';
+import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
 import {
@@ -78,7 +80,10 @@ import {
 } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
-import { AnalysisPageGetServerSideProps } from './pages/Analysis';
+import {
+  AnalysisPageGetServerSideProps,
+  type AnalysisPageLayoutProps,
+} from './pages/Analysis';
 
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
@@ -110,6 +115,7 @@ export {
   type RegisteredIcons,
   type SessionConfiguration,
   type ExplorerPageProps,
+  type AnalysisPageLayoutProps,
   // components
   CollapsableSidebar,
   DropdownButton,
@@ -118,13 +124,14 @@ export {
   UploadJSONButton,
   ActionButton,
   ErrorCard,
+  TopBar,
   // Pages
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,
   QueryPageGetServerSideProps,
   LandingPage,
-  LandingPageGetStaticProps,
+  LandingPageGetServerSideProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
   DictionaryPage,

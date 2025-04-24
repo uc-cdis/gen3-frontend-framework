@@ -18,6 +18,8 @@ import {
   type IndexedMetadataFilters,
 } from './types';
 
+import { queryMultipleMDSRecords } from './utils';
+
 export {
   type MetadataPaginationParams,
   type MetadataRequestParams,
@@ -33,4 +35,5 @@ export {
   useGetCrosswalkDataQuery,
   useLazyGetCrosswalkDataQuery,
   useGetIndexAggMDSQuery,
+  queryMultipleMDSRecords,
 };

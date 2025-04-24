@@ -16,7 +16,7 @@ import {
   MultiSelect,
 } from '@mantine/core';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { AnalysisToolConfig } from './types';
+import { AnalysisToolConfiguration } from './types';
 import { FiAlertTriangle as AlertTriangle } from 'react-icons/fi';
 import {
   FaSearch as Search,
@@ -34,16 +34,16 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml'];
 const MAX_HISTORY = 50;
 
 interface HistoryState {
-  past: AnalysisToolConfig[][];
-  present: AnalysisToolConfig[];
-  future: AnalysisToolConfig[][];
+  past: AnalysisToolConfiguration[][];
+  present: AnalysisToolConfiguration[];
+  future: AnalysisToolConfiguration[][];
 }
 
 interface FileWithPreview extends File {
   preview?: string;
 }
 
-interface AnalysisToolConfigWithPreview extends AnalysisToolConfig {
+interface AnalysisToolConfigWithPreview extends AnalysisToolConfiguration {
   iconFile?: FileWithPreview;
   imageFile?: FileWithPreview;
 }
@@ -195,7 +195,7 @@ const AnalysisCardEditor = () => {
       try {
         const content = e.target?.result as string;
         const imported = JSON.parse(content);
-        const withImages = imported.map((card: AnalysisToolConfig) => {
+        const withImages = imported.map((card: AnalysisToolConfiguration) => {
           return {
             ...card,
             iconFile: { preview: card.icon },

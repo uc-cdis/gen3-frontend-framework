@@ -6,10 +6,11 @@ import {
   Datalist,
   FileItem,
   getNumberOfItemsInDatalist,
-  getTimestamp,
   isAdditionalDataItem,
   isCohortItem,
   isFileItem,
+  DataListUpdate,
+  StorageOperationResults,
 } from '@gen3/core';
 import {
   getNumberOfSelectedItemsInList,
@@ -17,14 +18,17 @@ import {
   useDataLibrarySelection,
 } from './selection/SelectionContext';
 import { selectAllListItems } from './selection/selection';
-import { Accordion } from '@mantine/core';
+import { Accordion, LoadingOverlay } from '@mantine/core';
 import { DatasetAccordionControl } from './DatasetAccordionControl';
 import DataSetContentsTable from './tables/DatasetContentsTable';
 
 interface DatalistAccordionProps {
   dataList: Datalist;
-  updateListInDataLibrary: (id: string, data: Datalist) => Promise<void>;
-  deleteListFromDataLibrary: (id: string) => Promise<void>;
+  updateListInDataLibrary: (
+    payload: DataListUpdate,
+  ) => Promise<StorageOperationResults>;
+  deleteListFromDataLibrary: (id: string) => Promise<StorageOperationResults>;
+  isUpdating: string | null;
   size?: string;
 }
 
@@ -33,8 +37,6 @@ interface DatalistAccordionProps {
  *
  * @param {Object} dataListAccordionItemParams - Parameters for the DataListAccordionItem.
  * @param {Object} dataListAccordionItemParams.dataList - The data list to be displayed in the accordion item.
- * @param {Function} dataListAccordionItemParams.updateListInDataLibrary - Function to update the list in the data library.
- * @param {Function} dataListAccordionItemParams.deleteListFromDataLibrary - Function to delete the list from the data library.
  *
  * @return {JSX.Element} A rendered accordion item component with controls for data list updates and deletions.
  */
@@ -42,6 +44,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,
   updateListInDataLibrary,
   deleteListFromDataLibrary,
+  isUpdating,
   size = 'sm',
 }) => {
   const [selectedState, setSelectedState] =
@@ -56,10 +59,10 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
     useDataLibrarySelection();
 
   const updateList = async (update: Record<string, any>) => {
-    await updateListInDataLibrary(listId, {
-      ...dataList,
+    return await updateListInDataLibrary({
+      ...{ name: listName, items: dataList.items },
       ...update,
-      updatedTime: getTimestamp(),
+      id: listId,
     });
   };
 
@@ -82,7 +85,7 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
             });
           } else {
             // handle RegisteredDataListEntry
-            Object.entries(dataItem.items).forEach(([itemId, item]) => {
+            Object.entries(dataItem.members).forEach(([itemId, item]) => {
               if (isFileItem(item)) {
                 files.push({
                   ...item,
@@ -142,10 +145,10 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   const removeItemFromList = async (itemId: string) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [itemId]: _removedKey, ...newObject } = dataList.items;
-    await updateListInDataLibrary(listId, {
-      ...dataList,
+    await updateListInDataLibrary({
+      id: listId,
+      name: dataList.name,
       items: newObject,
-      updatedTime: getTimestamp(),
     });
     // update selections
     removeListMember(listId, itemId);
@@ -164,12 +167,18 @@ export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   };
 
   return (
-    <Accordion.Item value={listName} key={listName} className="group">
+    <Accordion.Item
+      value={listName}
+      key={listName}
+      className="group"
+      pos="relative"
+    >
+      <LoadingOverlay visible={isUpdating === listId} />
       <DatasetAccordionControl
         listName={listName}
         numberOfItems={numberOfItemsInList}
-        updatedTime={dataList.updatedTime}
-        createdTime={dataList.createdTime}
+        updatedTime={dataList.updated_time}
+        createdTime={dataList.created_time}
         updateHandler={updateList}
         deleteListHandler={() => deleteListFromDataLibrary(listId)}
         selectListHandler={handleSelectList}

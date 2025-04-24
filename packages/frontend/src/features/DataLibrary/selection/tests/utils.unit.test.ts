@@ -1,5 +1,6 @@
-import { getSelectionPaths, SelectionPath } from '../utils';
+import { extractDatasetIds, getSelectionPaths, SelectionPath } from '../utils';
 import { DataLibrarySelectionState } from '../SelectionContext';
+import { ValidatedSelectedItem } from '../../types';
 
 describe('getSelectionPaths', () => {
   it('should return an array of paths based on the state of the data library', () => {
@@ -86,5 +87,86 @@ describe('getSelectionPaths', () => {
     expect(result.filter((path) => path.listId === 'list2').length).toBe(2);
     expect(result.filter((path) => path.listId === 'list3').length).toBe(0);
     expect(result.filter((path) => path.objectId === undefined).length).toBe(1);
+  });
+});
+
+describe('extractDatasetIds', () => {
+  it('should return an empty array when given an empty array', () => {
+    const selections: ReadonlyArray<ValidatedSelectedItem> = [];
+    const result = extractDatasetIds(selections);
+    expect(result).toEqual([]);
+  });
+
+  it('should extract dataset IDs from file items', () => {
+    const fileItem1: ValidatedSelectedItem = {
+      id: 'file1',
+      guid: 'guid1',
+      itemType: 'Data',
+      datasetId: 'dataset1',
+      datasetName: 'Dataset 1',
+    };
+    const fileItem2: ValidatedSelectedItem = {
+      id: 'file2',
+      guid: 'guid2',
+      itemType: 'Data',
+      datasetId: 'dataset2',
+      datasetName: 'Dataset 2',
+    };
+
+    const selections: ReadonlyArray<ValidatedSelectedItem> = [
+      fileItem1,
+      fileItem2,
+    ];
+    const result = extractDatasetIds(selections);
+
+    expect(result).toEqual(['dataset1', 'dataset2']);
+    expect(result.length).toBe(2);
+  });
+
+  it('should not extract dataset IDs from non-file items', () => {
+    const cohortItem: ValidatedSelectedItem = {
+      id: 'cohort1',
+      itemType: 'Gen3GraphQL',
+      data: {},
+      name: 'Cohort 1',
+      schemaVersion: '1.0',
+      datasetId: 'dataset3',
+      datasetName: 'Dataset 3',
+    };
+
+    const selections: ReadonlyArray<ValidatedSelectedItem> = [cohortItem];
+    const result = extractDatasetIds(selections);
+
+    expect(result).toEqual([]);
+    expect(result.length).toBe(0);
+  });
+
+  it('should extract dataset IDs only from file items in a mixed array', () => {
+    const fileItem: ValidatedSelectedItem = {
+      id: 'file3',
+      guid: 'guid3',
+      itemType: 'Data',
+      datasetId: 'dataset4',
+      datasetName: 'Dataset 4',
+    };
+
+    const cohortItem: ValidatedSelectedItem = {
+      id: 'cohort2',
+      itemType: 'Gen3GraphQL',
+      data: {},
+      name: 'Cohort 2',
+      schemaVersion: '1.0',
+      datasetId: 'dataset5',
+      datasetName: 'Dataset 5',
+    };
+
+    const selections: ReadonlyArray<ValidatedSelectedItem> = [
+      fileItem,
+      cohortItem,
+    ];
+    const result = extractDatasetIds(selections);
+
+    expect(result).toEqual(['dataset4']);
+    expect(result.length).toBe(1);
   });
 });

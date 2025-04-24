@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
+  MRT_Row,
   type MRT_PaginationState,
   type MRT_SortingState,
+  type MRT_RowSelectionState,
   useMantineReactTable,
+  MRT_RowData,
 } from 'mantine-react-table';
+
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 import classes from './style/DiscoveryTable.module.css';
 
@@ -28,8 +33,8 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 
 const extractCellValue =
   (func: CellRendererFunction) =>
-  ({ cell }: { cell: MRT_Cell<JSONObject> }) =>
-    func({ value: cell.getValue() as never, cell });
+  ({ cell, row }: { cell: MRT_Cell<JSONObject>; row: MRT_Row<MRT_RowData> }) =>
+    func({ value: cell.getValue() as never, cell, row });
 
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
@@ -39,6 +44,7 @@ interface DiscoveryTableProps {
   sorting: MRT_SortingState;
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
+  setSelection: (selection: Array<string>) => void;
 }
 
 const DiscoveryTable = ({
@@ -47,12 +53,14 @@ const DiscoveryTable = ({
   dataRequestStatus,
   setSorting,
   setPagination,
+  setSelection,
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -108,7 +116,11 @@ const DiscoveryTable = ({
     enableColumnActions: false,
     enableStickyHeader: true,
     enableStickyFooter: true,
-
+    getRowId: (originalRow) =>
+      config?.minimalFieldMapping?.uid &&
+      config.minimalFieldMapping.uid in originalRow
+        ? originalRow[config.minimalFieldMapping.uid]
+        : (originalRow?.id ?? undefined),
     // TODO: keep this to explore later
     // mantineTableContainerProps: ({ table }) => {
     //   return {
@@ -120,7 +132,9 @@ const DiscoveryTable = ({
     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
       : undefined,
+    onRowSelectionChange: setRowSelection,
     state: {
+      rowSelection,
       isLoading,
       ...(manualSortingAndPagination
         ? {
@@ -167,6 +181,12 @@ const DiscoveryTable = ({
       },
     },
   });
+
+  useDeepCompareEffect(() => {
+    //fetch data based on row selection state or something
+
+    setSelection(rowSelection ? Object.keys(rowSelection) : []);
+  }, [rowSelection, setSelection]);
 
   return (
     <React.Fragment>

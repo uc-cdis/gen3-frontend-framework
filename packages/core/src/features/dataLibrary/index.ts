@@ -1,33 +1,23 @@
 export * from './types';
 
-import {
-  useGetDataLibraryListQuery,
-  useGetDataLibraryListsQuery,
-  useAddDataLibraryListMutation,
-  useDeleteDataLibraryListMutation,
-  useUpdateDataLibraryListMutation,
-} from './dataLibraryApi';
-
 import useDataLibrary from './useDataLibrary';
 
+import { type StorageOperationResults } from './storage/types';
+
 import {
-  setDataLibraryListSelection,
-  clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
-} from './dataLibrarySelectionSlice';
-
-import { getNumberOfItemsInDatalist, getTimestamp } from './utils';
-
-export {
-  useGetDataLibraryListQuery,
-  useGetDataLibraryListsQuery,
-  useAddDataLibraryListMutation,
-  useDeleteDataLibraryListMutation,
-  useUpdateDataLibraryListMutation,
-  useDataLibrary,
-  setDataLibraryListSelection,
-  clearDataLibrarySelection,
-  dataLibrarySelectionReducer,
   getNumberOfItemsInDatalist,
   getTimestamp,
+  extractIndexFromDataLibraryCohort,
+  extractFileDatasetsInRecords,
+  buildListItemsGroupedByDataset,
+} from './utils';
+
+export {
+  useDataLibrary,
+  getNumberOfItemsInDatalist,
+  getTimestamp,
+  extractIndexFromDataLibraryCohort,
+  extractFileDatasetsInRecords,
+  buildListItemsGroupedByDataset,
+  type StorageOperationResults,
 };

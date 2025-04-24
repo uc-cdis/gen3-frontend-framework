@@ -2,7 +2,7 @@ import uniq from 'lodash/uniq';
 import sum from 'lodash/sum';
 import { JSONPath } from 'jsonpath-plus';
 import {
-  type AuthzMapping,
+  type ResourceAuthzMapping,
   type JSONObject,
   type AggregationsData,
 } from '@gen3/core';
@@ -10,28 +10,49 @@ import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
 import { DiscoveryIndexConfig, AccessLevel } from '../types';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
+import { METADATA_ITEM_AUTHORIZATION_FIELD } from '../constants';
+
 /**
- * Check for non-numeric items in an array and convert them to numbers.
- * Handles strings, numbers, and nested arrays.
- * It will silently convert any non-numeric items to 0 so as not to break the sum.
- * @param fields - array of fields to check
+ * Parses a single value into a number
+ * @param item - Value to convert
+ * @returns Numeric representation of the value
  */
-const checkForNonNumericItems = (fields: (number | string | any)[]): number[] =>
-  fields.map((item) => {
-    if (typeof item === 'number') {
-      return item;
-    }
-    // parse any string representation of an integer
-    if (typeof item === 'string') {
-      return parseInt(item, 10) || 0;
-    }
-    // if it's an array, recurse and sum the result
-    if (Array.isArray(item)) {
-      return sum(checkForNonNumericItems(item));
-    }
-    // if it's not a number, return 0 so as not to break the sum
-    return 0;
-  });
+const parseNumericValue = (item: unknown): number => {
+  const DEFAULT_VALUE = 0;
+
+  // Handle undefined values
+  if (item === undefined) {
+    return DEFAULT_VALUE;
+  }
+
+  // Numbers can be used directly
+  if (typeof item === 'number' && !Number.isNaN(item)) {
+    return item;
+  }
+
+  // Parse string representations of numbers
+  if (typeof item === 'string') {
+    const parsedValue = parseInt(item, 10);
+    return Number.isNaN(parsedValue) ? DEFAULT_VALUE : parsedValue;
+  }
+
+  // Recursively handle arrays by summing their numeric values
+  if (Array.isArray(item)) {
+    return convertToNumbers(item).reduce((acc, val) => acc + val, 0);
+  }
+
+  // Return default for any other types
+  return DEFAULT_VALUE;
+};
+
+/**
+ * Converts various types of values to numbers
+ * @param fields - Array of values to convert
+ * @returns Array of numbers, with non-numeric values converted to 0
+ */
+const convertToNumbers = <T>(fields: T[]): number[] => {
+  return fields.map(parseNumericValue);
+};
 
 /**
  * Process a summary statistic using the provided data and summary config
@@ -51,7 +72,7 @@ export const processSummary = (
   switch (type) {
     case 'sum': {
       // parse any string representation of an integer
-      fields = checkForNonNumericItems(fields);
+      fields = convertToNumbers(fields);
       return sum(fields).toLocaleString();
     }
     case 'count':
@@ -88,51 +109,90 @@ export const processAllSummaries = (
 export const processAuthorizations = (
   data: Array<JSONObject>,
   config: DiscoveryIndexConfig,
-  authMapping: AuthzMapping,
+  userAuthMapping: ResourceAuthzMapping,
 ): Array<JSONObject> => {
-  const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
-  const { supportedValues } = config.features.authorization;
+  const { enabled } = config.features.authorization;
 
-  return data.map((study) => {
-    if (typeof study[authzField] !== 'string') return study;
-    const studyAuthz = study[authzField] as string;
-    let accessible: AccessLevel;
+  if (!enabled) {
+    return data;
+  }
+
+  if (!userAuthMapping) {
+    throw new Error(
+      'Arborist must be enabled for the Discovery page to work if authorization is enabled in the Discovery page. Set `useArboristUI: true` in the portal config.',
+    );
+  }
+
+  const hostnameWithSubdomain = window.location.hostname; // TODO: replace this with useRouter
+
+  // mark studies as accessible or inaccessible to user
+  const { authzField, dataAvailabilityField } = config.minimalFieldMapping;
+  const { supportedValues, isMesh } = config.features.authorization;
+
+  const studiesWithAccessibleField = data.map((study) => {
+    let accessible: AccessLevel = AccessLevel.NOT_AVAILABLE;
     if (
-      supportedValues?.pending?.enabled &&
+      supportedValues?.unaccessible?.enabled &&
       dataAvailabilityField &&
-      study[dataAvailabilityField] === 'pending'
+      study[dataAvailabilityField] === 'unaccessible'
     ) {
-      accessible = AccessLevel.PENDING;
-    } else if (supportedValues?.notAvailable?.enabled && !study[authzField]) {
+      accessible = AccessLevel.UNACCESSIBLE;
+    } else if (
+      supportedValues?.notAvailable?.enabled &&
+      dataAvailabilityField &&
+      study[dataAvailabilityField] === 'not_available'
+    ) {
       accessible = AccessLevel.NOT_AVAILABLE;
+    } else if (supportedValues?.waiting?.enabled && !study[authzField]) {
+      accessible = AccessLevel.WAITING;
     } else {
+      let authMapping = {};
+      if (isMesh) {
+        let commonsURL = study.commons_url as string; // TODO: configure this value
+        if (commonsURL && commonsURL.startsWith('http')) {
+          commonsURL = new URL(commonsURL).hostname;
+        }
+        authMapping =
+          userAuthMapping[commonsURL || hostnameWithSubdomain] || {};
+      } else {
+        authMapping = Object.values(userAuthMapping)[0];
+      }
+      // TODO: This needs to be configurable GFF-294
       const isAuthorized =
         userHasMethodForServiceOnResource(
           'read',
           '*',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read',
           'peregrine',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read',
           'guppy',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         ) ||
         userHasMethodForServiceOnResource(
           'read-storage',
           'fence',
-          studyAuthz,
+          study[authzField] as string,
           authMapping,
         );
       if (supportedValues?.accessible?.enabled && isAuthorized) {
-        accessible = AccessLevel.ACCESSIBLE;
+        if (
+          supportedValues?.mixed?.enabled &&
+          dataAvailabilityField &&
+          study[dataAvailabilityField] === 'mixed_availability'
+        ) {
+          accessible = AccessLevel.MIXED;
+        } else {
+          accessible = AccessLevel.ACCESSIBLE;
+        }
       } else if (supportedValues?.unaccessible?.enabled && !isAuthorized) {
         accessible = AccessLevel.UNACCESSIBLE;
       } else {
@@ -141,9 +201,10 @@ export const processAuthorizations = (
     }
     return {
       ...study,
-      __accessible: accessible,
+      [METADATA_ITEM_AUTHORIZATION_FIELD]: accessible,
     };
   });
+  return studiesWithAccessibleField;
 };
 
 export const processChartData = (

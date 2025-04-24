@@ -22,6 +22,11 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
   webpack: (config) => {

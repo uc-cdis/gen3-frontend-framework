@@ -80,7 +80,9 @@ const useGetIndexedMDSData = ({
       const studyData = data.data;
       if (discoveryConfig?.features?.authorization.enabled) {
         setMDSData(
-          processAuthorizations(studyData, discoveryConfig, authMapping),
+          processAuthorizations(studyData, discoveryConfig, {
+            default: authMapping,
+          }),
         );
       } else setMDSData(studyData);
     } else setMDSData([]);

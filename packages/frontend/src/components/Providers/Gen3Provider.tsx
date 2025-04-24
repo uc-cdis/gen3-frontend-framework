@@ -26,13 +26,11 @@ export const createMantineTheme = (
     // use V2 font in MantineProvider
     fontFamily: fonts.fontFamily,
     colors: Object.fromEntries(
-      Object.entries(colors).map(([key, values]) => (values? [
-        key,
-        Object.values(values),
-      ]: [])),
+      Object.entries(colors).map(([key, values]) =>
+        values ? [key, Object.values(values)] : [],
+      ),
     ),
     primaryColor: 'primary',
-    primaryShade: { light: 4, dark: 7 },
     breakpoints: {
       xs: '31.25em',
       sm: '50em',
@@ -49,19 +47,20 @@ export const createMantineTheme = (
         },
       }),
       Pagination: Pagination.extend({
-        defaultProps: { //Add 508 localization to Pagination
+        defaultProps: {
           getControlProps: (control) => {
+            //Add 508 localization to Pagination, not needed if using react table
             if (control === 'first') {
-              return { "aria-label": "First" };
+              return { 'aria-label': 'First' };
             }
             if (control === 'last') {
-              return { "aria-label": "Last" };
+              return { 'aria-label': 'Last' };
             }
             if (control === 'next') {
-              return { "aria-label": "Next" };
+              return { 'aria-label': 'Next' };
             }
             if (control === 'previous') {
-              return { "aria-label": "Previous" };
+              return { 'aria-label': 'Previous' };
             }
             return {};
           },
@@ -87,7 +86,6 @@ const Gen3Provider = ({
   useEffect(() => {
     icons.forEach((i) => addCollection(i));
   }, [icons]);
-
 
   return (
     <CoreProvider>

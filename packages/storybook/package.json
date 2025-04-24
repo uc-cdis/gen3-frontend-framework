@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.10.82",
+  "version": "0.10.91",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -19,26 +19,27 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "next": "^15.1.7"
+    "next": "^15.2.4"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.5",
-    "@storybook/addon-a11y": "^8.6.3",
-    "@storybook/addon-essentials": "^8.6.3",
-    "@storybook/addon-interactions": "^8.6.3",
-    "@storybook/addon-onboarding": "^8.6.3",
-    "@storybook/blocks": "^8.6.3",
-    "@storybook/nextjs": "^8.6.3",
-    "@storybook/react": "^8.6.3",
-    "@storybook/test": "^8.6.3",
-    "@storybook/test-runner": "^0.21.0",
+    "@storybook/addon-a11y": "^8.6.11",
+    "@storybook/addon-essentials": "^8.6.11",
+    "@storybook/addon-interactions": "^8.6.11",
+    "@storybook/addon-onboarding": "^8.6.11",
+    "@storybook/blocks": "^8.6.11",
+    "@storybook/nextjs": "^8.6.11",
+    "@storybook/react": "^8.6.11",
+    "@storybook/test": "^8.6.11",
+    "@storybook/test-runner": "^0.22.0",
     "axe-playwright": "^2.1.0",
+    "dotenv": "^16.4.7",
     "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4",
-    "storybook-addon-deep-controls": "^0.9.2",
     "postcss-import": "^16.1.0",
     "postcss-preset-mantine": "^1.17.0",
-    "postcss-simple-vars": "^7.0.1"
+    "postcss-simple-vars": "^7.0.1",
+    "storybook-addon-deep-controls": "^0.9.2"
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.16",

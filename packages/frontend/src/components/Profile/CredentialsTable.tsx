@@ -39,7 +39,7 @@ interface APIKeyStatus {
  * @returns {JSX.Element} The JSX element representing the credentials table.
  */
 const CredentialsTable = () => {
-  const { data: csrfToken } = useGetCSRFQuery();
+  const { data: csrfToken, isFetching: isCSRFFetching} = useGetCSRFQuery();
   const { data: credentials } = useGetCredentialsQuery();
   const [removeCredential] = useRemoveCredentialMutation();
 
@@ -56,7 +56,7 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) =>
+        accessorFn: (apiKey: APIKeyStatus) => // pragma: allowlist secret
           unixTimeToString(
             // pragma: allowlist-secret
             apiKey.expiration,
@@ -109,6 +109,7 @@ const CredentialsTable = () => {
       placeholder: 'Search API Keys',
     },
     icons: TableIcons,
+    state: { isLoading: isCSRFFetching },
   });
 
   return <MantineReactTable table={table} />;

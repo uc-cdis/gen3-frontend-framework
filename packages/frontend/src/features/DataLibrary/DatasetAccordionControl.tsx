@@ -16,14 +16,17 @@ import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
 import { IconSize } from '../../utils/sizes';
 import { formatDate } from '../../utils/date';
+import { StorageOperationResults } from '@gen3/core';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {
   listName: string;
   numberOfItems: number;
   updatedTime: string;
   createdTime: string;
-  updateHandler: (update: Record<string, any>) => Promise<void>;
-  deleteListHandler: () => Promise<void>;
+  updateHandler: (
+    update: Record<string, any>,
+  ) => Promise<StorageOperationResults>;
+  deleteListHandler: () => Promise<StorageOperationResults>;
   selectListHandler: (checked: boolean) => void;
   selectedState: DataItemSelectedState;
   size?: string;
@@ -128,7 +131,9 @@ export const DatasetAccordionControl = ({
             {formatDate(updatedTime)}
           </Text>
         </div>
-        <Tooltip label={`Delete ${listName}. Will not delete dataset`}>
+        <Tooltip
+          label={`Delete list ${listName}. Will not delete the actual dataset`}
+        >
           <ActionIcon
             color="accent.4"
             variant="transparent"

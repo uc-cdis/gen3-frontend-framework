@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.10.82",
+  "version": "0.10.91",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -51,7 +51,8 @@
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.14.191",
     "@types/papaparse": "^5.3.14",
-    "@types/uuid": "^9.0.0"
+    "@types/uuid": "^9.0.0",
+    "fake-indexeddb": "^6.0.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",

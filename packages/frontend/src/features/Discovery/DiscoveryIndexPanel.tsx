@@ -1,8 +1,8 @@
-import React, { useMemo, useRef, useState, ReactNode } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Loader, Text, Button } from '@mantine/core';
+import { Button, Loader, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -20,6 +20,19 @@ export interface DiscoveryIndexPanelProps {
   indexSelector: ReactNode | null;
 }
 
+/**
+ * DiscoveryIndexPanel is a React functional component that renders a discovery panel interface.
+ * It includes features such as search, sorting, filtering, charts, export functionality, and a discovery table.
+ * The component uses hooks for handling state, API data loading, and interface interactions.
+ *
+ * @param {Object} props - The properties object passed to the component.
+ * @param {Object} props.discoveryConfig - Configuration object for setting up the discovery panel.
+ * @param {Object} props.discoveryConfig.features - Defines enabled features (e.g., search, charts, export).
+ * @param {Object} props.discoveryConfig.minimalFieldMapping - Field mapping configuration, such as `uid`.
+ * @param {JSX.Element} props.indexSelector - React component for selecting an index in the discovery panel.
+ *
+ * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
+ */
 const DiscoveryIndexPanel = ({
   discoveryConfig,
   indexSelector,
@@ -38,6 +51,7 @@ const DiscoveryIndexPanel = ({
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
+  const [selections, setSelections] = useState<string[]>([]); // table selections
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -72,6 +86,17 @@ const DiscoveryIndexPanel = ({
     searchTerms: searchParam,
     discoveryConfig,
   });
+
+  const selectedRecords = useMemo(() => {
+    const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
+    const filterSelectedMembers = (data: Array<Record<string, any>>) =>
+      data.filter(
+        (member) => uidField in member && selections.includes(member[uidField]),
+      );
+    return filterSelectedMembers(data);
+  }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
+
+  console.log('selectedRecords', selectedRecords);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
@@ -142,9 +167,21 @@ const DiscoveryIndexPanel = ({
             ) : (
               false
             )}
-            {discoveryConfig?.features?.exportToDataLibrary?.enabled ? (
+            {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
               <ActionBar
-                config={discoveryConfig.features.exportToDataLibrary}
+                buttons={discoveryConfig.features.exportFromDiscovery.buttons}
+                exportDataFields={
+                  discoveryConfig.features.exportFromDiscovery.exportDataFields
+                }
+                selectedResources={selectedRecords}
+                verifyExternalLogins={
+                  discoveryConfig.features.exportFromDiscovery
+                    .verifyExternalLogins
+                }
+                dataLibraryStoreMode={
+                  discoveryConfig.features.exportFromDiscovery
+                    .dataLibraryStoreMode
+                }
               />
             ) : null}
           </div>
@@ -168,6 +205,7 @@ const DiscoveryIndexPanel = ({
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}
+                setSelection={setSelections}
                 pagination={pagination}
                 sorting={sorting}
               />
