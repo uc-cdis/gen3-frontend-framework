@@ -173,6 +173,13 @@ export function isFetchParseError(error: unknown): error is ParsingError {
 export type AggregationsData = Record<string, HistogramDataArray>;
 
 /**
+ *  Represents the results of a guppy aggregation query
+ */
+export interface GuppyAggregationsResponse {
+  _aggregation: Record<string, AggregationsData>;
+}
+
+/**
  * Represents a manifest item.
  * @interface ManifestItem
  */

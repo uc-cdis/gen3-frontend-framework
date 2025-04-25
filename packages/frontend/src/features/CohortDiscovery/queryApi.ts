@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Accessibility,
-  AggregationsData,
+  GuppyAggregationsResponse,
   buildGetAggregationQuery,
   FilterSet,
   GraphQLQuery,
@@ -13,6 +13,7 @@ import { getCookie } from 'cookies-next';
 interface ErrorDetails {
   status: string;
   message: string;
+  error: ErrorDetails | null;
 }
 
 export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
@@ -65,6 +66,7 @@ export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
       } as ErrorDetails)
     : null;
 
+  console.log('useGraphQLData', data);
   return {
     data,
     isLoading,
@@ -88,15 +90,21 @@ export const useRoundedAggsQuery = ({
   filters,
   accessibility = Accessibility.ALL,
 }: QueryAggsParams) => {
-  const response = useGraphQLData<AggregationsData, GraphQLQuery>(
+  const response = useGraphQLData<
+    { data: GuppyAggregationsResponse },
+    GraphQLQuery
+  >(
     '/api/analysis/cohortDiscovery',
-    buildGetAggregationQuery(type, fields, filters, accessibility),
+    buildGetAggregationQuery(type, fields, filters, accessibility, false),
   );
 
-  return useDeepCompareMemo(
-    () => processHistogramResponse(response.data?._aggregation[type] ?? {}),
-    [response],
-  );
+  console.log('useRoundedAggsQuery', response);
+  return {
+    ...response,
+    data: response?.data?.data
+      ? processHistogramResponse(response?.data.data?._aggregation[type] ?? {})
+      : undefined,
+  };
 };
 
 // import { cohortDiscoveryApi } from './appApi';

@@ -15,7 +15,7 @@ import { groupSharedFields } from './utils';
 const statusEndpoint = '/_status';
 
 export const processHistogramResponse = (
-  data: Record<string, any>,
+  data: Record<string, unknown>,
 ): AggregationsData => {
   const valueData = JSONPath({
     json: data,
@@ -494,7 +494,7 @@ export const buildGetAggregationQuery = (
   fields: ReadonlyArray<string>,
   filters: FilterSet,
   accessibility = Accessibility.ALL,
-  filterSelf: boolean = true,
+  filterSelf: boolean = false,
 ): GraphQLQuery => {
   const queryStart = isFilterEmpty(filters)
     ? `

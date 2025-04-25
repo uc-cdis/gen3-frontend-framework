@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
-import { AppState } from '../appApi';
 
 import {
   MantineReactTable,
   useMantineReactTable,
   MRT_ColumnDef,
+  MRT_Cell,
 } from 'mantine-react-table';
-import { TableIcons } from '../../../components/Tables/TableIcons';
 import { selectCohortIdToNameMap } from '../CohortManagerSlice';
 import { selectAllDataAccessRequests } from '../RequestManagerSlice';
 import { useAppSelector } from '../appApi';
@@ -15,6 +14,10 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
+
+interface ColumnCellParams {
+  cell: MRT_Cell<RequestWithCohort, string>;
+}
 
 interface RequestWithCohort extends DataAccessRequest {
   cohortName: string;
@@ -28,17 +31,23 @@ const RequestsTable = () => {
       {
         accessorKey: 'cohortName',
         header: 'Cohort',
-        Cell: ({ cell }) => <Text>{cell.getValue()} </Text>,
+        Cell: ({ cell }: ColumnCellParams) => (
+          <Text>{cell.getValue<string>()} </Text>
+        ),
       },
       {
         accessorKey: 'request_datetime',
         header: 'Request Date',
-        Cell: ({ cell }) => <Text>{formatDate(cell.getValue())} </Text>,
+        Cell: ({ cell }: ColumnCellParams) => (
+          <Text>{formatDate(cell.getValue<string>())} </Text>
+        ),
       },
       {
         accessorKey: 'status', //normal accessorKey
         header: 'Status',
-        Cell: ({ cell }) => <Text>{cell.getValue()} </Text>,
+        Cell: ({ cell }: ColumnCellParams) => (
+          <Text>{cell.getValue<string>()} </Text>
+        ),
         cellProps: {
           style: {
             textTransform: 'uppercase',
@@ -63,10 +72,11 @@ const RequestsTable = () => {
     [requests, cohortIdToNameMap],
   );
 
+  const size = 'sm';
   const table = useMantineReactTable<RequestWithCohort>({
     columns,
     data: requestsWithCohorts,
-    ...commonTableSettings(),
+    ...commonTableSettings<RequestWithCohort>(),
   });
 
   return (

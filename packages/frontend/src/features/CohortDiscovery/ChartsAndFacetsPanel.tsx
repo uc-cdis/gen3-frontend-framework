@@ -4,7 +4,6 @@ import {
   extractEnumFilterValue,
   FacetDefinition,
   fieldNameToTitle,
-  AggregationsData,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -19,8 +18,6 @@ import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-import { useRoundedAggsQuery } from './queryApi';
-import { useGetAggsQuery, buildGetAggregationQuery } from '@gen3/core';
 import { useRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
@@ -55,12 +52,10 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     filters: cohortFilters,
   });
 
-  console.log('data', data);
-
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
-        data: processBucketData((data as AggregationsData)?.[field]),
+        data: processBucketData(data?.[field]),
         enumFilters:
           field in cohortFilters.root
             ? extractEnumFilterValue(cohortFilters.root[field])
@@ -74,7 +69,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
-        data: processRangeData((data as AggregationsData)?.[field]),
+        data: processRangeData(data?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };

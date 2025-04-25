@@ -47,6 +47,7 @@ interface ExplorerResultsData {
 export const processBucketData = (
   data?: HistogramDataArray,
 ): Record<string, number> => {
+  console.log('processBucketData', data);
   if (!data) return {};
 
   return data.reduce(

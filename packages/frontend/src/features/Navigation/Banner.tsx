@@ -57,7 +57,6 @@ export const Banner: React.FC<BannerProps> = ({
         <span className={`pl-4 ${textColor[level]}`}>
           <Markdown
             components={{
-              // eslint-disable-next-line react/prop-types
               a: ({ children, ...props }) => (
                 <a
                   className="underline"
