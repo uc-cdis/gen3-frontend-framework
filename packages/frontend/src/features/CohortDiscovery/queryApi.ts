@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import useSWR from 'swr';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Accessibility,
-  convertFilterSetToGqlFilter,
+  AggregationsData,
+  buildGetAggregationQuery,
   FilterSet,
-  isFilterEmpty,
   GraphQLQuery,
+  processHistogramResponse,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 
@@ -14,15 +15,16 @@ interface ErrorDetails {
   message: string;
 }
 
-export const useGraphQLData = <TResponse = unknown, TBody = any>(
+export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
   url: string,
   body: TBody,
 ) => {
   // Create a fetcher function that handles the GraphQL POST request
   const fetcher = async (fetchUrl: string, fetchBody: TBody) => {
-    const headers = new Headers();
-    headers.set('Content-Type', 'application/json');
-
+    const headers = new Headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    });
     if (process.env.NODE_ENV === 'development') {
       // NOTE: This cookie can only be accessed from the client side
       // in development mode. Otherwise, the cookie is set as httpOnly
@@ -46,10 +48,7 @@ export const useGraphQLData = <TResponse = unknown, TBody = any>(
   };
 
   // Use SWR with the fetcher
-  const { data, error, isLoading, isValidating, mutate } = useSWR<
-    TResponse,
-    Error
-  >(
+  const { data, error, isLoading, mutate } = useSWR<TResponse, Error>(
     [url, body],
     ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody as TBody),
     {
@@ -76,86 +75,6 @@ export const useGraphQLData = <TResponse = unknown, TBody = any>(
   };
 };
 
-interface UsePostDataState<TResponse> {
-  data: TResponse | null;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  error: ErrorDetails | null;
-}
-
-export const usePostData = <TResponse = unknown, TBody = unknown>(
-  url: string,
-) => {
-  const [state, setState] = useState<UsePostDataState<TResponse>>({
-    data: null,
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
-    error: null,
-  });
-
-  const handleFetchError = (error: Error): ErrorDetails => ({
-    status: error.message.match(/\d+/)?.[0] || 'Unknown',
-    message: error.message,
-  });
-
-  const postData = async (body: TBody): Promise<void> => {
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: true,
-      isSuccess: false,
-      isError: false,
-      error: null,
-    }));
-
-    try {
-      const headers = new Headers();
-      headers.set('Content-Type', 'application/json');
-      if (process.env.NODE_ENV === 'development') {
-        // NOTE: This cookie can only be accessed from the client side
-        // in development mode. Otherwise, the cookie is set as httpOnly
-        const accessToken = getCookie('credentials_token');
-        if (accessToken) {
-          headers.set('Authorization', `Bearer ${accessToken}`);
-        }
-      }
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const result: TResponse = await response.json();
-      setState((prevState) => ({
-        ...prevState,
-        data: result,
-        isSuccess: true,
-      }));
-    } catch (err) {
-      if (err instanceof Error) {
-        setState((prevState) => ({
-          ...prevState,
-          isError: true,
-          error: handleFetchError(err),
-        }));
-      }
-    } finally {
-      setState((prevState) => ({
-        ...prevState,
-        isLoading: false,
-      }));
-    }
-  };
-
-  return { postData, ...state };
-};
-
 interface QueryAggsParams {
   type: string;
   fields: ReadonlyArray<string>;
@@ -163,51 +82,21 @@ interface QueryAggsParams {
   accessibility?: Accessibility;
 }
 
-const histogramQueryStrForEachField = (field: string): string => {
-  const splittedFieldArray = field.split('.');
-  const splittedField = splittedFieldArray.shift();
-  if (splittedFieldArray.length === 0) {
-    return `
-    ${splittedField} {
-      histogram {
-        key
-        count
-      }
-    }`;
-  }
-  return `
-  ${splittedField} {
-    ${histogramQueryStrForEachField(splittedFieldArray.join('.'))}
-  }`;
-};
-
-export const buildGetAggregationQuery = (
-  type: string,
-  fields: ReadonlyArray<string>,
-  filters: FilterSet,
+export const useRoundedAggsQuery = ({
+  type,
+  fields,
+  filters,
   accessibility = Accessibility.ALL,
-): GraphQLQuery => {
-  const queryStart = isFilterEmpty(filters)
-    ? `
-              query getAggs {
-              _aggregation {
-              ${type} (accessibility: ${accessibility}) {`
-    : `query getAggs ($filter: JSON) {
-               _aggregation {
-                      ${type} (filter: $filter, filterSelf: false, accessibility: ${accessibility}) {`;
-  const query = `${queryStart}
-                  ${fields.map((field: string) =>
-                    histogramQueryStrForEachField(field),
-                  )}
-                }
-              }
-            }`;
-  const queryBody: GraphQLQuery = {
-    query: query,
-    variables: { filter: convertFilterSetToGqlFilter(filters) },
-  };
+}: QueryAggsParams) => {
+  const response = useGraphQLData<AggregationsData, GraphQLQuery>(
+    '/api/analysis/cohortDiscovery',
+    buildGetAggregationQuery(type, fields, filters, accessibility),
+  );
 
-  return queryBody;
+  return useDeepCompareMemo(
+    () => processHistogramResponse(response.data?._aggregation[type] ?? {}),
+    [response],
+  );
 };
 
 // import { cohortDiscoveryApi } from './appApi';

@@ -17,12 +17,11 @@ import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { computeRowSpan } from '../../components/charts';
 import { selectIndexFilters } from './CohortSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-// //import { useGetAggsQuery } from './queryApi';
-import { useGetAggsQuery } from '@gen3/core';
-import { buildGetAggregationQuery, usePostData } from './queryApi';
+import { useRoundedAggsQuery } from './queryApi';
+import { useGetAggsQuery, buildGetAggregationQuery } from '@gen3/core';
+import { useRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -50,31 +49,13 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     data,
     isSuccess,
     isError: isAggsQueryError,
-  } = useGetAggsQuery({
+  } = useRoundedAggsQuery({
     type: index,
     fields: facets.map((x) => x.field),
     filters: cohortFilters,
   });
 
-  // const {
-  //   postData,
-  //   data: aggsData,
-  //   isError: isAggsError,
-  //   error,
-  //   isLoading: isAggsLoading,
-  //   isSuccess: isAggsSucces,
-  // } = usePostData('/api/analysis/cohortDiscovery');
-  //
-  // useEffect(() => {
-  //   console.log('postData', facets);
-  //   const query = buildGetAggregationQuery(
-  //     index,
-  //     facets.map((x) => x.field),
-  //     cohortFilters,
-  //   );
-  //   console.log('query', query);
-  //   postData(query);
-  // }, [index, facets, cohortFilters]);
+  console.log('data', data);
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
