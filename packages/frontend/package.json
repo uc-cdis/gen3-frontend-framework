@@ -106,7 +106,7 @@
     "react-table": "^7.8.0",
     "recharts": "^2.4.3",
     "remark-gfm": "^4.0.0",
-    "stable-hash": "^0.0.3",
+    "stable-hash": "^0.0.5",
     "tailwind-merge": "^2.5.2",
     "tailwind-styled-components": "^2.2.0",
     "use-deep-compare": "^1.1.0",
