@@ -9,6 +9,7 @@ import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
 import { isArray } from 'lodash';
+import { appendParameterToUrl } from './utils';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
   let redirectPath = '';
@@ -33,7 +34,9 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   const handleFenceLoginSelected = useCallback(
     async (loginURL: string) => {
       router
-        .push(`${loginURL}?redirect=${filterRedirect(referer)}`)
+        .push(
+          `${appendParameterToUrl(loginURL, 'redirect', filterRedirect(referer))}`,
+        )
         .catch((e) => {
           showNotification({
             title: 'Login Error',
