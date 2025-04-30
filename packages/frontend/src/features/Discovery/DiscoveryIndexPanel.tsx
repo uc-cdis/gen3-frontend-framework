@@ -96,8 +96,6 @@ const DiscoveryIndexPanel = ({
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  console.log('selectedRecords', selectedRecords);
-
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
