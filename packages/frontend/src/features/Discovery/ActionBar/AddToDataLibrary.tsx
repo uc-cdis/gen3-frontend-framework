@@ -20,6 +20,7 @@ import {
   selectUserAuthStatus,
   isAuthenticated,
   DataLibraryStoreMode,
+  StorageOperationResults,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportActionButtonProps } from './types';
@@ -35,20 +36,28 @@ const extractIdToLabel = (data: DataLibrary): SelectOptions =>
         return acc;
       }, {});
 
+const buildErrorMessage = (error: StorageOperationResults): string => {
+  if (error.status === 401) {
+    return 'Please log in to save to data library';
+  }
+  if (error.status === 404) {
+    return 'Cannot query data library. Please try again later.';
+  }
+  return 'Error saving to data library. Please try again later.';
+};
 const createTooltipLabel = (
-  error: Record<string, any> | null,
+  error: StorageOperationResults | null,
   isLoggedIn: boolean,
   requiresLogin: boolean | undefined,
   numSelected: number,
   currentListName: string | undefined,
 ) => {
-  if (error) return 'Error saving to data library. Please try again later';
   if (!isLoggedIn && requiresLogin)
     return 'Please log in to save to data library';
   if (numSelected === 0)
     return 'Please select at least one study to save to data library';
   if (!currentListName) return 'Please select or create a list';
-
+  if (error) return buildErrorMessage(error);
   return 'Add selections to list';
 };
 
@@ -61,7 +70,7 @@ const AddToDataLibrary = ({
 }: ExportActionButtonProps) => {
   const [selectItems, setSelectItems] = useState<SelectOptions>({});
   const [currentList, setCurrentList] = useState<string | null>(null);
-  const [error, setError] = useState<Record<string, any> | null>(null);
+  const [error, setError] = useState<StorageOperationResults | null>(null);
   const [currentListName, setCurrentListName] = useState<string>('');
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
