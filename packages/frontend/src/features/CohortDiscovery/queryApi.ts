@@ -19,6 +19,7 @@ interface ErrorDetails {
 export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
   url: string,
   body: TBody,
+  skip?: boolean,
 ) => {
   // Create a fetcher function that handles the GraphQL POST request
   const fetcher = async (fetchUrl: string, fetchBody: TBody) => {
@@ -50,7 +51,7 @@ export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
 
   // Use SWR with the fetcher
   const { data, error, isLoading, mutate } = useSWR<TResponse, Error>(
-    [url, body],
+    !skip ? [url, body] : null,
     ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody as TBody),
     {
       revalidateOnFocus: false, // Disable auto revalidation on window focus
@@ -66,7 +67,6 @@ export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
       } as ErrorDetails)
     : null;
 
-  console.log('useGraphQLData', data);
   return {
     data,
     isLoading,
@@ -84,26 +84,28 @@ interface QueryAggsParams {
   accessibility?: Accessibility;
 }
 
-export const useRoundedAggsQuery = ({
-  type,
-  fields,
-  filters,
-  accessibility = Accessibility.ALL,
-}: QueryAggsParams) => {
+interface QueryOptions {
+  skip?: boolean;
+}
+
+export const useRoundedAggsQuery = (
+  { type, fields, filters, accessibility = Accessibility.ALL }: QueryAggsParams,
+  { skip }: QueryOptions = { skip: false },
+) => {
   const response = useGraphQLData<
     { data: GuppyAggregationsResponse },
     GraphQLQuery
   >(
     '/api/analysis/cohortDiscovery',
     buildGetAggregationQuery(type, fields, filters, accessibility, false),
+    skip,
   );
 
-  console.log('useRoundedAggsQuery', response);
   return {
     ...response,
     data: response?.data?.data
       ? processHistogramResponse(response?.data.data?._aggregation[type] ?? {})
-      : undefined,
+      : {},
   };
 };
 

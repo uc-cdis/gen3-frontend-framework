@@ -24,6 +24,7 @@ import {
   removeFacetSelection,
   addFacetSelection,
 } from './SelectedFacetsSlice';
+import { useRoundedAggsQuery } from './queryApi';
 
 const IndexPanel = ({
   dataConfig,
@@ -56,6 +57,7 @@ const IndexPanel = ({
 
   /**
    * When selection changes, update active list of FacetDefinitions
+   * This will be changed to use a facet dictionary once that feature is implemented
    */
   useDeepCompareEffect(() => {
     const selectFacetDefinitions = selectedFacets.reduce((acc, field) => {
@@ -79,7 +81,7 @@ const IndexPanel = ({
     data,
     isSuccess,
     isError: isAggsQueryError,
-  } = useGetAggsQuery(
+  } = useRoundedAggsQuery(
     {
       type: index,
       fields: queryFields,

@@ -6,8 +6,6 @@ import {
   GetEnumFacetDataFunction,
 } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
-import { EnumFacetToHistogramArray } from '../utils';
-import FacetPanelDataHeader from './FacetPanelDataHeader';
 import { FacetDefinition, fieldNameToTitle, HistogramData } from '@gen3/core';
 import FacetEnumList from '../../../components/facets/FacetEnumList';
 

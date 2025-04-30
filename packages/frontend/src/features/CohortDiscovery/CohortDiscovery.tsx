@@ -2,7 +2,7 @@ import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { Title, Loader, Tabs } from '@mantine/core';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import { ContextModalProps } from '@mantine/modals';
 import {
   CohortDiscoveryConfig,
   DataAccessRequestUserInformation,

@@ -8,7 +8,6 @@ import {
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   // Ensure this API route only accepts POST requests
-
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST requests are allowed' });
   }
