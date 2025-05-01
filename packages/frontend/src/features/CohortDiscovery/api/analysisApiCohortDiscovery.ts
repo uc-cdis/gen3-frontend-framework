@@ -4,7 +4,12 @@ import {
   GEN3_GUPPY_API,
   HTTPError,
   HttpMethod,
+  roundHistogramResponse,
 } from '@gen3/core';
+
+const COHORT_DISCOVERY_LIMIT = process.env.COHORT_DISCOVERY_LIMIT
+  ? Number(process.env.COHORT_DISCOVERY_LIMIT)
+  : 100;
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   // Ensure this API route only accepts POST requests
@@ -28,9 +33,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       JSON.stringify({ query, variables }),
     );
     // Parse and return the response as JSON
-    const data = response;
+    const data: Record<string, unknown> = response as Record<string, unknown>;
 
-    res.status(200).json(data);
+    const redactedData = roundHistogramResponse(data, COHORT_DISCOVERY_LIMIT);
+
+    res.status(200).json(redactedData);
   } catch (error) {
     if (error instanceof HTTPError)
       res

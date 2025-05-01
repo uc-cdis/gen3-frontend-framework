@@ -1,7 +1,6 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { JSONPath } from 'jsonpath-plus';
 import {
   convertFilterSetToGqlFilter,
   FilterSet,
@@ -11,39 +10,9 @@ import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { SharedFieldMapping } from './types';
 
 import { groupSharedFields } from './utils';
+import { processHistogramResponse } from './processing';
 
 const statusEndpoint = '/_status';
-
-export const processHistogramResponse = (
-  data: Record<string, unknown>,
-): AggregationsData => {
-  const valueData = JSONPath({
-    json: data,
-    path: '$..histogram',
-    resultType: 'value',
-  });
-
-  const pointerData = JSONPath({
-    json: data,
-    path: '$..histogram',
-    resultType: 'pointer',
-  });
-
-  const results = pointerData.reduce(
-    (acc: AggregationsData, element: Record<string, any>, idx: number) => {
-      const key = element
-        .slice(1)
-        .replace(/\/histogram/g, '')
-        .replace(/\//g, '.');
-      return {
-        ...acc,
-        [key]: valueData[idx],
-      };
-    },
-    {} as AggregationsData,
-  );
-  return results as AggregationsData;
-};
 
 export interface GraphQLQuery {
   query: string;

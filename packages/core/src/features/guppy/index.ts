@@ -7,6 +7,7 @@ import {
 } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
 export * from './types';
+export * from './processing';
 
 export {
   downloadFromGuppyToBlob,
@@ -14,3 +15,4 @@ export {
   useDownloadFromGuppyMutation,
   groupSharedFields,
 };
+export { processHistogramResponse } from './processing';
