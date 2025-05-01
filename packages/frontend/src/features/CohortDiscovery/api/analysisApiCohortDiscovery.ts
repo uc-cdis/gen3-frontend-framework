@@ -35,6 +35,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     // Parse and return the response as JSON
     const data: Record<string, unknown> = response as Record<string, unknown>;
 
+    // redact data that is less than the rounding.
     const redactedData = roundHistogramResponse(data, COHORT_DISCOVERY_LIMIT);
 
     res.status(200).json(redactedData);
