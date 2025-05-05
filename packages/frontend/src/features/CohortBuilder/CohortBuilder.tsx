@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { CohortPanelConfig, CohortBuilderProps } from './types';
+import { CohortPanelConfiguration, CohortBuilderProps } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
@@ -58,7 +58,7 @@ export const CohortBuilder = ({
           className="w-full"
           justify={TabsLayoutToComponentProp(tabsLayout)}
         >
-          {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -68,7 +68,7 @@ export const CohortBuilder = ({
           ))}
         </Tabs.List>
 
-        {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+        {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}

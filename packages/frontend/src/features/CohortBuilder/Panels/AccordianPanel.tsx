@@ -9,6 +9,7 @@ import {
 import type { TabConfig } from '../types';
 import { FiltersPanel } from '../FiltersPanel';
 import {
+  Accessibility,
   FacetDefinition,
   selectAllCohortFiltersCollapsed,
   selectSharedFilters,
@@ -29,6 +30,9 @@ export const AccordionPanel = ({
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+  onAccessChange = (value: Accessibility) => null,
+  accessLevel = Accessibility.ALL,
+  showAccessLevel = false,
 }: TabbablePanelProps) => {
   const coreDispatch = useCoreDispatch();
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));

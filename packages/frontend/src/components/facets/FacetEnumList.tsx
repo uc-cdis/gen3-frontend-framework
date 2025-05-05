@@ -8,7 +8,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { MdClose as CloseIcon } from 'react-icons/md';
+import { CloseIcon, LockOutlineIcon } from '../../types';
 import FacetSortPanel from './FacetSortPanel';
 import { type CombineMode, fieldNameToTitle } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
@@ -416,15 +416,23 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               </span>
                             </OverflowTooltippedLabel>
                             <div className="flex-none text-right w-14 text-xs font-normal font-content">
-                              {count.toLocaleString()}
+                              {count < 0 ? (
+                                <LockOutlineIcon />
+                              ) : (
+                                count.toLocaleString()
+                              )}
                             </div>
                             {showPercent ? (
                               <div className="flex-none text-right w-18 text-xs font-normal font-content">
                                 (
-                                {(
-                                  ((count as number) / totalCount) *
-                                  100
-                                ).toFixed(2)}
+                                {count < 0 ? (
+                                  <LockOutlineIcon />
+                                ) : (
+                                  (
+                                    ((count as number) / totalCount) *
+                                    100
+                                  ).toFixed(2)
+                                )}
                                 %)
                               </div>
                             ) : null}

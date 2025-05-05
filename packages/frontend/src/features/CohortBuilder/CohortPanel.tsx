@@ -13,8 +13,9 @@ import {
   CombineMode,
   selectSharedFilters,
   useGetAggsNoFilterSelfQuery,
+  Accessibility,
 } from '@gen3/core';
-import { type CohortPanelConfig } from './types';
+import { type CohortPanelConfiguration } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
@@ -52,7 +53,6 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from './Panels/DropdownPanel';
-import AccordianPanel from './Panels/AccordianPanel';
 
 const EmptyData = {};
 
@@ -64,6 +64,12 @@ const EmptyData = {};
  * explorer config in legacy gitops.json file.
  * @example see packages/sampleCommons/config/gen3/explorer.json
  */
+
+interface CohortPanelConfigurationWithAccessLevel
+  extends CohortPanelConfiguration {
+  showAccessLevel?: boolean;
+}
+
 export const CohortPanel = ({
   guppyConfig,
   filters,
@@ -73,11 +79,14 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
-}: CohortPanelConfig): JSX.Element => {
+  showAccessLevel = true,
+}: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');
-
+  const [accessLevel, setAccessLevel] = useState<Accessibility>(
+    Accessibility.ALL,
+  );
   const sharedFiltersMap = useCoreSelector((state: CoreState) =>
     selectSharedFilters(state),
   );
@@ -114,6 +123,7 @@ export const CohortPanel = ({
     type: index,
     fields: fields,
     filters: cohortFilters,
+    accessibility: accessLevel,
   });
 
   const {
@@ -125,6 +135,7 @@ export const CohortPanel = ({
     type: index,
     fields: Object.keys(charts),
     filters: cohortFilters,
+    accessibility: accessLevel,
   });
 
   const getEnumFacetData = useDeepCompareCallback(
@@ -269,6 +280,7 @@ export const CohortPanel = ({
   } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
+    accessibility: accessLevel,
   });
 
   if (isError || isAggsQueryError) {
@@ -293,6 +305,9 @@ export const CohortPanel = ({
               tabTitle={tabTitle}
               facetDefinitions={facetDefinitions}
               facetDataHooks={facetDataHooks}
+              onAccessChange={setAccessLevel}
+              accessLevel={accessLevel}
+              showAccessLevel={showAccessLevel}
             />
           )}
         </div>

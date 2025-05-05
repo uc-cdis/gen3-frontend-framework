@@ -1,7 +1,7 @@
 import { Tabs } from '@mantine/core';
 import { TabConfig } from '../types';
 import { FiltersPanel } from '../FiltersPanel';
-import { FacetDefinition } from '@gen3/core';
+import { Accessibility, FacetDefinition } from '@gen3/core';
 import React from 'react';
 import { TabbablePanelProps } from './types';
 
@@ -11,6 +11,9 @@ const VerticalTabbedPanel = ({
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+                               onAccessChange = (value: Accessibility) => null,
+                               accessLevel = Accessibility.ALL,
+                               showAccessLevel = false,
 }: TabbablePanelProps) => {
   return (
     <div>

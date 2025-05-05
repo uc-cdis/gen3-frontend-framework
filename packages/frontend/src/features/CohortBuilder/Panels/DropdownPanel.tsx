@@ -21,9 +21,11 @@ import {
   setShouldShareFilters,
   type FacetDefinition,
   selectSharedFilters,
+  Accessibility,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import AccessLevel from '../AccessLevel';
 
 export const DropdownPanel = ({
   index,
@@ -31,6 +33,9 @@ export const DropdownPanel = ({
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+  onAccessChange = (value: Accessibility) => null,
+  accessLevel = Accessibility.ALL,
+  showAccessLevel = false,
 }: TabbablePanelProps) => {
   const [value, setValue] = useState<string | null>('0');
   const allFiltersCollapsed = useCoreSelector((state) =>
@@ -90,6 +95,9 @@ export const DropdownPanel = ({
           {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
         </button>
       </Group>
+      {showAccessLevel ? (
+        <AccessLevel onChange={onAccessChange} accessLevel={accessLevel} />
+      ) : null}
       <Stack className="bg-base-max py-4 px-2 h-full w-full">
         {Object.keys(sharedFilters).length > 0 && (
           <Group gap="xs" justify="space-between">
