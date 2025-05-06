@@ -417,7 +417,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                             </OverflowTooltippedLabel>
                             <div className="flex-none text-right w-14 text-xs font-normal font-content">
                               {count < 0 ? (
-                                <LockOutlineIcon />
+                                <LockOutlineIcon
+                                  size="1.1em"
+                                  className="justify-self-end"
+                                />
                               ) : (
                                 count.toLocaleString()
                               )}
@@ -426,7 +429,10 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               <div className="flex-none text-right w-18 text-xs font-normal font-content">
                                 (
                                 {count < 0 ? (
-                                  <LockOutlineIcon />
+                                  <LockOutlineIcon
+                                    size="1.1em"
+                                    className="justify-self-end"
+                                  />
                                 ) : (
                                   (
                                     ((count as number) / totalCount) *

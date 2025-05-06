@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SegmentedControl } from '@mantine/core';
+import React from 'react';
+import { SegmentedControl, useMantineTheme } from '@mantine/core';
 import { Accessibility } from '@gen3/core';
 
 const AccessData = [
@@ -17,8 +17,10 @@ const AccessLevelControl = ({
   onChange,
   accessLevel,
 }: AccessLevelControlProps) => {
+  const theme = useMantineTheme();
   return (
     <SegmentedControl
+      color={theme.colors.accent[5]}
       data={AccessData}
       value={accessLevel}
       onChange={(val) => {

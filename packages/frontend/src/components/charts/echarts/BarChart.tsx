@@ -5,6 +5,8 @@ import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
 import type { EChartsOption } from 'echarts';
 import { graphic } from 'echarts';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { isArray } from 'lodash';
 
 interface BarChartData {
   value: number;
@@ -92,6 +94,19 @@ const BarChart = ({ data }: ChartProps) => {
       ],
       tooltip: {
         trigger: 'item',
+        formatter: function (param) {
+          const p: CallbackDataParams =
+            isArray(param) && param.length > 0
+              ? param[0]
+              : (param as CallbackDataParams);
+          if (
+            p.value &&
+            typeof typeof p === 'number' &&
+            (p.value as number) < 0
+          )
+            return `${p.name} Hidden`;
+          return `{${p.name} ${p.value}`;
+        },
       },
       ...processAxis(data),
       series: [{ type: 'bar', data: processChartData(data) }],
