@@ -1,7 +1,7 @@
 {
   "name": "@gen3/toolsff",
   "version": "0.10.93",
-  "description": "tools for processing Gen3 commons content: color theme, icons",
+  "description": "tools for processing Gen3 commons content: color theme, icons, sharedFilters",
   "main": "index.js",
   "type": "module",
   "engines": {
