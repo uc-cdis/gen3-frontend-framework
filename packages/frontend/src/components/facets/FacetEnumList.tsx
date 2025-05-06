@@ -8,7 +8,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { CloseIcon, LockOutlineIcon } from '../../types';
+import { CloseIcon, LockOutlineIcon } from '../../types/icons';
 import FacetSortPanel from './FacetSortPanel';
 import { type CombineMode, fieldNameToTitle } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
@@ -419,7 +419,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               {count < 0 ? (
                                 <LockOutlineIcon
                                   size="1.1em"
-                                  className="justify-self-end"
+                                  className="ml-auto"
                                 />
                               ) : (
                                 count.toLocaleString()
@@ -431,7 +431,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 {count < 0 ? (
                                   <LockOutlineIcon
                                     size="1.1em"
-                                    className="justify-self-end"
+                                    className="ml-auto"
                                   />
                                 ) : (
                                   (
