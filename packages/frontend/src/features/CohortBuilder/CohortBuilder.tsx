@@ -1,39 +1,18 @@
-import React, { Suspense } from 'react';
-import { CohortPanelConfiguration, CohortBuilderProps } from './types';
+import React from 'react';
+import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
-  useGetCSRFQuery,
   selectCurrentCohortId,
+  setSharedFilters,
   useCoreDispatch,
   useCoreSelector,
-  setSharedFilters,
+  useGetCSRFQuery,
 } from '@gen3/core';
+import { TabsLayoutToComponentProp } from '../../utils/layout';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
-};
-
-const TabsLayoutToComponentProp = (
-  tabsLayout?: 'left' | 'right' | 'center',
-) => {
-  if (!tabsLayout) {
-    return 'flex-start';
-  }
-  switch (tabsLayout) {
-    case 'left': {
-      return 'flex-start';
-    }
-    case 'right': {
-      return 'flex-end';
-    }
-    case 'center': {
-      return 'center';
-    }
-    default: {
-      return 'flex-start';
-    }
-  }
 };
 
 export const CohortBuilder = ({
@@ -44,7 +23,6 @@ export const CohortBuilder = ({
   useGetCSRFQuery();
 
   const dispatch = useCoreDispatch();
-  const currentCohort = useGetCurrentCohort();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
   return (

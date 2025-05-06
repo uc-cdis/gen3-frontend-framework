@@ -52,8 +52,6 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     filters: cohortFilters,
   });
 
-  console.log('data', data);
-
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
