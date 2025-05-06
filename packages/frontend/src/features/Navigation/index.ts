@@ -1,4 +1,3 @@
-// import all components and then export them
 import Footer from './Footer/Footer';
 import Gen3Link from './Gen3Link';
 import Header from './Header';
@@ -9,7 +8,7 @@ import NavPageLayout, { type NavPageLayoutProps } from './NavPageLayout';
 import { type TopBarProps } from './TopBar/TopBar';
 import { HeaderProps, type NavigationProps } from './types';
 import { FooterProps } from './Footer/types';
-import { BannerProps } from './Banner';
+import { BannerProps, Banner, BannerLevelCategories } from './Banner';
 
 export {
   type FooterProps,
@@ -18,6 +17,7 @@ export {
   type NavPageLayoutProps,
   type TopBarProps,
   type BannerProps,
+  type BannerLevelCategories,
   Footer,
   Gen3Link,
   Header,
@@ -25,4 +25,5 @@ export {
   NavigationBar,
   NavigationButton,
   NavPageLayout,
+  Banner,
 };
