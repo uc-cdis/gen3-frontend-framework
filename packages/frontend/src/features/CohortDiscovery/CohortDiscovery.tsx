@@ -46,7 +46,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
-        <Title order={1} className="absolute top-6 left-[154px]">
+        <Title order={3} className="absolute top-6 left-[154px]">
           Cohort Discovery
         </Title>
         <Tabs

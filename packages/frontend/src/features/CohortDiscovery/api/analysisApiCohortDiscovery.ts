@@ -7,8 +7,8 @@ import {
   roundHistogramResponse,
 } from '@gen3/core';
 
-const COHORT_DISCOVERY_LIMIT = process.env.COHORT_DISCOVERY_LIMIT
-  ? Number(process.env.COHORT_DISCOVERY_LIMIT)
+const COHORT_DISCOVERY_LIMIT = process.env.GEN3_COHORT_DISCOVERY_LIMIT
+  ? Number(process.env.GEN3_COHORT_DISCOVERY_LIMIT)
   : 100;
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
