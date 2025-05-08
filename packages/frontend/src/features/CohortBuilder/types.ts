@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { ConfigVersionAndName } from '../../types';
+import { DispatchJobButtonProps } from '../../components/Buttons/DropdownButtons/types';
 
 export type FacetType =
   | 'enum'
@@ -69,7 +70,8 @@ export interface CohortPanelConfig {
   charts?: Record<string, SummaryChart>; // grid of charts
   table?: SummaryTable; // table configuration
   filters?: TabsConfig; // filters for the fields
-  dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
+  dropdowns?: Record<string, DropdownsWithButtonsProps>;
+  jobsButtons: ReadonlyArray<DispatchJobButtonProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
   sharedFiltersMap?: SharedFieldMapping;

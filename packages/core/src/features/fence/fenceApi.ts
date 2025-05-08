@@ -58,11 +58,11 @@ export const {
 } = loginProvidersApi;
 
 export interface FetchRequest {
-  readonly endpoint: string;
-  readonly method?: 'GET' | 'POST';
-  readonly body?: object;
-  readonly headers?: Record<string, string>;
-  readonly isJSON?: boolean;
+  endpoint: string;
+  method?: 'GET' | 'POST';
+  body?: object;
+  headers?: Record<string, string>;
+  isJSON?: boolean;
 }
 
 /**

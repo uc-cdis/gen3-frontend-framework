@@ -33,7 +33,6 @@ export const userAuthApi = createApi({
       'Content-Type': 'application/json',
       ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      credentials: 'include',
     };
 
     try {
@@ -86,6 +85,10 @@ export const userAuthApi = createApi({
           if (error instanceof Error) {
             return {
               error: error,
+            };
+          } else {
+            return {
+              error: 'Unknown Error',
             };
           }
         }

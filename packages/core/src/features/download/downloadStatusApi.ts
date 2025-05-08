@@ -50,9 +50,7 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
     getDownloadStatus: builder.query<DownloadStatus, string | FetchArgs>({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         const statusResponse = await fetchWithBQ({
-          headers: {
-            credentials: 'include',
-          },
+          credentials: 'include',
           url: `${GEN3_SOWER_API}/status?UID=${arg}`,
         });
 
@@ -82,9 +80,6 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
 
         if (status === 'Completed') {
           const statusResponse = await fetchWithBQ({
-            headers: {
-              credentials: 'include',
-            },
             url: `${GEN3_SOWER_API}/output?UID=${arg}`,
           });
           const { output } = statusResponse.data as JobOutput;

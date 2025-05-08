@@ -32,6 +32,7 @@ declare module 'redux-persist' {
 }
 
 import storage from './storage-persist';
+import sowerJobsMiddleware from './features/sower/middleware';
 
 const persistConfig = {
   key: 'root',
@@ -55,6 +56,7 @@ export const setupCoreStore = (preloadedState?: Partial<CoreState>) =>
         gen3ServicesReducerMiddleware,
         guppyAPISliceMiddleware,
         userAuthApiMiddleware,
+        sowerJobsMiddleware,
       ),
   });
 

@@ -1,28 +1,18 @@
 import React from 'react';
 import { Group, Text, Stack, Badge, Paper, Table } from '@mantine/core';
-import {
-  useCoreSelector,
-  selectSowerJobs,
-  useGetSowerJobsStatusQuery,
-} from '@gen3/core';
+import { useCoreSelector, selectSowerJobs } from '@gen3/core';
 import { ErrorCard } from '../MessageCards';
+import { useSowerJob } from './hooks';
 
 interface JobsListProps {
   size?: string;
 }
 
 const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
-  const jobIds = useCoreSelector(selectSowerJobs);
-  // const idsArray = Object.keys(jobIds);
-  // const {
-  //   data: jobStatuses,
-  //   isLoading,
-  //   isError,
-  // } = useGetSowerJobsStatusQuery(idsArray, {
-  //   skip: idsArray.length === 0,
-  // });
+  const { isError } = useSowerJob();
+  const allJobs = useCoreSelector(selectSowerJobs);
 
-  if (Object.keys(jobIds).length === 0) {
+  if (Object.keys(allJobs).length === 0) {
     return (
       <Paper p="md">
         <Text>No Active Jobs</Text>
@@ -30,13 +20,13 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
     );
   }
 
-  // if (isError) {
-  //   return (
-  //     <Paper p="md">
-  //       <ErrorCard message="Error retrieving jobs" />
-  //     </Paper>
-  //   );
-  // }
+  if (isError) {
+    return (
+      <Paper p="md">
+        <ErrorCard message="Error retrieving jobs" />
+      </Paper>
+    );
+  }
 
   const tableHeader = (
     <Table.Tr>
@@ -48,7 +38,7 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
     </Table.Tr>
   );
 
-  const rows = Object.values(jobIds).map((jobStatus) => {
+  const rows = Object.values(allJobs).map((jobStatus) => {
     return (
       <Table.Tr key={jobStatus.jobId}>
         <Table.Td>{jobStatus.jobId}</Table.Td>

@@ -32,6 +32,7 @@ import {
   type JobBuilderAction,
   type SendJobOutputAction,
   type BoundCreateAndExportAction,
+  type SowerJobState,
 } from './types';
 
 export {
@@ -60,6 +61,7 @@ export {
   type ActionFunction,
   type ActionParams,
   type JobBuilderAction,
+  type SowerJobState,
   type SendJobOutputAction,
   type BoundCreateAndExportAction,
 };

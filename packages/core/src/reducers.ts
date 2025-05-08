@@ -4,8 +4,8 @@ import { userReducer } from './features/user/userSlice';
 import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
-import { dataLibrarySelectionReducer } from './features/dataLibrary';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+
 import {
   guppyApiReducer,
   guppyApiSliceReducerPath,
@@ -26,7 +26,6 @@ export const rootReducer = combineReducers({
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
   sowerJobsList: sowerJobsListSliceReducer,
-  dataLibrarySelection: dataLibrarySelectionReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });

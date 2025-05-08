@@ -111,3 +111,19 @@ export const formatDate = (timestamp: number): string => {
   const time = parts.slice(3).join(':');
   return `${day} ${time}`;
 };
+
+// Example usage:
+const measureExecutionTime = async (func: () => Promise<any>) => {
+  const startTime = getCurrentTimestamp();
+  await func();
+  const duration = getTimeDifferenceMs(startTime);
+  return getReadableDuration(duration);
+};
+
+// Performance monitoring with high-resolution timestamps
+const getHighResolutionTimestamp = (): number => {
+  return performance.now(); // More precise than Date.now() for performance measurements
+};
+
+const SecondsToMilliseconds = (seconds: number) => seconds * 1000;
+export const MinutesToMilliseconds = (minutes: number) => minutes * 60 * 1000;

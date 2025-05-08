@@ -2,8 +2,8 @@ import { Middleware, Reducer } from '@reduxjs/toolkit';
 import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
-import { selectCSRFToken } from '../user/userSliceRTK';
 import { getCookie } from 'cookies-next';
+import { selectCSRFToken } from '../user';
 
 /**
  * Creates a base class core API for building other API endpoints on top of.
@@ -28,6 +28,9 @@ export const gen3Api = createApi({
       if (csrfToken) headers.set('X-CSRF-Token', csrfToken);
 
       return headers;
+    },
+    validateStatus: (response) => {
+      return response.status >= 200 && response.status < 300;
     },
   }),
   endpoints: () => ({}),
