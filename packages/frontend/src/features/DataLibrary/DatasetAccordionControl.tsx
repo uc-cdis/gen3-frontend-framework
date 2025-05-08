@@ -12,9 +12,10 @@ import {
 } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import { getHotkeyHandler } from '@mantine/hooks';
-import { DataItemSelectedState, IconSize } from './types';
+import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';
-import { formatDate } from './utils';
+import { IconSize } from '../../utils/sizes';
+import { formatDate } from '../../utils/date';
 import { StorageOperationResults } from '@gen3/core';
 
 interface DatasetAccordionControlProps extends AccordionControlProps {

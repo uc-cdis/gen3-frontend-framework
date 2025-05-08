@@ -1,7 +1,7 @@
 import React from 'react';
 import { CellRenderFunctionProps } from './types';
 import { AccessLevel } from '../types';
-import { Divider, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
   LuClock as PendingIcon,
   LuUnlock as UnlockedIcon,
@@ -27,17 +27,16 @@ const buildTooltip = (mainMessage: string, secondaryMessage?: string) => {
   );
 };
 
-export const DataAccessCellRenderer = (
-  { cell, row }: CellRenderFunctionProps,
-  params?: JSONObject,
-) => {
+export const DataAccessCellRenderer = ({
+  cell,
+  row,
+}: CellRenderFunctionProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();
   const authorization = (row?.original?.[authzField] as string) || undefined;
   const dataObjectField =
     config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
-  const numFileobject = row?.original?.num_fileobject || 0;
   if (isArray(value)) value = value[0];
   const accessLevel = getAccessLevelFromNumber(value);
 

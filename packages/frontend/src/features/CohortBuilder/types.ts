@@ -64,7 +64,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
   dropdownItems: ReadonlyArray<DownloadButtonProps>;
 }
 
-export interface CohortPanelConfig {
+export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
   charts?: Record<string, SummaryChart>; // grid of charts
@@ -82,21 +82,28 @@ export interface SharedFieldConfiguration {
   autoCreate?: boolean;
 }
 
+export enum GuppyDataAccessMode {
+  REGULAR = 'regular',
+  LIBRE = 'libre',
+  PRIVATE = 'private',
+}
+
+export interface AccessControlConfiguration {
+  dataMode: GuppyDataAccessMode;
+  tierLimit?: number;
+  showAccessLevelControl?: boolean;
+}
+
 export interface CohortBuilderConfiguration extends ConfigVersionAndName {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
   sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
-  explorerConfig: Array<CohortPanelConfig>;
+  explorerConfig: Array<CohortPanelConfiguration>;
+  accessControl?: AccessControlConfiguration;
 }
 
 export interface CohortBuilderProps
   extends Omit<CohortBuilderConfiguration, 'sharedFilters'> {
   sharedFiltersMap: SharedFieldMapping | null;
-}
-
-// to do add buttons, options,  menus, etc
-
-export interface CohortConfig {
-  tabs: TabConfig[];
 }
 
 export enum DownloadFileFormats {

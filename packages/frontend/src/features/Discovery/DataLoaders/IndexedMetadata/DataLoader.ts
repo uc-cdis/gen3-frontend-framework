@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetDataProps, GetDataResponse } from '../types';
 import { processAuthorizations } from '../utils';
 import {

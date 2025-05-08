@@ -5,6 +5,7 @@ import FacetEnumList from './FacetEnumList';
 import { FacetHeader, FacetText, controlsIconStyle } from './components';
 
 import {
+  EnumFacetDataChangedFunction,
   FacetCardProps,
   FacetDataHooks,
   GetEnumFacetDataFunction,
@@ -12,6 +13,7 @@ import {
 
 export interface EnumFacetHooks extends FacetDataHooks {
   useGetFacetData: GetEnumFacetDataFunction;
+  updateVisibleValues?: EnumFacetDataChangedFunction;
 }
 
 const EnumFacet = ({

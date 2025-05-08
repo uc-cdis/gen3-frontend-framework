@@ -1,14 +1,10 @@
 # TODO
 
-* add slice to handle facet selection
-* add separate cohort: add to config
-* add buttons to panel
-  * add actions: export, import (save delayed until Data Library is ready )
-* add left side panel
+* chart redaction refinements:
+*   for redacted charts add redacted text
+*   for all charts redacted set max to 100 instead of 1
 * add empty state icons
-* add cohort query expression
 * add tier level redaction options
 * add submission request config
 * 508 scans
-* remove empty guppy query
 * add support for multiple tabs - TODO

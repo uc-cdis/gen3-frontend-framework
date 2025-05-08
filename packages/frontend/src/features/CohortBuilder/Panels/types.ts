@@ -1,5 +1,5 @@
 import { TabsConfig } from '../types';
-import { FacetDefinition, FacetType } from '@gen3/core';
+import { Accessibility, FacetDefinition, FacetType } from '@gen3/core';
 import { FacetDataHooks } from '../../../components/facets';
 
 export interface TabbablePanelProps {
@@ -8,4 +8,7 @@ export interface TabbablePanelProps {
   tabTitle: string;
   facetDefinitions: Record<string, FacetDefinition>;
   facetDataHooks: Record<FacetType, FacetDataHooks>;
+  onAccessChange?: (value: Accessibility) => void;
+  accessLevel?: Accessibility;
+  showAccessLevel?: boolean;
 }

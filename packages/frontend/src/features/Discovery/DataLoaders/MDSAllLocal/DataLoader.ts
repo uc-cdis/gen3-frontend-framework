@@ -220,7 +220,7 @@ const useGetAggMDSData = ({
         );
       } else setMDSData(data.data);
     }
-  }, [data, isSuccess, studyField]);
+  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -261,7 +261,6 @@ const useSearchMetadata = ({
     search,
     autoSuggest,
     searchResults,
-    rawResults,
     suggestions: miniSearchSuggestions,
     addAll,
     removeAll,

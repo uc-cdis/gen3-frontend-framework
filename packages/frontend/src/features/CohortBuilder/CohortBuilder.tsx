@@ -1,29 +1,18 @@
-import React, { Suspense } from 'react';
-import { CohortPanelConfig, CohortBuilderProps } from './types';
-import { Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
+import React from 'react';
+import { CohortBuilderProps, CohortPanelConfiguration } from './types';
+import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useCoreDispatch, useGetCSRFQuery, setSharedFilters } from '@gen3/core';
+import {
+  selectCurrentCohortId,
+  setSharedFilters,
+  useCoreDispatch,
+  useCoreSelector,
+  useGetCSRFQuery,
+} from '@gen3/core';
+import { TabsLayoutToComponentProp } from '../../utils/layout';
 
-const TabsLayoutToComponentProp = (
-  tabsLayout?: 'left' | 'right' | 'center',
-) => {
-  if (!tabsLayout) {
-    return 'flex-start';
-  }
-  switch (tabsLayout) {
-    case 'left': {
-      return 'flex-start';
-    }
-    case 'right': {
-      return 'flex-end';
-    }
-    case 'center': {
-      return 'center';
-    }
-    default: {
-      return 'flex-start';
-    }
-  }
+export const useGetCurrentCohort = () => {
+  return useCoreSelector((state) => selectCurrentCohortId(state));
 };
 
 export const CohortBuilder = ({
@@ -47,7 +36,7 @@ export const CohortBuilder = ({
           className="w-full"
           justify={TabsLayoutToComponentProp(tabsLayout)}
         >
-          {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -57,7 +46,7 @@ export const CohortBuilder = ({
           ))}
         </Tabs.List>
 
-        {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+        {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}

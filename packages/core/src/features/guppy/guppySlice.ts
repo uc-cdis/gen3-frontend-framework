@@ -1,7 +1,6 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { JSONPath } from 'jsonpath-plus';
 import {
   convertFilterSetToGqlFilter,
   FilterSet,
@@ -11,39 +10,9 @@ import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { SharedFieldMapping } from './types';
 
 import { groupSharedFields } from './utils';
+import { processHistogramResponse } from './processing';
 
 const statusEndpoint = '/_status';
-
-export const processHistogramResponse = (
-  data: Record<string, any>,
-): AggregationsData => {
-  const valueData = JSONPath({
-    json: data,
-    path: '$..histogram',
-    resultType: 'value',
-  });
-
-  const pointerData = JSONPath({
-    json: data,
-    path: '$..histogram',
-    resultType: 'pointer',
-  });
-
-  const results = pointerData.reduce(
-    (acc: AggregationsData, element: Record<string, any>, idx: number) => {
-      const key = element
-        .slice(1)
-        .replace(/\/histogram/g, '')
-        .replace(/\//g, '.');
-      return {
-        ...acc,
-        [key]: valueData[idx],
-      };
-    },
-    {} as AggregationsData,
-  );
-  return results as AggregationsData;
-};
 
 export interface GraphQLQuery {
   query: string;
@@ -221,26 +190,13 @@ const explorerApi = guppyApi.injectEndpoints({
         filters,
         accessibility = Accessibility.ALL,
       }: QueryAggsParams) => {
-        const queryStart = isFilterEmpty(filters)
-          ? `
-              query getAggs {
-              _aggregation {
-              ${type} (accessibility: ${accessibility}) {`
-          : `query getAggs ($filter: JSON) {
-               _aggregation {
-                      ${type} (filter: $filter, filterSelf: false, accessibility: ${accessibility}) {`;
-        const query = `${queryStart}
-                  ${fields.map((field: string) =>
-                    histogramQueryStrForEachField(field),
-                  )}
-                }
-              }
-            }`;
-        const queryBody: GraphQLQuery = {
-          query: query,
-          variables: { filter: convertFilterSetToGqlFilter(filters) },
-        };
-        return queryBody;
+        return buildGetAggregationQuery(
+          type,
+          fields,
+          filters,
+          accessibility,
+          false,
+        );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
         return processHistogramResponse(
@@ -255,26 +211,13 @@ const explorerApi = guppyApi.injectEndpoints({
         filters,
         accessibility = Accessibility.ALL,
       }: QueryAggsParams) => {
-        const queryStart = isFilterEmpty(filters)
-          ? `
-              query getAggs {
-              _aggregation {
-              ${type} (accessibility: ${accessibility}) {`
-          : `query getAggs ($filter: JSON) {
-               _aggregation {
-                      ${type} (filter: $filter, filterSelf: true, accessibility: ${accessibility}) {`;
-        const query = `${queryStart}
-                  ${fields.map((field: string) =>
-                    histogramQueryStrForEachField(field),
-                  )}
-                }
-              }
-            }`;
-        const queryBody: GraphQLQuery = {
-          query: query,
-          variables: { filter: convertFilterSetToGqlFilter(filters) },
-        };
-        return queryBody;
+        return buildGetAggregationQuery(
+          type,
+          fields,
+          filters,
+          accessibility,
+          true,
+        );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
         return processHistogramResponse(
@@ -445,7 +388,7 @@ const explorerApi = guppyApi.injectEndpoints({
 // query for aggregate data
 // convert the function below to typescript
 
-const histogramQueryStrForEachField = (field: string): string => {
+export const histogramQueryStrForEachField = (field: string): string => {
   const splittedFieldArray = field.split('.');
   const splittedField = splittedFieldArray.shift();
   if (splittedFieldArray.length === 0) {
@@ -463,7 +406,7 @@ const histogramQueryStrForEachField = (field: string): string => {
   }`;
 };
 
-const nestedHistogramQueryStrForEachField = (
+export const nestedHistogramQueryStrForEachField = (
   mainField: string,
   numericAggAsText: boolean,
 ) => `
@@ -513,6 +456,36 @@ export const useGetArrayTypes = () => {
 export const useGetIndexFields = (index: string) => {
   const { data } = useGetFieldsForIndexQuery(index);
   return data ?? [];
+};
+
+export const buildGetAggregationQuery = (
+  type: string,
+  fields: ReadonlyArray<string>,
+  filters: FilterSet,
+  accessibility = Accessibility.ALL,
+  filterSelf: boolean = false,
+): GraphQLQuery => {
+  const queryStart = isFilterEmpty(filters)
+    ? `
+              query getAggs {
+              _aggregation {
+              ${type} (accessibility: ${accessibility}) {`
+    : `query getAggs ($filter: JSON) {
+               _aggregation {
+                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) {`;
+  const query = `${queryStart}
+                  ${fields.map((field: string) =>
+                    histogramQueryStrForEachField(field),
+                  )}
+                }
+              }
+            }`;
+  const queryBody: GraphQLQuery = {
+    query: query,
+    variables: { filter: convertFilterSetToGqlFilter(filters) },
+  };
+
+  return queryBody;
 };
 
 export const {

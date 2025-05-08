@@ -1,16 +1,25 @@
 // import all the components from this directory
 import {
+  type Cohort,
+  cohortReducer,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
+  selectAvailableCohorts,
+  selectCurrentCohortModified,
+  selectCurrentCohortSaved,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
+  addNewDefaultUnsavedCohort,
+  removeCohort,
+  setActiveCohort,
+  setActiveCohortList,
 } from './cohortSlice';
 
 import {
@@ -35,12 +44,18 @@ import {
 } from './filterCombineModeSlice';
 
 export {
+  type Cohort,
+  type CombineMode,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohort,
+  selectAvailableCohorts,
+  selectCurrentCohortModified,
+  selectCurrentCohortSaved,
+  cohortReducer,
   selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
   selectCohortFilterCombineMode,
@@ -52,10 +67,13 @@ export {
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
+  addNewDefaultUnsavedCohort,
+  removeCohort,
+  setActiveCohort,
+  setActiveCohortList,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
   setSharedFilters,
   setShouldShareFilters,
-  type CombineMode,
 };

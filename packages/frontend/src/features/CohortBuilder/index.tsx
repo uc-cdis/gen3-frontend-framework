@@ -2,7 +2,7 @@ import { CohortBuilder } from './CohortBuilder';
 import {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
-  type CohortPanelConfig,
+  type CohortPanelConfiguration,
 } from './types';
 
 import {
@@ -14,6 +14,10 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
 } from './ExplorerTable';
 
+import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext';
+import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
+import QueryExpression from './QueryExpression/QueryExpression';
+
 import CohortManager from './CohortManager';
 
 export {
@@ -21,11 +25,14 @@ export {
   type CohortBuilderProps,
   type TableDetailsPanelProps,
   type CellRendererFunctionProps,
-  type CohortPanelConfig,
+  type CohortPanelConfiguration,
   CohortBuilder,
   CohortManager,
   ExplorerTableCellRendererFactory,
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
+  QueryExpressionContext,
+  QueryExpression,
+  QueryExpressionSection,
 };

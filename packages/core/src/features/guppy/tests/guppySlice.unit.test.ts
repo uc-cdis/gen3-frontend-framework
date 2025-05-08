@@ -1,5 +1,6 @@
-import { processHistogramResponse } from '../guppySlice'; // Adjust the import path as needed
-import { AggregationsData } from '../../../types'; // Adjust the import path as needed
+// Adjust the import path as needed
+import { AggregationsData } from '../../../types';
+import { processHistogramResponse } from '../processing'; // Adjust the import path as needed
 
 describe('processHistogramResponse', () => {
   it('should process a simple histogram response', () => {

@@ -9,11 +9,7 @@ interface Props extends NavPageLayoutProps {
   analysisFile?: any;
 }
 
-const AnalysisEditorPage = ({
-  headerProps,
-  footerProps,
-  analysisFile,
-}: Props) => {
+const AnalysisEditorPage = ({ headerProps, footerProps }: Props) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}

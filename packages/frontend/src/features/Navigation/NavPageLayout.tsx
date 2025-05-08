@@ -21,8 +21,8 @@ const NavPageLayout = ({
   children,
 }: PropsWithChildren<NavPageLayoutProps>) => {
   const mainContentStyle = mainProps?.fixed
-    ? 'flex-1 flex overflow-hidden'
-    : 'flex grow';
+    ? 'flex-1 flex overflow-hidden relative'
+    : 'flex grow relative';
   return (
     <div className="flex flex-col justify-between h-screen">
       <Head>

@@ -13,7 +13,8 @@ import { Icon } from '@iconify/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { ValidatedSelectedItem } from '../types';
-import { IconSize } from '../types';
+
+import { IconSize } from '../../../utils/sizes';
 
 interface SelectedItemsTableHeaderProps {
   numberOfItems: number;

@@ -4,18 +4,22 @@ import ContentSource from '../../lib/content';
 import {
   CohortBuilderConfiguration,
   CohortBuilderProps,
-  CohortPanelConfig,
+  CohortPanelConfiguration,
 } from '../../features/CohortBuilder';
 import {
+  fetchJSONDataFromURL,
   GEN3_COMMONS_NAME,
   GEN3_GUPPY_API,
-  fetchJSONDataFromURL,
   groupSharedFields,
-  SharedFieldMapping,
   HttpMethod,
+  SharedFieldMapping,
 } from '@gen3/core';
 import { isArray } from 'lodash';
 import type { NavPageLayoutProps } from '../../features/Navigation';
+import {
+  AccessControlConfiguration,
+  GuppyDataAccessMode,
+} from '../../features/CohortBuilder/types';
 
 const GetSharedFieldMapping = async (
   cohortBuilderConfiguration: CohortBuilderConfiguration,
@@ -52,10 +56,13 @@ const GetSharedFieldMapping = async (
     if (sharedFiltersMap) {
       const indexToAlias = Object.values(
         cohortBuilderConfiguration?.explorerConfig,
-      ).reduce((acc: Record<string, string>, panel: CohortPanelConfig) => {
-        acc[panel.guppyConfig.dataType] = panel.tabTitle;
-        return acc;
-      }, {});
+      ).reduce(
+        (acc: Record<string, string>, panel: CohortPanelConfiguration) => {
+          acc[panel.guppyConfig.dataType] = panel.tabTitle;
+          return acc;
+        },
+        {},
+      );
 
       const updatedSharedFiltersMap: SharedFieldMapping = {};
       for (const [field, values] of Object.entries(sharedFiltersMap)) {
@@ -69,6 +76,12 @@ const GetSharedFieldMapping = async (
   }
 
   return sharedFiltersMap;
+};
+
+const DefaultAccessControlConfiguration: AccessControlConfiguration = {
+  dataMode: GuppyDataAccessMode.REGULAR,
+  tierLimit: -1,
+  showAccessLevelControl: false,
 };
 
 export const ExplorerPageGetServerSideProps: GetServerSideProps<
@@ -101,6 +114,10 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
+        accessControl: {
+          ...DefaultAccessControlConfiguration,
+          ...(cohortBuilderConfiguration.accessControl ?? {}),
+        },
       },
     };
   } catch (err: unknown) {
@@ -147,6 +164,10 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
+        accessControl: {
+          ...DefaultAccessControlConfiguration,
+          ...(cohortBuilderConfiguration.accessControl ?? {}),
+        },
       },
     };
   } catch (err: unknown) {

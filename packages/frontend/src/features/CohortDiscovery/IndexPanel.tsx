@@ -1,16 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Flex, Stack } from '@mantine/core';
+import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import {
-  CoreState,
-  FacetDefinition,
-  selectIndexFilters,
-  useCoreSelector,
-  useGetAggsQuery,
-} from '@gen3/core';
+import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
+
+import { selectIndexFilters } from './CohortSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
   getAllFieldsFromFilterConfigs,
@@ -19,13 +15,28 @@ import {
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
-import ActionButtonGroup from './ActionButtonGroup';
-import CohortManager from '../CohortBuilder/CohortManager';
+import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
+import CohortManager from '../CohortDiscovery/CohortManager';
+import { AppState, useAppSelector, useAppDispatch } from './appApi';
+import Image from 'next/image';
+import {
+  selectSelectedFacetsFromIndex,
+  removeFacetSelection,
+  addFacetSelection,
+} from './SelectedFacetsSlice';
+import { useRoundedAggsQuery } from './queryApi';
 
-const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
+const IndexPanel = ({
+  dataConfig,
+  tabs,
+  tabTitle,
+  emptySelection,
+}: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
   >([]);
+
+  const appDispatch = useAppDispatch();
 
   const index = dataConfig.dataType;
   const fields = useMemo(
@@ -39,7 +50,26 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
 
   const [categories, setCategories] = useState<TabConfig[]>([]);
 
-  const cohortFilters = useCoreSelector((state: CoreState) =>
+  const selectedFacets: string[] =
+    useAppSelector((state: AppState) =>
+      selectSelectedFacetsFromIndex(state, index),
+    ) ?? [];
+
+  /**
+   * When selection changes, update active list of FacetDefinitions
+   * This will be changed to use a facet dictionary once that feature is implemented
+   */
+  useDeepCompareEffect(() => {
+    const selectFacetDefinitions = selectedFacets.reduce((acc, field) => {
+      if (field in facetDefinitions) {
+        acc.push(facetDefinitions[field]);
+      }
+      return acc;
+    }, [] as Array<FacetDefinition>);
+    setActiveFieldDefinitions(selectFacetDefinitions);
+  }, [selectedFacets, facetDefinitions]);
+
+  const cohortFilters = useAppSelector((state: AppState) =>
     selectIndexFilters(state, index),
   );
 
@@ -51,7 +81,7 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
     data,
     isSuccess,
     isError: isAggsQueryError,
-  } = useGetAggsQuery(
+  } = useRoundedAggsQuery(
     {
       type: index,
       fields: queryFields,
@@ -61,22 +91,17 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   );
 
   const updateFields = useDeepCompareCallback(
-    (field: string) => {
-      if (activeFieldDefinitions.some((facetDef) => facetDef.field === field)) {
-        setActiveFieldDefinitions((prevState) => {
-          return prevState.filter((f) => f.field !== field);
-        });
-      } else {
-        setActiveFieldDefinitions((prevState) => [
-          ...prevState,
-          facetDefinitions[field],
-        ]);
+    (field: string, checked: boolean) => {
+      if (!checked) {
+        appDispatch(removeFacetSelection({ index, field }));
+      }
+      if (checked) {
+        appDispatch(addFacetSelection({ index, field }));
       }
     },
-    [activeFieldDefinitions, facetDefinitions],
+    [selectedFacets, index, appDispatch],
   );
 
-  // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
       const configFacetDefs = tabs.reduce(
@@ -116,10 +141,10 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
   return (
     <Stack>
       <CohortManager index={index} />
-      <Flex className="w-full h-full bg-base-light">
+      <Flex className="flex h-full bg-base-light pb-4 ml-4">
         <FacetSelectionPanel
           categories={categories}
-          selectedFields={activeFieldDefinitions.map((x) => x.field)}
+          selectedFields={selectedFacets}
           updateSelectedField={updateFields}
           hooks={{
             useClearFilter: () => (field: string) => null,
@@ -127,9 +152,29 @@ const IndexPanel = ({ dataConfig, tabs, tabTitle }: CohortDiscoveryGroup) => {
             useFilterExpanded: useFilterExpandedState,
           }}
         />
-        <Stack className="w-full">
-          <ActionButtonGroup />
-          <ChartsAndFacetsPanel index={index} facets={activeFieldDefinitions} />
+        <Stack className="w-2/3 mr-2 min-h-[500px]">
+          <ActionButtonGroup index={index} />
+          {selectedFacets.length > 0 ? (
+            <ChartsAndFacetsPanel
+              index={index}
+              facets={activeFieldDefinitions}
+            />
+          ) : (
+            <Center className="h-full mx-2 bg-base-max">
+              <Box className="text-center m-4">
+                <Image
+                  src={`/images/apps/${emptySelection.image}`}
+                  alt={emptySelection.imageAlt}
+                  width={240}
+                  height={240}
+                  className="inline-block mb-4"
+                />
+                {/*TODO make config file for tabs*/}
+                <Title order={3}>{emptySelection.title || ''}</Title>
+                <Text>{emptySelection.subHead || ''}</Text>
+              </Box>
+            </Center>
+          )}
         </Stack>
       </Flex>
     </Stack>
