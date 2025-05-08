@@ -35,11 +35,12 @@
   * implement download zip
   * download PFB
   * create PFB
+  * export to workspace
 * search working
 * sort by file size
 * connect explorer
   * save to list
   * pick from all cohorts
 * connect discovery
-  * save to list
+  *~~save to list~~
 * export selections?

@@ -1,4 +1,5 @@
 import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import jsLint from '@eslint/js';
@@ -50,12 +51,15 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       react: react,
+      reactHooks: reactHooks,
       next: next,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       'react/prop-types': 'warn',
+      'reactHooks/rules-of-hooks': 'error',
+      'reactHooks/exhaustive-deps': 'warn',
     },
   },
 ];

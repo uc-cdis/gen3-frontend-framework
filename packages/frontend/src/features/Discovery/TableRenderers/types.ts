@@ -1,6 +1,6 @@
 import { JSONObject } from '@gen3/core';
 import { ReactElement } from 'react';
-import { MRT_Cell, MRT_RowData } from 'mantine-react-table';
+import { MRT_Cell, MRT_Row, MRT_RowData } from 'mantine-react-table';
 
 // TODO Tighten up the typing
 export interface CellRenderFunctionProps<
@@ -9,6 +9,7 @@ export interface CellRenderFunctionProps<
 > {
   value: T; // value of the cell
   cell?: MRT_Cell<C>; // optional cell object for use in custom cell renderers
+  row?: MRT_Row<C>; // optional row cell object
 }
 
 /**

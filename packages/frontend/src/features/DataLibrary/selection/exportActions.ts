@@ -1,4 +1,3 @@
-import { DataActionFunction } from './registeredActions';
 import {
   fetchFencePresignedURL,
   FileItem,
@@ -7,6 +6,7 @@ import {
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { HTTPUserFriendlyErrorMessages } from '../modals/utils';
+import { DataActionFunction } from './types';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendExistingPFBToURLParameters {
@@ -29,8 +29,8 @@ const isSendExistingPFBToURLParameters = (
 export const sendExistingPFBToURL: DataActionFunction = async (
   validatedSelections,
   params,
-  done = () => null,
-  error = () => null,
+  onDone = () => null,
+  onError = () => null,
   onAbort = () => null,
   signal = undefined,
 ) => {
@@ -73,9 +73,9 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     );
     return new Promise<void>(() => {
       if (window) window.open(targetURL, '_blank', 'noopener,noreferrer');
-      if (done) done(targetURL);
+      if (onDone) onDone(targetURL);
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof HTTPError) {
       notifications.show({
         id: 'data-library-send-existing-pfb-to-url-http-error',
@@ -86,14 +86,19 @@ export const sendExistingPFBToURL: DataActionFunction = async (
         message:
           error.status in HTTPUserFriendlyErrorMessages
             ? HTTPUserFriendlyErrorMessages[error.status]
-            : 'An error has occured to prevent exporting PFB',
+            : 'An error has occurred to prevent exporting PFB',
         color: 'red',
         loading: false,
       });
     }
-    console.error('Error sending PFB to URL', error);
-    return new Promise<void>(() => {
-      error(error as Error);
-    });
+    if (error instanceof Error) {
+      if (error.name == 'AbortError') {
+        onAbort?.();
+      }
+
+      return new Promise<void>(() => {
+        onError?.(error as Error);
+      });
+    }
   }
 };

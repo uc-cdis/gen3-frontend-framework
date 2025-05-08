@@ -12,6 +12,7 @@ import {
   fetchJSONDataFromURL,
   groupSharedFields,
   SharedFieldMapping,
+  HttpMethod,
 } from '@gen3/core';
 import { isArray } from 'lodash';
 import type { NavPageLayoutProps } from '../../features/Navigation';
@@ -30,10 +31,10 @@ const GetSharedFieldMapping = async (
       );
 
       try {
-        const data = await fetchJSONDataFromURL(
+        const data = await fetchJSONDataFromURL<any>(
           `${GEN3_GUPPY_API}/graphql`,
           true,
-          'POST',
+          HttpMethod.POST,
           { query: `{ _mapping { ${indices.join(' ')} }}`, variables: {} },
         );
         if ('_mapping' in data.data) {

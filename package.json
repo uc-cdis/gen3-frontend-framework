@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.85",
+  "version": "0.10.89",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -17,6 +17,7 @@
   "scripts": {
     "lint": "lerna run lint",
     "lint-fix": "eslint . --fix",
+    "lint:config": "npx @eslint/config-inspector@latest",
     "oxlint": "oxlint .",
     "build": "lerna run build --include-dependencies --stream",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
@@ -85,8 +86,9 @@
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
     "lerna": "^8.1.8",
+    "msw": "^2.7.3",
     "nx": "19.4.3 ",
-    "oxlint": "^0.15.8",
+    "oxlint": "^0.16.4",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^6.0.0",
     "postcss-preset-mantine": "^1.17.0",
@@ -112,9 +114,9 @@
     }
   },
   "optionalDependencies": {
-      "@nx/nx-darwin-arm64": "^20.6.0",
-      "@nx/nx-linux-arm64-gnu": "^20.6.0",
-      "@nx/nx-linux-x64-gnu": "^20.6.0",
+      "@nx/nx-darwin-arm64": "^20.7.1",
+      "@nx/nx-linux-arm64-gnu": "^20.7.1",
+      "@nx/nx-linux-x64-gnu": "^20.7.1",
       "@swc/nx-darwin-arm64" : "^1.11.10",
       "@swc/nx-linux-arm64-gnu" : "^1.11.10",
       "@swc/core-linux-x64-gnu" : "^1.11.10"

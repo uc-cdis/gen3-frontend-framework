@@ -5,6 +5,20 @@ import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
 
+import type { Action, Reducer } from 'redux';
+import type { PersistConfig, PersistState } from 'redux-persist';
+
+declare module 'redux-persist' {
+  export function persistReducer<S, A extends Action = Action, P = S>(
+    config: PersistConfig<S>,
+    baseReducer: Reducer<S, A, P>,
+  ): Reducer<
+    S & { _persist: PersistState },
+    A,
+    P & { _persist?: PersistState }
+  >;
+}
+
 const _APP_NAME = 'CohortDiscovery';
 
 const persistConfig = {

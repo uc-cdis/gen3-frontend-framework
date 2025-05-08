@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { CohortPanelConfig, CohortBuilderProps } from './types';
 import { Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
@@ -31,7 +31,7 @@ export const CohortBuilder = ({
   sharedFiltersMap = null,
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
-  const { isFetching } = useGetCSRFQuery();
+  useGetCSRFQuery();
 
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));

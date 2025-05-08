@@ -1,16 +1,15 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
 import { MantineProvider } from '@mantine/core';
-import '../src/styles/globals.css';
+import { Gen3Provider } from '@gen3/frontend';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import theme from '../src/mantineTheme';
+import icons from './loadIcons';
+
 import '../src/styles/globals.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
-import { Gen3Provider } from '@gen3/frontend';
-import icons from './loadIcons';
-
 /*
  * Initializes MSW
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw

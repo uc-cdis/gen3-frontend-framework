@@ -1,4 +1,19 @@
-import { type AuthzMapping, type ServiceAndMethod } from './types';
-import { useGetAuthzMappingsQuery, selectAuthzMappingData } from './authzMappingSlice';
+import {
+  type ServiceAndMethod,
+  type AuthzMapping,
+  type ResourceAuthzMapping,
+} from './types';
+import {
+  useGetAuthzMappingsQuery,
+  useLazyGetAuthzMappingsQuery,
+  selectAuthzMappingData,
+} from './authzMappingSlice';
 
-export { useGetAuthzMappingsQuery, selectAuthzMappingData, type AuthzMapping, type ServiceAndMethod, };
+export {
+  useGetAuthzMappingsQuery,
+  useLazyGetAuthzMappingsQuery,
+  selectAuthzMappingData,
+  type ServiceAndMethod,
+  type AuthzMapping,
+  type ResourceAuthzMapping,
+};

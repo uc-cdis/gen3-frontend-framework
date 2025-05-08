@@ -86,7 +86,7 @@ const WorkspaceCardProvider = ({ children }: WorkspaceCardProviderProps) => {
     setWorkspaceCards((prevWorkspaceCards) =>
       prevWorkspaceCards.filter((WorkspaceCard) => WorkspaceCard.id !== id),
     );
-  }, [WorkspaceCards]);
+  }, []);
 
   const value: WorkspaceCardContextType = {
     WorkspaceCards,
@@ -99,7 +99,7 @@ const WorkspaceCardProvider = ({ children }: WorkspaceCardProviderProps) => {
   return (
     <WorkspaceCardEditorContext.Provider value={value}>
       {children}
-      </WorkspaceCardEditorContext.Provider>
+    </WorkspaceCardEditorContext.Provider>
   );
 };
 

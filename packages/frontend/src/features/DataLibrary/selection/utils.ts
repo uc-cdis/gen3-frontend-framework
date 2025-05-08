@@ -5,8 +5,13 @@ import {
   FileItem,
   isCohortItem,
   isFileItem,
+  ManifestItem,
 } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
+import {
+  FileItemWithParentDatasetNameAndID,
+  isValidFileItemWithParentDatasetNameAndID,
+  ValidatedSelectedItem,
+} from '../types';
 
 export const getDataLibraryItem = (
   dataLibrary: DataLibrary,
@@ -27,13 +32,13 @@ export const getDataLibraryItem = (
     } as CohortItem & { datasetId: string; datasetName: string };
   } else {
     if (!fileId) return undefined;
-    if (!(fileId in datasetOrCohort.items)) return undefined;
+    if (!(fileId in datasetOrCohort.members)) return undefined;
 
-    if (isFileItem(datasetOrCohort.items[fileId])) {
+    if (isFileItem(datasetOrCohort.members[fileId])) {
       return {
         datasetName: name,
         datasetId: dataId,
-        ...(datasetOrCohort.items[fileId] as FileItem),
+        ...(datasetOrCohort.members[fileId] as FileItem),
       } as FileItemWithParentDatasetNameAndID;
     }
     return undefined;
@@ -112,4 +117,33 @@ const getUniqueItemKey = (
     // For FileItems
     return `file_${item.datasetId}_${item.id}`;
   }
+};
+
+export const selectionToManifest = (
+  dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
+) => {
+  return dataLibrarySelections.reduce((acc, item) => {
+    if (isValidFileItemWithParentDatasetNameAndID(item)) {
+      acc.push({
+        object_id: item.id,
+        ...(item.name ? { file_name: item.name } : {}),
+        ...(item.size ? { file_size: Number(item.size) } : {}),
+        dataset_id: item.datasetId,
+      });
+    }
+
+    return acc;
+  }, [] as Array<ManifestItem>);
+};
+
+export const extractDatasetIds = (
+  dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
+) => {
+  const metadataIds = dataLibrarySelections.reduce((acc, item) => {
+    if (isFileItem(item)) {
+      acc.add(item.datasetId);
+    }
+    return acc;
+  }, new Set<string>() as Set<string>);
+  return Array.from(metadataIds);
 };

@@ -1,5 +1,8 @@
-import { CohortItem } from '@gen3/core';
-import { FileItemWithParentDatasetNameAndID } from '../types';
+import { CohortItem, HTTPError } from '@gen3/core';
+import {
+  FileItemWithParentDatasetNameAndID,
+  ValidatedSelectedItem,
+} from '../types';
 
 type RuleOperator =
   | 'equals'
@@ -8,7 +11,7 @@ type RuleOperator =
   | 'excludes'
   | 'greater'
   | 'less';
-type GroupOperator = 'count';
+type GroupOperator = 'count' | 'greater';
 // Enforce type safety for rule values
 type RuleValue = string | number | boolean;
 // Ensure field exists on items
@@ -41,3 +44,12 @@ export interface DataLibraryActionConfig {
 }
 
 export type DataLibraryActionsConfig = ReadonlyArray<DataLibraryActionConfig>;
+
+export type DataActionFunction<T = void> = (
+  validatedSelections: ReadonlyArray<ValidatedSelectedItem>,
+  params?: Record<string, any>, // function options from the config
+  onDone?: (arg0?: string) => void,
+  onError?: (error: HTTPError | Error) => void,
+  onAbort?: () => void,
+  signal?: AbortSignal,
+) => Promise<T>;

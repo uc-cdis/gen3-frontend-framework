@@ -5,16 +5,16 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { dataLibrarySelectionReducer } from './features/dataLibrary';
+import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+import {
+  guppyApiReducer,
+  guppyApiSliceReducerPath,
+} from './features/guppy/guppyApi'; // Do not shorten
 import {
   userAuthApiReducerPath,
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
-import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
 import { sowerJobsListSliceReducer } from './features/sower';
-import {
-  guppyApiReducer,
-  guppyApiSliceReducerPath,
-} from './features/guppy/guppyApi';
 import { cohortReducers } from './features/cohort/reducers';
 
 export const rootReducer = combineReducers({
