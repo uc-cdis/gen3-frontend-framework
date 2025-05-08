@@ -7,11 +7,13 @@ import {
 import { Badge, Menu, MultiSelect, Table } from '@mantine/core';
 
 import { Policy, Resource } from '../types';
-import { AuthzContext } from '../Provider';
+import { AuthzContext } from '../AuthzAdminProvider';
 
-
-
-export const buildResourcePaths = (resource: Resource, prefix= '', result: string[] = []): string[] => {
+export const buildResourcePaths = (
+  resource: Resource,
+  prefix = '',
+  result: string[] = [],
+): string[] => {
   // Add the current resource name to the result array
   const currentName = prefix + '/' + resource.name;
   result.push(currentName);
@@ -36,9 +38,12 @@ const PoliciesTable = () => {
   const all_roles = context.state.roles.map((role) => role.id);
   // resource_paths is a list of strings, each of which is a path to a resource
   // use a reducer to flatten the list of lists of strings into a single list of strings
-  const all_resources = context.state.resources.reduce((acc: string[], resource: Resource) => {
-    return acc.concat(buildResourcePaths(resource));
-  }, []);
+  const all_resources = context.state.resources.reduce(
+    (acc: string[], resource: Resource) => {
+      return acc.concat(buildResourcePaths(resource));
+    },
+    [],
+  );
 
   const columns = useMemo<MRT_ColumnDef<Policy>[]>(
     () => [
@@ -56,17 +61,29 @@ const PoliciesTable = () => {
         id: 'role_ids',
         header: 'Roles',
         accessorFn: (policy: Policy) => policy.role_ids,
-        Cell: ({ row} ) => {
-          return (<MultiSelect data={all_roles} value={row.original.role_ids} onChange={(value) => console.log(value)} />);
-        }
+        Cell: ({ row }) => {
+          return (
+            <MultiSelect
+              data={all_roles}
+              value={row.original.role_ids}
+              onChange={(value) => console.log(value)}
+            />
+          );
+        },
       },
       {
         id: 'resource_paths',
         header: 'Resources',
         accessorFn: (policy: Policy) => policy.resource_paths,
-        Cell: ({ row}) => {
-          return (<MultiSelect data={all_resources} value={row.original.resource_paths} onChange={(value) => console.log(value)} />);
-        }
+        Cell: ({ row }) => {
+          return (
+            <MultiSelect
+              data={all_resources}
+              value={row.original.resource_paths}
+              onChange={(value) => console.log(value)}
+            />
+          );
+        },
       },
     ],
     [],
@@ -89,12 +106,11 @@ const PoliciesTable = () => {
       radius: 'md',
       size: 'lg',
     },
-
   });
 
   return (
     <div className="m-2">
-      <MantineReactTable  table={table} />
+      <MantineReactTable table={table} />
     </div>
   );
 };

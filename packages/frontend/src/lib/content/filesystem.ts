@@ -26,7 +26,7 @@ export class FilesystemContent implements ContentSource {
         fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
     } catch (err) {
-      throw new Error(`Cannot process ${filepath} `);
+      throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
     }
   }
   public async getAll<T extends Record<string, any>>(

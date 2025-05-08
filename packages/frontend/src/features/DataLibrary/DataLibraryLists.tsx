@@ -1,6 +1,7 @@
 import React from 'react';
 import { Accordion, Center, LoadingOverlay } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { useDataLibrary } from '@gen3/core';
 import SearchAndActions from './SearchAndActions';
 import { useDataLibrarySelection } from './selection/SelectionContext';
@@ -8,24 +9,26 @@ import SelectedItemsModal from './modals/SelectedItemsModal';
 import { DatalistAccordionItem } from './DatalistAccordionItem';
 import { DataLibraryConfig } from './types';
 import { ErrorCard } from '../../components/MessageCards';
-import { HTTPUserFriendlyErrorMessages } from './modals/utils';
-import { size } from 'lodash';
+import { useIsAuthenticated } from '../../lib/session/session';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 const DataLibraryLists: React.FC<DataLibraryConfig> = ({
-  useAPI,
+  storageMode,
+  requiresLogin = true,
   actions,
   size,
 }) => {
   const {
     dataLibrary,
-    isError,
     isLoading,
+    isUpdating,
     error: dataLibraryError,
     addListToDataLibrary,
     updateListInDataLibrary,
     deleteListFromDataLibrary,
-  } = useDataLibrary(useAPI);
+  } = useDataLibrary({ storageMode });
 
+  const { isAuthenticated } = useIsAuthenticated();
   const [selectedItemsOpen, { open, close }] = useDisclosure(false);
   const { gatherSelectedItems } = useDataLibrarySelection();
 
@@ -34,16 +37,30 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
     open();
   };
 
-  if (isError) {
-    let message = 'There was a error getting the library';
-    if (
-      dataLibraryError &&
-      'data' in dataLibraryError &&
-      dataLibraryError?.status in HTTPUserFriendlyErrorMessages
-    ) {
-      message =
-        HTTPUserFriendlyErrorMessages[dataLibraryError?.status as number];
+  // Use useEffect to show notifications only when error changes
+  useDeepCompareEffect(() => {
+    if (dataLibraryError?.isError && dataLibraryError?.status !== 401) {
+      notifications.show({
+        position: 'top-center',
+        color: 'red',
+        title: 'Data Library Error',
+        message: dataLibraryError?.message,
+        autoClose: 2000,
+      });
     }
+  }, [dataLibraryError]);
+
+  // Handle 401 error with UI rendering
+  if (dataLibraryError?.isError && dataLibraryError?.status === 401) {
+    let message = 'You are not authorized to access the library.';
+    if (requiresLogin) {
+      if (!isAuthenticated)
+        message = 'Data Library requires login. Please log in to continue.';
+      else
+        message =
+          'You are not authorized to access the library. Please contact your site administrator.';
+    }
+
     return (
       <div className="flex flex-col w-full ml-2">
         <Center>
@@ -55,7 +72,6 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
 
   return (
     <div className="flex flex-col w-full ml-2">
-      <LoadingOverlay visible={isLoading} />
       <SelectedItemsModal
         opened={selectedItemsOpen}
         onClose={close}
@@ -67,6 +83,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
         gatherData={gatherData}
       />
       <div className="flex items-center">
+        <LoadingOverlay visible={isLoading} />
         <Accordion
           chevronPosition="left"
           classNames={{
@@ -81,6 +98,7 @@ const DataLibraryLists: React.FC<DataLibraryConfig> = ({
                   dataList={datalist}
                   key={datalist.id}
                   size={size}
+                  isUpdating={isUpdating}
                   updateListInDataLibrary={updateListInDataLibrary}
                   deleteListFromDataLibrary={deleteListFromDataLibrary}
                 />

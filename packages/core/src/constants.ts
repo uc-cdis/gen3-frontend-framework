@@ -34,7 +34,9 @@ export const GEN3_DATA_LIBRARY_API =
 export const GEN3_CROSSWALK_API =
   process.env.NEXT_PUBLIC_GEN3_CROSSWALK_API || `${GEN3_API}/mds`;
 export const GEN3_SOWER_API =
-  process.env.NEXT_PUBLIC_GEN3_SOWER_API || `${GEN3_API}/job`;
+  process.env.NEXT_PUBLIC_GEN3_SOWER_API || `${GEN3_API}/jobs`;
+export const GEN3_MANIFEST_API =
+  process.env.NEXT_PUBLIC_GEN3_MANIFEST_API || `${GEN3_API}/manifests`;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',

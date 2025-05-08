@@ -41,7 +41,6 @@ const WrappedStringCell = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   params?: JSONObject,
 ) => {
-
   if (value === undefined || value === null || toString(value) === '') {
     return (
       <Text>
@@ -49,7 +48,7 @@ const WrappedStringCell = (
           params && params?.valueIfNotAvailable
             ? params?.valueIfNotAvailable
             : ''
-        }`}{' '}
+        }`}
       </Text>
     );
   }
@@ -63,7 +62,6 @@ const WrappedStringCell = (
     </div>
   );
 };
-
 
 /**
  * Register custom cell renderers for DiscoveryTable
@@ -79,6 +77,6 @@ export const registerDiscoveryCustomCellRenderers = () => {
     manifest: {
       default: FilemapPopup,
       inline: FilemapInline,
-    }
+    },
   });
 };

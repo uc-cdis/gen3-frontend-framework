@@ -3,6 +3,7 @@ import { useGetExternalLoginsQuery } from './externalLoginsSlice';
 import { ExternalProvider, FileMetadata } from './types';
 import { GUID_PREFIX_PATTERN } from '../../constants';
 import { resolveDRSObjectId } from '../drsResolver/utils';
+import { queryWTSFederatedLoginStatus } from './utils';
 
 /**
  * Input is a list of files selected for download.
@@ -88,11 +89,54 @@ const resolveGUIDsInSelectedFiles = async (
   };
 };
 
+interface ExternalLoginStatus {
+  providersToAuthenticate?: ExternalProvider[];
+  missingProviders?: ExternalProvider[];
+  error?: Error;
+}
+const fetchExternalLogins = async (
+  externalProviders: Array<ExternalProvider>,
+  selectedFiles: ReadonlyArray<FileMetadata>,
+): Promise<ExternalLoginStatus> => {
+  const providers = externalProviders ?? [];
+  // find all the providers that do not have tokens
+  const unauthenticatedProviders = providers.filter(
+    (provider) => !provider.refresh_token_expiration,
+  );
+
+  try {
+    const guidResolutions = await resolveGUIDsInSelectedFiles(selectedFiles);
+    const providersToAuthenticate = unauthenticatedProviders.filter(
+      (unauthenticatedProvider) =>
+        Object.values(guidResolutions.externalHosts).includes(
+          new URL(unauthenticatedProvider.base_url).hostname,
+        ),
+    );
+
+    const missingProviders = providersToAuthenticate.filter(
+      (provider) =>
+        !Object.values(guidResolutions.externalHosts).includes(
+          new URL(provider.base_url).hostname,
+        ),
+    );
+
+    return {
+      providersToAuthenticate: providersToAuthenticate,
+      missingProviders: missingProviders,
+    };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return { error };
+    }
+    return { error: new Error('Unknown error') };
+  }
+};
+
 interface FederatedLoginStatusParams {
   selectedFiles: ReadonlyArray<FileMetadata>;
 }
 
-const useGetFederatedLoginStatus = ({
+export const useGetFederatedLoginStatus = ({
   selectedFiles,
 }: FederatedLoginStatusParams) => {
   const {
@@ -102,11 +146,7 @@ const useGetFederatedLoginStatus = ({
   } = useGetExternalLoginsQuery();
 
   // State to manage the asynchronous results
-  const [result, setResult] = useState<{
-    providersToAuthenticate?: ExternalProvider[];
-    missingProviders?: ExternalProvider[];
-    error?: Error;
-  } | null>(null);
+  const [result, setResult] = useState<ExternalLoginStatus | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,44 +156,11 @@ const useGetFederatedLoginStatus = ({
         return;
       }
 
-      const providers = wtsResults.providers ?? [];
-      const unauthenticatedProviders = providers.filter(
-        (provider) => !provider.refresh_token_expiration,
+      const results = await fetchExternalLogins(
+        wtsResults.providers,
+        selectedFiles,
       );
-
-      try {
-        const guidResolutions =
-          await resolveGUIDsInSelectedFiles(selectedFiles);
-        const providersToAuthenticate = unauthenticatedProviders.filter(
-          (unauthenticatedProvider) =>
-            Object.values(guidResolutions.externalHosts).includes(
-              new URL(unauthenticatedProvider.base_url).hostname,
-            ),
-        );
-
-        const missingProviders = providersToAuthenticate.filter(
-          (provider) =>
-            !Object.values(guidResolutions.externalHosts).includes(
-              new URL(provider.base_url).hostname,
-            ),
-        );
-
-        if (missingProviders.length > 0) {
-          throw new Error(
-            `Could not find DRS server hostname for providers: ${missingProviders
-              .map((provider) => provider.name)
-              .join(', ')}`,
-          );
-        }
-
-        setResult({
-          providersToAuthenticate,
-          missingProviders,
-        });
-      } catch (error: unknown) {
-        if (error instanceof Error) setResult({ error });
-        else setResult({ error: new Error('Unknown error') });
-      }
+      setResult(results);
     };
 
     // Only run if there's data to act on
@@ -169,4 +176,9 @@ const useGetFederatedLoginStatus = ({
   };
 };
 
-export default useGetFederatedLoginStatus;
+export const getFederatedLoginStatus = async (
+  selectedFiles: ReadonlyArray<FileMetadata>,
+) => {
+  const providers = await queryWTSFederatedLoginStatus();
+  return await fetchExternalLogins(providers.providers, selectedFiles);
+};

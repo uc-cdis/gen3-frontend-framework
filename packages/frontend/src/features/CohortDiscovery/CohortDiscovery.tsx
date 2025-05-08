@@ -10,9 +10,9 @@ import { AppStore } from './appApi';
 const persistor = persistStore(AppStore);
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
-  const { isLoading } = useGetCSRFQuery(); // need for Guppy
+  const { isFetching } = useGetCSRFQuery(); // needed for Guppy
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <Center maw={400} h={100} mx="auto">
         <Loader variant="dots" />

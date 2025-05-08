@@ -1,10 +1,12 @@
 import { JSONObject } from '../../types';
 
+// represents the auth access control for a DataList
 export interface AuthZAccess {
   version: number;
   authz: string[];
 }
 
+// Possible values of an Item: File, Additional Value, Cohort
 export type ItemValue =
   | string
   | number
@@ -12,10 +14,7 @@ export type ItemValue =
   | Record<string, any>
   | boolean;
 
-export interface Items {
-  [k: string]: ItemValue;
-}
-
+// Object representing an Item with its type
 export interface ListItem {
   itemType: 'Data' | 'AdditionalData' | 'Gen3GraphQL';
   [k: string]: ItemValue;
@@ -27,13 +26,20 @@ export interface ListItem {
 
 export interface FileItem extends ListItem {
   id: string; // TODO: remove id or guid
-  guid: string;
+  guid?: string;
   name?: string;
   description?: string;
   type?: string;
   size?: string;
+  md5sum?: string;
+  url?: string;
+  documentationUrl?: string;
   itemType: 'Data';
-  datasetGuid: string;
+  dataset_guid?: string;
+}
+
+export interface FileItemAPI extends Omit<FileItem, 'id'> {
+  display_name?: string;
 }
 
 export interface CohortItem extends ListItem {
@@ -42,7 +48,6 @@ export interface CohortItem extends ListItem {
   name: string;
   schemaVersion: string;
   id: string;
-  index: string;
 }
 
 export interface AdditionalDataItem extends ListItem {
@@ -51,7 +56,7 @@ export interface AdditionalDataItem extends ListItem {
   url?: string;
   itemType: 'AdditionalData';
   name: string;
-  datasetGuid: string;
+  dataset_guid?: string;
 }
 
 export const isFileItem = (item: ListItem): item is FileItem => {
@@ -72,61 +77,127 @@ export const isCohortItem = (item: any): item is CohortItem => {
   );
 };
 
-export type DataSetItems = Record<string, FileItem | AdditionalDataItem>;
+// Type guard for DatalistAPI
+export const isDatalistAPI = (value: unknown): value is DatalistAPI => {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const data = value as Partial<DatalistAPI>;
+
+  // Check required properties in DataItemBaseData
+  if (
+    typeof data.name !== 'string' ||
+    typeof data.created_time !== 'string' ||
+    typeof data.updated_time !== 'string' ||
+    typeof data.version !== 'number' ||
+    typeof data.authz !== 'object' ||
+    data.authz === null ||
+    !Array.isArray(data.authz.authz)
+  ) {
+    return false;
+  }
+
+  // Check required properties in DatalistAsItems
+  if (
+    typeof data.items !== 'object' ||
+    data.items === null ||
+    typeof (data.items as Record<string, unknown>) !== 'object'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export type DataSetMembers = Record<string, FileItem | AdditionalDataItem>;
 
 /**
  * Represents a DataSet which is created by grouping File
  * objects with the same dataset_guids
  */
-export interface DataListEntry {
-  name?: string; // TODO: figure out how to set name
-  items: DataSetItems;
-}
-
-export interface RegisteredDataListEntry extends DataListEntry {
+export interface DataLibraryDataset {
   id: string;
+  name?: string;
+  members: DataSetMembers; // Files and Additional Information
+  itemType: 'Dataset';
 }
 
-export type FilesOrCohort = Record<
+export type DatasetOrCohort = Record<string, DataLibraryDataset | CohortItem>;
+
+export type LibraryListItemsAPI = Record<
   string,
-  RegisteredDataListEntry | CohortItem
+  FileItemAPI | AdditionalDataItem | CohortItem
 >;
 
-export type LibraryAPIItems = Record<
-  string,
-  FileItem | AdditionalDataItem | CohortItem
->;
-
-export interface DatalistUpdate {
+export interface DatalistBase {
   name: string;
-  items: LibraryAPIItems;
-}
-
-export interface Datalist {
-  id: string;
-  createdTime: string;
-  updatedTime: string;
+  created_time: string;
+  updated_time: string;
   authz: AuthZAccess;
   version: number;
-  name: string;
-  items: FilesOrCohort;
 }
 
+export interface DatalistAsAPIItems {
+  name: string;
+  items: LibraryListItemsAPI;
+}
+
+export interface LibraryListItemsGroupedByDataset {
+  name: string;
+  items: DatasetOrCohort; // a record of datasets and cohorts
+}
+
+export interface DataListUpdate extends LibraryListItemsGroupedByDataset {
+  id: string;
+}
+
+export type Datalist = DatalistBase &
+  LibraryListItemsGroupedByDataset & { id: string };
+export type DatalistAPI = DatalistBase & DatalistAsAPIItems;
+export type DatalistWithIdAPI = DatalistAPI & { id: string };
+// DataLibrary has been combined into data sets using BuildList
 export type DataLibrary = Record<string, Datalist>;
 
-export type DataLibraryItems = {
-  lists: DataLibrary;
-};
+// Data Library as represented in the Storage API
+export type DataLibraryAPI = Record<string, DatalistAPI>;
 
 export type DataLibraryAPIResponse = {
-  lists: Record<string, JSONObject>;
+  lists: DataLibraryAPI;
 };
 
-export interface LoadAllListData {
-  lists: Array<DataListEntry>;
+/**
+ * Type guard for DataLibraryAPIResponse
+ */
+export const isDataLibraryAPIResponse = (
+  obj: unknown,
+): obj is DataLibraryAPIResponse => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'lists' in obj &&
+    typeof (obj as DataLibraryAPIResponse).lists === 'object'
+  );
+};
+
+export interface UpdateDataLibraryListParams extends DatalistAsAPIItems {
+  id: string;
 }
 
-export interface AddUpdateListParams {
-  id: string;
-  list: DatalistUpdate;
+export enum DataLibraryStoreMode {
+  ApiOnly = 'apiOnly',
+  ApiAndLocal = 'apiAndLocal',
+  LocalOnly = 'localOnly',
+}
+
+export interface ExportDatasetFields {
+  dataObjectField: string; // member that stores the id of the object that stores the id.
+  datasetIdField: string; // member that stores the id of the "dataset" will default to uid
+  dataObjectIdField: string; // field in data object
+  dataObjectNameField?: string;
+  dataObjectSizeField?: string;
+  dataObjectMd5sumField?: string;
+  dataObjectUrlField?: string;
+  dataObjectFileTypeValue?: string;
+  dataObjectFileTypeField?: string;
 }

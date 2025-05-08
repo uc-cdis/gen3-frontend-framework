@@ -77,7 +77,7 @@ export const userAuthApi = createApi({
 
           if (res.ok) {
             const jsonData = await res.json();
-            const token = jsonData?.data?.csrf ?? '';
+            const token = jsonData?.csrf ?? '';
             return {
               data: { csrfToken: token },
             };
@@ -131,7 +131,7 @@ export const selectUserAuthStatus = createSelector(
 
 export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();
 
-const passThroughTheState = (state: CoreState) => state.gen3Services;
+const passThroughTheState = (state: CoreState) => state.userAuthApi;
 
 export const selectCSRFToken = createSelector(
   [selectCSRFTokenData, passThroughTheState],

@@ -5,7 +5,7 @@ import {
   Datalist,
   isCohortItem,
   isFileItem,
-  RegisteredDataListEntry,
+  DataLibraryDataset,
 } from '@gen3/core';
 
 /**
@@ -54,16 +54,16 @@ export const selectAllDatasetMembers = (
  * it iterates through the dataset items and sets the keys of file items
  * to true in the returned object.
  *
- * @param {RegisteredDataListEntry | CohortItem} dataSetOrCohort - The dataset or cohort item to process.
+ * @param {DataLibraryDataset | CohortItem} dataSetOrCohort - The dataset or cohort item to process.
  * @returns {SelectedMembers} An object representing the selected members.
  */
 export const getDatasetMembers = (
-  dataSetOrCohort: RegisteredDataListEntry | CohortItem,
+  dataSetOrCohort: DataLibraryDataset | CohortItem,
 ): SelectedMembers => {
   if (isCohortItem(dataSetOrCohort)) {
     return { [dataSetOrCohort.id]: true };
   }
-  return Object.entries(dataSetOrCohort.items).reduce(
+  return Object.entries(dataSetOrCohort.members).reduce(
     (acc: SelectedMembers, [key, item]) => {
       if (isFileItem(item)) acc[key] = true;
       return acc;
