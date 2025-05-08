@@ -1,6 +1,6 @@
 import React, { useContext, useState, useReducer, useRef } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,

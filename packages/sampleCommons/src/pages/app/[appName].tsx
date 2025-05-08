@@ -26,6 +26,13 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
 
+  if (!GdcApp)
+    return (
+      <div className="text-utility-warning font-bold m-10 border-base-darkest">
+        App not found
+      </div>
+    );
+
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -52,7 +59,7 @@ export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
   const appName = context.query.appName as string;
-
+  console.log('getServerSideProps appName', appName);
   try {
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,

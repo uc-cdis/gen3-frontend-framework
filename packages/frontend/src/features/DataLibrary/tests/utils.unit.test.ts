@@ -1,5 +1,6 @@
-import { getNextSize, formatDate } from '../utils';
+import { getNextSize } from '../utils';
 import '@jest/globals';
+import { formatDate } from '../../../utils/date';
 
 // Start test suite
 describe('FormatDate Function', () => {

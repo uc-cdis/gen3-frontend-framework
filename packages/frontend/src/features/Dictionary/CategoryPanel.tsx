@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, MutableRefObject } from 'react';
 import CategoryHeader from './CategoryHeader';
 import { Accordion, Button, Group } from '@mantine/core';
-import { useScrollIntoView } from '@mantine/hooks';
 import CategoryAccordionLabel from './CategoryAccordionLabel';
 import PropertiesTable from './PropertiesTable';
 import { useDictionaryContext } from './DictionaryProvider';
@@ -36,17 +35,17 @@ const CategoryPanel = ({
     itemRefs.current[id] = el;
   };
 
-  const scrollToItem = (id: string) => {
-    if (!itemRefs.current || itemRefs.current[id] == null) return;
-    const elm = itemRefs.current[id];
-    if (elm !== null) {
-      scrollToSelection(elm);
-    }
-  };
-
   // set up a timeout to give the ref time to be rendered in it's final position withing the
   // page.
   useEffect(() => {
+    const scrollToItem = (id: string) => {
+      if (!itemRefs.current || itemRefs.current[id] == null) return;
+      const elm = itemRefs.current[id];
+      if (elm !== null) {
+        scrollToSelection(elm);
+      }
+    };
+
     if (
       value !== null &&
       value == toNodeCategory(selectedItems) &&
@@ -57,7 +56,7 @@ const CategoryPanel = ({
       }, 5); // Adjust the delay based on your accordion animation duration
       return () => clearTimeout(timer);
     }
-  }, [scrollToItem, selectedId, selectedItems, value]);
+  }, [scrollToSelection, selectedId, selectedItems, value]);
 
   useDeepCompareEffect(() => {
     if (category == selectedItems.node)

@@ -1,36 +1,36 @@
 import {
+  AggregationsData,
+  CombineMode,
+  CoreState,
   EnumFilterValue,
+  extractEnumFilterValue,
   FacetDefinition,
+  fieldNameToTitle,
   HistogramData,
   HistogramDataArray,
   Includes,
+  IndexAndField,
   Intersection,
-  Operation,
-  isUnion,
-  selectIndexedFilterByName,
   isOperationWithField,
+  isOperatorWithFieldAndArrayOfOperands,
+  isUnion,
+  Operation,
+  OperatorWithFieldAndArrayOfOperands,
+  selectIndexedFilterByName,
+  selectSharedFilters,
+  selectShouldShareFilters,
+  SharedFieldMapping,
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  fieldNameToTitle,
-  AggregationsData,
-  CoreState,
-  extractEnumFilterValue,
-  isOperatorWithFieldAndArrayOfOperands,
-  OperatorWithFieldAndArrayOfOperands,
-  CombineMode,
-  SharedFieldMapping,
-  selectShouldShareFilters,
-  selectSharedFilters,
-  IndexAndField,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
-  FromToRange,
-  UpdateFacetFilterFunction,
-  FieldToName,
   FacetSortType,
+  FieldToName,
+  FromToRange,
   SortType,
+  UpdateFacetFilterFunction,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -384,4 +384,32 @@ export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
     type: type === 'label' ? 'alpha' : 'value',
     direction: direction as 'asc' | 'dsc',
   };
+};
+export const compareKeysAscending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a - b;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return -1;
+  if (typeof b === 'number') return 1;
+  // If both are strings, sort alphabetically
+  return a.localeCompare(b);
+};
+export const compareKeysDescending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return b - a;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return 1;
+  if (typeof b === 'number') return -1;
+  // If both are strings, sort alphabetically
+  return b.localeCompare(a);
 };

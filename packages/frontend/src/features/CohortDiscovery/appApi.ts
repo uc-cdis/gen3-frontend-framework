@@ -1,9 +1,14 @@
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
+import { facetDefinitionsReducer } from './FacetDefinitionsSlice';
+import { cohortReducer } from './CohortSlice';
+
+import storage from './storage-persist';
+import { cohortPersistenceReducer } from './CohortManagerSlice';
+import { dataAccessRequestsReducer } from './RequestManagerSlice';
 
 import type { Action, Reducer } from 'redux';
 import type { PersistConfig, PersistState } from 'redux-persist';
@@ -25,7 +30,6 @@ const persistConfig = {
   key: _APP_NAME,
   version: 1,
   storage,
-  whitelist: ['filterExpandState'],
 };
 
 // create the store, context and selector for the ProjectsCenter
@@ -35,13 +39,19 @@ const persistConfig = {
 const reducers = combineReducers({
   selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
+  facetDefinitionState: facetDefinitionsReducer,
+  cohorts: cohortReducer,
+  savedCohorts: cohortPersistenceReducer,
+  dataAccessRequests: dataAccessRequestsReducer,
 });
+
+const persistedReducers = persistReducer(persistConfig, reducers);
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
-    reducers: persistReducer(persistConfig, reducers),
+    reducers: persistedReducers,
     name: _APP_NAME,
     version: '0.0.1',
   });
 
-export type AppState = ReturnType<typeof reducers>;
+export type AppState = ReturnType<typeof persistedReducers>;

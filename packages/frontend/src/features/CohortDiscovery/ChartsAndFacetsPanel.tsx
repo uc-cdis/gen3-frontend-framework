@@ -1,36 +1,31 @@
-import React, { useMemo } from 'react';
-import { Grid, Transition } from '@mantine/core';
+import React, { useEffect } from 'react';
+import { Grid } from '@mantine/core';
 import {
-  CoreState,
   extractEnumFilterValue,
   FacetDefinition,
-  FacetType,
   fieldNameToTitle,
-  selectIndexFilters,
-  useCoreSelector,
-  useGetAggsQuery,
-  useGetCountsQuery,
 } from '@gen3/core';
+import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
-  FacetDataHooks,
   processBucketData,
   processRangeData,
-  useGetFacetFilters,
-  useUpdateFilters,
 } from '../../components/facets';
 import { partial } from 'lodash';
-import { useClearFilters } from '../../components/facets/hooks';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { computeRowSpan } from '../../components/charts';
+import { selectIndexFilters } from './CohortSelectors';
+import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
+import { useRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
   facets: Array<FacetDefinition>;
 }
+
+const NUM_COLS = 2; // TODO: add to config
 
 /**
  * CartsAndFacetsPanel component
@@ -43,7 +38,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,
   facets,
 }) => {
-  const cohortFilters = useCoreSelector((state: CoreState) =>
+  const cohortFilters = useAppSelector((state: AppState) =>
     selectIndexFilters(state, index),
   );
 
@@ -51,7 +46,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     data,
     isSuccess,
     isError: isAggsQueryError,
-  } = useGetAggsQuery({
+  } = useRoundedAggsQuery({
     type: index,
     fields: facets.map((x) => x.field),
     filters: cohortFilters,
@@ -68,7 +63,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
         isSuccess: isSuccess,
       };
     },
-    [cohortFilters, cohortFilters.root, data, isSuccess],
+    [cohortFilters, cohortFilters.root, data],
   );
 
   const getRangeFacetData = useDeepCompareCallback(
@@ -79,7 +74,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
         isSuccess: isSuccess,
       };
     },
-    [data, cohortFilters.root, isSuccess],
+    [data, cohortFilters.root],
   );
 
   const facetHooks: Record<SupportedFacetTypes, EnumFacetPanelDataHooks> =
@@ -108,15 +103,28 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     );
   }, [facets, index, facetHooks.enum]);
 
-  const spans = computeRowSpan(panels.length);
+  const colSpan = Math.floor(12 / NUM_COLS);
+  const numLastRow = panels.length % NUM_COLS;
+
+  const placeholderPanels = [];
+  for (let i = 0; i < numLastRow; i++) {
+    placeholderPanels.push(
+      <div key={`placeholder-${i}`} className="invisible" />,
+    );
+  }
 
   return (
-    <Grid className="w-full mx-2 bg-base-max p-4">
+    <Grid className="w-full mx-2 bg-base-max p-4 transition-[height] ease-in-out duration-300">
       {panels.map((panel, index) => (
         <Grid.Col
-          span={spans[index]}
+          span={colSpan}
           key={`${index}-charts-${facets[index].field}-col`}
         >
+          {panel}
+        </Grid.Col>
+      ))}
+      {placeholderPanels.map((panel, index) => (
+        <Grid.Col span={colSpan} key={`${index}-charts-placeholder-col`}>
           {panel}
         </Grid.Col>
       ))}

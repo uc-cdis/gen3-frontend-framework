@@ -1,17 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Text } from '@mantine/core';
 import {
+  EnumFacetDataChangedFunction,
   FacetDataHooks,
   GetEnumFacetDataFunction,
 } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
-import { EnumFacetToHistogramArray } from '../utils';
-import FacetPanelDataHeader from './FacetPanelDataHeader';
-import { FacetDefinition, fieldNameToTitle } from '@gen3/core';
+import { FacetDefinition, fieldNameToTitle, HistogramData } from '@gen3/core';
 import FacetEnumList from '../../../components/facets/FacetEnumList';
 
 export interface EnumFacetPanelDataHooks extends FacetDataHooks {
   useGetFacetData: GetEnumFacetDataFunction;
+  updateVisibleValues?: EnumFacetDataChangedFunction;
 }
 
 interface EnumFacetPanelProps {
@@ -30,14 +30,29 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
   chartType = 'bar',
 }) => {
   const { field, label } = facet;
+
+  const [visibleData, setVisibleData] = useState<HistogramData[]>([]);
+
+  const updateVisibleItems = useCallback(
+    (data: Array<[string | number, number]>) => {
+      setVisibleData(
+        data.reduce((acc, elm) => {
+          acc.push({ key: String(elm[0]), count: elm[1] });
+          return acc;
+        }, [] as HistogramData[]),
+      );
+    },
+    [],
+  );
+
   const facetName = useMemo(
     () => label ?? fieldNameToTitle(field),
     [label, field],
   );
-  const { data } = hooks.useGetFacetData(field);
+  //const { data } = hooks.useGetFacetData(field);
 
   const chart = createChart(chartType, {
-    data: EnumFacetToHistogramArray(data),
+    data: visibleData,
     total: 1,
     valueType: 'count',
   });
@@ -51,13 +66,12 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
         {showTotals ? <Text>Todo</Text> : null}
       </div>
       <div className="px-4 pb-4 pt-8">{chart}</div>
-      <FacetPanelDataHeader label={facetName} valueLabel={valueLabel} />
       <div className="p-4 pt-2 pb-2">
         <FacetEnumList
           field={field}
           valueLabel={valueLabel}
-          hooks={hooks}
-          showSorting={false}
+          hooks={{ ...hooks, updateVisibleValues: updateVisibleItems }}
+          showSorting={true}
         />
       </div>
     </div>
