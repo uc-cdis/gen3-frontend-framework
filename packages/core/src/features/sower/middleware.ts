@@ -7,6 +7,15 @@ import {
   sowerApi,
   JobWithActions,
 } from './index';
+import { showNotification } from '../notifications';
+
+interface NotificationConfig {
+  enabled: boolean;
+  showJobStarted: boolean;
+  showJobCompleted: boolean;
+  showJobFailed: boolean;
+  autoClose: number; // milliseconds
+}
 
 /**
  * Middleware for managing Sower job polling lifecycle
@@ -15,6 +24,15 @@ export const sowerJobsMiddleware: Middleware<object, any, any> = (store) => {
   let pollTimeout: NodeJS.Timeout | null = null;
   let isPolling = false;
   const POLLING_INTERVAL = 5000; // 5 seconds
+
+  // Notification configuration - can be customized
+  const notificationConfig: NotificationConfig = {
+    enabled: true,
+    showJobStarted: true,
+    showJobCompleted: true,
+    showJobFailed: true,
+    autoClose: 4000,
+  };
 
   // Helper function to start polling if not already polling
   const startPolling = () => {
@@ -91,6 +109,50 @@ export const sowerJobsMiddleware: Middleware<object, any, any> = (store) => {
       }
     } else if (updateSowerJob.match(action)) {
       // Check if this update resulted in all jobs being completed/failed
+      const { jobId, status } = action.payload;
+      const job = state.sowerJobsList.jobIds[jobId];
+
+      // Show notifications based on job status changes
+      if (job && notificationConfig.enabled) {
+        // Only notify on status transitions
+        const previousStatus = job.status;
+        const newStatus = status;
+
+        if (previousStatus !== newStatus) {
+          // Completed job notification
+          if (
+            newStatus === 'Completed' &&
+            notificationConfig.showJobCompleted
+          ) {
+            showNotification(
+              `job-completed-${jobId}`,
+              'Job Completed',
+              `${job.name} has completed successfully`,
+              'success',
+              {
+                autoClose: notificationConfig.autoClose,
+                onClick: job.outputGUID
+                  ? () => {
+                      // Optional handling of click (needs to be implemented by UI)
+                    }
+                  : undefined,
+              },
+            );
+          }
+
+          // Failed job notification
+          if (newStatus === 'Failed' && notificationConfig.showJobFailed) {
+            showNotification(
+              `job-failed-${jobId}`,
+              'Job Failed',
+              `${job.name} encountered an error`,
+              'error',
+              { autoClose: notificationConfig.autoClose },
+            );
+          }
+        }
+      }
+
       const activeJobs = Object.values(state.sowerJobsList.jobIds).filter(
         (job: any) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
       );
