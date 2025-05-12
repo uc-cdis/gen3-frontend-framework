@@ -1,7 +1,5 @@
 import React, { useContext } from 'react';
 import { NameAndIcon } from '../types';
-import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import { IconSize } from '../../DataLibrary/types';
 import { usePathname } from 'next/navigation';
 import { SessionContext } from '../../../lib/session/session';
 import {

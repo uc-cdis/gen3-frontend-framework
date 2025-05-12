@@ -8,6 +8,7 @@ import {
   JobWithActions,
 } from './index';
 import { showNotification } from '../notifications';
+import { CoreState } from '../../reducers';
 
 interface NotificationConfig {
   enabled: boolean;
@@ -20,7 +21,9 @@ interface NotificationConfig {
 /**
  * Middleware for managing Sower job polling lifecycle
  */
-export const sowerJobsMiddleware: Middleware<object, any, any> = (store) => {
+export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
+  store,
+) => {
   let pollTimeout: NodeJS.Timeout | null = null;
   let isPolling = false;
   const POLLING_INTERVAL = 5000; // 5 seconds

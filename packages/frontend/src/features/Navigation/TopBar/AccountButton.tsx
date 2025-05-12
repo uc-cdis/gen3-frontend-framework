@@ -13,9 +13,10 @@ import {
   selectUserDetails,
   useCoreSelector,
 } from '@gen3/core';
-import { IconButton, TopIconButtonProps } from './IconButton';
+import { IconButton } from './IconButton';
+import { TopIconButtonConfig } from './types';
 
-type TopBarAccountButtonProps = Omit<TopIconButtonProps, 'name'>;
+type TopBarAccountButtonProps = Omit<TopIconButtonConfig, 'name' | 'type'>;
 
 export const AccountButton = ({
   leftIcon = undefined,

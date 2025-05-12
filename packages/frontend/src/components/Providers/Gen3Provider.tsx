@@ -9,6 +9,8 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import NotificationsProvider from '../notifications/NotificationsProvider';
+import { RegisteredJobsModal } from '../jobs/JobsModal';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -89,13 +91,15 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider>
+      <ModalsProvider modals={{ jobs: RegisteredJobsModal }}>
         <Notifications />
-        <SessionProvider {...sessionConfig}>
-          <Gen3ModalsProvider config={modalsConfig}>
-            {children}
-          </Gen3ModalsProvider>
-        </SessionProvider>
+        <NotificationsProvider>
+          <SessionProvider {...sessionConfig}>
+            <Gen3ModalsProvider config={modalsConfig}>
+              {children}
+            </Gen3ModalsProvider>
+          </SessionProvider>
+        </NotificationsProvider>
       </ModalsProvider>
     </CoreProvider>
   );

@@ -1,7 +1,22 @@
 import React, { ReactElement } from 'react';
 import { Text } from '@mantine/core';
+import { ContextModalProps } from '@mantine/modals';
 import { BaseModal } from '../Modals';
 import JobsList from './JobsList';
+
+export const JobsModalContent = () => {
+  return (
+    <div className="flex flex-col border-y border-y-base-darker py-4 space-y-4 font-content">
+      <JobsList />
+    </div>
+  );
+};
+
+export const RegisteredJobsModal = ({
+  context,
+  id,
+  innerProps,
+}: ContextModalProps) => <JobsModalContent />;
 
 const JobsModal = ({ openModal }: { openModal: boolean }): ReactElement => {
   return (

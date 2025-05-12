@@ -1,39 +1,51 @@
 import React, { ReactElement } from 'react';
 import { Divider } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import LoginAccountButton from '../../../components/Login/LoginAccountButton';
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { StylingOverrideWithMergeControl } from '../../../types';
-import { IconButton, TopIconButtonPropsWithLink } from './IconButton';
+import { IconButton } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
+import { TopIconButtonConfig } from './types';
+import ShowModalButton from './ShowModalButton';
 
 const processTopBarItems = (
-  items: TopIconButtonPropsWithLink[],
+  items: TopIconButtonConfig[],
   classNames: StylingOverrideWithMergeControl,
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce(
-    (acc: ReactElement[], item: TopIconButtonPropsWithLink, index: number) => {
+    (acc: ReactElement[], item: TopIconButtonConfig, index: number) => {
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
       acc.push(
         <>
-          <a
-            className="flex"
-            href={item.href}
-            key={`${item.href}_${item.name}`}
-          >
-            <IconButton
+          {item?.type && item?.type === 'modal' ? (
+            <ShowModalButton
               name={item.name}
               iconSize={item.iconSize}
               leftIcon={item.leftIcon}
               rightIcon={item.rightIcon}
               classNames={mergedClassnames}
+              modal={item.modal}
             />
-          </a>
+          ) : (
+            <a
+              className="flex"
+              href={item.href}
+              key={`${item.href}_${item.name}`}
+            >
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+              />
+            </a>
+          )}
           <Divider
             size="md"
             orientation="vertical"
@@ -48,7 +60,7 @@ const processTopBarItems = (
 };
 
 export interface TopBarProps {
-  readonly items: TopIconButtonPropsWithLink[];
+  readonly items: TopIconButtonConfig[];
   readonly loginButtonVisibility?: LoginButtonVisibility;
   readonly externalLoginUrl?: string;
   readonly classNames?: StylingOverrideWithMergeControl;

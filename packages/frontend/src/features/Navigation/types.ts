@@ -58,7 +58,7 @@ export interface MainContentProps {
 }
 
 export interface NameAndIcon {
-  readonly name?: string;
+  readonly name?: string; // TODO change to title
   readonly iconSize?: string;
   readonly rightIcon?: string;
   readonly leftIcon?: string;

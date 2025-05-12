@@ -1,21 +1,13 @@
 import React from 'react';
-import { NameAndIcon } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
 import { extractClassName } from '../utils';
 import { Icon } from '@iconify/react';
 import { Tooltip } from '@mantine/core';
 import { TooltipStyle } from '../style';
+import { TopIconButtonConfig } from './types';
 
-export interface TopIconButtonProps extends NameAndIcon {
-  tooltip?: string;
-  clickHandler?: () => void;
-  ariaLabel?: string;
-}
-
-export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
-  href: string;
-}
+export type IconButtonProps = Omit<TopIconButtonConfig, 'type'>;
 
 export const IconButton = ({
   name,
@@ -26,7 +18,7 @@ export const IconButton = ({
   classNames = {},
   clickHandler = undefined,
   ariaLabel = undefined,
-}: TopIconButtonProps) => {
+}: IconButtonProps) => {
   const classNamesDefaults = {
     root: `flex items-center align-middle px-2 my-2`,
     button:
