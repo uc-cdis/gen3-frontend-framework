@@ -54,7 +54,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const sampleRequest = () => {
     
     submitRequest({
-      username: 'shawnoconnor@uchicago.edu',
+      username: 'test@test.edu',
       resource_id: 'HDP00007',
       resource_paths: ['/study/9898687', '/mds_gateway', '/cedar'],
       role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
