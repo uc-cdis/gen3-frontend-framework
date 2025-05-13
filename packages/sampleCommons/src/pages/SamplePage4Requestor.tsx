@@ -34,7 +34,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   };
 
     
-     * {"username":"shawnoconnor@uchicago.edu","resource_id":"HDP00007","resource_paths":["/study/9898687","/mds_gateway","/cedar"],"role_ids":["study_registrant","mds_user","cedar_user"]}
+     * {"username":"test@test.edu","resource_id":"HDP00007","resource_paths":["/study/9898687","/mds_gateway","/cedar"],"role_ids":["study_registrant","mds_user","cedar_user"]}
      * possable responce 
         * 201
         {"resource_display_name":null,
