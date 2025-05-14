@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { ThHTMLAttributes, useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Accessibility,
   CoreState,
-  fieldNameToTitle,
   JSONObject,
   selectIndexFilters,
   useCoreSelector,
@@ -11,47 +10,24 @@ import {
 } from '@gen3/core';
 import {
   MantineReactTable,
-  type MRT_Column,
   type MRT_PaginationState,
   type MRT_Row,
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import {
-  ExplorerTableProps,
-  SummaryTable,
-  CellRendererFunctionProps,
-} from './types';
-import {
-  CellRendererFunction,
-  ExplorerTableCellRendererFactory,
-} from './ExplorerTableCellRenderers';
+import type { ExplorerTableProps, SummaryTable } from './types';
 import {
   ExplorerTableDetailsPanelFactory,
   type TableDetailsPanelProps,
 } from './ExploreTableDetails';
 import { DetailsModal } from '../../../components/Details';
+import { createTableColumns } from './utils';
+import SubtableAccordion from './SubTables/SubtableAccordian';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
-
-const isRecordAny = (obj: unknown): obj is Record<string, any> => {
-  if (Array.isArray(obj)) return false;
-
-  return obj !== null && typeof obj === 'object';
-};
-
-interface ExplorerColumn {
-  field: string;
-  accessorKey: never;
-  header: string;
-  accessorFn?: (originalRow: ExplorerColumn) => any;
-  Cell?: CellRendererFunction;
-  size?: number;
-}
 
 /**
  * Main table component for the explorer page. Fetches data from guppy using
@@ -83,47 +59,15 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
     [],
   );
 
-  const cols = useDeepCompareMemo(() => {
-    // setup table columns at the same time
-    // TODO: refactor to support more complex table configs
-    return tableConfig.fields.map((field) => {
-      const columnDef = tableConfig?.columns?.[field];
-
-      const cellRendererFunc = columnDef?.type
-        ? ExplorerTableCellRendererFactory().getRenderer(
-            columnDef?.type,
-            columnDef?.cellRenderFunction ?? 'default',
-          )
-        : undefined;
-
-      const cellRendererFuncParams =
-        columnDef?.params && isRecordAny(columnDef?.params)
-          ? columnDef?.params
-          : {};
-      return {
-        id: field,
-        field: field,
-        accessorKey: field as never,
-        header: columnDef?.title ?? fieldNameToTitle(field),
-        accessorFn: columnDef?.accessorPath
-          ? jsonPathAccessor(columnDef.accessorPath)
-          : undefined,
-        Cell:
-          cellRendererFunc && columnDef?.params
-            ? (cell: CellRendererFunctionProps) =>
-                cellRendererFunc(cell, cellRendererFuncParams)
-            : cellRendererFunc
-              ? cellRendererFunc
-              : undefined,
-
-        size: columnDef?.width,
-        enableSorting: columnDef?.sortable ?? undefined,
-      };
-    }, [] as MRT_Column<ExplorerColumn>[]);
+  const tableColumns = useDeepCompareMemo(() => {
+    return createTableColumns(tableConfig);
   }, [tableConfig]);
 
   // TODO: add support for nested fields
-  const fields = useMemo(() => cols.map((column) => column.field), [cols]);
+  const fields = useMemo(
+    () => tableColumns.map((column) => column.field),
+    [tableColumns],
+  );
 
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
@@ -193,7 +137,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    */
 
   const table = useMantineReactTable<JSONObject>({
-    columns: cols as any[], //TODO: fix this
+    columns: tableColumns as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
     manualSorting: true,
     manualPagination: true,
@@ -212,6 +156,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
     },
+
     mantineTableHeadCellProps: {
       style: {
         '--mrt-base-background-color': 'var(--mantine-color-table-1)',
@@ -254,6 +199,16 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             },
           })
         : {},
+    renderDetailPanel:
+      tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
+        ? ({ row }) =>
+            tableConfig?.subTables ? (
+              <SubtableAccordion
+                subTables={tableConfig.subTables}
+                data={data ?? []}
+              />
+            ) : null
+        : undefined,
   });
   return (
     <React.Fragment>

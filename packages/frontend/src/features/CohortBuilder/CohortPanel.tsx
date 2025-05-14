@@ -79,7 +79,7 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
-  showAccessLevel = true,
+  showAccessLevel = false,
 }: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
