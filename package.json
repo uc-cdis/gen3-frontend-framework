@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.10.89",
+  "version": "0.10.94",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -38,9 +38,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@grafana/faro-react": "^1.9.1",
-    "@grafana/faro-web-sdk": "^1.9.1",
-    "@grafana/faro-web-tracing": "^1.9.1",
+    "@grafana/faro-react": "^1.18.1",
+    "@grafana/faro-web-sdk": "^1.18.1",
+    "@grafana/faro-web-tracing": "^1.18.1",
     "@mantine/core": "^7.16.0",
     "@mantine/dates": "^7.16.0",
     "@mantine/form": "^7.16.0",
@@ -52,8 +52,8 @@
     "cookies-next": "4.3.0",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-responsive-carousel": "^3.2.23",
     "url-join": "^5.0.0"
   },
