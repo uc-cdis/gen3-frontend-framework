@@ -39,6 +39,7 @@ export * from './features/guppy';
 export * from './features/manifest';
 export * from './features/metadata';
 export * from './features/modals';
+export * from './features/requestor';
 export * from './features/sower';
 export * from './features/submission';
 export * from './features/workspace';
