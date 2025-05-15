@@ -14,14 +14,17 @@ const SubtableAccordion = ({ subTables, data }: SubtableAccordianProps) => {
     () =>
       subTables.reduce((acc: ReactElement[], config: FieldSubtable) => {
         if (!(config.root in data)) return acc;
-
         acc.push(
           <Accordion.Item value={config.root} key={config.root}>
             <Accordion.Control>{config.label}</Accordion.Control>
-            <ExplorerTableSubtable
-              config={config}
-              data={data[config.root] as JSONObject[]}
-            />
+            <Accordion.Panel>
+              <div className="w-100 inline-block overflow-x-scroll">
+                <ExplorerTableSubtable
+                  config={config}
+                  data={data[config.root] as JSONObject[]}
+                />
+              </div>
+            </Accordion.Panel>
           </Accordion.Item>,
         );
         return acc;
@@ -29,7 +32,16 @@ const SubtableAccordion = ({ subTables, data }: SubtableAccordianProps) => {
     [data, subTables],
   );
 
-  return <Accordion>{items}</Accordion>;
+  return (
+    <Accordion
+      chevronPosition="left"
+      classNames={{
+        panel: 'w-100',
+      }}
+    >
+      {items}
+    </Accordion>
+  );
 };
 
 export default SubtableAccordion;

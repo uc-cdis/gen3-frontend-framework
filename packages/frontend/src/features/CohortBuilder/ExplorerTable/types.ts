@@ -6,7 +6,7 @@ import {
   MRT_RowData,
   MRT_TableInstance,
 } from 'mantine-react-table';
-import { JSONObject } from '@gen3/core';
+import { Accessibility, JSONObject } from '@gen3/core';
 import { ReactNode, RefObject } from 'react';
 import { CellRendererFunction } from './ExplorerTableCellRenderers';
 
@@ -47,9 +47,15 @@ export interface TableColumnsAndFields {
   columns: Record<string, SummaryTableColumn>;
 }
 
+export interface FieldSubtableClassnames extends Record<string, string> {
+  header: string;
+  columnLabel: string;
+}
+
 export interface FieldSubtable extends TableColumnsAndFields {
   root: string;
   label: string;
+  classNames: FieldSubtableClassnames;
 }
 
 export interface SummaryTable extends TableColumnsAndFields {
@@ -63,6 +69,7 @@ export interface SummaryTable extends TableColumnsAndFields {
 export interface ExplorerTableProps {
   index: string; // guppy index this table is for
   tableConfig: Readonly<SummaryTable>; // config for the table
+  accessibility: Accessibility;
 }
 
 /**

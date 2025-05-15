@@ -348,7 +348,11 @@ export const CohortPanel = ({
           {table?.enabled && (
             <div className="mt-2 flex flex-col">
               <div className="grid">
-                <ExplorerTable index={index} tableConfig={table} />
+                <ExplorerTable
+                  index={index}
+                  tableConfig={table}
+                  accessibility={accessLevel}
+                />
               </div>
             </div>
           )}

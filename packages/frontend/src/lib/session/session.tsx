@@ -126,7 +126,7 @@ const refreshSession = (
     return;
   }
 
-  // hitting Fence endpoint refreshes token
+  // hitting Fence endpoint refreshes the token
   updateSessionRefreshTimestamp(Date.now());
   getUserDetails();
 };
@@ -201,28 +201,20 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  // Update session status using the session token api
-  const updateSessionWithSessionApi = async () => {
-    // const tokenStatus = await getSession();
-    // setSessionInfo(tokenStatus);
-    // setPending(false); // not waiting for session to load anymore
-    await getUserDetails();
-  };
-
   // update session status using the user status
-  const updateSessionWithUserStatus = async () => {
-    await getUserDetails();
-  };
 
   const sessionInfo = useManageSession(userStatus);
 
   // for now, we are using the user status to determine if the user is logged in
-  const updateSession = useCallback(
-    () => updateSessionWithUserStatus(),
-    [updateSessionWithUserStatus],
-  );
+  const updateSession = useCallback(() => {
+    const updateSessionWithUserStatus = async () => {
+      await getUserDetails();
+    };
 
-  const endSession = async () => {
+    updateSessionWithUserStatus();
+  }, [getUserDetails]);
+
+  const endSession = useCallback(async () => {
     logoutSession()
       .then(() => {
         getUserDetails();
@@ -236,7 +228,7 @@ export const SessionProvider = ({
       .finally(() => {
         router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
       });
-  };
+  }, [getUserDetails, router]);
   /**
    * Update session value every updateSessionInterval seconds
    */

@@ -1,7 +1,6 @@
 import React, { ThHTMLAttributes, useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
-  Accessibility,
   CoreState,
   JSONObject,
   selectIndexFilters,
@@ -36,7 +35,11 @@ const DEFAULT_PAGE_LIMIT = 10000;
  * @param index - Offset to use for fetching/displaying pages of rows
  * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
  */
-const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
+const ExplorerTable = ({
+  index,
+  tableConfig,
+  accessibility,
+}: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -56,7 +59,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
         'tableDetails',
         tableConfig?.detailsConfig?.panel ?? 'default',
       ),
-    [],
+    [tableConfig?.detailsConfig?.panel],
   );
 
   const tableColumns = useDeepCompareMemo(() => {
@@ -72,11 +75,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
     const idField: string | undefined = detailsConfig?.idField;
-    return (
-      originalRow: JSONObject,
-      _index: number,
-      _parentRow: MRT_Row<JSONObject>,
-    ) =>
+    return (originalRow: JSONObject) =>
       idField && Object.keys(originalRow).includes(idField)
         ? (originalRow[idField] as string)
         : undefined;
@@ -99,7 +98,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
               return { [x.id]: x.desc ? 'desc' : 'asc' };
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
-      accessibility: Accessibility.ACCESSIBLE,
+      accessibility: accessibility,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
@@ -136,6 +135,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
+  console.log('tableConfig?.subTables', tableConfig?.subTables);
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
@@ -201,13 +201,14 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
         : {},
     renderDetailPanel:
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
-        ? ({ row }) =>
-            tableConfig?.subTables ? (
+        ? ({ row }) => {
+            return tableConfig?.subTables ? (
               <SubtableAccordion
                 subTables={tableConfig.subTables}
-                data={data ?? []}
+                data={row.original ?? []}
               />
-            ) : null
+            ) : null;
+          }
         : undefined,
   });
   return (
@@ -228,6 +229,7 @@ const ExplorerTable = ({ index, tableConfig }: ExplorerTableProps) => {
             index,
             tableConfig,
             ...(tableConfig?.detailsConfig?.params ?? {}),
+            accessibility,
           }}
         />
       ) : null}

@@ -25,16 +25,12 @@ const ExplorerTableSubTable = ({
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
     data: data ?? [],
-    manualSorting: true,
-    manualPagination: true,
-    enableStickyHeader: true,
+    enablePagination: false,
+    enableTableFooter: false,
+    enableTopToolbar: false,
   });
 
-  return (
-    <div className="inline-block overflow-x-scroll">
-      <MantineReactTable table={table} />
-    </div>
-  );
+  return <MantineReactTable table={table} />;
 };
 
 export default ExplorerTableSubTable;

@@ -32,6 +32,7 @@ export const QueryRowDetailsPanel = ({
   id,
   index,
   tableConfig,
+  accessibility,
 }: TableDetailsPanelProps) => {
   //const [queryGuppy, { data, isLoading, isError }] = useLazyGeneralGQLQuery();
   const idField = tableConfig.detailsConfig?.idField;
