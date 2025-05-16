@@ -4,7 +4,7 @@ import {
   IndexAndField,
 } from './types';
 import { GEN3_GUPPY_API } from '../../constants';
-import { selectCSRFToken } from '../user';
+import { selectCSRFTokenFromState } from '../gen3/csrfSlice';
 import { coreStore } from '../../store';
 import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
@@ -42,13 +42,13 @@ const prepareUrl = (apiUrl: string) => `${apiUrl}/download`;
  */
 const prepareFetchConfig = (
   parameters: GuppyDownloadDataParams,
-  csrfToken?: string,
+  csrfToken: string | null,
 ): FetchConfig => {
   return {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
+      ...(csrfToken !== null && { 'X-CSRF-Token': csrfToken }),
       // TODO: Add credentials
     },
     body: JSON.stringify({
@@ -80,7 +80,7 @@ export const downloadFromGuppyToBlob = async ({
   onAbort = () => null,
   signal = undefined,
 }: DownloadFromGuppyParams) => {
-  const csrfToken = selectCSRFToken(coreStore.getState());
+  const csrfToken = selectCSRFTokenFromState(coreStore.getState());
   onStart?.();
 
   const url = prepareUrl(GEN3_GUPPY_API);
@@ -136,7 +136,7 @@ export const downloadJSONDataFromGuppy = async ({
   onAbort = () => null,
   signal = undefined,
 }: DownloadFromGuppyParams) => {
-  const csrfToken = selectCSRFToken(coreStore.getState());
+  const csrfToken = selectCSRFTokenFromState(coreStore.getState());
 
   const url = prepareUrl(GEN3_GUPPY_API);
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);

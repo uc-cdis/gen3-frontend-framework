@@ -7,7 +7,7 @@ import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from './userSliceRTK';
+import { selectCSRFTokenFromState } from '../gen3/csrfSlice';
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
@@ -30,7 +30,7 @@ export const fetchUserState = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >('fence/user/user', async (_, meta) => {
   // Get an access token from a cookie if in development mode
-  const csrfToken = selectCSRFToken(meta.getState());
+  const csrfToken = selectCSRFTokenFromState(meta.getState());
   let accessToken = undefined;
   if (process.env.NODE_ENV === 'development') {
     accessToken = getCookie('credentials_token');

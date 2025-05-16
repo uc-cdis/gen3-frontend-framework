@@ -1,7 +1,7 @@
-import { selectCSRFToken } from '../features/user';
 import { coreStore } from '../store';
 import { GEN3_FENCE_API, GEN3_API } from '../constants';
 import { getCookie } from 'cookies-next';
+import { selectCSRFTokenFromState } from '../features/gen3';
 
 export enum HttpMethod {
   GET = 'GET',
@@ -92,7 +92,7 @@ export const fetchFencePresignedURL = async ({
   onAbort = () => null,
   signal = undefined,
 }: FetchFencePresignedURLParameters) => {
-  const csrfToken = selectCSRFToken(coreStore.getState());
+  const csrfToken = selectCSRFTokenFromState(coreStore.getState());
 
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');

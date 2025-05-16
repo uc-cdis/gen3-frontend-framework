@@ -4,7 +4,8 @@ import {
   useGetCredentialsQuery,
   useRemoveCredentialMutation,
   type APIKey,
-  useGetCSRFQuery,
+  useCoreSelector,
+  selectCSRFTokenFromState,
 } from '@gen3/core';
 import { MdDelete as DeleteIcon } from 'react-icons/md';
 import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
@@ -34,12 +35,12 @@ interface APIKeyStatus {
 }
 
 /**
- * Defines a Credentials Table that lists all credentials for a logged in user
+ * Defines a Credential Table that lists all credentials for a logged-in user
  * with the ability to delete a given credential using useRemoveCredentialMutation() hook
- * @returns {JSX.Element} The JSX element representing the credentials table.
+ * @returns {JSX.Element} The JSX element representing the credential table.
  */
 const CredentialsTable = () => {
-  const { data: csrfToken, isFetching: isCSRFFetching} = useGetCSRFQuery();
+  const csrfToken = useCoreSelector((state) => selectCSRFTokenFromState(state));
   const { data: credentials } = useGetCredentialsQuery();
   const [removeCredential] = useRemoveCredentialMutation();
 
@@ -56,7 +57,9 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) => // pragma: allowlist secret
+        accessorFn: (
+          apiKey: APIKeyStatus, // pragma: allowlist secret
+        ) =>
           unixTimeToString(
             // pragma: allowlist-secret
             apiKey.expiration,
@@ -70,7 +73,7 @@ const CredentialsTable = () => {
             <ActionIcon
               onClick={() =>
                 removeCredential({
-                  csrfToken: csrfToken?.csrfToken,
+                  csrfToken: csrfToken,
                   id: row.original.key,
                 })
               }
@@ -109,7 +112,6 @@ const CredentialsTable = () => {
       placeholder: 'Search API Keys',
     },
     icons: TableIcons,
-    state: { isLoading: isCSRFFetching },
   });
 
   return <MantineReactTable table={table} />;

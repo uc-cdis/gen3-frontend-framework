@@ -15,7 +15,7 @@ const credentialsWithTags = gen3Api.enhanceEndpoints({
 });
 
 interface DeleteCredentialParams {
-  readonly csrfToken?: string;
+  readonly csrfToken: string | null;
   readonly id: string;
 }
 

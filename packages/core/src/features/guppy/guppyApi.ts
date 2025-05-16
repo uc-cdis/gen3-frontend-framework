@@ -4,7 +4,7 @@ import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from '../user';
+import { selectCSRFTokenFromState } from '../gen3/csrfSlice';
 
 export interface guppyFetchError {
   readonly url: string;
@@ -45,7 +45,7 @@ export const guppyApi = createApi({
 
   // TODO: refactor to use fetchBaseQuery
   baseQuery: async (query: guppyApiSliceRequest, api) => {
-    const csrfToken = selectCSRFToken(api.getState() as CoreState);
+    const csrfToken = selectCSRFTokenFromState(api.getState() as CoreState);
 
     let accessToken = undefined;
     if (process.env.NODE_ENV === 'development') {

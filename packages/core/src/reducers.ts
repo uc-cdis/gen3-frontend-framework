@@ -14,6 +14,7 @@ import {
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
+import { csrfReducer } from './features/gen3/csrfSlice';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -23,6 +24,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
+  csrf: csrfReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });

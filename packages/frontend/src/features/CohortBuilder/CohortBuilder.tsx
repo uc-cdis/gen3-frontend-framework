@@ -7,7 +7,6 @@ import {
   setSharedFilters,
   useCoreDispatch,
   useCoreSelector,
-  useGetCSRFQuery,
 } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 
@@ -20,8 +19,6 @@ export const CohortBuilder = ({
   sharedFiltersMap = null,
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
-  useGetCSRFQuery();
-
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 

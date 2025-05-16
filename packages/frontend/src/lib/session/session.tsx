@@ -21,15 +21,15 @@ import {
   showModal,
   useCoreDispatch,
   useCoreSelector,
-  useGetCSRFQuery,
   useLazyFetchUserDetailsQuery,
+  fetchCSRFToken,
 } from '@gen3/core';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
 export const logoutSession = async () => {
-  // logged in using credentials then execute credentials logout first
+  // logged in using credentials, then execute credentials logout first
   const accessToken = getCookie('credentials_token');
   if (accessToken) {
     await fetch('/api/auth/credentialsLogout');
@@ -176,8 +176,13 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
+
+  console.log('SessionProvider: updateSessionTime', updateSessionTime);
+
+  useEffect(() => {
+    coreDispatch(fetchCSRFToken());
+  }, []);
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
   const userStatus = useCoreSelector((state: CoreState) =>

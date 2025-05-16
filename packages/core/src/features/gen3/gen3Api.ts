@@ -1,9 +1,9 @@
 import { Middleware, Reducer } from '@reduxjs/toolkit';
 import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
-import { CoreState } from '../../reducers';
-import { selectCSRFToken } from '../user/userSliceRTK';
+import { selectCSRFTokenFromState } from './csrfSlice';
 import { getCookie } from 'cookies-next';
+import { CoreState } from '../../reducers';
 
 /**
  * Creates a base class core API for building other API endpoints on top of.
@@ -17,7 +17,9 @@ export const gen3Api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${GEN3_API}`,
     prepareHeaders: (headers, { getState }) => {
-      const csrfToken = selectCSRFToken(getState() as CoreState);
+      const state = getState() as CoreState;
+      const csrfToken = selectCSRFTokenFromState(state);
+
       headers.set('Content-Type', 'application/json');
       if (process.env.NODE_ENV === 'development') {
         // NOTE: This cookie can only be accessed from the client side

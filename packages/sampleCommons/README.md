@@ -36,3 +36,55 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+# Sample Commons
+
+This is a sample implementation of a Gen3 Commons site.
+
+## Development
+
+### Standard Development
+
+```bash
+npm run dev
+```
+
+### Optimized Development (Faster Hot Reloading)
+
+For faster hot reloading during development, use the optimized development script:
+
+```bash
+npm run dev:fast
+```
+
+This script:
+- Increases the Node.js memory limit to 4GB
+- Uses Next.js Turbo mode for faster compilation
+- Takes advantage of webpack optimizations in next.config.js
+- Uses content caching to avoid expensive reloads
+
+If you need HTTPS, use:
+
+```bash
+npm run devssh:fast
+```
+
+## Performance Optimizations
+
+The following optimizations have been implemented to improve hot reload performance:
+
+1. **Webpack Optimizations in next.config.js**:
+   - Reduced filesystem operations with optimized watchOptions
+   - Enabled module resolution caching
+   - Used faster source maps in development mode
+
+2. **Content Caching in _app.tsx**:
+   - Content is loaded only once during development
+   - Subsequent hot reloads use cached content
+   - This avoids expensive filesystem operations on every reload
+
+3. **Next.js Turbo Mode**:
+   - Experimental feature that can significantly improve development performance
+   - Used in the dev:fast and devssh:fast scripts
+
+These optimizations should reduce hot reload times from 30+ seconds to just a few seconds.
