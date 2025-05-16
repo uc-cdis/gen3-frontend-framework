@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Stack } from '@mantine/core';
 import { ExpandingSubTableProps } from './types';
 import ExplorerTableSubtable from './ExplorerTableSubtable';
 import { JSONObject, JSONValue } from '@gen3/core';
@@ -13,7 +12,7 @@ interface HeaderProps {
 
 const Header = ({ label, className }: HeaderProps) => {
   return (
-    <div className="bg-primary h-10 w-full text-primary-contrast font-semibold">
+    <div className="flex items-center bg-primary px-10 h-10 w-full text-primary-contrast font-semibold">
       {label}
     </div>
   );
@@ -54,9 +53,16 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
     ];
   }
 
-  console.log('ExpandingSubtable: ', config, ' data: ', tableData);
+  console.log(
+    'ExpandingSubtable: ',
+    config,
+    ' data: ',
+    tableData,
+    'cols',
+    compressedTableColumns,
+  );
   return (
-    <Stack>
+    <div className="flex flex-col">
       <Header label={config.label} />
       {expanded ? (
         <ExplorerTableSubtable
@@ -69,7 +75,7 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
           data={tableData}
         />
       )}
-    </Stack>
+    </div>
   );
 };
 

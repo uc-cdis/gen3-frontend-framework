@@ -1,5 +1,4 @@
 import React, { useMemo, ReactElement } from 'react';
-import { Stack, Accordion } from '@mantine/core';
 import type { FieldSubtable } from '../types';
 import ExpandingSubtable from './ExpandingSubtable';
 import { JSONObject } from '@gen3/core';
@@ -10,12 +9,12 @@ interface SubtableStackProps {
 }
 
 const SubtableStack = ({ subTables, data }: SubtableStackProps) => {
-  console.log('SubtableStack: ', subTables, ' data: ', data);
   const items = useMemo(
     () =>
       subTables.reduce((acc: ReactElement[], config: FieldSubtable) => {
         if (!(config.root in data)) return acc;
         acc.push(
+          <div key={config.root} className="inline-block overflow-x-scroll" />,
           <ExpandingSubtable
             config={config}
             data={data[config.root] as JSONObject[]}
@@ -26,15 +25,7 @@ const SubtableStack = ({ subTables, data }: SubtableStackProps) => {
     [data, subTables],
   );
 
-  return (
-    <Stack
-      classNames={{
-        root: 'w-100',
-      }}
-    >
-      {items}
-    </Stack>
-  );
+  return <div className="flex flex-col">{items}</div>;
 };
 
 export default SubtableStack;

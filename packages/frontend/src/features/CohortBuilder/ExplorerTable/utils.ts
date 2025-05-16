@@ -86,8 +86,6 @@ export const createArrayTableColumns = (
         )
       : undefined;
 
-    const dataPath = `${root}[*].${field}`;
-
     const cellRendererFuncParams =
       columnDef?.params && isRecordAny(columnDef?.params)
         ? columnDef?.params
