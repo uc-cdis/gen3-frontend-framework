@@ -27,7 +27,7 @@ RUN lerna run build:pkg
 RUN lerna run --scope @gen3/samplecommons build
 
 # Production stage
-FROM node:20.18.2-alpine3.20 AS runner
+FROM node:20.19.2-alpine3.20 AS runner
 RUN apk add bash
 WORKDIR /gen3
 
