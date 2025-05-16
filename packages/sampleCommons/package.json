@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "next lint",
     "lint-fix": "next lint --fix",
-    "dev": "next dev --turbopack",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "devssh": "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
@@ -23,9 +23,6 @@
     "@fontsource/source-sans-pro": "^5.0.8",
     "@gen3/core": "file:../core",
     "@gen3/frontend": "file:../frontend",
-    "@grafana/faro-react": "^1.9.1",
-    "@grafana/faro-web-sdk": "^1.9.1",
-    "@grafana/faro-web-tracing": "^1.9.1",
     "@mantine/core": "^7.16.0",
     "@mantine/dates": "^7.16.0",
     "@mantine/form": "^7.16.0",

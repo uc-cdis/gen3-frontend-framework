@@ -55,7 +55,7 @@ export interface FieldSubtableClassnames extends Record<string, string> {
 export interface FieldSubtable extends TableColumnsAndFields {
   root: string;
   label: string;
-  classNames: FieldSubtableClassnames;
+  classNames?: Partial<FieldSubtableClassnames>;
 }
 
 export interface SummaryTable extends TableColumnsAndFields {
@@ -66,10 +66,30 @@ export interface SummaryTable extends TableColumnsAndFields {
   selectableRows?: boolean;
 }
 
+export interface ExploreTableClassnames extends Record<string, string> {
+  root: string;
+  label: string;
+  header: string;
+  columnLabel: string;
+}
+
 export interface ExplorerTableProps {
   index: string; // guppy index this table is for
   tableConfig: Readonly<SummaryTable>; // config for the table
   accessibility: Accessibility;
+  size?: string;
+  classNames?: Partial<ExploreTableClassnames>;
+}
+
+export interface ExplorerTableColumnMRT {
+  id: string;
+  field: string;
+  accessorKey: never;
+  header: string;
+  accessorFn?: (originalRow: JSONObject) => any;
+  Cell?: ((cell: CellRendererFunctionProps) => React.ReactNode) | undefined;
+  size?: number;
+  enableSorting?: boolean;
 }
 
 /**

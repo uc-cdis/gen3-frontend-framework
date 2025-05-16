@@ -1,11 +1,18 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONArray
+  | JSONObject;
 
-export type JSONObject = {
-  [k: string]: JSONValue;
-};
-export type JSONArray = Array<JSONValue>;
+export interface JSONObject {
+  [key: string]: JSONValue;
+}
+
+export type JSONArray = JSONValue[];
 
 // type guard functions
 export const isHistogramRangeData = (key: any): key is [number, number] => {
@@ -20,7 +27,7 @@ export const isJSONObject = (data: any): data is JSONObject => {
   return typeof data === 'object' && data !== null && !Array.isArray(data);
 };
 
-export const isJSONValue = (data: any): data is JSONValue => {
+export const isJSONValue = (data: unknown): data is JSONValue => {
   return (
     typeof data === 'string' ||
     typeof data === 'number' ||

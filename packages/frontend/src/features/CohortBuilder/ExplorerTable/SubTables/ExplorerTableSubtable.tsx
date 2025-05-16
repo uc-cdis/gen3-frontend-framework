@@ -1,33 +1,19 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDeepCompareMemo } from 'use-deep-compare';
-import {
-  TableColumnsAndFields,
-  SummaryTableColumn,
-  FieldSubtable,
-} from '../types';
-import { createTableColumns } from '../utils';
+import React from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { JSONObject } from '@gen3/core';
-
-interface ExplorerTableSubTableProps {
-  config: FieldSubtable;
-  data?: JSONObject[];
-}
+import type { ExplorerTableSubTableProps } from './types';
 
 const ExplorerTableSubTable = ({
-  config,
+  columns,
   data,
 }: ExplorerTableSubTableProps) => {
-  const tableColumns = useDeepCompareMemo(() => {
-    return createTableColumns(config);
-  }, [config]);
-
   const table = useMantineReactTable<JSONObject>({
-    columns: tableColumns as any[], //TODO: fix this
+    columns: columns,
     data: data ?? [],
     enablePagination: false,
     enableTableFooter: false,
     enableTopToolbar: false,
+    enableBottomToolbar: false,
   });
 
   return <MantineReactTable table={table} />;

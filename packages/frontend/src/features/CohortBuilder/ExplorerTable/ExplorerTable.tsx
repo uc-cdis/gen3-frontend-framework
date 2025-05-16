@@ -23,7 +23,7 @@ import {
 } from './ExploreTableDetails';
 import { DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
-import SubtableAccordion from './SubTables/SubtableAccordian';
+import SubtableStack from './SubTables/SubtableStack';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -34,11 +34,14 @@ const DEFAULT_PAGE_LIMIT = 10000;
  *
  * @param index - Offset to use for fetching/displaying pages of rows
  * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
+ * @param accessibility - set the access level for the cohort data
  */
 const ExplorerTable = ({
   index,
   tableConfig,
   accessibility,
+  classNames,
+  size = 'sm',
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -135,7 +138,6 @@ const ExplorerTable = ({
    *   @see https://www.mantine-react-table.com/docs/guides/state-management#manage-individual-states-as-needed
    */
 
-  console.log('tableConfig?.subTables', tableConfig?.subTables);
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
     data: data?.data?.[index] ?? [],
@@ -152,6 +154,13 @@ const ExplorerTable = ({
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+    mantineTableProps: {
+      style: {
+        backgroundColor: 'var(--mantine-color-base-1)',
+        '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
+        fontSize: `var(--mantine-font-size-${size})`,
+      },
+    },
     mantinePaginationProps: {
       rowsPerPageOptions: ['5', '10', '20', '40', '100'],
       withEdges: false, //note: changed from `showFirstLastButtons` in v1.0
@@ -203,7 +212,7 @@ const ExplorerTable = ({
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
         ? ({ row }) => {
             return tableConfig?.subTables ? (
-              <SubtableAccordion
+              <SubtableStack
                 subTables={tableConfig.subTables}
                 data={row.original ?? []}
               />

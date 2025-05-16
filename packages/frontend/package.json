@@ -27,7 +27,7 @@
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run compile --stream && npm run rollup -- --watch",
-    "dev": "echo 'dev'"
+    "dev": "npm run build:watch"
   },
   "exports": {
     ".": {
