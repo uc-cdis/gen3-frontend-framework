@@ -1,4 +1,3 @@
-'use client';
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { MantineProvider } from '@mantine/core';
@@ -106,30 +105,14 @@ const Gen3App = ({
   );
 };
 
-// Cache for content in development mode to improve hot reloading performance
-let contentCache: any = null;
-
 // TODO: replace with page router
 Gen3App.getInitialProps = async (
   context: AppContext,
 ): Promise<Gen3AppProps & AppInitialProps> => {
   const ctx = await App.getInitialProps(context);
 
-  // In development mode, use cached content after the first load
-  // This significantly improves hot reload performance
-  if (process.env.NODE_ENV === 'development' && contentCache) {
-    return {
-      ...ctx,
-      ...contentCache,
-    };
-  }
-
   try {
     const res = await loadContent();
-    // Cache the content for future hot reloads in development mode
-    if (process.env.NODE_ENV === 'development') {
-      contentCache = res;
-    }
     return {
       ...ctx,
       ...res,
@@ -138,7 +121,8 @@ Gen3App.getInitialProps = async (
     console.error('Provider Wrapper error loading config', error.toString());
   }
   // return default
-  const defaultContent = {
+  return {
+    ...ctx,
     icons: [
       {
         prefix: 'gen3',
@@ -150,16 +134,6 @@ Gen3App.getInitialProps = async (
     ],
     modalsConfig: {},
     sessionConfig: {},
-  };
-
-  // Cache the default content for future hot reloads in development mode
-  if (process.env.NODE_ENV === 'development') {
-    contentCache = defaultContent;
-  }
-
-  return {
-    ...ctx,
-    ...defaultContent,
   };
 };
 export default withFaroProfiler(Gen3App);
