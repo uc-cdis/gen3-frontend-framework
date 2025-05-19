@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
 import {
+  fetchCSRFToken,
   selectCurrentCohortId,
   setSharedFilters,
   useCoreDispatch,
@@ -21,6 +22,10 @@ export const CohortBuilder = ({
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
+
+  useEffect(() => {
+    dispatch(fetchCSRFToken());
+  }, []);
 
   return (
     <div className="w-full">
