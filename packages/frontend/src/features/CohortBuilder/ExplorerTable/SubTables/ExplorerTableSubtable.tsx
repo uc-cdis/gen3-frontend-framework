@@ -15,7 +15,7 @@ const ExplorerTableSubTable = ({
     enableTableFooter: false,
     enableTopToolbar: false,
     enableBottomToolbar: false,
-    getRowCanExpand: (row) => Object.keys(row).length > 0,
+    enableColumnResizing: true,
     icons: TableIcons,
     layoutMode: 'grid-no-grow',
     defaultColumn: {
@@ -25,13 +25,13 @@ const ExplorerTableSubTable = ({
     },
     mantineTableHeadProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-primary-3)',
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-1)',
       },
     },
     mantineTableHeadCellProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-primary-3)',
-        color: `var(--mantine-color-table-contrast-5')`,
+        '--mrt-base-background-color': 'var(--mantine-color-secondary-1)',
+        color: `var(--mantine-color-secondary-contrast-1')`,
         padding: '0.2rem',
         paddingLeft: '1.5rem',
         borderRight: '1px solid var(--mantine-color-table-1)',

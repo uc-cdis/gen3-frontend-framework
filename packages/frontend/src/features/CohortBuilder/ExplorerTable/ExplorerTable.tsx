@@ -2,6 +2,7 @@ import React, { ThHTMLAttributes, useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
+  isJSONValue,
   JSONObject,
   selectIndexFilters,
   useCoreSelector,
@@ -15,6 +16,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
+import { Row } from '@tanstack/react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
 import {
@@ -148,6 +150,7 @@ const ExplorerTable = ({
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    enableExpanding: !!tableConfig?.detailsConfig,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
     icons: TableIcons,
@@ -211,12 +214,25 @@ const ExplorerTable = ({
     renderDetailPanel:
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
         ? ({ row }) => {
-            return tableConfig?.subTables ? (
-              <SubtableStack
-                subTables={tableConfig.subTables}
-                data={row.original ?? []}
-              />
-            ) : null;
+            const val = tableConfig?.subTables?.some((subTable) => {
+              if (
+                subTable.root in row.original &&
+                isJSONValue(row.original[subTable.root])
+              ) {
+                return (
+                  Object.values(row.original[subTable.root] as JSONObject)
+                    .length > 0
+                );
+              } else return false;
+            });
+            if (tableConfig?.subTables && val) {
+              return (
+                <SubtableStack
+                  subTables={tableConfig.subTables}
+                  data={row.original ?? []}
+                />
+              );
+            } else return null;
           }
         : undefined,
   });

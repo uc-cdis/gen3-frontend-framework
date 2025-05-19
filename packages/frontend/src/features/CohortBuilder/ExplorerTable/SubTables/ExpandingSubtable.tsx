@@ -12,7 +12,7 @@ interface HeaderProps {
 
 const Header = ({ label, className }: HeaderProps) => {
   return (
-    <div className="flex items-center bg-primary px-10 h-10 w-full text-primary-contrast font-semibold">
+    <div className="flex items-center bg-primary px-4 h-10 w-full text-primary-contrast font-semibold">
       {label}
     </div>
   );
