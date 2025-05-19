@@ -1,4 +1,13 @@
 import { gen3Api } from './gen3Api';
-import { selectCSRFTokenFromState, fetchCSRFToken } from './csrfSlice';
+import {
+  selectCSRFTokenFromState,
+  selectCSRFLoadingFromState,
+  fetchCSRFToken,
+} from './csrfSlice';
 
-export { gen3Api, selectCSRFTokenFromState, fetchCSRFToken };
+export {
+  gen3Api,
+  selectCSRFLoadingFromState,
+  selectCSRFTokenFromState,
+  fetchCSRFToken,
+};

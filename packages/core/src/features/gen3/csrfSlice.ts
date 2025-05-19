@@ -61,3 +61,6 @@ export const csrfReducer = csrfSlice.reducer;
 // Selectors
 export const selectCSRFTokenFromState = (state: { csrf: CSRFState }) =>
   state.csrf.token;
+
+export const selectCSRFLoadingFromState = (state: { csrf: CSRFState }) =>
+  state.csrf.loading;

@@ -23,7 +23,7 @@ export const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
-  useEffect(() => {
+  const isCSRFLoading = useEffect(() => {
     dispatch(fetchCSRFToken());
   }, []);
 
