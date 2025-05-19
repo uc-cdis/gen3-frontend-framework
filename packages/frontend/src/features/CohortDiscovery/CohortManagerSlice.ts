@@ -44,7 +44,6 @@ export const cohortPersistenceSlice = createSlice({
     removeCohort: cohortsAdapter.removeOne,
     // Remove multiple cohorts
     removeCohorts: cohortsAdapter.removeMany,
-    // Set the selected cohort
   },
 });
 

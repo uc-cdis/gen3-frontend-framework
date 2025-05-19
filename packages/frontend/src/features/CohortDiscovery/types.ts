@@ -79,6 +79,9 @@ export enum DataAccessRequestStatus {
   pending = 'pending',
   approved = 'approved',
   rejected = 'rejected',
+  signed = 'signed',
+  submitted = 'submitted',
+  draft = 'draft',
 }
 
 export interface DataAccessRequest extends DataAccessRequestUserInformation {

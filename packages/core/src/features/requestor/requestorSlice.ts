@@ -12,7 +12,6 @@ export interface RequestQueryBody {
   username?: string;
 }
 
-
 export interface RequestorResponse {
   resource_display_name?: string | null;
   updated_time?: string;
@@ -25,6 +24,53 @@ export interface RequestorResponse {
   created_time?: string;
 }
 
+export interface RequestListQuery {
+  policy_ids: Array<string>;
+  resource_ids: Array<string>;
+  status: string;
+  revoke: boolean;
+}
+
+/**
+ * Converts a Partial<RequestListQuery> object to a URL query string
+ * @param params - The parameters to convert
+ * @returns A formatted query string (including the leading '?')
+ */
+export const convertToQueryString = (
+  params: Partial<RequestListQuery>,
+): string | undefined => {
+  if (!params || Object.keys(params).length === 0) {
+    return '';
+  }
+
+  const queryParts: string[] = [];
+
+  // Handle policy_ids array
+  if (params.policy_ids && params.policy_ids.length > 0) {
+    params.policy_ids.forEach((id) => {
+      queryParts.push(`policy_id=${encodeURIComponent(id)}`);
+    });
+  }
+
+  if (params.resource_ids && params.resource_ids.length > 0) {
+    params.resource_ids.forEach((id) => {
+      queryParts.push(`resource_id=${encodeURIComponent(id)}`);
+    });
+  }
+
+  // Handle status
+  if (params.status !== undefined) {
+    queryParts.push(`status=${encodeURIComponent(params.status)}`);
+  }
+
+  // Handle revoke
+  if (params.revoke !== undefined) {
+    queryParts.push(`revoke=${params.revoke}`);
+  }
+
+  return queryParts.length > 0 ? `?${queryParts.join('&')}` : undefined;
+};
+
 /**
  * Defines requester service using a base URL and expected endpoints. Derived from gen3Api core API.
  *
@@ -36,7 +82,35 @@ export interface RequestorResponse {
  */
 export const requestorApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    request: builder.query<RequestorResponse, RequestQueryBody>({
+    status: builder.query<RequestorResponse, RequestListQuery | void>({
+      // get status of requestor service
+      query: () => `${GEN3_REQUESTOR_API}/_status`,
+    }),
+    request: builder.query<RequestorResponse, Partial<RequestListQuery>>({
+      // get a list of requests
+      query: (params?) => {
+        if (params) {
+          return `${GEN3_REQUESTOR_API}/request${convertToQueryString(params)}`;
+        } else {
+          return `${GEN3_REQUESTOR_API}/request`;
+        }
+      },
+    }),
+    userRequest: builder.query<RequestorResponse, Partial<RequestListQuery>>({
+      // get a list of requests
+      query: (params?) => {
+        if (params) {
+          return `${GEN3_REQUESTOR_API}/request/user${convertToQueryString(params)}`;
+        } else {
+          return `${GEN3_REQUESTOR_API}/request/user`;
+        }
+      },
+    }),
+    requestById: builder.query<RequestorResponse, string>({
+      // get a list of requests
+      query: (requestId) => `${GEN3_REQUESTOR_API}/request/${requestId}`,
+    }),
+    createRequest: builder.mutation<RequestorResponse, RequestQueryBody>({
       query: (queryBody: RequestQueryBody) => ({
         url: `${GEN3_REQUESTOR_API}/request`,
         method: 'POST',
@@ -52,6 +126,10 @@ export const requestorApi = gen3Api.injectEndpoints({
 });
 
 export const {
+  useCreateRequestMutation,
   useRequestQuery,
   useLazyRequestQuery,
+  useStatusQuery: useRequestorStatusQuery,
+  useRequestByIdQuery,
+  useUserRequestQuery,
 } = requestorApi;
