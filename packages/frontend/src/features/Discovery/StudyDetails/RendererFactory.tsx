@@ -43,7 +43,7 @@ export class StudyFieldRendererFactory {
     if (
       !(type in StudyFieldRendererFactory.getInstance().fieldRendererCatalog)
     ) {
-      console.log('No field renderer found for type: ', type);
+      console.warn('No field renderer found for type: ', type);
       return defaultStudyFieldRenderer;
     }
     return (

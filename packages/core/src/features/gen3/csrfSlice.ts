@@ -32,24 +32,20 @@ const csrfSlice = createCoreSlice({
         });
 
         const jsonData = await response.json();
-        console.log('fetch csrf call', jsonData);
         return jsonData?.csrf ?? null;
       },
       {
         pending: (state) => {
-          console.log("pending action.payload")
           state.loading = true;
           state.error = null;
         },
         rejected: (state, action) => {
-          console.log('rejected action.payload:', action);
           state.loading = false;
           state.error =
             action.error.message ??
             'Unknown error getting CSRF token from Gen3';
         },
         fulfilled: (state, action) => {
-          console.log('fulfilled action.payload:', action);
           state.loading = false;
           state.token = action.payload;
           state.error = null;

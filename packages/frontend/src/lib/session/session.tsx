@@ -178,8 +178,6 @@ export const SessionProvider = ({
   const coreDispatch = useCoreDispatch();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
-  console.log('SessionProvider: updateSessionTime', updateSessionTime);
-
   useEffect(() => {
     coreDispatch(fetchCSRFToken());
   }, []);

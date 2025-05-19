@@ -95,7 +95,9 @@ const main = () => {
   const saturation = Number(colorSaturation);
 
   if (!themeFile) {
-    console.log("No theme file found. Please provide a theme file with '-t'.");
+    console.error(
+      "No theme file found. Please provide a theme file with '-t'.",
+    );
     return;
   }
 

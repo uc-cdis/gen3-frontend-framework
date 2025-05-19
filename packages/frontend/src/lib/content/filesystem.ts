@@ -7,7 +7,7 @@ const myGlob = (dir: string, filter: string) => {
     const files = fs.readdirSync(dir);
     return files.filter((file) => file.search(filter) !== -1);
   } catch (error: any) {
-    console.log('myGlob error', error, dir);
+    console.error('myGlob error', error, dir);
   }
   return [];
 };
