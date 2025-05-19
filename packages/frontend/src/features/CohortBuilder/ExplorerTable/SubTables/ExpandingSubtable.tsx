@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ActionIcon } from '@mantine/core';
+import { Icon } from '@iconify/react';
 import { ExpandingSubTableProps } from './types';
 import ExplorerTableSubtable from './ExplorerTableSubtable';
 import { JSONObject, JSONValue } from '@gen3/core';
@@ -29,6 +31,10 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
     return createArrayTableColumns(config.root, config);
   }, [config]);
 
+  const expand = () => {
+    setExpanded((prevState) => !prevState);
+  };
+
   let tableData = data;
   if (!expanded) {
     // convert data from Array<Record<string, JSONValue>> to Record<string, Array<JSONValue>>
@@ -53,28 +59,33 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
     ];
   }
 
-  console.log(
-    'ExpandingSubtable: ',
-    config,
-    ' data: ',
-    tableData,
-    'cols',
-    compressedTableColumns,
-  );
   return (
     <div className="flex flex-col">
       <Header label={config.label} />
-      {expanded ? (
-        <ExplorerTableSubtable
-          columns={expandedTableColumns}
-          data={tableData}
-        />
-      ) : (
-        <ExplorerTableSubtable
-          columns={compressedTableColumns}
-          data={tableData}
-        />
-      )}
+      <div className="flex flex-nowrap w-full">
+        <ActionIcon
+          variant="filled"
+          aria-label="Settings"
+          onClick={expand}
+          className="self-center"
+        >
+          <Icon icon={expanded ? 'gen3:changeFrom' : 'gen3:changeTo'} />
+        </ActionIcon>
+        <div className="w-full overflow-x-scroll">
+          {expanded ? (
+            <ExplorerTableSubtable
+              columns={expandedTableColumns}
+              data={tableData}
+            />
+          ) : (
+            <ExplorerTableSubtable
+              columns={compressedTableColumns}
+              data={tableData}
+            />
+          )}
+        </div>
+        /
+      </div>
     </div>
   );
 };
