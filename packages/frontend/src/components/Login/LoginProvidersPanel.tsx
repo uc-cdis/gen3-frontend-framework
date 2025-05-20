@@ -40,6 +40,12 @@ const LoginProviderMultipleItems = ({
         }}
         onChange={setValue}
         value={value}
+        searchable
+        label={provider.name}
+        placeholder="Select a login provider"
+        size="sm"
+        clearable
+        aria-label="Select a login provider"
       />
       <Button
         fullWidth
