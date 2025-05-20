@@ -1,9 +1,11 @@
 import { DetailsPanelComponentProps } from '../../../../components/Details/types';
 import { SummaryTable } from '../types';
+import { Accessibility } from '@gen3/core';
 
 export interface TableDetailsPanelProps extends DetailsPanelComponentProps {
   index: string;
   tableConfig: SummaryTable;
+  accessibility: Accessibility;
 }
 
 /**
