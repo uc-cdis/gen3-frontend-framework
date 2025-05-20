@@ -2,7 +2,7 @@ import { coreStore } from '../../store';
 import { userAuthApi } from './userSliceRTK';
 import { fetchJSONDataFromURL, HttpMethod } from '../../utils';
 import { GEN3_WTS_API } from '../../constants';
-import { ExternalProvider } from './types';
+import { ExternalProvider, LoginStatus } from './types';
 
 let cachedToken: string | null = null;
 
@@ -110,3 +110,5 @@ export const queryWTSFederatedLoginStatus = async (
     };
   }
 };
+export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
+  loginStatus === 'authenticated';

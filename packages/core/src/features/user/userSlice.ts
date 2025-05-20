@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
 import { selectCSRFToken } from './userSliceRTK';
+import { isAuthenticated } from './utils';
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;
@@ -48,9 +49,6 @@ export const fetchUserState = createAsyncThunk<
     },
   });
 });
-
-export const isAuthenticated = (loginStatus: LoginStatus): boolean =>
-  loginStatus === 'authenticated';
 
 export const isPending = (loginStatus: LoginStatus): boolean =>
   loginStatus === 'pending';

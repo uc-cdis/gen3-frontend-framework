@@ -288,6 +288,8 @@ export const CohortPanel = ({
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
+  console.log('CohortPanel');
+
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
       <CohortManager index={index} />

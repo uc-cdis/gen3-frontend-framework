@@ -25,6 +25,8 @@ export const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
+  console.log('Cohort Builder');
+
   return (
     <div className="w-full">
       <Tabs

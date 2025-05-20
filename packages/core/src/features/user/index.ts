@@ -2,7 +2,6 @@ import {
   useUserAuth,
   resetUserState,
   fetchUserState,
-  isAuthenticated,
   isPending,
   selectUser,
   selectUserData,
@@ -38,6 +37,7 @@ import {
 } from './types';
 
 import { getFederatedLoginStatus, useGetFederatedLoginStatus } from './hooks';
+import { isAuthenticated } from './utils';
 
 export {
   type Gen3User,

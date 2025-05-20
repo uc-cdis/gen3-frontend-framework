@@ -33,6 +33,7 @@ export const userAuthApi = createApi({
       'Content-Type': 'application/json',
       ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      credentials: 'include',
     };
 
     try {
