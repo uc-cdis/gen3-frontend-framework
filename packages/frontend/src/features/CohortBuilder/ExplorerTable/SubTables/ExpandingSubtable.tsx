@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, useMantineTheme } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import { ExpandingSubTableProps } from './types';
 import ExplorerTableSubtable from './ExplorerTableSubtable';
@@ -22,6 +22,9 @@ const Header = ({ label, className }: HeaderProps) => {
 
 const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  const theme = useMantineTheme();
 
   const expandedTableColumns = useDeepCompareMemo(() => {
     return createTableColumns(config);
@@ -63,24 +66,37 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
     <div className="flex flex-col">
       <Header label={config.label} />
       <div className="flex flex-nowrap w-full">
-        <ActionIcon
-          variant="filled"
-          aria-label="Settings"
-          onClick={expand}
-          className="self-center"
-        >
-          <Icon icon={expanded ? 'gen3:changeFrom' : 'gen3:changeTo'} />
-        </ActionIcon>
-        <div className="w-full overflow-x-scroll">
+        <div className="flex flex-col border border-table-light">
+          <div
+            className="bg-secondary-lightest border-bottom border-table-light"
+            style={{
+              height: `${headerHeight}px`,
+            }}
+          ></div>
+          <ActionIcon
+            variant="transparent"
+            aria-label="Settings"
+            onClick={expand}
+            className="my-auto"
+          >
+            <Icon
+              icon={expanded ? 'gen3:changeFrom' : 'gen3:changeTo'}
+              color={theme.colors.accent[4]}
+            />
+          </ActionIcon>
+        </div>
+        <div className="w-full overflow-x-auto">
           {expanded ? (
             <ExplorerTableSubtable
               columns={expandedTableColumns}
               data={tableData}
+              setHeaderHeight={setHeaderHeight}
             />
           ) : (
             <ExplorerTableSubtable
               columns={compressedTableColumns}
               data={tableData}
+              setHeaderHeight={setHeaderHeight}
             />
           )}
         </div>

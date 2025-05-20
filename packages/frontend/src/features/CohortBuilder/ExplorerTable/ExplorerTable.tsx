@@ -162,6 +162,7 @@ const ExplorerTable = ({
         backgroundColor: 'var(--mantine-color-base-1)',
         '--mrt-striped-row-background-color': 'var(--mantine-color-base-3)',
         fontSize: `var(--mantine-font-size-${size})`,
+        zIndex: 10,
       },
     },
     mantinePaginationProps: {

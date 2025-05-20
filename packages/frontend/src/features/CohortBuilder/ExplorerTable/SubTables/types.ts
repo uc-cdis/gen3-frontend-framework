@@ -9,4 +9,5 @@ export interface ExpandingSubTableProps {
 export interface ExplorerTableSubTableProps {
   columns: ExplorerTableColumnMRT[];
   data?: JSONObject[];
+  setHeaderHeight?: (height: number) => void;
 }
