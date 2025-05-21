@@ -15,18 +15,15 @@ import DiscoveryConfigProvider, {
 } from './DiscoveryProvider';
 import {
   type DiscoveryConfig,
-  type StudyDetailsField,
   type TagData,
   type TagsConfig,
 } from './types';
-import StudyGroup from './StudyDetails/StudyGroup';
 import { getTagInfo } from './utils';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
 
 export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,
-  type StudyDetailsField,
   type RowRenderFunctionParams,
   type TagData,
   type TagsConfig,
@@ -39,7 +36,6 @@ export {
   DiscoveryRowRendererFactory,
   DiscoveryConfigProvider,
   useDiscoveryContext,
-  StudyGroup,
   getTagInfo,
   AiSearch,
   ActionBar,

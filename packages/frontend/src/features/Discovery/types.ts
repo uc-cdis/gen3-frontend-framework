@@ -10,6 +10,8 @@ import {
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
+import { StudyPageGroup, StudyPageConfig, StudyDetailsField, StudyColumn, StudyDetailView } from '../Study/types';
+import { AccessibleResource, DataAuthorization } from '../../utils';
 
 export interface TagData {
   name: string;
@@ -112,85 +114,11 @@ export type DiscoveryContentTypes =
   | 'boolean'
   | 'paragraphs';
 
-export interface StudyColumn {
-  name: string;
-  field: string;
-  contentType?: DiscoveryContentTypes;
-  cellRenderFunction?: string;
-  params?: JSONObject;
-  errorIfNotAvailable?: boolean;
-  valueIfNotAvailable?: string | number;
-}
-
 export interface MinimalFieldMapping {
   authzField: string;
   tagsListFieldName: string;
   dataAvailabilityField: string;
   uid: string;
-}
-
-export interface StudyDetailsField {
-  name: string;
-  field: string;
-  contentType?: string;
-  includeLabel?: boolean;
-  includeIfNotAvailable?: boolean;
-  valueIfNotAvailable?: string | number;
-  renderer?: string;
-  params?: Record<string, unknown>;
-  classNames?: Record<string, string>;
-}
-
-export interface StudyPageGroup {
-  groupName?: string;
-  groupWidth?: 'half' | 'full';
-  fields: StudyDetailsField[];
-}
-
-export interface DataDownloadLinks {
-  field: string;
-  name?: string;
-  className?: Record<string, string>;
-}
-
-export interface DownloadLinkFields {
-  idField: string;
-  titleField: string;
-  descriptionField: string;
-}
-
-export interface StudyPageConfig {
-  showAllAvailableFields?: boolean;
-  header?: {
-    field: string;
-    className?: string;
-  };
-  downloadLinks?: DataDownloadLinks;
-  downloadLinkFields?: DownloadLinkFields;
-  classNames?: Record<string, string>;
-  fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
-}
-
-export interface StudyTabTagField extends StudyDetailsField {
-  categories?: string[];
-}
-
-export interface StudyTabGroup {
-  header: string;
-  fields: Array<StudyDetailsField | StudyTabTagField>;
-}
-
-export interface StudyDetailTab {
-  tabName: string;
-  groups: StudyTabGroup[];
-}
-
-export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
-  tabs: StudyDetailTab[];
 }
 
 interface DiscoveryTableConfig {
@@ -236,24 +164,12 @@ export interface SearchConfig {
   tagSearchDropdown?: TagSearchDropdown;
 }
 
-export interface AuthorizationValues {
-  enabled: boolean;
-  menuText: string;
-}
-
 export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   dataLibraryStoreMode?: DataLibraryStoreMode;
   exportDataFields: ExportDatasetFields;
-}
-
-export interface DataAuthorization {
-  columnTooltip?: string;
-  supportedValues?: Record<string, AuthorizationValues>;
-  isMesh?: boolean;
-  enabled?: boolean;
 }
 
 export interface AccessFilters {
@@ -318,20 +234,8 @@ export interface DiscoveryConfig {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
-export const accessibleFieldName = '__accessible';
 const ARBORIST_READ_PRIV = 'read';
 
-export enum AccessLevel {
-  ACCESSIBLE = 1,
-  UNACCESSIBLE = 2,
-  WAITING = 3,
-  NOT_AVAILABLE = 4,
-  OTHER = 5,
-  MIXED = 6,
-}
-
-export interface DiscoveryResource
-  extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
-  [accessibleFieldName]?: AccessLevel;
+export interface DiscoveryResource extends AccessibleResource {
   tags?: Array<TagInfo>;
 }

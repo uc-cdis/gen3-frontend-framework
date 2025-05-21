@@ -18,7 +18,7 @@ import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
-import StudyDetails from './StudyDetails/StudyDetails';
+import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';

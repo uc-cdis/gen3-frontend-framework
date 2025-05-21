@@ -4,7 +4,8 @@
 import React, { ReactElement } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { JSONObject, JSONValue } from '@gen3/core';
-import { DataAuthorization, StudyPageConfig } from '../types';
+import { StudyPageConfig } from '../types';
+import { DataAuthorization } from '../../../utils';
 import DetailsAuthorizationIcon from './DetailsAuthorizationIcon';
 import { JSONPath } from 'jsonpath-plus';
 import { toString } from 'lodash';

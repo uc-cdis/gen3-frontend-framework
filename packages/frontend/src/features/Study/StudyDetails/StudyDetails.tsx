@@ -1,7 +1,6 @@
 import { Button, CopyButton, Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import React, { useEffect } from 'react';
-import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
