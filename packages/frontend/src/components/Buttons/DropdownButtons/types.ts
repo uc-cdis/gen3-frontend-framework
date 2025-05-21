@@ -15,11 +15,11 @@ export interface DownloadButtonProps {
 }
 
 export interface DispatchJobButtonProps
-  extends Omit<DownloadButtonProps, 'action' | 'actionArgs'> {
+  extends Omit<DownloadButtonProps, 'action' | 'actionParams'> {
   actions: CreateAndExportActionConfig;
 }
 
 export interface DropdownButtonProps
-  extends Omit<DownloadButtonProps, 'action' | 'actionArgs'> {
+  extends Omit<DownloadButtonProps, 'action' | 'actionParams'> {
   dropdownItems: ReadonlyArray<Partial<DownloadButtonProps>>;
 }

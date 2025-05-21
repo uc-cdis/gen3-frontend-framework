@@ -40,6 +40,8 @@ const useGuppyActionButton = ({
   const [active, setActive] = useState(false);
   const dispatch = useCoreDispatch();
 
+  console.log('useGuppyActionButton actionArgs', actionArgs);
+
   const handleError = useDeepCompareCallback(
     (error: Error) => {
       const errorMessage: string = error.message;

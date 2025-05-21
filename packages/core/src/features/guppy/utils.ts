@@ -10,6 +10,7 @@ import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
 import { isJSONObject } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
+import { getCookie } from 'cookies-next';
 
 /**
  * Represents a configuration for making a fetch request.
@@ -44,11 +45,21 @@ const prepareFetchConfig = (
   parameters: GuppyDownloadDataParams,
   csrfToken?: string,
 ): FetchConfig => {
+  let accessToken = undefined;
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    accessToken = getCookie('credentials_token');
+  }
+
   return {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
+      ...(accessToken !== undefined && {
+        Authorization: `Bearer ${accessToken}`,
+      }),
       // TODO: Add credentials
     },
     body: JSON.stringify({
@@ -70,7 +81,7 @@ const prepareFetchConfig = (
  * @param onDone - The function to call when the download is done.
  * @param onError - The function to call when the download fails.
  * @param onAbort - The function to call when the download is aborted.
- * @param signal - AbortSignal to use for the request.
+ * @param signal - AbortSignal to abort the request.
  */
 export const downloadFromGuppyToBlob = async ({
   parameters,

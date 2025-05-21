@@ -8,7 +8,13 @@ import {
   DownloadButtonProps,
   type DropdownButtonProps,
 } from '../../components/Buttons/DropdownButtons';
-import { Accessibility, FilterSet, useIsUserLoggedIn } from '@gen3/core';
+import {
+  Accessibility,
+  FilterSet,
+  isAuthenticated,
+  useCoreSelector,
+  selectUserAuthStatus,
+} from '@gen3/core';
 import CohortActionButton from './downloads/CohortActionButton';
 import {
   findButtonAction,
@@ -26,7 +32,7 @@ const createDownloadMenuButton = (
 ): JSX.Element => {
   const elements = props.dropdownItems?.map((button) => {
     let actionFunction = NullButtonAction;
-    let actionArgs = {};
+    let actionParams = {};
 
     const buttonAction = button.action ?? button.type;
 
@@ -34,7 +40,7 @@ const createDownloadMenuButton = (
       const actionItem = findButtonAction(buttonAction);
       if (actionItem) {
         actionFunction = actionItem.action;
-        actionArgs = actionItem.args ?? ({} as Record<string, any>);
+        actionParams = actionItem.args ?? ({} as Record<string, any>);
       }
     }
 
@@ -51,7 +57,7 @@ const createDownloadMenuButton = (
       actionFunction: actionFunction,
       actionArgs: {
         ...args,
-        ...actionArgs,
+        ...actionParams,
         ...(button.actionArgs ?? ({} as Record<string, any>)),
       },
     } as DownloadButtonPropsWithAction;
@@ -94,9 +100,11 @@ const DownloadsPanel = ({
   fields,
   filter,
   accessibility,
-  sort,
 }: DownloadsPanelProps): JSX.Element => {
-  const isUserLoggedIn = useIsUserLoggedIn();
+  const isUserLoggedIn = useCoreSelector((state) =>
+    isAuthenticated(selectUserAuthStatus(state)),
+  );
+
   const loginRequired = loginForDownload ? loginForDownload : false;
 
   const dropdownsToRender = useDeepCompareMemo(() => {

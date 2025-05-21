@@ -2,8 +2,6 @@ import {
   useUserAuth,
   resetUserState,
   fetchUserState,
-  isAuthenticated,
-  isPending,
   selectUser,
   selectUserData,
   selectUserLoginStatus,
@@ -13,12 +11,7 @@ import {
 import {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
-  selectUserDetails,
-  selectUserAuthStatus,
   useGetCSRFQuery,
-  selectCSRFToken,
-  selectCSRFTokenData,
-  selectHeadersWithCSRFToken,
   type CSRFToken,
 } from './userSliceRTK';
 
@@ -37,7 +30,16 @@ import {
   type JWTSessionStatus,
 } from './types';
 
+import { isAuthenticated, isPending } from './utils';
+
 import { getFederatedLoginStatus, useGetFederatedLoginStatus } from './hooks';
+import {
+  selectCSRFToken,
+  selectCSRFTokenData,
+  selectHeadersWithCSRFToken,
+  selectUserAuthStatus,
+  selectUserDetails,
+} from './userSelectorsRTK';
 
 export {
   type Gen3User,
@@ -52,10 +54,10 @@ export {
   selectUserData,
   selectUserLoginStatus,
   fetchUserState,
-  isAuthenticated,
-  isPending,
   useIsUserLoggedIn,
   resetUserState,
+  isAuthenticated,
+  isPending,
   useGetExternalLoginsQuery,
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,

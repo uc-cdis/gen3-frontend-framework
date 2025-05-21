@@ -7,7 +7,7 @@ import { useCoreDispatch, useCoreSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { Gen3User, LoginStatus } from './types';
 import { getCookie } from 'cookies-next';
-import { selectCSRFToken } from './userSliceRTK';
+import { selectCSRFToken } from './userSelectorsRTK';
 
 export interface Gen3UserLoginResponse<T> {
   readonly data?: T;

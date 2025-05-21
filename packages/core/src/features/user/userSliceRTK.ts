@@ -1,12 +1,11 @@
-import { createSelector } from '@reduxjs/toolkit';
 import { fetchFence } from '../fence/utils';
 import { type Gen3FenceResponse } from '../fence/types';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
 import { getCookie } from 'cookies-next';
-import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
+import { selectCSRFToken } from './userSelectorsRTK';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -100,10 +99,6 @@ export const userAuthApi = createApi({
   }),
 });
 
-const EMPTY_USER: Gen3User = {
-  username: undefined,
-};
-
 export const {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
@@ -115,37 +110,3 @@ export const userAuthApiReducer = userAuthApi.reducer;
 
 export const selectUserDetailsFromState =
   userAuthApi.endpoints.fetchUserDetails.select();
-
-export const selectUserDetails = createSelector(
-  selectUserDetailsFromState,
-  (userDetails) => userDetails?.data?.data ?? EMPTY_USER,
-);
-
-export const selectUserAuthStatus = createSelector(
-  selectUserDetailsFromState,
-  (userLoginState) =>
-    userLoginState.status === QueryStatus.pending
-      ? ('pending' as LoginStatus)
-      : userLoginState.status === QueryStatus.uninitialized
-        ? ('not present' as LoginStatus)
-        : (userLoginState?.data?.loginStatus ??
-          ('unauthenticated' as LoginStatus)),
-);
-
-export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();
-
-const passThroughTheState = (state: CoreState) => state.userAuthApi;
-
-export const selectCSRFToken = createSelector(
-  [selectCSRFTokenData, passThroughTheState],
-  (state) => state?.data?.csrfToken,
-);
-
-export const selectHeadersWithCSRFToken = createSelector(
-  [selectCSRFToken, passThroughTheState],
-  (csrfToken) => ({
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
-  }),
-);

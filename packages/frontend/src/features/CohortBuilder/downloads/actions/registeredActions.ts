@@ -1,7 +1,4 @@
-import {
-  ActionButtonWithArgsFunction,
-  ActionButtonFunction,
-} from '../../types';
+import { ActionButtonWithArgsFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 import { downloadToManifestAction } from './downloadManifest';
 import { submitJobAction } from './sowerActions';

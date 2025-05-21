@@ -14,7 +14,6 @@ import { fetchJWTKey } from './utils';
  */
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const params = req.body;
-
   try {
     const response = await fetchFence<Record<string, string>>({
       endpoint: '/credentials/api/access_token',
@@ -77,6 +76,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).json({ message: 'Session token set' });
   } catch (error: unknown) {
+    console.log('credentialsLogin response: ', error);
     getWebTokenErrorResponse(error, res); // will update res with error
   }
 }

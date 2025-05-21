@@ -4,7 +4,6 @@ import { ExternalProvider, FileMetadata } from './types';
 import { GUID_PREFIX_PATTERN } from '../../constants';
 import { resolveDRSObjectId } from '../drsResolver/utils';
 import { queryWTSFederatedLoginStatus } from './utils';
-
 /**
  * Input is a list of files selected for download.
  * Output is a array of GUID prefixes
