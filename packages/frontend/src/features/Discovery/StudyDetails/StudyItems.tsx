@@ -341,7 +341,11 @@ const accessDescriptor: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
-  if (typeof resource !== 'object' || !(accessibleFieldName in resource)) {
+  if (
+    resource === null ||
+    typeof resource !== 'object' ||
+    !(accessibleFieldName in resource)
+  ) {
     return <React.Fragment />;
   }
 

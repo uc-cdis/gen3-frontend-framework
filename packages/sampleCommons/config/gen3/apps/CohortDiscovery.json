@@ -27,22 +27,24 @@
     {
       "dataConfig": {
         "dataType": "subject",
-        "nodeCountTitle": "Cases"
+        "nodeCountTitle": "Subjects"
       },
-      "tabTitle": "Cases",
+      "tabTitle": "Subjects",
       "tabs": [
         {
           "title": "Study Selection",
-          "fields": ["project"]
+          "fields": [
+            "project_id"
+          ]
         },
         {
           "title": "Subjects",
           "fields": [
-            "study",
+            "age_at_enrollment",
             "gender",
             "race",
             "ethnicity",
-            "vital_status"
+            "experimental_group"
           ]
         }
       ]

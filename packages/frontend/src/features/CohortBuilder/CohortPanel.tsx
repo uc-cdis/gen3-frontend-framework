@@ -79,7 +79,7 @@ export const CohortPanel = ({
   dropdowns,
   buttons,
   loginForDownload,
-  showAccessLevel = true,
+  showAccessLevel = false,
 }: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
@@ -348,7 +348,11 @@ export const CohortPanel = ({
           {table?.enabled && (
             <div className="mt-2 flex flex-col">
               <div className="grid">
-                <ExplorerTable index={index} tableConfig={table} />
+                <ExplorerTable
+                  index={index}
+                  tableConfig={table}
+                  accessibility={accessLevel}
+                />
               </div>
             </div>
           )}
