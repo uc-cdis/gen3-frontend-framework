@@ -147,16 +147,16 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
               root: 'grow',
               input: 'border-r-0 rounded-r-none py-1',
             }}
-            comboboxProps={{ shadow: 'md' }}
+            comboboxProps={{ shadow: 'sm' }}
             aria-label="enter value to add filter"
             value={selectedValues}
             onChange={setSelectedValues}
             searchable
             data={dataValues}
-            limit={10}
+            limit={100}
             maxDropdownHeight={200}
             hidePickedOptions
-            withScrollArea={false}
+            withScrollArea={true}
             mt="md"
           />
         </div>

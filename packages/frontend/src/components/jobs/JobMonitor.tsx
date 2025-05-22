@@ -13,7 +13,7 @@ import {
   updateSowerJob,
   type JobWithActions,
 } from '@gen3/core';
-import { bindSendResultsAction } from '../../features/CohortBuilder/downloads/actions/TwoStepActionButton';
+import { findSendResultsAction } from '../../features/CohortBuilder/downloads/actions/TwoStepActionButton';
 
 const handleError = (
   dispatch: CoreDispatch,
@@ -52,7 +52,7 @@ const runSendActionb = async (
 ) => {
   try {
     // get the objectId of the job
-    const action = bindSendResultsAction(
+    const action = findSendResultsAction(
       pendingAction.config.sendJobAction.actionName,
     );
     await action({

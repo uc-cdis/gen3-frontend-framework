@@ -20,6 +20,8 @@ import {
   sowerJobsListSliceReducer,
 } from './jobsListSlice';
 
+import { initSowerJobsPolling } from './init';
+
 import { selectSowerJobId, selectSowerJobs } from './jobsListSelectors';
 
 import {
@@ -50,6 +52,7 @@ export {
   updateOutputGUID,
   removeSowerJob,
   clearSowerJobsId,
+  initSowerJobsPolling,
   sowerApi,
   sowerJobsListSliceReducer,
   selectSowerJobId,

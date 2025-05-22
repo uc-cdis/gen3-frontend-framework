@@ -124,19 +124,23 @@ SowerJobBuilderActionFactory.register(
 
 SendSowerJobOutputActionFactory.register('handoff-pfb-to-url', sendPFBToURL);
 
-export const bindCreateJobAction = (actionName: string): JobBuilderAction => {
+/**
+ *  find the action to create a job (e.g get the correct data)
+ * @param actionName
+ */
+export const findCreateJobAction = (actionName: string): JobBuilderAction => {
   try {
     const createAction = SowerJobBuilderActionFactory.getAction(actionName);
     return createAction;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error(`Error binding action ${actionName}`, error.message);
+      console.error(`Cannot find create job action ${actionName}`);
     }
-    throw error;
+    throw new Error(`Cannot find create job action ${actionName}`);
   }
 };
 
-export const bindSendResultsAction = (
+export const findSendResultsAction = (
   actionName: string,
 ): SendJobOutputAction => {
   try {
@@ -144,15 +148,19 @@ export const bindSendResultsAction = (
     return createAction;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error(`Error binding action ${actionName}`, error.message);
+      console.error(`Error binding send results action ${actionName}`);
     }
-    throw error;
+    throw new Error(`Cannot find send results action ${actionName}`);
   }
 };
 
 interface CohortSubmitJobActionButtonProps {
   actions: CreateAndExportActionConfig;
   jobParameters: Record<string, any>;
+  /**
+   * label of button
+   */
+  label: string;
   /**
    *   Left Icon for the button, can be undefined too
    */
@@ -199,17 +207,19 @@ const CohortSubmitJobActionButton = forwardRef<
       jobParameters,
       tooltipText = undefined,
       disabled = false,
+      label = 'Submit',
       ...props
     }: CohortSubmitJobActionButtonProps,
     ref,
   ) => {
-    const [submitJob, { isLoading, isSuccess }] = useSubmitSowerJobMutation();
+    const [submitJob, { isLoading, isSuccess, error, isError }] =
+      useSubmitSowerJobMutation();
 
     // TODO: handle error from binding actions
 
     const handleSubmitJob = async () => {
       try {
-        const createJobAction = bindCreateJobAction(
+        const createJobAction = findCreateJobAction(
           actions.createAction.actionName,
         );
         const jobConfig = createJobAction({
@@ -221,13 +231,29 @@ const CohortSubmitJobActionButton = forwardRef<
         const { uid } = await submitJob(jobConfig).unwrap();
 
         // Register with global monitor
-        SowerJobsMonitor.getInstance().registerJob(uid, actions);
-      } catch (error: unknown) {
-        notifications.show({
-          title: 'Error',
-          message: 'Failed to start job',
-          color: 'red',
-        });
+        //  SowerJobsMonitor.getInstance().registerJob(uid, actions);
+
+        console.log('isError', isError, error);
+      } catch (e: unknown) {
+        console.log('error', e);
+        if (e instanceof FetchBaseQueryError)
+          notifications.show({
+            title: 'ErrorRTK',
+            message: e.message,
+            color: 'red',
+          });
+        else if (e instanceof Error)
+          notifications.show({
+            title: 'Error',
+            message: e.message,
+            color: 'red',
+          });
+        else
+          notifications.show({
+            title: 'Error',
+            message: 'Failed to start job',
+            color: 'red',
+          });
       }
     };
 
@@ -239,7 +265,7 @@ const CohortSubmitJobActionButton = forwardRef<
         disabled={disabled}
         {...props}
       >
-        Start Action
+        {label}
       </Button>
     );
   },

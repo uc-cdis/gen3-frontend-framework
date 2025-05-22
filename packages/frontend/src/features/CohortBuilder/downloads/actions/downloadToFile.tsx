@@ -10,7 +10,6 @@ export const downloadToFileAction = async (
 ): Promise<void> => {
   // call the downloadFromGuppy function
 
-  console.log('downloadToFileAction', params);
   await downloadFromGuppyToBlob({
     parameters: params as GuppyDownloadDataParams,
     onDone: (data: Blob) => {

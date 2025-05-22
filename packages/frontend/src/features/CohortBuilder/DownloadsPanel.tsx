@@ -132,6 +132,78 @@ const DownloadsPanel = ({
     return dropdownsToRender;
   }, [dropdowns, loginRequired, isUserLoggedIn]);
 
+  const submitJobsButtons = useDeepCompareMemo(() => {
+    return jobsButtons.map((button) => {
+      console.log('jobs', button);
+      let disabled = button?.enabled === undefined ? false : !button.enabled;
+      console.log('disabled', disabled);
+      if (loginRequired && !isUserLoggedIn) {
+        disabled = true;
+      }
+
+      return (
+        <CohortSubmitJobActionButton
+          label={button.title}
+          activeText={'Submitting...'}
+          inactiveText={button.title}
+          tooltipText={button.tooltipText}
+          disabled={disabled}
+          actions={button.actions}
+          jobParameters={{
+            index,
+            totalCount,
+            fields,
+            filter,
+            accessibility: accessibility ?? Accessibility.ALL,
+            // sort: sort, // TODO add sort
+          }}
+          key={button.title}
+        />
+      );
+    });
+  }, [jobsButtons, loginRequired, isUserLoggedIn]);
+
+  const actionButtons = useDeepCompareMemo(() => {
+    return buttons.map((button) => {
+      let disabled = false;
+      let actionFunction = NullButtonAction;
+      let actionArgs = {};
+      const buttonAction = button.action ?? button.type;
+      if (buttonAction) {
+        const actionItem = findButtonAction(buttonAction);
+        if (actionItem) {
+          const funcArgs = actionItem.args ?? {};
+          actionFunction = actionItem.action;
+          actionArgs = funcArgs ?? ({} as Record<string, any>);
+        }
+      }
+      if (loginRequired && !isUserLoggedIn) {
+        disabled = true;
+      }
+
+      return (
+        <CohortActionButton
+          activeText={'Downloading...'}
+          inactiveText={button.title}
+          tooltipText={button.tooltipText}
+          disabled={disabled || !button.enabled}
+          actionFunction={actionFunction}
+          actionArgs={{
+            ...actionArgs,
+            ...(button.actionArgs ?? ({} as Record<string, any>)),
+            type: index,
+            totalCount,
+            fields,
+            filter,
+            accessibility: accessibility ?? Accessibility.ALL,
+            // sort: sort, // TODO add sort
+          }}
+          key={button.title}
+        />
+      );
+    });
+  }, [buttons, loginRequired, isUserLoggedIn]);
+
   return dropdowns || buttons || jobsButtons ? (
     <div className="flex space-x-1">
       {Object.values(dropdownsToRender).map(
@@ -147,69 +219,8 @@ const DownloadsPanel = ({
         },
       )}
 
-      {buttons.map((button) => {
-        let disabled = false;
-        let actionFunction = NullButtonAction;
-        let actionArgs = {};
-        const buttonAction = button.action ?? button.type;
-        if (buttonAction) {
-          const actionItem = findButtonAction(buttonAction);
-          if (actionItem) {
-            const funcArgs = actionItem.args ?? {};
-            actionFunction = actionItem.action;
-            actionArgs = funcArgs ?? ({} as Record<string, any>);
-          }
-        }
-        if (loginRequired && !isUserLoggedIn) {
-          disabled = true;
-        }
-
-        return (
-          <CohortActionButton
-            activeText={'Downloading...'}
-            inactiveText={button.title}
-            tooltipText={button.tooltipText}
-            disabled={disabled || !button.enabled}
-            actionFunction={actionFunction}
-            actionArgs={{
-              ...actionArgs,
-              ...(button.actionArgs ?? ({} as Record<string, any>)),
-              type: index,
-              totalCount,
-              fields,
-              filter,
-              accessibility: accessibility ?? Accessibility.ALL,
-              // sort: sort, // TODO add sort
-            }}
-            key={button.title}
-          />
-        );
-      })}
-      {jobsButtons.map((button) => {
-        let disabled = false;
-        if (loginRequired && !isUserLoggedIn) {
-          disabled = true;
-        }
-
-        return (
-          <CohortSubmitJobActionButton
-            activeText={'Downloading...'}
-            inactiveText={button.title}
-            tooltipText={button.tooltipText}
-            disabled={disabled || !button.enabled}
-            actions={button.actions}
-            jobParameters={{
-              index,
-              totalCount,
-              fields,
-              filter,
-              accessibility: accessibility ?? Accessibility.ALL,
-              // sort: sort, // TODO add sort
-            }}
-            key={button.title}
-          />
-        );
-      })}
+      {actionButtons}
+      {submitJobsButtons}
     </div>
   ) : (
     <React.Fragment></React.Fragment>

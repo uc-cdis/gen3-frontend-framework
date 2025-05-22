@@ -11,6 +11,7 @@ import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import NotificationsProvider from '../notifications/NotificationsProvider';
 import { RegisteredJobsModal } from '../jobs/JobsModal';
+import SowerJobsInitializer from '../jobs/SowerJobsInitializer';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -96,6 +97,7 @@ const Gen3Provider = ({
         <NotificationsProvider>
           <SessionProvider {...sessionConfig}>
             <Gen3ModalsProvider config={modalsConfig}>
+              <SowerJobsInitializer />
               {children}
             </Gen3ModalsProvider>
           </SessionProvider>

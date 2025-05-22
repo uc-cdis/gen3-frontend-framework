@@ -9,7 +9,7 @@ import {
   type CreateAndExportActionConfig,
 } from '@gen3/core';
 
-import { bindSendResultsAction } from '../features/CohortBuilder/downloads/actions/TwoStepActionButton';
+import { findSendResultsAction } from '../features/CohortBuilder/downloads/actions/TwoStepActionButton';
 
 interface JobMonitorConfig {
   pollingInterval?: number; // in milliseconds
@@ -139,7 +139,7 @@ export class SowerJobsMonitor {
   private async executeStep2(pendingAction: JobWithActions) {
     try {
       // get the objectId of the job
-      const action = bindSendResultsAction(
+      const action = findSendResultsAction(
         pendingAction.config.sendJobAction.actionName,
       );
       await action({

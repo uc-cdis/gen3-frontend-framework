@@ -4,9 +4,12 @@ import {
   removeSowerJob,
   clearSowerJobsId,
   updateSowerJob,
-  sowerApi,
-  JobWithActions,
-} from './index';
+} from './jobsListSlice';
+import { type JobWithActions } from './types';
+
+import { sowerApi } from './sowerApi';
+import { INIT_SOWER_JOBS_POLLING } from './init';
+
 import { showNotification } from '../notifications';
 import { CoreState } from '../../reducers';
 
@@ -94,16 +97,59 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
     });
   };
 
+  const checkForActiveJobsAndStartPolling = () => {
+    const state = store.getState();
+    const jobIds = Object.keys(state.sowerJobsList.jobIds);
+
+    // Only start polling if there are jobs
+    if (jobIds.length > 0) {
+      // Filter out jobs that are already completed/failed
+      const activeJobs = Object.values(state.sowerJobsList.jobIds).filter(
+        (job) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
+      );
+
+      if (activeJobs.length > 0) {
+        startPolling();
+
+        if (notificationConfig.enabled) {
+          showNotification(
+            'job-polling-resumed',
+            'Monitoring Jobs',
+            `Resuming monitoring of ${activeJobs.length} active jobs`,
+            'info',
+            { autoClose: 3000 },
+          );
+        }
+      }
+    }
+  };
+
   // Middleware logic
   return (next) => (unkAction: unknown) => {
     const action = unkAction as PayloadAction<JobWithActions, string, any>;
     const result = next(action);
     const state = store.getState();
 
+    // Check if this is the initialization action
+    if (action.type === INIT_SOWER_JOBS_POLLING) {
+      checkForActiveJobsAndStartPolling();
+      return result;
+    }
+
     // Check if we need to start or stop polling based on action type
     if (addSowerJob.match(action)) {
       // When a job is added, ensure polling is started
       startPolling();
+      if (notificationConfig.showJobStarted && notificationConfig.enabled) {
+        const job = action.payload;
+        showNotification(
+          `job-started-${job.jobId}`,
+          'Job Started',
+          `${job.name} has been submitted`,
+          'info',
+          { autoClose: notificationConfig.autoClose },
+        );
+      }
     } else if (removeSowerJob.match(action) || clearSowerJobsId.match(action)) {
       // After a job removal action, check if we should stop polling
       const jobIds = Object.keys(state.sowerJobsList.jobIds);
