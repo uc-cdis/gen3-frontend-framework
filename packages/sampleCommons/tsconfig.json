@@ -21,8 +21,11 @@
     "incremental": true,
     "paths": {
       "@/*": [
-        "./src/*"
-      ]
+        "./src/*",
+
+      ],
+      "@gen3/core/*": ["../core/*"],
+      "@gen3/frontend/*": ["../frontend/*"]
     },
     "plugins": [
       {

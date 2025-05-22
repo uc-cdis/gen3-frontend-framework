@@ -105,6 +105,7 @@ export const {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   useGetCSRFQuery,
+  useLazyGetCSRFQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;
