@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
 import { MultiSelect } from '@mantine/core';
 import { controlsIconStyle, FacetText, FacetHeader } from './components';
@@ -60,6 +60,7 @@ const extractValues = (
  * @param width - width of the facet
  * @param hooks - hooks to use for the facet
  * @param header - header components
+ * @oaram showSettings - show the setting "and/or" for facet
  * @category Facets
  */
 const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
