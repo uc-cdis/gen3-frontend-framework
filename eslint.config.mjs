@@ -7,6 +7,8 @@ import tsLint from 'typescript-eslint';
 import next from '@next/eslint-plugin-next';
 import globals from 'globals';
 import reactRecommended from 'eslint-plugin-react/configs/recommended.js';
+import stylisticTs from '@stylistic/eslint-plugin-ts';
+import parserTs from '@typescript-eslint/parser';
 
 export default [
   reactRecommended,
@@ -53,6 +55,10 @@ export default [
       react: react,
       reactHooks: reactHooks,
       next: next,
+      '@stylistic/ts': stylisticTs,
+      languageOptions: {
+        parser: parserTs,
+      },
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -60,6 +66,14 @@ export default [
       'react/prop-types': 'warn',
       'reactHooks/rules-of-hooks': 'error',
       'reactHooks/exhaustive-deps': 'warn',
+      "@typescript-eslint/quotes": [
+        "error",
+        "single",
+        {
+          "avoidEscape": true,
+          "allowTemplateLiterals": true
+        }
+      ]
     },
   },
 ];

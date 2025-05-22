@@ -1,17 +1,16 @@
-import React, { ReactNode, useState } from 'react';
-import { Tooltip } from '@mantine/core';
+import React, { useState, PropsWithChildren } from "react";
+import { Tooltip } from "@mantine/core";
 
-type OverflowTooltippedLabelProps = {
-  children: ReactNode;
+interface OverflowTooltippedLabelProps extends PropsWithChildren {
   label: string;
   className?: string;
-};
+}
 
-const OverflowTooltippedLabel = ({
+const OverflowTooltippedLabel: React.FC<OverflowTooltippedLabelProps> = ({
   children,
   label,
-  className = 'flex-grow font-heading text-md pt-0.5',
-}: OverflowTooltippedLabelProps): JSX.Element => {
+  className = "flex-grow font-heading text-sm pt-0.5",
+}) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
@@ -25,11 +24,11 @@ const OverflowTooltippedLabel = ({
       arrowOffset={20}
       classNames={{
         tooltip:
-          'bg-base-min bg-opacity-90 text-base-contrast-min shadow-lg font-content font-medium text-xs',
-        arrow: 'bg-base-min bg-opacity-90',
+          "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+        arrow: "bg-base-min bg-opacity-90",
       }}
     >
-      <div
+      <span
         className={`${className} truncate ... `}
         ref={(el) => {
           if (el) {
@@ -42,7 +41,7 @@ const OverflowTooltippedLabel = ({
         }}
       >
         {children}
-      </div>
+      </span>
     </Tooltip>
   );
 };

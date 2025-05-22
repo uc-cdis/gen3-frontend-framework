@@ -35,7 +35,7 @@ import {
   EnumFacetDataHooks,
   FacetDataHooks,
 } from '../../components/facets/types';
-import CohortManager from './CohortManager';
+import CohortManagerAndExpression from './CohortManagerAndExpression';
 import { Charts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
@@ -289,7 +289,7 @@ export const CohortPanel = ({
 
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
-      <CohortManager index={index} />
+      <CohortManagerAndExpression index={index} />
 
       {/* Flex container to ensure proper 25/75 split */}
       <div className="flex w-full">

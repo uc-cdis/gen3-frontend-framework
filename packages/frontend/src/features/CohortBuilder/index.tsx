@@ -18,7 +18,7 @@ import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext
 import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 import QueryExpression from './QueryExpression/QueryExpression';
 
-import CohortManager from './CohortManager';
+import CohortManagerAndExpression from './CohortManagerAndExpression';
 
 export {
   type CohortBuilderConfiguration,
@@ -27,7 +27,7 @@ export {
   type CellRendererFunctionProps,
   type CohortPanelConfiguration,
   CohortBuilder,
-  CohortManager,
+  CohortManagerAndExpression,
   ExplorerTableCellRendererFactory,
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,

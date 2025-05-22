@@ -63,6 +63,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.0",
+    "@stylistic/eslint-plugin-ts": "^4.2.0",
     "@swc/cli": "^0.5.0",
     "@swc/core": "^1.7.28",
     "@testing-library/jest-dom": "^5.16.5",
@@ -114,11 +115,11 @@
     }
   },
   "optionalDependencies": {
-      "@nx/nx-darwin-arm64": "^20.7.1",
-      "@nx/nx-linux-arm64-gnu": "^20.7.1",
-      "@nx/nx-linux-x64-gnu": "^20.7.1",
-      "@swc/nx-darwin-arm64" : "^1.11.10",
-      "@swc/nx-linux-arm64-gnu" : "^1.11.10",
-      "@swc/core-linux-x64-gnu" : "^1.11.10"
+    "@nx/nx-darwin-arm64": "^20.7.1",
+    "@nx/nx-linux-arm64-gnu": "^20.7.1",
+    "@nx/nx-linux-x64-gnu": "^20.7.1",
+    "@swc/core-linux-x64-gnu": "^1.11.10",
+    "@swc/nx-darwin-arm64": "^1.11.10",
+    "@swc/nx-linux-arm64-gnu": "^1.11.10"
   }
 }

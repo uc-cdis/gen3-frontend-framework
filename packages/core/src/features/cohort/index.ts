@@ -1,6 +1,5 @@
 // import all the components from this directory
 import {
-  type Cohort,
   cohortReducer,
   selectCohortFilters,
   selectIndexFilters,
@@ -22,6 +21,8 @@ import {
   setActiveCohortList,
 } from './cohortSlice';
 
+import { CohortPersistence } from './cohortPersistence';
+
 import {
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
@@ -36,7 +37,15 @@ import {
   selectSharedFilters,
   selectSharedFiltersForFields,
 } from './sharedFiltersSlice';
-import { type CombineMode } from './types';
+import { Cohort, type CombineMode } from './types';
+
+import {
+  useSavePersistedCohort,
+  useGetPersistedCohortById,
+  useGetAllPersistedCohorts,
+  useDeletePersistedCohort,
+  useUpdatePersistedCohort,
+} from './cohortPersistenceHooks';
 
 import {
   setCohortFilterCombineMode,
@@ -76,4 +85,10 @@ export {
   setCohortFilterCombineMode,
   setSharedFilters,
   setShouldShareFilters,
+  CohortPersistence,
+  useSavePersistedCohort,
+  useGetPersistedCohortById,
+  useGetAllPersistedCohorts,
+  useDeletePersistedCohort,
+  useUpdatePersistedCohort,
 };
