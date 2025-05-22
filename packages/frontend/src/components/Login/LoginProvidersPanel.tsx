@@ -52,6 +52,7 @@ const LoginProviderMultipleItems = ({
         key={provider.name}
         color="accent.3"
         disabled={!value}
+        classNames={{ root: 'data-disabled:bg-accent-lightest' }}
         onClick={() => value && handleLoginSelected(value)}
       >
         {' '}
