@@ -73,6 +73,14 @@ validate_ssl_files() {
     return 0
 }
 
+# Strip http:// or https:// prefix from domain
+strip_protocol() {
+    local domain=$1
+    # Remove http:// or https:// if present
+    domain=$(echo "$domain" | sed -E 's#^(https?://)##')
+    echo "$domain"
+}
+
 # Generate nginx configuration
 generate_nginx_config() {
     local domain=$1
@@ -80,7 +88,10 @@ generate_nginx_config() {
     local key_path=$3
     local output_file=$4
 
-    print_message "$YELLOW" "Generating NGINX configuration..."
+    # Strip protocol from domain if present
+    domain=$(strip_protocol "$domain")
+
+    print_message "$YELLOW" "Generating NGINX configuration for domain: $domain"
 
     # Create a temporary file with certificates path replaced
     local temp_template="/tmp/nginx_temp_template.conf"
@@ -128,7 +139,7 @@ manage_nginx() {
 usage() {
     echo "Usage: $0 [-d domain] [-c cert_path] [-k key_path] [-o output_conf]"
     echo "Options:"
-    echo "  -d domain        Domain name of the commons (required)"
+    echo "  -d domain        Domain name of the commons (required, http:// or https:// prefixes will be removed automatically)"
     echo "  -c cert_path     Path to SSL certificate (default: $DEFAULT_CERT_DIR/cert.pem)"
     echo "  -k key_path      Path to SSL key (default: $DEFAULT_CERT_DIR/key.pem)"
     echo "  -o output_conf   Output configuration file (default: $DEFAULT_NGINX_CONF)"
