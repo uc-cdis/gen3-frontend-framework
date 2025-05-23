@@ -6,6 +6,7 @@ import {
   MRT_ColumnDef,
   MRT_Cell,
 } from 'mantine-react-table';
+import { useUserRequestQuery } from '@gen3/core';
 import { selectCohortIdToNameMap } from '../CohortManagerSlice';
 import { selectAllDataAccessRequests } from '../RequestManagerSlice';
 import { useAppSelector } from '../appApi';
@@ -14,6 +15,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
+import { ErrorCard } from '../../../components/MessageCards';
 
 interface ColumnCellParams {
   cell: MRT_Cell<RequestWithCohort, string>;
@@ -23,9 +25,14 @@ interface RequestWithCohort extends DataAccessRequest {
   cohortName: string;
 }
 const RequestsTable = () => {
-  const requests: Array<DataAccessRequest> = useAppSelector(
-    selectAllDataAccessRequests,
-  );
+  const {
+    data: requests,
+    isFetching,
+    isError,
+    error,
+    isSuccess,
+  } = useUserRequestQuery();
+
   const columns = useMemo<MRT_ColumnDef<RequestWithCohort, string>[]>(
     () => [
       {
@@ -77,7 +84,18 @@ const RequestsTable = () => {
     columns,
     data: requestsWithCohorts,
     ...commonTableSettings<RequestWithCohort>(),
+    state: {
+      isLoading: isFetching,
+    },
   });
+
+  if (isError) {
+    return (
+      <div className="w-full h-dvh flex flex-col items-center justify-center">
+        <ErrorCard message={`Error retrieving user request`} />
+      </div>
+    );
+  }
 
   return (
     <div className="inline-block overflow-x-scroll w-full">
