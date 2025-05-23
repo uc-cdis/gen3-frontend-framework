@@ -77,7 +77,7 @@ validate_ssl_files() {
 strip_protocol() {
     local domain=$1
     # Remove http:// or https:// if present
-    domain=$(echo "$domain" | sed -E 's#^(https?://)##')
+    domain=$(echo "$domain" | sed -E 's#^(https?://)##;s#/$##')
     echo "$domain"
 }
 
