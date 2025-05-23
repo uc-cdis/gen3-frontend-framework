@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
@@ -12,7 +12,7 @@ interface SessionExpiredModalProps {
 export const SessionExpiredModal = ({
   openModal,
   config,
-}: SessionExpiredModalProps): JSX.Element => {
+}: SessionExpiredModalProps): ReactElement => {
   const router = useRouter();
   const onLogout = useCallback(() => {
     router.push(config?.externalLoginUrl || '/Login');

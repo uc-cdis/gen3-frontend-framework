@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement}   from 'react';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
 
@@ -6,7 +6,7 @@ export const NoAccessModal = ({
   openModal,
 }: {
   openModal: boolean;
-}): JSX.Element => {
+}): ReactElement=> {
   return (
     <BaseModal
       title={

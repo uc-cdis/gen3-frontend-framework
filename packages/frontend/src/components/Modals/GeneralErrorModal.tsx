@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useCoreSelector, selectCurrentMessage } from '@gen3/core';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
@@ -7,7 +7,7 @@ export const GeneralErrorModal = ({
   openModal,
 }: {
   openModal: boolean;
-}): JSX.Element => {
+}): ReactElement => {
   const message = useCoreSelector((state) => selectCurrentMessage(state));
   return (
     <BaseModal

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, ReactElement } from 'react';
 import { hideModal, useCoreDispatch, CoreDispatch } from '@gen3/core';
 import { Button, Modal } from '@mantine/core';
 
@@ -10,7 +10,7 @@ interface ButtonOptions {
 }
 
 const isButtonOptions = (
-  button: ButtonOptions | JSX.Element,
+  button: ButtonOptions | ReactElement,
 ): button is ButtonOptions => {
   return typeof button === 'object' && 'title' in button;
 };
@@ -21,9 +21,9 @@ const isButtonOptions = (
  * @param dispatch - Dispatch hook to be used for state tracking
  */
 const renderButtons = (
-  buttons: Array<ButtonOptions | JSX.Element>,
+  buttons: Array<ButtonOptions | ReactElement>,
   dispatch: CoreDispatch,
-): JSX.Element => {
+): ReactElement => {
   return (
     <div className="flex justify-end mt-2.5 gap-2">
       {buttons.map((button) => {
@@ -61,8 +61,8 @@ interface Props {
   title: ReactNode;
   size?: string | number;
   children: ReactNode;
-  leftButtons?: Array<ButtonOptions | JSX.Element>;
-  buttons?: Array<ButtonOptions | JSX.Element>;
+  leftButtons?: Array<ButtonOptions | ReactElement>;
+  buttons?: Array<ButtonOptions | ReactElement>;
   withCloseButton?: boolean;
   onClose?: () => void;
   closeOnClickOutside?: boolean;
