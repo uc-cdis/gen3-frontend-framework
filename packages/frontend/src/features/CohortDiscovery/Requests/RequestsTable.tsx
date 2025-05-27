@@ -158,7 +158,7 @@ const RequestsTable = () => {
 
   if (isError) {
     return (
-      <div className="w-full h-dvh flex flex-col items-center justify-center">
+      <div className="w-full mt-24 flex flex-col items-center justify-center">
         <ErrorCard message={`Error retrieving user request`} />
       </div>
     );

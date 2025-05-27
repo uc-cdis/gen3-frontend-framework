@@ -90,12 +90,10 @@ export const requestorApi = gen3Api.injectEndpoints({
     }),
     request: builder.query<RequestorResponse, Partial<RequestListQuery>>({
       // get a list of requests
+
       query: (params?) => {
-        if (params) {
-          return `${GEN3_REQUESTOR_API}/request${convertToQueryString(params)}`;
-        } else {
-          return `${GEN3_REQUESTOR_API}/request`;
-        }
+        const strParams = params ? convertToQueryString(params) : undefined;
+        return `${GEN3_REQUESTOR_API}/request${strParams ?? ''}`;
       },
     }),
     userRequest: builder.query<
@@ -104,11 +102,8 @@ export const requestorApi = gen3Api.injectEndpoints({
     >({
       // get a list of requests
       query: (params?) => {
-        if (params) {
-          return `${GEN3_REQUESTOR_API}/request/user${convertToQueryString(params)}`;
-        } else {
-          return `${GEN3_REQUESTOR_API}/request/user`;
-        }
+        const strParams = params ? convertToQueryString(params) : undefined;
+        return `${GEN3_REQUESTOR_API}/request/user${strParams ?? ''}`;
       },
     }),
     requestById: builder.query<RequestorResponse, string>({

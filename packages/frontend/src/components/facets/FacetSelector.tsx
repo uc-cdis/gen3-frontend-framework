@@ -33,6 +33,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   selectedFields,
   updateSelectedField,
   showSearch = true,
+  showSettings = false,
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -87,6 +88,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
           hooks={hooks}
           facetName={facetName}
           showSearch={showSearch}
+          showSettings={showSettings}
           toggleSearch={toggleSearch}
           header={header}
         />
