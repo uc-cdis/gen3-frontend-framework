@@ -1,18 +1,8 @@
 import { RemoteSupportRequestAction } from './types';
+import { defaultLogger, Logger } from '../../../utils/logger';
 
 const DefaultRemoteSupportAction: RemoteSupportRequestAction = async () => {
   throw new Error('No remote support service registered for this service name');
-};
-
-export interface Logger {
-  warn(message: string): void;
-  error(message: string): void;
-}
-
-// Default console logger
-const defaultLogger: Logger = {
-  warn: (message: string) => console.warn(message),
-  error: (message: string) => console.error(message),
 };
 
 export class RemoteSupportServiceRegistry {
@@ -116,11 +106,15 @@ export class RemoteSupportServiceRegistry {
 
 let defaultRegistryInstance: RemoteSupportServiceRegistry | null = null;
 
-export const getExternalServiceRegistry = (
+export function getDefaultRegistry(
   logger?: Logger,
-): RemoteSupportServiceRegistry => {
+): RemoteSupportServiceRegistry {
   if (!defaultRegistryInstance) {
     defaultRegistryInstance = new RemoteSupportServiceRegistry(logger);
   }
   return defaultRegistryInstance;
-};
+}
+
+export function resetDefaultRegistry(): void {
+  defaultRegistryInstance = null;
+}

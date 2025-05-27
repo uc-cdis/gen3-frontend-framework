@@ -1,6 +1,35 @@
 import { gen3Api } from '../gen3';
 import { GEN3_REQUESTOR_API } from '../../constants';
-import { RequestListQuery, RequestorResponse, RequestQueryBody } from './types';
+
+export interface RequestQueryBody {
+  policy_id?: string;
+  resource_display_name?: string;
+  resource_id?: string;
+  resource_path?: string;
+  resource_paths?: string[];
+  role_ids?: string[];
+  status?: string;
+  username?: string;
+}
+
+export interface RequestorResponse {
+  resource_display_name?: string | null;
+  updated_time?: string;
+  resource_id?: string;
+  request_id?: string;
+  username?: string;
+  status?: string;
+  revoke?: boolean;
+  policy_id?: string;
+  created_time?: string;
+}
+
+export interface RequestListQuery {
+  policy_ids: Array<string>;
+  resource_ids: Array<string>;
+  status: string;
+  revoke: boolean;
+}
 
 /**
  * Converts a Partial<RequestListQuery> object to a URL query string
@@ -51,6 +80,8 @@ export const convertToQueryString = (
  *    @see https://petstore.swagger.io/?url=https://raw.githubusercontent.com/uc-cdis/requestor/master/docs/openapi.yaml#/Query/list_requests_request_get
  * @returns: Object of request made
  */
+
+//TODO convert snakeCase yTpes o camelCase by adding transform respomse
 export const requestorApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     status: builder.query<RequestorResponse, RequestListQuery | void>({
@@ -69,7 +100,7 @@ export const requestorApi = gen3Api.injectEndpoints({
     }),
     userRequest: builder.query<
       Array<RequestorResponse>,
-      Partial<RequestListQuery>
+      Partial<RequestListQuery> | undefined
     >({
       // get a list of requests
       query: (params?) => {

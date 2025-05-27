@@ -13,7 +13,6 @@ import {
   newDataAccessRequest,
 } from './types';
 import { AppState } from './appApi';
-import { selectAllCohorts } from './CohortManagerSlice';
 
 // Create the entity adapter
 export const dataAccessRequestsAdapter = createEntityAdapter<
@@ -24,8 +23,8 @@ export const dataAccessRequestsAdapter = createEntityAdapter<
   selectId: (request: DataAccessRequest) => request.id,
   // Optional: Sort by request_datetime descending (newest first)
   sortComparer: (a, b) =>
-    new Date(b.request_datetime).getTime() -
-    new Date(a.request_datetime).getTime(),
+    new Date(b.createdDatetime).getTime() -
+    new Date(a.createdDatetime).getTime(),
 });
 
 type DataAccessRequestState = EntityState<DataAccessRequest, string>;

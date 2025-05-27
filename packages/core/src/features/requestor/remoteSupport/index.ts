@@ -1,5 +1,10 @@
 import { type RemoteSupportRequest } from './types';
 
-import { getExternalServiceRegistry } from './registeredRemoteSupportServices';
+import { getDefaultRegistry } from './registeredRemoteSupportServices';
+import { registerDefaultRemoteSupport } from './registerDefaultRemoteSupport';
 
-export { type RemoteSupportRequest, getExternalServiceRegistry };
+export {
+  type RemoteSupportRequest,
+  getDefaultRegistry,
+  registerDefaultRemoteSupport,
+};

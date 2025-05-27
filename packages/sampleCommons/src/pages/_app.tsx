@@ -2,7 +2,6 @@ import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { MantineProvider } from '@mantine/core';
 import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
-// import { initGrafanaFaro } from '../lib/Grafana/grafana';
 import mantinetheme from '../mantineTheme';
 
 import {
@@ -15,6 +14,8 @@ import {
   registerMetadataSchemaApp,
   registerCohortDiscoveryApp,
 } from '@gen3/frontend';
+
+import { registerDefaultRemoteSupport } from '@gen3/core';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
 import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
@@ -51,7 +52,6 @@ const Gen3App = ({
   modalsConfig,
 }: AppProps & Gen3AppProps) => {
   const isFirstRender = useRef(true);
-  const faroRef = useRef<null | Faro>(null);
 
   useEffect(() => {
     // one time init
@@ -65,6 +65,7 @@ const Gen3App = ({
     // if (!faroRef.current) faroRef.current = initGrafanaFaro();
     if (isFirstRender.current) {
       setDRSHostnames(drsHostnames);
+      registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
       registerCohortDiscoveryApp();
       registerExplorerDefaultCellRenderers();

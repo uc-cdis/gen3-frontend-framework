@@ -41,6 +41,7 @@ const TabbedIndex = ({ config, tabsLayout = 'left' }: TabbedIndexProps) => {
             <IndexPanel
               dataConfig={panelConfig.dataConfig}
               tabTitle={panelConfig.tabTitle}
+              resourceField={panelConfig.resourceField}
               tabs={panelConfig.tabs}
               emptySelection={config.emptySelection}
               numColumns={panelConfig.numColumns ?? 2}

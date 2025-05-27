@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react';
-
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -10,28 +9,103 @@ import { useUserRequestQuery } from '@gen3/core';
 import { selectCohortIdToNameMap } from '../CohortManagerSlice';
 import { selectAllDataAccessRequests } from '../RequestManagerSlice';
 import { useAppSelector } from '../appApi';
-import { DataAccessRequest } from '../types';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { DataAccessRequest, DataAccessRequestStatus } from '../types';
+
 import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
 import { ErrorCard } from '../../../components/MessageCards';
+
+const useGetCohortRequests = (resources: string[] = []) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [cohortRequests, setCohortRequests] = useState<
+    Array<RequestWithCohort>
+  >([]);
+  const localRequests: Array<DataAccessRequest> = useAppSelector(
+    selectAllDataAccessRequests,
+  );
+  const {
+    data: submittedRequests,
+    isFetching,
+    isError,
+    error,
+  } = useUserRequestQuery({ resource_ids: resources });
+
+  const cohortIdToNameMap = useAppSelector(selectCohortIdToNameMap);
+
+  useEffect(() => {
+    // Return early if we're still fetching data
+    if (isFetching) {
+      setIsLoading(true);
+      return;
+    }
+
+    // Once data is available, merge local and remote requests
+    if (submittedRequests) {
+      // Create a map of local requests by ID for efficient lookup
+      const localRequestsMap = localRequests.reduce(
+        (acc, localRequest) => {
+          acc[localRequest.id] = localRequest;
+          return acc;
+        },
+        {} as Record<string, DataAccessRequest>,
+      );
+
+      // Add cohort names to the requests
+      const requestsWithCohorts = submittedRequests.reduce((acc, request) => {
+        if (request.resource_id && request.resource_id in localRequestsMap) {
+          const localRequest = localRequestsMap[request.resource_id];
+          acc.push({
+            ...localRequest,
+            status: (request?.status ?? 'unknown') as DataAccessRequestStatus,
+            updatedDatetime:
+              request.created_time ?? localRequest.updatedDatetime,
+            createdDatetime:
+              request.updated_time ?? localRequest.createdDatetime,
+          });
+          return acc;
+        }
+        return acc;
+      }, [] as Array<DataAccessRequest>);
+
+      setCohortRequests(requestsWithCohorts);
+    } else if (isError) {
+      // If there's an error fetching remote data, just use local requests
+      const localRequestsWithCohorts = localRequests.map((request) => ({
+        ...request,
+        cohortName: request.id ? cohortIdToNameMap[request.id] : 'Unknown',
+      }));
+
+      setCohortRequests(localRequestsWithCohorts);
+    }
+
+    setIsLoading(false);
+  }, [
+    submittedRequests,
+    localRequests,
+    isFetching,
+    isError,
+    cohortIdToNameMap,
+  ]);
+
+  return {
+    cohortRequests,
+    isLoading: isLoading || isFetching,
+    isError,
+    error,
+  };
+};
 
 interface ColumnCellParams {
   cell: MRT_Cell<RequestWithCohort, string>;
 }
 
 interface RequestWithCohort extends DataAccessRequest {
-  cohortName: string;
+  cohortName?: string;
 }
 const RequestsTable = () => {
-  const {
-    data: requests,
-    isFetching,
-    isError,
-    error,
-    isSuccess,
-  } = useUserRequestQuery();
+  const { cohortRequests, isLoading, isError, error } =
+    useGetCohortRequests(undefined);
 
   const columns = useMemo<MRT_ColumnDef<RequestWithCohort, string>[]>(
     () => [
@@ -43,8 +117,15 @@ const RequestsTable = () => {
         ),
       },
       {
-        accessorKey: 'request_datetime',
+        accessorKey: 'createdDatetime',
         header: 'Request Date',
+        Cell: ({ cell }: ColumnCellParams) => (
+          <Text>{formatDate(cell.getValue<string>())} </Text>
+        ),
+      },
+      {
+        accessorKey: 'updatedDatetime',
+        header: 'Last Update',
         Cell: ({ cell }: ColumnCellParams) => (
           <Text>{formatDate(cell.getValue<string>())} </Text>
         ),
@@ -65,27 +146,13 @@ const RequestsTable = () => {
     [],
   );
 
-  const cohortIdToNameMap = useAppSelector(selectCohortIdToNameMap);
-
-  const requestsWithCohorts = useDeepCompareMemo(
-    () =>
-      requests.map((request) => {
-        return {
-          ...request,
-          cohortName: (cohortIdToNameMap[request.cohortId] ||
-            'Unknown') as string,
-        };
-      }),
-    [requests, cohortIdToNameMap],
-  );
-
   const size = 'sm';
   const table = useMantineReactTable<RequestWithCohort>({
     columns,
-    data: requestsWithCohorts,
-    ...commonTableSettings<RequestWithCohort>(),
+    data: cohortRequests ?? [],
+    ...commonTableSettings<RequestWithCohort>(size),
     state: {
-      isLoading: isFetching,
+      isLoading: isLoading,
     },
   });
 

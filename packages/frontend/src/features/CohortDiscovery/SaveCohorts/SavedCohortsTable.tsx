@@ -49,12 +49,12 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
         Cell: ({ cell }) => <Text>{cell.getValue()} </Text>,
       },
       {
-        accessorKey: 'created_datetime',
+        accessorKey: 'createdDatetime',
         header: 'Modified Date',
         Cell: ({ cell }) => <Text>{formatDate(cell.getValue())} </Text>,
       },
       {
-        accessorKey: 'modified_datetime', //normal accessorKey
+        accessorKey: 'modifiedDatetime', //normal accessorKey
         header: 'Created Date',
         Cell: ({ cell }) => <Text>{formatDate(cell.getValue())} </Text>,
       },

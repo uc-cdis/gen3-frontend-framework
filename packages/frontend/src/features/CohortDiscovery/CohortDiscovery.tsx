@@ -15,7 +15,6 @@ import RequestsPanel from './Requests/RequestsPanel';
 import DataAccessRequestForm, {
   DataAccessRequestFormParams,
 } from './Requests/DataAccessRequestForm';
-import { TabbedPanel } from '../CohortBuilder/Panels/TabbedPanel';
 import TabbedIndex from './TabbedIndex';
 
 const persistor = persistStore(AppStore);
@@ -87,6 +86,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
                 tabTitle={config.dataIndexes[0].tabTitle}
                 tabs={config.dataIndexes[0].tabs}
                 emptySelection={config.emptySelection}
+                resourceField={config.dataIndexes[0].resourceField}
                 numColumns={config.dataIndexes[0].numColumns ?? 2}
               />
             ) : (
