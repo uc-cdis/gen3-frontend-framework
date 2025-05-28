@@ -56,7 +56,7 @@ const processChartData = (
     const data = facetData.filter((d: HistogramData) => d.key !== '_missing');
 
     const results = data.slice(0, maxBins).map((d: any) => ({
-      x: processLabel(d.key),
+      x: typeof d.key === 'string' ? processLabel(d.key) : d.key.toString(),
       truncatedXName: truncateString(processLabel(d.key), 35),
       y: d.count,
     }));

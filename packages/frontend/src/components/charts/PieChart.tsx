@@ -1,42 +1,46 @@
 import React, { useMemo } from 'react';
 import { VictoryPie, VictoryTheme } from 'victory';
-import {  processLabel, truncateString } from './utils';
+import { processLabel, truncateString } from './utils';
 
 interface PieChartProps {
-    data: ReadonlyArray<Record<string, number>>;
+  data: ReadonlyArray<Record<string, number>>;
 }
 
 interface PieChartData {
-    x: string;
-    y: number;
-    label: string;
+  x: string;
+  y: number;
+  label: string;
 }
 
 const processChartData = (
-    facetData: Record<string, any>,
-    maxBins = 100,
-) : PieChartData[]  => {
+  facetData: Record<string, any>,
+  maxBins = 100,
+): PieChartData[] => {
+  if (!facetData) {
+    return [];
+  }
+  const data = facetData.filter((d: any) => d.key !== '_missing');
 
-    if (!facetData) {
-        return [];
-    }
-    const data =facetData.filter((d:any) => d.key !== '_missing');
-
-    const results = data.slice(0, maxBins)
-        .map((d:any, i:number) => ({
-            x: i,
-            y: d.count,
-            label: truncateString(processLabel(d.key), 35),
-        }));
-    return results;
+  const results = data.slice(0, maxBins).map((d: any, i: number) => ({
+    x: i,
+    y: d.count,
+    label: truncateString(
+      typeof d.key === 'string' ? processLabel(d.key) : d.key.toString(),
+      35,
+    ),
+  }));
+  return results;
 };
 
-
-const PieChart  = ({ data } : PieChartProps) => {
-    const chartData = useMemo(() => processChartData(data[0]), [data]);
-    return (
-            <VictoryPie theme={VictoryTheme.material} data={chartData} animate={{duration: 500}}/>
-    );
+const PieChart = ({ data }: PieChartProps) => {
+  const chartData = useMemo(() => processChartData(data[0]), [data]);
+  return (
+    <VictoryPie
+      theme={VictoryTheme.material}
+      data={chartData}
+      animate={{ duration: 500 }}
+    />
+  );
 };
 
 export default PieChart;

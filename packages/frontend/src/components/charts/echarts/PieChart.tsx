@@ -20,7 +20,10 @@ const processChartData = (
 
   const results = data.slice(0, maxBins).map((d: any) => ({
     value: d.count,
-    name: truncateString(processLabel(d.key), 35),
+    name: truncateString(
+      typeof d.key === 'string' ? processLabel(d.key) : d.key.toString(),
+      35,
+    ),
   }));
   return results;
 };
@@ -51,7 +54,7 @@ const PieChart = ({ data, label }: ChartProps) => {
         },
       ],
     };
-  }, [data]);
+  }, [data, label?.show]);
 
   return (
     <div className="w-full h-64">

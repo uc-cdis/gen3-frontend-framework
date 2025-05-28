@@ -1,16 +1,16 @@
+import React, { forwardRef, ReactElement } from 'react';
+import { Button, ButtonProps } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import {
   convertFilterSetToGqlFilter,
   fetchFencePresignedURL,
-  type FilterSet,
+  isFetchBaseQueryError,
   useSubmitSowerJobMutation,
+  type FilterSet,
   type CreateAndExportActionConfig,
   type JobBuilderAction,
   type SendJobOutputAction,
 } from '@gen3/core';
-import React, { forwardRef, ReactElement, useState } from 'react';
-import { Button, ButtonProps } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { SowerJobsMonitor } from '../../../../services/SowerJobsMonitor';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -229,20 +229,18 @@ const CohortSubmitJobActionButton = forwardRef<
 
         console.log('jobConfig', jobConfig);
         const { uid } = await submitJob(jobConfig).unwrap();
-
+        console.log('submit job', uid);
         // Register with global monitor
-        //  SowerJobsMonitor.getInstance().registerJob(uid, actions);
-
-        console.log('isError', isError, error);
       } catch (e: unknown) {
         console.log('error', e);
-        if (e instanceof FetchBaseQueryError)
+        if (isFetchBaseQueryError(e)) {
+          const errMsg = 'error' in e ? e.error : JSON.stringify(e.data);
           notifications.show({
-            title: 'ErrorRTK',
-            message: e.message,
+            title: 'Error from Service',
+            message: errMsg,
             color: 'red',
           });
-        else if (e instanceof Error)
+        } else if (e instanceof Error)
           notifications.show({
             title: 'Error',
             message: e.message,

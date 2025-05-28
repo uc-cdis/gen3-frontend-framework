@@ -4,7 +4,7 @@ import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
 import type { EChartsOption } from 'echarts';
-import { graphic, format } from 'echarts';
+import { graphic } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 
@@ -34,15 +34,18 @@ const processChartData = (
     max = 1;
   }
 
-  const results = data.slice(0, maxBins).map((d: any) => {
-    if (d.count >= 0)
-      return { value: d.count, name: truncateString(processLabel(d.key), 35) };
+  return data.slice(0, maxBins).map((d: any) => {
+    const label = truncateString(
+      typeof d.key === 'string' ? processLabel(d.key) : d.key.toString(),
+      35,
+    );
+    if (d.count >= 0) return { value: d.count, name: label };
 
     // handle redacted data
     return {
       value: max,
       groupId: 'redacted',
-      name: truncateString(processLabel(d.key), 35),
+      name: label,
       itemStyle: {
         opacity: 0.5,
         color: new graphic.LinearGradient(0, 0, 0, 1, [
@@ -57,7 +60,6 @@ const processChartData = (
       },
     };
   });
-  return results;
 };
 
 const processAxis = (facetData: HistogramDataArray, maxBins = 100) => {

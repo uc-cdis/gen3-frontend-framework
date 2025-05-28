@@ -7,12 +7,12 @@ import {
   NotificationOptions,
 } from '@gen3/core';
 import {
-  IconCheck,
-  IconX,
-  IconInfoCircle,
-  IconLoader,
-  IconDownload,
-} from '@tabler/icons-react';
+  MdCheck as CheckIcon,
+  MdOutlineClose as CloseIcon,
+  MdInfoOutline as IconInfoCircle,
+  MdDownload as DownloadIcon,
+} from 'react-icons/md';
+import { BiLoaderAlt as LoaderIcon } from 'react-icons/bi';
 
 interface NotificationProviderProps {
   children: React.ReactNode;
@@ -35,11 +35,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       options?: NotificationOptions,
     ) => {
       const iconMap = {
-        success: <IconCheck size={18} />,
-        error: <IconX size={18} />,
+        success: <CheckIcon size={18} />,
+        error: <CloseIcon size={18} />,
         info: <IconInfoCircle size={18} />,
-        loading: <IconLoader size={18} className="animate-spin" />,
-        download: <IconDownload size={18} />,
+        loading: <LoaderIcon size={18} className="animate-spin" />,
+        download: <DownloadIcon size={18} />,
       };
 
       const colorMap = {

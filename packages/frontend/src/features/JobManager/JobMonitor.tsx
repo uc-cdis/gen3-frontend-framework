@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { MdCheck as IconCheck, MdOutlineClose as IconX } from 'react-icons/md';
 import { useGetSowerJobListQuery } from '@gen3/core';
 
 const GlobalJobMonitor = () => {
