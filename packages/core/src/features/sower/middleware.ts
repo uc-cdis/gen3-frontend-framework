@@ -4,7 +4,7 @@ import {
   removeSowerJob,
   clearSowerJobsId,
   updateSowerJob,
-} from './sowerSlice';
+} from './jobsListSlice';
 import { type JobWithActions } from './types';
 
 import { sowerApi } from './sowerApi';

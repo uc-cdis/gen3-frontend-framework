@@ -21,6 +21,12 @@ const processResults = (results: any[], ids: string[]) => {
 type JobListResponse = Array<JobStatus>;
 type JobsListResponse = Record<string, DispatchJobResponse>;
 
+const TAGS = 'sower';
+
+export const sowerTags = gen3Api.enhanceEndpoints({
+  addTagTypes: [TAGS],
+});
+
 /**
  * Creates a loadingStatusApi for checking the status of a sower data download job
  * @param getJobList Shows the list of jobs currently running
@@ -28,7 +34,7 @@ type JobsListResponse = Record<string, DispatchJobResponse>;
  * @param getDownloadStatus Shows the status of a selected job
  * @returns: A sower job response dict which returns job information of file downloads
  */
-export const sowerApi = gen3Api.injectEndpoints({
+export const sowerApi = sowerTags.injectEndpoints({
   endpoints: (builder) => ({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
@@ -50,6 +56,7 @@ export const sowerApi = gen3Api.injectEndpoints({
           return { error: response.originalStatus };
         return { error: response };
       },
+      invalidatesTags: [TAGS],
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,

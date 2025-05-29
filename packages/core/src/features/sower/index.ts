@@ -17,15 +17,12 @@ import {
   updateOutputGUID,
   removeSowerJob,
   clearSowerJobsId,
-} from './sowerSlice';
+  refreshSowerJobs,
+} from './jobsListSlice';
 
 import { initSowerJobsPolling } from './init';
 
-import {
-  selectSowerJobId,
-  selectSowerJobList,
-  selectSowerJobListWithStatus,
-} from './jobsListSelectors';
+import { selectSowerJobId, selectSowerJobList } from './jobsListSelectors';
 
 import {
   type JobWithActions,
@@ -55,11 +52,11 @@ export {
   updateOutputGUID,
   removeSowerJob,
   clearSowerJobsId,
+  refreshSowerJobs,
   initSowerJobsPolling,
   sowerApi,
   selectSowerJobId,
   selectSowerJobList,
-  selectSowerJobListWithStatus,
   type DispatchJobParams,
   type DispatchJobResponse,
   type JobWithActions,

@@ -61,13 +61,14 @@ export class SowerJobsMonitor {
   }
 
   registerJob(jobId: string, config: CreateAndExportActionConfig) {
+    const timestamp = Date.now();
     coreStore.dispatch(
       addSowerJob({
         jobId,
         config,
         part: 1,
-        created: Date.now(),
-        updated: Date.now(),
+        created: timestamp,
+        updated: timestamp,
         name: '',
         status: 'Unknown',
       }),
@@ -139,7 +140,7 @@ export class SowerJobsMonitor {
   private async executeStep2(pendingAction: JobWithActions) {
     try {
       // get the objectId of the job
-      if ( pendingAction.config?.sendJobAction) {
+      if (pendingAction.config?.sendJobAction) {
         const action = findSendResultsAction(
           pendingAction.config.sendJobAction.actionName,
         );

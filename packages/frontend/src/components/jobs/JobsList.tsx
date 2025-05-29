@@ -1,16 +1,14 @@
 import React from 'react';
 import { Text, LoadingOverlay, Badge, Paper, Table } from '@mantine/core';
 import { ErrorCard } from '../MessageCards';
-import { useCoreSelector, selectSowerJobListWithStatus } from '@gen3/core';
+import { useCoreSelector, selectSowerJobList } from '@gen3/core';
 
 interface JobsListProps {
   size?: string;
 }
 
 const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
-  const { jobs, isFetching, isError } = useCoreSelector(
-    selectSowerJobListWithStatus,
-  );
+  const { jobs } = useCoreSelector(selectSowerJobList);
 
   if (Object.keys(jobs).length === 0) {
     return (
@@ -20,13 +18,13 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
     );
   }
 
-  if (isError) {
-    return (
-      <Paper p="md">
-        <ErrorCard message="Error retrieving jobs" />
-      </Paper>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <Paper p="md">
+  //       <ErrorCard message="Error retrieving jobs" />
+  //     </Paper>
+  //   );
+  // }
 
   const tableHeader = (
     <Table.Tr>
@@ -37,6 +35,8 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
       <Table.Th>Updated</Table.Th>
     </Table.Tr>
   );
+
+  console.log(jobs);
 
   const rows = Object.values(jobs).map((jobStatus) => {
     return (
@@ -68,7 +68,6 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
 
   return (
     <div>
-      <LoadingOverlay visible={isFetching} />
       <Table striped highlightOnHover withTableBorder>
         <Table.Thead>{tableHeader}</Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

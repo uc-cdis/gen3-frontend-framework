@@ -6,10 +6,12 @@ import {
   fetchFencePresignedURL,
   isFetchBaseQueryError,
   useSubmitSowerJobMutation,
+  addSowerJob,
   type FilterSet,
   type CreateAndExportActionConfig,
   type JobBuilderAction,
   type SendJobOutputAction,
+  useCoreDispatch,
 } from '@gen3/core';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
@@ -215,6 +217,8 @@ const CohortSubmitJobActionButton = forwardRef<
     const [submitJob, { isLoading, isSuccess, error, isError }] =
       useSubmitSowerJobMutation();
 
+    const dispatch = useCoreDispatch();
+
     // TODO: handle error from binding actions
 
     const handleSubmitJob = async () => {
@@ -226,11 +230,24 @@ const CohortSubmitJobActionButton = forwardRef<
           ...actions.createAction.parameters,
           ...jobParameters,
         });
+        const timestamp = Date.now();
 
         console.log('jobConfig', jobConfig);
-        const { uid } = await submitJob(jobConfig).unwrap();
+        const { uid, name, status } = await submitJob(jobConfig).unwrap();
         console.log('submit job', uid);
         // Register with global monitor
+        // add Job
+        dispatch(
+          addSowerJob({
+            jobId: uid,
+            name,
+            status,
+            part: 1,
+            config: actions,
+            created: timestamp,
+            updated: timestamp,
+          }),
+        );
       } catch (e: unknown) {
         console.log('error', e);
         if (isFetchBaseQueryError(e)) {

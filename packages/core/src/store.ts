@@ -4,6 +4,7 @@ import { CoreState, rootReducer } from './reducers';
 import { gen3ServicesReducerMiddleware } from './features/gen3/gen3Api';
 import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
+import { sowerListenerMiddleware } from './features/sower/listeners';
 import {
   persistReducer,
   FLUSH,
@@ -52,12 +53,14 @@ export const setupCoreStore = (preloadedState?: Partial<CoreState>) =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(
-        gen3ServicesReducerMiddleware,
-        guppyAPISliceMiddleware,
-        userAuthApiMiddleware,
-        sowerJobsMiddleware,
-      ),
+      })
+        .concat(
+          gen3ServicesReducerMiddleware,
+          guppyAPISliceMiddleware,
+          userAuthApiMiddleware,
+          sowerJobsMiddleware,
+        )
+        .prepend(sowerListenerMiddleware.middleware),
   });
 
 export const coreStore = setupCoreStore();
