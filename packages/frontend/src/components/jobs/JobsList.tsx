@@ -1,18 +1,18 @@
 import React from 'react';
-import { Group, Text, Stack, Badge, Paper, Table } from '@mantine/core';
-import { useCoreSelector, selectSowerJobs } from '@gen3/core';
+import { Text, LoadingOverlay, Badge, Paper, Table } from '@mantine/core';
 import { ErrorCard } from '../MessageCards';
-import { useSowerJob } from './hooks';
+import { useCoreSelector, selectSowerJobListWithStatus } from '@gen3/core';
 
 interface JobsListProps {
   size?: string;
 }
 
 const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
-  const { isError } = useSowerJob();
-  const allJobs = useCoreSelector(selectSowerJobs);
+  const { jobs, isFetching, isError } = useCoreSelector(
+    selectSowerJobListWithStatus,
+  );
 
-  if (Object.keys(allJobs).length === 0) {
+  if (Object.keys(jobs).length === 0) {
     return (
       <Paper p="md">
         <Text>No Active Jobs</Text>
@@ -38,7 +38,7 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
     </Table.Tr>
   );
 
-  const rows = Object.values(allJobs).map((jobStatus) => {
+  const rows = Object.values(jobs).map((jobStatus) => {
     return (
       <Table.Tr key={jobStatus.jobId}>
         <Table.Td>{jobStatus.jobId}</Table.Td>
@@ -67,10 +67,13 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
   });
 
   return (
-    <Table striped highlightOnHover withTableBorder>
-      <Table.Thead>{tableHeader}</Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
-    </Table>
+    <div>
+      <LoadingOverlay visible={isFetching} />
+      <Table striped highlightOnHover withTableBorder>
+        <Table.Thead>{tableHeader}</Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </div>
   );
 };
 

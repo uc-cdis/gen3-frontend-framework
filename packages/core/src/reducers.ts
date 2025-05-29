@@ -13,7 +13,7 @@ import {
   userAuthApiReducerPath,
   userAuthApiReducer,
 } from './features/user/userSliceRTK';
-import { sowerJobsListSliceReducer } from './features/sower';
+import { sowerJobsListSliceReducer } from './features/sower/sowerSlice';
 import { cohortReducers } from './features/cohort/reducers';
 
 export const rootReducer = combineReducers({

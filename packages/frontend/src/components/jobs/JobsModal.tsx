@@ -3,6 +3,7 @@ import { Text } from '@mantine/core';
 import { ContextModalProps } from '@mantine/modals';
 import { BaseModal } from '../Modals';
 import JobsList from './JobsList';
+import SowerJobsInitializer from './SowerJobsInitializer';
 
 export const JobsModalContent = () => {
   return (
@@ -33,6 +34,7 @@ const JobsModal = ({ openModal }: { openModal: boolean }): ReactElement => {
       size="auto"
     >
       <div className="flex flex-col border-y border-y-base-darker py-4 space-y-4 font-content">
+        <SowerJobsInitializer />
         <JobsList />
       </div>
     </BaseModal>

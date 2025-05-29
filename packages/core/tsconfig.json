@@ -9,6 +9,7 @@
   "compilerOptions": {
     "outDir": "dist/dts",
     "jsx": "react",
+    "incremental": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "emitDeclarationOnly": true,

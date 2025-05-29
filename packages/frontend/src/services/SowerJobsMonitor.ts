@@ -78,7 +78,7 @@ export class SowerJobsMonitor {
 
   private getPendingActions(): Record<string, JobWithActions> {
     const state = coreStore.getState();
-    return state.sowerJobsList.jobIds;
+    return state.sowerJobsList.jobs;
   }
 
   private startPollingIfNeeded() {
@@ -139,20 +139,22 @@ export class SowerJobsMonitor {
   private async executeStep2(pendingAction: JobWithActions) {
     try {
       // get the objectId of the job
-      const action = findSendResultsAction(
-        pendingAction.config.sendJobAction.actionName,
-      );
-      await action({
-        parameters: pendingAction.config.sendJobAction.parameters,
-      });
+      if ( pendingAction.config?.sendJobAction) {
+        const action = findSendResultsAction(
+          pendingAction.config.sendJobAction.actionName,
+        );
+        await action({
+          parameters: pendingAction.config.sendJobAction.parameters,
+        });
 
-      notifications.show({
-        title: 'Success',
-        message: 'Action completed successfully',
-        color: 'green',
-      });
+        notifications.show({
+          title: 'Success',
+          message: 'Action completed successfully',
+          color: 'green',
+        });
 
-      coreStore.dispatch(removeSowerJob(pendingAction.jobId));
+        coreStore.dispatch(removeSowerJob(pendingAction.jobId));
+      }
     } catch (error) {
       this.handleError(pendingAction.jobId, 'Failed to complete second step');
     }

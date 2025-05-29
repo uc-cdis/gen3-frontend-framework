@@ -2,7 +2,6 @@ import {
   FilterSet,
   DispatchJobParams,
   convertFilterSetToGqlFilter,
-  JSONObject,
 } from '@gen3/core';
 
 interface DispatchJobActionParams {

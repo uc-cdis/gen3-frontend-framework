@@ -4,7 +4,7 @@ import {
   removeSowerJob,
   clearSowerJobsId,
   updateSowerJob,
-} from './jobsListSlice';
+} from './sowerSlice';
 import { type JobWithActions } from './types';
 
 import { sowerApi } from './sowerApi';
@@ -71,8 +71,16 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
 
   // Helper function to poll job statuses
   const checkJobStatuses = () => {
+    store
+      .dispatch(
+        sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+          forceRefetch: true,
+        }),
+      )
+      .unwrap();
+
     const state = store.getState();
-    const jobIds = Object.keys(state.sowerJobsList.jobIds);
+    const jobIds = Object.keys(state.sowerJobsList.jobs);
 
     if (jobIds.length === 0) {
       stopPolling();
@@ -81,7 +89,7 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
 
     // Fetch job statuses
     jobIds.forEach((jobId) => {
-      const currentJob = state.sowerJobsList.jobIds[jobId];
+      const currentJob = state.sowerJobsList.jobs[jobId];
 
       // Skip jobs that are already completed/failed
       if (['Completed', 'Failed', 'Unknown'].includes(currentJob.status)) {
@@ -98,13 +106,22 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
   };
 
   const checkForActiveJobsAndStartPolling = () => {
-    const state = store.getState();
-    const jobIds = Object.keys(state.sowerJobsList.jobIds);
+    const state = store.getState() satisfies CoreState as CoreState;
+
+    store
+      .dispatch(
+        sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+          forceRefetch: true,
+        }),
+      )
+      .unwrap();
+
+    const jobIds = Object.keys(state.sowerJobsList.jobs);
 
     // Only start polling if there are jobs
     if (jobIds.length > 0) {
       // Filter out jobs that are already completed/failed
-      const activeJobs = Object.values(state.sowerJobsList.jobIds).filter(
+      const activeJobs = Object.values(state.sowerJobsList.jobs).filter(
         (job) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
       );
 
@@ -130,6 +147,8 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
     const result = next(action);
     const state = store.getState();
 
+    console.log('sower middleware', action);
+
     // Check if this is the initialization action
     if (action.type === INIT_SOWER_JOBS_POLLING) {
       checkForActiveJobsAndStartPolling();
@@ -152,14 +171,14 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
       }
     } else if (removeSowerJob.match(action) || clearSowerJobsId.match(action)) {
       // After a job removal action, check if we should stop polling
-      const jobIds = Object.keys(state.sowerJobsList.jobIds);
+      const jobIds = Object.keys(state.sowerJobsList.jobs);
       if (jobIds.length === 0) {
         stopPolling();
       }
     } else if (updateSowerJob.match(action)) {
       // Check if this update resulted in all jobs being completed/failed
       const { jobId, status } = action.payload;
-      const job = state.sowerJobsList.jobIds[jobId];
+      const job = state.sowerJobsList.jobs[jobId];
 
       // Show notifications based on job status changes
       if (job && notificationConfig.enabled) {
@@ -202,7 +221,7 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
         }
       }
 
-      const activeJobs = Object.values(state.sowerJobsList.jobIds).filter(
+      const activeJobs = Object.values(state.sowerJobsList.jobs).filter(
         (job: any) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
       );
 
@@ -219,10 +238,10 @@ export const sowerJobsMiddleware: Middleware<object, CoreState, any> = (
       const jobId = action.meta?.arg?.originalArgs;
       const jobStatus = action.payload?.status;
 
-      if (jobId && jobStatus && state.sowerJobsList.jobIds[jobId]) {
+      if (jobId && jobStatus && state.sowerJobsList.jobs[jobId]) {
         if (
           ['Completed', 'Failed', 'Unknown'].includes(jobStatus) &&
-          state.sowerJobsList.jobIds[jobId].status !== jobStatus
+          state.sowerJobsList.jobs[jobId].status !== jobStatus
         ) {
           // Update job status
           store.dispatch(

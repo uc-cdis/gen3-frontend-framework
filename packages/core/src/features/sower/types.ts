@@ -54,7 +54,7 @@ export interface BoundCreateAndExportAction {
 
 export interface JobWithActions {
   jobId: string;
-  config: CreateAndExportActionConfig;
+  config?: CreateAndExportActionConfig;
   part: 1 | 2;
   created: number;
   updated: number;

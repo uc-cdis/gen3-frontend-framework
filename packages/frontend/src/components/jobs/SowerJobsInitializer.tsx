@@ -1,18 +1,16 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { initSowerJobsPolling } from '@gen3/core';
+import { useCoreDispatch, initSowerJobsPolling } from '@gen3/core';
 
-const SowerJobsInitializer: React.FC = () => {
-  const dispatch = useDispatch();
+const SowerJobsInitializer = () => {
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
-    // Dispatch the initialization action when the component mounts
+    console.log('init sower jobs polling');
     dispatch(initSowerJobsPolling());
-
-    // No cleanup needed
   }, [dispatch]);
 
-  // This component doesn't render anything
+  console.log('sower jobs polling initialized');
+
   return null;
 };
 
