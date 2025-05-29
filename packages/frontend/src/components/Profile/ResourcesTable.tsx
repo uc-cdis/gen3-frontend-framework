@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Badge } from '@mantine/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
 
@@ -28,7 +28,7 @@ const ResourceBadge = ({
   resource,
   serviceBadgeStyle,
   defaultColor = 'primary',
-}: ResourceBadgeProps): JSX.Element => {
+}: ResourceBadgeProps): ReactElement => {
   const { color, label } =
     resource in serviceBadgeStyle
       ? serviceBadgeStyle[resource]

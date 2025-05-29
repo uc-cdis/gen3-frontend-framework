@@ -1,7 +1,7 @@
 import MiniSearch, { Query, Options, SearchOptions, SearchResult, Suggestion } from 'minisearch'
 import React, { useEffect, useState, useRef, PropsWithChildren, useMemo, ReactElement } from 'react'
 
-export interface UseMiniSearch<T = any> {
+export interface UseMiniSearch<T extends Record<string, any> = Record<string, any>> {
   search: (query: Query, options?: SearchOptions) => void,
   searchResults: T[] | null,
   rawResults: SearchResult[] | null,
@@ -23,7 +23,10 @@ export interface UseMiniSearch<T = any> {
   miniSearch: MiniSearch<T>
 }
 
-export function useMiniSearch<T = never> (documents: readonly T[], options: Options<T>): UseMiniSearch<T> {
+type ExtractFieldFunction<T extends Record<string, any> = Record<string, any>> =
+  (document: T, id: keyof T) => string;
+
+export function useMiniSearch<T extends Record<string, any> = Record<string, any>> (documents: readonly T[], options: Options<T>): UseMiniSearch<T> {
   const optionsRef = useRef(options)
   const miniSearchRef = useRef<MiniSearch<T>>(new MiniSearch<T>(options))
   const documentByIdRef = useRef<{ [key: string]: T }>({})
@@ -38,15 +41,16 @@ export function useMiniSearch<T = never> (documents: readonly T[], options: Opti
     const documentById = documentByIdRef.current
     const options = optionsRef.current
 
-    const idField = options.idField || MiniSearch.getDefault('idField') as Options['idField']
-    const extractField = options.extractField || MiniSearch.getDefault('extractField') as Options['extractField']
-    const gatherById = (documents: unknown) => documents.reduce((byId: unknown, doc: unknown) => {
+    const idField = options.idField || MiniSearch.getDefault('idField') as Options['idField'];
+
+    const extractField = options.extractField || (MiniSearch.getDefault('extractField') as ExtractFieldFunction )
+    const gatherById = (documents: T) => Object.values(documents).reduce((byId : string, doc : T) => {
       const id = extractField(doc, idField)
       byId[id] = doc
       return byId
-    }, {})
+    }, {});
 
-    const search = (query: string, searchOptions?: SearchOptions): void => {
+    const search = (query: Query, searchOptions?: SearchOptions): void => {
       const results = miniSearch.search(query, searchOptions)
       const searchResults = results.map(({ id }) => getById(id))
       setSearchResults(searchResults)
@@ -79,7 +83,7 @@ export function useMiniSearch<T = never> (documents: readonly T[], options: Opti
       })
     }
 
-    const getById = (id: any): T | null => {
+    const getById = (id: string): T | null => {
       return documentById[id]
     }
 
@@ -88,7 +92,7 @@ export function useMiniSearch<T = never> (documents: readonly T[], options: Opti
       documentByIdRef.current = removeFromMap<T>(documentById, extractField(document, idField))
     }
 
-    const removeById = (id: any): void => {
+    const removeById = (id: string): void => {
       const document = getById(id)
       if (document == null) {
         throw new Error(`react-minisearch: document with id ${id} does not exist in the index`)
@@ -97,13 +101,12 @@ export function useMiniSearch<T = never> (documents: readonly T[], options: Opti
       documentByIdRef.current = removeFromMap<T>(documentById, id)
     }
 
-    const removeAll = function (documents?: readonly T[]): void {
+    const removeAll = function (documents: readonly T[]): void {
       if (arguments.length === 0) {
         miniSearch.removeAll()
         documentByIdRef.current = {}
       } else {
-        miniSearch.removeAll(documents)
-        const idsToRemove = documents.map((doc) => extractField(doc, idField))
+        const idsToRemove = Object.values(documents).map((doc) => extractField(doc, idField))
         documentByIdRef.current = removeManyFromMap<T>(documentById, idsToRemove)
       }
     }
@@ -183,7 +186,7 @@ function getDisplayName<PropsT> (Component: React.ComponentType<PropsT>): string
   return Component.displayName || Component.name || 'Component'
 }
 
-export function withMiniSearch<OwnProps, T = any> (
+export function withMiniSearch<OwnProps, T extends Record<string, any> = Record<string, any> > (
   documents: T[],
   options: Options<T>,
   Component: React.ComponentType<OwnProps & UseMiniSearch<T>>
@@ -198,13 +201,13 @@ export function withMiniSearch<OwnProps, T = any> (
   return WithMiniSearch
 }
 
-export interface WithMiniSearchProps<T = any> {
+export interface WithMiniSearchProps<T extends Record<string, any > = Record<string, any>> {
   documents: T[],
   options: Options<T>,
-  children: (props: UseMiniSearch<T>) => JSX.Element | null,
+  children: (props: UseMiniSearch<T>) => ReactElement | null,
 }
 
-export const WithMiniSearch = <T, >({ documents, options, children }: PropsWithChildren<WithMiniSearchProps<T>>) => {
+export const WithMiniSearch = <T extends Record<string, any > = Record<string, any>, >({ documents, options, children }: PropsWithChildren<WithMiniSearchProps<T>>) => {
   const miniSearchProps = useMiniSearch<T>(documents, options)
   return children(miniSearchProps)
 }

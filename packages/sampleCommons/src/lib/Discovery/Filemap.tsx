@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
   CellRenderFunctionProps,
   ReactECharts,
@@ -136,7 +136,7 @@ const useProcessManifestToChart = (
  *
  * @component
  * @param {Object} value - An object containing the __manifest value to render.
- * @returns {JSX.Element} - The rendered JSX element.
+ * @returns {ReactElement} - The rendered JSX element.
  */
 export const FilemapPopup = ({ value }: CellRenderFunctionProps) => {
   const [opened, { close, open }] = useDisclosure(false);
@@ -165,9 +165,9 @@ export const FilemapPopup = ({ value }: CellRenderFunctionProps) => {
  * Render a chart component based on the provided value.
  *
  * @param {object} value - An object or array containing the value for the chart component.
- * @returns {JSX.Element} - The rendered chart component.
+ * @returns {ReactElement} - The rendered chart component.
  */
-export const FilemapInline = ({ value }: CellRenderFunctionProps) => {
+export const FilemapInline = ({ value }: CellRenderFunctionProps) : ReactElement => {
   const chartDefinition = useProcessManifestToChart(value[0], false, true);
 
   if (!chartDefinition) {

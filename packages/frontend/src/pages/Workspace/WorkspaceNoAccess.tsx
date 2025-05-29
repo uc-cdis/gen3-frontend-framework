@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import { NavPageLayoutProps } from '../../features/Navigation';
 import { CardContainer } from '../../components/MessageCards';
@@ -6,7 +6,7 @@ import { CardContainer } from '../../components/MessageCards';
 const WorkspaceNoAccessPage = ({
   headerProps,
   footerProps,
-}: NavPageLayoutProps): JSX.Element => {
+}: NavPageLayoutProps): ReactElement => {
   const supportEmail =
     headerProps?.siteProps?.contactEmail || 'support@datacommons.io';
   return (

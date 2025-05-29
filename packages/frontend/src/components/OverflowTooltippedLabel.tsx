@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, ReactElement, useState } from 'react';
 import { Tooltip } from '@mantine/core';
 
 type OverflowTooltippedLabelProps = {
@@ -11,7 +11,7 @@ const OverflowTooltippedLabel = ({
   children,
   label,
   className = 'flex-grow font-heading text-md pt-0.5',
-}: OverflowTooltippedLabelProps): JSX.Element => {
+}: OverflowTooltippedLabelProps): ReactElement => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (

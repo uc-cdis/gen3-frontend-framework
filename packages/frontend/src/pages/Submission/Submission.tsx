@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import SubmissionPanel from '../../features/Submission/SubmissionPanel';
 import { SubmissionsPageLayoutProps } from './types';
@@ -7,7 +7,7 @@ const SubmissionPage = ({
   submissionConfig,
   headerProps,
   footerProps,
-}: SubmissionsPageLayoutProps): JSX.Element => {
+}: SubmissionsPageLayoutProps): ReactElement => {
   return (
     <NavPageLayout
       footerProps={footerProps}

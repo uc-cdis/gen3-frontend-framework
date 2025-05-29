@@ -40,7 +40,7 @@ export function useCollapsableSidebar({
   onTransitionEnd = () => null,
   opened,
 }: UseCollapsableSidebar): (props: GetCollapseProps) => Record<string, any> {
-  const el = useRef<HTMLElement | null>(null);
+  const el = useRef<HTMLElement | undefined>(undefined);
   const collapsedWidth = 0;
   const collapsedStyles = {
     display: 'none',

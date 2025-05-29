@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import { Button, Menu } from '@mantine/core';
 import { FloatingPosition } from '@mantine/core';
 import { ReactNode } from 'react';
@@ -14,11 +14,11 @@ interface DropdownWithIconProps {
   /**
    *   Left Icon for the taret button, can be undefined too
    */
-  LeftIcon?: JSX.Element;
+  LeftIcon?: ReactElement;
   /**
    *   Right Icon for the taret button, can be undefined too (default to dropdown icon)
    */
-  RightIcon?: JSX.Element;
+  RightIcon?: ReactElement;
   /**
    *    Content for target button
    */
@@ -33,7 +33,7 @@ interface DropdownWithIconProps {
   dropdownElements: Array<{
     title: string;
     onClick?: () => void;
-    icon?: JSX.Element;
+    icon?: ReactElement;
     disabled?: boolean; // if true, disables the menu item
   }>;
   /**
@@ -89,7 +89,7 @@ export const DropdownWithIcon = ({
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
-}: DropdownWithIconProps): JSX.Element => {
+}: DropdownWithIconProps): ReactElement => {
   return (
     <Menu
       width={disableTargetWidth ?? 'target'}

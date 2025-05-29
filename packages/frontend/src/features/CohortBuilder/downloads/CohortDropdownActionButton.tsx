@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { Button, Menu, MenuItemProps } from '@mantine/core';
 import { FloatingPosition } from '@mantine/core';
 import { Tooltip } from '@mantine/core';
@@ -28,7 +28,7 @@ interface GuppyDropdownMenuItemProps
 
 interface GuppyDropdownElementProps {
   title: string;
-  icon?: JSX.Element;
+  icon?: ReactElement;
   disabled?: boolean;
   actionFunction: ActionButtonWithArgsFunction;
   actionArgs: Record<string, any>;
@@ -81,11 +81,11 @@ interface DropdownWithIconProps {
   /**
    *   Left Icon for the taret button, can be undefined too
    */
-  leftIcon?: JSX.Element;
+  leftIcon?: ReactElement;
   /**
    *   Right Icon for the taret button, can be undefined too (default to dropdown icon)
    */
-  rightIcon?: JSX.Element;
+  rightIcon?: ReactElement;
   /**
    *    Content for target button
    */
@@ -155,7 +155,7 @@ const CohortDropdownActionButton = ({
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
-}: DropdownWithIconProps): JSX.Element => {
+}: DropdownWithIconProps): ReactElement => {
   const [isActive, setIsActive] = useState(false);
 
   const menuLabelText = useDeepCompareMemo(() => {

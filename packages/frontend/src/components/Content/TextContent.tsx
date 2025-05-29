@@ -44,7 +44,7 @@ export interface TextContentProps {
  * @param {string} [props.email] - Optional email address to be rendered as a clickable "mailto" link when type is `ContentType.TextWithEmail`.
  * @param {string} [props.link] - Optional URL to be rendered as a clickable hyperlink when type is `ContentType.TextWithLink`.
  * @param {string} [props.linkText] - Optional link text to display instead of the raw URL when type is `ContentType.TextWithLink`.
- * @returns {JSX.Element} A JSX element that renders the content dynamically based on the input type and properties.
+ * @returns {ReactElement} A JSX element that renders the content dynamically based on the input type and properties.
  */
 const TextContent = ({
   text,

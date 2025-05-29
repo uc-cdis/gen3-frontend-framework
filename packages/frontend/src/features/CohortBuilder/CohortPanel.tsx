@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, ReactElement } from 'react';
 import { partial } from 'lodash';
 import {
   CoreState,
@@ -80,7 +80,7 @@ export const CohortPanel = ({
   buttons,
   loginForDownload,
   showAccessLevel = false,
-}: CohortPanelConfigurationWithAccessLevel): JSX.Element => {
+}: CohortPanelConfigurationWithAccessLevel): ReactElement => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');

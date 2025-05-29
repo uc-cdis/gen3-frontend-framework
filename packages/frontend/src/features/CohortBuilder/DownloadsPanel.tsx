@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
@@ -37,7 +37,7 @@ const makeActionArgs = (button: DownloadButtonProps) => {
 const createDownloadMenuButton = (
   props: DropdownButtonProps,
   args: Record<string, any>,
-): JSX.Element => {
+): ReactElement => {
   const elements = props.dropdownItems?.map((button) => {
     let actionFunction = NullButtonAction;
     let actionArgs = {};
@@ -107,7 +107,7 @@ const DownloadsPanel = ({
   filter,
   accessibility,
   sort,
-}: DownloadsPanelProps): JSX.Element => {
+}: DownloadsPanelProps): ReactElement => {
   const isUserLoggedIn = useIsUserLoggedIn();
   const loginRequired = loginForDownload ? loginForDownload : false;
 

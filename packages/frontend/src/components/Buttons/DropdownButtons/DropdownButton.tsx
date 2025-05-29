@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import { Menu, Button, Text } from '@mantine/core';
 import { type DropdownButtonProps } from './types';
 import { Icon } from '@iconify/react';
@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react';
 const DropdownButton = ({
   title,
   dropdownItems,
-}: DropdownButtonProps): JSX.Element => {
+}: DropdownButtonProps): ReactElement => {
   return (
     <Menu onChange={(value) => console.log(value)}>
       <Menu.Target>

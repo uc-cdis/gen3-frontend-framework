@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import { Group, Select, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify/react';
 import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
@@ -19,7 +19,7 @@ import {
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
 
-export const UnsavedIcon = ({ label }: { label: string }): JSX.Element => (
+export const UnsavedIcon = ({ label }: { label: string }): ReactElement => (
   <Tooltip label={label} withArrow>
     <span className="leading-0 pointer-events-auto">
       <Icon icon="gen3:cohort-unsaved" aria-hidden="true" height="1.5rem" />

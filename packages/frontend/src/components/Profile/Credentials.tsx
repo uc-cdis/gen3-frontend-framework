@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
   useCoreDispatch,
   showModal,
@@ -24,7 +24,7 @@ import CredentialsTable from './CredentialsTable';
  * and a table that shows all current credentials for logged in user.
  * It also retrieves CSRF token and creates a modal that shows the newly
  * created API key coming from fence.
- * @returns {JSX.Element} The JSX element representing the credentials section.
+ * @returns {ReactElement} The JSX element representing the credentials section.
  */
 const Credentials = () => {
   // useGetCSRFQuery hook returns a user's JWT token from the default gen3 core API

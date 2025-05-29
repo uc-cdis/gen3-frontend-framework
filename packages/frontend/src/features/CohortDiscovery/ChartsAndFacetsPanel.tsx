@@ -32,7 +32,7 @@ const NUM_COLS = 2; // TODO: add to config
  *
  * @param {string} index - The index type used for querying data.
  * @param {Array} facets - The list of facets to be rendered.
- * @returns {JSX.Element} The rendered component showing facets.
+ * @returns {ReactElement} The rendered component showing facets.
  */
 const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,

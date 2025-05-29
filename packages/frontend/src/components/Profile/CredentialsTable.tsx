@@ -36,7 +36,7 @@ interface APIKeyStatus {
 /**
  * Defines a Credentials Table that lists all credentials for a logged in user
  * with the ability to delete a given credential using useRemoveCredentialMutation() hook
- * @returns {JSX.Element} The JSX element representing the credentials table.
+ * @returns {ReactElement} The JSX element representing the credentials table.
  */
 const CredentialsTable = () => {
   const { data: csrfToken, isFetching: isCSRFFetching} = useGetCSRFQuery();

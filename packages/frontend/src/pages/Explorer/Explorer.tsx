@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import { CohortBuilder } from '../../features/CohortBuilder';
 import { ExplorerPageProps } from './types';
@@ -10,7 +10,7 @@ const ExplorerPage = ({
   explorerConfig,
   tabsLayout,
   sharedFiltersMap,
-}: ExplorerPageProps): JSX.Element => {
+}: ExplorerPageProps): ReactElement => {
   if (explorerConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">

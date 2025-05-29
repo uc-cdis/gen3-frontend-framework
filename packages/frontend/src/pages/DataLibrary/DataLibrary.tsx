@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavPageLayout, NavPageLayoutProps } from '../../features/Navigation';
 import {
   DataLibrary,
@@ -13,7 +13,7 @@ const DataLibraryPage = ({
   headerProps,
   footerProps,
   config,
-}: DataLibraryPageProps): JSX.Element => {
+}: DataLibraryPageProps): ReactElement => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}

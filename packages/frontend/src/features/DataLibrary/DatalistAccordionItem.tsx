@@ -38,7 +38,7 @@ interface DatalistAccordionProps {
  * @param {Object} dataListAccordionItemParams - Parameters for the DataListAccordionItem.
  * @param {Object} dataListAccordionItemParams.dataList - The data list to be displayed in the accordion item.
  *
- * @return {JSX.Element} A rendered accordion item component with controls for data list updates and deletions.
+ * @return ReactElement} A rendered accordion item component with controls for data list updates and deletions.
  */
 export const DatalistAccordionItem: React.FC<DatalistAccordionProps> = ({
   dataList,

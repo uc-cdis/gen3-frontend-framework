@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import Discovery from '../../features/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
@@ -15,7 +15,7 @@ const DiscoveryPage = ({
   headerProps,
   footerProps,
   discoveryConfig,
-}: DiscoveryPageProps): JSX.Element => {
+}: DiscoveryPageProps): ReactElement => {
   if (discoveryConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">

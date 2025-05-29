@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
   Accordion,
   AccordionControlProps,
@@ -43,7 +43,7 @@ export const DatasetAccordionControl = ({
   selectedState,
   size = 'sm',
   ...props
-}: DatasetAccordionControlProps): JSX.Element => {
+}: DatasetAccordionControlProps): ReactElement => {
   const [value, setValue] = useState<string | undefined>(undefined);
   const handleUpdateName = () => {
     updateHandler({ name: value });

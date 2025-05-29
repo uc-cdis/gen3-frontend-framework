@@ -1,5 +1,5 @@
+import React, {ReactElement} from 'react';
 import { Badge, Loader, Tooltip } from '@mantine/core';
-import React from 'react';
 
 /**
  * A Button component that displays a count in a badge,
@@ -24,7 +24,7 @@ export const CountButton = ({
   handleOnClick: () => void;
   count: number;
   loading?: boolean;
-}): JSX.Element => {
+}): ReactElement => {
   return (
     <Tooltip label={tooltipLabel} withArrow>
       <span>

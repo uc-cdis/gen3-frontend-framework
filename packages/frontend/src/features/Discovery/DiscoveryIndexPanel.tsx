@@ -29,9 +29,8 @@ export interface DiscoveryIndexPanelProps {
  * @param {Object} props.discoveryConfig - Configuration object for setting up the discovery panel.
  * @param {Object} props.discoveryConfig.features - Defines enabled features (e.g., search, charts, export).
  * @param {Object} props.discoveryConfig.minimalFieldMapping - Field mapping configuration, such as `uid`.
- * @param {JSX.Element} props.indexSelector - React component for selecting an index in the discovery panel.
- *
- * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
+ * @param {ReactElement} props.indexSelector - React component for selecting an index in the discovery panel.
+ * @return {ReactElement} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
  */
 const DiscoveryIndexPanel = ({
   discoveryConfig,

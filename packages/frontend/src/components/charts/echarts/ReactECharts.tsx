@@ -19,7 +19,7 @@ const ReactECharts = ({
   settings,
   loading,
   theme,
-}: ReactEChartsProps): JSX.Element => {
+}: ReactEChartsProps): ReactElement => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
   const [chartRef, rect] = useResizeObserver();
   useDeepCompareEffect(() => {

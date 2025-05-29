@@ -35,7 +35,7 @@ describe('<DropdownWithIcon />', () => {
         targetButtonDisabled
       />,
     );
-    expect(getByTestId('menu-elem')).toBeDisabled();
+    expect(getByTestId('menu-elem')).();
   });
 
   it('target button should NOT be disabled if targetButtonDisabled props is not provided/undefined', () => {

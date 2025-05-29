@@ -6,7 +6,7 @@ import {
   NavPageLayoutProps,
 } from '@gen3/frontend';
 
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
   CohortBuilder,
   ExplorerPageProps,
@@ -20,7 +20,7 @@ const CohortBuilderPage = ({
   explorerConfig,
   tabsLayout,
   sharedFiltersMap,
-}: ExplorerPageProps): JSX.Element => {
+}: ExplorerPageProps): ReactElement => {
   if (explorerConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
