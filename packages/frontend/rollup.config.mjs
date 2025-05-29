@@ -82,6 +82,10 @@ const config = [
         sourcemap: true,
       },
     ],
+    watch: {
+      include: 'src/**',
+      exclude: 'node_modules/**'
+    },
     external: [
       ...Object.keys(globals),
       'tailwindcss/plugin',

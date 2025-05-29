@@ -29,6 +29,10 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
+  transpilePackages: ['@gen3/core', '@gen3/frontend'],
+  experimental: {
+    externalDir: true,
+  },
   webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
