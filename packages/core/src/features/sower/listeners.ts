@@ -25,7 +25,7 @@ sowerListenerMiddleware.startListening({
       sowerJobs.forEach((job) => {
         const timestamp = Date.now();
         if (!jobsState.jobs[job.uid]) {
-          // not in jobs list
+          // not in jobs list so add it, although there will be no config
           listenerApi.dispatch(
             addSowerJob({
               jobId: job.uid,
@@ -33,10 +33,11 @@ sowerListenerMiddleware.startListening({
               status: job.status,
               created: timestamp,
               updated: timestamp,
-              part: 2,
+              part: job.status === 'Completed' ? 2 : 1,
             }),
           );
         } else {
+          // update the status
           listenerApi.dispatch(
             updateSowerJob({
               jobId: job.uid,
@@ -51,7 +52,7 @@ sowerListenerMiddleware.startListening({
       if (error instanceof Error) {
         console.error(error.message);
       } else {
-        console.error('Unknown error');
+        console.error('sowerListenerMiddleware: Unknown error');
       }
     }
   },

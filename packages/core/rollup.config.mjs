@@ -49,6 +49,10 @@ const config = [
       },
     ],
     external: Object.keys(globals),
+    watch: {
+      include: 'src/**',
+      exclude: 'node_modules/**',
+    },
     plugins: [
       peerDepsExternal(),
       json(),

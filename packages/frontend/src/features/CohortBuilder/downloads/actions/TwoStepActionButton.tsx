@@ -1,18 +1,17 @@
 import React, { forwardRef, ReactElement } from 'react';
 import { Button, ButtonProps } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import {
   convertFilterSetToGqlFilter,
-  fetchFencePresignedURL,
-  isFetchBaseQueryError,
-  useSubmitSowerJobMutation,
-  addSowerJob,
-  type FilterSet,
   type CreateAndExportActionConfig,
+  fetchFencePresignedURL,
+  type FilterSet,
   type JobBuilderAction,
   type SendJobOutputAction,
   useCoreDispatch,
+  useSubmitSowerJobMutation,
 } from '@gen3/core';
+import { SendResultsActionNotFoundError, SowerJobNotFoundError } from './types';
+import { submitSowerJob } from './actions';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -127,18 +126,19 @@ SowerJobBuilderActionFactory.register(
 SendSowerJobOutputActionFactory.register('handoff-pfb-to-url', sendPFBToURL);
 
 /**
- *  find the action to create a job (e.g get the correct data)
+ *  find the action to create a job (e.g., get the correct data)
  * @param actionName
  */
 export const findCreateJobAction = (actionName: string): JobBuilderAction => {
   try {
-    const createAction = SowerJobBuilderActionFactory.getAction(actionName);
-    return createAction;
+    return SowerJobBuilderActionFactory.getAction(actionName);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(`Cannot find create job action ${actionName}`);
     }
-    throw new Error(`Cannot find create job action ${actionName}`);
+    throw new SowerJobNotFoundError(
+      `Cannot find create job action ${actionName}`,
+    );
   }
 };
 
@@ -146,13 +146,14 @@ export const findSendResultsAction = (
   actionName: string,
 ): SendJobOutputAction => {
   try {
-    const createAction = SendSowerJobOutputActionFactory.getAction(actionName);
-    return createAction;
+    return SendSowerJobOutputActionFactory.getAction(actionName);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(`Error binding send results action ${actionName}`);
     }
-    throw new Error(`Cannot find send results action ${actionName}`);
+    throw new SendResultsActionNotFoundError(
+      `Cannot find send results action ${actionName}`,
+    );
   }
 };
 
@@ -219,58 +220,62 @@ const CohortSubmitJobActionButton = forwardRef<
 
     const dispatch = useCoreDispatch();
 
-    // TODO: handle error from binding actions
-
     const handleSubmitJob = async () => {
-      try {
-        const createJobAction = findCreateJobAction(
-          actions.createAction.actionName,
-        );
-        const jobConfig = createJobAction({
-          ...actions.createAction.parameters,
-          ...jobParameters,
-        });
-        const timestamp = Date.now();
-
-        console.log('jobConfig', jobConfig);
-        const { uid, name, status } = await submitJob(jobConfig).unwrap();
-        console.log('submit job', uid);
-        // Register with global monitor
-        // add Job
-        dispatch(
-          addSowerJob({
-            jobId: uid,
-            name,
-            status,
-            part: 1,
-            config: actions,
-            created: timestamp,
-            updated: timestamp,
-          }),
-        );
-      } catch (e: unknown) {
-        console.log('error', e);
-        if (isFetchBaseQueryError(e)) {
-          const errMsg = 'error' in e ? e.error : JSON.stringify(e.data);
-          notifications.show({
-            title: 'Error from Service',
-            message: errMsg,
-            color: 'red',
-          });
-        } else if (e instanceof Error)
-          notifications.show({
-            title: 'Error',
-            message: e.message,
-            color: 'red',
-          });
-        else
-          notifications.show({
-            title: 'Error',
-            message: 'Failed to start job',
-            color: 'red',
-          });
-      }
+      return await submitSowerJob(actions, jobParameters, dispatch, submitJob);
     };
+
+    // const handleSubmitJob = async () => {
+    //   try {
+    //     const createSowerJobAction = findCreateJobAction(
+    //       actions.createAction.actionName,
+    //     );
+    //
+    //     const sowerJobConfig = createSowerJobAction({
+    //       ...actions.createAction.parameters,
+    //       ...jobParameters,
+    //     });
+    //     const timestamp = Date.now();
+    //
+    //     console.log('jobConfig', sowerJobConfig);
+    //     // submit the job to sower
+    //     const { uid, name, status } = await submitJob(sowerJobConfig).unwrap();
+    //     console.log('submit job', uid);
+    //     // Register with global monitor
+    //     // add Job to slice so we can both manage and persist it
+    //     dispatch(
+    //       addSowerJob({
+    //         jobId: uid,
+    //         name,
+    //         status,
+    //         part: 1,
+    //         config: actions,
+    //         created: timestamp,
+    //         updated: timestamp,
+    //       }),
+    //     );
+    //   } catch (e: unknown) {
+    //     console.log('error', e);
+    //     if (isFetchBaseQueryError(e)) {
+    //       const errMsg = 'error' in e ? e.error : JSON.stringify(e.data);
+    //       notifications.show({
+    //         title: 'Error from Service',
+    //         message: errMsg,
+    //         color: 'red',
+    //       });
+    //     } else if (e instanceof Error)
+    //       notifications.show({
+    //         title: 'Error',
+    //         message: e.message,
+    //         color: 'red',
+    //       });
+    //     else
+    //       notifications.show({
+    //         title: 'Error',
+    //         message: 'Failed to start job',
+    //         color: 'red',
+    //       });
+    //   }
+    // };
 
     return (
       <Button

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useCoreDispatch, initSowerJobsPolling } from '@gen3/core';
+import { useCoreDispatch, initSowerPolling } from '@gen3/core';
 
 const SowerJobsInitializer = () => {
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
-    console.log('init sower jobs polling');
-    dispatch(initSowerJobsPolling());
+    console.log('start init sower jobs polling');
+    dispatch(initSowerPolling());
   }, [dispatch]);
 
   console.log('sower jobs polling initialized');

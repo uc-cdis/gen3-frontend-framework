@@ -104,6 +104,10 @@ const config = [
       '@gen3/core',
       'swr',
     ],
+    watch: {
+      include: 'src/**',
+      exclude: 'node_modules/**',
+    },
     plugins: [
       peerDepsExternal(),
       json(),

@@ -42,14 +42,17 @@ interface BoundActionConfig<T> extends ActionFunctionConfig {
   actionFunction: T;
 }
 
+// handles Sower job: consist of the sower job action and optionally an action which uses the output of the job
+// used in the JobsSlice and is serializable
 export interface CreateAndExportActionConfig {
   createAction: ActionFunctionConfig;
-  sendJobAction: ActionFunctionConfig;
+  sendJobAction?: ActionFunctionConfig;
 }
 
+// Bound actions: action that are bound to a function
 export interface BoundCreateAndExportAction {
   createAction: BoundActionConfig<JobBuilderAction>;
-  sendJobAction: BoundActionConfig<SendJobOutputAction>;
+  sendJobAction?: BoundActionConfig<SendJobOutputAction>;
 }
 
 export interface JobWithActions {

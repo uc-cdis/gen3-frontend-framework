@@ -18,9 +18,8 @@ import {
   removeSowerJob,
   clearSowerJobsId,
   refreshSowerJobs,
+  initSowerPolling,
 } from './jobsListSlice';
-
-import { initSowerJobsPolling } from './init';
 
 import { selectSowerJobId, selectSowerJobList } from './jobsListSelectors';
 
@@ -53,7 +52,7 @@ export {
   removeSowerJob,
   clearSowerJobsId,
   refreshSowerJobs,
-  initSowerJobsPolling,
+  initSowerPolling,
   sowerApi,
   selectSowerJobId,
   selectSowerJobList,

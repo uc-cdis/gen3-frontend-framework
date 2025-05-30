@@ -16,8 +16,9 @@ export const NullButtonAction: ActionButtonWithArgsFunction = (
   _params,
   done,
 ): Promise<void> => {
-  return new Promise<void>((done) => {
+  return new Promise<void>((resolve) => {
     if (done) done();
+    resolve();
   });
 };
 
@@ -32,12 +33,11 @@ export const findButtonAction = (
   buttonName?: string,
 ): ActionCreatorFactoryItem | undefined => {
   if (buttonName === undefined) {
-    console.error('getButtonAction: no name provided');
+    console.error('findButtonAction: no name provided');
     return undefined;
   }
-
   if (!(buttonName in registeredButtonActions)) {
-    console.error('getButtonAction: no action found for', buttonName);
+    console.error('findButtonAction: no action found for', buttonName);
     return undefined;
   }
   return registeredButtonActions[buttonName];

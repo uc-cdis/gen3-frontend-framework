@@ -41,5 +41,9 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "references": [
+    { "path": "../core" },
+    { "path": "../frontend" }
   ]
 }
