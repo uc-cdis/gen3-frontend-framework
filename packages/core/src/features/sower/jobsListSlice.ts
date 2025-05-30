@@ -1,7 +1,8 @@
 import { createSlice, Draft, type PayloadAction } from '@reduxjs/toolkit';
 import { JobWithActions } from './types';
 
-type SowerJobUpdatePayload = Pick<JobWithActions, 'status' | 'jobId'>;
+type SowerJobUpdateStage = Pick<JobWithActions, 'stage' | 'jobId'>;
+type SowerJobUpdateStatus = Pick<JobWithActions, 'status' | 'jobId'>;
 type SowerJobUpdateObjectGUID = Pick<JobWithActions, 'outputGUID' | 'jobId'>;
 
 export interface SowerJobsListState {
@@ -24,26 +25,42 @@ export const sowerJobsListSlice = createSlice({
         state.jobs[action.payload.jobId] = action.payload;
       }
     },
-    updateSowerJob: (
+    updateSowerJobStatus: (
       state: Draft<SowerJobsListState>,
-      action: PayloadAction<SowerJobUpdatePayload>,
+      action: PayloadAction<SowerJobUpdateStatus>,
     ) => {
-      if (Object.keys(state.jobs).includes(action.payload.jobId)) {
-        state.jobs[action.payload.jobId] = {
-          ...state.jobs[action.payload.jobId],
-          ...action.payload,
+      const { jobId, status } = action.payload;
+      if (Object.keys(state.jobs).includes(jobId)) {
+        state.jobs[jobId] = {
+          ...state.jobs[jobId],
+          status: status,
           updated: Date.now(),
         };
       }
     },
+    updateSowerJobStage: (
+      state: Draft<SowerJobsListState>,
+      action: PayloadAction<SowerJobUpdateStage>,
+    ) => {
+      const { jobId, stage } = action.payload;
+      if (Object.keys(state.jobs).includes(jobId)) {
+        state.jobs[jobId] = {
+          ...state.jobs[jobId],
+          stage: stage,
+          updated: Date.now(),
+        };
+      }
+    },
+
     updateOutputGUID: (
       state: Draft<SowerJobsListState>,
       action: PayloadAction<SowerJobUpdateObjectGUID>,
     ) => {
-      if (Object.keys(state.jobs).includes(action.payload.jobId)) {
-        state.jobs[action.payload.jobId] = {
-          ...state.jobs[action.payload.jobId],
-          outputGUID: action.payload.outputGUID,
+      const { jobId, outputGUID } = action.payload;
+      if (Object.keys(state.jobs).includes(jobId)) {
+        state.jobs[jobId] = {
+          ...state.jobs[jobId],
+          outputGUID: outputGUID,
           updated: Date.now(),
         };
       }
@@ -74,7 +91,8 @@ export const {
   addSowerJob,
   removeSowerJob,
   clearSowerJobsId,
-  updateSowerJob,
+  updateSowerJobStatus,
+  updateSowerJobStage,
   updateOutputGUID,
   refreshSowerJobs,
   initSowerPolling,

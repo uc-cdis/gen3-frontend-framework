@@ -13,7 +13,8 @@ import {
 
 import {
   addSowerJob,
-  updateSowerJob,
+  updateSowerJobStatus,
+  updateSowerJobStage,
   updateOutputGUID,
   removeSowerJob,
   clearSowerJobsId,
@@ -47,7 +48,8 @@ export {
   useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
   addSowerJob,
-  updateSowerJob,
+  updateSowerJobStatus,
+  updateSowerJobStage,
   updateOutputGUID,
   removeSowerJob,
   clearSowerJobsId,

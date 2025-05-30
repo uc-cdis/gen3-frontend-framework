@@ -10,6 +10,7 @@ import {
 } from '@gen3/core';
 
 import { findSendResultsAction } from '../features/CohortBuilder/downloads/actions/TwoStepActionButton';
+import { SendResultsActionNotFoundError } from '../features/CohortBuilder/downloads/actions/types';
 
 interface JobMonitorConfig {
   pollingInterval?: number; // in milliseconds
@@ -23,7 +24,7 @@ export class SowerJobsMonitor {
   private config: JobMonitorConfig;
 
   private static DEFAULT_CONFIG: JobMonitorConfig = {
-    pollingInterval: 5000, // 5 seconds default
+    pollingInterval: 1000 * 10, // 5 seconds default
     debug: true,
   };
 
@@ -106,7 +107,10 @@ export class SowerJobsMonitor {
     }
   }
 
-  private async checkJobStatus(jobId: string, pendingAction: JobWithActions) {
+  private async checkJobStatus(sowerJob: JobWithActions) {
+    const jobId = sowerJob.jobId;
+    const job = coreStore.getState().sowerJobsList.jobs[jobId];
+
     try {
       const response = await coreStore.dispatch(
         sowerApi.endpoints.getSowerJobStatus.initiate(jobId),
@@ -114,20 +118,31 @@ export class SowerJobsMonitor {
 
       console.log('checkJobStatus: ', response);
 
-      if ('data' in response) {
-        const status = response.data;
+      if ('data' in response && response.data) {
+        const jobStatus = response.data;
 
-        if (status?.status === 'Completed' && pendingAction.part === 1) {
-          this.executeStep2(pendingAction);
+        const updatedTimestamp = Date.now();
+
+        if (jobStatus.status === 'Completed' && sowerJob.part === 1) {
+          if (sowerJob.config?.sendJobAction) {
+            coreStore.dispatch(
+              updateSowerJob({
+                ...job,
+                part: 2,
+                updated: updatedTimestamp,
+              }),
+            );
+          }
+          this.executeStep2(sowerJob);
           this.stopPollingIfNoJobs();
-        } else if (status?.status === 'Failed') {
+        } else if (jobStatus?.status === 'Failed') {
           this.handleError(jobId, 'Job failed');
           this.stopPollingIfNoJobs();
         }
         coreStore.dispatch(
           updateSowerJob({
-            jobId,
-            status: status?.status || 'Unknown',
+            ...job,
+            status: jobStatus.status || 'Unknown',
           }),
         );
       }
@@ -156,8 +171,15 @@ export class SowerJobsMonitor {
 
         coreStore.dispatch(removeSowerJob(pendingAction.jobId));
       }
-    } catch (error) {
-      this.handleError(pendingAction.jobId, 'Failed to complete second step');
+    } catch (error: unknown) {
+      if (error instanceof SendResultsActionNotFoundError) {
+        this.handleError(
+          pendingAction.jobId,
+          'Failed to find send results action',
+        );
+      }
+      if (error instanceof Error)
+        this.handleError(pendingAction.jobId, 'Failed to complete second step');
     }
   }
 

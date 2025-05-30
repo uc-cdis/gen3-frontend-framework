@@ -1,11 +1,34 @@
 import { isAnyOf, createListenerMiddleware } from '@reduxjs/toolkit';
 import { CoreState } from '../../reducers';
-import { addSowerJob, updateSowerJob, refreshSowerJobs } from './jobsListSlice';
+import {
+  addSowerJob,
+  updateSowerJobStatus,
+  refreshSowerJobs,
+} from './jobsListSlice';
 import { selectSowerJobList } from './jobsListSelectors';
 import { sowerApi } from './sowerApi';
+import { type JobStatus } from './types';
 
 // Create the middleware instance and methods
 export const sowerListenerMiddleware = createListenerMiddleware();
+
+const GetObjectIdsForCompletedJobs = async (
+  jobs: Array<JobStatus>,
+  dispatch: CoreState['dispatch'],
+) => {
+  const objectIds: Record<string, string> = {};
+  for (const job of jobs) {
+    if (job.status === 'Completed') {
+      const objectId = await dispatch.sowerApi.endpoints.getSowerOutput
+        .initiate(job.uid, {
+          forceRefetch: true,
+        })
+        .unwrap();
+      objectIds[job.uid] = objectId;
+    }
+  }
+  return objectIds;
+};
 
 sowerListenerMiddleware.startListening({
   matcher: isAnyOf(refreshSowerJobs),
@@ -22,6 +45,13 @@ sowerListenerMiddleware.startListening({
         )
         .unwrap();
 
+      const missingJobs = sowerJobs.filter((job) => !jobsState.jobs[job.uid]);
+
+      const outputGuids = await GetObjectIdsForCompletedJobs(
+        missingJobs,
+        listenerApi.dispatch,
+      );
+
       sowerJobs.forEach((job) => {
         const timestamp = Date.now();
         if (!jobsState.jobs[job.uid]) {
@@ -33,13 +63,15 @@ sowerListenerMiddleware.startListening({
               status: job.status,
               created: timestamp,
               updated: timestamp,
-              part: job.status === 'Completed' ? 2 : 1,
+              outputGUID:
+                job.uid in outputGuids ? outputGuids[job.uid] : undefined,
+              stage: job.status === 'Completed' ? 2 : 1,
             }),
           );
         } else {
           // update the status
           listenerApi.dispatch(
-            updateSowerJob({
+            updateSowerJobStatus({
               jobId: job.uid,
               status: job.status,
             }),

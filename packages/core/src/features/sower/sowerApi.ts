@@ -70,8 +70,11 @@ export const sowerApi = sowerTags.injectEndpoints({
         return { data: combinedResults };
       },
     }),
-    getSowerOutput: builder.query<DispatchJobResponse, string>({
+    getSowerOutput: builder.query<string, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
+      transformResponse: (response: { output: string }) => {
+        return response['output'];
+      },
     }),
     getSowerServiceStatus: builder.query<JSON, void>({
       query: () => `${GEN3_SOWER_API}/_status`,
