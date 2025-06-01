@@ -49,7 +49,7 @@ export const submitSowerJob = async (
         jobId: uid,
         name,
         status,
-        part: 1,
+        stage: 1,
         config: actions,
         created: timestamp,
         updated: timestamp,

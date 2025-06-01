@@ -34,6 +34,7 @@ const nextConfig = {
   transpilePackages: ['@gen3/core', '@gen3/frontend'],
   experimental: {
     externalDir: true,
+    optimizePackageImports: ['react-icons', '@gen3/core', '@gen3/frontend'],
   },
   webpack: (config) => {
     config.infrastructureLogging = {

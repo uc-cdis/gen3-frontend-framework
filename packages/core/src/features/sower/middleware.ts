@@ -36,75 +36,75 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
     autoClose: 4000,
   };
 
-  const fetchJobsAndUpdateStatus = () => {
-    const state = store.getState() satisfies CoreState as CoreState;
-    const jobsInStore = state.sowerJobsList.jobs;
-    try {
-      const sowerJobs: Array<JobStatus> = store
-        .dispatch(
-          sowerApi.endpoints.getSowerJobList.initiate(void 0, {
-            forceRefetch: true,
-          }),
-        )
-        .unwrap();
-
-      sowerJobs.forEach((job) => {
-        const timestamp = Date.now();
-        if (!jobsInStore[job.uid]) {
-          // not in jobs list so add it, although there will be no config
-          state.dispatch(
-            addSowerJob({
-              jobId: job.uid,
-              name: job.name,
-              status: job.status,
-              created: timestamp,
-              updated: timestamp,
-              stage: job.status === 'Completed' ? 2 : 1,
-            }),
-          );
-        } else {
-          // handle changes in status
-
-          if (job)
-            // update the status
-            state.dispatch(
-              updateSowerJob({
-                jobId: job.uid,
-                status: job.status,
-              }),
-            );
-        }
-      });
-
-      // Only start polling if there are jobs
-      if (sowerJobs.length > 0) {
-        // Filter out jobs that are already completed/failed
-        const activeJobs = sowerJobs.filter(
-          (job) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
-        );
-
-        if (activeJobs.length > 0) {
-          startPolling();
-
-          if (notificationConfig.enabled) {
-            showNotification(
-              'job-polling-resumed',
-              'Monitoring Jobs',
-              `Resuming monitoring of ${activeJobs.length} active jobs`,
-              'info',
-              { autoClose: 3000 },
-            );
-          }
-        }
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error('sowerListenerMiddleware: Unknown error');
-      }
-    }
-  };
+  // const fetchJobsAndUpdateStatus = () => {
+  //   const state = store.getState() satisfies CoreState as CoreState;
+  //   const jobsInStore = state.sowerJobsList.jobs;
+  //   try {
+  //     const sowerJobs: Array<JobStatus> = store
+  //       .dispatch(
+  //         sowerApi.endpoints.getSowerJobList.initiate(void 0, {
+  //           forceRefetch: true,
+  //         }),
+  //       )
+  //       .unwrap();
+  //
+  //     sowerJobs.forEach((job) => {
+  //       const timestamp = Date.now();
+  //       if (!jobsInStore[job.uid]) {
+  //         // not in jobs list so add it, although there will be no config
+  //         state.dispatch(
+  //           addSowerJob({
+  //             jobId: job.uid,
+  //             name: job.name,
+  //             status: job.status,
+  //             created: timestamp,
+  //             updated: timestamp,
+  //             stage: job.status === 'Completed' ? 2 : 1,
+  //           }),
+  //         );
+  //       } else {
+  //         // handle changes in status
+  //
+  //         if (job)
+  //           // update the status
+  //           state.dispatch(
+  //             updateSowerJobStatus({
+  //               jobId: job.uid,
+  //               status: job.status,
+  //             }),
+  //           );
+  //       }
+  //     });
+  //
+  //     // Only start polling if there are jobs
+  //     if (sowerJobs.length > 0) {
+  //       // Filter out jobs that are already completed/failed
+  //       const activeJobs = sowerJobs.filter(
+  //         (job) => !['Completed', 'Failed', 'Unknown'].includes(job.status),
+  //       );
+  //
+  //       if (activeJobs.length > 0) {
+  //         startPolling();
+  //
+  //         if (notificationConfig.enabled) {
+  //           showNotification(
+  //             'job-polling-resumed',
+  //             'Monitoring Jobs',
+  //             `Resuming monitoring of ${activeJobs.length} active jobs`,
+  //             'info',
+  //             { autoClose: 3000 },
+  //           );
+  //         }
+  //       }
+  //     }
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error) {
+  //       console.error(error.message);
+  //     } else {
+  //       console.error('sowerListenerMiddleware: Unknown error');
+  //     }
+  //   }
+  // };
 
   // Helper function to start polling if not already polling
   const startPolling = () => {
@@ -203,7 +203,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
         } else {
           // update the status
           state.dispatch(
-            updateSowerJob({
+            updateSowerJobStatus({
               jobId: job.uid,
               status: job.status,
             }),
@@ -274,7 +274,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
       if (jobIds.length === 0) {
         stopPolling();
       }
-    } else if (updateSowerJob.match(action)) {
+    } else if (updateSowerJobStatus.match(action)) {
       // Check if this update resulted in all jobs being completed/failed
       const { jobId, status } = action.payload;
       const job = state.sowerJobsList.jobs[jobId];
@@ -344,7 +344,7 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
         ) {
           // Update job status
           store.dispatch(
-            updateSowerJob({
+            updateSowerJobStatus({
               jobId,
               status: jobStatus,
             }),

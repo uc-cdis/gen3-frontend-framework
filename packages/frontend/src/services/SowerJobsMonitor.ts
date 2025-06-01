@@ -3,7 +3,7 @@ import {
   coreStore,
   sowerApi,
   addSowerJob,
-  updateSowerJob,
+  updateSowerJobStatus,
   removeSowerJob,
   type JobWithActions,
   type CreateAndExportActionConfig,
@@ -67,7 +67,7 @@ export class SowerJobsMonitor {
       addSowerJob({
         jobId,
         config,
-        part: 1,
+        stage: 1,
         created: timestamp,
         updated: timestamp,
         name: '',
@@ -123,13 +123,12 @@ export class SowerJobsMonitor {
 
         const updatedTimestamp = Date.now();
 
-        if (jobStatus.status === 'Completed' && sowerJob.part === 1) {
+        if (jobStatus.status === 'Completed' && sowerJob.stage === 1) {
           if (sowerJob.config?.sendJobAction) {
             coreStore.dispatch(
-              updateSowerJob({
+              updateSowerJobStatus({
                 ...job,
-                part: 2,
-                updated: updatedTimestamp,
+                status: 'Completed',
               }),
             );
           }
@@ -140,7 +139,7 @@ export class SowerJobsMonitor {
           this.stopPollingIfNoJobs();
         }
         coreStore.dispatch(
-          updateSowerJob({
+          updateSowerJobStatus({
             ...job,
             status: jobStatus.status || 'Unknown',
           }),
@@ -203,7 +202,7 @@ export class SowerJobsMonitor {
         }
 
         Object.entries(pendingActions).forEach(async ([jobId, action]) => {
-          await this.checkJobStatus(jobId, action);
+          await this.checkJobStatus( action);
         });
       }, this.config.pollingInterval);
 
