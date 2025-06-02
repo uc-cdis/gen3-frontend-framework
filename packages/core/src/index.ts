@@ -45,6 +45,8 @@ export * from './features/submission';
 export * from './features/workspace';
 export * from './features/notifications';
 
+import { sowerJobsListSliceReducer } from './features/sower/jobsListSlice';
+
 export {
   type CoreState,
   GEN3_COMMONS_NAME,
@@ -62,4 +64,6 @@ export {
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
   Accessibility,
+  // for testing/mocking
+  sowerJobsListSliceReducer,
 };

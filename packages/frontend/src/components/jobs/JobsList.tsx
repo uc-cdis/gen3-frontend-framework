@@ -1,15 +1,15 @@
 import React from 'react';
 import { Text, LoadingOverlay, Badge, Paper, Table } from '@mantine/core';
-import { ErrorCard } from '../MessageCards';
-import { useCoreSelector, selectSowerJobList } from '@gen3/core';
+import { formatDateFromTimestamp } from '../../utils/date';
 
-interface JobsListProps {
+import { JobWithActions } from '@gen3/core';
+
+export interface JobsListProps {
+  jobs: Record<string, JobWithActions>;
   size?: string;
 }
 
-const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
-  const { jobs } = useCoreSelector(selectSowerJobList);
-
+const JobsList = ({ jobs, size = 'sm' }: JobsListProps) => {
   if (Object.keys(jobs).length === 0) {
     return (
       <Paper p="md">
@@ -17,14 +17,6 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
       </Paper>
     );
   }
-
-  // if (isError) {
-  //   return (
-  //     <Paper p="md">
-  //       <ErrorCard message="Error retrieving jobs" />
-  //     </Paper>
-  //   );
-  // }
 
   const tableHeader = (
     <Table.Tr>
@@ -35,8 +27,6 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
       <Table.Th>Updated</Table.Th>
     </Table.Tr>
   );
-
-  console.log(jobs);
 
   const rows = Object.values(jobs).map((jobStatus) => {
     return (
@@ -60,8 +50,8 @@ const JobsList: React.FC<JobsListProps> = ({ size = 'sm' }) => {
             {jobStatus.status || 'Unknown'}
           </Badge>
         </Table.Td>
-        <Table.Td>{new Date(jobStatus.created).toLocaleDateString()}</Table.Td>
-        <Table.Td>{new Date(jobStatus.updated).toLocaleDateString()}</Table.Td>
+        <Table.Td>{formatDateFromTimestamp(jobStatus.created)}</Table.Td>
+        <Table.Td>{formatDateFromTimestamp(jobStatus.updated)}</Table.Td>
       </Table.Tr>
     );
   });

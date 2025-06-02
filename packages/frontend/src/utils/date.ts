@@ -72,6 +72,25 @@ export const formatDate = (datestr: string): string => {
     throw new Error('Invalid date string');
   }
 
+  return formatDateFromTimestamp(timestamp);
+};
+
+/**
+ * Converts a timestamp to a formatted date string in UTC.
+ *
+ * The formatted date string follows the format: `MMM-DD-YYYY HH:MM:SS`.
+ * - `MMM` refers to the abbreviated month name (e.g., Jan, Feb).
+ * - `DD` is the day of the month.
+ * - `YYYY` is the four-digit year.
+ * - `HH` is the hour in 24-hour format.
+ * - `MM` is the minutes.
+ * - `SS` is the seconds.
+ *
+ * @param {number} timestamp - The timestamp in milliseconds since the Unix epoch.
+ * @returns {string} The formatted date as a string in UTC.
+ * @throws {Error} Throws an error if the parts derived from formatting have an incorrect length.
+ */
+export const formatDateFromTimestamp = (timestamp: number): string => {
   const date = new Date(timestamp);
 
   const parts = new Intl.DateTimeFormat('en-US', {

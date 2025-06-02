@@ -1,8 +1,13 @@
-export type SowerJobState = 'Running' | 'Completed' | 'Failed' | 'Unknown';
+export const enum SowerJobStatus {
+  Running = 'Running',
+  Completed = 'Completed',
+  Failed = 'Failed',
+  Unknown = 'Unknown',
+}
 
 export interface JobStatus {
   uid: string;
-  status: SowerJobState;
+  status: SowerJobStatus;
   name: string;
   error?: string;
 }
@@ -55,14 +60,19 @@ export interface BoundCreateAndExportAction {
   sendJobAction?: BoundActionConfig<SendJobOutputAction>;
 }
 
+export enum SowerJobStage {
+  JobDispatched = 1,
+  SendJobOutput = 2,
+}
+
 export interface JobWithActions {
   jobId: string;
   config?: CreateAndExportActionConfig;
-  stage: 1 | 2;
+  stage: SowerJobStage;
   created: number;
   updated: number;
   name: string;
-  status: SowerJobState;
+  status: SowerJobStatus;
   outputGUID?: string;
 }
 
@@ -74,5 +84,5 @@ export interface DispatchJobParams {
 export interface DispatchJobResponse {
   uid: string;
   name: string;
-  status: SowerJobState;
+  status: SowerJobStatus;
 }

@@ -2,7 +2,10 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
-const nextJsPresetPath = require.resolve('@storybook/nextjs');
+const getAbsolutePath = (packageName: string): any =>
+  path
+    .dirname(require.resolve(path.join(packageName, 'package.json')))
+    .replace(/^file:\/\//, '');
 
 const config: StorybookConfig = {
   stories: [
@@ -24,7 +27,7 @@ const config: StorybookConfig = {
     skipCompiler: false,
   },
   framework: {
-    name: '@storybook/nextjs',
+    name: getAbsolutePath('@storybook/nextjs'),
     options: {
       builder: {
         useSWC: true, // Enables SWC support

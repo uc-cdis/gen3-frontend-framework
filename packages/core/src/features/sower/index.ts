@@ -20,9 +20,14 @@ import {
   clearSowerJobsId,
   refreshSowerJobs,
   initSowerPolling,
+  type SowerJobsListState,
 } from './jobsListSlice';
 
-import { selectSowerJobId, selectSowerJobList } from './jobsListSelectors';
+import {
+  selectSowerJobId,
+  selectSowerJobList,
+  selectSowerJobs,
+} from './jobsListSelectors';
 
 import {
   type JobWithActions,
@@ -34,7 +39,8 @@ import {
   type JobBuilderAction,
   type SendJobOutputAction,
   type BoundCreateAndExportAction,
-  type SowerJobState,
+  type SowerJobStatus,
+  type SowerJobStage,
 } from './types';
 
 export {
@@ -56,6 +62,7 @@ export {
   refreshSowerJobs,
   initSowerPolling,
   sowerApi,
+  selectSowerJobs,
   selectSowerJobId,
   selectSowerJobList,
   type DispatchJobParams,
@@ -65,7 +72,9 @@ export {
   type ActionFunction,
   type ActionParams,
   type JobBuilderAction,
-  type SowerJobState,
+  type SowerJobStatus,
   type SendJobOutputAction,
   type BoundCreateAndExportAction,
+  type SowerJobsListState,
+  type SowerJobStage,
 };
