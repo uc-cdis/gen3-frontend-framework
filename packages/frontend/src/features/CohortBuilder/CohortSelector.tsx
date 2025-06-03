@@ -4,7 +4,6 @@ import { Icon } from '@iconify/react';
 import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
 import {
   type Cohort,
-  type FilterSet,
   type IndexedFilterSet,
   useCoreDispatch,
   useCoreSelector,
@@ -14,7 +13,7 @@ import {
   setActiveCohort,
   setCohortIndexFilters,
   selectCurrentCohortId,
-  selectCohortFilters,
+  selectCurrentCohortFilters,
 } from '@gen3/core';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
@@ -37,7 +36,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector(selectAvailableCohorts);
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
-  const filters: IndexedFilterSet = useCoreSelector(selectCohortFilters);
+  const filters: IndexedFilterSet = useCoreSelector(selectCurrentCohortFilters);
   const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
   const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
   const cohortStatusMessage = currentCohortSaved

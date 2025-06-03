@@ -6,6 +6,7 @@ import {
   Button,
   useMantineTheme,
 } from '@mantine/core';
+
 import { UndoIcon } from './commonIcons';
 import GenericCohortModal from './modals/GenericCohortModal';
 import SaveCohortModal from './modals/SaveCohortModal';
@@ -23,9 +24,11 @@ interface CohortManagerProps {
 }
 
 /**
- * Component for the user to manage (save, delete, etc) cohorts
- * @param hooks - Collection of hooks for performing saving, deleting, etc operations on cohorts
+ * Component for the user to manage (save, delete, etc.) cohorts
+ * @param hooks - Collection of hooks for performing saving, deleting, etc. operations on cohorts
  * @param invalidCohortNames - list of cohort names that the user is barred from using
+ * @param isFetchingCohorts - whether we are currently fetching cohorts from the server
+ * @param defaultCohortName - name of the default cohort that is created when the user first opens the app
  */
 const CohortManager: React.FC<CohortManagerProps> = ({
   hooks,
@@ -38,7 +41,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const handleDelete = hooks.useDeleteCohort();
   const handleDiscard = hooks.useDiscardChanges();
-  const handleUpdate = hooks.useUpdateFilters();
+  const handleUpdate = hooks?.useUpdateFilters
+    ? hooks.useUpdateFilters
+    : () => null;
   const setActiveCohort = hooks.useSetActiveCohort();
   const addNewDefaultUnsavedCohort = hooks.useAddUnsavedCohort();
   const {

@@ -1,7 +1,7 @@
 // import all the components from this directory
 import {
   cohortReducer,
-  selectCohortFilters,
+  selectCurrentCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
   selectCurrentCohortId,
@@ -20,6 +20,14 @@ import {
   setActiveCohort,
   setActiveCohortList,
 } from './cohortSlice';
+
+import {
+  useSetActiveCohort,
+  useDeleteCohort,
+  useAddUnsavedCohort,
+  useDiscardChanges,
+  useCohortFacetFilters,
+} from './cohortSliceHooks';
 
 import { CohortPersistence } from './cohortPersistence';
 
@@ -40,7 +48,7 @@ import {
 import {
   Cohort,
   type CombineMode,
-  type CohortPersistenceSaveUpdateParameters,
+  type CohortPersistenceSaveReplaceParameters,
 } from './types';
 
 import {
@@ -51,6 +59,8 @@ import {
   useDeletePersistedCohort,
   useUpdatePersistedCohort,
   useGetAllCohortNames,
+  type ReplacePersistedCohortResults,
+  type SavePersistedCohortResult,
 } from './cohortPersistenceHooks';
 
 import {
@@ -61,8 +71,10 @@ import {
 export {
   type Cohort,
   type CombineMode,
-  type CohortPersistenceSaveUpdateParameters,
-  selectCohortFilters,
+  type CohortPersistenceSaveReplaceParameters,
+  type ReplacePersistedCohortResults,
+  type SavePersistedCohortResult,
+  selectCurrentCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
   selectCurrentCohortId,
@@ -100,4 +112,9 @@ export {
   useDeletePersistedCohort,
   useUpdatePersistedCohort,
   useGetAllCohortNames,
+  useSetActiveCohort,
+  useDeleteCohort,
+  useAddUnsavedCohort,
+  useDiscardChanges,
+  useCohortFacetFilters,
 };

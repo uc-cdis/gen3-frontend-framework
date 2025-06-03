@@ -300,22 +300,22 @@ export const cohortSlice = createSlice({
     discardCohortChanges: (
       state,
       action: PayloadAction<{
-        filters: FilterSet | undefined;
-        index: string;
+        filters: IndexedFilterSet | undefined;
         id?: string;
+        modifiedDatetime: string;
       }>,
     ) => {
-      const { index, id, filters } = action.payload;
+      /*
+       * Discard changes to the cohort filters for all the indexes
+       */
+      const { id, filters, modifiedDatetime } = action.payload;
       const cohortId = id ?? getCurrentCohort(state);
       cohortsAdapter.updateOne(state, {
         id: cohortId,
         changes: {
-          filters: {
-            ...state.entities[cohortId].filters,
-            [index]: filters || { mode: 'and', root: {} },
-          },
+          filters: filters,
           modified: false,
-          modified_datetime: new Date().toISOString(),
+          modified_datetime: modifiedDatetime,
         },
       });
     },
@@ -374,7 +374,9 @@ export const {
   setCohortList,
 } = cohortSlice.actions;
 
-export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
+export const selectCurrentCohortFilters = (
+  state: CoreState,
+): IndexedFilterSet => {
   const currentCohortId = getCurrentCohortFromCoreState(state);
   return state.cohorts.cohort.entities[currentCohortId]?.filters;
 };
@@ -530,11 +532,12 @@ export const setActiveCohortList =
 
 export const discardActiveCohortChanges =
   (
-    index: string,
-    filters: FilterSet,
+    id: CohortId,
+    filters: IndexedFilterSet,
+    modifiedDatetime: string,
   ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
   async (dispatch /* getState */) => {
-    dispatch(discardCohortChanges({ index, filters }));
+    dispatch(discardCohortChanges({ id, filters, modifiedDatetime }));
   };
 
 export const cohortReducer = cohortSlice.reducer;

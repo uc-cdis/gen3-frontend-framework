@@ -1,8 +1,13 @@
-import React, { ReactNode, useContext, useRef } from "react";
-import { Button, MantineProvider, Menu, Tooltip } from "@mantine/core";
-import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
-import { DropdownIcon } from "src/commonIcons";
-import { AppContext } from "src/context";
+import React, { ReactNode, useContext, useRef } from 'react';
+import {
+  Button,
+  MantineProvider,
+  Menu,
+  Tooltip,
+  type FloatingPosition,
+  useMantineTheme,
+} from '@mantine/core';
+import { DropdownIcon } from '../../types/icons';
 
 interface DropdownWithIconProps {
   /**
@@ -90,14 +95,14 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
   buttonAriaLabel = undefined,
 }) => {
   const targetRef = useRef<HTMLButtonElement>(null);
-  const { theme } = useContext(AppContext);
+  const theme = useMantineTheme();
 
   return (
     <MantineProvider theme={theme}>
       <Menu
-        width={!disableTargetWidth ? "target" : undefined}
+        width={!disableTargetWidth ? 'target' : undefined}
         {...(customPosition && { position: customPosition })}
-        data-testid={customDataTestId ?? "menu-elem"}
+        data-testid={customDataTestId ?? 'menu-elem'}
         zIndex={9000} //dropdown should be on top of everything when open
       >
         <Menu.Target>
@@ -107,7 +112,7 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
             rightSection={RightSection}
             disabled={targetButtonDisabled}
             classNames={{
-              root: `${fullHeight ? "!h-full" : undefined} !w-full`,
+              root: `${fullHeight ? '!h-full' : undefined} !w-full`,
             }}
             ref={targetRef}
             aria-label={buttonAriaLabel}
@@ -132,7 +137,7 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
           {menuLabelText && (
             <>
               <Menu.Label
-                className={menuLabelCustomClass ?? "font-bold"}
+                className={menuLabelCustomClass ?? 'font-bold'}
                 data-testid="menu-label"
               >
                 {menuLabelText}

@@ -1,4 +1,8 @@
-import { type CohortPersistenceSaveUpdateParameters } from '@gen3/core';
+import {
+  type CohortPersistenceSaveReplaceParameters,
+  type ReplacePersistedCohortResults,
+  type SavePersistedCohortResult,
+} from '@gen3/core';
 
 export interface DataFetchingResult<T> extends DataFetchingStatus {
   readonly data: T;
@@ -51,7 +55,7 @@ export interface CohortHooks {
   useSelectAvailableCohorts: () => Cohort[];
   useDeleteCohort: () => () => Promise<void>;
   useDiscardChanges: () => () => Promise<void>;
-  useUpdateFilters: () => () => void;
+  useUpdateFilters?: () => () => void;
   useSetActiveCohort: () => (cohortId: string) => void;
   useAddUnsavedCohort: () => () => void;
   useSaveCohort: () => ({
@@ -61,10 +65,7 @@ export interface CohortHooks {
     caseFilters,
     createStaticCohort,
     saveAs,
-  }: CohortPersistenceSaveUpdateParameters) => Promise<{
-    cohortAlreadyExists: boolean;
-    newCohortId: string;
-  }>;
+  }: CohortPersistenceSaveReplaceParameters) => Promise<SavePersistedCohortResult>;
   useReplaceCohort: () => ({
     newName,
     filters,
@@ -72,7 +73,7 @@ export interface CohortHooks {
     createStaticCohort,
     cohortId,
     saveAs,
-  }: CohortPersistenceSaveUpdateParameters) => Promise<{ newCohortId: string }>;
+  }: CohortPersistenceSaveReplaceParameters) => Promise<ReplacePersistedCohortResults>;
   useExportCohort?: () => {
     handleExport: () => void;
     status: DataFetchingStatus;

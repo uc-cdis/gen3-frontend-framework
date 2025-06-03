@@ -1,21 +1,31 @@
 import { useState, useCallback } from 'react';
+import { useDeepCompareCallback } from 'use-deep-compare';
 import { CohortPersistence } from './cohortPersistence';
 import {
   Cohort,
   CohortId,
-  CohortPersistenceSaveUpdateParameters,
+  CohortPersistenceSaveReplaceParameters,
 } from './types';
-import { useCoreDispatch } from '../../hooks';
-import { addUnsavedCohort, createNewCohort, removeCohort } from './cohortSlice';
+import { useCoreDispatch, useCoreSelector } from '../../hooks';
+import {
+  addUnsavedCohort,
+  createNewCohort,
+  removeCohort,
+  selectCurrentCohort,
+} from './cohortSlice';
 
 export interface CohortPersistenceError {
   status: number;
   message: string;
 }
 
-export interface SaveOrUpdateCohortResult {
-  cohortAlreadyExists: boolean;
+export interface ReplacePersistedCohortResults {
   newCohortId?: string;
+}
+
+export interface SavePersistedCohortResult
+  extends ReplacePersistedCohortResults {
+  cohortAlreadyExists?: boolean;
 }
 
 /**
@@ -37,81 +47,53 @@ export interface SaveOrUpdateCohortResult {
  * - `error` (string | null): An error message if the save operation fails, or `null` if no error occurred.
  */
 
-export const useSavePersistedCohort = (enforceUniqueNames: boolean = true) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-
-  const saveCohort = useCallback(
+export const useSavePersistedCohort = () => {
+  const dispatch = useCoreDispatch();
+  const saveCohort = useDeepCompareCallback(
     async ({
       newName,
       cohortId,
       filters,
-    }: CohortPersistenceSaveUpdateParameters): Promise<SaveOrUpdateCohortResult> => {
-      setIsLoading(true);
-      setError(null);
-
-      let result: SaveOrUpdateCohortResult = {
+    }: CohortPersistenceSaveReplaceParameters): Promise<SavePersistedCohortResult> => {
+      let result: SavePersistedCohortResult = {
         cohortAlreadyExists: false,
         newCohortId: undefined,
       };
-      try {
-        const persistence = CohortPersistence.getInstance();
-        const cohortExists = await persistence.checkIfCohortNameExists(newName);
+      const persistence = CohortPersistence.getInstance();
+      const cohortExists = await persistence.checkIfCohortNameExists(newName);
 
-        if (
-          enforceUniqueNames &&
-          cohortExists?.cohortByNameExists !== undefined &&
-          cohortExists.cohortByNameExists
-        ) {
-          result = { cohortAlreadyExists: true, newCohortId: undefined };
-          setError({
-            status: 409,
-            message: `A cohort with the name ${newName} already exists. Please choose a different name.`,
-          });
-        } else {
-          const saveResult = await persistence.saveCohort({
-            name: newName,
-            id: cohortId,
-            filters,
-            modified_datetime: new Date().toISOString(),
-            modified: false,
-          });
-
-          if (saveResult.isError) {
-            setError({
-              status: saveResult.status,
-              message: saveResult.message,
-            });
-          } else {
-            result = {
-              cohortAlreadyExists: false,
-              newCohortId: saveResult?.cohort?.id,
-            };
-          }
-        }
-      } catch (err: unknown) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        setError({
-          status: 500,
-          message: errorMessage,
+      if (
+        cohortExists?.cohortByNameExists !== undefined &&
+        cohortExists.cohortByNameExists
+      ) {
+        result = {
+          cohortAlreadyExists: true,
+          newCohortId: undefined,
+        };
+      } else {
+        const newCohort = createNewCohort({
+          filters,
+          customName: newName,
+          id: cohortId,
         });
-      } finally {
-        setIsLoading(false);
+
+        const saveResult = await persistence.saveCohort(newCohort);
+        dispatch(addUnsavedCohort(newCohort));
+        result = {
+          cohortAlreadyExists: false,
+          newCohortId: saveResult?.cohort?.id,
+        };
       }
 
       return result;
     },
-    [],
+    [dispatch],
   );
 
-  return { saveCohort, isLoading, error, isError: error !== null };
+  return saveCohort;
 };
 
 export const useReplaceExistingPersistedCohort = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-
   const dispatch = useCoreDispatch();
 
   const replaceCohort = useCallback(
@@ -119,60 +101,36 @@ export const useReplaceExistingPersistedCohort = () => {
       newName,
       cohortId,
       filters,
-    }: CohortPersistenceSaveUpdateParameters): Promise<SaveOrUpdateCohortResult> => {
-      setIsLoading(true);
-      setError(null);
-
-      let result: SaveOrUpdateCohortResult = {
-        cohortAlreadyExists: false,
+    }: CohortPersistenceSaveReplaceParameters): Promise<ReplacePersistedCohortResults> => {
+      let result: ReplacePersistedCohortResults = {
         newCohortId: undefined,
       };
-      try {
-        const persistence = CohortPersistence.getInstance();
-        const existingCohort = await persistence.getCohort(cohortId);
+      const persistence = CohortPersistence.getInstance();
+      const existingCohort = await persistence.getCohort(cohortId);
 
-        // cohort exists, delete it
-        if (!existingCohort.isError) {
-          await persistence.deleteCohort(cohortId);
-          dispatch(
-            removeCohort({
-              shouldShowMessage: false,
-              id: cohortId,
-            }),
-          );
-
-          // now we can add a new cohort
-
-          const newCohort = createNewCohort({
-            filters,
-            customName: newName,
+      // cohort exists, delete it
+      if (!existingCohort.isError) {
+        await persistence.deleteCohort(cohortId);
+        dispatch(
+          removeCohort({
+            shouldShowMessage: false,
             id: cohortId,
-          });
-          dispatch(addUnsavedCohort(newCohort));
+          }),
+        );
 
-          const saveResult = await persistence.saveCohort(newCohort);
+        // now we can add a new cohort
 
-          if (saveResult.isError) {
-            setError({
-              status: saveResult.status,
-              message: saveResult.message,
-            });
-          } else {
-            result = {
-              cohortAlreadyExists: false,
-              newCohortId: saveResult?.cohort?.id,
-            };
-          }
-        }
-      } catch (err: unknown) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        setError({
-          status: 500,
-          message: errorMessage,
+        const newCohort = createNewCohort({
+          filters,
+          customName: newName,
+          id: cohortId,
         });
-      } finally {
-        setIsLoading(false);
+        dispatch(addUnsavedCohort(newCohort));
+
+        const saveResult = await persistence.saveCohort(newCohort);
+        result = {
+          newCohortId: saveResult?.cohort?.id,
+        };
       }
 
       return result;
@@ -180,191 +138,95 @@ export const useReplaceExistingPersistedCohort = () => {
     [],
   );
 
-  return { replaceCohort, isLoading, error, isError: error !== null };
+  return replaceCohort;
 };
 
 /**
  * Hook for retrieving a cohort by id
  */
 export const useGetPersistedCohortById = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-
-  const getCohort = useCallback(async (id: CohortId): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
+  const getCohort = useCallback(
+    async (id: CohortId): Promise<Cohort | null> => {
       const persistence = CohortPersistence.getInstance();
       const result = await persistence.getCohort(id);
+      return result?.cohort ?? null;
+    },
+    [],
+  );
 
-      if (result.isError) {
-        setError({
-          status: result.status,
-          message: result.message,
-        });
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError({
-        status: 500,
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return { getCohort, isLoading, error, isError: error !== null };
+  return getCohort;
 };
 
 /**
  * Hook for retrieving all cohorts
  */
 export const useGetAllPersistedCohorts = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-  const [cohorts, setCohorts] = useState<Cohort[] | null>(null);
-
-  const getAllCohorts = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const persistence = CohortPersistence.getInstance();
-      const result = await persistence.getAllCohorts();
-
-      if (result.isError) {
-        setError({
-          status: result.status,
-          message: result.message,
-        });
-      } else if (result.cohorts) {
-        setCohorts(result.cohorts);
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError({
-        status: 500,
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const getAllCohorts = useCallback(async (): Promise<Array<Cohort>> => {
+    const persistence = CohortPersistence.getInstance();
+    const result = await persistence.getAllCohorts();
+    return result?.cohorts ?? [];
   }, []);
 
-  return { getAllCohorts, cohorts, isLoading, error, isError: error !== null };
+  return getAllCohorts;
 };
 
 /**
  * Hook for updating a cohort
  */
 export const useUpdatePersistedCohort = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-
   // @ts-ignore
   const updateCohort = useCallback(async (cohort: Cohort): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const persistence = CohortPersistence.getInstance();
-      const result = await persistence.updateCohort(cohort);
-
-      if (result.isError) {
-        setError({
-          status: result.status,
-          message: result.message,
-        });
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError({
-        status: 500,
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    const persistence = CohortPersistence.getInstance();
+    await persistence.updateCohort(cohort);
   }, []);
 
-  return { updateCohort, isLoading, error, isError: error !== null };
+  return updateCohort;
 };
 
 /**
  * Hook for deleting a cohort
  */
 export const useDeletePersistedCohort = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
+  const coreDispatch = useCoreDispatch();
+  const currentCohort = useCoreSelector(selectCurrentCohort);
 
-  const deleteCohort = useCallback(async (id: CohortId): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
+  const deleteCohort = useDeepCompareCallback(() => {
+    coreDispatch(removeCohort({ id: currentCohort.id }));
+    // fetch case counts is now handled in listener
+  }, [coreDispatch]);
 
-    try {
-      const persistence = CohortPersistence.getInstance();
-      const result = await persistence.deleteCohort(id);
-
-      if (result.isError) {
-        setError({
-          status: result.status,
-          message: result.message,
-        });
+  const handleDelete = useDeepCompareCallback(async () => {
+    return new Promise<void>((resolve, reject) => {
+      if (currentCohort.saved) {
+        const persistence = CohortPersistence.getInstance();
+        // don't delete it from the local adapter if not able to delete from the BE
+        persistence
+          .deleteCohort(currentCohort.id)
+          .then(() => {
+            deleteCohort();
+            resolve();
+          })
+          .catch(reject);
+      } else {
+        deleteCohort();
+        resolve();
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError({
-        status: 500,
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    });
   }, []);
 
-  return { deleteCohort, isLoading, error, isError: error !== null };
+  return handleDelete;
 };
 
 /**
  * Hook for clearing all cohorts
  */
 export const useClearAllPersistedCohorts = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<CohortPersistenceError | null>(null);
-
   const clearCohorts = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const persistence = CohortPersistence.getInstance();
-      const result = await persistence.clearCohorts();
-
-      if (result.isError) {
-        setError({
-          status: result.status,
-          message: result.message,
-        });
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      setError({
-        status: 500,
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    const persistence = CohortPersistence.getInstance();
+    await persistence.clearCohorts();
   }, []);
 
-  return { clearCohorts, isLoading, error, isError: error !== null };
+  return clearCohorts;
 };
 
 export const useGetAllCohortNames = () => {

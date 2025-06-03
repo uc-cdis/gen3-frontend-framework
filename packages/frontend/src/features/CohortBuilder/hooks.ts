@@ -3,7 +3,6 @@ import {
   CoreState,
   useCoreSelector,
   FilterSet,
-  selectCohortFilters,
   toggleCohortBuilderCategoryFilter,
   selectAllCohortFiltersCollapsed,
   selectCohortFilterExpanded,

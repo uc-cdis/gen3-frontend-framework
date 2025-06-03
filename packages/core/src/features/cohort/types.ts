@@ -26,7 +26,7 @@ export interface Cohort {
   saved?: boolean; // flag indicating if cohort has been saved.
 }
 
-export interface CohortPersistenceSaveUpdateParameters {
+export interface CohortPersistenceSaveReplaceParameters {
   newName: string;
   cohortId: string;
   filters: IndexedFilterSet;

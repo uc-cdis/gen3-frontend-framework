@@ -10,7 +10,7 @@ interface SaveCohortModalProps {
   readonly hooks: CohortHooks;
   readonly initialName?: string;
   readonly onClose: () => void;
-  readonly cohortId?: string;
+  readonly cohortId: string;
   readonly invalidCohortNames: string[];
   readonly filters: any;
   readonly caseFilters?: any;
