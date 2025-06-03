@@ -37,14 +37,20 @@ import {
   selectSharedFilters,
   selectSharedFiltersForFields,
 } from './sharedFiltersSlice';
-import { Cohort, type CombineMode } from './types';
+import {
+  Cohort,
+  type CombineMode,
+  type CohortPersistenceSaveUpdateParameters,
+} from './types';
 
 import {
   useSavePersistedCohort,
+  useReplaceExistingPersistedCohort,
   useGetPersistedCohortById,
   useGetAllPersistedCohorts,
   useDeletePersistedCohort,
   useUpdatePersistedCohort,
+  useGetAllCohortNames,
 } from './cohortPersistenceHooks';
 
 import {
@@ -55,6 +61,7 @@ import {
 export {
   type Cohort,
   type CombineMode,
+  type CohortPersistenceSaveUpdateParameters,
   selectCohortFilters,
   selectIndexFilters,
   selectIndexedFilterByName,
@@ -87,8 +94,10 @@ export {
   setShouldShareFilters,
   CohortPersistence,
   useSavePersistedCohort,
+  useReplaceExistingPersistedCohort,
   useGetPersistedCohortById,
   useGetAllPersistedCohorts,
   useDeletePersistedCohort,
   useUpdatePersistedCohort,
+  useGetAllCohortNames,
 };

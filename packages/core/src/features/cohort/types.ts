@@ -25,3 +25,12 @@ export interface Cohort {
   modified_datetime: string; // last time cohort was modified
   saved?: boolean; // flag indicating if cohort has been saved.
 }
+
+export interface CohortPersistenceSaveUpdateParameters {
+  newName: string;
+  cohortId: string;
+  filters: IndexedFilterSet;
+  caseFilters?: any;
+  createStaticCohort: boolean;
+  saveAs: boolean;
+}

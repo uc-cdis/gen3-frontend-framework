@@ -1,3 +1,5 @@
+import { type CohortPersistenceSaveUpdateParameters } from '@gen3/core';
+
 export interface DataFetchingResult<T> extends DataFetchingStatus {
   readonly data: T;
 }
@@ -59,14 +61,10 @@ export interface CohortHooks {
     caseFilters,
     createStaticCohort,
     saveAs,
-  }: {
-    newName: string;
-    cohortId?: string;
-    filters: any;
-    caseFilters: any;
-    createStaticCohort: boolean;
-    saveAs: boolean;
-  }) => Promise<{ cohortAlreadyExists: boolean; newCohortId: string }>;
+  }: CohortPersistenceSaveUpdateParameters) => Promise<{
+    cohortAlreadyExists: boolean;
+    newCohortId: string;
+  }>;
   useReplaceCohort: () => ({
     newName,
     filters,
@@ -74,14 +72,7 @@ export interface CohortHooks {
     createStaticCohort,
     cohortId,
     saveAs,
-  }: {
-    newName: string;
-    filters: any;
-    caseFilters: any;
-    createStaticCohort: boolean;
-    cohortId?: string;
-    saveAs: boolean;
-  }) => Promise<{ newCohortId: string }>;
+  }: CohortPersistenceSaveUpdateParameters) => Promise<{ newCohortId: string }>;
   useExportCohort?: () => {
     handleExport: () => void;
     status: DataFetchingStatus;

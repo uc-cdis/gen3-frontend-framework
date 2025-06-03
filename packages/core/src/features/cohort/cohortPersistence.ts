@@ -14,11 +14,42 @@ export interface CohortOperationResult {
 }
 
 /**
+ * Represents the response for cohort persistence names.
+ *
+ * This interface extends the CohortOperationResult to include a specific name
+ * associated with the cohort persistence operation. It is utilized to convey
+ * the result of an operation alongside an identifiable name.
+ *
+ * @interface CohortPersistenceNamesResponse
+ * @extends CohortOperationResult
+ *
+ * @property {string} name - The identifier or name associated with the cohort persistence result.
+ */
+export interface CohortPersistenceNamesResponse extends CohortOperationResult {
+  names?: Array<string>;
+}
+
+export interface CohortPersistenceCohortNameExists
+  extends CohortOperationResult {
+  cohortByNameExists?: boolean;
+}
+
+/**
  * Interface for the result of a cohort storage operation that returns cohort data
  */
-export interface CohortReturnStatus extends CohortOperationResult {
+export interface CohortPersistenceResponse extends CohortOperationResult {
   cohort?: Cohort;
   cohorts?: Cohort[];
+}
+
+export class CohortPersistenceError extends Error {
+  public status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'CohortExistError';
+    this.status = status;
+    this.message = message;
+  }
 }
 
 /**
@@ -48,12 +79,33 @@ export class CohortPersistence {
     });
   }
 
+  async checkIfCohortNameExists(
+    cohortName: string,
+  ): Promise<CohortPersistenceCohortNameExists> {
+    try {
+      const db = await this.getDb();
+      const cohorts = await db.getAll(STORE_NAME);
+      return {
+        cohortByNameExists: cohorts.some((c) => c.name == cohortName),
+        status: 200,
+        message: 'Cohorts retrieved successfully',
+      };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        status: 500,
+        message: `Failed to save cohort: ${errorMessage}`,
+      };
+    }
+  }
+
   /**
-   * Create or update a cohort in the database
+   * Creates a new cohort in the database
    * @param cohort The cohort to save
    * @returns A CohortReturnStatus with the saved cohort
    */
-  async saveCohort(cohort: Cohort): Promise<CohortReturnStatus> {
+  async saveCohort(cohort: Cohort): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       await db.put(STORE_NAME, cohort);
@@ -78,7 +130,7 @@ export class CohortPersistence {
    * @param id The ID of the cohort to retrieve
    * @returns A CohortReturnStatus with the cohort if found
    */
-  async getCohort(id: CohortId): Promise<CohortReturnStatus> {
+  async getCohort(id: CohortId): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       const cohort = await db.get(STORE_NAME, id);
@@ -111,7 +163,7 @@ export class CohortPersistence {
    * Get all cohorts from the database
    * @returns A CohortReturnStatus with an array of all cohorts
    */
-  async getAllCohorts(): Promise<CohortReturnStatus> {
+  async getAllCohorts(): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       const cohorts = await db.getAll(STORE_NAME);
@@ -133,11 +185,35 @@ export class CohortPersistence {
   }
 
   /**
+   * Get all cohort names from the database
+   * @returns A CohortReturnStatus with an array of all cohort names
+   */
+
+  async getAllCohortNames(): Promise<CohortPersistenceNamesResponse> {
+    try {
+      const db = await this.getDb();
+      const cohorts = await db.getAllKeys(STORE_NAME);
+      return {
+        names: cohorts.map((name) => name.toString()),
+        status: 200,
+        message: 'Cohorts names successfully',
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        status: 500,
+        message: `Failed to get cohorts: ${errorMessage}`,
+      };
+    }
+  }
+
+  /**
    * Update an existing cohort
    * @param cohort The cohort with updated values
    * @returns A CohortReturnStatus with the updated cohort
    */
-  async updateCohort(cohort: Cohort): Promise<CohortReturnStatus> {
+  async updateCohort(cohort: Cohort): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       const existingCohort = await db.get(STORE_NAME, cohort.id);
@@ -179,7 +255,7 @@ export class CohortPersistence {
    * @param id The ID of the cohort to delete
    * @returns A CohortReturnStatus indicating success or failure
    */
-  async deleteCohort(id: CohortId): Promise<CohortReturnStatus> {
+  async deleteCohort(id: CohortId): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       const existingCohort = await db.get(STORE_NAME, id);
@@ -213,7 +289,7 @@ export class CohortPersistence {
    * Clear all cohorts from the database
    * @returns A CohortReturnStatus indicating success or failure
    */
-  async clearCohorts(): Promise<CohortReturnStatus> {
+  async clearCohorts(): Promise<CohortPersistenceResponse> {
     try {
       const db = await this.getDb();
       await db.clear(STORE_NAME);

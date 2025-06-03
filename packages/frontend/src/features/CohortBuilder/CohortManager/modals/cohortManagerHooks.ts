@@ -1,3 +1,11 @@
+import {
+  useSavePersistedCohort,
+  useGetPersistedCohortById,
+  useGetAllPersistedCohorts,
+  useDeletePersistedCohort,
+  useUpdatePersistedCohort,
+} from '@gen3/core';
+
 import type { CohortHooks } from '../types';
 import {
   useSelectAvailableCohorts,
@@ -13,4 +21,5 @@ const hooks: CohortHooks = {
   useAddUnsavedCohort,
   useSetActiveCohort,
   useDeleteCohort,
+  useSaveCohort: useSavePersistedCohort,
 };

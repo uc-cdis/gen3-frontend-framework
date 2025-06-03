@@ -54,16 +54,18 @@ interface ClearAllFilterParams {
   index: string;
 }
 
-const newCohort = ({
+export const createNewCohort = ({
   filters = {},
   customName,
+  id,
 }: {
   filters?: IndexedFilterSet;
   customName?: string;
+  id?: CohortId;
 }): Cohort => {
   const ts = new Date();
   const newName = customName ?? defaultCohortNameGenerator();
-  const newId = createCohortId();
+  const newId = id ?? createCohortId();
   return {
     name: newName,
     id: newId,
@@ -85,7 +87,7 @@ const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
 });
 
 // Create an initial unsaved cohort
-const initialCohort = newCohort({ customName: UNSAVED_COHORT_NAME });
+const initialCohort = createNewCohort({ customName: UNSAVED_COHORT_NAME });
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
   currentCohort: initialCohort.id,
@@ -93,7 +95,10 @@ const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
 });
 
 // Set the initial cohort in the adapter state
-const initialState = cohortsAdapter.setOne(emptyInitialState, initialCohort);
+export const initialState = cohortsAdapter.setOne(
+  emptyInitialState,
+  initialCohort,
+);
 
 const getCurrentCohort = (
   state: EntityState<Cohort, string> & CurrentCohortState,
@@ -112,9 +117,12 @@ export const cohortSlice = createSlice({
   name: 'cohort',
   initialState: initialState,
   reducers: {
-    addNewDefaultUnsavedCohort: (state) => {
-      const cohort = newCohort({
-        customName: UNSAVED_COHORT_NAME, // TODO: add generated name
+    addNewDefaultUnsavedCohort: (
+      state,
+      action: PayloadAction<string | undefined>,
+    ) => {
+      const cohort = createNewCohort({
+        customName: action?.payload ?? UNSAVED_COHORT_NAME, // TODO: add generated name
       });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
@@ -130,6 +138,13 @@ export const cohortSlice = createSlice({
         },
       });
     },
+
+    addUnsavedCohort: (state, action: PayloadAction<Cohort>) => {
+      const cohort = action.payload;
+      cohortsAdapter.addOne(state, cohort);
+      state.message = [`newCohort|${cohort.name}|${cohort.id}`];
+    },
+
     removeCohort: (
       state,
       action: PayloadAction<{
@@ -354,6 +369,7 @@ export const {
   removeCohort,
   discardCohortChanges,
   addNewDefaultUnsavedCohort,
+  addUnsavedCohort,
   setCurrentCohortId,
   setCohortList,
 } = cohortSlice.actions;
