@@ -7,6 +7,7 @@ export * from './components/Protected';
 // features
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './features/Study';
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';

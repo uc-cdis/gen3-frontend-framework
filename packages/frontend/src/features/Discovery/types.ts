@@ -10,13 +10,8 @@ import {
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
-import { StudyPageGroup, StudyPageConfig, StudyDetailsField, StudyColumn, StudyDetailView } from '../Study/types';
-import { AccessibleResource, DataAuthorization } from '../../utils';
-
-export interface TagData {
-  name: string;
-  category: string;
-}
+import { StudyPageGroup, StudyPageConfig, StudyDetailsField, StudyColumn, StudyDetailView, TagsConfig } from '../Study/types';
+import { DataAuthorization } from '../../utils';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -72,19 +67,6 @@ export interface AdvancedSearchFilters {
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
-export interface TagInfo {
-  name: string;
-  category: string;
-}
-
-export const isTagInfo = (obj: any): obj is TagInfo => {
-  return obj && obj.name && obj.category;
-};
-
-export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
-  return obj && Array.isArray(obj) && obj.every(isTagInfo);
-};
-
 export interface SearchKV {
   key: string;
   value: any;
@@ -97,12 +79,6 @@ export const isSearchKV = (obj: any): obj is SearchKV => {
 export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
   return obj && Array.isArray(obj) && obj.every(isSearchKV);
 };
-
-export interface TagCategory extends TagInfo {
-  displayName: string;
-  color: string;
-  display: boolean;
-}
 
 export type DiscoveryContentTypes =
   | string
@@ -186,11 +162,6 @@ interface DataLoader {
   sortingAndPagination?: 'client' | 'server';
 }
 
-export interface TagsConfig {
-  tagCategories: TagCategory[];
-  showUnknownTags?: boolean;
-}
-
 interface SummaryChartWithField extends SummaryChart {
   field: string;
 }
@@ -235,7 +206,3 @@ export interface DiscoveryConfig {
 }
 
 const ARBORIST_READ_PRIV = 'read';
-
-export interface DiscoveryResource extends AccessibleResource {
-  tags?: Array<TagInfo>;
-}

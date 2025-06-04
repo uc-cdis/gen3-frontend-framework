@@ -1,7 +1,5 @@
 import {
   JSONValue,
-  type MetadataPaginationParams,
-  type AggregationsData,
 } from '@gen3/core';
 
 export const accessibleFieldName = '__accessible';
@@ -13,9 +11,4 @@ export enum AccessLevel {
   NOT_AVAILABLE = 4,
   OTHER = 5,
   MIXED = 6,
-}
-
-export interface AccessibleResource
-  extends Record<string, JSONValue | AccessLevel | undefined> {
-  [accessibleFieldName]?: AccessLevel;
 }

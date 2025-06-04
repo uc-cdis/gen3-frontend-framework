@@ -13,20 +13,13 @@ import {
 import DiscoveryConfigProvider, {
   useDiscoveryContext,
 } from './DiscoveryProvider';
-import {
-  type DiscoveryConfig,
-  type TagData,
-  type TagsConfig,
-} from './types';
-import { getTagInfo } from './utils';
+import { type DiscoveryConfig } from './types';
 import { registerDefaultDiscoveryDataLoaders } from './DataLoaders/registeredDataLoaders';
 
 export {
   type CellRenderFunctionProps,
   type DiscoveryConfig,
   type RowRenderFunctionParams,
-  type TagData,
-  type TagsConfig,
   DiscoveryIndexPanel,
   TagCloud,
   registerDiscoveryDefaultCellRenderers,
@@ -36,7 +29,6 @@ export {
   DiscoveryRowRendererFactory,
   DiscoveryConfigProvider,
   useDiscoveryContext,
-  getTagInfo,
   AiSearch,
   ActionBar,
 };
