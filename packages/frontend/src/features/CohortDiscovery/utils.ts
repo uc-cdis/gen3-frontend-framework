@@ -1,5 +1,5 @@
 import { HistogramData } from '@gen3/core';
-import { data } from 'autoprefixer';
+import { CohortDiscoveryConfig, IndexResourceField } from './types';
 
 export const EnumFacetToHistogramArray = (
   data?: Record<string, number>,
@@ -10,4 +10,13 @@ export const EnumFacetToHistogramArray = (
     acc.push({ key, count });
     return acc;
   }, [] as Array<HistogramData>);
+};
+
+export const extractIndexResourceFromConfiguration = (
+  config: CohortDiscoveryConfig,
+): IndexResourceField => {
+  return config.dataIndexes.reduce((acc: IndexResourceField, panelConfig) => {
+    acc[panelConfig.dataConfig.dataType] = panelConfig.resourceField;
+    return acc;
+  }, {});
 };

@@ -1,7 +1,6 @@
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { MantineProvider } from '@mantine/core';
-import { Faro, FaroErrorBoundary, withFaroProfiler } from '@grafana/faro-react';
 import mantinetheme from '../mantineTheme';
 
 import {
@@ -54,15 +53,6 @@ const Gen3App = ({
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // one time init
-    // if (
-    //   process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL &&
-    //   process.env.NEXT_PUBLIC_FARO_APP_ENVIRONMENT != "local" &&
-    //   !faroRef.current
-    // ) {
-
-    // Note: not using faro for development
-    // if (!faroRef.current) faroRef.current = initGrafanaFaro();
     if (isFirstRender.current) {
       setDRSHostnames(drsHostnames);
       registerDefaultRemoteSupport();
@@ -86,17 +76,15 @@ const Gen3App = ({
     <React.Fragment>
       {isClient ? (
         <Suspense fallback={<Loading />}>
-          <FaroErrorBoundary>
-            <MantineProvider theme={mantinetheme}>
-              <Gen3Provider
-                icons={icons}
-                sessionConfig={sessionConfig}
-                modalsConfig={modalsConfig}
-              >
-                <Component {...pageProps} />
-              </Gen3Provider>
-            </MantineProvider>
-          </FaroErrorBoundary>
+          <MantineProvider theme={mantinetheme}>
+            <Gen3Provider
+              icons={icons}
+              sessionConfig={sessionConfig}
+              modalsConfig={modalsConfig}
+            >
+              <Component {...pageProps} />
+            </Gen3Provider>
+          </MantineProvider>
         </Suspense>
       ) : (
         // Show some fallback UI while waiting for the client to load
@@ -137,4 +125,4 @@ Gen3App.getInitialProps = async (
     sessionConfig: {},
   };
 };
-export default withFaroProfiler(Gen3App);
+export default Gen3App;

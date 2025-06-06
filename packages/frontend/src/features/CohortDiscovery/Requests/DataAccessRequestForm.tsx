@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Textarea,
   TextInput,
   Button,
   Group,
@@ -34,16 +33,12 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
     initialValues: {
       name: '',
       institution: '',
-      department: '',
-      address: '',
       email: '',
       phone: '',
     },
 
     validate: {
       name: isNotEmpty('Name is required'),
-      institution: isNotEmpty('Institution is required'),
-      address: isNotEmpty('Address is required'),
       email: isEmail('Please provide a valid email'),
       phone: matches(
         /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
@@ -95,22 +90,6 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
             placeholder="University, Organization, or Company"
             withAsterisk
             {...form.getInputProps('institution')}
-          />
-
-          <TextInput
-            label="Department"
-            placeholder="Research Department"
-            {...form.getInputProps('department')}
-          />
-
-          <Textarea
-            label="Address"
-            placeholder="Full institutional address"
-            withAsterisk
-            autosize
-            minRows={2}
-            maxRows={4}
-            {...form.getInputProps('address')}
           />
 
           <TextInput

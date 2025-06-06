@@ -25,6 +25,8 @@ import {
   useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 
+import { Loader, Center } from '@mantine/core';
+
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
@@ -176,7 +178,8 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  useGetCSRFQuery();
+
+  const { isSuccess: isGetCSRFSuccess } = useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -299,7 +302,16 @@ export const SessionProvider = ({
     };
   }, [sessionInfo, updateSession, endSession]);
 
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  );
+  if (isGetCSRFSuccess)
+    return (
+      <SessionContext.Provider value={value}>
+        {children}
+      </SessionContext.Provider>
+    );
+  else
+    return (
+      <Center h="100vh">
+        <Loader />
+      </Center>
+    );
 };

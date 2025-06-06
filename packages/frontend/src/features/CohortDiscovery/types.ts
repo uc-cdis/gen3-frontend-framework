@@ -24,7 +24,7 @@ interface LeftNav {
 
 export interface CohortDiscoveryGroup {
   dataConfig: DataTypeConfig; // database config
-  resourceField: string; // which field is used as a resource to request access
+  resourceField: string; //  field used as authz resource to request access
   tabTitle: string; // title of the tab
   tabs: ReadonlyArray<TabConfig>; // filters for the fields
   numColumns?: number; // number of cards to show in a row.
@@ -70,10 +70,8 @@ export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
 export interface DataAccessRequestUserInformation {
   name: string;
   institution: string;
-  department?: string;
-  address: string;
   email: string;
-  phone: string;
+  phone?: string;
 }
 
 export enum DataAccessRequestStatus {
@@ -112,3 +110,5 @@ export const newDataAccessRequest = (
 export interface ActionButtonProps {
   index: string;
 }
+
+export type IndexResourceField = Record<string, string>;

@@ -6,10 +6,8 @@ import {
   MRT_ColumnDef,
 } from 'mantine-react-table';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ActionIcon,
-  Center,
   Group,
   Text,
   Tooltip,
@@ -18,9 +16,17 @@ import {
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
 import { IconSize } from '../../../utils/sizes';
-import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
+import {
+  selectAllCohorts,
+  removeCohort,
+  selectCohortById,
+} from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
-import { Cohort, DataAccessRequestUserInformation } from '../types';
+import {
+  Cohort,
+  DataAccessRequestUserInformation,
+  IndexResourceField,
+} from '../types';
 import {
   addDataAccessRequest,
   selectCohortToRequestId,
@@ -28,18 +34,23 @@ import {
 import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
+import { queryAllResources } from '../Requests/hooks';
+import { useLazyGetAggsNoFilterSelfQuery } from '@gen3/core';
 
 interface CohortWithRequested extends Cohort {
   requested: string;
 }
 
 interface SavedCohortsTableProps {
+  indexResources: IndexResourceField;
   size?: string;
 }
 const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
+  indexResources,
   size = 'md',
 }) => {
   const appDispatch = useAppDispatch();
+  const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
 
   const columns = useMemo<MRT_ColumnDef<CohortWithRequested, string>[]>(
     () => [
@@ -84,15 +95,31 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
     [data, requestByCohortId],
   );
 
-  const handleSubmission = (
+  const handleSubmission = async (
     cohortId: string,
     values: DataAccessRequestUserInformation,
   ) => {
-    if (cohortId && values) {
+    const cohort = data.find((obj) => obj.id === cohortId);
+    if (cohort && values) {
+      // need to get the resources requires by the cohort
+
+      const resources = await queryAllResources(
+        cohort.filters,
+        indexResources,
+        getGetAggs,
+      );
+
+      console.log(resources);
+
+      // now we have the resources, submit a requestor request
+
+      // followed by a zendesk request
+
+      // update the request store
       appDispatch(
         addDataAccessRequest({ cohortId, userAccessInformation: values }),
       );
-      // Close the modal after successful dispatch
+      // Close the modal after a successful dispatch
       close();
     }
   };

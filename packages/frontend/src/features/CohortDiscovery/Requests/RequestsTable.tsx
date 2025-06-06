@@ -15,6 +15,7 @@ import { Text } from '@mantine/core';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
 import { ErrorCard } from '../../../components/MessageCards';
+import { EmptyTableMessage } from '../../../components/MessageCards';
 
 const useGetCohortRequests = (resources: string[] = []) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +105,7 @@ interface RequestWithCohort extends DataAccessRequest {
   cohortName?: string;
 }
 const RequestsTable = () => {
-  const { cohortRequests, isLoading, isError, error } =
+  const { cohortRequests, isLoading, isError } =
     useGetCohortRequests(undefined);
 
   const columns = useMemo<MRT_ColumnDef<RequestWithCohort, string>[]>(
@@ -150,6 +151,9 @@ const RequestsTable = () => {
   const table = useMantineReactTable<RequestWithCohort>({
     columns,
     data: cohortRequests ?? [],
+    renderEmptyRowsFallback: () => (
+      <EmptyTableMessage message={'No requests submitted.'} />
+    ),
     ...commonTableSettings<RequestWithCohort>(size),
     state: {
       isLoading: isLoading,

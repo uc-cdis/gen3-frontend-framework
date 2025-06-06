@@ -1,6 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
+import {
+  Flex,
+  Stack,
+  Center,
+  Box,
+  Title,
+  Text,
+  LoadingOverlay,
+} from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
@@ -80,6 +88,7 @@ const IndexPanel = ({
   const {
     data,
     isSuccess,
+    isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useRoundedAggsQuery(
     {
@@ -141,7 +150,8 @@ const IndexPanel = ({
   return (
     <Stack>
       <CohortManager index={index} />
-      <Flex className="flex h-full bg-base-light pb-4 ml-4">
+      <Flex wrap="nowrap" className="flex h-full bg-base-light pb-4 ml-4">
+        <LoadingOverlay visible={isAggsQueryFetching} />
         <FacetSelectionPanel
           categories={categories}
           selectedFields={selectedFacets}
@@ -152,7 +162,7 @@ const IndexPanel = ({
             useFilterExpanded: useFilterExpandedState,
           }}
         />
-        <Stack className="w-2/3 mr-2 min-h-[500px]">
+        <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
           <ActionButtonGroup index={index} />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel

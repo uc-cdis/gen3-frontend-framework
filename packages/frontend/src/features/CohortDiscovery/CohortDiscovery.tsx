@@ -10,12 +10,13 @@ import {
 import IndexPanel from './IndexPanel';
 import { AppStore } from './appApi';
 import Image from 'next/image';
-import SavedCohortsPanel from './SaveCohorts/SavedCohortsPanel';
+import SavedCohortsPanel from './SavedCohorts/SavedCohortsPanel';
 import RequestsPanel from './Requests/RequestsPanel';
 import DataAccessRequestForm, {
   DataAccessRequestFormParams,
 } from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
+import { extractIndexResourceFromConfiguration } from './utils';
 
 const persistor = persistStore(AppStore);
 
@@ -42,6 +43,7 @@ const DataRequestModal = ({
 );
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
+  const indexResources = extractIndexResourceFromConfiguration(config);
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
@@ -95,7 +97,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
           </Tabs.Panel>
 
           <Tabs.Panel value="saved">
-            <SavedCohortsPanel />
+            <SavedCohortsPanel indexResources={indexResources} />
           </Tabs.Panel>
 
           <Tabs.Panel value="request">

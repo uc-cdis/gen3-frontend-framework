@@ -46,6 +46,7 @@ export const fetchFence = async <T>({
 }: FetchRequest): Promise<Gen3FenceResponse<T>> => {
   const res = await fetch(`${GEN3_FENCE_API}${endpoint}`, {
     method: method,
+    credentials: 'include',
     headers: headers,
     body: 'POST' === method ? JSON.stringify(body) : null,
   });
