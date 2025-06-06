@@ -5,15 +5,22 @@ import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
+import { StudyDetailView, StudyPageConfig } from '../types';
+import { DataAuthorization } from '../../../utils';
 
-const StudyDetails = () => {
-  // DTODO
-  // const { discoveryConfig: config, studyDetails } = useStudyContext();
+const StudyDetails = ({
+  index,
+  detailView,
+  simpleDetailsView,
+  authz
+}: {
+  index: string,
+  detailView: StudyDetailView,
+  simpleDetailsView?: StudyPageConfig,
+  authz: DataAuthorization
+}) => {
   const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  // DTODO
-  // const index = config?.minimalFieldMapping?.uid ?? 'unknown';
-  const index = 'unknown';
   let permalink = 'Discovery/notfound';
 
   if (studyDetails) {
@@ -34,8 +41,6 @@ const StudyDetails = () => {
     return null;
   }
 
-  // DTODO
-  /*
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
@@ -54,37 +59,13 @@ const StudyDetails = () => {
           </CopyButton>
         </Drawer.Header>
         <Drawer.Body>
-          {config.detailView ?
+          {detailView ?
           <StudyDetailsPanel
             data={studyDetails ?? {}}
-            studyConfig={config.detailView}
-          /> : config.simpleDetailsView ?
-          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={config.simpleDetailsView} authorization={config.features.authorization} /> :
+            studyConfig={detailView}
+          /> : simpleDetailsView ?
+          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={simpleDetailsView} authorization={authz} /> :
           <div>Study Details Panel not configured</div>}
-        </Drawer.Body>
-      </Drawer.Content>
-    </Drawer.Root>
-  );
-  */
-  return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
-      <Drawer.Overlay opacity={0.5} blur={4} />
-      <Drawer.Content>
-        <Drawer.Header>
-          <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            {' '}
-            Back{' '}
-          </Button>
-          <CopyButton value={permalink}>
-            {({ copied, copy }) => (
-              <Button color={copied ? 'primary' : 'secondary'} onClick={copy}>
-                {copied ? 'Copied Permalink' : 'Permalink'}
-              </Button>
-            )}
-          </CopyButton>
-        </Drawer.Header>
-        <Drawer.Body>
-          <div>Study Details Panel not configured</div>
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

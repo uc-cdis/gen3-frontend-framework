@@ -192,7 +192,12 @@ const DiscoveryTable = ({
 
   return (
     <React.Fragment>
-      <StudyDetails />
+      <StudyDetails
+        index={config?.minimalFieldMapping?.uid ?? 'unknown'}
+	detailView={config.detailView}
+	simpleDetailsView={config.simpleDetailsView}
+	authz={config.features.authorization}
+      />
       <div className="grow w-auto inline-block overflow-x-scroll">
         <LoadingOverlay visible={dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />
