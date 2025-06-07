@@ -22,7 +22,7 @@ const handleSelected = async (
   externalLoginUrl?: string,
 ) => {
   if (!isAuthenticated)
-    await router.push(externalLoginUrl || `Login?redirect=${referrer}`);
+    await router.push(externalLoginUrl || `/Login?redirect=${referrer}`);
   else {
     if (endSession) endSession();
   }

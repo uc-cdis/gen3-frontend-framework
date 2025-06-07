@@ -18,6 +18,7 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
   } else {
     redirectPath = redirect ?? '/';
   }
+  console.log('redirectPath', redirectPath);
   return GEN3_REDIRECT_URL
     ? `${GEN3_REDIRECT_URL}/${redirectPath}`
     : redirectPath;
