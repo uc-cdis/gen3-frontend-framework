@@ -20,22 +20,28 @@ You have two options for hostname configuration:
 ### Option 1: Use gen3dev.local.io (Requires DNS Configuration)
 ```bash
 # Generate certificates for gen3dev.local.io and localhost
-mkcert gen3dev.local.io localhost 127.0.0.1
+mkdir ~/ssl_certs
+mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.local.io localhost 127.0.0.1
 
 # This creates:
 # - gen3dev.local.io+2.pem (certificate)
 # - gen3dev.local.io+2-key.pem (private key)
 ```
 
+
 ### Option 2: Use host.docker.internal (Simpler)
 ```bash
+mkdir ~/ssl_certs
 # Generate certificates using host.docker.internal (works out-of-the-box with Kind)
-mkcert host.docker.internal localhost 127.0.0.1
+mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker.internal localhost 127.0.0.1
 
 # This creates:
 # - host.docker.internal+2.pem (certificate)
 # - host.docker.internal+2-key.pem (private key)
 ```
+
+Note: the ~/ssl_cert directory is read by the npm run setProxy command for 
+proxying to gen3 services for gen3 frontend development.
 
 ## Step 2: Create Kubernetes TLS Secret
 
@@ -43,9 +49,7 @@ Create a Kubernetes secret with your SSL certificate:
 
 ### If using gen3dev.local.io:
 ```bash
-kubectl create secret tls gen3-local-tls \
-  --cert=gen3dev.local.io+2.pem \
-  --key=gen3dev.local.io+2-key.pem
+kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem 
 ```
 
 ### If using host.docker.internal:
@@ -58,6 +62,11 @@ kubectl create secret tls gen3-local-tls \
 ```bash
 # Verify the secret was created
 kubectl get secret gen3-local-tls
+```
+returns something like:
+```aiignore
+NAME             TYPE                DATA   AGE
+gen3-local-tls   kubernetes.io/tls   2      33s
 ```
 
 ## Step 3: Update Ingress Configuration
