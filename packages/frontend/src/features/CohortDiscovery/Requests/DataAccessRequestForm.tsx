@@ -32,18 +32,12 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
   const form = useForm<DataAccessRequestUserInformation>({
     initialValues: {
       name: '',
-      institution: '',
       email: '',
-      phone: '',
     },
 
     validate: {
       name: isNotEmpty('Name is required'),
       email: isEmail('Please provide a valid email'),
-      phone: matches(
-        /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
-        'Please provide a valid phone number',
-      ),
     },
   });
 
@@ -86,24 +80,10 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
           />
 
           <TextInput
-            label="Institution"
-            placeholder="University, Organization, or Company"
-            withAsterisk
-            {...form.getInputProps('institution')}
-          />
-
-          <TextInput
             label="Email"
             placeholder="your.email@institution.edu"
             withAsterisk
             {...form.getInputProps('email')}
-          />
-
-          <TextInput
-            label="Phone"
-            placeholder="+1 (123) 456-7890"
-            withAsterisk
-            {...form.getInputProps('phone')}
           />
 
           <Group justify="flex-end">

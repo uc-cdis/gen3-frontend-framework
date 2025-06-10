@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
+import { notifications } from '@mantine/notifications';
 import { IconSize } from '../../../utils/sizes';
 import {
   selectAllCohorts,
@@ -26,6 +27,7 @@ import {
   Cohort,
   DataAccessRequestUserInformation,
   IndexResourceField,
+  SupportServiceConfiguration,
 } from '../types';
 import {
   addDataAccessRequest,
@@ -34,8 +36,20 @@ import {
 import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
-import { queryAllResources } from '../Requests/hooks';
-import { useLazyGetAggsNoFilterSelfQuery } from '@gen3/core';
+import { queryAllResources, QueryAllIndexedError } from '../Requests/hooks';
+import {
+  useLazyGetAggsNoFilterSelfQuery,
+  useCreateRequestMutation,
+  useCoreSelector,
+  selectUser,
+  isHttpStatusError,
+  type HttpError,
+} from '@gen3/core';
+
+const REQUESTOR_HTTP_ERROR_MESSAGES: Record<number, string> = {
+  401: 'You are not authorized to request access to this data. Please contact the site administrator.',
+  403: 'You do not have the correct permissions to request this resource. Please contact the site administrator.',
+};
 
 interface CohortWithRequested extends Cohort {
   requested: string;
@@ -43,14 +57,20 @@ interface CohortWithRequested extends Cohort {
 
 interface SavedCohortsTableProps {
   indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
   size?: string;
 }
+
 const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
   indexResources,
+  supportTicketConfiguration,
   size = 'md',
 }) => {
   const appDispatch = useAppDispatch();
   const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
+  const [requestQuery, requestResults] = useCreateRequestMutation();
+  const user = useCoreSelector(selectUser);
+  console.log(user);
 
   const columns = useMemo<MRT_ColumnDef<CohortWithRequested, string>[]>(
     () => [
@@ -103,24 +123,55 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
     if (cohort && values) {
       // need to get the resources requires by the cohort
 
-      const resources = await queryAllResources(
-        cohort.filters,
-        indexResources,
-        getGetAggs,
-      );
+      try {
+        // query for resources from
+        const resources = await queryAllResources(
+          cohort.filters,
+          indexResources,
+          getGetAggs,
+        );
 
-      console.log(resources);
+        // now we have the resources, submit a requestor request
+        const request = await requestQuery({
+          resource_paths: resources,
+        }).unwrap();
 
-      // now we have the resources, submit a requestor request
+        // followed by a zendesk request
 
-      // followed by a zendesk request
-
-      // update the request store
-      appDispatch(
-        addDataAccessRequest({ cohortId, userAccessInformation: values }),
-      );
-      // Close the modal after a successful dispatch
-      close();
+        // update the request store
+        appDispatch(
+          addDataAccessRequest({ cohortId, userAccessInformation: values }),
+        );
+        // Close the modal after a successful dispatch
+        close();
+      } catch (error: unknown) {
+        console.log('error', error);
+        if (error instanceof QueryAllIndexedError) {
+          notifications.show({
+            title: 'Request Cohort',
+            message: `Error while getting resources for cohort: ${error.message}`,
+          });
+        } else if (isHttpStatusError(error)) {
+          const httpError = error as HttpError;
+          notifications.show({
+            title: 'Request Cohort',
+            message:
+              REQUESTOR_HTTP_ERROR_MESSAGES[httpError.status] ||
+              `Error while submitting resource request for cohorts`,
+          });
+        } else if (error instanceof Error) {
+          notifications.show({
+            title: 'Request Cohort',
+            message: `Error while submitting resource request for cohorts: ${error.message}`,
+          });
+        } else {
+          notifications.show({
+            title: 'Request Cohort',
+            message:
+              'Unknown error while submitting resource request for cohorts',
+          });
+        }
+      }
     }
   };
 

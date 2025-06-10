@@ -97,7 +97,10 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
           </Tabs.Panel>
 
           <Tabs.Panel value="saved">
-            <SavedCohortsPanel indexResources={indexResources} />
+            <SavedCohortsPanel
+              indexResources={indexResources}
+              remoteSupportService={config.remoteSupportService}
+            />
           </Tabs.Panel>
 
           <Tabs.Panel value="request">

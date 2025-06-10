@@ -16,7 +16,10 @@ export const extractIndexResourceFromConfiguration = (
   config: CohortDiscoveryConfig,
 ): IndexResourceField => {
   return config.dataIndexes.reduce((acc: IndexResourceField, panelConfig) => {
-    acc[panelConfig.dataConfig.dataType] = panelConfig.resourceField;
+    acc[panelConfig.dataConfig.dataType] = {
+      resourceField: panelConfig.resourceField,
+      resourcePath: panelConfig.resourcePath,
+    };
     return acc;
   }, {});
 };

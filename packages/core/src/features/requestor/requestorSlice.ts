@@ -89,8 +89,6 @@ export const requestorApi = gen3Api.injectEndpoints({
       query: () => `${GEN3_REQUESTOR_API}/_status`,
     }),
     request: builder.query<RequestorResponse, Partial<RequestListQuery>>({
-      // get a list of requests
-
       query: (params?) => {
         const strParams = params ? convertToQueryString(params) : undefined;
         return `${GEN3_REQUESTOR_API}/request${strParams ?? ''}`;
@@ -107,7 +105,6 @@ export const requestorApi = gen3Api.injectEndpoints({
       },
     }),
     requestById: builder.query<RequestorResponse, string>({
-      // get a list of requests
       query: (requestId) => `${GEN3_REQUESTOR_API}/request/${requestId}`,
     }),
     createRequest: builder.mutation<RequestorResponse, RequestQueryBody>({

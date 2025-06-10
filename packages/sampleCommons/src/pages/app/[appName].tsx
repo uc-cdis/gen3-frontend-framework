@@ -64,7 +64,6 @@ export const getServerSideProps: GetServerSideProps<
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,
     );
-
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),

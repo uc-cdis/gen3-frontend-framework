@@ -1,6 +1,6 @@
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { DataTypeConfig, TabConfig } from '../CohortBuilder/types';
-import { IndexedFilterSet } from '@gen3/core';
+import { IndexedFilterSet, type RemoteSupportConfiguration } from '@gen3/core';
 import { nanoid } from '@reduxjs/toolkit';
 
 interface EmptySelection {
@@ -24,6 +24,7 @@ interface LeftNav {
 
 export interface CohortDiscoveryGroup {
   dataConfig: DataTypeConfig; // database config
+  resourcePath?: string;
   resourceField: string; //  field used as authz resource to request access
   tabTitle: string; // title of the tab
   tabs: ReadonlyArray<TabConfig>; // filters for the fields
@@ -31,8 +32,14 @@ export interface CohortDiscoveryGroup {
   emptySelection: EmptySelection; // What to show when no filters are selected
 }
 
+export interface SupportServiceConfiguration {
+  service: string;
+  configuration: RemoteSupportConfiguration;
+}
+
 export interface CohortDiscoveryConfig extends Gen3AppConfigData {
   dataIndexes: Array<CohortDiscoveryGroup>;
+  remoteSupportService: SupportServiceConfiguration;
   emptySelection: EmptySelection;
   leftNav: LeftNav;
 }
@@ -69,9 +76,7 @@ export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
 
 export interface DataAccessRequestUserInformation {
   name: string;
-  institution: string;
   email: string;
-  phone?: string;
 }
 
 export enum DataAccessRequestStatus {
@@ -93,15 +98,18 @@ export interface DataAccessRequest extends DataAccessRequestUserInformation {
 }
 
 export const newDataAccessRequest = (
+  requestId: string,
+  status: DataAccessRequestStatus,
+
   userInformation: DataAccessRequestUserInformation,
   cohortId: CohortId,
 ) => {
   const now = new Date().toISOString();
   return {
-    id: createRequestId(),
+    id: requestId,
     createdDatetime: now,
     updatedDatetime: now,
-    status: DataAccessRequestStatus.pending,
+    status: status,
     cohortId,
     ...userInformation,
   } satisfies DataAccessRequest;
@@ -110,5 +118,12 @@ export const newDataAccessRequest = (
 export interface ActionButtonProps {
   index: string;
 }
-
-export type IndexResourceField = Record<string, string>;
+// Interface for extracting resources used to create a
+// requestor request
+interface ResourceField {
+  resourcePath?: string;
+  resourceField: string;
+}
+// mapping index to resource path and data field for a requestor
+// cohort request
+export type IndexResourceField = Record<string, ResourceField>;

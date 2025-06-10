@@ -1,10 +1,11 @@
 import React from 'react';
 import { Group, Stack } from '@mantine/core';
 import SavedCohortsTable from './SavedCohortsTable';
-import { IndexResourceField } from '../types';
+import { IndexResourceField, SupportServiceConfiguration } from '../types';
 
 interface SavedCohortsPanelProps {
   indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
 }
 
 const SavedCohortsPanel = ({ indexResources }: SavedCohortsPanelProps) => {
@@ -12,7 +13,10 @@ const SavedCohortsPanel = ({ indexResources }: SavedCohortsPanelProps) => {
     <>
       <Stack className="w-100 m-2">
         <Group className="w-100 bg-base-light p-4">
-          <SavedCohortsTable indexResources={indexResources} />
+          <SavedCohortsTable
+            indexResources={indexResources}
+            remoteSupportService={remoteSupportService}
+          />
         </Group>
       </Stack>
     </>
