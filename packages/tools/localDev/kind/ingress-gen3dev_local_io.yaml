@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts:
     - localhost
-    secretName: io-localhost-gen3dev
+    secretName: gen3-local-tls
   rules:
     - host: "gen3dev.local.io"
       http:
