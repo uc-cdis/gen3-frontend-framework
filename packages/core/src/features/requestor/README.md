@@ -1,16 +1,18 @@
 # TODOs and Notes
 
-
 ### HEAL's requestor flow:
 
-
 ##### first request:
+
 https://preprod.healdata.org/requestor/request/user?&resource_id=HDP00258&status=DRAFT
 response:
+
 ```json
 []
 ```
+
 ##### second request:
+
 https://preprod.healdata.org/requestor/request
 
 POST payload:
@@ -19,16 +21,8 @@ POST payload:
 {
   "username": "craigrbarnes@uchicago.edu",
   "resource_id": "HDP00258",
-  "resource_paths": [
-    "/study/9898044",
-    "/mds_gateway",
-    "/cedar"
-  ],
-  "role_ids": [
-    "study_registrant",
-    "mds_user",
-    "cedar_user"
-  ]
+  "resource_paths": ["/study/9898044", "/mds_gateway", "/cedar"],
+  "role_ids": ["study_registrant", "mds_user", "cedar_user"]
 }
 ```
 
@@ -49,6 +43,7 @@ response:
 ```
 
 ##### zendesk request:
+
 https://heal-support.zendesk.com/api/v2/requests
 POST payload:
 

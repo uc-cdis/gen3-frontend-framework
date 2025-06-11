@@ -39,15 +39,25 @@ export const dataAccessRequestsSlice = createSlice({
   name: 'dataAccessRequests',
   initialState: dataAccessRequestsAdapter.getInitialState(),
   reducers: {
-    addDataAccessRequest: (
-      state,
-      action: PayloadAction<DataAccessRequestForCohort>,
-    ) => {
-      const { cohortId, userAccessInformation } = action.payload;
+    addDataAccessRequest: (state, action: PayloadAction<DataAccessRequest>) => {
+      const {
+        cohortId,
+        status,
+        id,
+        name,
+        email,
+        organization,
+        createdDatetime,
+        updatedDatetime,
+      } = action.payload;
 
       const dataAccessRequests = newDataAccessRequest(
-        userAccessInformation,
+        id,
+        status,
+        { name, email, organization },
         cohortId,
+        createdDatetime,
+        updatedDatetime,
       );
       dataAccessRequestsAdapter.addOne(state, dataAccessRequests);
     },

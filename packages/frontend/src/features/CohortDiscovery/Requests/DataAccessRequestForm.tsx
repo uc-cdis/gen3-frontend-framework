@@ -32,6 +32,7 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
   const form = useForm<DataAccessRequestUserInformation>({
     initialValues: {
       name: '',
+      organization: '',
       email: '',
     },
 
@@ -77,6 +78,13 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
             placeholder="John Doe"
             withAsterisk
             {...form.getInputProps('name')}
+          />
+
+          <TextInput
+            label="Organization"
+            placeholder="University, Organization, or Company"
+            withAsterisk
+            {...form.getInputProps('organization')}
           />
 
           <TextInput

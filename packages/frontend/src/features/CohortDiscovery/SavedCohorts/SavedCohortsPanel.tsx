@@ -8,7 +8,10 @@ interface SavedCohortsPanelProps {
   remoteSupportService: SupportServiceConfiguration;
 }
 
-const SavedCohortsPanel = ({ indexResources }: SavedCohortsPanelProps) => {
+const SavedCohortsPanel = ({
+  indexResources,
+  remoteSupportService,
+}: SavedCohortsPanelProps) => {
   return (
     <>
       <Stack className="w-100 m-2">

@@ -41,9 +41,11 @@ import {
   useLazyGetAggsNoFilterSelfQuery,
   useCreateRequestMutation,
   useCoreSelector,
-  selectUser,
+  selectUserDetails,
   isHttpStatusError,
+  getRemoteSupportServiceRegistry,
   type HttpError,
+  MissingServiceConfigurationError,
 } from '@gen3/core';
 
 const REQUESTOR_HTTP_ERROR_MESSAGES: Record<number, string> = {
@@ -63,13 +65,14 @@ interface SavedCohortsTableProps {
 
 const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
   indexResources,
-  supportTicketConfiguration,
+  remoteSupportService,
   size = 'md',
 }) => {
   const appDispatch = useAppDispatch();
   const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
   const [requestQuery, requestResults] = useCreateRequestMutation();
-  const user = useCoreSelector(selectUser);
+  const user = useCoreSelector(selectUserDetails);
+
   console.log(user);
 
   const columns = useMemo<MRT_ColumnDef<CohortWithRequested, string>[]>(
@@ -138,14 +141,46 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
 
         // followed by a zendesk request
 
+        const zendeskRequestAction =
+          getRemoteSupportServiceRegistry().getSupportService(
+            remoteSupportService.service,
+          );
+
+        await zendeskRequestAction(
+          {
+            subject: `Request for access to ${cohort.name}`,
+            fullName: `${values.name}`,
+            email: `${values.email}`,
+            contents:
+              `Requestor: ${values.name} (${values.email})` +
+              `\n\nCohort: ${cohort.name}` +
+              `\n\nResources: ${resources.join(', ')}` +
+              `\n\nRequestor ID: ${user?.data?.username || 'unknown'}` +
+              `\n\nRequest ID: ${request.request_id}` +
+              `\n\nRequest URL: ${window.location.href}` +
+              `\n\nRequestor Email: ${values.email}` +
+              `\n\nRequestor Name: ${values.name}` +
+              `\n\nRequestor Organization: ${values.organization}`,
+          },
+          remoteSupportService.configuration,
+        );
+
         // update the request store
         appDispatch(
-          addDataAccessRequest({ cohortId, userAccessInformation: values }),
+          addDataAccessRequest({
+            cohortId,
+            id: request.request_id ?? 'unknown',
+            name: values.name,
+            email: values.email,
+            status: request.status ?? 'unknown',
+            organization: values.organization,
+            createdDatetime: request.created_time ?? 'unknown',
+            updatedDatetime: request.updated_time ?? 'unknown',
+          }),
         );
         // Close the modal after a successful dispatch
         close();
       } catch (error: unknown) {
-        console.log('error', error);
         if (error instanceof QueryAllIndexedError) {
           notifications.show({
             title: 'Request Cohort',
@@ -158,6 +193,11 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
             message:
               REQUESTOR_HTTP_ERROR_MESSAGES[httpError.status] ||
               `Error while submitting resource request for cohorts`,
+          });
+        } else if (error instanceof MissingServiceConfigurationError) {
+          notifications.show({
+            title: 'Request Cohort',
+            message: `Error while submitting resource request for cohorts: ${error.message}`,
           });
         } else if (error instanceof Error) {
           notifications.show({

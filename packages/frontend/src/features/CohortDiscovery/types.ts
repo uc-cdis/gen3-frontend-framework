@@ -34,6 +34,7 @@ export interface CohortDiscoveryGroup {
 
 export interface SupportServiceConfiguration {
   service: string;
+  subject?: string;
   configuration: RemoteSupportConfiguration;
 }
 
@@ -77,6 +78,7 @@ export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
 export interface DataAccessRequestUserInformation {
   name: string;
   email: string;
+  organization: string;
 }
 
 export enum DataAccessRequestStatus {
@@ -93,22 +95,23 @@ export interface DataAccessRequest extends DataAccessRequestUserInformation {
   id: string;
   createdDatetime: string;
   updatedDatetime: string;
-  status: DataAccessRequestStatus;
+  status: string;
   cohortId: CohortId;
 }
 
 export const newDataAccessRequest = (
   requestId: string,
-  status: DataAccessRequestStatus,
-
+  status: string,
   userInformation: DataAccessRequestUserInformation,
   cohortId: CohortId,
+  createdTime?: string | undefined,
+  updatedTime?: string | undefined,
 ) => {
   const now = new Date().toISOString();
   return {
     id: requestId,
-    createdDatetime: now,
-    updatedDatetime: now,
+    createdDatetime: createdTime ?? now,
+    updatedDatetime: updatedTime ?? now,
     status: status,
     cohortId,
     ...userInformation,

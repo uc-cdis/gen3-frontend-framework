@@ -1,10 +1,14 @@
-import { type RemoteSupportRequest } from './types';
+import {
+  type RemoteSupportRequest,
+  type MissingServiceConfigurationError,
+} from './types';
 
-import { getDefaultRegistry } from './registeredRemoteSupportServices';
+import { getRemoteSupportServiceRegistry } from './registeredRemoteSupportServices';
 import { registerDefaultRemoteSupport } from './registerDefaultRemoteSupport';
 
 export {
   type RemoteSupportRequest,
-  getDefaultRegistry,
+  type MissingServiceConfigurationError,
+  getRemoteSupportServiceRegistry,
   registerDefaultRemoteSupport,
 };

@@ -1,7 +1,7 @@
-import { getDefaultRegistry } from './registeredRemoteSupportServices';
+import { getRemoteSupportServiceRegistry } from './registeredRemoteSupportServices';
 import { createZendeskTicket } from './zenDesk';
 
 export const registerDefaultRemoteSupport = () => {
-  const registry = getDefaultRegistry();
+  const registry = getRemoteSupportServiceRegistry();
   registry.registerService('zenDesk', createZendeskTicket);
 };

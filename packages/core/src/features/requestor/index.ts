@@ -1,6 +1,19 @@
-import { type RemoteSupportConfiguration } from './remoteSupport/types';
+import {
+  type RemoteSupportConfiguration,
+  type RemoteSupportRequestAction,
+  MissingServiceConfigurationError,
+} from './remoteSupport/types';
+import {
+  getRemoteSupportServiceRegistry,
+  registerDefaultRemoteSupport,
+} from './remoteSupport';
 
 export * from './requestorSlice';
-export * from './remoteSupport';
 
-export { type RemoteSupportConfiguration };
+export {
+  type RemoteSupportConfiguration,
+  type RemoteSupportRequestAction,
+  MissingServiceConfigurationError,
+  getRemoteSupportServiceRegistry,
+  registerDefaultRemoteSupport,
+};

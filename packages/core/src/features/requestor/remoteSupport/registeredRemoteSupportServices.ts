@@ -1,4 +1,7 @@
-import { RemoteSupportRequestAction } from './types';
+import {
+  MissingServiceConfigurationError,
+  RemoteSupportRequestAction,
+} from './types';
 import { defaultLogger, Logger } from '../../../utils/logger';
 
 const DefaultRemoteSupportAction: RemoteSupportRequestAction = async () => {
@@ -57,7 +60,7 @@ export class RemoteSupportServiceRegistry {
       this.logger.warn(
         `Service '${serviceName}' not registered. Using default action.`,
       );
-      return DefaultRemoteSupportAction;
+      throw new MissingServiceConfigurationError(serviceName);
     }
 
     return service;
@@ -106,7 +109,7 @@ export class RemoteSupportServiceRegistry {
 
 let defaultRegistryInstance: RemoteSupportServiceRegistry | null = null;
 
-export function getDefaultRegistry(
+export function getRemoteSupportServiceRegistry(
   logger?: Logger,
 ): RemoteSupportServiceRegistry {
   if (!defaultRegistryInstance) {
