@@ -155,7 +155,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
               `Requestor: ${values.name} (${values.email})` +
               `\n\nCohort: ${cohort.name}` +
               `\n\nResources: ${resources.join(', ')}` +
-              `\n\nRequestor ID: ${user?.data?.username || 'unknown'}` +
+              `\n\nRequestor ID: ${user?.username || 'unknown'}` +
               `\n\nRequest ID: ${request.request_id}` +
               `\n\nRequest URL: ${window.location.href}` +
               `\n\nRequestor Email: ${values.email}` +

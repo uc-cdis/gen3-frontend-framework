@@ -14,7 +14,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
     { isLoading: apiIsLoading, data: aiResponse, error: aiError },
     // This is the destructured mutation result
   ] = useLazyRequestQuery();
- // from data portal heal https://github.com/uc-cdis/data-portal/blob/bbd58ef8d722d81db3b0cf2393d6206a1bd66b08/src/GenericAccessRequestForm/handleRegisterFormSubmission.ts#L8
+  // from data portal heal https://github.com/uc-cdis/data-portal/blob/bbd58ef8d722d81db3b0cf2393d6206a1bd66b08/src/GenericAccessRequestForm/handleRegisterFormSubmission.ts#L8
   /**const getQueryBody = () => {
     let queryBody: QueryBody = {};
 
@@ -33,9 +33,9 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
     return queryBody;
   };
 
-    
+
      * {"username":"test@test.edu","resource_id":"HDP00007","resource_paths":["/study/9898687","/mds_gateway","/cedar"],"role_ids":["study_registrant","mds_user","cedar_user"]}
-     * possable responce 
+     * possable responce
         * 201
         {"resource_display_name":null,
          * "updated_time":"2025-05-13T15:10:37.745189",
@@ -46,20 +46,12 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
          * "revoke":false,
          * "policy_id":"study.9898687_mds_gateway_cedar_study_registrant_mds_user_cedar_user",
          * "created_time":"2025-05-13T15:10:37.745183"
-         * } 
-         * 
+         * }
+         *
          * 403
          * {"detail":"Permission denied"}
          * */
-  const sampleRequest = () => {
-    
-    submitRequest({
-      username: 'test@test.edu',
-      resource_id: 'HDP00007',
-      resource_paths: ['/study/9898687', '/mds_gateway', '/cedar'],
-      role_ids: ['study_registrant', 'mds_user', 'cedar_user'],
-    });
-  };
+
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -73,11 +65,7 @@ const SamplePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
         <Center>
           <Paper shadow="md" p="xl" withBorder>
             <Text>This is a example custom page in Gen3</Text>
-            <Button
-              onClick={sampleRequest}
-              loading={apiIsLoading}
-              disabled={apiIsLoading}
-            >
+            <Button loading={apiIsLoading} disabled={apiIsLoading}>
               Submit Request
             </Button>
           </Paper>
