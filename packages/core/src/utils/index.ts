@@ -8,6 +8,11 @@ import {
   fetchJSONDataFromURL,
 } from './fetch';
 import { getCurrentTimestamp, isTimeGreaterThan } from './time';
+import {
+  convertToHistogramDataAsStringKey,
+  calculatePercentageAsString,
+  calculatePercentageAsNumber,
+} from './conversions';
 
 export {
   isObject,
@@ -22,4 +27,7 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
+  convertToHistogramDataAsStringKey,
+  calculatePercentageAsString,
+  calculatePercentageAsNumber,
 };

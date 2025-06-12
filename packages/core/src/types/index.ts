@@ -46,6 +46,11 @@ export interface HistogramData {
   count: number;
 }
 
+export interface HistogramDataAsStringKey {
+  key: string;
+  count: number;
+}
+
 export type HistogramDataArray = Array<HistogramData>;
 
 const isValidObject = (input: any): boolean =>
