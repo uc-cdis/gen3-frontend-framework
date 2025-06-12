@@ -9,6 +9,7 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import SaveCohortErrorModal from '../../features/CohortBuilder/CohortManager/modals/SaveCohortErrorModal';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -89,7 +90,7 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider>
+      <ModalsProvider modals={{ saveCohortError: SaveCohortErrorModal }}>
         <Notifications />
         <SessionProvider {...sessionConfig}>
           <Gen3ModalsProvider config={modalsConfig}>

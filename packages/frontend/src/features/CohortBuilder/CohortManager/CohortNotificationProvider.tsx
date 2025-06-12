@@ -1,37 +1,21 @@
 import React, { createContext, PropsWithChildren, useReducer } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { isEqual } from 'lodash';
-import { Button } from '@mantine/core';
-import { Notifications, showNotification } from '@mantine/notifications';
-import { ContextModalProps, ModalsProvider } from '@mantine/modals';
+import { showNotification } from '@mantine/notifications';
 import {
   DeleteCohortNotification,
   DiscardChangesCohortNotification,
   ErrorCohortNotification,
   NewCohortNotification,
-  SavedCurrentCohortNotification,
   SavedCohortNotification,
   SavedCohortNotificationWithSetAsCurrent,
+  SavedCurrentCohortNotification,
 } from './CohortNotifications';
 
 import {
   CohortNotificationCommand,
   CohortNotificationCommandWithParam,
 } from './types';
-
-const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
-  <>
-    <p className="py-2 px-4">There was a problem saving the cohort.</p>
-    <div
-      className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
-      data-testid="modal-button-container"
-    >
-      <Button onClick={() => context.closeModal(id)} variant="darkFunction">
-        OK
-      </Button>
-    </div>
-  </>
-);
 
 const cohortMessageReducer = (
   state: CohortNotificationCommand[],
@@ -201,12 +185,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
   );
 
   return (
-    <ModalsProvider modals={{ saveCohortError: SaveCohortErrorModal }}>
-      <CohortNotificationContext.Provider value={updateCohortMessage}>
-        <Notifications position="top-center" />
-        {children}
-      </CohortNotificationContext.Provider>
-    </ModalsProvider>
+    <CohortNotificationContext.Provider value={updateCohortMessage}>
+      {children}
+    </CohortNotificationContext.Provider>
   );
 };
 

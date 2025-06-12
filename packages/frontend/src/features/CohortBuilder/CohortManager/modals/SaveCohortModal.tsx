@@ -104,10 +104,11 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         })
         .catch(() => {
           modals.openContextModal({
-            modal: 'cohortSaveError',
+            modal: 'saveCohortError',
             title: 'Save Cohort Error',
             innerProps: {},
           });
+          setIsSaving(false);
         });
     } else {
       saveCohort({
@@ -148,10 +149,11 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         })
         .catch(() => {
           modals.openContextModal({
-            modal: 'cohortSaveError',
+            modal: 'saveCohortError',
             title: 'Save Cohort Error',
             innerProps: {},
           });
+          setIsSaving(false);
         });
     }
   };

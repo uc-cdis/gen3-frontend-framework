@@ -59,6 +59,7 @@ import {
   useDeletePersistedCohort,
   useUpdatePersistedCohort,
   useGetAllCohortNames,
+  useSetupInitialCohorts,
   type ReplacePersistedCohortResults,
   type SavePersistedCohortResult,
 } from './cohortPersistenceHooks';
@@ -117,4 +118,5 @@ export {
   useAddUnsavedCohort,
   useDiscardChanges,
   useCohortFacetFilters,
+  useSetupInitialCohorts,
 };

@@ -181,6 +181,11 @@ export const cohortSlice = createSlice({
       state.message = [`newCohort|${cohort.name}|${cohort.id}`];
     },
 
+    addSavedCohort: (state, action: PayloadAction<Cohort>) => {
+      const cohort = action.payload;
+      cohortsAdapter.addOne(state, cohort);
+    },
+
     removeCohort: (
       state,
       action: PayloadAction<{
@@ -396,6 +401,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
 };
 
 export const selectCohortById = (state: CoreState, id: CohortId): Cohort => {
+  console.log('selectCohortById', id);
   return cohortSelectors.selectById(state, id);
 };
 
@@ -411,6 +417,7 @@ export const {
   addNewDefaultUnsavedCohort,
   addUnsavedCohort,
   setCurrentCohortId,
+  addSavedCohort,
   setCohortList,
   updateCohortAtIdNameAndSavedFlag,
 } = cohortSlice.actions;

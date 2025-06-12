@@ -14,7 +14,10 @@ import {
   selectCurrentCohort,
   updateCohortAtIdNameAndSavedFlag,
   selectCohortById,
+  selectAllCohorts,
+  addSavedCohort,
 } from './cohortSlice';
+import { coreStore } from '../../store';
 
 export interface CohortPersistenceError {
   status: number;
@@ -51,6 +54,8 @@ export interface SavePersistedCohortResult
 
 export const useSavePersistedCohort = () => {
   const dispatch = useCoreDispatch();
+  const coreState = coreStore.getState();
+
   const saveCohort = useDeepCompareCallback(
     async ({
       newName,
@@ -62,10 +67,14 @@ export const useSavePersistedCohort = () => {
       };
       const persistence = CohortPersistence.getInstance();
       const cohortExists = await persistence.checkIfCohortNameExists(newName);
-      const currentCohort = useCoreSelector((state) =>
-        selectCohortById(state, cohortId),
-      );
 
+      const currentCohort = selectCohortById(coreState, cohortId);
+      if (currentCohort === undefined) {
+        console.log(coreState.cohorts);
+        throw new Error(
+          `Could not find cohort with id ${cohortId} in the store`,
+        );
+      }
       if (
         cohortExists?.cohortByNameExists !== undefined &&
         cohortExists.cohortByNameExists
@@ -275,4 +284,20 @@ export const useGetAllCohortNames = () => {
     error,
     isError: error !== null,
   };
+};
+
+export const useSetupInitialCohorts = async () => {
+  // get all of the persisted cohorts
+  const persistence = CohortPersistence.getInstance();
+  const savedCohorts = await persistence.getAllCohorts();
+  const unsavedCohorts = useCoreSelector(selectAllCohorts);
+
+  // for all of the savedCohorts:
+  // if cohort.id is not in unsavedCohorts, add it to unsavedCohorts
+
+  savedCohorts?.cohorts?.forEach((savedCohort) => {
+    if (!(savedCohort.id in unsavedCohorts)) {
+      coreStore.dispatch(addSavedCohort(savedCohort));
+    }
+  });
 };

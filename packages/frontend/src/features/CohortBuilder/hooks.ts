@@ -1,3 +1,4 @@
+import { useDeepCompareCallback } from 'use-deep-compare';
 import {
   useCoreDispatch,
   CoreState,
@@ -10,6 +11,7 @@ import {
   CombineMode,
   setCohortFilterCombineMode,
   selectCurrentCohortFilters,
+  setActiveCohort
 } from '@gen3/core';
 
 export const useCohortFacetFilters = (index: string): FilterSet => {
@@ -46,4 +48,17 @@ export const useSetCohortFilterCombineState = (index: string) => {
   return (field: string, mode: CombineMode) => {
     dispatch(setCohortFilterCombineMode({ index, field, mode }));
   };
+};
+
+export const useSetActiveCohort = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const handleCohortChange = useDeepCompareCallback(
+    (id: string) => {
+      coreDispatch(setActiveCohort(id));
+    },
+    [coreDispatch],
+  );
+
+  return handleCohortChange;
 };
