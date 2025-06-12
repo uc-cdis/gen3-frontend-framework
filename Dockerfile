@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 WORKDIR /gen3
 
 # Copy package files first to leverage cache
@@ -27,7 +27,7 @@ RUN lerna run build:pkg
 RUN lerna run --scope @gen3/samplecommons build
 
 # Production stage
-FROM node:20.18.2-alpine3.20 AS runner
+FROM node:22-alpine3.20 AS runner
 RUN apk add bash
 WORKDIR /gen3
 
