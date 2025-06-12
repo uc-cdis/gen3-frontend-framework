@@ -11,7 +11,7 @@ interface CohortSelectorProps {
   readonly setActiveCohort: (newCohort: string) => void;
 }
 
-const CohortSelector: React.FC<CohortSelectorProps> = ({
+const CohortSelector2: React.FC<CohortSelectorProps> = ({
   selectAvailableCohorts,
   selectCurrentCohort,
   setActiveCohort,
@@ -82,4 +82,4 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
   );
 };
 
-export default CohortSelector;
+export default CohortSelector2;

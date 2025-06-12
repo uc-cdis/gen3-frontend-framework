@@ -77,28 +77,30 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         saveAs,
       })
         .then(({ newCohortId }) => {
-          if (setAsCurrent || saveAs) {
-            setCohortMessage &&
-              setCohortMessage([
-                {
-                  cmd: setAsCurrent ? 'savedCohort' : 'savedCurrentCohort',
-                  param1: newName,
-                  param2: newCohortId,
-                },
-              ]);
+          if (newCohortId) {
+            if (setAsCurrent || saveAs) {
+              setCohortMessage &&
+                setCohortMessage([
+                  {
+                    cmd: setAsCurrent ? 'savedCohort' : 'savedCurrentCohort',
+                    param1: newName,
+                    param2: newCohortId,
+                  },
+                ]);
 
-            setActiveCohort(newCohortId);
-          } else {
-            setCohortMessage &&
-              setCohortMessage([
-                {
-                  cmd: 'savedCohortSetCurrent',
-                  param1: newName,
-                  param2: newCohortId,
-                },
-              ]);
+              setActiveCohort(newCohortId);
+            } else {
+              setCohortMessage &&
+                setCohortMessage([
+                  {
+                    cmd: 'savedCohortSetCurrent',
+                    param1: newName,
+                    param2: newCohortId,
+                  },
+                ]);
+            }
+            closeModal();
           }
-          closeModal();
         })
         .catch(() => {
           modals.openContextModal({
@@ -121,7 +123,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
             setShowReplaceCohort(true);
             setIsSaving(false);
           } else {
-            if (setAsCurrent || saveAs) {
+            if (newCohortId && (setAsCurrent || saveAs)) {
               setActiveCohort(newCohortId);
             }
 
