@@ -138,7 +138,14 @@ export const cohortSlice = createSlice({
         },
       });
     },
-
+    updateSavedState: (state, action: PayloadAction<boolean>) => {
+      cohortsAdapter.updateOne(state, {
+        id: getCurrentCohort(state),
+        changes: {
+          saved: action.payload,
+        },
+      });
+    },
     addUnsavedCohort: (state, action: PayloadAction<Cohort>) => {
       const cohort = action.payload;
       cohortsAdapter.addOne(state, cohort);
@@ -359,6 +366,10 @@ const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
   return NULL_COHORT_ID;
 };
 
+export const selectCohortById = (state: CoreState, id: CohortId): Cohort => {
+  return cohortSelectors.selectById(state, id);
+};
+
 // Filter actions: addFilter, removeFilter, updateFilter
 export const {
   updateCohortFilter,
@@ -372,6 +383,7 @@ export const {
   addUnsavedCohort,
   setCurrentCohortId,
   setCohortList,
+  updateSavedState,
 } = cohortSlice.actions;
 
 export const selectCurrentCohortFilters = (

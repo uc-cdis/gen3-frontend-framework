@@ -40,8 +40,8 @@ const CohortActions: React.FC<CohortActionsProps> = ({
 }: CohortActionsProps) => {
   const currentCohort = selectCurrentCohort();
   const availableCohorts = selectAvailableCohorts();
-  const hasUnsavedCohorts =
-    availableCohorts.filter((c) => !c.saved).length >= 1;
+  // const hasUnsavedCohorts =
+  //   availableCohorts.filter((c) => !c.saved).length >= 1;
 
   const { handleExport, status } = useExportCohort();
   const { isFetching: exportCohortPending = false } = status;
@@ -79,9 +79,10 @@ const CohortActions: React.FC<CohortActionsProps> = ({
 
       <Tooltip
         label={
-          hasUnsavedCohorts
-            ? 'There is already an unsaved cohort'
-            : 'Create New Unsaved Cohort'
+          'Create New Unsaved Cohort'
+          // hasUnsavedCohorts
+          //   ? 'There is already an unsaved cohort'
+          //  : 'Create New Unsaved Cohort'
         }
         position="bottom"
         withArrow
@@ -95,7 +96,6 @@ const CohortActions: React.FC<CohortActionsProps> = ({
               ]);
           }}
           data-testid="addButton"
-          disabled={hasUnsavedCohorts}
           aria-label="Add cohort"
           variant="action"
         >

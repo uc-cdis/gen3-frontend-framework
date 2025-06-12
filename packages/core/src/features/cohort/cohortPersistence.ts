@@ -109,6 +109,8 @@ export class CohortPersistence {
     try {
       const db = await this.getDb();
       await db.put(STORE_NAME, cohort);
+
+      console.log('saveCohort', cohort);
       return {
         status: 200,
         message: 'Cohort saved successfully',

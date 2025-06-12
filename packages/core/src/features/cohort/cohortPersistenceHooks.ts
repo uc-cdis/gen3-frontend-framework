@@ -12,6 +12,8 @@ import {
   createNewCohort,
   removeCohort,
   selectCurrentCohort,
+  updateSavedState,
+  selectCohortById,
 } from './cohortSlice';
 
 export interface CohortPersistenceError {
@@ -61,7 +63,9 @@ export const useSavePersistedCohort = () => {
       };
       const persistence = CohortPersistence.getInstance();
       const cohortExists = await persistence.checkIfCohortNameExists(newName);
-
+      const currentCohort = useCoreSelector((state) =>
+        selectCohortById(state, cohortId),
+      );
       if (
         cohortExists?.cohortByNameExists !== undefined &&
         cohortExists.cohortByNameExists
@@ -71,14 +75,14 @@ export const useSavePersistedCohort = () => {
           newCohortId: undefined,
         };
       } else {
-        const newCohort = createNewCohort({
-          filters,
-          customName: newName,
-          id: cohortId,
-        });
+        // const newCohort = createNewCohort({
+        //   filters,
+        //   customName: newName,
+        //   id: cohortId,
+        // });
 
-        const saveResult = await persistence.saveCohort(newCohort);
-        dispatch(addUnsavedCohort(newCohort));
+        const saveResult = await persistence.saveCohort(currentCohort);
+        dispatch(updateSavedState(newCohort));
         result = {
           cohortAlreadyExists: false,
           newCohortId: saveResult?.cohort?.id,
