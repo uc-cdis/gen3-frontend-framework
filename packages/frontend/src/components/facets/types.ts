@@ -5,7 +5,20 @@ import {
   CombineMode,
   IndexAndField,
 } from '@gen3/core';
-import { ReactNode, ComponentType } from 'react';
+import React, { ReactNode, ComponentType } from 'react';
+
+export type QueryOptions = Record<string, unknown>;
+
+export interface EnumChartProps {
+  readonly field: string;
+  readonly data: Record<string, number>;
+  readonly selectedEnums: readonly string[];
+  readonly isSuccess: boolean;
+  readonly showTitle: boolean;
+  readonly maxBins: number;
+  readonly height: number;
+  readonly valueLabel?: string;
+}
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
@@ -24,6 +37,8 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly width?: string;
   readonly dismissCallback?: (arg0: string) => void;
   readonly sharedWithIndices?: Array<IndexAndField>;
+  readonly Chart?: React.FC<EnumChartProps>;
+  readonly queryOptions?: QueryOptions;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -68,11 +83,14 @@ export type GetFacetDataFunction = (
 ) => EnumFacetResponse | RangeFacetResponse;
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
+
 export type GetFacetCombineModeFunction = (field: string) => CombineMode;
 export type SetFacetCombineModeFunction = (
   field: string,
   combineMode: CombineMode,
 ) => void;
+
+export type EnumOperandValue = ReadonlyArray<string | number>;
 
 export type EnumFacetDataChangedFunction = (
   data: Array<[string | number, number]>,
@@ -95,6 +113,17 @@ export interface EnumFacetDataHooks extends FacetDataHooks {
   useGetCombineMode: GetFacetCombineModeFunction;
   useUpdateCombineMode: SetFacetCombineModeFunction;
 }
+
+export type RangeFacetHooks = FacetCommonHooks & {
+  /**
+   * Hook that returns range values and counts
+   */
+  useGetRangeFacetData: GetRangeFacetDataFunction;
+  /**
+   * Hook that returns the currently selected filters
+   */
+  useGetFacetFilters: SelectFacetFilterFunction;
+};
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -134,6 +163,24 @@ export interface FieldToName {
   readonly field: string;
   readonly name: string;
 }
+
+export type NumericRangeFacetHooks = FacetCommonHooks & {
+  /**
+   * Hook that returns range values and counts
+   */
+  useGetRangeFacetData: GetRangeFacetDataFunction;
+  /**
+   * Hook that returns the currently selected filters
+   */
+  useGetFacetFilters: SelectFacetFilterFunction;
+};
+
+export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
+  readonly rangeDatatype?: string;
+  readonly minimum: number | undefined;
+  readonly maximum: number | undefined;
+  readonly clearValues?: boolean;
+};
 
 // compact string representation of SortType for config file
 export type FacetSortType =
