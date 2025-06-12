@@ -12,7 +12,7 @@ import {
   createNewCohort,
   removeCohort,
   selectCurrentCohort,
-  updateSavedState,
+  //  updateSavedState,
   selectCohortById,
 } from './cohortSlice';
 
@@ -55,7 +55,7 @@ export const useSavePersistedCohort = () => {
     async ({
       newName,
       cohortId,
-      filters,
+      // filters,
     }: CohortPersistenceSaveReplaceParameters): Promise<SavePersistedCohortResult> => {
       let result: SavePersistedCohortResult = {
         cohortAlreadyExists: false,
@@ -82,7 +82,7 @@ export const useSavePersistedCohort = () => {
         // });
 
         const saveResult = await persistence.saveCohort(currentCohort);
-        dispatch(updateSavedState(newCohort));
+        // dispatch(updateSavedState(newCohort));
         result = {
           cohortAlreadyExists: false,
           newCohortId: saveResult?.cohort?.id,
