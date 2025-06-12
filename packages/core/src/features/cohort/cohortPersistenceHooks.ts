@@ -12,7 +12,7 @@ import {
   createNewCohort,
   removeCohort,
   selectCurrentCohort,
-  //  updateSavedState,
+  updateCohortAtIdNameAndSavedFlag,
   selectCohortById,
 } from './cohortSlice';
 
@@ -55,7 +55,6 @@ export const useSavePersistedCohort = () => {
     async ({
       newName,
       cohortId,
-      // filters,
     }: CohortPersistenceSaveReplaceParameters): Promise<SavePersistedCohortResult> => {
       let result: SavePersistedCohortResult = {
         cohortAlreadyExists: false,
@@ -66,6 +65,7 @@ export const useSavePersistedCohort = () => {
       const currentCohort = useCoreSelector((state) =>
         selectCohortById(state, cohortId),
       );
+
       if (
         cohortExists?.cohortByNameExists !== undefined &&
         cohortExists.cohortByNameExists
@@ -75,20 +75,24 @@ export const useSavePersistedCohort = () => {
           newCohortId: undefined,
         };
       } else {
-        // const newCohort = createNewCohort({
-        //   filters,
-        //   customName: newName,
-        //   id: cohortId,
-        // });
-
-        const saveResult = await persistence.saveCohort(currentCohort);
-        // dispatch(updateSavedState(newCohort));
+        // save result in a persistent store
+        const saveResult = await persistence.saveCohort({
+          ...currentCohort,
+          name: newName,
+        });
+        // update the cohort in the store
+        dispatch(
+          updateCohortAtIdNameAndSavedFlag({
+            id: currentCohort.id,
+            saved: true,
+            name: newName,
+          }),
+        );
         result = {
           cohortAlreadyExists: false,
           newCohortId: saveResult?.cohort?.id,
         };
       }
-
       return result;
     },
     [dispatch],

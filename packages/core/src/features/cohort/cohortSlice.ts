@@ -46,6 +46,18 @@ interface RemoveFilterParams {
   field: string;
 }
 
+interface UpdateCohortAtIdParams {
+  id: string;
+}
+
+interface UpdateCohortAtIdName extends UpdateCohortAtIdParams {
+  name: string;
+}
+
+interface UpdateCohortAtIdNameAndSavedStatus extends UpdateCohortAtIdName {
+  saved: boolean;
+}
+
 export const createCohortName = (postfix: string): string => {
   return `Custom Cohort ${postfix}`;
 };
@@ -138,11 +150,28 @@ export const cohortSlice = createSlice({
         },
       });
     },
-    updateSavedState: (state, action: PayloadAction<boolean>) => {
+    updateCohortAtIdNameAndSavedFlag: (
+      state,
+      action: PayloadAction<UpdateCohortAtIdNameAndSavedStatus>,
+    ) => {
       cohortsAdapter.updateOne(state, {
-        id: getCurrentCohort(state),
+        id: action.payload.id,
         changes: {
-          saved: action.payload,
+          saved: action.payload.saved,
+          name: action.payload.name,
+          modified: true,
+          modified_datetime: new Date().toISOString(),
+        },
+      });
+    },
+    updateCohortAtIdIdName: (
+      state,
+      action: PayloadAction<UpdateCohortAtIdName>,
+    ) => {
+      cohortsAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: {
+          name: action.payload.name,
         },
       });
     },
@@ -383,7 +412,7 @@ export const {
   addUnsavedCohort,
   setCurrentCohortId,
   setCohortList,
-  updateSavedState,
+  updateCohortAtIdNameAndSavedFlag,
 } = cohortSlice.actions;
 
 export const selectCurrentCohortFilters = (
