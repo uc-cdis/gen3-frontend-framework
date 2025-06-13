@@ -4,10 +4,9 @@ import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
 import { facetDefinitionsReducer } from './FacetDefinitionsSlice';
-import { cohortReducer } from './CohortSlice';
 
 import storage from './storage-persist';
-import { cohortPersistenceReducer } from './CohortManagerSlice';
+import { saveCohortPersistenceReducer } from './SavedCohortManagerSlice';
 import { dataAccessRequestsReducer } from './RequestManagerSlice';
 
 import type { Action, Reducer } from 'redux';
@@ -40,8 +39,8 @@ const reducers = combineReducers({
   selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
   facetDefinitionState: facetDefinitionsReducer,
-  cohorts: cohortReducer,
-  savedCohorts: cohortPersistenceReducer,
+  // cohorts: cohortReducer,
+  savedCohorts: saveCohortPersistenceReducer,
   dataAccessRequests: dataAccessRequestsReducer,
 });
 

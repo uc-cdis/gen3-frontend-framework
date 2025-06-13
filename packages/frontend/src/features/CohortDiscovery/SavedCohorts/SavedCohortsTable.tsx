@@ -17,7 +17,10 @@ import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
 import { notifications } from '@mantine/notifications';
 import { IconSize } from '../../../utils/sizes';
-import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
+import {
+  selectAllSavedCohorts,
+  removeSavedCohort,
+} from '../SavedCohortManagerSlice';
 import { useAppSelector } from '../appApi';
 import {
   Cohort,
@@ -102,7 +105,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
 
   const iconSize = IconSize[size] || IconSize['sm'];
   const theme = useMantineTheme();
-  const data: Cohort[] = useAppSelector(selectAllCohorts);
+  const data: Cohort[] = useAppSelector(selectAllSavedCohorts);
   const requestByCohortId = useAppSelector(selectCohortToRequestId);
 
   const tData = useDeepCompareMemo(
@@ -278,7 +281,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
                 labels: { confirm: 'Delete Cohort', cancel: 'Cancel' },
                 confirmProps: { color: theme.colors.utility[2] },
                 onConfirm: () => {
-                  appDispatch(removeCohort(row.id));
+                  appDispatch(removeSavedCohort(row.id));
                 },
               });
             }}

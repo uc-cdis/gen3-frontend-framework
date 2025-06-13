@@ -14,7 +14,7 @@ import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
 import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
 
-import { selectIndexFilters } from './CohortSelectors';
+import { selectCurrentCohortIndexFilters } from './SavedCohortManagerSlice';
 import { CohortDiscoveryGroup } from './types';
 import {
   getAllFieldsFromFilterConfigs,
@@ -78,7 +78,7 @@ const IndexPanel = ({
   }, [selectedFacets, facetDefinitions]);
 
   const cohortFilters = useAppSelector((state: AppState) =>
-    selectIndexFilters(state, index),
+    selectCurrentCohortIndexFilters(state, index),
   );
 
   const queryFields =
@@ -151,7 +151,6 @@ const IndexPanel = ({
     <Stack>
       <CohortManager index={index} />
       <Flex wrap="nowrap" className="flex h-full bg-base-light pb-4 ml-4">
-        <LoadingOverlay visible={isAggsQueryFetching} />
         <FacetSelectionPanel
           categories={categories}
           selectedFields={selectedFacets}

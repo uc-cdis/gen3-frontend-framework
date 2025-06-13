@@ -1,5 +1,4 @@
 import useSWR from 'swr';
-import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   Accessibility,
   GuppyAggregationsResponse,

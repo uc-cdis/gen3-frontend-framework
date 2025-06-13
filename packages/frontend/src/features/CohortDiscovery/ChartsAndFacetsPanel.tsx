@@ -16,7 +16,7 @@ import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { selectIndexFilters } from './CohortSelectors';
+import { selectCurrentCohortIndexFilters } from './SavedCohortManagerSlice';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useRoundedAggsQuery } from './queryApi';
 
@@ -39,7 +39,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   facets,
 }) => {
   const cohortFilters = useAppSelector((state: AppState) =>
-    selectIndexFilters(state, index),
+    selectCurrentCohortIndexFilters(state, index),
   );
 
   const {

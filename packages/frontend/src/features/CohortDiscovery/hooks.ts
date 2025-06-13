@@ -6,13 +6,14 @@ import {
   toggleCategoryFilter,
 } from './FilterExpandSlice';
 import { selectSelectedFacetsFromIndex } from './SelectedFacetsSlice';
-import { removeCohortFilter, updateCohortFilter } from './CohortSlice';
+import {
+  removeCohortFilter,
+  updateCohortFilter,
+  selectCurrentIndexedFilterByName,
+  selectCurrentCohortFilters,
+} from './SavedCohortManagerSlice';
 import { FilterSet, Operation } from '@gen3/core';
 import { buildNested } from '../../components/facets';
-import {
-  selectIndexedFilterByName,
-  selectCohortFilters,
-} from './CohortSelectors';
 
 export const useToggleExpandFilter = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +33,9 @@ export const useAllFiltersCollapsed = () => {
 };
 
 export const useCohortFacetFilters = (index: string): FilterSet => {
-  return useAppSelector((state: AppState) => selectCohortFilters(state)[index]);
+  return useAppSelector(
+    (state: AppState) => selectCurrentCohortFilters(state)[index],
+  );
 };
 
 export const useClearFilters = (index: string) => {
@@ -69,7 +72,7 @@ export const useUpdateFilters = (index: string) => {
 export const useGetFacetFilters = (index: string, field: string): Operation => {
   return useAppSelector(
     (state: AppState) =>
-      selectIndexedFilterByName(state, index, field) ?? {
+      selectCurrentIndexedFilterByName(state, index, field) ?? {
         operator: 'and',
         operands: [],
       },

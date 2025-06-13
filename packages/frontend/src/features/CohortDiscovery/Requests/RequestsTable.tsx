@@ -6,7 +6,7 @@ import {
   MRT_Cell,
 } from 'mantine-react-table';
 import { useUserRequestQuery } from '@gen3/core';
-import { selectCohortIdToNameMap } from '../CohortManagerSlice';
+import { selectCohortIdToNameMap } from '../SavedCohortManagerSlice';
 import { selectAllDataAccessRequests } from '../RequestManagerSlice';
 import { useAppSelector } from '../appApi';
 import { DataAccessRequest, DataAccessRequestStatus } from '../types';

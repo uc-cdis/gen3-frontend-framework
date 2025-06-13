@@ -17,6 +17,8 @@ import DataAccessRequestForm, {
 } from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
 import { extractIndexResourceFromConfiguration } from './utils';
+import { useAppDispatch } from './appApi';
+import { resetCurrentCohortId } from './SavedCohortManagerSlice';
 
 const persistor = persistStore(AppStore);
 
@@ -44,6 +46,7 @@ const DataRequestModal = ({
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const indexResources = extractIndexResourceFromConfiguration(config);
+  const dispatch = useAppDispatch(resetCurrentCohortId);
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>

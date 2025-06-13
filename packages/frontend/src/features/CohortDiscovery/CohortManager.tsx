@@ -7,15 +7,13 @@ import {
 } from '../CohortBuilder';
 import { useAppSelector, AppState, useAppDispatch } from './appApi';
 import {
-  selectCurrentCohortId,
-  selectCurrentCohortName,
-} from './CohortSelectors';
-import {
   clearCohortFilters,
   removeCohortFilter,
   updateCohortFilter,
   setCohortFilter,
-} from './CohortSlice';
+  selectCurrentCohortId,
+  selectCurrentCohortName,
+} from './SavedCohortManagerSlice';
 
 interface CohortManagerProps {
   index: string;
