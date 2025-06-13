@@ -17,11 +17,7 @@ import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
 import { notifications } from '@mantine/notifications';
 import { IconSize } from '../../../utils/sizes';
-import {
-  selectAllCohorts,
-  removeCohort,
-  selectCohortById,
-} from '../CohortManagerSlice';
+import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
 import {
   Cohort,
