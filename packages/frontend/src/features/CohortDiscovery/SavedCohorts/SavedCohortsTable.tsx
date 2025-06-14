@@ -17,11 +17,7 @@ import { modals } from '@mantine/modals';
 import { Icon } from '@iconify/react';
 import { notifications } from '@mantine/notifications';
 import { IconSize } from '../../../utils/sizes';
-import {
-  selectAllCohorts,
-  removeCohort,
-  selectCohortById,
-} from '../CohortManagerSlice';
+import { selectAllCohorts, removeCohort } from '../CohortManagerSlice';
 import { useAppSelector } from '../appApi';
 import {
   Cohort,
@@ -155,7 +151,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
               `Requestor: ${values.name} (${values.email})` +
               `\n\nCohort: ${cohort.name}` +
               `\n\nResources: ${resources.join(', ')}` +
-              `\n\nRequestor ID: ${user?.data?.username || 'unknown'}` +
+              `\n\nRequestor ID: ${user?.username || 'unknown'}` +
               `\n\nRequest ID: ${request.request_id}` +
               `\n\nRequest URL: ${window.location.href}` +
               `\n\nRequestor Email: ${values.email}` +
