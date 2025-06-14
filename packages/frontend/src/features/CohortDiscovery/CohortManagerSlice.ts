@@ -20,7 +20,10 @@ export const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
   // Select the id as the primary key
   selectId: (cohort: Cohort) => cohort.id,
   // Optional: Sort by name if needed
-  sortComparer: (a, b) => a.name.localeCompare(b.name),
+  sortComparer: (a, b) => {
+    if (a.modifiedDatetime <= b.modifiedDatetime) return 1;
+    else return -1;
+  },
 });
 
 type SavedCohortState = EntityState<Cohort, CohortId>;

@@ -51,7 +51,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
           Cohort Discovery
         </Title>
         <Tabs
-          keepMounted={true}
+          keepMounted={false}
           defaultValue="build"
           orientation="vertical"
           classNames={{
