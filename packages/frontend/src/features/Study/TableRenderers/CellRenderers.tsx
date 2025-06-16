@@ -1,3 +1,4 @@
+import React from 'react';
 import { getTagInfo } from '../utils';
 import { TagData } from '../types';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
