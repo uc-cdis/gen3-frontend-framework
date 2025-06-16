@@ -18,7 +18,8 @@ import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
-import StudyDetails from './StudyDetails/StudyDetails';
+import { useStudyContext } from '../Study/StudyProvider';
+import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
@@ -57,7 +58,8 @@ const DiscoveryTable = ({
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
-  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const { setStudyDetails } = useStudyContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
@@ -190,7 +192,12 @@ const DiscoveryTable = ({
 
   return (
     <React.Fragment>
-      <StudyDetails />
+      <StudyDetails
+        index={config?.minimalFieldMapping?.uid ?? 'unknown'}
+	detailView={config.detailView}
+	simpleDetailsView={config.simpleDetailsView}
+	authz={config.features.authorization}
+      />
       <div className="grow w-auto inline-block overflow-x-scroll">
         <LoadingOverlay visible={dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />

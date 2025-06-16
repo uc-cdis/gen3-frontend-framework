@@ -1,7 +1,6 @@
 import React from 'react';
-import { DataAuthorization, AccessLevel } from '../types';
 import { JSONObject } from '@gen3/core';
-import { accessibleFieldName } from '../types';
+import { accessibleFieldName, AccessLevel, DataAuthorization } from '../../../utils';
 
 interface DetailsAccessProps {
   readonly studyData: JSONObject;
