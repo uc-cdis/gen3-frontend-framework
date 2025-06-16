@@ -16,7 +16,7 @@ const STORE_NAME = 'DataLibraryLists';
 
 export class LocalStorageService implements StorageService {
   private getDb(): Promise<IDBPDatabase> {
-    return openDB(DATABASE_NAME, 1, {
+    return openDB(DATABASE_NAME, 1, { // TODO add more complete upgrade
       upgrade(db) {
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: 'id' });
