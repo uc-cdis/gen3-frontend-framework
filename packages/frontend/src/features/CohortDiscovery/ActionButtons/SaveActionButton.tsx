@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Button, Group, Modal, Stack, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useAppSelector, useAppDispatch, AppState } from '../appApi';
-import { selectCurrentCohortFilters } from '../SavedCohortManagerSlice';
-import { saveCohort } from '../SavedCohortManagerSlice';
+import {
+  selectCurrentCohortFilters,
+  selectCurrentCohort,
+} from '../CohortManagment/CohortManagerSelectors';
+import { saveCohortToStorage } from '../CohortManagment/CohortManagerSlice';
 import { IndexedFilterSet } from '@gen3/core';
 import { ActionButtonProps } from '../types';
 
@@ -11,6 +14,10 @@ const SaveActionButton: React.FC<ActionButtonProps> = ({ index }) => {
   const [opened, { close, open }] = useDisclosure(false);
   const filters: IndexedFilterSet = useAppSelector((state: AppState) =>
     selectCurrentCohortFilters(state),
+  );
+
+  const currentCohort = useAppSelector((state: AppState) =>
+    selectCurrentCohort(state),
   );
 
   const [cohortName, setCohortName] = useState('New Cohort');
@@ -45,7 +52,12 @@ const SaveActionButton: React.FC<ActionButtonProps> = ({ index }) => {
             </Button>
             <Button
               onClick={() => {
-                appDispatch(saveCohort({ name: cohortName, filters: filters }));
+                appDispatch(
+                  saveCohortToStorage({
+                    cohortId: currentCohort.id,
+                    cohortName,
+                  }),
+                );
                 close();
               }}
             >

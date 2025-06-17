@@ -16,7 +16,7 @@ import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { selectCurrentCohortIndexFilters } from './SavedCohortManagerSlice';
+import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useRoundedAggsQuery } from './queryApi';
 

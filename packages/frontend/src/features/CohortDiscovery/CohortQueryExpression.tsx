@@ -11,15 +11,18 @@ import {
   removeCohortFilter,
   updateCohortFilter,
   setCohortFilter,
+} from './CohortManagment/CohortManagerSlice';
+
+import {
   selectCurrentCohortId,
   selectCurrentCohortName,
-} from './SavedCohortManagerSlice';
+} from './CohortManagment/CohortManagerSelectors';
 
 interface CohortManagerProps {
   index: string;
 }
 
-const CohortManager = ({ index }: CohortManagerProps) => {
+const CohortQueryExpression = ({ index }: CohortManagerProps) => {
   const currentCohortId = useAppSelector((state: AppState) =>
     selectCurrentCohortId(state),
   );
@@ -78,4 +81,4 @@ const CohortManager = ({ index }: CohortManagerProps) => {
   );
 };
 
-export default CohortManager;
+export default CohortQueryExpression;

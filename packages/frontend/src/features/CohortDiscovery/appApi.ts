@@ -4,13 +4,15 @@ import { createAppStore } from '@gen3/core';
 import { filtersExpandedReducer } from './FilterExpandSlice';
 import { selectedFacetsReducer } from './SelectedFacetsSlice';
 import { facetDefinitionsReducer } from './FacetDefinitionsSlice';
+import { autoSaveMiddleware } from './CohortManagment/CohortManagerMiddleware';
 
 import storage from './storage-persist';
-import { saveCohortPersistenceReducer } from './SavedCohortManagerSlice';
+//import { saveCohortPersistenceReducer } from './SavedCohortManagerSlice';
 import { dataAccessRequestsReducer } from './RequestManagerSlice';
 
 import type { Action, Reducer } from 'redux';
 import type { PersistConfig, PersistState } from 'redux-persist';
+import { cohortManagerReducer } from './CohortManagment/CohortManagerSlice';
 
 declare module 'redux-persist' {
   export function persistReducer<S, A extends Action = Action, P = S>(
@@ -39,8 +41,8 @@ const reducers = combineReducers({
   selectedIndexFacets: selectedFacetsReducer,
   filtersExpandedState: filtersExpandedReducer,
   facetDefinitionState: facetDefinitionsReducer,
-  // cohorts: cohortReducer,
-  savedCohorts: saveCohortPersistenceReducer,
+  cohorts: cohortManagerReducer,
+  // savedCohorts: saveCohortPersistenceReducer,
   dataAccessRequests: dataAccessRequestsReducer,
 });
 
@@ -49,6 +51,7 @@ const persistedReducers = persistReducer(persistConfig, reducers);
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
     reducers: persistedReducers,
+    middleware: autoSaveMiddleware,
     name: _APP_NAME,
     version: '0.0.1',
   });

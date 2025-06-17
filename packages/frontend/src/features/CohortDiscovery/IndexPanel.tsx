@@ -1,20 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import {
-  Flex,
-  Stack,
-  Center,
-  Box,
-  Title,
-  Text,
-  LoadingOverlay,
-} from '@mantine/core';
+import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
+import { FacetDefinition } from '@gen3/core';
 
-import { selectCurrentCohortIndexFilters } from './SavedCohortManagerSlice';
+import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
   getAllFieldsFromFilterConfigs,
@@ -24,7 +16,7 @@ import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
-import CohortManager from '../CohortDiscovery/CohortManager';
+import CohortManager from './CohortManagment/CohortManager';
 import { AppState, useAppSelector, useAppDispatch } from './appApi';
 import Image from 'next/image';
 import {
@@ -33,6 +25,7 @@ import {
   addFacetSelection,
 } from './SelectedFacetsSlice';
 import { useRoundedAggsQuery } from './queryApi';
+import CohortQueryExpression from './CohortQueryExpression';
 
 const IndexPanel = ({
   dataConfig,
@@ -149,7 +142,7 @@ const IndexPanel = ({
 
   return (
     <Stack>
-      <CohortManager index={index} />
+      <CohortQueryExpression index={index} />
       <Flex wrap="nowrap" className="flex h-full bg-base-light pb-4 ml-4">
         <FacetSelectionPanel
           categories={categories}
@@ -163,6 +156,7 @@ const IndexPanel = ({
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
           <ActionButtonGroup index={index} />
+          <CohortManager index={index} />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}

@@ -5,14 +5,12 @@ import SaveActionButton from './SaveActionButton';
 import { useAppSelector, useAppDispatch } from '../appApi';
 import {
   selectCurrentCohort,
-  selectAllSavedCohorts,
-  setCurrentCohortId,
-} from '../SavedCohortManagerSlice';
-import { setAllIndexFilters } from '../SavedCohortManagerSlice';
-import { useDeepCompareEffect } from 'use-deep-compare';
+  selectAllCohorts,
+} from '../CohortManagment/CohortManagerSelectors';
+import { setCurrentCohortId } from '../CohortManagment/CohortManagerSlice';
 
 const ActionButtonGroup: React.FC<ActionButtonProps> = ({ index }) => {
-  const data: Cohort[] = useAppSelector(selectAllSavedCohorts); // all saved cohorts
+  const data: Cohort[] = useAppSelector(selectAllCohorts); // all saved cohorts
   const currentCohort = useAppSelector(selectCurrentCohort);
   const dispatch = useAppDispatch();
 

@@ -9,9 +9,11 @@ import { selectSelectedFacetsFromIndex } from './SelectedFacetsSlice';
 import {
   removeCohortFilter,
   updateCohortFilter,
-  selectCurrentIndexedFilterByName,
+} from './CohortManagment/CohortManagerSlice';
+import {
+  selectCurrentCohortIndexFilters,
   selectCurrentCohortFilters,
-} from './SavedCohortManagerSlice';
+} from './CohortManagment/CohortManagerSelectors';
 import { FilterSet, Operation } from '@gen3/core';
 import { buildNested } from '../../components/facets';
 
@@ -71,10 +73,9 @@ export const useUpdateFilters = (index: string) => {
 };
 export const useGetFacetFilters = (index: string, field: string): Operation => {
   return useAppSelector(
-    (state: AppState) =>
-      selectCurrentIndexedFilterByName(state, index, field) ?? {
-        operator: 'and',
-        operands: [],
-      },
+    selectCurrentCohortIndexFilters(index, field) ?? {
+      operator: 'and',
+      operands: [],
+    },
   );
 };
