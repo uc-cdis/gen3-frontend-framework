@@ -311,15 +311,15 @@ export class CohortStorage {
       const store = tx.objectStore(STORE_NAME);
       // Verify cohort exists before deleting
       const existing = await db.get(STORE_NAME, id);
-
+      return { status: 200, message: `${id}: ${existing ? 'true' : 'false'}` };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
       return {
-        return cohort !== undefined;
-      }
-
-      return cohort !== undefined;
-    } catch (error) {
-      console.error(`Failed to check if cohort exists ${id}:`, error);
-      return false;
+        isError: true,
+        status: 500,
+        message: `Unable search for cohort. Error: ${errorMessage}`,
+      };
     }
   }
 
@@ -333,17 +333,21 @@ export class CohortStorage {
   /**
    * Import cohorts from JSON data
    */
-  async importCohorts(cohorts: Cohort[], overwrite: boolean = false): Promise<void> {
+  async importCohorts(cohorts: Cohort[], overwrite: boolean = false): Promise<void | CohortStorageReturnStatus> {
     try {
       if (overwrite) {
         await this.deleteAllCohorts();
       }
-
       await this.saveCohorts(cohorts);
       console.log(`Imported ${cohorts.length} cohorts`);
-    } catch (error) {
-      console.error('Failed to import cohorts:', error);
-      throw new Error(`Failed to import cohorts: ${error.message}`);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        isError: true,
+        status: 500,
+        message: `Failed to import cohorts: ${errorMessage}`,
+      };
     }
   }
 
