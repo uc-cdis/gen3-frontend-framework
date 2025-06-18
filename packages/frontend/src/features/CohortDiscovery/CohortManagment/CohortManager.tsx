@@ -16,6 +16,7 @@ import {
   removeCohort,
   updateCohortName,
   updateCohortFilter,
+  clearError,
 } from './CohortManagerSlice';
 import {
   selectAllCohorts,
@@ -76,6 +77,11 @@ export const CohortManager = ({ index }: CohortManagerProps) => {
   };
 
   const handleRenameCohort = (id: string, name: string) => {
+    // Clear any previous errors when user starts typing
+    if (error && error.includes('already exists')) {
+      dispatch(clearError());
+    }
+
     dispatch(updateCohortName({ id, name }));
   };
 

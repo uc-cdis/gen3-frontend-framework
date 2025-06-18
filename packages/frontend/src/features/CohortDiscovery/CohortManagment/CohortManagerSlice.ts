@@ -10,6 +10,45 @@ import { Cohort, CohortId, newCohort } from '../types';
 import { cohortStorage } from './CohortStorage';
 import { EmptyFilterSet } from './types';
 
+const isNameUnique = (
+  state: EntityState<Cohort, CohortId> & CohortManagerState,
+  name: string,
+  excludeId?: string,
+): boolean => {
+  const trimmedName = name.trim();
+  if (!trimmedName) return false;
+
+  return !Object.values(state.entities).some(
+    (cohort) =>
+      cohort &&
+      cohort.id !== excludeId &&
+      cohort.name.trim().toLowerCase() === trimmedName.toLowerCase(),
+  );
+};
+
+const generateUniqueName = (
+  state: EntityState<Cohort, CohortId> & CohortManagerState,
+  baseName: string,
+): string => {
+  const trimmedBaseName = baseName.trim();
+
+  // If base name is unique, use it
+  if (isNameUnique(state, trimmedBaseName)) {
+    return trimmedBaseName;
+  }
+
+  // Find a unique name by appending numbers
+  let counter = 1;
+  let uniqueName: string;
+
+  do {
+    uniqueName = `${trimmedBaseName} (${counter})`;
+    counter++;
+  } while (!isNameUnique(state, uniqueName));
+
+  return uniqueName;
+};
+
 export const createDefaultCohort = () =>
   newCohort(DEFAULT_COHORT_NAME, {}, DEFAULT_COHORT_ID, false);
 
@@ -168,8 +207,11 @@ export const cohortManagerSlice = createSlice({
     },
 
     createNewCohort: (state, action: PayloadAction<CreateCohortParams>) => {
+      const baseName = action.payload.name || `New Cohort`;
+      const uniqueName = generateUniqueName(state, baseName);
+
       const cohort = newCohort(
-        action.payload.name || `New Cohort ${Date.now()}`,
+        uniqueName,
         action.payload.filters || {},
         undefined,
         false,
@@ -209,22 +251,40 @@ export const cohortManagerSlice = createSlice({
       const { id, name } = action.payload;
       const cohort = state.entities[id];
 
-      if (cohort) {
-        const wasSaved = cohort.saved;
+      if (!cohort) return;
 
-        cohortsAdapter.updateOne(state, {
-          id,
-          changes: {
-            name,
-            modified: !wasSaved,
-            modifiedDatetime: new Date().toISOString(),
-          },
-        });
+      const trimmedName = name.trim();
 
-        if (wasSaved) {
-          // Add to auto-save queue if not already present
-          updateAutoSave(id, state);
-        }
+      // Don't update if name is empty
+      if (!trimmedName) return;
+
+      // Don't update if name hasn't changed
+      if (cohort.name === trimmedName) return;
+
+      // Check if name is unique (excluding current cohort)
+      if (!isNameUnique(state, trimmedName, id)) {
+        // Set error for duplicate name
+        state.error = `A cohort named "${trimmedName}" already exists. Please choose a different name.`;
+        return;
+      }
+
+      // Clear any previous errors
+      state.error = null;
+
+      const wasSaved = cohort.saved;
+
+      cohortsAdapter.updateOne(state, {
+        id,
+        changes: {
+          name: trimmedName,
+          modified: !wasSaved,
+          modifiedDatetime: new Date().toISOString(),
+        },
+      });
+
+      if (wasSaved) {
+        // Add to auto-save queue if not already present
+        updateAutoSave(id, state);
       }
     },
 
@@ -469,3 +529,15 @@ export const {
 } = cohortManagerSlice.actions;
 
 export const cohortManagerReducer = cohortManagerSlice.reducer;
+
+export const validateCohortName =
+  (name: string, excludeId?: string) => (dispatch: any, getState: any) => {
+    const state = getState();
+    return isNameUnique(state.cohorts, name, excludeId);
+  };
+
+export const generateUniqueNameForCohort =
+  (baseName: string) => (dispatch: any, getState: any) => {
+    const state = getState();
+    return generateUniqueName(state.cohorts, baseName);
+  };
