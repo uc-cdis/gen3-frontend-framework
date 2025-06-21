@@ -269,7 +269,7 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
   };
 }
 
-const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
+export const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
   const handler: OperationHandler<GQLFilter> = new ToGqlHandler();
   return handleOperation(handler, filter);
 };
