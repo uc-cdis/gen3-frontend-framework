@@ -68,9 +68,19 @@ export const selectCurrentCohortFilters = createSelector(
 export const selectCurrentCohortIndexFilters = createSelector(
   [selectCurrentCohort, (state, index) => index],
   (cohort, index) => {
-    console.log('selectCurrentCohortIndexFilters', cohort, index);
     return cohort.filters?.[index] ?? EmptyFilterSet;
   },
+);
+
+export const selectCohortNameExists = createSelector(
+  [selectAllCohorts, (state, name, excludeId) => ({ name, excludeId })],
+  (cohorts, params) => {
+    const trimmedName = params.name.trim().toLowerCase();
+    return cohorts.some(cohort =>
+      cohort.id !== params.excludeId &&
+      cohort.name.trim().toLowerCase() === trimmedName
+    );
+  }
 );
 
 export const selectCohortManagerLoading = (state: AppState): boolean =>
