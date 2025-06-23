@@ -1,5 +1,10 @@
 import { ServiceAndMethod } from '@gen3/core';
 
+export interface UserAuthMapping {
+  service: string;
+  method: string;
+}
+
 export const resourcePathFromProjectID = (projectID: string) => {
   const split = projectID.split('-');
   const program = split[0];

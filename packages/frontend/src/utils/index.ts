@@ -9,6 +9,8 @@ export * from './strings';
 export * from './isType';
 export * from './values';
 export * from './time';
+export * from './access';
+export * from './dataAuthorization';
 
 export {
   type TenStringArray,
