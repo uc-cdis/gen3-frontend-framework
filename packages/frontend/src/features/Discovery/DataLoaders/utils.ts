@@ -8,7 +8,8 @@ import {
 } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
-import { DiscoveryIndexConfig, AccessLevel } from '../types';
+import { DiscoveryIndexConfig } from '../types';
+import { AccessLevel } from '../../../utils';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 import { METADATA_ITEM_AUTHORIZATION_FIELD } from '../constants';
 

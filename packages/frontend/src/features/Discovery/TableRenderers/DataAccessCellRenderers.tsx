@@ -1,6 +1,6 @@
 import React from 'react';
 import { CellRenderFunctionProps } from './types';
-import { AccessLevel } from '../types';
+import { AccessLevel } from '../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
   LuClock as PendingIcon,

@@ -4,18 +4,17 @@ import { isArray, toString } from 'lodash';
 import { JSONPath } from 'jsonpath-plus';
 import { Alert, Text } from '@mantine/core';
 import {
-  accessibleFieldName,
-  DiscoveryResource,
-  AccessLevel,
+  StudyResource,
   StudyDetailsField,
   StudyTabTagField,
 } from '../types';
+import { accessibleFieldName, AccessLevel } from '../../../utils';
 import { RenderTagsCell } from '../TableRenderers/CellRenderers';
 import {
   StudyFieldRendererFactory,
   FieldRendererFunction,
   FieldRendererFunctionMap,
-  DiscoveryDetailsRenderer,
+  StudyDetailsRenderer,
 } from './RendererFactory';
 import { JSONValue } from '@gen3/core';
 
@@ -380,7 +379,7 @@ const renderDetailTags: FieldRendererFunction = (
   fieldConfig?: Record<string, any>,
 ): ReactElement => {
   //TODO - fix this type
-  const resource = fieldValue as DiscoveryResource;
+  const resource = fieldValue as StudyResource;
 
   if (fieldConfig === undefined) {
     return <React.Fragment />;
@@ -426,7 +425,7 @@ export const createFieldRendererElement = (
       ? field.name
       : undefined;
 
-  const studyFieldRenderer = DiscoveryDetailsRenderer(
+  const studyFieldRenderer = StudyDetailsRenderer(
     field.contentType,
     field?.renderer ?? 'default',
   );
