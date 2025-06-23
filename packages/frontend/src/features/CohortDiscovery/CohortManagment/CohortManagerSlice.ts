@@ -268,9 +268,6 @@ export const cohortManagerSlice = createSlice({
         return;
       }
 
-      // Clear any previous errors
-      state.error = null;
-
       const wasSaved = cohort.saved;
 
       cohortsAdapter.updateOne(state, {
@@ -411,7 +408,6 @@ export const cohortManagerSlice = createSlice({
         updateAutoSave(currentCohort.id, state);
       }
     },
-
     clearError: (state) => {
       state.error = null;
     },
@@ -525,7 +521,6 @@ export const {
   setAllIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
-  clearError,
 } = cohortManagerSlice.actions;
 
 export const cohortManagerReducer = cohortManagerSlice.reducer;

@@ -28,8 +28,6 @@ const ActionButtonGroup: React.FC<ActionButtonProps> = ({ index }) => {
     [dispatch],
   );
 
-  console.log('currentCohortId', currentCohort);
-
   return (
     <Group gap="xs" className="flex pt-4 pl-2">
       <Select

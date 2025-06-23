@@ -155,8 +155,7 @@ const IndexPanel = ({
           }}
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
-          <ActionButtonGroup index={index} />
-          <CohortManager index={index} />
+          <CohortManager />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}
