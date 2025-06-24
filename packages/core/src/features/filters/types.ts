@@ -23,7 +23,7 @@ export interface NotEquals {
 }
 
 export interface Includes {
-  operator: 'in';
+  operator: 'in' | 'includes';
   field: string;
   operands: ReadonlyArray<string | number>;
 }
@@ -102,7 +102,7 @@ export type OperationWithField =
   | ExcludeIfAny
   | Excludes;
 
-export type OperandsType = Intersection | Union;
+type OperandsType = Includes | Excludes | ExcludeIfAny | Intersection | Union;
 
 export interface FilterSet {
   readonly root: Record<string, Operation>;

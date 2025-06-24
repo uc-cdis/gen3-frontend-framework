@@ -91,6 +91,7 @@ export const handleOperation = <T>(
     case 'nested':
       return handler.handleNestedFilter(op);
     case 'in':
+    case 'includes':
       return handler.handleIncludes(op);
     case 'excludeifany':
       return handler.handleExcludeIfAny(op);
