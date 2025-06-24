@@ -15,7 +15,6 @@ import {
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
-import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
 import CohortManager from './CohortManagment/CohortManager';
 import { AppState, useAppSelector, useAppDispatch } from './appApi';
 import Image from 'next/image';
@@ -32,6 +31,8 @@ const IndexPanel = ({
   tabs,
   tabTitle,
   emptySelection,
+  indexResources,
+  remoteSupportService,
 }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
@@ -155,7 +156,10 @@ const IndexPanel = ({
           }}
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
-          <CohortManager />
+          <CohortManager
+            indexResources={indexResources}
+            remoteSupportService={remoteSupportService}
+          />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}

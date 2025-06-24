@@ -34,6 +34,8 @@ export interface CohortDiscoveryGroup {
   tabs: ReadonlyArray<TabConfig>; // filters for the fields
   numColumns?: number; // number of cards to show in a row.
   emptySelection: EmptySelection; // What to show when no filters are selected
+  indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
 }
 
 export interface SupportServiceConfiguration {
@@ -142,3 +144,8 @@ interface ResourceField {
 // mapping index to resource path and data field for a requestor
 // cohort request
 export type IndexResourceField = Record<string, ResourceField>;
+
+export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
+  Object.values(filters).every(
+    (filterSet) => Object.keys(filterSet).length === 0,
+  );

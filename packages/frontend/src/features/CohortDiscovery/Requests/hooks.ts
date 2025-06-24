@@ -19,9 +19,11 @@ export class QueryAllIndexedError extends Error {
 }
 
 // To get the return type of the whole hook
-type LazyQueryHookResult = ReturnType<typeof useLazyGetAggsNoFilterSelfQuery>;
+type LazyQueryGQLAggsHookResult = ReturnType<
+  typeof useLazyGetAggsNoFilterSelfQuery
+>;
 // To get just the type of the trigger function (first element of tuple)
-type TriggerFunctionType = LazyQueryHookResult[0];
+export type QueryGQLAggsrFunctionType = LazyQueryGQLAggsHookResult[0];
 
 /**
  * Queries all resources based on the provided filters and resource fields, executing an aggregation query for each resource type.
@@ -38,7 +40,7 @@ type TriggerFunctionType = LazyQueryHookResult[0];
 export const queryAllResources = async (
   filters: IndexedFilterSet,
   resourceFields: IndexResourceField,
-  triggerAggsQuery: TriggerFunctionType,
+  triggerAggsQuery: QueryGQLAggsrFunctionType,
   excludeList = ['', 'no data'],
 ) => {
   try {

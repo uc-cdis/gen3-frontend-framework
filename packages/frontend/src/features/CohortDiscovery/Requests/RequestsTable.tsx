@@ -52,76 +52,46 @@ const useGetCohortRequests = (resources: string[] = []) => {
         {} as Record<string, DataAccessRequest>,
       );
 
-      // we need 3 list
-      // 1. local requests that have a mathed remote request
-      // 2. local requests that don't have a matched remote request
-      // 3. remote requests that don't have a matched local request
-
-      // 1.
       // Add cohort names to the requests
-      const requestsWithCohorts = submittedRequests.reduce((acc, request) => {
-        console.log(
-          'looking for ',
-          request.request_id,
-          ' in ',
-          Object.keys(localRequestsMap),
-          '',
-        );
-
-        console.log('request_id', request.request_id, localRequestsMap);
-        console.log(
-          'localRequestsMap',
-          request.request_id &&
-            Object.hasOwn(localRequestsMap, request.request_id),
-        );
-        if (
-          request.request_id &&
-          Object.hasOwn(localRequestsMap, request.request_id)
-        ) {
-          const localRequest = localRequestsMap[request.request_id as string];
-          acc.push({
-            ...localRequest,
-            status: (request?.status ?? 'unknown') as DataAccessRequestStatus,
-            updatedDatetime:
-              request.created_time ?? localRequest.updatedDatetime,
-            createdDatetime:
-              request.updated_time ?? localRequest.createdDatetime,
-          });
-          return acc;
-        }
-        return acc;
-      }, [] as Array<DataAccessRequest>);
-
-      // 2. local requests that don't have a matched remote request
-      const localRequestsWithoutRemoteRequests = localRequests.filter(
-        (localRequest) =>
-          !(
-            localRequest.id && Object.hasOwn(submittedRequests, localRequest.id)
-          ),
-      );
-
-      // 3. remote requests that don't have a matched local request
-      const remoteRequestsWithoutLocalRequests = submittedRequests.filter(
-        (request) =>
-          !(
+      const requestsWithCohorts = submittedRequests.reduce(
+        (acc: Array<RequestWithCohort>, request) => {
+          if (
             request.request_id &&
             Object.hasOwn(localRequestsMap, request.request_id)
-          ),
+          ) {
+            const localRequest = localRequestsMap[request.request_id as string];
+            acc.push({
+              ...localRequest,
+              cohortName:
+                cohortIdToNameMap[localRequest.cohortId] ?? 'Not Found',
+              status: (request?.status ?? 'unknown') as DataAccessRequestStatus,
+              updatedDatetime:
+                request.created_time ?? localRequest.updatedDatetime,
+              createdDatetime:
+                request.updated_time ?? localRequest.createdDatetime,
+            });
+          } else {
+            acc.push({
+              ...request,
+              cohortId: 'Not Set',
+              email: request.username ?? 'Not Set',
+              name: 'Not Set',
+              organization: 'Not Set',
+              id: request.request_id ?? 'Not Set',
+              cohortName: 'Not Found',
+              status: (request?.status ?? 'unknown') as DataAccessRequestStatus,
+              updatedDatetime: request.created_time ?? 'Not Set',
+              createdDatetime: request.updated_time ?? ' Not Set',
+            });
+          }
+          return acc;
+        },
+        [] as Array<RequestWithCohort>,
       );
-
-      console.log(
-        'localRequestsWithoutRemoteRequests',
-        localRequestsWithoutRemoteRequests,
-      );
-      console.log(
-        'remoteRequestsWithoutLocalRequests',
-        remoteRequestsWithoutLocalRequests,
-      );
-      console.log('requestsWithCohorts', requestsWithCohorts);
 
       setCohortRequests(requestsWithCohorts);
     } else if (isError) {
-      // If there's an error fetching remote data, just use local requests
+      // If there's an error fetching remote data, use local requests
       const localRequestsWithCohorts = localRequests.map((request) => ({
         ...request,
         cohortName: request.id ? cohortIdToNameMap[request.id] : 'Unknown',
@@ -157,8 +127,6 @@ interface RequestWithCohort extends DataAccessRequest {
 const RequestsTable = () => {
   const { cohortRequests, isLoading, isError } =
     useGetCohortRequests(undefined);
-
-  console.log('cohortR:', cohortRequests, isLoading, isError);
 
   const columns = useMemo<MRT_ColumnDef<RequestWithCohort, string>[]>(
     () => [

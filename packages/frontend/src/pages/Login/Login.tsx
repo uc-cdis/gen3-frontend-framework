@@ -15,6 +15,7 @@ const LoginPage = ({
         title: 'Gen3 Login Page',
         content: 'Login page',
         key: 'gen3-login-page',
+        ...(loginConfig?.headerMetadata ? loginConfig.headerMetadata : {}),
       }}
     >
       <LoginPanel {...loginConfig} />

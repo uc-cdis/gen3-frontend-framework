@@ -20,7 +20,6 @@ const ActionButtonGroup: React.FC<ActionButtonProps> = ({ index }) => {
 
   const onSelectCohort = useCallback(
     (_value: unknown, option: ComboboxItem | null) => {
-      console.log('onSelectCohort', option);
       if (option) {
         dispatch(setCurrentCohortId(option.value));
       }

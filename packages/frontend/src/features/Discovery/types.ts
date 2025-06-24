@@ -10,8 +10,16 @@ import {
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
-import { StudyPageGroup, StudyPageConfig, StudyDetailsField, StudyColumn, StudyDetailView, TagsConfig } from '../Study/types';
+import {
+  StudyPageGroup,
+  StudyPageConfig,
+  StudyDetailsField,
+  StudyColumn,
+  StudyDetailView,
+  TagsConfig,
+} from '../Study/types';
 import { DataAuthorization } from '../../utils';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -201,7 +209,7 @@ export interface DiscoveryIndexConfig {
   minimalFieldMapping: MinimalFieldMapping;
 }
 
-export interface DiscoveryConfig {
+export interface DiscoveryConfig extends Gen3AppConfigData {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 

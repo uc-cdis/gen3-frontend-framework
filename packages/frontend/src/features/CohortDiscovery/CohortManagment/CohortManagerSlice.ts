@@ -50,7 +50,7 @@ const generateUniqueName = (
 };
 
 export const createDefaultCohort = () =>
-  newCohort(DEFAULT_COHORT_NAME, {}, DEFAULT_COHORT_ID, false);
+  newCohort(DEFAULT_COHORT_NAME, {}, undefined, false);
 
 // Entity adapter
 export const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
@@ -69,7 +69,7 @@ export interface CohortManagerState {
   autoSaveInProgress: string[];
 }
 
-const DEFAULT_COHORT_ID = 'default';
+//const DEFAULT_COHORT_ID = 'default';
 const DEFAULT_COHORT_NAME = 'Default';
 
 export const loadCohortsFromStorage = createAsyncThunk(
@@ -178,7 +178,7 @@ interface ClearAllFilterParams {
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CohortManagerState>({
-  currentCohortId: DEFAULT_COHORT_ID,
+  currentCohortId: 'empty',
   loading: false,
   error: null,
   autoSaveInProgress: [],
@@ -236,7 +236,7 @@ export const cohortManagerSlice = createSlice({
 
       if (state.currentCohortId === cohortId) {
         const remainingIds = Object.keys(state.entities);
-        state.currentCohortId = remainingIds[0] || DEFAULT_COHORT_ID;
+        state.currentCohortId = remainingIds[0];
       }
 
       state.autoSaveInProgress = state.autoSaveInProgress.filter(
@@ -423,11 +423,8 @@ export const cohortManagerSlice = createSlice({
         state.loading = false;
 
         if (action.payload.length > 0) {
-          if (
-            state.entities[DEFAULT_COHORT_ID] &&
-            Object.keys(state.entities).length === 1
-          ) {
-            cohortsAdapter.removeOne(state, DEFAULT_COHORT_ID);
+          if (Object.keys(state.entities).length === 1) {
+            cohortsAdapter.removeOne(state, state.entities[0].id);
           }
 
           cohortsAdapter.addMany(state, action.payload);
@@ -488,7 +485,7 @@ export const cohortManagerSlice = createSlice({
           cohortsAdapter.removeOne(state, cohortId);
           if (state.currentCohortId === cohortId) {
             const remainingIds = Object.keys(state.entities);
-            state.currentCohortId = remainingIds[0] || DEFAULT_COHORT_ID;
+            state.currentCohortId = remainingIds[0];
           }
         }
 

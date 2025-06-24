@@ -15,6 +15,7 @@ import {
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -33,7 +34,7 @@ export interface leftRightProps {
     readonly alt: string;
   };
 }
-export interface LandingPageProps {
+export interface LandingPageProps extends Gen3AppConfigData {
   readonly topTitle?: string;
   readonly body?: ReadonlyArray<{
     readonly title?: {
@@ -124,11 +125,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
               if (obj.image) {
                 return (
                   <div key={index} className="h-full relative">
-                    <Image
-                      src={obj.image.src}
-                      alt={obj.image.alt}
-                      fill
-                    />
+                    <Image src={obj.image.src} alt={obj.image.alt} fill />
                   </div>
                 );
               }

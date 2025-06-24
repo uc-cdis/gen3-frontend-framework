@@ -376,7 +376,6 @@ export class CohortStorage {
         await this.deleteAllCohorts();
       }
       await this.saveCohorts(cohorts);
-      console.log(`Imported ${cohorts.length} cohorts`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
@@ -395,7 +394,6 @@ export class CohortStorage {
     try {
       const db = await this.getDb();
       db.close();
-      console.log('CohortDB connection closed');
     } catch (error) {
       console.error('Failed to close database:', error);
     }

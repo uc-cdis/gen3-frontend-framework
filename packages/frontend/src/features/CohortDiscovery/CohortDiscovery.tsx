@@ -47,7 +47,6 @@ const DataRequestModal = ({
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   const indexResources = extractIndexResourceFromConfiguration(config);
   useAppDispatch(loadCohortsFromStorage());
-  console.log('after loadCohortsFromStorage');
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
@@ -94,9 +93,11 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
                 emptySelection={config.emptySelection}
                 resourceField={config.dataIndexes[0].resourceField}
                 numColumns={config.dataIndexes[0].numColumns ?? 2}
+                indexResources={indexResources}
+                remoteSupportService={config.remoteSupportService}
               />
             ) : (
-              <TabbedIndex config={config} />
+              <TabbedIndex config={config} indexResources={indexResources} />
             )}
           </Tabs.Panel>
 

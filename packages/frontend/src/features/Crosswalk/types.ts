@@ -1,3 +1,5 @@
+import { Gen3AppConfigData } from '../../lib/content/types';
+
 export interface CrosswalkName {
   id: string; // id of corsswalk entry
   label: string; // label for the table column
@@ -13,7 +15,7 @@ export interface CrosswalkMapping {
   external: Array<CrosswalkInfo>;
 }
 
-export interface CrosswalkConfig {
+export interface CrosswalkConfig extends Gen3AppConfigData {
   showSubmittedIdInTable?: boolean; // add submitted id column in results table
   mapping: CrosswalkMapping; // mapping configuration for crosswalk
   idEntryPlaceholderText?: string; // Placeholder text for id entry field

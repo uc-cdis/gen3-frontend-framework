@@ -6,38 +6,32 @@ import {
   Select,
   TextInput,
   Tooltip,
-  Loader,
-  LoadingOverlay,
-  ActionIcon,
   useMantineTheme,
   Text,
 } from '@mantine/core';
-import { Operation } from '@gen3/core';
+
 import {
   setCurrentCohortId,
   createNewCohort,
-  saveCohortToStorage,
-  deleteCohortFromStorage,
   removeCohort,
   updateCohortName,
 } from './CohortManagerSlice';
 import {
   selectAllCohorts,
   selectCurrentCohort,
-  selectSavedCohorts,
-  selectUnsavedCohorts,
-  selectModifiedUnsavedCohorts,
   selectCohortManagerLoading,
-  selectCohortManagerError,
-  selectAutoSaveInProgress,
-  selectCohortAutoSaveStatus,
 } from './CohortManagerSelectors';
-import { AppState, useAppDispatch, useAppSelector } from '../appApi';
-import { Cohort } from '../types';
+import { useAppDispatch, useAppSelector } from '../appApi';
+import {
+  Cohort,
+  DataAccessRequestUserInformation,
+  IndexResourceField,
+  isIndexedFilterSetEmpty,
+  SupportServiceConfiguration,
+} from '../types';
 import {
   UploadIcon,
   AddIcon,
-  DeleteIcon,
   DownloadIcon,
   CloseIcon,
 } from '../../../types/icons';
@@ -46,24 +40,38 @@ import { Icon } from '@iconify/react';
 
 import { IconSize } from '../../../utils/sizes';
 import { modals } from '@mantine/modals';
+import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
+import { submitCohortRequestAction } from '../Requests/submitCohortRequestAction';
+import {
+  selectUserDetails,
+  useCoreSelector,
+  useCreateRequestMutation,
+  useLazyGetAggsNoFilterSelfQuery,
+} from '@gen3/core';
 
 interface CohortManagerProps {
+  indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
   size?: string;
 }
 
 const hasExportImport = false;
 
-export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
+export const CohortManager = ({
+  indexResources,
+  remoteSupportService,
+  size = 'md',
+}: CohortManagerProps) => {
   const dispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingLabel, setEditingLabel] = useState('');
-  const allCohorts = useAppSelector(selectAllCohorts);
+  const allCohorts: Array<Cohort> = useAppSelector(selectAllCohorts);
   const currentCohort = useAppSelector(selectCurrentCohort);
-  const savedCohorts = useAppSelector(selectSavedCohorts);
-  const unsavedCohorts = useAppSelector(selectUnsavedCohorts);
-  const modifiedUnsavedCohorts = useAppSelector(selectModifiedUnsavedCohorts);
   const loading = useAppSelector(selectCohortManagerLoading);
-  const autoSaveInProgress = useAppSelector(selectAutoSaveInProgress);
+  const appDispatch = useAppDispatch();
+  const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
+  const [requestQuery] = useCreateRequestMutation();
+  const user = useCoreSelector(selectUserDetails);
 
   const theme = useMantineTheme();
   const iconSize = IconSize[size] || IconSize['sm'];
@@ -71,6 +79,10 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
     setIsEditing(true);
     setEditingLabel(currentCohort.name);
   };
+
+  const hasNoFilters = currentCohort
+    ? isIndexedFilterSetEmpty(currentCohort?.filters)
+    : true;
 
   const cancelEditing = () => {
     setIsEditing(false);
@@ -85,26 +97,8 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
     setEditingLabel('');
   };
 
-  const currentCohortAutoSaving = useAppSelector((state: AppState) =>
-    selectCohortAutoSaveStatus(state, currentCohort.id),
-  );
-
   const handleCreateNew = () => {
     dispatch(createNewCohort({ name: 'New Cohort' }));
-  };
-
-  const handleSaveCohort = () => {
-    const cohortId = currentCohort?.id;
-    if (!cohortId) {
-      dispatch(saveCohortToStorage({ cohortId }));
-    }
-  };
-
-  const handleSaveAsCohort = () => {
-    const cohortId = currentCohort?.id;
-    if (!cohortId) {
-      dispatch(saveCohortToStorage({ cohortId }));
-    }
   };
 
   const selectData = useMemo(() => {
@@ -114,26 +108,6 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
     }));
   }, [allCohorts]);
 
-  const handleDeleteCohort = (cohortId: string) => {
-    const cohort = allCohorts.find((c: Cohort) => c.id === cohortId);
-    if (cohort?.saved) {
-      dispatch(deleteCohortFromStorage(cohortId));
-    } else {
-      dispatch(removeCohort(cohortId));
-    }
-  };
-
-  const handleRenameCohort = (name: string) => {
-    const cohortId = currentCohort?.id;
-    if (cohortId) {
-      dispatch(updateCohortName({ id: cohortId, name }));
-    }
-  };
-
-  const handleSelectCohort = (cohortId: string) => {
-    dispatch(setCurrentCohortId(cohortId));
-  };
-
   const onSelectCohort = useCallback(
     (_value: unknown, option: ComboboxItem | null) => {
       if (option) {
@@ -142,6 +116,25 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
     },
     [dispatch],
   );
+
+  const handleCohortAccessRequest = async (
+    cohortId: string,
+    values: DataAccessRequestUserInformation,
+  ) => {
+    const cohort = allCohorts.find((obj) => obj.id === cohortId);
+
+    if (cohort)
+      await submitCohortRequestAction(
+        cohort,
+        values,
+        user,
+        indexResources,
+        remoteSupportService,
+        appDispatch,
+        getGetAggs,
+        requestQuery,
+      );
+  };
 
   if (loading) {
     return <div>Loading cohorts...</div>;
@@ -233,16 +226,20 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
           variant="action"
           onClick={() => {
             modals.openConfirmModal({
-              title: 'Delete Cohort',
+              title: `Delete Cohort: ${currentCohort?.name}`,
               centered: true,
               children: (
                 <Text size="sm">
                   Are you sure you want to delete your cohort? Deleted cohorts
-                  cannot be restored.
+                  cannot be restored.{' '}
+                  {currentCohort?.requests?.length > 0
+                    ? `This cohort has ${currentCohort?.requests?.length} requests. Deleting this cohort will results in not being able to correlate nay pending requests.
+                    Are you sure you want to delete this cohort?.`
+                    : ''}
                 </Text>
               ),
               labels: { confirm: 'Delete Cohort', cancel: 'Cancel' },
-              confirmProps: { color: theme.colors.utility[2] },
+              confirmProps: { color: theme.colors.accent[4] },
               onConfirm: () => {
                 dispatch(removeCohort(currentCohort.id));
               },
@@ -250,6 +247,37 @@ export const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
           }}
         >
           <Icon icon="gen3:delete" height={iconSize} width={iconSize} />
+        </Button>
+      </Tooltip>
+      <Tooltip
+        label={
+          hasNoFilters
+            ? 'No Filters defined. Cannot submit request.'
+            : 'Submit Data Access Request'
+        }
+        position="bottom"
+        withArrow
+      >
+        <Button
+          size={`compact-${size}`}
+          data-testid="cohortManager-requestCohortAccessButton"
+          aria-label="Request cohort access"
+          variant="action"
+          disabled={hasNoFilters}
+          onClick={() => {
+            const modelId = modals.open({
+              title: 'DATA ACCESS REQUEST',
+              children: (
+                <DataAccessRequestForm
+                  cohortId={currentCohort.id}
+                  submitFunction={handleCohortAccessRequest}
+                  close={() => modals.close(modelId)}
+                />
+              ),
+            });
+          }}
+        >
+          <Icon icon="gen3:request" height={iconSize} width={iconSize} />
         </Button>
       </Tooltip>
       {hasExportImport ? (
