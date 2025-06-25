@@ -15,6 +15,9 @@ const WorkspacePage = ({
         title: 'Gen3 Workspace Page',
         content: 'Workspace page',
         key: 'gen3-workspace-page',
+        ...(workspaceProps?.headerMetadata
+          ? workspaceProps.headerMetadata
+          : {}),
       }}
     >
       <Workspace config={workspaceProps} />

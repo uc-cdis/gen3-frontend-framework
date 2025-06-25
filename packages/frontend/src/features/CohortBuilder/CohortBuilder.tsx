@@ -20,8 +20,6 @@ export const CohortBuilder = ({
   sharedFiltersMap = null,
   tabsLayout = 'left',
 }: CohortBuilderProps) => {
-  useGetCSRFQuery();
-
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 

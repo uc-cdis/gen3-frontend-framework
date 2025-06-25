@@ -87,6 +87,10 @@ export const userAuthApi = createApi({
             return {
               error: error,
             };
+          } else {
+            return {
+              error: 'Unknown Error',
+            };
           }
         }
         return {

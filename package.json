@@ -55,7 +55,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-responsive-carousel": "^3.2.23",
-    "url-join": "^5.0.0"
+    "url-join": "^5.0.0",
+    "idb": "^8.0.3"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",

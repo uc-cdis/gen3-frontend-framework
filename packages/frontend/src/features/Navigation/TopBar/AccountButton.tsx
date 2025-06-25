@@ -40,7 +40,7 @@ export const AccountButton = ({
   const router = useRouter();
 
   const handleSelected = async () => {
-    await router.push('Profile');
+    await router.push('/Profile');
   };
 
   const userInfo = useCoreSelector((state: CoreState) =>

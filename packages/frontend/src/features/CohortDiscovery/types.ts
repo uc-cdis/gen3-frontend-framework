@@ -1,6 +1,10 @@
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { DataTypeConfig, TabConfig } from '../CohortBuilder/types';
-import { IndexedFilterSet } from '@gen3/core';
+import {
+  FilterSet,
+  IndexedFilterSet,
+  type RemoteSupportConfiguration,
+} from '@gen3/core';
 import { nanoid } from '@reduxjs/toolkit';
 
 interface EmptySelection {
@@ -19,19 +23,30 @@ interface LeftNavItem {
 interface LeftNav {
   build: LeftNavItem;
   saved: LeftNavItem;
-  rquest: LeftNavItem;
+  request: LeftNavItem;
 }
 
 export interface CohortDiscoveryGroup {
-  readonly dataConfig: DataTypeConfig; // database config
-  readonly tabTitle: string; // title of the tab
-  readonly tabs: ReadonlyArray<TabConfig>; // filters for the fields
-  readonly numColumns?: number;
-  readonly emptySelection: EmptySelection; // What to show when no filters are selected
+  dataConfig: DataTypeConfig; // database config
+  resourcePath?: string;
+  resourceField: string; //  field used as authz resource to request access
+  tabTitle: string; // title of the tab
+  tabs: ReadonlyArray<TabConfig>; // filters for the fields
+  numColumns?: number; // number of cards to show in a row.
+  emptySelection: EmptySelection; // What to show when no filters are selected
+  indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
+}
+
+export interface SupportServiceConfiguration {
+  service: string;
+  subject?: string;
+  configuration: RemoteSupportConfiguration;
 }
 
 export interface CohortDiscoveryConfig extends Gen3AppConfigData {
   dataIndexes: Array<CohortDiscoveryGroup>;
+  remoteSupportService: SupportServiceConfiguration;
   emptySelection: EmptySelection;
   leftNav: LeftNav;
 }
@@ -45,62 +60,92 @@ export interface Cohort {
   id: string;
   name: string;
   filters: IndexedFilterSet; // maps of index to filter set
-  modified?: boolean; // flag which is set to true if modified and unsaved
-  modified_datetime: string; // last time cohort was modified
-  created_datetime: string;
+  modified: boolean; // flag which is set to true if modified and unsaved
+  modifiedDatetime: string; // last time cohort was modified
+  createdDatetime: string;
   requestedAccess: boolean;
   requestId: string;
+  saved: boolean;
 }
 
-export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
+export const newCohort = (
+  name: string,
+  filters: IndexedFilterSet,
+  id?: string,
+  saved?: boolean,
+): Cohort => {
   const ts = new Date().toISOString();
 
   return {
-    id: createCohortId(),
+    id: id ?? createCohortId(),
     name: name,
     filters: filters,
-    modified_datetime: ts,
-    created_datetime: ts,
+    modifiedDatetime: ts,
+    createdDatetime: ts,
     requestedAccess: false,
     requestId: 'no_request_id',
+    saved: saved ?? false,
+    modified: false,
   };
 };
 
 export interface DataAccessRequestUserInformation {
   name: string;
-  institution: string;
-  department?: string;
-  address: string;
   email: string;
-  phone: string;
+  organization: string;
 }
 
 export enum DataAccessRequestStatus {
   pending = 'pending',
   approved = 'approved',
   rejected = 'rejected',
+  signed = 'signed',
+  submitted = 'submitted',
+  draft = 'draft',
+  unknown = 'unknown',
 }
 
 export interface DataAccessRequest extends DataAccessRequestUserInformation {
   id: string;
-  request_datetime: string;
-  status: DataAccessRequestStatus;
+  createdDatetime: string;
+  updatedDatetime: string;
+  status: string;
   cohortId: CohortId;
 }
 
 export const newDataAccessRequest = (
+  requestId: string,
+  status: string,
   userInformation: DataAccessRequestUserInformation,
   cohortId: CohortId,
+  createdTime?: string | undefined,
+  updatedTime?: string | undefined,
 ) => {
+  const now = new Date().toISOString();
   return {
-    id: createRequestId(),
-    request_datetime: new Date().toISOString(),
-    status: 'pending',
+    id: requestId,
+    createdDatetime: createdTime ?? now,
+    updatedDatetime: updatedTime ?? now,
+    status: status,
     cohortId,
     ...userInformation,
-  } as DataAccessRequest;
+  } satisfies DataAccessRequest;
 };
 
 export interface ActionButtonProps {
   index: string;
 }
+// Interface for extracting resources used to create a
+// requestor request
+interface ResourceField {
+  resourcePath?: string;
+  resourceField: string;
+}
+// mapping index to resource path and data field for a requestor
+// cohort request
+export type IndexResourceField = Record<string, ResourceField>;
+
+export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
+  Object.values(filters).every(
+    (filterSet) => Object.keys(filterSet).length === 0,
+  );

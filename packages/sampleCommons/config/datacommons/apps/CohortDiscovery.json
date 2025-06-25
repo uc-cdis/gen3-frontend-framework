@@ -26,25 +26,24 @@
   "dataIndexes": [
     {
       "dataConfig": {
-        "dataType": "subject",
+        "dataType": "metadata",
         "nodeCountTitle": "Subjects"
       },
       "tabTitle": "Subjects",
       "tabs": [
         {
-          "title": "Study Selection",
+          "title": "Study",
           "fields": [
-            "project_id"
+            "study_id"
           ]
         },
         {
           "title": "Subjects",
           "fields": [
-            "age_at_enrollment",
-            "gender",
-            "race",
-            "ethnicity",
-            "experimental_group"
+            "subject_year_of_birth",
+            "subject_cancer_grade",
+            "subject_cancer_stage",
+            "subject_race"
           ]
         }
       ]
