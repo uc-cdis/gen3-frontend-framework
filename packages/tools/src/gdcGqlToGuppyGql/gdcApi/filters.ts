@@ -38,10 +38,12 @@ export const handleOperation = <T>(
       return handler.handleGreaterThan(op);
     case ">=":
       return handler.handleGreaterThanOrEquals(op);
+      /*
     case "missing":
       return handler.handleMissing(op);
     case "exists":
       return handler.handleExists(op);
+      */
     case "includes":
       return handler.handleIncludes(op);
     case "excludes":
@@ -325,6 +327,9 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
     op: "or",
     content: op.operands.map(convertFilterToGqlFilter),
   });
+  handleNestedFilter = (op: NestedFilter): GqlOperation => {
+    return convertFilterToGqlFilter(op.operand);
+  }
 }
 
 export const convertFilterToGqlFilter = (filter: Operation): GqlOperation => {
@@ -365,6 +370,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     field: op.content.field,
     operand: op.content.value,
   });
+  /*
   handleMissing = (op: GqlMissing): Missing => ({
     operator: "missing",
     field: op.content.field,
@@ -373,6 +379,8 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     operator: "exists",
     field: op.content.field,
   });
+  */
+
   handleIncludes = (op: GqlIncludes): Includes => ({
     operator: "includes",
     field: op.content.field,
