@@ -60,6 +60,10 @@ export const roundHistogramResponse = (
     resultType: 'pointer',
   });
 
+  if (!pointerData) {
+    return {};
+  }
+
   if (pointerData.length === 0) {
     return {};
   }
@@ -71,7 +75,7 @@ export const roundHistogramResponse = (
       path: key,
       resultType: 'value',
     });
-    histogramData[0].forEach((x: any) => {
+    histogramData?.[0]?.forEach((x: any) => {
       x.count = x.count < minValue ? -1 : x.count;
     });
   });

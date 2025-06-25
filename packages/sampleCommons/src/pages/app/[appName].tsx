@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
   const appName = context.query.appName as string;
-  console.log('getServerSideProps appName', appName);
+
   try {
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,
