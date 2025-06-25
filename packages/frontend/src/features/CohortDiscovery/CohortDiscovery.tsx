@@ -10,13 +10,15 @@ import {
 import IndexPanel from './IndexPanel';
 import { AppStore } from './appApi';
 import Image from 'next/image';
-import SavedCohortsPanel from './SaveCohorts/SavedCohortsPanel';
+import SavedCohortsPanel from './SavedCohorts/SavedCohortsPanel';
 import RequestsPanel from './Requests/RequestsPanel';
 import DataAccessRequestForm, {
   DataAccessRequestFormParams,
 } from './Requests/DataAccessRequestForm';
-import { TabbedPanel } from '../CohortBuilder/Panels/TabbedPanel';
 import TabbedIndex from './TabbedIndex';
+import { extractIndexResourceFromConfiguration } from './utils';
+import { useAppDispatch } from './appApi';
+import { loadCohortsFromStorage } from './CohortManagment/CohortManagerSlice';
 
 const persistor = persistStore(AppStore);
 
@@ -43,6 +45,8 @@ const DataRequestModal = ({
 );
 
 const CohortDiscovery = (config: CohortDiscoveryConfig) => {
+  const indexResources = extractIndexResourceFromConfiguration(config);
+  useAppDispatch(loadCohortsFromStorage());
   return (
     <React.Fragment>
       <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
@@ -50,7 +54,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
           Cohort Discovery
         </Title>
         <Tabs
-          keepMounted={true}
+          keepMounted={false}
           defaultValue="build"
           orientation="vertical"
           classNames={{
@@ -87,15 +91,21 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
                 tabTitle={config.dataIndexes[0].tabTitle}
                 tabs={config.dataIndexes[0].tabs}
                 emptySelection={config.emptySelection}
+                resourceField={config.dataIndexes[0].resourceField}
                 numColumns={config.dataIndexes[0].numColumns ?? 2}
+                indexResources={indexResources}
+                remoteSupportService={config.remoteSupportService}
               />
             ) : (
-              <TabbedIndex config={config} />
+              <TabbedIndex config={config} indexResources={indexResources} />
             )}
           </Tabs.Panel>
 
           <Tabs.Panel value="saved">
-            <SavedCohortsPanel />
+            <SavedCohortsPanel
+              indexResources={indexResources}
+              remoteSupportService={config.remoteSupportService}
+            />
           </Tabs.Panel>
 
           <Tabs.Panel value="request">

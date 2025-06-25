@@ -13,7 +13,6 @@ import {
   newDataAccessRequest,
 } from './types';
 import { AppState } from './appApi';
-import { selectAllCohorts } from './CohortManagerSlice';
 
 // Create the entity adapter
 export const dataAccessRequestsAdapter = createEntityAdapter<
@@ -24,8 +23,8 @@ export const dataAccessRequestsAdapter = createEntityAdapter<
   selectId: (request: DataAccessRequest) => request.id,
   // Optional: Sort by request_datetime descending (newest first)
   sortComparer: (a, b) =>
-    new Date(b.request_datetime).getTime() -
-    new Date(a.request_datetime).getTime(),
+    new Date(b.createdDatetime).getTime() -
+    new Date(a.createdDatetime).getTime(),
 });
 
 type DataAccessRequestState = EntityState<DataAccessRequest, string>;
@@ -40,15 +39,25 @@ export const dataAccessRequestsSlice = createSlice({
   name: 'dataAccessRequests',
   initialState: dataAccessRequestsAdapter.getInitialState(),
   reducers: {
-    addDataAccessRequest: (
-      state,
-      action: PayloadAction<DataAccessRequestForCohort>,
-    ) => {
-      const { cohortId, userAccessInformation } = action.payload;
+    addDataAccessRequest: (state, action: PayloadAction<DataAccessRequest>) => {
+      const {
+        cohortId,
+        status,
+        id,
+        name,
+        email,
+        organization,
+        createdDatetime,
+        updatedDatetime,
+      } = action.payload;
 
       const dataAccessRequests = newDataAccessRequest(
-        userAccessInformation,
+        id,
+        status,
+        { name, email, organization },
         cohortId,
+        createdDatetime,
+        updatedDatetime,
       );
       dataAccessRequestsAdapter.addOne(state, dataAccessRequests);
     },

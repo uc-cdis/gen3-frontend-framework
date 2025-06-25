@@ -169,6 +169,7 @@ const FacetControlsHeader = ({
                 if (toggleSettings) toggleSettings();
               }}
               aria-label="Search"
+              className={header.iconStyle}
             >
               <Icon
                 width={12}

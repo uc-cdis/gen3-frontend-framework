@@ -1,8 +1,8 @@
+import { StorageOperationResults } from '../../types';
+
 export * from './types';
 
 import useDataLibrary from './useDataLibrary';
-
-import { type StorageOperationResults } from './storage/types';
 
 import {
   getNumberOfItemsInDatalist,

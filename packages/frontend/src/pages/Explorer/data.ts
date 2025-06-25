@@ -100,6 +100,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         props: {
           ...(await getNavPageLayoutPropsFromConfig()),
           explorerConfig: cohortBuilderConfiguration,
+          headerMetadata: { ...cohortBuilderConfiguration?.headerMetadata },
         },
       };
     }
@@ -114,6 +115,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
+        headerMetadata: cohortBuilderConfiguration.headerMetadata,
         accessControl: {
           ...DefaultAccessControlConfiguration,
           ...(cohortBuilderConfiguration.accessControl ?? {}),
@@ -150,6 +152,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         props: {
           ...(await getNavPageLayoutPropsFromConfig()),
           explorerConfig: cohortBuilderConfiguration,
+          headerMetadata: { ...cohortBuilderConfiguration?.headerMetadata },
         },
       };
     }
@@ -164,6 +167,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
+        headerMetadata: cohortBuilderConfiguration.headerMetadata,
         accessControl: {
           ...DefaultAccessControlConfiguration,
           ...(cohortBuilderConfiguration.accessControl ?? {}),

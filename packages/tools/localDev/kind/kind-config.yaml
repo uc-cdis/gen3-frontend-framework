@@ -6,8 +6,17 @@ networking:
   apiServerAddress: 127.0.0.1
 nodes:
   - role: control-plane
+    extraMounts:
+      - hostPath: ./coredns-custom
+        containerPath: /etc/coredns/custom
     kubeadmConfigPatches:
       - |
+        kind: ClusterConfiguration
+        dns:
+          type: CoreDNS
+          coreDNS:
+            extraArgs:
+              conf: /etc/coredns/custom/Corefile
         kind: InitConfiguration
         nodeRegistration:
           kubeletExtraArgs:
