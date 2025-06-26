@@ -53,7 +53,7 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from './Panels/DropdownPanel';
-import CollapsableChartsPanel from '../Discovery/Charts/CollapsableChartsPanel';
+import CollapsableCharts from '../Discovery/Charts/CollapsableCharts';
 
 const EmptyData = {};
 
@@ -363,7 +363,7 @@ export const CohortPanel = ({
           </div>
 
           {chartsSection?.enabled && (
-            <CollapsableChartsPanel
+            <CollapsableCharts
               config={chartsSection}
               data={chartData ?? EmptyData}
             />

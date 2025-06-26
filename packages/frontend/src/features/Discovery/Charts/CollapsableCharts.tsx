@@ -12,7 +12,7 @@ interface ChartsPanelProps {
   data: AggregationsData;
 }
 
-const CollapsableChartsPanel = ({ config, data }: ChartsPanelProps) => {
+const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
   const [showLegends, setShowLegends] = useState(config.showLegends?.enabled);
 
   if (!(config?.charts && Object.keys(config.charts).length > 0)) {
@@ -74,4 +74,4 @@ const CollapsableChartsPanel = ({ config, data }: ChartsPanelProps) => {
   );
 };
 
-export default CollapsableChartsPanel;
+export default CollapsableCharts;
