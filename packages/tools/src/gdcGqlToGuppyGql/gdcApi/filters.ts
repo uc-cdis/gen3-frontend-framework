@@ -17,6 +17,7 @@ import {
   Excludes,
   ExcludeIfAny,
   Intersection,
+  NestedFilter,
   Union,
   OperationHandler
 } from "@gen3/core"
@@ -46,6 +47,8 @@ export const handleOperation = <T>(
       */
     case "includes":
       return handler.handleIncludes(op);
+    case "in":
+      return handler.handleIncludes(op);
     case "excludes":
       return handler.handleExcludes(op);
     case "excludeifany":
@@ -54,6 +57,8 @@ export const handleOperation = <T>(
       return handler.handleIntersection(op);
     case "or":
       return handler.handleUnion(op);
+    case "nested":
+      return handler.handleNestedFilter(op);
     default:
       return assertNever(op);
   }
@@ -70,8 +75,8 @@ export type GqlOperation =
   | GqlLessThanOrEquals
   | GqlGreaterThan
   | GqlGreaterThanOrEquals
-  | GqlMissing
-  | GqlExists
+  // | GqlMissing
+  // | GqlExists
   | GqlIncludes
   | GqlExcludes
   | GqlExcludeIfAny
@@ -125,22 +130,22 @@ export interface GqlGreaterThanOrEquals {
     readonly value: string | number;
   };
 }
-
-export interface GqlMissing {
-  readonly op: "is";
-  readonly content: {
-    readonly field: string;
-    readonly value: "MISSING";
-  };
-}
-
-export interface GqlExists {
-  readonly op: "not";
-  readonly content: {
-    readonly field: string;
-    readonly value?: string;
-  };
-}
+// Only support if needed
+// export interface GqlMissing {
+//   readonly op: "is";
+//   readonly content: {
+//     readonly field: string;
+//     readonly value: "MISSING";
+//   };
+// }
+//
+// export interface GqlExists {
+//   readonly op: "not";
+//   readonly content: {
+//     readonly field: string;
+//     readonly value?: string;
+//   };
+// }
 
 export interface GqlIncludes {
   readonly op: "in";
@@ -195,8 +200,8 @@ export interface GqlOperationHandler<T> {
   handleLessThanOrEquals: (op: GqlLessThanOrEquals) => T;
   handleGreaterThan: (op: GqlGreaterThan) => T;
   handleGreaterThanOrEquals: (op: GqlGreaterThanOrEquals) => T;
-  handleMissing: (op: GqlMissing) => T;
-  handleExists: (op: GqlExists) => T;
+  // handleMissing: (op: GqlMissing) => T;
+  // handleExists: (op: GqlExists) => T;
   handleIncludes: (op: GqlIncludes) => T;
   handleExcludes: (op: GqlExcludes) => T;
   handleExcludeIfAny: (op: GqlExcludeIfAny) => T;
@@ -221,10 +226,10 @@ export const handleGqlOperation = <T>(
       return handler.handleGreaterThan(op);
     case ">=":
       return handler.handleGreaterThanOrEquals(op);
-    case "is":
-      return handler.handleMissing(op);
-    case "not":
-      return handler.handleExists(op);
+    // case "is":
+    //   return handler.handleMissing(op);
+    // case "not":
+    //   return handler.handleExists(op);
     case "in":
       return handler.handleIncludes(op);
     case "exclude":
@@ -285,19 +290,19 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
       value: op.operand,
     },
   });
-  handleMissing = (op: Missing): GqlMissing => ({
-    op: "is",
-    content: {
-      field: op.field,
-      value: "MISSING",
-    },
-  });
-  handleExists = (op: Exists): GqlExists => ({
-    op: "not",
-    content: {
-      field: op.field,
-    },
-  });
+  // handleMissing = (op: Missing): GqlMissing => ({
+  //   op: "is",
+  //   content: {
+  //     field: op.field,
+  //     value: "MISSING",
+  //   },
+  // });
+  // handleExists = (op: Exists): GqlExists => ({
+  //   op: "not",
+  //   content: {
+  //     field: op.field,
+  //   },
+  // });
   handleIncludes = (op: Includes): GqlIncludes => ({
     op: "in",
     content: {
@@ -370,16 +375,15 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     field: op.content.field,
     operand: op.content.value,
   });
-  /*
-  handleMissing = (op: GqlMissing): Missing => ({
-    operator: "missing",
-    field: op.content.field,
-  });
-  handleExists = (op: GqlExists): Exists => ({
-    operator: "exists",
-    field: op.content.field,
-  });
-  */
+
+  // handleMissing = (op: GqlMissing): Missing => ({
+  //   operator: "missing",
+  //   field: op.content.field,
+  // });
+  // handleExists = (op: GqlExists): Exists => ({
+  //   operator: "exists",
+  //   field: op.content.field,
+  // });
 
   handleIncludes = (op: GqlIncludes): Includes => ({
     operator: "includes",
@@ -394,7 +398,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
   handleExcludeIfAny = (op: GqlExcludeIfAny): ExcludeIfAny => ({
     operator: "excludeifany",
     field: op.content.field,
-    operands: op.content.value,
+    operands: op.content.value instanceof Array ? op.content.value : [op.content.value],
   });
   handleIntersection = (op: GqlIntersection): Intersection => ({
     operator: "and",

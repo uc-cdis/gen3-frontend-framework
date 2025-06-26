@@ -2,8 +2,9 @@ import {
   convertFilterToGqlFilter,
   convertGqlFilterToFilter,
   GqlOperation,
-  Operation,
 } from "./filters";
+
+import { Operation } from "@gen3/core";
 
 type Scenario = {
   readonly name: string;
@@ -107,34 +108,34 @@ const greaterThanOrEquals: Scenario = {
   },
 };
 
-const missing: Scenario = {
-  name: "missing",
-  op: {
-    operator: "missing",
-    field: "asdf",
-  },
-  gqlOp: {
-    op: "is",
-    content: {
-      field: "asdf",
-      value: "MISSING",
-    },
-  },
-};
-
-const exists: Scenario = {
-  name: "exists",
-  op: {
-    operator: "exists",
-    field: "asdf",
-  },
-  gqlOp: {
-    op: "not",
-    content: {
-      field: "asdf",
-    },
-  },
-};
+// const missing: Scenario = {
+//   name: "missing",
+//   op: {
+//     operator: "missing",
+//     field: "asdf",
+//   },
+//   gqlOp: {
+//     op: "is",
+//     content: {
+//       field: "asdf",
+//       value: "MISSING",
+//     },
+//   },
+// };
+//
+// const exists: Scenario = {
+//   name: "exists",
+//   op: {
+//     operator: "exists",
+//     field: "asdf",
+//   },
+//   gqlOp: {
+//     op: "not",
+//     content: {
+//       field: "asdf",
+//     },
+//   },
+// };
 
 const includes: Scenario = {
   name: "includes",
@@ -267,8 +268,8 @@ const scenarios: ReadonlyArray<Scenario> = [
   lessThanOrEquals,
   greaterThan,
   greaterThanOrEquals,
-  missing,
-  exists,
+  // missing,
+  // exists,
   includes,
   excludes,
   excludeifany,
