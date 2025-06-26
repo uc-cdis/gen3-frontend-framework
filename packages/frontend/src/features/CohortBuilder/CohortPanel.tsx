@@ -78,7 +78,7 @@ interface CohortPanelConfigurationWithAccessLevel
  * @param {Object} props                          The properties required to configure the CohortPanel component.
  * @param {Object} props.guppyConfig              Configuration object for Guppy, including field mappings and data type information.
  * @param {Object} props.filters                  Configuration for filter tabs, including filter fields and layout.
- * @deprecated @param {Object} [props.charts={}]  Optional set of chart configuration objects for rendering summaries.
+ * @param {Object} [props.charts={}]              Optional set of chart configuration objects for rendering summaries.
  * @param {Object} [props.chartsSection]          Optional configuration for an additional section of charts.
  * @param {Object} props.table                    Reference to the table configuration or component for displaying data.
  * @param {string} props.tabTitle                 Title for the filter tab section.
