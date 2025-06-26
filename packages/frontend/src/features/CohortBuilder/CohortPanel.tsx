@@ -36,7 +36,7 @@ import {
   FacetDataHooks,
 } from '../../components/facets/types';
 import CohortManager from './CohortManager';
-import { Charts } from '../../components/charts';
+import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
@@ -53,7 +53,6 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from './Panels/DropdownPanel';
-import CollapsableCharts from '../Discovery/Charts/CollapsableCharts';
 
 const EmptyData = {};
 
@@ -154,7 +153,10 @@ export const CohortPanel = ({
     isError: isChartError,
   } = useGetAggsNoFilterSelfQuery({
     type: index,
-    fields: Object.keys(charts),
+    fields: [
+      ...Object.keys(chartsSection?.charts ?? {}),
+      ...Object.keys(charts),
+    ],
     filters: cohortFilters,
     accessibility: accessLevel,
   });
@@ -269,6 +271,8 @@ export const CohortPanel = ({
 
       const chartDefinitions = chartsSection?.charts ?? charts;
 
+      console.log(chartDefinitions);
+
       const summaryCharts = Object.keys(chartDefinitions).reduce(
         (acc, field) => {
           let chartField = field;
@@ -362,21 +366,21 @@ export const CohortPanel = ({
             />
           </div>
 
-          {chartsSection?.enabled && (
+          {/* Charts Section */}
+          {chartsSection?.enabled ? (
             <CollapsableCharts
-              config={chartsSection}
+              config={{ ...chartsSection, charts: summaryCharts }}
               data={chartData ?? EmptyData}
             />
+          ) : (
+            <Charts
+              charts={summaryCharts}
+              data={chartData ?? EmptyData}
+              counts={counts}
+              isSuccess={isChartSuccess}
+              numCols={numCols}
+            />
           )}
-
-          {/* Charts Section */}
-          <Charts
-            charts={summaryCharts}
-            data={chartData ?? EmptyData}
-            counts={counts}
-            isSuccess={isChartSuccess}
-            numCols={numCols}
-          />
 
           {/* Table Section */}
           {table?.enabled && (

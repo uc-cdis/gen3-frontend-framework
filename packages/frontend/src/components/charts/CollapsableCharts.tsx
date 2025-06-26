@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { Accordion, Center, Switch, Divider, Box } from '@mantine/core';
-import {
-  Charts,
-  CollapsableChartsPanelConfiguration,
-} from '../../../components/charts';
+import Charts from './Charts';
+import { CollapsableChartsPanelConfiguration } from './types';
 import { AggregationsData } from '@gen3/core';
-import { ErrorCard } from '../../../components/MessageCards';
+import { ErrorCard } from '../../components/MessageCards';
 
 interface ChartsPanelProps {
   config: CollapsableChartsPanelConfiguration;
   data: AggregationsData;
+  isFetching?: boolean;
+  isSuccess?: boolean;
+  isError?: boolean;
 }
 
 const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
   const [showLegends, setShowLegends] = useState(config.showLegends?.enabled);
 
+  console.log('config', config);
+
   if (!(config?.charts && Object.keys(config.charts).length > 0)) {
     return (
       <Center>
-        <ErrorCard message="Discovery Charts Section not setup properly" />
+        <ErrorCard message="Charts Section not setup properly" />
       </Center>
     );
   }
