@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { ChartsSection } from '../types';
 import { Accordion, Center, Switch, Divider, Box } from '@mantine/core';
-import { Charts } from '../../../components/charts';
+import {
+  Charts,
+  CollapsableChartsPanelConfiguration,
+} from '../../../components/charts';
 import { AggregationsData } from '@gen3/core';
 import { ErrorCard } from '../../../components/MessageCards';
 
 interface ChartsPanelProps {
-  config: ChartsSection;
+  config: CollapsableChartsPanelConfiguration;
   data: AggregationsData;
 }
 
-const ChartsPanel = ({ config, data }: ChartsPanelProps) => {
+const CollapsableChartsPanel = ({ config, data }: ChartsPanelProps) => {
   const [showLegends, setShowLegends] = useState(config.showLegends?.enabled);
 
   if (!(config?.charts && Object.keys(config.charts).length > 0)) {
@@ -72,4 +74,4 @@ const ChartsPanel = ({ config, data }: ChartsPanelProps) => {
   );
 };
 
-export default ChartsPanel;
+export default CollapsableChartsPanel;

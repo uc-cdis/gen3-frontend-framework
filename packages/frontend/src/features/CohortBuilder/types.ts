@@ -1,6 +1,9 @@
 // set of interfaces which follows the current explorer configuration
 
-import { SummaryChart } from '../../components/charts';
+import {
+  CollapsableChartsPanelConfiguration,
+  SummaryChart,
+} from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
 import { FieldToName, FacetSortType } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
@@ -66,6 +69,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
+  chartsSection?: CollapsableChartsPanelConfiguration; // grid of charts within an accordion
   charts?: Record<string, SummaryChart>; // grid of charts
   table?: SummaryTable; // table configuration
   filters?: TabsConfig; // filters for the fields

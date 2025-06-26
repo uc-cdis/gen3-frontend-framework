@@ -53,15 +53,16 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from './Panels/DropdownPanel';
+import CollapsableChartsPanel from '../Discovery/Charts/CollapsableChartsPanel';
 
 const EmptyData = {};
 
 /**
- * The main component that houses the charts, tabs, modals
+ * The main component that houses the charts, tabs, modal
  * filters, tables, buttons of the exploration page.
  *
  * All of these params come directly from the top level exploration page configuration file or
- * explorer config in legacy gitops.json file.
+ * explorer config in a legacy gitops.json file.
  * @example see packages/sampleCommons/config/gen3/explorer.json
  */
 
@@ -70,10 +71,30 @@ interface CohortPanelConfigurationWithAccessLevel
   showAccessLevel?: boolean;
 }
 
+/**
+ * CohortPanel is a React component that provides an interactive interface for cohort exploration and filtering.
+ * It integrates with data services and facilitates visualization, filtering, and analysis tasks.
+ *
+ * @param {Object} props                          The properties required to configure the CohortPanel component.
+ * @param {Object} props.guppyConfig              Configuration object for Guppy, including field mappings and data type information.
+ * @param {Object} props.filters                  Configuration for filter tabs, including filter fields and layout.
+ * @deprecated @param {Object} [props.charts={}]  Optional set of chart configuration objects for rendering summaries.
+ * @param {Object} [props.chartsSection]          Optional configuration for an additional section of charts.
+ * @param {Object} props.table                    Reference to the table configuration or component for displaying data.
+ * @param {string} props.tabTitle                 Title for the filter tab section.
+ * @param {Object[]|undefined} props.dropdowns    Dropdown menu configuration, allowing for additional filter options or actions.
+ * @param {Object[]|undefined} props.buttons      List of button configurations for actions such as downloads.
+ * @param {boolean} props.loginForDownload        Determines whether login is required to enable download functionality.
+ * @param {boolean} [props.showAccessLevel=false] Indicates if the user access level should be displayed on the panel.
+ *
+ * @returns {JSX.Element}                         Returns a JSX element rendering the CohortPanel. This includes filter options,
+ *                                                summary charts, cohort manager, and data display components.
+ */
 export const CohortPanel = ({
   guppyConfig,
   filters,
   charts = {},
+  chartsSection = undefined,
   table,
   tabTitle,
   dropdowns,
@@ -246,21 +267,26 @@ export const CohortPanel = ({
 
       // setup summary charts since nested fields can be listed by the split field name
 
-      const summaryCharts = Object.keys(charts).reduce((acc, field) => {
-        let chartField = field;
-        if (facetDefs?.[field] === undefined) {
-          const res = Object.values(facetDefs).filter((def) => {
-            return def.dataField === field;
-          });
-          if (res.length > 0) {
-            chartField = res[0].field;
+      const chartDefinitions = chartsSection?.charts ?? charts;
+
+      const summaryCharts = Object.keys(chartDefinitions).reduce(
+        (acc, field) => {
+          let chartField = field;
+          if (facetDefs?.[field] === undefined) {
+            const res = Object.values(facetDefs).filter((def) => {
+              return def.dataField === field;
+            });
+            if (res.length > 0) {
+              chartField = res[0].field;
+            }
           }
-        }
-        return {
-          ...acc,
-          [chartField]: charts[field],
-        };
-      }, {});
+          return {
+            ...acc,
+            [chartField]: chartDefinitions[field],
+          };
+        },
+        {},
+      );
 
       setSummaryCharts(summaryCharts);
     }
@@ -271,6 +297,7 @@ export const CohortPanel = ({
     index,
     guppyConfig.fieldMapping,
     charts,
+    chartsSection,
   ]);
 
   const {
@@ -334,6 +361,13 @@ export const CohortPanel = ({
               isSuccess={isCountSuccess}
             />
           </div>
+
+          {chartsSection?.enabled && (
+            <CollapsableChartsPanel
+              config={chartsSection}
+              data={chartData ?? EmptyData}
+            />
+          )}
 
           {/* Charts Section */}
           <Charts

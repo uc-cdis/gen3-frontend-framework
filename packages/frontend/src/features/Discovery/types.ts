@@ -1,21 +1,19 @@
 import {
-  JSONValue,
+  type AggregationsData,
+  DataLibraryStoreMode,
+  type ExportDatasetFields,
   JSONObject,
   type MetadataPaginationParams,
-  type AggregationsData,
-  type ExportDatasetFields,
-  DataLibraryStoreMode,
 } from '@gen3/core';
 
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
-import { SummaryChart } from '../../components/charts/types';
+import { CollapsableChartsPanelConfiguration } from '../../components/charts/types';
 import {
-  StudyPageGroup,
-  StudyPageConfig,
-  StudyDetailsField,
   StudyColumn,
+  StudyDetailsField,
   StudyDetailView,
+  StudyPageConfig,
   TagsConfig,
 } from '../Study/types';
 import { DataAuthorization } from '../../utils';
@@ -170,20 +168,6 @@ interface DataLoader {
   sortingAndPagination?: 'client' | 'server';
 }
 
-interface SummaryChartWithField extends SummaryChart {
-  field: string;
-}
-
-export interface ChartsSection {
-  enabled: boolean;
-  title?: string;
-  showLegends?: {
-    enabled: boolean;
-    showSwitch?: boolean;
-  };
-  charts?: Record<string, SummaryChartWithField>;
-}
-
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
@@ -197,7 +181,7 @@ export interface DiscoveryIndexConfig {
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
-    chartsSection?: ChartsSection;
+    chartsSection?: CollapsableChartsPanelConfiguration;
   };
   aggregations: SummaryStatisticsConfig[];
   tags: TagsConfig;
