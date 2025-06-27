@@ -22,6 +22,8 @@ export const NULL_COHORT_ID = 'null_cohort_id';
 
 type CohortId = string;
 
+type CountsData = Record<string, number>;
+
 /**
  * A Cohort is a collection of filters that can be used to query the GDC API.
  * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
@@ -42,6 +44,7 @@ export interface Cohort {
   modified?: boolean; // flag which is set to true if modified and unsaved
   modified_datetime: string; // last time cohort was modified
   saved?: boolean; // flag indicating if cohort has been saved.
+  counts?: CountsData; // counts for each index "unit" (e.g. case or study) in the cohort
 }
 
 export interface CurrentCohortState {
@@ -94,6 +97,7 @@ const newCohort = ({
     modified: false,
     saved: false,
     modified_datetime: ts.toISOString(),
+    counts: {}
   };
 };
 
