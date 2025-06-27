@@ -21,10 +21,10 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       key={title}
       align="stretch"
       justify="space-between"
-      className="rounded-sm bg-base-max"
+      className="rounded-sm rounded-t-md bg-base-max p-0"
     >
       <div className="h-full">
-        <div className="p-0 rounded-sm">
+        <div className="p-0 rounded-sm h-1/2 h-max-1/2">
           <Image
             component={NextImage}
             src={`${image}`}
