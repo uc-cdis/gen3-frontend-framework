@@ -17,8 +17,13 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   btnText,
 }) => {
   return (
-    <Stack key={title}>
-      <div className="rounded-sm bg-base-max">
+    <Stack
+      key={title}
+      align="stretch"
+      justify="space-between"
+      className="rounded-sm bg-base-max"
+    >
+      <div className="h-full">
         <div className="p-0 rounded-sm">
           <Image
             component={NextImage}
@@ -30,7 +35,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           />
         </div>
         <div className="flex -mt-5 relative z-10">
-          <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base">
+          <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
             <Image
               component={NextImage}
               src={`${icon}`}
@@ -51,27 +56,31 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           <div className="text-xs text-gray-400 h-6">
             {loginRequired ? 'Login Required' : ' '}
           </div>
-          <div className="text-sm p-2 h-fit">
+          <div className="text-sm p-2 h-fit mt-2">
             <TextDescription description={description} />
           </div>
-          <div className="flex mb-4 rounded-b-md">
-            <div className="m-auto">
-              <NavLink
-                component={Link}
-                href={href ?? '_blank'}
-                classNames={{
-                  root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
-                  label: 'text-sm font-semibold',
-                }}
-                label={btnText ? btnText : `Run ${type === 'application' ? 'App' : 'Notebook'}`}
-              />
-              {hasDemo && (
-                <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
-                  Demo
-                </button>
-              )}
-            </div>
-          </div>
+        </div>
+      </div>
+      <div className="flex mb-4 rounded-b-md">
+        <div className="m-auto">
+          <NavLink
+            component={Link}
+            href={href ?? '_blank'}
+            classNames={{
+              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
+              label: 'text-sm font-semibold',
+            }}
+            label={
+              btnText
+                ? btnText
+                : `Run ${type === 'application' ? 'App' : 'Notebook'}`
+            }
+          />
+          {hasDemo && (
+            <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
+              Demo
+            </button>
+          )}
         </div>
       </div>
     </Stack>
