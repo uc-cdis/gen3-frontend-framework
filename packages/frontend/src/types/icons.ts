@@ -8,13 +8,14 @@ import {
   MdFileUpload as UploadIcon,
 } from 'react-icons/md';
 
-import { FaPlus as PlusIcon } from 'react-icons/fa';
+import { FaPlus as PlusIcon, FaCircle as CircleIcon } from 'react-icons/fa';
 
 export {
   AddIcon,
   DeleteIcon,
   PlusIcon,
   LockOutlineIcon,
+  CircleIcon,
   CloseIcon,
   DownloadIcon,
   UploadIcon,
