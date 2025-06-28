@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 export interface AnalysisToolConfiguration {
   title: string;
@@ -15,7 +16,7 @@ export interface AnalysisToolConfiguration {
   btnText?: string;
 }
 
-export interface AnalysisCenterConfiguration {
+export interface AnalysisCenterConfiguration extends Gen3AppConfigData {
   tools: Array<AnalysisToolConfiguration>;
   showFilterAndSort?: boolean;
 }

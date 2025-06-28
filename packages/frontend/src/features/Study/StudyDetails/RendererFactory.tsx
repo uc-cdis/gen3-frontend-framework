@@ -85,7 +85,7 @@ export class StudyFieldRendererFactory {
  * @param type
  * @param functionName
  */
-export const DiscoveryDetailsRenderer = (
+export const StudyDetailsRenderer = (
   type = 'string',
   functionName = 'default',
 ): FieldRendererFunction => {

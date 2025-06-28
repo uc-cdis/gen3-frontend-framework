@@ -7,7 +7,7 @@ import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
 import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
-import { ConfigVersionAndName } from '../../types';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 export type FacetType =
   | 'enum'
@@ -92,7 +92,7 @@ export interface AccessControlConfiguration {
   showAccessLevelControl?: boolean;
 }
 
-export interface CohortBuilderConfiguration extends ConfigVersionAndName {
+export interface CohortBuilderConfiguration extends Gen3AppConfigData {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
   sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfiguration>;

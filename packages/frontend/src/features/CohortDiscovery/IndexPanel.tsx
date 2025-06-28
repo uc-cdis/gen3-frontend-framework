@@ -4,9 +4,9 @@ import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
+import { FacetDefinition } from '@gen3/core';
 
-import { selectIndexFilters } from './CohortSelectors';
+import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
   getAllFieldsFromFilterConfigs,
@@ -15,8 +15,7 @@ import {
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
-import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
-import CohortManager from '../CohortDiscovery/CohortManager';
+import CohortManager from './CohortManagment/CohortManager';
 import { AppState, useAppSelector, useAppDispatch } from './appApi';
 import Image from 'next/image';
 import {
@@ -25,12 +24,15 @@ import {
   addFacetSelection,
 } from './SelectedFacetsSlice';
 import { useRoundedAggsQuery } from './queryApi';
+import CohortQueryExpression from './CohortQueryExpression';
 
 const IndexPanel = ({
   dataConfig,
   tabs,
   tabTitle,
   emptySelection,
+  indexResources,
+  remoteSupportService,
 }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
@@ -70,7 +72,7 @@ const IndexPanel = ({
   }, [selectedFacets, facetDefinitions]);
 
   const cohortFilters = useAppSelector((state: AppState) =>
-    selectIndexFilters(state, index),
+    selectCurrentCohortIndexFilters(state, index),
   );
 
   const queryFields =
@@ -80,6 +82,7 @@ const IndexPanel = ({
   const {
     data,
     isSuccess,
+    isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useRoundedAggsQuery(
     {
@@ -140,8 +143,8 @@ const IndexPanel = ({
 
   return (
     <Stack>
-      <CohortManager index={index} />
-      <Flex className="flex h-full bg-base-light pb-4 ml-4">
+      <CohortQueryExpression index={index} />
+      <Flex wrap="nowrap" className="flex h-full bg-base-light pb-4 ml-4">
         <FacetSelectionPanel
           categories={categories}
           selectedFields={selectedFacets}
@@ -152,8 +155,11 @@ const IndexPanel = ({
             useFilterExpanded: useFilterExpandedState,
           }}
         />
-        <Stack className="w-2/3 mr-2 min-h-[500px]">
-          <ActionButtonGroup index={index} />
+        <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
+          <CohortManager
+            indexResources={indexResources}
+            remoteSupportService={remoteSupportService}
+          />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
               index={index}

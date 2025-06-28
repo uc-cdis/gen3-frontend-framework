@@ -23,7 +23,7 @@ export interface NotEquals {
 }
 
 export interface Includes {
-  operator: 'in';
+  operator: 'in' | 'includes';
   field: string;
   operands: ReadonlyArray<string | number>;
 }
@@ -102,6 +102,8 @@ export type OperationWithField =
   | ExcludeIfAny
   | Excludes;
 
+type OperandsType = Includes | Excludes | ExcludeIfAny | Intersection | Union;
+
 export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: 'and' | 'or';
@@ -141,6 +143,12 @@ export function isIntersection(value: unknown): value is Intersection {
     Array.isArray((value as Intersection).operands)
   );
 }
+
+export const isOperandsType = (
+  operation: Operation,
+): operation is OperandsType => {
+  return (operation as OperandsType)?.operands !== undefined;
+};
 
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;

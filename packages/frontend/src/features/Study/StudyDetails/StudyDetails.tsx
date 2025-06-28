@@ -1,15 +1,26 @@
 import { Button, CopyButton, Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import React, { useEffect } from 'react';
-import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
+import { useStudyContext } from '../StudyProvider';
+import { StudyDetailView, StudyPageConfig } from '../types';
+import { DataAuthorization } from '../../../utils';
 
-const StudyDetails = () => {
-  const { discoveryConfig: config, studyDetails } = useDiscoveryContext();
+const StudyDetails = ({
+  index,
+  detailView,
+  simpleDetailsView,
+  authz
+}: {
+  index: string,
+  detailView: StudyDetailView,
+  simpleDetailsView?: StudyPageConfig,
+  authz: DataAuthorization
+}) => {
+  const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
   let permalink = 'Discovery/notfound';
 
   if (studyDetails) {
@@ -48,12 +59,12 @@ const StudyDetails = () => {
           </CopyButton>
         </Drawer.Header>
         <Drawer.Body>
-          {config.detailView ?
+          {detailView ?
           <StudyDetailsPanel
             data={studyDetails ?? {}}
-            studyConfig={config.detailView}
-          /> : config.simpleDetailsView ?
-          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={config.simpleDetailsView} authorization={config.features.authorization} /> :
+            studyConfig={detailView}
+          /> : simpleDetailsView ?
+          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={simpleDetailsView} authorization={authz} /> :
           <div>Study Details Panel not configured</div>}
         </Drawer.Body>
       </Drawer.Content>

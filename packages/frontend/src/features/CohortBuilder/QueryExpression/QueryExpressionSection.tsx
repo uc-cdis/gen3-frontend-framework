@@ -125,7 +125,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   showImportExport = false,
   displayOnly = false,
-  showTitle = false,
+  showTitle = true,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);

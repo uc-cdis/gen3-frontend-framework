@@ -120,3 +120,9 @@ For example,
 The container can be viewed at `localhost:3000{BASE_PATH | /}`
 
 Note that the base path is configurable with the `BASE_PATH` environment variable. It is left empty by default when running locally
+
+### Using self-signed certs
+
+```
+NODE_EXTRA_CA_CERTS=$HOME/Library/Application Support/mkcert/rootCA.pem
+```

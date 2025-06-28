@@ -12,8 +12,8 @@ import {
   convertDatasetOrCohortToLibraryListItemsAPI,
   flattenDataList,
 } from './utils';
-import { StorageOperationResults } from './storage/types';
 import { DataLibraryStorageService } from './storage/DataLibraryStorageService';
+import { StorageOperationResults } from '../../types';
 
 const EMPTY_LIST: Datalist = {
   items: {},

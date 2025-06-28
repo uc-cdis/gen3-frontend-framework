@@ -10,11 +10,16 @@ import {
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import { SummaryChart } from '../../components/charts/types';
-
-export interface TagData {
-  name: string;
-  category: string;
-}
+import {
+  StudyPageGroup,
+  StudyPageConfig,
+  StudyDetailsField,
+  StudyColumn,
+  StudyDetailView,
+  TagsConfig,
+} from '../Study/types';
+import { DataAuthorization } from '../../utils';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -70,19 +75,6 @@ export interface AdvancedSearchFilters {
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
-export interface TagInfo {
-  name: string;
-  category: string;
-}
-
-export const isTagInfo = (obj: any): obj is TagInfo => {
-  return obj && obj.name && obj.category;
-};
-
-export const isTagInfoArray = (obj: any): obj is TagInfo[] => {
-  return obj && Array.isArray(obj) && obj.every(isTagInfo);
-};
-
 export interface SearchKV {
   key: string;
   value: any;
@@ -96,12 +88,6 @@ export const isSearchKVArray = (obj: any): obj is SearchKV[] => {
   return obj && Array.isArray(obj) && obj.every(isSearchKV);
 };
 
-export interface TagCategory extends TagInfo {
-  displayName: string;
-  color: string;
-  display: boolean;
-}
-
 export type DiscoveryContentTypes =
   | string
   | 'string'
@@ -112,85 +98,11 @@ export type DiscoveryContentTypes =
   | 'boolean'
   | 'paragraphs';
 
-export interface StudyColumn {
-  name: string;
-  field: string;
-  contentType?: DiscoveryContentTypes;
-  cellRenderFunction?: string;
-  params?: JSONObject;
-  errorIfNotAvailable?: boolean;
-  valueIfNotAvailable?: string | number;
-}
-
 export interface MinimalFieldMapping {
   authzField: string;
   tagsListFieldName: string;
   dataAvailabilityField: string;
   uid: string;
-}
-
-export interface StudyDetailsField {
-  name: string;
-  field: string;
-  contentType?: string;
-  includeLabel?: boolean;
-  includeIfNotAvailable?: boolean;
-  valueIfNotAvailable?: string | number;
-  renderer?: string;
-  params?: Record<string, unknown>;
-  classNames?: Record<string, string>;
-}
-
-export interface StudyPageGroup {
-  groupName?: string;
-  groupWidth?: 'half' | 'full';
-  fields: StudyDetailsField[];
-}
-
-export interface DataDownloadLinks {
-  field: string;
-  name?: string;
-  className?: Record<string, string>;
-}
-
-export interface DownloadLinkFields {
-  idField: string;
-  titleField: string;
-  descriptionField: string;
-}
-
-export interface StudyPageConfig {
-  showAllAvailableFields?: boolean;
-  header?: {
-    field: string;
-    className?: string;
-  };
-  downloadLinks?: DataDownloadLinks;
-  downloadLinkFields?: DownloadLinkFields;
-  classNames?: Record<string, string>;
-  fieldsToShow: Array<StudyPageGroup>; // render multiple groups of fields
-}
-
-export interface StudyTabTagField extends StudyDetailsField {
-  categories?: string[];
-}
-
-export interface StudyTabGroup {
-  header: string;
-  fields: Array<StudyDetailsField | StudyTabTagField>;
-}
-
-export interface StudyDetailTab {
-  tabName: string;
-  groups: StudyTabGroup[];
-}
-
-export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
-  tabs: StudyDetailTab[];
 }
 
 interface DiscoveryTableConfig {
@@ -236,24 +148,12 @@ export interface SearchConfig {
   tagSearchDropdown?: TagSearchDropdown;
 }
 
-export interface AuthorizationValues {
-  enabled: boolean;
-  menuText: string;
-}
-
 export interface ExportFromDiscoveryActions {
   buttons: ExportFromDiscoveryActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   dataLibraryStoreMode?: DataLibraryStoreMode;
   exportDataFields: ExportDatasetFields;
-}
-
-export interface DataAuthorization {
-  columnTooltip?: string;
-  supportedValues?: Record<string, AuthorizationValues>;
-  isMesh?: boolean;
-  enabled?: boolean;
 }
 
 export interface AccessFilters {
@@ -268,11 +168,6 @@ interface DataLoader {
   dataFetchFunction?: string;
   dataFetchArgs?: JSONObject;
   sortingAndPagination?: 'client' | 'server';
-}
-
-export interface TagsConfig {
-  tagCategories: TagCategory[];
-  showUnknownTags?: boolean;
 }
 
 interface SummaryChartWithField extends SummaryChart {
@@ -314,24 +209,8 @@ export interface DiscoveryIndexConfig {
   minimalFieldMapping: MinimalFieldMapping;
 }
 
-export interface DiscoveryConfig {
+export interface DiscoveryConfig extends Gen3AppConfigData {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
-export const accessibleFieldName = '__accessible';
 const ARBORIST_READ_PRIV = 'read';
-
-export enum AccessLevel {
-  ACCESSIBLE = 1,
-  UNACCESSIBLE = 2,
-  WAITING = 3,
-  NOT_AVAILABLE = 4,
-  OTHER = 5,
-  MIXED = 6,
-}
-
-export interface DiscoveryResource
-  extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
-  [accessibleFieldName]?: AccessLevel;
-  tags?: Array<TagInfo>;
-}

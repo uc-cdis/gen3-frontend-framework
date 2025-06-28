@@ -1,15 +1,20 @@
 import { Tabs } from '@mantine/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 import React from 'react';
-import { CohortDiscoveryConfig } from './types';
+import { CohortDiscoveryConfig, IndexResourceField } from './types';
 import IndexPanel from './IndexPanel';
 
 interface TabbedIndexProps {
   config: CohortDiscoveryConfig;
+  indexResources: IndexResourceField;
   tabsLayout?: 'left' | 'center' | 'right';
 }
 
-const TabbedIndex = ({ config, tabsLayout = 'left' }: TabbedIndexProps) => {
+const TabbedIndex = ({
+  config,
+  indexResources,
+  tabsLayout = 'left',
+}: TabbedIndexProps) => {
   return (
     <div className="w-full">
       <Tabs
@@ -41,9 +46,12 @@ const TabbedIndex = ({ config, tabsLayout = 'left' }: TabbedIndexProps) => {
             <IndexPanel
               dataConfig={panelConfig.dataConfig}
               tabTitle={panelConfig.tabTitle}
+              resourceField={panelConfig.resourceField}
               tabs={panelConfig.tabs}
               emptySelection={config.emptySelection}
               numColumns={panelConfig.numColumns ?? 2}
+              indexResources={indexResources}
+              remoteSupportService={config.remoteSupportService}
             />
           </Tabs.Panel>
         ))}

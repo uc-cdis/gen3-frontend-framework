@@ -91,6 +91,7 @@ export const handleOperation = <T>(
     case 'nested':
       return handler.handleNestedFilter(op);
     case 'in':
+    case 'includes':
       return handler.handleIncludes(op);
     case 'excludeifany':
       return handler.handleExcludeIfAny(op);
@@ -269,7 +270,7 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
   };
 }
 
-const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
+export const convertFilterToGqlFilter = (filter: Operation): GQLFilter => {
   const handler: OperationHandler<GQLFilter> = new ToGqlHandler();
   return handleOperation(handler, filter);
 };

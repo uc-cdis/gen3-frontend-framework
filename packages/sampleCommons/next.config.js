@@ -23,6 +23,7 @@ const withMDX = require('@next/mdx')({
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  allowedDevOrigins: ['local.io', '*.local.io'],
   eslint: {
     ignoreDuringBuilds: true,
   },

@@ -51,7 +51,7 @@ const processChartData = (
   return results;
 };
 
-const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
+const HorizontalBarChart = ({ data, valueType, total, showLegendInChart = true }: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
 
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
@@ -68,10 +68,11 @@ const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
         left: '73%',
         type: 'scroll',
         right: 15,
+        show: showLegendInChart,
       },
       grid: {
         left: '0%',
-        right: '30%',
+        right: showLegendInChart ? '30%' : '3%',
         bottom: '25%',
         containLabel: true,
         height: '50%',

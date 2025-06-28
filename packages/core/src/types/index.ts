@@ -201,3 +201,9 @@ export interface ManifestItem {
   file_size?: number;
   file_name?: string;
 }
+
+export interface StorageOperationResults {
+  isError?: boolean;
+  status: number;
+  message: string;
+}

@@ -1,4 +1,5 @@
-import { DiscoveryIndexConfig, isTagInfoArray, TagInfo } from '../../types';
+import { DiscoveryIndexConfig } from '../../types';
+import { isTagInfoArray, TagInfo } from '../../../Study/types';
 import { JSONObject } from '@gen3/core';
 const filterByTags = (
   studies: JSONObject[],

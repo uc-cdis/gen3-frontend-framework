@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.10.93",
+  "version": "0.10.97",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -19,7 +19,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "next": "^15.2.4"
+    "next": "^15.3.3"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.5",

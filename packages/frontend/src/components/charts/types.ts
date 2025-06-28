@@ -8,6 +8,7 @@ export interface SummaryChart extends Partial<TitleAndDescription> {
   label?: {
     show?: boolean;
   };
+  showLegendInChart?: boolean;
 }
 
 export interface ChartProps {
@@ -17,4 +18,5 @@ export interface ChartProps {
   label?: {
     show?: boolean;
   };
+  showLegendInChart?: boolean;
 }

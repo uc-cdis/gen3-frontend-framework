@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Textarea,
   TextInput,
   Button,
   Group,
@@ -33,22 +32,13 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
   const form = useForm<DataAccessRequestUserInformation>({
     initialValues: {
       name: '',
-      institution: '',
-      department: '',
-      address: '',
+      organization: '',
       email: '',
-      phone: '',
     },
 
     validate: {
       name: isNotEmpty('Name is required'),
-      institution: isNotEmpty('Institution is required'),
-      address: isNotEmpty('Address is required'),
       email: isEmail('Please provide a valid email'),
-      phone: matches(
-        /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
-        'Please provide a valid phone number',
-      ),
     },
   });
 
@@ -91,26 +81,10 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
           />
 
           <TextInput
-            label="Institution"
+            label="Organization"
             placeholder="University, Organization, or Company"
             withAsterisk
-            {...form.getInputProps('institution')}
-          />
-
-          <TextInput
-            label="Department"
-            placeholder="Research Department"
-            {...form.getInputProps('department')}
-          />
-
-          <Textarea
-            label="Address"
-            placeholder="Full institutional address"
-            withAsterisk
-            autosize
-            minRows={2}
-            maxRows={4}
-            {...form.getInputProps('address')}
+            {...form.getInputProps('organization')}
           />
 
           <TextInput
@@ -118,13 +92,6 @@ export const DataAccessRequestForm: React.FC<DataAccessRequestFormParams> = ({
             placeholder="your.email@institution.edu"
             withAsterisk
             {...form.getInputProps('email')}
-          />
-
-          <TextInput
-            label="Phone"
-            placeholder="+1 (123) 456-7890"
-            withAsterisk
-            {...form.getInputProps('phone')}
           />
 
           <Group justify="flex-end">
