@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Grid } from '@mantine/core';
 import {
   extractEnumFilterValue,
@@ -18,6 +18,7 @@ import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
+import { useFieldNameToTitle } from '../../components/facets/hooks';
 import { useRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
@@ -45,6 +46,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   const {
     data,
     isSuccess,
+    isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
   } = useRoundedAggsQuery({
     type: index,
@@ -61,6 +63,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
             ? extractEnumFilterValue(cohortFilters.root[field])
             : undefined,
         isSuccess: isSuccess,
+        isFetching: isAggsQueryFetching,
+        isError: isAggsQueryError,
       };
     },
     [cohortFilters, cohortFilters.root, data],
@@ -86,6 +90,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
+          useFieldNameToTitle: useFieldNameToTitle,
         }, // TODO: range facets
         // range: {
         //   useGetFacetData: getRangeFacetData,
