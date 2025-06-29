@@ -1,10 +1,12 @@
 import { FacetDefinition } from '@gen3/core';
 import React from 'react';
 import { createFacetCard, CreateFacetCardProps } from './createFacetCard';
+import { FacetDataHooks, FacetType } from './types';
 
 interface CreateFacetCardsProps
-  extends Omit<CreateFacetCardProps, 'facetDefinition'> {
+  extends Omit<CreateFacetCardProps, 'facetDefinition' | 'hooks'> {
   facets: FacetDefinition[];
+  hooks: Record<FacetType, FacetDataHooks>;
 }
 
 export const createFacetCards = ({
@@ -24,7 +26,7 @@ export const createFacetCards = ({
         return createFacetCard({
           facetDefinition,
           valueLabel,
-          hooks,
+          hooks: hooks[facetDefinition.type],
           facetNameFormatter,
           idPrefix,
           dismissCallback,

@@ -21,7 +21,7 @@ import {
   CustomFacetHooks,
   EnumChartProps,
   FacetDataHooks,
-  FacetRequiredHooks,
+  FacetType,
   QueryOptions,
 } from './types';
 
@@ -69,15 +69,13 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
-  readonly hooks: FacetDataHooks;
+  readonly hooks?: FacetDataHooks;
   readonly queryOptions?: QueryOptions;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facets,
   children,
-  hooks,
-  queryOptions,
 }: FacetGroupProps) => {
   // TODO: implement this
   // const { usePopulateFacetData = () => {} } = hooks;
@@ -97,13 +95,17 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 };
 
 interface CustomFacetGroupProps {
-  readonly hooks: FacetDataHooks;
   readonly customFacetHooks: CustomFacetHooks;
   readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
   readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
+  readonly useFieldNameToTitle: () => (
+    field: string,
+    sections?: number,
+  ) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<any>;
+  hooks: Record<FacetType, FacetDataHooks>;
 }
 
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
@@ -114,13 +116,14 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   cardScrollMargin,
   Chart,
   usedFacets,
+  useFieldNameToTitle,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
     customFacetHooks.useCustomFacets();
   const addCustomFilter = customFacetHooks.useAddCustomFilter();
   const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const fieldNameToTitle = useFieldNameToTitle();
   // const { usePopulateFacetData = () => {} } = hooks;
 
   const handleFilterSelected = (filter: string) => {
@@ -177,7 +180,6 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
           <FacetGroup
             facets={customFacetDefinitions}
             queryOptions={queryOptions}
-            hooks={hooks}
           >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
@@ -214,7 +216,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 type FacetTabProps = {
   readonly activeTab: string | null | undefined;
   readonly setActiveTab: (tab: string | null) => void;
-  readonly hooks: FacetDataHooks & FacetRequiredHooks;
+  hooks: Record<FacetType, FacetDataHooks>;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly usedFacets: string[];
@@ -222,6 +224,10 @@ type FacetTabProps = {
   readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
+  readonly useFieldNameToTitle: () => (
+    field: string,
+    sections?: number,
+  ) => string;
 };
 
 /**
@@ -247,9 +253,10 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   customFacetHooks,
   getFacetLabel,
   cardScrollMargin,
+  useFieldNameToTitle,
   Chart,
 }) => {
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const fieldNameToTitle = useFieldNameToTitle();
   const theme = useMantineTheme();
 
   const searchParams = new URLSearchParams(window.location.search);
@@ -291,11 +298,11 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
               usedFacets={usedFacets}
+              useFieldNameToTitle={useFieldNameToTitle}
             />
           ) : (
             <FacetGroup
               facets={firstFacetList}
-              hooks={hooks}
               queryOptions={firstEntry.queryOptions}
             >
               {createFacetCards({
@@ -365,11 +372,11 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         cardScrollMargin={cardScrollMargin}
                         Chart={Chart}
                         usedFacets={usedFacets}
+                        useFieldNameToTitle={useFieldNameToTitle}
                       />
                     ) : (
                       <FacetGroup
                         facets={facetList}
-                        hooks={hooks}
                         queryOptions={tabEntry.queryOptions}
                       >
                         {createFacetCards({

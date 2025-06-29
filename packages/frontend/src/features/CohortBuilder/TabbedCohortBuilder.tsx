@@ -16,7 +16,6 @@ import {
 } from '@gen3/core';
 import FacetTabs from '../../components/facets/FacetTabs';
 import {
-  EnumFacetDataHooks,
   extractRangeValues,
   FacetDataHooks,
   processBucketData,
@@ -81,14 +80,11 @@ export const calculateStickyHeaderHeight = (): number => {
 };
 
 export interface TabbedCohortBuilderProps {
-  tabsConfig: TabbedCohortBuilderFacetConfig;
   index: string;
 }
 
-const TabbedCohortBuilder = ({
-  tabsConfig,
-  index,
-}: TabbedCohortBuilderProps) => {
+const TabbedCohortBuilder = ({ index }: TabbedCohortBuilderProps) => {
+  const tabsConfig = CohortBuilderDefaultConfig.config;
   const cohortBuilderFilters = [
     ...Object.values(CohortBuilderDefaultConfig.config).reduce(
       (filters: string[], category) => {
@@ -186,10 +182,19 @@ const TabbedCohortBuilder = ({
     [data, cohortFilters.root, isSuccess],
   );
 
+  const RangeHookInstances = {
+    useGetFacetData: getRangeFacetData,
+    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useFieldNameToTitle: useFieldNameToTitle,
+    useTotalCounts: undefined,
+  };
+
   // Set up the hooks for the facet components to use based on the required index
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const facetDataHooks: Record<FacetType, FacetDataHooks | EnumFacetDataHooks> =
+  const facetDataHooks: Record<FacetType, FacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
@@ -202,7 +207,7 @@ const TabbedCohortBuilder = ({
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useGetCombineMode: partial(useCohortFilterCombineState, index),
           useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useSetFilterExpanded: useFieldNameToTitle,
+          useFieldNameToTitle: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
         exact: {
@@ -212,7 +217,7 @@ const TabbedCohortBuilder = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useSetFilterExpanded: useFieldNameToTitle,
+          useFieldNameToTitle: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -222,19 +227,17 @@ const TabbedCohortBuilder = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useSetFilterExpanded: useFieldNameToTitle,
+          useFieldNameToTitle: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
-        range: {
-          useGetFacetData: getRangeFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useSetFilterExpanded: useFieldNameToTitle,
-          useTotalCounts: undefined,
-        },
+        range: RangeHookInstances,
+        age: RangeHookInstances,
+        year: RangeHookInstances,
+        years: RangeHookInstances,
+        days: RangeHookInstances,
+        percent: RangeHookInstances,
+        datetime: RangeHookInstances,
+        toggle: RangeHookInstances,
       };
     }, [getEnumFacetData, getRangeFacetData, index]);
 
@@ -245,20 +248,7 @@ const TabbedCohortBuilder = ({
       facetDefinitions={facetDefinitions}
       tabsConfig={tabsConfig}
       usedFacets={cohortBuilderFilters}
-      hooks={{
-        useGetFacetData: getEnumFacetData,
-        useGetRangeFacetData: getRangeFacetData,
-        useUpdateFacetFilters: partial(useUpdateFilters, index),
-        useFieldNameToTitle: useFieldNameToTitle,
-        useGetFacetFilters: partial(useGetFacetFilters, index),
-        useClearFilter: partial(useClearFilters, index),
-        useFilterExpanded: partial(useFilterExpandedState, index),
-        useToggleExpandFilter: partial(useToggleExpandFilter, index),
-        useGetCombineMode: partial(useCohortFilterCombineState, index),
-        useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-        useSetFilterExpanded: useFieldNameToTitle,
-        useTotalCounts: undefined,
-      }}
+      hooks={facetDataHooks}
       customFacetHooks={{
         useCustomFacets,
         useAvailableCustomFacets: (
@@ -271,6 +261,7 @@ const TabbedCohortBuilder = ({
       }}
       getFacetLabel={() => 'cases'}
       cardScrollMargin={calculateStickyHeaderHeight()}
+      useFieldNameToTitle={useFieldNameToTitle}
     />
   );
 };

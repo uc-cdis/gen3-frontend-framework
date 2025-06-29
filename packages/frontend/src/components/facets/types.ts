@@ -59,7 +59,8 @@ export type FacetType =
   | 'days'
   | 'percent'
   | 'datetime'
-  | 'toggle';
+  | 'toggle'
+  | 'multiselect';
 
 // required functions
 export type ClearFacetFunction = (field: string) => void;
@@ -89,6 +90,11 @@ export type GetRangeFacetWithDefinedRangesDataFunction = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
 ) => RangeFacetResponse;
+
+export type FieldNameToTitleFunction = (
+  field: string,
+  sections?: number,
+) => string;
 
 export type GetFacetCombineModeFunction = (field: string) => CombineMode;
 export type SetFacetCombineModeFunction = (
