@@ -21,6 +21,7 @@ import {
   CustomFacetHooks,
   EnumChartProps,
   FacetDataHooks,
+  FacetRequiredHooks,
   QueryOptions,
 } from './types';
 
@@ -211,9 +212,9 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 };
 
 type FacetTabProps = {
-  readonly activeTab: string;
+  readonly activeTab: string | null | undefined;
   readonly setActiveTab: (tab: string | null) => void;
-  readonly hooks: FacetDataHooks;
+  readonly hooks: FacetDataHooks & FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly usedFacets: string[];
@@ -227,7 +228,7 @@ type FacetTabProps = {
  * Component for rendering a tabbed facet selection view
  * @param activeTab - which tab is currently active
  * @param setActiveTab - function to set the active tab
- * @param hooks - Hooks for retrieving data, modifying cohort, etc for the various facet types
+ * @param hooks - Hooks for retrieving data, modifying cohort, etc. for the various facet types
  * @param facetDefinitions - Description of facets and their properties
  * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
  * @param customFacetHooks - Hooks for custom facet selection
