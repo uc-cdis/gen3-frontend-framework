@@ -1,11 +1,13 @@
 import {
+  CombineMode,
+  DataFetchingResult,
   EnumFilterValue,
   FacetDefinition,
-  Operation,
-  CombineMode,
   IndexAndField,
+  Operation,
 } from '@gen3/core';
-import React, { ReactNode, ComponentType } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
+import { NumericFromTo } from './NumericRangeFacet/types';
 
 export type QueryOptions = Record<string, unknown>;
 
@@ -83,6 +85,10 @@ export type GetFacetDataFunction = (
 ) => EnumFacetResponse | RangeFacetResponse;
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
+export type GetRangeFacetWithDefinedRangesDataFunction = (
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+) => RangeFacetResponse;
 
 export type GetFacetCombineModeFunction = (field: string) => CombineMode;
 export type SetFacetCombineModeFunction = (
@@ -98,8 +104,16 @@ export type EnumFacetDataChangedFunction = (
 
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook;
+  /**
+   * Hook that takes the API field and returns a human readable field name
+   */
+  useFieldNameToTitle: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
+  usePopulateFacetData?: (
+    facets: FacetDefinition[],
+    queryOptions?: QueryOptions,
+  ) => void;
 }
 
 export interface FacetDataHooks extends FacetCommonHooks {
@@ -114,7 +128,12 @@ export interface EnumFacetDataHooks extends FacetDataHooks {
   useUpdateCombineMode: SetFacetCombineModeFunction;
 }
 
-export type RangeFacetHooks = FacetCommonHooks & {
+export interface RangeFacetHooks extends FacetCommonHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetData: GetRangeFacetDataFunction;
+}
+
+export type AdvancedRangeFacetHooks = FacetCommonHooks & {
   /**
    * Hook that returns range values and counts
    */
@@ -125,9 +144,36 @@ export type RangeFacetHooks = FacetCommonHooks & {
   useGetFacetFilters: SelectFacetFilterFunction;
 };
 
+export interface CustomFacetHooks {
+  /**
+   * Hook that returns a list of a user's currently selected custom facets
+   */
+  readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
+  /**
+   * Hook that returns facets available for a user to add to their custom facets, option to return only facets
+   * with data
+   */
+  readonly useAvailableCustomFacets: (
+    usedFacets: readonly string[],
+    onlyFiltersWithValues: boolean,
+    queryOptions?: QueryOptions,
+  ) => {
+    data: Record<string, FacetDefinition>;
+  };
+  /**
+   * Hook to add a custom filter to a user's panel
+   */
+  readonly useAddCustomFilter: () => (filter: string) => void;
+  /**
+   * Hook to remove a custom filter to a user's panel
+   */
+  readonly useRemoveCustomFilter: () => (filter: string) => void;
+}
+
 export interface FacetResponse {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;
+  readonly isFetching: boolean;
   readonly error?: unknown;
 }
 
@@ -164,11 +210,11 @@ export interface FieldToName {
   readonly name: string;
 }
 
-export type NumericRangeFacetHooks = FacetCommonHooks & {
+export type NumericRangeFacetHooks = FacetDataHooks & {
   /**
    * Hook that returns range values and counts
    */
-  useGetRangeFacetData: GetRangeFacetDataFunction;
+  useGetRangeFacetData: GetRangeFacetWithDefinedRangesDataFunction;
   /**
    * Hook that returns the currently selected filters
    */
@@ -202,4 +248,27 @@ export interface SelectedFields {
   fields: Array<FacetDefinition>;
   selectedFields: Array<string>;
   updateSelectedField: (facet: string) => void;
+}
+
+export interface AllowableRange {
+  readonly minimum: number;
+  readonly maximum: number;
+}
+
+export interface CohortBuilderCategoryConfig {
+  readonly label: string;
+  readonly facets: ReadonlyArray<string>;
+  readonly queryOptions?: QueryOptions;
+}
+export type FacetRequiredHooks = EnumFacetDataHooks | RangeFacetHooks;
+
+export interface EnumChartProps {
+  readonly field: string;
+  readonly data: Record<string, number>;
+  readonly selectedEnums: readonly string[];
+  readonly isSuccess: boolean;
+  readonly showTitle: boolean;
+  readonly maxBins: number;
+  readonly height: number;
+  readonly valueLabel?: string;
 }

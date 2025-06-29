@@ -4,12 +4,13 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import FacetExpander from '../FacetExpander';
 import {
   buildRangeBuckets,
+  buildRangeLabelsAndValues,
+  classifyRangeType,
   DEFAULT_VISIBLE_ITEMS,
   extractRangeValues,
 } from './utils';
 import FromTo from './FromTo';
 import RangeValueSelector from './RangeValueSelector';
-import { buildRangeLabelsAndValues, classifyRangeType } from './utils';
 import { BAD_DATA_MESSAGE } from '../constants';
 import { NumericFacetProps, NumericUnits } from './types';
 
@@ -67,7 +68,7 @@ const RangeInputWithPrefixedRanges: React.FC<
     isSuccess = false,
     isFetching,
     error,
-  } = hooks.useGetRangeFacetData(field, ranges, queryOptions);
+  } = hooks.useGetRangeFacetData(field, ranges);
   const rangeLabelsAndValues = buildRangeLabelsAndValues(
     bucketRanges,
     rangeData,
@@ -174,7 +175,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               itemsToShow={bucketsToShow}
               rangeLabelsAndValues={rangeLabelsAndValues}
               selected={selectedRange}
-              useUpdateFacetFilters={hooks.}
+              useUpdateFacetFilters={hooks.useUpdateFacetFilters}
               setSelected={(value) => {
                 setIsCustom(false); // no longer a customRange
                 // this is the only way user interaction

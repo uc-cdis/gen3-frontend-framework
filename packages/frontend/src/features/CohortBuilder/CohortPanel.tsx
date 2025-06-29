@@ -1,19 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
+  Accessibility,
+  CombineMode,
   CoreState,
   extractEnumFilterValue,
   type FacetDefinition,
   FacetType,
   isIntersection,
   selectIndexFilters,
+  selectSharedFilters,
   useCoreSelector,
+  useGetAggsNoFilterSelfQuery,
   useGetAggsQuery,
   useGetCountsQuery,
-  CombineMode,
-  selectSharedFilters,
-  useGetAggsNoFilterSelfQuery,
-  Accessibility,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
 import { type SummaryChart } from '../../components/charts/types';
@@ -30,7 +30,10 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets/utils';
-import { useClearFilters } from '../../components/facets/hooks';
+import {
+  useClearFilters,
+  useFieldNameToTitle,
+} from '../../components/facets/hooks';
 import {
   EnumFacetDataHooks,
   FacetDataHooks,
@@ -193,6 +196,7 @@ export const CohortPanel = ({
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useGetCombineMode: partial(useCohortFilterCombineState, index),
           useSetCombineMode: partial(useSetCohortFilterCombineState, index),
+          useSetFilterExpanded: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
         exact: {
@@ -202,6 +206,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
+          useSetFilterExpanded: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -211,6 +216,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
+          useSetFilterExpanded: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
         range: {
@@ -220,6 +226,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
+          useSetFilterExpanded: useFieldNameToTitle,
           useTotalCounts: undefined,
         },
       };
