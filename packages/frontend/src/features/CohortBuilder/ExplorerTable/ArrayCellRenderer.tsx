@@ -9,10 +9,6 @@ export const ArrayCellRenderer = (
   props: CellRendererFunctionProps<JSONObject>,
   ...args: any[]
 ) => {
-  console.log('ArrayCellRenderer');
-  console.log(cellRenderFunction);
-  console.log(props);
-  console.log(args);
   const { cell } = props;
   const value = cell.getValue();
   if (isArray(value)) {
