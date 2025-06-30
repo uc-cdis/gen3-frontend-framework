@@ -19,7 +19,11 @@ import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 import QueryExpression from './QueryExpression/QueryExpression';
 
 import CohortManager from './CohortManager';
-import TabbedCohortBuilder from './TabbedCohortBuilder';
+import TabbedCohortBuilder, {
+  type CohortBuilderTabCategoryConfig,
+  type TabbedCohortBuilderConfiguration,
+  type TabbedCohortBuilderFacetConfig,
+} from './TabbedCohortBuilder';
 
 export {
   type CohortBuilderConfiguration,
@@ -37,4 +41,7 @@ export {
   QueryExpression,
   QueryExpressionSection,
   TabbedCohortBuilder,
+  type TabbedCohortBuilderFacetConfig,
+  type CohortBuilderTabCategoryConfig,
+  type TabbedCohortBuilderConfiguration,
 };
