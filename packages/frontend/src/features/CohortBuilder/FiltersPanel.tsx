@@ -1,5 +1,5 @@
 import React from 'react';
-import { FacetDefinition, FacetType } from '@gen3/core';
+import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
 import { createFacetCard } from '../../components/facets/createFacetCard';
 import { FacetDataHooks } from '../../components/facets/types';
 
@@ -23,16 +23,14 @@ export const FiltersPanel = ({
         }
         if (!(facetDefinition.type in dataFunctions)) return null;
 
-        return createFacetCard(
+        return createFacetCard({
           facetDefinition,
           valueLabel,
-          dataFunctions[facetDefinition.type],
-          'filters-panel',
-          undefined,
-          false,
-          facetDefinition.label,
-          undefined,
-        );
+          hooks: dataFunctions[facetDefinition.type],
+          facetNameFormatter: fieldNameToTitle,
+          idPrefix: 'filters-panel',
+          showPercent: false,
+        });
       })}
     </div>
   );

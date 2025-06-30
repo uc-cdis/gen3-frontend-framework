@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Flex, Stack, Center, Box, Title, Text } from '@mantine/core';
+import { Box, Center, Flex, Stack, Text, Title } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
@@ -9,19 +9,19 @@ import { FacetDefinition } from '@gen3/core';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
-  getAllFieldsFromFilterConfigs,
   classifyFacets,
+  getAllFieldsFromFilterConfigs,
 } from '../../components/facets';
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
 import CohortManager from './CohortManagment/CohortManager';
-import { AppState, useAppSelector, useAppDispatch } from './appApi';
+import { AppState, useAppDispatch, useAppSelector } from './appApi';
 import Image from 'next/image';
 import {
-  selectSelectedFacetsFromIndex,
-  removeFacetSelection,
   addFacetSelection,
+  removeFacetSelection,
+  selectSelectedFacetsFromIndex,
 } from './SelectedFacetsSlice';
 import { useRoundedAggsQuery } from './queryApi';
 import CohortQueryExpression from './CohortQueryExpression';
@@ -153,6 +153,7 @@ const IndexPanel = ({
             useClearFilter: () => (field: string) => null,
             useToggleExpandFilter: useToggleExpandFilter,
             useFilterExpanded: useFilterExpandedState,
+            useFieldNameToTitle: () => (field: string) => field,
           }}
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">

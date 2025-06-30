@@ -3,6 +3,7 @@ export * from './components/Login';
 
 export * from './components/Modals';
 export * from './components/charts';
+export * from './components/facets';
 export * from './components/Protected';
 // features
 export * from './features/Navigation';
@@ -50,9 +51,9 @@ import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
 import {
-  type ExplorerPageProps,
   ExplorerPageGetServerSideProps,
   ExplorerPageGetServerSidePropsForConfigId,
+  type ExplorerPageProps,
 } from './pages/Explorer';
 
 import ColorThemePage from './pages/Theme/Colors';
@@ -76,8 +77,8 @@ import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 import WorkspacePage from './pages/Workspace/Workspace';
 import { WorkspaceNoAccessPage } from './pages/Workspace/index';
 import {
-  WorkspacePageGetServerSideProps,
   WorkspaceNoAccessPageServerSideProps,
+  WorkspacePageGetServerSideProps,
 } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
@@ -101,6 +102,9 @@ import DataLibraryPage, {
 // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
+
+import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
+import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -179,4 +183,6 @@ export {
   registerCohortSimilarityApp,
   // appApis
   analysisApiCohortDiscovery,
+  TabbedCohortBuilderPage,
+  TabbedCohortBuilderPageGetServerSideProps,
 };

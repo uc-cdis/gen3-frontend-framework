@@ -1,6 +1,6 @@
 {
   "name": "@gen3/toolsff",
-  "version": "0.10.97",
+  "version": "0.10.98",
   "description": "tools for processing Gen3 commons content: color theme, icons, sharedFilters",
   "main": "index.js",
   "type": "module",
@@ -21,7 +21,8 @@
     "getSchema": "./dist/getSchema.esm.js",
     "getSharedMapping": "./dist/getSharedMapping.esm.js",
     "getDRSToHostname": "./dist/getDRSToHostname.esm.js",
-    "getSharedFilters": "./dist/getSharedFilters.esm.js"
+    "getSharedFilters": "./dist/getSharedFilters.esm.js",
+    "gdcGqlToGuppyGql": "./dist/gdcGqlToGuppyGql.esm.js"
   },
   "author": "Craig Barnes",
   "license": "Apache-2.0",
