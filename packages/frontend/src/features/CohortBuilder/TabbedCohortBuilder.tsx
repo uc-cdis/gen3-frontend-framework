@@ -145,8 +145,6 @@ const TabbedCohortBuilder = ({
     }
   }, [isSuccess, data, facetDefinitions, index]);
 
-  console.log('Facet definitions: ', facetDefinitions);
-
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       let filters = undefined;
