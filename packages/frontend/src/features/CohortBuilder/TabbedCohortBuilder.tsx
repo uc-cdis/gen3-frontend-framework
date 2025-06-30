@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import CohortBuilderDefaultConfig from './data/cohort_builder.json';
 import {
   Accessibility,
   CombineMode,
@@ -83,7 +82,7 @@ const TabbedCohortBuilder = ({
 }: TabbedCohortBuilderConfiguration) => {
   const tabsConfig = tabsConfiguration;
   const cohortBuilderFilters = [
-    ...Object.values(CohortBuilderDefaultConfig.config).reduce(
+    ...Object.values(tabsConfiguration).reduce(
       (filters: string[], category) => {
         return [...filters, ...category.facets];
       },
