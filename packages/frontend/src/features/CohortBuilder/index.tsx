@@ -6,12 +6,12 @@ import {
 } from './types';
 
 import {
-  type TableDetailsPanelProps,
   type CellRendererFunctionProps,
-  ExplorerTableDetailsPanelFactory,
   ExplorerTableCellRendererFactory,
-  registerExplorerDefaultCellRenderers,
+  ExplorerTableDetailsPanelFactory,
   registerCohortBuilderDefaultPreviewRenderers,
+  registerExplorerDefaultCellRenderers,
+  type TableDetailsPanelProps,
 } from './ExplorerTable';
 
 import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext';
@@ -19,6 +19,7 @@ import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 import QueryExpression from './QueryExpression/QueryExpression';
 
 import CohortManager from './CohortManager';
+import TabbedCohortBuilder from './TabbedCohortBuilder';
 
 export {
   type CohortBuilderConfiguration,
@@ -35,4 +36,5 @@ export {
   QueryExpressionContext,
   QueryExpression,
   QueryExpressionSection,
+  TabbedCohortBuilder,
 };

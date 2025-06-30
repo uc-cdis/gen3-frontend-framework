@@ -86,7 +86,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-content gap-4 m-4"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 w-content gap-4 my-4 ml-2 w-full"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
@@ -135,7 +135,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-colw-full h-full bg-base-max pr-6">
+    <div className="flex flex-col w-full h-full bg-base-max pr-6">
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
       <Modal
         data-testid="modal-cohort-builder-add-custom-filter"
@@ -281,7 +281,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
 
   return (
     <MantineProvider theme={theme}>
-      <div className="w-100">
+      <div className="w-full mr-8">
         <span
           id="facetTab-liveRegion"
           aria-live="assertive"
@@ -326,7 +326,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
             onChange={setActiveTab}
             keepMounted={false}
             classNames={{
-              tab: 'pl-0 data-active:pl-4 ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1',
+              tab: 'pl-0 data-active:pl-4 ml-4 data-active:text-secondary data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1',
               list: 'flex flex-col bg-primary-lightest text-primary-contrast-dark w-60 md:w-72 lg:w-80 py-4',
               tabLabel: 'text-left',
               root: 'bg-base-max',

@@ -1,24 +1,23 @@
 import React from 'react';
-import {
-  NavPageLayout,
-  type NavPageLayoutProps,
-} from '../../features/Navigation';
+import { NavPageLayout } from '../../features/Navigation';
 import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
+import { TabbedCohortBuilderPageProps } from './types';
 
 const TabbedCohortBuilderPage = ({
   headerProps,
   footerProps,
-}: NavPageLayoutProps): JSX.Element => {
+  configuration,
+}: TabbedCohortBuilderPageProps): JSX.Element => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerData={{
-        title: 'Gen3 Explorer Page',
-        content: 'Explorer Page',
-        key: 'gen3-explorer-page',
+        title: 'Gen3 Tabbed Cohort Builder Page',
+        content: 'Tabbed Cohort Builder Page',
+        key: 'gen3-tabbed-cohort-builder-page',
       }}
     >
-      <TabbedCohortBuilder index={'cases'} />
+      <TabbedCohortBuilder {...configuration} />
     </NavPageLayout>
   );
 };

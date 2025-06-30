@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
 import { MultiSelect } from '@mantine/core';
-import { controlsIconStyle, FacetText, FacetHeader } from './components';
+import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import {
-  Operation,
   Excludes,
   Includes,
+  Operation,
   trimFirstFieldNameToTitle,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
@@ -123,7 +123,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : 'mx-0'
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition`}
     >
       <FacetControlsHeader
         field={field}

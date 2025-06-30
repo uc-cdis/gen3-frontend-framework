@@ -89,7 +89,7 @@ const RangeFacet = ({
     <div
       className={`flex flex-col ${
         width ? width : 'mx-1'
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition`}
       id={field}
     >
       <FacetControlsHeader

@@ -16,6 +16,7 @@ import {
 } from '@gen3/core';
 import FacetTabs from '../../components/facets/FacetTabs';
 import {
+  classifyFacets,
   extractRangeValues,
   FacetDataHooks,
   processBucketData,
@@ -25,7 +26,11 @@ import {
   useUpdateFilters,
 } from '../../components/facets';
 import { QueryOptions } from '../../components/facets/types';
-import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import { partial } from 'lodash';
 import {
   useClearFilters,
@@ -38,7 +43,7 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 
-export interface CohortBuilderCategoryConfig {
+export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
   readonly queryOptions: {
     readonly indexType: string;
@@ -46,26 +51,14 @@ export interface CohortBuilderCategoryConfig {
   readonly facets: ReadonlyArray<string>;
 }
 
-type CohortBuilderCategory =
-  | 'general'
-  | 'demographic'
-  | 'general_diagnosis'
-  | 'disease_status'
-  | 'disease_specific_classifications'
-  | 'treatment'
-  | 'exposure'
-  | 'other_clinical_attributes'
-  | 'biospecimen'
-  | 'available_data'
-  | 'custom';
-
 export type TabbedCohortBuilderFacetConfig = Record<
-  CohortBuilderCategory,
-  CohortBuilderCategoryConfig
+  string,
+  CohortBuilderTabCategoryConfig
 >;
 
 const useCustomFacets = () => ({
   data: [],
+  isSuccess: true,
 });
 
 const useAddCustomFilter = (x: string) => {};
@@ -79,12 +72,16 @@ export const calculateStickyHeaderHeight = (): number => {
   );
 };
 
-export interface TabbedCohortBuilderProps {
+export interface TabbedCohortBuilderConfiguration {
+  tabsConfiguration: TabbedCohortBuilderFacetConfig;
   index: string;
 }
 
-const TabbedCohortBuilder = ({ index }: TabbedCohortBuilderProps) => {
-  const tabsConfig = CohortBuilderDefaultConfig.config;
+const TabbedCohortBuilder = ({
+  index,
+  tabsConfiguration,
+}: TabbedCohortBuilderConfiguration) => {
+  const tabsConfig = tabsConfiguration;
   const cohortBuilderFilters = [
     ...Object.values(CohortBuilderDefaultConfig.config).reduce(
       (filters: string[], category) => {
@@ -138,6 +135,18 @@ const TabbedCohortBuilder = ({ index }: TabbedCohortBuilderProps) => {
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
   }, [activeTab, routerTab, prevRouterTab]);
+
+  // Set the facet definitions based on the data only the first time the data is loaded
+  useDeepCompareEffect(() => {
+    if (isSuccess && Object.keys(facetDefinitions).length === 0) {
+      const facetDefs = classifyFacets(data, index);
+      setFacetDefinitions(facetDefs);
+
+      // setup summary charts since nested fields can be listed by the split field nam
+    }
+  }, [isSuccess, data, facetDefinitions, index]);
+
+  console.log('Facet definitions: ', facetDefinitions);
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
@@ -255,11 +264,11 @@ const TabbedCohortBuilder = ({ index }: TabbedCohortBuilderProps) => {
           usedFacets: readonly string[],
           onlyFiltersWithValues: boolean,
           queryOptions?: QueryOptions,
-        ) => ({ data: {} }),
+        ) => ({ data: {}, isSuccess: true }),
         useAddCustomFilter: () => (filter: string) => {},
         useRemoveCustomFilter: () => (filter: string) => {},
       }}
-      getFacetLabel={() => 'cases'}
+      getFacetLabel={() => 'Cases'}
       cardScrollMargin={calculateStickyHeaderHeight()}
       useFieldNameToTitle={useFieldNameToTitle}
     />

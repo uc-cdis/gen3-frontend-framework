@@ -58,7 +58,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
 
   return (
     <div
-      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition  ${
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition  ${
         cardSelected ? 'animate-border-highlight ' : ''
       }`}
       id={field}

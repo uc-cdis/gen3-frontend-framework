@@ -1,5 +1,4 @@
 import { FacetDefinition } from '@gen3/core';
-import React from 'react';
 import { createFacetCard, CreateFacetCardProps } from './createFacetCard';
 import { FacetDataHooks, FacetType } from './types';
 
@@ -20,23 +19,19 @@ export const createFacetCards = ({
   Chart,
   showPercent,
 }: CreateFacetCardsProps) => {
-  return (
-    <div>
-      {facets.map((facetDefinition) => {
-        return createFacetCard({
-          facetDefinition,
-          valueLabel,
-          hooks: hooks[facetDefinition.type],
-          facetNameFormatter,
-          idPrefix,
-          dismissCallback,
-          hideIfEmpty,
-          Chart,
-          showPercent,
-        });
-      })}
-    </div>
-  );
+  return facets.map((facetDefinition) => {
+    return createFacetCard({
+      facetDefinition,
+      valueLabel,
+      hooks: hooks[facetDefinition.type],
+      facetNameFormatter,
+      idPrefix,
+      dismissCallback,
+      hideIfEmpty,
+      Chart,
+      showPercent,
+    });
+  });
 };
 
 export default createFacetCards;

@@ -40,7 +40,7 @@ export const createFacetCard = ({
       : valueLabel(queryOptions);
 
   return (
-    <div key={`${idPrefix}-enum-${field}`}>
+    <div key={`${idPrefix}-facet-${field}`}>
       {
         {
           enum: (
