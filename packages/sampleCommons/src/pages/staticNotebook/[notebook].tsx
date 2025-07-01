@@ -3,10 +3,10 @@ import { GetServerSideProps } from 'next';
 import { NextRouter, useRouter } from 'next/dist/client/router';
 
 import {
+  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
   NavPageLayoutProps,
-  getNavPageLayoutPropsFromConfig,
-  StaticNotebookViewer,
+  StaticNotebookIFrame,
 } from '@gen3/frontend';
 
 const StaticNotebookApp = ({
@@ -25,7 +25,7 @@ const StaticNotebookApp = ({
         key: 'gen3-static-notebook-page',
       }}
     >
-      <StaticNotebookViewer notebook={notebook} />
+      <StaticNotebookIFrame notebook={notebook} />
     </NavPageLayout>
   );
 };

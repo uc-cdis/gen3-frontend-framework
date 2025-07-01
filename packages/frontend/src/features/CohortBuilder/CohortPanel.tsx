@@ -278,8 +278,6 @@ export const CohortPanel = ({
 
       const chartDefinitions = chartsSection?.charts ?? charts;
 
-      console.log(chartDefinitions);
-
       const summaryCharts = Object.keys(chartDefinitions).reduce(
         (acc, field) => {
           let chartField = field;

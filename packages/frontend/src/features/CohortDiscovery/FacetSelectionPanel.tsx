@@ -21,8 +21,6 @@ const FacetSelectionPanel: React.FC<FacetSelectionPanelProps> = ({
     return categories.map((item) => {
       const fields = item.fields.map((f) => item.fieldsConfig[f]);
 
-      console.log(fields);
-
       return (
         <FacetSelector
           fields={fields}
