@@ -19,7 +19,7 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useFieldNameToTitle } from '../../components/facets/hooks';
-import { useRoundedAggsQuery } from './queryApi';
+import { useUnsecureRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -48,7 +48,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     isSuccess,
     isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
-  } = useRoundedAggsQuery({
+  } = useUnsecureRoundedAggsQuery({
     type: index,
     fields: facets.map((x) => x.field),
     filters: cohortFilters,

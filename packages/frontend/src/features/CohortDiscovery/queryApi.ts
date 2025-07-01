@@ -6,6 +6,8 @@ import {
   FilterSet,
   GraphQLQuery,
   processHistogramResponse,
+  roundHistogramResponse,
+  AggregationsData,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import { GEN3_COHORT_DISCOVERY_API } from './constants';
@@ -105,6 +107,36 @@ export const useRoundedAggsQuery = (
     ...response,
     data: response?.data?.data
       ? processHistogramResponse(response?.data.data?._aggregation[type] ?? {})
+      : {},
+  };
+};
+
+const COHORT_DISCOVERY_LIMIT = process.env.GEN3_COHORT_DISCOVERY_LIMIT
+  ? Number(process.env.GEN3_COHORT_DISCOVERY_LIMIT)
+  : 100;
+
+export const useUnsecureRoundedAggsQuery = (
+  { type, fields, filters, accessibility = Accessibility.ALL }: QueryAggsParams,
+  { skip }: QueryOptions = { skip: false },
+) => {
+  const response = useGraphQLData<
+    { data: GuppyAggregationsResponse },
+    GraphQLQuery
+  >(
+    GEN3_COHORT_DISCOVERY_API,
+    buildGetAggregationQuery(type, fields, filters, accessibility, false),
+    skip,
+  );
+
+  return {
+    ...response,
+    data: response?.data?.data
+      ? processHistogramResponse(
+          roundHistogramResponse(
+            response?.data?.data as unknown as Record<string, unknown>,
+            COHORT_DISCOVERY_LIMIT,
+          ),
+        )
       : {},
   };
 };
