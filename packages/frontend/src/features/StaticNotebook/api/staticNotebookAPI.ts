@@ -3,7 +3,10 @@ import path from 'path';
 import fs from 'fs';
 import DOMPurify from 'isomorphic-dompurify';
 import { isArray } from 'lodash';
-import { GEN3_STATIC_NOTEBOOK_DIR } from '../constants';
+import {
+  GEN3_STATIC_NOTEBOOK_DIR,
+  GEN3_STATIC_NOTEBOOK_PATH,
+} from '../constants';
 
 export const staticNotebookAPI = async (
   req: NextApiRequest,
@@ -56,7 +59,10 @@ export const staticNotebookAPI = async (
 
       // Check if a file exists and is within the data directory
 
-      const dataDir = path.join(process.cwd(), GEN3_STATIC_NOTEBOOK_DIR);
+      const dataDir = path.join(
+        process.cwd(),
+        `${GEN3_STATIC_NOTEBOOK_PATH}/${GEN3_STATIC_NOTEBOOK_DIR}`,
+      );
       if (!fullPath.startsWith(dataDir)) {
         return res.status(403).json({
           error: 'File access denied',

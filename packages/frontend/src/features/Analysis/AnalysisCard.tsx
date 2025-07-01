@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import React from 'react';
 import { Image, NavLink, Stack } from '@mantine/core';
 import NextImage from 'next/image';
 import TextDescription from './TextDescription';
