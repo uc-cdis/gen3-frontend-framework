@@ -23,7 +23,7 @@ import {
   removeFacetSelection,
   selectSelectedFacetsFromIndex,
 } from './SelectedFacetsSlice';
-import { useUnsecureRoundedAggsQuery, useRoundedAggsQuery } from './queryApi';
+import { useUnsecureRoundedAggsQuery } from './queryApi';
 import CohortQueryExpression from './CohortQueryExpression';
 
 const IndexPanel = ({

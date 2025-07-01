@@ -130,8 +130,6 @@ export const classifyFacets = (
       [fieldKey, value]: [string, HistogramDataArray],
     ) => {
       if (!value) return acc; // return if no data, which prevents an application crash
-
-      console.log('classify facets', data);
       const dataField = fieldKey.split('.')?.slice(-1)[0] ?? fieldKey;
       // check if range facet
       const type =
