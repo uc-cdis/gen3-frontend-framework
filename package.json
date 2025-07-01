@@ -23,7 +23,7 @@
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
-    "dev": "NODE_OPTIONS='--max_old_space_size=4096' lerna run dev",
+    "dev": "lerna run dev",
     "dev:watch": "lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME --include-dependencies",
     "dev:app": "lerna run dev --scope=@gen3/samplecommons",
     "start": "lerna run start",

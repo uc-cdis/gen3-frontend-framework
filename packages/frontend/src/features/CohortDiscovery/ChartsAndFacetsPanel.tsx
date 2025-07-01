@@ -4,6 +4,7 @@ import {
   extractEnumFilterValue,
   FacetDefinition,
   fieldNameToTitle,
+  AggregationsData,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
@@ -24,6 +25,10 @@ import { useUnsecureRoundedAggsQuery } from './queryApi';
 interface ChartsAndFacetsPanelProps {
   index: string;
   facets: Array<FacetDefinition>;
+  data: AggregationsData;
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
 }
 
 const NUM_COLS = 2; // TODO: add to config
@@ -32,27 +37,24 @@ const NUM_COLS = 2; // TODO: add to config
  * CartsAndFacetsPanel component
  *
  * @param {string} index - The index type used for querying data.
+ * @param data
+ * @param isLoading
+ * @param isError
+ * @param isSuccess
  * @param {Array} facets - The list of facets to be rendered.
  * @returns {JSX.Element} The rendered component showing facets.
  */
 const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,
+  data,
+  isLoading,
+  isError,
+  isSuccess,
   facets,
 }) => {
   const cohortFilters = useAppSelector((state: AppState) =>
     selectCurrentCohortIndexFilters(state, index),
   );
-
-  const {
-    data,
-    isSuccess,
-    isLoading: isAggsQueryFetching,
-    isError: isAggsQueryError,
-  } = useUnsecureRoundedAggsQuery({
-    type: index,
-    fields: facets.map((x) => x.field),
-    filters: cohortFilters,
-  });
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
@@ -63,8 +65,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
             ? extractEnumFilterValue(cohortFilters.root[field])
             : undefined,
         isSuccess: isSuccess,
-        isFetching: isAggsQueryFetching,
-        isError: isAggsQueryError,
+        isFetching: isLoading,
+        isError: isError,
       };
     },
     [cohortFilters, cohortFilters.root, data],
