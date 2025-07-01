@@ -13,6 +13,7 @@ export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
 export * from './features/Analysis';
+export * from './features/StaticNotebook';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -113,6 +114,7 @@ import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
+import staticNotebookAPI from './features/StaticNotebook/api/staticNotebookAPI';
 
 export {
   ContentSource,
@@ -178,11 +180,12 @@ export {
   registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
+  TabbedCohortBuilderPage,
+  TabbedCohortBuilderPageGetServerSideProps,
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,
   // appApis
   analysisApiCohortDiscovery,
-  TabbedCohortBuilderPage,
-  TabbedCohortBuilderPageGetServerSideProps,
+  staticNotebookAPI,
 };

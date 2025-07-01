@@ -22,7 +22,7 @@ export const AISearchPageGetServerSideProps: GetServerSideProps<
           navigation: {},
         },
         footerProps: {},
-        headerData: {
+        headerMetadata: {
           title: 'Gen3 AI Search Page',
           content: 'AI Search',
           key: 'gen3-ai-search-page',

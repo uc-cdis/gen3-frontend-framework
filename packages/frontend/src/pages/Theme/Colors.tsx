@@ -7,7 +7,7 @@ const ColorThemePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Theme Page',
         content: 'Theme page',
         key: 'gen3-theme-page',

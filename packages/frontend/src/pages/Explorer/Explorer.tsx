@@ -23,7 +23,7 @@ const ExplorerPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Explorer Page',
         content: 'Explorer Page',
         key: 'gen3-explorer-page',

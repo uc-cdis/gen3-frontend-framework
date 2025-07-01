@@ -5,6 +5,8 @@ import {
   type NavPageLayoutProps,
   type TopBarProps,
   type BannerProps,
+  type HeaderMetadata,
+  isHeaderMetadata,
 } from '../../features/Navigation';
 import ContentSource from '../content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
@@ -25,13 +27,36 @@ export const getNavPageLayoutPropsFromConfig =
       bannerConfigJSON = await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/banner.json`,
       );
-    } catch (e) {
+    } catch (error: unknown) {
       console.warn(
         'No banner config found at: ',
         `${GEN3_COMMONS_NAME}/banner.json`,
       );
     }
     const { topBar, navigation, type = 'original' } = navigationConfigJSON;
+
+    let headerMetadata: HeaderMetadata = {
+      title: 'Gen3 Frontend Framework Page',
+      content: 'Gen3 Frontend Framework Page',
+      key: 'gen3-common-page',
+    };
+
+    try {
+      const loadedHeaderMetadata = await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/headerMetadata.json`,
+      );
+
+      if (isHeaderMetadata(loadedHeaderMetadata)) {
+        headerMetadata = loadedHeaderMetadata;
+      } else {
+        console.warn('headerMetadata is not a valid HeaderMetadata object');
+      }
+    } catch (error: unknown) {
+      console.warn(
+        'No headerMetadata config found at: ',
+        `${GEN3_COMMONS_NAME}/headerMetadata.json`,
+      );
+    }
 
     const headerProps: HeaderProps = {
       top: topBar as unknown as TopBarProps,
@@ -46,10 +71,6 @@ export const getNavPageLayoutPropsFromConfig =
     return {
       headerProps,
       footerProps,
-      headerData: {
-        title: 'Gen3 Frontend Framework Page',
-        content: 'Gen3 Frontend Framework Page',
-        key: 'gen3-common-page',
-      },
+      headerMetadata,
     };
   };

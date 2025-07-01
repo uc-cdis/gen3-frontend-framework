@@ -23,7 +23,7 @@ const ResourcePage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Resource Page',
         content: 'Resource Page',
         key: 'gen3-resource-page',

@@ -6,9 +6,13 @@ import {
   NavPageLayout,
   NavPageLayoutProps,
   getNavPageLayoutPropsFromConfig,
+  StaticNotebookViewer,
 } from '@gen3/frontend';
 
-const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
+const StaticNotebookApp = ({
+  headerProps,
+  footerProps,
+}: NavPageLayoutProps) => {
   const router = useRouter();
   const notebook = getNotebookName(router);
 
@@ -16,20 +20,12 @@ const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerMetadata={{
-        title: 'Gen3 Notebook Page',
-        content: 'Jupyter Notebook',
-        key: 'gen3-notebook-page',
+        title: 'Gen3 Static Notebook Page',
+        content: 'Static Notebook',
+        key: 'gen3-static-notebook-page',
       }}
     >
-      <div className="flex justify-items-center w-full">
-        <iframe
-          allow="cross-origin"
-          src={`${router.basePath}/jupyter/lab/index.html?path=${notebook}`}
-          width="100%"
-          height="100%"
-          title="client notebook"
-        ></iframe>
-      </div>
+      <StaticNotebookViewer notebook={notebook} />
     </NavPageLayout>
   );
 };
@@ -61,4 +57,4 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-export default AppsPage;
+export default StaticNotebookApp;

@@ -12,9 +12,7 @@ import { AppStore } from './appApi';
 import Image from 'next/image';
 import SavedCohortsPanel from './SavedCohorts/SavedCohortsPanel';
 import RequestsPanel from './Requests/RequestsPanel';
-import DataAccessRequestForm, {
-  DataAccessRequestFormParams,
-} from './Requests/DataAccessRequestForm';
+import DataAccessRequestForm from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
 import { extractIndexResourceFromConfiguration } from './utils';
 import { useAppDispatch } from './appApi';
