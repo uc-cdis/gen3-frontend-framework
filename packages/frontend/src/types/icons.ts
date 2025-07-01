@@ -11,7 +11,7 @@ import {
 
 import { MdWarning as WarningTriangleIcon } from 'react-icons/md';
 import { RiErrorWarningFill as WarningMessageIcon } from 'react-icons/ri';
-import { FaPlus as PlusIcon } from 'react-icons/fa';
+import { FaPlus as PlusIcon, FaCircle as CircleIcon } from 'react-icons/fa';
 
 export {
   AddIcon,
@@ -19,6 +19,7 @@ export {
   DeleteIcon,
   PlusIcon,
   LockOutlineIcon,
+  CircleIcon,
   CloseIcon,
   DownloadIcon,
   UploadIcon,

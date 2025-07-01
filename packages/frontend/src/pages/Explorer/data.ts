@@ -21,6 +21,12 @@ import {
   GuppyDataAccessMode,
 } from '../../features/CohortBuilder/types';
 
+const DefaultHeaderMetadata = {
+  title: 'Gen3 Explorer Page',
+  content: 'Explorer Page',
+  key: 'gen3-explorer-page',
+};
+
 const GetSharedFieldMapping = async (
   cohortBuilderConfiguration: CohortBuilderConfiguration,
 ) => {
@@ -100,7 +106,9 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         props: {
           ...(await getNavPageLayoutPropsFromConfig()),
           explorerConfig: cohortBuilderConfiguration,
-          headerMetadata: { ...cohortBuilderConfiguration?.headerMetadata },
+          headerMetadata: cohortBuilderConfiguration?.headerMetadata
+            ? cohortBuilderConfiguration.headerMetadata
+            : DefaultHeaderMetadata,
         },
       };
     }
@@ -115,7 +123,7 @@ export const ExplorerPageGetServerSideProps: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
-        headerMetadata: cohortBuilderConfiguration.headerMetadata,
+        //  headerMetadata: cohortBuilderConfiguration.headerMetadata,
         accessControl: {
           ...DefaultAccessControlConfiguration,
           ...(cohortBuilderConfiguration.accessControl ?? {}),
@@ -152,7 +160,9 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         props: {
           ...(await getNavPageLayoutPropsFromConfig()),
           explorerConfig: cohortBuilderConfiguration,
-          headerMetadata: { ...cohortBuilderConfiguration?.headerMetadata },
+          headerMetadata: cohortBuilderConfiguration?.headerMetadata
+            ? cohortBuilderConfiguration.headerMetadata
+            : DefaultHeaderMetadata,
         },
       };
     }
@@ -167,7 +177,7 @@ export const ExplorerPageGetServerSidePropsForConfigId: GetServerSideProps<
         sharedFiltersMap: sharedFiltersMap,
         tabsLayout: cohortBuilderConfiguration?.tabsLayout ?? 'left',
         explorerConfig: cohortBuilderConfiguration.explorerConfig,
-        headerMetadata: cohortBuilderConfiguration.headerMetadata,
+        // headerMetadata: { ...(cohortBuilderConfiguration?.headerMetadata ? cohortBuilderConfiguration.headerMetadata : {}) },
         accessControl: {
           ...DefaultAccessControlConfiguration,
           ...(cohortBuilderConfiguration.accessControl ?? {}),

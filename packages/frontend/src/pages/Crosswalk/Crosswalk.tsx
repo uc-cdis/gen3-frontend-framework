@@ -11,7 +11,7 @@ const CrosswalkPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Crosswalk Page',
         content: 'Crosswalk Data',
         key: 'gen3-crosswalk-page',

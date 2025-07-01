@@ -62,7 +62,7 @@ const AuthzResourceManagement = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Resource Management Page',
         content: 'Forms Data',
         key: 'gen3-resource-management-page',

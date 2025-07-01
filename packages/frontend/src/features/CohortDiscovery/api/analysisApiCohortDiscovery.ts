@@ -40,6 +40,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json(redactedData);
   } catch (error) {
+    console.error('CohortDiscovery API', error);
     if (error instanceof HTTPError)
       res
         .status(error.status)

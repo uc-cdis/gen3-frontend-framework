@@ -8,7 +8,7 @@ import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import ChartsPanel from './Charts/ChartsPanel';
+import { CollapsableCharts } from '../../components/charts';
 import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
@@ -127,7 +127,7 @@ const DiscoveryIndexPanel = ({
               <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
             ) : null}
             {discoveryConfig.features?.chartsSection?.enabled && (
-              <ChartsPanel
+              <CollapsableCharts
                 config={discoveryConfig.features?.chartsSection}
                 data={chartData}
               />

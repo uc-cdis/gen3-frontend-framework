@@ -11,7 +11,7 @@ const LoginPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Login Page',
         content: 'Login page',
         key: 'gen3-login-page',

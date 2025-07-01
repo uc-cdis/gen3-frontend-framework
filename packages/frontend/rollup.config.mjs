@@ -68,6 +68,8 @@ const globals = {
   swc: 'swc',
   'redux-persist': 'reduxPersist',
   '@hello-pangea': 'pangea',
+  'use-deep-compare': 'use-deep-compare',
+  graphql: 'graphql',
 };
 
 const config = [

@@ -36,7 +36,7 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 App Page',
         content: 'App Data',
         key: 'gen3-app-page',
@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps<
   NavPageLayoutProps
 > = async (context) => {
   const appName = context.query.appName as string;
-  console.log('getServerSideProps appName', appName);
+
   try {
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,

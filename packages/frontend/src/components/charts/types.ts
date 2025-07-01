@@ -11,6 +11,10 @@ export interface SummaryChart extends Partial<TitleAndDescription> {
   showLegendInChart?: boolean;
 }
 
+interface SummaryChartWithField extends SummaryChart {
+  field: string;
+}
+
 export interface ChartProps {
   data: HistogramDataArray;
   total: number;
@@ -19,4 +23,14 @@ export interface ChartProps {
     show?: boolean;
   };
   showLegendInChart?: boolean;
+}
+
+export interface CollapsableChartsPanelConfiguration {
+  enabled: boolean;
+  title?: string;
+  showLegends?: {
+    enabled: boolean;
+    showSwitch?: boolean;
+  };
+  charts?: Record<string, SummaryChart>;
 }

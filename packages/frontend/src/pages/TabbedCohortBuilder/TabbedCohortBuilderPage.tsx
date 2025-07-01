@@ -11,7 +11,7 @@ const TabbedCohortBuilderPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Tabbed Cohort Builder Page',
         content: 'Tabbed Cohort Builder Page',
         key: 'gen3-tabbed-cohort-builder-page',

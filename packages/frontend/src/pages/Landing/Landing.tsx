@@ -17,7 +17,7 @@ const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Home Page',
         content: 'Home page',
         key: 'gen3-home-page',

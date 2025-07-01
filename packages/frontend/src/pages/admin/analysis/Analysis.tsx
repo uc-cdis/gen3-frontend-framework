@@ -14,7 +14,7 @@ const AnalysisEditorPage = ({ headerProps, footerProps }: Props) => {
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerProps={headerProps}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Analysis Editor Page',
         content: 'Analysis Editor page',
         key: 'gen3-analysis-editor-page',
