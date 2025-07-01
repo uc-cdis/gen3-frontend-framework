@@ -8,6 +8,7 @@ import {
   processHistogramResponse,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
+import { GEN3_COHORT_DISCOVERY_API } from './constants';
 
 interface ErrorDetails {
   status: string;
@@ -95,7 +96,7 @@ export const useRoundedAggsQuery = (
     { data: GuppyAggregationsResponse },
     GraphQLQuery
   >(
-    '/api/analysis/cohortDiscovery',
+    GEN3_COHORT_DISCOVERY_API,
     buildGetAggregationQuery(type, fields, filters, accessibility, false),
     skip,
   );
