@@ -6,6 +6,11 @@ import {
   FilterSet,
   GraphQLQuery,
   processHistogramResponse,
+  roundHistogramResponse,
+  GEN3_GUPPY_API,
+  CoreState,
+  useCoreSelector,
+  selectCSRFToken,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import { GEN3_COHORT_DISCOVERY_API } from './constants';
@@ -22,10 +27,16 @@ export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
   skip?: boolean,
 ) => {
   // Create a fetcher function that handles the GraphQL POST request
+
+  const csrfToken = useCoreSelector((state: CoreState) =>
+    selectCSRFToken(state),
+  );
+
   const fetcher = async (fetchUrl: string, fetchBody: TBody) => {
     const headers = new Headers({
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken ?? '',
     });
     if (process.env.NODE_ENV === 'development') {
       // NOTE: This cookie can only be accessed from the client side
@@ -105,6 +116,40 @@ export const useRoundedAggsQuery = (
     ...response,
     data: response?.data?.data
       ? processHistogramResponse(response?.data.data?._aggregation[type] ?? {})
+      : {},
+  };
+};
+
+const COHORT_DISCOVERY_LIMIT = process.env
+  .NEXT_PUBLIC_GEN3_COHORT_DISCOVERY_LIMIT
+  ? Number(process.env.NEXT_PUBLIC_GEN3_COHORT_DISCOVERY_LIMIT)
+  : 100;
+
+export const useUnsecureRoundedAggsQuery = (
+  { type, fields, filters, accessibility = Accessibility.ALL }: QueryAggsParams,
+  { skip }: QueryOptions = { skip: false },
+) => {
+  const response = useGraphQLData<
+    { data: GuppyAggregationsResponse },
+    GraphQLQuery
+  >(
+    `${GEN3_GUPPY_API}/graphql`,
+    buildGetAggregationQuery(type, fields, filters, accessibility, false),
+    skip,
+  );
+
+  return {
+    ...response,
+    data: response?.data?.data
+      ? processHistogramResponse(
+          roundHistogramResponse(
+            response?.data?.data._aggregation[type] as unknown as Record<
+              string,
+              unknown
+            >,
+            COHORT_DISCOVERY_LIMIT,
+          ),
+        )
       : {},
   };
 };

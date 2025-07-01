@@ -23,7 +23,7 @@ import {
   removeFacetSelection,
   selectSelectedFacetsFromIndex,
 } from './SelectedFacetsSlice';
-import { useRoundedAggsQuery } from './queryApi';
+import { useUnsecureRoundedAggsQuery } from './queryApi';
 import CohortQueryExpression from './CohortQueryExpression';
 
 const IndexPanel = ({
@@ -75,22 +75,18 @@ const IndexPanel = ({
     selectCurrentCohortIndexFilters(state, index),
   );
 
-  const queryFields =
-    categories.length === 0
-      ? fields
-      : activeFieldDefinitions.map((x) => x.field);
   const {
     data,
     isSuccess,
     isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
-  } = useRoundedAggsQuery(
+  } = useUnsecureRoundedAggsQuery(
     {
       type: index,
-      fields: queryFields,
+      fields: fields,
       filters: cohortFilters,
     },
-    { skip: queryFields.length === 0 },
+    { skip: fields.length === 0 },
   );
 
   const updateFields = useDeepCompareCallback(
@@ -163,6 +159,10 @@ const IndexPanel = ({
           />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
+              data={data}
+              isLoading={isAggsQueryFetching}
+              isError={isAggsQueryError}
+              isSuccess={isSuccess}
               index={index}
               facets={activeFieldDefinitions}
             />
