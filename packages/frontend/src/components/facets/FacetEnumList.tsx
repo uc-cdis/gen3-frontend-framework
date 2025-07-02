@@ -24,7 +24,7 @@ import {
   updateFacetEnum,
 } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 interface FacetEnumListProps {
   field: string;

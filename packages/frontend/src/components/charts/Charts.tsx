@@ -4,7 +4,7 @@ import {
   AggregationsData,
   HistogramDataArray,
 } from '@gen3/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 import { useDisclosure } from '@mantine/hooks';
 import {

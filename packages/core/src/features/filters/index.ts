@@ -1,6 +1,7 @@
 import {
   isFilterEmpty,
   isOperationWithField,
+  filterSetToOperation,
   convertFilterToGqlFilter,
   convertFilterSetToGqlFilter,
   isOperatorWithFieldAndArrayOfOperands,
@@ -31,6 +32,7 @@ export {
   isFilterEmpty,
   isOperationWithField,
   isOperatorWithFieldAndArrayOfOperands,
+  filterSetToOperation,
   convertFilterToGqlFilter,
   convertFilterSetToGqlFilter,
   extractFilterValue,
