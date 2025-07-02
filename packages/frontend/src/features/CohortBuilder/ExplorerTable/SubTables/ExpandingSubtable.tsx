@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ActionIcon, useMantineTheme } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { ExpandingSubTableProps } from './types';
 import ExplorerTableSubtable from './ExplorerTableSubtable';
 import { JSONObject, JSONValue } from '@gen3/core';

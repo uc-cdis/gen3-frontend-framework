@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 interface JsonFileSaverProps {
   getData: () => object;

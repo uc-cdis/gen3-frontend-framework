@@ -21,7 +21,7 @@ import {
 } from '@gen3/core';
 import React from 'react';
 import { TabbablePanelProps } from './types';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { modals } from '@mantine/modals';
 
 export const AccordionPanel = ({

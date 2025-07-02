@@ -3,7 +3,7 @@ import { Button, Group, Text, Tooltip, Transition } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { FaRegStopCircle as StopIcon } from 'react-icons/fa';
 import { BsArrowsFullscreen as FullscreenIcon } from 'react-icons/bs';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import {
   isWorkspaceRunningOrStopping,

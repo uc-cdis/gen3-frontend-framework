@@ -218,3 +218,5 @@ export interface FacetDefinition {
 }
 
 export type IndexedFilterSet = Record<string, FilterSet>;
+
+export type UnionOrIntersection = Union | Intersection;

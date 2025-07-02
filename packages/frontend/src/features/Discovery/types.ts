@@ -172,6 +172,7 @@ interface DataLoader {
 export interface DiscoveryIndexConfig {
   guidType?: string;
   studyField?: string;
+  maxStudies?: number;
   label?: string;
   features: {
     advSearchFilters?: AdvancedSearchFilters;
