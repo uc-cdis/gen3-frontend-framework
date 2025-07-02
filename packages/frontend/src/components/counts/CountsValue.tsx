@@ -1,5 +1,6 @@
 import React from 'react';
 import { Paper, LoadingOverlay } from '@mantine/core';
+import { toCountsString } from '../../utils';
 
 interface CountsValueProps {
   readonly label: string;
@@ -18,7 +19,7 @@ const CountsValue = ({ label, isSuccess, counts }: CountsValueProps) => {
         withBorder
         className="bg-primary text-primary-contrast font-heading text-md font-semibold"
       >
-        {`${counts?.toLocaleString() ?? '...'} ${label}`}
+        {toCountsString(counts, label)}
       </Paper>
     </div>
   );

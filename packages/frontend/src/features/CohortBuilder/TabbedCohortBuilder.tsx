@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Group, Stack } from '@mantine/core';
 import {
   Accessibility,
   CombineMode,
@@ -11,6 +12,7 @@ import {
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
+  useGetCountsQuery,
   usePrevious,
 } from '@gen3/core';
 import FacetTabs from '../../components/facets/FacetTabs';
@@ -41,6 +43,8 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
+import CountsValue from '../../components/counts/CountsValue';
+import { toCountsString, toDisplayName } from '../../utils';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -112,6 +116,16 @@ const TabbedCohortBuilder = ({
   } = useGetAggsQuery({
     type: index,
     fields: cohortBuilderFilters,
+    filters: cohortFilters,
+    accessibility: accessLevel,
+  });
+
+  const {
+    data: counts,
+    isSuccess: isCountSuccess,
+    isError,
+  } = useGetCountsQuery({
+    type: index,
     filters: cohortFilters,
     accessibility: accessLevel,
   });
@@ -248,27 +262,32 @@ const TabbedCohortBuilder = ({
     }, [getEnumFacetData, getRangeFacetData, index]);
 
   return (
-    <FacetTabs
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      facetDefinitions={facetDefinitions}
-      tabsConfig={tabsConfig}
-      usedFacets={cohortBuilderFilters}
-      hooks={facetDataHooks}
-      customFacetHooks={{
-        useCustomFacets,
-        useAvailableCustomFacets: (
-          usedFacets: readonly string[],
-          onlyFiltersWithValues: boolean,
-          queryOptions?: QueryOptions,
-        ) => ({ data: {}, isSuccess: true }),
-        useAddCustomFilter: () => (filter: string) => {},
-        useRemoveCustomFilter: () => (filter: string) => {},
-      }}
-      getFacetLabel={() => 'Cases'}
-      cardScrollMargin={calculateStickyHeaderHeight()}
-      useFieldNameToTitle={useFieldNameToTitle}
-    />
+    <Stack gap="xs" align="stretch" classNames={{ root: 'w-full' }}>
+      <Group justify="flex-end">
+        <CountsValue label={index} counts={counts} isSuccess={isCountSuccess} />
+      </Group>
+      <FacetTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        facetDefinitions={facetDefinitions}
+        tabsConfig={tabsConfig}
+        usedFacets={cohortBuilderFilters}
+        hooks={facetDataHooks}
+        customFacetHooks={{
+          useCustomFacets,
+          useAvailableCustomFacets: (
+            usedFacets: readonly string[],
+            onlyFiltersWithValues: boolean,
+            queryOptions?: QueryOptions,
+          ) => ({ data: {}, isSuccess: true }),
+          useAddCustomFilter: () => (filter: string) => {},
+          useRemoveCustomFilter: () => (filter: string) => {},
+        }}
+        getFacetLabel={() => 'Cases'}
+        cardScrollMargin={calculateStickyHeaderHeight()}
+        useFieldNameToTitle={useFieldNameToTitle}
+      />
+    </Stack>
   );
 };
 
