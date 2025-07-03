@@ -86,7 +86,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 w-content gap-4 my-4 ml-2 w-full"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 w-content gap-4 ml-2 w-full"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
