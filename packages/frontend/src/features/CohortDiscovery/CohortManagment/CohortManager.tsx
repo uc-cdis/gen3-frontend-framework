@@ -36,7 +36,7 @@ import {
   CloseIcon,
 } from '../../../types/icons';
 
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 import { IconSize } from '../../../utils/sizes';
 import { modals } from '@mantine/modals';

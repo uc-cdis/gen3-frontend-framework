@@ -167,6 +167,20 @@ export interface GQLExcludeIfAny {
   };
 }
 
+/**
+ * Type guard to check if an object is a GQLIntersection
+ * @param value - The value to check
+ * @returns True if the value is a GQLIntersection
+ */
+export const isGQLIntersection = (value: unknown): value is GQLIntersection => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'and' in value &&
+    Array.isArray((value as GQLIntersection).and)
+  );
+};
+
 export interface GQLIntersection {
   and: ReadonlyArray<GQLFilter>;
 }
@@ -174,6 +188,20 @@ export interface GQLIntersection {
 export interface GQLUnion {
   or: ReadonlyArray<GQLFilter>;
 }
+
+/**
+ * Type guard to check if an object is a GQLIntersection
+ * @param value - The value to check
+ * @returns True if the value is a GQLIntersection
+ */
+export const isGQLUnion = (value: unknown): value is GQLUnion => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'or' in value &&
+    Array.isArray((value as GQLUnion).or)
+  );
+};
 
 type NestedContents = GQLFilter & {
   path: string;
@@ -516,3 +544,34 @@ export class EnumValueExtractorHandler
     return extractEnumFilterValue(op.operand);
   };
 }
+
+export const appendFilterToOperation = (
+  filter: Intersection | Union | undefined,
+  addition: Intersection | Union | undefined,
+): Intersection | Union => {
+  if (filter === undefined && addition === undefined)
+    return { operator: 'and', operands: [] };
+  if (addition === undefined && filter) return filter;
+  if (filter === undefined && addition) return addition;
+  return { ...filter, operands: [...(filter?.operands || []), addition] } as
+    | Intersection
+    | Union;
+};
+
+export const filterSetToOperation = (
+  fs: FilterSet | undefined,
+): Operation | undefined => {
+  if (!fs) return undefined;
+  switch (fs.mode) {
+    case 'and':
+      return Object.keys(fs.root).length == 0
+        ? undefined
+        : {
+            operator: fs.mode,
+            operands: Object.keys(fs.root).map((k): Operation => {
+              return fs.root[k];
+            }),
+          };
+  }
+  return undefined;
+};

@@ -9,7 +9,7 @@ import {
 } from 'mantine-react-table';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text, Tooltip } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { ValidatedSelectedItem } from '../types';

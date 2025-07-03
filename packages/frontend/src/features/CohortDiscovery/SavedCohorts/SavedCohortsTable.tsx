@@ -14,7 +14,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { IconSize } from '../../../utils/sizes';
 import { removeCohort } from '../CohortManagment/CohortManagerSlice';
 import { selectAllCohorts } from '../CohortManagment/CohortManagerSelectors';
