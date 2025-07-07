@@ -1,6 +1,10 @@
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { DataTypeConfig, TabConfig } from '../CohortBuilder/types';
-import { IndexedFilterSet, type RemoteSupportConfiguration } from '@gen3/core';
+import {
+  FilterSet,
+  IndexedFilterSet,
+  type RemoteSupportConfiguration,
+} from '@gen3/core';
 import { nanoid } from '@reduxjs/toolkit';
 
 interface EmptySelection {
@@ -30,6 +34,8 @@ export interface CohortDiscoveryGroup {
   tabs: ReadonlyArray<TabConfig>; // filters for the fields
   numColumns?: number; // number of cards to show in a row.
   emptySelection: EmptySelection; // What to show when no filters are selected
+  indexResources: IndexResourceField;
+  remoteSupportService: SupportServiceConfiguration;
 }
 
 export interface SupportServiceConfiguration {
@@ -54,24 +60,32 @@ export interface Cohort {
   id: string;
   name: string;
   filters: IndexedFilterSet; // maps of index to filter set
-  modified?: boolean; // flag which is set to true if modified and unsaved
+  modified: boolean; // flag which is set to true if modified and unsaved
   modifiedDatetime: string; // last time cohort was modified
   createdDatetime: string;
   requestedAccess: boolean;
   requestId: string;
+  saved: boolean;
 }
 
-export const newCohort = (name: string, filters: IndexedFilterSet): Cohort => {
+export const newCohort = (
+  name: string,
+  filters: IndexedFilterSet,
+  id?: string,
+  saved?: boolean,
+): Cohort => {
   const ts = new Date().toISOString();
 
   return {
-    id: createCohortId(),
+    id: id ?? createCohortId(),
     name: name,
     filters: filters,
     modifiedDatetime: ts,
     createdDatetime: ts,
     requestedAccess: false,
     requestId: 'no_request_id',
+    saved: saved ?? false,
+    modified: false,
   };
 };
 
@@ -130,3 +144,8 @@ interface ResourceField {
 // mapping index to resource path and data field for a requestor
 // cohort request
 export type IndexResourceField = Record<string, ResourceField>;
+
+export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
+  Object.values(filters).every(
+    (filterSet) => Object.keys(filterSet).length === 0,
+  );

@@ -8,6 +8,7 @@ const ExplorerPage = ({
   headerProps,
   footerProps,
   explorerConfig,
+  headerMetadata,
   tabsLayout,
   sharedFiltersMap,
 }: ExplorerPageProps): JSX.Element => {
@@ -22,10 +23,11 @@ const ExplorerPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Explorer Page',
         content: 'Explorer Page',
         key: 'gen3-explorer-page',
+        ...(headerMetadata ? headerMetadata : {}),
       }}
     >
       <CohortBuilder

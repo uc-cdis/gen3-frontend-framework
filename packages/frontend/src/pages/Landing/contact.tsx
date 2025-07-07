@@ -12,7 +12,7 @@ const ContactPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3Contact Page',
         content: 'Contact Page',
         key: 'gen3-contact-page',

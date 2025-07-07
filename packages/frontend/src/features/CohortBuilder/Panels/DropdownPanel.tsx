@@ -9,7 +9,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import type { TabConfig } from '../types';
 import { FiltersPanel } from '../FiltersPanel';
 import {

@@ -14,7 +14,7 @@ import {
   findButtonAction,
   NullButtonAction,
 } from './downloads/actions/registeredActions';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 

@@ -1,44 +1,38 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import {
-  Flex,
-  Stack,
-  Center,
-  Box,
-  Title,
-  Text,
-  LoadingOverlay,
-} from '@mantine/core';
+import { Box, Center, Flex, Stack, Text, Title } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import { FacetDefinition, useGetAggsQuery } from '@gen3/core';
+import { FacetDefinition } from '@gen3/core';
 
-import { selectIndexFilters } from './CohortSelectors';
+import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { CohortDiscoveryGroup } from './types';
 import {
-  getAllFieldsFromFilterConfigs,
   classifyFacets,
+  getAllFieldsFromFilterConfigs,
 } from '../../components/facets';
 import { TabConfig } from '../CohortBuilder/types';
 import { ErrorCard } from '../../components/MessageCards';
 import ChartsAndFacetsPanel from './ChartsAndFacetsPanel';
-import ActionButtonGroup from './ActionButtons/ActionButtonGroup';
-import CohortManager from '../CohortDiscovery/CohortManager';
-import { AppState, useAppSelector, useAppDispatch } from './appApi';
+import CohortManager from './CohortManagment/CohortManager';
+import { AppState, useAppDispatch, useAppSelector } from './appApi';
 import Image from 'next/image';
 import {
-  selectSelectedFacetsFromIndex,
-  removeFacetSelection,
   addFacetSelection,
+  removeFacetSelection,
+  selectSelectedFacetsFromIndex,
 } from './SelectedFacetsSlice';
-import { useRoundedAggsQuery } from './queryApi';
+import { useUnsecureRoundedAggsQuery } from './queryApi';
+import CohortQueryExpression from './CohortQueryExpression';
 
 const IndexPanel = ({
   dataConfig,
   tabs,
   tabTitle,
   emptySelection,
+  indexResources,
+  remoteSupportService,
 }: CohortDiscoveryGroup) => {
   const [activeFieldDefinitions, setActiveFieldDefinitions] = useState<
     Array<FacetDefinition>
@@ -78,25 +72,21 @@ const IndexPanel = ({
   }, [selectedFacets, facetDefinitions]);
 
   const cohortFilters = useAppSelector((state: AppState) =>
-    selectIndexFilters(state, index),
+    selectCurrentCohortIndexFilters(state, index),
   );
 
-  const queryFields =
-    categories.length === 0
-      ? fields
-      : activeFieldDefinitions.map((x) => x.field);
   const {
     data,
     isSuccess,
     isLoading: isAggsQueryFetching,
     isError: isAggsQueryError,
-  } = useRoundedAggsQuery(
+  } = useUnsecureRoundedAggsQuery(
     {
       type: index,
-      fields: queryFields,
+      fields: fields,
       filters: cohortFilters,
     },
-    { skip: queryFields.length === 0 },
+    { skip: fields.length === 0 },
   );
 
   const updateFields = useDeepCompareCallback(
@@ -149,9 +139,8 @@ const IndexPanel = ({
 
   return (
     <Stack>
-      <CohortManager index={index} />
+      <CohortQueryExpression index={index} />
       <Flex wrap="nowrap" className="flex h-full bg-base-light pb-4 ml-4">
-        <LoadingOverlay visible={isAggsQueryFetching} />
         <FacetSelectionPanel
           categories={categories}
           selectedFields={selectedFacets}
@@ -160,12 +149,20 @@ const IndexPanel = ({
             useClearFilter: () => (field: string) => null,
             useToggleExpandFilter: useToggleExpandFilter,
             useFilterExpanded: useFilterExpandedState,
+            useFieldNameToTitle: () => (field: string) => field,
           }}
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">
-          <ActionButtonGroup index={index} />
+          <CohortManager
+            indexResources={indexResources}
+            remoteSupportService={remoteSupportService}
+          />
           {selectedFacets.length > 0 ? (
             <ChartsAndFacetsPanel
+              data={data}
+              isLoading={isAggsQueryFetching}
+              isError={isAggsQueryError}
+              isSuccess={isSuccess}
               index={index}
               facets={activeFieldDefinitions}
             />

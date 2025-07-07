@@ -1,20 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FacetCardProps, FacetDataHooks } from './types';
-import { ActionIcon, Badge, Group, TextInput, Tooltip } from '@mantine/core';
-import {
-  controlsIconStyle,
-  FacetIconButton,
-  FacetText,
-  FacetHeader,
-} from './components';
+import { ActionIcon, Badge, Group, TextInput } from '@mantine/core';
+import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { MdClose as CloseIcon } from 'react-icons/md';
-import { FaUndo as UndoIcon, FaPlus as PlusIcon } from 'react-icons/fa';
+import { FaPlus as PlusIcon } from 'react-icons/fa';
 import {
-  Operation,
+  EnumFilterValue,
   Excludes,
   Includes,
+  Operation,
   trimFirstFieldNameToTitle,
-  EnumFilterValue,
 } from '@gen3/core';
 import FacetControlsHeader from './FacetControlsHeader';
 
@@ -125,7 +120,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : 'mx-0'
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition`}
     >
       <FacetControlsHeader
         field={field}

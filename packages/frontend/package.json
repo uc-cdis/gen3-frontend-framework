@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.95",
+  "version": "0.11.10",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -8,7 +8,7 @@
   "sideEffects": false,
   "engines": {
     "npm": ">=10.2.3",
-    "node": ">=20.11.0"
+    "node": ">=22.11.0"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -49,10 +49,10 @@
     "os": false
   },
   "dependencies": {
-    "@gen3/core": "^0.10.95",
+    "@gen3/core": "^0.11.10",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
-    "@iconify/react": "^5.0.2",
+    "@iconify-icon/react": "^3.0.0",
     "@kbox-labs/react-echarts": "^1.4.0",
     "@mantine/core": "^7.16.0",
     "@mantine/dates": "^7.16.0",
@@ -82,6 +82,7 @@
     "graphql": "^16.9.0",
     "graphql-ws": "^5.14.0",
     "gray-matter": "^4.0.3",
+    "isomorphic-dompurify": "^2.25.0",
     "jose": "^4.15.9",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",

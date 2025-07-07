@@ -1,29 +1,11 @@
 import React, { useCallback } from 'react';
-import { FacetCommonHooks, FromToRangeValues } from './types';
+import { FacetCardProps, FromToRangeValues, RangeFacetHooks } from './types';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
-import {
-  NumberInput,
-  Text,
-  LoadingOverlay,
-  RangeSlider,
-  Tooltip,
-} from '@mantine/core';
-import {
-  FacetHeader,
-  FacetText,
-  controlsIconStyle,
-  FacetIconButton,
-} from './components';
+import { LoadingOverlay, NumberInput, RangeSlider, Text } from '@mantine/core';
+import { controlsIconStyle, FacetHeader, FacetText } from './components';
 
-import {
-  FacetCardProps,
-  GetRangeFacetDataFunction,
-  GetTotalCountsFunction,
-  UpdateFacetFilterHook,
-} from './types';
-
-import { fieldNameToTitle, Intersection } from '@gen3/core';
+import { Intersection } from '@gen3/core';
 import FacetControlsHeader from './FacetControlsHeader';
 
 const createBucket = (
@@ -45,11 +27,6 @@ const createBucket = (
     },
   ],
 });
-
-export interface RangeFacetHooks extends FacetCommonHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetData: GetRangeFacetDataFunction;
-}
 
 export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
   minimum?: number;
@@ -112,7 +89,7 @@ const RangeFacet = ({
     <div
       className={`flex flex-col ${
         width ? width : 'mx-1'
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition`}
       id={field}
     >
       <FacetControlsHeader

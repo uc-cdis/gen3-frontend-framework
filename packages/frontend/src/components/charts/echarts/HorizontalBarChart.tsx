@@ -3,6 +3,8 @@ import { processLabel, truncateString } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramData, HistogramDataArray } from '@gen3/core';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { isArray } from 'lodash';
 
 interface BarChartData {
   data: number[];
@@ -51,16 +53,26 @@ const processChartData = (
   return results;
 };
 
-const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
+const HorizontalBarChart = ({
+  data,
+  valueType,
+  total,
+  showLegendInChart = true,
+}: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
 
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          // Use axis to trigger tooltip
-          type: 'shadow', // 'shadow' as default; can also be 'line' or 'shadow'
+        trigger: 'item',
+        formatter: function (param) {
+          const p: CallbackDataParams =
+            isArray(param) && param.length > 0
+              ? param[0]
+              : (param as CallbackDataParams);
+
+          const colorSquare = `<span style="display:inline-block; width:10px; height:10px; background-color:${p.color}; margin-right:5px;"></span>`;
+          return `${colorSquare}${p.seriesName}: <b>${p.value}</b>`;
         },
       },
       legend: {
@@ -68,10 +80,11 @@ const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
         left: '73%',
         type: 'scroll',
         right: 15,
+        show: showLegendInChart,
       },
       grid: {
         left: '0%',
-        right: '30%',
+        right: showLegendInChart ? '30%' : '3%',
         bottom: '25%',
         containLabel: true,
         height: '50%',

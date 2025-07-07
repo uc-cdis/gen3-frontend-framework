@@ -42,7 +42,7 @@ const Header = ({
       />
     </div>
   ) : (
-    <div className="w-100">
+    <div className="w-full">
       <TopBar
         items={top.items}
         loginButtonVisibility={top?.loginButtonVisibility}

@@ -17,7 +17,7 @@ const DataLibraryPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 DataLibrary Page',
         content: 'DataLibrary Data',
         key: 'gen3-data-library-page',

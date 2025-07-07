@@ -12,7 +12,7 @@ const WorkspaceNoAccessPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Workspace No Access Page',
         content: 'Workspace no access page',
         key: 'gen3-workspace-no-access-page',

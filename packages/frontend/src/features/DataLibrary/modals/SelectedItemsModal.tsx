@@ -10,7 +10,7 @@ import {
   Text,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { HTTPError } from '@gen3/core';
 import { HTTPUserFriendlyErrorMessages } from './utils';
 
@@ -214,7 +214,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             disabled={actionButtonDisabled}
             onClick={async () => {
               setIsRunning(true);
-               await actionFunction.action(
+              await actionFunction.action(
                 validatedLibrarySelections,
                 actionFunction.parameters,
                 onDone,

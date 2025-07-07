@@ -46,6 +46,11 @@ export interface HistogramData {
   count: number;
 }
 
+export interface HistogramDataAsStringKey {
+  key: string;
+  count: number;
+}
+
 export type HistogramDataArray = Array<HistogramData>;
 
 const isValidObject = (input: any): boolean =>
@@ -196,3 +201,23 @@ export interface ManifestItem {
   file_size?: number;
   file_name?: string;
 }
+
+export interface StorageOperationResults {
+  isError?: boolean;
+  status: number;
+  message: string;
+}
+
+export interface DataFetchingResult<T> extends DataFetchingStatus {
+  readonly data: T;
+}
+
+export interface DataFetchingStatus {
+  readonly isSuccess?: boolean;
+  readonly isFetching?: boolean;
+  readonly isError?: boolean;
+  readonly isUninitialized?: boolean;
+  readonly error?: string;
+}
+
+export type DataFetchingHook<T> = () => DataFetchingResult<T>;

@@ -1,17 +1,23 @@
 import {
-  JSONValue,
+  type AggregationsData,
+  DataLibraryStoreMode,
+  type ExportDatasetFields,
   JSONObject,
   type MetadataPaginationParams,
-  type AggregationsData,
-  type ExportDatasetFields,
-  DataLibraryStoreMode,
 } from '@gen3/core';
 
 import { SummaryStatistics, SummaryStatisticsConfig } from './Statistics/types';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
-import { SummaryChart } from '../../components/charts/types';
-import { StudyPageGroup, StudyPageConfig, StudyDetailsField, StudyColumn, StudyDetailView, TagsConfig } from '../Study/types';
+import { CollapsableChartsPanelConfiguration } from '../../components/charts/types';
+import {
+  StudyColumn,
+  StudyDetailsField,
+  StudyDetailView,
+  StudyPageConfig,
+  TagsConfig,
+} from '../Study/types';
 import { DataAuthorization } from '../../utils';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -162,24 +168,11 @@ interface DataLoader {
   sortingAndPagination?: 'client' | 'server';
 }
 
-interface SummaryChartWithField extends SummaryChart {
-  field: string;
-}
-
-export interface ChartsSection {
-  enabled: boolean;
-  title?: string;
-  showLegends?: {
-    enabled: boolean;
-    showSwitch?: boolean;
-  };
-  charts?: Record<string, SummaryChartWithField>;
-}
-
 // TODO: Type the rest of the config
 export interface DiscoveryIndexConfig {
   guidType?: string;
   studyField?: string;
+  maxStudies?: number;
   label?: string;
   features: {
     advSearchFilters?: AdvancedSearchFilters;
@@ -189,7 +182,7 @@ export interface DiscoveryIndexConfig {
     search?: SearchConfig;
     authorization: DataAuthorization;
     dataLoader?: DataLoader;
-    chartsSection?: ChartsSection;
+    chartsSection?: CollapsableChartsPanelConfiguration;
   };
   aggregations: SummaryStatisticsConfig[];
   tags: TagsConfig;
@@ -201,7 +194,7 @@ export interface DiscoveryIndexConfig {
   minimalFieldMapping: MinimalFieldMapping;
 }
 
-export interface DiscoveryConfig {
+export interface DiscoveryConfig extends Gen3AppConfigData {
   metadataConfig: Array<DiscoveryIndexConfig>;
 }
 
