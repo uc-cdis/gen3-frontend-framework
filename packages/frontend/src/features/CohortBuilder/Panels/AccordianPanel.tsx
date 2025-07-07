@@ -7,7 +7,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import type { TabConfig } from '../types';
-import { FiltersPanel } from '../FiltersPanel';
+import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
   FacetDefinition,

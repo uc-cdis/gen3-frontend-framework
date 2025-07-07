@@ -9,7 +9,7 @@ interface FiltersPanelProps {
   valueLabel: string;
 }
 
-export const FiltersPanel = ({
+const FiltersPanel = ({
   fields,
   dataFunctions,
   valueLabel,
@@ -35,3 +35,5 @@ export const FiltersPanel = ({
     </div>
   );
 };
+
+export default FiltersPanel;
