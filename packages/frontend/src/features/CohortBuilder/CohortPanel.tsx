@@ -55,7 +55,7 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import DropdownPanel from './Panels/DropdownPanel';
+import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 
 const EmptyData = {};
 

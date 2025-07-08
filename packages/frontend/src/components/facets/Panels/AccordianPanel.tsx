@@ -6,7 +6,7 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import type { TabConfig } from '../types';
+import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,

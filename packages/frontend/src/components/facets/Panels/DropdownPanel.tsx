@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify-icon/react';
-import type { TabConfig } from '../types';
+import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
@@ -25,7 +25,7 @@ import {
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import AccessLevel from '../AccessLevel';
+import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
 
 export const DropdownPanel = ({
   index,

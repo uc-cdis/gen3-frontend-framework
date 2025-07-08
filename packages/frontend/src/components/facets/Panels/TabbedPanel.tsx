@@ -1,5 +1,5 @@
 import { Tabs } from '@mantine/core';
-import { TabConfig } from '../types';
+import { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import { Accessibility, FacetDefinition } from '@gen3/core';
 import React from 'react';
