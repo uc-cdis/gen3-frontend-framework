@@ -3,7 +3,7 @@ import { upperFirst } from 'lodash';
 import { Button, Modal, TextInput, Loader } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import ErrorMessage from '../../../../components/MessageCards/ErrorMessage';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 interface SaveOrCreateEntityModalProps {
   entity: string;

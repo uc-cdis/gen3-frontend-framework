@@ -1,11 +1,9 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
-import CohortManager from '../../features/CohortBuilder/CohortManager';
 import { Stack } from '@mantine/core';
 import { TabbedCohortBuilderPageProps } from './types';
-import CountsValue from '../../components/counts/CountsValue';
-import { toDisplayName } from '../../utils';
+import CohortManagerAndExpression from '../../features/CohortBuilder/CohortManagerAndExpression';
 
 const TabbedCohortBuilderPage = ({
   headerProps,
@@ -23,7 +21,9 @@ const TabbedCohortBuilderPage = ({
     >
       <Stack align="stretch" classNames={{ root: 'w-full' }}>
         <div className="w-full flex-col flex gap-4 fixed bg-white z-10">
-          <CohortManager index={configuration.index}></CohortManager>
+          <CohortManagerAndExpression
+            index={configuration.index}
+          ></CohortManagerAndExpression>
         </div>
         <div className="w-full mt-40 mr-4">
           <TabbedCohortBuilder {...configuration} index={configuration.index} />

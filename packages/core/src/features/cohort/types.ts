@@ -4,6 +4,8 @@ export type CombineMode = 'and' | 'or';
 
 export type CohortId = string;
 
+export type CohortCountsData = Record<string, number>;
+
 /**
  * A Cohort is a collection of filters that can be used to query the GDC API.
  * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
@@ -24,6 +26,7 @@ export interface Cohort {
   modified?: boolean; // flag which is set to true if modified and unsaved
   modified_datetime: string; // last time cohort was modified
   saved?: boolean; // flag indicating if cohort has been saved.
+  counts: CohortCountsData; // counts for each index "unit" (e.g. case or study) in the cohort
 }
 
 export interface CohortPersistenceSaveReplaceParameters {
