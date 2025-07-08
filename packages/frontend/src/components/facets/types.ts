@@ -2,7 +2,6 @@ import {
   CombineMode,
   DataFetchingResult,
   EnumFilterValue,
-  FacetDefinition,
   IndexAndField,
   Operation,
 } from '@gen3/core';
@@ -60,7 +59,8 @@ export type FacetType =
   | 'percent'
   | 'datetime'
   | 'toggle'
-  | 'multiselect';
+  | 'multiselect'
+  | 'upload';
 
 // required functions
 export type ClearFacetFunction = (field: string) => void;
@@ -277,4 +277,16 @@ export interface EnumChartProps {
   readonly maxBins: number;
   readonly height: number;
   readonly valueLabel?: string;
+}
+
+export interface FacetDefinition {
+  readonly description?: string; //description from _mapping
+  readonly field: string; // full name of field
+  readonly dataField?: string; // deprecated
+  readonly index: string; // what dataType is this facet for
+  readonly type: FacetType; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly range?: AllowableRange; // range of value types
+  readonly hasData?: boolean; // does this facet have data
+  readonly label?: string; // label for facet
+  readonly sharedWithIndices?: Array<IndexAndField>; // if this filter is denormalized across indices
 }

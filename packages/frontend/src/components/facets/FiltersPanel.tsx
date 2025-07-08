@@ -1,7 +1,7 @@
 import React from 'react';
-import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
-import { createFacetCard } from '../../components/facets/createFacetCard';
-import { FacetDataHooks } from '../../components/facets/types';
+import { fieldNameToTitle } from '@gen3/core';
+import { createFacetCard } from './createFacetCard';
+import { FacetDataHooks, FacetDefinition, FacetType } from './types';
 
 interface FiltersPanelProps {
   dataFunctions: Record<FacetType, FacetDataHooks>;
@@ -9,7 +9,7 @@ interface FiltersPanelProps {
   valueLabel: string;
 }
 
-export const FiltersPanel = ({
+const FiltersPanel = ({
   fields,
   dataFunctions,
   valueLabel,
@@ -35,3 +35,5 @@ export const FiltersPanel = ({
     </div>
   );
 };
+
+export default FiltersPanel;

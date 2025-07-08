@@ -1,6 +1,10 @@
 import React from 'react';
-import { FacetDefinition } from '@gen3/core';
-import { EnumChartProps, FacetDataHooks, QueryOptions } from './types';
+import {
+  EnumChartProps,
+  FacetDataHooks,
+  FacetDefinition,
+  QueryOptions,
+} from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';

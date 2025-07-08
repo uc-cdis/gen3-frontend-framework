@@ -1,8 +1,9 @@
 import { Tabs } from '@mantine/core';
-import { TabConfig } from '../types';
-import { FiltersPanel } from '../FiltersPanel';
-import { Accessibility, FacetDefinition } from '@gen3/core';
+import { TabConfig } from '../../../features/CohortBuilder/types';
+import FiltersPanel from '../FiltersPanel';
+import { Accessibility } from '@gen3/core';
 import React from 'react';
+import { FacetDefinition } from '../types';
 import { TabbablePanelProps } from './types';
 
 const VerticalTabbedPanel = ({
@@ -11,9 +12,9 @@ const VerticalTabbedPanel = ({
   tabTitle,
   facetDefinitions,
   facetDataHooks,
-                               onAccessChange = (value: Accessibility) => null,
-                               accessLevel = Accessibility.ALL,
-                               showAccessLevel = false,
+  onAccessChange = (value: Accessibility) => null,
+  accessLevel = Accessibility.ALL,
+  showAccessLevel = false,
 }: TabbablePanelProps) => {
   return (
     <div>
@@ -78,7 +79,7 @@ const SinglePanel = ({
   );
 };
 
-export const TabbedPanel = ({
+const TabbedPanel = ({
   index,
   filters,
   tabTitle,
@@ -103,3 +104,5 @@ export const TabbedPanel = ({
     />
   );
 };
+
+export default TabbedPanel;
