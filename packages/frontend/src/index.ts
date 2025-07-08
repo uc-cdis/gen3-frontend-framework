@@ -25,6 +25,7 @@ import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerA
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
 import { CollapsableSidebar } from './components/CollapsableSidebar';
+import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
 import {
   ActionButton,
   DropdownButton,
@@ -32,6 +33,8 @@ import {
   Gen3ButtonReverse,
   UploadJSONButton,
 } from './components/Buttons';
+
+import SegmentedControl from './components/SegmentedControl';
 
 import TopBar from './features/Navigation/TopBar/TopBar';
 
@@ -126,6 +129,8 @@ export {
   // components
   CollapsableSidebar,
   DropdownButton,
+  DropdownWithIcon,
+  SegmentedControl,
   Gen3Button,
   Gen3ButtonReverse,
   UploadJSONButton,

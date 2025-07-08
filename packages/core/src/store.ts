@@ -63,3 +63,5 @@ export const coreStore = setupCoreStore();
 setupListeners(coreStore.dispatch);
 
 export type CoreDispatch = typeof coreStore.dispatch;
+
+export type CoreStore = typeof coreStore;

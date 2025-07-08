@@ -22,6 +22,7 @@ import {
   type GQLIntersection,
   type GQLUnion,
   type GQLNestedFilter,
+  type GQLRange,
 } from './filters';
 
 export * from './types';
@@ -51,4 +52,5 @@ export {
   type GQLIntersection,
   type GQLUnion,
   type GQLNestedFilter,
+  type GQLRange,
 };
