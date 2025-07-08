@@ -24,7 +24,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       className="rounded-sm rounded-t-md bg-base-max p-0"
     >
       <div className="h-full">
-        <div className="p-0 rounded-sm h-1/2 h-max-1/2">
+        <div className="p-0 rounded-sm h-1/2 h-max-1/2 flex justify-center items-center overflow-hidden">
           <Image
             component={NextImage}
             src={`${image}`}
