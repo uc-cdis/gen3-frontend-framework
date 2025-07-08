@@ -1,8 +1,9 @@
 import { Tabs } from '@mantine/core';
 import { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
-import { Accessibility, FacetDefinition } from '@gen3/core';
+import { Accessibility } from '@gen3/core';
 import React from 'react';
+import { FacetDefinition } from '../types';
 import { TabbablePanelProps } from './types';
 
 const VerticalTabbedPanel = ({

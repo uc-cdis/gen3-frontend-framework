@@ -1,15 +1,15 @@
 import React from 'react';
 import { Grid } from '@mantine/core';
 import {
-  extractEnumFilterValue,
-  FacetDefinition,
-  fieldNameToTitle,
   AggregationsData,
+  extractEnumFilterValue,
+  fieldNameToTitle,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
+  FacetDefinition,
   processBucketData,
   processRangeData,
 } from '../../components/facets';
@@ -20,7 +20,6 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useFieldNameToTitle } from '../../components/facets/hooks';
-import { useUnsecureRoundedAggsQuery } from './queryApi';
 
 interface ChartsAndFacetsPanelProps {
   index: string;

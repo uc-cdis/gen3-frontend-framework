@@ -4,7 +4,7 @@ import { Box, Center, Flex, Stack, Text, Title } from '@mantine/core';
 import FacetSelectionPanel from './FacetSelectionPanel';
 import { useFilterExpandedState, useToggleExpandFilter } from './hooks';
 
-import { FacetDefinition } from '@gen3/core';
+import { FacetDefinition } from '../../components/facets/types';
 
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { CohortDiscoveryGroup } from './types';

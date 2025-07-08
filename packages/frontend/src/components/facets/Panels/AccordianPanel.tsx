@@ -10,7 +10,6 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
-  FacetDefinition,
   selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
@@ -21,6 +20,7 @@ import {
 } from '@gen3/core';
 import React from 'react';
 import { TabbablePanelProps } from './types';
+import { FacetDefinition } from '../types';
 import { Icon } from '@iconify-icon/react';
 import { modals } from '@mantine/modals';
 

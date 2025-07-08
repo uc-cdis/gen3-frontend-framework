@@ -1,6 +1,5 @@
-import { FacetDefinition } from '@gen3/core';
 import { createFacetCard, CreateFacetCardProps } from './createFacetCard';
-import { FacetDataHooks, FacetType } from './types';
+import { FacetDataHooks, FacetDefinition, FacetType } from './types';
 
 interface CreateFacetCardsProps
   extends Omit<CreateFacetCardProps, 'facetDefinition' | 'hooks'> {

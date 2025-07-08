@@ -14,7 +14,6 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
-  type FacetDefinition,
   selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
@@ -26,6 +25,7 @@ import {
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
+import { FacetDefinition } from '../types';
 
 export const DropdownPanel = ({
   index,

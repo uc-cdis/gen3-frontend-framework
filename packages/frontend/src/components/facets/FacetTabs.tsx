@@ -11,7 +11,6 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import { FacetDefinition } from '@gen3/core';
 import useScrollToHash from '../../utils/useScrollToHash';
 import { AddFacetIcon, AddIcon } from '../../types/icons';
 import createFacetCards from './createFacetCards';
@@ -21,6 +20,7 @@ import {
   CustomFacetHooks,
   EnumChartProps,
   FacetDataHooks,
+  FacetDefinition,
   FacetType,
   QueryOptions,
 } from './types';

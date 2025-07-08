@@ -1,7 +1,7 @@
 import React from 'react';
-import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
-import { FacetDataHooks } from './types';
+import { FacetDataHooks, FacetDefinition, FacetType } from './types';
 
 interface FiltersPanelProps {
   dataFunctions: Record<FacetType, FacetDataHooks>;
