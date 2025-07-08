@@ -9,8 +9,7 @@ import {
   TextInput,
   UnstyledButton,
 } from '@mantine/core';
-import { FacetDefinition as FacetCardDefinition } from '@gen3/core'; // NOTE: This allow use of GDC component with less code modifications
-import { QueryOptions } from './types';
+import { FacetDefinition as FacetCardDefinition, QueryOptions } from './types';
 
 interface FacetListProps {
   readonly data?: Record<string, FacetCardDefinition>; // Facets to display

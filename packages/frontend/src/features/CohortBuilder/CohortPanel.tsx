@@ -5,8 +5,6 @@ import {
   CombineMode,
   CoreState,
   extractEnumFilterValue,
-  type FacetDefinition,
-  FacetType,
   isIntersection,
   selectIndexFilters,
   selectSharedFilters,
@@ -19,6 +17,12 @@ import { type CohortPanelConfiguration } from './types';
 import { type SummaryChart } from '../../components/charts/types';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
+import {
+  EnumFacetDataHooks,
+  FacetDataHooks,
+  FacetDefinition,
+  FacetType,
+} from '../../components/facets/types';
 
 import {
   classifyFacets,
@@ -34,10 +38,6 @@ import {
   useClearFilters,
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
-import {
-  EnumFacetDataHooks,
-  FacetDataHooks,
-} from '../../components/facets/types';
 import CohortManager from './CohortManager';
 import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
@@ -55,7 +55,7 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import DropdownPanel from './Panels/DropdownPanel';
+import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 
 const EmptyData = {};
 

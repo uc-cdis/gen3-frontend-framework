@@ -5,10 +5,14 @@ import {
   SummaryChart,
 } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
-import { FieldToName, FacetSortType } from '../../components/facets/types';
+import {
+  FacetDefinition,
+  FacetSortType,
+  FieldToName,
+} from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
+import { Modals, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { Gen3AppConfigData } from '../../lib/content/types';
 

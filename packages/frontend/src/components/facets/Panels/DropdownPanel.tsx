@@ -10,22 +10,22 @@ import {
 } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify-icon/react';
-import type { TabConfig } from '../types';
-import { FiltersPanel } from '../FiltersPanel';
+import type { TabConfig } from '../../../features/CohortBuilder/types';
+import FiltersPanel from '../FiltersPanel';
 import {
-  useCoreSelector,
+  Accessibility,
   selectAllCohortFiltersCollapsed,
-  toggleCohortBuilderAllFilters,
-  useCoreDispatch,
+  selectSharedFilters,
   selectShouldShareFilters,
   setShouldShareFilters,
-  type FacetDefinition,
-  selectSharedFilters,
-  Accessibility,
+  toggleCohortBuilderAllFilters,
+  useCoreDispatch,
+  useCoreSelector,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import AccessLevel from '../AccessLevel';
+import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
+import { FacetDefinition } from '../types';
 
 export const DropdownPanel = ({
   index,

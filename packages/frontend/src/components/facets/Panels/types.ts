@@ -1,6 +1,7 @@
-import { TabsConfig } from '../types';
-import { Accessibility, FacetDefinition, FacetType } from '@gen3/core';
-import { FacetDataHooks } from '../../../components/facets';
+import { TabsConfig } from '../../../features/CohortBuilder/types';
+import { Accessibility } from '@gen3/core';
+import { FacetDataHooks } from '../index';
+import { FacetDefinition, FacetType } from '../types';
 
 export interface TabbablePanelProps {
   index: string;

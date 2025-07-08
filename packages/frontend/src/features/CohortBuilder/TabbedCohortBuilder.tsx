@@ -6,8 +6,6 @@ import {
   CombineMode,
   CoreState,
   extractEnumFilterValue,
-  type FacetDefinition,
-  FacetType,
   isIntersection,
   selectIndexFilters,
   useCoreSelector,
@@ -26,7 +24,11 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import { QueryOptions } from '../../components/facets/types';
+import {
+  type FacetDefinition,
+  FacetType,
+  QueryOptions,
+} from '../../components/facets/types';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -44,7 +46,6 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import CountsValue from '../../components/counts/CountsValue';
-import { toCountsString, toDisplayName } from '../../utils';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -202,6 +203,19 @@ const TabbedCohortBuilder = ({
     [data, cohortFilters.root, isSuccess],
   );
 
+  const EnumHookInstances = {
+    useGetFacetData: getEnumFacetData,
+    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useGetCombineMode: partial(useCohortFilterCombineState, index),
+    useSetCombineMode: partial(useSetCohortFilterCombineState, index),
+    useFieldNameToTitle: useFieldNameToTitle,
+    useTotalCounts: undefined,
+  };
+
   const RangeHookInstances = {
     useGetFacetData: getRangeFacetData,
     useUpdateFacetFilters: partial(useUpdateFilters, index),
@@ -218,38 +232,9 @@ const TabbedCohortBuilder = ({
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
-        enum: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useGetCombineMode: partial(useCohortFilterCombineState, index),
-          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useFieldNameToTitle: useFieldNameToTitle,
-          useTotalCounts: undefined,
-        },
-        exact: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToTitle: useFieldNameToTitle,
-          useTotalCounts: undefined,
-        },
-        multiselect: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToTitle: useFieldNameToTitle,
-          useTotalCounts: undefined,
-        },
+        enum: EnumHookInstances,
+        exact: EnumHookInstances,
+        multiselect: EnumHookInstances,
         range: RangeHookInstances,
         age: RangeHookInstances,
         year: RangeHookInstances,
@@ -258,6 +243,7 @@ const TabbedCohortBuilder = ({
         percent: RangeHookInstances,
         datetime: RangeHookInstances,
         toggle: RangeHookInstances,
+        upload: EnumHookInstances,
       };
     }, [getEnumFacetData, getRangeFacetData, index]);
 

@@ -2,6 +2,8 @@ export * from './types';
 export * from './utils';
 export * from './hooks';
 export * from './constants';
+export * from './NumericRangeFacet';
+export * from './Panels';
 import EnumFacet from './EnumFacet';
 import ExactValueFacet from './ExactValueFacet';
 import RangeFacet from './RangeFacet';
@@ -11,6 +13,8 @@ import FacetSelector from './FacetSelector';
 import FacetControlsHeader from './FacetControlsHeader';
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
+import FiltersPanel from './FiltersPanel';
+import { useFieldNameToTitle } from './hooks';
 
 export {
   FacetSelector,
@@ -22,4 +26,6 @@ export {
   FacetControlsHeader,
   FacetSortPanel,
   FacetExpander,
+  FiltersPanel,
+  useFieldNameToTitle,
 };
