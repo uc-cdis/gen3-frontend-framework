@@ -13,7 +13,7 @@ import FacetSelector from './FacetSelector';
 import FacetControlsHeader from './FacetControlsHeader';
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
-import FilterPanel from './FilterPanel';
+import FiltersPanel from './FiltersPanel';
 
 export {
   FacetSelector,
@@ -25,5 +25,5 @@ export {
   FacetControlsHeader,
   FacetSortPanel,
   FacetExpander,
-  FilterPanel,
+  FiltersPanel,
 };
