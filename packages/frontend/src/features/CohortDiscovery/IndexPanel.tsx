@@ -89,6 +89,8 @@ const IndexPanel = ({
     { skip: fields.length === 0 },
   );
 
+  console.log('fields', fields);
+
   const updateFields = useDeepCompareCallback(
     (field: string, checked: boolean) => {
       if (!checked) {
