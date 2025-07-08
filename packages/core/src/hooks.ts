@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { CoreDispatch } from './store';
+import { useDispatch, useSelector, useStore } from 'react-redux';
+import { CoreDispatch, CoreStore } from './store';
 import { CoreState } from './reducers';
 
 // From here down is react-related code. If we wanted to create a UI-agnotic core,
@@ -16,3 +16,4 @@ import { CoreState } from './reducers';
 
 export const useCoreSelector = useSelector.withTypes<CoreState>();
 export const useCoreDispatch = useDispatch.withTypes<CoreDispatch>();
+export const useCoreStore = useStore.withTypes<CoreStore>();

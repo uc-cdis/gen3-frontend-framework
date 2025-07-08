@@ -167,6 +167,17 @@ export interface GQLExcludeIfAny {
   };
 }
 
+export interface NumericFromTo {
+  readonly from: number;
+  readonly to: number;
+}
+
+export interface GQLRange {
+  range: {
+    [key: string]: ReadonlyArray<{ ranges: NumericFromTo[] }>;
+  };
+}
+
 /**
  * Type guard to check if an object is a GQLIntersection
  * @param value - The value to check
