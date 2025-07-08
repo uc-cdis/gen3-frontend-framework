@@ -390,6 +390,13 @@ export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
   return state.cohorts.cohort.entities[currentCohortId]?.filters;
 };
 
+export const selectCurrentCohortFilters = (
+  state: CoreState,
+): IndexedFilterSet => {
+  const currentCohortId = getCurrentCohortFromCoreState(state);
+  return state.cohorts.cohort.entities[currentCohortId]?.filters;
+};
+
 export const selectCurrentCohortId = (state: CoreState): CohortId => {
   return getCurrentCohort(state.cohorts.cohort);
 };

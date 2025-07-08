@@ -3,6 +3,7 @@ export * from './utils';
 export * from './hooks';
 export * from './constants';
 export * from './NumericRangeFacet';
+export * from './NumericRangeFacet/types';
 export * from './Panels';
 import EnumFacet from './EnumFacet';
 import ExactValueFacet from './ExactValueFacet';
