@@ -17,7 +17,7 @@ import { defaultCohortNameGenerator } from './utils';
  *  Switching a cohort is means that all the cohorts for the index changes.
  */
 
-export const UNSAVED_COHORT_NAME = 'Unsaved_Cohort';
+export const UNSAVED_COHORT_NAME = 'Cohort';
 export const NULL_COHORT_ID = 'null_cohort_id';
 
 type CohortId = string;
@@ -97,7 +97,7 @@ const newCohort = ({
     modified: false,
     saved: false,
     modified_datetime: ts.toISOString(),
-    counts: {}
+    counts: {},
   };
 };
 
