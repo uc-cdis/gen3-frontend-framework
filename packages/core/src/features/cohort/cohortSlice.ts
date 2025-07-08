@@ -18,8 +18,35 @@ import { Cohort, CohortId } from './types';
  *  Switching a cohort is means that all the cohorts for the index changes.
  */
 
-export const UNSAVED_COHORT_NAME = 'Unsaved_Cohort';
+export const UNSAVED_COHORT_NAME = 'Cohort';
 export const NULL_COHORT_ID = 'null_cohort_id';
+
+type CohortId = string;
+
+type CountsData = Record<string, number>;
+
+/**
+ * A Cohort is a collection of filters that can be used to query the GDC API.
+ * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
+ * @see https://redux-toolkit.js.org/api/createEntityAdapter
+ *
+ * @property id - the id of the cohort
+ * @property name - the name of the cohort
+ * @property filters - the filters for the cohort
+ * @property modified - flag indicating if the cohort has been modified
+ * @property modified_datetime - the last time the cohort was modified
+ * @property saved - flag indicating if the cohort has been saved
+ * @category Cohort
+ */
+export interface Cohort {
+  id: CohortId;
+  name: string;
+  filters: IndexedFilterSet; // maps of index to filter set
+  modified?: boolean; // flag which is set to true if modified and unsaved
+  modified_datetime: string; // last time cohort was modified
+  saved?: boolean; // flag indicating if cohort has been saved.
+  counts?: CountsData; // counts for each index "unit" (e.g. case or study) in the cohort
+}
 
 export interface CurrentCohortState {
   currentCohort?: string;
@@ -85,6 +112,7 @@ export const createNewCohort = ({
     modified: false,
     saved: false,
     modified_datetime: ts.toISOString(),
+    counts: {},
   };
 };
 

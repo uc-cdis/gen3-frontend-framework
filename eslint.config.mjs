@@ -33,6 +33,11 @@ export default [
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js'],
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     ...react.configs.flat.recommended,
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,

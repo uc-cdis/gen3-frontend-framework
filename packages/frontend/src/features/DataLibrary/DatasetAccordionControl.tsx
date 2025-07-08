@@ -10,7 +10,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { getHotkeyHandler } from '@mantine/hooks';
 import { DataItemSelectedState } from './types';
 import EmptyList from './EmptyList';

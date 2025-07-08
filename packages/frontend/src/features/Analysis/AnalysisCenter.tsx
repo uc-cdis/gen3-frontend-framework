@@ -75,7 +75,7 @@ const AnalysisCenter = ({
         </div>
       ) : null}
       <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mx-4 overflow-y-scroll">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-1 mx-4 overflow-y-auto">
           {tools.map(
             (
               {

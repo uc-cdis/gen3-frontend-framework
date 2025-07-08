@@ -5,3 +5,5 @@ export const DEFAULT_MINIMUM = 0;
 export const DEFAULT_MAXIMUM = 100;
 
 export const BAD_DATA_MESSAGE = 'No data for this field';
+
+export const DAYS_IN_YEAR = 365.25;

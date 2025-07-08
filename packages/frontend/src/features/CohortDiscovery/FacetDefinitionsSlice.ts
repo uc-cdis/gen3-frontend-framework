@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FacetDefinition } from '@gen3/core';
+import { FacetDefinition } from '../../components/facets/types';
 
 /**
  * State structure for facet definitions, organized by index and field

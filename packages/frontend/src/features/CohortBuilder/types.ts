@@ -1,13 +1,20 @@
 // set of interfaces which follows the current explorer configuration
 
-import { SummaryChart } from '../../components/charts';
+import {
+  CollapsableChartsPanelConfiguration,
+  SummaryChart,
+} from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
-import { FieldToName, FacetSortType } from '../../components/facets/types';
+import {
+  FacetDefinition,
+  FacetSortType,
+  FieldToName,
+} from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { Modals, FacetDefinition, SharedFieldMapping } from '@gen3/core';
+import { Modals, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
-import { ConfigVersionAndName } from '../../types';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 export type FacetType =
   | 'enum'
@@ -66,6 +73,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
+  chartsSection?: CollapsableChartsPanelConfiguration; // grid of charts within an accordion
   charts?: Record<string, SummaryChart>; // grid of charts
   table?: SummaryTable; // table configuration
   filters?: TabsConfig; // filters for the fields
@@ -92,7 +100,7 @@ export interface AccessControlConfiguration {
   showAccessLevelControl?: boolean;
 }
 
-export interface CohortBuilderConfiguration extends ConfigVersionAndName {
+export interface CohortBuilderConfiguration extends Gen3AppConfigData {
   tabsLayout?: 'left' | 'right' | 'center'; // top level tabs layout
   sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfiguration>;

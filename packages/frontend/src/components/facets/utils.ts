@@ -4,7 +4,6 @@ import {
   CoreState,
   EnumFilterValue,
   extractEnumFilterValue,
-  FacetDefinition,
   fieldNameToTitle,
   HistogramData,
   HistogramDataArray,
@@ -26,6 +25,7 @@ import {
 } from '@gen3/core';
 import {
   ClearFacetFunction,
+  FacetDefinition,
   FacetSortType,
   FieldToName,
   FromToRange,
@@ -143,7 +143,7 @@ export const classifyFacets = (
         ...acc,
         [fieldKey]: {
           field: fieldKey,
-          dataField: dataField, // get the last part of nested field name
+          dataField: dataField, // get the last part of the nested field name
           // this is to maintain compatibility with gitops but should be deprecated
           type: facetDef.type ?? type,
           index: index,

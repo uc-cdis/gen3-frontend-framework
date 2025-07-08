@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.10.93",
+  "version": "0.11.11",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -9,7 +9,7 @@
   ],
   "engines": {
     "npm": ">=10.2.3",
-    "node": ">=20.11.0"
+    "node": ">=22.11.0"
   },
   "author": "craigrbarnes <craig.barnes@intelligentlight.com>",
   "license": "Apache-2.0",
@@ -19,7 +19,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "next": "^15.2.4"
+    "next": "^15.3.3"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.5",

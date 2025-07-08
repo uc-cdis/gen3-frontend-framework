@@ -26,6 +26,7 @@ import {
 import { DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
+import StudyProvider from '../../Study/StudyProvider';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;

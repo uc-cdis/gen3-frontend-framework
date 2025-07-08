@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, Button, Text } from '@mantine/core';
 import { type DropdownButtonProps } from './types';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 const DropdownButton = ({
   title,

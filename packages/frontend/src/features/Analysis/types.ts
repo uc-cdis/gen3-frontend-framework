@@ -1,4 +1,6 @@
-import { ReactElement } from 'react';
+import  { ReactElement } from 'react';
+import { Gen3AppConfigData } from '../../lib/content/types';
+
 
 export interface AnalysisToolConfiguration {
   title: string;
@@ -9,13 +11,19 @@ export interface AnalysisToolConfiguration {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
+  appId?: string;
   count?: number; // TODO replace with function
+  countIndex?: string;
   countUnits?: string;
+  noDataTooltip?: string;
   cardType?: 'regular' | 'compact';
   btnText?: string;
+  tags?: Array<string>;
+  readonly rightComponent?: React.FC;
+  readonly selectionScreen?: React.FC;
 }
 
-export interface AnalysisCenterConfiguration {
+export interface AnalysisCenterConfiguration extends Gen3AppConfigData {
   tools: Array<AnalysisToolConfiguration>;
   showFilterAndSort?: boolean;
 }

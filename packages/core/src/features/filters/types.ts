@@ -1,5 +1,3 @@
-import { IndexAndField } from '../guppy';
-
 export interface Intersection {
   operator: 'and';
   operands: ReadonlyArray<Operation>;
@@ -23,7 +21,7 @@ export interface NotEquals {
 }
 
 export interface Includes {
-  operator: 'in';
+  operator: 'in' | 'includes';
   field: string;
   operands: ReadonlyArray<string | number>;
 }
@@ -102,6 +100,8 @@ export type OperationWithField =
   | ExcludeIfAny
   | Excludes;
 
+type OperandsType = Includes | Excludes | ExcludeIfAny | Intersection | Union;
+
 export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: 'and' | 'or';
@@ -142,6 +142,12 @@ export function isIntersection(value: unknown): value is Intersection {
   );
 }
 
+export const isOperandsType = (
+  operation: Operation,
+): operation is OperandsType => {
+  return (operation as OperandsType)?.operands !== undefined;
+};
+
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
   handleNotEquals: (op: NotEquals) => T;
@@ -179,34 +185,11 @@ export type HistogramBucket = {
   count: number;
 };
 
-export type FacetType =
-  | 'enum'
-  | 'exact'
-  | 'range'
-  | 'age'
-  | 'year'
-  | 'years'
-  | 'days'
-  | 'percent'
-  | 'datetime'
-  | 'toggle' // Note these support alternative UIs
-  | 'multiselect';
-
 export interface AllowableRange {
   readonly minimum?: number;
   readonly maximum?: number;
 }
 
-export interface FacetDefinition {
-  readonly description?: string; //description from _mapping
-  readonly field: string; // full name of field
-  readonly dataField: string; //
-  readonly index: string; // what dataType is this facet for
-  readonly type: FacetType; // classified type based on type + name: e.g. age, year, enumeration, etc
-  readonly range?: AllowableRange; // range of value types
-  readonly hasData?: boolean; // does this facet have data
-  readonly label?: string; // label for facet
-  readonly sharedWithIndices?: Array<IndexAndField>; // if this filter is denormalized across indices
-}
-
 export type IndexedFilterSet = Record<string, FilterSet>;
+
+export type UnionOrIntersection = Union | Intersection;

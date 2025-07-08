@@ -6,7 +6,7 @@ import { SessionProvider } from '../../lib/session/session';
 import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { addCollection } from '@iconify/react';
+import { addCollection } from '@iconify-icon/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import SaveCohortErrorModal from '../../features/CohortBuilder/CohortManager/modals/SaveCohortErrorModal';

@@ -4,7 +4,7 @@ import {
   AggregationsData,
   HistogramDataArray,
 } from '@gen3/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -121,6 +121,7 @@ const Charts = ({
                   total: counts ?? 1,
                   valueType: chart.valueType ?? 'count',
                   label: chart.label,
+                  showLegendInChart: chart.showLegendInChart,
                 })}
               </Grid.Col>
               <Grid.Col span={6} key="modal-col-2">
@@ -210,6 +211,7 @@ const Charts = ({
             total: counts ?? 1,
             valueType: charts[field].valueType ?? 'count',
             label: charts[field].label,
+            showLegendInChart: charts[field].showLegendInChart,
           })}
           {showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>

@@ -6,7 +6,12 @@ import NavigationBar from './NavigationBar';
 import NavigationButton from './NavigationButton';
 import NavPageLayout, { type NavPageLayoutProps } from './NavPageLayout';
 import { type TopBarProps } from './TopBar/TopBar';
-import { HeaderProps, type NavigationProps } from './types';
+import {
+  HeaderProps,
+  type NavigationProps,
+  HeaderMetadata,
+  isHeaderMetadata,
+} from './types';
 import { FooterProps } from './Footer/types';
 import { BannerProps, Banner, BannerLevelCategories } from './Banner';
 
@@ -18,6 +23,7 @@ export {
   type TopBarProps,
   type BannerProps,
   type BannerLevelCategories,
+  type HeaderMetadata,
   Footer,
   Gen3Link,
   Header,
@@ -26,4 +32,5 @@ export {
   NavigationButton,
   NavPageLayout,
   Banner,
+  isHeaderMetadata,
 };

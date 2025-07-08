@@ -36,8 +36,9 @@ export default [
       '@iconify/tools/src/svg/cleanup',
       '@iconify/tools/src/colors/parse',
       '@iconify/tools/src/optimise/svgo',
+      'node:fs',
       'fs',
-      'node:path',
+      'path',
       'node:util',
       '@iconify/tools/lib/colors/parse',
       '@iconify/tools/lib/import/directory',
@@ -113,6 +114,21 @@ export default [
       'node:util',
       'fetch-retry',
       'node-fetch',
+      '@gen3/core',
+      'url',
+    ],
+    plugins: [peerDepsExternal(), swc()],
+  },
+  {
+    input: './src/gdcGqlToGuppyGql/convert.ts',
+    output: [
+      {
+        file: 'dist/gdcGqlToGuppyGql.esm.js',
+        format: 'esm',
+        name: 'gdcGqlToGuppyGql',
+      },
+    ],
+    external: [
       '@gen3/core',
       'url',
     ],

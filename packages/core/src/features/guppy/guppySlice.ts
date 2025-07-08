@@ -495,6 +495,7 @@ export const {
   useGetAggsQuery,
   useGetAggsNoFilterSelfQuery,
   useLazyGetAggsQuery,
+  useLazyGetAggsNoFilterSelfQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,

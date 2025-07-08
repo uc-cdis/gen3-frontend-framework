@@ -32,7 +32,7 @@ const CohortBuilderPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Cohort Builder Page',
         content: 'Cohort Builder',
         key: 'gen3-cohort-builder-page',

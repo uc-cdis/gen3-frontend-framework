@@ -20,12 +20,8 @@ const processTopBarItems = (
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
       acc.push(
-        <>
-          <a
-            className="flex"
-            href={item.href}
-            key={`${item.href}_${item.name}`}
-          >
+        <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
+          <a className="flex" href={item.href}>
             <IconButton
               name={item.name}
               iconSize={item.iconSize}
@@ -39,7 +35,7 @@ const processTopBarItems = (
             orientation="vertical"
             classNames={{ root: dividerClassname }}
           />
-        </>,
+        </React.Fragment>,
       );
       return acc;
     },

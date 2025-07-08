@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, FileButton, Tooltip } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 interface UploadJSONButtonProps {
   handleFileChange: (data: string) => void;

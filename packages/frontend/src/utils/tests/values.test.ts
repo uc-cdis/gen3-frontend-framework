@@ -1,5 +1,3 @@
-// values.test.ts
-
 import { extractObjectKey } from '../values';
 
 describe('extractObjectKey Function', () => {
