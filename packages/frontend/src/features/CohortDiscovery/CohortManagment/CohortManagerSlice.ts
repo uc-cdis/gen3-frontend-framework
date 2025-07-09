@@ -7,11 +7,11 @@ import {
 } from '@reduxjs/toolkit';
 import { FilterSet, IndexedFilterSet, Operation } from '@gen3/core';
 import { Cohort, CohortId, newCohort } from '../types';
-import { cohortStorage } from './CohortStorage';
+import { cohortStorage } from './DiscoveryCohortStorage';
 import { EmptyFilterSet } from './types';
 
-const isNameUnique = (
-  state: EntityState<Cohort, CohortId> & CohortManagerState,
+const isNameUnique = <T, K extends EntityId>(
+  state: EntityState<T, K> & CohortManagerState,
   name: string,
   excludeId?: string,
 ): boolean => {

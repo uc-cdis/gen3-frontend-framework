@@ -1,19 +1,43 @@
 import { openDB, IDBPDatabase } from 'idb';
 import { StorageOperationResults, getTimestamp } from '@gen3/core';
-import { Cohort, CohortId } from '../types';
-import { CohortStorageReturnStatus } from './types';
+import { Cohort, CohortId } from '../features/CohortDiscovery/types';
 
-const DATABASE_NAME = 'Gen3CohortDiscovery';
-const STORE_NAME = 'cohorts';
-const DB_SCHEMA_VERSION = 1;
+export interface CohortStorageReturnStatus<T> extends StorageOperationResults {
+  data?: T;
+}
 
-export class CohortStorage {
+interface StorageEntity<T> {
+  id: T;
+  name: string;
+}
+
+export interface CohortStorageConfig {
+  databaseName: string;
+  storeName: string;
+  schemaVersion?: number;
+}
+
+export class CohortStorage<
+  T extends StorageEntity<K>,
+  K extends string | number = string,
+> {
+  private readonly databaseName: string;
+  private readonly storeName: string;
+  private readonly schemaVersion: number;
+
+  constructor(config: CohortStorageConfig) {
+    this.databaseName = config.databaseName;
+    this.storeName = config.storeName;
+    this.schemaVersion = config.schemaVersion || 1;
+  }
+
   private getDb(): Promise<IDBPDatabase> {
     try {
-      return openDB(DATABASE_NAME, 1, {
+      const storeName = this.storeName;
+      return openDB(this.databaseName, 1, {
         upgrade(db) {
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          if (!db.objectStoreNames.contains(storeName)) {
+            db.createObjectStore(storeName, { keyPath: 'id' });
           }
         },
       });
@@ -31,10 +55,10 @@ export class CohortStorage {
    */
   private async initializeDB(): Promise<IDBPDatabase> {
     try {
-      return await openDB(DATABASE_NAME, DB_SCHEMA_VERSION, {
+      return await openDB(this.databaseName, this.schemaVersion, {
         upgrade: (db) => {
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          if (!db.objectStoreNames.contains(this.storeName)) {
+            db.createObjectStore(this.storeName, { keyPath: 'id' });
           }
         },
 
@@ -70,11 +94,11 @@ export class CohortStorage {
   /**
    * Save a single cohort to the database
    */
-  async saveCohort(cohort: Cohort): Promise<StorageOperationResults> {
+  async saveCohort(cohort: T): Promise<StorageOperationResults> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).put(cohort);
+      const tx = db.transaction(this.storeName, 'readwrite');
+      tx.objectStore(this.storeName).put(cohort);
       await tx.done;
       return { status: 200, message: 'cohort added' };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,7 +110,7 @@ export class CohortStorage {
   /**
    * Save multiple cohorts in a single transaction (bulk operation)
    */
-  async saveCohorts(cohorts: Cohort[]): Promise<StorageOperationResults> {
+  async saveCohorts(cohorts: T[]): Promise<StorageOperationResults> {
     if (cohorts.length === 0)
       return {
         isError: true,
@@ -96,7 +120,7 @@ export class CohortStorage {
 
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const tx = db.transaction(this.storeName, 'readwrite');
 
       // Batch all operations in single transaction for better performance
       await Promise.all([
@@ -115,12 +139,12 @@ export class CohortStorage {
   /**
    * Get a specific cohort by ID
    */
-  async getCohort(id: CohortId): Promise<CohortStorageReturnStatus<Cohort>> {
+  async getCohort(id: K): Promise<CohortStorageReturnStatus<T>> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const cohort = (await store.get(id)) satisfies Cohort;
+      const tx = db.transaction(this.storeName, 'readonly');
+      const store = tx.objectStore(this.storeName);
+      const cohort = (await store.get(id)) satisfies T;
       return {
         status: 200,
         message: 'success',
@@ -139,16 +163,14 @@ export class CohortStorage {
   /**
    * Get all cohorts from the database
    */
-  async getAllCohorts(): Promise<
-    CohortStorageReturnStatus<Record<CohortId, Cohort>>
-  > {
+  async getAllCohorts(): Promise<CohortStorageReturnStatus<Record<K, T>>> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readonly');
+      const store = tx.objectStore(this.storeName);
 
       const savedCohorts =
-        (await store.getAll()) satisfies Array<Cohort> as Array<Cohort>;
+        (await store.getAll()) satisfies Array<T> as Array<T>;
       if (!savedCohorts) {
         return {
           isError: true,
@@ -157,12 +179,12 @@ export class CohortStorage {
         };
       }
       const cohorts = savedCohorts.reduce(
-        (acc: Record<CohortId, Cohort>, cohort) => {
+        (acc: Record<K, T>, cohort) => {
           const { id } = cohort;
           acc[id] = cohort;
           return acc;
         },
-        {},
+        {} as Record<K, T>,
       );
       return {
         status: 200,
@@ -180,14 +202,14 @@ export class CohortStorage {
    */
   async searchCohortsByName(
     searchTerm: string,
-  ): Promise<CohortStorageReturnStatus<Record<CohortId, Cohort>>> {
+  ): Promise<CohortStorageReturnStatus<Record<K, T>>> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readonly');
+      const store = tx.objectStore(this.storeName);
       const allCohorts = (await store.getAll(
-        STORE_NAME,
-      )) satisfies Array<Cohort> as Array<Cohort>;
+        this.storeName,
+      )) satisfies Array<T> as Array<T>;
 
       // Filter in memory for partial name matching
       const searchLower = searchTerm.toLowerCase();
@@ -196,11 +218,14 @@ export class CohortStorage {
         message: 'success',
         data: allCohorts
           .filter((cohort) => cohort.name.toLowerCase().includes(searchLower))
-          .reduce((acc: Record<CohortId, Cohort>, cohort) => {
-            const { id } = cohort;
-            acc[id] = cohort;
-            return acc;
-          }, {}),
+          .reduce(
+            (acc: Record<K, T>, cohort) => {
+              const { id } = cohort;
+              acc[id] = cohort;
+              return acc;
+            },
+            {} as Record<K, T>,
+          ),
       };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error: unknown) {
@@ -214,7 +239,7 @@ export class CohortStorage {
   async getCohortCount(): Promise<CohortStorageReturnStatus<number>> {
     try {
       const db = await this.getDb();
-      const total = await db.count(STORE_NAME);
+      const total = await db.count(this.storeName);
       return {
         status: 200,
         message: 'success',
@@ -235,13 +260,13 @@ export class CohortStorage {
   /**
    * Update an existing cohort (full replacement)
    */
-  async updateCohort(cohort: Cohort): Promise<StorageOperationResults> {
+  async updateCohort(cohort: T): Promise<StorageOperationResults> {
     try {
       const db = await this.getDb();
 
       // Verify cohort exists before updating
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readwrite');
+      const store = tx.objectStore(this.storeName);
       const existing = await store.get(cohort.id);
       if (!existing) {
         return {
@@ -278,13 +303,13 @@ export class CohortStorage {
   /**
    * Delete a specific cohort by ID
    */
-  async deleteCohort(id: CohortId): Promise<StorageOperationResults> {
+  async deleteCohort(id: K): Promise<StorageOperationResults> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readwrite');
+      const store = tx.objectStore(this.storeName);
       // Verify cohort exists before deleting
-      const existing = await db.get(STORE_NAME, id);
+      const existing = await db.get(this.storeName, id);
       if (!existing) {
         return {
           isError: true,
@@ -313,8 +338,8 @@ export class CohortStorage {
   async deleteAllCohorts(): Promise<StorageOperationResults> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readwrite');
+      const store = tx.objectStore(this.storeName);
       store.clear();
       await tx.done;
       return { status: 200, message: `all cohorts deleted` };
@@ -334,15 +359,13 @@ export class CohortStorage {
   /**
    * Check if a cohort exists
    */
-  async cohortExists(
-    id: CohortId,
-  ): Promise<CohortStorageReturnStatus<boolean>> {
+  async cohortExists(id: K): Promise<CohortStorageReturnStatus<boolean>> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(this.storeName, 'readwrite');
+      const store = tx.objectStore(this.storeName);
       // Verify cohort exists before deleting
-      const existing = await db.get(STORE_NAME, id);
+      const existing = await db.get(this.storeName, id);
       return { status: 200, message: `${id}: ${existing ? 'true' : 'false'}` };
     } catch (error: unknown) {
       const errorMessage =
@@ -358,9 +381,7 @@ export class CohortStorage {
   /**
    * Export all cohorts as JSON
    */
-  async exportCohorts(): Promise<
-    CohortStorageReturnStatus<Record<CohortId, Cohort>>
-  > {
+  async exportCohorts(): Promise<CohortStorageReturnStatus<Record<K, T>>> {
     return await this.getAllCohorts();
   }
 
@@ -368,9 +389,9 @@ export class CohortStorage {
    * Import cohorts from JSON data
    */
   async importCohorts(
-    cohorts: Cohort[],
+    cohorts: T[],
     overwrite: boolean = false,
-  ): Promise<void | CohortStorageReturnStatus> {
+  ): Promise<void | CohortStorageReturnStatus<T>> {
     try {
       if (overwrite) {
         await this.deleteAllCohorts();
@@ -399,6 +420,3 @@ export class CohortStorage {
     }
   }
 }
-
-// Export a singleton instance
-export const cohortStorage = new CohortStorage();
