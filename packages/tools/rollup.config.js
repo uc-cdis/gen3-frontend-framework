@@ -128,7 +128,25 @@ export default [
         name: 'gdcGqlToGuppyGql',
       },
     ],
+    external: ['@gen3/core', 'url'],
+    plugins: [peerDepsExternal(), swc()],
+  },
+  {
+    input: './src/getFacetDefinitions/index.ts',
+    output: [
+      {
+        file: 'dist/getSharedFilters.esm.js',
+        format: 'esm',
+        name: 'getSharedFilters',
+      },
+    ],
     external: [
+      'https',
+      'http',
+      'fs',
+      'node:util',
+      'fetch-retry',
+      'node-fetch',
       '@gen3/core',
       'url',
     ],

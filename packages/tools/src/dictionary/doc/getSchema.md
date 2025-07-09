@@ -2,7 +2,7 @@
 
 getSchema is a function that returns a JSON schema for a given resource path.
 
-To use it make sure your using the correct version of node, currently >= 18.15.0.
+To use it, make sure you're using the correct version of node, currently >= 22.11.0.
 
 node --version
 
