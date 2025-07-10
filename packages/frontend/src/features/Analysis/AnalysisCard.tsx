@@ -21,25 +21,27 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       key={title}
       align="stretch"
       justify="space-between"
-      className="rounded-sm rounded-t-md bg-base-max p-0"
+      className="rounded-sm rounded-t-md bg-base-max p-0 h-full"
     >
-      <div className="h-full">
-        <div className="p-0 rounded-sm h-1/2 h-max-1/2 flex justify-center items-center overflow-hidden">
-          <Image
-            component={NextImage}
-            src={`${image}`}
-            alt={`${title} image`}
-            height={1000}
-            width={1000}
-            radius="md"
-          />
+      <div className="relative">
+        <div className="p-0 rounded-sm h-[200px] h-max-1/2 flex justify-center items-center relative overflow-hidden">
+          <div>
+            <Image
+              component={NextImage}
+              src={`${image}`}
+              alt=""
+              radius="md"
+              width={500}
+              height={500}
+            />
+          </div>
         </div>
         <div className="flex -mt-5 relative z-10">
           <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
             <Image
               component={NextImage}
               src={`${icon}`}
-              alt={`${title} logo`}
+              alt=""
               width={40}
               height={40}
               radius="lg"
