@@ -2,6 +2,7 @@ import { isArray, toString } from 'lodash';
 import React, { CSSProperties } from 'react';
 import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
+import { Icon } from '@iconify-icon/react';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
 import { getTagInfo } from '../../Study/utils';
 import { TagData } from '../../Study/types';
@@ -257,6 +258,30 @@ const RenderParagraphsCell: CellRendererFunction = ({
   );
 };
 
+const RenderIfArrayHasData: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
+  const content = value as string | string[];
+  if (isArray(content) && content.length > 0) {
+    return (
+      <Icon
+        icon="gen3:checked-filled"
+        height={22}
+        width={22}
+        className="text-utility-success"
+      />
+    );
+  }
+  return (
+    <Icon
+      icon="gen3:cancel-filled"
+      height={22}
+      width={22}
+      className="text-utility-error"
+    />
+  );
+};
+
 // TODO Fix below
 // eslint-disable-next-line react/prop-types
 export const DiscoveryRenderTagsCell: CellRendererFunction = ({
@@ -295,6 +320,7 @@ export const DiscoveryRenderTagsCell: CellRendererFunction = ({
 export const Gen3DiscoveryStandardCellRenderers = {
   array: {
     NegativePositive: RenderArrayCellNegativePositive,
+    HasData: RenderIfArrayHasData,
     default: RenderArrayCell,
   },
   string: {

@@ -139,6 +139,7 @@ export const classifyFacets = (
         fieldNameToTitle(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
+
       return {
         ...acc,
         [fieldKey]: {
@@ -155,6 +156,8 @@ export const classifyFacets = (
               fieldKey in sharedFieldMapping &&
               sharedFieldMapping[fieldKey].filter((x) => x.index !== index)) ??
             undefined,
+          moveValuesToBottom: facetDef?.moveValuesToBottom,
+          excludeValues: facetDef?.excludeValues,
           range:
             (facetDef.range ?? type === 'range')
               ? {
@@ -379,12 +382,37 @@ export const removeIntersectionFromEnum = (
  * @returns {SortType} - The mapped sort type object containing type and direction.
  */
 export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
+  // Default fallback values
+  const defaultSort: SortType = {
+    type: 'value',
+    direction: 'dsc',
+  };
+
+  // Validate input
+  if (!facetSort) {
+    console.warn(
+      `Invalid facetSort: expected string, got ${typeof facetSort}. Using default.`,
+    );
+    return defaultSort;
+  }
+
+  const parts = facetSort.split('-');
+
+  // Check if we have exactly 2 parts
+  if (parts.length !== 2) {
+    console.warn(
+      `Invalid facetSort format: expected 'type-direction', got '${facetSort}'. Using default.`,
+    );
+    return defaultSort;
+  }
+
   const [type, direction] = facetSort.split('-');
   return {
     type: type === 'label' ? 'alpha' : 'value',
     direction: direction as 'asc' | 'dsc',
   };
 };
+
 export const compareKeysAscending = (
   a: string | number,
   b: string | number,

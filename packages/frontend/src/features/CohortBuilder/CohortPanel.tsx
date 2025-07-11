@@ -114,10 +114,15 @@ export const CohortPanel = ({
     selectSharedFilters(state),
   );
 
-  let numCols = 3;
-  if (isSm) numCols = 1;
-  if (isMd) numCols = 2;
-  if (isXl) numCols = 4;
+  const defaultDropdowns = useMemo(() => dropdowns ?? {}, [dropdowns]);
+  const defaultButtons = useMemo(() => buttons ?? [], [buttons]);
+
+  const numCols = useMemo(() => {
+    if (isSm) return 1;
+    if (isMd) return 2;
+    if (isXl) return 4;
+    return 3;
+  }, [isSm, isMd, isXl]);
 
   const index = guppyConfig.dataType;
   const fields = useMemo(
@@ -149,20 +154,27 @@ export const CohortPanel = ({
     accessibility: accessLevel,
   });
 
+  const chartKeys = useDeepCompareMemo(
+    () => [...Object.keys(chartsSection?.charts ?? {}), ...Object.keys(charts)],
+    [chartsSection?.charts, charts],
+  );
+
   const {
     data: chartData,
     isSuccess: isChartSuccess,
     isFetching: isChartFetching,
     isError: isChartError,
-  } = useGetAggsNoFilterSelfQuery({
-    type: index,
-    fields: [
-      ...Object.keys(chartsSection?.charts ?? {}),
-      ...Object.keys(charts),
-    ],
-    filters: cohortFilters,
-    accessibility: accessLevel,
-  });
+  } = useGetAggsNoFilterSelfQuery(
+    {
+      type: index,
+      fields: chartKeys,
+      filters: cohortFilters,
+      accessibility: accessLevel,
+    },
+    {
+      skip: chartKeys.length === 0,
+    },
+  );
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
@@ -189,7 +201,7 @@ export const CohortPanel = ({
         isSuccess: isSuccess,
       };
     },
-    [cohortFilters, data, isSuccess],
+    [cohortFilters.root, data, isSuccess],
   );
 
   const getRangeFacetData = useDeepCompareCallback(
@@ -275,7 +287,6 @@ export const CohortPanel = ({
       setFacetDefinitions(facetDefs);
 
       // setup summary charts since nested fields can be listed by the split field name
-
       const chartDefinitions = chartsSection?.charts ?? charts;
 
       const summaryCharts = Object.keys(chartDefinitions).reduce(
@@ -356,8 +367,8 @@ export const CohortPanel = ({
           {/* Top row with DownloadsPanel and CountsValue */}
           <div className="flex justify-between mb-2 ml-2">
             <DownloadsPanel
-              dropdowns={dropdowns ?? {}}
-              buttons={buttons ?? []}
+              dropdowns={defaultDropdowns}
+              buttons={defaultButtons}
               loginForDownload={loginForDownload}
               index={index}
               totalCount={counts ?? 0}
@@ -376,6 +387,7 @@ export const CohortPanel = ({
             <CollapsableCharts
               config={{ ...chartsSection, charts: summaryCharts }}
               data={chartData ?? EmptyData}
+              isSuccess={isChartSuccess}
             />
           ) : (
             <Charts

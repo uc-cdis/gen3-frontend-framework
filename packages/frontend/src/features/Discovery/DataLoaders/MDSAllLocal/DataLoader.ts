@@ -270,6 +270,7 @@ const useSearchMetadata = ({
     fields: searchOverFields,
     storeFields: [uidField],
     idField: uidField,
+    tokenize: (string, _fieldName) => string.split(' '),
     extractField: extractValue,
     //  processTerm: (term) => suffixes(term, 3),
     searchOptions: {

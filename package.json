@@ -50,16 +50,17 @@
     "classnames": "^2.3.1",
     "colorette": "^2.0.20",
     "cookies-next": "4.3.0",
+    "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-responsive-carousel": "^3.2.23",
-    "url-join": "^5.0.0",
-    "idb": "^8.0.3"
+    "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
+    "@eslint/js": "^9.28.0",
     "@next/eslint-plugin-next": "^15.3.3",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -73,6 +74,7 @@
     "@types/react": "^18.3.18",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "@welldone-software/why-did-you-render": "^8.0.3",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.28.0",
     "eslint-config-next": "^15.3.3",
@@ -82,7 +84,6 @@
     "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "@eslint/js" : "^9.28.0",
     "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
@@ -116,11 +117,11 @@
     }
   },
   "optionalDependencies": {
-      "@nx/nx-darwin-arm64": "^20.7.1",
-      "@nx/nx-linux-arm64-gnu": "^20.7.1",
-      "@nx/nx-linux-x64-gnu": "^20.7.1",
-      "@swc/nx-darwin-arm64" : "^1.11.10",
-      "@swc/nx-linux-arm64-gnu" : "^1.11.10",
-      "@swc/core-linux-x64-gnu" : "^1.11.10"
+    "@nx/nx-darwin-arm64": "^20.7.1",
+    "@nx/nx-linux-arm64-gnu": "^20.7.1",
+    "@nx/nx-linux-x64-gnu": "^20.7.1",
+    "@swc/core-linux-x64-gnu": "^1.11.10",
+    "@swc/nx-darwin-arm64": "^1.11.10",
+    "@swc/nx-linux-arm64-gnu": "^1.11.10"
   }
 }
