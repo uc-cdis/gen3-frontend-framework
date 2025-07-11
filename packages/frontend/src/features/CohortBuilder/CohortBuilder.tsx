@@ -72,5 +72,3 @@ export const CohortBuilder = ({
     </div>
   );
 };
-
-CohortBuilder.whyDidYouRender = true;

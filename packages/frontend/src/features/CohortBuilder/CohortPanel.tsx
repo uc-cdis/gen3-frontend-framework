@@ -380,6 +380,7 @@ export const CohortPanel = ({
             <CollapsableCharts
               config={{ ...chartsSection, charts: summaryCharts }}
               data={chartData ?? EmptyData}
+              isSuccess={isChartSuccess}
             />
           ) : (
             <Charts
@@ -408,5 +409,3 @@ export const CohortPanel = ({
     </div>
   );
 };
-
-CohortPanel.whyDidYouRender = true;

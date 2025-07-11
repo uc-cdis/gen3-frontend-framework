@@ -7,13 +7,19 @@ import { ErrorCard } from '../../components/MessageCards';
 
 interface ChartsPanelProps {
   config: CollapsableChartsPanelConfiguration;
-  data?: AggregationsData;
+  data: AggregationsData;
   isFetching?: boolean;
-  isSuccess?: boolean;
+  isSuccess: boolean;
   isError?: boolean;
 }
 
-const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
+const CollapsableCharts = ({
+  config,
+  data,
+  isError,
+  isFetching,
+  isSuccess,
+}: ChartsPanelProps) => {
   const [showLegends, setShowLegends] = useState(config.showLegends?.enabled);
 
   if (!(config?.charts && Object.keys(config.charts).length > 0)) {
@@ -23,8 +29,6 @@ const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
       </Center>
     );
   }
-
-  if (!data) return null;
 
   return (
     <Accordion
@@ -67,7 +71,7 @@ const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
               charts={config.charts}
               data={data}
               counts={2}
-              isSuccess={true}
+              isSuccess={isSuccess}
               numCols={4}
             />
           </Box>
