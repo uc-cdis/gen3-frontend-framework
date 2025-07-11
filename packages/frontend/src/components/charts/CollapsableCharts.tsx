@@ -7,7 +7,7 @@ import { ErrorCard } from '../../components/MessageCards';
 
 interface ChartsPanelProps {
   config: CollapsableChartsPanelConfiguration;
-  data: AggregationsData;
+  data?: AggregationsData;
   isFetching?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
@@ -23,6 +23,8 @@ const CollapsableCharts = ({ config, data }: ChartsPanelProps) => {
       </Center>
     );
   }
+
+  if (!data) return null;
 
   return (
     <Accordion

@@ -38,6 +38,8 @@ interface FacetEnumListProps {
   hideIfEmpty?: boolean;
   showSorting?: boolean;
   sort?: FacetSortType;
+  moveValuesToBottom?: Array<string>;
+  excludeValues?: Array<string>;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -52,6 +54,8 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   hideIfEmpty = false,
   showSorting = true,
   sort = 'value-dsc',
+  moveValuesToBottom = [],
+  excludeValues = [],
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -115,7 +119,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         combineMode,
       );
     } else {
-      const updated = selectedEnums?.filter((x) => x != value);
+      const updated = selectedEnums?.filter((x) => x !== value);
       updateFacetEnum(
         field,
         updated ?? [],
@@ -185,7 +189,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     if (isSuccess && data) {
       // get all the data except the missing and empty values
       const tempFilteredData = Object.entries(data)
-        .filter((entry) => entry[0] != '_missing' && entry[0] != '')
+        .filter((entry) => entry[0] !== '_missing' && entry[0] !== '')
         .filter((entry) =>
           searchTerm === ''
             ? entry
@@ -215,13 +219,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         tempFilteredData.length + selectedEnumNotInData.length,
       );
 
+      const allData = [...tempFilteredData, ...selectedEnumNotInData];
+      // remove any enum in excludeValues
+      const filteredData = allData.filter(
+        (x) => !excludeValues?.includes(x[0].toString()),
+      );
+
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
-        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
-        filteredDataObj: Object.fromEntries([
-          ...tempFilteredData,
-          ...selectedEnumNotInData,
-        ]),
+        filteredData: filteredData, // merge any selected enums that are not in the data
+        filteredDataObj: Object.fromEntries(filteredData),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
@@ -254,16 +261,21 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
 
   useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
-      const obj = [...facetChartData.filteredData]
-        .sort(
-          sortType.type === 'value'
-            ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
-            : ([a], [b]) =>
-                sortType.direction === 'dsc'
-                  ? compareKeysDescending(a, b)
-                  : compareKeysAscending(a, b),
-        )
-        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
+      const obj = [
+        ...facetChartData.filteredData
+          .filter((x) => !moveValuesToBottom.includes(x[0].toString()))
+          .sort(
+            sortType.type === 'value'
+              ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
+              : ([a], [b]) =>
+                  sortType.direction === 'dsc'
+                    ? compareKeysDescending(a, b)
+                    : compareKeysAscending(a, b),
+          ),
+        ...facetChartData.filteredData.filter((x) =>
+          moveValuesToBottom.includes(x[0].toString()),
+        ),
+      ].slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
       setSortedData(obj);
       if (updateVisibleValues) updateVisibleValues(obj);
     }

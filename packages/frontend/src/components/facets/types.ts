@@ -40,6 +40,8 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly sharedWithIndices?: Array<IndexAndField>;
   readonly Chart?: React.FC<EnumChartProps>;
   readonly queryOptions?: QueryOptions;
+  readonly moveValuesToBottom?: Array<string>;
+  readonly excludeValues?: Array<string>;
 
   readonly header?: {
     readonly Panel: ComponentType<{ children: ReactNode }>; // optional header component
@@ -289,4 +291,6 @@ export interface FacetDefinition {
   readonly hasData?: boolean; // does this facet have data
   readonly label?: string; // label for facet
   readonly sharedWithIndices?: Array<IndexAndField>; // if this filter is denormalized across indices
+  readonly moveValuesToBottom?: Array<string>;
+  readonly excludeValues?: Array<string>;
 }

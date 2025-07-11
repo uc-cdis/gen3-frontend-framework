@@ -13,5 +13,7 @@ export const createChart = (
   // TODO: add default chart chart for missing chart type
   const element = ChartRendererFactory().getRenderer('chart', type);
 
+  console.log('chartProps', chartProps);
+
   return element({ ...chartProps }, parameters);
 };

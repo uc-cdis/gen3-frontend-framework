@@ -27,8 +27,8 @@ export type FacetType =
 
 export interface TabConfig {
   title: string;
-  fields: ReadonlyArray<string>;
-  fieldsConfig: Record<string, FacetDefinition>;
+  fields: ReadonlyArray<string>; // list of fields
+  fieldsConfig: Record<string, FacetDefinition>; // extra/override configuration
   classNames?: StylingOverride;
   defaultSort?: FacetSortType;
 }

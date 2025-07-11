@@ -59,6 +59,8 @@ export const createFacetCard = ({
               hooks={dataFunctions}
               showPercent={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
+              moveValuesToBottom={facetDefinition?.moveValuesToBottom ?? []}
+              excludeValues={facetDefinition?.excludeValues ?? []}
             />
           ),
           range: (

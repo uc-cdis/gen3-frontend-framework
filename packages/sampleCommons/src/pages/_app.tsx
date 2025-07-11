@@ -1,3 +1,8 @@
+import whyDidYouRender from '@welldone-software/why-did-you-render';
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  whyDidYouRender(React);
+}
 import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { MantineProvider } from '@mantine/core';
