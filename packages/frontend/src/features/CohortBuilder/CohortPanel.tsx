@@ -154,20 +154,27 @@ export const CohortPanel = ({
     accessibility: accessLevel,
   });
 
+  const chartKeys = useDeepCompareMemo(
+    () => [...Object.keys(chartsSection?.charts ?? {}), ...Object.keys(charts)],
+    [chartsSection?.charts, charts],
+  );
+
   const {
     data: chartData,
     isSuccess: isChartSuccess,
     isFetching: isChartFetching,
     isError: isChartError,
-  } = useGetAggsNoFilterSelfQuery({
-    type: index,
-    fields: [
-      ...Object.keys(chartsSection?.charts ?? {}),
-      ...Object.keys(charts),
-    ],
-    filters: cohortFilters,
-    accessibility: accessLevel,
-  });
+  } = useGetAggsNoFilterSelfQuery(
+    {
+      type: index,
+      fields: chartKeys,
+      filters: cohortFilters,
+      accessibility: accessLevel,
+    },
+    {
+      skip: chartKeys.length === 0,
+    },
+  );
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
