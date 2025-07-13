@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
@@ -23,6 +24,11 @@ export const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
+  const configuration = useDeepCompareMemo(
+    () => explorerConfig,
+    [explorerConfig],
+  );
+
   const isCSRFLoading = useEffect(() => {
     dispatch(fetchCSRFToken());
   }, []);
@@ -38,7 +44,7 @@ export const CohortBuilder = ({
           className="w-full"
           justify={TabsLayoutToComponentProp(tabsLayout)}
         >
-          {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
+          {configuration.map((panelConfig: CohortPanelConfiguration) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -48,14 +54,22 @@ export const CohortBuilder = ({
           ))}
         </Tabs.List>
 
-        {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
+        {configuration.map((panelConfig: CohortPanelConfiguration) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}
           >
             <CohortPanel
-              {...panelConfig}
+              guppyConfig={panelConfig.guppyConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
+              chartsSection={panelConfig?.chartsSection}
+              filters={panelConfig.filters}
+              tabTitle={panelConfig.tabTitle}
+              table={panelConfig.table}
+              dropdowns={panelConfig.dropdowns}
+              buttons={panelConfig.buttons}
+              loginForDownload={panelConfig.loginForDownload}
+              sharedFiltersMap={panelConfig.sharedFiltersMap}
             />
           </Tabs.Panel>
         ))}

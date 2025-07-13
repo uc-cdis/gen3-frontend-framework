@@ -8,6 +8,11 @@ export interface SummaryChart extends Partial<TitleAndDescription> {
   label?: {
     show?: boolean;
   };
+  showLegendInChart?: boolean;
+}
+
+interface SummaryChartWithField extends SummaryChart {
+  field: string;
 }
 
 export interface ChartProps {
@@ -17,4 +22,15 @@ export interface ChartProps {
   label?: {
     show?: boolean;
   };
+  showLegendInChart?: boolean;
+}
+
+export interface CollapsableChartsPanelConfiguration {
+  enabled: boolean;
+  title?: string;
+  showLegends?: {
+    enabled: boolean;
+    showSwitch?: boolean;
+  };
+  charts?: Record<string, SummaryChart>;
 }

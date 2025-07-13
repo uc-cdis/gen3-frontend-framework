@@ -31,6 +31,9 @@ export const gen3Api = createApi({
 
       return headers;
     },
+    validateStatus: (response) => {
+      return response.status >= 200 && response.status < 300;
+    },
   }),
   endpoints: () => ({}),
 });

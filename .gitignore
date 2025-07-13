@@ -40,3 +40,6 @@ packages/sampleCommons/config/heal
 packages/sampleCommons/config/bdc
 /packages/frontend/.rollup.cache/
 /packages/sampleCommons/.swc/
+
+# emacs save files
+*~

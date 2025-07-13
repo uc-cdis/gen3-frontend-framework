@@ -26,23 +26,25 @@
   "dataIndexes": [
     {
       "dataConfig": {
-        "dataType": "subject",
-        "nodeCountTitle": "Cases"
+        "dataType": "metadata",
+        "nodeCountTitle": "Subjects"
       },
-      "tabTitle": "Cases",
+      "tabTitle": "Studies",
       "tabs": [
         {
           "title": "Study Selection",
-          "fields": ["project"]
+          "fields": [
+            "gen3_discovery.study_id",
+            "gen3_discovery.project_id",
+            "gen3_discovery.study_description",
+            "gen3_discovery.study_url"
+          ]
         },
         {
           "title": "Subjects",
           "fields": [
-            "study",
-            "gender",
-            "race",
-            "ethnicity",
-            "vital_status"
+            "gen3_discovery.subject_cancer_grade",
+            "gen3_discovery.subject_cancer_stage"
           ]
         }
       ]

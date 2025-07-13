@@ -17,10 +17,12 @@ import { defaultCohortNameGenerator } from './utils';
  *  Switching a cohort is means that all the cohorts for the index changes.
  */
 
-export const UNSAVED_COHORT_NAME = 'Unsaved_Cohort';
+export const UNSAVED_COHORT_NAME = 'Cohort';
 export const NULL_COHORT_ID = 'null_cohort_id';
 
 type CohortId = string;
+
+type CountsData = Record<string, number>;
 
 /**
  * A Cohort is a collection of filters that can be used to query the GDC API.
@@ -42,6 +44,7 @@ export interface Cohort {
   modified?: boolean; // flag which is set to true if modified and unsaved
   modified_datetime: string; // last time cohort was modified
   saved?: boolean; // flag indicating if cohort has been saved.
+  counts?: CountsData; // counts for each index "unit" (e.g. case or study) in the cohort
 }
 
 export interface CurrentCohortState {
@@ -94,6 +97,7 @@ const newCohort = ({
     modified: false,
     saved: false,
     modified_datetime: ts.toISOString(),
+    counts: {},
   };
 };
 
@@ -382,6 +386,13 @@ export const {
 } = cohortSlice.actions;
 
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {
+  const currentCohortId = getCurrentCohortFromCoreState(state);
+  return state.cohorts.cohort.entities[currentCohortId]?.filters;
+};
+
+export const selectCurrentCohortFilters = (
+  state: CoreState,
+): IndexedFilterSet => {
   const currentCohortId = getCurrentCohortFromCoreState(state);
   return state.cohorts.cohort.entities[currentCohortId]?.filters;
 };

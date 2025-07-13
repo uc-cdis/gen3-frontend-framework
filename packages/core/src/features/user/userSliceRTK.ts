@@ -64,6 +64,40 @@ export const userAuthApi = createApi({
         };
       },
     }),
+    getCSRF: builder.query<CSRFToken, void>({
+      queryFn: async () => {
+        const headers: Record<string, string> = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        };
+        try {
+          const res = await fetch(`${GEN3_API}/_status`, {
+            headers: headers,
+          });
+
+          if (res.ok) {
+            const jsonData = await res.json();
+            const token = jsonData?.csrf ?? '';
+            return {
+              data: { csrfToken: token },
+            };
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            return {
+              error: error,
+            };
+          } else {
+            return {
+              error: 'Unknown Error',
+            };
+          }
+        }
+        return {
+          error: 'Unknown Error',
+        };
+      },
+    }),
   }),
 });
 
@@ -71,8 +105,12 @@ const EMPTY_USER: Gen3User = {
   username: undefined,
 };
 
-export const { useFetchUserDetailsQuery, useLazyFetchUserDetailsQuery } =
-  userAuthApi;
+export const {
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery,
+  useGetCSRFQuery,
+  useLazyGetCSRFQuery,
+} = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;
 export const userAuthApiReducer = userAuthApi.reducer;
@@ -96,10 +134,17 @@ export const selectUserAuthStatus = createSelector(
           ('unauthenticated' as LoginStatus)),
 );
 
+export const selectCSRFTokenData = userAuthApi.endpoints.getCSRF.select();
+
 const passThroughTheState = (state: CoreState) => state.userAuthApi;
 
+export const selectCSRFToken = createSelector(
+  [selectCSRFTokenData, passThroughTheState],
+  (state) => state?.data?.csrfToken,
+);
+
 export const selectHeadersWithCSRFToken = createSelector(
-  [selectCSRFTokenFromState, passThroughTheState],
+  [selectCSRFToken, passThroughTheState],
   (csrfToken) => ({
     Accept: 'application/json',
     'Content-Type': 'application/json',

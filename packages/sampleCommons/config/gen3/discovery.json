@@ -51,6 +51,15 @@
           "enabled": true,
           "title": "Discover Datasets"
         },
+        "exportToDataLibrary": {
+          "enabled" : true,
+          "buttons" : [
+            {
+              "type" : "add-to-data-library",
+              "label" : "Add to Data Library"
+            }
+          ]
+        },
         "search": {
           "searchBar": {
             "enabled": true,
@@ -235,18 +244,20 @@
         "dataAvailabilityField": "data_availability",
         "uid": "_hdp_uid"
       },
-      "tagCategories": [
-        {
-          "name": "Condition",
-          "color": "#532565",
-          "display": false
-        },
-        {
-          "name": "Data Type",
-          "color": "#982568",
-          "display": false
-        }
-      ]
+      "tags": {
+        "tagCategories": [
+          {
+            "name": "Condition",
+            "color": "#532565",
+            "display": false
+          },
+          {
+            "name": "Data Type",
+            "color": "#982568",
+            "display": false
+          }
+        ]
+      }
     }
   ]
 }

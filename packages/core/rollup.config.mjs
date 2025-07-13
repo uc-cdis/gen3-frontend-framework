@@ -27,6 +27,8 @@ const globals = {
   'cookies-next': 'cookies-next',
   queue: 'queue',
   idb: 'idb',
+  'use-deep-compare': 'use-deep-compare',
+  graphql: 'graphql',
 };
 
 const config = [

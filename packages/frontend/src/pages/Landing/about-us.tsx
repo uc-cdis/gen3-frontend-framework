@@ -15,7 +15,7 @@ const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 About Us Page',
         content: ' About Us Page',
         key: 'gen3-about-us-page',

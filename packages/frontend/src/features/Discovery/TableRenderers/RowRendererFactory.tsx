@@ -4,7 +4,7 @@ import {
   defaultRowRenderer,
   Gen3DiscoveryStandardRowPreviewRenderers,
 } from './RowRenderers';
-import { StudyDetailsField } from '../types';
+import { StudyDetailsField } from '../../Study/types';
 
 // TODO Tighten up the typing here
 export type RowRendererFunction = (

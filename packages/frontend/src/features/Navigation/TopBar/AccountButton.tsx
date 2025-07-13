@@ -1,10 +1,6 @@
 import React from 'react';
-import { NameAndIcon } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
-import { extractClassName } from '../utils';
-import { Icon } from '@iconify/react';
-import { Tooltip } from '@mantine/core';
 import { useRouter } from 'next/router';
 import {
   type CoreState,
@@ -40,7 +36,7 @@ export const AccountButton = ({
   const router = useRouter();
 
   const handleSelected = async () => {
-    await router.push('Profile');
+    await router.push('/Profile');
   };
 
   const userInfo = useCoreSelector((state: CoreState) =>

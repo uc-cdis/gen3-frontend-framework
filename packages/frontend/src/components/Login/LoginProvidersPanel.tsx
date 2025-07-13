@@ -40,12 +40,19 @@ const LoginProviderMultipleItems = ({
         }}
         onChange={setValue}
         value={value}
+        searchable
+        label={provider.name}
+        placeholder="Select a login provider"
+        size="sm"
+        clearable
+        aria-label="Select a login provider"
       />
       <Button
         fullWidth
         key={provider.name}
         color="accent.3"
         disabled={!value}
+        classNames={{ root: 'data-disabled:bg-accent-lightest' }}
         onClick={() => value && handleLoginSelected(value)}
       >
         {' '}

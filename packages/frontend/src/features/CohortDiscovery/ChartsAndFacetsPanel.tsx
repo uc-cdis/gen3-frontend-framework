@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Grid } from '@mantine/core';
 import {
+  AggregationsData,
   extractEnumFilterValue,
-  FacetDefinition,
   fieldNameToTitle,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
+  FacetDefinition,
   processBucketData,
   processRangeData,
 } from '../../components/facets';
@@ -16,13 +17,17 @@ import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
-import { selectIndexFilters } from './CohortSelectors';
+import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-import { useRoundedAggsQuery } from './queryApi';
+import { useFieldNameToTitle } from '../../components/facets/hooks';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
   facets: Array<FacetDefinition>;
+  data: AggregationsData;
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
 }
 
 const NUM_COLS = 2; // TODO: add to config
@@ -31,26 +36,24 @@ const NUM_COLS = 2; // TODO: add to config
  * CartsAndFacetsPanel component
  *
  * @param {string} index - The index type used for querying data.
+ * @param data
+ * @param isLoading
+ * @param isError
+ * @param isSuccess
  * @param {Array} facets - The list of facets to be rendered.
  * @returns {JSX.Element} The rendered component showing facets.
  */
 const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
   index,
+  data,
+  isLoading,
+  isError,
+  isSuccess,
   facets,
 }) => {
   const cohortFilters = useAppSelector((state: AppState) =>
-    selectIndexFilters(state, index),
+    selectCurrentCohortIndexFilters(state, index),
   );
-
-  const {
-    data,
-    isSuccess,
-    isError: isAggsQueryError,
-  } = useRoundedAggsQuery({
-    type: index,
-    fields: facets.map((x) => x.field),
-    filters: cohortFilters,
-  });
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
@@ -61,6 +64,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
             ? extractEnumFilterValue(cohortFilters.root[field])
             : undefined,
         isSuccess: isSuccess,
+        isFetching: isLoading,
+        isError: isError,
       };
     },
     [cohortFilters, cohortFilters.root, data],
@@ -86,6 +91,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
+          useFieldNameToTitle: useFieldNameToTitle,
         }, // TODO: range facets
         // range: {
         //   useGetFacetData: getRangeFacetData,

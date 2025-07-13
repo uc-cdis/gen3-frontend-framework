@@ -17,10 +17,11 @@ const LandingPage = ({ headerProps, footerProps, landingPage }: Props) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Home Page',
         content: 'Home page',
         key: 'gen3-home-page',
+        ...(landingPage?.headerMetadata ? landingPage.headerMetadata : {}),
       }}
     >
       <div className="flex justify-items-center w-full">

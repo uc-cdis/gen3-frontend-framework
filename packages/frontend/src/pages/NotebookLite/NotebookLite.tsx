@@ -10,7 +10,7 @@ const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Notebooks Lite Page',
         content: 'Notebooks Lite',
         key: 'gen3-notebooks-lite-page',

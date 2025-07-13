@@ -15,7 +15,7 @@ const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Notebook Page',
         content: 'Jupyter Notebook',
         key: 'gen3-notebook-page',

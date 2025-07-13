@@ -3,14 +3,17 @@ export * from './components/Login';
 
 export * from './components/Modals';
 export * from './components/charts';
+export * from './components/facets';
 export * from './components/Protected';
 // features
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './features/Study';
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
 export * from './features/Analysis';
+export * from './features/StaticNotebook';
 export * from './utils/';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
@@ -22,6 +25,7 @@ import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerA
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
 import { CollapsableSidebar } from './components/CollapsableSidebar';
+import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
 import {
   ActionButton,
   DropdownButton,
@@ -29,6 +33,8 @@ import {
   Gen3ButtonReverse,
   UploadJSONButton,
 } from './components/Buttons';
+
+import SegmentedControl from './components/SegmentedControl';
 
 import TopBar from './features/Navigation/TopBar/TopBar';
 
@@ -49,9 +55,9 @@ import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
 import ExplorerPage from './pages/Explorer/Explorer';
 import {
-  type ExplorerPageProps,
   ExplorerPageGetServerSideProps,
   ExplorerPageGetServerSidePropsForConfigId,
+  type ExplorerPageProps,
 } from './pages/Explorer';
 
 import ColorThemePage from './pages/Theme/Colors';
@@ -75,8 +81,8 @@ import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 import WorkspacePage from './pages/Workspace/Workspace';
 import { WorkspaceNoAccessPage } from './pages/Workspace/index';
 import {
-  WorkspacePageGetServerSideProps,
   WorkspaceNoAccessPageServerSideProps,
+  WorkspacePageGetServerSideProps,
 } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
@@ -101,6 +107,9 @@ import DataLibraryPage, {
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
+import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
+import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -108,6 +117,7 @@ import sessionLogout from './api/auth/sessionLogout';
 import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
+import staticNotebookAPI from './features/StaticNotebook/api/staticNotebookAPI';
 
 export {
   ContentSource,
@@ -119,6 +129,8 @@ export {
   // components
   CollapsableSidebar,
   DropdownButton,
+  DropdownWithIcon,
+  SegmentedControl,
   Gen3Button,
   Gen3ButtonReverse,
   UploadJSONButton,
@@ -173,9 +185,12 @@ export {
   registerMetadataSchemaApp,
   AnalysisEditorPage,
   AnalysisEditorPageGetServerSideProps,
+  TabbedCohortBuilderPage,
+  TabbedCohortBuilderPageGetServerSideProps,
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,
   // appApis
   analysisApiCohortDiscovery,
+  staticNotebookAPI,
 };

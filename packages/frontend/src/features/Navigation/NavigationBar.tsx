@@ -24,6 +24,7 @@ const NavigationBar = ({
     root: 'flex bg-base-max border-b-1 border-base-dark',
     navigationPanel: 'font-heading',
     logoAndTitlePanel: 'flex justify-center items-center align-middle',
+    buttons: '',
     login:
       'pl-1 mr-6 bg-base-max text-base-contrast opacity-80 hover:opacity-100',
   };
@@ -50,7 +51,7 @@ const NavigationBar = ({
       </div>
       <div className="flex flex-grow">{/* middle section of header */}</div>
       <div
-        className={`grid grid-cols-${items?.length} ${extractClassName(
+        className={`flex flex-grow nowrap ${extractClassName(
           'navigationPanel',
           mergedClassnames,
         )}`}
@@ -63,7 +64,10 @@ const NavigationBar = ({
           return (
             <div
               key={`${x.name}-${index}`}
-              className={`first:border-l-1 border-r-1 border-base-dark ${selectedStyle}`}
+              className={`first:border-l-1 border-r-1 flex-1 border-base-dark ${selectedStyle} ${extractClassName(
+                'buttons',
+                mergedClassnames,
+              )}`}
             >
               <NavigationBarButton
                 tooltip={x.tooltip}

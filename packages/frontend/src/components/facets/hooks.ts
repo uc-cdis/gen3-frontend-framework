@@ -1,13 +1,15 @@
+import { useCallback } from 'react';
 import {
-  type EnumFilterValue,
-  useCoreDispatch,
-  removeCohortFilter,
-  useCoreSelector,
-  selectIndexedFilterByName,
-  extractEnumFilterValue,
   CoreState,
-  selectShouldShareFilters,
+  type EnumFilterValue,
+  extractEnumFilterValue,
+  fieldNameToTitle,
+  removeCohortFilter,
+  selectIndexedFilterByName,
   selectSharedFilters,
+  selectShouldShareFilters,
+  useCoreDispatch,
+  useCoreSelector,
 } from '@gen3/core';
 
 import { FromToRange } from './types';
@@ -55,4 +57,14 @@ export const useExtractRangeFilterValues = (
     selectIndexedFilterByName(state, index, field),
   );
   return filter ? extractRangeValues(filter) : undefined;
+};
+
+export const useFieldNameToTitle = () => {
+  const fieldToTitle = useCallback((field: string, sections?: number) => {
+    return field === 'genes.gene_id'
+      ? 'Mutated Gene'
+      : fieldNameToTitle(field, sections);
+  }, []);
+
+  return fieldToTitle;
 };
