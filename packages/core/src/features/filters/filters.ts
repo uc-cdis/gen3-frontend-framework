@@ -40,9 +40,9 @@ export const isOperatorWithFieldAndArrayOfOperands = (
     typeof operation === 'object' &&
     operation !== null &&
     'operands' in operation &&
-    Array.isArray((operation as any).operands) &&
+    Array.isArray(operation.operands) &&
     'field' in operation &&
-    typeof (operation as any).field === 'string' // Assuming `field` should be a string
+    typeof operation.field === 'string' // Assuming `field` should be a string
   ) {
     const { operator } = (operation as any).operator;
     return (
@@ -308,12 +308,6 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
     },
   });
 
-  handleExist = (op: Exists): GQLExists => ({
-    not: {
-      [op.field]: op.operand,
-    },
-  });
-
   handleIntersection = (op: Intersection): GQLIntersection => ({
     and: op.operands.map((x) =>
       convertFilterToGqlFilter(x),
@@ -378,6 +372,8 @@ export interface GqlOperationHandler<T> {
   handleIntersection: (op: GQLIntersection) => T;
   handleUnion: (op: GQLUnion) => T;
   handleNestedFilter: (op: GQLNestedFilter) => T;
+  handleExists: (op: GQLExists) => T;
+  handleMissing: (op: GQLMissing) => T;
 }
 
 export const handleGqlOperation = <T>(
@@ -421,6 +417,12 @@ export const handleGqlOperation = <T>(
   }
   if (operationKeys.includes('nested')) {
     return handler.handleNestedFilter(op as GQLNestedFilter);
+  }
+  if (operationKeys.includes('is')) {
+    return handler.handleExists(op as GQLExists);
+  }
+  if (operationKeys.includes('not')) {
+    return handler.handleMissing(op as GQLMissing);
   }
   return assertNever(op as never);
 };
@@ -518,6 +520,21 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
     operator: 'or',
     operands: op.or.map(convertGqlFilterToFilter),
   });
+  handleExists = (op: GQLExists): Exists => {
+    const [field, value] = Object.entries(op.not)[0];
+    return {
+      operator: 'exists',
+      field: field,
+      operand: value,
+    };
+  };
+  handleMissing = (op: GQLMissing): Missing => {
+    const field = Object.keys(op.is)[0];
+    return {
+      operator: 'missing',
+      field: field,
+    };
+  };
   handleNestedFilter = (op: GQLNestedFilter): NestedFilter => ({
     operator: 'nested',
     path: op.nested.path,
@@ -526,7 +543,7 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
 }
 
 /**
- * Extract the operand values, if operands themselves have values,  otherwise undefined.
+ * Extract the operand values, if operands themselves have values, otherwise undefined.
  */
 export class ValueExtractorHandler implements OperationHandler<FilterValue> {
   handleEquals: (op: Equals) => string | number = (op: Equals) => op.operand;
@@ -561,7 +578,7 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
 }
 
 /**
- * Extract the operand values, if operands themselves have values,  otherwise undefined.
+ * Extract the operand values, if operands themselves have values, otherwise undefined.
  */
 export class EnumValueExtractorHandler
   implements OperationHandler<EnumFilterValue | undefined>
