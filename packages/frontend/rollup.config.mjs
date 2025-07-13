@@ -70,6 +70,8 @@ const globals = {
   '@hello-pangea': 'pangea',
   'use-deep-compare': 'use-deep-compare',
   graphql: 'graphql',
+  'isomorphic-dompurify': 'isomorphic-dompurify',
+  '@iconify-icon/react': 'iconify-iconReact ',
 };
 
 const config = [
