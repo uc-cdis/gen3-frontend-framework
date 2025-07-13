@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v9. The minimum node version is set to v20.11.0 only from an LTS perspective.
+This is a multi-workspace repo that requires npm v10. The minimum node version is set to v22.11.0.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
