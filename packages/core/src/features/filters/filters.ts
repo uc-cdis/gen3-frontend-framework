@@ -4,6 +4,7 @@ import {
   Equals,
   ExcludeIfAny,
   Excludes,
+  Exists,
   FilterSet,
   FilterValue,
   GreaterThan,
@@ -12,6 +13,7 @@ import {
   Intersection,
   LessThan,
   LessThanOrEquals,
+  Missing,
   NestedFilter,
   NotEquals,
   Operation,
@@ -97,6 +99,10 @@ export const handleOperation = <T>(
       return handler.handleExcludeIfAny(op);
     case 'excludes':
       return handler.handleExcludes(op);
+    case 'exists':
+      return handler.handleExists(op);
+    case 'missing':
+      return handler.handleMissing(op);
     default:
       return assertNever(op);
   }
@@ -158,6 +164,18 @@ export interface GQLIncludes {
 export interface GQLExcludes {
   exclude: {
     [key: string]: ReadonlyArray<string | number>;
+  };
+}
+
+export interface GQLExists {
+  not: {
+    [key: string]: string | number;
+  };
+}
+
+export interface GQLMissing {
+  is: {
+    [key: string]: 'MISSING';
   };
 }
 
@@ -234,6 +252,8 @@ export type GQLFilter =
   | GQLExcludeIfAny
   | GQLIntersection
   | GQLUnion
+  | GQLExists
+  | GQLMissing
   | GQLNestedFilter;
 
 export class ToGqlHandler implements OperationHandler<GQLFilter> {
@@ -288,6 +308,12 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
     },
   });
 
+  handleExist = (op: Exists): GQLExists => ({
+    not: {
+      [op.field]: op.operand,
+    },
+  });
+
   handleIntersection = (op: Intersection): GQLIntersection => ({
     and: op.operands.map((x) =>
       convertFilterToGqlFilter(x),
@@ -296,6 +322,18 @@ export class ToGqlHandler implements OperationHandler<GQLFilter> {
 
   handleUnion = (op: Union): GQLUnion => ({
     or: op.operands.map((x) => convertFilterToGqlFilter(x)),
+  });
+
+  handleMissing = (op: Missing): GQLMissing => ({
+    is: {
+      [op.field]: 'MISSING',
+    },
+  });
+
+  handleExists = (op: Exists): GQLExists => ({
+    not: {
+      [op.field]: op?.operand ?? null,
+    },
   });
 
   handleNestedFilter = (op: NestedFilter): GQLNestedFilter => {
@@ -518,6 +556,8 @@ export class ValueExtractorHandler implements OperationHandler<FilterValue> {
   handleUnion: (op: Union) => undefined = (_: Union) => undefined;
   handleNestedFilter: (op: NestedFilter) => undefined = (_: NestedFilter) =>
     undefined;
+  handleExists: (op: Exists) => undefined = (_: Exists) => undefined;
+  handleMissing: (op: Missing) => undefined = (_: Missing) => undefined;
 }
 
 /**
@@ -554,6 +594,8 @@ export class EnumValueExtractorHandler
   ) => {
     return extractEnumFilterValue(op.operand);
   };
+  handleExists: (op: Exists) => undefined = (_: Exists) => undefined;
+  handleMissing: (op: Missing) => undefined = (_: Missing) => undefined;
 }
 
 export const appendFilterToOperation = (
