@@ -1,7 +1,7 @@
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { create10ColorPallet, create10ColorAccessibleContrast } from './colors';
+import { create10ColorPallet } from './colors';
 
 const utility = {
   link: '#155276',
@@ -105,6 +105,28 @@ const main = () => {
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
+
+  // build list of colors
+  const theme = Object.entries(themeColors).reduce(
+    (acc: Record<string, Record<string, string>>, [colorName, colorValue]) => {
+      acc[colorName] = create10ColorPallet(
+        colorValue as string,
+        shift,
+        saturation,
+      );
+
+      acc[`${colorName}-contrast`] = create10ColorPallet(
+        colorValue as string,
+        shift,
+        saturation,
+      );
+
+      return acc;
+    },
+    {},
+  );
+
+  /* ---
   const primaryPallet = create10ColorPallet(
     themeColors.primary,
     shift,
@@ -164,7 +186,7 @@ const main = () => {
     navigation: navigationPallet,
     'navigation-contrast': create10ColorAccessibleContrast(navigationPallet),
   };
-
+ -- */
   writeFileSync(
     join(out ?? './', 'themeColors.json'),
     JSON.stringify(theme, null, 2),
