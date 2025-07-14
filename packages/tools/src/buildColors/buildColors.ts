@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { create10ColorPallet } from './colors';
+import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
 
 const utility = {
   link: '#155276',
@@ -106,7 +106,7 @@ const main = () => {
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
 
-  // build list of colors
+  // build a list of colors
   const theme = Object.entries(themeColors).reduce(
     (acc: Record<string, Record<string, string>>, [colorName, colorValue]) => {
       acc[colorName] = create10ColorPallet(
@@ -115,10 +115,8 @@ const main = () => {
         saturation,
       );
 
-      acc[`${colorName}-contrast`] = create10ColorPallet(
-        colorValue as string,
-        shift,
-        saturation,
+      acc[`${colorName}-contrast`] = create10ColorAccessibleContrast(
+        acc[colorName],
       );
 
       return acc;
@@ -126,67 +124,9 @@ const main = () => {
     {},
   );
 
-  /* ---
-  const primaryPallet = create10ColorPallet(
-    themeColors.primary,
-    shift,
-    saturation,
-  );
-  const secondaryPallet = create10ColorPallet(
-    themeColors.secondary,
-    shift,
-    saturation,
-  );
-  const accentPallet = create10ColorPallet(
-    themeColors.accent,
-    shift,
-    saturation,
-  );
-  const accentPalletWarm = create10ColorPallet(
-    themeColors.accentWarm,
-    shift,
-    saturation,
-  );
-  const accentPalletCool = create10ColorPallet(
-    themeColors.accentCool,
-    shift,
-    saturation,
-  );
-  const basePallet = create10ColorPallet(themeColors.base, shift, saturation);
-  const chartPallet = create10ColorPallet(themeColors.chart, shift, saturation);
-  const tablePallet = create10ColorPallet(
-    themeColors?.table ?? '#ffffff',
-    shift,
-    saturation,
-  );
-  const navigationPallet = create10ColorPallet(
-    themeColors?.navigation ?? '#ffffff',
-    shift,
-    saturation,
-  );
-  const theme = {
-    primary: primaryPallet,
-    'primary-contrast': create10ColorAccessibleContrast(primaryPallet),
-    secondary: secondaryPallet,
-    'secondary-contrast': create10ColorAccessibleContrast(secondaryPallet),
-    accent: accentPallet,
-    'accent-contrast': create10ColorAccessibleContrast(accentPallet),
-    'accent-warm': accentPalletWarm,
-    'accent-warm-contrast': create10ColorAccessibleContrast(accentPalletWarm),
-    'accent-cool': accentPalletCool,
-    'accent-cool-contrast': create10ColorAccessibleContrast(accentPalletCool),
-    base: basePallet,
-    'base-contrast': create10ColorAccessibleContrast(basePallet),
-    utility: utility,
-    'utility-contrast': utilityContrast,
-    chart: chartPallet,
-    'chart-contrast': create10ColorAccessibleContrast(chartPallet),
-    table: tablePallet,
-    'table-contrast': create10ColorAccessibleContrast(tablePallet),
-    navigation: navigationPallet,
-    'navigation-contrast': create10ColorAccessibleContrast(navigationPallet),
-  };
- -- */
+  theme['utility'] = utility;
+  theme['utility-contrast'] = utilityContrast;
+
   writeFileSync(
     join(out ?? './', 'themeColors.json'),
     JSON.stringify(theme, null, 2),
