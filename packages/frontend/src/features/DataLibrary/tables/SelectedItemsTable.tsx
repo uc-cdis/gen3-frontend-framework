@@ -239,6 +239,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     state: { rowSelection },
     initialState: {
       density: 'xs',
+      grouping: ['datasetId'],
       columnPinning: {
         left: ['mrt-row-select', 'mrt-row-expand'],
         right: ['mrt-row-actions'],
