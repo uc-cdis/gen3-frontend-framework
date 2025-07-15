@@ -248,6 +248,7 @@ const ExplorerTable = ({
   return (
     <React.Fragment>
       <StudyProvider>
+        {/* Can replace this with a Drawer like Discovery */}
         {Object.keys(rowSelection).length > 0 ? (
           <DetailsComponent
             title={tableConfig?.detailsConfig?.title}
