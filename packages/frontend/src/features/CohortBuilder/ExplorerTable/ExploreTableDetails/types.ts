@@ -25,5 +25,6 @@ export interface ExplorerDetailsConfig {
   panel: string;
   params?: Record<string, unknown>;
   classNames?: Record<string, string>;
-  idField?: string;
+  idField?: string; // field containing the unique id
+  dataPath?: string; // the path to the returned data object.
 }

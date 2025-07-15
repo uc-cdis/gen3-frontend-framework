@@ -1,8 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
-import { useGeneralGQLQuery } from '@gen3/core';
+import { useGetRawDataAndTotalCountsQuery } from '@gen3/core';
 import ErrorCard from '../../../../components/MessageCards/ErrorCard';
 import { TableDetailsPanelProps } from './types';
+import { buildNested } from '../../../../components/facets';
+import { JSONPath } from 'jsonpath-plus';
+import { isArray } from 'lodash';
+import { useStudyContext } from '../../../Study/StudyProvider';
 
 interface QueryResponse {
   data?: Record<string, Array<any>>;
@@ -19,13 +23,22 @@ function isQueryResponse(obj: any): obj is QueryResponse {
 const ExtractData = (
   data: QueryResponse,
   index: string,
+  path?: string,
 ): Record<string, any> => {
   if (data === undefined || data === null) return {};
   if (data.data === undefined || data.data === null) return {};
 
-  return Array.isArray(data.data[index]) && data.data[index].length > 0
-    ? data.data[index][0]
-    : {};
+  if (!isArray(data.data[index])) return {};
+
+  let rowData = data.data[index][0];
+  if (path) {
+    const tmp = JSONPath({ path: path, json: data.data[index][0] });
+    if (tmp.length > 0) {
+      rowData = tmp[0];
+    }
+  }
+
+  return rowData;
 };
 
 export const QueryRowDetailsPanel = ({
@@ -36,24 +49,42 @@ export const QueryRowDetailsPanel = ({
 }: TableDetailsPanelProps) => {
   //const [queryGuppy, { data, isLoading, isError }] = useLazyGeneralGQLQuery();
   const idField = tableConfig.detailsConfig?.idField;
-  const { data, isLoading, isError } = useGeneralGQLQuery({
-    query: `query ($filter: JSON) {
-        ${index} (filter: $filter,  accessibility: all) {
-        ${tableConfig.fields}
-        }
-      }`,
-    variables: {
-      filter: {
-        AND: [
-          {
-            IN: {
-              [idField ?? 0]: [id],
-            },
-          },
-        ],
+  const { setStudyDetails } = useStudyContext();
+
+  const { data, isError, isFetching } = useGetRawDataAndTotalCountsQuery(
+    {
+      type: index,
+      fields: tableConfig.fields as string[],
+      filters: {
+        mode: 'and',
+        root: {
+          [idField as string]: buildNested(idField as string, {
+            operator: '=',
+            field: idField as string,
+            operand: id as string,
+          }),
+        },
       },
+      offset: 0,
+      size: 1,
+      accessibility: accessibility,
     },
-  });
+    {
+      skip: !idField || !id, // if no ide do not send request
+    },
+  );
+
+  const queryData = useMemo(
+    () =>
+      isQueryResponse(data)
+        ? ExtractData(data, index, tableConfig?.detailsConfig?.dataPath)
+        : {},
+    [data, index, tableConfig?.detailsConfig?.dataPath],
+  );
+
+  useEffect(() => {
+    setStudyDetails(queryData);
+  }, [queryData, setStudyDetails]);
 
   if (!idField) {
     return (
@@ -65,8 +96,7 @@ export const QueryRowDetailsPanel = ({
     return <ErrorCard message={'Error occurred while fetching data'} />;
   }
 
-  const queryData = isQueryResponse(data) ? ExtractData(data, index) : {};
-
+  // Replace with Study Details
   const rows = Object.entries(queryData).map(([field, value]) => (
     <tr key={field}>
       <td>
@@ -77,9 +107,10 @@ export const QueryRowDetailsPanel = ({
       </td>
     </tr>
   ));
+
   return (
     <Stack>
-      <LoadingOverlay visible={isLoading} />
+      <LoadingOverlay visible={isFetching} />
       <Text c="primary.4">Results for {id}</Text>
       <Table withTableBorder withColumnBorders>
         <thead>

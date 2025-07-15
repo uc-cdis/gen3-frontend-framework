@@ -1,4 +1,4 @@
-import React, { ThHTMLAttributes, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
@@ -16,7 +16,6 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Row } from '@tanstack/react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
 import {
@@ -26,7 +25,8 @@ import {
 import { DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
-import StudyProvider from '../../Study/StudyProvider';
+import { JSONPath } from 'jsonpath-plus';
+import { StudyProvider } from '../../Study';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -81,10 +81,17 @@ const ExplorerTable = ({
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
     const idField: string | undefined = detailsConfig?.idField;
-    return (originalRow: JSONObject) =>
-      idField && Object.keys(originalRow).includes(idField)
-        ? (originalRow[idField] as string)
-        : undefined;
+    if (!idField) return undefined;
+
+    return (originalRow: JSONObject) => {
+      const id = JSONPath({ json: originalRow, path: idField });
+
+      if (id.length > 0) {
+        return id[0];
+      } else {
+        return undefined;
+      }
+    };
   }, []);
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
@@ -240,30 +247,32 @@ const ExplorerTable = ({
   });
   return (
     <React.Fragment>
-      {Object.keys(rowSelection).length > 0 ? (
-        <DetailsComponent
-          title={tableConfig?.detailsConfig?.title}
-          id={
-            Object.keys(rowSelection).length > 0
-              ? Object.keys(rowSelection).at(0)
-              : undefined
-          }
-          row={selectedRow}
-          onClose={() => setRowSelection({})}
-          panel={DetailsPanel}
-          classNames={tableConfig?.detailsConfig?.classNames}
-          panelProps={{
-            index,
-            tableConfig,
-            ...(tableConfig?.detailsConfig?.params ?? {}),
-            accessibility,
-          }}
-        />
-      ) : null}
+      <StudyProvider>
+        {Object.keys(rowSelection).length > 0 ? (
+          <DetailsComponent
+            title={tableConfig?.detailsConfig?.title}
+            id={
+              Object.keys(rowSelection).length > 0
+                ? Object.keys(rowSelection).at(0)
+                : undefined
+            }
+            row={selectedRow}
+            onClose={() => setRowSelection({})}
+            panel={DetailsPanel}
+            classNames={tableConfig?.detailsConfig?.classNames}
+            panelProps={{
+              index,
+              tableConfig,
+              ...(tableConfig?.detailsConfig?.params ?? {}),
+              accessibility,
+            }}
+          />
+        ) : null}
 
-      <div className="inline-block overflow-x-scroll">
-        <MantineReactTable table={table} />
-      </div>
+        <div className="inline-block overflow-x-scroll">
+          <MantineReactTable table={table} />
+        </div>
+      </StudyProvider>
     </React.Fragment>
   );
 };
