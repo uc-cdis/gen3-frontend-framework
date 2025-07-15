@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from '../../lib/session/session';
 import { Center, Loader, Stack, Text } from '@mantine/core';
+import { type JWTSessionStatus } from '@gen3/core';
 
 interface ProtectedContentProps {
   children?: ReactNode;
@@ -31,9 +32,18 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
       onUnauthenticated();
     }, 2000);
   };
+  const [stableStatus, setStableStatus] = useState<JWTSessionStatus | undefined>();
 
   const { status, pending } = useSession(true, delayRedirect);
-  if (status !== 'issued') {
+  useEffect(() => {
+    if (!pending && (stableStatus !== status)) {
+      // only update stableStatus if session is not pending
+      // this prevents flickering of the status
+      setStableStatus(status);
+    }
+  }, [status, pending]);
+
+  if (stableStatus !== 'issued') {
     // not logged in
     if (pending)
       return (
