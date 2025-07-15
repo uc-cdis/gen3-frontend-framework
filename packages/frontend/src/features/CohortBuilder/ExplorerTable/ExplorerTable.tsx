@@ -27,6 +27,7 @@ import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
 import { StudyProvider } from '../../Study';
+import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -59,14 +60,16 @@ const ExplorerTable = ({
     MRT_Row<Record<string, any>> | undefined
   >(undefined);
 
-  const DetailsPanel = useMemo(
-    () =>
-      ExplorerTableDetailsPanelFactory().getRenderer(
-        'tableDetails',
-        tableConfig?.detailsConfig?.panel ?? 'default',
-      ),
-    [tableConfig?.detailsConfig?.panel],
-  );
+  // const DetailsPanel = useMemo(
+  //   () =>
+  //     ExplorerTableDetailsPanelFactory().getRenderer(
+  //       'tableDetails',
+  //       tableConfig?.detailsConfig?.panel ?? 'default',
+  //     ),
+  //   [tableConfig?.detailsConfig?.panel],
+  // );
+
+  const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
   const tableColumns = useDeepCompareMemo(() => {
     return createTableColumns(tableConfig);
