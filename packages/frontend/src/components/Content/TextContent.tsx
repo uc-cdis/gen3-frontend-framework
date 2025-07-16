@@ -69,7 +69,7 @@ const TextContent = ({
       return (
         <div className={className} role="list">
           <style>
-            /* making sure tailwind loads imported classes */
+            {/* making sure tailwind loads imported classes */}
             @source inline({className});
           </style>
           {textArray.map((item) => (
@@ -120,7 +120,7 @@ const TextContent = ({
       return (
         <div className={mergedClassname}>
           <style>
-            /* making sure tailwind loads imported classes */
+            {/* making sure tailwind loads imported classes */}
             @source inline({className});
           </style>
           <span>
@@ -155,7 +155,7 @@ const TextContent = ({
       return (
         <div className={mergedClassname}>
           <style>
-            /* making sure tailwind loads imported classes */
+            {/* making sure tailwind loads imported classes */}
             @source inline({className});
           </style>
           <span>
@@ -177,7 +177,7 @@ const TextContent = ({
       return (
         <div className={className}>
           <style>
-            /* making sure tailwind loads imported classes */
+            {/* making sure tailwind loads imported classes */}
             @source inline({className});
           </style>
           <p>{text.toString()}</p>
