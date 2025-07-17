@@ -39,6 +39,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
       <Tabs
         className="w-full"
         defaultValue={metadataIndex}
+        variant={discoveryConfig.metadataConfig[0]?.tabType}
         onChange={(v: string | null) => {
           setMetadataIndex(v ?? '0');
         }}

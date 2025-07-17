@@ -183,6 +183,7 @@ export interface DiscoveryIndexConfig {
   studyField?: string;
   maxStudies?: number;
   label?: string;
+  tabType?: 'pills' | 'outline';
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;
