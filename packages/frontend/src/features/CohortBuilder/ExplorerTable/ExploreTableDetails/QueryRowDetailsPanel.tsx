@@ -34,7 +34,6 @@ const ExtractData = (
   if (path) {
     const tmp = JSONPath({ path: path, json: data.data[index][0] });
     if (!isArray(tmp)) {
-      console.log(path, data);
       return {};
     }
     if (tmp.length > 0) {
