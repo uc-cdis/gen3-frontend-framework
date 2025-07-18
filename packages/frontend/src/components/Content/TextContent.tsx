@@ -61,14 +61,17 @@ const TextContent = ({
         <p
           className={className}
           dangerouslySetInnerHTML={{ __html: textString }}
-          aria-label="HTML content" // Provide context for HTML rendered content
         />
       );
     }
     case ContentType.TextArray: {
       const textArray = !Array.isArray(text) ? [text] : text;
       return (
-        <div className={className} role="list" aria-label="Text array">
+        <div className={className} role="list">
+          <style>
+            {/* making sure tailwind loads imported classes */}
+            @source inline({className});
+          </style>
           {textArray.map((item) => (
             <p className="my-2" key={hashCode(item)} role="listitem">
               {item}
@@ -80,7 +83,7 @@ const TextContent = ({
     case ContentType.Markdown: {
       const textString = Array.isArray(text) ? text.join('') : text;
       return (
-        <div aria-label="Markdown content">
+        <div>
           <Markdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -116,13 +119,16 @@ const TextContent = ({
       const textString = Array.isArray(text) ? text.join('') : text;
       return (
         <div className={mergedClassname}>
+          <style>
+            {/* making sure tailwind loads imported classes */}
+            @source inline({className});
+          </style>
           <span>
             {textString}
             {email && (
               <Anchor
                 classNames={{ root: mergedClassname }}
                 href={`mailto:${email}`}
-                aria-label={`Send an email to ${email}`} // Provide label for email purpose
               >
                 {` ${email}.`}
               </Anchor>
@@ -140,7 +146,7 @@ const TextContent = ({
       const textString = Array.isArray(text) ? text.join('') : text;
       if (!link) {
         return (
-          <div className={mergedClassname} aria-label="No link defined">
+          <div className={mergedClassname}>
             Link is not defined.
           </div>
         );
@@ -148,13 +154,16 @@ const TextContent = ({
 
       return (
         <div className={mergedClassname}>
+          <style>
+            {/* making sure tailwind loads imported classes */}
+            @source inline({className});
+          </style>
           <span>
             {textString}
             {link && (
               <Anchor
                 classNames={{ root: mergedClassname }}
                 href={link}
-                aria-label={`Visit the link: ${linkText || link}`} // Label to clarify the link purpose
               >
                 {` ${linkText ?? link}.`}
               </Anchor>
@@ -166,7 +175,11 @@ const TextContent = ({
     case ContentType.Text:
     default:
       return (
-        <div className={className} aria-label="Plain text content">
+        <div className={className}>
+          <style>
+            {/* making sure tailwind loads imported classes */}
+            @source inline({className});
+          </style>
           <p>{text.toString()}</p>
         </div>
       );
