@@ -31,6 +31,7 @@ const persistConfig = {
   key: _APP_NAME,
   version: 1,
   storage,
+  // blacklist: ['cohorts'], // cohorts are persisted in cohortStorage
 };
 
 // create the store, context and selector for the ProjectsCenter
@@ -42,7 +43,6 @@ const reducers = combineReducers({
   filtersExpandedState: filtersExpandedReducer,
   facetDefinitionState: facetDefinitionsReducer,
   cohorts: cohortManagerReducer,
-  // savedCohorts: saveCohortPersistenceReducer,
   dataAccessRequests: dataAccessRequestsReducer,
 });
 
