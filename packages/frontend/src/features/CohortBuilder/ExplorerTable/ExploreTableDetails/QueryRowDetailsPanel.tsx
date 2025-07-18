@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo } from 'react';
 import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useGetRawDataAndTotalCountsQuery } from '@gen3/core';
+import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import ErrorCard from '../../../../components/MessageCards/ErrorCard';
 import { TableDetailsPanelProps } from './types';
 import { buildNested } from '../../../../components/facets';
 import { JSONPath } from 'jsonpath-plus';
 import { isArray } from 'lodash';
 import { useStudyContext } from '../../../Study/StudyProvider';
+import { SinglePageStudyDetailsPanel } from '../../../Study';
 
 interface QueryResponse {
   data?: Record<string, Array<any>>;
@@ -52,7 +55,9 @@ export const QueryRowDetailsPanel = ({
 }: TableDetailsPanelProps) => {
   //const [queryGuppy, { data, isLoading, isError }] = useLazyGeneralGQLQuery();
   const idField = tableConfig.detailsConfig?.idField;
+  const simpleDetailsView = tableConfig.detailsConfig?.simpleDetailsView;
   const { setStudyDetails } = useStudyContext();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { data, isError, isFetching } = useGetRawDataAndTotalCountsQuery(
     {
@@ -99,33 +104,17 @@ export const QueryRowDetailsPanel = ({
     return <ErrorCard message={'Error occurred while fetching data'} />;
   }
 
-  // Replace with Study Details
-  const rows = Object.entries(queryData).map(([field, value]) => (
-    <tr key={field}>
-      <td>
-        <Text fw="bold">{field}</Text>
-      </td>
-      <td>
-        <Text>{value ? (value as string) : ''}</Text>
-      </td>
-    </tr>
-  ));
+  // Inital attempt at using Study Details component
 
   return (
     <Stack>
-      <LoadingOverlay visible={isFetching} />
-      <Text c="primary.4">Results for {id}</Text>
-      <Table withTableBorder withColumnBorders>
-        <thead>
-          <tr>
-            <th>Field</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
+    <LoadingOverlay visible={isFetching} />
+      {simpleDetailsView ?
+       <SinglePageStudyDetailsPanel data={queryData ?? {}} studyConfig={simpleDetailsView} /> :
+       <div>Study Details Panel not configured</div> }
     </Stack>
   );
+
 };
 
 export default QueryRowDetailsPanel;

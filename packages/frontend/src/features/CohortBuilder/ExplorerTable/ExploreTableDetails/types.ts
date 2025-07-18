@@ -1,6 +1,7 @@
 import { DetailsPanelComponentProps } from '../../../../components/Details/types';
 import { SummaryTable } from '../types';
 import { Accessibility } from '@gen3/core';
+import { StudyPageConfig } '../../../Study/types';
 
 export interface TableDetailsPanelProps extends DetailsPanelComponentProps {
   index: string;
@@ -27,4 +28,5 @@ export interface ExplorerDetailsConfig {
   classNames?: Record<string, string>;
   idField?: string; // field containing the unique id
   dataPath?: string; // the path to the returned data object.
+  simpleDetailsView?: StudyPageConfig; // simple detailed view similar to Discovery
 }
