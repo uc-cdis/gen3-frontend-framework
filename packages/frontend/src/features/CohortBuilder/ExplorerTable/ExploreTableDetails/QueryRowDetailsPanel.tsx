@@ -33,6 +33,9 @@ const ExtractData = (
   let rowData = data.data[index][0];
   if (path) {
     const tmp = JSONPath({ path: path, json: data.data[index][0] });
+    if (!isArray(tmp)) {
+      return {};
+    }
     if (tmp.length > 0) {
       rowData = tmp[0];
     }
