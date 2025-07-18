@@ -31,7 +31,7 @@ const persistConfig = {
   key: _APP_NAME,
   version: 1,
   storage,
-  // blacklist: ['cohorts'], // cohorts are persisted in cohortStorage
+  // blacklist: ['cohorts'], // TODO: enable when cohorts are persisted in cohortStorage
 };
 
 // create the store, context and selector for the ProjectsCenter
