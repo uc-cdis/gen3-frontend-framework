@@ -4,6 +4,7 @@ import { cohortsAdapter, createDefaultCohort } from './CohortManagerSlice';
 import { AppState } from '../appApi';
 import { EmptyFilterSet } from './types';
 import { Cohort, CohortId } from '../types';
+import { UninitializeCohort } from '../constants';
 
 // Selectors
 export const {
@@ -16,12 +17,12 @@ export const {
 export const selectCurrentCohortId = (state: AppState): string =>
   state.cohorts.currentCohortId;
 
-export const selectCurrentCohort = (state: AppState): Cohort => {
+export const selectCurrentCohort = (state: AppState): Cohort | null => {
   const { currentCohortId, entities } = state.cohorts;
   const cohort = entities[currentCohortId];
 
   if (!cohort) {
-    return createDefaultCohort();
+    return null;
   }
 
   return cohort;
@@ -57,18 +58,18 @@ export const selectCohortAutoSaveStatus = createSelector(
 
 export const selectCurrentCohortName = createSelector(
   [selectCurrentCohort],
-  (cohort) => cohort.name,
+  (cohort) => cohort?.name ?? 'No Cohort Defined',
 );
 
 export const selectCurrentCohortFilters = createSelector(
   [selectCurrentCohort],
-  (cohort) => cohort.filters,
+  (cohort) => (cohort ? cohort.filters : UninitializeCohort.filters),
 );
 
 export const selectCurrentCohortIndexFilters = createSelector(
   [selectCurrentCohort, (state, index) => index],
   (cohort, index) => {
-    return cohort.filters?.[index] ?? EmptyFilterSet;
+    return cohort?.filters?.[index] ?? EmptyFilterSet;
   },
 );
 
@@ -76,15 +77,19 @@ export const selectCohortNameExists = createSelector(
   [selectAllCohorts, (state, name, excludeId) => ({ name, excludeId })],
   (cohorts, params) => {
     const trimmedName = params.name.trim().toLowerCase();
-    return cohorts.some(cohort =>
-      cohort.id !== params.excludeId &&
-      cohort.name.trim().toLowerCase() === trimmedName
+    return cohorts.some(
+      (cohort) =>
+        cohort.id !== params.excludeId &&
+        cohort.name.trim().toLowerCase() === trimmedName,
     );
-  }
+  },
 );
 
 export const selectCohortManagerLoading = (state: AppState): boolean =>
   state.cohorts.loading;
+
+export const selectCohortManagerUninitialized = (state: AppState): boolean =>
+  state.cohorts.uninitialized;
 
 export const selectCohortManagerError = (state: AppState): string | null =>
   state.cohorts.error;

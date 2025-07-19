@@ -25,7 +25,7 @@ export class FilesystemContent implements ContentSource {
       return await JSON.parse(
         fs.readFileSync(path.join(this.rootPath, filepath)).toString('utf8'),
       );
-    } catch (err) {
+    } catch (err: unknown) {
       throw new Error(`Cannot process ${path.join(this.rootPath, filepath)} `);
     }
   }
@@ -38,7 +38,7 @@ export class FilesystemContent implements ContentSource {
       return Promise.all(
         files.map((file) => this.get<T>(path.join(filepath, file))),
       );
-    } catch (err) {
+    } catch (_err: unknown) {
       throw new Error(
         `getAllCannot process ${path.join(this.rootPath, filepath)}/${filter}`,
       );

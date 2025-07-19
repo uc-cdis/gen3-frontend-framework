@@ -22,17 +22,18 @@ export const getNavPageLayoutPropsFromConfig =
       `${GEN3_COMMONS_NAME}/navigation.json`,
     );
 
-    let bannerConfigJSON: Array<BannerProps> = [];
-    try {
-      bannerConfigJSON = await ContentSource.getContentDatabase().get(
-        `${GEN3_COMMONS_NAME}/banner.json`,
-      );
-    } catch (error: unknown) {
-      console.warn(
-        'No banner config found at: ',
-        `${GEN3_COMMONS_NAME}/banner.json`,
-      );
-    }
+    const bannerConfigJSON: Array<BannerProps> = [];
+    // TODO: enable later
+    // try {
+    //   bannerConfigJSON = await ContentSource.getContentDatabase().get(
+    //     `${GEN3_COMMONS_NAME}/banner.json`,
+    //   );
+    // } catch (error: unknown) {
+    //   console.warn(
+    //     'No banner config found at: ',
+    //     `${GEN3_COMMONS_NAME}/banner.json`,
+    //   );
+    // }
     const { topBar, navigation, type = 'original' } = navigationConfigJSON;
 
     let headerMetadata: HeaderMetadata = {
