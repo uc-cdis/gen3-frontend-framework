@@ -29,9 +29,10 @@ const CohortBuilder = ({
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-2">
       <Tabs
         color="primary.4"
+        variant={explorerConfig[0]?.tabType}
         keepMounted={true}
         defaultValue={explorerConfig[0].tabTitle}
       >

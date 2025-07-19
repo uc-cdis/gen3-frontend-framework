@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
   Accessibility,
+  AggregationsData,
   CombineMode,
   CoreState,
   extractEnumFilterValue,
@@ -39,7 +40,11 @@ import {
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
 import CohortManager from './CohortManager';
-import { Charts, CollapsableCharts } from '../../components/charts';
+import {
+  Charts,
+  CollapsableCharts,
+  filterAggregationsDataKeys,
+} from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
@@ -175,6 +180,29 @@ export const CohortPanel = ({
       skip: chartKeys.length === 0,
     },
   );
+
+  const cleanChartData = useDeepCompareMemo(() => {
+    if (isChartSuccess && chartData) {
+      const cleanedData: AggregationsData = {};
+      Object.keys(summaryCharts).forEach((key) => {
+        // remove empty keys
+        cleanedData[key] = chartData[key].filter((x) =>
+          typeof x.key !== 'string' ? true : x.key !== '',
+        );
+
+        const facetDef = facetDefinitions?.[key];
+        if (facetDef?.excludeValues) {
+          cleanedData[key] = cleanedData[key].filter((x) =>
+            typeof x.key !== 'string'
+              ? true
+              : facetDef?.excludeValues?.includes(String(x.key)) === false,
+          );
+        }
+      });
+      return cleanedData;
+    }
+    return chartData;
+  }, [chartData, isChartSuccess, summaryCharts]);
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
@@ -386,13 +414,13 @@ export const CohortPanel = ({
           {chartsSection?.enabled ? (
             <CollapsableCharts
               config={{ ...chartsSection, charts: summaryCharts }}
-              data={chartData ?? EmptyData}
+              data={cleanChartData ?? EmptyData}
               isSuccess={isChartSuccess}
             />
           ) : (
             <Charts
               charts={summaryCharts}
-              data={chartData ?? EmptyData}
+              data={cleanChartData ?? EmptyData}
               counts={counts}
               isSuccess={isChartSuccess}
               numCols={numCols}

@@ -61,6 +61,8 @@ export const getServerSideProps: GetServerSideProps<
 > = async (context) => {
   const appName = context.query.appName as string;
 
+  console.log('loading', appName);
+
   try {
     const config: any = await ContentSource.getContentDatabase().get(
       `${GEN3_COMMONS_NAME}/apps/${appName}.json`,
@@ -72,11 +74,10 @@ export const getServerSideProps: GetServerSideProps<
       },
     };
   } catch (err) {
-    console.error(err);
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        config: undefined,
+        config: null,
       },
     };
   }

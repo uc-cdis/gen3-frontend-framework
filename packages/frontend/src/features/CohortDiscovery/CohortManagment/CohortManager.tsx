@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   ComboboxItem,
@@ -8,6 +8,7 @@ import {
   Tooltip,
   useMantineTheme,
   Text,
+  LoadingOverlay,
 } from '@mantine/core';
 
 import {
@@ -15,12 +16,16 @@ import {
   createNewCohort,
   removeCohort,
   updateCohortName,
+  loadCohortsFromStorage,
 } from './CohortManagerSlice';
 import {
   selectAllCohorts,
   selectCurrentCohort,
   selectCohortManagerLoading,
+  selectCohortManagerUninitialized,
+  selectCohortManagerError,
 } from './CohortManagerSelectors';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import { useAppDispatch, useAppSelector } from '../appApi';
 import {
   Cohort,
@@ -48,6 +53,7 @@ import {
   useCreateRequestMutation,
   useLazyGetAggsNoFilterSelfQuery,
 } from '@gen3/core';
+import { ErrorCard } from '../../../components/MessageCards';
 
 interface CohortManagerProps {
   indexResources: IndexResourceField;
@@ -57,18 +63,17 @@ interface CohortManagerProps {
 
 const hasExportImport = false;
 
-export const CohortManager = ({
+const CohortManagerPanel = ({
   indexResources,
   remoteSupportService,
   size = 'md',
 }: CohortManagerProps) => {
-  const dispatch = useAppDispatch();
+  const appDispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingLabel, setEditingLabel] = useState('');
   const allCohorts: Array<Cohort> = useAppSelector(selectAllCohorts);
   const currentCohort = useAppSelector(selectCurrentCohort);
-  const loading = useAppSelector(selectCohortManagerLoading);
-  const appDispatch = useAppDispatch();
+
   const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
   const [requestQuery] = useCreateRequestMutation();
   const user = useCoreSelector(selectUserDetails);
@@ -92,13 +97,13 @@ export const CohortManager = ({
   const saveEdit = () => {
     if (editingLabel.trim() === '' || !currentCohort.name) return;
 
-    dispatch(updateCohortName({ id: currentCohort.id, name: editingLabel }));
+    appDispatch(updateCohortName({ id: currentCohort.id, name: editingLabel }));
     setIsEditing(false);
     setEditingLabel('');
   };
 
   const handleCreateNew = () => {
-    dispatch(createNewCohort({ name: 'New Cohort' }));
+    appDispatch(createNewCohort({ name: 'New Cohort' }));
   };
 
   const selectData = useMemo(() => {
@@ -108,13 +113,19 @@ export const CohortManager = ({
     }));
   }, [allCohorts]);
 
+  useDeepCompareEffect(() => {
+    if (!currentCohort) {
+      setCurrentCohortId(allCohorts[0].id);
+    }
+  }, [allCohorts, currentCohort, setCurrentCohortId]);
+
   const onSelectCohort = useCallback(
     (_value: unknown, option: ComboboxItem | null) => {
       if (option) {
-        dispatch(setCurrentCohortId(option.value));
+        appDispatch(setCurrentCohortId(option.value));
       }
     },
-    [dispatch],
+    [appDispatch],
   );
 
   const handleCohortAccessRequest = async (
@@ -135,10 +146,6 @@ export const CohortManager = ({
         requestQuery,
       );
   };
-
-  if (loading) {
-    return <div>Loading cohorts...</div>;
-  }
 
   return (
     <Group gap="xs" className="flex pt-4 pl-2">
@@ -185,7 +192,7 @@ export const CohortManager = ({
               aria-label="Complete rename cohort"
               disabled={
                 editingLabel.trim() === '' ||
-                editingLabel.trim() === currentCohort.name
+                editingLabel.trim() === currentCohort?.name
               }
               size={`compact-${size}`}
             >
@@ -241,7 +248,7 @@ export const CohortManager = ({
               labels: { confirm: 'Delete Cohort', cancel: 'Cancel' },
               confirmProps: { color: theme.colors.accent[4] },
               onConfirm: () => {
-                dispatch(removeCohort(currentCohort.id));
+                appDispatch(removeCohort(currentCohort.id));
               },
             });
           }}
@@ -307,6 +314,22 @@ export const CohortManager = ({
         </>
       ) : null}
     </Group>
+  );
+};
+
+const CohortManager = ({
+  indexResources,
+  remoteSupportService,
+  size = 'md',
+}: CohortManagerProps) => {
+  // TODO: initialize and load cohorts from cohort storage
+  //  as right now the redux-persist is handling cohorts
+  return (
+    <CohortManagerPanel
+      indexResources={indexResources}
+      remoteSupportService={remoteSupportService}
+      size={size}
+    />
   );
 };
 
