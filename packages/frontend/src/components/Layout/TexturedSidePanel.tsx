@@ -6,9 +6,9 @@ interface TexturedSidePanelProps {
 const TexturedSidePanel = ({ url }: TexturedSidePanelProps) => {
   return (
     <div
-      aria-label={'background image'}
+      aria-hidden="true"
       style={{ backgroundImage: `url(${url})` }}
-      className="flex h-screen w-full bg-left bg-repeat-y last:-scale-x-100"
+      className="bg-contain flex h-full w-full bg-repeat-y last:-scale-x-100"
     ></div>
   );
 };

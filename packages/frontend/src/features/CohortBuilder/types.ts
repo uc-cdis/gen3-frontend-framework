@@ -73,6 +73,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
+  tabType?: 'pills' | 'outline';
   chartsSection?: CollapsableChartsPanelConfiguration; // grid of charts within an accordion
   charts?: Record<string, SummaryChart>; // grid of charts
   table?: SummaryTable; // table configuration
