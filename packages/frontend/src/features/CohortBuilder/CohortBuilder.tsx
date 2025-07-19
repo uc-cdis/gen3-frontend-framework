@@ -15,7 +15,7 @@ export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
 };
 
-export const CohortBuilder = ({
+const CohortBuilder = ({
   explorerConfig,
   sharedFiltersMap = null,
   tabsLayout = 'left',
@@ -73,3 +73,5 @@ export const CohortBuilder = ({
     </div>
   );
 };
+
+export default CohortBuilder;

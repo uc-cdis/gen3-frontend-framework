@@ -363,7 +363,7 @@ export const CohortPanel = ({
   }
 
   return (
-    <div className="flex flex-col mt-3 relative px-4 bg-base-light w-full">
+    <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
       <CohortManager index={index} />
 
       {/* Flex container to ensure proper 25/75 split */}
@@ -430,13 +430,11 @@ export const CohortPanel = ({
           {/* Table Section */}
           {table?.enabled && (
             <div className="mt-2 flex flex-col">
-              <div className="grid">
-                <ExplorerTable
-                  index={index}
-                  tableConfig={table}
-                  accessibility={accessLevel}
-                />
-              </div>
+              <ExplorerTable
+                index={index}
+                tableConfig={table}
+                accessibility={accessLevel}
+              />
             </div>
           )}
         </div>
