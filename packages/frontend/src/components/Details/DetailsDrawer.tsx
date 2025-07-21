@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Drawer, Group, Text } from '@mantine/core';
+import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { DetailsComponentProps, DetailsPanelComponentProps } from './types';
@@ -24,19 +24,9 @@ const DetailsDrawer = <
       <Drawer.Overlay opacity={0.5} blur={4} />
       <Drawer.Content>
         <Drawer.Header>
-          <Group justify="space-between">
-            <Text size="lg" fw="bolder">
-              {title}
-            </Text>
-            <Button
-              leftSection={<BackIcon />}
-              onClick={close}
-              variant="outline"
-            >
-              {' '}
-              Back{' '}
-            </Button>
-          </Group>
+          <Button leftSection={<BackIcon />} onClick={close} variant="outline">
+            Back
+          </Button>
         </Drawer.Header>
         <Drawer.Body>{panel({ id: id, ...panelProps })}</Drawer.Body>
       </Drawer.Content>
