@@ -48,6 +48,7 @@ export interface FooterLogo {
   width: number;
   height: number;
   className?: string;
+  href?: string;
 }
 
 export type FooterRow =
