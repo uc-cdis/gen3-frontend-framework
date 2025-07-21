@@ -50,21 +50,21 @@ const SinglePageStudyDetailsPanel = ({
     if (studyConfig === undefined || studyConfig === null) {
       return <div>Study Details Panel not configured</div>;
     } else {
-      return studyConfig?.fieldsToShow.map((field) => {
+      return studyConfig?.fieldsToShow.map((fieldToShow) => {
         return (
           <div
-            key={`${field.fields.join('-')}-details`}
+            key={`${fieldToShow.fields.join('-')}-details`}
             className={`px-2 ${
-              field.groupWidth == 'full' || field.groupWidth === undefined
+              fieldToShow.groupWidth == 'full' || fieldToShow.groupWidth === undefined
                 ? 'w-full'
                 : 'w-1/2'
             }`}
           >
             <div className="flex flex-col">
-              {field?.groupName ? (
-                <div className="text-lg font-bold">{field.groupName}</div>
+              {fieldToShow?.groupName ? (
+                <div className="text-lg font-bold">{fieldToShow.groupName}</div>
               ) : null}
-              {field.fields.map((field) => {
+              {fieldToShow.fields.map((field) => {
                 const element = createFieldRendererElement(
                   field,
                   data as JSONValue,
