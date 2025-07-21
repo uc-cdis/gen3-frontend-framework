@@ -21,9 +21,10 @@ export interface TableDetailsPanelProps extends DetailsPanelComponentProps {
  * @property {string} [idField] - The field used as an identifier for the Explorer details.
  */
 export interface ExplorerDetailsConfig {
-  mode?: 'click' | 'doubleclick' | 'expand';
+  mode?: 'click' | 'doubleclick' | 'expand' | 'none';
   title?: string;
   panel: string;
+  panelContainer?: 'modal' | 'drawer';
   params?: Record<string, unknown>;
   classNames?: Record<string, string>;
   idField?: string; // field containing the unique id
