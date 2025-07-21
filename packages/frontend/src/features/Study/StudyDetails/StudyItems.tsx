@@ -412,13 +412,16 @@ export const createFieldRendererElement = (
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
 
-  if (resourceFieldValue === undefined || resourceFieldValue === null) {
+  if (!isArray(resourceFieldValue) || resourceFieldValue.length == 0 || resourceFieldValue[0] === null) {
     if (field.includeIfNotAvailable === false) return null;
-    if (field.valueIfNotAvailable)
+    if (field.valueIfNotAvailable) {
       resourceFieldValue = field.valueIfNotAvailable as JSONValue;
-  } else
-    resourceFieldValue =
-      resourceFieldValue.length > 0 ? resourceFieldValue[0] : '';
+    } else {
+      resourceFieldValue = '';
+    }
+  } else {
+    resourceFieldValue = resourceFieldValue[0];
+  }
 
   const label =
     field.includeLabel === undefined || field?.includeLabel
