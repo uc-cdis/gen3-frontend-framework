@@ -2,6 +2,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  EntityId,
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
