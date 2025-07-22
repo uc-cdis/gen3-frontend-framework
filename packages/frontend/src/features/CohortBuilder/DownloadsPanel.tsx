@@ -17,6 +17,7 @@ import {
 import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
+import AddToDataLibrary from './ActionBar/AddToDataLibrary';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -156,6 +157,14 @@ const DownloadsPanel = ({
         let actionFunction = NullButtonAction;
         let actionArgs = {};
         const buttonAction = button.action ?? button.type;
+
+        if (button.type === 'addToDataLibrary') {
+          return <AddToDataLibrary
+
+
+
+        }
+
         if (buttonAction) {
           const actionItem = findButtonAction(buttonAction);
           if (actionItem) {

@@ -15,6 +15,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Modals, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { ExportFromDiscoveryActions } from '../Discovery/types';
 
 export type FacetType =
   | 'enum'
