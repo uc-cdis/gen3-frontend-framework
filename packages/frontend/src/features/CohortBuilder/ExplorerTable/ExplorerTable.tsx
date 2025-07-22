@@ -18,11 +18,8 @@ import {
 } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
-import {
-  ExplorerTableDetailsPanelFactory,
-  type TableDetailsPanelProps,
-} from './ExploreTableDetails';
-import { DetailsModal } from '../../../components/Details';
+import { type TableDetailsPanelProps } from './ExploreTableDetails';
+import { DetailsModal, DetailsDrawer } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
@@ -52,7 +49,13 @@ const ExplorerTable = ({
     pageSize: 10,
   });
 
-  const DetailsComponent = DetailsModal<TableDetailsPanelProps>;
+  const DetailsComponent = useMemo(
+    () =>
+      tableConfig?.detailsConfig?.panelContainer === 'drawer'
+        ? DetailsDrawer<TableDetailsPanelProps>
+        : DetailsModal<TableDetailsPanelProps>,
+    [],
+  );
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -161,6 +164,12 @@ const ExplorerTable = ({
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    enableExpandAll: false,
+    displayColumnDefOptions: {
+      'mrt-row-expand': {
+        enableHiding: true, //now row numbers are hidable too
+      },
+    },
     enableExpanding: !!tableConfig?.detailsConfig,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
@@ -168,6 +177,16 @@ const ExplorerTable = ({
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+    // mantineExpandAllButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
+    // mantineExpandButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
@@ -205,6 +224,7 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
+      columnVisibility: { 'mrt-row-expand': false },
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -251,28 +271,24 @@ const ExplorerTable = ({
   return (
     <React.Fragment>
       <StudyProvider>
-        {/* Can replace this with a Drawer like Discovery */}
-        {Object.keys(rowSelection).length > 0 ? (
-          <DetailsComponent
-            title={tableConfig?.detailsConfig?.title}
-            id={
-              Object.keys(rowSelection).length > 0
-                ? Object.keys(rowSelection).at(0)
-                : undefined
-            }
-            row={selectedRow}
-            onClose={() => setRowSelection({})}
-            panel={DetailsPanel}
-            classNames={tableConfig?.detailsConfig?.classNames}
-            panelProps={{
-              index,
-              tableConfig,
-              ...(tableConfig?.detailsConfig?.params ?? {}),
-              accessibility,
-            }}
-          />
-        ) : null}
-
+        <DetailsComponent
+          title={tableConfig?.detailsConfig?.title}
+          id={
+            Object.keys(rowSelection).length > 0
+              ? Object.keys(rowSelection).at(0)
+              : undefined
+          }
+          row={selectedRow}
+          onClose={() => setRowSelection({})}
+          panel={DetailsPanel}
+          classNames={tableConfig?.detailsConfig?.classNames}
+          panelProps={{
+            index,
+            tableConfig,
+            ...(tableConfig?.detailsConfig?.params ?? {}),
+            accessibility,
+          }}
+        />
         <div className="inline-block overflow-x-scroll">
           <MantineReactTable table={table} />
         </div>

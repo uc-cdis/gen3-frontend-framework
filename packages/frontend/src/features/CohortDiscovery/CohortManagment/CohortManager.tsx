@@ -115,7 +115,7 @@ const CohortManagerPanel = ({
 
   useDeepCompareEffect(() => {
     if (!currentCohort) {
-      setCurrentCohortId(allCohorts[0].id);
+      appDispatch(setCurrentCohortId(allCohorts[0].id));
     }
   }, [allCohorts, currentCohort, setCurrentCohortId]);
 
