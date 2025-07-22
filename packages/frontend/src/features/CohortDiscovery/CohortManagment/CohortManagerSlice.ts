@@ -65,6 +65,7 @@ export const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
 export interface CohortManagerState {
   currentCohortId: string;
   loading: boolean;
+  uninitialized: boolean;
   error: string | null;
   autoSaveInProgress: string[];
 }
@@ -76,8 +77,9 @@ export const loadCohortsFromStorage = createAsyncThunk(
   'cohorts/loadFromStorage',
   async (): Promise<Cohort[]> => {
     try {
-      const cohortsMap = await cohortStorage.getAllCohorts();
-      return Object(cohortsMap).values();
+      const results = await cohortStorage.getAllCohorts();
+      if (results.data) return Object.values(results.data);
+      else return [];
     } catch (error) {
       console.error('Failed to load cohorts:', error);
       return [];
@@ -178,11 +180,14 @@ interface ClearAllFilterParams {
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CohortManagerState>({
-  currentCohortId: 'empty',
+  currentCohortId: 'uninitialized',
   loading: false,
+  uninitialized: true,
   error: null,
   autoSaveInProgress: [],
 });
+
+// const initialState = emptyInitialState;
 
 const initialState = cohortsAdapter.addOne(
   emptyInitialState,
@@ -417,22 +422,28 @@ export const cohortManagerSlice = createSlice({
     builder
       .addCase(loadCohortsFromStorage.pending, (state) => {
         state.loading = true;
+        state.uninitialized = false;
         state.error = null;
+        console.log('loadCohortsFromStorage.pending');
       })
       .addCase(loadCohortsFromStorage.fulfilled, (state, action) => {
         state.loading = false;
-
+        console.log('loadCohortsFromStorage.fulfilled', action.payload);
         if (action.payload.length > 0) {
-          if (Object.keys(state.entities).length === 1) {
-            cohortsAdapter.removeOne(state, state.entities[0].id);
+          if (Object.keys(state.entities).length >= 0) {
+            cohortsAdapter.removeAll(state);
           }
-
           cohortsAdapter.addMany(state, action.payload);
 
           const sortedCohorts = action.payload.sort((a, b) =>
             b.modifiedDatetime.localeCompare(a.modifiedDatetime),
           );
           state.currentCohortId = sortedCohorts[0].id;
+        } else {
+          // No cohorts in storage, create default cohort
+          const defaultCohort = createDefaultCohort();
+          cohortsAdapter.addOne(state, defaultCohort);
+          state.currentCohortId = defaultCohort.id;
         }
       })
       .addCase(loadCohortsFromStorage.rejected, (state, action) => {

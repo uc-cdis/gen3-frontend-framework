@@ -103,8 +103,17 @@ export interface MinimalFieldMapping {
   uid: string;
 }
 
+export type RowSelectCompareFunctions = 'arrayNotEmpty' | 'alwaysTrue';
+
+export interface SelectableRowConfiguration {
+  field: string;
+  comparer: RowSelectCompareFunctions;
+  value?: string | number;
+}
+
 interface DiscoveryTableConfig {
   selectableRows?: boolean;
+  selectableRowConfiguration?: SelectableRowConfiguration;
   expandableRows?: boolean;
   expandingRowRenderFunction?: string;
 }
@@ -174,6 +183,7 @@ export interface DiscoveryIndexConfig {
   studyField?: string;
   maxStudies?: number;
   label?: string;
+  tabType?: 'pills' | 'outline';
   features: {
     advSearchFilters?: AdvancedSearchFilters;
     aiSearch?: boolean;

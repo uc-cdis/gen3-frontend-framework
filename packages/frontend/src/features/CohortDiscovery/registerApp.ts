@@ -11,7 +11,7 @@ export const registerCohortDiscoveryApp = () =>
     App: CohortDiscovery,
     id: AppId,
     name: _APP_NAME,
-    version: 'v1.0.0',
+    version: _APP_VERSION,
     requiredEntityTypes: [],
     store: AppStore,
     context: AppContext,

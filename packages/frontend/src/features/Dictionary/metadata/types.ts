@@ -14,4 +14,5 @@ export interface MetadataPropertiesConfiguration {
   schemaID: string;
   definitionsFieldName: string;
   fontSize?: string;
+  tabType?: 'pills' | 'outline';
 }

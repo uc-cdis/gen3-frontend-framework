@@ -31,6 +31,8 @@ const EnumFacet = ({
   dismissCallback = undefined,
   width = undefined,
   sharedWithIndices = undefined,
+  moveValuesToBottom = [],
+  excludeValues = [],
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -93,6 +95,8 @@ const EnumFacet = ({
           isSearching={isSearching}
           hideIfEmpty={hideIfEmpty}
           showPercent={showPercent}
+          moveValuesToBottom={moveValuesToBottom}
+          excludeValues={excludeValues}
         />
       </div>
     </div>
