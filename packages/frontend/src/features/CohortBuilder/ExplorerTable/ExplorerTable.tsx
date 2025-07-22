@@ -49,13 +49,17 @@ const ExplorerTable = ({
     pageSize: 10,
   });
 
-  const DetailsComponent = useMemo(
-    () =>
-      tableConfig?.detailsConfig?.panelContainer === 'drawer'
-        ? DetailsDrawer<TableDetailsPanelProps>
-        : DetailsModal<TableDetailsPanelProps>,
-    [],
-  );
+  const DetailsComponent = useMemo(() => {
+    if (
+      !tableConfig?.detailsConfig ||
+      !tableConfig?.detailsConfig?.panel ||
+      tableConfig?.detailsConfig?.mode === 'none'
+    )
+      return null;
+    return tableConfig?.detailsConfig?.panelContainer === 'drawer'
+      ? DetailsDrawer<TableDetailsPanelProps>
+      : DetailsModal<TableDetailsPanelProps>;
+  }, []);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -271,24 +275,26 @@ const ExplorerTable = ({
   return (
     <React.Fragment>
       <StudyProvider>
-        <DetailsComponent
-          title={tableConfig?.detailsConfig?.title}
-          id={
-            Object.keys(rowSelection).length > 0
-              ? Object.keys(rowSelection).at(0)
-              : undefined
-          }
-          row={selectedRow}
-          onClose={() => setRowSelection({})}
-          panel={DetailsPanel}
-          classNames={tableConfig?.detailsConfig?.classNames}
-          panelProps={{
-            index,
-            tableConfig,
-            ...(tableConfig?.detailsConfig?.params ?? {}),
-            accessibility,
-          }}
-        />
+        {DetailsComponent && (
+          <DetailsComponent
+            title={tableConfig?.detailsConfig?.title}
+            id={
+              Object.keys(rowSelection).length > 0
+                ? Object.keys(rowSelection).at(0)
+                : undefined
+            }
+            row={selectedRow}
+            onClose={() => setRowSelection({})}
+            panel={DetailsPanel}
+            classNames={tableConfig?.detailsConfig?.classNames}
+            panelProps={{
+              index,
+              tableConfig,
+              ...(tableConfig?.detailsConfig?.params ?? {}),
+              accessibility,
+            }}
+          />
+        )}
         <div className="inline-block overflow-x-scroll">
           <MantineReactTable table={table} />
         </div>
