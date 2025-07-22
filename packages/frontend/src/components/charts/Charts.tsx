@@ -126,7 +126,6 @@ const LegendOverflow = ({
                   {data.map((element, elIndex) => (
                     <Table.Tr
                       key={elIndex}
-                      className={`${elIndex === 0 ? 'overflow-hidden text-ellipsis whitespace-nowrap' : 'last:text-right'}`}
                     >
                       <Table.Td>
                         <div className="flex flex-nowrap items-center">
@@ -249,7 +248,6 @@ const Charts = ({
                     <Table.Tr>
                       {dataKeys.map((el, i) => (
                         <Table.Th
-                          className={`${i === 0 ? 'w-[90%] overflow-hidden text-ellipsis whitespace-nowrap' : 'last:text-right'}`}
                           key={i}
                         >
                           {charts[field]?.dataLabels?.[el] || (
