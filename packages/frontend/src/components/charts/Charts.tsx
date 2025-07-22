@@ -5,6 +5,7 @@ import {
   HistogramDataArray,
 } from '@gen3/core';
 import { Icon } from '@iconify-icon/react';
+import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -61,13 +62,19 @@ const LegendRows = ({ data }: { data: HistogramDataArray }) => {
   return limitedRows.map((element, elIndex) => (
     <Table.Tr key={elIndex}>
       <Table.Td>
-        <ColorSwatch
-          className="inline-block mr-2 align-middle"
-          size="1em"
-          radius="xs"
-          color={chartColors?.[elIndex % chartColors.length] || ''}
-        />
-        {element.key}
+        <div className="flex flex-nowrap items-center overflow-hidden">
+          <ColorSwatch
+            className="inline-block mr-2 align-middle"
+            size="1em"
+            radius="xs"
+            color={chartColors?.[elIndex % chartColors.length] || ''}
+          />
+          <OverflowTooltippedLabel label={element.key.toString()}>
+            <span className="text-sm font-medium font-content">
+              {element.key.toString()}
+            </span>
+          </OverflowTooltippedLabel>
+        </div>
       </Table.Td>
       <Table.Td className="text-right">{element.count}</Table.Td>
     </Table.Tr>
@@ -111,25 +118,36 @@ const LegendOverflow = ({
               <Table
                 withRowBorders={false}
                 classNames={{
-                  table: '',
+                  table: 'w-full table-fixed',
                   td: 'p-1 leading-3',
                 }}
               >
                 <Table.Tbody>
                   {data.map((element, elIndex) => (
-                    <Table.Tr key={elIndex}>
+                    <Table.Tr
+                      key={elIndex}
+                      className={`${elIndex === 0 ? 'overflow-hidden text-ellipsis whitespace-nowrap' : 'last:text-right'}`}
+                    >
                       <Table.Td>
-                        <ColorSwatch
-                          className="inline-block mr-2 align-middle"
-                          size="1em"
-                          radius="xs"
-                          color={
-                            chartColors?.[elIndex % chartColors.length] || ''
-                          }
-                        />
-                        {element.key}
+                        <div className="flex flex-nowrap items-center">
+                          <ColorSwatch
+                            className="inline-block mr-2 align-middle"
+                            size="1em"
+                            radius="xs"
+                            color={
+                              chartColors?.[elIndex % chartColors.length] || ''
+                            }
+                          />
+                          <OverflowTooltippedLabel
+                            label={element.key.toString()}
+                          >
+                            <span className="text-sm font-medium font-content">
+                              {element.key.toString()}
+                            </span>
+                          </OverflowTooltippedLabel>
+                        </div>
                       </Table.Td>
-                      <Table.Td className="text-right">
+                      <Table.Td className="w-[10%] text-right">
                         {element.count}
                       </Table.Td>
                     </Table.Tr>
@@ -216,30 +234,40 @@ const Charts = ({
           })}
           {numberOfDataItems > 0 && showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
-              <Table
-                withRowBorders={false}
-                classNames={{
-                  td: 'p-1 leading-3',
-                  th: 'p-1 leading-3 [text-shadow:_1px_0_#000]',
-                  thead: 'border-b',
-                  tbody: "before:content-[''] before:block before:p-1",
-                }}
-              >
-                <Table.Thead>
-                  <Table.Tr>
-                    {dataKeys.map((el, i) => (
-                      <Table.Th className="last:text-right" key={i}>
-                        {charts[field]?.dataLabels?.[el] || (
-                          <React.Fragment>&nbsp;</React.Fragment>
-                        )}
-                      </Table.Th>
-                    ))}
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {data === undefined ? '' : <LegendRows data={data[field]} />}
-                </Table.Tbody>
-              </Table>
+              <div className="w-full">
+                <Table
+                  withRowBorders={false}
+                  classNames={{
+                    table: 'w-full table-fixed',
+                    td: 'p-1 leading-3',
+                    th: 'p-1 leading-3 [text-shadow:_1px_0_#000]',
+                    thead: 'border-b',
+                    tbody: "before:content-[''] before:block before:p-1",
+                  }}
+                >
+                  <Table.Thead>
+                    <Table.Tr>
+                      {dataKeys.map((el, i) => (
+                        <Table.Th
+                          className={`${i === 0 ? 'w-[90%] overflow-hidden text-ellipsis whitespace-nowrap' : 'last:text-right'}`}
+                          key={i}
+                        >
+                          {charts[field]?.dataLabels?.[el] || (
+                            <React.Fragment>&nbsp;</React.Fragment>
+                          )}
+                        </Table.Th>
+                      ))}
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {data === undefined ? (
+                      ''
+                    ) : (
+                      <LegendRows data={data[field]} />
+                    )}
+                  </Table.Tbody>
+                </Table>
+              </div>
             </Card.Section>
           )}
           {showLegends && moreThanMaxRows && (

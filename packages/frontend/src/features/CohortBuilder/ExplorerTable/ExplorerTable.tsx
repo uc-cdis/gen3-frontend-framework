@@ -164,6 +164,12 @@ const ExplorerTable = ({
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    enableExpandAll: false,
+    displayColumnDefOptions: {
+      'mrt-row-expand': {
+        enableHiding: true, //now row numbers are hidable too
+      },
+    },
     enableExpanding: !!tableConfig?.detailsConfig,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
@@ -171,6 +177,16 @@ const ExplorerTable = ({
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+    // mantineExpandAllButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
+    // mantineExpandButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
@@ -208,6 +224,7 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
+      columnVisibility: { 'mrt-row-expand': false },
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -272,7 +289,6 @@ const ExplorerTable = ({
             accessibility,
           }}
         />
-        )
         <div className="inline-block overflow-x-scroll">
           <MantineReactTable table={table} />
         </div>
