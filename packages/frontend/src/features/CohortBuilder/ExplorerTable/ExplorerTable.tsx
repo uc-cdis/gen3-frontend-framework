@@ -164,6 +164,7 @@ const ExplorerTable = ({
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
+    enableColumnFilters: false,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
