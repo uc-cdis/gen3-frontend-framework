@@ -28,6 +28,7 @@ Each logo within row can be configured with the following properties:
 - **width**: Width of the logo in pixels.
 - **height**: Height of the logo in pixels.
 - **description**: A text description of the logo, which can be used for accessibility features like alt text.
+- **href**: Optional Link to a page (target _blank).
 
 ### Label
 - **text**: Text to display.
