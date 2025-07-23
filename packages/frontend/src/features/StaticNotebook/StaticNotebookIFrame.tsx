@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import { GEN3_STATIC_NOTEBOOK_DIR } from './constants';
 
 export interface StaticNotebookViewerProps {
