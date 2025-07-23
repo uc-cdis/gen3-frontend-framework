@@ -3,7 +3,6 @@ import { Text, Tooltip } from '@mantine/core';
 import {
   EnumFacetDataChangedFunction,
   FacetDataHooks,
-  FacetDefinition,
   GetEnumFacetDataFunction,
 } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
@@ -11,6 +10,7 @@ import { fieldNameToTitle, HistogramData } from '@gen3/core';
 import FacetEnumList from '../../../components/facets/FacetEnumList';
 import { FacetIconButton } from '../../../components/facets/components';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
+import { FacetDefinition } from '@gen3/core';
 
 export interface EnumFacetPanelDataHooks extends FacetDataHooks {
   useGetFacetData: GetEnumFacetDataFunction;

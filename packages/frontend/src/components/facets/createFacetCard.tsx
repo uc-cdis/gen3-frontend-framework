@@ -1,14 +1,10 @@
 import React from 'react';
-import {
-  EnumChartProps,
-  FacetDataHooks,
-  FacetDefinition,
-  QueryOptions,
-} from './types';
+import { EnumChartProps, FacetDataHooks, QueryOptions } from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
+import { FacetDefinition } from '@gen3/core';
 
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;

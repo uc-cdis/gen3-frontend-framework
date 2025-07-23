@@ -9,7 +9,6 @@ import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
-  FacetDefinition,
   processBucketData,
   processRangeData,
 } from '../../components/facets';
@@ -20,6 +19,7 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useFieldNameToTitle } from '../../components/facets/hooks';
+import { FacetDefinition } from '@gen3/core';
 
 interface ChartsAndFacetsPanelProps {
   index: string;

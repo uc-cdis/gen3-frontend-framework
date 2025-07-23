@@ -30,6 +30,7 @@ export * from './features/authz';
 export * from './features/cohort';
 export * from './features/dataLibrary';
 export * from './features/drsResolver';
+export * from './features/facets';
 export * from './features/fence';
 export * from './features/filters';
 export * from './features/gen3';

@@ -1,3 +1,4 @@
+import { NumericFromTo } from '@gen3/core';
 import { NumericFacetCardProps, QueryOptions } from '../types';
 
 export type NumericFacetProps = Omit<NumericFacetCardProps, 'facetName'> & {
@@ -22,11 +23,6 @@ export interface RangeBucketElement {
 }
 
 export type NumericUnits = 'days' | 'years' | 'percent' | 'year';
-
-export interface NumericFromTo {
-  readonly from: number;
-  readonly to: number;
-}
 
 export type GetNumericRangeFacetDataFunction = (
   field: string,
