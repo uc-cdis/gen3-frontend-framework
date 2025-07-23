@@ -163,21 +163,6 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
               />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="Select Cohort" withArrow>
-            <ActionIcon
-              color="accent.4"
-              variant="transparent"
-              aria-label="Select cohort"
-              onClick={() => {}}
-            >
-              <Icon
-                icon="gen3:cohort"
-                height={iconSize}
-                width={iconSize}
-                color={theme.colors.secondary[4]}
-              />
-            </ActionIcon>
-          </Tooltip>
           <Tooltip label="Delete Cohort" withArrow>
             <ActionIcon
               color="accent.4"

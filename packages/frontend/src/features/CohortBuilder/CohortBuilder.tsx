@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
@@ -7,7 +8,6 @@ import {
   setSharedFilters,
   useCoreDispatch,
   useCoreSelector,
-  useGetCSRFQuery,
 } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 
@@ -15,7 +15,7 @@ export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
 };
 
-export const CohortBuilder = ({
+const CohortBuilder = ({
   explorerConfig,
   sharedFiltersMap = null,
   tabsLayout = 'left',
@@ -23,10 +23,16 @@ export const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
+  const configuration = useDeepCompareMemo(
+    () => explorerConfig,
+    [explorerConfig],
+  );
+
   return (
-    <div className="w-full">
+    <div className="w-full mt-2">
       <Tabs
         color="primary.4"
+        variant={explorerConfig[0]?.tabType}
         keepMounted={true}
         defaultValue={explorerConfig[0].tabTitle}
       >
@@ -34,7 +40,7 @@ export const CohortBuilder = ({
           className="w-full"
           justify={TabsLayoutToComponentProp(tabsLayout)}
         >
-          {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
+          {configuration.map((panelConfig: CohortPanelConfiguration) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -44,14 +50,22 @@ export const CohortBuilder = ({
           ))}
         </Tabs.List>
 
-        {explorerConfig.map((panelConfig: CohortPanelConfiguration) => (
+        {configuration.map((panelConfig: CohortPanelConfiguration) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}
           >
             <CohortPanel
-              {...panelConfig}
+              guppyConfig={panelConfig.guppyConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
+              chartsSection={panelConfig?.chartsSection}
+              filters={panelConfig.filters}
+              tabTitle={panelConfig.tabTitle}
+              table={panelConfig.table}
+              dropdowns={panelConfig.dropdowns}
+              buttons={panelConfig.buttons}
+              loginForDownload={panelConfig.loginForDownload}
+              sharedFiltersMap={panelConfig.sharedFiltersMap}
             />
           </Tabs.Panel>
         ))}
@@ -59,3 +73,5 @@ export const CohortBuilder = ({
     </div>
   );
 };
+
+export default CohortBuilder;

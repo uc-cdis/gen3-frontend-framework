@@ -50,6 +50,7 @@ export interface GreaterThanOrEquals extends Comparison {
 export interface Exists {
   readonly operator: 'exists';
   readonly field: string;
+  readonly operand: string | number;
 }
 
 export interface Missing {
@@ -86,7 +87,9 @@ export type Operation =
   | GreaterThan
   | GreaterThanOrEquals
   | NestedFilter
+  | Exists
   | ExcludeIfAny
+  | Missing
   | Excludes;
 
 export type OperationWithField =
@@ -98,7 +101,9 @@ export type OperationWithField =
   | GreaterThan
   | GreaterThanOrEquals
   | ExcludeIfAny
-  | Excludes;
+  | Excludes
+  | Missing
+  | Exists;
 
 type OperandsType = Includes | Excludes | ExcludeIfAny | Intersection | Union;
 
@@ -161,6 +166,8 @@ export interface OperationHandler<T> {
   handleIntersection: (op: Intersection) => T;
   handleUnion: (op: Union) => T;
   handleNestedFilter: (op: NestedFilter) => T;
+  handleExists: (op: Exists) => T;
+  handleMissing: (op: Missing) => T;
 }
 
 /**

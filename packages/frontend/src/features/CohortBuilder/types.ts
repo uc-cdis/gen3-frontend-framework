@@ -27,8 +27,8 @@ export type FacetType =
 
 export interface TabConfig {
   title: string;
-  fields: ReadonlyArray<string>;
-  fieldsConfig: Record<string, FacetDefinition>;
+  fields: ReadonlyArray<string>; // list of fields
+  fieldsConfig: Record<string, FacetDefinition>; // extra/override configuration
   classNames?: StylingOverride;
   defaultSort?: FacetSortType;
 }
@@ -73,6 +73,7 @@ export interface DropdownsWithButtonsProps extends DropdownButtonsConfig {
 export interface CohortPanelConfiguration {
   guppyConfig: DataTypeConfigWithManifest; // guppy config
   tabTitle: string; // title of the tab
+  tabType?: 'pills' | 'outline';
   chartsSection?: CollapsableChartsPanelConfiguration; // grid of charts within an accordion
   charts?: Record<string, SummaryChart>; // grid of charts
   table?: SummaryTable; // table configuration

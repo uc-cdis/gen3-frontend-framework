@@ -107,6 +107,7 @@ const MetadataDictionary = ({ schemas }: MetadataDictionaryProps) => {
   return (
     <Tabs
       defaultValue={schemas[0].schemaID}
+      variant={schemas[0]?.tabType}
       className="w-full"
       keepMounted={false}
     >

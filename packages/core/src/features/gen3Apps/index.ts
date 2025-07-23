@@ -3,6 +3,9 @@ import {
   getGen3AppId,
   createAppStore,
   createGen3AppWithOwnStore,
+  type AppDataSelectorResponse,
+  type UseAppDataResponse,
+  type UseAppDataHook,
 } from './Gen3App';
 import {
   selectGen3AppMetadataByName,
@@ -19,4 +22,7 @@ export {
   getGen3AppId,
   createAppStore,
   createAppApiForRTKQ,
+  type AppDataSelectorResponse,
+  type UseAppDataResponse,
+  type UseAppDataHook,
 };

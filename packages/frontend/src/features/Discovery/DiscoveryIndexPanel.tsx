@@ -130,6 +130,7 @@ const DiscoveryIndexPanel = ({
               <CollapsableCharts
                 config={discoveryConfig.features?.chartsSection}
                 data={chartData}
+                isSuccess={dataRequestStatus.isSuccess}
               />
             )}
             <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">

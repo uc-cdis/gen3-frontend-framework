@@ -72,6 +72,14 @@ export const staticNotebookAPI = async (
 
       const rawContent = fs.readFileSync(fullPath, 'utf8');
 
+      DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+        if (node.tagName === 'a' || node.tagName === 'A') {
+          // Check for anchor tags and target attribute
+          node.setAttribute('target', '_blank');
+          node.setAttribute('rel', 'noopener'); // Prevent window.opener vulnerability
+        }
+      });
+
       const sanitizedContent = DOMPurify.sanitize(rawContent, {
         ALLOWED_TAGS: [
           'p',

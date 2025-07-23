@@ -1,4 +1,4 @@
-import React, { ThHTMLAttributes, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
@@ -16,17 +16,15 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Row } from '@tanstack/react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
-import {
-  ExplorerTableDetailsPanelFactory,
-  type TableDetailsPanelProps,
-} from './ExploreTableDetails';
-import { DetailsModal } from '../../../components/Details';
+import { type TableDetailsPanelProps } from './ExploreTableDetails';
+import { DetailsModal, DetailsDrawer } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
-import StudyProvider from '../../Study/StudyProvider';
+import { JSONPath } from 'jsonpath-plus';
+import { StudyProvider } from '../../Study';
+import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -51,7 +49,17 @@ const ExplorerTable = ({
     pageSize: 10,
   });
 
-  const DetailsComponent = DetailsModal<TableDetailsPanelProps>;
+  const DetailsComponent = useMemo(() => {
+    if (
+      !tableConfig?.detailsConfig ||
+      !tableConfig?.detailsConfig?.panel ||
+      tableConfig?.detailsConfig?.mode === 'none'
+    )
+      return null;
+    return tableConfig?.detailsConfig?.panelContainer === 'drawer'
+      ? DetailsDrawer<TableDetailsPanelProps>
+      : DetailsModal<TableDetailsPanelProps>;
+  }, []);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -59,14 +67,16 @@ const ExplorerTable = ({
     MRT_Row<Record<string, any>> | undefined
   >(undefined);
 
-  const DetailsPanel = useMemo(
-    () =>
-      ExplorerTableDetailsPanelFactory().getRenderer(
-        'tableDetails',
-        tableConfig?.detailsConfig?.panel ?? 'default',
-      ),
-    [tableConfig?.detailsConfig?.panel],
-  );
+  // const DetailsPanel = useMemo(
+  //   () =>
+  //     ExplorerTableDetailsPanelFactory().getRenderer(
+  //       'tableDetails',
+  //       tableConfig?.detailsConfig?.panel ?? 'default',
+  //     ),
+  //   [tableConfig?.detailsConfig?.panel],
+  // );
+
+  const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
   const tableColumns = useDeepCompareMemo(() => {
     return createTableColumns(tableConfig);
@@ -81,10 +91,17 @@ const ExplorerTable = ({
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
     const idField: string | undefined = detailsConfig?.idField;
-    return (originalRow: JSONObject) =>
-      idField && Object.keys(originalRow).includes(idField)
-        ? (originalRow[idField] as string)
-        : undefined;
+    if (!idField) return undefined;
+
+    return (originalRow: JSONObject) => {
+      const id = JSONPath({ json: originalRow, path: idField });
+
+      if (id.length > 0) {
+        return id[0];
+      } else {
+        return undefined;
+      }
+    };
   }, []);
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
@@ -147,10 +164,17 @@ const ExplorerTable = ({
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
+    enableColumnFilters: false,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    enableExpandAll: false,
+    displayColumnDefOptions: {
+      'mrt-row-expand': {
+        enableHiding: true, //now row numbers are hidable too
+      },
+    },
     enableExpanding: !!tableConfig?.detailsConfig,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
@@ -158,6 +182,16 @@ const ExplorerTable = ({
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+    // mantineExpandAllButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
+    // mantineExpandButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
@@ -195,6 +229,7 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
+      columnVisibility: { 'mrt-row-expand': false },
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -240,30 +275,31 @@ const ExplorerTable = ({
   });
   return (
     <React.Fragment>
-      {Object.keys(rowSelection).length > 0 ? (
-        <DetailsComponent
-          title={tableConfig?.detailsConfig?.title}
-          id={
-            Object.keys(rowSelection).length > 0
-              ? Object.keys(rowSelection).at(0)
-              : undefined
-          }
-          row={selectedRow}
-          onClose={() => setRowSelection({})}
-          panel={DetailsPanel}
-          classNames={tableConfig?.detailsConfig?.classNames}
-          panelProps={{
-            index,
-            tableConfig,
-            ...(tableConfig?.detailsConfig?.params ?? {}),
-            accessibility,
-          }}
-        />
-      ) : null}
-
-      <div className="inline-block overflow-x-scroll">
-        <MantineReactTable table={table} />
-      </div>
+      <StudyProvider>
+        {DetailsComponent && (
+          <DetailsComponent
+            title={tableConfig?.detailsConfig?.title}
+            id={
+              Object.keys(rowSelection).length > 0
+                ? Object.keys(rowSelection).at(0)
+                : undefined
+            }
+            row={selectedRow}
+            onClose={() => setRowSelection({})}
+            panel={DetailsPanel}
+            classNames={tableConfig?.detailsConfig?.classNames}
+            panelProps={{
+              index,
+              tableConfig,
+              ...(tableConfig?.detailsConfig?.params ?? {}),
+              accessibility,
+            }}
+          />
+        )}
+        <div className="inline-block overflow-x-scroll">
+          <MantineReactTable table={table} />
+        </div>
+      </StudyProvider>
     </React.Fragment>
   );
 };

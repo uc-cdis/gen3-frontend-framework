@@ -5,10 +5,12 @@ import {
   HistogramDataArray,
 } from '@gen3/core';
 import { Icon } from '@iconify-icon/react';
+import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 
 import { useDisclosure } from '@mantine/hooks';
 import {
   // ActionIcon,
+  Center,
   Card,
   Grid,
   Group,
@@ -53,6 +55,127 @@ const chartColors = [
   '#ea7ccc',
 ];
 
+const LegendRows = ({ data }: { data: HistogramDataArray }) => {
+  const moreThanMaxRows = data.length > MAX_LEGEND_ROWS;
+  const limitedRows = moreThanMaxRows ? data.slice(0, MAX_LEGEND_ROWS) : data;
+
+  return limitedRows.map((element, elIndex) => (
+    <Table.Tr key={elIndex}>
+      <Table.Td>
+        <div className="flex flex-nowrap items-center overflow-hidden">
+          <ColorSwatch
+            className="inline-block mr-2 align-middle"
+            size="1em"
+            radius="xs"
+            color={chartColors?.[elIndex % chartColors.length] || ''}
+          />
+          <OverflowTooltippedLabel label={element.key.toString()}>
+            <span className="text-sm font-medium font-content">
+              {element.key.toString()}
+            </span>
+          </OverflowTooltippedLabel>
+        </div>
+      </Table.Td>
+      <Table.Td className="text-right">{element.count}</Table.Td>
+    </Table.Tr>
+  ));
+};
+
+const LegendOverflow = ({
+  chart,
+  data,
+  chartTitle,
+  counts,
+}: {
+  chart: SummaryChart;
+  data: HistogramDataArray;
+  chartTitle: string;
+  counts: number;
+}) => {
+  const [openedMoreRows, { open: openMoreRows, close: closeMoreRows }] =
+    useDisclosure(false);
+  const theme = useMantineTheme();
+  return (
+    <React.Fragment>
+      <Modal
+        opened={openedMoreRows}
+        onClose={closeMoreRows}
+        title={chartTitle}
+        size="xl"
+      >
+        <Grid>
+          <Grid.Col span={6} key="modal-col-1">
+            {createChart(chart.chartType, {
+              data: data === undefined ? [] : data,
+              total: counts ?? 1,
+              valueType: chart.valueType ?? 'count',
+              label: chart.label,
+              showLegendInChart: chart.showLegendInChart,
+            })}
+          </Grid.Col>
+          <Grid.Col span={6} key="modal-col-2">
+            <div className="border-solid border-[1px] border-[var(--mantine-color-gray-3)] h-full p-1">
+              <Table
+                withRowBorders={false}
+                classNames={{
+                  table: 'w-full table-fixed',
+                  td: 'p-1 leading-3',
+                }}
+              >
+                <Table.Tbody>
+                  {data.map((element, elIndex) => (
+                    <Table.Tr
+                      key={elIndex}
+                    >
+                      <Table.Td>
+                        <div className="flex flex-nowrap items-center">
+                          <ColorSwatch
+                            className="inline-block mr-2 align-middle"
+                            size="1em"
+                            radius="xs"
+                            color={
+                              chartColors?.[elIndex % chartColors.length] || ''
+                            }
+                          />
+                          <OverflowTooltippedLabel
+                            label={element.key.toString()}
+                          >
+                            <span className="text-sm font-medium font-content">
+                              {element.key.toString()}
+                            </span>
+                          </OverflowTooltippedLabel>
+                        </div>
+                      </Table.Td>
+                      <Table.Td className="w-[10%] text-right">
+                        {element.count}
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </div>
+          </Grid.Col>
+        </Grid>
+      </Modal>
+      <Button
+        variant="subtle"
+        onClick={openMoreRows}
+        leftSection={
+          <Icon
+            icon="gen3:open-in-modal"
+            height={24}
+            width={24}
+            color={theme.colors.accent[5]}
+          />
+        }
+        className="text-black hover:text-black"
+      >
+        {data.length - MAX_LEGEND_ROWS} more
+      </Button>
+    </React.Fragment>
+  );
+};
+
 //The Charts component maps the data from ChartsProps into a grid of createChart() ReactNodes
 const Charts = ({
   charts,
@@ -72,111 +195,6 @@ const Charts = ({
       return <ErrorCard message={`${field} not found in data`} />;
     }
 
-    const LegendRows = ({ data }: { data: HistogramDataArray }) => {
-      const moreThanMaxRows = data.length > MAX_LEGEND_ROWS;
-      const limitedRows = moreThanMaxRows
-        ? data.slice(0, MAX_LEGEND_ROWS)
-        : data;
-
-      return limitedRows.map((element, elIndex) => (
-        <Table.Tr key={elIndex}>
-          <Table.Td>
-            <ColorSwatch
-              className="inline-block mr-2 align-middle"
-              size="1em"
-              radius="xs"
-              color={chartColors?.[elIndex % chartColors.length] || ''}
-            />
-            {element.key}
-          </Table.Td>
-          <Table.Td className="text-right">{element.count}</Table.Td>
-        </Table.Tr>
-      ));
-    };
-
-    const LegendOverflow = ({
-      chart,
-      data,
-      chartTitle,
-    }: {
-      chart: SummaryChart;
-      data: HistogramDataArray;
-      chartTitle: string;
-    }) => {
-      const [openedMoreRows, { open: openMoreRows, close: closeMoreRows }] =
-        useDisclosure(false);
-      const theme = useMantineTheme();
-      return (
-        <React.Fragment>
-          <Modal
-            opened={openedMoreRows}
-            onClose={closeMoreRows}
-            title={chartTitle}
-            size="xl"
-          >
-            <Grid>
-              <Grid.Col span={6} key="modal-col-1">
-                {createChart(chart.chartType, {
-                  data: data === undefined ? [] : data,
-                  total: counts ?? 1,
-                  valueType: chart.valueType ?? 'count',
-                  label: chart.label,
-                  showLegendInChart: chart.showLegendInChart,
-                })}
-              </Grid.Col>
-              <Grid.Col span={6} key="modal-col-2">
-                <div className="border-solid border-[1px] border-[var(--mantine-color-gray-3)] h-full p-1">
-                  <Table
-                    withRowBorders={false}
-                    classNames={{
-                      table: '',
-                      td: 'p-1 leading-3',
-                    }}
-                  >
-                    <Table.Tbody>
-                      {data.map((element, elIndex) => (
-                        <Table.Tr key={elIndex}>
-                          <Table.Td>
-                            <ColorSwatch
-                              className="inline-block mr-2 align-middle"
-                              size="1em"
-                              radius="xs"
-                              color={
-                                chartColors?.[elIndex % chartColors.length] ||
-                                ''
-                              }
-                            />
-                            {element.key}
-                          </Table.Td>
-                          <Table.Td className="text-right">
-                            {element.count}
-                          </Table.Td>
-                        </Table.Tr>
-                      ))}
-                    </Table.Tbody>
-                  </Table>
-                </div>
-              </Grid.Col>
-            </Grid>
-          </Modal>
-          <Button
-            variant="subtle"
-            onClick={openMoreRows}
-            leftSection={
-              <Icon
-                icon="gen3:open-in-modal"
-                height={24}
-                width={24}
-                color={theme.colors.accent[5]}
-              />
-            }
-            className="text-black hover:text-black"
-          >
-            {data.length - MAX_LEGEND_ROWS} more
-          </Button>
-        </React.Fragment>
-      );
-    };
     const dataKeys =
       field in data && data?.[field].length > 0
         ? Object.keys(data[field][0])
@@ -184,8 +202,8 @@ const Charts = ({
 
     const chartTitle = charts[field].title ?? fieldNameToTitle(field);
 
-    const moreThanMaxRows =
-      data?.[field] && data[field].length > MAX_LEGEND_ROWS;
+    const numberOfDataItems = data?.[field] && data[field].length;
+    const moreThanMaxRows = numberOfDataItems > MAX_LEGEND_ROWS;
 
     return (
       <Grid.Col span={spans[indexNum]} key={`${indexNum}-charts-${field}-col`}>
@@ -213,32 +231,41 @@ const Charts = ({
             label: charts[field].label,
             showLegendInChart: charts[field].showLegendInChart,
           })}
-          {showLegends && (
+          {numberOfDataItems > 0 && showLegends && (
             <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
-              <Table
-                withRowBorders={false}
-                classNames={{
-                  td: 'p-1 leading-3',
-                  th: 'p-1 leading-3 [text-shadow:_1px_0_#000]',
-                  thead: 'border-b',
-                  tbody: "before:content-[''] before:block before:p-1",
-                }}
-              >
-                <Table.Thead>
-                  <Table.Tr>
-                    {dataKeys.map((el, i) => (
-                      <Table.Th className="last:text-right" key={i}>
-                        {charts[field]?.dataLabels?.[el] || (
-                          <React.Fragment>&nbsp;</React.Fragment>
-                        )}
-                      </Table.Th>
-                    ))}
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {data === undefined ? '' : <LegendRows data={data[field]} />}
-                </Table.Tbody>
-              </Table>
+              <div className="w-full">
+                <Table
+                  withRowBorders={false}
+                  classNames={{
+                    table: 'w-full table-fixed',
+                    td: 'p-1 leading-3',
+                    th: 'p-1 leading-3 [text-shadow:_1px_0_#000]',
+                    thead: 'border-b',
+                    tbody: "before:content-[''] before:block before:p-1",
+                  }}
+                >
+                  <Table.Thead>
+                    <Table.Tr>
+                      {dataKeys.map((el, i) => (
+                        <Table.Th
+                          key={i}
+                        >
+                          {charts[field]?.dataLabels?.[el] || (
+                            <React.Fragment>&nbsp;</React.Fragment>
+                          )}
+                        </Table.Th>
+                      ))}
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {data === undefined ? (
+                      ''
+                    ) : (
+                      <LegendRows data={data[field]} />
+                    )}
+                  </Table.Tbody>
+                </Table>
+              </div>
             </Card.Section>
           )}
           {showLegends && moreThanMaxRows && (
@@ -251,6 +278,7 @@ const Charts = ({
                 chart={charts[field]}
                 data={data[field]}
                 chartTitle={chartTitle}
+                counts={counts ?? 0}
               />
             </Card.Section>
           )}

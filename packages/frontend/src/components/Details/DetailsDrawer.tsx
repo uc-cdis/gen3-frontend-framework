@@ -2,9 +2,16 @@ import React, { useEffect } from 'react';
 import { Button, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
-import { DetailsComponentProps } from './types';
+import { DetailsComponentProps, DetailsPanelComponentProps } from './types';
 
-const DetailsDrawer = ({ id, panel, panelProps }: DetailsComponentProps) => {
+const DetailsDrawer = <
+  T extends DetailsPanelComponentProps = DetailsPanelComponentProps,
+>({
+  id,
+  title,
+  panel,
+  panelProps,
+}: DetailsComponentProps<T>) => {
   const [opened, { open, close }] = useDisclosure(id !== undefined);
 
   useEffect(() => {
@@ -18,8 +25,7 @@ const DetailsDrawer = ({ id, panel, panelProps }: DetailsComponentProps) => {
       <Drawer.Content>
         <Drawer.Header>
           <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            {' '}
-            Back{' '}
+            Back
           </Button>
         </Drawer.Header>
         <Drawer.Body>{panel({ id: id, ...panelProps })}</Drawer.Body>

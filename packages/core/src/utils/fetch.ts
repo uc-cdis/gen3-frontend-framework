@@ -164,7 +164,7 @@ const getCSRFToken = async (): Promise<string | null> => {
     throw new HTTPError(response.status, response.statusText);
   }
 
-  const { csrf_token: csrfToken } = await response.json();
+  const { csrf: csrfToken } = await response.json();
   return csrfToken || null;
 };
 
@@ -221,7 +221,7 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   }
 
   if (response.status === 204) {
-    // no content so return null
+    // no content so returns null
     return null;
   }
   return await response.json();

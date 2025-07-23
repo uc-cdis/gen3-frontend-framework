@@ -61,10 +61,17 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }
+      ],
       'react/prop-types': 'warn',
       'reactHooks/rules-of-hooks': 'error',
       'reactHooks/exhaustive-deps': 'warn',
+
     },
   },
 ];
