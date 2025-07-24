@@ -12,7 +12,9 @@ export type FacetType =
   | 'datetime'
   | 'toggle'
   | 'multiselect'
-  | 'upload';
+  | 'upload'
+  | 'text'
+  | 'age_in_years';
 
 export interface AllowableRange {
   readonly minimum: number;

@@ -4,9 +4,9 @@ import {
   Project,
   ProjectResponse,
   ProjectsListRequestParams,
-  SubmissionInfo,
   SubmissionGraphqlParams,
   SubmissionGraphqlResponse,
+  SubmissionInfo,
 } from './types';
 import { JSONObject } from '../../types';
 import { extractValuesFromObject } from '../../utils/extractvalues';
@@ -237,4 +237,5 @@ export const {
   useLazyGetSubmissionGraphQLQuery,
   useGetSubmissionsQuery,
   useGetDictionaryQuery,
+  useLazyGetDictionaryQuery,
 } = submissionApi;

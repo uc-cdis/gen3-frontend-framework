@@ -10,10 +10,11 @@ import {
   guppyApiSliceReducerPath,
 } from './features/guppy/guppyApi'; // Do not shorten
 import {
-  userAuthApiReducerPath,
   userAuthApiReducer,
+  userAuthApiReducerPath,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
+import { facetDictionaryReducer } from './features/facets/facetDictionarySlice';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -23,6 +24,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
+  facetDictionary: facetDictionaryReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
 });
