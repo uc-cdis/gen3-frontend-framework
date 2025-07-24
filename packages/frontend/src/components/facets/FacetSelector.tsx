@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ActionIcon, Switch, Text, TextInput } from '@mantine/core';
-import { FacetCardProps, FacetCommonHooks, FacetDefinition } from './types';
+import { FacetCardProps, FacetCommonHooks } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { toDisplayName } from '../../utils';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle, FacetDefinition } from '@gen3/core';
 import FacetExpander from './FacetExpander';
 import { BAD_DATA_MESSAGE } from './constants';
 import { MdClose as CloseIcon } from 'react-icons/md';

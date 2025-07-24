@@ -25,7 +25,8 @@ import {
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
-import { FacetDefinition } from '../types';
+
+import { FacetDefinition } from '@gen3/core';
 
 export const DropdownPanel = ({
   index,

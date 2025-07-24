@@ -3,8 +3,8 @@ import { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import { Accessibility } from '@gen3/core';
 import React from 'react';
-import { FacetDefinition } from '../types';
 import { TabbablePanelProps } from './types';
+import { FacetDefinition } from '@gen3/core';
 
 const VerticalTabbedPanel = ({
   index,
