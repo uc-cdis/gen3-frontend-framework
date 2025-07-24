@@ -145,12 +145,12 @@ export const classifyFacets = (
         [fieldKey]: {
           field: fieldKey,
           dataField: dataField, // get the last part of the nested field name
-          // this is to maintain compatibility with gitops but should be deprecated
+          // this is to maintain compatibility with data-portal but should be deprecated
           type: facetDef.type ?? type,
           index: index,
           description: facetDef.description ?? 'Not Available',
           label: facetDef.label ?? facetName,
-          // assumption is that the initial data has the min and max values
+          // the assumption is that the initial data has the min and max values
           sharedWithIndices:
             (sharedFieldMapping &&
               fieldKey in sharedFieldMapping &&

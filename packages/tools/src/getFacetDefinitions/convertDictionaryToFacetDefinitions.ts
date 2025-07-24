@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Args, getArgs } from '../utils';
-import { FacetDefinition } from '@gen3/frontend';
+import { FacetDefinition } from '@gen3/core';
 
 // Type definitions
 interface SchemaProperty {
@@ -69,7 +69,9 @@ const convertFacetPropertyToFacetDefinitions = (
       enum: value.enum,
       oneOf: value.oneOf,
     };
+    results.push(facet);
   }
+  return results;
 };
 
 /**
