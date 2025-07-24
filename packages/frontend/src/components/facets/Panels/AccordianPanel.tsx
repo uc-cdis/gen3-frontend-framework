@@ -20,9 +20,9 @@ import {
 } from '@gen3/core';
 import React from 'react';
 import { TabbablePanelProps } from './types';
-import { FacetDefinition } from '../types';
 import { Icon } from '@iconify-icon/react';
 import { modals } from '@mantine/modals';
+import { FacetDefinition } from '@gen3/core';
 
 export const AccordionPanel = ({
   index,

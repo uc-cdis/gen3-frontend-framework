@@ -20,10 +20,9 @@ import {
   CustomFacetHooks,
   EnumChartProps,
   FacetDataHooks,
-  FacetDefinition,
-  FacetType,
   QueryOptions,
 } from './types';
+import { FacetDefinition, FacetType } from '@gen3/core';
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
