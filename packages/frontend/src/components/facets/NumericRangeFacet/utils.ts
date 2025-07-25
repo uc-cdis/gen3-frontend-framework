@@ -1,17 +1,18 @@
 import {
-  FromToRange,
-  UpdateFacetFilterFunction,
   ClearFacetFunction,
   EnumOperandValue,
+  FromToRange,
+  UpdateFacetFilterFunction,
 } from '../types';
 import {
-  Operation,
   GreaterThan,
   GreaterThanOrEquals,
   LessThan,
   LessThanOrEquals,
+  NumericFromTo,
+  Operation,
 } from '@gen3/core';
-import { RangeBucketElement, NumericUnits, NumericFromTo } from './types';
+import { NumericUnits, RangeBucketElement } from './types';
 import { DAYS_IN_YEAR } from '../constants';
 
 export const DEFAULT_VISIBLE_ITEMS = 6;

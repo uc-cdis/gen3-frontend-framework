@@ -6,6 +6,8 @@ import {
   CombineMode,
   CoreState,
   extractEnumFilterValue,
+  FacetDefinition,
+  FacetType,
   isIntersection,
   selectIndexFilters,
   selectSharedFilters,
@@ -21,8 +23,6 @@ import { useMediaQuery } from '@mantine/hooks';
 import {
   EnumFacetDataHooks,
   FacetDataHooks,
-  FacetDefinition,
-  FacetType,
 } from '../../components/facets/types';
 
 import {
@@ -40,11 +40,7 @@ import {
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
 import CohortManager from './CohortManager';
-import {
-  Charts,
-  CollapsableCharts,
-  filterAggregationsDataKeys,
-} from '../../components/charts';
+import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';

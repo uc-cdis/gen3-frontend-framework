@@ -5,16 +5,13 @@ import {
   SummaryChart,
 } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
-import {
-  FacetDefinition,
-  FacetSortType,
-  FieldToName,
-} from '../../components/facets/types';
+import { FacetSortType, FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
 import { Modals, SharedFieldMapping } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { FacetDefinition } from '@gen3/core';
 
 export type FacetType =
   | 'enum'

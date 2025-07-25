@@ -18,11 +18,8 @@ import {
 } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
-import {
-  ExplorerTableDetailsPanelFactory,
-  type TableDetailsPanelProps,
-} from './ExploreTableDetails';
-import { DetailsModal } from '../../../components/Details';
+import { type TableDetailsPanelProps } from './ExploreTableDetails';
+import { DetailsModal, DetailsDrawer } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
@@ -52,7 +49,17 @@ const ExplorerTable = ({
     pageSize: 10,
   });
 
-  const DetailsComponent = DetailsModal<TableDetailsPanelProps>;
+  const DetailsComponent = useMemo(() => {
+    if (
+      !tableConfig?.detailsConfig ||
+      !tableConfig?.detailsConfig?.panel ||
+      tableConfig?.detailsConfig?.mode === 'none'
+    )
+      return null;
+    return tableConfig?.detailsConfig?.panelContainer === 'drawer'
+      ? DetailsDrawer<TableDetailsPanelProps>
+      : DetailsModal<TableDetailsPanelProps>;
+  }, []);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -157,10 +164,17 @@ const ExplorerTable = ({
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
+    enableColumnFilters: false,
     paginateExpandedRows: false,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     enableTopToolbar: false,
+    enableExpandAll: false,
+    displayColumnDefOptions: {
+      'mrt-row-expand': {
+        enableHiding: true, //now row numbers are hidable too
+      },
+    },
     enableExpanding: !!tableConfig?.detailsConfig,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
@@ -168,6 +182,16 @@ const ExplorerTable = ({
     paginationDisplayMode: 'pages',
     enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+    // mantineExpandAllButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
+    // mantineExpandButtonProps: {
+    //   style: {
+    //     visibility: 'hidden',
+    //   },
+    // },
     mantineTableProps: {
       style: {
         backgroundColor: 'var(--mantine-color-base-1)',
@@ -205,6 +229,7 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
+      columnVisibility: { 'mrt-row-expand': false },
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -251,8 +276,7 @@ const ExplorerTable = ({
   return (
     <React.Fragment>
       <StudyProvider>
-        {/* Can replace this with a Drawer like Discovery */}
-        {Object.keys(rowSelection).length > 0 ? (
+        {DetailsComponent && (
           <DetailsComponent
             title={tableConfig?.detailsConfig?.title}
             id={
@@ -271,8 +295,7 @@ const ExplorerTable = ({
               accessibility,
             }}
           />
-        ) : null}
-
+        )}
         <div className="inline-block overflow-x-scroll">
           <MantineReactTable table={table} />
         </div>

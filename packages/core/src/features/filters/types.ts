@@ -192,11 +192,6 @@ export type HistogramBucket = {
   count: number;
 };
 
-export interface AllowableRange {
-  readonly minimum?: number;
-  readonly maximum?: number;
-}
-
 export type IndexedFilterSet = Record<string, FilterSet>;
 
 export type UnionOrIntersection = Union | Intersection;

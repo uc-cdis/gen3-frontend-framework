@@ -86,6 +86,24 @@ const FooterRowComponent: React.FC<FooterRowComponentProps> = ({
 
     case 'Icon': {
       const logo = item[itemType] as FooterLogo;
+      if (logo.href) {
+        return (
+          <a
+            key={`icons-${logo.logo}`}
+            href={logo.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={className}
+          >
+            <Image
+              src={`${logo.logo}`}
+              width={logo.width}
+              height={logo.height}
+              alt={logo.description}
+            />
+          </a>
+        );
+      }
       return (
         <Image
           key={`icons-${logo.logo}`}

@@ -6,6 +6,8 @@ import {
   CombineMode,
   CoreState,
   extractEnumFilterValue,
+  FacetDefinition,
+  FacetType,
   isIntersection,
   selectIndexFilters,
   useCoreSelector,
@@ -24,11 +26,7 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import {
-  type FacetDefinition,
-  FacetType,
-  QueryOptions,
-} from '../../components/facets/types';
+import { QueryOptions } from '../../components/facets/types';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
