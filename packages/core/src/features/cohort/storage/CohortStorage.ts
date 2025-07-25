@@ -1,14 +1,10 @@
-import { openDB, IDBPDatabase } from 'idb';
-import { StorageOperationResults, getTimestamp } from '@gen3/core';
-import { Cohort, CohortId } from '../features/CohortDiscovery/types';
+import { IDBPDatabase, openDB } from 'idb';
+import { StorageOperationResults } from '../../../types';
+import { getTimestamp } from '../../../utils';
+import { StorageEntity } from '../types';
 
 export interface CohortStorageReturnStatus<T> extends StorageOperationResults {
   data?: T;
-}
-
-interface StorageEntity<T> {
-  id: T;
-  name: string;
 }
 
 export interface CohortStorageConfig {
@@ -34,50 +30,11 @@ export class CohortStorage<
   private getDb(): Promise<IDBPDatabase> {
     try {
       const storeName = this.storeName;
-      return openDB(this.databaseName, 1, {
+      return openDB(this.databaseName, this.schemaVersion, {
         upgrade(db) {
           if (!db.objectStoreNames.contains(storeName)) {
             db.createObjectStore(storeName, { keyPath: 'id' });
           }
-        },
-      });
-    } catch (error: unknown) {
-      let errorMessage = 'Unknown error';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      throw new Error(`Database initialization failed: ${errorMessage}`);
-    }
-  }
-
-  /**
-   * Initialize the IndexedDB database with proper schema
-   */
-  private async initializeDB(): Promise<IDBPDatabase> {
-    try {
-      return await openDB(this.databaseName, this.schemaVersion, {
-        upgrade: (db) => {
-          if (!db.objectStoreNames.contains(this.storeName)) {
-            db.createObjectStore(this.storeName, { keyPath: 'id' });
-          }
-        },
-
-        blocked: () => {
-          console.warn(
-            'CohortDB: Database upgrade blocked by another connection',
-          );
-        },
-
-        blocking: () => {
-          console.warn(
-            'CohortDB: This connection is blocking a database upgrade',
-          );
-        },
-
-        terminated: () => {
-          console.error(
-            'CohortDB: Database connection terminated unexpectedly',
-          );
         },
       });
     } catch (error: unknown) {
@@ -122,7 +79,7 @@ export class CohortStorage<
       const db = await this.getDb();
       const tx = db.transaction(this.storeName, 'readwrite');
 
-      // Batch all operations in single transaction for better performance
+      // Batch all operations in a single transaction for better performance
       await Promise.all([
         ...cohorts.map((cohort) => tx.store.put({ ...cohort, saved: true })),
         tx.done,
@@ -362,8 +319,6 @@ export class CohortStorage<
   async cohortExists(id: K): Promise<CohortStorageReturnStatus<boolean>> {
     try {
       const db = await this.getDb();
-      const tx = db.transaction(this.storeName, 'readwrite');
-      const store = tx.objectStore(this.storeName);
       // Verify cohort exists before deleting
       const existing = await db.get(this.storeName, id);
       return { status: 200, message: `${id}: ${existing ? 'true' : 'false'}` };

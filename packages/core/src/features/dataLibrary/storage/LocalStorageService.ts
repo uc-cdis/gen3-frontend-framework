@@ -1,22 +1,24 @@
 import { IDBPDatabase, openDB } from 'idb';
 import { ReturnStatus, StorageService } from './types';
 import {
-  DatalistAPI,
   DataLibraryAPI,
-  isDatalistAPI,
+  DatalistAPI,
   DatalistAsAPIItems,
   DatalistWithIdAPI,
+  isDatalistAPI,
 } from '../types';
-import { BuildLists, getTimestamp } from '../utils';
+import { BuildLists } from '../utils';
 import { isJSONObject, JSONObject } from '../../../types';
 import { nanoid } from '@reduxjs/toolkit';
+import { getTimestamp } from '../../../utils';
 
 const DATABASE_NAME = 'Gen3DataLibrary';
 const STORE_NAME = 'DataLibraryLists';
 
 export class LocalStorageService implements StorageService {
   private getDb(): Promise<IDBPDatabase> {
-    return openDB(DATABASE_NAME, 1, { // TODO add more complete upgrade
+    return openDB(DATABASE_NAME, 1, {
+      // TODO add more complete upgrade
       upgrade(db) {
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: 'id' });

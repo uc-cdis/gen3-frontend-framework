@@ -1,17 +1,17 @@
-import { isObject, isString, isNotDefined, isArray } from './ts-utils';
+import { isArray, isNotDefined, isObject, isString } from './ts-utils';
 import { prepareUrl } from './url';
 import {
-  HTTPErrorMessages,
-  HttpMethod,
-  HTTPError,
   fetchFencePresignedURL,
   fetchJSONDataFromURL,
+  HTTPError,
+  HTTPErrorMessages,
+  HttpMethod,
 } from './fetch';
 import { getCurrentTimestamp, isTimeGreaterThan } from './time';
 import {
-  convertToHistogramDataAsStringKey,
-  calculatePercentageAsString,
   calculatePercentageAsNumber,
+  calculatePercentageAsString,
+  convertToHistogramDataAsStringKey,
 } from './conversions';
 
 export {
@@ -31,3 +31,4 @@ export {
   calculatePercentageAsString,
   calculatePercentageAsNumber,
 };
+export { getTimestamp } from './time';

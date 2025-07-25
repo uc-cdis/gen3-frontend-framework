@@ -1,44 +1,39 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Button,
   ComboboxItem,
   Group,
   Select,
+  Text,
   TextInput,
   Tooltip,
   useMantineTheme,
-  Text,
-  LoadingOverlay,
 } from '@mantine/core';
 
 import {
-  setCurrentCohortId,
   createNewCohort,
   removeCohort,
+  setCurrentCohortId,
   updateCohortName,
-  loadCohortsFromStorage,
 } from './CohortManagerSlice';
 import {
   selectAllCohorts,
   selectCurrentCohort,
-  selectCohortManagerLoading,
-  selectCohortManagerUninitialized,
-  selectCohortManagerError,
 } from './CohortManagerSelectors';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useAppDispatch, useAppSelector } from '../appApi';
 import {
-  Cohort,
   DataAccessRequestUserInformation,
+  DiscoveryCohort,
   IndexResourceField,
   isIndexedFilterSetEmpty,
   SupportServiceConfiguration,
 } from '../types';
 import {
-  UploadIcon,
   AddIcon,
-  DownloadIcon,
   CloseIcon,
+  DownloadIcon,
+  UploadIcon,
 } from '../../../types/icons';
 
 import { Icon } from '@iconify-icon/react';
@@ -53,7 +48,6 @@ import {
   useCreateRequestMutation,
   useLazyGetAggsNoFilterSelfQuery,
 } from '@gen3/core';
-import { ErrorCard } from '../../../components/MessageCards';
 
 interface CohortManagerProps {
   indexResources: IndexResourceField;
@@ -71,7 +65,7 @@ const CohortManagerPanel = ({
   const appDispatch = useAppDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingLabel, setEditingLabel] = useState('');
-  const allCohorts: Array<Cohort> = useAppSelector(selectAllCohorts);
+  const allCohorts: Array<DiscoveryCohort> = useAppSelector(selectAllCohorts);
   const currentCohort = useAppSelector(selectCurrentCohort);
 
   const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
@@ -107,7 +101,7 @@ const CohortManagerPanel = ({
   };
 
   const selectData = useMemo(() => {
-    return allCohorts.map((cohort: Cohort) => ({
+    return allCohorts.map((cohort: DiscoveryCohort) => ({
       label: cohort.name,
       value: cohort.id,
     }));

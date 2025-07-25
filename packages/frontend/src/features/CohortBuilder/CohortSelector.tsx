@@ -4,17 +4,16 @@ import { Icon } from '@iconify-icon/react';
 import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
 import {
   type Cohort,
-  type FilterSet,
   type IndexedFilterSet,
-  useCoreDispatch,
-  useCoreSelector,
   selectAvailableCohorts,
+  selectCohortFilters,
+  selectCurrentCohortId,
   selectCurrentCohortModified,
   selectCurrentCohortSaved,
   setActiveCohort,
   setCohortIndexFilters,
-  selectCurrentCohortId,
-  selectCohortFilters,
+  useCoreDispatch,
+  useCoreSelector,
 } from '@gen3/core';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
@@ -70,7 +69,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
     () =>
       cohorts
         .sort((a: Cohort, b: Cohort) =>
-          a.modified_datetime <= b.modified_datetime ? 1 : -1,
+          a.modifiedDatetime <= b.modifiedDatetime ? 1 : -1,
         )
         .map((x) => ({
           value: x.id,

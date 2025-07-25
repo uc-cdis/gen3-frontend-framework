@@ -1,16 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
 import { Button, ComboboxItem, Group, Select } from '@mantine/core';
-import { ActionButtonProps, Cohort } from '../types';
+import { ActionButtonProps, DiscoveryCohort } from '../types';
 import SaveActionButton from './SaveActionButton';
-import { useAppSelector, useAppDispatch } from '../appApi';
+import { useAppDispatch, useAppSelector } from '../appApi';
 import {
-  selectCurrentCohort,
   selectAllCohorts,
+  selectCurrentCohort,
 } from '../CohortManagment/CohortManagerSelectors';
 import { setCurrentCohortId } from '../CohortManagment/CohortManagerSlice';
 
 const ActionButtonGroup: React.FC<ActionButtonProps> = ({ index }) => {
-  const data: Cohort[] = useAppSelector(selectAllCohorts); // all saved cohorts
+  const data: DiscoveryCohort[] = useAppSelector(selectAllCohorts); // all saved cohorts
   const currentCohort = useAppSelector(selectCurrentCohort);
   const dispatch = useAppDispatch();
 

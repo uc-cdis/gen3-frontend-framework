@@ -1,52 +1,61 @@
 // import all the components from this directory
 import {
-  type Cohort,
-  cohortReducer,
-  selectCohortFilters,
-  selectCurrentCohortFilters,
-  selectIndexFilters,
-  selectIndexedFilterByName,
-  selectCurrentCohortId,
-  selectCurrentCohortName,
-  selectCurrentCohort,
-  selectAvailableCohorts,
-  selectCurrentCohortModified,
-  selectCurrentCohortSaved,
-  updateCohortFilter,
-  setCohortFilter,
-  setCohortIndexFilters,
-  removeCohortFilter,
-  clearCohortFilters,
   addNewDefaultUnsavedCohort,
+  clearCohortFilters,
+  cohortReducer,
   removeCohort,
+  removeCohortFilter,
+  selectAvailableCohorts,
+  selectCohortFilters,
+  selectCurrentCohort,
+  selectCurrentCohortFilters,
+  selectCurrentCohortId,
+  selectCurrentCohortModified,
+  selectCurrentCohortName,
+  selectCurrentCohortSaved,
+  selectIndexedFilterByName,
+  selectIndexFilters,
   setActiveCohort,
   setActiveCohortList,
+  setCohortFilter,
+  setCohortIndexFilters,
+  updateCohortFilter,
 } from './cohortSlice';
 
 import {
-  toggleCohortBuilderCategoryFilter,
-  toggleCohortBuilderAllFilters,
-  selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
+  selectCohortFilterExpanded,
+  toggleCohortBuilderAllFilters,
+  toggleCohortBuilderCategoryFilter,
 } from './filterExpandSlice';
 
 import {
-  setSharedFilters,
-  setShouldShareFilters,
-  selectShouldShareFilters,
   selectSharedFilters,
   selectSharedFiltersForFields,
+  selectShouldShareFilters,
+  setSharedFilters,
+  setShouldShareFilters,
 } from './sharedFiltersSlice';
-import { type CombineMode } from './types';
+import {
+  type Cohort,
+  type CohortId,
+  type CombineMode,
+  type StorageEntity,
+} from './types';
 
 import {
-  setCohortFilterCombineMode,
   selectCohortFilterCombineMode,
+  setCohortFilterCombineMode,
 } from './filterCombineModeSlice';
+
+import { type CohortStorage } from './storage/CohortStorage';
 
 export {
   type Cohort,
   type CombineMode,
+  type CohortId,
+  type StorageEntity,
+  type CohortStorage,
   selectCohortFilters,
   selectCurrentCohortFilters,
   selectIndexFilters,

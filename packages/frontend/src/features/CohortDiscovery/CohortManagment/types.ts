@@ -1,4 +1,3 @@
-import { FilterSet, StorageOperationResults } from '@gen3/core';
-import { Cohort, CohortId } from '../types';
+import { FilterSet } from '@gen3/core';
 
 export const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };

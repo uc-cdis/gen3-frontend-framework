@@ -2,14 +2,15 @@ import {
   createEntityAdapter,
   createSlice,
   EntityState,
-  type PayloadAction,
   nanoid,
+  type PayloadAction,
   ThunkAction,
   UnknownAction,
 } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
-import { Operation, FilterSet, IndexedFilterSet } from '../filters';
+import { FilterSet, IndexedFilterSet, Operation } from '../filters';
 import { defaultCohortNameGenerator } from './utils';
+import { Cohort, CohortId } from './types';
 
 /**
  *  Cohorts in Gen3 are defined as a set of filters for each index in the data.
@@ -19,33 +20,6 @@ import { defaultCohortNameGenerator } from './utils';
 
 export const UNSAVED_COHORT_NAME = 'Cohort';
 export const NULL_COHORT_ID = 'null_cohort_id';
-
-type CohortId = string;
-
-type CountsData = Record<string, number>;
-
-/**
- * A Cohort is a collection of filters that can be used to query the GDC API.
- * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
- * @see https://redux-toolkit.js.org/api/createEntityAdapter
- *
- * @property id - the id of the cohort
- * @property name - the name of the cohort
- * @property filters - the filters for the cohort
- * @property modified - flag indicating if the cohort has been modified
- * @property modified_datetime - the last time the cohort was modified
- * @property saved - flag indicating if the cohort has been saved
- * @category Cohort
- */
-export interface Cohort {
-  id: CohortId;
-  name: string;
-  filters: IndexedFilterSet; // maps of index to filter set
-  modified?: boolean; // flag which is set to true if modified and unsaved
-  modified_datetime: string; // last time cohort was modified
-  saved?: boolean; // flag indicating if cohort has been saved.
-  counts?: CountsData; // counts for each index "unit" (e.g. case or study) in the cohort
-}
 
 export interface CurrentCohortState {
   currentCohort?: string;
@@ -87,7 +61,7 @@ const newCohort = ({
   filters?: IndexedFilterSet;
   customName?: string;
 }): Cohort => {
-  const ts = new Date();
+  const ts = new Date().toISOString();
   const newName = customName ?? defaultCohortNameGenerator();
   const newId = createCohortId();
   return {
@@ -96,7 +70,8 @@ const newCohort = ({
     filters: filters ?? {},
     modified: false,
     saved: false,
-    modified_datetime: ts.toISOString(),
+    createdDatetime: ts,
+    modifiedDatetime: ts,
     counts: {},
   };
 };
@@ -105,7 +80,7 @@ export const createCohortId = (): string => nanoid();
 
 const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
   sortComparer: (a, b) => {
-    if (a.modified_datetime <= b.modified_datetime) return 1;
+    if (a.modifiedDatetime <= b.modifiedDatetime) return 1;
     else return -1;
   },
   selectId: (cohort: Cohort) => cohort.id,
@@ -153,7 +128,7 @@ export const cohortSlice = createSlice({
         changes: {
           name: action.payload,
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -201,7 +176,7 @@ export const cohortSlice = createSlice({
             },
           },
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -222,7 +197,7 @@ export const cohortSlice = createSlice({
             [index]: filters,
           },
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -242,7 +217,7 @@ export const cohortSlice = createSlice({
         changes: {
           filters: action.payload.filters,
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -274,7 +249,7 @@ export const cohortSlice = createSlice({
             },
           },
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -305,7 +280,7 @@ export const cohortSlice = createSlice({
             },
           },
           modified: true,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },
@@ -327,7 +302,7 @@ export const cohortSlice = createSlice({
             [index]: filters || { mode: 'and', root: {} },
           },
           modified: false,
-          modified_datetime: new Date().toISOString(),
+          modifiedDatetime: new Date().toISOString(),
         },
       });
     },

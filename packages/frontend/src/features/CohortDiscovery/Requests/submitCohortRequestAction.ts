@@ -1,23 +1,23 @@
 import { notifications } from '@mantine/notifications';
 import {
+  getRemoteSupportServiceRegistry,
   type HttpError,
-  type UserProfile,
+  isHttpStatusError,
   MissingServiceConfigurationError,
   useCreateRequestMutation,
-  isHttpStatusError,
-  getRemoteSupportServiceRegistry,
+  type UserProfile,
 } from '@gen3/core';
 
 import { addDataAccessRequest } from '../RequestManagerSlice';
 import {
-  Cohort,
-  IndexResourceField,
   DataAccessRequestUserInformation,
+  DiscoveryCohort,
+  IndexResourceField,
   SupportServiceConfiguration,
 } from '../types';
 import {
-  queryAllResources,
   QueryAllIndexedError,
+  queryAllResources,
   QueryGQLAggsrFunctionType,
 } from './hooks';
 import { useAppDispatch } from '../appApi';
@@ -33,7 +33,7 @@ const REQUESTOR_HTTP_ERROR_MESSAGES: Record<number, string> = {
 };
 
 export const submitCohortRequestAction = async (
-  cohort: Cohort,
+  cohort: DiscoveryCohort,
   values: DataAccessRequestUserInformation,
   user: Partial<UserProfile>,
   indexResources: IndexResourceField,

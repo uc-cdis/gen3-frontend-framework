@@ -19,8 +19,8 @@ import { IconSize } from '../../../utils/sizes';
 import { removeCohort } from '../CohortManagment/CohortManagerSlice';
 import { selectAllCohorts } from '../CohortManagment/CohortManagerSelectors';
 import {
-  Cohort,
   DataAccessRequestUserInformation,
+  DiscoveryCohort,
   IndexResourceField,
   isIndexedFilterSetEmpty,
   SupportServiceConfiguration,
@@ -37,7 +37,7 @@ import {
 } from '@gen3/core';
 import { submitCohortRequestAction } from '../Requests/submitCohortRequestAction';
 
-interface CohortWithRequested extends Cohort {
+interface CohortWithRequested extends DiscoveryCohort {
   requested: string;
 }
 
@@ -88,7 +88,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
 
   const iconSize = IconSize[size] || IconSize['sm'];
   const theme = useMantineTheme();
-  const data: Cohort[] = useAppSelector(selectAllCohorts);
+  const data: DiscoveryCohort[] = useAppSelector(selectAllCohorts);
   const requestByCohortId = useAppSelector(selectCohortToRequestId);
 
   const tData = useDeepCompareMemo(

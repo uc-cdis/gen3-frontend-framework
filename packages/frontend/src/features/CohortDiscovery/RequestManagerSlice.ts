@@ -1,17 +1,17 @@
 import {
   createEntityAdapter,
-  EntityState,
-  createSlice,
-  PayloadAction,
   createSelector,
+  createSlice,
+  EntityState,
+  PayloadAction,
 } from '@reduxjs/toolkit';
 import {
   DataAccessRequest,
   DataAccessRequestStatus,
-  CohortId,
   DataAccessRequestUserInformation,
   newDataAccessRequest,
 } from './types';
+import { CohortId } from '@gen3/core';
 import { AppState } from './appApi';
 
 // Create the entity adapter
