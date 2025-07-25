@@ -14,7 +14,33 @@ export type FacetType =
   | 'multiselect'
   | 'upload'
   | 'text'
-  | 'age_in_years';
+  | 'age_in_years'
+  | 'unknown';
+
+export const stringToFacetType = (input: string): FacetType => {
+  const validFacetTypes: FacetType[] = [
+    'enum',
+    'exact',
+    'range',
+    'age',
+    'year',
+    'years',
+    'days',
+    'percent',
+    'datetime',
+    'toggle',
+    'multiselect',
+    'upload',
+    'text',
+    'age_in_years',
+  ];
+
+  if (validFacetTypes.includes(input as FacetType)) {
+    return input as FacetType;
+  }
+
+  return 'unknown';
+};
 
 export interface AllowableRange {
   readonly minimum: number;
@@ -25,7 +51,7 @@ export interface FacetDefinition {
   readonly description?: string; //description from _mapping
   readonly field: string; // full name of field
   readonly dataField?: string; // deprecated
-  readonly index: string; // what dataType is this facet for
+  readonly index: string | null; // what dataType is this facet for
   readonly type: FacetType; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean; // does this facet have data?

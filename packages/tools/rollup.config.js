@@ -1,6 +1,7 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import executable from 'rollup-plugin-executable';
+
 export default [
   {
     input: './src/buildColors/buildColors.ts',
@@ -132,18 +133,20 @@ export default [
     plugins: [peerDepsExternal(), swc()],
   },
   {
-    input: './src/getFacetDefinitions/index.ts',
+    input: './src/getFacetDefinitions/convertDictionaryToFacetDefinitions.ts',
     output: [
       {
-        file: 'dist/getSharedFilters.esm.js',
+        file: 'dist/convertDictionaryToFacetDefinitions.esm.js',
         format: 'esm',
-        name: 'getSharedFilters',
+        name: 'convertDictionaryToFacetDefinitions',
       },
     ],
     external: [
       'https',
       'http',
       'fs',
+      'path',
+      'node:process',
       'node:util',
       'fetch-retry',
       'node-fetch',

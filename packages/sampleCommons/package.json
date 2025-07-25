@@ -13,11 +13,13 @@
     "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons",
     "build:colors:noshift": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons --colorShift=0 --colorSaturation=100",
     "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
-    "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
+    "getSchema": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js",
+    "convertSchemaToFacets": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/convertDictionaryToFacetDefinitions.esm.js",
     "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.48.3",
     "@fontsource/montserrat": "^5.0.19",
     "@fontsource/poppins": "^5.0.15",
     "@fontsource/source-sans-pro": "^5.0.8",

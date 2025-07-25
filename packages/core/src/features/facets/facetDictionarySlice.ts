@@ -58,7 +58,23 @@ const initialState: FacetDefinitionState = {
 const facetDictionary = createSlice({
   name: 'facet/fetchFacetDictionary',
   initialState,
-  reducers: {},
+  reducers: {
+    resetFacetDictionary: (state) => {
+      state.entries = {};
+      state.status = 'uninitialized';
+    },
+    mergeFacetDictionary: (state, action) => {
+      const { entries } = action.payload;
+      state.entries = {
+        ...state.entries,
+        ...entries,
+      };
+    },
+    setFacetDictionary: (state, action) => {
+      state.entries = action.payload;
+      state.status = 'fulfilled';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFacetDictionary.fulfilled, (_, action) => {

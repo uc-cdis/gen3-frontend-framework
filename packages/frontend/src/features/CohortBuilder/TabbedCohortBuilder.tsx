@@ -8,6 +8,7 @@ import {
   extractEnumFilterValue,
   FacetDefinition,
   FacetType,
+  Intersection,
   isIntersection,
   selectIndexFilters,
   useCoreSelector,
@@ -201,6 +202,27 @@ const TabbedCohortBuilder = ({
     [data, cohortFilters.root, isSuccess],
   );
 
+  const EmptyHookInstances = {
+    useGetFacetData: () => ({
+      data: {},
+      enumFilters: undefined,
+      combineMode: 'or' as CombineMode,
+      isSuccess: true,
+      isFetching: false,
+      isError: false,
+    }),
+    useUpdateFacetFilters: () => () => {},
+    useGetFacetFilters: () =>
+      ({ operator: 'and', operands: [] }) as Intersection,
+    useClearFilter: () => () => {},
+    useFilterExpanded: () => false,
+    useToggleExpandFilter: () => () => {},
+    useGetCombineMode: () => 'or' as CombineMode,
+    useSetCombineMode: () => () => {},
+    useFieldNameToTitle: () => (field: string) => field,
+    useTotalCounts: undefined,
+  };
+
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
     useUpdateFacetFilters: partial(useUpdateFilters, index),
@@ -242,6 +264,9 @@ const TabbedCohortBuilder = ({
         datetime: RangeHookInstances,
         toggle: RangeHookInstances,
         upload: EnumHookInstances,
+        age_in_years: RangeHookInstances,
+        text: EnumHookInstances,
+        unknown: EmptyHookInstances,
       };
     }, [getEnumFacetData, getRangeFacetData, index]);
 

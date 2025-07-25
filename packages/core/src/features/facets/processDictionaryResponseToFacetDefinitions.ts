@@ -1,11 +1,5 @@
-#!/usr/bin/env node
-import * as fs from 'fs';
-// import { FacetDefinition, stringToFacetType } from '@gen3/core';
 import { FacetDefinition, stringToFacetType } from './types';
-import { parseArgs } from 'node:util';
-import * as process from 'node:process';
 
-// Type definitions
 interface SchemaProperty {
   type?: string;
   enum?: string[];
@@ -48,14 +42,14 @@ interface TooltipData {
 
 // Configuration constants
 const SUBCAT_REMAP: Record<string, string> = {};
-const REMAP_FILTER_NAMES: Record<string, string> = {};
-const CLINICAL_ALL: string[] = [];
+//const REMAP_FILTER_NAMES: Record<string, string> = {};
+//const CLINICAL_ALL: string[] = [];
 const CATEGORY_SKIP = ['internal'];
-const REMAP_CATEGORIES: Record<string, string> = { data_file: 'downloadable' };
+//const REMAP_CATEGORIES: Record<string, string> = { data_file: 'downloadable' };
 const TYPE_LIST = ['enum', 'type', 'anyOf', 'oneOf'];
 const SKIP_ROOT = ['_definitions', '_settings', '_terms', 'metaschema'];
 
-const convertFacetPropertyToFacetDefinitions = (
+export const convertFacetPropertyToFacetDefinitions = (
   facets: Record<string, FacetProperty>,
 ): FacetDefinition[] => {
   const results: FacetDefinition[] = [];
@@ -67,7 +61,7 @@ const convertFacetPropertyToFacetDefinitions = (
       label: value.label,
       description: value.description,
       type: stringToFacetType(value.facet_type),
-      index: 'unknown',
+      index: null,
     };
     results.push(facet);
   }
@@ -77,14 +71,14 @@ const convertFacetPropertyToFacetDefinitions = (
 /**
  * Converts a camelCase string to a space-separated string
  */
-function camelCaseToSpaces(text: string): string {
+const camelCaseToSpaces = (text: string): string => {
   return text.replace(/([A-Z][a-z]+)/g, '$1').trim();
-}
+};
 
 /**
  * Processes a label by converting underscores to spaces and applying title case
  */
-function processLabel(text: string): string {
+const processLabel = (text: string): string => {
   const remap: Record<string, string> = {};
 
   let result = text
@@ -102,12 +96,12 @@ function processLabel(text: string): string {
   result = camelCaseToSpaces(result);
 
   return result;
-}
+};
 
 /**
  * Builds tooltip data from the schema
  */
-function buildTooltipData(schema: Schema): TooltipData {
+export const buildTooltipData = (schema: Schema): TooltipData => {
   const results: CategoryResults = {};
 
   for (const [key, value] of Object.entries(schema)) {
@@ -247,48 +241,4 @@ function buildTooltipData(schema: Schema): TooltipData {
   }
 
   return { dictionary: results };
-}
-
-/**
- * Main processing function
- */
-function processDictionary(schemaPath: string, outputPath: string): void {
-  console.log('Loading dictionary');
-
-  const schemaContent = fs.readFileSync(schemaPath, 'utf8');
-  const schema: Schema = JSON.parse(schemaContent);
-
-  console.log('...loaded');
-
-  const facetDescriptions = buildTooltipData(schema);
-  console.log('...built');
-  fs.writeFileSync(outputPath, JSON.stringify(facetDescriptions, null, 2));
-
-  console.log('Processing complete');
-}
-
-/**
- * Main entry point
- */
-function main(): void {
-  const {
-    values: { inDict, outFacets },
-  } = parseArgs({
-    options: {
-      inDict: {
-        type: 'string',
-        short: 'i',
-        default: `config/${process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME}/dictionary.json`,
-      },
-      outFacets: {
-        type: 'string',
-        short: 'o',
-        default: `config/${process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME}/facetDefinitions.json`,
-      },
-    },
-  });
-
-  processDictionary(inDict, outFacets);
-}
-
-main();
+};

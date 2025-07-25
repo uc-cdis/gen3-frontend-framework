@@ -4,9 +4,9 @@ import { buildClientSchema, printSchema } from 'graphql';
 import { writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { default as fetchRetry } from 'fetch-retry';
-
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import * as process from 'node:process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,11 +24,11 @@ const getSubPath = (argPath = ''): SubPath => {
   if (!argPath) {
     let commonsDefaultPath = 'http://localhost:5000/v0/submission/';
 
-    if (process.env.HOSTNAME) {
-      commonsDefaultPath = `https://${process.env.HOSTNAME}/api/v0/submission/`;
-      if (process.env.HOSTNAME.startsWith('revproxy')) {
+    if (process.env.NEXT_PUBLIC_GEN3_API) {
+      commonsDefaultPath = `${process.env.NEXT_PUBLIC_GEN3_API}/api/v0/submission/`;
+      if (process.env.NEXT_PUBLIC_GEN3_API.startsWith('revproxy')) {
         // running thur a revproxy like nginx
-        commonsDefaultPath = `http://${process.env.HOSTNAME}/api/v0/submission/`;
+        commonsDefaultPath = `http://${'revproxy-service'}/api/v0/submission/`;
       }
     }
     return {
@@ -99,7 +99,7 @@ const main = () => {
       out: {
         type: 'string',
         short: 'o',
-        default: `${__dirname}`,
+        default: `config/${process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME}`,
       },
     },
   });
@@ -110,10 +110,7 @@ const main = () => {
   }
 
   const schemaUrl = `${commonsSubPath}getschema`;
-  const schemaPath = `${out}/schema.json`;
   const dictUrl = `${commonsSubPath}_dictionary/_all`;
-  const dictPath = `${out}/dictionary.json`;
-
   const actionList: ActionList = [];
 
   actionList.push(
@@ -122,11 +119,13 @@ const main = () => {
       if (!schema) {
         throw new Error('Failed to fetch schema.json');
       }
-      writeFileSync(schemaPath, JSON.stringify(schema, null, 2));
+      console.log(`writing schema to ${out}/schema.json`);
+      writeFileSync(`${out}/schema.json`, JSON.stringify(schema, null, 2));
 
       // Save user readable type system shorthand of schema
+      console.log(`writing graphql schema to ${out}/schema.schema`);
       const graphQLSchema = buildClientSchema(schema.data);
-      writeFileSync(`${__dirname}/schema.graphql`, printSchema(graphQLSchema));
+      writeFileSync(`${out}/schema.graphql`, printSchema(graphQLSchema));
     }),
   );
 
@@ -135,7 +134,8 @@ const main = () => {
       if (!dict) {
         throw new Error('Failed to fetch dictionary.json');
       }
-      writeFileSync(dictPath, JSON.stringify(dict, null, 2));
+      console.log(`writing dictionary to ${out}/dictionary.json`);
+      writeFileSync(`${out}/dictionary.json`, JSON.stringify(dict, null, 2));
     }),
   );
 
