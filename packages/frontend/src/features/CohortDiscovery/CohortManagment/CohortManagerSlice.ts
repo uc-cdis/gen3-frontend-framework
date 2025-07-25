@@ -193,7 +193,12 @@ const emptyInitialState = cohortsAdapter.getInitialState<CohortManagerState>({
   autoSaveInProgress: [],
 });
 
-const initialState = emptyInitialState;
+// const initialState = emptyInitialState;
+
+const initialState = cohortsAdapter.addOne(
+  emptyInitialState,
+  createDefaultCohort(),
+);
 
 const updateAutoSave = (cohortId: string, state: CohortManagerState) => {
   // Add to auto-save queue if not already present
@@ -213,7 +218,7 @@ export const cohortManagerSlice = createSlice({
     },
 
     createNewCohort: (state, action: PayloadAction<CreateCohortParams>) => {
-      const baseName = action.payload.name || `New DiscoveryCohort`;
+      const baseName = action.payload.name || `New Cohort`;
       const uniqueName = generateUniqueName(state, baseName);
 
       const cohort = newCohort(

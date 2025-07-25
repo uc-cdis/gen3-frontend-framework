@@ -9,7 +9,7 @@ import {
 } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
 import { FilterSet, IndexedFilterSet, Operation } from '../filters';
-import { defaultCohortNameGenerator } from './utils';
+import { defaultCohortNameGenerator, generateUniqueName } from './utils';
 import { Cohort, CohortId } from './types';
 
 /**
@@ -18,11 +18,11 @@ import { Cohort, CohortId } from './types';
  *  Switching a cohort is means that all the cohorts for the index changes.
  */
 
-export const UNSAVED_COHORT_NAME = 'Cohort';
+export const DEFAULT_COHORT_NAME = 'Cohort';
 export const NULL_COHORT_ID = 'null_cohort_id';
 
 export interface CurrentCohortState {
-  currentCohort?: string;
+  currentCohortId?: string;
   message?: string[];
 }
 
@@ -87,24 +87,29 @@ const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
 });
 
 // Create an initial unsaved cohort
-const initialCohort = newCohort({ customName: UNSAVED_COHORT_NAME });
+const initialCohort = newCohort({ customName: DEFAULT_COHORT_NAME });
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
-  currentCohort: initialCohort.id,
+  currentCohortId: initialCohort.id,
   message: undefined, // message is used to inform frontend components of changes to the cohort.
 });
 
 // Set the initial cohort in the adapter state
 const initialState = cohortsAdapter.setOne(emptyInitialState, initialCohort);
 
-const getCurrentCohort = (
+const getCurrentCohortId = (
   state: EntityState<Cohort, string> & CurrentCohortState,
-): CohortId => {
-  if (state.currentCohort) {
-    return state.currentCohort;
-  }
-  return NULL_COHORT_ID;
-};
+): CohortId | null => state.currentCohortId ?? null;
+
+interface CreateCohortParams {
+  name?: string;
+  filters?: IndexedFilterSet;
+}
+
+interface UpdateCohortNameParams {
+  id: string;
+  name: string;
+}
 
 /**
  * Redux slice for cohort filters
@@ -114,19 +119,30 @@ export const cohortSlice = createSlice({
   name: 'cohort',
   initialState: initialState,
   reducers: {
-    addNewDefaultUnsavedCohort: (state) => {
+    createNewCohort: (state, action: PayloadAction<CreateCohortParams>) => {
+      const baseName = action.payload.name || `Cohort`;
+      const uniqueName = generateUniqueName(
+        Object.values(state.entities),
+        baseName,
+      );
+
       const cohort = newCohort({
-        customName: UNSAVED_COHORT_NAME, // TODO: add generated name
+        filters: action.payload.filters,
+        customName: uniqueName,
       });
       cohortsAdapter.addOne(state, cohort);
-      state.currentCohort = cohort.id;
-      state.message = [`newCohort|${cohort.name}|${cohort.id}`];
+      state.currentCohortId = cohort.id;
     },
-    updateCohortName: (state, action: PayloadAction<string>) => {
+
+    updateCohortName: (
+      state,
+      action: PayloadAction<UpdateCohortNameParams>,
+    ) => {
+      const { id, name } = action.payload;
       cohortsAdapter.updateOne(state, {
-        id: getCurrentCohort(state),
+        id: id,
         changes: {
-          name: action.payload,
+          name: name,
           modified: true,
           modifiedDatetime: new Date().toISOString(),
         },
@@ -136,122 +152,143 @@ export const cohortSlice = createSlice({
       state,
       action: PayloadAction<{
         shouldShowMessage?: boolean;
-        id?: string;
+        id: string;
       }>,
     ) => {
-      const removedCohort =
-        state.entities[action?.payload?.id || getCurrentCohort(state)];
-      cohortsAdapter.removeOne(
-        state,
-        action?.payload?.id || getCurrentCohort(state),
-      );
+      const removedCohortName = state.entities[action.payload.id].name;
+      const totalCohorts = Object.keys(state.entities).length;
+      if (totalCohorts <= 1) {
+        cohortsAdapter.removeAll(state);
+        const defaultCohort = newCohort({
+          filters: {},
+          customName: DEFAULT_COHORT_NAME,
+        });
+        cohortsAdapter.addOne(state, defaultCohort);
+        state.currentCohortId = defaultCohort.id;
+        if (action?.payload.shouldShowMessage) {
+          state.message = [
+            `deleteCohort|${removedCohortName}|${state.currentCohortId}`,
+          ];
+        }
+        return;
+      }
+
+      cohortsAdapter.removeOne(state, action.payload.id);
+
       if (action?.payload.shouldShowMessage) {
         state.message = [
-          `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
+          `deleteCohort|${removedCohortName}|${state.currentCohortId}`,
         ];
       }
     },
     // adds a filter to the cohort filter set at the given index
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const { index, field, filter } = action.payload;
-      const currentCohortId = getCurrentCohort(state);
+      const currentCohortId = getCurrentCohortId(state);
 
-      if (!state.entities[currentCohortId]) {
-        return;
-      }
-
-      cohortsAdapter.updateOne(state, {
-        id: currentCohortId,
-        changes: {
-          filters: {
-            ...state.entities[currentCohortId].filters,
-            [index]: {
-              mode:
-                state.entities[currentCohortId]?.filters[index]?.mode ?? 'and',
-              root: {
-                ...(state.entities[currentCohortId]?.filters[index]?.root ??
-                  {}),
-                [field]: filter,
+      if (currentCohortId) {
+        if (!state.entities[currentCohortId]) {
+          return;
+        }
+        cohortsAdapter.updateOne(state, {
+          id: currentCohortId,
+          changes: {
+            filters: {
+              ...state.entities[currentCohortId].filters,
+              [index]: {
+                mode:
+                  state.entities[currentCohortId]?.filters[index]?.mode ??
+                  'and',
+                root: {
+                  ...(state.entities[currentCohortId]?.filters[index]?.root ??
+                    {}),
+                  [field]: filter,
+                },
               },
             },
+            modified: true,
+            modifiedDatetime: new Date().toISOString(),
           },
-          modified: true,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
+        });
+      }
     },
     setCohortFilter: (state, action: PayloadAction<SetFilterParams>) => {
       const { index, filters } = action.payload;
-      const currentCohortId = getCurrentCohort(state);
+      const currentCohortId = getCurrentCohortId(state);
 
-      if (!state.entities[currentCohortId]) {
-        console.error(`no cohort with id=${currentCohortId} defined`);
-        return;
-      }
+      if (currentCohortId) {
+        if (!state.entities[currentCohortId]) {
+          console.error(`no cohort with id=${currentCohortId} defined`);
+          return;
+        }
 
-      cohortsAdapter.updateOne(state, {
-        id: currentCohortId,
-        changes: {
-          filters: {
-            ...state.entities[currentCohortId].filters,
-            [index]: filters,
+        cohortsAdapter.updateOne(state, {
+          id: currentCohortId,
+          changes: {
+            filters: {
+              ...state.entities[currentCohortId].filters,
+              [index]: filters,
+            },
+            modified: true,
+            modifiedDatetime: new Date().toISOString(),
           },
-          modified: true,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
+        });
+      }
     },
     setCohortIndexFilters: (
       state,
       action: PayloadAction<SetAllIndexFiltersParams>,
     ) => {
-      const currentCohortId = getCurrentCohort(state);
+      const currentCohortId = getCurrentCohortId(state);
+      if (currentCohortId) {
+        if (!state.entities[currentCohortId]) {
+          console.error(`no cohort with id=${currentCohortId} defined`);
+          return;
+        }
 
-      if (!state.entities[currentCohortId]) {
-        console.error(`no cohort with id=${currentCohortId} defined`);
-        return;
+        cohortsAdapter.updateOne(state, {
+          id: currentCohortId,
+          changes: {
+            filters: action.payload.filters,
+            modified: true,
+            modifiedDatetime: new Date().toISOString(),
+          },
+        });
       }
-
-      cohortsAdapter.updateOne(state, {
-        id: currentCohortId,
-        changes: {
-          filters: action.payload.filters,
-          modified: true,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
     },
 
     // removes a filter to the cohort filter set at the given index
     removeCohortFilter: (state, action: PayloadAction<RemoveFilterParams>) => {
       const { index, field } = action.payload;
-      const currentCohortId = getCurrentCohort(state);
+      const currentCohortId = getCurrentCohortId(state);
 
-      if (!state.entities[currentCohortId]) {
-        console.error(`no cohort with id=${currentCohortId} defined`);
-        return;
-      }
-      const filters = state.entities[currentCohortId]?.filters[index]?.root;
-      if (!filters) {
-        return;
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [field]: _a, ...updated } = filters;
+      if (currentCohortId) {
+        if (!state.entities[currentCohortId]) {
+          console.error(`no cohort with id=${currentCohortId} defined`);
+          return;
+        }
+        const filters = state.entities[currentCohortId]?.filters[index]?.root;
+        if (!filters) {
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [field]: _a, ...updated } = filters;
 
-      cohortsAdapter.updateOne(state, {
-        id: currentCohortId,
-        changes: {
-          filters: {
-            ...state.entities[currentCohortId]?.filters,
-            [index]: {
-              mode: state.entities[currentCohortId].filters[index].mode,
-              root: updated,
+        cohortsAdapter.updateOne(state, {
+          id: currentCohortId,
+          changes: {
+            filters: {
+              ...state.entities[currentCohortId]?.filters,
+              [index]: {
+                mode: state.entities[currentCohortId].filters[index].mode,
+                root: updated,
+              },
             },
+            modified: true,
+            modifiedDatetime: new Date().toISOString(),
           },
-          modified: true,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
+        });
+      }
     },
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
@@ -259,55 +296,36 @@ export const cohortSlice = createSlice({
       action: PayloadAction<ClearAllFilterParams>,
     ) => {
       const { index } = action.payload;
-      const currentCohortId = getCurrentCohort(state);
-      if (!state.entities[currentCohortId]) {
-        console.error(`no cohort with id=${currentCohortId} defined`);
-        return;
-      }
-      const filters = state.entities[currentCohortId]?.filters[index]?.root;
-      if (!filters) {
-        return;
-      }
+      const currentCohortId = getCurrentCohortId(state);
+      if (currentCohortId) {
+        if (!state.entities[currentCohortId]) {
+          console.error(`no cohort with id=${currentCohortId} defined`);
+          return;
+        }
+        const filters = state.entities[currentCohortId]?.filters[index]?.root;
+        if (!filters) {
+          return;
+        }
 
-      cohortsAdapter.updateOne(state, {
-        id: currentCohortId,
-        changes: {
-          filters: {
-            ...state.entities[currentCohortId]?.filters,
-            [index]: {
-              mode: 'and',
-              root: {},
+        cohortsAdapter.updateOne(state, {
+          id: currentCohortId,
+          changes: {
+            filters: {
+              ...state.entities[currentCohortId]?.filters,
+              [index]: {
+                mode: 'and',
+                root: {},
+              },
             },
+            modified: true,
+            modifiedDatetime: new Date().toISOString(),
           },
-          modified: true,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
+        });
+      }
     },
-    discardCohortChanges: (
-      state,
-      action: PayloadAction<{
-        filters: FilterSet | undefined;
-        index: string;
-        id?: string;
-      }>,
-    ) => {
-      const { index, id, filters } = action.payload;
-      const cohortId = id ?? getCurrentCohort(state);
-      cohortsAdapter.updateOne(state, {
-        id: cohortId,
-        changes: {
-          filters: {
-            ...state.entities[cohortId].filters,
-            [index]: filters || { mode: 'and', root: {} },
-          },
-          modified: false,
-          modifiedDatetime: new Date().toISOString(),
-        },
-      });
-    },
+
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
-      state.currentCohort = action.payload;
+      state.currentCohortId = action.payload;
     },
     /** @hidden */
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
@@ -340,22 +358,21 @@ export const selectAllCohorts = (state: CoreState): Record<CohortId, Cohort> =>
   cohortSelectors.selectEntities(state);
 
 const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
-  if (state.cohorts.cohort.currentCohort) {
-    return state.cohorts.cohort.currentCohort;
+  if (state.cohorts.cohort.currentCohortId) {
+    return state.cohorts.cohort.currentCohortId;
   }
   return NULL_COHORT_ID;
 };
 
 // Filter actions: addFilter, removeFilter, updateFilter
 export const {
+  createNewCohort,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
   removeCohort,
-  discardCohortChanges,
-  addNewDefaultUnsavedCohort,
   setCurrentCohortId,
   setCohortList,
 } = cohortSlice.actions;
@@ -372,8 +389,8 @@ export const selectCurrentCohortFilters = (
   return state.cohorts.cohort.entities[currentCohortId]?.filters;
 };
 
-export const selectCurrentCohortId = (state: CoreState): CohortId => {
-  return getCurrentCohort(state.cohorts.cohort);
+export const selectCurrentCohortId = (state: CoreState): CohortId | null => {
+  return getCurrentCohortId(state.cohorts.cohort);
 };
 
 export const selectCurrentCohort = (state: CoreState): Cohort =>
@@ -503,31 +520,5 @@ export const selectIndexFilters = (
   }
   return cohort?.filters?.[index] ?? EmptyFilterSet;
 };
-
-export const setActiveCohortList =
-  (
-    cohorts?: Cohort[],
-  ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch, getState) => {
-    // set the list of all cohorts
-    if (cohorts) {
-      dispatch(setCohortList(cohorts));
-      return;
-    }
-
-    const availableCohorts = selectAllCohorts(getState());
-    if (Object.keys(availableCohorts).length === 0) {
-      dispatch(addNewDefaultUnsavedCohort());
-    }
-  };
-
-export const discardActiveCohortChanges =
-  (
-    index: string,
-    filters: FilterSet,
-  ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch /* getState */) => {
-    dispatch(discardCohortChanges({ index, filters }));
-  };
 
 export const cohortReducer = cohortSlice.reducer;

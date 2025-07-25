@@ -1,8 +1,8 @@
 // import all the components from this directory
 import {
-  addNewDefaultUnsavedCohort,
   clearCohortFilters,
   cohortReducer,
+  createNewCohort,
   removeCohort,
   removeCohortFilter,
   selectAvailableCohorts,
@@ -16,7 +16,6 @@ import {
   selectIndexedFilterByName,
   selectIndexFilters,
   setActiveCohort,
-  setActiveCohortList,
   setCohortFilter,
   setCohortIndexFilters,
   updateCohortFilter,
@@ -48,14 +47,16 @@ import {
   setCohortFilterCombineMode,
 } from './filterCombineModeSlice';
 
-import { type CohortStorage } from './storage/CohortStorage';
+import { CohortStorage } from './storage/CohortStorage';
+
+export * from './utils';
 
 export {
   type Cohort,
   type CombineMode,
   type CohortId,
   type StorageEntity,
-  type CohortStorage,
+  CohortStorage,
   selectCohortFilters,
   selectCurrentCohortFilters,
   selectIndexFilters,
@@ -78,10 +79,9 @@ export {
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
-  addNewDefaultUnsavedCohort,
+  createNewCohort,
   removeCohort,
   setActiveCohort,
-  setActiveCohortList,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
