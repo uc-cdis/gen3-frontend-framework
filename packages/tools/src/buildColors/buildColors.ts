@@ -1,5 +1,4 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
 
@@ -37,7 +36,7 @@ const main = () => {
       themeFile: {
         type: 'string',
         short: 't',
-        default: './colors.json',
+        default: `config/${process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME}/colors.json`,
       },
       primary: {
         type: 'string',
@@ -78,7 +77,7 @@ const main = () => {
       out: {
         type: 'string',
         short: 'o',
-        default: '../',
+        default: `config/${process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME}/themeColors.json`,
       },
       colorShift: {
         type: 'string',
@@ -127,10 +126,7 @@ const main = () => {
   theme['utility'] = utility;
   theme['utility-contrast'] = utilityContrast;
 
-  writeFileSync(
-    join(out ?? './', 'themeColors.json'),
-    JSON.stringify(theme, null, 2),
-  );
+  writeFileSync(out, JSON.stringify(theme, null, 2));
 };
 
 main();
