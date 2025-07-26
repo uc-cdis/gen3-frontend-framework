@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "build:colors": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js",
-    "build:colors:noshift": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons --colorShift=0 --colorSaturation=100",
+    "build:colors:noshift": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --colorShift=0 --colorSaturation=100",
     "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js",
     "convertSchemaToFacets": "dotenvx run --convention=nextjs -- node ../../node_modules/@gen3/toolsff/dist/convertDictionaryToFacetDefinitions.esm.js",
