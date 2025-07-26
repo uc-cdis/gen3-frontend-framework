@@ -5,21 +5,13 @@ import {
   createNewCohort,
   removeCohort,
   removeCohortFilter,
-  selectAvailableCohorts,
-  selectCohortFilters,
-  selectCurrentCohort,
-  selectCurrentCohortFilters,
-  selectCurrentCohortId,
-  selectCurrentCohortModified,
-  selectCurrentCohortName,
-  selectCurrentCohortSaved,
-  selectIndexedFilterByName,
-  selectIndexFilters,
-  setActiveCohort,
   setCohortFilter,
   setCohortIndexFilters,
+  setCohortList,
+  setCurrentCohortId,
   updateCohortFilter,
-} from './cohortSlice';
+  updateCohortName,
+} from './cohortManagerSlice';
 
 import {
   selectAllCohortFiltersCollapsed,
@@ -48,6 +40,19 @@ import {
 } from './filterCombineModeSlice';
 
 import { CohortStorage } from './storage/CohortStorage';
+import {
+  selectAllCohorts,
+  selectAvailableCohorts,
+  selectCohortFilters,
+  selectCurrentCohort,
+  selectCurrentCohortFilters,
+  selectCurrentCohortId,
+  selectCurrentCohortModified,
+  selectCurrentCohortName,
+  selectCurrentCohortSaved,
+  selectIndexedFilterByName,
+  selectIndexFilters,
+} from './cohortManagerSelector';
 
 export * from './utils';
 
@@ -74,6 +79,7 @@ export {
   selectShouldShareFilters,
   selectSharedFilters,
   selectSharedFiltersForFields,
+  selectAllCohorts,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
@@ -81,10 +87,12 @@ export {
   clearCohortFilters,
   createNewCohort,
   removeCohort,
-  setActiveCohort,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
   setSharedFilters,
   setShouldShareFilters,
+  setCurrentCohortId,
+  updateCohortName,
+  setCohortList,
 };

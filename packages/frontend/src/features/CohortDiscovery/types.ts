@@ -137,8 +137,3 @@ interface ResourceField {
 // mapping index to resource path and data field for a requestor
 // cohort request
 export type IndexResourceField = Record<string, ResourceField>;
-
-export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
-  Object.values(filters).every(
-    (filterSet) => Object.keys(filterSet).length === 0,
-  );

@@ -129,23 +129,22 @@ export const isFilterSet = (input: any): input is FilterSet => {
   return true;
 };
 
-export function isUnion(value: unknown): value is Union {
+export const isUnion = (value: unknown): value is Union => {
   return (
     typeof value === 'object' &&
     value !== null &&
     (value as Union).operator === 'or' &&
     Array.isArray((value as Union).operands)
   );
-}
-
-export function isIntersection(value: unknown): value is Intersection {
+};
+export const isIntersection = (value: unknown): value is Intersection => {
   return (
     typeof value === 'object' &&
     value !== null &&
     (value as Intersection).operator === 'and' &&
     Array.isArray((value as Intersection).operands)
   );
-}
+};
 
 export const isOperandsType = (
   operation: Operation,
@@ -194,4 +193,11 @@ export type HistogramBucket = {
 
 export type IndexedFilterSet = Record<string, FilterSet>;
 
+export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
+  Object.values(filters).every(
+    (filterSet) => Object.keys(filterSet).length === 0,
+  );
+
 export type UnionOrIntersection = Union | Intersection;
+
+export const EmptyFilterSet: FilterSet = { mode: 'and', root: {} };

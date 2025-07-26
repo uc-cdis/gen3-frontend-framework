@@ -22,7 +22,6 @@ import {
   DataAccessRequestUserInformation,
   DiscoveryCohort,
   IndexResourceField,
-  isIndexedFilterSetEmpty,
   SupportServiceConfiguration,
 } from '../types';
 import { selectCohortToRequestId } from '../RequestManagerSlice';
@@ -30,6 +29,7 @@ import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
 import { formatDate } from '../../../utils/date';
 import { commonTableSettings } from '../tableSettings';
 import {
+  isIndexedFilterSetEmpty,
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,

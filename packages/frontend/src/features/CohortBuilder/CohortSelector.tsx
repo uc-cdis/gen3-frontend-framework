@@ -10,8 +10,8 @@ import {
   selectCurrentCohortId,
   selectCurrentCohortModified,
   selectCurrentCohortSaved,
-  setActiveCohort,
   setCohortIndexFilters,
+  setCurrentCohortId,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
@@ -60,7 +60,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
 
   const handleCohortChange = useDeepCompareCallback(
     (id: string) => {
-      coreDispatch(setActiveCohort(id));
+      coreDispatch(setCurrentCohortId(id));
     },
     [coreDispatch],
   );

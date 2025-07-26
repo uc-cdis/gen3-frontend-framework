@@ -18,7 +18,7 @@ import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext
 import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 import QueryExpression from './QueryExpression/QueryExpression';
 
-import CohortManager from './CohortManager';
+import CohortManager from './CohortManagerAndExpression';
 import TabbedCohortBuilder, {
   type CohortBuilderTabCategoryConfig,
   type TabbedCohortBuilderConfiguration,

@@ -39,7 +39,7 @@ import {
   useClearFilters,
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
-import CohortManager from './CohortManager';
+import CohortManager from './CohortManagerAndExpression';
 import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
