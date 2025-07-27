@@ -52,7 +52,7 @@ interface ClearAllFilterParams {
   index: string;
 }
 
-const newCohort = ({
+export const newCohort = ({
   filters = {},
   customName,
 }: {
@@ -153,7 +153,8 @@ export const cohortManagerSlice = createSlice({
         id: string;
       }>,
     ) => {
-      const removedCohortName = state.entities[action.payload.id].name;
+      const { id: cohortId } = action.payload;
+      const removedCohortName = state.entities[cohortId].name;
       const totalCohorts = Object.keys(state.entities).length;
       if (totalCohorts <= 1) {
         cohortsAdapter.removeAll(state);
@@ -171,7 +172,13 @@ export const cohortManagerSlice = createSlice({
         return;
       }
 
-      cohortsAdapter.removeOne(state, action.payload.id);
+      cohortsAdapter.removeOne(state, cohortId);
+
+      // deleted the current cohort so set to most recent cohort
+      if (state.currentCohortId === cohortId) {
+        const remainingIds = Object.keys(state.entities);
+        state.currentCohortId = remainingIds[0];
+      }
 
       if (action?.payload.shouldShowMessage) {
         state.message = [
