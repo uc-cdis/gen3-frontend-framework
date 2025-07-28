@@ -39,7 +39,6 @@ import {
   useClearFilters,
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
-import CohortManager from './CohortManagerAndExpression';
 import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
@@ -57,6 +56,7 @@ import {
   useToggleExpandFilter,
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
+import QueryExpression from './QueryExpression';
 
 const EmptyData = {};
 
@@ -360,7 +360,7 @@ export const CohortPanel = ({
 
   return (
     <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
-      <CohortManager index={index} />
+      <QueryExpression index={index} />
 
       {/* Flex container to ensure proper 25/75 split */}
       <div className="flex w-full">

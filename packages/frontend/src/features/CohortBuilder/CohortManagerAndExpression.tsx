@@ -1,6 +1,5 @@
 import React from 'react';
 import QueryExpression from './QueryExpression';
-import CohortManager from './CohortManager/CohortManager';
 
 interface CohortManagerProps {
   index: string;
@@ -9,7 +8,6 @@ interface CohortManagerProps {
 const CohortManagerAndExpression = ({ index }: CohortManagerProps) => {
   return (
     <div className="flex flex-col mb-2">
-      <CohortManager />
       <QueryExpression index={index} />
     </div>
   );

@@ -41,7 +41,6 @@ import { modals } from '@mantine/modals';
 const hasExportImport = false;
 
 interface CohortManagerProps {
-  index?: string; // optional for now: TODO remove or change to required
   size?: string;
 }
 

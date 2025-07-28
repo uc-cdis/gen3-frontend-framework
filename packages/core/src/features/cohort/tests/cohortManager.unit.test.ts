@@ -132,8 +132,6 @@ describe('cohortManagerSlice add, update, duplicate, and remove cohort', () => {
   });
 
   test('delete last cohort', () => {
-    console.log(localState);
-
     const testState = cohortReducer(
       localState,
       removeCohort({ shouldShowMessage: true, id: '000-000-000-1' }),

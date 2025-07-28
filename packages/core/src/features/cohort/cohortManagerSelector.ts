@@ -22,7 +22,6 @@ export const {
  * @param state
  */
 const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
-  console.log(state.cohorts.cohortManager.currentCohortId);
   return state.cohorts.cohortManager.currentCohortId;
 };
 export const selectCohortFilters = (state: CoreState): IndexedFilterSet => {

@@ -12,7 +12,6 @@ const getCurrentCohort = (
 ): DiscoveryCohort => {
   const cohort = state.entities[state.currentCohortId];
   if (!cohort) {
-    console.log('creating default cohort');
     return createDefaultCohort();
   }
   return cohort;

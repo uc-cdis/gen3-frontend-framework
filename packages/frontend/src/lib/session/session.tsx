@@ -25,7 +25,7 @@ import {
   useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 
-import { Loader, Center } from '@mantine/core';
+import { Center, Loader } from '@mantine/core';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
@@ -179,7 +179,8 @@ export const SessionProvider = ({
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
 
-  const { isSuccess: isGetCSRFSuccess } = useGetCSRFQuery();
+  const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
+    useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -301,6 +302,14 @@ export const SessionProvider = ({
       endSession,
     };
   }, [sessionInfo, updateSession, endSession]);
+
+  if (isGetCSRFError) {
+    return (
+      <Center h="100vh">
+        {`Error from the commons services. They do not seem to be running`}
+      </Center>
+    );
+  }
 
   if (isGetCSRFSuccess)
     return (

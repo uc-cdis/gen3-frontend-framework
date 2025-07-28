@@ -430,11 +430,9 @@ export const cohortManagerSlice = createSlice({
         state.loading = true;
         state.uninitialized = false;
         state.error = null;
-        console.log('loadCohortsFromStorage.pending');
       })
       .addCase(loadCohortsFromStorage.fulfilled, (state, action) => {
         state.loading = false;
-        console.log('loadCohortsFromStorage.fulfilled', action.payload);
         if (action.payload.length > 0) {
           if (Object.keys(state.entities).length >= 0) {
             cohortsAdapter.removeAll(state);
