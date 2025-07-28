@@ -108,7 +108,7 @@ const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
   );
 
   return (
-    <Group gap="xs" className="flex pt-4 pl-2">
+    <Group gap="xs" className="bg-primary flex pt-4 pl-4 p-4 mb-4">
       {!isEditing ? (
         <Group>
           <Select
@@ -194,7 +194,7 @@ const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
           color="secondary.4"
           onClick={handleDuplicate}
         >
-          <CopyIcon size="1.5em" aria-hidden="true" />
+          <CopyIcon size="1.4em" aria-hidden="true" />
         </Button>
       </Tooltip>
       <Tooltip label="Delete selected cohort" position="bottom" withArrow>
