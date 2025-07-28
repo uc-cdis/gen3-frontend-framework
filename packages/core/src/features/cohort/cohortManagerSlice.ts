@@ -287,6 +287,20 @@ export const cohortManagerSlice = createSlice({
         },
       });
     },
+    duplicateCohort: (state) => {
+      const currentCohortId = getCurrentCohortId(state);
+      const currentCohort = state.entities[currentCohortId];
+      const newName = generateUniqueName(
+        Object.values(state.entities),
+        currentCohort.name,
+      );
+      const duplicatedCohort = newCohort({
+        filters: currentCohort.filters,
+        customName: newName,
+      });
+      cohortsAdapter.addOne(state, duplicatedCohort);
+      state.currentCohortId = duplicatedCohort.id;
+    },
     // removes all filters from the cohort filter set at the given index
     clearCohortFilters: (
       state,
@@ -350,6 +364,7 @@ export const {
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
+  duplicateCohort,
   removeCohortFilter,
   clearCohortFilters,
   removeCohort,

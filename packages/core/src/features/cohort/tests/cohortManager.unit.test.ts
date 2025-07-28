@@ -4,6 +4,7 @@ import {
   createNewCohort,
   CurrentCohortState,
   DEFAULT_COHORT_NAME,
+  duplicateCohort,
   newCohort,
   removeCohort,
 } from '../cohortManagerSlice';
@@ -30,7 +31,7 @@ const STATE_WITH_2_COHORTS = {
       id: '000-000-000-2',
       modified: false,
       modifiedDatetime: '2025-01-25T10:30:00.000Z',
-      name: 'Cohort (1)',
+      name: 'Other Cohort',
       saved: false,
     },
   },
@@ -75,7 +76,7 @@ describe('cohortManagerSlice Initial State', () => {
   });
 });
 
-describe('cohortManagerSlice add, update, and remove cohort', () => {
+describe('cohortManagerSlice add, update, duplicate, and remove cohort', () => {
   const mockDate = new Date('2025-01-25T10:30:00.000Z');
 
   jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
@@ -84,7 +85,8 @@ describe('cohortManagerSlice add, update, and remove cohort', () => {
     .spyOn(cohortSlice, 'createCohortId')
     .mockReturnValueOnce('000-000-000-1')
     .mockReturnValueOnce('000-000-000-2')
-    .mockReturnValueOnce('000-000-000-3');
+    .mockReturnValueOnce('000-000-000-3')
+    .mockReturnValueOnce('000-000-000-4');
 
   const initialCohort = newCohort({ customName: DEFAULT_COHORT_NAME });
 
@@ -98,7 +100,7 @@ describe('cohortManagerSlice add, update, and remove cohort', () => {
   test('add cohort', () => {
     const testState = cohortReducer(
       localState,
-      createNewCohort({ filters: {} }),
+      createNewCohort({ filters: {}, name: 'Other Cohort' }),
     );
 
     expect(testState).toEqual(STATE_WITH_2_COHORTS);
@@ -120,7 +122,7 @@ describe('cohortManagerSlice add, update, and remove cohort', () => {
           id: '000-000-000-2',
           modified: false,
           modifiedDatetime: '2025-01-25T10:30:00.000Z',
-          name: 'Cohort (1)',
+          name: 'Other Cohort',
           saved: false,
         },
       },
@@ -153,6 +155,47 @@ describe('cohortManagerSlice add, update, and remove cohort', () => {
       },
       ids: ['000-000-000-3'],
       message: ['deleteCohort|Cohort|000-000-000-3'],
+    });
+  });
+
+  test('duplicate cohort', () => {
+    const testState = cohortReducer(STATE_WITH_2_COHORTS, duplicateCohort());
+
+    expect(testState).toEqual({
+      currentCohortId: '000-000-000-4',
+      entities: {
+        '000-000-000-1': {
+          counts: {},
+          createdDatetime: '2025-01-25T10:30:00.000Z',
+          filters: {},
+          id: '000-000-000-1',
+          modified: false,
+          modifiedDatetime: '2025-01-25T10:30:00.000Z',
+          name: 'Cohort',
+          saved: false,
+        },
+        '000-000-000-2': {
+          counts: {},
+          createdDatetime: '2025-01-25T10:30:00.000Z',
+          filters: {},
+          id: '000-000-000-2',
+          modified: false,
+          modifiedDatetime: '2025-01-25T10:30:00.000Z',
+          name: 'Other Cohort',
+          saved: false,
+        },
+        '000-000-000-4': {
+          counts: {},
+          createdDatetime: '2025-01-25T10:30:00.000Z',
+          filters: {},
+          id: '000-000-000-4',
+          modified: false,
+          modifiedDatetime: '2025-01-25T10:30:00.000Z',
+          name: 'Other Cohort (1)',
+          saved: false,
+        },
+      },
+      ids: ['000-000-000-1', '000-000-000-2', '000-000-000-4'],
     });
   });
 });
