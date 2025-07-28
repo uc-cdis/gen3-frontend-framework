@@ -13,6 +13,7 @@ import {
 import {
   Cohort,
   createNewCohort,
+  duplicateCohort,
   isIndexedFilterSetEmpty,
   removeCohort,
   selectAllCohorts,
@@ -27,6 +28,7 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   AddIcon,
   CloseIcon,
+  CopyIcon,
   DownloadIcon,
   UploadIcon,
 } from '../../../types/icons';
@@ -78,6 +80,10 @@ const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
 
   const handleCreateNew = () => {
     coreDispatch(createNewCohort({ name: 'New Cohort' }));
+  };
+
+  const handleDuplicate = () => {
+    coreDispatch(duplicateCohort());
   };
 
   const selectData = useMemo(() => {
@@ -178,6 +184,18 @@ const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
           onClick={handleCreateNew}
         >
           <AddIcon size="1.5em" aria-hidden="true" />
+        </Button>
+      </Tooltip>
+      <Tooltip label="Duplicate current" position="bottom" withArrow>
+        <Button
+          size={`compact-${size}`}
+          data-testid="duplicateButton"
+          aria-label="Duplicate cohort"
+          variant="action"
+          color="secondary.4"
+          onClick={handleDuplicate}
+        >
+          <CopyIcon size="1.5em" aria-hidden="true" />
         </Button>
       </Tooltip>
       <Tooltip label="Delete selected cohort" position="bottom" withArrow>
