@@ -1,13 +1,5 @@
-import React, { HTMLProps } from 'react';
-import {
-  Anchor,
-  Button,
-  Group,
-  Image,
-  NavLink,
-  Stack,
-  Text,
-} from '@mantine/core';
+import React from 'react';
+import { Button, Group, Image, NavLink, Stack, Text } from '@mantine/core';
 import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
@@ -68,11 +60,21 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
           </div>
         </div>
         <Group className="mb-6">
-          <Button color="primary.4">
-            {btnText ? btnText : `Run ${type === 'application' ? 'App' : 'Notebook'}`}
-          </Button>
+          <NavLink
+            component={Link}
+            href={href ?? '_blank'}
+            classNames={{
+              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
+              label: 'text-sm font-semibold',
+            }}
+            label={
+              btnText
+                ? btnText
+                : `Run ${type === 'application' ? 'App' : 'Notebook'}`
+            }
+          />
           {hasDemo && (
-            <Button variant="outline" color="primary.4">
+            <Button variant="outline" color="accent.4">
               Demo
             </Button>
           )}

@@ -24,7 +24,7 @@ const TabbedCohortBuilderPage = ({
           <CohortManager index={configuration.index}></CohortManager>
         </div>
         <div className="w-full mt-40 mr-4">
-          <TabbedCohortBuilder {...configuration} index={configuration.index} />
+          <TabbedCohortBuilder {...configuration} />
         </div>
       </Stack>
     </NavPageLayout>

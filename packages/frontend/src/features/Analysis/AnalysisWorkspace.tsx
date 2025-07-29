@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useReducer } from "react";
-import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
-import AnalysisCenter from "./AnalysisCenter";
+import React, { useEffect, useReducer, useState } from 'react';
+import AnalysisBreadcrumbs from './AnalysisBreadcrumbs';
 import {
   chartDownloadReducer,
   DashboardDownloadContext,
   SelectionScreenContext,
-} from "./context";
-import { AnalysisToolConfiguration } from "./types";
+} from './context';
+import { AnalysisToolConfiguration } from './types';
 
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
@@ -34,7 +33,7 @@ interface AnalysisWorkspaceProps {
 
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
-                                                               registeredApps,
+  registeredApps,
   handleAppSelected,
   isDemoMode,
   skipSelectionScreen,
@@ -80,11 +79,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             <ActiveAnalysisTool appId={app} />
           </DashboardDownloadContext.Provider>
         </SelectionScreenContext.Provider>
-      )}
-      {!app && (
-        <AnalysisCenter
-          tools={registeredApps}
-        />
       )}
     </div>
   );
