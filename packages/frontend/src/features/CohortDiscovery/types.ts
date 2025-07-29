@@ -1,7 +1,8 @@
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { DataTypeConfig, TabConfig } from '../CohortBuilder/types';
 import {
-  FilterSet,
+  Cohort,
+  CohortId,
   IndexedFilterSet,
   type RemoteSupportConfiguration,
 } from '@gen3/core';
@@ -52,20 +53,12 @@ export interface CohortDiscoveryConfig extends Gen3AppConfigData {
 }
 
 export type SupportedFacetTypes = 'enum';
-export type CohortId = string;
 const createCohortId = (): string => nanoid();
 const createRequestId = (): string => nanoid();
 
-export interface Cohort {
-  id: string;
-  name: string;
-  filters: IndexedFilterSet; // maps of index to filter set
-  modified: boolean; // flag which is set to true if modified and unsaved
-  modifiedDatetime: string; // last time cohort was modified
-  createdDatetime: string;
+export interface DiscoveryCohort extends Cohort {
   requestedAccess: boolean;
   requestId: string;
-  saved: boolean;
 }
 
 export const newCohort = (
@@ -73,7 +66,7 @@ export const newCohort = (
   filters: IndexedFilterSet,
   id?: string,
   saved?: boolean,
-): Cohort => {
+): DiscoveryCohort => {
   const ts = new Date().toISOString();
 
   return {
@@ -144,8 +137,3 @@ interface ResourceField {
 // mapping index to resource path and data field for a requestor
 // cohort request
 export type IndexResourceField = Record<string, ResourceField>;
-
-export const isIndexedFilterSetEmpty = (filters: IndexedFilterSet): boolean =>
-  Object.values(filters).every(
-    (filterSet) => Object.keys(filterSet).length === 0,
-  );

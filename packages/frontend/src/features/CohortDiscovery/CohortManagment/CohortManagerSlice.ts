@@ -5,21 +5,27 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { FilterSet, IndexedFilterSet, Operation } from '@gen3/core';
-import { Cohort, CohortId, newCohort } from '../types';
-import { cohortStorage } from './CohortStorage';
+import {
+  type CohortId,
+  FilterSet,
+  IndexedFilterSet,
+  Operation,
+  StorageEntity,
+} from '@gen3/core';
+import { DiscoveryCohort, newCohort } from '../types';
+import { cohortStorage } from './DiscoveryCohortStorage';
 import { EmptyFilterSet } from './types';
 
-const isNameUnique = (
-  state: EntityState<Cohort, CohortId> & CohortManagerState,
+const isNameUnique = <T extends StorageEntity<CohortId>, K extends CohortId>(
+  state: EntityState<T, K> & CohortManagerState,
   name: string,
   excludeId?: string,
 ): boolean => {
   const trimmedName = name.trim();
   if (!trimmedName) return false;
 
-  return !Object.values(state.entities).some(
-    (cohort) =>
+  return !Object.values<T>(state.entities).some(
+    (cohort: T) =>
       cohort &&
       cohort.id !== excludeId &&
       cohort.name.trim().toLowerCase() === trimmedName.toLowerCase(),
@@ -27,7 +33,7 @@ const isNameUnique = (
 };
 
 const generateUniqueName = (
-  state: EntityState<Cohort, CohortId> & CohortManagerState,
+  state: EntityState<DiscoveryCohort, CohortId> & CohortManagerState,
   baseName: string,
 ): string => {
   const trimmedBaseName = baseName.trim();
@@ -53,8 +59,8 @@ export const createDefaultCohort = () =>
   newCohort(DEFAULT_COHORT_NAME, {}, undefined, false);
 
 // Entity adapter
-export const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
-  selectId: (cohort: Cohort) => cohort.id,
+export const cohortsAdapter = createEntityAdapter<DiscoveryCohort, CohortId>({
+  selectId: (cohort: DiscoveryCohort) => cohort.id,
   sortComparer: (a, b) => {
     if (a.modifiedDatetime > b.modifiedDatetime) return -1;
     if (a.modifiedDatetime < b.modifiedDatetime) return 1;
@@ -75,7 +81,7 @@ const DEFAULT_COHORT_NAME = 'Default';
 
 export const loadCohortsFromStorage = createAsyncThunk(
   'cohorts/loadFromStorage',
-  async (): Promise<Cohort[]> => {
+  async (): Promise<DiscoveryCohort[]> => {
     try {
       const results = await cohortStorage.getAllCohorts();
       if (results.data) return Object.values(results.data);
@@ -93,18 +99,18 @@ interface SaveCohortParams {
 }
 export const saveCohortToStorage = createAsyncThunk(
   'cohorts/saveToStorage',
-  async (params: SaveCohortParams, { getState }): Promise<Cohort> => {
+  async (params: SaveCohortParams, { getState }): Promise<DiscoveryCohort> => {
     const { cohortId, cohortName } = params;
     const state = getState() as {
-      cohorts: EntityState<Cohort, CohortId> & CohortManagerState;
+      cohorts: EntityState<DiscoveryCohort, CohortId> & CohortManagerState;
     };
     const cohort = state.cohorts.entities[cohortId];
 
     if (!cohort) {
-      throw new Error(`Cohort with id ${cohortId} not found`);
+      throw new Error(`DiscoveryCohort with id ${cohortId} not found`);
     }
 
-    const cohortToSave: Cohort = {
+    const cohortToSave: DiscoveryCohort = {
       ...cohort,
       name: cohortName || cohort.name,
       saved: true,
@@ -119,9 +125,9 @@ export const saveCohortToStorage = createAsyncThunk(
 
 export const autoSaveCohort = createAsyncThunk(
   'cohorts/autoSave',
-  async (cohortId: string, { getState }): Promise<Cohort> => {
+  async (cohortId: string, { getState }): Promise<DiscoveryCohort> => {
     const state = getState() as {
-      cohorts: EntityState<Cohort, CohortId> & CohortManagerState;
+      cohorts: EntityState<DiscoveryCohort, CohortId> & CohortManagerState;
     };
     const cohort = state.cohorts.entities[cohortId];
 
@@ -129,7 +135,7 @@ export const autoSaveCohort = createAsyncThunk(
       throw new Error(`Cannot auto-save unsaved cohort ${cohortId}`);
     }
 
-    const cohortToSave: Cohort = {
+    const cohortToSave: DiscoveryCohort = {
       ...cohort,
       modified: false,
       modifiedDatetime: new Date().toISOString(),
@@ -424,11 +430,9 @@ export const cohortManagerSlice = createSlice({
         state.loading = true;
         state.uninitialized = false;
         state.error = null;
-        console.log('loadCohortsFromStorage.pending');
       })
       .addCase(loadCohortsFromStorage.fulfilled, (state, action) => {
         state.loading = false;
-        console.log('loadCohortsFromStorage.fulfilled', action.payload);
         if (action.payload.length > 0) {
           if (Object.keys(state.entities).length >= 0) {
             cohortsAdapter.removeAll(state);
@@ -509,8 +513,8 @@ export const cohortManagerSlice = createSlice({
 
 // Helper function
 const getCurrentCohort = (
-  state: EntityState<Cohort, CohortId> & CohortManagerState,
-): Cohort => {
+  state: EntityState<DiscoveryCohort, CohortId> & CohortManagerState,
+): DiscoveryCohort => {
   const cohort = state.entities[state.currentCohortId];
   if (!cohort) {
     return createDefaultCohort();

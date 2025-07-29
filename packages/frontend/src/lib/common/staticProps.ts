@@ -1,12 +1,12 @@
 import {
+  type BannerProps,
   type FooterProps,
+  type HeaderMetadata,
   type HeaderProps,
+  isHeaderMetadata,
   type NavigationProps,
   type NavPageLayoutProps,
   type TopBarProps,
-  type BannerProps,
-  type HeaderMetadata,
-  isHeaderMetadata,
 } from '../../features/Navigation';
 import ContentSource from '../content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
@@ -50,6 +50,7 @@ export const getNavPageLayoutPropsFromConfig =
       if (isHeaderMetadata(loadedHeaderMetadata)) {
         headerMetadata = loadedHeaderMetadata;
       } else {
+        console.log('loadedHeaderMetadata', loadedHeaderMetadata);
         console.warn('headerMetadata is not a valid HeaderMetadata object');
       }
     } catch (error: unknown) {

@@ -5,12 +5,12 @@ interface CohortManagerProps {
   index: string;
 }
 
-const CohortManager = ({ index }: CohortManagerProps) => {
+const CohortManagerAndExpression = ({ index }: CohortManagerProps) => {
   return (
-    <div className="mb-2">
+    <div className="flex flex-col mb-2">
       <QueryExpression index={index} />
     </div>
   );
 };
 
-export default CohortManager;
+export default CohortManagerAndExpression;

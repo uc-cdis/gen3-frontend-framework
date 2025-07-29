@@ -11,26 +11,24 @@ import {
 } from '@mantine/core';
 
 import {
+  Cohort,
   createNewCohort,
+  duplicateCohort,
+  isIndexedFilterSetEmpty,
   removeCohort,
-  setCurrentCohortId,
-  updateCohortName,
-} from './CohortManagerSlice';
-import {
   selectAllCohorts,
   selectCurrentCohort,
-} from './CohortManagerSelectors';
+  setCurrentCohortId,
+  updateCohortName,
+  useCoreDispatch,
+  useCoreSelector,
+} from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { useAppDispatch, useAppSelector } from '../appApi';
-import {
-  DataAccessRequestUserInformation,
-  DiscoveryCohort,
-  IndexResourceField,
-  SupportServiceConfiguration,
-} from '../types';
+
 import {
   AddIcon,
   CloseIcon,
+  CopyIcon,
   DownloadIcon,
   UploadIcon,
 } from '../../../types/icons';
@@ -39,38 +37,19 @@ import { Icon } from '@iconify-icon/react';
 
 import { IconSize } from '../../../utils/sizes';
 import { modals } from '@mantine/modals';
-import DataAccessRequestForm from '../Requests/DataAccessRequestForm';
-import { submitCohortRequestAction } from '../Requests/submitCohortRequestAction';
-import {
-  isIndexedFilterSetEmpty,
-  selectUserDetails,
-  useCoreSelector,
-  useCreateRequestMutation,
-  useLazyGetAggsNoFilterSelfQuery,
-} from '@gen3/core';
-
-interface CohortManagerProps {
-  indexResources: IndexResourceField;
-  remoteSupportService: SupportServiceConfiguration;
-  size?: string;
-}
 
 const hasExportImport = false;
 
-const CohortManagerPanel = ({
-  indexResources,
-  remoteSupportService,
-  size = 'md',
-}: CohortManagerProps) => {
-  const appDispatch = useAppDispatch();
+interface CohortManagerProps {
+  size?: string;
+}
+
+const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
+  const coreDispatch = useCoreDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingLabel, setEditingLabel] = useState('');
-  const allCohorts: Array<DiscoveryCohort> = useAppSelector(selectAllCohorts);
-  const currentCohort = useAppSelector(selectCurrentCohort);
-
-  const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
-  const [requestQuery] = useCreateRequestMutation();
-  const user = useCoreSelector(selectUserDetails);
+  const allCohorts: Array<Cohort> = useCoreSelector(selectAllCohorts);
+  const currentCohort = useCoreSelector(selectCurrentCohort);
 
   const theme = useMantineTheme();
   const iconSize = IconSize[size] || IconSize['sm'];
@@ -91,17 +70,23 @@ const CohortManagerPanel = ({
   const saveEdit = () => {
     if (editingLabel.trim() === '' || !currentCohort.name) return;
 
-    appDispatch(updateCohortName({ id: currentCohort.id, name: editingLabel }));
+    coreDispatch(
+      updateCohortName({ id: currentCohort.id, name: editingLabel }),
+    );
     setIsEditing(false);
     setEditingLabel('');
   };
 
   const handleCreateNew = () => {
-    appDispatch(createNewCohort({ name: 'New Cohort' }));
+    coreDispatch(createNewCohort({ name: 'New Cohort' }));
+  };
+
+  const handleDuplicate = () => {
+    coreDispatch(duplicateCohort());
   };
 
   const selectData = useMemo(() => {
-    return allCohorts.map((cohort: DiscoveryCohort) => ({
+    return allCohorts.map((cohort: Cohort) => ({
       label: cohort.name,
       value: cohort.id,
     }));
@@ -109,40 +94,21 @@ const CohortManagerPanel = ({
 
   useDeepCompareEffect(() => {
     if (!currentCohort) {
-      appDispatch(setCurrentCohortId(allCohorts[0].id));
+      coreDispatch(setCurrentCohortId(allCohorts[0].id));
     }
   }, [allCohorts, currentCohort, setCurrentCohortId]);
 
   const onSelectCohort = useCallback(
     (_value: unknown, option: ComboboxItem | null) => {
       if (option) {
-        appDispatch(setCurrentCohortId(option.value));
+        coreDispatch(setCurrentCohortId(option.value));
       }
     },
-    [appDispatch],
+    [coreDispatch],
   );
 
-  const handleCohortAccessRequest = async (
-    cohortId: string,
-    values: DataAccessRequestUserInformation,
-  ) => {
-    const cohort = allCohorts.find((obj) => obj.id === cohortId);
-
-    if (cohort)
-      await submitCohortRequestAction(
-        cohort,
-        values,
-        user,
-        indexResources,
-        remoteSupportService,
-        appDispatch,
-        getGetAggs,
-        requestQuery,
-      );
-  };
-
   return (
-    <Group gap="xs" className="flex pt-4 pl-2">
+    <Group gap="xs" className="bg-primary flex pt-4 pl-4 p-4 mb-4">
       {!isEditing ? (
         <Group>
           <Select
@@ -219,6 +185,18 @@ const CohortManagerPanel = ({
           <AddIcon size="1.5em" aria-hidden="true" />
         </Button>
       </Tooltip>
+      <Tooltip label="Duplicate current" position="bottom" withArrow>
+        <Button
+          size={`compact-${size}`}
+          data-testid="duplicateButton"
+          aria-label="Duplicate cohort"
+          variant="action"
+          color="secondary.4"
+          onClick={handleDuplicate}
+        >
+          <CopyIcon size="1.4em" aria-hidden="true" />
+        </Button>
+      </Tooltip>
       <Tooltip label="Delete selected cohort" position="bottom" withArrow>
         <Button
           size={`compact-${size}`}
@@ -233,16 +211,17 @@ const CohortManagerPanel = ({
                 <Text size="sm">
                   Are you sure you want to delete your cohort? Deleted cohorts
                   cannot be restored.{' '}
-                  {currentCohort?.requests?.length > 0
-                    ? `This cohort has ${currentCohort?.requests?.length} requests. Deleting this cohort will results in not being able to correlate nay pending requests.
-                    Are you sure you want to delete this cohort?.`
-                    : ''}
                 </Text>
               ),
               labels: { confirm: 'Delete Cohort', cancel: 'Cancel' },
               confirmProps: { color: theme.colors.accent[4] },
               onConfirm: () => {
-                appDispatch(removeCohort(currentCohort.id));
+                coreDispatch(
+                  removeCohort({
+                    id: currentCohort.id,
+                    shouldShowMessage: true,
+                  }),
+                );
               },
             });
           }}
@@ -250,37 +229,7 @@ const CohortManagerPanel = ({
           <Icon icon="gen3:delete" height={iconSize} width={iconSize} />
         </Button>
       </Tooltip>
-      <Tooltip
-        label={
-          hasNoFilters
-            ? 'No Filters defined. Cannot submit request.'
-            : 'Submit Data Access Request'
-        }
-        position="bottom"
-        withArrow
-      >
-        <Button
-          size={`compact-${size}`}
-          data-testid="cohortManager-requestCohortAccessButton"
-          aria-label="Request cohort access"
-          variant="action"
-          disabled={hasNoFilters}
-          onClick={() => {
-            const modelId = modals.open({
-              title: 'DATA ACCESS REQUEST',
-              children: (
-                <DataAccessRequestForm
-                  cohortId={currentCohort.id}
-                  submitFunction={handleCohortAccessRequest}
-                  close={() => modals.close(modelId)}
-                />
-              ),
-            });
-          }}
-        >
-          <Icon icon="gen3:request" height={iconSize} width={iconSize} />
-        </Button>
-      </Tooltip>
+
       {hasExportImport ? (
         <>
           <Tooltip label="Import Cohort" position="bottom" withArrow>
@@ -311,20 +260,10 @@ const CohortManagerPanel = ({
   );
 };
 
-const CohortManager = ({
-  indexResources,
-  remoteSupportService,
-  size = 'md',
-}: CohortManagerProps) => {
+const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
   // TODO: initialize and load cohorts from cohort storage
   //  as right now the redux-persist is handling cohorts
-  return (
-    <CohortManagerPanel
-      indexResources={indexResources}
-      remoteSupportService={remoteSupportService}
-      size={size}
-    />
-  );
+  return <CohortManagerPanel size={size} />;
 };
 
 export default CohortManager;

@@ -1,11 +1,9 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
-import CohortManager from '../../features/CohortBuilder/CohortManager';
+import CohortManager from '../../features/CohortBuilder/CohortManagerAndExpression';
 import { Stack } from '@mantine/core';
 import { TabbedCohortBuilderPageProps } from './types';
-import CountsValue from '../../components/counts/CountsValue';
-import { toDisplayName } from '../../utils';
 
 const TabbedCohortBuilderPage = ({
   headerProps,

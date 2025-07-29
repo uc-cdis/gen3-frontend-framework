@@ -4,14 +4,14 @@ import {
   CohortManagerState,
   createDefaultCohort,
 } from './CohortManagerSlice';
-import { Cohort, CohortId } from '../types';
+import { CohortId } from '@gen3/core';
+import { DiscoveryCohort } from '../types';
 
 const getCurrentCohort = (
-  state: EntityState<Cohort, CohortId> & CohortManagerState,
-): Cohort => {
+  state: EntityState<DiscoveryCohort, CohortId> & CohortManagerState,
+): DiscoveryCohort => {
   const cohort = state.entities[state.currentCohortId];
   if (!cohort) {
-    console.log('creating default cohort');
     return createDefaultCohort();
   }
   return cohort;

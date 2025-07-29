@@ -1,52 +1,68 @@
 // import all the components from this directory
 import {
-  type Cohort,
+  clearCohortFilters,
   cohortReducer,
-  selectCohortFilters,
-  selectCurrentCohortFilters,
-  selectIndexFilters,
-  selectIndexedFilterByName,
-  selectCurrentCohortId,
-  selectCurrentCohortName,
-  selectCurrentCohort,
-  selectAvailableCohorts,
-  selectCurrentCohortModified,
-  selectCurrentCohortSaved,
-  updateCohortFilter,
+  createNewCohort,
+  duplicateCohort,
+  removeCohort,
+  removeCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
-  removeCohortFilter,
-  clearCohortFilters,
-  addNewDefaultUnsavedCohort,
-  removeCohort,
-  setActiveCohort,
-  setActiveCohortList,
-} from './cohortSlice';
+  setCohortList,
+  setCurrentCohortId,
+  updateCohortFilter,
+  updateCohortName,
+} from './cohortManagerSlice';
 
 import {
-  toggleCohortBuilderCategoryFilter,
-  toggleCohortBuilderAllFilters,
-  selectCohortFilterExpanded,
   selectAllCohortFiltersCollapsed,
+  selectCohortFilterExpanded,
+  toggleCohortBuilderAllFilters,
+  toggleCohortBuilderCategoryFilter,
 } from './filterExpandSlice';
 
 import {
-  setSharedFilters,
-  setShouldShareFilters,
-  selectShouldShareFilters,
   selectSharedFilters,
   selectSharedFiltersForFields,
+  selectShouldShareFilters,
+  setSharedFilters,
+  setShouldShareFilters,
 } from './sharedFiltersSlice';
-import { type CombineMode } from './types';
+import {
+  type Cohort,
+  type CohortId,
+  type CombineMode,
+  type StorageEntity,
+} from './types';
 
 import {
-  setCohortFilterCombineMode,
   selectCohortFilterCombineMode,
+  setCohortFilterCombineMode,
 } from './filterCombineModeSlice';
+
+import { CohortStorage } from './storage/CohortStorage';
+import {
+  selectAllCohorts,
+  selectAvailableCohorts,
+  selectCohortFilters,
+  selectCurrentCohort,
+  selectCurrentCohortFilters,
+  selectCurrentCohortId,
+  selectCurrentCohortModified,
+  selectCurrentCohortName,
+  selectCurrentCohortSaved,
+  selectIndexedFilterByName,
+  selectIndexFilters,
+} from './cohortManagerSelector';
+
+export * from './utils';
 
 export {
   type Cohort,
   type CombineMode,
+  type CohortId,
+  type StorageEntity,
+  CohortStorage,
   selectCohortFilters,
   selectCurrentCohortFilters,
   selectIndexFilters,
@@ -64,18 +80,21 @@ export {
   selectShouldShareFilters,
   selectSharedFilters,
   selectSharedFiltersForFields,
+  selectAllCohorts,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
   removeCohortFilter,
   clearCohortFilters,
-  addNewDefaultUnsavedCohort,
+  createNewCohort,
+  duplicateCohort,
   removeCohort,
-  setActiveCohort,
-  setActiveCohortList,
   toggleCohortBuilderCategoryFilter,
   toggleCohortBuilderAllFilters,
   setCohortFilterCombineMode,
   setSharedFilters,
   setShouldShareFilters,
+  setCurrentCohortId,
+  updateCohortName,
+  setCohortList,
 };

@@ -85,7 +85,7 @@ export const userAuthApi = createApi({
         } catch (error: unknown) {
           if (error instanceof Error) {
             return {
-              error: error,
+              error: error.message,
             };
           } else {
             return {

@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
-
-import { cohortsAdapter, createDefaultCohort } from './CohortManagerSlice';
+import { CohortId } from '@gen3/core';
+import { cohortsAdapter } from './CohortManagerSlice';
 import { AppState } from '../appApi';
 import { EmptyFilterSet } from './types';
-import { Cohort, CohortId } from '../types';
+import { DiscoveryCohort } from '../types';
 import { UninitializeCohort } from '../constants';
 
 // Selectors
@@ -17,7 +17,9 @@ export const {
 export const selectCurrentCohortId = (state: AppState): string =>
   state.cohorts.currentCohortId;
 
-export const selectCurrentCohort = (state: AppState): Cohort | null => {
+export const selectCurrentCohort = (
+  state: AppState,
+): DiscoveryCohort | null => {
   const { currentCohortId, entities } = state.cohorts;
   const cohort = entities[currentCohortId];
 

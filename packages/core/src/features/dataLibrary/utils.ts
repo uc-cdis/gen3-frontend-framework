@@ -2,20 +2,20 @@ import {
   AdditionalDataItem,
   CohortItem,
   DataLibrary,
+  DataLibraryAPI,
   DataLibraryAPIResponse,
+  DataLibraryDataset,
   Datalist,
   DatalistAPI,
   DataSetMembers,
+  DatasetOrCohort,
   ExportDatasetFields,
-  LibraryListItemsGroupedByDataset,
+  FileItem,
+  FileItemAPI,
   isCohortItem,
   isFileItem,
   LibraryListItemsAPI,
-  DatasetOrCohort,
-  DataLibraryDataset,
-  FileItem,
-  FileItemAPI,
-  DataLibraryAPI,
+  LibraryListItemsGroupedByDataset,
 } from './types';
 import { parse } from 'graphql';
 import { JSONObject } from '../../types/';
@@ -137,10 +137,6 @@ export const getNumberOfItemsInDatalist = (dataList: Datalist): number => {
       );
     }
   }, 0);
-};
-
-export const getTimestamp = () => {
-  return new Date(Date.now()).toLocaleString();
 };
 
 export const flattenDataList = (dataList: LibraryListItemsGroupedByDataset) => {

@@ -1,7 +1,11 @@
 import React, { PropsWithChildren, ReactElement, useContext } from 'react';
-import { get } from 'lodash';
+import { get, isArray } from 'lodash';
 import {
   Equals,
+  ExcludeIfAny,
+  Excludes,
+  Exists,
+  fieldNameToTitle,
   GreaterThan,
   GreaterThanOrEquals,
   handleOperation,
@@ -9,19 +13,14 @@ import {
   Intersection,
   LessThan,
   LessThanOrEquals,
+  Missing,
+  NestedFilter,
   NotEquals,
   Operation,
   OperationHandler,
   Union,
-  fieldNameToTitle,
-  Exists,
-  Missing,
-  ExcludeIfAny,
-  Excludes,
-  NestedFilter,
 } from '@gen3/core';
 import { ActionIcon, Badge, Divider, Group } from '@mantine/core';
-import { isArray } from 'lodash';
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
@@ -141,7 +140,7 @@ const IncludeExcludeQueryElement = ({
   const removeCohortFilter = useRemoveFilter();
   const updateCohortFilter = useUpdateFilters();
   useDeepCompareEffect(() => {
-    if (get(queryExpressionsExpanded, field) === undefined) {
+    if (currentCohortId && get(queryExpressionsExpanded, field) === undefined) {
       setQueryExpressionsExpanded({
         type: 'expand',
         cohortId: currentCohortId,
@@ -166,11 +165,12 @@ const IncludeExcludeQueryElement = ({
         variant="transparent"
         size={'xs'}
         onClick={() => {
-          setQueryExpressionsExpanded({
-            type: expanded ? 'collapse' : 'expand',
-            cohortId: currentCohortId,
-            field,
-          });
+          if (currentCohortId)
+            setQueryExpressionsExpanded({
+              type: expanded ? 'collapse' : 'expand',
+              cohortId: currentCohortId,
+              field,
+            });
         }}
         color="accent"
         className="ml-1 my-auto hover:bg-accent-darker hover:bg-primary]"
@@ -209,7 +209,7 @@ const IncludeExcludeQueryElement = ({
                     const fieldToUpdate =
                       path && path != '.' ? [path, field].join('.') : field;
 
-                    if (newOperands.length === 0) {
+                    if (currentCohortId && newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: 'clear',
                         cohortId: currentCohortId,
@@ -365,11 +365,12 @@ export const QueryElement = ({
   const fieldName = path && path != '.' ? [path, field].join('.') : field;
   const handleRemoveFilter = () => {
     removeCohortFilter(index, fieldName);
-    setQueryExpressionsExpanded({
-      type: 'clear',
-      cohortId: currentCohortId,
-      field: fieldName,
-    });
+    if (currentCohortId)
+      setQueryExpressionsExpanded({
+        type: 'clear',
+        cohortId: currentCohortId,
+        field: fieldName,
+      });
   };
 
   return (

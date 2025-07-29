@@ -10,6 +10,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
+import CohortManager from './CohortManager/CohortManager';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
@@ -29,7 +30,8 @@ const CohortBuilder = ({
   );
 
   return (
-    <div className="w-full mt-2">
+    <div className="flex flex-col w-full mt-2">
+      <CohortManager></CohortManager>
       <Tabs
         color="primary.4"
         variant={explorerConfig[0]?.tabType}
