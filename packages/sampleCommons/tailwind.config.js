@@ -188,6 +188,10 @@ module.exports = {
     },
     {
       pattern:
+        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+    },
+    {
+      pattern:
         /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {

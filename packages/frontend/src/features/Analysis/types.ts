@@ -1,6 +1,7 @@
-import  { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Gen3AppConfigData } from '../../lib/content/types';
 
+type CountFunction = () => string;
 
 export interface AnalysisToolConfiguration {
   title: string;
@@ -11,8 +12,10 @@ export interface AnalysisToolConfiguration {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
-  appId?: string;
+  appId?: string; // id of the app
+  componentName?: string; // Name of component to load
   count?: number; // TODO replace with function
+  countFunction?: CountFunction;
   countIndex?: string;
   countUnits?: string;
   noDataTooltip?: string;
