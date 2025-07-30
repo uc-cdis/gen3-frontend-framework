@@ -1,9 +1,10 @@
-import React from 'react';
-import { Button, Group, Image, NavLink, Stack, Text } from '@mantine/core';
+import React, { useCallback } from 'react';
+import Link from 'next/link';
 import NextImage from 'next/image';
 import TextDescription from './TextDescription';
-import Link from 'next/link';
+import { Button, Group, Image, Stack, Text } from '@mantine/core';
 import { AnalysisToolConfiguration } from './types';
+import { useRouter } from 'next/router';
 
 type AnalysisCardCompactProps = Omit<AnalysisToolConfiguration, 'image'>;
 
@@ -19,6 +20,12 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
   countUnits,
   btnText,
 }) => {
+  const router = useRouter();
+
+  const handleClick = useCallback(
+    (href: string) => router.push(href),
+    [router],
+  );
   return (
     <Stack
       gap="xs"
@@ -60,21 +67,18 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
           </div>
         </div>
         <Group className="mb-6">
-          <NavLink
+          <Button
+            color="accent.4"
             component={Link}
             href={href ?? '_blank'}
-            classNames={{
-              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
-              label: 'text-sm font-semibold',
-            }}
-            label={
-              btnText
-                ? btnText
-                : `Run ${type === 'application' ? 'App' : 'Notebook'}`
-            }
-          />
+            onClick={(_event) => handleClick(href ?? '_blank')}
+          >
+            {btnText
+              ? btnText
+              : `Run ${type === 'application' ? 'App' : 'Notebook'}`}
+          </Button>
           {hasDemo && (
-            <Button variant="outline" color="accent.4">
+            <Button variant="outline" color="primary.4">
               Demo
             </Button>
           )}
