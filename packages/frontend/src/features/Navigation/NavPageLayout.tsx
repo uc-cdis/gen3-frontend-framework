@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import Header from './Header';
@@ -11,6 +11,8 @@ export interface NavPageLayoutProps {
   footerProps: Readonly<FooterProps>;
   mainProps?: Partial<MainContentProps>;
   headerMetadata: HeaderMetadata;
+  CustomHeaderComponent?: ComponentType<HeaderProps>;
+  CustomFooterComponent?: ComponentType<FooterProps>;
 }
 
 const NavPageLayout = ({
@@ -18,6 +20,8 @@ const NavPageLayout = ({
   footerProps,
   mainProps,
   headerMetadata,
+  CustomHeaderComponent,
+  CustomFooterComponent,
   children,
 }: PropsWithChildren<NavPageLayoutProps>) => {
   const mainContentStyle = mainProps?.fixed
@@ -33,14 +37,18 @@ const NavPageLayout = ({
           key={headerMetadata.key}
         />
       </Head>
-      <Header {...headerProps}>
-        <title>{headerMetadata.title}</title>
-        <meta
-          property="og:title"
-          content={headerMetadata.content}
-          key={headerMetadata.key}
-        />
-      </Header>
+      {CustomHeaderComponent ? (
+        <CustomHeaderComponent {...headerProps} />
+      ) : (
+        <Header {...headerProps}>
+          <title>{headerMetadata.title}</title>
+          <meta
+            property="og:title"
+            content={headerMetadata.content}
+            key={headerMetadata.key}
+          />
+        </Header>
+      )}
       {headerProps.type === 'vertical' ? (
         <div className="flex grow">
           <LeftSidePanel
@@ -52,7 +60,11 @@ const NavPageLayout = ({
       ) : (
         <main className={mainContentStyle}>{children}</main>
       )}
-      <Footer {...footerProps} />
+      {CustomFooterComponent ? (
+        <CustomFooterComponent {...footerProps} />
+      ) : (
+        <Footer {...footerProps} />
+      )}
     </div>
   );
 };
