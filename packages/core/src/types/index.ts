@@ -54,16 +54,16 @@ export interface HistogramDataAsStringKey {
 export type HistogramDataArray = Array<HistogramData>;
 
 export interface StatValues {
-  count: number;
-  min: number;
-  max: number;
-  avg: number;
-  sum: number;
-  stddev: number;
-  median: number;
-  p25: number;
-  p50: number;
-  p75: number;
+  count: number | null;
+  min: number | null;
+  max: number | null;
+  avg: number | null;
+  sum: number | null;
+  stddev: number | null;
+  median: number | null;
+  p25: number | null;
+  p50: number | null;
+  p75: number | null;
 }
 
 export type StatsValuesArray = Array<Partial<StatValues>>;
