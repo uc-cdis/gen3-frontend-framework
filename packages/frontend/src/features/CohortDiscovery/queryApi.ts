@@ -1,16 +1,17 @@
 import useSWR from 'swr';
 import {
   Accessibility,
-  GuppyAggregationsResponse,
+  AggregationsData,
   buildGetAggregationQuery,
+  CoreState,
   FilterSet,
+  GEN3_GUPPY_API,
   GraphQLQuery,
+  GuppyAggregationsResponse,
   processHistogramResponse,
   roundHistogramResponse,
-  GEN3_GUPPY_API,
-  CoreState,
-  useCoreSelector,
   selectCSRFToken,
+  useCoreSelector,
 } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 import { GEN3_COHORT_DISCOVERY_API } from './constants';
@@ -141,7 +142,7 @@ export const useUnsecureRoundedAggsQuery = (
   return {
     ...response,
     data: response?.data?.data
-      ? processHistogramResponse(
+      ? processHistogramResponse<AggregationsData>(
           roundHistogramResponse(
             response?.data?.data._aggregation[type] as unknown as Record<
               string,

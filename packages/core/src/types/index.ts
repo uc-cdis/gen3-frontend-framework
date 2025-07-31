@@ -53,6 +53,21 @@ export interface HistogramDataAsStringKey {
 
 export type HistogramDataArray = Array<HistogramData>;
 
+export interface StatValues {
+  count: number;
+  min: number;
+  max: number;
+  avg: number;
+  sum: number;
+  stddev: number;
+  median: number;
+  p25: number;
+  p50: number;
+  p75: number;
+}
+
+export type StatsValuesArray = Array<Partial<StatValues>>;
+
 const isValidObject = (input: any): boolean =>
   typeof input === 'object' && input !== null;
 
@@ -107,6 +122,51 @@ export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {
     typeof data.key === 'string' &&
     typeof data.count === 'number'
   );
+};
+
+export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
+  if (typeof item !== 'object' || item === null) {
+    return false;
+  }
+
+  const obj = item as Record<string, unknown>;
+
+  // Check that all present properties have correct types
+  const numericFields = [
+    'count',
+    'min',
+    'max',
+    'avg',
+    'sum',
+    'stddev',
+    'median',
+  ];
+  for (const field of numericFields) {
+    if (field in obj && typeof obj[field] !== 'number') {
+      return false;
+    }
+  }
+
+  // Check percentiles structure if present
+  if ('percentiles' in obj) {
+    const percentiles = obj.percentiles;
+    if (typeof percentiles !== 'object' || percentiles === null) {
+      return false;
+    }
+    const pObj = percentiles as Record<string, unknown>;
+    const requiredPercentiles = ['p25', 'p50', 'p75'];
+    for (const p of requiredPercentiles) {
+      if (p in pObj && typeof pObj[p] !== 'number') {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+export const isStatsValuesArray = (data: unknown): data is StatsValuesArray => {
+  return Array.isArray(data) && data.every(isStatsValue);
 };
 
 export const isHistogramDataAArray = (
@@ -183,6 +243,8 @@ export function isFetchParseError(error: unknown): error is ParsingError {
 }
 
 export type AggregationsData = Record<string, HistogramDataArray>;
+
+export type StatsData = Record<string, StatsValuesArray>;
 
 /**
  *  Represents the results of a guppy aggregation query
