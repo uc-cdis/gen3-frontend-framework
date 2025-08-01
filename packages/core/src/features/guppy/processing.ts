@@ -1,4 +1,4 @@
-import { AggregationsData } from '../../types';
+import { AggregationsData, StatsData } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
 
 /**
@@ -7,9 +7,11 @@ import { JSONPath } from 'jsonpath-plus';
  * @param {Record<string, unknown>} data - The input data object containing histogram information.
  * @returns {AggregationsData} An object containing the processed histogram data, structured as key-value pairs.
  */
-export const processHistogramResponse = (
+export const processHistogramResponse = <
+  T extends AggregationsData | StatsData,
+>(
   data: Record<string, unknown>,
-): AggregationsData => {
+): T => {
   const valueData = JSONPath({
     json: data,
     path: '$..histogram',
@@ -23,7 +25,7 @@ export const processHistogramResponse = (
   });
 
   const results = pointerData.reduce(
-    (acc: AggregationsData, element: Record<string, any>, idx: number) => {
+    (acc: T, element: Record<string, any>, idx: number) => {
       const key = element
         .slice(1)
         .replace(/\/histogram/g, '')
@@ -33,9 +35,9 @@ export const processHistogramResponse = (
         [key]: valueData[idx],
       };
     },
-    {} as AggregationsData,
+    {} as T,
   );
-  return results as AggregationsData;
+  return results as T;
 };
 
 /**
@@ -51,7 +53,7 @@ export const processHistogramResponse = (
 export const roundHistogramResponse = (
   origData: Record<string, unknown>,
   minValue: number = 100,
-): Record<string, unknown> => {
+): Record<string, AggregationsData> => {
   const data = { ...origData };
 
   const pointerData = JSONPath({
@@ -80,5 +82,5 @@ export const roundHistogramResponse = (
     });
   });
 
-  return data;
+  return data as Record<string, AggregationsData>;
 };

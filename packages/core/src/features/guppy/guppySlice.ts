@@ -1,5 +1,5 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
-import { AggregationsData, JSONObject } from '../../types';
+import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import {
   convertFilterSetToGqlFilter,
@@ -63,6 +63,7 @@ interface QueryAggsParams {
   fields: ReadonlyArray<string>;
   filters: FilterSet;
   accessibility?: Accessibility;
+  filterSelf?: boolean;
 }
 
 interface QueryForSubAggsParams {
@@ -199,7 +200,7 @@ const explorerApi = guppyApi.injectEndpoints({
         );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(
+        return processHistogramResponse<AggregationsData>(
           response?.data?._aggregation[args.type] ?? {},
         );
       },
@@ -220,7 +221,29 @@ const explorerApi = guppyApi.injectEndpoints({
         );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(
+        return processHistogramResponse<AggregationsData>(
+          response?.data?._aggregation[args.type] ?? {},
+        );
+      },
+    }),
+    getStatsAggregations: builder.query<StatsData, QueryAggsParams>({
+      query: ({
+        type,
+        fields,
+        filters,
+        accessibility = Accessibility.ALL,
+        filterSelf = false,
+      }: QueryAggsParams) => {
+        return buildGetStatsAggregationQuery(
+          type,
+          fields,
+          filters,
+          accessibility,
+          filterSelf,
+        );
+      },
+      transformResponse: (response: Record<string, any>, _meta, args) => {
+        return processHistogramResponse<StatsData>(
           response?.data?._aggregation[args.type] ?? {},
         );
       },
@@ -261,7 +284,7 @@ const explorerApi = guppyApi.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse(
+        return processHistogramResponse<AggregationsData>(
           response?.data?._aggregation[args.type] ?? {},
         );
       },
@@ -406,6 +429,27 @@ export const histogramQueryStrForEachField = (field: string): string => {
   }`;
 };
 
+export const statsQueryStrForEachField = (field: string): string => {
+  const splittedFieldArray = field.split('.');
+  const splittedField = splittedFieldArray.shift();
+  if (splittedFieldArray.length === 0) {
+    return `
+    ${splittedField} {
+      histogram {
+                count
+                min
+                max
+                avg
+                sum
+      }
+    }`;
+  }
+  return `
+  ${splittedField} {
+    ${statsQueryStrForEachField(splittedFieldArray.join('.'))}
+  }`;
+};
+
 export const nestedHistogramQueryStrForEachField = (
   mainField: string,
   numericAggAsText: boolean,
@@ -488,6 +532,36 @@ export const buildGetAggregationQuery = (
   return queryBody;
 };
 
+export const buildGetStatsAggregationQuery = (
+  type: string,
+  fields: ReadonlyArray<string>,
+  filters: FilterSet,
+  accessibility = Accessibility.ALL,
+  filterSelf: boolean = false,
+): GraphQLQuery => {
+  const queryStart = isFilterEmpty(filters)
+    ? `
+              query getAggs {
+              _aggregation {
+              ${type} (accessibility: ${accessibility}) {`
+    : `query getAggs ($filter: JSON) {
+               _aggregation {
+                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) {`;
+  const query = `${queryStart}
+                  ${fields.map((field: string) =>
+                    statsQueryStrForEachField(field),
+                  )}
+                }
+              }
+            }`;
+  const queryBody: GraphQLQuery = {
+    query: query,
+    variables: { filter: convertFilterSetToGqlFilter(filters) },
+  };
+
+  return queryBody;
+};
+
 export const {
   useGetRawDataAndTotalCountsQuery,
   useGetAccessibleDataQuery,
@@ -496,6 +570,8 @@ export const {
   useGetAggsNoFilterSelfQuery,
   useLazyGetAggsQuery,
   useLazyGetAggsNoFilterSelfQuery,
+  useGetStatsAggregationsQuery,
+  useLazyGetStatsAggregationsQuery,
   useGetSubAggsQuery,
   useGetCountsQuery,
   useGetFieldCountSummaryQuery,

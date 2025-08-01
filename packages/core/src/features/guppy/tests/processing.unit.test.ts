@@ -30,7 +30,7 @@ const HISTOGRAM_DATA_2 = [
   },
 ];
 
-describe('processHistogramResponse', () => {
+describe('processHistogramResponse for AggregationsData', () => {
   it('should process histogram data from the input object correctly', () => {
     const inputData = {
       data: {
@@ -41,7 +41,7 @@ describe('processHistogramResponse', () => {
       data: HISTOGRAM_DATA_1,
     };
 
-    const result = processHistogramResponse(inputData);
+    const result = processHistogramResponse<AggregationsData>(inputData);
 
     expect(result).toEqual(expectedOutput);
   });
@@ -75,7 +75,7 @@ describe('processHistogramResponse', () => {
       'outer.inner': HISTOGRAM_DATA_1,
     };
 
-    const result = processHistogramResponse(inputData);
+    const result = processHistogramResponse<AggregationsData>(inputData);
 
     expect(result).toEqual(expectedOutput);
   });
@@ -107,7 +107,7 @@ describe('processHistogramResponse', () => {
       second: HISTOGRAM_DATA_2,
     };
 
-    const result = processHistogramResponse(inputData);
+    const result = processHistogramResponse<AggregationsData>(inputData);
 
     expect(result).toEqual(expectedOutput);
   });
@@ -116,7 +116,7 @@ describe('processHistogramResponse', () => {
     const inputData = {};
     const expectedOutput: AggregationsData = {};
 
-    const result = processHistogramResponse(inputData);
+    const result = processHistogramResponse<AggregationsData>(inputData);
 
     expect(result).toEqual(expectedOutput);
   });
