@@ -28,9 +28,11 @@ import { CollapsableSidebar } from './components/CollapsableSidebar';
 import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
 import {
   ActionButton,
+  DownloadButton,
   DropdownButton,
   Gen3Button,
   Gen3ButtonReverse,
+  JSONObjectDownloadButton,
   UploadJSONButton,
 } from './components/Buttons';
 
@@ -102,8 +104,7 @@ import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
-} from './pages/DataLibrary';
-// TODO Replace with AppTool plugin
+} from './pages/DataLibrary'; // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
@@ -128,6 +129,8 @@ export {
   type AnalysisPageLayoutProps,
   // components
   CollapsableSidebar,
+  DownloadButton,
+  JSONObjectDownloadButton,
   DropdownButton,
   DropdownWithIcon,
   SegmentedControl,
