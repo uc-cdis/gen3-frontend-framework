@@ -26,6 +26,8 @@ import TabbedCohortBuilder, {
   type TabbedCohortBuilderFacetConfig,
 } from './TabbedCohortBuilder';
 
+export * from './Repository';
+
 export {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,

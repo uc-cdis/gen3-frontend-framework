@@ -4,61 +4,65 @@
  */
 
 import {
-  Operation,
   Equals,
-  NotEquals,
-  LessThan,
-  LessThanOrEquals,
+  ExcludeIfAny,
+  Excludes,
+  Exists,
   GreaterThan,
   GreaterThanOrEquals,
-  Missing,
-  Exists,
   Includes,
-  Excludes,
-  ExcludeIfAny,
   Intersection,
+  LessThan,
+  LessThanOrEquals,
+  Missing,
   NestedFilter,
+  NotEquals,
+  Operation,
+  OperationHandler,
   Union,
-  OperationHandler
-} from "@gen3/core"
+} from '@gen3/core';
 
 export const handleOperation = <T>(
   handler: OperationHandler<T>,
   op: Operation,
 ): T => {
   switch (op.operator) {
-    case "=":
+    case '=':
       return handler.handleEquals(op);
-    case "!=":
+    case '!=':
       return handler.handleNotEquals(op);
-    case "<":
+    case '<':
       return handler.handleLessThan(op);
-    case "<=":
+    case '<=':
       return handler.handleLessThanOrEquals(op);
-    case ">":
+    case '>':
       return handler.handleGreaterThan(op);
-    case ">=":
+    case '>=':
       return handler.handleGreaterThanOrEquals(op);
-      /*
+    /*
     case "missing":
       return handler.handleMissing(op);
     case "exists":
       return handler.handleExists(op);
       */
-    case "includes":
+    case 'includes':
       return handler.handleIncludes(op);
-    case "in":
+    case 'in':
       return handler.handleIncludes(op);
-    case "excludes":
+    case 'excludes':
       return handler.handleExcludes(op);
-    case "excludeifany":
+    case 'excludeifany':
       return handler.handleExcludeIfAny(op);
-    case "and":
+    case 'and':
       return handler.handleIntersection(op);
-    case "or":
+    case 'or':
       return handler.handleUnion(op);
-    case "nested":
+    case 'nested':
       return handler.handleNestedFilter(op);
+    case 'missing':
+      return handler.handleMissing(op);
+    case 'exists':
+      return handler.handleExists(op);
     default:
       return assertNever(op);
   }
@@ -84,7 +88,7 @@ export type GqlOperation =
   | GqlUnion;
 
 export interface GqlEquals {
-  readonly op: "=";
+  readonly op: '=';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
@@ -92,7 +96,7 @@ export interface GqlEquals {
 }
 
 export interface GqlNotEquals {
-  readonly op: "!=";
+  readonly op: '!=';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
@@ -100,7 +104,7 @@ export interface GqlNotEquals {
 }
 
 export interface GqlLessThan {
-  readonly op: "<";
+  readonly op: '<';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
@@ -108,7 +112,7 @@ export interface GqlLessThan {
 }
 
 export interface GqlLessThanOrEquals {
-  readonly op: "<=";
+  readonly op: '<=';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
@@ -116,7 +120,7 @@ export interface GqlLessThanOrEquals {
 }
 
 export interface GqlGreaterThan {
-  readonly op: ">";
+  readonly op: '>';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
@@ -124,31 +128,31 @@ export interface GqlGreaterThan {
 }
 
 export interface GqlGreaterThanOrEquals {
-  readonly op: ">=";
+  readonly op: '>=';
   readonly content: {
     readonly field: string;
     readonly value: string | number;
   };
 }
 // Only support if needed
-// export interface GqlMissing {
-//   readonly op: "is";
-//   readonly content: {
-//     readonly field: string;
-//     readonly value: "MISSING";
-//   };
-// }
-//
-// export interface GqlExists {
-//   readonly op: "not";
-//   readonly content: {
-//     readonly field: string;
-//     readonly value?: string;
-//   };
-// }
+export interface GqlMissing {
+  readonly op: 'is';
+  readonly content: {
+    readonly field: string;
+    readonly value: 'MISSING';
+  };
+}
+
+export interface GqlExists {
+  readonly op: 'not';
+  readonly content: {
+    readonly field: string;
+    readonly value?: string;
+  };
+}
 
 export interface GqlIncludes {
-  readonly op: "in";
+  readonly op: 'in';
   readonly content: {
     readonly field: string;
     readonly value: ReadonlyArray<string | number>;
@@ -156,7 +160,7 @@ export interface GqlIncludes {
 }
 
 export interface GqlExcludes {
-  readonly op: "exclude";
+  readonly op: 'exclude';
   readonly content: {
     readonly field: string;
     readonly value: ReadonlyArray<string | number>;
@@ -164,7 +168,7 @@ export interface GqlExcludes {
 }
 
 export interface GqlExcludeIfAny {
-  readonly op: "excludeifany";
+  readonly op: 'excludeifany';
   readonly content: {
     readonly field: string;
     readonly value: string | ReadonlyArray<string | number>;
@@ -172,13 +176,13 @@ export interface GqlExcludeIfAny {
 }
 
 export interface GqlIntersection {
-  readonly op: "and";
+  readonly op: 'and';
   readonly content: ReadonlyArray<GqlOperation>;
   readonly isLoggedIn?: boolean;
 }
 
 export interface GqlUnion {
-  readonly op: "or";
+  readonly op: 'or';
   readonly content: ReadonlyArray<GqlOperation>;
   readonly isLoggedIn?: boolean;
 }
@@ -189,7 +193,7 @@ export interface NumericFromTo {
 }
 
 export interface GqlRange {
-  readonly op: "range";
+  readonly op: 'range';
   readonly content: ReadonlyArray<{ ranges: NumericFromTo[] }>;
 }
 
@@ -200,8 +204,8 @@ export interface GqlOperationHandler<T> {
   handleLessThanOrEquals: (op: GqlLessThanOrEquals) => T;
   handleGreaterThan: (op: GqlGreaterThan) => T;
   handleGreaterThanOrEquals: (op: GqlGreaterThanOrEquals) => T;
-  // handleMissing: (op: GqlMissing) => T;
-  // handleExists: (op: GqlExists) => T;
+  handleMissing: (op: GqlMissing) => T;
+  handleExists: (op: GqlExists) => T;
   handleIncludes: (op: GqlIncludes) => T;
   handleExcludes: (op: GqlExcludes) => T;
   handleExcludeIfAny: (op: GqlExcludeIfAny) => T;
@@ -214,31 +218,31 @@ export const handleGqlOperation = <T>(
   op: GqlOperation,
 ): T => {
   switch (op.op) {
-    case "=":
+    case '=':
       return handler.handleEquals(op);
-    case "!=":
+    case '!=':
       return handler.handleNotEquals(op);
-    case "<":
+    case '<':
       return handler.handleLessThan(op);
-    case "<=":
+    case '<=':
       return handler.handleLessThanOrEquals(op);
-    case ">":
+    case '>':
       return handler.handleGreaterThan(op);
-    case ">=":
+    case '>=':
       return handler.handleGreaterThanOrEquals(op);
     // case "is":
     //   return handler.handleMissing(op);
     // case "not":
     //   return handler.handleExists(op);
-    case "in":
+    case 'in':
       return handler.handleIncludes(op);
-    case "exclude":
+    case 'exclude':
       return handler.handleExcludes(op);
-    case "excludeifany":
+    case 'excludeifany':
       return handler.handleExcludeIfAny(op);
-    case "and":
+    case 'and':
       return handler.handleIntersection(op);
-    case "or":
+    case 'or':
       return handler.handleUnion(op);
     default:
       return assertNever(op);
@@ -247,35 +251,35 @@ export const handleGqlOperation = <T>(
 
 export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
   handleEquals = (op: Equals): GqlEquals => ({
-    op: "=",
+    op: '=',
     content: {
       field: op.field,
       value: op.operand,
     },
   });
   handleNotEquals = (op: NotEquals): GqlNotEquals => ({
-    op: "!=",
+    op: '!=',
     content: {
       field: op.field,
       value: op.operand,
     },
   });
   handleLessThan = (op: LessThan): GqlLessThan => ({
-    op: "<",
+    op: '<',
     content: {
       field: op.field,
       value: op.operand,
     },
   });
   handleLessThanOrEquals = (op: LessThanOrEquals): GqlLessThanOrEquals => ({
-    op: "<=",
+    op: '<=',
     content: {
       field: op.field,
       value: op.operand,
     },
   });
   handleGreaterThan = (op: GreaterThan): GqlGreaterThan => ({
-    op: ">",
+    op: '>',
     content: {
       field: op.field,
       value: op.operand,
@@ -284,7 +288,7 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
   handleGreaterThanOrEquals = (
     op: GreaterThanOrEquals,
   ): GqlGreaterThanOrEquals => ({
-    op: ">=",
+    op: '>=',
     content: {
       field: op.field,
       value: op.operand,
@@ -304,37 +308,43 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
   //   },
   // });
   handleIncludes = (op: Includes): GqlIncludes => ({
-    op: "in",
+    op: 'in',
     content: {
       field: op.field,
       value: op.operands,
     },
   });
   handleExcludes = (op: Excludes): GqlExcludes => ({
-    op: "exclude",
+    op: 'exclude',
     content: {
       field: op.field,
       value: op.operands,
     },
   });
   handleExcludeIfAny = (op: ExcludeIfAny): GqlExcludeIfAny => ({
-    op: "excludeifany",
+    op: 'excludeifany',
     content: {
       field: op.field,
       value: op.operands,
     },
   });
   handleIntersection = (op: Intersection): GqlIntersection => ({
-    op: "and",
+    op: 'and',
     content: op.operands.map(convertFilterToGqlFilter),
   });
   handleUnion = (op: Union): GqlUnion => ({
-    op: "or",
+    op: 'or',
     content: op.operands.map(convertFilterToGqlFilter),
   });
   handleNestedFilter = (op: NestedFilter): GqlOperation => {
     return convertFilterToGqlFilter(op.operand);
-  }
+  };
+  handleMissing = (op: Missing): GqlOperation => {
+    return convertFilterToGqlFilter(op);
+  };
+  handleExists = (op: Exists): GqlOperation => {
+    return convertFilterToGqlFilter(op);
+  };
 }
 
 export const convertFilterToGqlFilter = (filter: Operation): GqlOperation => {
@@ -344,68 +354,70 @@ export const convertFilterToGqlFilter = (filter: Operation): GqlOperation => {
 
 class ToOperationHandler implements GqlOperationHandler<Operation> {
   handleEquals = (op: GqlEquals): Equals => ({
-    operator: "=",
+    operator: '=',
     field: op.content.field,
     operand: op.content.value,
   });
   handleNotEquals = (op: GqlNotEquals): NotEquals => ({
-    operator: "!=",
+    operator: '!=',
     field: op.content.field,
     operand: op.content.value,
   });
   handleLessThan = (op: GqlLessThan): LessThan => ({
-    operator: "<",
+    operator: '<',
     field: op.content.field,
     operand: op.content.value,
   });
   handleLessThanOrEquals = (op: GqlLessThanOrEquals): LessThanOrEquals => ({
-    operator: "<=",
+    operator: '<=',
     field: op.content.field,
     operand: op.content.value,
   });
   handleGreaterThan = (op: GqlGreaterThan): GreaterThan => ({
-    operator: ">",
+    operator: '>',
     field: op.content.field,
     operand: op.content.value,
   });
   handleGreaterThanOrEquals = (
     op: GqlGreaterThanOrEquals,
   ): GreaterThanOrEquals => ({
-    operator: ">=",
+    operator: '>=',
     field: op.content.field,
     operand: op.content.value,
   });
 
-  // handleMissing = (op: GqlMissing): Missing => ({
-  //   operator: "missing",
-  //   field: op.content.field,
-  // });
-  // handleExists = (op: GqlExists): Exists => ({
-  //   operator: "exists",
-  //   field: op.content.field,
-  // });
+  handleMissing = (op: GqlMissing): Missing => ({
+    operator: 'missing',
+    field: op.content.field,
+  });
+  handleExists = (op: GqlExists): Exists => ({
+    operator: 'exists',
+    field: op.content.field,
+    operand: op.content.value as string,
+  });
 
   handleIncludes = (op: GqlIncludes): Includes => ({
-    operator: "includes",
+    operator: 'includes',
     field: op.content.field,
     operands: op.content.value,
   });
   handleExcludes = (op: GqlExcludes): Excludes => ({
-    operator: "excludes",
+    operator: 'excludes',
     field: op.content.field,
     operands: op.content.value,
   });
   handleExcludeIfAny = (op: GqlExcludeIfAny): ExcludeIfAny => ({
-    operator: "excludeifany",
+    operator: 'excludeifany',
     field: op.content.field,
-    operands: op.content.value instanceof Array ? op.content.value : [op.content.value],
+    operands:
+      op.content.value instanceof Array ? op.content.value : [op.content.value],
   });
   handleIntersection = (op: GqlIntersection): Intersection => ({
-    operator: "and",
+    operator: 'and',
     operands: op.content.map(convertGqlFilterToFilter),
   });
   handleUnion = (op: GqlUnion): Union => ({
-    operator: "or",
+    operator: 'or',
     operands: op.content.map(convertGqlFilterToFilter),
   });
 }
@@ -425,7 +437,7 @@ export const convertGqlFilterToFilter = (
 export const isIntersectionOrUnion = (
   o: Operation,
 ): o is Intersection | Union =>
-  (o as Intersection).operator === "and" || (o as Union).operator === "or";
+  (o as Intersection).operator === 'and' || (o as Union).operator === 'or';
 
 /**
  * Type guard for Includes
@@ -433,7 +445,7 @@ export const isIntersectionOrUnion = (
  * @category Filters
  */
 export const isIncludes = (o: Operation): o is Includes =>
-  (o as Includes).operator === "includes";
+  (o as Includes).operator === 'includes';
 
 /**
  * Type guard for Union
@@ -441,7 +453,7 @@ export const isIncludes = (o: Operation): o is Includes =>
  * @category Filters
  */
 export const isUnion = (o: Operation): o is Union =>
-  (o as Union).operator === "or";
+  (o as Union).operator === 'or';
 
 /**
  * Type guard for Intersection
@@ -449,7 +461,7 @@ export const isUnion = (o: Operation): o is Union =>
  * @category Filters
  */
 export const isIntersection = (o: Operation): o is Intersection =>
-  (o as Intersection).operator === "and";
+  (o as Intersection).operator === 'and';
 
 /**
  * Type guard for ExcludeIfAny
@@ -457,7 +469,7 @@ export const isIntersection = (o: Operation): o is Intersection =>
  * @category Filters
  */
 export const isExcludeIfAny = (o: Operation): o is Includes =>
-  (o as ExcludeIfAny).operator === "excludeifany";
+  (o as ExcludeIfAny).operator === 'excludeifany';
 
 /**
  * Given a string of JSON, parse it into an object.
@@ -478,7 +490,7 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
 };
 
 /**
- * Given a object of JSON, stringify it into a string.
+ * Given an object of JSON, stringify it into a string.
  * @param obj - the object to stringify
  * @param defaults - the default value to return if the object is undefined
  * @category Utility
@@ -486,5 +498,5 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
 
 export const stringifyJSONParam = (
   obj?: Record<string, any>,
-  defaults = "{}",
+  defaults = '{}',
 ): string => (obj ? JSON.stringify(obj) : defaults);

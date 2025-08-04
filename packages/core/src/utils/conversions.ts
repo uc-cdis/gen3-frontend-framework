@@ -132,3 +132,15 @@ export const ageDisplay = (
 
   return ageInDays >= 0 ? ageString : `-${ageString}`;
 };
+
+/**
+ * Given an object of JSON, stringify it into a string.
+ * @param obj - the object to stringify
+ * @param defaults - the default value to return if the object is undefined
+ * @category Utility
+ */
+
+export const stringifyJSONParam = (
+  obj?: Record<string, any>,
+  defaults = '{}',
+): string => (obj ? JSON.stringify(obj) : defaults);

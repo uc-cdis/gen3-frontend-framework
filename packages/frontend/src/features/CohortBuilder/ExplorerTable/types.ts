@@ -8,7 +8,6 @@ import {
 } from 'mantine-react-table';
 import { Accessibility, JSONObject } from '@gen3/core';
 import { ReactNode, RefObject } from 'react';
-import { CellRendererFunction } from './ExplorerTableCellRenderers';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -113,3 +112,8 @@ export interface ExplorerColumn {
   Cell?: CellRendererFunction;
   size?: number;
 }
+
+export type CellRendererFunction = (
+  props: CellRendererFunctionProps,
+  ...args: any[]
+) => ReactNode;

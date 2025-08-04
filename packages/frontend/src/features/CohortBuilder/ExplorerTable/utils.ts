@@ -2,10 +2,10 @@ import { fieldNameToTitle } from '@gen3/core';
 import type {
   CellRendererFunctionProps,
   ColumnDefinition,
-  SummaryTableColumn,
-  TableColumnsAndFields,
   ExplorerColumn,
   ExplorerTableColumnMRT,
+  SummaryTableColumn,
+  TableColumnsAndFields,
 } from './types';
 import { type MRT_Column } from 'mantine-react-table';
 import {

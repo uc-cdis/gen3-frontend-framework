@@ -111,6 +111,10 @@ import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
 import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
 
+import RepositoryPage, {
+  RepositoryPageGetServerSideProps,
+} from './pages/Repository';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -190,6 +194,8 @@ export {
   AnalysisEditorPageGetServerSideProps,
   TabbedCohortBuilderPage,
   TabbedCohortBuilderPageGetServerSideProps,
+  RepositoryPage,
+  RepositoryPageGetServerSideProps,
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,

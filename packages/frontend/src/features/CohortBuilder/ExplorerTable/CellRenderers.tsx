@@ -1,18 +1,11 @@
-import { MRT_Cell, MRT_Column, MRT_Row } from 'mantine-react-table';
 import { isArray } from 'lodash';
 import React, { ReactElement, ReactNode } from 'react';
 import { Badge } from '@mantine/core';
 import Link from 'next/link';
-import { CellRendererFunctionProps } from './types';
+import { CellRendererFunction, CellRendererFunctionProps } from './types';
 
 const NullCell = (): ReactElement => <span>NULL</span>;
 
-export type CellRendererFunction = (
-  props: CellRendererFunctionProps,
-  ...args: any[]
-) => ReactNode;
-
-// TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
   cell,
 }: CellRendererFunctionProps) => {
