@@ -48,20 +48,25 @@ const isStringToColorTable = (value: unknown): value is StringToColorTable => {
   return true;
 };
 
-export const ProjectAccessCellRenderer = ({
-  cell,
-  params,
-}: CellRendererFunctionProps) => {
+export const ProjectAccessCellRenderer = (
+  { cell }: CellRendererFunctionProps,
+  params: Record<string, any>,
+) => {
   const value = cell.getValue();
   if (typeof value !== 'string') return <span>Bad Value</span>;
   const { projectName } = extractProgramAndProjectNames(value);
 
   let color = 'primary.4';
   if (params && isStringToColorTable(params?.colorTable)) {
+    console.log(params.colorTable);
     if (projectName) {
       color = ExtractValueFromObject(params.colorTable, projectName, color);
     }
   }
 
-  return <Badge color={color}>{projectName}</Badge>;
+  return (
+    <Badge fullWidth color={color}>
+      {projectName}
+    </Badge>
+  );
 };

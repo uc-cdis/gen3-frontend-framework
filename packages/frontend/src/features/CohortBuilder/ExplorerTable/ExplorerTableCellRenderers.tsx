@@ -195,8 +195,13 @@ export const registerExplorerDefaultCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRendererCatalog({
     value: {
       default: ValueCellRenderer,
-      projectAccess: ProjectAccessCellRenderer,
+
       filesize: FilesizeRenderer,
+    },
+  });
+  ExplorerTableCellRendererFactory().registerRendererCatalog({
+    access: {
+      projectAccess: ProjectAccessCellRenderer,
     },
   });
   ExplorerTableCellRendererFactory().registerRendererCatalog({

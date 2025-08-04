@@ -1,8 +1,7 @@
 import React from 'react';
 import { isArray } from 'lodash';
-import { CellRendererFunction } from './ExplorerTableCellRenderers';
 import { JSONObject } from '@gen3/core';
-import { CellRendererFunctionProps } from './types';
+import { CellRendererFunction, CellRendererFunctionProps } from './types';
 
 export const ArrayCellRenderer = (
   cellRenderFunction: CellRendererFunction,

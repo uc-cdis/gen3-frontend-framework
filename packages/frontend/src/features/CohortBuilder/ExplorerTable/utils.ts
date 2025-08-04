@@ -39,6 +39,8 @@ export const createTableColumns = (
   return tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
 
+    console.log(columnDef);
+
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
           columnDef?.type,

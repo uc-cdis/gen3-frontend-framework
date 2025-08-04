@@ -19,7 +19,7 @@ import {
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
 import { type TableDetailsPanelProps } from './ExploreTableDetails';
-import { DetailsModal, DetailsDrawer } from '../../../components/Details';
+import { DetailsDrawer, DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
@@ -46,7 +46,7 @@ const ExplorerTable = ({
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   });
 
   const DetailsComponent = useMemo(() => {
