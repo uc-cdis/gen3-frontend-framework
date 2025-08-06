@@ -107,7 +107,7 @@ interface QueryForFileCountSummaryParams {
  * @param getCounts - Returns total counts of a vertex type
  * @returns: A guppy API endpoint for templating queryable data displayed on the exploration page
  */
-const explorerApi = guppyApi.injectEndpoints({
+export const explorerApi = guppyApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllFieldsForType: builder.query({
       query: (type: { type: string }) => ({
@@ -200,9 +200,18 @@ const explorerApi = guppyApi.injectEndpoints({
         );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return processHistogramResponse<AggregationsData>(
+        const buckets = processHistogramResponse<AggregationsData>(
           response?.data?._aggregation[args.type] ?? {},
         );
+
+        // check for totals
+        const count =
+          response?.data?._aggregation[args.type]?._totalCount ?? null;
+
+        return {
+          _totalCount: [{ key: args.type, count }], // add total count to allow cohorts to cache index item totals
+          ...buckets,
+        };
       },
     }),
     getAggsNoFilterSelf: builder.query<AggregationsData, QueryAggsParams>({
@@ -270,6 +279,7 @@ const explorerApi = guppyApi.injectEndpoints({
       ${type} ( ${
         gqlFilter ?? 'filter: $filter, filterSelf: false,'
       } nestedAggFields: $nestedAggFields, accessibility: ${accessibility}) {
+      _totalCounts
         ${nestedHistogramQueryStrForEachField(mainField, numericAggAsText)}
       }`;
 
@@ -516,7 +526,8 @@ export const buildGetAggregationQuery = (
               ${type} (accessibility: ${accessibility}) {`
     : `query getAggs ($filter: JSON) {
                _aggregation {
-                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) {`;
+
+                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) { _totalCount`;
   const query = `${queryStart}
                   ${fields.map((field: string) =>
                     histogramQueryStrForEachField(field),
@@ -546,7 +557,7 @@ export const buildGetStatsAggregationQuery = (
               ${type} (accessibility: ${accessibility}) {`
     : `query getAggs ($filter: JSON) {
                _aggregation {
-                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) {`;
+                      ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) { _totalCount`;
   const query = `${queryStart}
                   ${fields.map((field: string) =>
                     statsQueryStrForEachField(field),

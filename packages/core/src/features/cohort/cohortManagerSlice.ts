@@ -1,19 +1,23 @@
 import {
   createEntityAdapter,
   createSlice,
-  EntityState,
+  type EntityState,
   nanoid,
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
-import { FilterSet, IndexedFilterSet, Operation } from '../filters';
+import {
+  type FilterSet,
+  type IndexedFilterSet,
+  type Operation,
+} from '../filters';
 import { defaultCohortNameGenerator, generateUniqueName } from './utils';
-import { Cohort, CohortId } from './types';
+import { type Cohort, type CohortId } from './types';
 
 /**
  *  Cohorts in Gen3 are defined as a set of filters for each index in the data.
  *  This means one cohort id defined for all "tabs" in CohortBuilder (explorer)
- *  Switching a cohort is means that all the cohorts for the index changes.
+ *  Switching a cohort id means all the cohorts for the index are changed.
  */
 
 export const DEFAULT_COHORT_NAME = 'Cohort';
@@ -174,7 +178,7 @@ export const cohortManagerSlice = createSlice({
 
       cohortsAdapter.removeOne(state, cohortId);
 
-      // deleted the current cohort so set to most recent cohort
+      // deleted the current cohort so set to the most recent cohort
       if (state.currentCohortId === cohortId) {
         const remainingIds = Object.keys(state.entities);
         state.currentCohortId = remainingIds[0];
@@ -295,10 +299,13 @@ export const cohortManagerSlice = createSlice({
         currentCohort.name,
       );
       const duplicatedCohort = newCohort({
-        filters: currentCohort.filters,
+        filters: { ...currentCohort.filters },
         customName: newName,
       });
-      cohortsAdapter.addOne(state, duplicatedCohort);
+      cohortsAdapter.addOne(state, {
+        ...duplicatedCohort,
+        counts: { ...currentCohort.counts },
+      });
       state.currentCohortId = duplicatedCohort.id;
     },
     // removes all filters from the cohort filter set at the given index
@@ -333,7 +340,23 @@ export const cohortManagerSlice = createSlice({
         },
       });
     },
+    updateCohortCounts: (
+      state,
+      action: PayloadAction<Record<string, number>>,
+    ) => {
+      const currentCohortId = getCurrentCohortId(state);
+      const currentCohort = state.entities[currentCohortId];
 
+      cohortsAdapter.updateOne(state, {
+        id: currentCohortId,
+        changes: {
+          counts: {
+            ...currentCohort.counts,
+            ...action.payload,
+          },
+        },
+      });
+    },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohortId = action.payload;
     },
@@ -370,6 +393,7 @@ export const {
   removeCohort,
   setCurrentCohortId,
   updateCohortName,
+  updateCohortCounts,
   setCohortList,
 } = cohortManagerSlice.actions;
 
