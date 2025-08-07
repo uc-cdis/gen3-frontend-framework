@@ -4,18 +4,20 @@ import { CoreState, rootReducer } from './reducers';
 import { gen3ServicesReducerMiddleware } from './features/gen3/gen3Api';
 import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
+import { coreStoreListenerMiddleware } from './listeners';
+import type { PersistConfig, PersistState } from 'redux-persist';
 import {
-  persistReducer,
   FLUSH,
   PAUSE,
   PERSIST,
+  persistReducer,
   PURGE,
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
 
 import type { Action, Reducer } from 'redux';
-import type { PersistConfig, PersistState } from 'redux-persist';
+import storage from './storage-persist';
 
 /**
  * Update declaration of persistReducer to support redux v5
@@ -30,8 +32,6 @@ declare module 'redux-persist' {
     P & { _persist?: PersistState }
   >;
 }
-
-import storage from './storage-persist';
 
 const persistConfig = {
   key: 'root',
@@ -51,11 +51,13 @@ export const setupCoreStore = (preloadedState?: Partial<CoreState>) =>
         serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-      }).concat(
-        gen3ServicesReducerMiddleware,
-        guppyAPISliceMiddleware,
-        userAuthApiMiddleware,
-      ),
+      })
+        .concat(
+          gen3ServicesReducerMiddleware,
+          guppyAPISliceMiddleware,
+          userAuthApiMiddleware,
+        )
+        .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended,
   });
 
 export const coreStore = setupCoreStore();
