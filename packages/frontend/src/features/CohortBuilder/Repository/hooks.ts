@@ -1,5 +1,15 @@
-import { FacetQueryParameters, FacetQueryResponse, FileCountsQueryParameters, FilesSizeData, } from './types';
-import { Accessibility, convertFilterSetToGqlFilter, useGeneralGQLQuery, useGetAggsQuery, } from '@gen3/core';
+import {
+  FacetQueryParameters,
+  FacetQueryResponse,
+  FileCountsQueryParameters,
+  FilesSizeData,
+} from './types';
+import {
+  Accessibility,
+  convertFilterSetToGqlFilter,
+  useGeneralGQLQuery,
+  useGetAggsQuery,
+} from '@gen3/core';
 import { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 

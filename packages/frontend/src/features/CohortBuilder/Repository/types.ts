@@ -1,4 +1,9 @@
-import { DataTypeConfigWithManifest, DownloadButtonConfig, DropdownsWithButtonsProps, TabsConfig, } from '../types';
+import {
+  DataTypeConfigWithManifest,
+  DownloadButtonConfig,
+  DropdownsWithButtonsProps,
+  TabsConfig,
+} from '../types';
 import { SummaryTable } from '../ExplorerTable/types';
 import { Gen3AppConfigData } from '../../../lib/content/types';
 import { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
