@@ -33,7 +33,7 @@ import {
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,
-  useLazyGetAggsNoFilterSelfQuery,
+  useLazyGetAggsQuery,
 } from '@gen3/core';
 import { submitCohortRequestAction } from '../Requests/submitCohortRequestAction';
 
@@ -53,7 +53,7 @@ const SavedCohortsTable: React.FC<SavedCohortsTableProps> = ({
   size = 'md',
 }) => {
   const appDispatch = useAppDispatch();
-  const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
+  const [getGetAggs] = useLazyGetAggsQuery();
   const [requestQuery] = useCreateRequestMutation();
   const user = useCoreSelector(selectUserDetails);
 

@@ -44,7 +44,6 @@ export * from './features/requestor';
 export * from './features/sower';
 export * from './features/submission';
 export * from './features/workspace';
-export * from './coreCreateApi';
 
 export {
   type CoreState,

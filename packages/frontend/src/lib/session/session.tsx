@@ -30,6 +30,8 @@ import { Center, Loader } from '@mantine/core';
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
 
+const ACTIVITY_CHANNEL = 'gen3-user-activity';
+
 export const logoutSession = async () => {
   // logged in using credentials then execute credentials logout first
   const accessToken = getCookie('credentials_token');
@@ -191,6 +193,38 @@ export const SessionProvider = ({
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
 
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+
+  // Initialize BroadcastChannel for cross-tab communication
+  // any user event on one tab or window will update mostRecentActivityTimestamp
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+
+      // Listen for activity updates from other tabs
+      const handleActivityMessage = (event: MessageEvent) => {
+        if (event.data.type === 'activity-update') {
+          setMostRecentActivityTimestamp(event.data.timestamp);
+        }
+      };
+
+      broadcastChannelRef.current.addEventListener(
+        'message',
+        handleActivityMessage,
+      );
+
+      return () => {
+        if (broadcastChannelRef.current) {
+          broadcastChannelRef.current.removeEventListener(
+            'message',
+            handleActivityMessage,
+          );
+          broadcastChannelRef.current.close();
+        }
+      };
+    }
+  }, []);
+
   const [
     mostRecentSessionRefreshTimestamp,
     setMostRecentSessionRefreshTimestamp,
@@ -242,17 +276,31 @@ export const SessionProvider = ({
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
     const updateUserActivity = () => {
-      setMostRecentActivityTimestamp(Date.now());
+      const timestamp = Date.now();
+      setMostRecentActivityTimestamp(timestamp);
+
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.postMessage({
+          type: 'activity-update',
+          timestamp,
+        });
+      }
     };
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
     window.addEventListener('updateUserActivity', updateUserActivity);
+    window.addEventListener('scroll', updateUserActivity);
+    window.addEventListener('click', updateUserActivity);
+    window.addEventListener('touchstart', updateUserActivity);
 
     return () => {
       window.removeEventListener('mousedown', updateUserActivity);
       window.removeEventListener('keypress', updateUserActivity);
       window.removeEventListener('updateUserActivity', updateUserActivity);
+      window.removeEventListener('scroll', updateUserActivity);
+      window.removeEventListener('click', updateUserActivity);
+      window.removeEventListener('touchstart', updateUserActivity);
     };
   }, []); // only call on mount/dismount
 

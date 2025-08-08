@@ -36,6 +36,8 @@ import {
   UploadJSONButton,
 } from './components/Buttons';
 
+import CountsValue from './components/counts/CountsValue';
+
 import SegmentedControl from './components/SegmentedControl';
 
 import TopBar from './features/Navigation/TopBar/TopBar';
@@ -144,6 +146,7 @@ export {
   ActionButton,
   ErrorCard,
   TopBar,
+  CountsValue,
   // Pages
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,

@@ -43,8 +43,11 @@ import {
 import { CohortStorage } from './storage/CohortStorage';
 import {
   selectAllCohorts,
+  selectAvailableCohortByName,
   selectAvailableCohorts,
+  selectCohortById,
   selectCohortFilters,
+  selectCohortIds,
   selectCurrentCohort,
   selectCurrentCohortFilters,
   selectCurrentCohortId,
@@ -53,6 +56,7 @@ import {
   selectCurrentCohortSaved,
   selectIndexedFilterByName,
   selectIndexFilters,
+  selectTotalCohorts,
 } from './cohortManagerSelector';
 
 export * from './utils';
@@ -81,6 +85,10 @@ export {
   selectSharedFilters,
   selectSharedFiltersForFields,
   selectAllCohorts,
+  selectCohortById,
+  selectCohortIds,
+  selectTotalCohorts,
+  selectAvailableCohortByName,
   updateCohortFilter,
   setCohortFilter,
   setCohortIndexFilters,
