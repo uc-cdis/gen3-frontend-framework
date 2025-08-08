@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Group, Stack } from '@mantine/core';
+import { Stack } from '@mantine/core';
 import {
   Accessibility,
   CombineMode,
@@ -44,7 +44,6 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import CountsValue from '../../components/counts/CountsValue';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -254,9 +253,6 @@ const TabbedCohortBuilder = ({
 
   return (
     <Stack gap="xs" align="stretch" classNames={{ root: 'w-full' }}>
-      <Group justify="flex-end">
-        <CountsValue label={index} counts={counts} isSuccess={isCountSuccess} />
-      </Group>
       <FacetTabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
