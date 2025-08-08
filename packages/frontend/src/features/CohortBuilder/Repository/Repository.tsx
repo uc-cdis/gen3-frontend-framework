@@ -1,6 +1,7 @@
 import { RepositoryConfiguration } from './types';
 import { CohortPanel } from '../CohortPanel';
 import React from 'react';
+import RepositoryPanel from './RepositoryPanel';
 
 const Repository = ({
   filters,
@@ -11,12 +12,11 @@ const Repository = ({
   dropdowns,
 }: RepositoryConfiguration) => {
   return (
-    <CohortPanel
+    <RepositoryPanel
       guppyConfig={guppyConfig}
       key="Repository-Panel"
       filters={filters}
       table={table}
-      tabTitle="Files"
       dropdowns={dropdowns}
       buttons={buttons}
       loginForDownload={loginForDownload}

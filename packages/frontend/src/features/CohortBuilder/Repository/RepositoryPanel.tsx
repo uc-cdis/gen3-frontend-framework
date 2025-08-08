@@ -17,13 +17,18 @@ import {
   Accessibility,
   CombineMode,
   CoreState,
+  EmptyFilterSet,
   extractEnumFilterValue,
   FacetDefinition,
   isIntersection,
   selectIndexFilters,
   useCoreSelector,
 } from '@gen3/core';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import { partial } from 'lodash';
 import {
   useCohortFilterCombineState,
@@ -31,6 +36,7 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from '../hooks';
+import { useGetFacetValuesQuery, useTotalFileSizeQuery } from './hooks';
 import Stats from './Stats';
 import { ErrorCard } from '../../../components/MessageCards';
 import DropdownPanel from '../../../components/facets/Panels/DropdownPanel';
@@ -40,10 +46,10 @@ export const RepositoryPanel = ({
   guppyConfig,
   filters,
   table,
+  fileStatsConfiguration,
   dropdowns,
   buttons,
   loginForDownload,
-  hooks,
 }: RepositoryConfiguration) => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
@@ -72,15 +78,17 @@ export const RepositoryPanel = ({
     isSuccess: isFacetsQuerySuccess,
     isFetching: isFacetsQueryFetching,
     isError: isFacetsQueryError,
-  } = hooks.useGetFacetValuesQuery({
+  } = useGetFacetValuesQuery({
     type: index,
     fields: fields,
     filters: repositoryFilters,
   });
 
   const { data: fileSizeSliceData, isFetching: isFileSizeFetching } =
-    hooks.useTotalFileSizeQuery({
+    useTotalFileSizeQuery({
       repositoryFilters: repositoryFilters,
+      cohortFilters: EmptyFilterSet,
+      ...fileStatsConfiguration,
     });
 
   const getEnumFacetData = useDeepCompareCallback(
@@ -198,9 +206,9 @@ export const RepositoryPanel = ({
             <div className="mt-2 flex flex-col">
               <div className="flex justify-between mb-2 ml-2">
                 <Stats
-                  totalFileCount={fileSizeSliceData.total_file_count}
-                  totalCaseCount={fileSizeSliceData.total_case_count}
-                  totalFileSize={fileSizeSliceData.total_file_size}
+                  totalFileCount={fileSizeSliceData.totalFileCount}
+                  totalCaseCount={fileSizeSliceData.totalCaseCount}
+                  totalFileSize={fileSizeSliceData.totalFileSize}
                   isFetching={isFileSizeFetching}
                 />
               </div>

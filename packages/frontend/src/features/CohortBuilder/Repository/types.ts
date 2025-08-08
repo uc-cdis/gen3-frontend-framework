@@ -1,14 +1,9 @@
-import {
-  DataTypeConfigWithManifest,
-  DownloadButtonConfig,
-  DropdownsWithButtonsProps,
-  TabsConfig,
-} from '../types';
+import { DataTypeConfigWithManifest, DownloadButtonConfig, DropdownsWithButtonsProps, TabsConfig, } from '../types';
 import { SummaryTable } from '../ExplorerTable/types';
 import { Gen3AppConfigData } from '../../../lib/content/types';
 import { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
 
-interface FacetQueryParameters {
+export interface FacetQueryParameters {
   type: string;
   fields: ReadonlyArray<string>;
   filters: FilterSet;
@@ -16,25 +11,31 @@ interface FacetQueryParameters {
   filterSelf?: boolean;
 }
 
-interface FacetQueryResponse {
+export interface FacetQueryResponse {
   data: AggregationsData;
   isSuccess: boolean;
   isFetching: boolean;
   isError: boolean;
 }
 
-interface FileCountsQueryParameters {
+export interface FileCountsQueryParameters {
   repositoryFilters: FilterSet;
-  cohortFilters?: FilterSet;
+  cohortFilters: FilterSet;
+  accessibility?: Accessibility;
+  cohortIndex: string;
+  repositoryIndex: string;
+  cohortItemIdField: string;
+  fileItemIdField: string;
+  fileSizeField: string;
 }
 
 export interface FilesSizeData {
-  total_file_size: number;
-  total_case_count: number;
-  total_file_count: number;
+  totalFileSize: number;
+  totalCaseCount: number;
+  totalFileCount: number;
 }
 
-interface FileSizeQueryResponse {
+export interface FileSizeQueryResponse {
   data: FilesSizeData;
   isSuccess: boolean;
   isFetching: boolean;
@@ -51,12 +52,15 @@ export type useTotalFileSizeQueryHook = (
 export interface RepositoryConfiguration extends Gen3AppConfigData {
   filters?: TabsConfig; // filters for the fields
   guppyConfig: DataTypeConfigWithManifest; // guppy
-  hooks: {
-    useGetFacetValuesQuery: useGetFacetValuesQueryHook;
-    useTotalFileSizeQuery: useTotalFileSizeQueryHook;
-  };
   table?: SummaryTable; // table configuration
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
+  fileStatsConfiguration: {
+    cohortIndex: string;
+    repositoryIndex: string;
+    cohortItemIdField: string;
+    fileItemIdField: string;
+    fileSizeField: string;
+  };
 }
