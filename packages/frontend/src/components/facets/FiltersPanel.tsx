@@ -9,11 +9,11 @@ interface FiltersPanelProps<T extends FacetType = FacetType> {
   valueLabel: string;
 }
 
-const FiltersPanel = ({
+const FiltersPanel = <T extends FacetType = FacetType>({
   fields,
   dataFunctions,
   valueLabel,
-}: FiltersPanelProps): JSX.Element => {
+}: FiltersPanelProps<T>): JSX.Element => {
   return (
     <div data-testid="filters-facets" className="flex flex-col gap-y-4 w-full">
       {fields.map((facetDefinition) => {
@@ -26,7 +26,7 @@ const FiltersPanel = ({
         return createFacetCard({
           facetDefinition,
           valueLabel,
-          hooks: dataFunctions[facetDefinition.type],
+          hooks: dataFunctions[facetDefinition.type as T],
           facetNameFormatter: fieldNameToTitle,
           idPrefix: 'filters-panel',
           showPercent: false,

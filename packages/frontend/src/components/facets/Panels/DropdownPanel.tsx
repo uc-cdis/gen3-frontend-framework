@@ -14,6 +14,8 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
+  FacetDefinition,
+  FacetType,
   selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
@@ -26,9 +28,7 @@ import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
 
-import { FacetDefinition } from '@gen3/core';
-
-export const DropdownPanel = ({
+export const DropdownPanel = <T extends FacetType = FacetType>({
   index,
   filters,
   tabTitle,
@@ -37,7 +37,7 @@ export const DropdownPanel = ({
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
-}: TabbablePanelProps) => {
+}: TabbablePanelProps<T>) => {
   const [value, setValue] = useState<string | null>('0');
   const allFiltersCollapsed = useCoreSelector((state) =>
     selectAllCohortFiltersCollapsed(state, index),

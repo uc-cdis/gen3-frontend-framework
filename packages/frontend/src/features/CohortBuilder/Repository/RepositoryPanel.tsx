@@ -23,11 +23,7 @@ import {
   selectIndexFilters,
   useCoreSelector,
 } from '@gen3/core';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { partial } from 'lodash';
 import {
   useCohortFilterCombineState,
@@ -110,6 +106,7 @@ export const RepositoryPanel = ({
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isFacetsQuerySuccess,
+        isFetching: isFacetsQueryFetching,
       };
     },
     [repositoryFilters.root, facetData, isFacetsQuerySuccess],
@@ -175,7 +172,7 @@ export const RepositoryPanel = ({
           className="flex-shrink-0 md:w-1/4 lg:w-1/5"
         >
           {filters?.tabs && (
-            <DropdownPanel
+            <DropdownPanel<'enum'>
               index={index}
               filters={filters}
               tabTitle="Files"
@@ -219,3 +216,5 @@ export const RepositoryPanel = ({
     </div>
   );
 };
+
+export default RepositoryPanel;
