@@ -69,10 +69,12 @@ const TabbedCohortBuilderPage = ({
     >
       <Stack align="stretch" classNames={{ root: 'w-full' }}>
         <div className="w-full flex-col flex gap-4 fixed bg-white z-10">
-          <CohortManager rightPanel={<CountsPanel index="case" />} />
+          <CohortManager
+            rightPanel={<CountsPanel index={configuration.index} />}
+          />
           <QueryExpression index={configuration.index}></QueryExpression>
         </div>
-        <div className="w-full mt-60 mr-4">
+        <div className="w-full mt-80 mr-4">
           <TabbedCohortBuilder {...configuration} />
         </div>
       </Stack>
