@@ -23,7 +23,11 @@ import {
   selectIndexFilters,
   useCoreSelector,
 } from '@gen3/core';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import { partial } from 'lodash';
 import {
   useCohortFilterCombineState,
