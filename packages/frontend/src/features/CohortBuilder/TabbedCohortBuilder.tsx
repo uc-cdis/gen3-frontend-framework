@@ -9,6 +9,7 @@ import {
   FacetDefinition,
   FacetType,
   isIntersection,
+  selectCurrentCohortId,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
@@ -103,6 +104,10 @@ const TabbedCohortBuilder = ({
     Accessibility.ALL,
   );
 
+  const cohortId = useCoreSelector((state: CoreState) =>
+    selectCurrentCohortId(state),
+  );
+
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
@@ -117,6 +122,7 @@ const TabbedCohortBuilder = ({
     fields: cohortBuilderFilters,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
   const {
@@ -127,6 +133,7 @@ const TabbedCohortBuilder = ({
     type: index,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
   const [facetDefinitions, setFacetDefinitions] = useState<
@@ -146,7 +153,7 @@ const TabbedCohortBuilder = ({
       }
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
-  }, [activeTab, routerTab, prevRouterTab]);
+  }, [activeTab, routerTab, prevRouterTab, router]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
