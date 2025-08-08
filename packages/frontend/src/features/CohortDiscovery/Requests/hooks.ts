@@ -2,7 +2,7 @@ import { IndexResourceField } from '../types';
 import {
   Accessibility,
   IndexedFilterSet,
-  useLazyGetAggsNoFilterSelfQuery,
+  useLazyGetAggsQuery,
 } from '@gen3/core';
 
 interface QueryAllIndexedState {
@@ -19,9 +19,7 @@ export class QueryAllIndexedError extends Error {
 }
 
 // To get the return type of the whole hook
-type LazyQueryGQLAggsHookResult = ReturnType<
-  typeof useLazyGetAggsNoFilterSelfQuery
->;
+type LazyQueryGQLAggsHookResult = ReturnType<typeof useLazyGetAggsQuery>;
 // To get just the type of the trigger function (first element of tuple)
 export type QueryGQLAggsrFunctionType = LazyQueryGQLAggsHookResult[0];
 
@@ -51,16 +49,17 @@ export const queryAllResources = async (
           type: index,
           fields: [fieldConfig.resourceField],
           accessibility: Accessibility.ALL,
+          filterSelf: true,
         })
           .unwrap()
-          .then((result) => ({ index, result })),
+          .then((result: any) => ({ index, result })),
     );
 
     const resources = await Promise.all(promises);
     const resultsByIndex = resources.reduce(
-      (acc: Record<string, string[]>, resource) => {
+      (acc: Record<string, string[]>, resource: any) => {
         const filteredResults = Object.values(resource.result)
-          .map((hist) => hist.map((h) => h.key))
+          .map((hist: any) => hist.map((h: any) => h.key))
           .flat()
           .filter(
             (x): x is string =>
@@ -75,12 +74,12 @@ export const queryAllResources = async (
     );
 
     return Object.entries(resultsByIndex).reduce(
-      (acc: string[], [index, results]) => {
+      (acc: string[], [index, results]: [string, any]) => {
         const resourcePath = resourceFields[index].resourcePath;
         if (resourcePath) {
-          acc.push(...results.map((x) => `${resourcePath}/${x}`));
+          acc.push(...results.map((x: any) => `${resourcePath}/${x}`));
         } else {
-          acc.push(...results.map((x) => `/${x}`));
+          acc.push(...results.map((x: any) => `/${x}`));
         }
         return acc;
       },

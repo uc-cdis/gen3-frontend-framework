@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useMemo, useState } from 'react';
 import {
   Button,
   ComboboxItem,
@@ -42,9 +42,13 @@ const hasExportImport = false;
 
 interface CohortManagerProps {
   size?: string;
+  rightPanel?: ReactElement;
 }
 
-const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
+const CohortManagerPanel = ({
+  size = 'md',
+  rightPanel,
+}: CohortManagerProps) => {
   const coreDispatch = useCoreDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingLabel, setEditingLabel] = useState('');
@@ -256,14 +260,19 @@ const CohortManagerPanel = ({ size = 'md' }: CohortManagerProps) => {
           </Tooltip>
         </>
       ) : null}
+      {rightPanel ? (
+        <Group gap="xs" className="flex-grow" justify="flex-end">
+          {rightPanel}
+        </Group>
+      ) : null}
     </Group>
   );
 };
 
-const CohortManager = ({ size = 'md' }: CohortManagerProps) => {
+const CohortManager = ({ size = 'md', rightPanel }: CohortManagerProps) => {
   // TODO: initialize and load cohorts from cohort storage
   //  as right now the redux-persist is handling cohorts
-  return <CohortManagerPanel size={size} />;
+  return <CohortManagerPanel size={size} rightPanel={rightPanel} />;
 };
 
 export default CohortManager;

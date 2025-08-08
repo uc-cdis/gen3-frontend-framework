@@ -29,6 +29,7 @@ const globals = {
   idb: 'idb',
   'use-deep-compare': 'use-deep-compare',
   graphql: 'graphql',
+  nanoid: 'nanoid',
 };
 
 const config = [

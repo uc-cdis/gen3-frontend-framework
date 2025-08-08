@@ -8,7 +8,6 @@ import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
-import { isArray } from 'lodash';
 import { appendParameterToUrl } from './utils';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
@@ -49,7 +48,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   );
 
   const handleCredentialsLogin = useCallback(async () => {
-    const redirect = !referer ? '/' : isArray(referer) ? referer[0] : referer;
+    const redirect = filterRedirect(referer);
     router.push(redirect).catch((e) => {
       showNotification({
         title: 'Login Error',

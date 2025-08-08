@@ -2,7 +2,6 @@ import {
   createEntityAdapter,
   createSlice,
   type EntityState,
-  nanoid,
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
@@ -13,6 +12,7 @@ import {
 } from '../filters';
 import { defaultCohortNameGenerator, generateUniqueName } from './utils';
 import { type Cohort, type CohortId } from './types';
+import { customAlphabet } from 'nanoid';
 
 /**
  *  Cohorts in Gen3 are defined as a set of filters for each index in the data.
@@ -77,6 +77,8 @@ export const newCohort = ({
     counts: {},
   };
 };
+
+const nanoid = customAlphabet('1234567890abcdef', 16);
 
 export const createCohortId = (): string => nanoid();
 
@@ -357,6 +359,27 @@ export const cohortManagerSlice = createSlice({
         },
       });
     },
+    updateCohortIndexCountById: (
+      state,
+      action: PayloadAction<{
+        index: string;
+        cohortId: string;
+        counts: number;
+      }>,
+    ) => {
+      const { index, cohortId, counts } = action.payload;
+      const cohort = state.entities[cohortId];
+
+      cohortsAdapter.updateOne(state, {
+        id: cohortId,
+        changes: {
+          counts: {
+            ...cohort.counts,
+            ...{ [index]: counts },
+          },
+        },
+      });
+    },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohortId = action.payload;
     },
@@ -394,6 +417,7 @@ export const {
   setCurrentCohortId,
   updateCohortName,
   updateCohortCounts,
+  updateCohortIndexCountById,
   setCohortList,
 } = cohortManagerSlice.actions;
 

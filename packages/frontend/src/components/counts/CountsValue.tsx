@@ -1,25 +1,30 @@
 import React from 'react';
-import { Paper, LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Paper } from '@mantine/core';
 import { toCountsString } from '../../utils';
 
 interface CountsValueProps {
   readonly label: string;
   readonly counts?: number;
-  readonly isSuccess: boolean;
+  readonly isFetching: boolean;
+  readonly isError: boolean;
 }
 
-const CountsValue = ({ label, isSuccess, counts }: CountsValueProps) => {
-  // TODO handle case of data.length == 1
+const CountsValue = ({
+  label,
+  isFetching,
+  isError,
+  counts,
+}: CountsValueProps) => {
   return (
-    <div className="mr-4">
-      <LoadingOverlay visible={!isSuccess} />
+    <div className="mr-4 relative">
+      <LoadingOverlay visible={isFetching} />
       <Paper
         shadow="xs"
         p="xs"
         withBorder
         className="bg-primary text-primary-contrast font-heading text-md font-semibold"
       >
-        {toCountsString(counts, label)}
+        {isError ? 'error' : toCountsString(counts, label)}
       </Paper>
     </div>
   );
