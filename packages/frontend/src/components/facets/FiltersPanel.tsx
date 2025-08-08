@@ -3,8 +3,8 @@ import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
 import { FacetDataHooks } from './types';
 
-interface FiltersPanelProps {
-  dataFunctions: Record<FacetType, FacetDataHooks>;
+interface FiltersPanelProps<T extends FacetType = FacetType> {
+  dataFunctions: Record<T, FacetDataHooks>;
   fields: ReadonlyArray<FacetDefinition>;
   valueLabel: string;
 }

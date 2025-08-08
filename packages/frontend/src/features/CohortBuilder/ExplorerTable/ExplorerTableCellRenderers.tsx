@@ -1,17 +1,16 @@
-import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
 import React, { ReactNode } from 'react';
+import { RenderFactoryTypedInstance } from '../../../utils/RendererFactory';
+import { Icon } from '@iconify-icon/react';
+import Link from 'next/link';
+import { filesize } from 'filesize';
 import { isArray } from 'lodash';
 import { Badge, Text } from '@mantine/core';
-import { CellRendererFunctionProps } from './types';
+import { CellRendererFunction, CellRendererFunctionProps } from './types';
+import { ProjectAccessCellRenderer } from './AccessCellRenderers';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
 }
-
-export type CellRendererFunction = (
-  props: CellRendererFunctionProps,
-  ...args: any[]
-) => ReactNode;
 
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
@@ -64,6 +63,10 @@ const ValueCellRenderer = ({ cell }: CellRendererFunctionProps) => {
   return <span>{cell.getValue() as ReactNode}</span>;
 };
 
+const FilesizeRenderer = ({ cell }: CellRendererFunctionProps) => {
+  return <span>{filesize(cell.getValue() as string)}</span>;
+};
+
 const ArrayCellFunctionCatalog = {
   NegativePositive: RenderArrayCellNegativePositive,
   default: RenderArrayCell,
@@ -84,6 +87,66 @@ const RenderLinkCell = (
         {cell.getValue() as ReactNode}{' '}
       </Text>
     </a>
+  );
+};
+
+interface RenderNextLinkCellWithIconParams {
+  baseURL?: string;
+  icon?: string;
+  size?: string;
+  iconHeight?: string;
+  classNames?: {
+    icon?: string;
+    text?: string;
+  };
+}
+
+const isRenderNextLinkCellWithIconParams = (
+  value: unknown,
+): value is RenderNextLinkCellWithIconParams => {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const obj = value as Record<string, unknown>;
+
+  return (
+    (obj.baseURL === undefined || typeof obj.baseURL === 'string') &&
+    (obj.icon === undefined || typeof obj.icon === 'string') &&
+    (obj.size === undefined || typeof obj.size === 'string')
+  );
+};
+
+const RenderLinkCellWithIcon = ({
+  cell,
+  params,
+}: CellRendererFunctionProps) => {
+  let baseURL = '';
+  let icon: string | null = null;
+  let size = 'sm';
+  let iconHeight = '1em';
+  if (isRenderNextLinkCellWithIconParams(params)) {
+    baseURL = params.baseURL ?? baseURL;
+    if (params.icon) {
+      icon = params.icon;
+    }
+    size = params.size ?? size;
+    iconHeight = params.iconHeight ?? iconHeight;
+  }
+
+  return (
+    <Link
+      href={`${baseURL}${cell.getValue()}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <div className="flex items-center gap-1">
+        {icon && <Icon height={iconHeight} icon={icon} />}
+        <Text c="blue" td="underline" fw={700} size={size}>
+          {cell.getValue() as ReactNode}
+        </Text>
+      </div>
+    </Link>
   );
 };
 
@@ -114,6 +177,7 @@ const RenderLinkCellUsingValueMap = (
 const LinkCellFunctionCatalog = {
   default: RenderLinkCell,
   linkWithValueMap: RenderLinkCellUsingValueMap,
+  linkWithIcon: RenderLinkCellWithIcon,
 };
 
 let instance: RenderFactoryTypedInstance<CellRendererFunctionProps>;
@@ -131,6 +195,13 @@ export const registerExplorerDefaultCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRendererCatalog({
     value: {
       default: ValueCellRenderer,
+
+      filesize: FilesizeRenderer,
+    },
+  });
+  ExplorerTableCellRendererFactory().registerRendererCatalog({
+    access: {
+      projectAccess: ProjectAccessCellRenderer,
     },
   });
   ExplorerTableCellRendererFactory().registerRendererCatalog({

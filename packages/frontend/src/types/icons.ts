@@ -9,6 +9,8 @@ import {
   MdFileUpload as UploadIcon,
   MdLibraryAdd as AddFacetIcon,
   MdLockOutline as LockOutlineIcon,
+  MdPerson as PersonIcon,
+  MdSave as SaveIcon,
   MdTrendingDown as SurvivalChartIcon,
   MdWarning as WarningTriangleIcon,
 } from 'react-icons/md';
@@ -25,6 +27,8 @@ export {
   DownloadIcon,
   DeleteIcon,
   LockOutlineIcon,
+  SaveIcon,
+  PersonIcon,
   PlusIcon,
   SurvivalChartIcon,
   UploadIcon,

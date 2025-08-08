@@ -28,9 +28,11 @@ import { CollapsableSidebar } from './components/CollapsableSidebar';
 import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
 import {
   ActionButton,
+  DownloadButton,
   DropdownButton,
   Gen3Button,
   Gen3ButtonReverse,
+  JSONObjectDownloadButton,
   UploadJSONButton,
 } from './components/Buttons';
 
@@ -104,13 +106,16 @@ import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
 import DataLibraryPage, {
   DataLibraryPageGetServerSideProps,
-} from './pages/DataLibrary';
-// TODO Replace with AppTool plugin
+} from './pages/DataLibrary'; // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
 import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
 import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
+
+import RepositoryPage, {
+  RepositoryPageGetServerSideProps,
+} from './pages/Repository';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
@@ -130,6 +135,8 @@ export {
   type AnalysisPageLayoutProps,
   // components
   CollapsableSidebar,
+  DownloadButton,
+  JSONObjectDownloadButton,
   DropdownButton,
   DropdownWithIcon,
   SegmentedControl,
@@ -190,6 +197,8 @@ export {
   AnalysisEditorPageGetServerSideProps,
   TabbedCohortBuilderPage,
   TabbedCohortBuilderPageGetServerSideProps,
+  RepositoryPage,
+  RepositoryPageGetServerSideProps,
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,

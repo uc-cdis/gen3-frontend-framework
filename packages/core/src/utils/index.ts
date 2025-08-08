@@ -12,7 +12,10 @@ import {
   calculatePercentageAsNumber,
   calculatePercentageAsString,
   convertToHistogramDataAsStringKey,
+  stringifyJSONParam,
 } from './conversions';
+
+import { ExtractValueFromObject } from './extractvalues';
 
 export {
   isObject,
@@ -30,5 +33,7 @@ export {
   convertToHistogramDataAsStringKey,
   calculatePercentageAsString,
   calculatePercentageAsNumber,
+  stringifyJSONParam,
+  ExtractValueFromObject,
 };
 export { getTimestamp } from './time';

@@ -2,10 +2,10 @@ import { fieldNameToTitle } from '@gen3/core';
 import type {
   CellRendererFunctionProps,
   ColumnDefinition,
-  SummaryTableColumn,
-  TableColumnsAndFields,
   ExplorerColumn,
   ExplorerTableColumnMRT,
+  SummaryTableColumn,
+  TableColumnsAndFields,
 } from './types';
 import { type MRT_Column } from 'mantine-react-table';
 import {
@@ -38,6 +38,8 @@ export const createTableColumns = (
 ): ExplorerTableColumnMRT[] => {
   return tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
+
+    console.log(columnDef);
 
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
