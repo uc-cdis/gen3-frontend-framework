@@ -6,6 +6,7 @@ import {
   groupSharedFields,
 } from './utils';
 import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
+
 export * from './types';
 export * from './processing';
 
@@ -16,3 +17,8 @@ export {
   groupSharedFields,
 };
 export { processHistogramResponse } from './processing';
+export { rawDataQueryStrForEachField } from './queryGenerators';
+export { nestedHistogramQueryStrForEachField } from './queryGenerators';
+export { statsQueryStrForEachField } from './queryGenerators';
+export { histogramQueryStrForEachField } from './queryGenerators';
+export { customQueryStrForEachField } from './queryGenerators';
