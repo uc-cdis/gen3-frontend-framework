@@ -1,5 +1,6 @@
 export * from './guppyApi';
 export * from './guppySlice';
+export * from './queryGenerators';
 import {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
