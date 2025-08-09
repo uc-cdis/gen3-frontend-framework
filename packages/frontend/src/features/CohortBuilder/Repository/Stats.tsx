@@ -1,5 +1,6 @@
 import React from 'react';
 import { PersonIcon, SaveIcon } from '../../../types/icons';
+import { filesize } from 'filesize';
 
 interface FileStatsProps {
   totalCaseCount: number;
@@ -17,7 +18,7 @@ const Stats = ({
   <div className="flex gap-1 text-xl items-center uppercase flex-wrap">
     <div>
       Total of{' '}
-      <strong>{isFetching ? totalFileCount.toLocaleString() : '--'}</strong>{' '}
+      <strong>{!isFetching ? totalFileCount.toLocaleString() : '--'}</strong>{' '}
       {totalFileCount !== 1 ? 'Files' : 'File'}
     </div>
     <div>
@@ -27,7 +28,7 @@ const Stats = ({
     </div>
     <div>
       <SaveIcon className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
-      {totalFileSize}
+      {filesize(totalFileSize)}
     </div>
   </div>
 );

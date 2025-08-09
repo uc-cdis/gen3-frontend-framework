@@ -1,4 +1,4 @@
-export const customQueryStrForEachField = (
+export const customQueryStrForField = (
   field: string,
   query: string,
   depth: number = 0,
@@ -12,10 +12,11 @@ export const customQueryStrForEachField = (
   }
 
   return `${indent}${splittedField} {
-${customQueryStrForEachField(splittedFieldArray.join('.'), query, depth + 1)}
+${customQueryStrForField(splittedFieldArray.join('.'), query, depth + 1)}
 ${indent}}`;
 };
 
+// TODO: refactor the function below using customQueryStrForEachField and a wrapper function that passes the query
 export const histogramQueryStrForEachField = (field: string): string => {
   const splittedFieldArray = field.split('.');
   const splittedField = splittedFieldArray.shift();

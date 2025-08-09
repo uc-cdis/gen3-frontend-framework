@@ -22,4 +22,4 @@ export { rawDataQueryStrForEachField } from './queryGenerators';
 export { nestedHistogramQueryStrForEachField } from './queryGenerators';
 export { statsQueryStrForEachField } from './queryGenerators';
 export { histogramQueryStrForEachField } from './queryGenerators';
-export { customQueryStrForEachField } from './queryGenerators';
+export { customQueryStrForField } from './queryGenerators';

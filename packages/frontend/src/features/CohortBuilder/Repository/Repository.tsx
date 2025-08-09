@@ -1,5 +1,4 @@
 import { RepositoryConfiguration } from './types';
-import { CohortPanel } from '../CohortPanel';
 import React from 'react';
 import RepositoryPanel from './RepositoryPanel';
 
@@ -10,6 +9,7 @@ const Repository = ({
   buttons,
   loginForDownload,
   dropdowns,
+  fileStatsConfiguration,
 }: RepositoryConfiguration) => {
   return (
     <RepositoryPanel
@@ -20,6 +20,7 @@ const Repository = ({
       dropdowns={dropdowns}
       buttons={buttons}
       loginForDownload={loginForDownload}
+      fileStatsConfiguration={fileStatsConfiguration}
     />
   );
 };

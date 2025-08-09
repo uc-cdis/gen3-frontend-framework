@@ -7,11 +7,12 @@ import {
 import {
   Accessibility,
   convertFilterSetToGqlFilter,
+  customQueryStrForField,
   useGeneralGQLQuery,
   useGetAggsQuery,
 } from '@gen3/core';
-import { filter } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 export const useGetFacetValuesQuery = (
   args: FacetQueryParameters,
@@ -35,17 +36,9 @@ const buildFileStatsdQuery = (
   const fileStatsQuery = `query repositoryTotals ($filter: JSON, $accessibility:Accessibility) {
     _aggregation {
         ${type} (accessibility: $accessibility, filter: $filter) {
-            ${fileItemIdField} {
-                _totalCount
-            }
-            ${fileSizeField} {
-                histogram {
-                    count
-                }
-            }
-             ${cohortItemIdField} {
-                _totalCount
-            }
+            ${customQueryStrForField(fileItemIdField, '{_totalCount }')}
+             ${customQueryStrForField(fileSizeField, ' {  histogram {sum} }')}
+                ${customQueryStrForField(cohortItemIdField, '{_cardinalityCount }')}
         }
     }
 }`;
@@ -57,7 +50,6 @@ interface FileCountsQueryResponse {
 
 export const useTotalFileSizeQuery = ({
   repositoryFilters,
-  cohortFilters,
   repositoryIndex,
   cohortIndex,
   fileSizeField,
@@ -85,15 +77,15 @@ export const useTotalFileSizeQuery = ({
     },
   });
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (isSuccess) {
-      const response = data as unknown as FileCountsQueryResponse;
+      const response = data.data as unknown as FileCountsQueryResponse;
       const totalFileSize =
         response?._aggregation?.[repositoryIndex]?.[fileSizeField]
-          ?.histogram?.[0]?.count || 0;
+          ?.histogram?.[0]?.sum || 0;
       const totalCaseCount =
-        response?._aggregation?.[cohortIndex]?.[cohortItemIdField]
-          ?._totalCount || 0;
+        response?._aggregation?.[repositoryIndex]?.[cohortItemIdField]
+          ?._cardinalityCount || 0;
       const totalFileCount =
         response?._aggregation?.[repositoryIndex]?.[fileItemIdField]
           ?._totalCount || 0;
@@ -103,7 +95,7 @@ export const useTotalFileSizeQuery = ({
         totalFileCount,
       });
     }
-  });
+  }, [data, isSuccess]);
 
   return {
     data: totals,

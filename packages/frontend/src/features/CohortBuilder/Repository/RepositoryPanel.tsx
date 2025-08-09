@@ -199,25 +199,22 @@ export const RepositoryPanel = ({
           className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
         >
           {/* Top row with DownloadsPanel and CountsValue */}
-          <div className="flex justify-between mb-2 ml-2"></div>
+          <div className="flex justify-end mb-2 ml-2">
+            <Stats
+              totalFileCount={fileSizeSliceData.totalFileCount}
+              totalCaseCount={fileSizeSliceData.totalCaseCount}
+              totalFileSize={fileSizeSliceData.totalFileSize}
+              isFetching={isFileSizeFetching}
+            />
+          </div>
 
           {/* Table Section */}
           {table?.enabled && (
-            <div className="mt-2 flex flex-col">
-              <div className="flex justify-between mb-2 ml-2">
-                <Stats
-                  totalFileCount={fileSizeSliceData.totalFileCount}
-                  totalCaseCount={fileSizeSliceData.totalCaseCount}
-                  totalFileSize={fileSizeSliceData.totalFileSize}
-                  isFetching={isFileSizeFetching}
-                />
-              </div>
-              <ExplorerTable
-                index={index}
-                tableConfig={table}
-                accessibility={accessLevel}
-              />
-            </div>
+            <ExplorerTable
+              index={index}
+              tableConfig={table}
+              accessibility={accessLevel}
+            />
           )}
         </div>
       </div>

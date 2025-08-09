@@ -50,7 +50,6 @@ export const getNavPageLayoutPropsFromConfig =
       if (isHeaderMetadata(loadedHeaderMetadata)) {
         headerMetadata = loadedHeaderMetadata;
       } else {
-        console.log('loadedHeaderMetadata', loadedHeaderMetadata);
         console.warn('headerMetadata is not a valid HeaderMetadata object');
       }
     } catch (error: unknown) {
