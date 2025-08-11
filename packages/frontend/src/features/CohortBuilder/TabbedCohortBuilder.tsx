@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Group, Stack } from '@mantine/core';
+import { Stack } from '@mantine/core';
 import {
   Accessibility,
   CombineMode,
@@ -9,6 +9,7 @@ import {
   FacetDefinition,
   FacetType,
   isIntersection,
+  selectCurrentCohortId,
   selectIndexFilters,
   useCoreSelector,
   useGetAggsQuery,
@@ -43,7 +44,6 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
-import CountsValue from '../../components/counts/CountsValue';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -103,6 +103,10 @@ const TabbedCohortBuilder = ({
     Accessibility.ALL,
   );
 
+  const cohortId = useCoreSelector((state: CoreState) =>
+    selectCurrentCohortId(state),
+  );
+
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
@@ -117,6 +121,7 @@ const TabbedCohortBuilder = ({
     fields: cohortBuilderFilters,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
   const {
@@ -127,6 +132,7 @@ const TabbedCohortBuilder = ({
     type: index,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
   const [facetDefinitions, setFacetDefinitions] = useState<
@@ -146,7 +152,7 @@ const TabbedCohortBuilder = ({
       }
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
-  }, [activeTab, routerTab, prevRouterTab]);
+  }, [activeTab, routerTab, prevRouterTab, router]);
 
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
@@ -247,9 +253,6 @@ const TabbedCohortBuilder = ({
 
   return (
     <Stack gap="xs" align="stretch" classNames={{ root: 'w-full' }}>
-      <Group justify="flex-end">
-        <CountsValue label={index} counts={counts} isSuccess={isCountSuccess} />
-      </Group>
       <FacetTabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}

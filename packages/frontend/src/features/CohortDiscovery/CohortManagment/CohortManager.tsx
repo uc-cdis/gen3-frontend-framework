@@ -46,7 +46,7 @@ import {
   selectUserDetails,
   useCoreSelector,
   useCreateRequestMutation,
-  useLazyGetAggsNoFilterSelfQuery,
+  useLazyGetAggsQuery,
 } from '@gen3/core';
 
 interface CohortManagerProps {
@@ -68,7 +68,7 @@ const CohortManagerPanel = ({
   const allCohorts: Array<DiscoveryCohort> = useAppSelector(selectAllCohorts);
   const currentCohort = useAppSelector(selectCurrentCohort);
 
-  const [getGetAggs] = useLazyGetAggsNoFilterSelfQuery();
+  const [getGetAggs] = useLazyGetAggsQuery();
   const [requestQuery] = useCreateRequestMutation();
   const user = useCoreSelector(selectUserDetails);
 

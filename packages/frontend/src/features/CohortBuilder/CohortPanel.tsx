@@ -9,10 +9,10 @@ import {
   FacetDefinition,
   FacetType,
   isIntersection,
+  selectCurrentCohortId,
   selectIndexFilters,
   selectSharedFilters,
   useCoreSelector,
-  useGetAggsNoFilterSelfQuery,
   useGetAggsQuery,
   useGetCountsQuery,
 } from '@gen3/core';
@@ -143,6 +143,10 @@ export const CohortPanel = ({
     selectIndexFilters(state, index),
   );
 
+  const cohortId = useCoreSelector((state: CoreState) =>
+    selectCurrentCohortId(state),
+  );
+
   const {
     data,
     isSuccess,
@@ -153,6 +157,7 @@ export const CohortPanel = ({
     fields: fields,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
   const chartKeys = useDeepCompareMemo(
@@ -165,12 +170,14 @@ export const CohortPanel = ({
     isSuccess: isChartSuccess,
     isFetching: isChartFetching,
     isError: isChartError,
-  } = useGetAggsNoFilterSelfQuery(
+  } = useGetAggsQuery(
     {
       type: index,
       fields: chartKeys,
       filters: cohortFilters,
       accessibility: accessLevel,
+      filterSelf: true,
+      queryId: cohortId,
     },
     {
       skip: chartKeys.length === 0,
@@ -346,15 +353,17 @@ export const CohortPanel = ({
 
   const {
     data: counts,
+    isFetching: isCountsFetching,
     isSuccess: isCountSuccess,
-    isError,
+    isError: isCountsError,
   } = useGetCountsQuery({
     type: index,
     filters: cohortFilters,
     accessibility: accessLevel,
+    queryId: cohortId,
   });
 
-  if (isError || isAggsQueryError) {
+  if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
@@ -402,7 +411,8 @@ export const CohortPanel = ({
             <CountsValue
               label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
               counts={counts}
-              isSuccess={isCountSuccess}
+              isFetching={isCountsFetching}
+              isError={isCountsError}
             />
           </div>
 

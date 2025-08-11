@@ -23,8 +23,7 @@ RUN npm run build
 COPY start.sh ./
 
 # Build packages
-RUN lerna run build:pkg
-RUN lerna run --scope @gen3/samplecommons build
+RUN lerna run build
 
 # Production stage
 FROM node:22-alpine3.20 AS runner
