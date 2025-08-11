@@ -5,7 +5,9 @@ import ViewSelector from './ViewSelector';
 import TableSearch from './TableSearch';
 import { useDictionaryContext } from './DictionaryProvider';
 import CategoryPanel from './CategoryPanel';
+import GraphView from './GraphView';
 import { useScrollIntoView } from '@mantine/hooks';
+import { Tabs } from '@mantine/core';
 
 const Dictionary = () => {
   const [selectedId, setSelectedId] = useState('');
@@ -32,6 +34,15 @@ const Dictionary = () => {
     },
     [scrollIntoView, targetRef],
   );
+  const categoryPanelTable = Object.keys(categories).length &&
+            Object.keys(categories).map((category) => (
+              <CategoryPanel
+                key={category}
+                category={category}
+                selectedId={selectedId}
+                scrollToSelection={scrollToSelection}
+              />
+            ));
 
   return (
     <>
@@ -57,15 +68,19 @@ const Dictionary = () => {
         ref={scrollableRef}
       >
         <div className="h-full">
-          {Object.keys(categories).length &&
-            Object.keys(categories).map((category) => (
-              <CategoryPanel
-                key={category}
-                category={category}
-                selectedId={selectedId}
-                scrollToSelection={scrollToSelection}
-              />
-            ))}
+          {config?.showGraph ? (
+            <Tabs value={view} keepMounted={false}>
+              <Tabs.Panel value="table">{categoryPanelTable}</Tabs.Panel>
+              <Tabs.Panel value="graph">
+                <GraphView
+                  categories={categories}
+                  selectedId={selectedId}
+                />
+              </Tabs.Panel>
+            </Tabs>
+          ) : 
+            categoryPanelTable
+          }
         </div>
       </div>
     </>
