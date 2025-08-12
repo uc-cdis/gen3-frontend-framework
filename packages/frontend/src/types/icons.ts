@@ -6,16 +6,23 @@ import {
   MdContentCopy as CopyIcon,
   MdDelete as DeleteIcon,
   MdDownload as DownloadIcon,
+  MdDragIndicator as DragIcon,
   MdFileUpload as UploadIcon,
   MdLibraryAdd as AddFacetIcon,
   MdLockOutline as LockOutlineIcon,
   MdPerson as PersonIcon,
   MdSave as SaveIcon,
+  MdSearch as SearchIcon,
   MdTrendingDown as SurvivalChartIcon,
   MdWarning as WarningTriangleIcon,
 } from 'react-icons/md';
 import { RiErrorWarningFill as WarningMessageIcon } from 'react-icons/ri';
-import { FaCircle as CircleIcon, FaPlus as PlusIcon } from 'react-icons/fa';
+import {
+  FaCircle as CircleIcon,
+  FaPlus as PlusIcon,
+  FaUndo as UndoIcon,
+} from 'react-icons/fa';
+import { BsList as ListIcon, BsX as XIcon } from 'react-icons/bs';
 
 export {
   AddIcon,
@@ -26,12 +33,17 @@ export {
   CopyIcon,
   DownloadIcon,
   DeleteIcon,
+  DragIcon,
+  ListIcon,
   LockOutlineIcon,
   SaveIcon,
+  SearchIcon,
   PersonIcon,
   PlusIcon,
   SurvivalChartIcon,
+  UndoIcon,
   UploadIcon,
   WarningTriangleIcon,
   WarningMessageIcon,
+  XIcon,
 };

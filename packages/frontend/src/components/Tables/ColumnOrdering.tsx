@@ -38,20 +38,20 @@ import {
   SearchIcon,
   UndoIcon,
   XIcon,
-} from '../../utils/icons';
+} from '../../types/icons';
 
 function ColumnOrdering<TData>({
   table,
   handleColumnOrderingReset,
   columnOrder,
   setColumnOrder,
-  noOrderingColumnIds = [],
+  noColumnOrdering = [],
 }: {
   table: Table<TData>;
   handleColumnOrderingReset: () => void;
   columnOrder: ColumnOrderState;
   setColumnOrder: Dispatch<SetStateAction<ColumnOrderState>>;
-  noOrderingColumnIds?: string[];
+  noColumnOrdering?: string[];
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -172,6 +172,7 @@ function ColumnOrdering<TData>({
             <List
               columns={table.getAllLeafColumns()}
               searchValue={searchValue}
+              noColumnOrdering={noColumnOrdering}
             />
           </SortableContext>
         </DndContext>
@@ -183,17 +184,17 @@ function ColumnOrdering<TData>({
 function List<TData>({
   columns,
   searchValue,
-  noOrderingColumnIds = [],
+  noColumnOrdering = [],
 }: {
   columns: Column<TData, unknown>[];
   searchValue: string;
-  noOrderingColumnIds?: string[];
+  noColumnOrdering?: string[];
 }) {
   return (
     <ul>
       {columns
         .filter((column) => {
-          if (!noOrderingColumnIds.includes(column.id)) {
+          if (!noColumnOrdering.includes(column.id)) {
             return humanify({ term: column.id })
               .toLowerCase()
               .includes(searchValue.toLowerCase());
@@ -202,7 +203,7 @@ function List<TData>({
           }
         })
         .map((column, index) => {
-          return !noOrderingColumnIds.includes(column.id) ? (
+          return !noColumnOrdering.includes(column.id) ? (
             <DraggableColumnItem
               key={column.id}
               column={column}

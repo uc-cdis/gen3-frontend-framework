@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Tooltip, TextInput, ActionIcon } from '@mantine/core';
+import { ActionIcon, TextInput, Tooltip } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
 import ColumnOrdering from './ColumnOrdering';
 import { useViewportSize } from '@mantine/hooks';
-import { XL_BREAKPOINT } from '../../utils';
-import { CloseIcon, SearchIcon } from '@/utils/icons';
+import { XL_BREAKPOINT } from '../../types/constants';
+import { CloseIcon, SearchIcon } from '../../types/icons';
 
 interface TableHeaderProps<TData> {
   additionalControls?: React.ReactNode;
