@@ -8,14 +8,9 @@ import {
   HttpMethod,
 } from './fetch';
 import { getCurrentTimestamp, isTimeGreaterThan } from './time';
-import {
-  calculatePercentageAsNumber,
-  calculatePercentageAsString,
-  convertToHistogramDataAsStringKey,
-  stringifyJSONParam,
-} from './conversions';
-
 import { ExtractValueFromObject } from './extractvalues';
+
+export * from './conversions';
 
 export {
   isObject,
@@ -30,10 +25,6 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
-  convertToHistogramDataAsStringKey,
-  calculatePercentageAsString,
-  calculatePercentageAsNumber,
-  stringifyJSONParam,
   ExtractValueFromObject,
 };
 export { getTimestamp } from './time';
