@@ -1,6 +1,8 @@
 import { RepositoryConfiguration } from './types';
 import React from 'react';
 import RepositoryPanel from './RepositoryPanel';
+import { validateObjectHasRequiredFields } from '../../../utils/validators';
+import { ErrorCard, MessagePage } from '../../../components/MessageCards';
 
 const Repository = ({
   filters,
@@ -11,6 +13,21 @@ const Repository = ({
   dropdowns,
   fileStatsConfiguration,
 }: RepositoryConfiguration) => {
+  console.log(fileStatsConfiguration);
+  if (
+    !fileStatsConfiguration ||
+    !validateObjectHasRequiredFields(
+      fileStatsConfiguration,
+      Object.keys(fileStatsConfiguration),
+    )
+  ) {
+    return (
+      <MessagePage>
+        <ErrorCard message="Invalid file stats configuration" />
+      </MessagePage>
+    );
+  }
+
   return (
     <RepositoryPanel
       guppyConfig={guppyConfig}

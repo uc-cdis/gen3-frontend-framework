@@ -7,7 +7,12 @@ import {
   TextInput,
   Tooltip,
 } from '@mantine/core';
-import { Column, ColumnOrderState, Table } from '@tanstack/react-table';
+import {
+  MRT_Column,
+  MRT_ColumnOrderState,
+  MRT_RowData,
+  MRT_TableInstance,
+} from 'mantine-react-table';
 import { isEqual } from 'lodash';
 import { humanify } from '@gen3/core';
 import {
@@ -40,17 +45,17 @@ import {
   XIcon,
 } from '../../types/icons';
 
-function ColumnOrdering<TData>({
+function ColumnOrdering<TData extends MRT_RowData>({
   table,
   handleColumnOrderingReset,
   columnOrder,
   setColumnOrder,
   noColumnOrdering = [],
 }: {
-  table: Table<TData>;
+  table: MRT_TableInstance<TData>;
   handleColumnOrderingReset: () => void;
-  columnOrder: ColumnOrderState;
-  setColumnOrder: Dispatch<SetStateAction<ColumnOrderState>>;
+  columnOrder: MRT_ColumnOrderState;
+  setColumnOrder: Dispatch<SetStateAction<MRT_ColumnOrderState>>;
   noColumnOrdering?: string[];
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
@@ -181,12 +186,12 @@ function ColumnOrdering<TData>({
   );
 }
 
-function List<TData>({
+function List<TData extends MRT_RowData>({
   columns,
   searchValue,
   noColumnOrdering = [],
 }: {
-  columns: Column<TData, unknown>[];
+  columns: MRT_Column<TData, unknown>[];
   searchValue: string;
   noColumnOrdering?: string[];
 }) {
@@ -217,11 +222,11 @@ function List<TData>({
   );
 }
 
-function DraggableColumnItem<TData>({
+function DraggableColumnItem<TData extends MRT_RowData>({
   column,
   isNotLast,
 }: {
-  column: Column<TData, unknown>;
+  column: MRT_Column<TData, unknown>;
   isNotLast: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =

@@ -170,56 +170,57 @@ export const RepositoryPanel = ({
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
 
-  return (
-    <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
-      {/* Flex container to ensure proper 25/75 split */}
-      <div className="flex w-full">
-        {/* Left panel - 25% */}
-        <div
-          id="cohort-builder-filters"
-          className="flex-shrink-0 md:w-1/4 lg:w-1/5"
-        >
-          {filters?.tabs && (
-            <DropdownPanel<'enum'>
-              index={index}
-              filters={filters}
-              tabTitle="Files"
-              facetDefinitions={facetDefinitions}
-              facetDataHooks={facetDataHooks}
-              showAccessLevel={false}
-              onAccessChange={setAccessLevel}
-              accessLevel={accessLevel}
-            />
-          )}
-        </div>
-
-        {/* Right content - 75% */}
-        <div
-          id="cohort-builder-content"
-          className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
-        >
-          {/* Top row with DownloadsPanel and CountsValue */}
-          <div className="flex justify-end mb-2 ml-2">
-            <Stats
-              totalFileCount={fileSizeSliceData.totalFileCount}
-              totalCaseCount={fileSizeSliceData.totalCaseCount}
-              totalFileSize={fileSizeSliceData.totalFileSize}
-              isFetching={isFileSizeFetching}
-            />
+  if (fileStatsConfiguration)
+    return (
+      <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
+        {/* Flex container to ensure proper 25/75 split */}
+        <div className="flex w-full">
+          {/* Left panel - 25% */}
+          <div
+            id="cohort-builder-filters"
+            className="flex-shrink-0 md:w-1/4 lg:w-1/5"
+          >
+            {filters?.tabs && (
+              <DropdownPanel<'enum'>
+                index={index}
+                filters={filters}
+                tabTitle="Files"
+                facetDefinitions={facetDefinitions}
+                facetDataHooks={facetDataHooks}
+                showAccessLevel={false}
+                onAccessChange={setAccessLevel}
+                accessLevel={accessLevel}
+              />
+            )}
           </div>
 
-          {/* Table Section */}
-          {table?.enabled && (
-            <ExplorerTable
-              index={index}
-              tableConfig={table}
-              accessibility={accessLevel}
-            />
-          )}
+          {/* Right content - 75% */}
+          <div
+            id="cohort-builder-content"
+            className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
+          >
+            {/* Top row with DownloadsPanel and CountsValue */}
+
+            {/* Table Section */}
+            {table?.enabled && (
+              <ExplorerTable
+                index={index}
+                tableConfig={table}
+                accessibility={accessLevel}
+                tableTotalDetail={
+                  <Stats
+                    totalFileCount={fileSizeSliceData.totalFileCount}
+                    totalCaseCount={fileSizeSliceData.totalCaseCount}
+                    totalFileSize={fileSizeSliceData.totalFileSize}
+                    isFetching={isFileSizeFetching}
+                  />
+                }
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default RepositoryPanel;

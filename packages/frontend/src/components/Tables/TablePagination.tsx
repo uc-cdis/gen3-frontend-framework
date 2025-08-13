@@ -3,8 +3,9 @@ import { DataStatus } from '@gen3/core';
 import { Pagination, Select } from '@mantine/core';
 import ShowingCount from './ShowingCount';
 import { HandleChangeInput, PaginationOptions } from './types';
+import { MRT_RowData } from 'mantine-react-table';
 
-interface TablePaginationProps<TData> {
+interface TablePaginationProps<TData extends MRT_RowData> {
   pagination: PaginationOptions;
   disablePageSize: boolean;
   handleChange: (obj: HandleChangeInput) => void;
@@ -12,7 +13,7 @@ interface TablePaginationProps<TData> {
   status: DataStatus;
 }
 
-function TablePagination<TData>({
+function TablePagination<TData extends MRT_RowData>({
   pagination,
   disablePageSize,
   handleChange,

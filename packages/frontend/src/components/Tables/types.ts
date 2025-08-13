@@ -74,3 +74,12 @@ export interface HandleChangeInput {
    */
   newHeadings?: any;
 }
+
+export interface TableSearchOrPaginationProps {
+  newSearch?: string;
+  newPageSize?: string;
+  newPageNumber?: number;
+}
+export type HandleTableSearchOrPaginationChange = (
+  params: TableSearchOrPaginationProps,
+) => void;

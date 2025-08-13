@@ -10,6 +10,7 @@ import {
 } from '@gen3/core';
 import {
   MantineReactTable,
+  type MRT_ColumnOrderState,
   type MRT_PaginationState,
   type MRT_Row,
   type MRT_RowSelectionState,
@@ -25,6 +26,8 @@ import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
 import { StudyProvider } from '../../Study';
 import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
+import TableHeader from '../../../components/Tables/TableHeader';
+import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -43,6 +46,9 @@ const ExplorerTable = ({
   accessibility,
   classNames,
   size = 'sm',
+  additionalControls,
+  tableTotalDetail,
+  tableTitle,
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -81,6 +87,15 @@ const ExplorerTable = ({
   const tableColumns = useDeepCompareMemo(() => {
     return createTableColumns(tableConfig);
   }, [tableConfig]);
+
+  const [columnOrder, setColumnOrder] = useState<MRT_ColumnOrderState>(
+    tableColumns.map((column: any) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+
+  const handleSearchOrPageChange = useCallback(
+    (params: TableSearchOrPaginationProps) => null,
+    [],
+  );
 
   // TODO: add support for nested fields
   const fields = useMemo(
@@ -170,12 +185,16 @@ const ExplorerTable = ({
     onSortingChange: setSorting,
     enableTopToolbar: false,
     enableExpandAll: false,
+    enableHiding: false,
+    enableColumnActions: false,
     displayColumnDefOptions: {
       'mrt-row-expand': {
         enableHiding: true, //now row numbers are hidable too
       },
     },
     enableExpanding: !!tableConfig?.detailsConfig,
+    //enableColumnOrdering: tableConfig?.columnSorting,
+    // enableHiding: tableConfig?.columnHiding,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
     icons: TableIcons,
@@ -230,6 +249,7 @@ const ExplorerTable = ({
       density: 'xs',
       rowSelection: rowSelection,
       columnVisibility: { 'mrt-row-expand': false },
+      columnOrder: columnOrder,
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -297,6 +317,20 @@ const ExplorerTable = ({
           />
         )}
         <div className="inline-block overflow-x-scroll">
+          {(tableConfig?.showTableHeaderControls ||
+            tableConfig.columnSorting ||
+            tableConfig?.columnHiding) && (
+            <TableHeader
+              table={table}
+              columnOrder={columnOrder}
+              setColumnOrder={setColumnOrder}
+              handleChange={handleSearchOrPageChange}
+              additionalControls={additionalControls}
+              tableTitle={tableTitle}
+              tableTotalDetail={tableTotalDetail}
+              showControls={tableConfig?.showTableHeaderControls}
+            />
+          )}
           <MantineReactTable table={table} />
         </div>
       </StudyProvider>

@@ -1,12 +1,14 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { ActionIcon, TextInput, Tooltip } from '@mantine/core';
-import { Table } from '@tanstack/react-table';
+import { MRT_RowData, MRT_TableInstance } from 'mantine-react-table';
+
 import ColumnOrdering from './ColumnOrdering';
 import { useViewportSize } from '@mantine/hooks';
 import { XL_BREAKPOINT } from '../../types/constants';
 import { CloseIcon, SearchIcon } from '../../types/icons';
+import { HandleTableSearchOrPaginationChange } from './types';
 
-interface TableHeaderProps<TData> {
+interface TableHeaderProps<TData extends MRT_RowData> {
   additionalControls?: React.ReactNode;
   tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
@@ -17,12 +19,8 @@ interface TableHeaderProps<TData> {
     tooltip?: string;
   };
   showControls?: boolean;
-  handleChange: (params: {
-    newSearch?: string;
-    newPageSize?: string;
-    newPageNumber?: number;
-  }) => void;
-  table: Table<TData>;
+  handleChange: HandleTableSearchOrPaginationChange;
+  table: MRT_TableInstance<TData>;
   columnOrder: string[];
   setColumnOrder: (order: string[]) => void;
   baseZIndex?: number;
@@ -125,7 +123,7 @@ const SearchInput: React.FC<{
   );
 };
 
-function TableHeader<TData>({
+function TableHeader<TData extends MRT_RowData>({
   additionalControls,
   tableTotalDetail,
   tableTitle,

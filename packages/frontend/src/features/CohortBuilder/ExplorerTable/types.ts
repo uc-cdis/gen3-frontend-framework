@@ -7,7 +7,7 @@ import {
   MRT_TableInstance,
 } from 'mantine-react-table';
 import { Accessibility, JSONObject } from '@gen3/core';
-import { ReactNode, RefObject } from 'react';
+import React, { ReactNode, RefObject } from 'react';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -63,6 +63,9 @@ export interface SummaryTable extends TableColumnsAndFields {
   pageLimit?: SummaryTablePageLimit;
   detailsConfig?: ExplorerDetailsConfig;
   selectableRows?: boolean;
+  showTableHeaderControls?: boolean;
+  columnSorting?: boolean;
+  columnHiding?: boolean;
 }
 
 export interface ExploreTableClassnames extends Record<string, string> {
@@ -78,6 +81,9 @@ export interface ExplorerTableProps {
   accessibility: Accessibility;
   size?: string;
   classNames?: Partial<ExploreTableClassnames>;
+  additionalControls?: React.ReactNode; // for customization
+  tableTotalDetail?: React.ReactNode;
+  tableTitle?: React.ReactNode;
 }
 
 export interface ExplorerTableColumnMRT {
