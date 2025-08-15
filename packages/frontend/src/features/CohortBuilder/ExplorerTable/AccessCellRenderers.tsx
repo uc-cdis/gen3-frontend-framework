@@ -58,7 +58,6 @@ export const ProjectAccessCellRenderer = (
 
   let color = 'primary.4';
   if (params && isStringToColorTable(params?.colorTable)) {
-    console.log(params.colorTable);
     if (projectName) {
       color = ExtractValueFromObject(params.colorTable, projectName, color);
     }

@@ -41,19 +41,25 @@ import Stats from './Stats';
 import { ErrorCard } from '../../../components/MessageCards';
 import DropdownPanel from '../../../components/facets/Panels/DropdownPanel';
 import ExplorerTable from '../ExplorerTable/ExplorerTable';
+import DownloadsPanel from '../DownloadsPanel';
 
 export const RepositoryPanel = ({
   guppyConfig,
   filters,
   table,
-  fileStatsConfiguration,
   dropdowns,
   buttons,
   loginForDownload,
+  fileStatsConfiguration,
 }: RepositoryConfiguration) => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');
+
+  const defaultDropdowns = useMemo(() => dropdowns ?? {}, [dropdowns]);
+  const defaultButtons = useMemo(() => buttons ?? [], [buttons]);
+
+  console.log('buttons', buttons);
 
   const [accessLevel, setAccessLevel] = useState<Accessibility>(
     Accessibility.ALL,
@@ -174,7 +180,7 @@ export const RepositoryPanel = ({
     return (
       <div className="flex flex-col mt-3 relative px-4 bg-base-lightest w-full">
         {/* Flex container to ensure proper 25/75 split */}
-        <div className="flex w-full">
+        <div className="flex w-full pt-2">
           {/* Left panel - 25% */}
           <div
             id="cohort-builder-filters"
@@ -199,21 +205,32 @@ export const RepositoryPanel = ({
             id="cohort-builder-content"
             className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
           >
-            {/* Top row with DownloadsPanel and CountsValue */}
-
             {/* Table Section */}
             {table?.enabled && (
               <ExplorerTable
                 index={index}
                 tableConfig={table}
                 accessibility={accessLevel}
-                tableTotalDetail={
-                  <Stats
-                    totalFileCount={fileSizeSliceData.totalFileCount}
-                    totalCaseCount={fileSizeSliceData.totalCaseCount}
-                    totalFileSize={fileSizeSliceData.totalFileSize}
-                    isFetching={isFileSizeFetching}
+                additionalControls={
+                  <DownloadsPanel
+                    dropdowns={defaultDropdowns}
+                    buttons={defaultButtons}
+                    loginForDownload={loginForDownload}
+                    index={index}
+                    totalCount={fileSizeSliceData.totalCaseCount ?? 0}
+                    fields={table?.fields ?? []}
+                    filter={repositoryFilters}
                   />
+                }
+                tableTotalDetail={
+                  <div className="ml-auto">
+                    <Stats
+                      totalFileCount={fileSizeSliceData.totalFileCount}
+                      totalCaseCount={fileSizeSliceData.totalCaseCount}
+                      totalFileSize={fileSizeSliceData.totalFileSize}
+                      isFetching={isFileSizeFetching}
+                    />
+                  </div>
                 }
               />
             )}

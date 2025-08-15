@@ -210,6 +210,7 @@ function TableHeader<TData extends MRT_RowData>({
     }
   }
 
+  console.log('additionalControls: ', additionalControls);
   return (
     <div
       className={`flex flex-wrap gap-4 items-center mb-2 ${
