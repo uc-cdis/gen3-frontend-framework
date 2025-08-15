@@ -34,6 +34,7 @@ export interface SummaryTableColumn {
   width?: number; // override auto width of the column
   sortable?: boolean; // enable sorting on this column
   visible?: boolean; // show/hide column
+  lockVisible?: boolean; // lock the visibility of this column to the value of visible (if set)
 }
 
 export interface SummaryTablePageLimit {
@@ -95,6 +96,8 @@ export interface ExplorerTableColumnMRT {
   Cell?: ((cell: CellRendererFunctionProps) => React.ReactNode) | undefined;
   size?: number;
   enableSorting?: boolean;
+  visible?: boolean;
+  lockVisible?: boolean;
 }
 
 /**

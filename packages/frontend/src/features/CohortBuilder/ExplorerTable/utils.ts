@@ -67,8 +67,10 @@ export const createTableColumns = (
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
+      visible: columnDef?.visible ?? true,
+      lockVisible: columnDef?.lockVisible ?? false,
     };
-  }, [] as MRT_Column<ExplorerColumn>[]);
+  });
 };
 
 export const createArrayTableColumns = (
