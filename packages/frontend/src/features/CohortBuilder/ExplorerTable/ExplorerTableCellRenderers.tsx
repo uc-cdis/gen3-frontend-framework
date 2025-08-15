@@ -158,10 +158,6 @@ const RenderLinkCellWithIcon = (
       linkURL = `${baseURL}${value}`;
     }
   }
-  console.log('params', params);
-  console.log('linkField', linkField);
-  console.log('cell.row.original', cell.row.original);
-  console.log('linkURL', linkURL);
 
   return (
     <Link href={linkURL} target="_blank" rel="noreferrer">

@@ -35,8 +35,10 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
   const router = useRouter();
   const {
-    query: { referer },
+    query: { referer: refererQuery, redirect: redirectQuery },
   } = router;
+
+  const referer = redirectQuery || refererQuery; // either referer or redirect query param
 
   const handleFenceLoginSelected = useCallback(
     async (loginURL: string) => {

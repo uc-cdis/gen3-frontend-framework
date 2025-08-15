@@ -25,6 +25,7 @@ interface TableHeaderProps<TData extends MRT_RowData> {
   setColumnOrder: (order: string[]) => void;
   baseZIndex?: number;
   customBreakpoint?: number;
+  noColumnOrdering?: string[];
 }
 
 const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
@@ -135,6 +136,7 @@ function TableHeader<TData extends MRT_RowData>({
   setColumnOrder,
   baseZIndex,
   customBreakpoint,
+  noColumnOrdering,
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? '');
   const [searchFocused, setSearchFocused] = useState(false);
@@ -190,6 +192,7 @@ function TableHeader<TData extends MRT_RowData>({
           }}
           columnOrder={columnOrder}
           setColumnOrder={setColumnOrder as any}
+          noColumnOrdering={noColumnOrdering}
         />
       )}
     </div>
@@ -210,7 +213,6 @@ function TableHeader<TData extends MRT_RowData>({
     }
   }
 
-  console.log('additionalControls: ', additionalControls);
   return (
     <div
       className={`flex flex-wrap gap-4 items-center mb-2 ${

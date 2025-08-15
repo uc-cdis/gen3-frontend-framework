@@ -32,16 +32,6 @@ import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
 
-const addRowIdToData = (
-  rows: JSONObject[],
-  rowIdField: string,
-): JSONObject[] => {
-  return rows.map((row: JSONObject) => {
-    const id = JSONPath({ json: row, path: rowIdField });
-    return id.length === 0 ? row : { ...row, id: id[0] };
-  });
-};
-
 /**
  * Main table component for the explorer page. Fetches data from guppy using
  * useGetRawDataAndTotalCountsQuery() hook that leverages guppy core API slices
@@ -82,6 +72,7 @@ const ExplorerTable = ({
   const [selectedRow, setSelectedRow] = useState<
     MRT_Row<Record<string, any>> | undefined
   >(undefined);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   // const DetailsPanel = useMemo(
   //   () =>
@@ -94,7 +85,20 @@ const ExplorerTable = ({
 
   const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
-  const tableColumns = useDeepCompareMemo(() => {
+  const handleColumnVisibilityChange = (updater) => {
+    const newState =
+      typeof updater === 'function' ? updater(columnVisibility) : updater;
+
+    // ✅ Do your custom logic here
+    console.log('Column visibility changed:', newState);
+
+    setColumnVisibility({
+      ...newState,
+      ...{ 'mrt-row-expand': false, ...lockedVisibility },
+    });
+  };
+
+  const { tableColumns, lockedVisibility } = useDeepCompareMemo(() => {
     return createTableColumns(tableConfig);
   }, [tableConfig]);
 
@@ -164,20 +168,6 @@ const ExplorerTable = ({
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
-
-  const tableData = useMemo(() => {
-    const indexData = data?.data?.[index];
-
-    if (!indexData) {
-      return [];
-    }
-
-    if (!tableConfig?.rowIdField) {
-      return indexData;
-    }
-
-    return addRowIdToData(indexData, tableConfig.rowIdField);
-  }, [data?.data, index, tableConfig.rowIdField]);
   /**
    * mantine-react-table setup
    * @see https://www.mantine-react-table.com/docs/api/table-options
@@ -199,7 +189,7 @@ const ExplorerTable = ({
 
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
-    data: tableData,
+    data: data?.data?.[index] ?? [],
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
@@ -209,13 +199,14 @@ const ExplorerTable = ({
     onSortingChange: setSorting,
     enableTopToolbar: false,
     enableExpandAll: false,
-    enableHiding: false,
+    enableHiding: true,
     enableColumnActions: false,
     displayColumnDefOptions: {
       'mrt-row-expand': {
-        enableHiding: true, //now row numbers are hidable too
+        enableHiding: true, //now row numbers are hide-able too
       },
     },
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     enableExpanding: !!tableConfig?.detailsConfig,
     //enableColumnOrdering: tableConfig?.columnSorting,
     // enableHiding: tableConfig?.columnHiding,
@@ -272,7 +263,7 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
-      columnVisibility: { 'mrt-row-expand': false },
+      columnVisibility: columnVisibility, //{ 'mrt-row-expand': false, ...lockedVisibility },
       columnOrder: columnOrder,
     },
     mantineTableBodyRowProps:
@@ -353,6 +344,7 @@ const ExplorerTable = ({
               tableTitle={tableTitle}
               tableTotalDetail={tableTotalDetail}
               showControls={tableConfig?.showTableHeaderControls}
+              noColumnOrdering={Object.keys(lockedVisibility)}
             />
           )}
           <MantineReactTable table={table} />

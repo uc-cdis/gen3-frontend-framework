@@ -33,10 +33,8 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
   return obj !== null && typeof obj === 'object';
 };
 
-export const createTableColumns = (
-  tableConfig: TableColumnsAndFields,
-): ExplorerTableColumnMRT[] => {
-  return tableConfig.fields.map((field) => {
+export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
+  const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
@@ -71,6 +69,22 @@ export const createTableColumns = (
       lockVisible: columnDef?.lockVisible ?? false,
     };
   });
+
+  const lockedVisibility = tableConfig.fields.reduce(
+    (acc, field) => {
+      const columnDef = tableConfig?.columns?.[field];
+      if (columnDef && columnDef?.lockVisible) {
+        acc[field] = columnDef?.visible ?? true; // assume visible by default
+      }
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+
+  return {
+    tableColumns: tableColumns,
+    lockedVisibility: lockedVisibility,
+  };
 };
 
 export const createArrayTableColumns = (
