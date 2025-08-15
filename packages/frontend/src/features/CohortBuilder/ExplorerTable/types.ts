@@ -66,6 +66,7 @@ export interface SummaryTable extends TableColumnsAndFields {
   showTableHeaderControls?: boolean;
   columnSorting?: boolean;
   columnHiding?: boolean;
+  rowIdField?: string;
 }
 
 export interface ExploreTableClassnames extends Record<string, string> {

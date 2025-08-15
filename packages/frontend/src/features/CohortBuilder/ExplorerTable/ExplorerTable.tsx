@@ -32,6 +32,16 @@ import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
 
+const addRowIdToData = (
+  rows: JSONObject[],
+  rowIdField: string,
+): JSONObject[] => {
+  return rows.map((row: JSONObject) => {
+    const id = JSONPath({ json: row, path: rowIdField });
+    return id.length === 0 ? row : { ...row, id: id[0] };
+  });
+};
+
 /**
  * Main table component for the explorer page. Fetches data from guppy using
  * useGetRawDataAndTotalCountsQuery() hook that leverages guppy core API slices
@@ -154,6 +164,20 @@ const ExplorerTable = ({
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
+
+  const tableData = useMemo(() => {
+    const indexData = data?.data?.[index];
+
+    if (!indexData) {
+      return [];
+    }
+
+    if (!tableConfig?.rowIdField) {
+      return indexData;
+    }
+
+    return addRowIdToData(indexData, tableConfig.rowIdField);
+  }, [data?.data, index, tableConfig.rowIdField]);
   /**
    * mantine-react-table setup
    * @see https://www.mantine-react-table.com/docs/api/table-options
@@ -175,7 +199,7 @@ const ExplorerTable = ({
 
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
-    data: data?.data?.[index] ?? [],
+    data: tableData,
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
