@@ -54,6 +54,14 @@ export type useTotalFileSizeQueryHook = (
   args: FileCountsQueryParameters,
 ) => FileSizeQueryResponse;
 
+export interface FileStatsConfiguration {
+  cohortIndex: string;
+  repositoryIndex: string;
+  cohortItemIdField: string;
+  fileItemIdField: string;
+  fileSizeField: string;
+}
+
 export interface RepositoryConfiguration extends Gen3AppConfigData {
   filters?: TabsConfig; // filters for the fields
   guppyConfig: DataTypeConfigWithManifest; // guppy
@@ -61,11 +69,5 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
   dropdowns?: Record<string, DropdownsWithButtonsProps>; // dropdown menu of action buttons
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
-  fileStatsConfiguration: {
-    cohortIndex: string;
-    repositoryIndex: string;
-    cohortItemIdField: string;
-    fileItemIdField: string;
-    fileSizeField: string;
-  };
+  fileStatsConfiguration: FileStatsConfiguration;
 }

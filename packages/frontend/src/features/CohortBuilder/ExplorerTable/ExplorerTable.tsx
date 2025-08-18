@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
@@ -28,6 +35,7 @@ import { StudyProvider } from '../../Study';
 import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
 import TableHeader from '../../../components/Tables/TableHeader';
 import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
+import { TableXPositionContext } from './context';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -54,6 +62,7 @@ const ExplorerTable = ({
     pageIndex: 0,
     pageSize: 20,
   });
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const DetailsComponent = useMemo(() => {
     if (
@@ -88,10 +97,6 @@ const ExplorerTable = ({
   const handleColumnVisibilityChange = (updater: any) => {
     const newState =
       typeof updater === 'function' ? updater(columnVisibility) : updater;
-
-    // ✅ Do your custom logic here
-    console.log('Column visibility changed:', newState);
-
     setColumnVisibility({
       ...newState,
       ...{ 'mrt-row-expand': false, ...lockedVisibility },
@@ -137,7 +142,9 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching } =
+  const { xPosition, setXPosition } = useContext(TableXPositionContext);
+
+  const { data, isLoading, isError, isFetching, isSuccess } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,
@@ -168,6 +175,7 @@ const ExplorerTable = ({
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
+
   /**
    * mantine-react-table setup
    * @see https://www.mantine-react-table.com/docs/api/table-options
@@ -308,6 +316,21 @@ const ExplorerTable = ({
           }
         : undefined,
   });
+
+  const rowCount = table.getRowModel().rows.length;
+
+  useLayoutEffect(() => {
+    if (
+      setXPosition &&
+      xPosition === undefined &&
+      isSuccess &&
+      rowCount > 0 &&
+      ref.current
+    ) {
+      setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
+    }
+  }, [setXPosition, xPosition, rowCount]);
+
   return (
     <React.Fragment>
       <StudyProvider>
@@ -331,7 +354,7 @@ const ExplorerTable = ({
             }}
           />
         )}
-        <div className="inline-block overflow-x-scroll">
+        <div className="inline-block overflow-x-scroll " ref={ref}>
           {(tableConfig?.showTableHeaderControls ||
             tableConfig.columnSorting ||
             tableConfig?.columnHiding) && (
