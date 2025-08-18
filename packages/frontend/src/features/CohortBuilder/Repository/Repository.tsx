@@ -13,7 +13,6 @@ const Repository = ({
   dropdowns,
   fileStatsConfiguration,
 }: RepositoryConfiguration) => {
-  console.log(buttons);
   if (
     !fileStatsConfiguration ||
     !validateObjectHasRequiredFields(

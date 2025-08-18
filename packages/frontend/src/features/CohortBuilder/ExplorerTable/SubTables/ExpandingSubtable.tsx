@@ -26,7 +26,7 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
 
   const theme = useMantineTheme();
 
-  const expandedTableColumns = useDeepCompareMemo(() => {
+  const { tableColumns: expandedTableColumns } = useDeepCompareMemo(() => {
     return createTableColumns(config);
   }, [config]);
 
