@@ -85,7 +85,7 @@ const ExplorerTable = ({
 
   const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
-  const handleColumnVisibilityChange = (updater) => {
+  const handleColumnVisibilityChange = (updater: any) => {
     const newState =
       typeof updater === 'function' ? updater(columnVisibility) : updater;
 
