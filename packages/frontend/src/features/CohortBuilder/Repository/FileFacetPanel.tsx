@@ -1,5 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import {
   Accessibility,
   CombineMode,
