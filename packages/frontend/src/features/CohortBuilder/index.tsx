@@ -12,6 +12,7 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
   registerExplorerDefaultCellRenderers,
   type TableDetailsPanelProps,
+  TableXPositionContext,
 } from './ExplorerTable';
 
 import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext';
@@ -41,7 +42,8 @@ export {
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
-  QueryExpressionContext,
+  QueryExpressionContext, // TODO move context to own feature folder
+  TableXPositionContext,
   QueryExpression,
   QueryExpressionSection,
   TabbedCohortBuilder,

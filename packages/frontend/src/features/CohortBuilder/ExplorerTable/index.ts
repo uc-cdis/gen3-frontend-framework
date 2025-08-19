@@ -1,16 +1,13 @@
 import ExplorerTable from './ExplorerTable';
-import { type ColumnDefinition, type CellRendererFunctionProps } from './types';
-import {
-  ExplorerTableCellRendererFactory,
-  registerExplorerDefaultCellRenderers,
-} from './ExplorerTableCellRenderers';
+import { ExplorerTableCellRendererFactory, registerExplorerDefaultCellRenderers, } from './ExplorerTableCellRenderers';
+import { TableXPositionContext } from './context';
 
 export * from './ExploreTableDetails';
+export * from './types';
 
 export {
   ExplorerTable,
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
-  type ColumnDefinition,
-  type CellRendererFunctionProps,
+  TableXPositionContext,
 };
