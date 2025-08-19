@@ -6,7 +6,6 @@ import {
   Accessibility,
   CoreState,
   EmptyFilterSet,
-  FacetDefinition,
   selectIndexFilters,
   useCoreSelector,
 } from '@gen3/core';
@@ -45,24 +44,9 @@ export const RepositoryPanel = ({
     [filters?.tabs],
   );
 
-  const [facetDefinitions, setFacetDefinitions] = useState<
-    Record<string, FacetDefinition>
-  >({});
-
   const repositoryFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
-
-  // const {
-  //   data: facetData,
-  //   isSuccess: isFacetsQuerySuccess,
-  //   isFetching: isFacetsQueryFetching,
-  //   isError: isFacetsQueryError,
-  // } = useGetFacetValuesQuery({
-  //   type: index,
-  //   fields: fields,
-  //   filters: repositoryFilters,
-  // });
 
   const { data: fileSizeSliceData, isFetching: isFileSizeFetching } =
     useTotalFileSizeQuery({
@@ -70,85 +54,6 @@ export const RepositoryPanel = ({
       cohortFilters: EmptyFilterSet,
       ...fileStatsConfiguration,
     });
-
-  // const getEnumFacetData = useDeepCompareCallback(
-  //   (field: string) => {
-  //     let filters = undefined;
-  //     let combineMode: CombineMode = 'or';
-  //     if (field in repositoryFilters.root) {
-  //       if (isIntersection(repositoryFilters.root[field])) {
-  //         const intersectionFilters = removeIntersectionFromEnum(
-  //           repositoryFilters.root[field],
-  //         );
-  //         if (intersectionFilters) {
-  //           filters = extractEnumFilterValue(intersectionFilters);
-  //           combineMode = 'and';
-  //         }
-  //       } else {
-  //         filters = extractEnumFilterValue(repositoryFilters.root[field]);
-  //       }
-  //     }
-  //
-  //     return {
-  //       data: processBucketData(facetData?.[field]),
-  //       enumFilters: filters,
-  //       combineMode: combineMode,
-  //       isSuccess: isFacetsQuerySuccess,
-  //       isFetching: isFacetsQueryFetching,
-  //     };
-  //   },
-  //   [repositoryFilters.root, facetData, isFacetsQuerySuccess],
-  // );
-  //
-  // const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
-  //   useDeepCompareMemo(() => {
-  //     return {
-  //       // TODO: see if there a better way to do this
-  //       enum: {
-  //         useGetFacetData: getEnumFacetData,
-  //         useUpdateFacetFilters: partial(useUpdateFilters, index),
-  //         useGetFacetFilters: partial(useGetFacetFilters, index),
-  //         useClearFilter: partial(useClearFilters, index),
-  //         useFilterExpanded: partial(useFilterExpandedState, index),
-  //         useToggleExpandFilter: partial(useToggleExpandFilter, index),
-  //         useGetCombineMode: partial(useCohortFilterCombineState, index),
-  //         useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-  //         useFieldNameToTitle: useFieldNameToTitle,
-  //         useTotalCounts: undefined,
-  //         useUpdateCombineMode: () => null,
-  //       },
-  //     };
-  //   }, [getEnumFacetData, index]);
-  //
-  // // Set the facet definitions based on the data only the first time the data is loaded
-  // useDeepCompareEffect(() => {
-  //   if (isFacetsQuerySuccess && Object.keys(facetDefinitions).length === 0) {
-  //     const configFacetDefs = filters?.tabs.reduce(
-  //       (acc: Record<string, FacetDefinition>, tab) => {
-  //         return { ...tab.fieldsConfig, ...acc };
-  //       },
-  //       {},
-  //     );
-  //
-  //     const facetDefs = classifyFacets(
-  //       facetData,
-  //       index,
-  //       guppyConfig?.fieldMapping ?? [],
-  //       configFacetDefs ?? {},
-  //     );
-  //     setFacetDefinitions(facetDefs);
-  //   }
-  // }, [
-  //   isFacetsQuerySuccess,
-  //   facetData,
-  //   facetDefinitions,
-  //   index,
-  //   guppyConfig.fieldMapping,
-  // ]);
-
-  // if (isFacetsQueryError) {
-  //   return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
-  // }
 
   if (fileStatsConfiguration)
     return (
