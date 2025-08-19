@@ -2,10 +2,10 @@ import { fieldNameToTitle } from '@gen3/core';
 import type {
   CellRendererFunctionProps,
   ColumnDefinition,
-  SummaryTableColumn,
-  TableColumnsAndFields,
   ExplorerColumn,
   ExplorerTableColumnMRT,
+  SummaryTableColumn,
+  TableColumnsAndFields,
 } from './types';
 import { type MRT_Column } from 'mantine-react-table';
 import {
@@ -33,12 +33,9 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
   return obj !== null && typeof obj === 'object';
 };
 
-export const createTableColumns = (
-  tableConfig: TableColumnsAndFields,
-): ExplorerTableColumnMRT[] => {
-  return tableConfig.fields.map((field) => {
+export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
+  const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
-
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
           columnDef?.type,
@@ -68,8 +65,26 @@ export const createTableColumns = (
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
+      visible: columnDef?.visible ?? true,
+      lockVisible: columnDef?.lockVisible ?? false,
     };
-  }, [] as MRT_Column<ExplorerColumn>[]);
+  });
+
+  const lockedVisibility = tableConfig.fields.reduce(
+    (acc, field) => {
+      const columnDef = tableConfig?.columns?.[field];
+      if (columnDef && columnDef?.lockVisible) {
+        acc[field] = columnDef?.visible ?? true; // assume visible by default
+      }
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+
+  return {
+    tableColumns: tableColumns,
+    lockedVisibility: lockedVisibility,
+  };
 };
 
 export const createArrayTableColumns = (

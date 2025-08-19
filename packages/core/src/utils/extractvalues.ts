@@ -26,3 +26,11 @@ export const extractValuesFromObject = (
 
   return result;
 };
+
+export const ExtractValueFromObject = <T = any>(
+  obj: Record<string, T> | null | undefined,
+  key: string,
+  valueIfNotFound: T,
+): T => {
+  return obj?.[key] ?? valueIfNotFound;
+};

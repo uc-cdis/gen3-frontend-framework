@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { MutableRefObject, useCallback, useState } from 'react';
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
@@ -29,20 +29,21 @@ const Dictionary = () => {
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
       // @ts-expect-error need to refactor this
-      targetRef.current = itemRef;
+      (targetRef.current as MutableRefObject<HTMLDivElement>) = itemRef;
       scrollIntoView();
     },
     [scrollIntoView, targetRef],
   );
-  const categoryPanelTable = Object.keys(categories).length &&
-            Object.keys(categories).map((category) => (
-              <CategoryPanel
-                key={category}
-                category={category}
-                selectedId={selectedId}
-                scrollToSelection={scrollToSelection}
-              />
-            ));
+  const categoryPanelTable =
+    Object.keys(categories).length &&
+    Object.keys(categories).map((category) => (
+      <CategoryPanel
+        key={category}
+        category={category}
+        selectedId={selectedId}
+        scrollToSelection={scrollToSelection}
+      />
+    ));
 
   return (
     <>
@@ -72,15 +73,12 @@ const Dictionary = () => {
             <Tabs value={view} keepMounted={false}>
               <Tabs.Panel value="table">{categoryPanelTable}</Tabs.Panel>
               <Tabs.Panel value="graph">
-                <GraphView
-                  categories={categories}
-                  selectedId={selectedId}
-                />
+                <GraphView categories={categories} selectedId={selectedId} />
               </Tabs.Panel>
             </Tabs>
-          ) : 
+          ) : (
             categoryPanelTable
-          }
+          )}
         </div>
       </div>
     </>

@@ -17,29 +17,29 @@ import {
   useGetCountsQuery,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import { type SummaryChart } from '../../components/charts/types';
+import {
+  Charts,
+  CollapsableCharts,
+  type SummaryChart,
+} from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
-  EnumFacetDataHooks,
-  FacetDataHooks,
-} from '../../components/facets/types';
-
-import {
   classifyFacets,
+  EnumFacetDataHooks,
   extractRangeValues,
+  FacetDataHooks,
   getAllFieldsFromFilterConfigs,
   processBucketData,
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
-} from '../../components/facets/utils';
+} from '../../components/facets';
 import {
   useClearFilters,
   useFieldNameToTitle,
 } from '../../components/facets/hooks';
-import { Charts, CollapsableCharts } from '../../components/charts';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
@@ -354,7 +354,6 @@ export const CohortPanel = ({
   const {
     data: counts,
     isFetching: isCountsFetching,
-    isSuccess: isCountSuccess,
     isError: isCountsError,
   } = useGetCountsQuery({
     type: index,

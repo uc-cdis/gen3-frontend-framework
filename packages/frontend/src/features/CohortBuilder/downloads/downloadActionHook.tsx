@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Modals, showModal, useCoreDispatch } from '@gen3/core';
 import { GuppyActionButtonProps } from '../types';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
@@ -48,11 +48,13 @@ const useGuppyActionButton = ({
         errorMessage === undefined
       ) {
         dispatch(showModal({ modal: Modal400, message: errorMessage }));
+        console.error(error);
       } else if (
         errorMessage ===
         'Your token is invalid or expired. Please get a new token.'
       ) {
         dispatch(showModal({ modal: Modal403, message: errorMessage }));
+        console.error(error);
       } else {
         dispatch(
           showModal({
@@ -60,6 +62,7 @@ const useGuppyActionButton = ({
             message: customErrorMessage || errorMessage,
           }),
         );
+        console.error(error);
       }
     },
     [Modal400, Modal403, customErrorMessage, dispatch],

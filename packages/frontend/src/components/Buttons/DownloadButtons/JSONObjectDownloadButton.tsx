@@ -67,3 +67,4 @@ const JSONObjectDownloadButton: React.FC<JsonFileSaverProps> = ({
 };
 
 export default JSONObjectDownloadButton;
+JSONObjectDownloadButton.displayName = 'JSONObjectDownloadButton';

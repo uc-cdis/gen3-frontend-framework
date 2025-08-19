@@ -7,8 +7,7 @@ import {
   MRT_TableInstance,
 } from 'mantine-react-table';
 import { Accessibility, JSONObject } from '@gen3/core';
-import { ReactNode, RefObject } from 'react';
-import { CellRendererFunction } from './ExplorerTableCellRenderers';
+import React, { ReactNode, RefObject } from 'react';
 
 export interface ColumnDefinition {
   header: string; // title of column
@@ -35,6 +34,7 @@ export interface SummaryTableColumn {
   width?: number; // override auto width of the column
   sortable?: boolean; // enable sorting on this column
   visible?: boolean; // show/hide column
+  lockVisible?: boolean; // lock the visibility of this column to the value of visible (if set)
 }
 
 export interface SummaryTablePageLimit {
@@ -64,6 +64,10 @@ export interface SummaryTable extends TableColumnsAndFields {
   pageLimit?: SummaryTablePageLimit;
   detailsConfig?: ExplorerDetailsConfig;
   selectableRows?: boolean;
+  showTableHeaderControls?: boolean;
+  columnSorting?: boolean;
+  columnHiding?: boolean;
+  rowIdField?: string;
 }
 
 export interface ExploreTableClassnames extends Record<string, string> {
@@ -79,6 +83,9 @@ export interface ExplorerTableProps {
   accessibility: Accessibility;
   size?: string;
   classNames?: Partial<ExploreTableClassnames>;
+  additionalControls?: React.ReactNode; // for customization
+  tableTotalDetail?: React.ReactNode;
+  tableTitle?: React.ReactNode;
 }
 
 export interface ExplorerTableColumnMRT {
@@ -90,6 +97,8 @@ export interface ExplorerTableColumnMRT {
   Cell?: ((cell: CellRendererFunctionProps) => React.ReactNode) | undefined;
   size?: number;
   enableSorting?: boolean;
+  visible?: boolean;
+  lockVisible?: boolean;
 }
 
 /**
@@ -113,3 +122,8 @@ export interface ExplorerColumn {
   Cell?: CellRendererFunction;
   size?: number;
 }
+
+export type CellRendererFunction = (
+  props: CellRendererFunctionProps,
+  ...args: any[]
+) => ReactNode;

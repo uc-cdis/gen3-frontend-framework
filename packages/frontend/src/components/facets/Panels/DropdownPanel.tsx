@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Group,
+  ScrollArea,
   Select,
   Stack,
   Switch,
@@ -14,6 +15,8 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
+  FacetDefinition,
+  FacetType,
   selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
@@ -26,9 +29,7 @@ import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
 
-import { FacetDefinition } from '@gen3/core';
-
-export const DropdownPanel = ({
+export const DropdownPanel = <T extends FacetType = FacetType>({
   index,
   filters,
   tabTitle,
@@ -37,7 +38,7 @@ export const DropdownPanel = ({
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
-}: TabbablePanelProps) => {
+}: TabbablePanelProps<T>) => {
   const [value, setValue] = useState<string | null>('0');
   const allFiltersCollapsed = useCoreSelector((state) =>
     selectAllCohortFiltersCollapsed(state, index),
@@ -99,58 +100,60 @@ export const DropdownPanel = ({
       {showAccessLevel ? (
         <AccessLevel onChange={onAccessChange} accessLevel={accessLevel} />
       ) : null}
-      <Stack className="bg-base-max py-4 px-2 h-full w-full">
-        {Object.keys(sharedFilters).length > 0 && (
-          <Group gap="xs" justify="space-between">
-            <div className="flex items-center space-x-1">
-              <Icon
-                icon="gen3:share"
-                height={16}
-                width={16}
-                color={theme.colors.accent[4]}
-              />
-              <Text size="sm">Set the shared filters for all</Text>
-              <Tooltip
-                label="If enabled any filter set on this tab will be applied to every tab where occurs."
-                position="top"
-                withArrow
-              >
+      <ScrollArea type="auto" className="flex-1 min-h-0 w-full">
+        <Stack className="bg-base-max py-4 px-2 h-screen w-full">
+          {Object.keys(sharedFilters).length > 0 && (
+            <Group gap="xs" justify="space-between">
+              <div className="flex items-center space-x-1">
                 <Icon
-                  icon="gen3:info"
-                  height={12}
-                  width={12}
+                  icon="gen3:share"
+                  height={16}
+                  width={16}
                   color={theme.colors.accent[4]}
                 />
-              </Tooltip>
-            </div>
-            <Switch
-              checked={shareFilters}
-              onChange={(event) =>
-                handleSharedFiltersChange(event.currentTarget.checked)
-              }
+                <Text size="sm">Set the shared filters for all</Text>
+                <Tooltip
+                  label="If enabled any filter set on this tab will be applied to every tab where occurs."
+                  position="top"
+                  withArrow
+                >
+                  <Icon
+                    icon="gen3:info"
+                    height={12}
+                    width={12}
+                    color={theme.colors.accent[4]}
+                  />
+                </Tooltip>
+              </div>
+              <Switch
+                checked={shareFilters}
+                onChange={(event) =>
+                  handleSharedFiltersChange(event.currentTarget.checked)
+                }
+              />
+            </Group>
+          )}
+          {filters.tabs.length > 1 && (
+            <Select
+              classNames={{
+                options: 'border-1 border-base-dark',
+                option: 'hover:bg-primary-lightest',
+              }}
+              withCheckIcon={false}
+              data={items}
+              value={value === null ? '0' : value}
+              onChange={setValue}
             />
-          </Group>
-        )}
-        {filters.tabs.length > 1 && (
-          <Select
-            classNames={{
-              options: 'border-1 border-base-dark',
-              option: 'hover:bg-primary-lightest',
-            }}
-            withCheckIcon={false}
-            data={items}
-            value={value === null ? '0' : value}
-            onChange={setValue}
-          />
-        )}
-        {Object.keys(facetDefinitions).length > 0 ? (
-          <FiltersPanel
-            fields={fields}
-            dataFunctions={facetDataHooks}
-            valueLabel={tabTitle}
-          />
-        ) : null}
-      </Stack>
+          )}
+          {Object.keys(facetDefinitions).length > 0 ? (
+            <FiltersPanel
+              fields={fields}
+              dataFunctions={facetDataHooks}
+              valueLabel={tabTitle}
+            />
+          ) : null}
+        </Stack>
+      </ScrollArea>
     </Stack>
   );
 };

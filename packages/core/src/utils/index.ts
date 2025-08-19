@@ -8,11 +8,9 @@ import {
   HttpMethod,
 } from './fetch';
 import { getCurrentTimestamp, isTimeGreaterThan } from './time';
-import {
-  calculatePercentageAsNumber,
-  calculatePercentageAsString,
-  convertToHistogramDataAsStringKey,
-} from './conversions';
+import { ExtractValueFromObject } from './extractvalues';
+
+export * from './conversions';
 
 export {
   isObject,
@@ -27,8 +25,6 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
-  convertToHistogramDataAsStringKey,
-  calculatePercentageAsString,
-  calculatePercentageAsNumber,
+  ExtractValueFromObject,
 };
 export { getTimestamp } from './time';

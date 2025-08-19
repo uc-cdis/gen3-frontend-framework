@@ -1,5 +1,5 @@
 import { Middleware, Reducer } from '@reduxjs/toolkit';
-import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 import { CoreState } from '../../reducers';
 import { selectCSRFToken } from '../user/userSliceRTK';

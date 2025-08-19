@@ -1,9 +1,8 @@
-import React, { useMemo, ReactElement } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Accordion } from '@mantine/core';
 import type { FieldSubtable } from '../types';
 import ExplorerTableSubtable from './ExplorerTableSubtable';
 import { JSONObject } from '@gen3/core';
-import { useDeepCompareMemo } from 'use-deep-compare';
 import { createTableColumns } from '../utils';
 
 interface SubtableAccordianProps {
@@ -17,7 +16,8 @@ const SubtableAccordion = ({ subTables, data }: SubtableAccordianProps) => {
       subTables.reduce((acc: ReactElement[], config: FieldSubtable) => {
         if (!(config.root in data)) return acc;
 
-        const expandedTableColumns = createTableColumns(config);
+        const { tableColumns: expandedTableColumns } =
+          createTableColumns(config);
 
         acc.push(
           <Accordion.Item value={config.root} key={config.root}>

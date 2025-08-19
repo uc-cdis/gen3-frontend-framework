@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   CoreState,
@@ -10,6 +17,7 @@ import {
 } from '@gen3/core';
 import {
   MantineReactTable,
+  type MRT_ColumnOrderState,
   type MRT_PaginationState,
   type MRT_Row,
   type MRT_RowSelectionState,
@@ -19,12 +27,15 @@ import {
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import type { ExplorerTableProps, SummaryTable } from './types';
 import { type TableDetailsPanelProps } from './ExploreTableDetails';
-import { DetailsModal, DetailsDrawer } from '../../../components/Details';
+import { DetailsDrawer, DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import SubtableStack from './SubTables/SubtableStack';
 import { JSONPath } from 'jsonpath-plus';
 import { StudyProvider } from '../../Study';
 import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
+import TableHeader from '../../../components/Tables/TableHeader';
+import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
+import { TableXPositionContext } from './context';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -43,11 +54,15 @@ const ExplorerTable = ({
   accessibility,
   classNames,
   size = 'sm',
+  additionalControls,
+  tableTotalDetail,
+  tableTitle,
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   });
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const DetailsComponent = useMemo(() => {
     if (
@@ -66,6 +81,7 @@ const ExplorerTable = ({
   const [selectedRow, setSelectedRow] = useState<
     MRT_Row<Record<string, any>> | undefined
   >(undefined);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   // const DetailsPanel = useMemo(
   //   () =>
@@ -78,9 +94,27 @@ const ExplorerTable = ({
 
   const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
-  const tableColumns = useDeepCompareMemo(() => {
+  const handleColumnVisibilityChange = (updater: any) => {
+    const newState =
+      typeof updater === 'function' ? updater(columnVisibility) : updater;
+    setColumnVisibility({
+      ...newState,
+      ...{ 'mrt-row-expand': false, ...lockedVisibility },
+    });
+  };
+
+  const { tableColumns, lockedVisibility } = useDeepCompareMemo(() => {
     return createTableColumns(tableConfig);
   }, [tableConfig]);
+
+  const [columnOrder, setColumnOrder] = useState<MRT_ColumnOrderState>(
+    tableColumns.map((column: any) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+
+  const handleSearchOrPageChange = useCallback(
+    (params: TableSearchOrPaginationProps) => null,
+    [],
+  );
 
   // TODO: add support for nested fields
   const fields = useMemo(
@@ -108,7 +142,9 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
 
-  const { data, isLoading, isError, isFetching } =
+  const { xPosition, setXPosition } = useContext(TableXPositionContext);
+
+  const { data, isLoading, isError, isFetching, isSuccess } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
       fields: fields,
@@ -139,6 +175,7 @@ const ExplorerTable = ({
       : 'Rows per Page:';
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
+
   /**
    * mantine-react-table setup
    * @see https://www.mantine-react-table.com/docs/api/table-options
@@ -170,12 +207,17 @@ const ExplorerTable = ({
     onSortingChange: setSorting,
     enableTopToolbar: false,
     enableExpandAll: false,
+    enableHiding: true,
+    enableColumnActions: false,
     displayColumnDefOptions: {
       'mrt-row-expand': {
-        enableHiding: true, //now row numbers are hidable too
+        enableHiding: true, //now row numbers are hide-able too
       },
     },
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     enableExpanding: !!tableConfig?.detailsConfig,
+    //enableColumnOrdering: tableConfig?.columnSorting,
+    // enableHiding: tableConfig?.columnHiding,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
     icons: TableIcons,
@@ -229,7 +271,8 @@ const ExplorerTable = ({
       showAlertBanner: isError,
       density: 'xs',
       rowSelection: rowSelection,
-      columnVisibility: { 'mrt-row-expand': false },
+      columnVisibility: columnVisibility, //{ 'mrt-row-expand': false, ...lockedVisibility },
+      columnOrder: columnOrder,
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -273,6 +316,21 @@ const ExplorerTable = ({
           }
         : undefined,
   });
+
+  const rowCount = table.getRowModel().rows.length;
+
+  useLayoutEffect(() => {
+    if (
+      setXPosition &&
+      xPosition === undefined &&
+      isSuccess &&
+      rowCount > 0 &&
+      ref.current
+    ) {
+      setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
+    }
+  }, [setXPosition, xPosition, rowCount]);
+
   return (
     <React.Fragment>
       <StudyProvider>
@@ -296,7 +354,22 @@ const ExplorerTable = ({
             }}
           />
         )}
-        <div className="inline-block overflow-x-scroll">
+        <div className="inline-block overflow-x-scroll " ref={ref}>
+          {(tableConfig?.showTableHeaderControls ||
+            tableConfig.columnSorting ||
+            tableConfig?.columnHiding) && (
+            <TableHeader
+              table={table}
+              columnOrder={columnOrder}
+              setColumnOrder={setColumnOrder}
+              handleChange={handleSearchOrPageChange}
+              additionalControls={additionalControls}
+              tableTitle={tableTitle}
+              tableTotalDetail={tableTotalDetail}
+              showControls={tableConfig?.showTableHeaderControls}
+              noColumnOrdering={Object.keys(lockedVisibility)}
+            />
+          )}
           <MantineReactTable table={table} />
         </div>
       </StudyProvider>
