@@ -11,7 +11,7 @@ interface ExtractedNames {
 // TODO: refine this to make more general
 const extractProgramAndProjectNames = (path: string): ExtractedNames => {
   // Regular expression to match the pattern /programs/{programName}/projects/{projectName}
-  const regex = /\/programs\/([^\/]+)\/projects\/([^\/]+)/;
+  const regex = /\/programs\/([^/]+)\/projects\/([^/]+)/;
   const match = path.match(regex);
 
   if (match) {
