@@ -6,6 +6,7 @@ export const MantineSizeToString: Record<string, string> = {
   xl: 'xl',
   'xl-2': 'xl-2',
 };
+
 export const IconSize: Record<string, number> = {
   xs: 14,
   sm: 16,
@@ -14,6 +15,7 @@ export const IconSize: Record<string, number> = {
   xl: 32,
   'xl-2': 36,
 };
+
 export const FontSize: Record<string, string> = {
   xs: 'var(--mantine-font-size-xs)',
   sm: 'var(--mantine-font-size-sm)',
