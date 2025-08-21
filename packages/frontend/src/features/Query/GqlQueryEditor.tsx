@@ -43,6 +43,15 @@ const GqlQueryEditor = ({
         query={query}
         onEditQuery={setQuery}
       >
+        <GraphiQL.Toolbar>
+          {({ merge, prettify, copy }) => (
+            <>
+              {prettify}
+              {merge}
+              {copy}
+            </>
+          )}
+        </GraphiQL.Toolbar>
         <GraphiQL.Logo> {null} </GraphiQL.Logo>
       </GraphiQL>
     </div>

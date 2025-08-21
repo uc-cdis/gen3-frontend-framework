@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "next lint",
     "lint-fix": "next lint --fix",
-    "dev": "NODE_OPTIONS='--inspect' next dev --turbopack",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "devssh": "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",
     "build": "next build",
@@ -42,6 +42,7 @@
     "react-dom": "18.3.1",
     "sharp": "^0.33.5",
     "swr": "^2.2.5"
+
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.1",
@@ -68,11 +69,14 @@
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.3.3"
+
   },
   "peerDependencies": {
     "tailwindcss": "^3.4.16",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "graphiql": "^4.1.2",
+    "@graphiql/react": "^0.34.0"
   }
 }
