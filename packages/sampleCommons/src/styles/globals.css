@@ -8,6 +8,7 @@
 @import "tailwindcss/utilities";
 @import '@gen3/frontend/dist/styles.css';
 
+@import 'graphiql/graphiql.css';
 
 @layer base {
   html {
