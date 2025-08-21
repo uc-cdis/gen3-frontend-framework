@@ -1,6 +1,5 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { GraphiQL } from 'graphiql';
-import 'graphiql/setup-workers/webpack';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
 import {
@@ -18,6 +17,7 @@ import { GqlQueryEditorProps } from './types';
 const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
+  const [query, setQuery] = useState('');
   const headers = useCoreSelector(selectHeadersWithCSRFToken);
 
   // Typically we would put this in core but it's only used here
@@ -37,7 +37,12 @@ const GqlQueryEditor = ({
           Query Graph
         </Text>
       </div>
-      <GraphiQL fetcher={fetcher}>
+      <GraphiQL
+        editorTheme="light"
+        fetcher={fetcher}
+        query={query}
+        onEditQuery={setQuery}
+      >
         <GraphiQL.Logo> {null} </GraphiQL.Logo>
       </GraphiQL>
     </div>
