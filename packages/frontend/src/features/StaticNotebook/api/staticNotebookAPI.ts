@@ -8,6 +8,17 @@ import {
   GEN3_STATIC_NOTEBOOK_PATH,
 } from '../constants';
 
+const MAX_FILE_SIZE = 4096 * 1024;
+
+function safeReadFileSync(filePath: string, maxBytes = MAX_FILE_SIZE) {
+  // 1 MB default
+  const stats = fs.statSync(filePath);
+  if (stats.size > maxBytes) {
+    throw new Error(`File too large: ${stats.size} bytes (limit ${maxBytes})`);
+  }
+  return fs.readFileSync(filePath, 'utf8');
+}
+
 export const staticNotebookAPI = async (
   req: NextApiRequest,
   res: NextApiResponse,
@@ -16,6 +27,7 @@ export const staticNotebookAPI = async (
     res.status(200).json({
       success: true,
     });
+    return;
   }
 
   if (req.method === 'GET') {
@@ -23,9 +35,8 @@ export const staticNotebookAPI = async (
       // Validate that a notebook was provided
       const { notebook } = req.query;
       if (!notebook) {
-        return res
-          .status(400)
-          .json({ error: 'notebook parameter is required' });
+        res.status(400).json({ error: 'notebook parameter is required' });
+        return;
       }
       let filePath: string = '';
       if (isArray(notebook)) {
@@ -41,13 +52,11 @@ export const staticNotebookAPI = async (
 
       // Ensure the file is within the allowed directory and has .html extension
       if (!sanitizedPath.endsWith('.html')) {
-        return Response.json(
-          {
-            error: 'Only HTML files are allowed',
-            success: false,
-          },
-          { status: 400 },
-        );
+        res.status(400).json({
+          error: 'Only HTML files are allowed',
+          success: false,
+        });
+        return;
       }
 
       // Construct the full file path within the data directory
@@ -64,13 +73,14 @@ export const staticNotebookAPI = async (
         `${GEN3_STATIC_NOTEBOOK_PATH}/${GEN3_STATIC_NOTEBOOK_DIR}`,
       );
       if (!fullPath.startsWith(dataDir)) {
-        return res.status(403).json({
+        res.status(403).json({
           error: 'File access denied',
           success: false,
         });
+        return;
       }
 
-      const rawContent = fs.readFileSync(fullPath, 'utf8');
+      const rawContent = safeReadFileSync(fullPath);
 
       DOMPurify.addHook('afterSanitizeAttributes', function (node) {
         if (node.tagName === 'a' || node.tagName === 'A') {
@@ -119,9 +129,7 @@ export const staticNotebookAPI = async (
       }
     }
   }
-  return res
-    .status(405)
-    .json({ error: 'Only GET|OPTION requests are allowed' });
+  res.status(405).json({ error: 'Only GET|OPTION requests are allowed' });
 };
 
 export default staticNotebookAPI;
