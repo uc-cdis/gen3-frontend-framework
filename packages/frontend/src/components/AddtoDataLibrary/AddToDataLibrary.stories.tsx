@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import AddToDataLibrary from './AddToDataLibrary';
+import React from 'react';
 
 const meta = {
   component: AddToDataLibrary,
   parameters: {
     deepControls: { enabled: true },
   },
+  decorators: [
+    (Story) => (
+      <div className="bg-primary-lighter p-4 h-screen/3">
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof AddToDataLibrary>;
 
 export default meta;

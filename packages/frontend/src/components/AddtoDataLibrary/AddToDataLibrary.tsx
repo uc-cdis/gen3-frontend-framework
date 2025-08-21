@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Combobox, Group, ScrollArea, TextInput, Tooltip, useCombobox, } from '@mantine/core';
+import {
+  Button,
+  Combobox,
+  Group,
+  ScrollArea,
+  TextInput,
+  Tooltip,
+  useCombobox,
+} from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 import {
@@ -262,7 +270,7 @@ const AddToDataLibrary = ({
                 color="primary.4"
                 fullWidth
                 justify="center"
-                leftSection={PlusIcon}
+                leftSection={<PlusIcon />}
               >
                 {CREATE_NEW_LIST_BUTTON_LABEL}
               </Button>
