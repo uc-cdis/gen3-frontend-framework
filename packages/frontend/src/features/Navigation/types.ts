@@ -1,7 +1,7 @@
-import { ReactElement } from 'react';
-import { TopBarProps } from './TopBar/TopBar';
-import { BannerProps } from './Banner';
+import { ComponentType, ReactElement } from 'react';
 import { StylingOverrideWithMergeControl } from '../../types';
+import { TopBarProps } from './TopBar/types';
+import { FooterProps } from './Footer/types';
 
 export interface NavigationButtonProps {
   icon: string;
@@ -69,6 +69,16 @@ interface CommonsData {
   contactEmail?: string;
 }
 
+export type BannerLevelCategories = 'INFO' | 'WARNING' | 'ERROR';
+
+export interface BannerProps {
+  readonly message: string;
+  readonly level: BannerLevelCategories;
+  readonly dismissible: boolean;
+  readonly isExternalLink: boolean;
+  readonly id: number;
+}
+
 export interface HeaderProps {
   top: TopBarProps;
   navigation: NavigationProps;
@@ -87,4 +97,13 @@ export interface NameAndIcon {
   readonly rightIcon?: string;
   readonly leftIcon?: string;
   readonly classNames?: StylingOverrideWithMergeControl;
+}
+
+export interface NavPageLayoutProps {
+  headerProps: Readonly<HeaderProps>;
+  footerProps: Readonly<FooterProps>;
+  mainProps?: Partial<MainContentProps>;
+  headerMetadata: HeaderMetadata;
+  CustomHeaderComponent?: ComponentType<HeaderProps>;
+  CustomFooterComponent?: ComponentType<FooterProps>;
 }

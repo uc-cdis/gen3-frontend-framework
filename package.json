@@ -101,6 +101,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-preserve-directives": "^0.4.0",
     "rollup-plugin-swc3": "^0.11.2",
     "rollup-swc-preserve-directives": "^0.7.0",
     "terser-webpack-plugin": "^5.3.10",

@@ -1,15 +1,17 @@
 import {
   type BannerProps,
-  type FooterProps,
   type HeaderMetadata,
   type HeaderProps,
   isHeaderMetadata,
   type NavigationProps,
   type NavPageLayoutProps,
-  type TopBarProps,
-} from '../../features/Navigation';
+} from '../../features/Navigation/types';
+
+import { type TopBarProps } from '../../features/Navigation/TopBar/types';
+import { type FooterProps } from '../../features/Navigation/Footer/types';
+
 import ContentSource from '../content';
-import { GEN3_COMMONS_NAME } from '@gen3/core';
+import { GEN3_COMMONS_NAME } from '@gen3/core/server';
 
 /**
  * Retrieves navigation page layout properties from configuration.

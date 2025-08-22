@@ -1,4 +1,4 @@
-import { ContentSource } from './types';
+import { ContentSourceInterface } from './types';
 
 /**
  *  The Content management "datastore" which is an abstracted interface to
@@ -6,11 +6,11 @@ import { ContentSource } from './types';
  */
 
 export interface CreateDatabase {
-  store: ContentSource;
+  store: ContentSourceInterface;
 }
 
 export class ContentDatabase {
-  public store: ContentSource;
+  public store: ContentSourceInterface;
 
   constructor(public config: CreateDatabase) {
     this.store = config.store;

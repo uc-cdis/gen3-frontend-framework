@@ -1,7 +1,7 @@
-import { JSONObject } from '@gen3/core';
+import { JSONObject } from '@gen3/core/server';
 import { HeaderMetadata } from '../../features/Navigation/types';
 
-export interface ContentSource {
+export interface ContentSourceInterface {
   get<T extends Record<string, undefined>>(filepath: string): Promise<T>;
   getAll<T extends Record<string, unknown>>(
     filepath: string,

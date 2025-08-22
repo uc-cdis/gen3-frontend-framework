@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
@@ -17,7 +17,6 @@ import { GqlQueryEditorProps } from './types';
 const GqlQueryEditor = ({
   graphQLEndpoint,
 }: GqlQueryEditorProps): ReactElement => {
-  const [query, setQuery] = useState('');
   const headers = useCoreSelector(selectHeadersWithCSRFToken);
 
   // Typically we would put this in core but it's only used here
@@ -37,23 +36,7 @@ const GqlQueryEditor = ({
           Query Graph
         </Text>
       </div>
-      <GraphiQL
-        editorTheme="light"
-        fetcher={fetcher}
-        query={query}
-        onEditQuery={setQuery}
-      >
-        <GraphiQL.Toolbar>
-          {({ merge, prettify, copy }) => (
-            <>
-              {prettify}
-              {merge}
-              {copy}
-            </>
-          )}
-        </GraphiQL.Toolbar>
-        <GraphiQL.Logo> {null} </GraphiQL.Logo>
-      </GraphiQL>
+      <GraphiQL fetcher={fetcher}></GraphiQL>
     </div>
   );
 };

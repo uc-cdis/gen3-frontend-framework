@@ -125,6 +125,7 @@ import credentialsLogin from './api/auth/credentialsLogin';
 import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
 import staticNotebookAPI from './features/StaticNotebook/api/staticNotebookAPI';
+import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
 export {
   ContentSource,
@@ -148,6 +149,8 @@ export {
   TopBar,
   CountsValue,
   // Pages
+  type QueryProps,
+  type QueryPageLayoutProps,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,

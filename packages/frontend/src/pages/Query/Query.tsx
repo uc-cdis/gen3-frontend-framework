@@ -1,7 +1,11 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { NavPageLayout } from '../../features/Navigation';
-import QueryPanel from '../../features/Query/QueryPanel';
 import { QueryPageLayoutProps } from './types';
+
+const QueryPanel = dynamic(() => import('../../features/Query/QueryPanel'), {
+  ssr: false,
+});
 
 const QueryPage = ({
   headerProps,
