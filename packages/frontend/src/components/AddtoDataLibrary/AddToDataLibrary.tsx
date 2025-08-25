@@ -1,13 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  Combobox,
-  Group,
-  ScrollArea,
-  TextInput,
-  Tooltip,
-  useCombobox,
-} from '@mantine/core';
+import { Button, Combobox, Group, ScrollArea, TextInput, Tooltip, useCombobox, } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 import {
@@ -25,7 +17,7 @@ import {
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportActionButtonProps } from './types';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-import { PlusIcon } from '../../types/icons';
+import { PlusIcon, SearchIcon } from '../../types/icons';
 
 type SelectOptions = Record<string, string>;
 
@@ -266,14 +258,21 @@ const AddToDataLibrary = ({
         <Combobox.Dropdown>
           <Combobox.Options>
             <Combobox.Header>
-              <Button
-                color="primary.4"
-                fullWidth
-                justify="center"
-                leftSection={<PlusIcon />}
-              >
-                {CREATE_NEW_LIST_BUTTON_LABEL}
-              </Button>
+              <Stack>
+                <TextInput
+                  leftSectionPointerEvents="none"
+                  leftSection={<SearchIcon />}
+                  placeholder="Seearch lists"
+                />
+                <Button
+                  color="primary.4"
+                  fullWidth
+                  justify="center"
+                  leftSection={<PlusIcon />}
+                >
+                  {CREATE_NEW_LIST_BUTTON_LABEL}
+                </Button>
+              </Stack>
             </Combobox.Header>
             <ScrollArea.Autosize mah={200} type="scroll">
               {options}
