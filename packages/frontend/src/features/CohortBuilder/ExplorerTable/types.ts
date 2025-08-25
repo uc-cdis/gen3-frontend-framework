@@ -58,6 +58,12 @@ export interface FieldSubtable extends TableColumnsAndFields {
   classNames?: Partial<FieldSubtableClassnames>;
 }
 
+export interface RowActionButton {
+  label?: string;
+  icon?: React.ReactNode;
+  actionFunction?: string;
+}
+
 export interface SummaryTable extends TableColumnsAndFields {
   enabled: boolean;
   subTables?: ReadonlyArray<FieldSubtable>;
@@ -68,6 +74,7 @@ export interface SummaryTable extends TableColumnsAndFields {
   columnSorting?: boolean;
   columnHiding?: boolean;
   rowIdField?: string;
+  rowActions?: ReadonlyArray<RowActionButton>;
 }
 
 export interface ExploreTableClassnames extends Record<string, string> {

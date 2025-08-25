@@ -209,6 +209,7 @@ const ExplorerTable = ({
     enableExpandAll: false,
     enableHiding: true,
     enableColumnActions: false,
+    enableRowActions: tableConfig?.rowActions?.length ? true : false,
     displayColumnDefOptions: {
       'mrt-row-expand': {
         enableHiding: true, //now row numbers are hide-able too
@@ -216,8 +217,6 @@ const ExplorerTable = ({
     },
     onColumnVisibilityChange: handleColumnVisibilityChange,
     enableExpanding: !!tableConfig?.detailsConfig,
-    //enableColumnOrdering: tableConfig?.columnSorting,
-    // enableHiding: tableConfig?.columnHiding,
     getRowId: getRowId(tableConfig),
     rowCount: totalRowCount,
     icons: TableIcons,
