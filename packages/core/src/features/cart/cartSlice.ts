@@ -9,9 +9,7 @@ export const cartAdapter = createEntityAdapter<CartItem, CartItemId>({
   selectId: (item) => item.id,
 });
 
-const initialState = cartAdapter.getInitialState({
-  idField: 'id',
-});
+const initialState = cartAdapter.getInitialState({});
 
 const cartSlice = createSlice({
   name: 'cart',
