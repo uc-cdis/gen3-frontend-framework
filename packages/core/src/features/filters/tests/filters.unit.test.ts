@@ -1,5 +1,6 @@
 import { FilterSet, Operation } from '../types';
 import {
+  buildNestedGQLFilter,
   convertFilterSetToGqlFilter,
   convertGqlFilterToFilter,
   GQLFilter,
@@ -361,6 +362,26 @@ describe('convertGqlFilterToFilter', () => {
         operator: '=',
         field: 'metadata.type',
         operand: 'document',
+      },
+    };
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should create a nested filter for a GQLFilter', () => {
+    const result = buildNestedGQLFilter('cases.genes.gene_id', {
+      '=': { gene_id: 'test' },
+    });
+
+    const expected = {
+      nested: {
+        nested: {
+          '=': {
+            gene_id: 'test',
+          },
+          path: 'cases.genes',
+        },
+        path: 'cases',
       },
     };
 
