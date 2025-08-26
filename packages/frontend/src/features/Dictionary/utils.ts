@@ -6,7 +6,6 @@ import {
   DictionaryProperty,
 } from './types';
 import { capitalize } from 'lodash';
-import { Data } from 'victory';
 
 export const categoryFilter = (id: string, dictionary: Record<string, any>) =>
   id.charAt(0) !== '_' &&
