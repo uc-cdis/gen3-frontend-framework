@@ -70,10 +70,14 @@ const Dictionary = () => {
       >
         <div className="h-full">
           {config?.showGraph ? (
-            <Tabs value={view} keepMounted={false}>
+            <Tabs value={view} keepMounted={false} className="h-full">
               <Tabs.Panel value="table">{categoryPanelTable}</Tabs.Panel>
-              <Tabs.Panel value="graph">
-                <GraphView categories={categories} selectedId={selectedId} />
+              <Tabs.Panel value="graph" className="h-full">
+                <GraphView
+                  categories={categories}
+                  dictionary={dictionary}
+                  selectedId={selectedId}
+                />
               </Tabs.Panel>
             </Tabs>
           ) : (

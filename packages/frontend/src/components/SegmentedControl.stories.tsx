@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 import { BarChartIcon, SurvivalChartIcon } from '../types/icons';
 import { SegmentedControlItem, Tooltip } from '@mantine/core';
 import SegmentedControl from './SegmentedControl';
