@@ -1,8 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import DataLibraryActionButton from './DataLibraryActionButton';
 
 const meta = {
+  title: 'Gen3 components/AddToDataLibraryButton',
   component: DataLibraryActionButton,
   parameters: {
     deepControls: { enabled: true },

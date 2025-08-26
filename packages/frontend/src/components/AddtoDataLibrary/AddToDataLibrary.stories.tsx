@@ -1,16 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import AddToDataLibrary from './AddToDataLibrary';
 import React from 'react';
 
 const meta = {
+  title: 'Gen3 components/AddToDataLibrary',
   component: AddToDataLibrary,
   parameters: {
     deepControls: { enabled: true },
   },
   decorators: [
     (Story) => (
-      <div className="bg-primary-lighter p-4 h-screen/3">
+      <div className="bg-base-lightest p-4 h-64">
         <Story />
       </div>
     ),

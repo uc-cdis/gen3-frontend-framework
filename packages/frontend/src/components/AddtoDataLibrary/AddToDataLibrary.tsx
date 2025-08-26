@@ -1,6 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Combobox, Group, ScrollArea, TextInput, Tooltip, useCombobox, } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Combobox,
+  Group,
+  Input,
+  InputBase,
+  Menu,
+  ScrollArea,
+  Stack,
+  Tooltip,
+  useCombobox,
+} from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { getNextMantineSize, IconSize } from '../../utils';
 
 import {
   buildListItemsGroupedByDataset,
@@ -17,7 +30,8 @@ import {
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { ExportActionButtonProps } from './types';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-import { PlusIcon, SearchIcon } from '../../types/icons';
+import { PlusIcon, SaveIcon } from '../../types/icons';
+import { Icon } from '@iconify-icon/react';
 
 type SelectOptions = Record<string, string>;
 
@@ -25,7 +39,7 @@ type SelectOptions = Record<string, string>;
 const INPUT_PLACEHOLDER = 'Select or Create List';
 const CREATE_NEW_LIST_BUTTON_LABEL = 'Create New List';
 
-const extractIdToLabel = (data: DataLibrary): SelectOptions =>
+const buildIdToLabelMap = (data: DataLibrary): SelectOptions =>
   !data
     ? {}
     : Object.keys(data).reduce((acc: SelectOptions, id) => {
@@ -54,7 +68,9 @@ const createTooltipLabel = (
   if (numSelected === 0)
     return 'Please select at least one study to save to data library';
   if (!currentListName) return 'Please select or create a list';
-  if (error) return buildErrorMessage(error);
+  if (error) {
+    return buildErrorMessage(error);
+  }
   return 'Add selections to list';
 };
 
@@ -67,12 +83,24 @@ const AddToDataLibrary = ({
   size = 'md',
 }: ExportActionButtonProps) => {
   const [selectItems, setSelectItems] = useState<SelectOptions>({});
+  const [search, setSearch] = useState('');
   const [currentList, setCurrentList] = useState<string | null>(null);
   const [error, setError] = useState<StorageOperationResults | null>(null);
   const [currentListName, setCurrentListName] = useState<string>('');
   const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
+    onDropdownClose: () => {
+      combobox.resetSelectedOption();
+      combobox.focusTarget();
+      setSearch('');
+    },
+
+    onDropdownOpen: () => {
+      combobox.focusSearchInput();
+    },
   });
+
+  const nextSize = getNextMantineSize(size);
+  const iconSize = IconSize[nextSize];
 
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
@@ -93,7 +121,7 @@ const AddToDataLibrary = ({
     currentListName,
   );
   const classNamesDefaults = {
-    root: 'w-1/2',
+    root: 'w-full',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
@@ -217,7 +245,7 @@ const AddToDataLibrary = ({
   useDeepCompareEffect(() => {
     if (dataLibrary)
       if (!dataLibraryError) {
-        const listItems = extractIdToLabel(dataLibrary);
+        const listItems = buildIdToLabelMap(dataLibrary);
         setSelectItems(listItems);
       } else {
         setError(dataLibraryError);
@@ -230,57 +258,77 @@ const AddToDataLibrary = ({
       wrap="nowrap"
       classNames={{ root: mergedClassnames.root }}
     >
-      <Combobox
-        onOptionSubmit={(selectedValue) => {
-          setCurrentList(selectedValue);
-          setCurrentListName(selectItems[selectedValue]);
-          combobox.closeDropdown();
-        }}
-        store={combobox}
-        withinPortal={false}
-      >
-        <Combobox.Target>
-          <TextInput
-            placeholder={INPUT_PLACEHOLDER}
-            value={currentListName ?? ''}
-            className={'w-full'}
-            onChange={(event) => {
-              setCurrentListName(event.currentTarget.value);
-              combobox.openDropdown();
-              combobox.updateSelectedOptionIndex();
-            }}
-            onClick={() => combobox.openDropdown()}
-            onFocus={() => combobox.openDropdown()}
-            onBlur={() => combobox.closeDropdown()}
-          />
-        </Combobox.Target>
+      <div className="flex nowrap">
+        <Combobox
+          onOptionSubmit={(selectedValue) => {
+            setCurrentList(selectedValue);
+            setCurrentListName(selectItems[selectedValue]);
+            combobox.closeDropdown();
+          }}
+          store={combobox}
+          withinPortal={false}
+          size={size}
+        >
+          <Combobox.Target>
+            <InputBase
+              classNames={{ input: 'rounded-r-none' }}
+              component="button"
+              type="button"
+              pointer
+              rightSection={<Combobox.Chevron />}
+              onClick={() => combobox.toggleDropdown()}
+              rightSectionPointerEvents="none"
+            >
+              {currentList || <Input.Placeholder>Pick value</Input.Placeholder>}
+            </InputBase>
+          </Combobox.Target>
 
-        <Combobox.Dropdown>
-          <Combobox.Options>
-            <Combobox.Header>
-              <Stack>
-                <TextInput
-                  leftSectionPointerEvents="none"
-                  leftSection={<SearchIcon />}
-                  placeholder="Seearch lists"
-                />
-                <Button
-                  color="primary.4"
-                  fullWidth
-                  justify="center"
-                  leftSection={<PlusIcon />}
-                >
-                  {CREATE_NEW_LIST_BUTTON_LABEL}
-                </Button>
-              </Stack>
-            </Combobox.Header>
-            <ScrollArea.Autosize mah={200} type="scroll">
-              {options}
-            </ScrollArea.Autosize>
-          </Combobox.Options>
-        </Combobox.Dropdown>
-      </Combobox>
+          <Combobox.Dropdown>
+            <Combobox.Options>
+              <Combobox.Header>
+                <Stack>
+                  <Combobox.Search
+                    value={search}
+                    onChange={(event) => setSearch(event.currentTarget.value)}
+                    placeholder={INPUT_PLACEHOLDER}
+                  />
+                  <Button
+                    color="primary.4"
+                    fullWidth
+                    justify="center"
+                    leftSection={<PlusIcon />}
+                  >
+                    {CREATE_NEW_LIST_BUTTON_LABEL}
+                  </Button>
+                </Stack>
+              </Combobox.Header>
+              <ScrollArea.Autosize mah={200} type="scroll">
+                {options}
+              </ScrollArea.Autosize>
+            </Combobox.Options>
+          </Combobox.Dropdown>
+        </Combobox>
+        <ActionIcon
+          classNames={{ root: 'rounded-l-none border-4 mt-[1px]' }}
+          size={nextSize}
+        >
+          <Icon icon="gen3:external-link" size={64} />
+        </ActionIcon>
+      </div>
 
+      <Menu>
+        <Menu.Target>
+          <Button
+            leftSection={<SaveIcon />}
+            rightSection={<Combobox.Chevron />}
+          ></Button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item>Replace existing items</Menu.Item>
+          <Menu.Item>Add to existing</Menu.Item>
+          <Menu.Item>Save as New List</Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
       <Tooltip label={tooltipLabel}>
         <Button
           classNames={{ root: 'w-1/3' }}
