@@ -1,18 +1,19 @@
 import {
-  addFilesToCart,
+  addItemsToCart,
   type CartItem,
   cartReducer,
-  removeFilesFromCart,
+  removeItemsFromCart,
 } from './cartSlice';
 
-import { selectCart } from './cartSelectors';
+import { selectCart, selectCartCount } from './cartSelectors';
 
 export {
   selectCart,
-  addFilesToCart,
-  removeFilesFromCart,
+  addItemsToCart,
+  removeItemsFromCart,
   type CartItem,
   cartReducer,
+  selectCartCount,
 };
 
 export const cartReducerPath = 'cart';

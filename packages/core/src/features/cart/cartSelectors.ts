@@ -10,3 +10,6 @@ export const selectCartItem = (state: CoreState, id: CartItemId) =>
 
 export const selectCart = (state: any) =>
   cartAdapter.getSelectors().selectAll(state.cart);
+
+export const selectCartCount = (state: CoreState) =>
+  cartAdapter.getSelectors().selectTotal(state.cart);

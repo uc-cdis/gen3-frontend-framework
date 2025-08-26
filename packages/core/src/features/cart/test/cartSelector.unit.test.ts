@@ -1,10 +1,10 @@
 import { EntityState } from '@reduxjs/toolkit';
 import {
-  addFilesToCart,
+  addItemsToCart,
   CartItem,
   CartItemId,
   cartReducer,
-  removeFilesFromCart,
+  removeItemsFromCart,
 } from '../cartSlice';
 
 const INITIAL_ITEMS = {
@@ -36,7 +36,7 @@ describe('cartSlice add items', () => {
   test('should add items to cart', () => {
     const testState = cartReducer(
       localState,
-      addFilesToCart([
+      addItemsToCart([
         { id: '1234', name: 'test' },
         { id: '5678', name: 'test2' },
         { id: '9012', name: 'test3' },
@@ -104,7 +104,7 @@ describe('cartSlice remove items', () => {
 
     const testState = cartReducer(
       localState,
-      removeFilesFromCart(['1234', '23232']),
+      removeItemsFromCart(['1234', '23232']),
     );
 
     const expectedState = {

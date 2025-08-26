@@ -44,6 +44,7 @@ export * from './features/requestor';
 export * from './features/sower';
 export * from './features/submission';
 export * from './features/workspace';
+export * from './features/cart';
 
 export {
   type CoreState,

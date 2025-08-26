@@ -15,10 +15,10 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState: initialState,
   reducers: {
-    addFilesToCart: cartAdapter.addMany,
-    removeFilesFromCart: cartAdapter.removeMany,
+    addItemsToCart: cartAdapter.addMany,
+    removeItemsFromCart: cartAdapter.removeMany,
   },
 });
 
 export const cartReducer = cartSlice.reducer;
-export const { addFilesToCart, removeFilesFromCart } = cartSlice.actions;
+export const { addItemsToCart, removeItemsFromCart } = cartSlice.actions;
