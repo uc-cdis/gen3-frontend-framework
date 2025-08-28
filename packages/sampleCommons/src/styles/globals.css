@@ -17,4 +17,8 @@
   }
 }
 
+.graphiql-container {
+    height: 100dvh !important;
+}
+
 @tailwind variants;

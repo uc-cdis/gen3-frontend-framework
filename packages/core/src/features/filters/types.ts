@@ -146,10 +146,26 @@ export const isIntersection = (value: unknown): value is Intersection => {
   );
 };
 
+/**
+ * Type guard for Union or Intersection
+ * @param o - operator to check
+ * @category Filters
+ */
+export const isIntersectionOrUnion = (
+  o: Operation,
+): o is Intersection | Union =>
+  (o as Intersection).operator === 'and' || (o as Union).operator === 'or';
+
 export const isOperandsType = (
   operation: Operation,
 ): operation is OperandsType => {
   return (operation as OperandsType)?.operands !== undefined;
+};
+
+export const isNestedFilter = (
+  operation: Operation,
+): operation is NestedFilter => {
+  return (operation as NestedFilter).operator === 'nested';
 };
 
 export interface OperationHandler<T> {

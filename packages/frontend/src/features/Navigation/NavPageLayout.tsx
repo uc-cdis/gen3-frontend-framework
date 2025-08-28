@@ -1,19 +1,9 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import Head from 'next/head';
 import Footer from './Footer/Footer';
 import Header from './Header';
-import { HeaderMetadata, HeaderProps, MainContentProps } from './types';
+import { NavPageLayoutProps } from './types';
 import LeftSidePanel from './Vertical/LeftSidePanel';
-import { FooterProps } from './Footer/types';
-
-export interface NavPageLayoutProps {
-  headerProps: Readonly<HeaderProps>;
-  footerProps: Readonly<FooterProps>;
-  mainProps?: Partial<MainContentProps>;
-  headerMetadata: HeaderMetadata;
-  CustomHeaderComponent?: ComponentType<HeaderProps>;
-  CustomFooterComponent?: ComponentType<FooterProps>;
-}
 
 const NavPageLayout = ({
   headerProps,

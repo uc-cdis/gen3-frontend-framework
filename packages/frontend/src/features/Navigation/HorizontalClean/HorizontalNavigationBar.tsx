@@ -3,13 +3,13 @@ import React, { ReactElement } from 'react';
 import { NavigationProps } from '../types';
 import NavigationBarButton from '../NavigationBarButton';
 import NavigationLogo from '../NavigationLogo';
-import { TopBarProps } from '../TopBar/TopBar';
 import LoginButton from '../../../components/Login/LoginButton';
 import { AiOutlineLogin as LoginIcon } from 'react-icons/ai';
 import { extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { LoginButtonVisibility } from '../../../components/Login/types';
+import { TopBarProps } from '../TopBar/types';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;

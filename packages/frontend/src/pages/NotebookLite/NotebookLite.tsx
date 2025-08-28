@@ -1,9 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const router = useRouter();
