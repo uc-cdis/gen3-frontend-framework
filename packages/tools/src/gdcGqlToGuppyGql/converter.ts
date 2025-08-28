@@ -1,48 +1,60 @@
-
-
 // a handler to convert from gql to guppy gql
 
 import {
-  Operation,
-  GQLFilter,
   GQLEqual,
-  GQLNotEqual,
+  GQLExcludeIfAny,
+  GQLExcludes,
+  GQLExists,
+  GQLFilter,
+  GQLGreaterThan,
+  GQLGreaterThanOrEquals,
+  GQLIncludes,
+  GQLIntersection,
   GQLLessThan,
   GQLLessThanOrEquals,
-  GQLGreaterThan,
-  GQLGreaterThanOrEquals, GQLIncludes, GQLExcludes, GQLExcludeIfAny, GQLIntersection, GQLUnion,
+  GQLMissing,
+  GQLNotEqual,
+  GQLUnion,
 } from '@gen3/core';
 import {
-  convertGqlFilterToFilter,
-  GqlEquals, GqlExcludeIfAny, GqlExcludes, GqlGreaterThan, GqlGreaterThanOrEquals, GqlIncludes, GqlIntersection,
-  GqlLessThan, GqlLessThanOrEquals,
+  GqlEquals,
+  GqlExcludeIfAny,
+  GqlExcludes,
+  GqlExists,
+  GqlGreaterThan,
+  GqlGreaterThanOrEquals,
+  GqlIncludes,
+  GqlIntersection,
+  GqlLessThan,
+  GqlLessThanOrEquals,
+  GqlMissing,
   GqlNotEquals,
   GqlOperation,
-  GqlOperationHandler, GqlUnion,
+  GqlOperationHandler,
+  GqlUnion,
   handleGqlOperation,
 } from './gdcApi/filters';
 
-
 class FromGDCToGen3 implements GqlOperationHandler<GQLFilter> {
   handleEquals = (op: GqlEquals): GQLEqual => ({
-    "=" : { [op.content.field]: op.content.value}
+    '=': { [op.content.field]: op.content.value },
   });
   handleNotEquals = (op: GqlNotEquals): GQLNotEqual => ({
-    "!=" : { [op.content.field]: op.content.value}
+    '!=': { [op.content.field]: op.content.value },
   });
   handleLessThan = (op: GqlLessThan): GQLLessThan => ({
-    "<" : { [op.content.field]: op.content.value}
+    '<': { [op.content.field]: op.content.value },
   });
   handleLessThanOrEquals = (op: GqlLessThanOrEquals): GQLLessThanOrEquals => ({
-    "<=" : { [op.content.field]: op.content.value}
+    '<=': { [op.content.field]: op.content.value },
   });
   handleGreaterThan = (op: GqlGreaterThan): GQLGreaterThan => ({
-    ">" : { [op.content.field]: op.content.value}
+    '>': { [op.content.field]: op.content.value },
   });
   handleGreaterThanOrEquals = (
     op: GqlGreaterThanOrEquals,
   ): GQLGreaterThanOrEquals => ({
-    ">=" : { [op.content.field]: op.content.value}
+    '>=': { [op.content.field]: op.content.value },
   });
 
   // handleMissing = (op: GqlMissing): Missing => ({
@@ -55,13 +67,24 @@ class FromGDCToGen3 implements GqlOperationHandler<GQLFilter> {
   // });
 
   handleIncludes = (op: GqlIncludes): GQLIncludes => ({
-    "in": { [op.content.field]: op.content.value}
+    in: { [op.content.field]: op.content.value },
   });
   handleExcludes = (op: GqlExcludes): GQLExcludes => ({
-    "exclude": { [op.content.field]: op.content.value}
+    exclude: { [op.content.field]: op.content.value },
   });
   handleExcludeIfAny = (op: GqlExcludeIfAny): GQLExcludeIfAny => ({
-    "excludeifany": { [op.content.field]: op.content.value instanceof Array ? op.content.value : [op.content.value]}
+    excludeifany: {
+      [op.content.field]:
+        op.content.value instanceof Array
+          ? op.content.value
+          : [op.content.value],
+    },
+  });
+  handleMissing = (op: GqlMissing): GQLMissing => ({
+    is: { [op.content.field]: op.content.value },
+  });
+  handleExists = (op: GqlExists): GQLExists => ({
+    not: { [op.content.field]: op.content.value ?? 'EXISTS' },
   });
   handleIntersection = (op: GqlIntersection): GQLIntersection => ({
     and: op.content.map(convertGDCFilterToGen3Filter),
