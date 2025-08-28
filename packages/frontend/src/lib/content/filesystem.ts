@@ -1,4 +1,4 @@
-import { ContentSource } from './types';
+import { ContentSourceInterface } from './types';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,7 +12,7 @@ const myGlob = (dir: string, filter: string) => {
   return [];
 };
 
-export class FilesystemContent implements ContentSource {
+export class FilesystemContent implements ContentSourceInterface {
   rootPath: string;
   constructor({ rootPath }: { rootPath?: string }) {
     this.rootPath = rootPath || '';

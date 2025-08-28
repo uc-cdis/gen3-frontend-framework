@@ -1,13 +1,13 @@
 import React, { ReactElement } from 'react';
 import { Divider } from '@mantine/core';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import LoginAccountButton from '../../../components/Login/LoginAccountButton';
 import { extractClassName } from '../utils';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { StylingOverrideWithMergeControl } from '../../../types';
 import { IconButton, TopIconButtonPropsWithLink } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
+import { TopBarProps } from './types';
 
 const processTopBarItems = (
   items: TopIconButtonPropsWithLink[],
@@ -42,14 +42,6 @@ const processTopBarItems = (
     [],
   );
 };
-
-export interface TopBarProps {
-  readonly items: TopIconButtonPropsWithLink[];
-  readonly loginButtonVisibility?: LoginButtonVisibility;
-  readonly externalLoginUrl?: string;
-  readonly classNames?: StylingOverrideWithMergeControl;
-  readonly itemClassnames?: StylingOverrideWithMergeControl;
-}
 
 const TopBar = ({
   items,

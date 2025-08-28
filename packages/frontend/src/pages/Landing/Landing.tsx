@@ -5,9 +5,8 @@ import React from 'react';
 import LandingPageContent, {
   LandingPageProps,
 } from '../../components/Content/LandingPageContent';
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 interface Props extends NavPageLayoutProps {
   landingPage: LandingPageProps;
