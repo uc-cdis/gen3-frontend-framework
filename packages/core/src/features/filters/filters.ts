@@ -689,3 +689,15 @@ export const buildNestedGQLFilter = (
     },
   };
 };
+
+export const extractContents = (
+  filter: GQLFilter,
+): readonly GQLFilter[] | undefined => {
+  if (isGQLUnion(filter)) {
+    return filter.or;
+  }
+  if (isGQLIntersection(filter)) {
+    return filter.and;
+  }
+  return undefined;
+};
