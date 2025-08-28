@@ -1,21 +1,12 @@
 import React from 'react';
 import {
-  FaQuestion as InfoIcon,
   FaExclamation as WarningIcon,
   FaExclamationTriangle as ErrorIcon,
   FaExternalLinkAlt,
+  FaQuestion as InfoIcon,
 } from 'react-icons/fa';
 import Markdown from 'react-markdown';
-
-export type BannerLevelCategories = 'INFO' | 'WARNING' | 'ERROR';
-
-export interface BannerProps {
-  readonly message: string;
-  readonly level: BannerLevelCategories;
-  readonly dismissible: boolean;
-  readonly isExternalLink: boolean;
-  readonly id: number;
-}
+import { BannerProps } from './types';
 
 const backgroundColor = {
   INFO: 'bg-utility-info',

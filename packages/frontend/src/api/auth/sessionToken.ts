@@ -15,7 +15,10 @@ export interface JWTPayloadAndUser extends JWTPayload {
  * @param req
  * @param res
  */
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<void> {
   try {
     const access_token = getCookie('access_token', { req, res });
     if (access_token) {
@@ -24,13 +27,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.status(500).json({
           message: 'No JWT Key to verify token',
         });
-        return res;
+        return;
       }
       // validate the token
       const publicKey = await importSPKI(jwtKey, 'RS256');
       await jwtVerify(access_token, publicKey);
       const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
-      return res.status(200).json({
+      res.status(200).json({
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,
         userContext: decodedAccessToken.context.user,
@@ -40,9 +43,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             : 'issued'
           : 'invalid',
       });
+      return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       status: 'not present',
     });
   } catch (error: unknown) {

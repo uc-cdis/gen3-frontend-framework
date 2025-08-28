@@ -1,25 +1,21 @@
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  whyDidYouRender(React);
-}
-import App, { AppProps, AppContext, AppInitialProps } from 'next/app';
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider } from '@mantine/core';
 import mantinetheme from '../mantineTheme';
 
 import {
   Gen3Provider,
   type ModalsConfig,
-  RegisteredIcons,
-  SessionConfiguration,
-  registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
-  registerMetadataSchemaApp,
   registerCohortDiscoveryApp,
+  RegisteredIcons,
+  registerExplorerDefaultCellRenderers,
+  registerMetadataSchemaApp,
+  SessionConfiguration,
 } from '@gen3/frontend';
 
-import { registerDefaultRemoteSupport } from '@gen3/core';
+import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
 import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';
@@ -28,11 +24,13 @@ import '../styles/globals.css';
 import '@fontsource/montserrat';
 import '@fontsource/source-sans-pro';
 import '@fontsource/poppins';
-
-import { setDRSHostnames } from '@gen3/core';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
 import Loading from '../components/Loading';
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  whyDidYouRender(React);
+}
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
