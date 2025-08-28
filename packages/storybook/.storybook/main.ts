@@ -2,8 +2,6 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import type { StorybookConfig } from '@storybook/nextjs';
 
-const nextJsPresetPath = require.resolve('@storybook/nextjs');
-
 const config: StorybookConfig = {
   stories: [
     '../../frontend/src/components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
@@ -11,12 +9,11 @@ const config: StorybookConfig = {
     '../../frontend/src/pages/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
-    '@storybook/addon-onboarding',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook',
-    '@storybook/addon-interactions',
-    '@storybook/addon-a11y',
-    'storybook-addon-deep-controls',
+    getAbsolutePath('@storybook/addon-onboarding'),
+    getAbsolutePath('@chromatic-com/storybook'),
+    getAbsolutePath('@storybook/addon-a11y'),
+    getAbsolutePath('storybook-addon-deep-controls'),
+    getAbsolutePath('@storybook/addon-docs'),
   ],
   typescript: {
     check: false,
@@ -24,7 +21,7 @@ const config: StorybookConfig = {
     skipCompiler: false,
   },
   framework: {
-    name: '@storybook/nextjs',
+    name: getAbsolutePath('@storybook/nextjs'),
     options: {
       builder: {
         useSWC: true, // Enables SWC support
@@ -69,3 +66,7 @@ const config: StorybookConfig = {
   },
 };
 export default config;
+
+function getAbsolutePath(value: string): any {
+  return path.dirname(require.resolve(path.join(value, 'package.json')));
+}

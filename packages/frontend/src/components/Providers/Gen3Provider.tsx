@@ -1,10 +1,10 @@
-import React, { useEffect, ReactNode } from 'react';
+import React, { FC, ReactNode, useEffect } from 'react';
 import { CoreProvider } from '@gen3/core';
-import { createTheme, Pagination, Modal } from '@mantine/core';
+import { createTheme, Modal, Pagination } from '@mantine/core';
 import { TenStringArray } from '../../utils';
 import { SessionProvider } from '../../lib/session/session';
-import { type RegisteredIcons, type Fonts } from '../../lib/content/types';
-import { ModalsProvider } from '@mantine/modals';
+import { type Fonts, type RegisteredIcons } from '../../lib/content/types';
+import { ContextModalProps, ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
 import { SessionConfiguration } from '../../lib/session/types';
@@ -14,6 +14,7 @@ interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
+  contextModals?: Record<string, FC<ContextModalProps<any>>>;
   children?: ReactNode | undefined;
 }
 
@@ -81,6 +82,7 @@ const Gen3Provider = ({
   icons,
   sessionConfig,
   modalsConfig,
+  contextModals,
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -89,7 +91,7 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider>
+      <ModalsProvider modals={contextModals}>
         <Notifications />
         <SessionProvider {...sessionConfig}>
           <Gen3ModalsProvider config={modalsConfig}>
