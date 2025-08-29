@@ -79,8 +79,8 @@ export type GqlOperation =
   | GqlLessThanOrEquals
   | GqlGreaterThan
   | GqlGreaterThanOrEquals
-  // | GqlMissing
-  // | GqlExists
+  | GqlMissing
+  | GqlExists
   | GqlIncludes
   | GqlExcludes
   | GqlExcludeIfAny
@@ -230,10 +230,10 @@ export const handleGqlOperation = <T>(
       return handler.handleGreaterThan(op);
     case '>=':
       return handler.handleGreaterThanOrEquals(op);
-    // case "is":
-    //   return handler.handleMissing(op);
-    // case "not":
-    //   return handler.handleExists(op);
+    case 'is':
+      return handler.handleMissing(op);
+    case 'not':
+      return handler.handleExists(op);
     case 'in':
       return handler.handleIncludes(op);
     case 'exclude':
@@ -477,7 +477,7 @@ export const isExcludeIfAny = (o: Operation): o is Includes =>
  * @param defaults - the default value to return if the string is not valid JSON
  * @category Utility
  */
-export const parseJSONParam: any = (str?: string, defaults = {}) => {
+export const parseJSONParam: unknown = (str?: string, defaults = {}) => {
   if (str) {
     try {
       return JSON.parse(str) || defaults;
@@ -497,6 +497,6 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
  */
 
 export const stringifyJSONParam = (
-  obj?: Record<string, any>,
+  obj?: Record<string, never>,
   defaults = '{}',
 ): string => (obj ? JSON.stringify(obj) : defaults);

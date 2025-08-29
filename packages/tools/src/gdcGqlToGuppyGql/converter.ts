@@ -1,6 +1,7 @@
 // a handler to convert from gql to guppy gql
 
 import {
+  buildNestedGQLFilter,
   GQLEqual,
   GQLExcludeIfAny,
   GQLExcludes,
@@ -13,6 +14,7 @@ import {
   GQLLessThan,
   GQLLessThanOrEquals,
   GQLMissing,
+  GQLNestedFilter,
   GQLNotEqual,
   GQLUnion,
 } from '@gen3/core';
@@ -39,9 +41,14 @@ class FromGDCToGen3 implements GqlOperationHandler<GQLFilter> {
   handleEquals = (op: GqlEquals): GQLEqual => ({
     '=': { [op.content.field]: op.content.value },
   });
-  handleNotEquals = (op: GqlNotEquals): GQLNotEqual => ({
-    '!=': { [op.content.field]: op.content.value },
-  });
+  handleNotEquals = (op: GqlNotEquals): GQLNotEqual | GQLNestedFilter => {
+    if (op.content.field.indexOf('.') > 0) {
+      const leafField = op.content.field.split('.').at(-1) ?? 'unset';
+      return buildNestedGQLFilter(op.content.field, {
+        '!=': { [leafField]: op.content.value },
+      }) as GQLNestedFilter;
+    } else return { '!=': { [op.content.field]: op.content.value } };
+  };
   handleLessThan = (op: GqlLessThan): GQLLessThan => ({
     '<': { [op.content.field]: op.content.value },
   });
@@ -66,9 +73,21 @@ class FromGDCToGen3 implements GqlOperationHandler<GQLFilter> {
   //   field: op.content.field,
   // });
 
-  handleIncludes = (op: GqlIncludes): GQLIncludes => ({
-    in: { [op.content.field]: op.content.value },
-  });
+  handleIncludes = (op: GqlIncludes): GQLIncludes | GQLFilter => {
+    if (op.content.field.indexOf('.') > 0) {
+      const leafField = op.content.field.split('.').at(-1) ?? 'unset';
+      return buildNestedGQLFilter(op.content.field, {
+        in: { [leafField]: op.content.value },
+      });
+    } else {
+      return {
+        in: {
+          [op.content.field]: op.content.value,
+        },
+      };
+    }
+  };
+
   handleExcludes = (op: GqlExcludes): GQLExcludes => ({
     exclude: { [op.content.field]: op.content.value },
   });
