@@ -830,6 +830,19 @@ export const convertFilterToNestedGqlFilter = (
   return handleOperation(handler, filter);
 };
 
+export const convertFilterSetToNestedGqlFilter = (
+  fs: FilterSet,
+  toplevelOp: 'and' | 'or' = 'and',
+): GQLFilter => {
+  const fsKeys = Object.keys(fs.root);
+  // if no keys return undefined
+  if (fsKeys.length === 0) return { and: [] };
+
+  return toplevelOp === 'and'
+    ? { and: fsKeys.map((key) => convertFilterToNestedGqlFilter(fs.root[key])) }
+    : { or: fsKeys.map((key) => convertFilterToNestedGqlFilter(fs.root[key])) };
+};
+
 /**
  * Constructs a nested operation object based on the provided field and leaf operand.
  * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
