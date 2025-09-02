@@ -2,7 +2,7 @@ import '@jest/globals';
 import { formatDate } from '../date';
 import { getNextSize } from '../sizes';
 
-// Start test suite
+// Start a test suite
 describe('FormatDate Function', () => {
   it('should format a date string correctly', () => {
     const inputDate = '2024-01-01T12:30:45Z';
