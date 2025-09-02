@@ -8,10 +8,12 @@ import React, {
 } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  addItemsToCart,
   CoreState,
   isJSONValue,
   JSONObject,
   selectIndexFilters,
+  useCoreDispatch,
   useCoreSelector,
   useGetRawDataAndTotalCountsQuery,
 } from '@gen3/core';
@@ -25,7 +27,11 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
-import type { ExplorerTableProps, SummaryTable } from './types';
+import {
+  ExplorerTableProps,
+  RowSelectionConfiguration,
+  SummaryTable,
+} from './types';
 import { type TableDetailsPanelProps } from './ExploreTableDetails';
 import { DetailsDrawer, DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
@@ -36,9 +42,45 @@ import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
 import TableHeader from '../../../components/Tables/TableHeader';
 import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
 import { TableXPositionContext } from './context';
+import { SingleItemAddToCartButton } from '../../cart/updateCart';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
+
+const processRowActions = (
+  configuration: RowSelectionConfiguration | undefined,
+  clickHandler: (row: MRT_Row<JSONObject>) => void,
+) => {
+  if (!configuration || configuration.enabled === false)
+    return {
+      enableRowActions: false,
+    };
+
+  if (configuration.action === 'cart') {
+    return {
+      enableRowActions: true,
+      renderRowActions: ({ row }: { row: MRT_Row<JSONObject> }) => {
+        const itemData = configuration?.itemFields?.reduce(
+          (acc: Record<string, any>, key) => {
+            if (key in row.original) acc[key] = row.original[key];
+            return acc;
+          },
+          {},
+        );
+        return (
+          <SingleItemAddToCartButton
+            item={{
+              id: row.id,
+              ...itemData,
+            }}
+          />
+        );
+      },
+    };
+  }
+
+  return { enableRowActions: false };
+};
 
 /**
  * Main table component for the explorer page. Fetches data from guppy using
@@ -81,7 +123,10 @@ const ExplorerTable = ({
   const [selectedRow, setSelectedRow] = useState<
     MRT_Row<Record<string, any>> | undefined
   >(undefined);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const { tableColumns, lockedVisibility } = useDeepCompareMemo(() => {
+    return createTableColumns(tableConfig);
+  }, [tableConfig]);
+  const [columnVisibility, setColumnVisibility] = useState(lockedVisibility);
 
   // const DetailsPanel = useMemo(
   //   () =>
@@ -98,14 +143,14 @@ const ExplorerTable = ({
     const newState =
       typeof updater === 'function' ? updater(columnVisibility) : updater;
     setColumnVisibility({
-      ...newState,
-      ...{ 'mrt-row-expand': false, ...lockedVisibility },
+      ...{
+        ...newState,
+        'mrt-row-expand': false,
+        'mrt-row-actions': false,
+        ...lockedVisibility,
+      },
     });
   };
-
-  const { tableColumns, lockedVisibility } = useDeepCompareMemo(() => {
-    return createTableColumns(tableConfig);
-  }, [tableConfig]);
 
   const [columnOrder, setColumnOrder] = useState<MRT_ColumnOrderState>(
     tableColumns.map((column: any) => column.id as string), //must start out with populated columnOrder so we can splice
@@ -124,12 +169,14 @@ const ExplorerTable = ({
 
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
-    const idField: string | undefined = detailsConfig?.idField;
-    if (!idField) return undefined;
+    const detailsIdField: string | undefined = detailsConfig?.idField; // Old Way
+    const rowIdField: string | undefined = tableConfig?.rowIdField;
+    if (!detailsIdField && !rowIdField) return undefined;
+    const idField = rowIdField ?? detailsIdField;
+    if (idField === undefined) return undefined;
 
     return (originalRow: JSONObject) => {
       const id = JSONPath({ json: originalRow, path: idField });
-
       if (id.length > 0) {
         return id[0];
       } else {
@@ -137,6 +184,15 @@ const ExplorerTable = ({
       }
     };
   }, []);
+
+  const dispatch = useCoreDispatch();
+
+  const handleAddToCart = useCallback(
+    (row: MRT_Row<JSONObject>) => {
+      dispatch(addItemsToCart([{ id: row.id }]));
+    },
+    [dispatch],
+  );
 
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
@@ -184,7 +240,6 @@ const ExplorerTable = ({
    * @param data - data array, from useGetRawDataAndTotalCountsQuery()
    * @param manualSorting - If this is true, you will be expected to sort your data before it is passed to the table.
    * @param manualPagination - If this is true, you will be expected to manually paginate the rows before passing them to the table
-0.
    * @param paginateExpandedRows - If true expanded rows will be paginated along with the rest of the table (which means expanded rows may span multiple pages)      -
    * @param onPaginationChange - If this function is provided, it will be called when the pagination state changes and you will be expected to manage the state yourself
    * @param onSortingChange - If provided, this function will be called with an updaterFn when variable state. sorting changes. Overrides default internal state management
@@ -208,11 +263,14 @@ const ExplorerTable = ({
     enableTopToolbar: false,
     enableExpandAll: false,
     enableHiding: true,
-    enableColumnActions: false,
     displayColumnDefOptions: {
       'mrt-row-expand': {
         enableHiding: true, //now row numbers are hide-able too
       },
+      ...(tableConfig?.selectableRowsConfiguration?.enabled &&
+      tableConfig?.selectableRowsConfiguration?.action === 'cart'
+        ? { 'mrt-row-actions': { header: 'Cart' } }
+        : {}),
     },
     onColumnVisibilityChange: handleColumnVisibilityChange,
     enableExpanding: !!tableConfig?.detailsConfig,
@@ -222,8 +280,8 @@ const ExplorerTable = ({
     rowCount: totalRowCount,
     icons: TableIcons,
     paginationDisplayMode: 'pages',
-    enableRowSelection: tableConfig?.selectableRows ?? false,
     localization: { rowsPerPage: limitLabel },
+
     // mantineExpandAllButtonProps: {
     //   style: {
     //     visibility: 'hidden',
@@ -272,7 +330,13 @@ const ExplorerTable = ({
       density: 'xs',
       rowSelection: rowSelection,
       columnVisibility: columnVisibility, //{ 'mrt-row-expand': false, ...lockedVisibility },
-      columnOrder: columnOrder,
+      columnOrder: [
+        'mrt-row-expand',
+        'mrt-row-number',
+        'mrt-row-selection',
+        'mrt-row-actions',
+        ...columnOrder,
+      ],
     },
     mantineTableBodyRowProps:
       tableConfig.detailsConfig?.mode === 'click'
@@ -291,6 +355,10 @@ const ExplorerTable = ({
             },
           })
         : {},
+    ...processRowActions(
+      tableConfig?.selectableRowsConfiguration,
+      handleAddToCart,
+    ),
     renderDetailPanel:
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
         ? ({ row }) => {

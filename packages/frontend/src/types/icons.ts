@@ -13,6 +13,7 @@ import {
   MdPerson as PersonIcon,
   MdSave as SaveIcon,
   MdSearch as SearchIcon,
+  MdShoppingCart as CartIcon,
   MdTrendingDown as SurvivalChartIcon,
   MdWarning as WarningTriangleIcon,
 } from 'react-icons/md';
@@ -22,12 +23,17 @@ import {
   FaPlus as PlusIcon,
   FaUndo as UndoIcon,
 } from 'react-icons/fa';
-import { BsList as ListIcon, BsX as XIcon } from 'react-icons/bs';
+import {
+  BsList as ListIcon,
+  BsTrash as TrashIcon,
+  BsX as XIcon,
+} from 'react-icons/bs';
 
 export {
   AddIcon,
   AddFacetIcon,
   BarChartIcon,
+  CartIcon,
   CircleIcon,
   CloseIcon,
   CopyIcon,
@@ -41,6 +47,7 @@ export {
   PersonIcon,
   PlusIcon,
   SurvivalChartIcon,
+  TrashIcon,
   UndoIcon,
   UploadIcon,
   WarningTriangleIcon,

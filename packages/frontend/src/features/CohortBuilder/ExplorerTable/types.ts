@@ -1,11 +1,5 @@
 import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
-import {
-  MRT_Cell,
-  MRT_Column,
-  MRT_Row,
-  MRT_RowData,
-  MRT_TableInstance,
-} from 'mantine-react-table';
+import { MRT_Cell, MRT_Column, MRT_Row, MRT_RowData, MRT_TableInstance, } from 'mantine-react-table';
 import { Accessibility, JSONObject } from '@gen3/core';
 import React, { ReactNode, RefObject } from 'react';
 
@@ -58,12 +52,19 @@ export interface FieldSubtable extends TableColumnsAndFields {
   classNames?: Partial<FieldSubtableClassnames>;
 }
 
+export interface RowSelectionConfiguration {
+  enabled?: boolean;
+  action: 'library' | 'cart';
+  idField?: string;
+  itemFields: ReadonlyArray<string>;
+}
+
 export interface SummaryTable extends TableColumnsAndFields {
   enabled: boolean;
   subTables?: ReadonlyArray<FieldSubtable>;
   pageLimit?: SummaryTablePageLimit;
   detailsConfig?: ExplorerDetailsConfig;
-  selectableRows?: boolean;
+  selectableRowsConfiguration?: RowSelectionConfiguration;
   showTableHeaderControls?: boolean;
   columnSorting?: boolean;
   columnHiding?: boolean;
