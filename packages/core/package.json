@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.11.32",
+  "version": "0.11.33",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API, various types, and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -21,6 +21,11 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/esm/server.js",
+      "require": "./dist/cjs/server.cjs"
     }
   },
   "scripts": {

@@ -7,6 +7,7 @@ import { StylingOverrideWithMergeControl } from '../../../types';
 import { IconButton, TopIconButtonPropsWithLink } from './IconButton';
 import { AccountButton } from './AccountButton';
 import { LoginButton } from './LoginButton';
+import { TopBarProps } from './types';
 
 const processTopBarItems = (
   items: TopIconButtonPropsWithLink[],
@@ -41,14 +42,6 @@ const processTopBarItems = (
     [],
   );
 };
-
-export interface TopBarProps {
-  readonly items: TopIconButtonPropsWithLink[];
-  readonly loginButtonVisibility?: LoginButtonVisibility;
-  readonly externalLoginUrl?: string;
-  readonly classNames?: StylingOverrideWithMergeControl;
-  readonly itemClassnames?: StylingOverrideWithMergeControl;
-}
 
 const TopBar = ({
   items,

@@ -4,16 +4,19 @@ import Header from './Header';
 import HoverLink from './HoverLink';
 import NavigationBar from './NavigationBar';
 import NavigationButton from './NavigationButton';
-import NavPageLayout, { type NavPageLayoutProps } from './NavPageLayout';
-import { type TopBarProps } from './TopBar/TopBar';
+import NavPageLayout from './NavPageLayout';
 import {
-  HeaderProps,
-  type NavigationProps,
-  HeaderMetadata,
+  BannerLevelCategories,
+  BannerProps,
+  type HeaderMetadata,
+  type HeaderProps,
   isHeaderMetadata,
+  type NavigationProps,
+  NavPageLayoutProps,
 } from './types';
 import { FooterProps } from './Footer/types';
-import { BannerProps, Banner, BannerLevelCategories } from './Banner';
+import { Banner } from './Banner';
+import { TopBarProps } from './TopBar/types';
 
 export {
   type FooterProps,

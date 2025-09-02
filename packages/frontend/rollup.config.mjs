@@ -74,77 +74,104 @@ const globals = {
   '@iconify-icon/react': 'iconify-iconReact ',
 };
 
-const config = [
-  {
-    input: './src/index.ts',
-    output: [
-      {
-        dir: 'dist/cjs',
-        format: 'cjs',
-        globals,
-        sourcemap: true,
-      },
-      {
-        dir: 'dist/esm',
-        format: 'esm',
-        globals,
-        sourcemap: true,
-      },
-    ],
-    external: [
-      ...Object.keys(globals),
-      'tailwindcss/plugin',
-      '@iconify/react',
-      'next/router',
-      'next/dynamic',
-      'next/link',
-      'next/image',
-      'react-icons/bi',
-      'react-icons/fa',
-      'react-icons/im',
-      'react-icons/pi',
-      'use-deep-compare',
-      'tinycolor2',
-      'tailwind-styled-components',
-      '@graphiql/plugin-explorer',
-      'mantine-react-table',
-      'victory',
-      'echarts',
-      '@gen3/core',
-      'swr',
-    ],
-    plugins: [
-      peerDepsExternal(),
-      json(),
+const external = [
+  ...Object.keys(globals),
+  'tailwindcss/plugin',
+  '@iconify/react',
+  'next/router',
+  'next/dynamic',
+  'next/link',
+  'next/image',
+  'react-icons/bi',
+  'react-icons/fa',
+  'react-icons/im',
+  'react-icons/pi',
+  'use-deep-compare',
+  'tinycolor2',
+  'tailwind-styled-components',
+  '@graphiql/plugin-explorer',
+  'mantine-react-table',
+  'victory',
+  'echarts',
+  '@gen3/core',
+  '@gen3/core/server',
+  'swr',
+];
+
+const jsBundle = (input, baseName) => ({
+  input,
+  output: [
+    {
+      dir: `dist/${baseName}/cjs`,
+      format: 'cjs',
+      globals,
+      sourcemap: true,
+    },
+    {
+      dir: `dist/${baseName}/esm`,
+      format: 'esm',
+      globals,
+      sourcemap: true,
+    },
+  ],
+  external,
+  plugins: [
+    peerDepsExternal(),
+    json(),
+    // If only client entry uses CSS, you can conditionally enable postcss for index only.
+    baseName === 'index' &&
       postcss({
-        config: {
-          path: './postcss.config.js',
-        },
-        modules: true, // Enable CSS Modules
+        config: { path: './postcss.config.js' },
+        modules: true,
+        preserveModules: false,
+        treeshake: { moduleSideEffects: false },
         extract: 'styles.css',
         extensions: ['.css'],
-        sourceMap: true, // Generate source map for the CSS
-        plugins: [
-          postcssImport(), // Handle @import rules in CSS
-          autoprefixer(), // Add vendor prefixes automatically
-        ],
-        inject: {
-          insertAt: 'top',
-        },
+        sourceMap: true,
+        plugins: [postcssImport(), autoprefixer()],
+        inject: { insertAt: 'top' },
       }),
-      swc(
+    swc(
+      {
+        sourceMaps: true,
+        include: /\.[mc]?[jt]sx?$/,
+        exclude: /node_modules/,
+        tsconfig: 'tsconfig.json',
+        jsc: {},
+      },
+      swcPreserveDirectives(),
+      json(),
+    ),
+  ],
+});
+
+// DTS bundle factory
+const dtsBundle = (input, outFile) => ({
+  input,
+  output: [{ file: outFile, format: 'es' }],
+  plugins: [
+    dts(),
+    postcss(),
+    copy({
+      targets: [
         {
-          sourceMaps: true,
-          include: /\.[mc]?[json]?[jt]sx?$/,
-          exclude: /node_modules/,
-          tsconfig: 'tsconfig.json',
-          jsc: {},
+          src: ['dist/esm/styles.css'],
+          dest: 'dist',
         },
-        swcPreserveDirectives(),
-        json(),
-      ),
-    ],
-  },
+      ],
+    }),
+  ],
+});
+
+const config = [
+  // JS builds
+  jsBundle('./src/index.ts', 'index'), // default/client entry
+  jsBundle('./src/server.ts', 'server'), // server entry
+
+  // Type declarations
+  dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
+  dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
+
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
@@ -154,7 +181,7 @@ const config = [
       copy({
         targets: [
           {
-            src: ['dist/esm/styles.css'],
+            src: ['dist/index/esm/styles.css'],
             dest: 'dist',
           },
         ],
