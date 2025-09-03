@@ -18,7 +18,6 @@ const RepositoryPage = ({
     );
   }
 
-  console.log('RepositoryPage', configuration);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}

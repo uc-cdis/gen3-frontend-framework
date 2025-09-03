@@ -60,20 +60,13 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   dispatch,
 }: AddNotificationProps) => {
   const itemsToAdd = items.filter(
-    (f) => !currentCart.map((c) => c.id).includes(f.id),
+    (f) => !currentCart?.map((c) => c.id).includes(f.id),
   );
 
   const newCart = [...currentCart, ...itemsToAdd];
 
-  console.log('currentCart', currentCart);
-
-  // const alreadyInCart = items.filter((f) =>
-  //   currentCart.map((c) => c.id).includes(f.id),
-  // );
   const alreadyInCart = items.filter((f) => {
-    console.log('f', f);
     return currentCart.map((c) => {
-      console.log('is id in cart', c.id.includes(f.id));
       return c.id.includes(f.id);
     });
   });
@@ -193,6 +186,7 @@ export const removeFromCart = (
       description: 'flex flex-col content-center text-center',
     },
     closeButtonProps: { 'aria-label': 'Close notification' },
+    position: 'top-center',
   });
   const itemsToRemove = items.map((f) => f.id);
   dispatch(removeItemsFromCart(itemsToRemove));
@@ -205,6 +199,7 @@ export const showCartOverLimitNotification = (numItemsInCart: number): void => {
       description: 'flex flex-col content-center text-center',
     },
     closeButtonProps: { 'aria-label': 'Close notification' },
+    position: 'top-center',
   });
 };
 
@@ -231,6 +226,7 @@ export const addToCart = (
         description: 'flex flex-col content-center text-center',
       },
       closeButtonProps: { 'aria-label': 'Close notification' },
+      position: 'top-center',
     });
   }
 };
@@ -308,11 +304,7 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
 }: SingleItemCartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  // const inCart = itemsInCart(currentCart, item.id);
-
   const inCart = useCoreSelector((state) => selectCartItem(state, item.id));
-
-  console.log('currentCart', currentCart, inCart);
 
   return (
     <ActionIcon
@@ -326,8 +318,8 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
           addToCart([item], currentCart, dispatch);
         }
       }}
-      className={`mx-auto text-primary-content-darkest border-primary-darkest ${
-        inCart ? 'bg-primary-light' : ''
+      className={`mx-auto text-primary-content-darkest border-primary  ${
+        inCart ? 'bg-primary-darker' : 'bg-primary'
       }`}
     >
       <CartIcon />

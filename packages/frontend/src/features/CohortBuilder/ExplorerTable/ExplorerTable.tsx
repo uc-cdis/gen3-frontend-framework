@@ -49,7 +49,6 @@ const DEFAULT_PAGE_LIMIT = 10000;
 
 const processRowActions = (
   configuration: RowSelectionConfiguration | undefined,
-  clickHandler: (row: MRT_Row<JSONObject>) => void,
 ) => {
   if (!configuration || configuration.enabled === false)
     return {
@@ -232,6 +231,12 @@ const ExplorerTable = ({
     return { totalRowCount, limitLabel };
   }, [tableConfig, data, pagination.pageSize, index]);
 
+  const rowActions = useDeepCompareMemo(
+    () => processRowActions(tableConfig?.selectableRowsConfiguration),
+
+    [tableConfig?.selectableRowsConfiguration],
+  );
+
   /**
    * mantine-react-table setup
    * @see https://www.mantine-react-table.com/docs/api/table-options
@@ -355,10 +360,10 @@ const ExplorerTable = ({
             },
           })
         : {},
-    ...processRowActions(
-      tableConfig?.selectableRowsConfiguration,
-      handleAddToCart,
-    ),
+    ...rowActions,
+    // ...processRowActions(
+    //   tableConfig?.selectableRowsConfiguration,
+    // ),
     renderDetailPanel:
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
         ? ({ row }) => {
