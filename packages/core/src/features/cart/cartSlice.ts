@@ -11,7 +11,7 @@ export const cartAdapter = createEntityAdapter<CartItem, CartItemId>({
 
 const initialState = cartAdapter.getInitialState({});
 
-const cartSlice = createSlice({
+export const cartSlice = createSlice({
   name: 'cart',
   initialState: initialState,
   reducers: {

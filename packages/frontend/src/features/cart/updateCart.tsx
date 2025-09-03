@@ -1,6 +1,6 @@
 import { ActionIcon, Button } from '@mantine/core';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
-import { focusStyles, itemsInCart } from '../../utils';
+import { focusStyles } from '../../utils';
 import {
   addItemsToCart,
   CART_LIMIT,
@@ -8,6 +8,7 @@ import {
   CoreDispatch,
   removeItemsFromCart,
   selectCart,
+  selectCartItem,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
@@ -59,14 +60,23 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   dispatch,
 }: AddNotificationProps) => {
   const itemsToAdd = items.filter(
-    (f) => !currentCart.map((c) => c.file_id).includes(f.file_id),
+    (f) => !currentCart.map((c) => c.id).includes(f.id),
   );
 
   const newCart = [...currentCart, ...itemsToAdd];
 
-  const alreadyInCart = items.filter((f) =>
-    currentCart.map((c) => c.file_id).includes(f.file_id),
-  );
+  console.log('currentCart', currentCart);
+
+  // const alreadyInCart = items.filter((f) =>
+  //   currentCart.map((c) => c.id).includes(f.id),
+  // );
+  const alreadyInCart = items.filter((f) => {
+    console.log('f', f);
+    return currentCart.map((c) => {
+      console.log('is id in cart', c.id.includes(f.id));
+      return c.id.includes(f.id);
+    });
+  });
 
   useEffect(() => {
     if (itemsToAdd.length > 0) {
@@ -137,7 +147,7 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   dispatch,
 }: RemoveNotificationProps) => {
   const itemsToRemove = items.filter((f) =>
-    currentCart.map((CartItem) => CartItem.file_id).includes(f.file_id),
+    currentCart.map((CartItem) => CartItem.id).includes(f.id),
   );
 
   const newCart = items.filter((f) => !itemsToRemove.includes(f));
@@ -184,7 +194,7 @@ export const removeFromCart = (
     },
     closeButtonProps: { 'aria-label': 'Close notification' },
   });
-  const itemsToRemove = items.map((f) => f.file_id);
+  const itemsToRemove = items.map((f) => f.id);
   dispatch(removeItemsFromCart(itemsToRemove));
 };
 
@@ -298,12 +308,15 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
 }: SingleItemCartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const inCart = itemsInCart(currentCart, item.id);
+  // const inCart = itemsInCart(currentCart, item.id);
 
-  console.log('currentCart', currentCart);
+  const inCart = useCoreSelector((state) => selectCartItem(state, item.id));
+
+  console.log('currentCart', currentCart, inCart);
 
   return (
     <ActionIcon
+      key={item.id}
       title={inCart ? 'Remove From Cart' : 'Add to Cart'}
       aria-label={inCart ? 'Remove from cart' : 'Add to Cart'}
       onClick={() => {
