@@ -178,6 +178,12 @@ module.exports = {
     'h-20',
     'mt-10',
     'mb-10',
+    'focus-visible:outline-none',
+    'focus-visible:ring-offset-2',
+    'focus:ring-offset-white',
+    'focus-visible:ring-inset',
+    'focus-visible:ring-2',
+    'focus-visible:ring-focusColor',
     {
       pattern:
         /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
