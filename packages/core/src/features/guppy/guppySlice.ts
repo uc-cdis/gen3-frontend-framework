@@ -50,6 +50,7 @@ export interface RawDataAndTotalCountsParams {
   size?: number;
   accessibility?: Accessibility;
   format?: string;
+  indexPrefix?: string;
 }
 
 /*
@@ -62,12 +63,14 @@ interface GuppyBaseQueryParams {
   type: string;
   filters: FilterSet;
   accessibility?: Accessibility;
+  indexPrefix?: string;
 }
 
 interface AccessibleDataSliceParams {
   type: string;
   fields: ReadonlyArray<string>;
   accessibility: Accessibility;
+  indexPrefix?: string;
 }
 
 interface QueryAggsParams extends GuppyBaseQueryParams {
@@ -117,20 +120,31 @@ export const explorerTags = guppyApi.enhanceEndpoints({
 export const explorerApi = explorerTags.injectEndpoints({
   endpoints: (builder) => ({
     getAllFieldsForType: builder.query({
-      query: (type: { type: string }) => ({
-        query: `{ _mapping ${type} } }`,
+      query: ({
+        type,
+        indexPrefix = '',
+      }: {
+        type: string;
+        indexPrefix?: string;
+      }) => ({
+        query: `{ ${indexPrefix}_mapping ${type} } }`,
       }),
       transformResponse: (response: Record<string, any>, _meta, params) => {
         return response[params.type];
       },
     }),
     getAccessibleData: builder.query({
-      query: ({ type, fields, accessibility }: AccessibleDataSliceParams) => {
+      query: ({
+        type,
+        fields,
+        accessibility,
+        indexPrefix = '',
+      }: AccessibleDataSliceParams) => {
         const fieldParts = fields.map(
           (field) => `${field} { histogram { key count } }`,
         );
         return {
-          query: `_aggregation {
+          query: `${indexPrefix}_aggregation {
               ${type} (accessibility: ${accessibility}) {
                 ${fieldParts.join(',')}
               }
@@ -232,6 +246,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         accessibility = Accessibility.ALL,
         filterSelf = false,
         queryId = undefined,
+        indexPrefix = '',
       }: QueryAggsParams) => {
         return buildGetStatsAggregationQuery(
           type,
@@ -240,6 +255,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           accessibility,
           filterSelf,
           queryId,
+          indexPrefix,
         );
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
@@ -352,10 +368,11 @@ export const explorerApi = explorerTags.injectEndpoints({
         field,
         filters,
         accessibility = Accessibility.ALL,
+        indexPrefix = '',
       }: QueryForFileCountSummaryParams) => {
         const gqlFilters = convertFilterSetToGqlFilter(filters);
         const query = `query summary ($filter: JSON) {
-        _aggregation {
+        ${indexPrefix}_aggregation {
           ${type} (filter: $filter, accessibility: ${accessibility}) {
             ${field} {
               histogram {
@@ -435,14 +452,15 @@ export const buildGetAggregationQuery = (
   accessibility = Accessibility.ALL,
   filterSelf: boolean = false,
   queryId: string | undefined = undefined,
+  indexPrefix: string = '',
 ): GraphQLQuery => {
   const queryStart = isFilterEmpty(filters)
     ? `
               query getAggs${queryId ? `_${queryId}` : ''} {
-              _aggregation {
+              ${indexPrefix}_aggregation {
               ${type} (accessibility: ${accessibility}) {`
     : `query getAggs ($filter: JSON) {
-               _aggregation {
+               ${indexPrefix}_aggregation {
 
                       ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) { _totalCount`;
   const query = `${queryStart}
@@ -467,14 +485,15 @@ export const buildGetStatsAggregationQuery = (
   accessibility = Accessibility.ALL,
   filterSelf: boolean = false,
   queryId: string | undefined = undefined,
+  indexPrefix: string = '',
 ): GraphQLQuery => {
   const queryStart = isFilterEmpty(filters)
     ? `
               query getStatsAggs${queryId ? `_${queryId}` : ''} {
-              _aggregation {
+              ${indexPrefix}_aggregation {
               ${type} (accessibility: ${accessibility}) {`
     : `query getStatsAggs${queryId ? `_${queryId}` : ''} ($filter: JSON) {
-               _aggregation {
+               ${indexPrefix}_aggregation {
                       ${type} (filter: $filter, filterSelf: ${filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) { _totalCount`;
   const query = `${queryStart}
                   ${fields.map((field: string) =>
