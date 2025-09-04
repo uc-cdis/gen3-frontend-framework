@@ -98,6 +98,7 @@ const ExplorerTable = ({
   additionalControls,
   tableTotalDetail,
   tableTitle,
+  indexPrefix = '',
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -213,6 +214,7 @@ const ExplorerTable = ({
             }) as Record<string, 'desc' | 'asc'>[])
           : undefined,
       accessibility: accessibility,
+      indexPrefix: indexPrefix,
     });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {

@@ -87,6 +87,7 @@ export interface ExplorerTableProps {
   additionalControls?: React.ReactNode; // for customization
   tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
+  indexPrefix?: string;
 }
 
 export interface ExplorerTableColumnMRT {

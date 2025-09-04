@@ -53,6 +53,7 @@ export const RepositoryPanel = ({
     useTotalFileSizeQuery({
       repositoryFilters: repositoryFilters,
       cohortFilters: EmptyFilterSet,
+      repositoryIndexPrefix: indexPrefix,
       ...fileStatsConfiguration,
     });
 
@@ -91,6 +92,7 @@ export const RepositoryPanel = ({
                   index={index}
                   tableConfig={table}
                   accessibility={accessLevel}
+                  indexPrefix={indexPrefix}
                   additionalControls={
                     <DownloadsPanel
                       dropdowns={defaultDropdowns}
