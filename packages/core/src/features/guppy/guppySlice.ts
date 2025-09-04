@@ -177,7 +177,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           ...(sort ? ['sort: $sort'] : []),
           ...(gqlFilter ? ['filter: $filter'] : []),
         ].join(',');
-        const dataTypeLine = `${type} (accessibility: ${accessibility}, offset: ${offset}, first: ${size},
+        const dataTypeLine = `${indexPrefix}${type} (accessibility: ${accessibility}, offset: ${offset}, first: ${size},
         ${dataParams}) {`;
 
         const typeAggsLine = `${type} (${

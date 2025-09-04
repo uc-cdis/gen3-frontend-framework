@@ -8,12 +8,10 @@ import React, {
 } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
-  addItemsToCart,
   CoreState,
   isJSONValue,
   JSONObject,
   selectIndexFilters,
-  useCoreDispatch,
   useCoreSelector,
   useGetRawDataAndTotalCountsQuery,
 } from '@gen3/core';
@@ -185,21 +183,10 @@ const ExplorerTable = ({
     };
   }, []);
 
-  const dispatch = useCoreDispatch();
-
-  const handleAddToCart = useCallback(
-    (row: MRT_Row<JSONObject>) => {
-      dispatch(addItemsToCart([{ id: row.id }]));
-    },
-    [dispatch],
-  );
-
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
-
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
-
   const { data, isLoading, isError, isFetching, isSuccess } =
     useGetRawDataAndTotalCountsQuery({
       type: index,
@@ -259,7 +246,13 @@ const ExplorerTable = ({
 
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
-    data: data?.data?.[index] ?? [],
+    data: data?.data?.[`${indexPrefix}${index}`] ?? [
+      {
+        id: 'no-data',
+        name: 'No Data',
+        description: 'No Data',
+      },
+    ],
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
