@@ -39,6 +39,7 @@ export const RepositoryPanel = ({
   );
 
   const index = guppyConfig.dataType;
+  const indexPrefix = guppyConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -74,6 +75,7 @@ export const RepositoryPanel = ({
                   filters={filters}
                   tabTitle="Files"
                   fieldMapping={guppyConfig?.fieldMapping ?? []}
+                  indexPrefix={indexPrefix}
                 />
               )}
             </div>

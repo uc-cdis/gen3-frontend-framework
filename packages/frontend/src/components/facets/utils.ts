@@ -4,6 +4,7 @@ import {
   CoreState,
   EnumFilterValue,
   extractEnumFilterValue,
+  FacetDefinition,
   fieldNameToTitle,
   HistogramData,
   HistogramDataArray,
@@ -33,7 +34,6 @@ import {
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
-import { FacetDefinition } from '@gen3/core';
 
 export const getAllFieldsFromFilterConfigs = (
   filterTabConfigs: ReadonlyArray<TabConfig>,
@@ -43,6 +43,17 @@ export const getAllFieldsFromFilterConfigs = (
 interface ExplorerResultsData {
   [key: string]: Record<string, any>;
 }
+
+export const getByPath = (obj: unknown, path: string) => {
+  if (!obj) return undefined;
+  const segments = path.split('.').filter(Boolean);
+  return segments.reduce<any>((acc, key) => {
+    if (acc && typeof acc === 'object' && key in (acc as any)) {
+      return (acc as any)[key];
+    }
+    return undefined;
+  }, obj as any);
+};
 
 export const processBucketData = (
   data?: HistogramDataArray,

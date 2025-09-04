@@ -14,6 +14,7 @@ export interface FacetQueryParameters {
   filters: FilterSet;
   accessibility?: Accessibility;
   filterSelf?: boolean;
+  indexPrefix?: string;
 }
 
 export interface FacetQueryResponse {

@@ -17,11 +17,7 @@ import {
   useGetCountsQuery,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import {
-  Charts,
-  CollapsableCharts,
-  type SummaryChart,
-} from '../../components/charts';
+import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -30,24 +26,18 @@ import {
   extractRangeValues,
   FacetDataHooks,
   getAllFieldsFromFilterConfigs,
+  getByPath,
   processBucketData,
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import {
-  useClearFilters,
-  useFieldNameToTitle,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToTitle, } from '../../components/facets/hooks';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import {
   useCohortFilterCombineState,
@@ -126,6 +116,7 @@ export const CohortPanel = ({
   }, [isSm, isMd, isXl]);
 
   const index = guppyConfig.dataType;
+  const indexPrefix = guppyConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -158,6 +149,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
     accessibility: accessLevel,
     queryId: cohortId,
+    indexPrefix: indexPrefix,
   });
 
   const chartKeys = useDeepCompareMemo(
@@ -178,6 +170,7 @@ export const CohortPanel = ({
       accessibility: accessLevel,
       filterSelf: true,
       queryId: cohortId,
+      indexPrefix: indexPrefix,
     },
     {
       skip: chartKeys.length === 0,
@@ -224,9 +217,9 @@ export const CohortPanel = ({
           filters = extractEnumFilterValue(cohortFilters.root[field]);
         }
       }
-
+      const dataRoot = getByPath(data, field);
       return {
-        data: processBucketData(data?.[field]),
+        data: processBucketData(dataRoot),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
@@ -237,8 +230,9 @@ export const CohortPanel = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
+      const dataRoot = getByPath(data, field);
       return {
-        data: processRangeData(data?.[field]),
+        data: processRangeData(dataRoot),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };

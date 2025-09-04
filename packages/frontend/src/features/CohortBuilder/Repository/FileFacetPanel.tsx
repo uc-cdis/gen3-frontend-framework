@@ -22,6 +22,7 @@ import {
   FacetDataHooks,
   FieldToName,
   getAllFieldsFromFilterConfigs,
+  getByPath,
   processBucketData,
   removeIntersectionFromEnum,
   useClearFilters,
@@ -45,6 +46,7 @@ interface FileFacetPanelProps {
   index: string;
   fieldMapping?: ReadonlyArray<FieldToName>;
   tabTitle: string;
+  indexPrefix?: string;
 }
 
 export const FileFacetPanel = ({
@@ -52,6 +54,7 @@ export const FileFacetPanel = ({
   index,
   tabTitle,
   fieldMapping,
+  indexPrefix = '',
 }: FileFacetPanelProps): JSX.Element => {
   const repositoryFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
@@ -79,6 +82,7 @@ export const FileFacetPanel = ({
     type: index,
     fields: fields,
     filters: repositoryFilters,
+    indexPrefix: indexPrefix,
   });
 
   // Set the facet definitions based on the data only the first time the data is loaded
@@ -119,8 +123,9 @@ export const FileFacetPanel = ({
         }
       }
 
+      const dataRoot = getByPath(facetData, field);
       return {
-        data: processBucketData(facetData?.[field]),
+        data: processBucketData(dataRoot),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isFacetsQuerySuccess,
