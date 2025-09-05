@@ -11,7 +11,7 @@ import { Tabs } from '@mantine/core';
 
 const Dictionary = () => {
   const [selectedId, setSelectedId] = useState('');
-  const [view, setView] = useState<ViewType>('table');
+  const [view, setView] = useState<ViewType>('graph');
   const { dictionary, categories, visibleCategories, config } =
     useDictionaryContext();
 

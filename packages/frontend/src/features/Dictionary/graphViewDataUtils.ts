@@ -349,7 +349,7 @@ export function nodesBreadthFirst(nodes: nodeExtendedProps[], edges: nodeLinkLis
 const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProps)=> {
   let currentX = 0;
   let currentY = 0;
-  const xSpacing = 300;
+  const xSpacing = 150;
   const ySpacing = 100;
 
   const positions: {
@@ -359,18 +359,25 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProp
     y: number 
   }[] = [];
 
-  treeLevel2Names.forEach((level) => {
+  treeLevel2Names.forEach((level, row) => {
+    currentY = ySpacing * 2 * row;
+    let longestName = 0;
+
     level.forEach((id) => {
+      const currentItemName = nodesById[id].name;
+      //Find longest name in this level
+      if (currentItemName.length > longestName) {
+        longestName = currentItemName.length;
+      }
       positions.push({
         id: id,
-        name: nodesById[id].name,
+        name: currentItemName,
         x: currentX,
         y: currentY,
       });
       currentY += ySpacing;
     });
-    currentY = 0;
-    currentX += xSpacing;
+    currentX += xSpacing + (longestName * 12);//TODO start here this is effecting zoom level i think as its made wider
   });
 
   return positions;
@@ -378,6 +385,7 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProp
 
 const linksForGraph = (edges: nodeLinkListProps[])=> {
   return edges.map((edge) => {
+    // Basic linking
     return {
       source: edge.source.id,
       target: edge.target.id,
