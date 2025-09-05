@@ -19,11 +19,13 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 interface CountsPanelProps {
   index: string;
   accessibility?: Accessibility;
+  indexPrefix?: string;
 }
 
 const CountsPanel: React.FC<CountsPanelProps> = ({
   index,
   accessibility = Accessibility.ALL,
+  indexPrefix = '',
 }: CountsPanelProps) => {
   const [getCounts, { data: counts, isFetching, isError, isSuccess }] =
     useLazyGetCountsQuery();
@@ -40,6 +42,7 @@ const CountsPanel: React.FC<CountsPanelProps> = ({
       filters: cohortFilters,
       accessibility: accessibility,
       queryId: currentCohortId,
+      indexPrefix: indexPrefix,
     });
   }, [cohortFilters, currentCohortId, accessibility]);
 
@@ -58,6 +61,7 @@ const TabbedCohortBuilderPage = ({
   footerProps,
   configuration,
 }: TabbedCohortBuilderPageProps): JSX.Element => {
+  console.log(configuration);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -70,7 +74,12 @@ const TabbedCohortBuilderPage = ({
       <Stack align="stretch" classNames={{ root: 'w-full' }}>
         <div className="w-full flex-col flex gap-4 fixed bg-white z-10">
           <CohortManager
-            rightPanel={<CountsPanel index={configuration.index} />}
+            rightPanel={
+              <CountsPanel
+                index={configuration.index}
+                indexPrefix={configuration?.indexPrefix}
+              />
+            }
           />
           <QueryExpression index={configuration.index}></QueryExpression>
         </div>

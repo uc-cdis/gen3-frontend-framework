@@ -1,5 +1,11 @@
 import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
-import { MRT_Cell, MRT_Column, MRT_Row, MRT_RowData, MRT_TableInstance, } from 'mantine-react-table';
+import {
+  MRT_Cell,
+  MRT_Column,
+  MRT_Row,
+  MRT_RowData,
+  MRT_TableInstance,
+} from 'mantine-react-table';
 import { Accessibility, JSONObject } from '@gen3/core';
 import React, { ReactNode, RefObject } from 'react';
 
@@ -87,6 +93,7 @@ export interface ExplorerTableProps {
   additionalControls?: React.ReactNode; // for customization
   tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
+  indexPrefix?: string;
 }
 
 export interface ExplorerTableColumnMRT {

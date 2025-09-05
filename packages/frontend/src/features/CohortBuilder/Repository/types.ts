@@ -14,6 +14,7 @@ export interface FacetQueryParameters {
   filters: FilterSet;
   accessibility?: Accessibility;
   filterSelf?: boolean;
+  indexPrefix?: string;
 }
 
 export interface FacetQueryResponse {
@@ -28,7 +29,9 @@ export interface FileCountsQueryParameters {
   cohortFilters?: FilterSet; // TODO: change to required
   accessibility?: Accessibility;
   cohortIndex: string;
+  cohortIndexPrefix?: string;
   repositoryIndex: string;
+  repositoryIndexPrefix?: string;
   cohortItemIdField: string;
   fileItemIdField: string;
   fileSizeField: string;

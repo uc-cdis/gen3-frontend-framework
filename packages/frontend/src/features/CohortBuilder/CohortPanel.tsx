@@ -30,6 +30,7 @@ import {
   extractRangeValues,
   FacetDataHooks,
   getAllFieldsFromFilterConfigs,
+  getByPath,
   processBucketData,
   processRangeData,
   removeIntersectionFromEnum,
@@ -126,6 +127,7 @@ export const CohortPanel = ({
   }, [isSm, isMd, isXl]);
 
   const index = guppyConfig.dataType;
+  const indexPrefix = guppyConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -158,6 +160,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
     accessibility: accessLevel,
     queryId: cohortId,
+    indexPrefix: indexPrefix,
   });
 
   const chartKeys = useDeepCompareMemo(
@@ -178,6 +181,7 @@ export const CohortPanel = ({
       accessibility: accessLevel,
       filterSelf: true,
       queryId: cohortId,
+      indexPrefix: indexPrefix,
     },
     {
       skip: chartKeys.length === 0,
@@ -224,9 +228,9 @@ export const CohortPanel = ({
           filters = extractEnumFilterValue(cohortFilters.root[field]);
         }
       }
-
+      const dataRoot = getByPath(data, field);
       return {
-        data: processBucketData(data?.[field]),
+        data: processBucketData(dataRoot),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
@@ -237,8 +241,9 @@ export const CohortPanel = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
+      const dataRoot = getByPath(data, field);
       return {
-        data: processRangeData(data?.[field]),
+        data: processRangeData(dataRoot),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };

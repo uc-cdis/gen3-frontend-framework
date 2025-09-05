@@ -3,12 +3,14 @@ import { Grid } from '@mantine/core';
 import {
   AggregationsData,
   extractEnumFilterValue,
+  FacetDefinition,
   fieldNameToTitle,
 } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import {
   extractRangeValues,
+  getByPath,
   processBucketData,
   processRangeData,
 } from '../../components/facets';
@@ -19,7 +21,6 @@ import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useFieldNameToTitle } from '../../components/facets/hooks';
-import { FacetDefinition } from '@gen3/core';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -57,8 +58,9 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
+      const dataRoot = getByPath(data, field);
       return {
-        data: processBucketData(data?.[field]),
+        data: processBucketData(dataRoot),
         enumFilters:
           field in cohortFilters.root
             ? extractEnumFilterValue(cohortFilters.root[field])
@@ -73,8 +75,9 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
+      const dataRoot = getByPath(data, field);
       return {
-        data: processRangeData(data?.[field]),
+        data: processRangeData(dataRoot),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };

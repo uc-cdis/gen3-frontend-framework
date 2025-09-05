@@ -69,3 +69,24 @@ export const ProjectAccessCellRenderer = (
     </Badge>
   );
 };
+
+export const OpenControlledAccessCellRenderer = (
+  { cell }: CellRendererFunctionProps,
+  params: Record<string, any>,
+) => {
+  const access = cell.getValue();
+  if (typeof access !== 'string') return <span>Bad Value</span>;
+
+  let color = 'primary.4';
+  if (params && isStringToColorTable(params?.colorTable)) {
+    if (access) {
+      color = ExtractValueFromObject(params.colorTable, access, color);
+    }
+  }
+
+  return (
+    <Badge fullWidth color={color}>
+      {access}
+    </Badge>
+  );
+};

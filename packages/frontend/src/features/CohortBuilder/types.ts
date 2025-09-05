@@ -38,6 +38,7 @@ export interface DataTypeConfig {
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
   tierAccessLimit?: number; // TODO: same
+  indexPrefix?: string;
 }
 
 export interface DataTypeConfigWithManifest extends DataTypeConfig {

@@ -6,7 +6,10 @@ import { filesize } from 'filesize';
 import { isArray } from 'lodash';
 import { Badge, Text } from '@mantine/core';
 import { CellRendererFunction, CellRendererFunctionProps } from './types';
-import { ProjectAccessCellRenderer } from './AccessCellRenderers';
+import {
+  OpenControlledAccessCellRenderer,
+  ProjectAccessCellRenderer,
+} from './AccessCellRenderers';
 
 export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
@@ -223,6 +226,7 @@ export const registerExplorerDefaultCellRenderers = () => {
   ExplorerTableCellRendererFactory().registerRendererCatalog({
     access: {
       projectAccess: ProjectAccessCellRenderer,
+      openControlledAccess: OpenControlledAccessCellRenderer,
     },
   });
   ExplorerTableCellRendererFactory().registerRendererCatalog({

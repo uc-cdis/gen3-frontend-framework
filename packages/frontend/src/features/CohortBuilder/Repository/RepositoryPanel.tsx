@@ -39,6 +39,7 @@ export const RepositoryPanel = ({
   );
 
   const index = guppyConfig.dataType;
+  const indexPrefix = guppyConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -52,6 +53,7 @@ export const RepositoryPanel = ({
     useTotalFileSizeQuery({
       repositoryFilters: repositoryFilters,
       cohortFilters: EmptyFilterSet,
+      repositoryIndexPrefix: indexPrefix,
       ...fileStatsConfiguration,
     });
 
@@ -74,6 +76,7 @@ export const RepositoryPanel = ({
                   filters={filters}
                   tabTitle="Files"
                   fieldMapping={guppyConfig?.fieldMapping ?? []}
+                  indexPrefix={indexPrefix}
                 />
               )}
             </div>
@@ -89,6 +92,7 @@ export const RepositoryPanel = ({
                   index={index}
                   tableConfig={table}
                   accessibility={accessLevel}
+                  indexPrefix={indexPrefix}
                   additionalControls={
                     <DownloadsPanel
                       dropdowns={defaultDropdowns}
