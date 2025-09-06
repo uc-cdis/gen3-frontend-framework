@@ -211,9 +211,11 @@ const ExplorerTable = ({
     const totalRowCount = tableConfig?.pageLimit
       ? Math.min(
           pageLimit,
-          data?.data?._aggregation?.[index]._totalCount ?? pagination.pageSize,
+          data?.data?.[`${indexPrefix}_aggregation`]?.[index]._totalCount ??
+            pagination.pageSize,
         )
-      : (data?.data?._aggregation?.[index]._totalCount ?? pagination.pageSize);
+      : (data?.data?.[`${indexPrefix}_aggregation`]?.[index]._totalCount ??
+        pagination.pageSize);
     const limitLabel = tableConfig?.pageLimit
       ? (tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL)
       : 'Rows per Page:';
