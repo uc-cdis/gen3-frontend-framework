@@ -1,19 +1,9 @@
 import React from 'react';
 import { Grid } from '@mantine/core';
-import {
-  AggregationsData,
-  extractEnumFilterValue,
-  FacetDefinition,
-  fieldNameToTitle,
-} from '@gen3/core';
+import { AggregationsData, extractEnumFilterValue, FacetDefinition, fieldNameToTitle, } from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
-import {
-  extractRangeValues,
-  getByPath,
-  processBucketData,
-  processRangeData,
-} from '../../components/facets';
+import { extractRangeValues, processBucketData, processRangeData, } from '../../components/facets';
 import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
@@ -58,9 +48,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
-      const dataRoot = getByPath(data, field);
       return {
-        data: processBucketData(dataRoot),
+        data: processBucketData(data?.[field]),
         enumFilters:
           field in cohortFilters.root
             ? extractEnumFilterValue(cohortFilters.root[field])
@@ -75,9 +64,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
-      const dataRoot = getByPath(data, field);
       return {
-        data: processRangeData(dataRoot),
+        data: processRangeData(data?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };

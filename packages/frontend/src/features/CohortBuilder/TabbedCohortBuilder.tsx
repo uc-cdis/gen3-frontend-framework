@@ -21,7 +21,6 @@ import {
   classifyFacets,
   extractRangeValues,
   FacetDataHooks,
-  getByPath,
   processBucketData,
   processRangeData,
   removeIntersectionFromEnum,
@@ -186,9 +185,9 @@ const TabbedCohortBuilder = ({
           filters = extractEnumFilterValue(cohortFilters.root[field]);
         }
       }
-      const dataRoot = getByPath(data, field);
+
       return {
-        data: processBucketData(dataRoot),
+        data: processBucketData(data?.[field]),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,

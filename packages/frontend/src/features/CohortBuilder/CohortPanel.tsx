@@ -30,7 +30,6 @@ import {
   extractRangeValues,
   FacetDataHooks,
   getAllFieldsFromFilterConfigs,
-  getByPath,
   processBucketData,
   processRangeData,
   removeIntersectionFromEnum,
@@ -228,9 +227,9 @@ export const CohortPanel = ({
           filters = extractEnumFilterValue(cohortFilters.root[field]);
         }
       }
-      const dataRoot = getByPath(data, field);
+
       return {
-        data: processBucketData(dataRoot),
+        data: processBucketData(data?.[field]),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
@@ -241,9 +240,8 @@ export const CohortPanel = ({
 
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
-      const dataRoot = getByPath(data, field);
       return {
-        data: processRangeData(dataRoot),
+        data: processRangeData(data?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
       };
