@@ -318,8 +318,8 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
           addToCart([item], currentCart, dispatch);
         }
       }}
-      className={`mx-auto text-primary-content-darkest border-primary  ${
-        inCart ? 'bg-primary-darker' : 'bg-primary'
+      className={`mx-auto ${
+        inCart ? 'bg-primary text-white' : 'bg-white text-black border-primary'
       }`}
     >
       <CartIcon />

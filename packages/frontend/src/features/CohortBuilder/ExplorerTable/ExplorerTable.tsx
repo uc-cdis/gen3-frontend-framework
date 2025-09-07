@@ -271,7 +271,7 @@ const ExplorerTable = ({
       },
       ...(tableConfig?.selectableRowsConfiguration?.enabled &&
       tableConfig?.selectableRowsConfiguration?.action === 'cart'
-        ? { 'mrt-row-actions': { header: 'Cart' } }
+        ? { 'mrt-row-actions': { header: 'Cart', enableHiding: false } }
         : {}),
     },
     onColumnVisibilityChange: handleColumnVisibilityChange,
