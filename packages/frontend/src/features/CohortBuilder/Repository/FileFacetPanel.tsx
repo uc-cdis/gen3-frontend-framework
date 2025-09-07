@@ -22,7 +22,6 @@ import {
   FacetDataHooks,
   FieldToName,
   getAllFieldsFromFilterConfigs,
-  getByPath,
   processBucketData,
   removeIntersectionFromEnum,
   useClearFilters,
@@ -123,9 +122,8 @@ export const FileFacetPanel = ({
         }
       }
 
-      const dataRoot = getByPath(facetData, field);
       return {
-        data: processBucketData(dataRoot),
+        data: processBucketData(facetData?.[field]),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isFacetsQuerySuccess,
