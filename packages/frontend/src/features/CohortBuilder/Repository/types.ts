@@ -7,6 +7,7 @@ import {
 import { SummaryTable } from '../ExplorerTable/types';
 import { Gen3AppConfigData } from '../../../lib/content/types';
 import { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
+import React from 'react';
 
 export interface FacetQueryParameters {
   type: string;
@@ -73,4 +74,8 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
   fileStatsConfiguration: FileStatsConfiguration;
+}
+
+export interface RepositoryProps extends RepositoryConfiguration {
+  additionalControls: React.ReactNode | null;
 }

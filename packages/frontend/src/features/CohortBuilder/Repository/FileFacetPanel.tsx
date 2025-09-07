@@ -136,7 +136,6 @@ export const FileFacetPanel = ({
   const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
-        // TODO: see if there a better way to do this
         enum: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),

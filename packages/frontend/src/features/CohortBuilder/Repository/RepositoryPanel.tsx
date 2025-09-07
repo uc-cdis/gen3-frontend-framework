@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { RepositoryConfiguration } from './types';
 import { useMediaQuery } from '@mantine/hooks';
 import { getAllFieldsFromFilterConfigs } from '../../../components/facets';
 import {
@@ -15,6 +14,7 @@ import ExplorerTable from '../ExplorerTable/ExplorerTable';
 import DownloadsPanel from '../DownloadsPanel';
 import { TableXPositionContext } from '../ExplorerTable/context';
 import FileFacetPanel from './FileFacetPanel';
+import { RepositoryProps } from './types';
 
 export const RepositoryPanel = ({
   guppyConfig,
@@ -24,7 +24,8 @@ export const RepositoryPanel = ({
   buttons,
   loginForDownload,
   fileStatsConfiguration,
-}: RepositoryConfiguration) => {
+  additionalControls = null,
+}: RepositoryProps) => {
   const isSm = useMediaQuery('(min-width: 639px)');
   const isMd = useMediaQuery('(min-width: 1373px)');
   const isXl = useMediaQuery('(min-width: 1600px)');
@@ -86,6 +87,7 @@ export const RepositoryPanel = ({
               id="cohort-builder-content"
               className="flex flex-col md:w-3/4 lg:w-4/5 pl-4"
             >
+              {additionalControls}
               {/* Table Section */}
               {table?.enabled && (
                 <ExplorerTable
