@@ -77,5 +77,5 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
 }
 
 export interface RepositoryProps extends RepositoryConfiguration {
-  additionalControls: React.ReactNode | null;
+  additionalControls?: React.ReactNode | null;
 }
