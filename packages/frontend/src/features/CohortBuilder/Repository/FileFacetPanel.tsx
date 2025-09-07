@@ -22,7 +22,6 @@ import {
   FacetDataHooks,
   FieldToName,
   getAllFieldsFromFilterConfigs,
-  getByPath,
   processBucketData,
   removeIntersectionFromEnum,
   useClearFilters,
@@ -123,9 +122,8 @@ export const FileFacetPanel = ({
         }
       }
 
-      const dataRoot = getByPath(facetData, field);
       return {
-        data: processBucketData(dataRoot),
+        data: processBucketData(facetData?.[field]),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isFacetsQuerySuccess,
@@ -138,7 +136,6 @@ export const FileFacetPanel = ({
   const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
-        // TODO: see if there a better way to do this
         enum: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),

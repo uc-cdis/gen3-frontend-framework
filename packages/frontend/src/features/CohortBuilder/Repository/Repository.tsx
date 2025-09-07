@@ -1,8 +1,8 @@
-import { RepositoryConfiguration } from './types';
 import React from 'react';
 import RepositoryPanel from './RepositoryPanel';
 import { validateObjectHasRequiredFields } from '../../../utils/validators';
 import { ErrorCard, MessagePage } from '../../../components/MessageCards';
+import { RepositoryProps } from './types';
 
 const Repository = ({
   filters,
@@ -12,7 +12,8 @@ const Repository = ({
   loginForDownload,
   dropdowns,
   fileStatsConfiguration,
-}: RepositoryConfiguration) => {
+  additionalControls = null,
+}: RepositoryProps) => {
   if (
     !fileStatsConfiguration ||
     !validateObjectHasRequiredFields(
@@ -37,6 +38,7 @@ const Repository = ({
       buttons={buttons}
       loginForDownload={loginForDownload}
       fileStatsConfiguration={fileStatsConfiguration}
+      additionalControls={additionalControls}
     />
   );
 };
