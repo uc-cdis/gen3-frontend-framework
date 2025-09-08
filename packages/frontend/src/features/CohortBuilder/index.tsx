@@ -1,5 +1,9 @@
 import CohortBuilder from './CohortBuilder';
-import { type CohortBuilderConfiguration, type CohortBuilderProps, type CohortPanelConfiguration, } from './types';
+import {
+  type CohortBuilderConfiguration,
+  type CohortBuilderProps,
+  type CohortPanelConfiguration,
+} from './types';
 
 import {
   type CellRendererFunctionProps,
