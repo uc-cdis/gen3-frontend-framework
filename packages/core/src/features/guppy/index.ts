@@ -6,7 +6,11 @@ import {
   downloadJSONDataFromGuppy,
   groupSharedFields,
 } from './utils';
-import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
+import {
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
+} from './guppyDownloadSlice';
+import { conversion } from './conversion';
 
 export * from './types';
 export * from './processing';
@@ -14,8 +18,10 @@ export * from './processing';
 export {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
-  useDownloadFromGuppyMutation,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
   groupSharedFields,
+  conversion,
 };
 export { processHistogramResponse } from './processing';
 export { rawDataQueryStrForEachField } from './queryGenerators';
