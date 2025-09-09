@@ -3,6 +3,9 @@ import {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
   type CohortPanelConfiguration,
+  type DataTypeConfigWithManifest,
+  type DownloadButtonConfig,
+  type DropdownsWithButtonsProps,
   type TabConfig,
   type TabsConfig,
 } from './types';
@@ -13,6 +16,7 @@ import {
   ExplorerTableDetailsPanelFactory,
   registerCohortBuilderDefaultPreviewRenderers,
   registerExplorerDefaultCellRenderers,
+  type SummaryTable,
   type TableDetailsPanelProps,
   TableXPositionContext,
 } from './ExplorerTable';
@@ -47,6 +51,10 @@ export {
   type TabbedCohortBuilderConfiguration,
   type TabConfig,
   type TabsConfig,
+  type DataTypeConfigWithManifest,
+  type DownloadButtonConfig,
+  type DropdownsWithButtonsProps,
+  type SummaryTable,
   CohortBuilder,
   CohortManager,
   CohortManagerAndExpression,
