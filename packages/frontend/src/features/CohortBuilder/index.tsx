@@ -3,6 +3,8 @@ import {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
   type CohortPanelConfiguration,
+  type TabConfig,
+  type TabsConfig,
 } from './types';
 
 import {
@@ -26,6 +28,11 @@ import TabbedCohortBuilder, {
   type TabbedCohortBuilderConfiguration,
   type TabbedCohortBuilderFacetConfig,
 } from './TabbedCohortBuilder';
+import useGuppyActionButton from './downloads/downloadActionHook';
+import CohortActionButton from './downloads/CohortActionButton';
+import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
+import ExplorerTable from './ExplorerTable/ExplorerTable';
+import DownloadsPanel from './DownloadsPanel';
 
 export * from './Repository';
 
@@ -35,6 +42,11 @@ export {
   type TableDetailsPanelProps,
   type CellRendererFunctionProps,
   type CohortPanelConfiguration,
+  type TabbedCohortBuilderFacetConfig,
+  type CohortBuilderTabCategoryConfig,
+  type TabbedCohortBuilderConfiguration,
+  type TabConfig,
+  type TabsConfig,
   CohortBuilder,
   CohortManager,
   CohortManagerAndExpression,
@@ -42,12 +54,14 @@ export {
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
-  QueryExpressionContext, // TODO move context to own feature folder
-  TableXPositionContext,
   QueryExpression,
   QueryExpressionSection,
   TabbedCohortBuilder,
-  type TabbedCohortBuilderFacetConfig,
-  type CohortBuilderTabCategoryConfig,
-  type TabbedCohortBuilderConfiguration,
+  CohortActionButton,
+  useGuppyActionButton,
+  CohortDropdownActionButton,
+  ExplorerTable,
+  DownloadsPanel,
+  QueryExpressionContext, // TODO move context to own feature folder
+  TableXPositionContext,
 };

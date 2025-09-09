@@ -1,34 +1,34 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { BarChartIcon, SurvivalChartIcon } from '../types/icons';
+import { CartIcon, PersonIcon } from '../types/icons';
 import { SegmentedControlItem, Tooltip } from '@mantine/core';
 import SegmentedControl from './SegmentedControl';
 
 const chartButtons: SegmentedControlItem[] = [
   {
-    value: 'histogram',
+    value: 'cart',
     label: (
-      <Tooltip label="Histogram" position="bottom-end" withArrow arrowSize={7}>
+      <Tooltip label="Cart" position="bottom-end" withArrow arrowSize={7}>
         <div
-          data-testid="button-histogram-plot"
+          data-testid="button-test-cart"
           role="button"
-          aria-label={`Select test histogram plot`}
+          aria-label={`Select cart`}
         >
-          <BarChartIcon size={20} aria-hidden="true" />
+          <CartIcon size={20} aria-hidden="true" />
         </div>
       </Tooltip>
     ),
   },
   {
-    value: 'survival',
+    value: 'person',
     label: (
-      <Tooltip label={'Survival Plot'} withArrow arrowSize={7}>
+      <Tooltip label={'Copy Plot'} withArrow arrowSize={7}>
         <div
-          data-testid="button-survival-plot"
+          data-testid="button-test-person"
           role="button"
-          aria-label={`Select test survival plot`}
+          aria-label={`Select person`}
         >
-          <SurvivalChartIcon size={20} aria-hidden="true" />
+          <PersonIcon size={20} aria-hidden="true" />
         </div>
       </Tooltip>
     ),

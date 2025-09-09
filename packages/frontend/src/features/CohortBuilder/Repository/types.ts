@@ -79,3 +79,7 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
 export interface RepositoryProps extends RepositoryConfiguration {
   additionalControls?: React.ReactNode | null;
 }
+
+export type GetFacetValuesQueryHook = (
+  args: FacetQueryParameters,
+) => FacetQueryResponse;

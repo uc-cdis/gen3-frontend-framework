@@ -1,7 +1,6 @@
 /// Icons that are part of the Gen3 FEF and not are not configurable.
 import {
   MdAdd as AddIcon,
-  MdBarChart as BarChartIcon,
   MdClose as CloseIcon,
   MdContentCopy as CopyIcon,
   MdDelete as DeleteIcon,
@@ -14,7 +13,6 @@ import {
   MdSave as SaveIcon,
   MdSearch as SearchIcon,
   MdShoppingCart as CartIcon,
-  MdTrendingDown as SurvivalChartIcon,
   MdWarning as WarningTriangleIcon,
 } from 'react-icons/md';
 import { RiErrorWarningFill as WarningMessageIcon } from 'react-icons/ri';
@@ -32,7 +30,6 @@ import {
 export {
   AddIcon,
   AddFacetIcon,
-  BarChartIcon,
   CartIcon,
   CircleIcon,
   CloseIcon,
@@ -46,7 +43,6 @@ export {
   SearchIcon,
   PersonIcon,
   PlusIcon,
-  SurvivalChartIcon,
   TrashIcon,
   UndoIcon,
   UploadIcon,

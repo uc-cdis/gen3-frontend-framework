@@ -6,7 +6,12 @@ import {
   MRT_RowData,
   MRT_TableInstance,
 } from 'mantine-react-table';
-import { Accessibility, JSONObject } from '@gen3/core';
+import {
+  Accessibility,
+  JSONObject,
+  RawDataAndTotalCountsParams,
+  useGetRawDataAndTotalCountsQuery,
+} from '@gen3/core';
 import React, { ReactNode, RefObject } from 'react';
 
 export interface ColumnDefinition {
@@ -94,6 +99,7 @@ export interface ExplorerTableProps {
   tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
   indexPrefix?: string;
+  dataHook?: ExplorerDataQueryHook;
 }
 
 export interface ExplorerTableColumnMRT {
@@ -135,3 +141,7 @@ export type CellRendererFunction = (
   props: CellRendererFunctionProps,
   ...args: any[]
 ) => ReactNode;
+
+export type ExplorerDataQueryHook = (
+  args: RawDataAndTotalCountsParams,
+) => ReturnType<typeof useGetRawDataAndTotalCountsQuery>;

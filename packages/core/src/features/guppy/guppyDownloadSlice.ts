@@ -21,7 +21,7 @@ interface DownloadRequestStatus {
  */
 export const downloadRequestApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    downloadFromGuppy: builder.mutation({
+    downloadFromGuppy: builder.query({
       query: ({
         type,
         filter,
@@ -47,4 +47,5 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useDownloadFromGuppyMutation } = downloadRequestApi;
+export const { useDownloadFromGuppyQuery, useLazyDownloadFromGuppyQuery } =
+  downloadRequestApi;

@@ -71,7 +71,7 @@ const globals = {
   'use-deep-compare': 'use-deep-compare',
   graphql: 'graphql',
   'isomorphic-dompurify': 'isomorphic-dompurify',
-  '@iconify-icon/react': 'iconify-iconReact ',
+  '@iconify-icon/react': 'iconify-iconReact',
 };
 
 const external = [
@@ -96,6 +96,10 @@ const external = [
   '@gen3/core',
   '@gen3/core/server',
   'swr',
+  '@dnd-kit/core',
+  '@dnd-kit/sortable',
+  '@dnd-kit/utilities',
+  '@dnd-kit/modifiers',
 ];
 
 const jsBundle = (input, baseName) => ({
