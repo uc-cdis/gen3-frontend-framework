@@ -7,6 +7,7 @@ import {
   groupSharedFields,
 } from './utils';
 import {
+  guppyDownloadApi,
   useDownloadFromGuppyQuery,
   useLazyDownloadFromGuppyQuery,
 } from './guppyDownloadSlice';
@@ -22,11 +23,7 @@ export {
   useLazyDownloadFromGuppyQuery,
   groupSharedFields,
   conversion,
+  guppyDownloadApi,
   jsonToFormat,
 };
 export { processHistogramResponse } from './processing';
-export { rawDataQueryStrForEachField } from './queryGenerators';
-export { nestedHistogramQueryStrForEachField } from './queryGenerators';
-export { statsQueryStrForEachField } from './queryGenerators';
-export { histogramQueryStrForEachField } from './queryGenerators';
-export { customQueryStrForField } from './queryGenerators';

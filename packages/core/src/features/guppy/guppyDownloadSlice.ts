@@ -19,7 +19,7 @@ interface DownloadRequestStatus {
  * type, filter, accessibility, fields, and sort arguments
  * @returns: A guppy download API for fetching bulk metadata
  */
-export const downloadRequestApi = gen3Api.injectEndpoints({
+export const guppyDownloadApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     downloadFromGuppy: builder.query({
       query: ({
@@ -48,4 +48,4 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
 });
 
 export const { useDownloadFromGuppyQuery, useLazyDownloadFromGuppyQuery } =
-  downloadRequestApi;
+  guppyDownloadApi;
