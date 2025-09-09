@@ -21,7 +21,11 @@ export * from './types';
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
-import { type Fonts, type RegisteredIcons } from './lib/content/types';
+import {
+  type Fonts,
+  type Gen3AppConfigData,
+  type RegisteredIcons,
+} from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
@@ -44,9 +48,7 @@ import SegmentedControl from './components/SegmentedControl';
 
 import TopBar from './features/Navigation/TopBar/TopBar';
 
-import '@gen3/core';
-
-// export Gen3 data UI standard pages
+import '@gen3/core'; // export Gen3 data UI standard pages
 import Gen3Provider, {
   createMantineTheme,
 } from './components/Providers/Gen3Provider';
@@ -152,6 +154,7 @@ export {
   // Pages
   type QueryProps,
   type QueryPageLayoutProps,
+  type Gen3AppConfigData,
   DiscoveryPage,
   DiscoveryPageGetServerSideProps,
   QueryPage,
