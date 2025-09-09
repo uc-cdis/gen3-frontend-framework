@@ -4,7 +4,7 @@ import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 import { Button, Group, Image, Stack, Text } from '@mantine/core';
 import { AnalysisToolConfiguration } from './types';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 type AnalysisCardCompactProps = Omit<AnalysisToolConfiguration, 'image'>;
 

@@ -13,6 +13,11 @@ const meta = {
       </div>
     ),
   ],
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+    }
+  }
 } satisfies Meta<typeof AnalysisCardCompact>;
 
 export default meta;
