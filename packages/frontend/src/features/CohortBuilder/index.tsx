@@ -3,6 +3,8 @@ import {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
   type CohortPanelConfiguration,
+  type TabConfig,
+  type TabsConfig,
 } from './types';
 
 import {
@@ -43,6 +45,8 @@ export {
   type TabbedCohortBuilderFacetConfig,
   type CohortBuilderTabCategoryConfig,
   type TabbedCohortBuilderConfiguration,
+  type TabConfig,
+  type TabsConfig,
   CohortBuilder,
   CohortManager,
   CohortManagerAndExpression,

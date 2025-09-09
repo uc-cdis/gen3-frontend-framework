@@ -97,6 +97,7 @@ const ExplorerTable = ({
   tableTotalDetail,
   tableTitle,
   indexPrefix = '',
+  dataHook = useGetRawDataAndTotalCountsQuery,
 }: ExplorerTableProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -187,22 +188,21 @@ const ExplorerTable = ({
     selectIndexFilters(state, index),
   );
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
-  const { data, isLoading, isError, isFetching, isSuccess } =
-    useGetRawDataAndTotalCountsQuery({
-      type: index,
-      fields: fields,
-      filters: cohortFilters,
-      offset: pagination.pageIndex * pagination.pageSize,
-      size: pagination.pageSize,
-      sort:
-        sorting.length > 0
-          ? (sorting.map((x) => {
-              return { [x.id]: x.desc ? 'desc' : 'asc' };
-            }) as Record<string, 'desc' | 'asc'>[])
-          : undefined,
-      accessibility: accessibility,
-      indexPrefix: indexPrefix,
-    });
+  const { data, isLoading, isError, isFetching, isSuccess } = dataHook({
+    type: index,
+    fields: fields,
+    filters: cohortFilters,
+    offset: pagination.pageIndex * pagination.pageSize,
+    size: pagination.pageSize,
+    sort:
+      sorting.length > 0
+        ? (sorting.map((x) => {
+            return { [x.id]: x.desc ? 'desc' : 'asc' };
+          }) as Record<string, 'desc' | 'asc'>[])
+        : undefined,
+    accessibility: accessibility,
+    indexPrefix: indexPrefix,
+  });
 
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
     const pageLimit =

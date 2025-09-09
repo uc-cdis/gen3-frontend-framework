@@ -59,14 +59,14 @@ const AddNotification: React.FC<AddNotificationProps> = ({
   currentCart,
   dispatch,
 }: AddNotificationProps) => {
-  const itemsToAdd = items.filter(
+  const itemsToAdd = items?.filter(
     (f) => !currentCart?.map((c) => c.id).includes(f.id),
   );
 
   const newCart = [...currentCart, ...itemsToAdd];
 
-  const alreadyInCart = items.filter((f) => {
-    return currentCart.map((c) => {
+  const alreadyInCart = items?.filter((f) => {
+    return currentCart?.map((c) => {
       return c.id.includes(f.id);
     });
   });
@@ -139,11 +139,11 @@ const RemoveNotification: React.FC<RemoveNotificationProps> = ({
   currentCart,
   dispatch,
 }: RemoveNotificationProps) => {
-  const itemsToRemove = items.filter((f) =>
-    currentCart.map((CartItem) => CartItem.id).includes(f.id),
+  const itemsToRemove = items?.filter((f) =>
+    currentCart?.map((CartItem) => CartItem.id).includes(f.id),
   );
 
-  const newCart = items.filter((f) => !itemsToRemove.includes(f));
+  const newCart = items?.filter((f) => !itemsToRemove.includes(f));
 
   if (itemsToRemove.length === 1) {
     return (
@@ -188,7 +188,7 @@ export const removeFromCart = (
     closeButtonProps: { 'aria-label': 'Close notification' },
     position: 'top-center',
   });
-  const itemsToRemove = items.map((f) => f.id);
+  const itemsToRemove = items?.map((f) => f.id);
   dispatch(removeItemsFromCart(itemsToRemove));
 };
 
