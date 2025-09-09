@@ -10,7 +10,7 @@ import {
   useDownloadFromGuppyQuery,
   useLazyDownloadFromGuppyQuery,
 } from './guppyDownloadSlice';
-import { conversion } from './conversion';
+import { conversion, jsonToFormat } from './conversion';
 
 export * from './types';
 export * from './processing';
@@ -22,6 +22,7 @@ export {
   useLazyDownloadFromGuppyQuery,
   groupSharedFields,
   conversion,
+  jsonToFormat,
 };
 export { processHistogramResponse } from './processing';
 export { rawDataQueryStrForEachField } from './queryGenerators';
