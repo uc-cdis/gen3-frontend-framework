@@ -53,7 +53,7 @@ export const ProjectAccessCellRenderer = (
   params: Record<string, any>,
 ) => {
   const value = cell.getValue();
-  if (typeof value !== 'string') return <span>Bad Value</span>;
+  if (typeof value !== 'string') return <span>---</span>;
   const { projectName } = extractProgramAndProjectNames(value);
 
   let color = 'primary.4';

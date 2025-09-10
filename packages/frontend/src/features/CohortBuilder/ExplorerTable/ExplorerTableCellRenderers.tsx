@@ -69,8 +69,6 @@ const ValueCellRenderer = ({ cell }: CellRendererFunctionProps) => {
 const FilesizeRenderer = ({ cell }: CellRendererFunctionProps) => {
   const value = cell.getValue();
 
-  console.log('value', value);
-
   if (value == null) return <span>---</span>;
 
   // Handle numbers

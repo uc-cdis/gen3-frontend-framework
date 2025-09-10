@@ -11,11 +11,14 @@ import {
   updateCohortFilter,
 } from './CohortManagment/CohortManagerSlice';
 import {
-  selectCurrentCohortIndexFilters,
   selectCurrentCohortFilters,
+  selectCurrentCohortIndexFilters,
 } from './CohortManagment/CohortManagerSelectors';
-import { FilterSet, Operation } from '@gen3/core';
-import { buildNested } from '../../components/facets';
+import {
+  buildNestedFilterForOperation,
+  FilterSet,
+  Operation,
+} from '@gen3/core';
 
 export const useToggleExpandFilter = () => {
   const dispatch = useAppDispatch();
@@ -66,7 +69,7 @@ export const useUpdateFilters = (index: string) => {
       updateCohortFilter({
         index: index,
         field: field,
-        filter: buildNested(field, filter),
+        filter: buildNestedFilterForOperation(field, filter),
       }),
     );
   };
