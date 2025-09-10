@@ -67,7 +67,32 @@ const ValueCellRenderer = ({ cell }: CellRendererFunctionProps) => {
 };
 
 const FilesizeRenderer = ({ cell }: CellRendererFunctionProps) => {
-  return <span>{filesize(cell.getValue() as string)}</span>;
+  const value = cell.getValue();
+
+  if (value == null) return <span>---</span>;
+
+  // Handle numbers
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? (
+      <span>{filesize(value)}</span>
+    ) : (
+      <span>---</span>
+    );
+  }
+
+  // Handle bigints if present
+  if (typeof value === 'bigint') {
+    return <span>{filesize(value)}</span>;
+  }
+
+  // Handle numeric strings
+  if (typeof value === 'string') {
+    const n = Number(value.trim());
+    return Number.isFinite(n) ? <span>{filesize(n)}</span> : <span>---</span>;
+  }
+
+  // Unsupported type
+  return <span>---</span>;
 };
 
 const ArrayCellFunctionCatalog = {

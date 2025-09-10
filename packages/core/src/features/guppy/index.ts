@@ -11,7 +11,7 @@ import {
   useDownloadFromGuppyQuery,
   useLazyDownloadFromGuppyQuery,
 } from './guppyDownloadSlice';
-import { conversion } from './conversion';
+import { conversion, jsonToFormat } from './conversion';
 
 export * from './types';
 export * from './processing';
@@ -24,5 +24,6 @@ export {
   groupSharedFields,
   conversion,
   guppyDownloadApi,
+  jsonToFormat,
 };
 export { processHistogramResponse } from './processing';

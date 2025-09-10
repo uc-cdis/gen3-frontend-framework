@@ -1,5 +1,6 @@
 import {
   AggregationsData,
+  buildNestedFilterForOperation,
   CombineMode,
   CoreState,
   EnumFilterValue,
@@ -184,40 +185,6 @@ export const classifyFacets = (
 };
 
 /**
- * Constructs a nested operation object based on the provided field and leaf operand.
- * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
- * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
- * creates a "nested" operation for the root field, and recursively constructs the nested structure
- * for the remaining portion of the field.
- *
- * @param {string} field - The hierarchical field path, with segments separated by dots (e.g., "root.child").
- * @param {Operation} leafOperand - The operation to be nested within the specified path.
- * @returns {Operation} A nested operation object that represents the structured path and operand.
- */
-export const buildNested = (
-  field: string,
-  leafOperand: Operation,
-): Operation => {
-  if (!field.includes('.')) {
-    if (isOperationWithField(leafOperand))
-      return {
-        ...leafOperand,
-        field: field,
-      } as Operation;
-    else return leafOperand;
-  }
-
-  const splitFieldArray = field.split('.');
-  const rootField = splitFieldArray.shift();
-
-  return {
-    operator: 'nested',
-    path: rootField ?? '',
-    operand: buildNested(splitFieldArray.join('.'), leafOperand),
-  };
-};
-
-/**
  * Update Guppy filters: process nested fields and have the final
  * leaf be filtered
  * @param index
@@ -238,7 +205,7 @@ export const useUpdateFilters = (index: string) => {
           updateCohortFilter({
             index: x.index,
             field: x.field,
-            filter: buildNested(x.field, filter),
+            filter: buildNestedFilterForOperation(x.field, filter),
           }),
         );
       });
@@ -247,7 +214,7 @@ export const useUpdateFilters = (index: string) => {
         updateCohortFilter({
           index: index,
           field: field,
-          filter: buildNested(field, filter),
+          filter: buildNestedFilterForOperation(field, filter),
         }),
       );
     }

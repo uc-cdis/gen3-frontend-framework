@@ -1,9 +1,10 @@
 import { gen3Api } from '../gen3';
 import { GEN3_GUPPY_API } from '../../constants';
 import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
-import { BaseGuppyDataRequest, GuppyDownloadDataParams } from './types';
+import { GuppyDownloadDataParams, GuppyDownloadDataRequest } from './types';
 
-export interface GuppyDownloadDataQueryParams extends BaseGuppyDataRequest {
+export interface GuppyDownloadDataQueryParams
+  extends Omit<GuppyDownloadDataRequest, 'filter'> {
   filter: GQLFilter;
 }
 

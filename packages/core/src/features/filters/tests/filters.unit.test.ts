@@ -1,5 +1,6 @@
 import { FilterSet, Operation } from '../types';
 import {
+  buildNestedFilterForOperation,
   buildNestedGQLFilter,
   convertFilterSetToGqlFilter,
   convertGqlFilterToFilter,
@@ -383,6 +384,46 @@ describe('convertGqlFilterToFilter', () => {
         },
         path: 'cases',
       },
+    };
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should create a nested filter for a Operation', () => {
+    const result = buildNestedFilterForOperation('cases.genes.gene_symbol', {
+      operator: '=',
+      field: 'gene_symbol',
+      operand: 'KRAS',
+    });
+
+    const expected = {
+      operand: {
+        operand: {
+          field: 'gene_symbol',
+          operand: 'KRAS',
+          operator: '=',
+        },
+        operator: 'nested',
+        path: 'cases.genes',
+      },
+      operator: 'nested',
+      path: 'cases',
+    };
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should not create a nested filter for fields without "."', () => {
+    const result = buildNestedFilterForOperation('gene_symbol', {
+      operator: '=',
+      field: 'to_set',
+      operand: 'KRAS',
+    });
+
+    const expected = {
+      field: 'gene_symbol',
+      operand: 'KRAS',
+      operator: '=',
     };
 
     expect(result).toEqual(expected);

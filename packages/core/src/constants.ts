@@ -57,4 +57,4 @@ export const FILE_DELIMITERS = {
   csv: ',',
 };
 
-export const CART_LIMIT = 10000;
+export const CART_LIMIT = 80000;
