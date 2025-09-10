@@ -162,6 +162,12 @@ export const isOperandsType = (
   return (operation as OperandsType)?.operands !== undefined;
 };
 
+export const ifOperationWithField = (
+  operation: Operation,
+): operation is OperationWithField => {
+  return (operation as OperationWithField).field !== undefined;
+};
+
 export const isNestedFilter = (
   operation: Operation,
 ): operation is NestedFilter => {
