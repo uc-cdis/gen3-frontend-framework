@@ -33,12 +33,20 @@ you should add `.valc` and `yalc.lock` to the `.gitignore` file to the
 data commons repository.
 
 then in the datacommons application (e.g. cadc-datacommons):
-```aiignore
+```bash
  yalc add @gen3/frontend @gen3/core
 ```
 This will then use the local copy of the Gen3.2 frontend and core packages
 in the datacommons application, without the overhead of publishing new
 Gen3.2 NPMs.
+
+### Updating changes to core or frontend packages
+```bash
+cd packages/core or ../frontend
+npm run build:clean
+yalc publish --push
+```
+which will update the local copy of the Gen3.2 packages and any linked applications.
 
 ### Removing the local copy of the Gen3.2 packages
 

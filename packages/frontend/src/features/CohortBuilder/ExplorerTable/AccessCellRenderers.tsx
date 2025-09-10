@@ -85,7 +85,11 @@ export const OpenControlledAccessCellRenderer = (
   }
 
   return (
-    <Badge fullWidth color={color}>
+    <Badge
+      fullWidth
+      color={color}
+      className="w-full max-w-[8em] capitalize text-xs font-bold font-content"
+    >
       {access}
     </Badge>
   );
