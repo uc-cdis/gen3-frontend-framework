@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';

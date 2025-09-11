@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NameAndIcon } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
-import { IconSize } from '../../DataLibrary/types';
+import { NextRouter, useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { SessionContext } from '../../../lib/session/session';
 import {
@@ -11,7 +11,6 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { LoginButtonVisibility } from '../../../components/Login/types';
-import { NextRouter, useRouter } from 'next/router';
 import { IconButton } from './IconButton';
 
 const handleSelected = async (
