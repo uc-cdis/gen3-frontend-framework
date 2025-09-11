@@ -53,7 +53,7 @@ export const ProjectAccessCellRenderer = (
   params: Record<string, any>,
 ) => {
   const value = cell.getValue();
-  if (typeof value !== 'string') return <span>Bad Value</span>;
+  if (typeof value !== 'string') return <span>---</span>;
   const { projectName } = extractProgramAndProjectNames(value);
 
   let color = 'primary.4';
@@ -66,6 +66,31 @@ export const ProjectAccessCellRenderer = (
   return (
     <Badge fullWidth color={color}>
       {projectName}
+    </Badge>
+  );
+};
+
+export const OpenControlledAccessCellRenderer = (
+  { cell }: CellRendererFunctionProps,
+  params: Record<string, any>,
+) => {
+  const access = cell.getValue();
+  if (typeof access !== 'string') return <span>Bad Value</span>;
+
+  let color = 'primary.4';
+  if (params && isStringToColorTable(params?.colorTable)) {
+    if (access) {
+      color = ExtractValueFromObject(params.colorTable, access, color);
+    }
+  }
+
+  return (
+    <Badge
+      fullWidth
+      color={color}
+      className="w-full max-w-[8em] capitalize text-xs font-bold font-content"
+    >
+      {access}
     </Badge>
   );
 };

@@ -5,7 +5,12 @@ import {
   removeItemsFromCart,
 } from './cartSlice';
 
-import { selectCart, selectCartCount } from './cartSelectors';
+import {
+  selectCart,
+  selectCartCount,
+  selectCartItem,
+  selectCartItems,
+} from './cartSelectors';
 
 export {
   selectCart,
@@ -14,6 +19,8 @@ export {
   type CartItem,
   cartReducer,
   selectCartCount,
+  selectCartItem,
+  selectCartItems,
 };
 
 export const cartReducerPath = 'cart';

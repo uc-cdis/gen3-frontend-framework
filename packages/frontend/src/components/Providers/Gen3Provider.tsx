@@ -16,6 +16,13 @@ interface Gen3ProviderProps {
   modalsConfig: ModalsConfig;
   contextModals?: Record<string, FC<ContextModalProps<any>>>;
   children?: ReactNode | undefined;
+  defaultNotificationPosition?:
+    | 'top-left'
+    | 'top-right'
+    | 'top-center'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'bottom-center';
 }
 
 // Define theme for mantine v7
@@ -83,6 +90,7 @@ const Gen3Provider = ({
   sessionConfig,
   modalsConfig,
   contextModals,
+  defaultNotificationPosition = 'top-center',
   children,
 }: Gen3ProviderProps) => {
   useEffect(() => {
@@ -92,7 +100,7 @@ const Gen3Provider = ({
   return (
     <CoreProvider>
       <ModalsProvider modals={contextModals}>
-        <Notifications />
+        <Notifications position={defaultNotificationPosition} />
         <SessionProvider {...sessionConfig}>
           <Gen3ModalsProvider config={modalsConfig}>
             {children}

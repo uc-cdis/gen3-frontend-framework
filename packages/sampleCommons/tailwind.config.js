@@ -11,7 +11,7 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
     './src/features/**/*.{js,ts,jsx,tsx}',
-    '../frontend/dist/**/index.js',
+    '../frontend/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -80,6 +80,14 @@ module.exports = {
       height: {
         '100px': '100px',
         '200px': '200px',
+      },
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1420px',
+        '3xl': '1536px',
       },
     },
   },
@@ -178,6 +186,12 @@ module.exports = {
     'h-20',
     'mt-10',
     'mb-10',
+    'focus-visible:outline-none',
+    'focus-visible:ring-offset-2',
+    'focus:ring-offset-white',
+    'focus-visible:ring-inset',
+    'focus-visible:ring-2',
+    'focus-visible:ring-focusColor',
     {
       pattern:
         /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,

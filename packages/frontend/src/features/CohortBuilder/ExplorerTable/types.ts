@@ -6,7 +6,12 @@ import {
   MRT_RowData,
   MRT_TableInstance,
 } from 'mantine-react-table';
-import { Accessibility, JSONObject } from '@gen3/core';
+import {
+  Accessibility,
+  JSONObject,
+  RawDataAndTotalCountsParams,
+  useGetRawDataAndTotalCountsQuery,
+} from '@gen3/core';
 import React, { ReactNode, RefObject } from 'react';
 
 export interface ColumnDefinition {
@@ -58,12 +63,19 @@ export interface FieldSubtable extends TableColumnsAndFields {
   classNames?: Partial<FieldSubtableClassnames>;
 }
 
+export interface RowSelectionConfiguration {
+  enabled?: boolean;
+  action: 'library' | 'cart';
+  idField?: string;
+  itemFields: ReadonlyArray<string>;
+}
+
 export interface SummaryTable extends TableColumnsAndFields {
   enabled: boolean;
   subTables?: ReadonlyArray<FieldSubtable>;
   pageLimit?: SummaryTablePageLimit;
   detailsConfig?: ExplorerDetailsConfig;
-  selectableRows?: boolean;
+  selectableRowsConfiguration?: RowSelectionConfiguration;
   showTableHeaderControls?: boolean;
   columnSorting?: boolean;
   columnHiding?: boolean;
@@ -86,6 +98,8 @@ export interface ExplorerTableProps {
   additionalControls?: React.ReactNode; // for customization
   tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
+  indexPrefix?: string;
+  dataHook?: ExplorerDataQueryHook;
 }
 
 export interface ExplorerTableColumnMRT {
@@ -127,3 +141,7 @@ export type CellRendererFunction = (
   props: CellRendererFunctionProps,
   ...args: any[]
 ) => ReactNode;
+
+export type ExplorerDataQueryHook = (
+  args: RawDataAndTotalCountsParams,
+) => ReturnType<typeof useGetRawDataAndTotalCountsQuery>;

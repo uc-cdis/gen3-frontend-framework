@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, ReactElement, useContext } from 'react';
 import { get, isArray } from 'lodash';
 import {
+  buildNestedFilterForOperation,
   Equals,
   ExcludeIfAny,
   Excludes,
@@ -30,7 +31,6 @@ import tw from 'tailwind-styled-components';
 import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import QueryRepresentationLabel from './QueryRepresentationLabel';
 import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
-import { buildNested } from '../../../components/facets';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { QueryExpressionContext } from './QueryExpressionContext';
 
@@ -221,7 +221,7 @@ const IncludeExcludeQueryElement = ({
                       updateCohortFilter(
                         index,
                         fieldToUpdate,
-                        buildNested(fieldToUpdate, {
+                        buildNestedFilterForOperation(fieldToUpdate, {
                           operator: operator,
                           field: field,
                           operands: newOperands,

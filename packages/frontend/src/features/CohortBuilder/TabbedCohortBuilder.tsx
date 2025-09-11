@@ -77,11 +77,13 @@ export const calculateStickyHeaderHeight = (): number => {
 export interface TabbedCohortBuilderConfiguration {
   tabsConfiguration: TabbedCohortBuilderFacetConfig;
   index: string;
+  indexPrefix?: string;
 }
 
 const TabbedCohortBuilder = ({
   index,
   tabsConfiguration,
+  indexPrefix = '',
 }: TabbedCohortBuilderConfiguration) => {
   const tabsConfig = tabsConfiguration;
   const cohortBuilderFilters = [
@@ -122,6 +124,7 @@ const TabbedCohortBuilder = ({
     filters: cohortFilters,
     accessibility: accessLevel,
     queryId: cohortId,
+    indexPrefix: indexPrefix,
   });
 
   const {
@@ -133,6 +136,7 @@ const TabbedCohortBuilder = ({
     filters: cohortFilters,
     accessibility: accessLevel,
     queryId: cohortId,
+    indexPrefix: indexPrefix,
   });
 
   const [facetDefinitions, setFacetDefinitions] = useState<

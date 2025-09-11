@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
-import { LoadingOverlay, Stack, Table, Text } from '@mantine/core';
+import { LoadingOverlay, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useGetRawDataAndTotalCountsQuery } from '@gen3/core';
-import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
+import {
+  buildNestedFilterForOperation,
+  useGetRawDataAndTotalCountsQuery,
+} from '@gen3/core';
 import ErrorCard from '../../../../components/MessageCards/ErrorCard';
 import { TableDetailsPanelProps } from './types';
-import { buildNested } from '../../../../components/facets';
+
 import { JSONPath } from 'jsonpath-plus';
 import { isArray } from 'lodash';
 import { useStudyContext } from '../../../Study/StudyProvider';
@@ -66,11 +68,14 @@ export const QueryRowDetailsPanel = ({
       filters: {
         mode: 'and',
         root: {
-          [idField as string]: buildNested(idField as string, {
-            operator: '=',
-            field: idField as string,
-            operand: id as string,
-          }),
+          [idField as string]: buildNestedFilterForOperation(
+            idField as string,
+            {
+              operator: '=',
+              field: idField as string,
+              operand: id as string,
+            },
+          ),
         },
       },
       offset: 0,
@@ -108,13 +113,17 @@ export const QueryRowDetailsPanel = ({
 
   return (
     <Stack>
-    <LoadingOverlay visible={isFetching} />
-      {simpleDetailsView ?
-       <SinglePageStudyDetailsPanel data={queryData ?? {}} studyConfig={simpleDetailsView} /> :
-       <div>Study Details Panel not configured</div> }
+      <LoadingOverlay visible={isFetching} />
+      {simpleDetailsView ? (
+        <SinglePageStudyDetailsPanel
+          data={queryData ?? {}}
+          studyConfig={simpleDetailsView}
+        />
+      ) : (
+        <div>Study Details Panel not configured</div>
+      )}
     </Stack>
   );
-
 };
 
 export default QueryRowDetailsPanel;

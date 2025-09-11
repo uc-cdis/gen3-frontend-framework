@@ -126,6 +126,7 @@ export const CohortPanel = ({
   }, [isSm, isMd, isXl]);
 
   const index = guppyConfig.dataType;
+  const indexPrefix = guppyConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -158,6 +159,7 @@ export const CohortPanel = ({
     filters: cohortFilters,
     accessibility: accessLevel,
     queryId: cohortId,
+    indexPrefix: indexPrefix,
   });
 
   const chartKeys = useDeepCompareMemo(
@@ -178,6 +180,7 @@ export const CohortPanel = ({
       accessibility: accessLevel,
       filterSelf: true,
       queryId: cohortId,
+      indexPrefix: indexPrefix,
     },
     {
       skip: chartKeys.length === 0,

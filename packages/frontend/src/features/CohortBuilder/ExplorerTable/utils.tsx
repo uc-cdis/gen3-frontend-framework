@@ -1,5 +1,5 @@
 import { fieldNameToTitle } from '@gen3/core';
-import type {
+import {
   CellRendererFunctionProps,
   ColumnDefinition,
   ExplorerColumn,

@@ -7,6 +7,7 @@ import {
 import { SummaryTable } from '../ExplorerTable/types';
 import { Gen3AppConfigData } from '../../../lib/content/types';
 import { Accessibility, AggregationsData, FilterSet } from '@gen3/core';
+import React from 'react';
 
 export interface FacetQueryParameters {
   type: string;
@@ -14,6 +15,7 @@ export interface FacetQueryParameters {
   filters: FilterSet;
   accessibility?: Accessibility;
   filterSelf?: boolean;
+  indexPrefix?: string;
 }
 
 export interface FacetQueryResponse {
@@ -28,7 +30,9 @@ export interface FileCountsQueryParameters {
   cohortFilters?: FilterSet; // TODO: change to required
   accessibility?: Accessibility;
   cohortIndex: string;
+  cohortIndexPrefix?: string;
   repositoryIndex: string;
+  repositoryIndexPrefix?: string;
   cohortItemIdField: string;
   fileItemIdField: string;
   fileSizeField: string;
@@ -71,3 +75,11 @@ export interface RepositoryConfiguration extends Gen3AppConfigData {
   loginForDownload?: boolean; // login required for download
   fileStatsConfiguration: FileStatsConfiguration;
 }
+
+export interface RepositoryProps extends RepositoryConfiguration {
+  additionalControls?: React.ReactNode | null;
+}
+
+export type GetFacetValuesQueryHook = (
+  args: FacetQueryParameters,
+) => FacetQueryResponse;

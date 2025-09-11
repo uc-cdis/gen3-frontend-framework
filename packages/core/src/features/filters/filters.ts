@@ -9,6 +9,7 @@ import {
   FilterValue,
   GreaterThan,
   GreaterThanOrEquals,
+  ifOperationWithField,
   Includes,
   Intersection,
   LessThan,
@@ -897,4 +898,51 @@ export const extractContents = (
     return filter.and;
   }
   return undefined;
+};
+
+/**
+ * Constructs a nested operation object based on the provided field and leaf operand.
+ * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
+ * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
+ * creates a "nested" operation for the root field, and recursively constructs the nested structure
+ * for the remaining portion of the field.
+ *
+ * @param {string} field - The hierarchical field path, with segments separated by dots (e.g., "root.child").
+ * @param {Operation} leafOperand - The operation to be nested within the specified path.
+ * @param parentPath - The parent path of the current field. Guppy nested filters require a parent path.
+ * @returns {Operation} A nested operation object that represents the structured path and operand.
+ */
+export const buildNestedFilterForOperation = (
+  field: string,
+  leafOperand: Operation,
+  parentPath: string | undefined = undefined,
+): Operation => {
+  if (!field.includes('.')) {
+    // at the end of the path
+    if (ifOperationWithField(leafOperand)) {
+      // update the field for operations with a field
+      return { ...leafOperand, field };
+    }
+    return leafOperand;
+  }
+
+  const splitFieldArray = field.split('.');
+  const nextField = splitFieldArray.shift();
+
+  if (!nextField) {
+    console.warn('Invalid field path:', field);
+    return leafOperand;
+  }
+
+  const currentPath = parentPath ? `${parentPath}.${nextField}` : nextField;
+
+  return {
+    operator: 'nested',
+    path: currentPath,
+    operand: buildNestedFilterForOperation(
+      splitFieldArray.join('.'),
+      leafOperand,
+      currentPath,
+    ),
+  } as NestedFilter;
 };

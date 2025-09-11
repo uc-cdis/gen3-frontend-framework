@@ -6,7 +6,12 @@ import {
   downloadJSONDataFromGuppy,
   groupSharedFields,
 } from './utils';
-import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
+import {
+  guppyDownloadApi,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
+} from './guppyDownloadSlice';
+import { conversion, jsonToFormat } from './conversion';
 
 export * from './types';
 export * from './processing';
@@ -14,12 +19,11 @@ export * from './processing';
 export {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
-  useDownloadFromGuppyMutation,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
   groupSharedFields,
+  conversion,
+  guppyDownloadApi,
+  jsonToFormat,
 };
 export { processHistogramResponse } from './processing';
-export { rawDataQueryStrForEachField } from './queryGenerators';
-export { nestedHistogramQueryStrForEachField } from './queryGenerators';
-export { statsQueryStrForEachField } from './queryGenerators';
-export { histogramQueryStrForEachField } from './queryGenerators';
-export { customQueryStrForField } from './queryGenerators';

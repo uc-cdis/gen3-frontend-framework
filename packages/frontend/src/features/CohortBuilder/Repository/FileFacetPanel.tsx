@@ -45,6 +45,7 @@ interface FileFacetPanelProps {
   index: string;
   fieldMapping?: ReadonlyArray<FieldToName>;
   tabTitle: string;
+  indexPrefix?: string;
 }
 
 export const FileFacetPanel = ({
@@ -52,6 +53,7 @@ export const FileFacetPanel = ({
   index,
   tabTitle,
   fieldMapping,
+  indexPrefix = '',
 }: FileFacetPanelProps): JSX.Element => {
   const repositoryFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
@@ -79,6 +81,7 @@ export const FileFacetPanel = ({
     type: index,
     fields: fields,
     filters: repositoryFilters,
+    indexPrefix: indexPrefix,
   });
 
   // Set the facet definitions based on the data only the first time the data is loaded
@@ -133,7 +136,6 @@ export const FileFacetPanel = ({
   const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
-        // TODO: see if there a better way to do this
         enum: {
           useGetFacetData: getEnumFacetData,
           useUpdateFacetFilters: partial(useUpdateFilters, index),
