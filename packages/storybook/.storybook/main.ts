@@ -51,6 +51,11 @@ const config: StorybookConfig = {
       use: ['@svgr/webpack'],
     });
 
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'next/router': 'next-router-mock',
+    };
+
     config.plugins.push(
       new webpack.DefinePlugin(
         Object.keys(process.env)

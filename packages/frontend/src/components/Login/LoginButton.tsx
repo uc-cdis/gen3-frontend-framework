@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import { UnstyledButton, Tooltip } from '@mantine/core';
+import { Tooltip, UnstyledButton } from '@mantine/core';
 import { NextRouter, useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { MdLogin as LoginIcon } from 'react-icons/md';
 import { SessionContext } from '../../lib/session/session';
 import {
   type CoreState,
+  isAuthenticated,
   selectUserAuthStatus,
   useCoreSelector,
-  isAuthenticated,
 } from '@gen3/core';
 import { TooltipStyle } from '../../features/Navigation/style';
 import { LoginButtonVisibility } from './types';
