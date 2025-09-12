@@ -67,6 +67,7 @@ const HorizontalBarChart = ({
       return {
         tooltip: {
           trigger: 'item',
+          confine: true,
           formatter: function (param) {
             const p: CallbackDataParams =
               isArray(param) && param.length > 0
