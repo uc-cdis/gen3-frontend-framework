@@ -192,13 +192,13 @@ export const CohortPanel = ({
       const cleanedData: AggregationsData = {};
       Object.keys(summaryCharts).forEach((key) => {
         // remove empty keys
-        cleanedData[key] = chartData[key].filter((x) =>
+        cleanedData[key] = chartData[key]?.filter((x) =>
           typeof x.key !== 'string' ? true : x.key !== '',
         );
 
         const facetDef = facetDefinitions?.[key];
         if (facetDef?.excludeValues) {
-          cleanedData[key] = cleanedData[key].filter((x) =>
+          cleanedData[key] = cleanedData[key]?.filter((x) =>
             typeof x.key !== 'string'
               ? true
               : facetDef?.excludeValues?.includes(String(x.key)) === false,
@@ -424,6 +424,8 @@ export const CohortPanel = ({
               config={{ ...chartsSection, charts: summaryCharts }}
               data={cleanChartData ?? EmptyData}
               isSuccess={isChartSuccess}
+              isFetching={isChartFetching}
+              isError={isChartError}
             />
           ) : (
             <Charts
@@ -431,6 +433,7 @@ export const CohortPanel = ({
               data={cleanChartData ?? EmptyData}
               counts={counts}
               isSuccess={isChartSuccess}
+              isError={isChartError}
               numCols={numCols}
             />
           )}

@@ -67,7 +67,11 @@ export const guppyApi = createApi({
         method: 'POST',
         body: JSON.stringify(query),
       });
-      return { data: await response.json() };
+      const jsonData = await response.json();
+      if (jsonData?.errors && jsonData.errors.length > 0) {
+        return { error: jsonData.errors[0].message };
+      }
+      return { data: jsonData };
     } catch (e: unknown) {
       if (e instanceof GraphQLError) {
         return {

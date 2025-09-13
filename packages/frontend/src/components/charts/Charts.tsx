@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-  fieldNameToTitle,
   AggregationsData,
+  fieldNameToTitle,
   HistogramDataArray,
 } from '@gen3/core';
 import { Icon } from '@iconify-icon/react';
@@ -9,17 +9,15 @@ import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 
 import { useDisclosure } from '@mantine/hooks';
 import {
-  // ActionIcon,
-  Center,
+  Button,
   Card,
+  ColorSwatch,
   Grid,
   Group,
-  Text,
   LoadingOverlay,
-  Table,
-  ColorSwatch,
   Modal,
-  Button,
+  Table,
+  Text,
   useMantineTheme,
 } from '@mantine/core';
 
@@ -38,6 +36,7 @@ interface ChartsProps {
   data: AggregationsData;
   isSuccess: boolean;
   isError?: boolean;
+  isFetching?: boolean;
   numCols?: number;
   style?: 'tile' | 'box';
   showLegends?: boolean;
@@ -56,7 +55,7 @@ const chartColors = [
 ];
 
 const LegendRows = ({ data }: { data: HistogramDataArray }) => {
-  const moreThanMaxRows = data.length > MAX_LEGEND_ROWS;
+  const moreThanMaxRows = (data && data?.length > MAX_LEGEND_ROWS) ?? false;
   const limitedRows = moreThanMaxRows ? data.slice(0, MAX_LEGEND_ROWS) : data;
 
   return limitedRows.map((element, elIndex) => (
@@ -95,6 +94,8 @@ const LegendOverflow = ({
   const [openedMoreRows, { open: openMoreRows, close: closeMoreRows }] =
     useDisclosure(false);
   const theme = useMantineTheme();
+
+  if (!data) return null;
   return (
     <React.Fragment>
       <Modal
@@ -124,9 +125,7 @@ const LegendOverflow = ({
               >
                 <Table.Tbody>
                   {data.map((element, elIndex) => (
-                    <Table.Tr
-                      key={elIndex}
-                    >
+                    <Table.Tr key={elIndex}>
                       <Table.Td>
                         <div className="flex flex-nowrap items-center">
                           <ColorSwatch
@@ -182,11 +181,15 @@ const Charts = ({
   data,
   counts,
   isSuccess,
+  isError,
+  isFetching,
   numCols = DEFAULT_COLS,
   style = 'tile',
   showLegends = false,
 }: ChartsProps) => {
   const spans = computeRowSpan(Object.keys(charts).length, numCols);
+
+  if (isError) return null;
 
   const chartCard = (field: string, indexNum: number) => {
     if (Object.keys(data).length === 0) return null;
@@ -223,7 +226,7 @@ const Charts = ({
              */}
             </Group>
           </Card.Section>
-          <LoadingOverlay visible={!isSuccess} />
+          <LoadingOverlay visible={isFetching} />
           {createChart(charts[field].chartType, {
             data: data === undefined ? [] : data[field],
             total: counts ?? 1,
@@ -247,9 +250,7 @@ const Charts = ({
                   <Table.Thead>
                     <Table.Tr>
                       {dataKeys.map((el, i) => (
-                        <Table.Th
-                          key={i}
-                        >
+                        <Table.Th key={i}>
                           {charts[field]?.dataLabels?.[el] || (
                             <React.Fragment>&nbsp;</React.Fragment>
                           )}
