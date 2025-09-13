@@ -123,6 +123,8 @@ export interface EnumFacetDataHooks extends FacetDataHooks {
   useUpdateCombineMode: SetFacetCombineModeFunction;
 }
 
+export type ToggleFacetDataHooks = FacetDataHooks;
+
 export interface RangeFacetHooks extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
@@ -262,5 +264,3 @@ export interface EnumChartProps {
   readonly height: number;
   readonly valueLabel?: string;
 }
-
-export type ToggleFacetHooks = EnumFacetDataHooks;

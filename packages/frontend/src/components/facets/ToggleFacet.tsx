@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { LoadingOverlay, Switch } from '@mantine/core';
 import { Includes } from '@gen3/core';
-import { FacetCardProps, ToggleFacetHooks } from './types';
+import { FacetCardProps, ToggleFacetDataHooks } from './types';
 import { updateFacetEnum } from './utils';
 import FacetControlsHeader from './FacetControlsHeader';
 
@@ -18,7 +18,7 @@ const extractToggleValue = (values?: ReadonlyArray<string | number>): boolean =>
  * @param dismissCallback - callback to call when the facet is dismissed
  */
 
-const ToggleFacet: React.FC<FacetCardProps<ToggleFacetHooks>> = ({
+const ToggleFacet: React.FC<FacetCardProps<ToggleFacetDataHooks>> = ({
   field,
   hooks,
   description,

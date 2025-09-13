@@ -5,6 +5,7 @@ import RangeFacet from './RangeFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 import { FacetDefinition } from '@gen3/core';
+import ToggleFacet from './ToggleFacet';
 
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
@@ -93,6 +94,19 @@ export const createFacetCard = ({
               field={field}
               facetName={facetLabel}
               description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+            />
+          ),
+          toggle: (
+            <ToggleFacet
+              key={`${idPrefix}-exact-${field}`}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              valueLabel={valueTypeLabel}
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
