@@ -262,3 +262,5 @@ export interface EnumChartProps {
   readonly height: number;
   readonly valueLabel?: string;
 }
+
+export type ToggleFacetHooks = EnumFacetDataHooks;
