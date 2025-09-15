@@ -1,35 +1,122 @@
 import {
   Accessibility,
   coreStore,
+  DatasetOrCohort,
   downloadJSONDataFromGuppy,
   EmptyFilterSet,
   GuppyDownloadDataParams,
   JSONObject,
   selectCurrentCohortFilters,
 } from '@gen3/core';
+import { DataLibraryDataset, FileItem } from '@gen3/core/dist/dts';
 
-export const processFiles = (
+const DEFAULT_FILE_MANIFEST_FIELDS = [
+  'file_name',
+  'file_size',
+  'md5sum',
+  'object_id',
+];
+const DEFUALT_DATA_LIBRARY_FIELDS = [
+  'file_name',
+  'file_size',
+  'md5sum',
+  'object_id',
+  'data_format',
+];
+
+export const processFilesForManifest = (
   data: JSONObject[],
-  manifestFields: string[],
-  idField: string,
-  fieldMapping: Record<string, string> = {},
+  fieldMapping: Record<string, string> = {
+    file_name: 'file_name',
+    file_size: 'file_size',
+    md5sum: 'md5Sum',
+    object_id: 'object_id',
+    dataset_id: 'dataset_id',
+  },
+) => mapDataToMappingDefinition(data, fieldMapping);
+
+export const processFilesForDataLibrary = (
+  data: JSONObject[],
+  fieldMapping: Record<string, string> = {
+    name: 'name',
+    size: 'size',
+    md5sum: 'md5Sum',
+    guid: 'guid',
+    type: 'type',
+  },
+) => mapDataToMappingDefinition(data, fieldMapping);
+
+export const mapDataToMappingDefinition = (
+  data: JSONObject[],
+  fieldMapping: Record<string, string> = {
+    file_name: 'file_name',
+    file_size: 'file_size',
+    md5sum: 'md5Sum',
+    object_id: 'object_id',
+  },
+  copyAllFields: boolean = false,
 ) => {
-  return data.filter((item) => {
-    const hasAllFields = manifestFields.every((field) => {
-      return item[field] !== undefined;
-    });
-    return hasAllFields && item[idField] !== undefined;
-  });
+  return data.reduce(
+    (acc, data) => {
+      const manifestEntry = Object.keys(fieldMapping).reduce(
+        (entry: Record<string, any>, field) => {
+          if (fieldMapping[field] in data) {
+            entry[field] = data[fieldMapping[field]];
+          } else if (copyAllFields) {
+            entry[field] = data[field];
+          }
+          return entry;
+        },
+        {},
+      );
+      if (manifestEntry['object_id'] !== undefined) {
+        acc.push(manifestEntry);
+      }
+      return acc;
+    },
+    [] as Record<string, JSONObject>[],
+  );
 };
 
-export interface ExportCohortDataToWorkspace extends Record<string, any> {
+export const createDataset = (data: Record<string, any>[], field: string) =>
+  data.reduce<DatasetOrCohort>((acc, item) => {
+    const key = String(item[field]);
+    const existing = acc[key];
+
+    if (!existing) {
+      acc[key] = {
+        id: key,
+        name: item?.name,
+        members: {
+          [key]: item as FileItem,
+        },
+        itemType: 'Dataset',
+      } as DataLibraryDataset;
+    } else if (existing.itemType === 'Dataset') {
+      // existing is now narrowed to DataLibraryDataset
+      existing.members[key] = item as FileItem;
+    }
+
+    return acc;
+  }, {});
+
+export interface ExportCohortData extends Record<string, any> {
   datasetIdField: string;
   fileIndex: string;
   cohortIndex: string;
   fileIdField: string;
   fileFields: string[];
-  metadataFields: string[];
   accessibility: Accessibility;
+  manifestFieldMapping?: Record<string, string>;
+}
+
+export interface ExportCohortDataToWorkspaceParams extends ExportCohortData {
+  manifestFieldMapping?: Record<string, string>;
+  metadataFields: string[];
+}
+
+export interface ExportCohortDataToDataLibraryParams extends ExportCohortData {
+  libraryDataItemMapping?: Record<string, string>;
 }
 
 export const addCohortDataFilesToDataLibraryAsDataset = async (
@@ -44,8 +131,7 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
   // query the cohort data using the cohort as filters, and the fields needed for the data object
 
   const cohort = selectCurrentCohortFilters(coreStore.getState());
-
-  console.log('cohort is', cohort);
+  const cohortName = selectCurrentCohortFilters(coreStore.getState())?.name;
 
   const {
     fileIndex,
@@ -54,8 +140,8 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
     datasetIdField,
     fileIdField,
     fileFields,
-    metadataFields,
-  } = params as ExportCohortDataToWorkspace;
+    libraryDataItemMapping,
+  } = params as ExportCohortDataToDataLibraryParams;
 
   // get the files information
 
@@ -70,19 +156,25 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
   };
 
   try {
-    let resultFileManifest = await downloadJSONDataFromGuppy({
+    let cohortDatafiles = await downloadJSONDataFromGuppy({
       parameters: fileInformationParameters,
       onAbort: onAbort,
       signal: signal,
     });
-    resultFileManifest = processFiles(
-      resultFileManifest,
-      fileFields,
-      fileIdField,
+    cohortDatafiles = processFilesForDataLibrary(
+      cohortDatafiles,
+      libraryDataItemMapping,
     );
-    if (resultFileManifest.length === 0) {
+    if (cohortDatafiles.length === 0) {
       throw new Error('No data found for the current filters');
     }
+
+    // create a dataset for each cohort
+    const dataset = createDataset(cohortDatafiles, datasetIdField);
+
+    // add/update dataset to the data library
+
+    // add/update a list using the current cohort name
     const str = JSON.stringify(resultFileManifest, null, 2);
     const blob = new Blob([str], {
       type: 'application/json;charset=utf-8',
