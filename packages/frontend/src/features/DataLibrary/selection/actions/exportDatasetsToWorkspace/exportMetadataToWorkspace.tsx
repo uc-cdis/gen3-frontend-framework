@@ -4,12 +4,12 @@ import { extractDatasetIds, selectionToManifest } from '../../utils';
 import {
   fetchJSONDataFromURL,
   GEN3_MANIFEST_API,
+  getFederatedLoginStatus,
   HttpMethod,
   queryMultipleMDSRecords,
-  getFederatedLoginStatus,
 } from '@gen3/core';
 import { Stack } from '@mantine/core';
-import { get, unset, cloneDeep } from 'lodash';
+import { cloneDeep, get, unset } from 'lodash';
 import { modals } from '@mantine/modals';
 import { ProvidersErrorPanel } from './providerErrorNotification';
 
@@ -90,7 +90,7 @@ export const exportMetadataToWorkspace: DataActionFunction = async (
         missingProviders?.length > 0
       ) {
         modals.open({
-          id: 'export-dicovery-to-workspace-providers-to-authenticate-modal',
+          id: 'export-discovery-to-workspace-providers-to-authenticate-modal',
           title: 'Error: Export to Workspace',
           withCloseButton: true,
           children: (
