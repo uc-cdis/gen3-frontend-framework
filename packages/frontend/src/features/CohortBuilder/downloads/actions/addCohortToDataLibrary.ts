@@ -24,7 +24,8 @@ export const processFiles = (
 
 export interface ExportCohortDataToWorkspace extends Record<string, any> {
   datasetIdField: string;
-  index: string;
+  fileIndex: string;
+  cohortIndex: string;
   fileIdField: string;
   fileFields: string[];
   metadataFields: string[];
@@ -47,7 +48,8 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
   console.log('cohort is', cohort);
 
   const {
-    index,
+    fileIndex,
+    cohortIndex,
     accessibility,
     datasetIdField,
     fileIdField,
@@ -57,11 +59,11 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
 
   // get the files information
 
-  const cohortFilters = cohort[index] ?? EmptyFilterSet;
+  const cohortFilters = cohort[cohortIndex] ?? EmptyFilterSet;
 
   const fileInformationParameters: GuppyDownloadDataParams = {
     filter: cohortFilters,
-    type: index,
+    type: fileIndex,
     fields: fileFields,
     accessibility: accessibility,
     format: 'json',

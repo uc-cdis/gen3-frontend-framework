@@ -69,7 +69,7 @@ export const guppyApi = createApi({
       });
       const jsonData = await response.json();
       if (jsonData?.errors && jsonData.errors.length > 0) {
-        return { error: jsonData.errors[0].message };
+        return { error: { message: jsonData.errors[0].message } };
       }
       return { data: jsonData };
     } catch (e: unknown) {
