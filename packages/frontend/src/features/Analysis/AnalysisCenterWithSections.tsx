@@ -61,7 +61,7 @@ const AnalysisCenterWithSections: React.FC<
             <div className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-stretch`}>
               {section.tools.map((tool, idx) => {
                 if (section.core) {
-                  return <AnaylsisCardCore {...tool} />
+                  return <AnaylsisCardCore {...tool} key={tool.title} />
                 } else {
                   return (
                     <div key={tool.title}>
@@ -74,6 +74,7 @@ const AnalysisCenterWithSections: React.FC<
                           )
                         }
                         useCountHook={() => ({ data: 1000, isFetching: false, isSuccess: true })}
+                        key={tool.title}
                       />
                     </div>
                   );
@@ -83,7 +84,7 @@ const AnalysisCenterWithSections: React.FC<
           </Stack>
         );
       }),
-    [sections, activeAnalysisCard],
+    [sections, activeAnalysisCard, mergedGlobalClassnames],
   );
 
   return <Stack gap="xl">{sectionPanels}</Stack>;
