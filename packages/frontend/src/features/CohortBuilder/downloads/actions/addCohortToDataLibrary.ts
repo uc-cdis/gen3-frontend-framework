@@ -231,7 +231,7 @@ export const exportCohortToWorkspace = async (
 
   const metadataQueryParamters: GuppyDownloadDataParams = {
     filter: cohortFilters,
-    type: metadataIndex,
+    type: cohortIndex,
     fields: metadataFields,
     accessibility: accessibility,
     format: 'json',
