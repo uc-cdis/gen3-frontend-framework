@@ -148,7 +148,7 @@ const FacetControlsHeader = ({
         )}
         <Tooltip
           label={description}
-          position="bottom-start"
+          position="top"
           multiline
           w={220}
           withArrow
