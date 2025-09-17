@@ -122,7 +122,7 @@ export interface FilterGroup {
 
 export interface GQLEqual {
   '=': {
-    [key: string]: string | number;
+    [key: string]: string | number | boolean;
   };
 }
 
@@ -547,7 +547,8 @@ class ToOperationHandler implements GqlOperationHandler<Operation> {
  * Extract the operand values, if operands themselves have values, otherwise undefined.
  */
 export class ValueExtractorHandler implements OperationHandler<FilterValue> {
-  handleEquals: (op: Equals) => string | number = (op: Equals) => op.operand;
+  handleEquals: (op: Equals) => string | number | boolean = (op: Equals) =>
+    op.operand;
   handleNotEquals: (op: NotEquals) => string | number = (op: NotEquals) =>
     op.operand;
   handleIncludes: (op: Includes) => ReadonlyArray<string | number> = (
