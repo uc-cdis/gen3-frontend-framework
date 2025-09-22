@@ -31,9 +31,16 @@ export interface ManifestFieldsConfig {
   referenceIdFieldInDataIndex: string;
 }
 
+export interface NodeCountConfiguration {
+  none: string;
+  one: string;
+  multiple: string;
+}
+
 export interface DataTypeConfig {
   dataType: string;
   nodeCountTitle?: string;
+  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
