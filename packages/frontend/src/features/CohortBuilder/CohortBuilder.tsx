@@ -3,12 +3,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import {
-  selectCurrentCohortId,
-  setSharedFilters,
-  useCoreDispatch,
-  useCoreSelector,
-} from '@gen3/core';
+import { selectCurrentCohortId, setSharedFilters, useCoreDispatch, useCoreSelector, } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 import CohortManager from './CohortManager/CohortManager';
 
@@ -20,6 +15,7 @@ const CohortBuilder = ({
   explorerConfig,
   sharedFiltersMap = null,
   tabsLayout = 'left',
+  enableCohortManager = true,
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
@@ -31,7 +27,7 @@ const CohortBuilder = ({
 
   return (
     <div className="flex flex-col w-full mt-2">
-      <CohortManager></CohortManager>
+      {enableCohortManager ? <CohortManager /> : null}
       <Tabs
         color="primary.4"
         variant={explorerConfig[0]?.tabType}
