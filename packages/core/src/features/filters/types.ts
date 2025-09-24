@@ -11,7 +11,7 @@ export interface Union {
 export interface Equals {
   operator: '=';
   field: string;
-  operand: number | string;
+  operand: number | string | boolean;
 }
 
 export interface NotEquals {
@@ -196,10 +196,12 @@ export interface OperationHandler<T> {
  */
 export type EnumFilterValue = ReadonlyArray<string | number>;
 export type RangeFilterValue = string | number;
+export type BooleanFilterValue = boolean;
 export type SetFilterValue = ReadonlyArray<Operation>;
 export type FilterValue =
   | EnumFilterValue
   | RangeFilterValue
+  | BooleanFilterValue
   | SetFilterValue
   | undefined;
 
