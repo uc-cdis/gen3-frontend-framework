@@ -6,7 +6,10 @@ const meta = {
   component: AnalysisCenterWithSections,
   parameters: {
     deepControls: { enabled: true },
-  },
+    nextjs: {
+      appDirectory: true,
+    }
+  }
 } satisfies Meta<typeof AnalysisCenterWithSections>;
 
 export default meta;
@@ -18,6 +21,7 @@ export const Default: Story = {
     sections: [
       {
         label: 'Core Tools',
+        core: true,
         tools: [
           {
             title: 'Projects',

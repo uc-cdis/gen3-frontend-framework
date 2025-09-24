@@ -18,6 +18,7 @@ export interface AnalysisToolConfiguration {
   countFunction?: CountFunction;
   countIndex?: string;
   countUnits?: string;
+  hideCounts?: boolean;
   noDataTooltip?: string;
   cardType?: 'regular' | 'compact';
   btnText?: string;
@@ -35,6 +36,7 @@ export interface AnalysisCenterSection {
   label: string;
   classNames?: Record<string, string>;
   tools: Array<AnalysisToolConfiguration>;
+  core?: boolean;
 }
 
 export interface AnalysisCenterWithSectionsConfiguration {
