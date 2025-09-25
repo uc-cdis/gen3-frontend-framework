@@ -31,9 +31,16 @@ export interface ManifestFieldsConfig {
   referenceIdFieldInDataIndex: string;
 }
 
+export interface NodeCountConfiguration {
+  none: string;
+  one: string;
+  multiple: string;
+}
+
 export interface DataTypeConfig {
   dataType: string;
   nodeCountTitle?: string;
+  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
@@ -94,6 +101,7 @@ export interface CohortBuilderConfiguration extends Gen3AppConfigData {
   sharedFilters?: SharedFieldConfiguration; // enabled for sharing filters across indexes for denormalized data.
   explorerConfig: Array<CohortPanelConfiguration>;
   accessControl?: AccessControlConfiguration;
+  enableCohortManager?: boolean;
 }
 
 export interface CohortBuilderProps
