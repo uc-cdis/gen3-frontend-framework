@@ -190,6 +190,7 @@ export const CohortPanel = ({
   const cleanChartData = useDeepCompareMemo(() => {
     if (isChartSuccess && chartData) {
       const cleanedData: AggregationsData = {};
+      const totalCount = chartData._totalCount[0]?.count;
       Object.keys(summaryCharts).forEach((key) => {
         // remove empty keys
         cleanedData[key] = chartData[key].filter((x) =>
@@ -203,6 +204,11 @@ export const CohortPanel = ({
               ? true
               : facetDef?.excludeValues?.includes(String(x.key)) === false,
           );
+        }
+
+        if (cleanedData[key].length === 0 && totalCount) {
+          // if no keys adds back no data
+          cleanedData[key] = [{ key: 'no data', count: totalCount }];
         }
       });
       return cleanedData;
