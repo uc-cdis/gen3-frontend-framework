@@ -20,6 +20,7 @@ const CohortBuilder = ({
   explorerConfig,
   sharedFiltersMap = null,
   tabsLayout = 'left',
+  enableCohortManager = true,
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
@@ -31,7 +32,7 @@ const CohortBuilder = ({
 
   return (
     <div className="flex flex-col w-full mt-2">
-      <CohortManager></CohortManager>
+      {enableCohortManager ? <CohortManager /> : null}
       <Tabs
         color="primary.4"
         variant={explorerConfig[0]?.tabType}
