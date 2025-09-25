@@ -1,4 +1,5 @@
 import { capitalize } from 'lodash';
+import { NodeCountConfiguration } from '../features/CohortBuilder/types';
 
 export const stripTrailingSlash = (str: string): string => {
   return str.endsWith('/') ? str.slice(0, -1) : str;
@@ -22,13 +23,20 @@ export const toDisplayName = (field: string): string => {
 
 /*
   Function to convert counts to a string with units
-  For example: count = 100 units = 'cases' => '100 Cases'
+  For example, count = 100 units = 'cases' => '100 Cases'
   Function should handle pluralization
  */
 export const toCountsString = (
   counts: number | undefined,
   units: string,
+  configuration?: NodeCountConfiguration,
 ): string => {
+  if (configuration) {
+    if (!counts) return `No ${configuration.none}`;
+    if (counts === 1) return `${counts.toLocaleString()} ${configuration.one}`;
+    return `${counts.toLocaleString()} ${configuration.multiple}`;
+  }
+
   if (!counts) return `No ${capitalize(pluralize(units))}`;
   // return a string with counts and units handling pluralization
   const unitDisplay = counts === 1 ? units : pluralize(units);

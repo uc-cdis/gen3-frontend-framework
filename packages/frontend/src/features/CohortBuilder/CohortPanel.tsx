@@ -412,6 +412,7 @@ export const CohortPanel = ({
             />
             <CountsValue
               label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
+              configuration={guppyConfig?.nodeCountConfiguration}
               counts={counts}
               isFetching={isCountsFetching}
               isError={isCountsError}
