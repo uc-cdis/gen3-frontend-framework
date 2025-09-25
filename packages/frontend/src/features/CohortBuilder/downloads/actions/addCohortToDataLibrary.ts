@@ -13,6 +13,7 @@ import {
   JSONObject,
   selectCurrentCohortFilters,
 } from '@gen3/core';
+import { JSONPath } from 'jsonpath-plus';
 
 const DEFAULT_FILE_MANIFEST_FIELDS = [
   'file_name',
@@ -30,6 +31,7 @@ const DEFUALT_DATA_LIBRARY_FIELDS = [
 
 export const processFilesForManifest = (
   data: JSONObject[],
+  path = '',
   fieldMapping: Record<string, string> = {
     file_name: 'file_name',
     file_size: 'file_size',
@@ -37,10 +39,11 @@ export const processFilesForManifest = (
     object_id: 'object_id',
     dataset_id: 'dataset_id',
   },
-) => mapDataToMappingDefinition(data, fieldMapping);
+) => mapDataToMappingDefinition(data, path, fieldMapping);
 
 export const processFilesForDataLibrary = (
   data: JSONObject[],
+  path = '',
   fieldMapping: Record<string, string> = {
     name: 'name',
     size: 'size',
@@ -48,10 +51,11 @@ export const processFilesForDataLibrary = (
     guid: 'guid',
     type: 'type',
   },
-) => mapDataToMappingDefinition(data, fieldMapping);
+) => mapDataToMappingDefinition(data, path, fieldMapping);
 
 export const mapDataToMappingDefinition = (
-  data: JSONObject[],
+  manifestData: JSONObject[],
+  path: string,
   fieldMapping: Record<string, string> = {
     file_name: 'file_name',
     file_size: 'file_size',
@@ -60,24 +64,31 @@ export const mapDataToMappingDefinition = (
   },
   copyAllFields: boolean = false,
 ) => {
-  return data.reduce(
+  return manifestData.reduce(
     (acc, data) => {
-      const manifestEntry = Object.keys(fieldMapping).reduce(
-        (entry: Record<string, any>, field) => {
-          if (fieldMapping[field] in data) {
-            entry[field] = data[fieldMapping[field]];
-          } else if (copyAllFields) {
-            entry[field] = data[field];
+      const root = JSONPath({ path: path, json: data });
+      if (root?.length > 0) {
+        root[0].forEach((dataFileItem: any) => {
+          const manifestEntry = Object.keys(fieldMapping).reduce(
+            (entry: Record<string, any>, field) => {
+              // use jsonpath to find data
+              if (fieldMapping[field] in dataFileItem) {
+                entry[field] = dataFileItem[fieldMapping[field]];
+              } else if (copyAllFields) {
+                entry[field] = dataFileItem[field];
+              }
+              return entry;
+            },
+            {},
+          );
+          if (manifestEntry['object_id'] !== undefined) {
+            acc.push(manifestEntry);
           }
-          return entry;
-        },
-        {},
-      );
-      if (manifestEntry['object_id'] !== undefined) {
-        acc.push(manifestEntry);
+        });
       }
       return acc;
     },
+
     [] as Record<string, JSONObject>[],
   );
 };
@@ -117,6 +128,7 @@ export interface ExportCohortDataToWorkspaceParams extends ExportCohortData {
   manifestFieldMapping?: Record<string, string>;
   metadataFields: string[];
   metadataIndex: string;
+  dataPath?: string;
 }
 
 export interface ExportCohortDataToDataLibraryParams extends ExportCohortData {
@@ -215,6 +227,7 @@ export const exportCohortToWorkspace = async (
     fileFields,
     manifestFieldMapping,
     metadataFields,
+    dataPath = '',
   } = params as ExportCohortDataToWorkspaceParams;
 
   // get the files information
@@ -229,7 +242,7 @@ export const exportCohortToWorkspace = async (
     format: 'json',
   };
 
-  const metadataQueryParamters: GuppyDownloadDataParams = {
+  const metadataQueryParameters: GuppyDownloadDataParams = {
     filter: cohortFilters,
     type: cohortIndex,
     fields: metadataFields,
@@ -245,14 +258,16 @@ export const exportCohortToWorkspace = async (
     });
     cohortDatafiles = processFilesForManifest(
       cohortDatafiles,
+      dataPath,
       manifestFieldMapping,
     );
+
     if (cohortDatafiles.length === 0) {
       throw new Error('No data found for the current filters');
     }
 
     const cohortMetaData = await downloadJSONDataFromGuppy({
-      parameters: fileQueryParameters,
+      parameters: metadataQueryParameters,
       onAbort: onAbort,
       signal: signal,
     });
