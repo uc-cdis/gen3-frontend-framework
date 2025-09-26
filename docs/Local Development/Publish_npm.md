@@ -28,3 +28,6 @@ lerna publish patch
 This will update the version number (in this case: the patch version number) publish the new version to npm,
 it will also create a new tag on github. You need to have your
 npm credentials set up and ready as it will prompt you for them.
+
+Make sure you open a PR to merge the branch into `develop`. However
+note that the npm packages are already published.
