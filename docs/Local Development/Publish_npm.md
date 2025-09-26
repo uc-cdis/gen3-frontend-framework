@@ -29,5 +29,21 @@ This will update the version number (in this case: the patch version number) pub
 it will also create a new tag on github. You need to have your
 npm credentials set up and ready as it will prompt you for them.
 
+you will see something like:
+```bash
+(node:71508) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+lerna notice cli v8.2.3
+lerna info current version 0.11.42
+lerna info Looking for changed packages since v0.10.82
+
+Changes:
+ - @gen3/core: 0.11.42 => 0.11.43
+ - @gen3/frontend: 0.11.42 => 0.11.43
+ - @gen3/samplecommons: 0.11.42 => 0.11.43 (private)
+ - @gen3/storybook: 0.11.42 => 0.11.43 (private)
+ - @gen3/toolsff: 0.11.42 => 0.11.43
+```
+
 Make sure you open a PR to merge the branch into `develop`. However
 note that the npm packages are already published.
