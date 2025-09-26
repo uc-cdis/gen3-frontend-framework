@@ -12,7 +12,7 @@ version number in the lerna.json files.
 
 push it to github, as lerna will not publish if the branch is not on the origin:
 ```bash
-git push origin chore/release_XX.XX.XX
+git push --set-upstream origin chore/release_XX.XX.XX
 ```
 
 make sure the package code is built by running:
