@@ -203,6 +203,59 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
         return { query, variables };
       },
+      // return . seperated fields as proper values
+      transformResponse: (response: Record<string, any>, _meta, args) => {
+        const containsDots = args?.fields?.filter((f) => f.includes('.'));
+        // check if dot seperated in arry and not object
+        if (containsDots && containsDots.length > 0 && response.data) {
+          const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
+            const partsArr = field.split('.');
+            if (partsArr.length < 2) {
+              throw new Error('Not made to handle filds with more than one dot');
+            }
+            const basePart = partsArr[0];
+            if (!acc.includes(basePart)) {
+              acc.push(basePart);
+            }
+            return acc;
+          }, [] as string[]);
+
+          // checks if api is returning an array of objects for the base part
+          // if so, it restructures the object to group the sub parts into arrays
+          // e.g. {a: [{b: 1, c:2}, {b:3, c:4}]} becomes {a: {b: [1,3], c:[2,4]}}
+          // this is to make it easier to work with in the table component
+          // currently only supports one level of nesting
+          // also puts original into subRows for dropdown viewing
+          const tempResponse = response.data[args.type].map((item: Record<string, any>) => {
+            let tempItem = item;
+            for (let i = 0; i < containsDotsUniqueBase.length; i++) {
+              const basePart = containsDotsUniqueBase[i];
+              if (item[basePart] && Array.isArray(item[basePart])) {
+                
+                // TODO check if dropdowns are enabled before adding
+                // TODO check format of arrays
+                tempItem.subRows = tempItem[basePart];
+
+                tempItem[basePart] = tempItem[basePart].reduce((acc: Record<string, any>, obj: Record<string, any>) => {
+                  for (const key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                      if (!acc[key]) {
+                        acc[key] = [];
+                      }
+                      acc[key].push(obj[key]);
+                    }
+                  }
+                  return acc;
+                }, {});
+              }
+            };
+            return tempItem;
+          });
+
+          return {data: {_aggregation: response.data._aggregation, [args.type]: tempResponse}};
+        }
+        return response;
+      },
       providesTags: ['RAW_DATA', 'TABLE_DATA'],
     }),
     getAggs: builder.query<AggregationsData, QueryAggsParams>({

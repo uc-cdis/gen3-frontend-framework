@@ -14,7 +14,6 @@ const SubtableStack = ({ subTables, data }: SubtableStackProps) => {
       subTables.reduce((acc: ReactElement[], config: FieldSubtable) => {
         if (!(config.root in data)) return acc;
         acc.push(
-          <div key={config.root} className="inline-block overflow-x-scroll" />,
           <ExpandingSubtable
             config={config}
             data={data[config.root] as JSONObject[]}

@@ -10,7 +10,7 @@ import {
 import { type MRT_Column } from 'mantine-react-table';
 import {
   ExplorerTableCellRendererFactory,
-  RenderArrayCell,
+  RenderArrayCellSimple,
 } from './ExplorerTableCellRenderers';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { ArrayCellRenderer } from './ArrayCellRenderer';
@@ -61,7 +61,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
               cellRendererFunc(cell, cellRendererFuncParams)
           : cellRendererFunc
             ? cellRendererFunc
-            : undefined,
+            : RenderArrayCellSimple,
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
@@ -120,7 +120,7 @@ export const createArrayTableColumns = (
           : cellRendererFunc
             ? (cell: CellRendererFunctionProps) =>
                 ArrayCellRenderer(cellRendererFunc, cell)
-            : RenderArrayCell,
+            : RenderArrayCellSimple,
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
