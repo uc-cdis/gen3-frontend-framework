@@ -227,18 +227,17 @@ export const explorerApi = explorerTags.injectEndpoints({
           // currently only supports one level of nesting
           // also puts original into subRows for dropdown viewing
           const tempResponse = response.data[args.type].map((item: Record<string, any>) => {
-            let tempItem = item;
+            const tempItem = item;
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
               const basePart = containsDotsUniqueBase[i];
               if (item[basePart] && Array.isArray(item[basePart])) {
                 
                 // TODO check if dropdowns are enabled before adding
-                // TODO check format of arrays
                 tempItem.subRows = tempItem[basePart];
 
                 tempItem[basePart] = tempItem[basePart].reduce((acc: Record<string, any>, obj: Record<string, any>) => {
                   for (const key in obj) {
-                    if (obj.hasOwnProperty(key)) {
+                    if (obj.hasOwn(key)) {
                       if (!acc[key]) {
                         acc[key] = [];
                       }
