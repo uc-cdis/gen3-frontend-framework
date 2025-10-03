@@ -231,8 +231,8 @@ export const explorerApi = explorerTags.injectEndpoints({
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
               const basePart = containsDotsUniqueBase[i];
               if (item[basePart] && Array.isArray(item[basePart])) {
-                
-                // TODO check if dropdowns are enabled before adding
+
+                // move original to subRows
                 tempItem.subRows = tempItem[basePart];
 
                 tempItem[basePart] = tempItem[basePart].reduce((acc: Record<string, any>, obj: Record<string, any>) => {
