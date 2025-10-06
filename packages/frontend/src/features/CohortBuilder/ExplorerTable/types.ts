@@ -60,7 +60,6 @@ export interface FieldSubtableClassnames extends Record<string, string> {
 export interface FieldSubtable extends TableColumnsAndFields {
   root: string;
   label: string;
-  processData?: boolean;
   classNames?: Partial<FieldSubtableClassnames>;
 }
 
