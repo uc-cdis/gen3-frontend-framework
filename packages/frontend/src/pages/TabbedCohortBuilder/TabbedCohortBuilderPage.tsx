@@ -61,7 +61,6 @@ const TabbedCohortBuilderPage = ({
   footerProps,
   configuration,
 }: TabbedCohortBuilderPageProps): JSX.Element => {
-  console.log(configuration);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}

@@ -78,7 +78,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       }
       return acc;
     },
-    {} as Record<string, boolean>,
+    { 'mrt-row-actions': true } as Record<string, boolean>,
   );
 
   return {
