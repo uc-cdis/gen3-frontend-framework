@@ -50,7 +50,7 @@ function ColumnOrdering<TData extends MRT_RowData>({
   handleColumnOrderingReset,
   columnOrder,
   setColumnOrder,
-  noColumnOrdering = [],
+  noColumnOrdering = ['mrt-row-actions'],
 }: {
   table: MRT_TableInstance<TData>;
   handleColumnOrderingReset: () => void;
@@ -60,7 +60,6 @@ function ColumnOrdering<TData extends MRT_RowData>({
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [columesVisible, setColumsnVisible] = useState<string[]>([]);
 
   const isBackToDefaults =
     isEqual(table.initialState.columnOrder, columnOrder) &&
