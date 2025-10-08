@@ -175,7 +175,6 @@ local-ssl-proxy --source 3010 --target 3000 --cert cert.pem --key key.pem
 
 ### Connecting the sample portal to the Gen3 Helm Charts
 
-
 1. Run the portal using `npm run dev`
 2. [Open Chrome (web browser)](https://alfilatov.com/posts/run-chrome-without-cors/) which disables web security to suppress the CORS warning.
    Or, if using Safari for feature testing with a logged-in user, click Develop -> Disable Cross-Origin Restrictions..
