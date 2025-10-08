@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { ActionIcon, useMantineTheme } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { ExpandingSubTableProps } from './types';
@@ -14,7 +14,7 @@ interface HeaderProps {
 
 const Header = ({ label, className }: HeaderProps) => {
   return (
-    <div className="flex items-center bg-primary px-4 h-10 w-full text-primary-contrast font-semibold">
+    <div className="flex items-center bg-primary px-4 h-10 w-full text-primary-contrast font-bold">
       {label}
     </div>
   );
@@ -61,31 +61,37 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
         : {},
     ];
   }
+  const id = useId();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-5">
       <Header label={config.label} />
-      <div className="flex flex-nowrap w-full">
-        <div className="flex flex-col border border-table-light">
+      <div className="flex flex-nowrap w-full bg-white">
+        <div className="flex flex-col border border-r-0 border-accent-max">
           <div
-            className="bg-secondary-lightest border-bottom border-table-light"
+            className="bg-secondary-lightest"
             style={{
-              height: `${headerHeight}px`,
+              minHeight: `${headerHeight}px`,
             }}
           ></div>
           <ActionIcon
             variant="transparent"
-            aria-label="Settings"
+            aria-label={`${expanded? 'Collapse' : 'Expand'} ${config.label} table`}
+            aria-controls={`${id}-table`}
+            id={`${id}-control`}
             onClick={expand}
-            className="my-auto"
+            className="my-auto h-full hover:bg-secondary-max"
           >
             <Icon
-              icon={expanded ? 'gen3:changeFrom' : 'gen3:changeTo'}
+              icon={expanded ? 'gen3:changefrom' : 'gen3:changeto'}
               color={theme.colors.accent[4]}
             />
           </ActionIcon>
         </div>
-        <div className="w-full overflow-x-auto">
+        <div
+          className="w-full overflow-x-auto"
+          id={`${id}-table`}
+          aria-labelledby={`${id}-control`}>
           {expanded ? (
             <ExplorerTableSubtable
               columns={expandedTableColumns}
@@ -100,7 +106,6 @@ const ExpandingSubtable = ({ config, data }: ExpandingSubTableProps) => {
             />
           )}
         </div>
-        /
       </div>
     </div>
   );
