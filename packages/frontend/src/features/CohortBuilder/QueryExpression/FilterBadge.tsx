@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import { Operation } from "@gen3/core";
-import { ActionIcon, Badge } from "@mantine/core";
-import OverflowTooltippedLabel from "../../../components/OverflowTooltippedLabel";
-import { QueryExpressionsExpandedContext } from "./QueryExpressionsExpandedContext";
-import { MdClose as CloseIcon } from "react-icons/md";
+import React, { useContext } from 'react';
+import { Operation } from '@gen3/core';
+import { ActionIcon, Badge } from '@mantine/core';
+import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
+import { QueryExpressionsExpandedContext } from './QueryExpressionsExpandedContext';
+import { MdClose as CloseIcon } from 'react-icons/md';
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
@@ -22,7 +22,7 @@ interface FilterBadgeProps {
   value: string;
   customTestid: string;
   operands: readonly (string | number)[];
-  operator: "includes" | "excludes" | "excludeifany";
+  operator: 'includes' | 'excludes' | 'excludeifany';
   hooks: {
     useSelectCurrentCohort?: () => any;
     useClearFilter: () => (field: string) => void;
@@ -49,13 +49,13 @@ const FilterBadge: React.FC<FilterBadgeProps> = ({
     const newOperands = operands.filter((o) => o !== value);
 
     if (newOperands.length === 0) {
-      currentCohort &&
-        setQueryExpressionsExpanded &&
+      if (currentCohort && setQueryExpressionsExpanded) {
         setQueryExpressionsExpanded({
-          type: "clear",
+          type: 'clear',
           cohortId: currentCohort.id,
           field,
         });
+      }
       removeFilter(field);
     } else {
       updateFilter(field, {
