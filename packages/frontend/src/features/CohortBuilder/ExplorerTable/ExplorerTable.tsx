@@ -141,11 +141,12 @@ const ExplorerTable = ({
   const handleColumnVisibilityChange = (updater: any) => {
     const newState =
       typeof updater === 'function' ? updater(columnVisibility) : updater;
+
     setColumnVisibility({
       ...{
         ...newState,
         'mrt-row-expand': false,
-        'mrt-row-actions': false,
+        'mrt-row-actions': true,
         ...lockedVisibility,
       },
     });
@@ -267,11 +268,11 @@ const ExplorerTable = ({
     enableHiding: true,
     displayColumnDefOptions: {
       'mrt-row-expand': {
-        enableHiding: true, //now row numbers are hide-able too
+        enableHiding: true, //now row numbers are hideable too
       },
       ...(tableConfig?.selectableRowsConfiguration?.enabled &&
       tableConfig?.selectableRowsConfiguration?.action === 'cart'
-        ? { 'mrt-row-actions': { header: 'Cart', enableHiding: false } }
+        ? { 'mrt-row-actions': { header: 'Cart', enableHiding: false } } // TODO: make this configurable but for now we will never hide this column
         : {}),
     },
     onColumnVisibilityChange: handleColumnVisibilityChange,
