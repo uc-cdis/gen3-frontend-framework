@@ -211,7 +211,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
             const partsArr = field.split('.');
             if (partsArr.length < 2) {
-              throw new Error('Not made to handle filds with more than one dot');
+              throw new Error('Explorer does not support field with more than one \'.\' separator\'t');
             }
             const basePart = partsArr[0];
             if (!acc.includes(basePart)) {
@@ -237,7 +237,7 @@ export const explorerApi = explorerTags.injectEndpoints({
 
                 tempItem[basePart] = tempItem[basePart].reduce((acc: Record<string, any>, obj: Record<string, any>) => {
                   for (const key in obj) {
-                    if (obj.hasOwn(key)) {
+                    if (Object.hasOwn(obj, key)) {
                       if (!acc[key]) {
                         acc[key] = [];
                       }

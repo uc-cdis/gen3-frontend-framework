@@ -61,7 +61,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
               cellRendererFunc(cell, cellRendererFuncParams)
           : cellRendererFunc
             ? cellRendererFunc
-            : RenderArrayCellSimple,
+            : (cell: CellRendererFunctionProps) => RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
@@ -120,7 +120,7 @@ export const createArrayTableColumns = (
           : cellRendererFunc
             ? (cell: CellRendererFunctionProps) =>
                 ArrayCellRenderer(cellRendererFunc, cell)
-            : RenderArrayCellSimple,
+            : (cell: CellRendererFunctionProps) => RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
