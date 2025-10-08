@@ -5,6 +5,7 @@ import RangeFacet from './RangeFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 import { FacetDefinition } from '@gen3/core';
+import UploadFacet from './UploadFacet';
 
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
@@ -89,7 +90,7 @@ export const createFacetCard = ({
           ),
           multiselect: (
             <MultiSelectValueFacet
-              key={`${idPrefix}-exact-${field}`}
+              key={`${idPrefix}-multiselect-${field}`}
               field={field}
               facetName={facetLabel}
               description={description}
@@ -97,6 +98,14 @@ export const createFacetCard = ({
               width={width}
               hooks={dataFunctions}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
+            />
+          ),
+          upload: (
+            <UploadFacet
+              key={`${idPrefix}-upload-${field}`}
+              field={field}
+              valueLabel={valueTypeLabel}
+              hooks={dataFunctions as any}
             />
           ),
         }[type as string]
