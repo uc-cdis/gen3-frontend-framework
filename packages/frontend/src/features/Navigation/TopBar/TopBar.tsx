@@ -19,16 +19,22 @@ const processTopBarItems = (
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
+
+      const Custom = item.component;
       acc.push(
         <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
           <a className="flex" href={item.href}>
-            <IconButton
-              name={item.name}
-              iconSize={item.iconSize}
-              leftIcon={item.leftIcon}
-              rightIcon={item.rightIcon}
-              classNames={mergedClassnames}
-            />
+            {Custom ? (
+              Custom
+            ) : (
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+              />
+            )}
           </a>
           <Divider
             size="md"
