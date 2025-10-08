@@ -128,6 +128,21 @@ export interface RangeFacetHooks extends FacetCommonHooks {
   useGetFacetData: GetRangeFacetDataFunction;
 }
 
+export interface UploadFacetHooks extends FacetCommonHooks {
+  /**
+  * Hook that returns a list of the uploaded items
+  */
+  useFilterItems: (field: string) => {
+    noData: boolean;
+    items: EnumOperandValue;
+  };
+  /**
+   * Hook that return a function to open the upload modal
+   */
+  useOpenUploadModal: () => (field: string) => void;
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+}
+
 export type AdvancedRangeFacetHooks = FacetCommonHooks & {
   /**
    * Hook that returns range values and counts
@@ -250,7 +265,7 @@ export interface CohortBuilderCategoryConfig {
   readonly facets: ReadonlyArray<string>;
   readonly queryOptions?: QueryOptions;
 }
-export type FacetRequiredHooks = EnumFacetDataHooks | RangeFacetHooks;
+export type FacetRequiredHooks = EnumFacetDataHooks | RangeFacetHooks | UploadFacetHooks;
 
 export interface EnumChartProps {
   readonly field: string;
