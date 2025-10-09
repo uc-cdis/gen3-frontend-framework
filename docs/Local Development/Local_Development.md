@@ -1,6 +1,6 @@
 # Developing and Running a common from your macbook/desktop
 
-There are several cases where it's beneficial to develop or run a the Gen3 FEF locally, for example
+There are several cases where it's beneficial to develop or run the Gen3 FEF locally, for example
 adding new features or testing configurations. This is possible by running the sampleCommons NextJS app
 that is part of the Gen3 FEF mono repository. This allows you to test different configuration files with
 different commons without requiring a deployment.
