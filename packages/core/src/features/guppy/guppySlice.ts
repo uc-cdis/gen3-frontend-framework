@@ -212,7 +212,7 @@ export const explorerApi = explorerTags.injectEndpoints({
             const partsArr = field.split('.');
             if (partsArr.length < 2) {
               throw new Error(
-                "Explorer does not support field with more than one '.' separator't",
+                "Explorer does not support field with more than one '.' separator",
               );
             }
             const basePart = partsArr[0];
