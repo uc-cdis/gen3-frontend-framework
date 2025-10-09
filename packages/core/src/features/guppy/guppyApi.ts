@@ -79,7 +79,7 @@ export const guppyApi = createApi({
           },
         };
       }
-      return { data: await response.json() };
+      return { data };
     } catch (e: unknown) {
       if (e instanceof GraphQLError) {
         return {
