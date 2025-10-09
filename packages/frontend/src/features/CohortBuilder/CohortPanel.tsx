@@ -192,6 +192,9 @@ export const CohortPanel = ({
       const cleanedData: AggregationsData = {};
       const totalCount = chartData._totalCount[0]?.count;
       Object.keys(summaryCharts).forEach((key) => {
+        if (!(key in chartData)) {
+          return;
+        } // handle missing key in  data
         // remove empty keys
         cleanedData[key] = chartData[key].filter((x) =>
           typeof x.key !== 'string' ? true : x.key !== '',
