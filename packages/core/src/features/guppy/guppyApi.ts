@@ -67,14 +67,25 @@ export const guppyApi = createApi({
         method: 'POST',
         body: JSON.stringify(query),
       });
-      return { data: await response.json() };
+
+      const data = await response.json();
+      // Check the response for GraphQL errors
+      if (data && 'errors' in data) {
+        // Return an object with an 'error' property if GraphQL errors are present
+        return {
+          error: {
+            message: data.errors[0].message,
+            locations: data.errors[0].locations,
+          },
+        };
+      }
+      return { data };
     } catch (e: unknown) {
       if (e instanceof GraphQLError) {
         return {
           error: {
             message: e.message,
             locations: e.locations,
-            path: e.path,
           },
         };
       }
