@@ -45,7 +45,7 @@ it is overwritten (defined) in ```.env.development.local```
 The important ENV variables are:
 
 ```NEXT_PUBLIC_GEN3_COMMONS_NAME=gen3``` this defines the directory to read the configuration from.
-For example, since we have copied the ```gen3``` config directory to ```my-datecommons```, we need to add
+For example, since we have copied the ```gen3``` config directory to ```my-datacommons```, we need to add
 that variable in ```.env.development.local``` as ```NEXT_PUBLIC_GEN3_COMMONS_NAME=my-datacommons```.
 
 ```NEXT_PUBLIC_GEN3_API=http://gen3.datacommons.io``` this defines the commons URL the FEF will
