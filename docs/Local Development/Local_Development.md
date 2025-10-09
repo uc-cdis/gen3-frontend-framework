@@ -17,7 +17,7 @@ cd into ```gen3-frontend-framework``` and install the packages:
 npm i
 ```
 
-once install you should be able to run:
+once installed you should be able to run:
 ```
 npm run dev
 ```
