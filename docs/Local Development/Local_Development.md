@@ -29,7 +29,7 @@ The various configuration files are located in ```packages/sampleCommons/config`
 Each "commons" has a separate directory. By default there is one at
 ```packages/sampleCommons/config/gen3```.
 
-To setup a new commons config copy the directory and its contents into a new directory withing
+To setup a new commons config copy the directory and its contents into a new directory within
 the ```config``` directory. For example, to create my-datacommons
 ```
 cp -r gen3 my-datacommons
