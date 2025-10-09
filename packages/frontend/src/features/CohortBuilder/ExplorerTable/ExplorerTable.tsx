@@ -205,8 +205,6 @@ const ExplorerTable = ({
     indexPrefix: indexPrefix,
   });
 
-  console.log('data', data);
-
   const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
     const pageLimit =
       (tableConfig?.pageLimit && tableConfig?.pageLimit?.limit) ??
