@@ -211,7 +211,9 @@ export const explorerApi = explorerTags.injectEndpoints({
           const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
             const partsArr = field.split('.');
             if (partsArr.length < 2) {
-              throw new Error('Explorer does not support field with more than one \'.\' separator\'t');
+              throw new Error(
+                "Explorer does not support field with more than one '.' separator",
+              );
             }
             const basePart = partsArr[0];
             if (!acc.includes(basePart)) {
@@ -226,32 +228,41 @@ export const explorerApi = explorerTags.injectEndpoints({
           // this is to make it easier to work with in the table component
           // currently only supports one level of nesting
           // also puts original into subRows for dropdown viewing
-          const tempResponse = response.data[args.type].map((item: Record<string, any>) => {
+          const tempResponse = response.data[
+            `${args.indexPrefix}${args.type}`
+          ].map((item: Record<string, any>) => {
             const tempItem = item;
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
               const basePart = containsDotsUniqueBase[i];
               if (item[basePart] && Array.isArray(item[basePart])) {
-
                 // move original to subRows
                 tempItem.subRows = tempItem[basePart];
 
-                tempItem[basePart] = tempItem[basePart].reduce((acc: Record<string, any>, obj: Record<string, any>) => {
-                  for (const key in obj) {
-                    if (Object.hasOwn(obj, key)) {
-                      if (!acc[key]) {
-                        acc[key] = [];
+                tempItem[basePart] = tempItem[basePart].reduce(
+                  (acc: Record<string, any>, obj: Record<string, any>) => {
+                    for (const key in obj) {
+                      if (Object.hasOwn(obj, key)) {
+                        if (!acc[key]) {
+                          acc[key] = [];
+                        }
+                        acc[key].push(obj[key]);
                       }
-                      acc[key].push(obj[key]);
                     }
-                  }
-                  return acc;
-                }, {});
+                    return acc;
+                  },
+                  {},
+                );
               }
-            };
+            }
             return tempItem;
           });
 
-          return {data: {_aggregation: response.data._aggregation, [args.type]: tempResponse}};
+          return {
+            data: {
+              _aggregation: response.data._aggregation,
+              [`${args.indexPrefix}${args.type}`]: tempResponse,
+            },
+          };
         }
         return response;
       },
