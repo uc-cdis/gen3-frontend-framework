@@ -1,4 +1,6 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import { Badge } from '@mantine/core';
 
 import TopBar from './TopBar';
 
@@ -36,6 +38,12 @@ export const Default: Story = {
         rightIcon: 'gen3:library',
         href: '/',
         name: 'My Data Library',
+        // eslint-disable-next-line react/react-in-jsx-scope
+        component: (
+          <Badge color="primary.4" className="mx-2">
+            Test
+          </Badge>
+        ),
       },
     ],
     loginButtonVisibility: 'visible' as any,
