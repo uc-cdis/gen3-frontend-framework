@@ -80,7 +80,7 @@ export interface BannerProps {
 }
 
 export interface HeaderProps {
-  top: TopBarProps;
+  topBar: TopBarProps;
   navigation: NavigationProps;
   banners?: Array<BannerProps>;
   type?: 'horizontal' | 'vertical' | 'original';
