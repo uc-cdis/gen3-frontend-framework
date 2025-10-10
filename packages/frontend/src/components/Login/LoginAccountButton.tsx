@@ -36,9 +36,13 @@ const LoginAccountButton = ({
   );
 
   if (userStatus && isAuthenticated(userStatus)) {
+    const displayName =
+    userInfo?.email ||
+    userInfo?.preferred_username ||
+    userInfo?.username;
     return (
       <UnstyledButton className="mx-2" onClick={() => handleSelected()}>
-        <div className={mergedClassname}>{userInfo?.username}</div>
+        <div className={mergedClassname}>{displayName}</div>
       </UnstyledButton>
     );
   }
