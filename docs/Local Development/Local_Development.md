@@ -62,7 +62,7 @@ likely see CORs errors. This can be resolved using a proxy like nginx (setup is 
 with CORs disabled. For Firefox there is a CORs plugin: [CORS Everywhere](https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/).
 For chrome you can run with CORs disabled by running (on OSX):
 ```bash
-open /Applications/Google\ Chrome.app --args --user-data-dir=/var/tmp/chrome-dev-disabled-security --disable-web-security --disable-site-isolation-trials
+open /Applications/Google\ Chrome.app --args --user-data-dir=/var/tmp/chrome-dev-disabled-security --disable-web-security
 ```
 use this ONLY to go to http://localhost:3000 or https://localhost:3010 and for nothing else.
 
