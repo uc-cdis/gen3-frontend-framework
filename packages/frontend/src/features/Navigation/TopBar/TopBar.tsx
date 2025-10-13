@@ -15,7 +15,7 @@ const processTopBarItems = (
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce(
-    (acc: ReactElement[], item: TopIconButtonPropsWithLink, index: number) => {
+    (acc: ReactElement[], item: TopIconButtonPropsWithLink) => {
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;

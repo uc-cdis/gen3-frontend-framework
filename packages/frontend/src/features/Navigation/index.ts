@@ -17,6 +17,7 @@ import {
 import { FooterProps } from './Footer/types';
 import { Banner } from './Banner';
 import { TopBarProps } from './TopBar/types';
+import { IconButton, TopIconButtonPropsWithLink } from './TopBar/IconButton';
 
 export {
   type FooterProps,
@@ -27,6 +28,7 @@ export {
   type BannerProps,
   type BannerLevelCategories,
   type HeaderMetadata,
+  type TopIconButtonPropsWithLink,
   Footer,
   Gen3Link,
   Header,
@@ -36,4 +38,5 @@ export {
   NavPageLayout,
   Banner,
   isHeaderMetadata,
+  IconButton,
 };
