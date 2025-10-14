@@ -51,7 +51,7 @@
     "@next/bundle-analyzer": "^15.5.4",
     "classnames": "^2.3.1",
     "colorette": "^2.0.20",
-    "cookies-next": "4.3.0",
+    "cookies-next": "^6.1.0",
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",

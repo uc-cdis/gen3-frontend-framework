@@ -24,7 +24,6 @@ const globals = {
   'redux-persist/integration/react': 'redux-persist-integration-react',
   'redux-persist/lib/storage/createWebStorage':
     'redux-persist-createWebStorage',
-  'cookies-next': 'cookies-next',
   queue: 'queue',
   idb: 'idb',
   'use-deep-compare': 'use-deep-compare',

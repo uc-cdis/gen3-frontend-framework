@@ -20,7 +20,7 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   try {
-    const access_token = getCookie('access_token', { req, res });
+    const access_token = await getCookie('access_token', { req, res });
     if (access_token) {
       const jwtKey = await fetchJWTKey();
       if (!jwtKey) {
