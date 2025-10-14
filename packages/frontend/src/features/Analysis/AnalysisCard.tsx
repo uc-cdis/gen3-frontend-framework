@@ -14,6 +14,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   hasDemo,
   loginRequired,
   href,
+  demoHref,
   btnText,
 }) => {
   return (
@@ -49,7 +50,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           </div>
           <div className="relative mb-0 ml-2">
             <span className="absolute bottom-0 left-0 text-xs text-gray-700 w-max">
-              {type === 'application' ? 'Application' : 'Jupyter Notebook'}
+              {type}
             </span>
           </div>
         </div>
@@ -63,13 +64,13 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           </div>
         </div>
       </div>
-      <div className="flex mb-4 rounded-b-md">
-        <div className="m-auto">
+      <div className="m-auto">
+        <div className="flex mb-4 rounded-b-md mx-4 flex-nowrap justify-between gap-x-2">
           <NavLink
             component={Link}
             href={href ?? '_blank'}
             classNames={{
-              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
+              root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded-sm',
               label: 'text-sm font-semibold',
             }}
             label={
@@ -79,9 +80,17 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             }
           />
           {hasDemo && (
-            <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
-              Demo
-            </button>
+            <NavLink
+              component={Link}
+              href={demoHref ?? '_blank'}
+              rel="noopener noreferrer"
+              target="_blank"
+              classNames={{
+                root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded-sm',
+                label: 'text-sm font-semibold',
+              }}
+              label="Demo"
+            />
           )}
         </div>
       </div>
