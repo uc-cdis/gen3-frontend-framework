@@ -12,6 +12,7 @@ export interface AnalysisToolConfiguration {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
+  demoHref?: string;
   appId?: string; // id of the app
   componentName?: string; // Name of component to load
   count?: number; // TODO replace with function
