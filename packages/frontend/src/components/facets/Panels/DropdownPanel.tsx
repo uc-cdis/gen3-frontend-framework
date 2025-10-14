@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Group,
   Select,
@@ -14,6 +14,7 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
+  clearCohortFilters,
   FacetDefinition,
   FacetType,
   selectAllCohortFiltersCollapsed,
@@ -56,6 +57,10 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
     coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
   };
 
+  const clearAllFilters = useCallback(() => {
+    coreDispatch(clearCohortFilters({ index }));
+  }, [coreDispatch, index]);
+
   const items = useDeepCompareMemo(
     () =>
       filters.tabs.map((tab: TabConfig, idx) => {
@@ -89,12 +94,26 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
         <Text size="xl" fw={800}>
           Filters
         </Text>
-        <button
-          className="text-primary text-sm font-normal"
-          onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
-        >
-          {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
-        </button>
+        <Group justify="flex-end" gap="xs">
+          <Tooltip
+            label={`${allFiltersCollapsed ? 'Expand' : 'Collapse'} all filter panels`}
+          >
+            <button
+              className="text-primary text-sm font-normal"
+              onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
+            >
+              {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
+            </button>
+          </Tooltip>
+          <Tooltip label="Clear all selected filters">
+            <button
+              className="text-primary text-sm font-normal"
+              onClick={clearAllFilters}
+            >
+              Clear All
+            </button>
+          </Tooltip>
+        </Group>
       </Group>
       {showAccessLevel ? (
         <AccessLevel onChange={onAccessChange} accessLevel={accessLevel} />
