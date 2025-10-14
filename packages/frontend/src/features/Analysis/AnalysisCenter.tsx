@@ -88,6 +88,7 @@ const AnalysisCenter = ({
                 loginRequired,
                 href,
                 btnText,
+                demoHref,
               },
               key,
             ) => {
@@ -105,6 +106,7 @@ const AnalysisCenter = ({
                     href,
                     cardType: 'regular',
                     btnText,
+                    demoHref,
                   }}
                 />
               );
