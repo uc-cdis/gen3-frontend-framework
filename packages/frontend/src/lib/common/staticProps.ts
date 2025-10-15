@@ -26,7 +26,7 @@ export const getNavPageLayoutPropsFromConfig =
             name: 'Site navigation is not configured',
             icon: '',
             tooltip: '',
-            href: '',
+            href: ''
           },
         ],
       },
