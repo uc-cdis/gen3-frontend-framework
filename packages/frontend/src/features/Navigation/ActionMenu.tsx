@@ -31,9 +31,18 @@ const ActionMenu = ({ items }: ActionMenuProps) => {
           {items.map((x, index) => {
             return (
               <Menu.Item key={`${x.name}-${index}`}>
-                <Link href={x.href}>
-                  <Text>{x.name}</Text>
-                </Link>
+                {x.newWindow === true ? (
+                  <Link
+                    href={x.href}
+                    target="_blank"
+                  >
+                    <Text>{x.name}</Text>
+                  </Link>
+                ) : (
+                  <Link href={x.href}>
+                    <Text>{x.name}</Text>
+                  </Link>
+                )}
               </Menu.Item>
             );
           })}

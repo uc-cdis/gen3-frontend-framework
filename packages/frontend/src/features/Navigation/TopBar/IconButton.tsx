@@ -16,6 +16,7 @@ export interface TopIconButtonProps extends NameAndIcon {
 
 export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
   href: string;
+  newWindow?: bool;
 }
 
 export const IconButton = ({
