@@ -23,7 +23,12 @@ const processTopBarItems = (
       const Custom = item.component;
       acc.push(
         <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
-          <a className="flex" href={item.href} target={item.newWindow === true ? "_blank" : null}>
+          <a
+            className="flex"
+            href={item.href}
+            target={item.newWindow === true ? '_blank' : undefined}
+            rel={item.newWindow === true ? 'noreferrer' : undefined}
+          >
             {Custom ? (
               Custom
             ) : (

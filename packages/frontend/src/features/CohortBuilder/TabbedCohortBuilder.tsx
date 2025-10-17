@@ -26,6 +26,7 @@ import {
   removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
+  useUpdateFiltersFlat,
 } from '../../components/facets';
 import { QueryOptions } from '../../components/facets/types';
 import {
@@ -44,6 +45,7 @@ import {
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -78,12 +80,16 @@ export interface TabbedCohortBuilderConfiguration {
   tabsConfiguration: TabbedCohortBuilderFacetConfig;
   index: string;
   indexPrefix?: string;
+  fieldsAreFlat?: boolean; // do not create nested field if true
+  classNames?: StylingOverrideWithMergeControl;
 }
 
 const TabbedCohortBuilder = ({
   index,
   tabsConfiguration,
   indexPrefix = '',
+  fieldsAreFlat = false,
+  classNames = {},
 }: TabbedCohortBuilderConfiguration) => {
   const tabsConfig = tabsConfiguration;
   const cohortBuilderFilters = [
@@ -164,7 +170,7 @@ const TabbedCohortBuilder = ({
       const facetDefs = classifyFacets(data, index);
       setFacetDefinitions(facetDefs);
 
-      // setup summary charts since nested fields can be listed by the split field nam
+      // setup summary charts since nested fields can be listed by the split field name
     }
   }, [isSuccess, data, facetDefinitions, index]);
 
@@ -213,7 +219,10 @@ const TabbedCohortBuilder = ({
 
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
-    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
@@ -226,7 +235,10 @@ const TabbedCohortBuilder = ({
 
   const RangeHookInstances = {
     useGetFacetData: getRangeFacetData,
-    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
@@ -277,6 +289,7 @@ const TabbedCohortBuilder = ({
         getFacetLabel={() => 'Cases'}
         cardScrollMargin={calculateStickyHeaderHeight()}
         useFieldNameToTitle={useFieldNameToTitle}
+        classNames={classNames}
       />
     </Stack>
   );
