@@ -221,6 +221,43 @@ export const useUpdateFilters = (index: string) => {
   };
 };
 
+/**
+ * Process any filter but do not nest enve if field is delimited with '.'
+ * leaf be filtered
+ * @param index
+ */
+export const useUpdateFiltersFlat = (index: string) => {
+  const dispatch = useCoreDispatch();
+  // update the filter for this facet
+
+  const shouldShareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
+
+  return (field: string, filter: Operation) => {
+    if (shouldShareFilters && field in sharedFilters) {
+      sharedFilters[field].forEach((x: IndexAndField) => {
+        dispatch(
+          updateCohortFilter({
+            index: x.index,
+            field: x.field,
+            filter: filter,
+          }),
+        );
+      });
+    } else {
+      dispatch(
+        updateCohortFilter({
+          index: index,
+          field: field,
+          filter: filter,
+        }),
+      );
+    }
+  };
+};
+
 export const useGetFacetFilters = (index: string, field: string): Operation => {
   return (
     useCoreSelector((state: CoreState) =>
