@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { GEN3_FENCE_API } from '@gen3/core';
-import cookie from 'cookie';
+import cookie from 'cookie';//TODO shold this be using a diferent plugin
 import { deleteCookie } from 'cookies-next';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {

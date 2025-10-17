@@ -55,7 +55,6 @@ const globals = {
   'file-saver': 'fileSaver',
   'universal-cookie': 'universalCookie',
   jose: 'jose',
-  'cookies-next': 'cookies-next',
   cookie: 'cookie',
   'next/head': 'nextHead',
   'next/navigation': 'nextNavigation',

@@ -89,7 +89,7 @@
     "graphql-ws": "^5.14.0",
     "gray-matter": "^4.0.3",
     "isomorphic-dompurify": "^2.25.0",
-    "jose": "^4.15.9",
+    "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
     "mantine-react-table": "^2.0.0-beta.9",
