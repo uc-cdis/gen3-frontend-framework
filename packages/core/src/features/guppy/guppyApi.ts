@@ -1,5 +1,6 @@
 import type { Middleware, Reducer } from '@reduxjs/toolkit';
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { GraphQLError } from 'graphql';
 import { JSONObject } from '../../types';
 import { GEN3_GUPPY_API } from '../../constants';
 import { CoreState } from '../../reducers';
@@ -66,8 +67,28 @@ export const guppyApi = createApi({
         method: 'POST',
         body: JSON.stringify(query),
       });
-      return { data: await response.json() };
+
+      const data = await response.json();
+      // Check the response for GraphQL errors
+      if (data && 'errors' in data) {
+        // Return an object with an 'error' property if GraphQL errors are present
+        return {
+          error: {
+            message: data.errors[0].message,
+            locations: data.errors[0].locations,
+          },
+        };
+      }
+      return { data };
     } catch (e: unknown) {
+      if (e instanceof GraphQLError) {
+        return {
+          error: {
+            message: e.message,
+            locations: e.locations,
+          },
+        };
+      }
       if (e instanceof Error) return { error: e.message };
       return { error: e };
     }

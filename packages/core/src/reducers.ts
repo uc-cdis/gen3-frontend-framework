@@ -5,13 +5,14 @@ import { gen3AppReducer } from './features/gen3Apps/gen3AppsSlice';
 import { drsHostnamesReducer } from './features/drsResolver';
 import { modalReducer } from './features/modals/modalsSlice';
 import { activeWorkspaceReducer } from './features/workspace/workspaceSlice';
+import { cartReducer, cartReducerPath } from './features/cart';
 import {
   guppyApiReducer,
   guppyApiSliceReducerPath,
 } from './features/guppy/guppyApi'; // Do not shorten
 import {
-  userAuthApiReducerPath,
   userAuthApiReducer,
+  userAuthApiReducerPath,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
 
@@ -25,6 +26,7 @@ export const rootReducer = combineReducers({
   activeWorkspace: activeWorkspaceReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
+  [cartReducerPath]: cartReducer,
 });
 
 export type CoreState = ReturnType<typeof rootReducer>;

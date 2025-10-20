@@ -1,53 +1,78 @@
 import React from 'react';
-import { FacetDefinition } from '@gen3/core';
-import { FacetDataHooks } from './types';
+import { EnumChartProps, FacetDataHooks, QueryOptions } from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
+import { FacetDefinition } from '@gen3/core';
+import UploadFacet from './UploadFacet';
 
-export const createFacetCard = (
-  facetDefinition: FacetDefinition,
-  valueLabel: string,
-  dataFunctions: FacetDataHooks,
-  idPrefix: string,
-  dismissCallback: (_arg0: string) => void = () => null,
+export interface CreateFacetCardProps {
+  facetDefinition: FacetDefinition;
+  hooks: FacetDataHooks;
+  idPrefix: string;
+  valueLabel: string | ((queryOptions?: QueryOptions) => string);
+  dismissCallback?: (field: string) => void;
+  hideIfEmpty?: boolean;
+  width?: string;
+  showPercent?: boolean;
+  queryOptions?: QueryOptions;
+  facetNameFormatter: (field: string) => string;
+  cardScrollMargin?: number;
+  Chart?: React.FC<EnumChartProps>;
+}
+
+export const createFacetCard = ({
+  facetDefinition,
+  valueLabel,
+  hooks: dataFunctions,
+  facetNameFormatter,
+  idPrefix,
   hideIfEmpty = false,
-  facetName?: string,
-  width?: string,
-): React.ReactNode => {
-  const { field, type, description } = facetDefinition;
+  width,
+  showPercent = false,
+  queryOptions,
+}: CreateFacetCardProps): React.ReactNode => {
+  const { field, type, description, label } = facetDefinition;
+  const facetLabel = label ?? facetNameFormatter(facetDefinition.field);
+  const valueTypeLabel =
+    valueLabel === undefined || typeof valueLabel === 'string'
+      ? valueLabel
+      : valueLabel(queryOptions);
+
   return (
-    <div key={`${idPrefix}-enum-${field}`}>
+    <div key={`${idPrefix}-facet-${field}`}>
       {
         {
           enum: (
             <EnumFacet
               key={`${idPrefix}-enum-${field}`}
-              valueLabel={valueLabel}
+              valueLabel={valueTypeLabel}
               field={field}
-              facetName={facetName}
+              facetName={facetLabel}
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
-              showPercent={false}
+              showPercent={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
+              moveValuesToBottom={facetDefinition?.moveValuesToBottom ?? []}
+              excludeValues={facetDefinition?.excludeValues ?? []}
             />
           ),
           range: (
             <RangeFacet
               key={`${idPrefix}-range-${field}`}
-              valueLabel={valueLabel}
+              valueLabel={valueTypeLabel}
               field={field}
-              facetName={facetName}
+              facetName={facetLabel}
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
               minimum={facetDefinition.range?.minimum}
               maximum={facetDefinition.range?.maximum}
-              showSettings={false}
+              showSettings={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
@@ -55,7 +80,7 @@ export const createFacetCard = (
             <ExactValueFacet
               key={`${idPrefix}-exact-${field}`}
               field={field}
-              facetName={facetName}
+              facetName={facetLabel}
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
@@ -65,14 +90,22 @@ export const createFacetCard = (
           ),
           multiselect: (
             <MultiSelectValueFacet
-              key={`${idPrefix}-exact-${field}`}
+              key={`${idPrefix}-multiselect-${field}`}
               field={field}
-              facetName={facetName}
+              facetName={facetLabel}
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
               hooks={dataFunctions}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
+            />
+          ),
+          upload: (
+            <UploadFacet
+              key={`${idPrefix}-upload-${field}`}
+              field={field}
+              valueLabel={valueTypeLabel}
+              hooks={dataFunctions as any}
             />
           ),
         }[type as string]

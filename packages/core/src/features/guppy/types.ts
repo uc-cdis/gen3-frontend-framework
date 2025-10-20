@@ -2,7 +2,8 @@ import { FilterSet } from '../filters';
 import { Accessibility } from '../../constants';
 
 // Guppy data request parameters
-export interface BaseGuppyDataRequest {
+export interface GuppyDownloadDataRequest {
+  filter: FilterSet; // cohort filters
   type: string;
   accessibility?: Accessibility;
   fields: string[];
@@ -10,8 +11,7 @@ export interface BaseGuppyDataRequest {
 }
 
 // Represents a request to download data from Guppy and convert it to a specific format.
-export interface GuppyDownloadDataParams extends BaseGuppyDataRequest {
-  filter: FilterSet; // cohort filters
+export interface GuppyDownloadDataParams extends GuppyDownloadDataRequest {
   format: 'json' | 'csv' | 'tsv'; // the three supported formats
   rootPath?: string; // a string (minus $.) JSONPath to the root of the data
 }

@@ -1,16 +1,29 @@
 export * from './guppyApi';
 export * from './guppySlice';
+export * from './queryGenerators';
 import {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
   groupSharedFields,
 } from './utils';
-import { useDownloadFromGuppyMutation } from './guppyDownloadSlice';
+import {
+  guppyDownloadApi,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
+} from './guppyDownloadSlice';
+import { conversion, jsonToFormat } from './conversion';
+
 export * from './types';
+export * from './processing';
 
 export {
   downloadFromGuppyToBlob,
   downloadJSONDataFromGuppy,
-  useDownloadFromGuppyMutation,
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
   groupSharedFields,
+  conversion,
+  guppyDownloadApi,
+  jsonToFormat,
 };
+export { processHistogramResponse } from './processing';

@@ -3,6 +3,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const dns = require('dns');
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
@@ -23,6 +26,7 @@ const withMDX = require('@next/mdx')({
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  allowedDevOrigins: ['local.io', '*.local.io'],
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -67,4 +71,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withMDX(nextConfig);
+module.exports = withBundleAnalyzer(withMDX(nextConfig));

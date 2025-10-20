@@ -10,6 +10,7 @@ import { convertFilterSetToGqlFilter } from '../filters';
 import { jsonToFormat } from './conversion';
 import { isJSONObject } from '../../types';
 import { JSONPath } from 'jsonpath-plus';
+import { getCookie } from 'cookies-next';
 
 /**
  * Represents a configuration for making a fetch request.
@@ -21,7 +22,7 @@ import { JSONPath } from 'jsonpath-plus';
  */
 export type FetchConfig = {
   method: string;
-  headers: Record<string, string>;
+  headers: Headers;
   body: string;
 };
 
@@ -44,13 +45,22 @@ const prepareFetchConfig = (
   parameters: GuppyDownloadDataParams,
   csrfToken?: string,
 ): FetchConfig => {
+  const headers: Headers = new Headers({
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
+  });
+
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+  }
+
   return {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(csrfToken !== undefined && { 'X-CSRF-Token': csrfToken }),
-      // TODO: Add credentials
-    },
+    headers: headers,
     body: JSON.stringify({
       type: parameters.type,
       filter: convertFilterSetToGqlFilter(parameters.filter),

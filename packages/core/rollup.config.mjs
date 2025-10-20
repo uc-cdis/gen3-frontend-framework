@@ -24,48 +24,67 @@ const globals = {
   'redux-persist/integration/react': 'redux-persist-integration-react',
   'redux-persist/lib/storage/createWebStorage':
     'redux-persist-createWebStorage',
-  'cookies-next': 'cookies-next',
   queue: 'queue',
   idb: 'idb',
+  'use-deep-compare': 'use-deep-compare',
+  graphql: 'graphql',
+  nanoid: 'nanoid',
 };
 
-const config = [
-  {
-    input: 'src/index.ts',
-    output: [
+const external = [
+  ...Object.keys(globals),
+  // ... your existing externals
+];
+
+// Shared JS build factory
+const jsBundle = (input, baseName) => ({
+  input,
+  output: [
+    {
+      file: `dist/cjs/${baseName}.js`,
+      format: 'cjs',
+      globals,
+      sourcemap: true,
+    },
+    {
+      file: `dist/esm/${baseName}.js`,
+      format: 'esm',
+      globals,
+      sourcemap: true,
+    },
+  ],
+  external,
+  plugins: [
+    peerDepsExternal(),
+    json(),
+    swc(
       {
-        file: 'dist/cjs/index.js',
-        format: 'cjs',
-        globals,
-        sourcemap: true,
-      },
-      {
-        file: 'dist/esm/index.js',
-        format: 'esm',
-        globals,
-        sourcemap: true,
-      },
-    ],
-    external: Object.keys(globals),
-    plugins: [
-      peerDepsExternal(),
-      json(),
-      swc({
-        // All options are optional
         sourceMaps: true,
-        include: /\.[mc]?[jt]sx?$/, // default
-        exclude: /node_modules/, // default
-        tsconfig: 'tsconfig.json', // default
+        include: /\.[mc]?[jt]sx?$/,
+        exclude: /node_modules/,
+        tsconfig: 'tsconfig.json',
         jsc: {},
-      }),
+      },
       swcPreserveDirectives(),
-    ],
-  },
-  {
-    input: './dist/dts/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'es' }],
-    plugins: [dts()],
-  },
+      json(),
+    ),
+  ],
+});
+
+const dtsBundle = (input, outFile) => ({
+  input,
+  output: [{ file: outFile, format: 'es' }],
+  plugins: [dts()],
+});
+
+const config = [
+  // JS builds
+  jsBundle('./src/index.ts', 'index'), // default/client entry
+  jsBundle('./src/server.ts', 'server'), // server entry
+
+  // Type declarations
+  dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
+  dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
 ];
 
 export default config;

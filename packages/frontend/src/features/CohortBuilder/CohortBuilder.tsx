@@ -1,45 +1,41 @@
-import React, { Suspense } from 'react';
-import { CohortPanelConfig, CohortBuilderProps } from './types';
-import { Center, Loader, LoadingOverlay, Tabs } from '@mantine/core';
+import React from 'react';
+import { useDeepCompareMemo } from 'use-deep-compare';
+import { CohortBuilderProps, CohortPanelConfiguration } from './types';
+import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import { useCoreDispatch, useGetCSRFQuery, setSharedFilters } from '@gen3/core';
+import {
+  selectCurrentCohortId,
+  setSharedFilters,
+  useCoreDispatch,
+  useCoreSelector,
+} from '@gen3/core';
+import { TabsLayoutToComponentProp } from '../../utils/layout';
+import CohortManager from './CohortManager/CohortManager';
 
-const TabsLayoutToComponentProp = (
-  tabsLayout?: 'left' | 'right' | 'center',
-) => {
-  if (!tabsLayout) {
-    return 'flex-start';
-  }
-  switch (tabsLayout) {
-    case 'left': {
-      return 'flex-start';
-    }
-    case 'right': {
-      return 'flex-end';
-    }
-    case 'center': {
-      return 'center';
-    }
-    default: {
-      return 'flex-start';
-    }
-  }
+export const useGetCurrentCohort = () => {
+  return useCoreSelector((state) => selectCurrentCohortId(state));
 };
 
-export const CohortBuilder = ({
+const CohortBuilder = ({
   explorerConfig,
   sharedFiltersMap = null,
   tabsLayout = 'left',
+  enableCohortManager = true,
 }: CohortBuilderProps) => {
-  useGetCSRFQuery();
-
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
+  const configuration = useDeepCompareMemo(
+    () => explorerConfig,
+    [explorerConfig],
+  );
+
   return (
-    <div className="w-full">
+    <div className="flex flex-col w-full mt-2">
+      {enableCohortManager ? <CohortManager /> : null}
       <Tabs
         color="primary.4"
+        variant={explorerConfig[0]?.tabType}
         keepMounted={true}
         defaultValue={explorerConfig[0].tabTitle}
       >
@@ -47,7 +43,7 @@ export const CohortBuilder = ({
           className="w-full"
           justify={TabsLayoutToComponentProp(tabsLayout)}
         >
-          {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+          {configuration.map((panelConfig: CohortPanelConfiguration) => (
             <Tabs.Tab
               value={panelConfig.tabTitle}
               key={`${panelConfig.tabTitle}-tabList`}
@@ -57,14 +53,22 @@ export const CohortBuilder = ({
           ))}
         </Tabs.List>
 
-        {explorerConfig.map((panelConfig: CohortPanelConfig) => (
+        {configuration.map((panelConfig: CohortPanelConfiguration) => (
           <Tabs.Panel
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}
           >
             <CohortPanel
-              {...panelConfig}
+              guppyConfig={panelConfig.guppyConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
+              chartsSection={panelConfig?.chartsSection}
+              filters={panelConfig.filters}
+              tabTitle={panelConfig.tabTitle}
+              table={panelConfig.table}
+              dropdowns={panelConfig.dropdowns}
+              buttons={panelConfig.buttons}
+              loginForDownload={panelConfig.loginForDownload}
+              sharedFiltersMap={panelConfig.sharedFiltersMap}
             />
           </Tabs.Panel>
         ))}
@@ -72,3 +76,5 @@ export const CohortBuilder = ({
     </div>
   );
 };
+
+export default CohortBuilder;

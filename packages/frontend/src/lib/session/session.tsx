@@ -25,8 +25,12 @@ import {
   useLazyFetchUserDetailsQuery,
 } from '@gen3/core';
 
+import { Center, Loader } from '@mantine/core';
+
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
+
+const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
 export const logoutSession = async () => {
   // logged in using credentials then execute credentials logout first
@@ -126,7 +130,7 @@ const refreshSession = (
     return;
   }
 
-  // hitting Fence endpoint refreshes token
+  // hitting Fence endpoint refreshes the token
   updateSessionRefreshTimestamp(Date.now());
   getUserDetails();
 };
@@ -176,7 +180,9 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  useGetCSRFQuery();
+
+  const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
+    useGetCSRFQuery();
   useWorkspaceResourceMonitor(monitorWorkspace); // monitor workspaces if any are running or configured
 
   const [getUserDetails] = useLazyFetchUserDetailsQuery(); // Fetch user details
@@ -186,6 +192,38 @@ export const SessionProvider = ({
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
+
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+
+  // Initialize BroadcastChannel for cross-tab communication
+  // any user event on one tab or window will update mostRecentActivityTimestamp
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      broadcastChannelRef.current = new BroadcastChannel(ACTIVITY_CHANNEL);
+
+      // Listen for activity updates from other tabs
+      const handleActivityMessage = (event: MessageEvent) => {
+        if (event.data.type === 'activity-update') {
+          setMostRecentActivityTimestamp(event.data.timestamp);
+        }
+      };
+
+      broadcastChannelRef.current.addEventListener(
+        'message',
+        handleActivityMessage,
+      );
+
+      return () => {
+        if (broadcastChannelRef.current) {
+          broadcastChannelRef.current.removeEventListener(
+            'message',
+            handleActivityMessage,
+          );
+          broadcastChannelRef.current.close();
+        }
+      };
+    }
+  }, []);
 
   const [
     mostRecentSessionRefreshTimestamp,
@@ -201,28 +239,20 @@ export const SessionProvider = ({
   const updateSessionIntervalMilliseconds =
     MinutesToMilliseconds(updateSessionTime);
 
-  // Update session status using the session token api
-  const updateSessionWithSessionApi = async () => {
-    // const tokenStatus = await getSession();
-    // setSessionInfo(tokenStatus);
-    // setPending(false); // not waiting for session to load anymore
-    await getUserDetails();
-  };
-
   // update session status using the user status
-  const updateSessionWithUserStatus = async () => {
-    await getUserDetails();
-  };
 
   const sessionInfo = useManageSession(userStatus);
 
   // for now, we are using the user status to determine if the user is logged in
-  const updateSession = useCallback(
-    () => updateSessionWithUserStatus(),
-    [updateSessionWithUserStatus],
-  );
+  const updateSession = useCallback(() => {
+    const updateSessionWithUserStatus = async () => {
+      await getUserDetails();
+    };
 
-  const endSession = async () => {
+    updateSessionWithUserStatus();
+  }, [getUserDetails]);
+
+  const endSession = useCallback(async () => {
     logoutSession()
       .then(() => {
         getUserDetails();
@@ -236,7 +266,7 @@ export const SessionProvider = ({
       .finally(() => {
         router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
       });
-  };
+  }, [getUserDetails, router]);
   /**
    * Update session value every updateSessionInterval seconds
    */
@@ -246,17 +276,31 @@ export const SessionProvider = ({
     if (updateSessionIntervalMilliseconds <= 0) return; // do not poll if updateSessionInterval is 0
 
     const updateUserActivity = () => {
-      setMostRecentActivityTimestamp(Date.now());
+      const timestamp = Date.now();
+      setMostRecentActivityTimestamp(timestamp);
+
+      if (broadcastChannelRef.current) {
+        broadcastChannelRef.current.postMessage({
+          type: 'activity-update',
+          timestamp,
+        });
+      }
     };
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
     window.addEventListener('updateUserActivity', updateUserActivity);
+    window.addEventListener('scroll', updateUserActivity);
+    window.addEventListener('click', updateUserActivity);
+    window.addEventListener('touchstart', updateUserActivity);
 
     return () => {
       window.removeEventListener('mousedown', updateUserActivity);
       window.removeEventListener('keypress', updateUserActivity);
       window.removeEventListener('updateUserActivity', updateUserActivity);
+      window.removeEventListener('scroll', updateUserActivity);
+      window.removeEventListener('click', updateUserActivity);
+      window.removeEventListener('touchstart', updateUserActivity);
     };
   }, []); // only call on mount/dismount
 
@@ -307,7 +351,24 @@ export const SessionProvider = ({
     };
   }, [sessionInfo, updateSession, endSession]);
 
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  );
+  if (isGetCSRFError) {
+    return (
+      <Center h="100vh">
+        {`Error from the commons services. They do not seem to be running`}
+      </Center>
+    );
+  }
+
+  if (isGetCSRFSuccess)
+    return (
+      <SessionContext.Provider value={value}>
+        {children}
+      </SessionContext.Provider>
+    );
+  else
+    return (
+      <Center h="100vh">
+        <Loader />
+      </Center>
+    );
 };

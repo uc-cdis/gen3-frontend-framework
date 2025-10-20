@@ -1,3 +1,5 @@
+import { Gen3AppConfigData } from '../../lib/content/types';
+
 export interface WorkspaceAdditionalInfo {
   title?: string;
   description?: string;
@@ -34,7 +36,7 @@ export interface LaunchStepIndicatorConfiguration {
   }>;
 }
 
-export interface WorkspaceConfig {
+export interface WorkspaceConfig extends Gen3AppConfigData {
   title?: string;
   workspaceInfo?: Record<string, WorkspaceAdditionalInfo>;
   launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;

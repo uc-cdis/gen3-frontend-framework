@@ -1,31 +1,75 @@
-import { CohortBuilder } from './CohortBuilder';
+import CohortBuilder from './CohortBuilder';
 import {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
-  type CohortPanelConfig,
+  type CohortPanelConfiguration,
+  type DataTypeConfigWithManifest,
+  type DownloadButtonConfig,
+  type DropdownsWithButtonsProps,
+  type TabConfig,
+  type TabsConfig,
 } from './types';
 
 import {
-  type TableDetailsPanelProps,
   type CellRendererFunctionProps,
-  ExplorerTableDetailsPanelFactory,
   ExplorerTableCellRendererFactory,
-  registerExplorerDefaultCellRenderers,
+  ExplorerTableDetailsPanelFactory,
   registerCohortBuilderDefaultPreviewRenderers,
+  registerExplorerDefaultCellRenderers,
+  type SummaryTable,
+  type TableDetailsPanelProps,
+  TableXPositionContext,
 } from './ExplorerTable';
 
-import CohortManager from './CohortManager';
+import { QueryExpressionContext } from './QueryExpression/QueryExpressionContext';
+import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
+import QueryExpression from './QueryExpression/QueryExpression';
+import CohortManager from './CohortManager/CohortManager';
+
+import CohortManagerAndExpression from './CohortManagerAndExpression';
+import TabbedCohortBuilder, {
+  type CohortBuilderTabCategoryConfig,
+  type TabbedCohortBuilderConfiguration,
+  type TabbedCohortBuilderFacetConfig,
+} from './TabbedCohortBuilder';
+import useGuppyActionButton from './downloads/downloadActionHook';
+import CohortActionButton from './downloads/CohortActionButton';
+import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
+import ExplorerTable from './ExplorerTable/ExplorerTable';
+import DownloadsPanel from './DownloadsPanel';
+
+export * from './Repository';
 
 export {
   type CohortBuilderConfiguration,
   type CohortBuilderProps,
   type TableDetailsPanelProps,
   type CellRendererFunctionProps,
-  type CohortPanelConfig,
+  type CohortPanelConfiguration,
+  type TabbedCohortBuilderFacetConfig,
+  type CohortBuilderTabCategoryConfig,
+  type TabbedCohortBuilderConfiguration,
+  type TabConfig,
+  type TabsConfig,
+  type DataTypeConfigWithManifest,
+  type DownloadButtonConfig,
+  type DropdownsWithButtonsProps,
+  type SummaryTable,
   CohortBuilder,
   CohortManager,
+  CohortManagerAndExpression,
   ExplorerTableCellRendererFactory,
   ExplorerTableDetailsPanelFactory,
   registerExplorerDefaultCellRenderers,
   registerCohortBuilderDefaultPreviewRenderers,
+  QueryExpression,
+  QueryExpressionSection,
+  TabbedCohortBuilder,
+  CohortActionButton,
+  useGuppyActionButton,
+  CohortDropdownActionButton,
+  ExplorerTable,
+  DownloadsPanel,
+  QueryExpressionContext, // TODO move context to own feature folder
+  TableXPositionContext,
 };

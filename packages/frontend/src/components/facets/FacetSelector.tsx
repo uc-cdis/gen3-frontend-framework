@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Text, Switch, ActionIcon, TextInput } from '@mantine/core';
-import { SortType, FacetCardProps, FacetCommonHooks } from './types';
-import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
+import { ActionIcon, Switch, Text, TextInput } from '@mantine/core';
+import { FacetCardProps, FacetCommonHooks } from './types';
+import { useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { toDisplayName } from '../../utils';
-import { FacetDefinition, fieldNameToTitle } from '@gen3/core';
+import { fieldNameToTitle, FacetDefinition } from '@gen3/core';
 import FacetExpander from './FacetExpander';
-import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from './constants';
+import { BAD_DATA_MESSAGE } from './constants';
 import { MdClose as CloseIcon } from 'react-icons/md';
 
 interface SelectedFields {
   category: string;
   fields: Array<FacetDefinition>;
   selectedFields: Array<string>;
-  updateSelectedField: (facet: string) => void;
+  updateSelectedField: (facet: string, checked: boolean) => void;
 }
 
 type FacetSelectorCardProps = Omit<
@@ -22,6 +22,8 @@ type FacetSelectorCardProps = Omit<
   'field' | 'valueLabel'
 > &
   SelectedFields;
+
+const DEFAULT_VISIBLE_ITEMS = 16;
 
 const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   category,
@@ -33,6 +35,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
   selectedFields,
   updateSelectedField,
   showSearch = true,
+  showSettings = false,
   header = {
     Panel: FacetHeader,
     Label: FacetText,
@@ -71,7 +74,12 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
     );
   }, [searchTerm, fields]);
 
-  const remainingValues = filteredFields.length - DEFAULT_VISIBLE_ITEMS;
+  const remainingValues = filteredFields.length - DEFAULT_VISIBLE_ITEMS * 2;
+
+  const visibleFields = filteredFields.slice(
+    0,
+    !isGroupExpanded ? DEFAULT_VISIBLE_ITEMS : undefined,
+  );
 
   return (
     <div
@@ -87,6 +95,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
           hooks={hooks}
           facetName={facetName}
           showSearch={showSearch}
+          showSettings={showSettings}
           toggleSearch={toggleSearch}
           header={header}
         />
@@ -124,13 +133,13 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
           <div className="flip-card" ref={cardRef}>
             <div className="card-face bg-base-max rounded-b-xs flex flex-col gap-y-1 justify-between">
               <div>
-                {filteredFields.length == 0 ? (
+                {visibleFields.length == 0 ? (
                   <div className="mx-4 font-content text-sm">
                     {BAD_DATA_MESSAGE}
                   </div>
                 ) : (
-                  filteredFields.map((facet) => {
-                    const label = fieldNameToTitle(facet.field);
+                  visibleFields.map((facet) => {
+                    const label = facet?.label ?? fieldNameToTitle(facet.field);
                     return (
                       <div
                         key={facet.field}
@@ -148,7 +157,12 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                             selectedFields &&
                             selectedFields.includes(facet.field)
                           }
-                          onChange={() => updateSelectedField(facet.field)}
+                          onChange={(event) =>
+                            updateSelectedField(
+                              facet.field,
+                              event.target.checked,
+                            )
+                          }
                         />
                       </div>
                     );

@@ -85,7 +85,11 @@ export const userAuthApi = createApi({
         } catch (error: unknown) {
           if (error instanceof Error) {
             return {
-              error: error,
+              error: error.message,
+            };
+          } else {
+            return {
+              error: 'Unknown Error',
             };
           }
         }
@@ -105,6 +109,7 @@ export const {
   useFetchUserDetailsQuery,
   useLazyFetchUserDetailsQuery,
   useGetCSRFQuery,
+  useLazyGetCSRFQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;

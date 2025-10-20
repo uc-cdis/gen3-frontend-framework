@@ -16,7 +16,7 @@ import {
   FacetHeader,
 } from './components';
 import { FacetCardProps, FacetCommonHooks } from './types';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetCommonHooks>,
@@ -148,7 +148,7 @@ const FacetControlsHeader = ({
         )}
         <Tooltip
           label={description}
-          position="bottom-start"
+          position="top"
           multiline
           w={220}
           withArrow
@@ -169,6 +169,7 @@ const FacetControlsHeader = ({
                 if (toggleSettings) toggleSettings();
               }}
               aria-label="Search"
+              className={header.iconStyle}
             >
               <Icon
                 width={12}

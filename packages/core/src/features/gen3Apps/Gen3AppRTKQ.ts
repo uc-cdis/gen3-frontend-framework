@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   createDispatchHook,
   createStoreHook,
+  createSelectorHook,
   ReactReduxContextValue,
-  useSelector,
 } from 'react-redux';
 import {
   ApiModules,
@@ -25,15 +25,21 @@ import {
 } from 'redux-persist';
 import { GEN3_API } from '../../constants';
 import { getCookie } from 'cookies-next';
+import { v5 as uuidv5 } from 'uuid';
+import { GEN3_APP_NAMESPACE } from './constants';
 
 export const createAppApiForRTKQ = (
   reducerPath: string,
+  name: string,
+  version: string,
+  additionalReducers?: (...args: any) => any,
   baseQuery?: BaseQueryFn,
 ) => {
-  const appContext = React.createContext<ReactReduxContextValue | null>(null);
+  const nameVersion = `${name}::${version}`;
+  const id = uuidv5(nameVersion, GEN3_APP_NAMESPACE);
 
-  type AppState = any;
-  const useAppSelector = useSelector.withTypes<AppState>();
+  const appContext = React.createContext<ReactReduxContextValue | null>(null);
+  const useAppSelector = createSelectorHook(appContext);
   const useAppDispatch = createDispatchHook(appContext);
   const useAppStore = createStoreHook(appContext);
 
@@ -57,14 +63,14 @@ export const createAppApiForRTKQ = (
         baseUrl: `${GEN3_API}`,
         prepareHeaders: (headers) => {
           headers.set('Content-Type', 'application/json');
-          let accessToken = undefined;
           if (process.env.NODE_ENV === 'development') {
             // NOTE: This cookie can only be accessed from the client side
             // in development mode. Otherwise, the cookie is set as httpOnly
-            accessToken = getCookie('credentials_token');
+            const accessToken = getCookie('credentials_token');
+            if (accessToken)
+              headers.set('Authorization', `Bearer ${accessToken}`);
           }
-          if (accessToken)
-            headers.set('Authorization', `Bearer ${accessToken}`);
+
           return headers;
         },
       }),
@@ -73,8 +79,12 @@ export const createAppApiForRTKQ = (
 
   const appMiddleware = appRTKQApi.middleware;
   const appStore = configureStore({
+    devTools: {
+      name: `${nameVersion}::${id}`,
+    },
     reducer: {
       [appRTKQApi.reducerPath]: appRTKQApi.reducer,
+      ...additionalReducers,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

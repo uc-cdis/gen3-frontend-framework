@@ -1,11 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { MutableRefObject, useCallback, useState } from 'react';
 import { MatchingSearchResult, ViewType } from './types';
 import { getPropertyCount, SearchPathToPropertyIdString } from './utils';
 import ViewSelector from './ViewSelector';
 import TableSearch from './TableSearch';
 import { useDictionaryContext } from './DictionaryProvider';
 import CategoryPanel from './CategoryPanel';
+import GraphView from './GraphView';
 import { useScrollIntoView } from '@mantine/hooks';
+import { Tabs } from '@mantine/core';
 
 const Dictionary = () => {
   const [selectedId, setSelectedId] = useState('');
@@ -27,11 +29,21 @@ const Dictionary = () => {
   const scrollToSelection = useCallback(
     (itemRef: HTMLSpanElement) => {
       // @ts-expect-error need to refactor this
-      targetRef.current = itemRef;
+      (targetRef.current as MutableRefObject<HTMLDivElement>) = itemRef;
       scrollIntoView();
     },
     [scrollIntoView, targetRef],
   );
+  const categoryPanelTable =
+    Object.keys(categories).length &&
+    Object.keys(categories).map((category) => (
+      <CategoryPanel
+        key={category}
+        category={category}
+        selectedId={selectedId}
+        scrollToSelection={scrollToSelection}
+      />
+    ));
 
   return (
     <>
@@ -57,15 +69,20 @@ const Dictionary = () => {
         ref={scrollableRef}
       >
         <div className="h-full">
-          {Object.keys(categories).length &&
-            Object.keys(categories).map((category) => (
-              <CategoryPanel
-                key={category}
-                category={category}
-                selectedId={selectedId}
-                scrollToSelection={scrollToSelection}
-              />
-            ))}
+          {config?.showGraph ? (
+            <Tabs value={view} keepMounted={false} className="h-full">
+              <Tabs.Panel value="table">{categoryPanelTable}</Tabs.Panel>
+              <Tabs.Panel value="graph" className="h-full">
+                <GraphView
+                  categories={categories}
+                  dictionary={dictionary}
+                  selectedId={selectedId}
+                />
+              </Tabs.Panel>
+            </Tabs>
+          ) : (
+            categoryPanelTable
+          )}
         </div>
       </div>
     </>

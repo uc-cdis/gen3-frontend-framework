@@ -8,48 +8,23 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { MdClose as CloseIcon } from 'react-icons/md';
+import { CloseIcon, LockOutlineIcon } from '../../types/icons';
 import FacetSortPanel from './FacetSortPanel';
-import { fieldNameToTitle, type CombineMode } from '@gen3/core';
+import { type CombineMode, fieldNameToTitle } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetHooks } from './EnumFacet';
 import { FacetSortType, SortType } from './types';
-import { mapFacetSortToSortType, updateFacetEnum } from './utils';
+import {
+  compareKeysAscending,
+  compareKeysDescending,
+  mapFacetSortToSortType,
+  updateFacetEnum,
+} from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
-import { Icon } from '@iconify/react';
-
-const compareKeysAscending = (
-  a: string | number,
-  b: string | number,
-): number => {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return a - b;
-  }
-  // If only one value is a number, move numbers to one end
-  // (in this case, numbers will come before strings)
-  if (typeof a === 'number') return -1;
-  if (typeof b === 'number') return 1;
-  // If both are strings, sort alphabetically
-  return a.localeCompare(b);
-};
-
-const compareKeysDescending = (
-  a: string | number,
-  b: string | number,
-): number => {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return b - a;
-  }
-  // If only one value is a number, move numbers to one end
-  // (in this case, numbers will come before strings)
-  if (typeof a === 'number') return 1;
-  if (typeof b === 'number') return -1;
-  // If both are strings, sort alphabetically
-  return b.localeCompare(a);
-};
+import { Icon } from '@iconify-icon/react';
 
 interface FacetEnumListProps {
   field: string;
@@ -63,6 +38,8 @@ interface FacetEnumListProps {
   hideIfEmpty?: boolean;
   showSorting?: boolean;
   sort?: FacetSortType;
+  moveValuesToBottom?: Array<string>;
+  excludeValues?: Array<string>;
 }
 
 const FacetEnumList: React.FC<FacetEnumListProps> = ({
@@ -77,6 +54,8 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
   hideIfEmpty = false,
   showSorting = true,
   sort = 'value-dsc',
+  moveValuesToBottom = [],
+  excludeValues = [],
 }) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -101,6 +80,8 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     mapFacetSortToSortType(sort),
   );
   const theme = useMantineTheme();
+
+  const updateVisibleValues = hooks?.updateVisibleValues;
 
   useEffect(() => {
     if (isSearching) {
@@ -138,7 +119,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         combineMode,
       );
     } else {
-      const updated = selectedEnums?.filter((x) => x != value);
+      const updated = selectedEnums?.filter((x) => x !== value);
       updateFacetEnum(
         field,
         updated ?? [],
@@ -208,7 +189,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
     if (isSuccess && data) {
       // get all the data except the missing and empty values
       const tempFilteredData = Object.entries(data)
-        .filter((entry) => entry[0] != '_missing' && entry[0] != '')
+        .filter((entry) => entry[0] !== '_missing' && entry[0] !== '')
         .filter((entry) =>
           searchTerm === ''
             ? entry
@@ -238,13 +219,16 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
         tempFilteredData.length + selectedEnumNotInData.length,
       );
 
+      const allData = [...tempFilteredData, ...selectedEnumNotInData];
+      // remove any enum in excludeValues
+      const filteredData = allData.filter(
+        (x) => !excludeValues?.includes(x[0].toString()),
+      );
+
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
-        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
-        filteredDataObj: Object.fromEntries([
-          ...tempFilteredData,
-          ...selectedEnumNotInData,
-        ]),
+        filteredData: filteredData, // merge any selected enums that are not in the data
+        filteredDataObj: Object.fromEntries(filteredData),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
@@ -277,17 +261,23 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
 
   useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
-      const obj = [...facetChartData.filteredData]
-        .sort(
-          sortType.type === 'value'
-            ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
-            : ([a], [b]) =>
-                sortType.direction === 'dsc'
-                  ? compareKeysDescending(a, b)
-                  : compareKeysAscending(a, b),
-        )
-        .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
+      const obj = [
+        ...facetChartData.filteredData
+          .filter((x) => !moveValuesToBottom.includes(x[0].toString()))
+          .sort(
+            sortType.type === 'value'
+              ? ([, a], [, b]) => (sortType.direction === 'dsc' ? b - a : a - b)
+              : ([a], [b]) =>
+                  sortType.direction === 'dsc'
+                    ? compareKeysDescending(a, b)
+                    : compareKeysAscending(a, b),
+          ),
+        ...facetChartData.filteredData.filter((x) =>
+          moveValuesToBottom.includes(x[0].toString()),
+        ),
+      ].slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined);
       setSortedData(obj);
+      if (updateVisibleValues) updateVisibleValues(obj);
     }
   }, [
     facetChartData.filteredData,
@@ -438,15 +428,29 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               </span>
                             </OverflowTooltippedLabel>
                             <div className="flex-none text-right w-14 text-xs font-normal font-content">
-                              {count.toLocaleString()}
+                              {count < 0 ? (
+                                <LockOutlineIcon
+                                  size="1.1em"
+                                  className="ml-auto"
+                                />
+                              ) : (
+                                count.toLocaleString()
+                              )}
                             </div>
                             {showPercent ? (
                               <div className="flex-none text-right w-18 text-xs font-normal font-content">
                                 (
-                                {(
-                                  ((count as number) / totalCount) *
-                                  100
-                                ).toFixed(2)}
+                                {count < 0 ? (
+                                  <LockOutlineIcon
+                                    size="1.1em"
+                                    className="ml-auto"
+                                  />
+                                ) : (
+                                  (
+                                    ((count as number) / totalCount) *
+                                    100
+                                  ).toFixed(2)
+                                )}
                                 %)
                               </div>
                             ) : null}

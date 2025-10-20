@@ -26,8 +26,6 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
           datalibraryConfig?.storageMode ?? DataLibraryStoreMode.ApiOnly;
     });
 
-    console.log('Updated Config', discoveryConfig);
-
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
@@ -39,7 +37,7 @@ export const DiscoveryPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        discoveryConfig: undefined,
+        discoveryConfig: [],
       },
     };
   }

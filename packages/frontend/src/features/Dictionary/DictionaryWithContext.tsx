@@ -5,7 +5,6 @@ import Dictionary from './Dictionary';
 import { DictionaryProps, DataDictionary } from './types';
 import DictionaryProvider from './DictionaryProvider';
 import { removeUnusedFieldsFromDictionaryObject } from './utils';
-import dataDictionary from '../../pages/DataDictionary';
 
 const DictionaryWithContext = ({ config }: DictionaryProps) => {
   const { data, isFetching, isUninitialized, isLoading, isError, isSuccess } =

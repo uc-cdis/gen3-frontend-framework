@@ -14,8 +14,6 @@ export interface DiscoveryProps {
 const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
   const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
-  console.log('Discovery Component', discoveryConfig);
-
   const menuItems = useMemo(() => {
     return discoveryConfig.metadataConfig.map((n, idx) => {
       return { value: idx.toString(), label: extractLabel(n, idx) };
@@ -41,6 +39,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
       <Tabs
         className="w-full"
         defaultValue={metadataIndex}
+        variant={discoveryConfig.metadataConfig[0]?.tabType}
         onChange={(v: string | null) => {
           setMetadataIndex(v ?? '0');
         }}

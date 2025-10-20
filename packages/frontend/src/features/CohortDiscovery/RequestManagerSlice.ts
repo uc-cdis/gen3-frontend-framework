@@ -1,0 +1,123 @@
+import {
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+  EntityState,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import {
+  DataAccessRequest,
+  DataAccessRequestStatus,
+  DataAccessRequestUserInformation,
+  newDataAccessRequest,
+} from './types';
+import { CohortId } from '@gen3/core';
+import { AppState } from './appApi';
+
+// Create the entity adapter
+export const dataAccessRequestsAdapter = createEntityAdapter<
+  DataAccessRequest,
+  string
+>({
+  // Select the id as the primary key
+  selectId: (request: DataAccessRequest) => request.id,
+  // Optional: Sort by request_datetime descending (newest first)
+  sortComparer: (a, b) =>
+    new Date(b.createdDatetime).getTime() -
+    new Date(a.createdDatetime).getTime(),
+});
+
+type DataAccessRequestState = EntityState<DataAccessRequest, string>;
+
+interface DataAccessRequestForCohort {
+  cohortId: CohortId;
+  userAccessInformation: DataAccessRequestUserInformation;
+}
+
+// Create a slice with reducers
+export const dataAccessRequestsSlice = createSlice({
+  name: 'dataAccessRequests',
+  initialState: dataAccessRequestsAdapter.getInitialState(),
+  reducers: {
+    addDataAccessRequest: (state, action: PayloadAction<DataAccessRequest>) => {
+      const {
+        cohortId,
+        status,
+        id,
+        name,
+        email,
+        organization,
+        createdDatetime,
+        updatedDatetime,
+      } = action.payload;
+
+      const dataAccessRequests = newDataAccessRequest(
+        id,
+        status,
+        { name, email, organization },
+        cohortId,
+        createdDatetime,
+        updatedDatetime,
+      );
+      dataAccessRequestsAdapter.addOne(state, dataAccessRequests);
+    },
+    // Set a request's status
+    setRequestStatus: (
+      state,
+      action: PayloadAction<{ id: string; status: DataAccessRequestStatus }>,
+    ) => {
+      const { id, status } = action.payload;
+      dataAccessRequestsAdapter.updateOne(state, {
+        id,
+        changes: { status },
+      });
+    },
+  },
+});
+
+// Export actions
+export const { addDataAccessRequest, setRequestStatus } =
+  dataAccessRequestsSlice.actions;
+
+// Export selectors
+export const {
+  selectAll: selectAllDataAccessRequests,
+  selectById: selectDataAccessRequestById,
+  selectIds: selectDataAccessRequestIds,
+  selectEntities: selectDataAccessRequestEntities,
+  selectTotal: selectTotalDataAccessRequests,
+} = dataAccessRequestsAdapter.getSelectors(
+  (state: AppState) => state.dataAccessRequests,
+);
+
+// Additional selectors
+export const selectDataAccessRequestsByCohort = (
+  state: AppState,
+  cohortId: CohortId,
+) => {
+  return selectAllDataAccessRequests(state).filter(
+    (request) => request.cohortId === cohortId,
+  );
+};
+
+export const selectDataAccessRequestsByStatus = (
+  state: AppState,
+  status: DataAccessRequestStatus,
+) => {
+  return selectAllDataAccessRequests(state).filter(
+    (request) => request.status === status,
+  );
+};
+
+export const selectCohortToRequestId = createSelector(
+  [selectAllDataAccessRequests],
+  (requests) => {
+    return requests.reduce<Record<CohortId, string>>((acc, request) => {
+      acc[request.cohortId] = request.id;
+      return acc;
+    }, {});
+  },
+);
+
+// Export reducer
+export const dataAccessRequestsReducer = dataAccessRequestsSlice.reducer;

@@ -1,8 +1,9 @@
-import React, { ReactElement, useMemo } from 'react';
-import { Divider, Grid, Stack, Text } from '@mantine/core';
+import React, { ReactElement, useMemo, useState } from 'react';
+import { Divider, Stack, Text } from '@mantine/core';
 import { AnalysisCenterWithSectionsConfiguration } from './types';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
-import AnalysisCardCompact from './AnalysisCardCompact';
+import AnaylsisCardCore from './AnalysisCardCore';
+import AnalysisCardCollapsible from './AnalysisCardCollapsible';
 
 /**
  * AnalysisPanelWithSections component.
@@ -33,9 +34,13 @@ const AnalysisCenterWithSections: React.FC<
     classNames ?? {},
   );
 
+  const [activeAnalysisCard, setActiveAnalysisCard] = useState<string | null>(
+    null,
+  );
+
   const sectionPanels = useMemo(
     () =>
-      sections.map((section) => {
+      sections.map((section, section_idx) => {
         const sectionClassnames = mergeDefaultTailwindClassnames(
           mergedGlobalClassnames,
           section.classNames ?? {},
@@ -53,19 +58,33 @@ const AnalysisCenterWithSections: React.FC<
               size="lg"
               classNames={{ root: sectionClassnames['divider'] }}
             />
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-stretch">
-              {section.tools.map((tool) => {
-                return (
-                  <div key={tool.title}>
-                    <AnalysisCardCompact {...tool} />
-                  </div>
-                );
+            <div className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-stretch`}>
+              {section.tools.map((tool, idx) => {
+                if (section.core) {
+                  return <AnaylsisCardCore {...tool} key={tool.title} />
+                } else {
+                  return (
+                    <div key={tool.title}>
+                      <AnalysisCardCollapsible
+                        {...tool}
+                        descriptionVisible={activeAnalysisCard === `${section_idx}-${idx}`}
+                        setDescriptionVisible={() =>
+                          setActiveAnalysisCard(
+                            `${section_idx}-${idx}` === activeAnalysisCard ? null : `${section_idx}-${idx}`,
+                          )
+                        }
+                        useCountHook={() => ({ data: 1000, isFetching: false, isSuccess: true })}
+                        key={tool.title}
+                      />
+                    </div>
+                  );
+                }
               })}
             </div>
           </Stack>
         );
       }),
-    [sections],
+    [sections, activeAnalysisCard, mergedGlobalClassnames],
   );
 
   return <Stack gap="xl">{sectionPanels}</Stack>;

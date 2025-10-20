@@ -13,7 +13,7 @@ const WorkspaceNotebooksPage = ({ headerProps, footerProps }: Props) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Workspace Panel Configuration Page',
         content: 'Workspace Panel Configuration',
         key: 'gen3-workspace-panel-config-page',

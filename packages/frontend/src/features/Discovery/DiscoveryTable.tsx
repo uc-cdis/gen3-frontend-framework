@@ -18,7 +18,8 @@ import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
 import { useDiscoveryContext } from './DiscoveryProvider';
-import StudyDetails from './StudyDetails/StudyDetails';
+import { useStudyContext } from '../Study/StudyProvider';
+import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
@@ -27,9 +28,36 @@ import {
   PaginationState,
   SortingState,
 } from '@tanstack/table-core';
-import { DataRequestStatus } from './types';
+import {
+  DataRequestStatus,
+  RowSelectCompareFunctions,
+  SelectableRowConfiguration,
+} from './types';
 import { LoadingOverlay } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
+
+const CompareFn = (
+  fieldValue: string,
+  cmpOp: RowSelectCompareFunctions,
+  value?: string | number,
+) => {
+  switch (cmpOp) {
+    case 'alwaysTrue':
+      return true;
+    case 'arrayNotEmpty':
+      return Array.isArray(fieldValue) && fieldValue.length > 0;
+  }
+};
+
+const isSelectable = (
+  row: MRT_RowData,
+  config?: SelectableRowConfiguration,
+) => {
+  if (!config) return false;
+  if (!Object.hasOwn(row.original, config.field)) return false;
+  const fieldValue = row.original[config.field];
+  return CompareFn(fieldValue, config.comparer, config.value);
+};
 
 const extractCellValue =
   (func: CellRendererFunction) =>
@@ -57,7 +85,8 @@ const DiscoveryTable = ({
   pagination,
   sorting,
 }: DiscoveryTableProps) => {
-  const { discoveryConfig: config, setStudyDetails } = useDiscoveryContext();
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const { setStudyDetails } = useStudyContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
@@ -96,6 +125,14 @@ const DiscoveryTable = ({
     });
   }, [config.studyColumns]);
 
+  const checkIfRowIsSelectable = (row: MRT_RowData) => {
+    if (config.tableConfig?.selectableRows) return true;
+    if (config.tableConfig?.selectableRowConfiguration) {
+      return isSelectable(row, config.tableConfig.selectableRowConfiguration);
+    }
+    return false;
+  };
+
   const table = useMantineReactTable({
     columns: cols as any[],
     data: data ?? [],
@@ -108,7 +145,7 @@ const DiscoveryTable = ({
           onSortingChange: setSorting,
         }
       : {}),
-    enableRowSelection: config.tableConfig?.selectableRows ?? false,
+    enableRowSelection: checkIfRowIsSelectable,
     rowCount: hits,
     icons: TableIcons,
     enableTopToolbar: false,
@@ -190,7 +227,12 @@ const DiscoveryTable = ({
 
   return (
     <React.Fragment>
-      <StudyDetails />
+      <StudyDetails
+        index={config?.minimalFieldMapping?.uid ?? 'unknown'}
+        detailView={config.detailView}
+        simpleDetailsView={config.simpleDetailsView}
+        authz={config.features.authorization}
+      />
       <div className="grow w-auto inline-block overflow-x-scroll">
         <LoadingOverlay visible={dataRequestStatus.isLoading} />
         <MantineReactTable table={table} />

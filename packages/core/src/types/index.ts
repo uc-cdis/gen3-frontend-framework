@@ -1,11 +1,18 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
-export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONArray
+  | JSONObject;
 
-export type JSONObject = {
-  [k: string]: JSONValue;
-};
-export type JSONArray = Array<JSONValue>;
+export interface JSONObject {
+  [key: string]: JSONValue;
+}
+
+export type JSONArray = JSONValue[];
 
 // type guard functions
 export const isHistogramRangeData = (key: any): key is [number, number] => {
@@ -20,7 +27,7 @@ export const isJSONObject = (data: any): data is JSONObject => {
   return typeof data === 'object' && data !== null && !Array.isArray(data);
 };
 
-export const isJSONValue = (data: any): data is JSONValue => {
+export const isJSONValue = (data: unknown): data is JSONValue => {
   return (
     typeof data === 'string' ||
     typeof data === 'number' ||
@@ -39,7 +46,27 @@ export interface HistogramData {
   count: number;
 }
 
+export interface HistogramDataAsStringKey {
+  key: string;
+  count: number;
+}
+
 export type HistogramDataArray = Array<HistogramData>;
+
+export interface StatValues {
+  count: number | null;
+  min: number | null;
+  max: number | null;
+  avg: number | null;
+  sum: number | null;
+  stddev: number | null;
+  median: number | null;
+  p25: number | null;
+  p50: number | null;
+  p75: number | null;
+}
+
+export type StatsValuesArray = Array<Partial<StatValues>>;
 
 const isValidObject = (input: any): boolean =>
   typeof input === 'object' && input !== null;
@@ -95,6 +122,51 @@ export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {
     typeof data.key === 'string' &&
     typeof data.count === 'number'
   );
+};
+
+export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
+  if (typeof item !== 'object' || item === null) {
+    return false;
+  }
+
+  const obj = item as Record<string, unknown>;
+
+  // Check that all present properties have correct types
+  const numericFields = [
+    'count',
+    'min',
+    'max',
+    'avg',
+    'sum',
+    'stddev',
+    'median',
+  ];
+  for (const field of numericFields) {
+    if (field in obj && typeof obj[field] !== 'number') {
+      return false;
+    }
+  }
+
+  // Check percentiles structure if present
+  if ('percentiles' in obj) {
+    const percentiles = obj.percentiles;
+    if (typeof percentiles !== 'object' || percentiles === null) {
+      return false;
+    }
+    const pObj = percentiles as Record<string, unknown>;
+    const requiredPercentiles = ['p25', 'p50', 'p75'];
+    for (const p of requiredPercentiles) {
+      if (p in pObj && typeof pObj[p] !== 'number') {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+export const isStatsValuesArray = (data: unknown): data is StatsValuesArray => {
+  return Array.isArray(data) && data.every(isStatsValue);
 };
 
 export const isHistogramDataAArray = (
@@ -172,6 +244,15 @@ export function isFetchParseError(error: unknown): error is ParsingError {
 
 export type AggregationsData = Record<string, HistogramDataArray>;
 
+export type StatsData = Record<string, StatsValuesArray>;
+
+/**
+ *  Represents the results of a guppy aggregation query
+ */
+export interface GuppyAggregationsResponse {
+  _aggregation: Record<string, AggregationsData>;
+}
+
 /**
  * Represents a manifest item.
  * @interface ManifestItem
@@ -182,3 +263,23 @@ export interface ManifestItem {
   file_size?: number;
   file_name?: string;
 }
+
+export interface StorageOperationResults {
+  isError?: boolean;
+  status: number;
+  message: string;
+}
+
+export interface DataFetchingResult<T> extends DataFetchingStatus {
+  readonly data: T;
+}
+
+export interface DataFetchingStatus {
+  readonly isSuccess?: boolean;
+  readonly isFetching?: boolean;
+  readonly isError?: boolean;
+  readonly isUninitialized?: boolean;
+  readonly error?: string;
+}
+
+export type DataFetchingHook<T> = () => DataFetchingResult<T>;

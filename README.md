@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v9. The minimum node version is set to v20.11.0 only from an LTS perspective.
+This is a multi-workspace repo that requires npm v10. The minimum node version is set to v22.11.0.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
@@ -120,3 +120,9 @@ For example,
 The container can be viewed at `localhost:3000{BASE_PATH | /}`
 
 Note that the base path is configurable with the `BASE_PATH` environment variable. It is left empty by default when running locally
+
+### Using self-signed certs
+
+```
+NODE_EXTRA_CA_CERTS=$HOME/Library/Application Support/mkcert/rootCA.pem
+```

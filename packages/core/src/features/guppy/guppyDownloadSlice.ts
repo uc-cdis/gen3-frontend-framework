@@ -1,9 +1,10 @@
 import { gen3Api } from '../gen3';
 import { GEN3_GUPPY_API } from '../../constants';
 import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
-import { BaseGuppyDataRequest, GuppyDownloadDataParams } from './types';
+import { GuppyDownloadDataParams, GuppyDownloadDataRequest } from './types';
 
-export interface GuppyDownloadDataQueryParams extends BaseGuppyDataRequest {
+export interface GuppyDownloadDataQueryParams
+  extends Omit<GuppyDownloadDataRequest, 'filter'> {
   filter: GQLFilter;
 }
 
@@ -19,9 +20,9 @@ interface DownloadRequestStatus {
  * type, filter, accessibility, fields, and sort arguments
  * @returns: A guppy download API for fetching bulk metadata
  */
-export const downloadRequestApi = gen3Api.injectEndpoints({
+export const guppyDownloadApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
-    downloadFromGuppy: builder.mutation({
+    downloadFromGuppy: builder.query({
       query: ({
         type,
         filter,
@@ -36,7 +37,7 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
         return {
           url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',
-          body: JSON.stringify(queryBody),
+          body: queryBody,
           cache: 'no-cache',
         };
       },
@@ -47,4 +48,5 @@ export const downloadRequestApi = gen3Api.injectEndpoints({
   }),
 });
 
-export const { useDownloadFromGuppyMutation } = downloadRequestApi;
+export const { useDownloadFromGuppyQuery, useLazyDownloadFromGuppyQuery } =
+  guppyDownloadApi;

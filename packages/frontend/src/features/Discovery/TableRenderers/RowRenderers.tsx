@@ -1,5 +1,5 @@
 import { MRT_Row } from 'mantine-react-table';
-import { StudyDetailsField } from '../types';
+import { StudyDetailsField } from '../../Study/types';
 import React, { ReactElement } from 'react';
 import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';

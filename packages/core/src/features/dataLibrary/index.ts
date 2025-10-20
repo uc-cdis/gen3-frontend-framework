@@ -1,16 +1,15 @@
-export * from './types';
-
+import { StorageOperationResults } from '../../types';
 import useDataLibrary from './useDataLibrary';
 
-import { type StorageOperationResults } from './storage/types';
-
 import {
-  getNumberOfItemsInDatalist,
-  getTimestamp,
-  extractIndexFromDataLibraryCohort,
-  extractFileDatasetsInRecords,
   buildListItemsGroupedByDataset,
+  extractFileDatasetsInRecords,
+  extractIndexFromDataLibraryCohort,
+  getNumberOfItemsInDatalist,
 } from './utils';
+import { getTimestamp } from '../../utils';
+
+export * from './types';
 
 export {
   useDataLibrary,

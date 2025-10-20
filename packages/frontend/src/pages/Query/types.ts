@@ -1,6 +1,7 @@
 import { NavPageLayoutProps } from '../../features/Navigation';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
-export interface QueryProps {
+export interface QueryProps extends Gen3AppConfigData {
   graphQLEndpoint?: string;
 }
 
