@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { GEN3_FENCE_API } from '@gen3/core';
-import cookie from 'cookie';//TODO shold this be using a diferent plugin
-import { deleteCookie } from 'cookies-next';
+import { serialize } from 'cookie';
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   await fetch(`${GEN3_FENCE_API}/logout`, {
@@ -13,14 +12,14 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   });
 
   res.setHeader('Set-Cookie', [
-    cookie.serialize('fence', '', {
+    serialize('fence', '', {
       sameSite: 'lax',
       httpOnly: true,
       secure: true,
       path: '/',
       expires: new Date(0),
     }),
-    cookie.serialize('access_token', '', {
+    serialize('access_token', '', {
       sameSite: 'lax',
       httpOnly: true,
       secure: true,
@@ -28,7 +27,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       expires: new Date(0),
     }),
     // delete the credentials_token cookie for credentials login
-    cookie.serialize('credentials_token', '', {
+    serialize('credentials_token', '', {
       sameSite: 'lax',
       httpOnly: process.env.NODE_ENV === 'production',
       secure: process.env.NODE_ENV === 'production',
@@ -36,12 +35,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       expires: new Date(0),
     }),
   ]);
-  deleteCookie('credentials_token', {
-    req,
-    res,
-    sameSite: 'lax',
-    httpOnly: process.env.NODE_ENV === 'production',
-    secure: process.env.NODE_ENV === 'production',
-  });
   res.status(200).json({ success: 'success' });
 }
