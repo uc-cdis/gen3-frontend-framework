@@ -129,6 +129,14 @@ export const isFilterSet = (input: any): input is FilterSet => {
   return true;
 };
 
+/**
+ * Type guard for Includes
+ * @param o - operator to check
+ * @category Filters
+ */
+export const isIncludes = (o: Operation): o is Includes =>
+  (o as Includes).operator === 'includes' || (o as Includes).operator === 'in';
+
 export const isUnion = (value: unknown): value is Union => {
   return (
     typeof value === 'object' &&

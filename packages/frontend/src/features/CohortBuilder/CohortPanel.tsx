@@ -1,17 +1,21 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
   Accessibility,
   AggregationsData,
+  clearCohortFilters,
   CombineMode,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
   FacetType,
   isIntersection,
+  selectAllCohortFiltersCollapsed,
   selectCurrentCohortId,
   selectIndexFilters,
   selectSharedFilters,
+  toggleCohortBuilderAllFilters,
+  useCoreDispatch,
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
@@ -132,6 +136,8 @@ export const CohortPanel = ({
     [filters?.tabs],
   );
 
+  const coreDispatch = useCoreDispatch();
+
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
   >({});
@@ -147,6 +153,18 @@ export const CohortPanel = ({
   const cohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
+
+  const allFiltersCollapsed = useCoreSelector((state) =>
+    selectAllCohortFiltersCollapsed(state, index),
+  );
+
+  const toggleAllFiltersExpanded = (expand: boolean) => {
+    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
+  };
+
+  const clearAllFilters = useCallback(() => {
+    coreDispatch(clearCohortFilters({ index }));
+  }, [coreDispatch, index]);
 
   const {
     data,
@@ -391,7 +409,6 @@ export const CohortPanel = ({
         >
           {filters?.tabs && (
             <DropdownPanel
-              index={index}
               filters={filters}
               tabTitle={tabTitle}
               facetDefinitions={facetDefinitions}
@@ -399,6 +416,9 @@ export const CohortPanel = ({
               onAccessChange={setAccessLevel}
               accessLevel={accessLevel}
               showAccessLevel={showAccessLevel}
+              allFiltersCollapsed={allFiltersCollapsed}
+              toggleAllFiltersExpanded={toggleAllFiltersExpanded}
+              clearAllFilters={clearAllFilters}
             />
           )}
         </div>
