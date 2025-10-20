@@ -1,35 +1,121 @@
 import React from 'react';
-import { Group } from '@mantine/core';
+import { Group, Select, Tooltip } from '@mantine/core';
+import { Icon } from '@iconify-icon/react';
 import JSONObjectDownloadButton from '../../components/Buttons/DownloadButtons/JSONObjectDownloadButton';
 import {
-  IndexedFilterSet,
-  useCoreDispatch,
-  setCohortIndexFilters,
+  type Cohort,
+  type IndexedFilterSet,
+  selectAvailableCohorts,
   selectCohortFilters,
+  selectCurrentCohortId,
+  selectCurrentCohortModified,
+  selectCurrentCohortSaved,
+  setCohortIndexFilters,
+  setCurrentCohortId,
+  useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
-import { useDeepCompareCallback } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import UploadJSONButton from '../../components/Buttons/UploadJSONButton';
 
-const CohortSelector = () => {
-  const dispatch = useCoreDispatch();
+export const UnsavedIcon = ({ label }: { label: string }): JSX.Element => (
+  <Tooltip label={label} withArrow>
+    <span className="leading-0 pointer-events-auto">
+      <Icon icon="gen3:cohort-unsaved" aria-hidden="true" height="1.5rem" />
+    </span>
+  </Tooltip>
+);
 
-  const cohortFilters = useCoreSelector(selectCohortFilters);
+interface CohortSelectorProps {
+  showSelectedCohorts?: boolean;
+}
 
-  const getData = () => cohortFilters;
+const CohortSelector: React.FC<CohortSelectorProps> = ({
+  showSelectedCohorts = true,
+}) => {
+  const coreDispatch = useCoreDispatch();
+  const cohorts = useCoreSelector(selectAvailableCohorts);
+  const currentCohortId = useCoreSelector(selectCurrentCohortId);
+  const filters: IndexedFilterSet = useCoreSelector(selectCohortFilters);
+  const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
+  const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
+  const cohortStatusMessage = currentCohortSaved
+    ? 'Changes not saved'
+    : 'Cohort not saved';
+  const isSavedUnchanged = currentCohortSaved && !currentCohortModified;
+
+  const getData = useDeepCompareCallback(() => {
+    return filters;
+  }, [filters]);
 
   const setCohort = useDeepCompareCallback(
     (data: string) => {
       const jsonForm = JSON.parse(data);
-      dispatch(
+      coreDispatch(
         setCohortIndexFilters({ filters: jsonForm as IndexedFilterSet }),
       );
     },
-    [dispatch],
+    [coreDispatch],
+  );
+
+  const handleCohortChange = useDeepCompareCallback(
+    (id: string) => {
+      coreDispatch(setCurrentCohortId(id));
+    },
+    [coreDispatch],
+  );
+
+  const cohortList = useDeepCompareMemo(
+    () =>
+      cohorts
+        .sort((a: Cohort, b: Cohort) =>
+          a.modifiedDatetime <= b.modifiedDatetime ? 1 : -1,
+        )
+        .map((x) => ({
+          value: x.id,
+          label: x.name,
+          isSavedUnchanged: x.saved && !x.modified,
+          cohortStatusMessage: x.saved
+            ? 'Changes not saved'
+            : 'Cohort not saved',
+        })),
+    [cohorts],
   );
 
   return (
     <Group>
+      <Select
+        data={cohortList}
+        searchable
+        clearable={false}
+        value={currentCohortId}
+        onChange={(id) => {
+          if (id !== null) {
+            handleCohortChange(id);
+          }
+        }}
+        classNames={{
+          root: 'border-secondary-darkest w-56 md:w-80 z-[290]',
+          input:
+            'text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2',
+          option:
+            'text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5',
+        }}
+        aria-label="Select cohort"
+        data-testid="switchButton"
+        rightSection={
+          <div className="flex gap-1 items-center">
+            {!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}
+            <Icon
+              icon="gen3:caret-down"
+              height="1.5rem"
+              className="text-primary"
+            />
+          </div>
+        }
+        rightSectionWidth={!isSavedUnchanged ? 45 : 30}
+        styles={{ section: { pointerEvents: 'none' } }}
+      />
       <JSONObjectDownloadButton
         getData={getData}
         filename="cohort.json"

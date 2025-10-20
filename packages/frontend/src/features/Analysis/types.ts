@@ -1,4 +1,7 @@
 import { ReactElement } from 'react';
+import { Gen3AppConfigData } from '../../lib/content/types';
+
+type CountFunction = () => string;
 
 export interface AnalysisToolConfiguration {
   title: string;
@@ -9,13 +12,23 @@ export interface AnalysisToolConfiguration {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
+  demoHref?: string;
+  appId?: string; // id of the app
+  componentName?: string; // Name of component to load
   count?: number; // TODO replace with function
+  countFunction?: CountFunction;
+  countIndex?: string;
   countUnits?: string;
+  hideCounts?: boolean;
+  noDataTooltip?: string;
   cardType?: 'regular' | 'compact';
   btnText?: string;
+  tags?: Array<string>;
+  readonly rightComponent?: React.FC;
+  readonly selectionScreen?: React.FC;
 }
 
-export interface AnalysisCenterConfiguration {
+export interface AnalysisCenterConfiguration extends Gen3AppConfigData {
   tools: Array<AnalysisToolConfiguration>;
   showFilterAndSort?: boolean;
 }
@@ -24,6 +37,7 @@ export interface AnalysisCenterSection {
   label: string;
   classNames?: Record<string, string>;
   tools: Array<AnalysisToolConfiguration>;
+  core?: boolean;
 }
 
 export interface AnalysisCenterWithSectionsConfiguration {

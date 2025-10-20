@@ -55,14 +55,21 @@ Similar to the navigation items, each top bar item has the following properties:
 - **rightIcon** (optional): An icon displayed to the right of the item text.
 - **href**: The URL to which the item links.
 - **name**: The text displayed for the item.
+- **newWindow**: Whether the link should be opened in a new window/tab.
 
-Example of a top bar item:
+Example of top bar items:
 
 ```json
 {
   "rightIcon": "gen3:upload",
   "href": "/submission",
   "name": "Browse Data"
+}
+
+{
+  "href": "http://example.com/documentation",
+  "name": "Example Documentation",
+  "newWindow": true
 }
 ```
 

@@ -3,13 +3,12 @@ import { GetStaticProps } from 'next';
 import ContentSource from '../../lib/content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
 import ResourcePageContent, {
   ResourcePageConfig,
 } from '../../components/Content/ResourcePageContent';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 interface ResourcePageProps extends NavPageLayoutProps {
   resourcePageConfig: ResourcePageConfig;
@@ -23,7 +22,7 @@ const ResourcePage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Resource Page',
         content: 'Resource Page',
         key: 'gen3-resource-page',

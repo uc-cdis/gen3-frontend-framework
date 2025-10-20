@@ -1,16 +1,15 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 const NotebookLitePage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const router = useRouter();
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Notebooks Lite Page',
         content: 'Notebooks Lite',
         key: 'gen3-notebooks-lite-page',

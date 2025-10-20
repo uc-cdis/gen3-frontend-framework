@@ -6,7 +6,7 @@ type SelectedIndexFilters = Record<string, string[]>;
 const initialState: SelectedIndexFilters = {};
 
 const selectIndexFacets = createSlice({
-  name: 'CohortDiscovery/filterExpand',
+  name: 'CohortDiscovery/selectedFacets',
   initialState: initialState,
   reducers: {
     addFacetSelection: (
@@ -31,17 +31,16 @@ const selectIndexFacets = createSlice({
       state,
       action: PayloadAction<{ index: string; field: string }>,
     ) => {
-      if (!(action.payload.index in state[action.payload.index])) return state;
-      if (action.payload.field in state[action.payload.index]) {
-        return {
-          ...state,
-          ...{
-            [action.payload.index]: state[action.payload.index].filter(
-              (x) => x !== action.payload.field,
-            ),
-          },
-        };
-      }
+      if (!(action.payload.index in state)) return state;
+
+      return {
+        ...state,
+        ...{
+          [action.payload.index]: state[action.payload.index].filter(
+            (x) => x != action.payload.field,
+          ),
+        },
+      };
     },
   },
 });
@@ -54,8 +53,4 @@ export const { addFacetSelection, removeFacetSelection } =
 export const selectSelectedFacetsFromIndex = (
   state: AppState,
   index: string,
-  field: string,
-): boolean => state.filtersExpandedState?.[field];
-
-export const selectAllFiltersCollapsed = (state: AppState): boolean =>
-  Object.values(state.filtersExpandedState).every((e) => !e);
+): string[] => state.selectedIndexFacets[index];

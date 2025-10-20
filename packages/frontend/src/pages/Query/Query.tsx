@@ -1,7 +1,11 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { NavPageLayout } from '../../features/Navigation';
-import QueryPanel from '../../features/Query/QueryPanel';
 import { QueryPageLayoutProps } from './types';
+
+const QueryPanel = dynamic(() => import('../../features/Query/QueryPanel'), {
+  ssr: false,
+});
 
 const QueryPage = ({
   headerProps,
@@ -11,10 +15,11 @@ const QueryPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Query Page',
         content: 'Query page',
         key: 'gen3-query-page',
+        ...(queryProps?.headerMetadata ? queryProps.headerMetadata : {}),
       }}
     >
       <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint} />

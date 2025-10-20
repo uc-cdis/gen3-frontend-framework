@@ -164,7 +164,7 @@ const getCSRFToken = async (): Promise<string | null> => {
     throw new HTTPError(response.status, response.statusText);
   }
 
-  const { csrf_token: csrfToken } = await response.json();
+  const { csrf: csrfToken } = await response.json();
   return csrfToken || null;
 };
 
@@ -188,7 +188,7 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   method: HttpMethod = DEFAULT_METHOD,
   body: unknown = undefined,
   signal?: AbortSignal,
-): Promise<Awaited<T | null | void>> => {
+): Promise<T | null> => {
   const requestHeaders = new Headers({
     [CONTENT_TYPE_HEADER]: CONTENT_TYPE_JSON,
   });
@@ -217,12 +217,12 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   } as RequestInit);
 
   if (!response.ok) {
-    throw new HTTPError(response.status, response.statusText);
+    throw new HTTPError(response.status, response.statusText, response.text());
   }
 
   if (response.status === 204) {
-    // no content so return null
+    // no content so returns null
     return null;
   }
-  return response.json();
+  return await response.json();
 };

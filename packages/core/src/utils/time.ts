@@ -53,3 +53,6 @@ export const measureExecutionTime = async (func: () => Promise<any>) => {
 export const getHighResolutionTimestamp = (): number => {
   return performance.now(); // More precise than Date.now() for performance measurements
 };
+export const getTimestamp = () => {
+  return new Date(Date.now()).toLocaleString();
+};

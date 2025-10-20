@@ -161,7 +161,7 @@ const download = async <T extends Record<string, any> = Record<string, any>>({
         styles: () => ({
           root: {
             textAlign: 'center',
-            display: hideNotification ? 'none' : 'block',
+            display: hideNotification ? 'none' : 'flex nowrap',
           },
           closeButton: {
             color: 'black',

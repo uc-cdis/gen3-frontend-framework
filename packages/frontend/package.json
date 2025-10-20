@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.10.91",
+  "version": "0.11.46",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -8,10 +8,10 @@
   "sideEffects": false,
   "engines": {
     "npm": ">=10.2.3",
-    "node": ">=20.11.0"
+    "node": ">=22.11.0"
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index/cjs/index.js",
+  "module": "dist/index/esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint .",
@@ -33,12 +33,17 @@
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "default": "./dist/index/esm/index.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/cjs/index.js"
+        "default": "./dist/index/cjs/index.js"
       }
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server/esm/server.js",
+      "require": "./dist/server/cjs/server.cjs"
     },
     "./dist/styles.css": "./dist/styles.css"
   },
@@ -49,20 +54,22 @@
     "os": false
   },
   "dependencies": {
-    "@gen3/core": "^0.10.91",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@gen3/core": "^0.11.46",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
-    "@iconify/react": "^5.0.2",
-    "@kbox-labs/react-echarts": "^1.4.0",
-    "@mantine/core": "^7.16.0",
-    "@mantine/dates": "^7.16.0",
-    "@mantine/form": "^7.16.0",
-    "@mantine/hooks": "^7.16.0",
-    "@mantine/modals": "^7.16.0",
-    "@mantine/notifications": "^7.16.0",
+    "@iconify-icon/react": "^3.0.0",
+    "@mantine/core": "^7.17.8",
+    "@mantine/dates": "^7.17.8",
+    "@mantine/form": "^7.17.8",
+    "@mantine/hooks": "^7.17.8",
+    "@mantine/modals": "^7.17.8",
+    "@mantine/notifications": "^7.17.8",
     "@mdx-js/loader": "^2.1.5",
     "@mdx-js/mdx": "^2.1.5",
-    "@next/mdx": "^14.1.1",
+    "@next/mdx": "^15.5.3",
     "@reduxjs/toolkit": "^2.5.0",
     "@tabler/icons-react": "^3.19.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -70,11 +77,10 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",
     "binguru": "^1.0.0-alpha.18.0",
-    "chart.js": "^4.0.1",
     "colorette": "^2.0.20",
     "default-composer": "^0.6.0",
     "dompurify": "3.2.4",
-    "echarts": "^5.5.1",
+    "echarts": "^5.6.0",
     "fetch-retry": "^5.0.6",
     "file-saver": "^2.0.5",
     "filesize": "^10.1.1",
@@ -82,20 +88,20 @@
     "graphql": "^16.9.0",
     "graphql-ws": "^5.14.0",
     "gray-matter": "^4.0.3",
-    "jose": "^4.15.9",
+    "isomorphic-dompurify": "^2.25.0",
+    "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
     "mantine-react-table": "^2.0.0-beta.9",
-    "mathjs": "^13.1.1",
+    "mathjs": "^14.6.0",
     "minisearch": "^6.3.0",
-    "next": "^15.2.4",
+    "next": "^15.5.3",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
     "pluralize": "^8.0.0",
     "postcss-loader": "^7.3.2",
     "postcss-preset-env": "^8.4.2",
-    "react-chartjs-2": "^5.2.0",
     "react-cookie": "^7.2.2",
     "react-fast-compare": "^3.2.2",
     "react-icons": "^4.10.1",
@@ -104,19 +110,15 @@
     "react-plotly.js": "^2.5.1",
     "react-redux": "^8.1.0",
     "react-table": "^7.8.0",
-    "recharts": "^2.4.3",
     "remark-gfm": "^4.0.0",
-    "stable-hash": "^0.0.3",
     "tailwind-merge": "^2.5.2",
     "tailwind-styled-components": "^2.2.0",
-    "use-deep-compare": "^1.1.0",
+    "use-deep-compare": "^1.3.0",
     "victory": "^36.6.11",
-    "victory-chart": "^36.6.12",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@iconify/types": "^2.0.0",
-    "@storybook/react": "^8.6.4",
     "@svgr/webpack": "^8.1.0",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
@@ -142,7 +144,6 @@
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.29",
     "react-what-changed": "^1.1.2",
-    "sharp": "^0.33.2",
     "style-loader": "^3.3.2",
     "swr": "^2.2.5"
   },

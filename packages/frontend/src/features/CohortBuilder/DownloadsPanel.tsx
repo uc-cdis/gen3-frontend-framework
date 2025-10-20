@@ -14,7 +14,7 @@ import {
   findButtonAction,
   NullButtonAction,
 } from './downloads/actions/registeredActions';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 
@@ -95,6 +95,7 @@ interface DownloadsPanelProps {
   readonly fields: ReadonlyArray<string>;
   readonly filter: FilterSet;
   readonly sort?: string[];
+  readonly indexPrefix?: string;
 }
 
 const DownloadsPanel = ({
@@ -107,6 +108,7 @@ const DownloadsPanel = ({
   filter,
   accessibility,
   sort,
+  indexPrefix = '',
 }: DownloadsPanelProps): JSX.Element => {
   const isUserLoggedIn = useIsUserLoggedIn();
   const loginRequired = loginForDownload ? loginForDownload : false;
@@ -183,6 +185,7 @@ const DownloadsPanel = ({
               totalCount,
               fields,
               filter,
+              indexPrefix: indexPrefix,
               accessibility: accessibility ?? Accessibility.ALL,
               // sort: sort, // TODO add sort
             }}

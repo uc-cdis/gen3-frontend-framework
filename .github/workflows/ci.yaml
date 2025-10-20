@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v4.1.0
         with:
-          node-version: 20.17.0
+          node-version: 22.11.0
       - name: Get Version
         run: npm -v
       - name: Install modules
@@ -15,3 +15,5 @@ jobs:
         run: npm ci --include=optional
       - name: Run ESLint
         run: npm run lint
+      - name: Run Build
+        run: npm run build

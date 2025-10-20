@@ -8,3 +8,8 @@ export interface ConfigVersionAndName {
   configVersion?: string;
   name?: string;
 }
+
+export interface SortBy {
+  readonly field: string;
+  readonly direction: 'asc' | 'desc';
+}

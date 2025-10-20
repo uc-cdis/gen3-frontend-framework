@@ -1,0 +1,44 @@
+import { JSONObject } from '@gen3/core';
+import { TagData, TagsConfig } from './types';
+
+// function given a Object and key as input will check if the key is present in the object
+// if present return the value of the key else return undefined
+export const getStringValueFromJSONObject = (
+  objectData?: JSONObject,
+  key?: string,
+): string | undefined => {
+  return key && objectData ? (objectData[key] as string) : undefined;
+};
+
+export interface TagInfo {
+  color: string;
+  display: boolean;
+  label: string;
+}
+
+export const getTagInfo = (
+  tagData: TagData,
+  tagsConfig?: TagsConfig,
+): TagInfo => {
+  if (tagData.category === undefined) {
+    return {
+      color: 'darkgray',
+      display: tagsConfig?.showUnknownTags ?? false,
+      label: tagData.name,
+    };
+  }
+  const categoryConfig = tagsConfig?.tagCategories.find(
+    (category) => category.name === tagData.category,
+  );
+  if (categoryConfig === undefined)
+    return {
+      color: 'gray',
+      display: tagsConfig?.showUnknownTags ?? false,
+      label: tagData.name,
+    };
+  return {
+    color: categoryConfig.color,
+    display: categoryConfig?.display ? true : categoryConfig.display,
+    label: categoryConfig?.displayName ?? tagData.name,
+  };
+};

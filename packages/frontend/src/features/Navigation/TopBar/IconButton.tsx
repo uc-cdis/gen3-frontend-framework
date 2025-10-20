@@ -3,7 +3,7 @@ import { NameAndIcon } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
 import { extractClassName } from '../utils';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { Tooltip } from '@mantine/core';
 import { TooltipStyle } from '../style';
 
@@ -11,10 +11,12 @@ export interface TopIconButtonProps extends NameAndIcon {
   tooltip?: string;
   clickHandler?: () => void;
   ariaLabel?: string;
+  component?: React.ReactElement;
 }
 
 export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
   href: string;
+  newWindow?: boolean;
 }
 
 export const IconButton = ({

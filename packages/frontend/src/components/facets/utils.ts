@@ -1,36 +1,37 @@
 import {
+  AggregationsData,
+  buildNestedFilterForOperation,
+  CombineMode,
+  CoreState,
   EnumFilterValue,
+  extractEnumFilterValue,
   FacetDefinition,
+  fieldNameToTitle,
   HistogramData,
   HistogramDataArray,
   Includes,
+  IndexAndField,
   Intersection,
-  Operation,
-  isUnion,
-  selectIndexedFilterByName,
   isOperationWithField,
+  isOperatorWithFieldAndArrayOfOperands,
+  isUnion,
+  Operation,
+  OperatorWithFieldAndArrayOfOperands,
+  selectIndexedFilterByName,
+  selectSharedFilters,
+  selectShouldShareFilters,
+  SharedFieldMapping,
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  fieldNameToTitle,
-  AggregationsData,
-  CoreState,
-  extractEnumFilterValue,
-  isOperatorWithFieldAndArrayOfOperands,
-  OperatorWithFieldAndArrayOfOperands,
-  CombineMode,
-  SharedFieldMapping,
-  selectShouldShareFilters,
-  selectSharedFilters,
-  IndexAndField,
 } from '@gen3/core';
 import {
   ClearFacetFunction,
-  FromToRange,
-  UpdateFacetFilterFunction,
-  FieldToName,
   FacetSortType,
+  FieldToName,
+  FromToRange,
   SortType,
+  UpdateFacetFilterFunction,
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
@@ -43,6 +44,17 @@ export const getAllFieldsFromFilterConfigs = (
 interface ExplorerResultsData {
   [key: string]: Record<string, any>;
 }
+
+export const getByPath = (obj: unknown, path: string) => {
+  if (!obj) return undefined;
+  const segments = path.split('.').filter(Boolean);
+  return segments.reduce<any>((acc, key) => {
+    if (acc && typeof acc === 'object' && key in (acc as any)) {
+      return (acc as any)[key];
+    }
+    return undefined;
+  }, obj as any);
+};
 
 export const processBucketData = (
   data?: HistogramDataArray,
@@ -139,11 +151,12 @@ export const classifyFacets = (
         fieldNameToTitle(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
+
       return {
         ...acc,
         [fieldKey]: {
           field: fieldKey,
-          dataField: dataField, // get the last part of nested field name
+          dataField: dataField, // get the last part of the nested field name
           // this is to maintain compatibility with gitops but should be deprecated
           type: facetDef.type ?? type,
           index: index,
@@ -155,6 +168,8 @@ export const classifyFacets = (
               fieldKey in sharedFieldMapping &&
               sharedFieldMapping[fieldKey].filter((x) => x.index !== index)) ??
             undefined,
+          moveValuesToBottom: facetDef?.moveValuesToBottom,
+          excludeValues: facetDef?.excludeValues,
           range:
             (facetDef.range ?? type === 'range')
               ? {
@@ -167,40 +182,6 @@ export const classifyFacets = (
     },
     {} as Record<string, FacetDefinition>,
   );
-};
-
-/**
- * Constructs a nested operation object based on the provided field and leaf operand.
- * If the field does not contain a dot '.', it either assigns the field to the leaf operand (if applicable)
- * or returns the leaf operand as is. When the field contains dots, it splits the field into parts,
- * creates a "nested" operation for the root field, and recursively constructs the nested structure
- * for the remaining portion of the field.
- *
- * @param {string} field - The hierarchical field path, with segments separated by dots (e.g., "root.child").
- * @param {Operation} leafOperand - The operation to be nested within the specified path.
- * @returns {Operation} A nested operation object that represents the structured path and operand.
- */
-export const buildNested = (
-  field: string,
-  leafOperand: Operation,
-): Operation => {
-  if (!field.includes('.')) {
-    if (isOperationWithField(leafOperand))
-      return {
-        ...leafOperand,
-        field: field,
-      } as Operation;
-    else return leafOperand;
-  }
-
-  const splitFieldArray = field.split('.');
-  const rootField = splitFieldArray.shift();
-
-  return {
-    operator: 'nested',
-    path: rootField ?? '',
-    operand: buildNested(splitFieldArray.join('.'), leafOperand),
-  };
 };
 
 /**
@@ -224,7 +205,7 @@ export const useUpdateFilters = (index: string) => {
           updateCohortFilter({
             index: x.index,
             field: x.field,
-            filter: buildNested(x.field, filter),
+            filter: buildNestedFilterForOperation(x.field, filter),
           }),
         );
       });
@@ -233,7 +214,44 @@ export const useUpdateFilters = (index: string) => {
         updateCohortFilter({
           index: index,
           field: field,
-          filter: buildNested(field, filter),
+          filter: buildNestedFilterForOperation(field, filter),
+        }),
+      );
+    }
+  };
+};
+
+/**
+ * Process any filter but do not nest enve if field is delimited with '.'
+ * leaf be filtered
+ * @param index
+ */
+export const useUpdateFiltersFlat = (index: string) => {
+  const dispatch = useCoreDispatch();
+  // update the filter for this facet
+
+  const shouldShareFilters = useCoreSelector((state) =>
+    selectShouldShareFilters(state),
+  );
+  const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
+
+  return (field: string, filter: Operation) => {
+    if (shouldShareFilters && field in sharedFilters) {
+      sharedFilters[field].forEach((x: IndexAndField) => {
+        dispatch(
+          updateCohortFilter({
+            index: x.index,
+            field: x.field,
+            filter: filter,
+          }),
+        );
+      });
+    } else {
+      dispatch(
+        updateCohortFilter({
+          index: index,
+          field: field,
+          filter: filter,
         }),
       );
     }
@@ -379,9 +397,62 @@ export const removeIntersectionFromEnum = (
  * @returns {SortType} - The mapped sort type object containing type and direction.
  */
 export const mapFacetSortToSortType = (facetSort: FacetSortType): SortType => {
+  // Default fallback values
+  const defaultSort: SortType = {
+    type: 'value',
+    direction: 'dsc',
+  };
+
+  // Validate input
+  if (!facetSort) {
+    console.warn(
+      `Invalid facetSort: expected string, got ${typeof facetSort}. Using default.`,
+    );
+    return defaultSort;
+  }
+
+  const parts = facetSort.split('-');
+
+  // Check if we have exactly 2 parts
+  if (parts.length !== 2) {
+    console.warn(
+      `Invalid facetSort format: expected 'type-direction', got '${facetSort}'. Using default.`,
+    );
+    return defaultSort;
+  }
+
   const [type, direction] = facetSort.split('-');
   return {
     type: type === 'label' ? 'alpha' : 'value',
     direction: direction as 'asc' | 'dsc',
   };
+};
+
+export const compareKeysAscending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a - b;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return -1;
+  if (typeof b === 'number') return 1;
+  // If both are strings, sort alphabetically
+  return a.localeCompare(b);
+};
+export const compareKeysDescending = (
+  a: string | number,
+  b: string | number,
+): number => {
+  if (typeof a === 'number' && typeof b === 'number') {
+    return b - a;
+  }
+  // If only one value is a number, move numbers to one end
+  // (in this case, numbers will come before strings)
+  if (typeof a === 'number') return 1;
+  if (typeof b === 'number') return -1;
+  // If both are strings, sort alphabetically
+  return b.localeCompare(a);
 };

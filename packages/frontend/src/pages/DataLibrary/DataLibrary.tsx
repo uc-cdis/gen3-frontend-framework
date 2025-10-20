@@ -14,11 +14,10 @@ const DataLibraryPage = ({
   footerProps,
   config,
 }: DataLibraryPageProps): JSX.Element => {
-  console.log('DataLibraryPage', config);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 DataLibrary Page',
         content: 'DataLibrary Data',
         key: 'gen3-data-library-page',

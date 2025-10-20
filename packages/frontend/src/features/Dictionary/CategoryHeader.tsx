@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactElement } from 'react';
 import { snakeCaseToLabel } from './utils';
 import { Avatar } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 
 const getIcon = (category: string) => {
   const iconName = `gen3:dictionary-icon-${category.replace('_', '-')}`;

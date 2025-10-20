@@ -1,30 +1,50 @@
 {
   "name": "CohortDiscovery",
+  "emptySelection": {
+    "image": "cohort_none.png",
+    "imageAlt": "three circled portraits connected by lines",
+    "title": "Build Your Cohort",
+    "subHead": "Select the critera on the left to include an item."
+  },
+  "leftNav": {
+    "build": {
+      "image": "/images/apps/cohort_none.png",
+      "imageAlt": "",
+      "title": "Build Cohorts"
+    },
+    "saved": {
+      "image": "/images/apps/cohort_saved.png",
+      "imageAlt": "",
+      "title": "Saved Cohorts"
+    },
+    "request": {
+      "image": "/images/apps/cohort_requests.png",
+      "imageAlt": "",
+      "title": "Request"
+    }
+  },
   "dataIndexes": [
     {
       "dataConfig": {
-        "dataType": "subject",
-        "nodeCountTitle": "Cases"
+        "dataType": "metadata",
+        "nodeCountTitle": "Subjects"
       },
-      "tabTitle": "Cases",
+      "tabTitle": "Studies",
       "tabs": [
         {
-          "title": "Demographic",
+          "title": "Study Selection",
           "fields": [
-            "gender",
-            "race",
-            "ethnicity",
-            "vital_status"
+            "gen3_discovery.study_id",
+            "gen3_discovery.project_id",
+            "gen3_discovery.study_description",
+            "gen3_discovery.study_url"
           ]
         },
         {
-          "title": "Study",
+          "title": "Subjects",
           "fields": [
-            "gender",
-            "race",
-            "ethnicity",
-            "vital_status",
-            "project"
+            "gen3_discovery.subject_cancer_grade",
+            "gen3_discovery.subject_cancer_stage"
           ]
         }
       ]

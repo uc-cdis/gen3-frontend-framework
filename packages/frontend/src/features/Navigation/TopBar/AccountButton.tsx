@@ -1,10 +1,6 @@
 import React from 'react';
-import { NameAndIcon } from '../types';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
-import { extractClassName } from '../utils';
-import { Icon } from '@iconify/react';
-import { Tooltip } from '@mantine/core';
 import { useRouter } from 'next/router';
 import {
   type CoreState,
@@ -40,7 +36,7 @@ export const AccountButton = ({
   const router = useRouter();
 
   const handleSelected = async () => {
-    await router.push('Profile');
+    await router.push('/Profile');
   };
 
   const userInfo = useCoreSelector((state: CoreState) =>
@@ -56,10 +52,14 @@ export const AccountButton = ({
 
   // get the icon size otherwise use the value of iconsSize as a string value: e.g. 2em
   const iconSz = IconSize[iconSize] ?? iconSize;
+  const displayName =
+  userInfo?.email ||
+  userInfo?.preferred_username ||
+  userInfo?.username;
 
   return (
     <IconButton
-      name={userInfo?.username ?? 'Profile'}
+      name={displayName ?? 'Profile'}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       iconSize={iconSize}

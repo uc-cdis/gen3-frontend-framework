@@ -220,7 +220,7 @@ const useGetAggMDSData = ({
         );
       } else setMDSData(data.data);
     }
-  }, [data, isSuccess, studyField]);
+  }, [authMapping, data, discoveryConfig, isSuccess, studyField]);
 
   useEffect(() => {
     if (queryIsError) {
@@ -261,7 +261,6 @@ const useSearchMetadata = ({
     search,
     autoSuggest,
     searchResults,
-    rawResults,
     suggestions: miniSearchSuggestions,
     addAll,
     removeAll,
@@ -271,6 +270,7 @@ const useSearchMetadata = ({
     fields: searchOverFields,
     storeFields: [uidField],
     idField: uidField,
+    tokenize: (string, _fieldName) => string.split(' '),
     extractField: extractValue,
     //  processTerm: (term) => suffixes(term, 3),
     searchOptions: {

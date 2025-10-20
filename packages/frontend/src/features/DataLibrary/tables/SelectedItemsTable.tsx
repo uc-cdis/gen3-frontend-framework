@@ -9,11 +9,12 @@ import {
 } from 'mantine-react-table';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text, Tooltip } from '@mantine/core';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import { isCohortItem } from '@gen3/core';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { ValidatedSelectedItem } from '../types';
-import { IconSize } from '../types';
+
+import { IconSize } from '../../../utils/sizes';
 
 interface SelectedItemsTableHeaderProps {
   numberOfItems: number;
@@ -223,20 +224,22 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
     data: tableRows.rows,
-    enableColumnResizing: false,
     icons: TableIcons,
     enableTopToolbar: false,
     enableRowSelection: true,
     enableBottomToolbar: tableRows.rows.length > 10,
     enablePagination: tableRows.rows.length > 10,
     enableRowActions: false,
-    enableStickyFooter: true,
+    enableColumnResizing: true,
+    enableGrouping: true,
     enableStickyHeader: true,
+    enableStickyFooter: true,
     enableHiding: true,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
     initialState: {
       density: 'xs',
+      grouping: ['datasetId'],
       columnPinning: {
         left: ['mrt-row-select', 'mrt-row-expand'],
         right: ['mrt-row-actions'],

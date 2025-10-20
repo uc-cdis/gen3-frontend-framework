@@ -1,24 +1,33 @@
 import React from 'react';
-import { Paper, LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Paper } from '@mantine/core';
+import { toCountsString } from '../../utils';
+import { NodeCountConfiguration } from '../../features/CohortBuilder/types';
 
 interface CountsValueProps {
-  readonly label: string;
-  readonly counts?: number;
-  readonly isSuccess: boolean;
+  label: string;
+  counts?: number;
+  isFetching: boolean;
+  isError: boolean;
+  configuration?: NodeCountConfiguration;
 }
 
-const CountsValue = ({ label, isSuccess, counts }: CountsValueProps) => {
-  // TODO handle case of data.length == 1
+const CountsValue = ({
+  label,
+  isFetching,
+  isError,
+  counts,
+  configuration,
+}: Readonly<CountsValueProps>) => {
   return (
-    <div className="mr-4">
-      <LoadingOverlay visible={!isSuccess} />
+    <div className="mr-4 relative">
+      <LoadingOverlay visible={isFetching} />
       <Paper
         shadow="xs"
         p="xs"
         withBorder
         className="bg-primary text-primary-contrast font-heading text-md font-semibold"
       >
-        {`${counts?.toLocaleString() ?? '...'} ${label}`}
+        {isError ? 'error' : toCountsString(counts, label, configuration)}
       </Paper>
     </div>
   );

@@ -37,7 +37,7 @@ const getCurrentTimestamp = (): number => {
 };
 
 // Get a readable timestamp for logging/display
-const getFormattedTimestamp = (): string => {
+export const getFormattedTimestamp = (): string => {
   return new Date().toISOString();
 };
 
@@ -50,7 +50,10 @@ const getTimeDifferenceMs = (
 };
 
 // Check if time difference is greater than specified minutes
-const isTimeGreaterThan = (startTime: number, minutes: number): boolean => {
+export const isTimeGreaterThan = (
+  startTime: number,
+  minutes: number,
+): boolean => {
   const diffMs = getTimeDifferenceMs(startTime);
   const diffMinutes = diffMs / (1000 * 60);
   return diffMinutes > minutes;
@@ -72,7 +75,7 @@ const getReadableDuration = (milliseconds: number): string => {
 };
 
 // Example usage:
-const measureExecutionTime = async (func: () => Promise<any>) => {
+export const measureExecutionTime = async (func: () => Promise<any>) => {
   const startTime = getCurrentTimestamp();
   await func();
   const duration = getTimeDifferenceMs(startTime);
@@ -80,7 +83,7 @@ const measureExecutionTime = async (func: () => Promise<any>) => {
 };
 
 // Performance monitoring with high-resolution timestamps
-const getHighResolutionTimestamp = (): number => {
+export const getHighResolutionTimestamp = (): number => {
   return performance.now(); // More precise than Date.now() for performance measurements
 };
 const SecondsToMilliseconds = (seconds: number) => seconds * 1000;

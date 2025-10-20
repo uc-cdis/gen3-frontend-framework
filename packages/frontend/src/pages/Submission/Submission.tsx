@@ -12,7 +12,7 @@ const SubmissionPage = ({
     <NavPageLayout
       footerProps={footerProps}
       headerProps={headerProps}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Submission Page',
         content: 'Submission page',
         key: 'gen3-submission-page',

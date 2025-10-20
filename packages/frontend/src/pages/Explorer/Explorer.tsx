@@ -1,13 +1,21 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { NavPageLayout } from '../../features/Navigation';
-import { CohortBuilder } from '../../features/CohortBuilder';
 import { ExplorerPageProps } from './types';
 import { Center } from '@mantine/core';
+
+const CohortBuilder = dynamic(
+  () => import('../../features/CohortBuilder/CohortBuilder'),
+  {
+    ssr: false,
+  },
+);
 
 const ExplorerPage = ({
   headerProps,
   footerProps,
   explorerConfig,
+  headerMetadata,
   tabsLayout,
   sharedFiltersMap,
 }: ExplorerPageProps): JSX.Element => {
@@ -22,10 +30,11 @@ const ExplorerPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Explorer Page',
         content: 'Explorer Page',
         key: 'gen3-explorer-page',
+        ...(headerMetadata ? headerMetadata : {}),
       }}
     >
       <CohortBuilder

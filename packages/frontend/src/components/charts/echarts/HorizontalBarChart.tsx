@@ -3,6 +3,9 @@ import { processLabel, truncateString } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramData, HistogramDataArray } from '@gen3/core';
+import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { isArray } from 'lodash';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface BarChartData {
   data: number[];
@@ -51,51 +54,70 @@ const processChartData = (
   return results;
 };
 
-const HorizontalBarChart = ({ data, valueType, total }: ChartProps) => {
+const HorizontalBarChart = ({
+  data,
+  valueType,
+  total,
+  showLegendInChart = true,
+}: ChartProps) => {
   const chartData = processChartData(data, valueType, total);
 
-  const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
-    return {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          // Use axis to trigger tooltip
-          type: 'shadow', // 'shadow' as default; can also be 'line' or 'shadow'
-        },
-      },
-      legend: {
-        orient: 'vertical',
-        left: '73%',
-        type: 'scroll',
-        right: 15,
-      },
-      grid: {
-        left: '0%',
-        right: '30%',
-        bottom: '25%',
-        containLabel: true,
-        height: '50%',
-      },
-      xAxis: {
-        type: 'value',
-        max: 'dataMax',
-        axisLine: {
-          lineStyle: {
-            color: '--mantine-color-base-9',
+  const chartDefinition =
+    useDeepCompareMemo((): ReactEChartsProps['option'] => {
+      return {
+        tooltip: {
+          trigger: 'item',
+          confine: true,
+          formatter: function (param) {
+            const p: CallbackDataParams =
+              isArray(param) && param.length > 0
+                ? param[0]
+                : (param as CallbackDataParams);
+
+            const colorSquare = `<span style="display:inline-block; width:10px; height:10px; background-color:${p.color}; margin-right:5px;"></span>`;
+            return `${colorSquare}${p.seriesName}: <b>${p.value}</b>`;
           },
         },
-      },
-      yAxis: {
-        type: 'category',
-        data: [''],
-      },
-      series: chartData,
-    };
-  }, [chartData]);
+        legend: {
+          orient: 'vertical',
+          left: '73%',
+          type: 'scroll',
+          right: 15,
+          show: showLegendInChart,
+        },
+        grid: {
+          left: '0%',
+          right: showLegendInChart ? '30%' : '3%',
+          bottom: '25%',
+          containLabel: true,
+          height: '50%',
+        },
+        xAxis: {
+          type: 'value',
+          max: 'dataMax',
+          axisLine: {
+            lineStyle: {
+              color: '--mantine-color-base-9',
+            },
+          },
+        },
+        yAxis: {
+          type: 'category',
+          data: [''],
+        },
+        series: chartData,
+      };
+    }, [chartData, showLegendInChart]);
 
   return (
     <div className="w-full h-64">
-      <ReactECharts option={chartDefinition} />
+      <ReactECharts
+        option={chartDefinition}
+        settings={{
+          notMerge: true,
+          lazyUpdate: false,
+        }}
+      />
     </div>
   );
 };
