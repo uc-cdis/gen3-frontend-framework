@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
   AggregationsData,
+  CoreState,
   JSONObject,
   MetadataPaginationParams,
   selectAuthzMappingData,
@@ -30,7 +31,6 @@ import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
-import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -158,7 +158,7 @@ const useGetMDSData = ({
         [],
       );
 
-      if (discoveryConfig?.features?.authorization.enabled) {
+      if (discoveryConfig?.features?.authorization?.enabled) {
         setMDSData(
           processAuthorizations(studyData, discoveryConfig, {
             default: authMapping,
