@@ -16,7 +16,7 @@ const AnalysisPage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Analysis Center',
         content: 'Analysis Center',
         key: 'gen3-analysis-center',

@@ -103,10 +103,10 @@ data:
   annotations-risk-level: Critical
 ```
 
-write the config and exit: It will reload and allow snippets used 
-by running 
+write the config and exit: It will reload and allow snippets used
+by running
 ```bash
- kubectl apply -f ingress-local-dev.yaml       
+ :qingress-local-dev.yaml
 ```
 or use in the alternate config below:
 

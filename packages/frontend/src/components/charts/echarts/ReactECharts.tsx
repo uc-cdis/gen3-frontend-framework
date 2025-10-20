@@ -32,7 +32,7 @@ const ReactECharts = ({
   }, [theme]);
 
   useDeepCompareEffect(() => {
-    // Update chart
+    // Update chart if theme, options, or settings change
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
       chart?.setOption(option, settings);

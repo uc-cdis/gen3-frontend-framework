@@ -8,12 +8,13 @@ import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
-import ChartsPanel from './Charts/ChartsPanel';
+import { CollapsableCharts } from '../../components/charts';
 import { useLoadAllMDSData } from './DataLoaders/MDSAllLocal/DataLoader';
 import { AdvancedSearchTerms, SearchCombination } from './Search/types';
 import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
+import StudyProvider from '../Study/StudyProvider';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -96,8 +97,6 @@ const DiscoveryIndexPanel = ({
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  console.log('selectedRecords', selectedRecords);
-
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
@@ -121,97 +120,101 @@ const DiscoveryIndexPanel = ({
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
-        <div className="w-full">
-          {discoveryConfig.features?.pageTitle &&
-          discoveryConfig?.features?.pageTitle.enabled ? (
-            <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
-          ) : null}
-          {discoveryConfig.features?.chartsSection?.enabled && (
-            <ChartsPanel
-              config={discoveryConfig.features?.chartsSection}
-              data={chartData}
-            />
-          )}
-          <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
-            {indexSelector}
-            <SummaryStatisticPanel summaries={summaryStatistics} />
-            <div className="w-3/4 flex flex-col">
-              <SearchInputWithSuggestions
-                suggestions={suggestions}
-                clearSearch={() => {
-                  setSearchBarTerm([]);
-                }}
-                searchChanged={(v) => setSearchBarTerm(v.split(' '))}
-                placeholder={
-                  discoveryConfig?.features?.search?.searchBar?.placeholder ??
-                  'Search...'
-                }
-                label={
-                  discoveryConfig?.features?.search?.searchBar?.inputSubtitle
-                }
+        <StudyProvider>
+          <div className="w-full">
+            {discoveryConfig.features?.pageTitle &&
+            discoveryConfig?.features?.pageTitle.enabled ? (
+              <Text size="xl">{discoveryConfig?.features?.pageTitle.text}</Text>
+            ) : null}
+            {discoveryConfig.features?.chartsSection?.enabled && (
+              <CollapsableCharts
+                config={discoveryConfig.features?.chartsSection}
+                data={chartData}
+                isSuccess={dataRequestStatus.isSuccess}
               />
-            </div>
-          </div>
-          {discoveryConfig?.features?.aiSearch && (
-            <div className="mb-4">
-              <div className="flex w-full bg-base-max p-4 rounded-lg">
-                <AiSearch />
+            )}
+            <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
+              {indexSelector}
+              <SummaryStatisticPanel summaries={summaryStatistics} />
+              <div className="w-3/4 flex flex-col">
+                <SearchInputWithSuggestions
+                  suggestions={suggestions}
+                  clearSearch={() => {
+                    setSearchBarTerm([]);
+                  }}
+                  searchChanged={(v) => setSearchBarTerm(v.split(' '))}
+                  placeholder={
+                    discoveryConfig?.features?.search?.searchBar?.placeholder ??
+                    'Search...'
+                  }
+                  label={
+                    discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                  }
+                />
               </div>
             </div>
-          )}
-          <div className="flex flex-row">
-            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
-              <Button onClick={toggleAdvancedSearch} color="accent">
-                Filters
-              </Button>
-            ) : (
-              false
+            {discoveryConfig?.features?.aiSearch && (
+              <div className="mb-4">
+                <div className="flex w-full bg-base-max p-4 rounded-lg">
+                  <AiSearch />
+                </div>
+              </div>
             )}
-            {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
-              <ActionBar
-                buttons={discoveryConfig.features.exportFromDiscovery.buttons}
-                exportDataFields={
-                  discoveryConfig.features.exportFromDiscovery.exportDataFields
-                }
-                selectedResources={selectedRecords}
-                verifyExternalLogins={
-                  discoveryConfig.features.exportFromDiscovery
-                    .verifyExternalLogins
-                }
-                dataLibraryStoreMode={
-                  discoveryConfig.features.exportFromDiscovery
-                    .dataLibraryStoreMode
-                }
-              />
-            ) : null}
-          </div>
-          <div className="flex justify-start">
-            {discoveryConfig?.features?.advSearchFilters?.enabled ? (
-              <AdvancedSearchPanel
-                advSearchFilters={advancedSearchFilterValues}
-                opened={showAdvancedSearch}
-                setAdvancedSearchFilters={setAdvancedSearchTerms}
-              />
-            ) : (
-              false
-            )}
-            <div
-              className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
-              ref={parentDivRef}
-            >
-              <DiscoveryTable
-                data={data}
-                hits={hits}
-                dataRequestStatus={dataRequestStatus}
-                setPagination={setPagination}
-                setSorting={setSorting}
-                setSelection={setSelections}
-                pagination={pagination}
-                sorting={sorting}
-              />
+            <div className="flex flex-row">
+              {discoveryConfig?.features?.advSearchFilters?.enabled ? (
+                <Button onClick={toggleAdvancedSearch} color="accent">
+                  Filters
+                </Button>
+              ) : (
+                false
+              )}
+              {discoveryConfig?.features?.exportFromDiscovery?.enabled ? (
+                <ActionBar
+                  buttons={discoveryConfig.features.exportFromDiscovery.buttons}
+                  exportDataFields={
+                    discoveryConfig.features.exportFromDiscovery
+                      .exportDataFields
+                  }
+                  selectedResources={selectedRecords}
+                  verifyExternalLogins={
+                    discoveryConfig.features.exportFromDiscovery
+                      .verifyExternalLogins
+                  }
+                  dataLibraryStoreMode={
+                    discoveryConfig.features.exportFromDiscovery
+                      .dataLibraryStoreMode
+                  }
+                />
+              ) : null}
+            </div>
+            <div className="flex justify-start">
+              {discoveryConfig?.features?.advSearchFilters?.enabled ? (
+                <AdvancedSearchPanel
+                  advSearchFilters={advancedSearchFilterValues}
+                  opened={showAdvancedSearch}
+                  setAdvancedSearchFilters={setAdvancedSearchTerms}
+                />
+              ) : (
+                false
+              )}
+              <div
+                className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+                ref={parentDivRef}
+              >
+                <DiscoveryTable
+                  data={data}
+                  hits={hits}
+                  dataRequestStatus={dataRequestStatus}
+                  setPagination={setPagination}
+                  setSorting={setSorting}
+                  setSelection={setSelections}
+                  pagination={pagination}
+                  sorting={sorting}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </StudyProvider>
       </DiscoveryProvider>
     </div>
   );

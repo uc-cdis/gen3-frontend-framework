@@ -1,7 +1,6 @@
-import React from 'react';
-import { FacetDefinition } from '@gen3/core';
+import React, { ReactElement } from 'react';
 import EnumFacetPanel, { EnumFacetPanelDataHooks } from './EnumFacetPanel';
-import { ReactElement } from 'react';
+import { FacetDefinition } from '@gen3/core';
 
 export const createFacetPanel = (
   facet: FacetDefinition,

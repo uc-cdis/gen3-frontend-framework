@@ -11,10 +11,13 @@ const WorkspacePage = ({
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Workspace Page',
         content: 'Workspace page',
         key: 'gen3-workspace-page',
+        ...(workspaceProps?.headerMetadata
+          ? workspaceProps.headerMetadata
+          : {}),
       }}
     >
       <Workspace config={workspaceProps} />

@@ -1,13 +1,16 @@
-import { isObject, isString, isNotDefined, isArray } from './ts-utils';
+import { isArray, isNotDefined, isObject, isString } from './ts-utils';
 import { prepareUrl } from './url';
 import {
-  HTTPErrorMessages,
-  HttpMethod,
-  HTTPError,
   fetchFencePresignedURL,
   fetchJSONDataFromURL,
+  HTTPError,
+  HTTPErrorMessages,
+  HttpMethod,
 } from './fetch';
 import { getCurrentTimestamp, isTimeGreaterThan } from './time';
+import { ExtractValueFromObject } from './extractvalues';
+
+export * from './conversions';
 
 export {
   isObject,
@@ -22,4 +25,6 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
+  ExtractValueFromObject,
 };
+export { getTimestamp } from './time';

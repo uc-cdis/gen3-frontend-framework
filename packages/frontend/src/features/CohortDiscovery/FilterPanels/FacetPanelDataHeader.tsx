@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox, Group, Text } from '@mantine/core';
+import { Group, Text } from '@mantine/core';
 
 interface FacetPanelDataHeaderProps {
   label: string;

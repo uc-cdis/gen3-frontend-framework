@@ -1,0 +1,156 @@
+import useSWR from 'swr';
+import {
+  Accessibility,
+  AggregationsData,
+  buildGetAggregationQuery,
+  CoreState,
+  FilterSet,
+  GEN3_GUPPY_API,
+  GraphQLQuery,
+  GuppyAggregationsResponse,
+  processHistogramResponse,
+  roundHistogramResponse,
+  selectCSRFToken,
+  useCoreSelector,
+} from '@gen3/core';
+import { getCookie } from 'cookies-next';
+import { GEN3_COHORT_DISCOVERY_API } from './constants';
+
+interface ErrorDetails {
+  status: string;
+  message: string;
+  error: ErrorDetails | null;
+}
+
+export const useGraphQLData = <TResponse = unknown, TBody = unknown>(
+  url: string,
+  body: TBody,
+  skip?: boolean,
+) => {
+  // Create a fetcher function that handles the GraphQL POST request
+
+  const csrfToken = useCoreSelector((state: CoreState) =>
+    selectCSRFToken(state),
+  );
+
+  const fetcher = async (fetchUrl: string, fetchBody: TBody) => {
+    const headers = new Headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken ?? '',
+    });
+    if (process.env.NODE_ENV === 'development') {
+      // NOTE: This cookie can only be accessed from the client side
+      // in development mode. Otherwise, the cookie is set as httpOnly
+      const accessToken = getCookie('credentials_token');
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+    }
+
+    const response = await fetch(fetchUrl, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(fetchBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  };
+
+  // Use SWR with the fetcher
+  const { data, error, isLoading, mutate } = useSWR<TResponse, Error>(
+    !skip ? [url, body] : null,
+    ([fetchUrl, fetchBody]) => fetcher(fetchUrl, fetchBody as TBody),
+    {
+      revalidateOnFocus: false, // Disable auto revalidation on window focus
+      // Add any other SWR options you need here
+    },
+  );
+
+  // Format error to match your ErrorDetails interface
+  const formattedError = error
+    ? ({
+        status: error.message.match(/\d+/)?.[0] || 'Unknown',
+        message: error.message,
+      } as ErrorDetails)
+    : null;
+
+  return {
+    data,
+    isLoading,
+    isSuccess: !!data && !error,
+    isError: !!error,
+    error: formattedError,
+    mutate, // Allow manual revalidation if needed
+  };
+};
+
+interface QueryAggsParams {
+  type: string;
+  fields: ReadonlyArray<string>;
+  filters: FilterSet;
+  accessibility?: Accessibility;
+}
+
+interface QueryOptions {
+  skip?: boolean;
+}
+
+export const useRoundedAggsQuery = (
+  { type, fields, filters, accessibility = Accessibility.ALL }: QueryAggsParams,
+  { skip }: QueryOptions = { skip: false },
+) => {
+  const response = useGraphQLData<
+    { data: GuppyAggregationsResponse },
+    GraphQLQuery
+  >(
+    GEN3_COHORT_DISCOVERY_API,
+    buildGetAggregationQuery(type, fields, filters, accessibility, false),
+    skip,
+  );
+
+  return {
+    ...response,
+    data: response?.data?.data
+      ? processHistogramResponse(response?.data.data?._aggregation[type] ?? {})
+      : {},
+  };
+};
+
+const COHORT_DISCOVERY_LIMIT = process.env
+  .NEXT_PUBLIC_GEN3_COHORT_DISCOVERY_LIMIT
+  ? Number(process.env.NEXT_PUBLIC_GEN3_COHORT_DISCOVERY_LIMIT)
+  : 100;
+
+export const useUnsecureRoundedAggsQuery = (
+  { type, fields, filters, accessibility = Accessibility.ALL }: QueryAggsParams,
+  { skip }: QueryOptions = { skip: false },
+) => {
+  const response = useGraphQLData<
+    { data: GuppyAggregationsResponse },
+    GraphQLQuery
+  >(
+    `${GEN3_GUPPY_API}/graphql`,
+    buildGetAggregationQuery(type, fields, filters, accessibility, false),
+    skip,
+  );
+
+  return {
+    ...response,
+    data: response?.data?.data
+      ? processHistogramResponse<AggregationsData>(
+          roundHistogramResponse(
+            response?.data?.data._aggregation[type] as unknown as Record<
+              string,
+              unknown
+            >,
+            COHORT_DISCOVERY_LIMIT,
+          ),
+        )
+      : {},
+  };
+};

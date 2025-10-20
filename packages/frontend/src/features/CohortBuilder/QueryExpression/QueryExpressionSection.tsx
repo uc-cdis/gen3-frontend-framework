@@ -1,19 +1,19 @@
-import React, { useContext, useState, useReducer, useRef } from 'react';
+import React, { useContext, useReducer, useRef, useState } from 'react';
 import { Button, Tooltip } from '@mantine/core';
-import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect } from 'use-deep-compare';
 import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowUp as UpArrowIcon,
 } from 'react-icons/md';
-import { Icon } from '@iconify/react';
+import { Icon } from '@iconify-icon/react';
 import tw from 'tailwind-styled-components';
 import { omit } from 'lodash';
 import { FilterSet, Operation } from '@gen3/core';
 import OverflowTooltippedLabel from '../../../components/OverflowTooltippedLabel';
 import { convertFilterToComponent } from './QueryRepresentation';
 import {
-  QueryExpressionsExpandedContext,
   CollapsedStateReducerAction,
+  QueryExpressionsExpandedContext,
 } from './QueryExpressionsExpandedContext';
 
 import { QueryExpressionContext } from './QueryExpressionContext';
@@ -125,7 +125,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   index,
   showImportExport = false,
   displayOnly = false,
-  showTitle = false,
+  showTitle = true,
 }: Readonly<QueryExpressionSectionProps>) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
@@ -151,20 +151,21 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const clearAllFilters = () => {
     clearCohortFilters(index);
-    setExpandedState({
-      type: 'clear',
-      cohortId: cohortId,
-      field: 'unset',
-    });
+    if (cohortId)
+      setExpandedState({
+        type: 'clear',
+        cohortId: cohortId,
+        field: 'unset',
+      });
   };
   const allQueryExpressionsCollapsed = Object.values(
-    expandedState?.[cohortId] || {},
+    (cohortId && expandedState?.[cohortId]) || {},
   ).every((q) => !q);
 
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
   useDeepCompareEffect(() => {
-    if (expandedState?.[cohortId] === undefined) {
+    if (cohortId && expandedState?.[cohortId] === undefined) {
       setExpandedState({
         type: 'init',
         cohortId: cohortId,
@@ -176,7 +177,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   return (
     <QueryExpressionContainer>
       <QueryExpressionsExpandedContext.Provider
-        value={[expandedState[cohortId], setExpandedState]}
+        value={[cohortId ? expandedState[cohortId] : {}, setExpandedState]}
       >
         <div className="flex flex-col w-full bg-primary-lighter">
           <div
@@ -220,17 +221,20 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   <Button
                     data-testid="button-expand-collapse-cohort-queries"
                     color="white"
-                    onClick={() =>
-                      allQueryExpressionsCollapsed
-                        ? setExpandedState({
+                    onClick={() => {
+                      if (cohortId) {
+                        if (allQueryExpressionsCollapsed)
+                          setExpandedState({
                             type: 'expandAll',
                             cohortId: cohortId,
-                          })
-                        : setExpandedState({
+                          });
+                        else
+                          setExpandedState({
                             type: 'collapseAll',
                             cohortId: cohortId,
-                          })
-                    }
+                          });
+                      }
+                    }}
                     aria-label="Expand/collapse all queries"
                     aria-expanded={!allQueryExpressionsCollapsed}
                     className={getCombinedClassesExpandCollapseQuery(

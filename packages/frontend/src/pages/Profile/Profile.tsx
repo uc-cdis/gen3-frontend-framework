@@ -11,10 +11,11 @@ const ProfilePage = ({ headerProps, footerProps, profileConfig }: Props) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Profile Page',
         content: 'Profile page',
         key: 'gen3-profile-page',
+        ...(profileConfig?.headerMetadata ? profileConfig.headerMetadata : {}),
       }}
     >
       <Profile profileConfig={profileConfig} />

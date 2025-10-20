@@ -1,21 +1,20 @@
 import React from 'react';
 import { GetStaticProps } from 'next';
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
 import { FaExternalLinkAlt } from 'react-icons/fa';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 const AboutUsPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   const { basePath } = useRouter();
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 About Us Page',
         content: ' About Us Page',
         key: 'gen3-about-us-page',

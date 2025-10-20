@@ -9,16 +9,12 @@ interface Props extends NavPageLayoutProps {
   analysisFile?: any;
 }
 
-const AnalysisEditorPage = ({
-  headerProps,
-  footerProps,
-  analysisFile,
-}: Props) => {
+const AnalysisEditorPage = ({ headerProps, footerProps }: Props) => {
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerProps={headerProps}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3 Analysis Editor Page',
         content: 'Analysis Editor page',
         key: 'gen3-analysis-editor-page',

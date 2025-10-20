@@ -8,7 +8,7 @@ import CredentialsLogin from './CredentialsLogin';
 import TextContent from '../Content/TextContent';
 import { LoginConfig } from './types';
 import { GEN3_REDIRECT_URL } from '@gen3/core';
-import { isArray } from 'lodash';
+import { appendParameterToUrl } from './utils';
 
 const filterRedirect = (redirect: string | string[] | undefined) => {
   let redirectPath = '';
@@ -17,9 +17,17 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
   } else {
     redirectPath = redirect ?? '/';
   }
-  return GEN3_REDIRECT_URL
-    ? `${GEN3_REDIRECT_URL}/${redirectPath}`
-    : redirectPath;
+
+  if (!GEN3_REDIRECT_URL) {
+    return redirectPath;
+  }
+
+  // Remove trailing slash from base URL and leading slash from path
+  const baseUrl = GEN3_REDIRECT_URL.replace(/\/+$/, '');
+  const cleanPath = redirectPath.replace(/^\/+/, '');
+
+  // Join with a single slash, ensuring we don't create double slashes
+  return cleanPath ? `${baseUrl}/${cleanPath}` : baseUrl;
 };
 
 const LoginPanel = (loginConfig: LoginConfig) => {
@@ -27,13 +35,17 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
   const router = useRouter();
   const {
-    query: { referer },
+    query: { referer: refererQuery, redirect: redirectQuery },
   } = router;
+
+  const referer = redirectQuery || refererQuery; // either referer or redirect query param
 
   const handleFenceLoginSelected = useCallback(
     async (loginURL: string) => {
       router
-        .push(`${loginURL}?redirect=${filterRedirect(referer)}`)
+        .push(
+          `${appendParameterToUrl(loginURL, 'redirect', filterRedirect(referer))}`,
+        )
         .catch((e) => {
           showNotification({
             title: 'Login Error',
@@ -45,7 +57,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
   );
 
   const handleCredentialsLogin = useCallback(async () => {
-    const redirect = !referer ? '/' : isArray(referer) ? referer[0] : referer;
+    const redirect = filterRedirect(referer);
     router.push(redirect).catch((e) => {
       showNotification({
         title: 'Login Error',

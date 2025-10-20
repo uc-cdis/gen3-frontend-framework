@@ -24,13 +24,13 @@ export interface QueryExpressionHooks {
 export interface QueryExpressionContextProps extends QueryExpressionHooks {
   displayOnly: boolean;
   cohortName: string;
-  cohortId: string;
+  cohortId: string | null;
 }
 
 export const QueryExpressionContext =
   React.createContext<QueryExpressionContextProps>({
     displayOnly: false,
-    cohortId: 'default',
+    cohortId: null,
     cohortName: 'default',
     useClearCohortFilters: () => {
       const dispatch = useCoreDispatch();

@@ -1,12 +1,7 @@
 import { JSONPath } from 'jsonpath-plus';
+import { JSONObject, JSONValue } from '../types';
 
 type JsonPathMapping = { [key: string]: string };
-
-export interface JSONObject {
-  [k: string]: JSONValue;
-}
-
-export type JSONValue = string | number | boolean | JSONValue[] | JSONObject;
 
 export const extractValuesFromObject = (
   jsonPathMappings: JsonPathMapping,
@@ -24,10 +19,18 @@ export const extractValuesFromObject = (
 
   for (const key in jsonPathMappings) {
     if (key in Object.keys(jsonPathMappings)) {
-      // Extract value from object and store it in the result.
+      // Extract value from an object and store it in the result.
       result[key] = extractObjectValue(jsonPathMappings[key], obj);
     }
   }
 
   return result;
+};
+
+export const ExtractValueFromObject = <T = any>(
+  obj: Record<string, T> | null | undefined,
+  key: string,
+  valueIfNotFound: T,
+): T => {
+  return obj?.[key] ?? valueIfNotFound;
 };

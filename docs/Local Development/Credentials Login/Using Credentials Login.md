@@ -18,19 +18,6 @@ To use them, you need to first create credentials from a commos: For example  ht
 
 Save the credentials file, for this example let call it `brh.data-commons.org.json`
 
-Next we need to configure the sampleCommons to use BRH's API:
-
-1. edit `packages/sampleCommons/.env.development` so it looks like:
-
-```
-GEN3_COMMONS_NAME=brh
-NEXT_PUBLIC_GEN3_API=https://brh.data-commons.org
-NEXT_PUBLIC_GEN3_DOMAIN=https://localhost:3010
-#NEXT_PUBLIC_GEN3_MDS_API=https://brh.data-commons.org/mds
-#NEXT_PUBLIC_GEN3_AI_SEARCH_API=http://localhost:8089
-#NEXT_PUBLIC_GEN3_GUPPY_API=https://localhost:3010/guppy
-```
-
 Note: the branch `feat/creditials_login`  should have this already in the .env file.
 
 2. Run the app: `npm run dev` from the source root

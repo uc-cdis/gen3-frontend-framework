@@ -1,18 +1,17 @@
 import React from 'react';
 import { GetStaticProps } from 'next';
-import NavPageLayout, {
-  NavPageLayoutProps,
-} from '../../features/Navigation/NavPageLayout';
+import NavPageLayout from '../../features/Navigation/NavPageLayout';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import Link from 'next/link';
 import { Text } from '@mantine/core';
 import { FaEnvelope, FaExternalLinkAlt } from 'react-icons/fa';
+import { NavPageLayoutProps } from '../../features/Navigation';
 
 const ContactPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
   return (
     <NavPageLayout
       {...{ footerProps, headerProps }}
-      headerData={{
+      headerMetadata={{
         title: 'Gen3Contact Page',
         content: 'Contact Page',
         key: 'gen3-contact-page',

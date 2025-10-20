@@ -6,12 +6,18 @@ import {
 import {
   useGetAuthzMappingsQuery,
   useLazyGetAuthzMappingsQuery,
+  useCreateAuthzResourceMutation,
+  useGetAuthzResourcesQuery,
+  useLazyGetAuthzResourcesQuery,
   selectAuthzMappingData,
 } from './authzMappingSlice';
 
 export {
   useGetAuthzMappingsQuery,
   useLazyGetAuthzMappingsQuery,
+  useCreateAuthzResourceMutation,
+  useGetAuthzResourcesQuery,
+  useLazyGetAuthzResourcesQuery,
   selectAuthzMappingData,
   type ServiceAndMethod,
   type AuthzMapping,

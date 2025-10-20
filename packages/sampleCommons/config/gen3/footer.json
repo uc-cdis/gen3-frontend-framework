@@ -1,6 +1,6 @@
 {
   "classNames": {
-    "root": "bg-base-darker",
+    "root": "bg-base-min",
     "layout": "flex items-center justify-end"
   },
   "rightSection": {
@@ -12,7 +12,8 @@
               "logo": "/icons/gen3.png",
               "width": 132,
               "height": 60,
-              "description": "Gen3 Logo"
+              "description": "Gen3",
+              "href": "https://gen3.org"
             }
           }
         ]
