@@ -134,7 +134,7 @@ export const isFilterSet = (input: any): input is FilterSet => {
  * @param o - operator to check
  * @category Filters
  */
-export const isIncludes = (o: Operation): o is Includes =>
+export const isIncludes = (o: unknown): o is Includes =>
   (o as Includes).operator === 'includes' || (o as Includes).operator === 'in';
 
 export const isUnion = (value: unknown): value is Union => {
