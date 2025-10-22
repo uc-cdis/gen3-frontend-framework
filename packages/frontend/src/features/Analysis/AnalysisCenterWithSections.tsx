@@ -59,7 +59,7 @@ const AnalysisCenterWithSections: React.FC<
               classNames={{ root: sectionClassnames['divider'] }}
             />
             <div
-              className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-start`}
+              className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-start items-stretch`}
             >
               {section.tools.map((tool, idx) => {
                 if (section.core) {

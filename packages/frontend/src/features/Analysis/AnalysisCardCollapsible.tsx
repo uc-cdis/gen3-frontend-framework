@@ -1,22 +1,25 @@
-import React from "react";
-import { Divider } from "@mantine/core";
-import { Button, Card, Loader, Tooltip, Image } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
+import React from 'react';
+import { Button, Card, Divider, Image, Loader, Tooltip } from '@mantine/core';
+import { useElementSize } from '@mantine/hooks';
 import {
   MdArrowDropDown as ArrowDropDownIcon,
   MdInfo as InfoIcon,
-  MdPlayArrow as PlayIcon,
   MdKeyboardArrowUp as UpArrowIcon,
-} from "react-icons/md";
+  MdPlayArrow as PlayIcon,
+} from 'react-icons/md';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { AnalysisToolConfiguration } from "./types";
+import { AnalysisToolConfiguration } from './types';
 
-type AnalysisCardCollapsibleProps = AnalysisToolConfiguration &  {
+type AnalysisCardCollapsibleProps = AnalysisToolConfiguration & {
   readonly descriptionVisible: boolean;
   readonly setDescriptionVisible: () => void;
-  readonly useCountHook: () => { data: number, isSuccess: boolean, isFetching: boolean };
-}
+  readonly useCountHook: () => {
+    data: number;
+    isSuccess: boolean;
+    isFetching: boolean;
+  };
+};
 
 const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
   descriptionVisible,
@@ -42,7 +45,7 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
       data-testid={`${title}-tool`}
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
-        inactive ? "" : "border-t-6"
+        inactive ? '' : 'border-t-6'
       }
      `}
       aria-label={`${title} Tool`}
@@ -50,16 +53,16 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
       {inactive && <div className="h-1" />}
       <div className="flex justify-between mb-1">
-          <Image
-            component={NextImage}
-            src={`${icon}`}
-            alt={`${title} logo`}
-            width={48}
-            height={48}
-            w={48}
-            h={48}
-          />
-         <div className="flex flex-col">
+        <Image
+          component={NextImage}
+          src={`${icon}`}
+          alt={`${title} logo`}
+          width={48}
+          height={48}
+          w={48}
+          h={48}
+        />
+        <div className="flex flex-col">
           <Link
             href={{
               pathname: href,
@@ -79,7 +82,7 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
             focus:border-secondary-dark
             mb-1
             w-[50px]
-            ${inactive ? "opacity-50 pointer-events-none" : ""}
+            ${inactive ? 'opacity-50 pointer-events-none' : ''}
             rounded
             h-5
           `}
@@ -126,7 +129,7 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
           ) : null}
         </div>
       </div>
-      <Divider variant="dotted" aria-hidden="true" />
+      <Divider variant="dotted" aria-hidden="true" color="accent.4" />
       <div className="flex flex-col items-center text-xs">
         <Button
           data-testid="select-description-tool"
@@ -141,8 +144,8 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
             )
           }
           classNames={{
-            root: "text-secondary-darkest font-bold bg-transparent",
-            section: "ml-0",
+            root: 'text-secondary-darkest font-bold bg-transparent',
+            section: 'ml-0',
           }}
           aria-expanded={descriptionVisible}
         >
@@ -151,12 +154,12 @@ const AnalysisCardCollapsible: React.FC<AnalysisCardCollapsibleProps> = ({
         <div
           data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className="transition-[height] duration-300 bg-primary-lightest overflow-hidden w-full mb-1"
+          className="transition-[height] duration-300 bg-accent-lightest overflow-hidden w-full mb-1"
           aria-hidden={!descriptionVisible}
         >
           <div
             className={`${
-              descriptionVisible ? "opacity-100" : "opacity-0"
+              descriptionVisible ? 'opacity-100' : 'opacity-0'
             } transition-opacity`}
             ref={descRef}
           >
