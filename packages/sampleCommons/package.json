@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.11.46",
+  "version": "0.11.48",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -33,15 +33,13 @@
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^15.5.3",
-    "cookies-next": "^4.3.0",
     "file-system-db": "^2.1.0",
-    "jose": "^4.15.9",
+    "jose": "^6.1.0",
     "jsonpath-plus": "^10.3.0",
     "mantine-react-table": "^2.0.0-beta.9",
     "next": "^15.5.3",
     "react": "^18.3.1",
     "react-dom": "18.3.1",
-    "sharp": "^0.33.5",
     "swr": "^2.2.5",
     "validator": "^13.15.15"
   },

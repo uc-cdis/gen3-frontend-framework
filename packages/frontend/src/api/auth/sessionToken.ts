@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getCookie } from 'cookies-next';
+import { parse } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
 import { fetchJWTKey } from './utils';
 import { getWebTokenErrorResponse } from './errorHandler';
@@ -20,7 +20,9 @@ export default async function handler(
   res: NextApiResponse,
 ): Promise<void> {
   try {
-    const access_token = getCookie('access_token', { req, res });
+    const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
+    const access_token = cookies.access_token;
+
     if (access_token) {
       const jwtKey = await fetchJWTKey();
       if (!jwtKey) {
