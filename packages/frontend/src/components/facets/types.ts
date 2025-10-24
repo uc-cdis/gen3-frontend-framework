@@ -123,15 +123,22 @@ export interface EnumFacetDataHooks extends FacetDataHooks {
   useUpdateCombineMode: SetFacetCombineModeFunction;
 }
 
-export interface RangeFacetHooks extends FacetCommonHooks {
+export interface RangeFacetDataHooks extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
 }
 
-export interface UploadFacetHooks extends FacetCommonHooks {
+export interface ToggleFacetDataHooks extends FacetCommonHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetData: GetFacetDataFunction;
+  useGetFacetFilters: SelectFacetFilterFunction;
+  useTotalCounts?: GetTotalCountsFunction;
+}
+
+export interface UploadFacetDataHooks extends FacetCommonHooks {
   /**
-  * Hook that returns a list of the uploaded items
-  */
+   * Hook that returns a list of the uploaded items
+   */
   useFilterItems: (field: string) => {
     noData: boolean;
     items: EnumOperandValue;
@@ -265,7 +272,10 @@ export interface CohortBuilderCategoryConfig {
   readonly facets: ReadonlyArray<string>;
   readonly queryOptions?: QueryOptions;
 }
-export type FacetRequiredHooks = EnumFacetDataHooks | RangeFacetHooks | UploadFacetHooks;
+export type FacetRequiredHooks =
+  | EnumFacetDataHooks
+  | RangeFacetDataHooks
+  | UploadFacetDataHooks;
 
 export interface EnumChartProps {
   readonly field: string;

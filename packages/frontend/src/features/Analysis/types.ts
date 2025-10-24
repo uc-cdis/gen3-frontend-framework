@@ -24,6 +24,7 @@ export interface AnalysisToolConfiguration {
   cardType?: 'regular' | 'compact';
   btnText?: string;
   tags?: Array<string>;
+  readonly leftComponent?: React.FC;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
 }

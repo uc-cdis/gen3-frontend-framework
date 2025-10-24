@@ -1,7 +1,13 @@
 import React from 'react';
-import { EnumChartProps, FacetDataHooks, QueryOptions } from './types';
+import {
+  EnumChartProps,
+  FacetDataHooks,
+  QueryOptions,
+  ToggleFacetDataHooks,
+} from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
+import ToggleFacet from './ToggleFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 import { FacetDefinition } from '@gen3/core';
@@ -106,6 +112,20 @@ export const createFacetCard = ({
               field={field}
               valueLabel={valueTypeLabel}
               hooks={dataFunctions as any}
+            />
+          ),
+          toggle: (
+            <ToggleFacet
+              key={`${idPrefix}-toggle-${field}`}
+              field={field}
+              valueLabel={valueTypeLabel}
+              hideIfEmpty={hideIfEmpty}
+              showPercent={showPercent}
+              hooks={{
+                ...(dataFunctions as ToggleFacetDataHooks),
+              }}
+              facetName={facetLabel}
+              description={description}
             />
           ),
         }[type as string]

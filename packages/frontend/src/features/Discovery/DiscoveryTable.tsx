@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
-  MRT_Row,
   type MRT_PaginationState,
-  type MRT_SortingState,
-  type MRT_RowSelectionState,
-  useMantineReactTable,
+  MRT_Row,
   MRT_RowData,
+  type MRT_RowSelectionState,
+  type MRT_SortingState,
+  useMantineReactTable,
 } from 'mantine-react-table';
 
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 import classes from './style/DiscoveryTable.module.css';
 
@@ -34,7 +34,6 @@ import {
   SelectableRowConfiguration,
 } from './types';
 import { LoadingOverlay } from '@mantine/core';
-import { useDeepCompareMemo } from 'use-deep-compare';
 
 const CompareFn = (
   fieldValue: string,
@@ -205,6 +204,7 @@ const DiscoveryTable = ({
     },
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
+        console.log('row.original', row.original);
         setStudyDetails(() => {
           return { ...row.original };
         });

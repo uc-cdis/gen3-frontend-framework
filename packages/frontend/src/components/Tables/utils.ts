@@ -10,7 +10,10 @@ import {
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
   // TODO: add logging if path is not found
-  return JSONPath({ json: row, path: path });
+  console.log('jsonPathAccessor', path, row);
+  const results = JSONPath({ json: row, path: path });
+  console.log('jsonPathAccessor', results);
+  return results;
 };
 
 export function downloadTSV<TData extends MRT_RowData>({

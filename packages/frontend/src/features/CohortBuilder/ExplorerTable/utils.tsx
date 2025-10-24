@@ -36,6 +36,7 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
 export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
   const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
+    console.log('createTableColumns', columnDef);
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
           columnDef?.type,
@@ -61,7 +62,8 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
               cellRendererFunc(cell, cellRendererFuncParams)
           : cellRendererFunc
             ? cellRendererFunc
-            : (cell: CellRendererFunctionProps) => RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
+            : (cell: CellRendererFunctionProps) =>
+                RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
@@ -120,7 +122,8 @@ export const createArrayTableColumns = (
           : cellRendererFunc
             ? (cell: CellRendererFunctionProps) =>
                 ArrayCellRenderer(cellRendererFunc, cell)
-            : (cell: CellRendererFunctionProps) => RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
+            : (cell: CellRendererFunctionProps) =>
+                RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,

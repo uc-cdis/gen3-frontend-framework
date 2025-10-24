@@ -58,22 +58,32 @@ const AnalysisCenterWithSections: React.FC<
               size="lg"
               classNames={{ root: sectionClassnames['divider'] }}
             />
-            <div className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-stretch`}>
+            <div
+              className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-start items-stretch`}
+            >
               {section.tools.map((tool, idx) => {
                 if (section.core) {
-                  return <AnaylsisCardCore {...tool} key={tool.title} />
+                  return <AnaylsisCardCore {...tool} key={tool.title} />;
                 } else {
                   return (
                     <div key={tool.title}>
                       <AnalysisCardCollapsible
                         {...tool}
-                        descriptionVisible={activeAnalysisCard === `${section_idx}-${idx}`}
+                        descriptionVisible={
+                          activeAnalysisCard === `${section_idx}-${idx}`
+                        }
                         setDescriptionVisible={() =>
                           setActiveAnalysisCard(
-                            `${section_idx}-${idx}` === activeAnalysisCard ? null : `${section_idx}-${idx}`,
+                            `${section_idx}-${idx}` === activeAnalysisCard
+                              ? null
+                              : `${section_idx}-${idx}`,
                           )
                         }
-                        useCountHook={() => ({ data: 1000, isFetching: false, isSuccess: true })}
+                        useCountHook={() => ({
+                          data: 1000,
+                          isFetching: false,
+                          isSuccess: true,
+                        })}
                         key={tool.title}
                       />
                     </div>

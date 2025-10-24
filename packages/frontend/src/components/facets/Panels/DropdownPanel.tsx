@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Group,
   Select,
@@ -14,14 +14,11 @@ import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
-  clearCohortFilters,
   FacetDefinition,
   FacetType,
-  selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
   setShouldShareFilters,
-  toggleCohortBuilderAllFilters,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
@@ -30,19 +27,18 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
 
 export const DropdownPanel = <T extends FacetType = FacetType>({
-  index,
   filters,
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+  allFiltersCollapsed,
+  toggleAllFiltersExpanded,
+  clearAllFilters,
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
 }: TabbablePanelProps<T>) => {
   const [value, setValue] = useState<string | null>('0');
-  const allFiltersCollapsed = useCoreSelector((state) =>
-    selectAllCohortFiltersCollapsed(state, index),
-  );
 
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
 
@@ -52,14 +48,6 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
 
   const theme = useMantineTheme();
   const coreDispatch = useCoreDispatch();
-
-  const toggleAllFiltersExpanded = (expand: boolean) => {
-    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
-  };
-
-  const clearAllFilters = useCallback(() => {
-    coreDispatch(clearCohortFilters({ index }));
-  }, [coreDispatch, index]);
 
   const items = useDeepCompareMemo(
     () =>
