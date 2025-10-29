@@ -60,7 +60,7 @@
     "@gen3/core": "^0.11.49",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
-    "@iconify-icon/react": "^3.0.0",
+    "@iconify-icon/react": "3.0.1",
     "@mantine/core": "^7.17.8",
     "@mantine/dates": "^7.17.8",
     "@mantine/form": "^7.17.8",
