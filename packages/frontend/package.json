@@ -80,7 +80,7 @@
     "colorette": "^2.0.20",
     "cookies-next": "^6.1.0",
     "default-composer": "^0.6.0",
-    "echarts": "^5.6.0",
+    "echarts": "^6.0.0",
     "fetch-retry": "^5.0.6",
     "file-saver": "^2.0.5",
     "filesize": "^10.1.1",

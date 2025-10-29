@@ -37,16 +37,21 @@ const PieChart = ({ data, label }: ChartProps) => {
       tooltip: {
         trigger: 'item',
       },
+      legend: {
+        top: '5%',
+        left: 'center',
+        height: '40%',
+        type: 'scroll',
+        orient: 'vertical',
+      },
       series: [
         {
           type: 'pie',
-          radius: '60%',
+          top: '45%',
+          radius: '80%',
           data: processChartData(data),
           label: {
-            show: label?.show !== undefined ? label.show : true,
-            fontSize: '14',
-            fontWeight: 'bold',
-            overflow: 'break',
+            show: false,
           },
         },
       ],
