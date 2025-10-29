@@ -15,7 +15,7 @@ const GraphView = ({
   dictionary,
   selectedId,
 }: GraphViewType) => {
-  const [zoomLevel, setZoomLevel] = useState(0); // TODO Start here for zoom level
+  const [zoomLevel, setZoomLevel] = useState(0);
   const dataAndLinks = formatDataForGraph(dictionary);
   console.log('GraphView dictionary', dictionary);
   console.log('GraphView categories', categories);
@@ -34,7 +34,8 @@ const GraphView = ({
       },
       toolbox: {
         show: true,
-        left: 'left',
+        left: 16,
+        top: 16,
         orient: 'vertical',
         itemSize: 30,
         iconStyle: {
@@ -82,10 +83,11 @@ const GraphView = ({
         type: 'graph',
         roam: true,
         zoom: zoomLevel,
-        label: {
+        label: { //TODO lable size stay same on zoom
           show: true,
           position: 'right',
           backgroundColor: 'white',
+          fontSize: 12,
         },
         symbol: 'circle',
         emphasis: {
@@ -104,8 +106,8 @@ const GraphView = ({
         data: dataAndLinks.data,
         links: dataAndLinks.links,
 
-        top: '10%',
-        left: '5%',
+        top: 100,
+        left: 100,
 
       }
     };
