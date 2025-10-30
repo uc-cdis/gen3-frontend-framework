@@ -169,7 +169,7 @@ const TabbedCohortBuilder = ({
     // This depends on what processRangeData expects
     return {
       data: data
-        ? processDefinedRangeData(data, ranges, index, indexPrefix)
+        ? processDefinedRangeData(data, ranges, field, index, indexPrefix)
         : {},
       isSuccess,
       isFetching,

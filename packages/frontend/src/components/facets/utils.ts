@@ -36,6 +36,7 @@ import {
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
+import { JSONPath } from 'jsonpath-plus';
 
 export const getAllFieldsFromFilterConfigs = (
   filterTabConfigs: ReadonlyArray<TabConfig>,
@@ -89,14 +90,29 @@ export const processRangeData = (
 };
 
 export const processDefinedRangeData = (
-  data: AggregationsData,
+  data: Record<string, any>,
   ranges: ReadonlyArray<NumericFromTo>,
+  field: string,
   index: string,
-  indexPrefix: string,
+  indexPrefix: string = '',
 ): Record<string, number> => {
   if (!data) return {};
 
-  console.log('data', data);
+  const valueData = JSONPath({
+    json: data,
+    path: '$..counts',
+    resultType: 'value',
+  });
+
+  const pointerData = JSONPath({
+    json: data,
+    path: '$..counts',
+    resultType: 'pointer',
+  });
+
+  console.log('valueData: ', valueData);
+  console.log('pointerData: ', pointerData);
+
   return {
     range0: 100,
   };
