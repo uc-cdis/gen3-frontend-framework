@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.11.49",
+  "version": "0.11.50",
   "private": true,
   "scripts": {
     "lint": "next lint",
