@@ -89,10 +89,14 @@ export const processRangeData = (
 };
 
 export const processDefinedRangeData = (
-  data?: AggregationsData,
-  ranges?: ReadonlyArray<NumericFromTo>,
+  data: AggregationsData,
+  ranges: ReadonlyArray<NumericFromTo>,
+  index: string,
+  indexPrefix: string,
 ): Record<string, number> => {
   if (!data) return {};
+
+  console.log('data', data);
   return {
     range0: 100,
   };

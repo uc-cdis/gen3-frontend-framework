@@ -73,10 +73,9 @@ export const buildAliasedNestedCountsQuery = ({
   type,
   field,
   rangeName,
-  prefix = '',
 }: NamedFilterRawDataParams) => {
   const dataParams = [`filter: $${rangeName}`];
-  const dataTypeLine = `${rangeName} : ${prefix}${type} (accessibility: $accessibility ${dataParams}) {`;
+  const dataTypeLine = `${rangeName} : ${type} (accessibility: $accessibility ${dataParams}) {`;
   const processedFields = rawDataQueryStrForEachField(field);
   return `${dataTypeLine} ${processedFields} }`;
 };
@@ -127,7 +126,6 @@ export const buildRangeQuery = (
       type: index,
       field,
       rangeName: rangeKey,
-      prefix: indexPrefix,
     });
     query += rangeQuery + ' \n';
   });

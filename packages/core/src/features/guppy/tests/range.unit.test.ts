@@ -185,7 +185,7 @@ range_3 : CaseCentric_case (accessibility: $accessibility filter: $range_3) { fi
 range_4 : CaseCentric_case (accessibility: $accessibility filter: $range_4) { files { data_type { histogram { count } } } }\n
 }}`),
     );
-    expect(results.variables).toEqual({
+    expect(results.filters).toEqual({
       range_0: {
         operands: [
           {

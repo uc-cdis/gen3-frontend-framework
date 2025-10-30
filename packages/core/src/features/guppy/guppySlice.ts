@@ -5,6 +5,7 @@ import {
   convertFilterSetToGqlFilter,
   convertFilterToGqlFilter,
   FilterSet,
+  GQLFilter,
   isFilterEmpty,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';

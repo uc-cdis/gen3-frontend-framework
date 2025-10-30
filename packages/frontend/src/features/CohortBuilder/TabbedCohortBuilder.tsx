@@ -155,7 +155,6 @@ const TabbedCohortBuilder = ({
     field: string,
     ranges: ReadonlyArray<NumericFromTo>,
   ) => {
-    console.log('useContinuousFacet', field, ranges);
     const { data, isSuccess, isFetching, isError } = useCustomRangeQuery({
       field,
       ranges: ranges as Array<NumericFromTo>,
@@ -169,7 +168,9 @@ const TabbedCohortBuilder = ({
     // Transform data to match the format expected by NumericRangeFacet
     // This depends on what processRangeData expects
     return {
-      data: processDefinedRangeData(data, ranges),
+      data: data
+        ? processDefinedRangeData(data, ranges, index, indexPrefix)
+        : {},
       isSuccess,
       isFetching,
       isError,
@@ -198,10 +199,6 @@ const TabbedCohortBuilder = ({
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
-      console.log(
-        'setting facet defs from tabsConfiguration: ',
-        tabsConfiguration,
-      );
       const configFacetDefs = Object.values(tabsConfiguration).reduce(
         (acc: Record<string, FacetDefinition>, tab) => {
           if (tab?.fieldsConfig) {
@@ -215,9 +212,6 @@ const TabbedCohortBuilder = ({
 
       const facetDefs = classifyFacets(data, index, undefined, configFacetDefs);
       setFacetDefinitions(facetDefs);
-
-      console.log('setting facet defs', facetDefs);
-
       // setup summary charts since nested fields can be listed by the split field name
     }
   }, [isSuccess, data, facetDefinitions, index]);

@@ -63,8 +63,6 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isCustom, setIsCustom] = useState(filterKey === 'custom'); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  console.log('ranges', ranges);
-
   const {
     data: rangeData,
     isSuccess = false,
