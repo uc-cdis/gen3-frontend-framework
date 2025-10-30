@@ -15,6 +15,7 @@ import {
   isOperationWithField,
   isOperatorWithFieldAndArrayOfOperands,
   isUnion,
+  NumericFromTo,
   Operation,
   OperatorWithFieldAndArrayOfOperands,
   selectIndexedFilterByName,
@@ -85,6 +86,26 @@ export const processRangeData = (
     },
     {} as Record<string, number>,
   );
+};
+
+export const processDefinedRangeData = (
+  data?: AggregationsData,
+  ranges?: ReadonlyArray<NumericFromTo>,
+): Record<string, number> => {
+  if (!data) return {};
+  return {
+    range0: 100,
+  };
+  //
+  // return data.reduce(
+  //   (acc: Record<string, number>, curr: HistogramData) => {
+  //     // TODO handle this better when keys are undefined
+  //     acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] =
+  //       curr.count;
+  //     return acc;
+  //   },
+  //   {} as Record<string, number>,
+  // );
 };
 
 /**
@@ -170,8 +191,9 @@ export const classifyFacets = (
             undefined,
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
-          range:
-            (facetDef.range ?? type === 'range')
+          range: facetDef?.range
+            ? { ...facetDef.range } // prefer config-defined range (if any)
+            : type === 'range' // if computed type is range use that
               ? {
                   minimum: Math.floor(Number(value[0].key[0])),
                   maximum: Math.ceil(Number(value[0].key[1])),

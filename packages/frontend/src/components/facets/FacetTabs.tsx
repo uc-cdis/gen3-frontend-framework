@@ -19,7 +19,7 @@ import {
   CohortBuilderCategoryConfig,
   CustomFacetHooks,
   EnumChartProps,
-  FacetDataHooks,
+  FacetHooks,
   QueryOptions,
 } from './types';
 import { FacetDefinition, FacetType } from '@gen3/core';
@@ -77,7 +77,7 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
-  readonly hooks?: FacetDataHooks;
+  readonly hooks?: FacetHooks;
   readonly queryOptions?: QueryOptions;
 };
 
@@ -113,7 +113,7 @@ interface CustomFacetGroupProps {
   ) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<any>;
-  hooks: Record<FacetType, FacetDataHooks>;
+  hooks: Record<FacetType, FacetHooks>;
 }
 
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
@@ -224,7 +224,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 type FacetTabProps = {
   readonly activeTab: string | null | undefined;
   readonly setActiveTab: (tab: string | null) => void;
-  hooks: Record<FacetType, FacetDataHooks>;
+  hooks: Record<FacetType, FacetHooks>;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly usedFacets: string[];

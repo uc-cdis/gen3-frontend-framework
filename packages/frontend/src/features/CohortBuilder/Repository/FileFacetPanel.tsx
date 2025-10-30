@@ -22,8 +22,7 @@ import {
 import DropdownPanel from '../../../components/facets/Panels/DropdownPanel';
 import {
   classifyFacets,
-  EnumFacetDataHooks,
-  FacetDataHooks,
+  FacetHooks,
   FieldToName,
   getAllFieldsFromFilterConfigs,
   processBucketData,
@@ -151,24 +150,23 @@ export const FileFacetPanel = ({
     [repositoryFilters.root, facetData, isFacetsQuerySuccess],
   );
 
-  const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
-    useDeepCompareMemo(() => {
-      return {
-        enum: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useGetCombineMode: partial(useCohortFilterCombineState, index),
-          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useFieldNameToTitle: useFieldNameToTitle,
-          useTotalCounts: undefined,
-          useUpdateCombineMode: () => null,
-        },
-      };
-    }, [getEnumFacetData, index]);
+  const facetDataHooks: Record<'enum', FacetHooks> = useDeepCompareMemo(() => {
+    return {
+      enum: {
+        useGetFacetData: getEnumFacetData,
+        useUpdateFacetFilters: partial(useUpdateFilters, index),
+        useGetFacetFilters: partial(useGetFacetFilters, index),
+        useClearFilter: partial(useClearFilters, index),
+        useFilterExpanded: partial(useFilterExpandedState, index),
+        useToggleExpandFilter: partial(useToggleExpandFilter, index),
+        useGetCombineMode: partial(useCohortFilterCombineState, index),
+        useSetCombineMode: partial(useSetCohortFilterCombineState, index),
+        useFieldNameToTitle: useFieldNameToTitle,
+        useTotalCounts: undefined,
+        useUpdateCombineMode: () => null,
+      },
+    };
+  }, [getEnumFacetData, index]);
 
   if (isFacetsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message

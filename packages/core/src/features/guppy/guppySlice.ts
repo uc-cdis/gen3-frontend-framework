@@ -3,11 +3,12 @@ import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import {
   convertFilterSetToGqlFilter,
+  convertFilterToGqlFilter,
   FilterSet,
   isFilterEmpty,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { SharedFieldMapping } from './types';
+import { RangeQueryRequest, SharedFieldMapping } from './types';
 
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
@@ -17,6 +18,8 @@ import {
   rawDataQueryStrForEachField,
   statsQueryStrForEachField,
 } from './queryGenerators';
+import { buildRangeQuery } from './range';
+import { convertFilterToNestedGqlFilter } from '../filters/nestedFilters';
 
 const statusEndpoint = '/_status';
 
@@ -516,6 +519,43 @@ export const explorerApi = explorerTags.injectEndpoints({
         return {};
       },
     }),
+    customRange: builder.query<AggregationsData, RangeQueryRequest>({
+      query: ({
+        field,
+        ranges,
+        rangeBaseName,
+        index,
+        indexPrefix,
+        accessibility = Accessibility.ALL,
+        isNested = true,
+      }: RangeQueryRequest) => {
+        const queryData = buildRangeQuery(
+          field,
+          ranges,
+          rangeBaseName,
+          index,
+          indexPrefix,
+          isNested,
+        );
+
+        const gqlFilters = Object.entries(queryData.filters).reduce(
+          (acc: Record<string, GQLFilter>, [key, filter]) => {
+            acc[key] = isNested
+              ? convertFilterToNestedGqlFilter(filter)
+              : convertFilterToGqlFilter(filter);
+            return acc;
+          },
+          {},
+        );
+        return {
+          query: queryData.query,
+          variables: {
+            accessibility,
+            ...gqlFilters,
+          },
+        };
+      },
+    }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
       query: ({ query, variables }) => {
         return {
@@ -626,4 +666,5 @@ export const {
   useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
+  useCustomRangeQuery,
 } = explorerApi;

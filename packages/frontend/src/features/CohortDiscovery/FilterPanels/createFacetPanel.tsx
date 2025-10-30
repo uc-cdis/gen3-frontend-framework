@@ -1,12 +1,13 @@
 import React, { ReactElement } from 'react';
-import EnumFacetPanel, { EnumFacetPanelDataHooks } from './EnumFacetPanel';
+import { EnumFacetDataHooks } from '../../../components/facets';
+import EnumFacetPanel from './EnumFacetPanel';
 import { FacetDefinition } from '@gen3/core';
 
 export const createFacetPanel = (
   facet: FacetDefinition,
   chartType: string,
   valueLabel: string,
-  hooks: EnumFacetPanelDataHooks,
+  hooks: EnumFacetDataHooks,
 ): ReactElement | null => {
   switch (facet.type) {
     case 'enum':

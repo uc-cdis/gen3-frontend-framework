@@ -4,7 +4,6 @@ import {
   NumericFromTo,
   Operation,
 } from '../filters';
-
 import { FromToRange } from '../../types';
 
 export interface Range<T> {
@@ -89,7 +88,7 @@ export const buildRangeFilters = (
   isNested: boolean = true,
 ) => {
   const filters = Object.entries(ranges).reduce(
-    (acc: Record<string, any>, [, rangeValue], idx) => {
+    (acc: Record<string, Operation>, [, rangeValue], idx) => {
       acc[`${rangeBaseName}_${idx}`] = convertNumericFromToArrayToFilters(
         field,
         rangeValue,
@@ -109,8 +108,14 @@ export const buildRangeQuery = (
   rangeBaseName: string = 'range',
   index: string = 'cases',
   indexPrefix: string = '',
+  isNested: boolean = true,
 ) => {
-  const rangeFilters = buildRangeFilters(field, ranges, rangeBaseName);
+  const rangeFilters = buildRangeFilters(
+    field,
+    ranges,
+    rangeBaseName,
+    isNested,
+  );
 
   let query = `query rangeQuery ($accessibility: Accessibility, ${Object.keys(
     rangeFilters,
@@ -131,6 +136,6 @@ export const buildRangeQuery = (
 
   return {
     query: query,
-    variables: rangeFilters as Operation,
+    filters: rangeFilters,
   };
 };
