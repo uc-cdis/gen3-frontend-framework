@@ -232,7 +232,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           // currently only supports one level of nesting
           // also puts original into subRows for dropdown viewing
           const tempResponse = response.data[
-            `${args.indexPrefix}${args.type}`
+            `${args?.indexPrefix ?? ''}${args.type}`
           ].map((item: Record<string, any>) => {
             const tempItem = item;
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
@@ -263,7 +263,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           return {
             data: {
               _aggregation: response.data._aggregation,
-              [`${args.indexPrefix}${args.type}`]: tempResponse,
+              [`${args?.indexPrefix ?? ''}${args.type}`]: tempResponse,
             },
           };
         }
@@ -501,7 +501,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return response[`${args.indexPrefix}_mapping`];
+        return response[`${args?.indexPrefix ?? ''}_mapping`];
       },
     }),
     getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
