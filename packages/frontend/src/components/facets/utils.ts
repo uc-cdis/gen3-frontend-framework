@@ -15,6 +15,7 @@ import {
   isOperationWithField,
   isOperatorWithFieldAndArrayOfOperands,
   isUnion,
+  NumericFromTo,
   Operation,
   OperatorWithFieldAndArrayOfOperands,
   selectIndexedFilterByName,
@@ -35,6 +36,7 @@ import {
 } from './types';
 import { isArray } from 'lodash';
 import { TabConfig } from '../../features/CohortBuilder/types';
+import { JSONPath } from 'jsonpath-plus';
 
 export const getAllFieldsFromFilterConfigs = (
   filterTabConfigs: ReadonlyArray<TabConfig>,
@@ -85,6 +87,42 @@ export const processRangeData = (
     },
     {} as Record<string, number>,
   );
+};
+
+export const processDefinedRangeData = (
+  data: Record<string, any>,
+  ranges: ReadonlyArray<NumericFromTo>,
+  field: string,
+  index: string,
+  indexPrefix: string = '',
+): Record<string, number> => {
+  if (!data) return {};
+
+  const valueData = JSONPath({
+    json: data,
+    path: '$..count',
+    resultType: 'value',
+  });
+
+  const pointerData = JSONPath({
+    json: data,
+    path: '$..count',
+    resultType: 'pointer',
+  });
+
+  const buckets = pointerData.reduce(
+    (acc: Record<string, number>, pointer: string, index: number) => {
+      const parts = pointer.split('/');
+      if (parts.length < 4) return acc;
+      const key = parts[3];
+      acc[key] = valueData[index];
+
+      return acc;
+    },
+    {},
+  );
+
+  return buckets;
 };
 
 /**
@@ -170,8 +208,9 @@ export const classifyFacets = (
             undefined,
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
-          range:
-            (facetDef.range ?? type === 'range')
+          range: facetDef?.range
+            ? { ...facetDef.range } // prefer config-defined range (if any)
+            : type === 'range' // if computed type is range use that
               ? {
                   minimum: Math.floor(Number(value[0].key[0])),
                   maximum: Math.ceil(Number(value[0].key[1])),

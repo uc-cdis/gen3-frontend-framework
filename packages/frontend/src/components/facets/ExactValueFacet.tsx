@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FacetCardProps, FacetDataHooks } from './types';
+import { FacetCardProps, FacetHooks } from './types';
 import { ActionIcon, Badge, Group, TextInput } from '@mantine/core';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { MdClose as CloseIcon } from 'react-icons/md';
@@ -14,7 +14,7 @@ import {
 import FacetControlsHeader from './FacetControlsHeader';
 
 type ExactValueProps = Omit<
-  FacetCardProps<FacetDataHooks>,
+  FacetCardProps<FacetHooks>,
   'showSearch' | 'showFlip' | 'showPercent' | 'valueLabel'
 >;
 

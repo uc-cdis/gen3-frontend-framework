@@ -5,6 +5,7 @@ export type FacetType =
   | 'exact'
   | 'range'
   | 'age'
+  | 'age_in_years'
   | 'year'
   | 'years'
   | 'days'

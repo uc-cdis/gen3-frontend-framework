@@ -91,7 +91,7 @@ export interface GqlEquals {
   readonly op: '=';
   readonly content: {
     readonly field: string;
-    readonly value: string | number;
+    readonly value: string | number | boolean;
   };
 }
 

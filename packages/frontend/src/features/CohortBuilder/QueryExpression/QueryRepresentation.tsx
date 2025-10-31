@@ -274,7 +274,7 @@ const ComparisonElement = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast pb-1"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast"
           onClick={() => {
             if (displayOnly) return;
             handleKeepMember(filter);
