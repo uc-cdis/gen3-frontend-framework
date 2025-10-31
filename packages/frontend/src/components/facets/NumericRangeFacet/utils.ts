@@ -141,6 +141,7 @@ const buildDayYearRangeBucket = (
   const fromLabel = (units === 'years' ? from : fromDays).toFixed(0);
   const toLabel = (units === 'years' ? to : toDays).toFixed(0);
   return {
+    queryKey: `range_${x}`,
     from: queryInYears ? from : fromDays,
     to: queryInYears ? to : toDays,
     key: `${(queryInYears ? from : fromDays).toFixed(
@@ -167,6 +168,7 @@ const build10UnitRange = (
   const from = minimum + x * 10;
   const to = minimum + (x + 1) * 10;
   return {
+    queryKey: `range_${x}`,
     from: from,
     to: to,
     key: `${from.toFixed(RANGE_DECIMAL_PRECISION)}-${to.toFixed(
@@ -357,17 +359,18 @@ export const buildRangeLabelsAndValues = (
   rangeData?: Record<string, string | number>,
   showZero = true,
 ) => {
-  return Object.keys(bucketRanges).reduce(
-    (b, x) => {
-      if (!showZero && rangeData && rangeData[x] == 0) return b;
+  console.log('buildRangeLabelsAndValues', bucketRanges, rangeData, showZero);
+  return Object.entries(bucketRanges).reduce(
+    (b, [x, val], index: number) => {
+      const count = rangeData?.[val.queryKey];
+      if (!showZero && !count) return b;
 
       b[x] = {
         ...bucketRanges[x],
+        queryKey: `range_${index}`,
         key: x,
-        value: rangeData?.[x],
-        valueLabel: rangeData?.[x]
-          ? `${rangeData[x]?.toLocaleString()}`
-          : undefined,
+        value: count,
+        valueLabel: count ? `${count.toLocaleString()}` : undefined,
       };
       return b;
     },

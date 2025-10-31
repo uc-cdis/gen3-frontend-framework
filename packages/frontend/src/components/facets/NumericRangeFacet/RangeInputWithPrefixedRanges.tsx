@@ -68,7 +68,7 @@ const RangeInputWithPrefixedRanges: React.FC<
     isSuccess = false,
     isFetching,
     error,
-  } = hooks.useGetRangeFacetData(field, ranges);
+  } = hooks.useGetFacetData(field, ranges);
   const rangeLabelsAndValues = buildRangeLabelsAndValues(
     bucketRanges,
     rangeData,

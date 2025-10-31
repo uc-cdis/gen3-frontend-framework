@@ -13,7 +13,7 @@ import { updateFacetEnum } from './utils';
 import FacetControlsHeader from './FacetControlsHeader';
 
 type ExactValueProps = Omit<
-  FacetCardProps<FacetDataHooks>,
+  FacetCardProps<FacetDataHooks<'enum'>>,
   'showSearch' | 'showFlip' | 'showPercent' | 'valueLabel'
 >;
 

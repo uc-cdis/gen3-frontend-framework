@@ -4,13 +4,12 @@ import { NumberInput, Radio } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import SegmentedControl from '../..//SegmentedControl';
 import {
+  ClearFacetHook,
   FromToRange,
   RangeFromOp,
   RangeToOp,
   UpdateFacetFilterHook,
 } from '../types';
-
-import { ClearFacetHook } from '../types';
 import {
   adjustDaysToYearsIfUnitsAreYears,
   adjustYearsToDaysIfUnitsAreYears,
@@ -280,11 +279,7 @@ const FromTo: React.FC<FromToProps> = ({
               <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-16">
                 From
               </div>
-              <div
-                className={`flex flex-col ${
-                  onSelectRadio ? 'min-[1800px]:flex-row' : 'xl:flex-row'
-                } flex-nowrap gap-2 grow`}
-              >
+              <div className={`flex flex-nowrap gap-2 grow`}>
                 <SegmentedControl
                   size="sm"
                   className="w-16 h-10"
@@ -325,11 +320,7 @@ const FromTo: React.FC<FromToProps> = ({
               <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-16">
                 To
               </div>
-              <div
-                className={`flex flex-col ${
-                  onSelectRadio ? 'min-[1800px]:flex-row' : 'xl:flex-row'
-                } flex-nowrap gap-2 grow`}
-              >
+              <div className={`flex flex-nowrap gap-2 grow`}>
                 <SegmentedControl
                   size="sm"
                   className="w-16 h-10"

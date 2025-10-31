@@ -15,8 +15,7 @@ import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
-import { EnumFacetHooks } from './EnumFacet';
-import { FacetSortType, SortType } from './types';
+import { EnumFacetDataHooks, FacetSortType, SortType } from './types';
 import {
   compareKeysAscending,
   compareKeysDescending,
@@ -30,7 +29,7 @@ interface FacetEnumListProps {
   field: string;
   facetName?: string;
   valueLabel: string;
-  hooks: EnumFacetHooks;
+  hooks: EnumFacetDataHooks;
   isSettings?: boolean;
   isSearching?: boolean;
   isFacetView?: boolean;

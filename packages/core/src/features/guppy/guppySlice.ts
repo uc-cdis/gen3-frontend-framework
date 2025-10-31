@@ -4,10 +4,11 @@ import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import {
   convertFilterSetToGqlFilter,
   FilterSet,
+  GQLFilter,
   isFilterEmpty,
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { SharedFieldMapping } from './types';
+import { RangeQueryRequest, SharedFieldMapping } from './types';
 
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
@@ -17,6 +18,8 @@ import {
   rawDataQueryStrForEachField,
   statsQueryStrForEachField,
 } from './queryGenerators';
+import { buildRangeQuery } from './range';
+import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
 
 const statusEndpoint = '/_status';
 
@@ -229,7 +232,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           // currently only supports one level of nesting
           // also puts original into subRows for dropdown viewing
           const tempResponse = response.data[
-            `${args.indexPrefix}${args.type}`
+            `${args?.indexPrefix ?? ''}${args.type}`
           ].map((item: Record<string, any>) => {
             const tempItem = item;
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
@@ -260,7 +263,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           return {
             data: {
               _aggregation: response.data._aggregation,
-              [`${args.indexPrefix}${args.type}`]: tempResponse,
+              [`${args?.indexPrefix ?? ''}${args.type}`]: tempResponse,
             },
           };
         }
@@ -498,7 +501,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return response[`${args.indexPrefix}_mapping`];
+        return response[`${args?.indexPrefix ?? ''}_mapping`];
       },
     }),
     getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
@@ -514,6 +517,47 @@ export const explorerApi = explorerTags.injectEndpoints({
           return groupSharedFields(response.data['_mapping']);
         }
         return {};
+      },
+    }),
+    customRange: builder.query<AggregationsData, RangeQueryRequest>({
+      query: ({
+        filters,
+        field,
+        ranges,
+        rangeBaseName,
+        index,
+        indexPrefix,
+        accessibility = Accessibility.ALL,
+        isNested = true,
+      }: RangeQueryRequest) => {
+        // remove field from FilterSet
+
+        const queryData = buildRangeQuery(
+          field,
+          ranges,
+          filters,
+          rangeBaseName,
+          index,
+          indexPrefix,
+          isNested,
+        );
+
+        const gqlFilters = Object.entries(queryData.filters).reduce(
+          (acc: Record<string, GQLFilter>, [key, filter]) => {
+            acc[key] = isNested
+              ? convertFilterSetToNestedGqlFilter(filter)
+              : convertFilterSetToGqlFilter(filter);
+            return acc;
+          },
+          {},
+        );
+        return {
+          query: queryData.query,
+          variables: {
+            accessibility,
+            ...gqlFilters,
+          },
+        };
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -626,4 +670,6 @@ export const {
   useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
+  useCustomRangeQuery,
+  useLazyCustomRangeQuery,
 } = explorerApi;

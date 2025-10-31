@@ -1,9 +1,11 @@
 import React from 'react';
 import {
   EnumChartProps,
-  FacetDataHooks,
+  EnumFacetDataHooks,
+  FacetHooks,
   QueryOptions,
   ToggleFacetDataHooks,
+  UploadFacetDataHooks,
 } from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
@@ -12,10 +14,11 @@ import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 import { FacetDefinition } from '@gen3/core';
 import UploadFacet from './UploadFacet';
+import NumericRangeFacet from './NumericRangeFacet';
 
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
-  hooks: FacetDataHooks;
+  hooks: FacetHooks;
   idPrefix: string;
   valueLabel: string | ((queryOptions?: QueryOptions) => string);
   dismissCallback?: (field: string) => void;
@@ -59,7 +62,7 @@ export const createFacetCard = ({
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              hooks={dataFunctions}
+              hooks={dataFunctions as EnumFacetDataHooks}
               showPercent={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
               moveValuesToBottom={facetDefinition?.moveValuesToBottom ?? []}
@@ -80,6 +83,57 @@ export const createFacetCard = ({
               maximum={facetDefinition.range?.maximum}
               showSettings={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
+            />
+          ),
+          age: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="age"
+            />
+          ),
+          age_in_years: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="age_in_years"
+            />
+          ),
+          years: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="years"
             />
           ),
           exact: (
@@ -111,7 +165,7 @@ export const createFacetCard = ({
               key={`${idPrefix}-upload-${field}`}
               field={field}
               valueLabel={valueTypeLabel}
-              hooks={dataFunctions as any}
+              hooks={dataFunctions as UploadFacetDataHooks}
             />
           ),
           toggle: (
