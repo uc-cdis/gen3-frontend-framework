@@ -3,7 +3,6 @@ import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
 import {
   convertFilterSetToGqlFilter,
-  convertFilterToGqlFilter,
   FilterSet,
   GQLFilter,
   isFilterEmpty,
@@ -20,7 +19,7 @@ import {
   statsQueryStrForEachField,
 } from './queryGenerators';
 import { buildRangeQuery } from './range';
-import { convertFilterToNestedGqlFilter } from '../filters/nestedFilters';
+import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
 
 const statusEndpoint = '/_status';
 
@@ -522,6 +521,7 @@ export const explorerApi = explorerTags.injectEndpoints({
     }),
     customRange: builder.query<AggregationsData, RangeQueryRequest>({
       query: ({
+        filters,
         field,
         ranges,
         rangeBaseName,
@@ -530,9 +530,12 @@ export const explorerApi = explorerTags.injectEndpoints({
         accessibility = Accessibility.ALL,
         isNested = true,
       }: RangeQueryRequest) => {
+        // remove field from FilterSet
+
         const queryData = buildRangeQuery(
           field,
           ranges,
+          filters,
           rangeBaseName,
           index,
           indexPrefix,
@@ -542,8 +545,8 @@ export const explorerApi = explorerTags.injectEndpoints({
         const gqlFilters = Object.entries(queryData.filters).reduce(
           (acc: Record<string, GQLFilter>, [key, filter]) => {
             acc[key] = isNested
-              ? convertFilterToNestedGqlFilter(filter)
-              : convertFilterToGqlFilter(filter);
+              ? convertFilterSetToNestedGqlFilter(filter)
+              : convertFilterSetToGqlFilter(filter);
             return acc;
           },
           {},
@@ -668,4 +671,5 @@ export const {
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
   useCustomRangeQuery,
+  useLazyCustomRangeQuery,
 } = explorerApi;

@@ -53,6 +53,7 @@ export type IndexAndField = {
 };
 
 export type RangeQueryRequest = {
+  filters: FilterSet; // cohort filters
   accessibility: Accessibility;
   field: string;
   index: string;

@@ -1,5 +1,6 @@
 import {
   buildNestedFilterForOperation,
+  FilterSet,
   Intersection,
   NumericFromTo,
   Operation,
@@ -80,30 +81,41 @@ export const buildAliasedNestedCountsQuery = ({
   return `${dataTypeLine} ${processedFields} }`;
 };
 
+export const removeKey = (
+  key: string | number,
+  { [key]: _, ...rest }: Record<string, Operation>,
+): Record<string, Operation> => rest;
+
 export const buildRangeFilters = (
   field: string,
   ranges: Array<NumericFromTo>,
+  filters: FilterSet,
   rangeBaseName: string,
   isNested: boolean = true,
 ) => {
-  const filters = Object.entries(ranges).reduce(
-    (acc: Record<string, Operation>, [, rangeValue], idx) => {
-      acc[`${rangeBaseName}_${idx}`] = convertNumericFromToArrayToFilters(
-        field,
-        rangeValue,
-        isNested,
-      );
+  return Object.entries(ranges).reduce(
+    (acc: Record<string, FilterSet>, [, rangeValue], idx) => {
+      acc[`${rangeBaseName}_${idx}`] = {
+        mode: filters.mode,
+        root: {
+          ...filters.root,
+          [field]: convertNumericFromToArrayToFilters(
+            field,
+            rangeValue,
+            isNested,
+          ),
+        },
+      } satisfies FilterSet;
       return acc;
     },
     {},
   );
-
-  return filters;
 };
 
 export const buildRangeQuery = (
   field: string,
   ranges: Array<NumericFromTo>,
+  filters: FilterSet,
   rangeBaseName: string = 'range',
   index: string = 'cases',
   indexPrefix: string = '',
@@ -112,6 +124,7 @@ export const buildRangeQuery = (
   const rangeFilters = buildRangeFilters(
     field,
     ranges,
+    filters,
     rangeBaseName,
     isNested,
   );

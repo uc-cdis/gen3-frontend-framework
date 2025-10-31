@@ -158,6 +158,7 @@ const TabbedCohortBuilder = ({
     const { data, isSuccess, isFetching, isError } = useCustomRangeQuery({
       field,
       ranges: ranges as Array<NumericFromTo>,
+      filters: cohortFilters,
       index,
       indexPrefix: indexPrefix,
       accessibility: accessLevel,

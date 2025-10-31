@@ -100,32 +100,29 @@ export const processDefinedRangeData = (
 
   const valueData = JSONPath({
     json: data,
-    path: '$..counts',
+    path: '$..count',
     resultType: 'value',
   });
 
   const pointerData = JSONPath({
     json: data,
-    path: '$..counts',
+    path: '$..count',
     resultType: 'pointer',
   });
 
-  console.log('valueData: ', valueData);
-  console.log('pointerData: ', pointerData);
+  const buckets = pointerData.reduce(
+    (acc: Record<string, number>, pointer: string, index: number) => {
+      const parts = pointer.split('/');
+      if (parts.length < 4) return acc;
+      const key = parts[3];
+      acc[key] = valueData[index];
 
-  return {
-    range0: 100,
-  };
-  //
-  // return data.reduce(
-  //   (acc: Record<string, number>, curr: HistogramData) => {
-  //     // TODO handle this better when keys are undefined
-  //     acc[`${curr.key?.[0]?.toString()}-${curr.key?.[1]?.toString()}`] =
-  //       curr.count;
-  //     return acc;
-  //   },
-  //   {} as Record<string, number>,
-  // );
+      return acc;
+    },
+    {},
+  );
+
+  return buckets;
 };
 
 /**
