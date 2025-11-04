@@ -1,6 +1,6 @@
+import React, { useEffect } from 'react';
 import WorkspacePanel from './WorkspacePanel';
 import WorkspaceNotebook from './WorkspaceNotebook';
-import React from 'react';
 import { useWorkspaceStatusContext } from './WorkspaceStatusProvider';
 import ExternalLoginsStatus from './ExternalLogins/ExternalLoginsStatus';
 import PaymentPanel from './PaymentPanel/PaymentPanel';
@@ -11,9 +11,15 @@ import StatusAndControls from './StatusAndControls';
 const FULLSCREEN_STYLE =
   'fixed top-0 left-0 w-full h-full flex flex-col flex-grow content-center items-center bg-base-lightest';
 
-const WorkspaceNotebookPanelWithControls = () => {
-  const { isFullscreen } = useWorkspaceStatusContext();
+const WorkspaceNotebookPanelWithControls = ({ id }: { id?: string }) => {
+  const { isFullscreen, startWorkspace } = useWorkspaceStatusContext();
   const { requirePayModel } = useWorkspaceContext();
+
+  useEffect(() => {
+    if (id) {
+      startWorkspace(id);
+    }
+  }, []);
 
   return (
     <div
