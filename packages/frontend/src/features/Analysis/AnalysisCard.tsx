@@ -1,9 +1,9 @@
 import React from 'react';
 import { Image, NavLink, Stack } from '@mantine/core';
-import NextImage from 'next/image';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
 import { AnalysisToolConfiguration } from './types';
+import NextImage from 'next/image';
 
 const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   title,
@@ -25,20 +25,18 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       className="rounded-sm rounded-t-md bg-base-max p-0 h-full"
     >
       <div className="relative">
-        <div className="p-0 rounded-sm h-[200px] h-max-1/2 flex justify-center items-center relative overflow-hidden">
-          <div>
-            <Image
-              component={NextImage}
-              src={`${image}`}
-              alt=""
-              radius="md"
-              width={500}
-              height={500}
-            />
-          </div>
+        <div className="p-0  h-max-1/2 flex justify-center items-center relative overflow-hidden">
+          <Image
+            src={`${image}`}
+            alt={`${title} image`}
+            height={500}
+            classNames={{
+              root: 'rounded-tl-lg rounded-tr-lg',
+            }}
+          />
         </div>
         <div className="flex -mt-5 relative z-10">
-          <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
+          <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
             <Image
               component={NextImage}
               src={`${icon}`}
@@ -49,17 +47,19 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             />
           </div>
           <div className="relative mb-0 ml-2">
-            <span className="absolute bottom-0 left-0 text-xs text-gray-700 w-max">
+            <span className="absolute bottom-0 left-0 text-sm font-normal text-gray-700 w-max capitalize">
               {type}
             </span>
           </div>
         </div>
         <div className="flex flex-col mt-2 ml-2">
-          <div className="text-sm font-black h-6">{title}</div>
+          <div className="w-64 h-7 justify-start text-base-contrast-max text-xl font-bold leading-6">
+            {title}
+          </div>
           <div className="text-xs text-gray-400 h-6">
             {loginRequired ? 'Login Required' : ' '}
           </div>
-          <div className="text-sm p-2 h-fit mt-2">
+          <div className="text-sm font-normal p-2">
             <TextDescription description={description} />
           </div>
         </div>
@@ -70,8 +70,8 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             component={Link}
             href={href ?? '_blank'}
             classNames={{
-              root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded-sm',
-              label: 'text-sm font-semibold',
+              root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded',
+              label: 'text-sm font-semibold px-2',
             }}
             label={
               btnText
@@ -86,8 +86,8 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
               rel="noopener noreferrer"
               target="_blank"
               classNames={{
-                root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded-sm',
-                label: 'text-sm font-semibold',
+                root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded',
+                label: 'text-sm font-semibold px-2',
               }}
               label="Demo"
             />

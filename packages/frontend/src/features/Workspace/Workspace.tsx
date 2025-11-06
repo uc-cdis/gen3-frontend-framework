@@ -7,15 +7,16 @@ import WorkspaceNotebookPanelWithControls from './WorkspaceNotebookPanelWithCont
 
 interface WorkspaceProps {
   config: WorkspaceConfig;
+  workspaceToRunId?: string;
 }
 
-const Workspace = ({ config }: WorkspaceProps) => {
+const Workspace = ({ config, workspaceToRunId }: WorkspaceProps) => {
   return (
     <ProtectedContent>
       <WorkspaceProvider config={config}>
         <WorkspaceStatusProvider>
           <div className="flex flex-col grow w-full relative">
-            <WorkspaceNotebookPanelWithControls />
+            <WorkspaceNotebookPanelWithControls id={workspaceToRunId} />
           </div>
         </WorkspaceStatusProvider>
       </WorkspaceProvider>
