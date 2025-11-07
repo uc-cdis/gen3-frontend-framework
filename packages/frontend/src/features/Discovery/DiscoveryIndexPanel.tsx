@@ -38,6 +38,25 @@ const DiscoveryIndexPanel = ({
   discoveryConfig,
   indexSelector,
 }: DiscoveryIndexPanelProps) => {
+  /** SPIKE CODE */
+  const apiUrl = 'http://localhost:3000/api/discovery';
+
+  fetch(apiUrl)
+    .then((response) => {
+      if (!response.ok) {
+        console.error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
+    })
+    .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+
+  /** END SPIKE CODE */
+
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(
