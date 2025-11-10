@@ -1,4 +1,5 @@
 import addAuthMetaData from './processData/addAuthMetaData';
+import combineData from './processData/combineData';
 import filterData from './processData/filterData';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
@@ -7,14 +8,15 @@ import sortData from './processData/sortData';
 let cachedData = null;
 let cacheTime = 0;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-const apiUrl1 =
+const mdsAggregateApi =
   'https://healdata.org/mds/aggregate/metadata?data=True&limit=2000&offset=0';
-const apiUrl2 =
+const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
 const processData = (data) => {
   const [searchQuery, pageNumber, pageSize] = [null, null, null];
+
   let processedData = addAuthMetaData(data); // Step 1: Add Metadata
   processedData = filterData(data); // Step 2: Filter
   processedData = searchData(data, searchQuery); // Step 3: Search
@@ -33,20 +35,20 @@ export default async function handler(req: any, res: any) {
 
   try {
     // Fetch both APIs concurrently
-    const [response1, response2] = await Promise.all([
-      fetch(apiUrl1),
-      fetch(apiUrl2),
+    const [mdsAggregateResponse, mdsMetadataResponse] = await Promise.all([
+      fetch(mdsAggregateApi),
+      fetch(mdsMetadataApi),
     ]);
 
     // Check if both responses are OK
-    if (!response1.ok || !response2.ok) {
+    if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
       throw new Error('One of the responses was not ok.');
     }
 
     // Parse the JSON data from both responses
-    const data1 = await response1.json();
-    const data2 = await response2.json();
-    const combinedData = [data1, data2];
+    const mdsAggregateData = await mdsAggregateResponse.json();
+    const mdsMetadataData = await mdsMetadataResponse.json();
+    const combinedData = combineData(mdsAggregateData, mdsMetadataData);
     // Update the cache
     cachedData = combinedData;
     cacheTime = currentTime;
