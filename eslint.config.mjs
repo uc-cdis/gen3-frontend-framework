@@ -74,7 +74,6 @@ export default [
       'react/prop-types': 'warn',
       'reactHooks/rules-of-hooks': 'error',
       'reactHooks/exhaustive-deps': 'warn',
-
     },
   },
   ...storybook.configs["flat/recommended"]
