@@ -1,11 +1,12 @@
-import addAuthMetaData from './processData/addAuthMetaData';
+import addAuthMetaData from './preProcessData/addAuthMetaData';
 import combineData from './processData/combineData';
 import filterData from './processData/filterData';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
 import sortData from './processData/sortData';
+import { JSONObject } from '@gen3/core';
 
-let cachedData = null;
+let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 const mdsAggregateApi =
@@ -14,9 +15,8 @@ const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
-const processData = (data) => {
+const processData = (data: Array<JSONObject>) => {
   const [searchQuery, pageNumber, pageSize] = [null, null, null];
-
   let processedData = addAuthMetaData(data); // Step 1: Add Metadata
   processedData = filterData(data); // Step 2: Filter
   processedData = searchData(data, searchQuery); // Step 3: Search
