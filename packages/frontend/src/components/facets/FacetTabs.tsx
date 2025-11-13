@@ -20,6 +20,7 @@ import {
   CustomFacetHooks,
   EnumChartProps,
   FacetHooks,
+  FacetValueLabel,
   QueryOptions,
 } from './types';
 import { FacetDefinition, FacetType } from '@gen3/core';
@@ -106,7 +107,7 @@ interface CustomFacetGroupProps {
   readonly customFacetHooks: CustomFacetHooks;
   readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
-  readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
+  readonly getFacetLabel: FacetValueLabel;
   readonly useFieldNameToTitle: () => (
     field: string,
     sections?: number,
@@ -229,7 +230,7 @@ type FacetTabProps = {
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly usedFacets: string[];
   readonly customFacetHooks?: CustomFacetHooks;
-  readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
+  readonly getFacetLabel: FacetValueLabel;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
   readonly useFieldNameToTitle: () => (
@@ -248,7 +249,7 @@ type FacetTabProps = {
  * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
  * @param usedFacets
  * @param customFacetHooks - Hooks for custom facet selection
- * @param getFacetLabel - Callback for determining the data label
+ * @param getFacetLabel - String or Callback for determining the data label
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
  * @param useFieldNameToTitle - will use built in hook for facet names
  * @param Chart - Component for rendering a Chart view of the data
@@ -327,10 +328,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                 facetNameFormatter: (field: string) => fieldNameToTitle(field),
                 hooks,
                 idPrefix: 'cohort-builder',
-                valueLabel: getFacetLabel
-                  ? getFacetLabel(firstEntry.queryOptions)
-                  : '',
-                queryOptions: firstEntry.queryOptions,
+                valueLabel:  getFacetLabel,
                 cardScrollMargin,
                 Chart,
               })}

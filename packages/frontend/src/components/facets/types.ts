@@ -11,6 +11,8 @@ import React, { ComponentType, ReactNode } from 'react';
 
 export type QueryOptions = Record<string, unknown>;
 
+export type FacetValueLabel = string | ((def?: FacetDefinition,  queryOptions?: QueryOptions) => string);
+
 export interface EnumChartProps {
   readonly field: string;
   readonly data: Record<string, number>;

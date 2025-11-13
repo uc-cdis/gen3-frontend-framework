@@ -1,11 +1,4 @@
-import {
-  Accordion,
-  Group,
-  Stack,
-  Switch,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
+import { Accordion, Group, Stack, Switch, Text, useMantineTheme, } from '@mantine/core';
 import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
@@ -21,6 +14,7 @@ import React from 'react';
 import { TabbablePanelProps } from './types';
 import { Icon } from '@iconify-icon/react';
 import { modals } from '@mantine/modals';
+import { FacetValueLabel } from '../types';
 
 export const AccordionPanel = ({
   filters,
@@ -33,6 +27,7 @@ export const AccordionPanel = ({
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
+                                 valueLabel = undefined as FacetValueLabel | undefined,
 }: TabbablePanelProps) => {
   const coreDispatch = useCoreDispatch();
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
@@ -110,7 +105,7 @@ export const AccordionPanel = ({
                         return [...acc, facetDefinitions[field]];
                       }, [] as FacetDefinition[])}
                       dataFunctions={facetDataHooks}
-                      valueLabel={tabTitle}
+                      valueLabel={valueLabel ?? tabTitle}
                     />
                   ) : null}
                 </Accordion.Panel>

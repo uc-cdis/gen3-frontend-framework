@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
-import { FacetHooks } from './types';
+import { FacetHooks, FacetValueLabel } from './types';
 import { useResizeObserver } from '@mantine/hooks';
 
 interface FiltersPanelProps<T extends FacetType = FacetType> {
   dataFunctions: Record<T, FacetHooks>;
   fields: ReadonlyArray<FacetDefinition>;
-  valueLabel: string;
+  valueLabel: FacetValueLabel;
 }
 
 const FiltersPanel = <T extends FacetType = FacetType>({

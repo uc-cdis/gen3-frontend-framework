@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Group,
-  Select,
-  Stack,
-  Switch,
-  Text,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
+import { Group, Select, Stack, Switch, Text, Tooltip, useMantineTheme, } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify-icon/react';
 import type { TabConfig } from '../../../features/CohortBuilder/types';
@@ -25,6 +17,7 @@ import {
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
+import { FacetValueLabel } from '../types';
 
 export const DropdownPanel = <T extends FacetType = FacetType>({
   filters,
@@ -37,6 +30,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
+  valueLabel = undefined as FacetValueLabel | undefined,
 }: TabbablePanelProps<T>) => {
   const [value, setValue] = useState<string | null>('0');
 
@@ -155,7 +149,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
           <FiltersPanel
             fields={fields}
             dataFunctions={facetDataHooks}
-            valueLabel={tabTitle}
+            valueLabel={valueLabel ?? tabTitle}
           />
         ) : null}
       </div>
