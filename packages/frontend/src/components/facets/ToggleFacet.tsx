@@ -64,7 +64,7 @@ const ToggleFacet: React.FC<FacetCardProps<ToggleFacetDataHooks>> = ({
         aria-hidden={!showFilters}
       >
         <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
-          <p className="px-2 font-semibold text-xs">{valueLabel}</p>
+          <p className="px-2 font-semibold text-xs mr-5">{valueLabel}</p>
         </div>
         <div className="w-full ">
           <div className="flex flex-nowrap justify-between items-center p-2 ">

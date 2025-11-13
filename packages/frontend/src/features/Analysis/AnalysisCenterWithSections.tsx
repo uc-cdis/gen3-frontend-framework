@@ -66,7 +66,7 @@ const AnalysisCenterWithSections: React.FC<
                   return <AnaylsisCardCore {...tool} key={tool.title} />;
                 } else {
                   return (
-                    <div key={tool.title}>
+                    <div key={tool.title} className="max-w-[12em]">
                       <AnalysisCardCollapsible
                         {...tool}
                         descriptionVisible={
