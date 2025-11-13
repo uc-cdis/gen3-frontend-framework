@@ -15,8 +15,8 @@ const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
-const processData = (data: Array<JSONObject>) => {
-  const [searchQuery, pageNumber, pageSize] = [null, null, null];
+const processData = (data: Array<JSONObject>, reqQuery: any) => {
+  const { searchQuery, pageNumber, pageSize } = reqQuery;
   let processedData = addAuthMetaData(data); // Step 1: Add Metadata
   processedData = filterData(data); // Step 2: Filter
   processedData = searchData(data, searchQuery); // Step 3: Search
@@ -26,10 +26,11 @@ const processData = (data: Array<JSONObject>) => {
 };
 
 export default async function handler(req: any, res: any) {
+  console.log('req', req.query);
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
-    const processedData = processData(cachedData);
+    const processedData = processData(cachedData, req.query);
     res.status(200).json(processedData);
   }
 
@@ -52,7 +53,8 @@ export default async function handler(req: any, res: any) {
     // Update the cache
     cachedData = combinedData;
     cacheTime = currentTime;
-    const processedData = processData(combinedData);
+    console.log('req.query', req.query);
+    const processedData = processData(combinedData, req.query);
     res.status(200).json(processedData);
   } catch (error) {
     console.error('Fetch error:', error);

@@ -40,8 +40,12 @@ const DiscoveryIndexPanel = ({
 }: DiscoveryIndexPanelProps) => {
   /** SPIKE CODE */
   const apiUrl = 'http://localhost:3000/api/discovery';
+  const params = new URLSearchParams({
+    param1: 'value1',
+    param2: 'value2',
+  });
 
-  fetch(apiUrl)
+  fetch(`${apiUrl}?${params}`)
     .then((response) => {
       if (!response.ok) {
         console.error('Network response was not ok ' + response.statusText);
