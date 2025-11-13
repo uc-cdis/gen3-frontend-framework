@@ -3,6 +3,7 @@ import {
   EnumChartProps,
   EnumFacetDataHooks,
   FacetHooks,
+  FacetValueLabel,
   QueryOptions,
   ToggleFacetDataHooks,
   UploadFacetDataHooks,
@@ -20,7 +21,7 @@ export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
   hooks: FacetHooks;
   idPrefix: string;
-  valueLabel: string | ((queryOptions?: QueryOptions) => string);
+  valueLabel: FacetValueLabel;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   width?: string;
@@ -47,7 +48,7 @@ export const createFacetCard = ({
   const valueTypeLabel =
     valueLabel === undefined || typeof valueLabel === 'string'
       ? valueLabel
-      : valueLabel(queryOptions);
+      : valueLabel(facetDefinition, queryOptions);
 
   return (
     <div key={`${idPrefix}-facet-${field}`}>
