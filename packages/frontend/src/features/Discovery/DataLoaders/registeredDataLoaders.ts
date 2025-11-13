@@ -4,8 +4,8 @@
 import { DiscoverDataHookResponse, DiscoveryDataLoaderProps } from '../types';
 import { useAggMDSServer } from './AggMDSServer/DataLoader';
 import {
-  useLoadAllMDSData,
   useLoadAllAggMDSData,
+  useLoadAllMDSData,
 } from './MDSAllLocal/DataLoader';
 import { useLoadAllIndexedAggMDSData } from './IndexedMetadata/DataLoader';
 

@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 type CountFunction = () => string;
 
@@ -27,6 +28,7 @@ export interface AnalysisToolConfiguration {
   readonly leftComponent?: React.FC;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
+  classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface AnalysisCenterConfiguration extends Gen3AppConfigData {

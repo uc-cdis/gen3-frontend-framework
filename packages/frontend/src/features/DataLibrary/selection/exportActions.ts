@@ -39,9 +39,8 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     return;
   }
   const { targetURLTemplate } = params;
-  // get the selection
-
-  if (validatedSelections.length !== 1 || !isFileItem(validatedSelections[0])) {
+  const selections = validatedSelections.filter((item) => item.valid)
+  if (selections.length !== 1 || !isFileItem(selections[0])) {
     notifications.show({
       id: 'data-library-send-existing-pfb-to-url-validate-length',
       position: 'bottom-center',
@@ -54,7 +53,7 @@ export const sendExistingPFBToURL: DataActionFunction = async (
     });
     return;
   }
-  const { guid, id } = validatedSelections[0] as FileItem;
+  const { guid, id } = selections[0] as FileItem;
 
   // get the pre-signed URL for the selected PFB
   try {
