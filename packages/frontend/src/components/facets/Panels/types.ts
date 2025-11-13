@@ -1,6 +1,6 @@
 import { TabsConfig } from '../../../features/CohortBuilder/types';
 import { Accessibility, FacetDefinition, FacetType } from '@gen3/core';
-import { FacetHooks } from '../index';
+import { FacetHooks, FacetValueLabel } from '../index';
 
 export type SetFilterExpandedState = (expanded: boolean) => void;
 
@@ -12,6 +12,7 @@ export interface FacetPanelProps<T extends FacetType = FacetType> {
   onAccessChange?: (value: Accessibility) => void;
   accessLevel?: Accessibility;
   showAccessLevel?: boolean;
+  valueLabel?: FacetValueLabel;
 }
 
 export interface TabbablePanelProps<T extends FacetType = FacetType>

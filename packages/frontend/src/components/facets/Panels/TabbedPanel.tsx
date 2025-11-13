@@ -4,6 +4,7 @@ import FiltersPanel from '../FiltersPanel';
 import { Accessibility, FacetDefinition } from '@gen3/core';
 import React from 'react';
 import { FacetPanelProps, TabbablePanelProps } from './types';
+import { FacetValueLabel } from '../types';
 
 const VerticalTabbedPanel = ({
   filters,
@@ -13,6 +14,7 @@ const VerticalTabbedPanel = ({
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
+                               valueLabel = undefined as FacetValueLabel | undefined,
 }: FacetPanelProps) => {
   return (
     <div>
@@ -45,7 +47,7 @@ const VerticalTabbedPanel = ({
                     return [...acc, facetDefinitions[field]];
                   }, [] as FacetDefinition[])}
                   dataFunctions={facetDataHooks}
-                  valueLabel={tabTitle}
+                  valueLabel={valueLabel ?? tabTitle}
                 />
               ) : null}
             </Tabs.Panel>
