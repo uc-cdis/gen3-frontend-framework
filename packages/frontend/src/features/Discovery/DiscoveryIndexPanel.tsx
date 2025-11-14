@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
@@ -15,6 +15,7 @@ import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
+import { JSONObject } from '@gen3/core';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -102,36 +103,59 @@ const DiscoveryIndexPanel = ({
     useDisclosure(false);
 
   /** SPIKE CODE */
+  // THIS SORT OF CODE LIKELY BELONGS IN packages/frontend/src/features/Discovery/DataLoaders
   const apiUrl = 'http://localhost:3000/api/discovery';
-  const params = {
-    pagination: {
-      offset: pagination.pageIndex * pagination.pageSize,
-      pageSize: pagination.pageSize,
-    },
-    searchTerms: searchParam,
-    sorting: sorting,
-    filters: {},
-  };
+  const [proxyData, setProxyData] = useState<Array<JSONObject>>([]);
+  useEffect(() => {
+    const params = {
+      discoveryConfig: discoveryConfig,
+      pagination: {
+        offset: pagination.pageIndex * pagination.pageSize,
+        pageSize: pagination.pageSize,
+        // pageSize: 4,
+      },
+      // searchTerms: searchParam,
+      searchTerms: {
+        keyword: { operator: 'AND', keywords: ['Martyn'] },
+        advancedSearchTerms: { operation: 'AND', filters: {} },
+      },
+      sorting: sorting,
+      filters: {},
+    };
 
-  fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        console.error('Network response was not ok ' + response.statusText);
-      }
-      return response.json();
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
     })
-    .then((data) => {
-      console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
-    })
-    .catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
+        setProxyData(data);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }, []);
+  console.log('searchParam', searchParam);
+
+  const searchOverFields =
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+
+  console.log(
+    'discoveryConfig?.features?.search?.searchBar?.searchableTextFields',
+    searchOverFields,
+  );
+  console.log('uidField', uidField);
+  console.log('proxyData', proxyData);
 
   /** END SPIKE CODE */
 
@@ -237,6 +261,7 @@ const DiscoveryIndexPanel = ({
               >
                 <DiscoveryTable
                   data={data}
+                  // data={proxyData}
                   hits={hits}
                   dataRequestStatus={dataRequestStatus}
                   setPagination={setPagination}

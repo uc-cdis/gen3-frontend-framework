@@ -16,12 +16,17 @@ const mdsMetadataApi =
 
 // Main Function to Orchestrate Steps
 const processData = (data: Array<JSONObject>, reqBody: any) => {
-  const { pagination, searchTerms, sorting, filters } = reqBody;
-  let processedData: Array<JSONObject>;
-  processedData = addAuthMetaData(data); // Step 1: Add Metadata
-  processedData = filterData(data); // Step 2: Filter
-  processedData = searchData(data, searchTerms); // Step 3: Search
-  processedData = sortData(data, 'title'); // Step 4: Sort (example key)
+  const { pagination, searchTerms, sorting, filters, discoveryConfig } =
+    reqBody;
+  let processedData: Array<JSONObject> = data;
+  // processedData = addAuthMetaData(data); // Step 1: Add Metadata
+  // processedData = filterData(data); // Step 2: Filter
+  processedData = searchData(
+    data,
+    searchTerms.keyword.keywords,
+    discoveryConfig,
+  ); // Step 3: Search
+  // processedData = sortData(data, 'title'); // Step 4: Sort (example key)
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
@@ -32,7 +37,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
 };
 
 export default async function handler(req: any, res: any) {
-  console.log('req', req.body);
+  // console.log('req', req.body);a
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
@@ -49,7 +54,11 @@ export default async function handler(req: any, res: any) {
 
     // Check if both responses are OK
     if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
-      throw new Error('One of the responses was not ok.');
+      throw new Error(
+        `One of the responses was not ok:
+        mdsAggregateResponse:${mdsAggregateResponse},
+        mdsMetadataResponse ${mdsMetadataResponse}`,
+      );
     }
 
     // Parse the JSON data from both responses
@@ -59,7 +68,7 @@ export default async function handler(req: any, res: any) {
     // Update the cache
     cachedData = combinedData;
     cacheTime = currentTime;
-    console.log('req.body', req.body);
+    // console.log('req.body', req.body);
     const processedData = processData(combinedData, req.body);
     res.status(200).json(processedData);
   } catch (error) {
