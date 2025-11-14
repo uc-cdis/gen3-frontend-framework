@@ -58,39 +58,39 @@ const AnalysisCenterWithSections: React.FC<
               size="lg"
               classNames={{ root: sectionClassnames['divider'] }}
             />
-            <div
-              className={`grid sm:grid-cols-2 ${section.core ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-4 items-start items-stretch`}
-            >
-              {section.tools.map((tool, idx) => {
-                if (section.core) {
-                  return <AnaylsisCardCore {...tool} key={tool.title} />;
-                } else {
-                  return (
-                    <div key={tool.title} className="max-w-[12em]">
-                      <AnalysisCardCollapsible
-                        {...tool}
-                        descriptionVisible={
-                          activeAnalysisCard === `${section_idx}-${idx}`
-                        }
-                        setDescriptionVisible={() =>
-                          setActiveAnalysisCard(
-                            `${section_idx}-${idx}` === activeAnalysisCard
-                              ? null
-                              : `${section_idx}-${idx}`,
-                          )
-                        }
-                        useCountHook={() => ({
-                          data: 1000,
-                          isFetching: false,
-                          isSuccess: true,
-                        })}
-                        key={tool.title}
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </div>
+            <div className="flex flex-wrap gap-4 items-stretch">
+  {section.tools.map((tool, idx) => {
+    if (section.core) {
+
+      return (
+        <div key={tool.title} className="w-1/4">
+        <AnaylsisCardCore {...tool} key={tool.title} />
+        </div>
+          )
+    } else {
+      return (
+        <div key={tool.title} className="max-w-[12em]">
+          <AnalysisCardCollapsible
+            {...tool}
+            descriptionVisible={activeAnalysisCard === `${section_idx}-${idx}`}
+            setDescriptionVisible={() =>
+              setActiveAnalysisCard(
+                `${section_idx}-${idx}` === activeAnalysisCard
+                  ? null
+                  : `${section_idx}-${idx}`,
+              )
+            }
+            useCountHook={() => ({
+              data: 1000,
+              isFetching: false,
+              isSuccess: true,
+            })}
+          />
+        </div>
+      );
+    }
+  })}
+</div>
           </Stack>
         );
       }),

@@ -9,8 +9,6 @@ nodes:
     extraMounts:
       - hostPath: ./coredns-custom
         containerPath: /etc/coredns/custom
-      - hostPath: /Users/craigrbarnes/Projects/CTDS/gen3/mmrf_es_snapshot
-        containerPath: /mnt/mmrf_es_snapshot
     kubeadmConfigPatches:
       - |
         kind: ClusterConfiguration
