@@ -74,7 +74,8 @@ const AddAuthMetaData = (data: Array<JSONObject>) => {
       );
     }*/
     const studiesWithAccessibleField = data.map((study) => {
-      let accessible: AccessLevel;
+      // Added default declaration Nov 2025 for TS issue
+      let accessible: AccessLevel = AccessLevel.UNACCESSIBLE;
       if (
         supportedValues?.unaccessible?.enabled &&
         dataAvailabilityField &&
@@ -155,7 +156,7 @@ const AddAuthMetaData = (data: Array<JSONObject>) => {
     });
     studiesToSet = studiesWithAccessibleField;
   }
-  return studiesToSet;
+  return studiesToSet as Array<JSONObject>;
 };
 
 export default AddAuthMetaData;

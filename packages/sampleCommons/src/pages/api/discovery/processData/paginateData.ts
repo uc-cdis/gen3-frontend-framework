@@ -1,8 +1,12 @@
-// Paginate Results
-const paginateData = (data, pageSize, pageNumber) => {
-  const start = (pageNumber - 1) * pageSize;
-  // return data.slice(start, start + pageSize);
-  return data;
-};
+import { JSONObject } from '@gen3/core';
 
+// Paginate Results
+const paginateData = (
+  data: Array<JSONObject>,
+  pageSize: number,
+  offset: number,
+) => {
+  const start = offset * pageSize;
+  return data.slice(start, start + pageSize);
+};
 export default paginateData;

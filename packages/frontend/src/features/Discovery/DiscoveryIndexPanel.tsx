@@ -38,29 +38,6 @@ const DiscoveryIndexPanel = ({
   discoveryConfig,
   indexSelector,
 }: DiscoveryIndexPanelProps) => {
-  /** SPIKE CODE */
-  const apiUrl = 'http://localhost:3000/api/discovery';
-  const params = new URLSearchParams({
-    param1: 'value1',
-    param2: 'value2',
-  });
-
-  fetch(`${apiUrl}?${params}`)
-    .then((response) => {
-      if (!response.ok) {
-        console.error('Network response was not ok ' + response.statusText);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
-    })
-    .catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
-
-  /** END SPIKE CODE */
-
   const dataHook = useMemo(
     () =>
       getDiscoveryDataLoader(
@@ -123,6 +100,40 @@ const DiscoveryIndexPanel = ({
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
+  /** SPIKE CODE */
+  const apiUrl = 'http://localhost:3000/api/discovery';
+  const params = {
+    pagination: {
+      offset: pagination.pageIndex * pagination.pageSize,
+      pageSize: pagination.pageSize,
+    },
+    searchTerms: searchParam,
+    sorting: sorting,
+    filters: {},
+  };
+
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        console.error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
+    })
+    .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+
+  /** END SPIKE CODE */
 
   if (dataRequestStatus.isLoading) {
     return (

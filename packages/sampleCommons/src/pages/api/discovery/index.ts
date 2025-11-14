@@ -1,5 +1,5 @@
 import addAuthMetaData from './preProcessData/addAuthMetaData';
-import combineData from './processData/combineData';
+import combineData from './preProcessData/combineData';
 import filterData from './processData/filterData';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
@@ -15,22 +15,28 @@ const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
 // Main Function to Orchestrate Steps
-const processData = (data: Array<JSONObject>, reqQuery: any) => {
-  const { searchQuery, pageNumber, pageSize } = reqQuery;
-  let processedData = addAuthMetaData(data); // Step 1: Add Metadata
+const processData = (data: Array<JSONObject>, reqBody: any) => {
+  const { pagination, searchTerms, sorting, filters } = reqBody;
+  let processedData: Array<JSONObject>;
+  processedData = addAuthMetaData(data); // Step 1: Add Metadata
   processedData = filterData(data); // Step 2: Filter
-  processedData = searchData(data, searchQuery); // Step 3: Search
+  processedData = searchData(data, searchTerms); // Step 3: Search
   processedData = sortData(data, 'title'); // Step 4: Sort (example key)
-  const paginatedData = paginateData(processedData, pageSize, pageNumber); // Step 5: Pagination */
+  const paginatedData = paginateData(
+    processedData,
+    pagination.pageSize,
+    pagination.offset,
+  ); // Step 5: Pagination */
   return paginatedData;
+  // return processedData;
 };
 
 export default async function handler(req: any, res: any) {
-  console.log('req', req.query);
+  console.log('req', req.body);
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
-    const processedData = processData(cachedData, req.query);
+    const processedData = processData(cachedData, req.body);
     res.status(200).json(processedData);
   }
 
@@ -53,8 +59,8 @@ export default async function handler(req: any, res: any) {
     // Update the cache
     cachedData = combinedData;
     cacheTime = currentTime;
-    console.log('req.query', req.query);
-    const processedData = processData(combinedData, req.query);
+    console.log('req.body', req.body);
+    const processedData = processData(combinedData, req.body);
     res.status(200).json(processedData);
   } catch (error) {
     console.error('Fetch error:', error);
