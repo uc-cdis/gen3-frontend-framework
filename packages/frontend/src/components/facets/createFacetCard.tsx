@@ -137,6 +137,57 @@ export const createFacetCard = ({
               rangeDatatype="years"
             />
           ),
+          year: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="year"
+            />
+          ),
+          percent: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="percent"
+            />
+          ),
+          numeric_range: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="range"
+            />
+          ),
           exact: (
             <ExactValueFacet
               key={`${idPrefix}-exact-${field}`}

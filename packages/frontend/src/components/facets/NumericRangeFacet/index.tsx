@@ -56,8 +56,6 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
     }
   }, [clearValues]);
 
-  console.log('range', maximum, minimum, rangeDatatype);
-
   return (
     <div
       className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-md text-xs transition  ${
