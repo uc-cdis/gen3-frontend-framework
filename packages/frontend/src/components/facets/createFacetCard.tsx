@@ -154,6 +154,23 @@ export const createFacetCard = ({
               rangeDatatype="year"
             />
           ),
+          days: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="days"
+            />
+          ),
           percent: (
             <NumericRangeFacet
               key={`${idPrefix}-range-${field}`}

@@ -10,6 +10,7 @@ export type FacetType =
   | 'years'
   | 'days'
   | 'percent'
+  | 'numeric_range'
   | 'datetime'
   | 'toggle'
   | 'multiselect'

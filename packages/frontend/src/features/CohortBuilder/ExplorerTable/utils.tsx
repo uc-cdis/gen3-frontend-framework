@@ -8,10 +8,7 @@ import {
   TableColumnsAndFields,
 } from './types';
 import { type MRT_Column } from 'mantine-react-table';
-import {
-  ExplorerTableCellRendererFactory,
-  RenderArrayCellSimple,
-} from './ExplorerTableCellRenderers';
+import { ExplorerTableCellRendererFactory, RenderArrayCellSimple, } from './ExplorerTableCellRenderers';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { ArrayCellRenderer } from './ArrayCellRenderer';
 
@@ -36,7 +33,7 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
 export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
   const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
-    console.log('createTableColumns', columnDef);
+
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
           columnDef?.type,

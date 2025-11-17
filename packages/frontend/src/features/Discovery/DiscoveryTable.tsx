@@ -23,16 +23,8 @@ import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
-import {
-  OnChangeFn,
-  PaginationState,
-  SortingState,
-} from '@tanstack/table-core';
-import {
-  DataRequestStatus,
-  RowSelectCompareFunctions,
-  SelectableRowConfiguration,
-} from './types';
+import { OnChangeFn, PaginationState, SortingState, } from '@tanstack/table-core';
+import { DataRequestStatus, RowSelectCompareFunctions, SelectableRowConfiguration, } from './types';
 import { LoadingOverlay } from '@mantine/core';
 
 const CompareFn = (
@@ -204,7 +196,6 @@ const DiscoveryTable = ({
     },
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
-        console.log('row.original', row.original);
         setStudyDetails(() => {
           return { ...row.original };
         });
