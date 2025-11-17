@@ -59,6 +59,7 @@ export type RangeQueryRequest = {
   index: string;
   indexPrefix: string;
   isNested?: boolean;
+  isTextHistogram?: boolean;
   rangeBaseName?: string;
   ranges: Array<NumericFromTo>;
 };

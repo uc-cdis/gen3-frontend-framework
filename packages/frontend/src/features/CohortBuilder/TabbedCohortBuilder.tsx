@@ -32,16 +32,9 @@ import {
   useUpdateFiltersFlat,
 } from '../../components/facets';
 import { QueryOptions } from '../../components/facets/types';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { partial } from 'lodash';
-import {
-  useClearFilters,
-  useFieldNameToTitle,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToTitle, } from '../../components/facets/hooks';
 import {
   useCohortFilterCombineState,
   useFilterExpandedState,
@@ -315,10 +308,11 @@ const TabbedCohortBuilder = ({
         range: RangeHookInstances,
         age: ContinuousHookInstances,
         age_in_years: ContinuousHookInstances,
-        year: RangeHookInstances,
-        years: RangeHookInstances,
-        days: RangeHookInstances,
-        percent: RangeHookInstances,
+        numeric_range: RangeHookInstances,
+        year: ContinuousHookInstances,
+        years: ContinuousHookInstances,
+        days: ContinuousHookInstances,
+        percent: ContinuousHookInstances,
         datetime: RangeHookInstances,
         toggle: RangeHookInstances,
         upload: EnumHookInstances,

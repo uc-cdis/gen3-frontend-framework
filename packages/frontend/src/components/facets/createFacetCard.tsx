@@ -50,6 +50,7 @@ export const createFacetCard = ({
       ? valueLabel
       : valueLabel(facetDefinition, queryOptions);
 
+  console.log(`creating ${type} facet for field ${field} with label: ${facetLabel}`)
   return (
     <div key={`${idPrefix}-facet-${field}`}>
       {
@@ -152,6 +153,23 @@ export const createFacetCard = ({
               showSettings={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
               rangeDatatype="year"
+            />
+          ),
+          days: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="days"
             />
           ),
           percent: (

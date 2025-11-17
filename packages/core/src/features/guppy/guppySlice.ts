@@ -1,12 +1,7 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  GQLFilter,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 
@@ -529,6 +524,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix,
         accessibility = Accessibility.ALL,
         isNested = true,
+                isTextHistogram = false,
       }: RangeQueryRequest) => {
         // remove field from FilterSet
 
@@ -540,6 +536,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           index,
           indexPrefix,
           isNested,
+          isTextHistogram
         );
 
         const gqlFilters = Object.entries(queryData.filters).reduce(

@@ -1,10 +1,4 @@
-import {
-  buildNestedFilterForOperation,
-  FilterSet,
-  Intersection,
-  NumericFromTo,
-  Operation,
-} from '../filters';
+import { buildNestedFilterForOperation, FilterSet, Intersection, NumericFromTo, Operation, } from '../filters';
 import { FromToRange } from '../../types';
 
 export interface Range<T> {
@@ -51,14 +45,14 @@ export const convertNumericFromToArrayToFilters = (
   } satisfies Intersection;
 };
 
-export const rawDataQueryStrForEachField = (field: string): string => {
+export const rawDataQueryStrForEachField = (field: string, isTextHistograpm: boolean = false): string => {
   const splitFieldArray = field.split('.');
   const splitField = splitFieldArray.shift();
   let middleQuery: string = '';
   if (splitFieldArray.length === 0) {
-    middleQuery = `${splitField} { histogram { count } }`;
+    middleQuery = `${splitField} { ${isTextHistograpm ? "histogram: textHistogram" :  "histogram"} { count } }`;
   } else {
-    middleQuery = `${splitField} { ${rawDataQueryStrForEachField(splitFieldArray.join('.'))} }`;
+    middleQuery = `${splitField} { ${rawDataQueryStrForEachField(splitFieldArray.join('.'), isTextHistograpm)} }`;
   }
   return middleQuery;
 };
@@ -68,16 +62,18 @@ interface NamedFilterRawDataParams {
   field: string;
   rangeName: string;
   prefix?: string;
+  isTextHistogram?: boolean;
 }
 
 export const buildAliasedNestedCountsQuery = ({
   type,
   field,
   rangeName,
+  isTextHistogram = false,
 }: NamedFilterRawDataParams) => {
   const dataParams = [`filter: $${rangeName}`];
   const dataTypeLine = `${rangeName} : ${type} (accessibility: $accessibility ${dataParams}) {`;
-  const processedFields = rawDataQueryStrForEachField(field);
+  const processedFields = rawDataQueryStrForEachField(field, isTextHistogram);
   return `${dataTypeLine} ${processedFields} }`;
 };
 
@@ -120,13 +116,14 @@ export const buildRangeQuery = (
   index: string = 'cases',
   indexPrefix: string = '',
   isNested: boolean = true,
+  isTextHistogram: boolean = false,
 ) => {
   const rangeFilters = buildRangeFilters(
     field,
     ranges,
     filters,
     rangeBaseName,
-    isNested,
+    isNested
   );
 
   let query = `query rangeQuery ($accessibility: Accessibility, ${Object.keys(
@@ -139,6 +136,7 @@ export const buildRangeQuery = (
       type: index,
       field,
       rangeName: rangeKey,
+      isTextHistogram
     });
     query += rangeQuery + ' \n';
   });
