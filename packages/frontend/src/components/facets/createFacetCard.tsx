@@ -50,7 +50,6 @@ export const createFacetCard = ({
       ? valueLabel
       : valueLabel(facetDefinition, queryOptions);
 
-  console.log(`creating ${type} facet for field ${field} with label: ${facetLabel}`)
   return (
     <div key={`${idPrefix}-facet-${field}`}>
       {

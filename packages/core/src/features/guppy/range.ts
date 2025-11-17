@@ -45,14 +45,14 @@ export const convertNumericFromToArrayToFilters = (
   } satisfies Intersection;
 };
 
-export const rawDataQueryStrForEachField = (field: string, isTextHistograpm: boolean = false): string => {
+export const rawDataQueryStrForEachField = (field: string, asTextHistogram: boolean = false): string => {
   const splitFieldArray = field.split('.');
   const splitField = splitFieldArray.shift();
   let middleQuery: string = '';
   if (splitFieldArray.length === 0) {
-    middleQuery = `${splitField} { ${isTextHistograpm ? "histogram: textHistogram" :  "histogram"} { count } }`;
+    middleQuery = `${splitField} { ${asTextHistogram ? "histogram: asTextHistogram" :  "histogram"} { count } }`;
   } else {
-    middleQuery = `${splitField} { ${rawDataQueryStrForEachField(splitFieldArray.join('.'), isTextHistograpm)} }`;
+    middleQuery = `${splitField} { ${rawDataQueryStrForEachField(splitFieldArray.join('.'), asTextHistogram)} }`;
   }
   return middleQuery;
 };
@@ -62,18 +62,18 @@ interface NamedFilterRawDataParams {
   field: string;
   rangeName: string;
   prefix?: string;
-  isTextHistogram?: boolean;
+  asTextHistogram?: boolean;
 }
 
 export const buildAliasedNestedCountsQuery = ({
   type,
   field,
   rangeName,
-  isTextHistogram = false,
+  asTextHistogram = false,
 }: NamedFilterRawDataParams) => {
   const dataParams = [`filter: $${rangeName}`];
   const dataTypeLine = `${rangeName} : ${type} (accessibility: $accessibility ${dataParams}) {`;
-  const processedFields = rawDataQueryStrForEachField(field, isTextHistogram);
+  const processedFields = rawDataQueryStrForEachField(field, asTextHistogram);
   return `${dataTypeLine} ${processedFields} }`;
 };
 
@@ -116,7 +116,7 @@ export const buildRangeQuery = (
   index: string = 'cases',
   indexPrefix: string = '',
   isNested: boolean = true,
-  isTextHistogram: boolean = false,
+  asTextHistogram: boolean = false,
 ) => {
   const rangeFilters = buildRangeFilters(
     field,
@@ -136,7 +136,7 @@ export const buildRangeQuery = (
       type: index,
       field,
       rangeName: rangeKey,
-      isTextHistogram
+       asTextHistogram
     });
     query += rangeQuery + ' \n';
   });

@@ -524,9 +524,11 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix,
         accessibility = Accessibility.ALL,
         isNested = true,
-                isTextHistogram = false,
+                asTextHistogram = false,
       }: RangeQueryRequest) => {
         // remove field from FilterSet
+
+
 
         const queryData = buildRangeQuery(
           field,
@@ -536,7 +538,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           index,
           indexPrefix,
           isNested,
-          isTextHistogram
+          asTextHistogram
         );
 
         const gqlFilters = Object.entries(queryData.filters).reduce(

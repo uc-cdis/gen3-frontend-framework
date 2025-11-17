@@ -189,7 +189,6 @@ export const classifyFacets = (
         fieldNameToTitle(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
-      console.log(`classifyFacets ${type} facet (facetDef: ${facetDef?.type ?? "not set"} for field ${fieldKey} with label: ${facetName}`)
 
       return {
         ...acc,

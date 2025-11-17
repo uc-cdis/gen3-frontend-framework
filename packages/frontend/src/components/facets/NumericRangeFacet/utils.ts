@@ -1,17 +1,5 @@
-import {
-  ClearFacetFunction,
-  EnumOperandValue,
-  FromToRange,
-  UpdateFacetFilterFunction,
-} from '../types';
-import {
-  GreaterThan,
-  GreaterThanOrEquals,
-  LessThan,
-  LessThanOrEquals,
-  NumericFromTo,
-  Operation,
-} from '@gen3/core';
+import { ClearFacetFunction, EnumOperandValue, FromToRange, UpdateFacetFilterFunction, } from '../types';
+import { GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, NumericFromTo, Operation, } from '@gen3/core';
 import { NumericUnits, RangeBucketElement } from './types';
 import { DAYS_IN_YEAR } from '../constants';
 
@@ -359,7 +347,7 @@ export const buildRangeLabelsAndValues = (
   rangeData?: Record<string, string | number>,
   showZero = true,
 ) => {
-  console.log('buildRangeLabelsAndValues', bucketRanges, rangeData, showZero);
+
   return Object.entries(bucketRanges).reduce(
     (b, [x, val], index: number) => {
       const count = rangeData?.[val.queryKey];
