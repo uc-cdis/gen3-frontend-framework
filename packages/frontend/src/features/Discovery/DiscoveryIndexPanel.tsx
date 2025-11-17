@@ -116,7 +116,10 @@ const DiscoveryIndexPanel = ({
       },
       // searchTerms: searchParam,
       searchTerms: {
-        keyword: { operator: 'AND', keywords: ['Martyn'] },
+        keyword: {
+          operator: 'AND',
+          keywords: ['Ze'],
+        },
         advancedSearchTerms: { operation: 'AND', filters: {} },
       },
       sorting: sorting,
@@ -137,25 +140,13 @@ const DiscoveryIndexPanel = ({
         return response.json();
       })
       .then((data) => {
-        console.log('data from DiscoveryIndexPanel new API', data); // Handle the retrieved data here
         setProxyData(data);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
   }, []);
-  console.log('searchParam', searchParam);
-
-  const searchOverFields =
-    discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
-  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
-
-  console.log(
-    'discoveryConfig?.features?.search?.searchBar?.searchableTextFields',
-    searchOverFields,
-  );
-  console.log('uidField', uidField);
-  console.log('proxyData', proxyData);
+  console.log('Returned proxy data', proxyData);
 
   /** END SPIKE CODE */
 
