@@ -21,12 +21,12 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
   let processedData: Array<JSONObject> = data;
   // processedData = addAuthMetaData(data); // Step 1: Add Metadata
   // processedData = filterData(data); // Step 2: Filter
-  processedData = searchData(
+  /* processedData = searchData(
     data,
     searchTerms.keyword.keywords,
     discoveryConfig,
-  ); // Step 3: Search
-  // processedData = sortData(data, 'title'); // Step 4: Sort (example key)
+  ); // Step 3: Search */
+  processedData = sortData(data, sorting); // Step 4: Sort (example key)
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,

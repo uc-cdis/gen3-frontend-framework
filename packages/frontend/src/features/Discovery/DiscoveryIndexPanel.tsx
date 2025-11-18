@@ -99,6 +99,7 @@ const DiscoveryIndexPanel = ({
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
@@ -145,8 +146,11 @@ const DiscoveryIndexPanel = ({
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, []);
+  }, [sorting]);
   console.log('Returned proxy data', proxyData);
+  useEffect(() => {
+    console.log('sorting', sorting);
+  }, [sorting]);
 
   /** END SPIKE CODE */
 

@@ -7,15 +7,20 @@ const searchData = (
   searchTerms: Array<string>,
   discoveryConfig: any,
 ) => {
+  // do not execute search if there are no search terms
+  if (searchTerms.length === 0) return data;
+
   const searchOverFields =
     discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
+  // Convert Search Terms into single string
+  const searchTermsSpaceSeparated = searchTerms.join(' ');
+
   const extractValue = (document: JSONObject, field: string) => {
     const result = JSONPath({ path: field, json: document });
     return result?.length ? result[0] : undefined;
   };
 
-  // from https://github.com/lucaong/minisearch
   const miniSearch = new MiniSearch({
     fields: searchOverFields, // fields to index for full-text search
     storeFields: [uidField],
@@ -27,8 +32,6 @@ const searchData = (
   // Index all documents
   miniSearch.addAll(data);
 
-  // Convert Search Terms into single string
-  const searchTermsSpaceSeparated = searchTerms.join(' ');
   // Search with default options
   const miniSearchResults = miniSearch.search(searchTermsSpaceSeparated);
   // Extract _hdp_uid values from the mini search results
