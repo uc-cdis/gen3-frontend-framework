@@ -73,7 +73,7 @@ const CohortManagerPanel = ({
   };
 
   const handleCreateNew = () => {
-    coreDispatch(createNewCohort({ name: "New Cohort" }));
+    coreDispatch(createNewCohort({ name: "New Cohort", setAsCurrent: true }));
   };
 
   const handleDuplicate = () => {

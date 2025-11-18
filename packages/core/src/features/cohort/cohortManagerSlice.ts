@@ -1,15 +1,6 @@
-import {
-  createEntityAdapter,
-  createSlice,
-  type EntityState,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice, type EntityState, type PayloadAction, } from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
-import {
-  type FilterSet,
-  type IndexedFilterSet,
-  type Operation,
-} from '../filters';
+import { type FilterSet, type IndexedFilterSet, type Operation, } from '../filters';
 import { defaultCohortNameGenerator, generateUniqueName } from './utils';
 import { type Cohort, type CohortId } from './types';
 import { customAlphabet } from 'nanoid';
@@ -108,6 +99,7 @@ const getCurrentCohortId = (
 interface CreateCohortParams {
   name?: string;
   filters?: IndexedFilterSet;
+  setAsCurrent?: boolean;
 }
 
 interface UpdateCohortNameParams {
@@ -135,7 +127,9 @@ export const cohortManagerSlice = createSlice({
         customName: uniqueName,
       });
       cohortsAdapter.addOne(state, cohort);
-      state.currentCohortId = cohort.id;
+      if (action.payload?.setAsCurrent) {
+        state.currentCohortId = cohort.id;
+      }
     },
 
     updateCohortName: (

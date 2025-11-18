@@ -6,7 +6,7 @@ import {
   DEFAULT_COHORT_NAME,
   duplicateCohort,
   newCohort,
-  removeCohort,
+  removeCohort
 } from '../cohortManagerSlice';
 import { Cohort, CohortId } from '../types';
 import { EntityState } from '@reduxjs/toolkit';
@@ -100,7 +100,7 @@ describe('cohortManagerSlice add, update, duplicate, and remove cohort', () => {
   test('add cohort', () => {
     const testState = cohortReducer(
       localState,
-      createNewCohort({ filters: {}, name: 'Other Cohort' }),
+      createNewCohort({ filters: {}, name: 'Other Cohort', setAsCurrent: true }),
     );
 
     expect(testState).toEqual(STATE_WITH_2_COHORTS);

@@ -9,6 +9,7 @@ export * from './components/Protected';
 // features
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './features/Dictionary';
 export * from './features/Study';
 export * from './features/CohortBuilder';
 export * from './features/Query';
@@ -22,11 +23,7 @@ export * from './types';
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
-import {
-  type Fonts,
-  type Gen3AppConfigData,
-  type RegisteredIcons,
-} from './lib/content/types';
+import { type Fonts, type Gen3AppConfigData, type RegisteredIcons, } from './lib/content/types';
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
@@ -50,9 +47,7 @@ import SegmentedControl from './components/SegmentedControl';
 import TopBar from './features/Navigation/TopBar/TopBar';
 
 import '@gen3/core'; // export Gen3 data UI standard pages
-import Gen3Provider, {
-  createMantineTheme,
-} from './components/Providers/Gen3Provider';
+import Gen3Provider, { createMantineTheme, } from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/Discovery';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
@@ -75,9 +70,7 @@ import { ColorThemePageGetServerSideProps } from './pages/Theme';
 import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
 import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
 
-import DictionaryPage, {
-  DictionaryPageGetServerSideProps,
-} from './pages/DataDictionary';
+import DictionaryPage, { DictionaryPageGetServerSideProps, } from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
@@ -89,16 +82,10 @@ import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
 import WorkspacePage from './pages/Workspace/Workspace';
 import { WorkspaceNoAccessPage } from './pages/Workspace/index';
-import {
-  WorkspaceNoAccessPageServerSideProps,
-  WorkspacePageGetServerSideProps,
-} from './pages/Workspace/data';
+import { WorkspaceNoAccessPageServerSideProps, WorkspacePageGetServerSideProps, } from './pages/Workspace/data';
 
 import AnalysisPage from './pages/Analysis/Analysis';
-import {
-  AnalysisPageGetServerSideProps,
-  type AnalysisPageLayoutProps,
-} from './pages/Analysis';
+import { AnalysisPageGetServerSideProps, type AnalysisPageLayoutProps, } from './pages/Analysis';
 
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
@@ -109,18 +96,14 @@ import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
 import NotebookLitePage from './pages/NotebookLite/NotebookLite';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
-import DataLibraryPage, {
-  DataLibraryPageGetServerSideProps,
-} from './pages/DataLibrary'; // TODO Replace with AppTool plugin
+import DataLibraryPage, { DataLibraryPageGetServerSideProps, } from './pages/DataLibrary'; // TODO Replace with AppTool plugin
 import CrosswalkPage from './pages/Crosswalk';
 import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
 
 import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
 import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
 
-import RepositoryPage, {
-  RepositoryPageGetServerSideProps,
-} from './pages/Repository';
+import RepositoryPage, { RepositoryPageGetServerSideProps, } from './pages/Repository';
 
 import { TailwindConfig } from './utils/tailwindConfig';
 
