@@ -13,7 +13,7 @@ const FULLSCREEN_STYLE =
 
 const WorkspaceNotebookPanelWithControls = ({ id }: { id?: string }) => {
   const { isFullscreen, startWorkspace } = useWorkspaceStatusContext();
-  const { requirePayModel } = useWorkspaceContext();
+  const { requirePayModel, externalLoginsNotUsed } = useWorkspaceContext();
 
   useEffect(() => {
     if (id) {
@@ -29,7 +29,7 @@ const WorkspaceNotebookPanelWithControls = ({ id }: { id?: string }) => {
           : 'flex flex-col grow w-full h-full relative'
       }
     >
-      <ExternalLoginsStatus />
+      {externalLoginsNotUsed === false && <ExternalLoginsStatus />}
       <div
         className={`flex w-full p-2 ${requirePayModel ? 'justify-between' : 'justify-end'}`}
       >
