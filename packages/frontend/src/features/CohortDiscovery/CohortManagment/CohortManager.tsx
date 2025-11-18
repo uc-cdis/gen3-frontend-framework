@@ -1,25 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Button,
-  ComboboxItem,
-  Group,
-  Select,
-  Text,
-  TextInput,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, ComboboxItem, Group, Select, Text, TextInput, Tooltip, useMantineTheme, } from '@mantine/core';
 
-import {
-  createNewCohort,
-  removeCohort,
-  setCurrentCohortId,
-  updateCohortName,
-} from './CohortManagerSlice';
-import {
-  selectAllCohorts,
-  selectCurrentCohort,
-} from './CohortManagerSelectors';
+import { createNewCohort, removeCohort, setCurrentCohortId, updateCohortName, } from './CohortManagerSlice';
+import { selectAllCohorts, selectCurrentCohort, } from './CohortManagerSelectors';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useAppDispatch, useAppSelector } from '../appApi';
 import {
@@ -28,12 +11,7 @@ import {
   IndexResourceField,
   SupportServiceConfiguration,
 } from '../types';
-import {
-  AddIcon,
-  CloseIcon,
-  DownloadIcon,
-  UploadIcon,
-} from '../../../types/icons';
+import { AddIcon, CloseIcon, DownloadIcon, UploadIcon, } from '../../../types/icons';
 
 import { Icon } from '@iconify-icon/react';
 
