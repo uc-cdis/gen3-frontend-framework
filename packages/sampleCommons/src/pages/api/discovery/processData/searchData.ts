@@ -7,14 +7,17 @@ const searchData = (
   searchTerms: Array<string>,
   discoveryConfig: any,
 ) => {
+  console.log('searchTerms pre-processing', searchTerms);
   // do not execute search if there are no search terms
-  if (searchTerms.length === 0) return data;
+  if (searchTerms.length === 0 || searchTerms.every((item) => item === ''))
+    return data;
 
   const searchOverFields =
     discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   // Convert Search Terms into single string
-  const searchTermsSpaceSeparated = searchTerms.join(' ');
+  const searchTermsSpaceSeparated = searchTerms.join(' ').trim();
+  console.log('searchTermsSpaceSeparated', searchTermsSpaceSeparated);
 
   const extractValue = (document: JSONObject, field: string) => {
     const result = JSONPath({ path: field, json: document });

@@ -21,58 +21,61 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
   let processedData: Array<JSONObject> = data;
   // processedData = addAuthMetaData(data); // Step 1: Add Metadata
   // processedData = filterData(data); // Step 2: Filter
-  /* processedData = searchData(
+  processedData = searchData(
     data,
     searchTerms.keyword.keywords,
     discoveryConfig,
-  ); // Step 3: Search */
-  processedData = sortData(data, sorting); // Step 4: Sort (example key)
+  ); // Step 3: Search
+  processedData = sortData(processedData, sorting); // Step 4: Sort (example key)
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
   ); // Step 5: Pagination */
-  return paginatedData;
+  return {
+    hits: processedData.length,
+    displayedData: paginatedData,
+  };
   // return processedData;
 };
 
 export default async function handler(req: any, res: any) {
-  // console.log('req', req.body);a
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
     const processedData = processData(cachedData, req.body);
+    console.log('used cachedData');
     res.status(200).json(processedData);
-  }
+  } else {
+    try {
+      // Fetch both APIs concurrently
+      const [mdsAggregateResponse, mdsMetadataResponse] = await Promise.all([
+        fetch(mdsAggregateApi),
+        fetch(mdsMetadataApi),
+      ]);
 
-  try {
-    // Fetch both APIs concurrently
-    const [mdsAggregateResponse, mdsMetadataResponse] = await Promise.all([
-      fetch(mdsAggregateApi),
-      fetch(mdsMetadataApi),
-    ]);
-
-    // Check if both responses are OK
-    if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
-      throw new Error(
-        `One of the responses was not ok:
+      // Check if both responses are OK
+      if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
+        throw new Error(
+          `One of the responses was not ok:
         mdsAggregateResponse:${mdsAggregateResponse},
         mdsMetadataResponse ${mdsMetadataResponse}`,
-      );
-    }
+        );
+      }
 
-    // Parse the JSON data from both responses
-    const mdsAggregateData = await mdsAggregateResponse.json();
-    const mdsMetadataData = await mdsMetadataResponse.json();
-    const combinedData = combineData(mdsAggregateData, mdsMetadataData);
-    // Update the cache
-    cachedData = combinedData;
-    cacheTime = currentTime;
-    // console.log('req.body', req.body);
-    const processedData = processData(combinedData, req.body);
-    res.status(200).json(processedData);
-  } catch (error) {
-    console.error('Fetch error:', error);
-    res.status(500).json({ error: 'Failed to fetch data.' });
+      // Parse the JSON data from both responses
+      const mdsAggregateData = await mdsAggregateResponse.json();
+      const mdsMetadataData = await mdsMetadataResponse.json();
+      const combinedData = combineData(mdsAggregateData, mdsMetadataData);
+      // Update the cache
+      cachedData = combinedData;
+      cacheTime = currentTime;
+      console.log('used new Data');
+      const processedData = processData(combinedData, req.body);
+      res.status(200).json(processedData);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      res.status(500).json({ error: 'Failed to fetch data.' });
+    }
   }
 }

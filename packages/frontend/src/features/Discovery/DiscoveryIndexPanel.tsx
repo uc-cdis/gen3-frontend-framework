@@ -107,22 +107,15 @@ const DiscoveryIndexPanel = ({
   // THIS SORT OF CODE LIKELY BELONGS IN packages/frontend/src/features/Discovery/DataLoaders
   const apiUrl = 'http://localhost:3000/api/discovery';
   const [proxyData, setProxyData] = useState<Array<JSONObject>>([]);
+  const [proxyHits, setProxyHits] = useState(0);
   useEffect(() => {
     const params = {
       discoveryConfig: discoveryConfig,
       pagination: {
         offset: pagination.pageIndex * pagination.pageSize,
         pageSize: pagination.pageSize,
-        // pageSize: 4,
       },
-      // searchTerms: searchParam,
-      searchTerms: {
-        keyword: {
-          operator: 'AND',
-          keywords: ['Ze'],
-        },
-        advancedSearchTerms: { operation: 'AND', filters: {} },
-      },
+      searchTerms: searchParam,
       sorting: sorting,
       filters: {},
     };
@@ -141,13 +134,16 @@ const DiscoveryIndexPanel = ({
         return response.json();
       })
       .then((data) => {
-        setProxyData(data);
+        setProxyHits(data.hits);
+        setProxyData(data.displayedData);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [sorting]);
+  }, [sorting, searchParam]);
   console.log('Returned proxy data', proxyData);
+  console.log('Returned proxyHits', proxyHits);
+
   useEffect(() => {
     console.log('sorting', sorting);
   }, [sorting]);
@@ -188,7 +184,17 @@ const DiscoveryIndexPanel = ({
             )}
             <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
               {indexSelector}
-              <SummaryStatisticPanel summaries={summaryStatistics} />
+              <SummaryStatisticPanel
+                // summaries={summaryStatistics}
+                summaries={[
+                  {
+                    name: 'Studies',
+                    field: '_hdp_uid',
+                    type: 'count',
+                    value: proxyHits,
+                  },
+                ]}
+              />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
                   suggestions={suggestions}
@@ -255,9 +261,10 @@ const DiscoveryIndexPanel = ({
                 ref={parentDivRef}
               >
                 <DiscoveryTable
-                  data={data}
-                  // data={proxyData}
-                  hits={hits}
+                  // data={data}
+                  data={proxyData}
+                  // hits={hits}
+                  hits={proxyHits}
                   dataRequestStatus={dataRequestStatus}
                   setPagination={setPagination}
                   setSorting={setSorting}
