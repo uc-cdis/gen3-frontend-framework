@@ -205,7 +205,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
             });
           }}
           classNames={{
-            input: 'focus:border-2 focus:border-primary text-sm p-5 ml-3',
+            input: 'focus:border-2 focus:border-primary text-sm',
           }}
           size="sm"
           rightSection={

@@ -99,7 +99,7 @@
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
     "pluralize": "^8.0.0",
-    "postcss-loader": "^7.3.2",
+    "postcss-loader": "^8.2.0",
     "postcss-preset-env": "^8.4.2",
     "react-cookie": "^7.2.2",
     "react-fast-compare": "^3.2.2",
