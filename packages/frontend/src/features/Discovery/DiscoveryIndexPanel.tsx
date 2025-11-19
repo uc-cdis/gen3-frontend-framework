@@ -143,10 +143,8 @@ const DiscoveryIndexPanel = ({
   }, [sorting, searchParam]);
   console.log('Returned proxy data', proxyData);
   console.log('Returned proxyHits', proxyHits);
-
-  useEffect(() => {
-    console.log('sorting', sorting);
-  }, [sorting]);
+  console.log('advancedSearchTerms', advancedSearchTerms);
+  console.log('advancedSearchFilterValues', advancedSearchFilterValues);
 
   /** END SPIKE CODE */
 
@@ -261,8 +259,8 @@ const DiscoveryIndexPanel = ({
                 ref={parentDivRef}
               >
                 <DiscoveryTable
-                  // data={data}
-                  data={proxyData}
+                  data={data}
+                  // data={proxyData}
                   // hits={hits}
                   hits={proxyHits}
                   dataRequestStatus={dataRequestStatus}
