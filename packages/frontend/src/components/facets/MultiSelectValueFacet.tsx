@@ -9,7 +9,7 @@ import FacetControlsHeader from './FacetControlsHeader';
 import { useDisclosure } from '@mantine/hooks';
 import { Icon } from '@iconify-icon/react';
 
-interface ExactValueProps extends Omit<
+export interface ExactValueProps extends Omit<
   FacetCardProps<FacetDataHooks<'enum'>>,
   'showSearch' | 'showFlip' | 'showPercent' | 'valueLabel'
 > {
