@@ -1,11 +1,5 @@
 import React, { ReactNode, useRef } from 'react';
-import {
-  Button,
-  Menu,
-  Tooltip,
-  FloatingPosition,
-  PopoverWidth,
-} from '@mantine/core';
+import { Button, FloatingPosition, Menu, Tooltip, } from '@mantine/core';
 import { focusStyles } from '../../utils';
 import { IoMdArrowDropdown as DropdownIcon } from 'react-icons/io';
 

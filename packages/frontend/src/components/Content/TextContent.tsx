@@ -88,19 +88,19 @@ const TextContent = ({
             remarkPlugins={[remarkGfm]}
             components={{
               p(props: any) {
-                const { node, ...rest } = props;
+                const { _node, ...rest } = props;
                 return <p className="text-lg my-1" {...rest} />;
               },
               ol(props: any) {
-                const { node, ...rest } = props;
+                const { _node, ...rest } = props;
                 return <ol className="list-disc list-inside my-1" {...rest} />;
               },
               ul(props: any) {
-                const { node, ...rest } = props;
+                const { _node, ...rest } = props;
                 return <ul className="list-disc list-inside my-1" {...rest} />;
               },
               li(props: any) {
-                const { node, ...rest } = props;
+                const { _node, ...rest } = props;
                 return <li className="text-md" {...rest} />;
               },
             }}
