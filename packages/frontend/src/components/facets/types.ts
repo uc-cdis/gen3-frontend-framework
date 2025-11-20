@@ -195,6 +195,7 @@ export interface FacetResponse {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;
   readonly isFetching: boolean;
+  readonly isError?: boolean;
   readonly error?: unknown;
 }
 

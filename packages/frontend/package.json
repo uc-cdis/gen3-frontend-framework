@@ -87,8 +87,7 @@
     "graphiql": "^3.7.1",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.14.0",
-    "gray-matter": "^4.0.3",
-    "isomorphic-dompurify": "^2.29.0",
+    "isomorphic-dompurify": "^2.32.0",
     "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
@@ -100,7 +99,7 @@
     "next-images": "^1.8.5",
     "node-json-db": "^2.3.0",
     "pluralize": "^8.0.0",
-    "postcss-loader": "^7.3.2",
+    "postcss-loader": "^8.2.0",
     "postcss-preset-env": "^8.4.2",
     "react-cookie": "^7.2.2",
     "react-fast-compare": "^3.2.2",
@@ -148,7 +147,7 @@
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwindcss": "^3.4.16"
+    "tailwindcss": "^3.4.18"
   },
   "files": [
     "dist"
