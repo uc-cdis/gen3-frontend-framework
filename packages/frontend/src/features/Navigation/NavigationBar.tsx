@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
@@ -37,8 +37,8 @@ const NavigationBar = ({
   const router = useRouter();
   const [current, setCurrent] = useState(router.pathname);
   useEffect(() => {
-    setCurrent(router.pathname);
-  }, [router.pathname]);
+    setCurrent(router.asPath);
+  }, [router.asPath]);
 
   return (
     <div
