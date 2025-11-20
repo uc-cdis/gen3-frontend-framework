@@ -1,6 +1,6 @@
 import addAuthMetaData from './preProcessData/addAuthMetaData';
 import combineData from './preProcessData/combineData';
-import filterData from './processData/filterData';
+import filterByAdvSearch from './processData/filterByAdvSearch';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
 import sortData from './processData/sortData';
@@ -19,19 +19,23 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
   const { pagination, searchTerms, sorting, filters, discoveryConfig } =
     reqBody;
   let processedData: Array<JSONObject> = data;
-  // processedData = addAuthMetaData(data); // Step 1: Add Metadata
-  // processedData = filterData(data); // Step 2: Filter
+
   processedData = searchData(
     data,
     searchTerms.keyword.keywords,
     discoveryConfig,
   ); // Step 3: Search
   processedData = sortData(processedData, sorting); // Step 4: Sort (example key)
+  processedData = filterByAdvSearch(
+    data,
+    searchTerms.advancedSearchTerms,
+    discoveryConfig,
+  ); //Step 5 Adv Search Filtering
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
-  ); // Step 5: Pagination */
+  ); // Step 6: Pagination */
   return {
     hits: processedData.length,
     displayedData: paginatedData,
