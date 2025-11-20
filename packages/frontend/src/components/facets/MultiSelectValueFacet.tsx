@@ -1,21 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
-import { MultiSelect } from '@mantine/core';
+import { ActionIcon, MultiSelect } from '@mantine/core';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
-import {
-  Excludes,
-  Includes,
-  Operation,
-  trimFirstFieldNameToTitle,
-} from '@gen3/core';
+import { Excludes, Includes, Operation, trimFirstFieldNameToTitle, } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { updateFacetEnum } from './utils';
 import FacetControlsHeader from './FacetControlsHeader';
+import { useDisclosure } from '@mantine/hooks';
+import { Icon } from '@iconify-icon/react';
 
-type ExactValueProps = Omit<
+interface ExactValueProps extends Omit<
   FacetCardProps<FacetDataHooks<'enum'>>,
   'showSearch' | 'showFlip' | 'showPercent' | 'valueLabel'
->;
+> {
+  placeHolder?: string;
+}
 
 const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ['in'].includes(op.operator); // TODO: Guppy does not support excludes
@@ -39,7 +38,7 @@ const isFacetEmpty = (op: object | null): boolean => {
 
 /**
  * Extracts the operands if the operation isIncludes or Excludes. Returns an empty Array
- * if filter is not the correct type.
+ * if the filter is not the correct type.
  * @param operation - filters to extract values from
  */
 const extractValues = (
@@ -87,6 +86,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   const isFilterExpanded =
     hooks.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+  const [dropdownOpened, { toggle }] = useDisclosure();
 
   const dataValues = useMemo(() => {
     if (facetDataValues?.data) {
@@ -142,10 +142,14 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
           <MultiSelect
             data-testid="multiselect-add-filter-value"
             size="sm"
-            placeholder={`Enter ${facetTitle}`}
+            placeholder='Add value'
+            styles={{
+              root: {
+                marginTop: 0,
+            }}}
             classNames={{
               root: 'grow',
-              input: 'border-r-0 rounded-r-none py-1',
+              input: 'border-r-0 rounded-r-none py-1 mt-0',
             }}
             comboboxProps={{ shadow: 'md' }}
             aria-label="enter value to add filter"
@@ -156,9 +160,15 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             limit={10}
             maxDropdownHeight={200}
             hidePickedOptions
-            withScrollArea={false}
-            mt="md"
+            withScrollArea={true}
+            dropdownOpened={dropdownOpened}
           />
+        <ActionIcon
+          variant="filled" aria-label={`toggle dropdown for ${facetTitle} facet`}
+           className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-9 border-l-0"
+          onClick={toggle}>
+          <Icon icon="gen3:chevron-down" aria-label="close dropdown for facet" className={dropdownOpened ? '' : '-rotate-90'}/>
+        </ActionIcon>
         </div>
       </div>
     </div>
