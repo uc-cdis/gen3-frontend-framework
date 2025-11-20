@@ -141,7 +141,6 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         <div className="flex flex-nowrap items-center p-2">
           <MultiSelect
             data-testid="multiselect-add-filter-value"
-            size="sm"
             placeholder='Add value'
             styles={{
               root: {
@@ -149,7 +148,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             }}}
             classNames={{
               root: 'grow',
-              input: 'border-r-0 rounded-r-none py-1 mt-0',
+              input: 'border-r-0 rounded-r-none py-1 mt-0 text-sm',
             }}
             comboboxProps={{ shadow: 'md' }}
             aria-label="enter value to add filter"
@@ -157,15 +156,13 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             onChange={setSelectedValues}
             searchable
             data={dataValues}
-            limit={10}
-            maxDropdownHeight={200}
             hidePickedOptions
             withScrollArea={true}
             dropdownOpened={dropdownOpened}
           />
         <ActionIcon
           variant="filled" aria-label={`toggle dropdown for ${facetTitle} facet`}
-           className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-9 border-l-0"
+           className="bg-accent text-accent-contrast border-base-min border-1 ml-2"
           onClick={toggle}>
           <Icon icon="gen3:chevron-down" aria-label="close dropdown for facet" className={dropdownOpened ? '' : '-rotate-90'}/>
         </ActionIcon>
