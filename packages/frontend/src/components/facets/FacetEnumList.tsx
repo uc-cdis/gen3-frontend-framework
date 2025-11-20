@@ -16,12 +16,7 @@ import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetDataHooks, FacetSortType, SortType } from './types';
-import {
-  compareKeysAscending,
-  compareKeysDescending,
-  mapFacetSortToSortType,
-  updateFacetEnum,
-} from './utils';
+import { compareKeysAscending, compareKeysDescending, mapFacetSortToSortType, updateFacetEnum, } from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify-icon/react';
 
@@ -403,7 +398,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               <Checkbox
                                 data-testid={`checkbox-${value}`}
                                 value={value}
-                                size="xs"
+                                size="sm"
                                 color="accent.4"
                                 onChange={(e) =>
                                   handleChange(
@@ -414,7 +409,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 aria-label={`${value}`}
                                 classNames={{
                                   input: 'hover:bg-accent-darker',
-                                  label: 'text-xs font-normal font-content',
+                                  label: 'text-sm font-normal font-content',
                                 }}
                                 checked={
                                   selectedEnums && selectedEnums.includes(value)
@@ -422,11 +417,11 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               />
                             </div>
                             <OverflowTooltippedLabel label={value.toString()}>
-                              <span className="text-xs font-normal font-content">
+                              <span className="text-sm font-normal font-content">
                                 {value}
                               </span>
                             </OverflowTooltippedLabel>
-                            <div className="flex-none text-right w-14 text-xs font-normal font-content">
+                            <div className="flex-none text-right w-14 text-sm font-normal font-content">
                               {count < 0 ? (
                                 <LockOutlineIcon
                                   size="1.1em"
@@ -437,7 +432,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               )}
                             </div>
                             {showPercent ? (
-                              <div className="flex-none text-right w-18 text-xs font-normal font-content">
+                              <div className="flex-none text-right w-18 text-sm font-normal font-content">
                                 (
                                 {count < 0 ? (
                                   <LockOutlineIcon
