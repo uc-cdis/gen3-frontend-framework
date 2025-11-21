@@ -120,7 +120,7 @@ const DiscoveryIndexPanel = ({
       selectedTags: {
         SPARC: true,
         Dataverse: true,
-      },
+      }, // NOTE UI NEEDS TO BE UPDATED TO ALLOW FOR USER TAG SELECTION
     };
 
     fetch(apiUrl, {
@@ -146,9 +146,6 @@ const DiscoveryIndexPanel = ({
   }, [sorting, searchParam]);
   console.log('Returned proxy data', proxyData);
   console.log('Returned proxyHits', proxyHits);
-  // console.log('advancedSearchTerms', advancedSearchTerms);
-  // console.log('advancedSearchFilterValues', advancedSearchFilterValues);
-
   /** END SPIKE CODE */
 
   if (dataRequestStatus.isLoading) {
