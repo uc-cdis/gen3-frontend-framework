@@ -79,6 +79,10 @@ export interface AdvancedSearchFilters {
   filters: ReadonlyArray<KeyValueSearchFilter>;
 }
 
+export interface selectedTags {
+  [key: string]: boolean;
+}
+
 export interface SearchKV {
   key: string;
   value: any;

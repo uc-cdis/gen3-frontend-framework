@@ -1,6 +1,7 @@
 import addAuthMetaData from './preProcessData/addAuthMetaData';
 import combineData from './preProcessData/combineData';
 import filterByAdvSearch from './processData/filterByAdvSearch';
+import filterByTags from './processData/filterByTags';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
 import sortData from './processData/sortData';
@@ -16,7 +17,7 @@ const mdsMetadataApi =
 
 // Main Function to Orchestrate Steps
 const processData = (data: Array<JSONObject>, reqBody: any) => {
-  const { pagination, searchTerms, sorting, filters, discoveryConfig } =
+  const { pagination, searchTerms, sorting, selectedTags, discoveryConfig } =
     reqBody;
   let processedData: Array<JSONObject> = data;
 
@@ -25,12 +26,14 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     searchTerms.keyword.keywords,
     discoveryConfig,
   ); // Step 3: Search
-  processedData = sortData(processedData, sorting); // Step 4: Sort (example key)
   processedData = filterByAdvSearch(
-    data,
+    processedData,
     searchTerms.advancedSearchTerms,
     discoveryConfig,
-  ); //Step 5 Adv Search Filtering
+  ); //Step 4 Adv Search Filtering
+  processedData = filterByTags(processedData, selectedTags, discoveryConfig);
+  processedData = sortData(processedData, sorting); // Step 5: Sort (example key)
+
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,

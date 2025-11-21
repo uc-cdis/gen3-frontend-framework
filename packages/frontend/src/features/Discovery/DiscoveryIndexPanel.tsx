@@ -117,7 +117,10 @@ const DiscoveryIndexPanel = ({
       },
       searchTerms: searchParam,
       sorting: sorting,
-      filters: {},
+      selectedTags: {
+        SPARC: true,
+        Dataverse: true,
+      },
     };
 
     fetch(apiUrl, {
