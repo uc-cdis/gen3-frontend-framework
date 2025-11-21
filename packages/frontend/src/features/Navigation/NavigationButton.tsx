@@ -1,14 +1,15 @@
 import React from 'react';
 import { Button, ButtonProps } from '@mantine/core';
+import Link from 'next/link';
 
 type NavigationButtonProps = ButtonProps &
-  React.ComponentPropsWithoutRef<'a'> & { $selected?: boolean };
+  React.ComponentPropsWithoutRef<typeof Link> & { $selected?: boolean };
 
 const NavigationButton = ({ $selected, ...props }: NavigationButtonProps) => {
   return (
     <Button
       {...props}
-      component="a"
+      component={Link}
       color={$selected ? 'white' : 'gray'}
       variant={$selected ? 'filled' : 'outline'}
       size="lg"
