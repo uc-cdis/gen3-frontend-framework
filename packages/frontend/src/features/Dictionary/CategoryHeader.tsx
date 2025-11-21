@@ -4,7 +4,7 @@ import { Avatar } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 
 const getIcon = (category: string) => {
-  const iconName = `gen3:dictionary-icon-${category.replace('_', '-')}`;
+  const iconName = `dataDictionary:dictionary-icon-${category.replace('_', '-')}`;
   return (
     <Icon color="primary-contrast.4" icon={iconName} height={24} width={24} />
   );
