@@ -17,28 +17,34 @@ const mdsMetadataApi =
 
 // Main Function to Orchestrate Steps
 const processData = (data: Array<JSONObject>, reqBody: any) => {
-  const { pagination, searchTerms, sorting, selectedTags, discoveryConfig } =
-    reqBody;
+  const {
+    pagination,
+    searchTerms,
+    sorting,
+    selectedTags,
+    selectedFieldsForSearchIndexing,
+    discoveryConfig,
+  } = reqBody;
   let processedData: Array<JSONObject> = data;
-
   processedData = searchData(
     data,
     searchTerms.keyword.keywords,
+    selectedFieldsForSearchIndexing,
     discoveryConfig,
   ); // Step 3: Search
   processedData = filterByAdvSearch(
     processedData,
     searchTerms.advancedSearchTerms,
     discoveryConfig,
-  ); //Step 4 Adv Search Filtering
-  processedData = filterByTags(processedData, selectedTags, discoveryConfig);
-  processedData = sortData(processedData, sorting); // Step 5: Sort (example key)
+  ); //Step 4 Adv Search Filtering (user selected filters)
+  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Step 5: Tags
+  processedData = sortData(processedData, sorting); // Step 6: Sort (example key)
 
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
-  ); // Step 6: Pagination */
+  ); // Step 7: Pagination */
   return {
     hits: processedData.length,
     displayedData: paginatedData,

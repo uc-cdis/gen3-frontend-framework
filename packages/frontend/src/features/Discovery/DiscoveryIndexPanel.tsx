@@ -109,6 +109,7 @@ const DiscoveryIndexPanel = ({
   const [proxyData, setProxyData] = useState<Array<JSONObject>>([]);
   const [proxyHits, setProxyHits] = useState(0);
   useEffect(() => {
+    console.log('discoveryConfig', discoveryConfig);
     const params = {
       discoveryConfig: discoveryConfig,
       pagination: {
@@ -117,10 +118,15 @@ const DiscoveryIndexPanel = ({
       },
       searchTerms: searchParam,
       sorting: sorting,
-      selectedTags: {
+      selectedFieldsForSearchIndexing: [
+        'study_metadata.minimal_info.study_name',
+      ],
+      selectedTags: {},
+      /*       selectedTags: {
         SPARC: true,
         Dataverse: true,
       }, // NOTE UI NEEDS TO BE UPDATED TO ALLOW FOR USER TAG SELECTION
+ */
     };
 
     fetch(apiUrl, {
