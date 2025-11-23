@@ -40,6 +40,8 @@ export const GEN3_MANIFEST_API =
 export const GEN3_REQUESTOR_API =
   process.env.NEXT_PUBLIC_GEN3_REQUESTOR_API || `${GEN3_API}/requestor`;
 
+// constants related to AuthZ and Page Access
+
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
   UNACCESSIBLE = 'unaccessible',

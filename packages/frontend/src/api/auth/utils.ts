@@ -1,4 +1,4 @@
-import { fetchFence } from '@gen3/core';
+import { fetchFence } from '@gen3/core/server';
 
 interface Gen3JTWKeys {
   keys: string[];

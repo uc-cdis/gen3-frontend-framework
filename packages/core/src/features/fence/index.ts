@@ -1,25 +1,25 @@
 import {
-  type FetchRequest,
   type Gen3LoginProvider,
-  type NameUrl,
   logoutFence,
-  useGetLoginProvidersQuery,
+  type NameUrl,
   useGetDownloadQuery,
+  useGetLoginProvidersQuery,
   useLazyGetDownloadQuery,
 } from './fenceApi';
 
 import {
   type APIKey,
   type Gen3FenceCredentials,
-  useGetCredentialsQuery,
   useAddNewCredentialMutation,
-  useRemoveCredentialMutation,
   useAuthorizeFromCredentialsMutation,
+  useGetCredentialsQuery,
+  useRemoveCredentialMutation,
 } from './credentialsApi';
 
 import { useGetJWKKeysQuery } from './jwtApi';
-import { FetchError, Gen3FenceResponse } from './types';
-import { fetchFence, isFetchError } from './utils';
+import { FetchError, FetchRequest, Gen3FenceResponse } from './types';
+import { isFetchError } from './utils';
+import { fetchFence } from './fetchFence';
 
 export {
   type Gen3FenceResponse,

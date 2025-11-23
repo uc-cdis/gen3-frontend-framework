@@ -75,6 +75,7 @@ import DictionaryPage, { DictionaryPageGetServerSideProps, } from './pages/DataD
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom403Page from './pages/403/Custom403Page';
 import Custom404Page from './pages/404/Custom404Page';
 
 import SubmissionPage from './pages/Submission/Submission';
@@ -167,6 +168,7 @@ export {
   WorkspaceNoAccessPageServerSideProps,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
+  Custom403Page,
   Custom404Page,
   sessionToken,
   sessionLogout,

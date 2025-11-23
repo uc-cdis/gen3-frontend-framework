@@ -19,11 +19,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ): Promise<void> {
+
+
   try {
     const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
-    const access_token = cookies.access_token;
+    let accessToken = cookies.access_token;
 
-    if (access_token) {
+    // in development mode we support "credentials login"
+    if (!accessToken && process.env.NODE_ENV === 'development') {
+      // NOTE: This cookie can only be accessed from the client side
+      // in development mode. Otherwise, the cookie is set as httpOnly
+      accessToken =cookies.credentials_token;
+    }
+
+    console.log("sessionToken", cookies);
+
+    if (accessToken) {
       const jwtKey = await fetchJWTKey();
       if (!jwtKey) {
         res.status(500).json({
@@ -33,8 +44,9 @@ export default async function handler(
       }
       // validate the token
       const publicKey = await importSPKI(jwtKey, 'RS256');
-      await jwtVerify(access_token, publicKey);
-      const decodedAccessToken = decodeJwt(access_token) as JWTPayloadAndUser;
+      await jwtVerify(accessToken, publicKey);
+      const decodedAccessToken = decodeJwt(accessToken) as JWTPayloadAndUser;
+
       res.status(200).json({
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,

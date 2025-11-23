@@ -1,10 +1,8 @@
 import React from 'react';
-import ProtectedContent from '../../components/Protected/ProtectedContent';
 import Credentials from '../../components/Profile/Credentials';
 import { Accordion } from '@mantine/core';
 import { ResourcesPanel } from '../../components/Profile/ResourcesPanel';
-import { ProfileProvider } from '../../components/Profile';
-import { ProfileConfig } from '../../components/Profile';
+import { ProfileConfig, ProfileProvider } from '../../components/Profile';
 import ExternalProvidersPanel from '../../components/Profile/ExternalProvidersPanel';
 import { PiCaretCircleDownFill as Caret } from 'react-icons/pi';
 
@@ -14,7 +12,7 @@ export interface ProfileProps {
 
 const Profile = ({ profileConfig }: ProfileProps) => {
   return (
-    <ProtectedContent>
+
       <ProfileProvider profileConfig={profileConfig}>
         <div className="flex flex-col w-full">
           <Accordion
@@ -61,7 +59,6 @@ const Profile = ({ profileConfig }: ProfileProps) => {
           </Accordion>
         </div>
       </ProfileProvider>
-    </ProtectedContent>
   );
 };
 

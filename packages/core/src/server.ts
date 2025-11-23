@@ -16,6 +16,10 @@ import {
   GEN3_SUBMISSION_API,
   GEN3_WORKSPACE_API,
 } from './constants';
+// NOTE: Do NOT change to using the barrel file as that will break the server-only package
+import { fetchArboristResources } from './features/authz/fetchAuthz';
+import { fetchFence } from './features/fence/fetchFence';
+import { type FetchRequest, type Gen3FenceResponse } from './features/fence/types';
 
 export {
   type JSONObject,
@@ -34,5 +38,8 @@ export {
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
+  type FetchRequest, type Gen3FenceResponse,
   Accessibility,
+  fetchArboristResources,
+  fetchFence
 };

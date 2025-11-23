@@ -85,7 +85,9 @@ const Gen3App = ({
               sessionConfig={sessionConfig}
               modalsConfig={modalsConfig}
             >
+
               <Component {...pageProps} />
+
             </Gen3Provider>
           </MantineProvider>
         </Suspense>
