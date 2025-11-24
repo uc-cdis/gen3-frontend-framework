@@ -37,7 +37,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
 
   const shouldFetchArborist = stableStatus === 'issued';
   const { data, error, isLoading } = useSWR<ArboristApiResponse>(
-    shouldFetchArborist ? '/api/arborist/resources' : null,
+    shouldFetchArborist ? '/api/authz/resources' : null,
     fetcher,
     {
       revalidateOnFocus: true,

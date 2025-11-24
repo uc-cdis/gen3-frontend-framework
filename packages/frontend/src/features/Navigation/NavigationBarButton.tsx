@@ -41,8 +41,6 @@ const NavigationBarButton = ({
   const { loading, allowed, isProtected, loginRequired, authzRequired, loggedIn } =
     useRouteAccess(href);
 
-  console.log('isProtected', isProtected, 'loggedIn', loggedIn, 'authzRequired', authzRequired, 'loginRequired', loginRequired, "loading", loading);
-
   const handleClick = () => {
     if (!allowed) {
       // Optional: open a modal / toast instead of doing nothing
@@ -51,11 +49,9 @@ const NavigationBarButton = ({
     router.push(href);
   };
 
-  let tooltipText = '';
+  let tooltipText = tooltip;
   if (loading) {
     tooltipText = 'Checking your access…';
-  } else if (!isProtected) {
-    tooltipText = tooltip;
   } else if (!loggedIn && loginRequired) {
     tooltipText = 'Login required to access this page';
   } else if (!allowed && authzRequired) {
@@ -92,9 +88,9 @@ const NavigationBarButton = ({
           </a>
         ) : (
             <div
-              className={extractClassName('root', mergedClassnames)}
-              role="navigation"
-            ><UnstyledButton onClick={handleClick} >
+              role="navigation" className={extractClassName('root', mergedClassnames)}
+            ><UnstyledButton onClick={handleClick} classNames={{"root" : "flex flex-col nowrap"  }}
+            >
               <Icon
                 height={iconHeight}
                 icon={icon}

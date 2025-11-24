@@ -69,6 +69,7 @@ function parseArboristCookie(
 async function isLoggedIn(req: NextRequest): Promise<boolean> {
   try {
     const url = new URL('/api/auth/sessionToken', req.nextUrl.origin);
+    console.log("url", url);
     const res = await fetch(url.toString(), {
       method: 'GET',
       // Forward cookies so sessionToken endpoint can see Fence cookies, etc.
@@ -206,6 +207,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Run on almost everything, but skip Next.js internals & common assets
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/*|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
   ],
 };

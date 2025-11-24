@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { decodeJwt, JWTPayload } from 'jose';
 import { getAuthzEnabled, getRouteConfig } from '../../../lib/authz/arboristConfig';
-import { fetchArboristResources } from '@gen3/core/server';
+import { fetchArboristResources, GEN3_DOMAIN } from '@gen3/core/server';
 
 const ARBORIST_COOKIE_NAME = 'arborist_resources';
 const RESOURCES_TTL_SECONDS = 300;
@@ -10,18 +9,6 @@ interface ArboristCookiePayload {
   expires: number;
   resources: string[];
   userKey: string;
-}
-
-function getUserKeyFromToken(token: string | null): string {
-  if (!token) return 'anonymous';
-  try {
-    const payload = decodeJwt(token) as JWTPayload & {
-      context?: { user?: { name?: string } };
-    };
-    return payload.sub || payload.context?.user?.name || 'logged-in';
-  } catch {
-    return 'logged-in';
-  }
 }
 
 export default async function handler(
@@ -42,6 +29,7 @@ export default async function handler(
 
   let currentUserKey = 'anonymous';
   try {
+    const url = new URL('/api/auth/sessionToken',GEN3_DOMAIN);
   const tokenResponse = await fetch('/api/auth/sessionToken');
   const sessionToken = await tokenResponse.json();
   currentUserKey = sessionToken.user.username;
