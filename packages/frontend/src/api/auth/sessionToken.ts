@@ -32,8 +32,6 @@ export default async function handler(
       accessToken =cookies.credentials_token;
     }
 
-    console.log("sessionToken", cookies);
-
     if (accessToken) {
       const jwtKey = await fetchJWTKey();
       if (!jwtKey) {

@@ -3,7 +3,7 @@ import { AuthzResourceResponse } from './types';
 
 /**
  * Low-level helper to fetch Arborist resources for the current user.
- * Adds Authorization header when a token is provided and normalizes the response
+ * Adds an Authorization header when a token is provided and normalizes the response
  * to a simple string[] of resource paths.
  */
 export async function fetchArboristResources(

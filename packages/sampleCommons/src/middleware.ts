@@ -69,7 +69,6 @@ function parseArboristCookie(
 async function isLoggedIn(req: NextRequest): Promise<boolean> {
   try {
     const url = new URL('/api/auth/sessionToken', req.nextUrl.origin);
-    console.log("url", url);
     const res = await fetch(url.toString(), {
       method: 'GET',
       // Forward cookies so sessionToken endpoint can see Fence cookies, etc.
@@ -84,7 +83,6 @@ async function isLoggedIn(req: NextRequest): Promise<boolean> {
     }
 
     const json = (await res.json()) as { status?: string };
-    console.log("status", json);
     return json.status === 'issued';
   } catch (e) {
     console.error('Failed to determine server session status:', e);
@@ -118,10 +116,9 @@ export async function middleware(req: NextRequest) {
   const needsAuthz =
     Array.isArray(rule.authzResources) && rule.authzResources.length > 0;
 
-  // Gen3-style login check
+  // Gen3 login check
   const loggedIn = await isLoggedIn(req);
 
-  console.log("loggedIn", loggedIn);
 
   // 1) Enforce login if required
   if (loginRequired && !loggedIn) {

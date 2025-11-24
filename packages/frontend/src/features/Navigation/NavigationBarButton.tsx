@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavigationButtonProps } from './types';
-import Link from 'next/link';
 import { Icon } from '@iconify-icon/react';
-import { Tooltip } from '@mantine/core';
+import { Tooltip, UnstyledButton } from '@mantine/core';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import { TooltipStyle } from './style';
+import { useRouteAccess } from '../../lib/authz/useRouteAccess';
+import { useRouter } from 'next/router';
 
 /**
  * NavigationBarButton: a button for the navigation bar
@@ -31,15 +32,40 @@ const NavigationBarButton = ({
     label: 'pt-1.5 body-typo font-heading text-sm text-nowrap',
     ...TooltipStyle,
   };
-
+  const router = useRouter();
   const mergedClassnames = mergeDefaultTailwindClassnames(
     classNamesDefaults,
     classNames,
   );
+
+  const { loading, allowed, isProtected, loginRequired, authzRequired, loggedIn } =
+    useRouteAccess(href);
+
+  console.log('isProtected', isProtected, 'loggedIn', loggedIn, 'authzRequired', authzRequired, 'loginRequired', loginRequired, "loading", loading);
+
+  const handleClick = () => {
+    if (!allowed) {
+      // Optional: open a modal / toast instead of doing nothing
+      return;
+    }
+    router.push(href);
+  };
+
+  let tooltipText = '';
+  if (loading) {
+    tooltipText = 'Checking your access…';
+  } else if (!isProtected) {
+    tooltipText = tooltip;
+  } else if (!loggedIn && loginRequired) {
+    tooltipText = 'Login required to access this page';
+  } else if (!allowed && authzRequired) {
+    tooltipText = 'You are logged in but not authorized to access this page';
+  }
+
   return (
     <React.Fragment>
       <Tooltip
-        label={tooltip}
+        label={tooltipText}
         disabled={!tooltip}
         multiline
         position="bottom"
@@ -65,19 +91,10 @@ const NavigationBarButton = ({
             </div>
           </a>
         ) : (
-          <Link
-            href={`${
-              // need this to preserve running in hybrid mode
-              process.env.NEXT_PUBLIC_PORTAL_BASENAME &&
-              process.env.NEXT_PUBLIC_PORTAL_BASENAME !== '/'
-                ? process.env.NEXT_PUBLIC_PORTAL_BASENAME
-                : ''
-            }${href}`}
-          >
             <div
               className={extractClassName('root', mergedClassnames)}
               role="navigation"
-            >
+            ><UnstyledButton onClick={handleClick} >
               <Icon
                 height={iconHeight}
                 icon={icon}
@@ -86,8 +103,8 @@ const NavigationBarButton = ({
               <p className={extractClassName('label', mergedClassnames)}>
                 {name}
               </p>
+            </UnstyledButton>
             </div>
-          </Link>
         )}
       </Tooltip>
     </React.Fragment>

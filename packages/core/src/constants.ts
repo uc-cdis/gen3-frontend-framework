@@ -42,6 +42,8 @@ export const GEN3_REQUESTOR_API =
 
 // constants related to AuthZ and Page Access
 
+export const AUTHZ_RESOURCE_PREFIX = 'data:';
+
 export enum Accessibility {
   ACCESSIBLE = 'accessible',
   UNACCESSIBLE = 'unaccessible',

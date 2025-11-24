@@ -1,5 +1,5 @@
 /**
- * Frontend server side api to extract the frontend protected resources
+ * Frontend server side api to extract the frontend-protected resources
  */
 type RouteRule = {
   loginRequired?: boolean;
