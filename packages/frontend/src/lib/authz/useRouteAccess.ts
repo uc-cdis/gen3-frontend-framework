@@ -40,7 +40,7 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   // If user is not logged in yet, you might choose *not* to fetch,
   // or still fetch to see anonymous/logged-in-group resources.
   const { data, error, isLoading } = useSWR<ArboristApiResponse>(
-    '/api/authz/resources',
+    '/api/auth/resources',
     fetcher,
     {
       revalidateOnFocus: true,

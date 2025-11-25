@@ -1,0 +1,21 @@
+{
+  "/DataLibrary": {
+    "loginRequired": true,
+    "authzResources": [
+      "/frontend/DataLibrary"
+    ]
+  },
+  "/Workspace": {
+    "loginRequired": true,
+    "authzResources": ["/workspaces"]
+  },
+  "/Profile": {
+    "loginRequired": true
+  },
+  "/Login": {
+    "loginRequired": false
+  },
+  "*" : {
+    "loginRequired": false
+  }
+}

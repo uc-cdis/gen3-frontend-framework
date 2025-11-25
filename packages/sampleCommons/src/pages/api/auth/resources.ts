@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAuthzEnabled, getRouteConfig } from '../../../lib/authz/arboristConfig';
-import { fetchArboristResources, GEN3_DOMAIN } from '@gen3/core/server';
+import { fetchArboristResources } from '@gen3/core/server';
 
 const ARBORIST_COOKIE_NAME = 'arborist_resources';
 const RESOURCES_TTL_SECONDS = 300;
@@ -29,7 +29,7 @@ export default async function handler(
 
   let currentUserKey = 'anonymous';
   try {
-    const url = new URL('/api/auth/sessionToken',GEN3_DOMAIN);
+    const url = new URL('/api/auth/sessionToken',req.url);
   const tokenResponse = await fetch('/api/auth/sessionToken');
   const sessionToken = await tokenResponse.json();
   currentUserKey = sessionToken.user.username;
