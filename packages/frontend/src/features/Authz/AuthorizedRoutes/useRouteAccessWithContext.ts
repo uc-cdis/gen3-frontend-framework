@@ -1,11 +1,6 @@
-import useSWR from 'swr';
-import { useSession } from '../../lib/session/session';
-
-type RouteRule = {
-  loginRequired?: boolean;
-  authzResources?: string[];
-};
-type RouteConfig = Record<string, RouteRule>;
+import { useSession } from '../../../lib/session/session';
+import { RouteConfig } from '../../../lib/authz/type';
+import { useProtectedRoutesContext } from './ProtectedRoutesProvider';
 
 interface ArboristApiResponse {
   disabled: boolean;
@@ -13,13 +8,13 @@ interface ArboristApiResponse {
   routeConfig: RouteConfig;
 }
 
-interface RouteAccessResult {
+export interface RouteAccessResult {
   loading: boolean;
   error?: Error;
   isProtected: boolean;
   loginRequired: boolean;
   authzRequired: boolean;
-  allowed: boolean;        // can navigate without 403
+  allowed: boolean;
   loggedIn: boolean;
 }
 
@@ -35,22 +30,13 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   // Just need to know if user is logged in or not
   const { status, pending } = useSession(false); // no redirect side-effects here
   const loggedIn = status === 'issued';
+  const routesConfig =useProtectedRoutesContext();
+  const { data: resources, error: authzResourceError, isFetching: isAuthzResourcesFetching, isError: isAuthzResourcesError } = useGetAuthzResourcesQuery()
 
-  const { data, error, isLoading } = useSWR<ArboristApiResponse>(
-    '/api/auth/resources',
-    fetcher,
-    {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-      dedupingInterval: 60_000,
-      shouldRetryOnError: false,
-    },
-  );
-
-  if (pending || isLoading || !data) {
+  if (pending || isAuthzResourcesFetching || !data | !resources) {
     return {
       loading: true,
-      error: error as Error | undefined,
+      error: error as authzResourceError | undefined,
       isProtected: false,
       loginRequired: false,
       authzRequired: false,
@@ -119,3 +105,5 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
     loggedIn,
   };
 }
+
+export type UseRouteAccessHook = typeof useRouteAccess;

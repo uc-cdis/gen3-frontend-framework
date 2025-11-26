@@ -1,7 +1,7 @@
 import { fetchFence } from './fetchFence';
 
 interface Gen3JTWKeys {
-  keys: string[];
+  keys: string[][];
 }
 
 /**

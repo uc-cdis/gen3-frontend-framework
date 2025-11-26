@@ -2,10 +2,9 @@ import { parse } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
 import { fetchJWTKey } from './fetchJWTKey';
 
-export const isExpired = (value: number) => value - Date.now() > 0;
-
+export const isExpired = (value: number) => (value * 1000) < Date.now();
 export interface JWTPayloadAndUser extends JWTPayload {
-  userContext: Record<string, any>;
+  context: Record<string, any>;
 }
 
 /**
@@ -50,10 +49,12 @@ export async function getLoginStatus (
       await jwtVerify(accessToken, publicKey);
       const decodedAccessToken = decodeJwt(accessToken) as JWTPayloadAndUser;
 
+      console.log(decodedAccessToken);
+
       return ({
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,
-        userContext: decodedAccessToken.userContext.user,
+        userContext: decodedAccessToken.context?.user,
         status: decodedAccessToken.exp
           ? isExpired(decodedAccessToken.exp)
             ? 'expired'

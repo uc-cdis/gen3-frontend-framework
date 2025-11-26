@@ -1,5 +1,6 @@
 import { type AuthzResourceResponse, GEN3_AUTHZ_API } from '@gen3/core/server';
 
+const DEFAULT_TTL_SECONDS = 360;
 
 /**
  * Low-level helper to fetch Arborist resources for the current user.
@@ -8,6 +9,7 @@ import { type AuthzResourceResponse, GEN3_AUTHZ_API } from '@gen3/core/server';
  */
 export async function fetchArboristResources(
   token: string | null,
+  revalidate: number = DEFAULT_TTL_SECONDS
 ): Promise<string[]> {
   const headers: Record<string, string> = {};
 
@@ -15,7 +17,7 @@ export async function fetchArboristResources(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${GEN3_AUTHZ_API}/resources`, { headers,     next: { revalidate: 360 } });
+  const res = await fetch(`${GEN3_AUTHZ_API}/resources`, { headers,     next: { revalidate: revalidate } });
 
   if (!res.ok) {
     console.error('Arborist /resources failed:', res.status, await res.text());

@@ -1,5 +1,5 @@
 import React from 'react';
-import { UseFormReturnType, useForm } from '@mantine/form';
+import { useForm, UseFormReturnType } from '@mantine/form';
 import { TextInput } from '@mantine/core';
 import { Permission } from '../types';
 

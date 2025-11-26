@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAuthzEnabled, getRouteConfig } from '../../../lib/auth/arboristConfig';
+import { getRouteConfig } from '../../../lib/auth/arboristConfig';
 import { ARBORIST_COOKIE_NAME, RESOURCES_TTL_SECONDS } from '../../../lib/auth/constants';
 import { fetchArboristResources } from '@gen3/core/server';
 
@@ -14,40 +14,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const authzEnabled = getAuthzEnabled();
-  const routeConfig = getRouteConfig();
+  const { enableAuthz, routes: routeConfig } = getRouteConfig();
+
 
   // If authz is disabled, just return that fact to the client.
-  if (!authzEnabled) {
+  if (!enableAuthz) {
     return res.status(200).json({
       disabled: true,
       resources: [],
       routeConfig,
     });
-  }
-
-  const sessionToken = req.cookies['sessionToken'];
-  let currentUserKey = 'anonymous';
-  try {
-    const url = new URL('/api/auth/sessionToken',req.url);
-  const tokenResponse = await fetch('/api/auth/sessionToken');
-  const sessionToken = await tokenResponse.json();
-  currentUserKey = sessionToken.user.username;
-  } catch (e) {
-    console.warn('Failed to fetch sessionToken in API:', e);
-  }
-
-  const now = Date.now();
-
-  let cookiePayload: ArboristCookiePayload | null = null;
-  const rawCookie = req.cookies[ARBORIST_COOKIE_NAME];
-
-  if (rawCookie) {
-    try {
-      cookiePayload = JSON.parse(rawCookie) as ArboristCookiePayload;
-    } catch (e) {
-      console.warn('Failed to parse arborist cookie in API:', e);
-    }
   }
 
   const cacheValid =

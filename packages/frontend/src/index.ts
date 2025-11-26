@@ -115,6 +115,8 @@ import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
 import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
+import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
+
 export {
   ContentSource,
   type Fonts,
@@ -122,6 +124,8 @@ export {
   type SessionConfiguration,
   type ExplorerPageProps,
   type AnalysisPageLayoutProps,
+  type RouteConfig,
+  type AuthorizedRoutesConfig,
   // components
   CollapsableSidebar,
   DownloadButton,

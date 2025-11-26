@@ -24,10 +24,13 @@ export const fetchFence = async <T>({
   const res = await fetch(`${GEN3_FENCE_API}${endpoint}`, {
     method: method,
     credentials: 'include',
-    headers: headers,
+    headers: {
+      // Ensure Content-Type is set for JSON POSTs, but allow overrides via 'headers'
+      ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {}),
+      ...headers,
+    },
     body: 'POST' === method ? JSON.stringify(body) : null,
-    next: { revalidate: 360 }
-  }, );
+  });
 
   if (res.ok)
     return {
