@@ -116,6 +116,7 @@ import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisA
 import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
+import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
 
 export {
   ContentSource,
@@ -201,4 +202,6 @@ export {
   registerCohortSimilarityApp,
   // appApis
   analysisApiCohortDiscovery,
+  // Defaults
+  DefaultAuthorizedRoutesConfig
 };

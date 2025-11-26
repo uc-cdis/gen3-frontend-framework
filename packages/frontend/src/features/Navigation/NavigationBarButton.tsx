@@ -5,7 +5,7 @@ import { Tooltip, UnstyledButton } from '@mantine/core';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import { TooltipStyle } from './style';
-import { useRouteAccess } from '../Authz/AuthorizedRoutes/useRouteAccess';
+import { useRouteAccess } from '../../components/AuthorizedRoutes/useRouteAccess';
 import { useRouter } from 'next/router';
 
 /**

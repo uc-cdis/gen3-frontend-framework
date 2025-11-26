@@ -9,12 +9,15 @@ import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
 import { SessionConfiguration } from '../../lib/session/types';
 import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import { AuthorizedRoutesConfig } from '../../lib/authz/type';
+import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
   sessionConfig: SessionConfiguration;
   modalsConfig: ModalsConfig;
   contextModals?: Record<string, FC<ContextModalProps<any>>>;
+  protectedRoutesConfig?: AuthorizedRoutesConfig;
   children?: ReactNode | undefined;
   defaultNotificationPosition?:
     | 'top-left'
@@ -90,6 +93,7 @@ const Gen3Provider = ({
   sessionConfig,
   modalsConfig,
   contextModals,
+  protectedRoutesConfig,
   defaultNotificationPosition = 'top-center',
   children,
 }: Gen3ProviderProps) => {
@@ -102,9 +106,30 @@ const Gen3Provider = ({
       <ModalsProvider modals={contextModals}>
         <Notifications position={defaultNotificationPosition} />
         <SessionProvider {...sessionConfig}>
+          <ProtectedRoutesProvider config={protectedRoutesConfig ?? {
+            "enableAuthz" : true,
+            "routes": {
+            "/DataLibrary": {
+            "loginRequired": true
+          },
+            "/Workspace": {
+            "loginRequired": true,
+          },
+            "/Profile": {
+            "loginRequired": true
+          },
+            "/Login": {
+            "loginRequired": false
+          },
+            "*" : {
+            "loginRequired": false
+          }
+          }
+          }}>
           <Gen3ModalsProvider config={modalsConfig}>
             {children}
           </Gen3ModalsProvider>
+          </ProtectedRoutesProvider>
         </SessionProvider>
       </ModalsProvider>
     </CoreProvider>

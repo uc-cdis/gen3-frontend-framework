@@ -1,9 +1,7 @@
 import React, { createContext, ReactNode, useContext } from 'react';
-import { AuthorizedRoutesConfig } from '../../../lib/authz/type';
+import { AuthorizedRoutesConfig, RouteConfig } from '../../lib/authz/type';
 
-export const DefaultRouteConfig : AuthorizedRoutesConfig= {
-  enableAuthz: false,
-  routes: {
+export const DefaultRouteConfig : RouteConfig= {
     "/DataLibrary": {
       "loginRequired": true,
       "authzResources": [
@@ -23,12 +21,8 @@ export const DefaultRouteConfig : AuthorizedRoutesConfig= {
     "*" : {
       "loginRequired": false
     }
-  },
-};
 
-export interface AuthzRoutesContextProps {
-  config: AuthorizedRoutesConfig;
-}
+};
 
 const ProtectedRoutesContext = createContext<AuthorizedRoutesConfig>({
   routes: DefaultRouteConfig,

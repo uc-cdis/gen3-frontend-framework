@@ -1,4 +1,6 @@
 {
+  "enableAuthz" : true,
+  "routes": {
   "/DataLibrary": {
     "loginRequired": true,
     "authzResources": [
@@ -19,3 +21,4 @@
     "loginRequired": false
   }
 }
+  }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decodeJwt, JWTPayload } from 'jose';
-import { getAuthzEnabled, getRouteConfig, RouteConfig, } from './lib/auth/arboristConfig';
+import { getRouteConfig, } from './lib/auth/arboristConfig';
 import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { ANONYMOUS_USER_KEY, ARBORIST_COOKIE_NAME, RESOURCES_TTL_SECONDS } from './lib/auth/constants';
+import { RouteConfig } from '@gen3/frontend/server';
 
 interface ArboristCookiePayload {
   expires: number;
@@ -68,7 +69,10 @@ function isLoggedIn(loginStatus: LoginStatus) { return loginStatus.status === "i
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const routeConfig = getRouteConfig();
+  const {enableAuthz,  routes: routeConfig } = getRouteConfig();
+
+  console.log("enableAuthz", enableAuthz);
+  console.log("routeConfig", routeConfig);
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
   // check if there is a wildcard route
@@ -104,7 +108,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // 3) If authz is globally disabled, treat as login-only
-  if (!getAuthzEnabled()) {
+  if (!enableAuthz) {
     return NextResponse.next();
   }
 
