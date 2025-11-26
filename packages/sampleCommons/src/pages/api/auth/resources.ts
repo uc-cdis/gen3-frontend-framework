@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAuthzEnabled, getRouteConfig } from '../../../lib/authz/arboristConfig';
+import { getAuthzEnabled, getRouteConfig } from '../../../lib/auth/arboristConfig';
 import { fetchArboristResources } from '@gen3/core/server';
 
 const ARBORIST_COOKIE_NAME = 'arborist_resources';

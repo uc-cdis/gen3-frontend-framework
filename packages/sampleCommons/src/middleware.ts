@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decodeJwt, JWTPayload } from 'jose';
-import { getAuthzEnabled, getRouteConfig, RouteConfig, } from './lib/authz/arboristConfig';
+import { getAuthzEnabled, getRouteConfig, RouteConfig, } from './lib/auth/arboristConfig';
 import { fetchArboristResources } from '@gen3/core/server';
+import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 
 const ARBORIST_COOKIE_NAME = 'arborist_resources';
 const RESOURCES_TTL_SECONDS = 300;
@@ -66,40 +67,10 @@ function parseArboristCookie(
  *
  * We treat status === "issued" as "logged in".
  */
-async function isLoggedIn(req: NextRequest): Promise<boolean> {
-  try {
-    const url = new URL('/api/auth/sessionToken', req.nextUrl.origin);
-    console.log("url", url);
-    const res = await fetch(url.toString(), {
-      method: 'GET',
-      // Forward cookies so sessionToken endpoint can see Fence cookies, etc.
-      headers: {
-        cookie: req.headers.get('cookie') ?? '',
-      },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      return false;
-    }
-
-    const json = (await res.json()) as { status?: string };
-    return json.status === 'issued';
-  } catch (e) {
-    console.error('Failed to determine server session status:', e);
-    return false;
-  }
-}
+function isLoggedIn(loginStatus: LoginStatus) { return loginStatus.status === "issued"}
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-
-  // Avoid recursion: let the sessionToken endpoint (and any other auth APIs)
-  // run without this middleware trying to call them again.
-  if (pathname.startsWith('/api/auth/sessionToken')) {
-    return NextResponse.next();
-  }
-
   const routeConfig = getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
@@ -118,7 +89,9 @@ export async function middleware(req: NextRequest) {
     Array.isArray(rule.authzResources) && rule.authzResources.length > 0;
 
   // Gen3 login check
-  const loggedIn = await isLoggedIn(req);
+  const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
+  console.log("loginStatus", loginStatus);
+  const loggedIn = await isLoggedIn(loginStatus);
 
 
   // 1) Enforce login if required
@@ -206,7 +179,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Run on almost everything, but skip Next.js internals & common assets
-    '/((?!_next/static|_next/image|favicon.ico|api/*|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+    // Run on almost everything, but skip Next.js internals and common assets
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
   ],
 };

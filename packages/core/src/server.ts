@@ -20,6 +20,7 @@ import {
 import { fetchArboristResources } from './features/authz/fetchAuthz';
 import { fetchFence } from './features/fence/fetchFence';
 import { type FetchRequest, type Gen3FenceResponse } from './features/fence/types';
+import { buildFetchError, isFetchError } from './features/fence/utils';
 
 export {
   type JSONObject,
@@ -41,5 +42,7 @@ export {
   type FetchRequest, type Gen3FenceResponse,
   Accessibility,
   fetchArboristResources,
-  fetchFence
+  fetchFence,
+  isFetchError,
+  buildFetchError
 };
