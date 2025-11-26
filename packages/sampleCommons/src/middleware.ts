@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decodeJwt, JWTPayload } from 'jose';
 import { getAuthzEnabled, getRouteConfig, RouteConfig, } from './lib/auth/arboristConfig';
-import { fetchArboristResources } from '@gen3/core/server';
 import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
-
-const ARBORIST_COOKIE_NAME = 'arborist_resources';
-const RESOURCES_TTL_SECONDS = 300;
-const ANONYMOUS_USER_KEY = 'anonymous';
+import { fetchArboristResources } from './lib/auth/fetchAuthz';
+import { ANONYMOUS_USER_KEY, ARBORIST_COOKIE_NAME, RESOURCES_TTL_SECONDS } from './lib/auth/constants';
 
 interface ArboristCookiePayload {
   expires: number;
@@ -121,15 +118,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // 4) Authz is enabled AND route has authzResources → check Arborist resources
-  // NOTE: fetchArboristResources from @gen3/core/server is expected to
-  // understand the current session via cookies; we can pass null token here
-  // and let it rely on server-side auth.
   const tokenFromCookieOrHeader =
-    req.cookies.get('jwt')?.value ||
+    req.cookies.get('access_token')?.value ||
     req.headers.get('Authorization')?.replace('Bearer ', '') ||
     null;
 
-  const currentUserKey = getUserKeyFromToken(tokenFromCookieOrHeader);
+  const currentUserKey = isLoggedIn(loginStatus) ? loginStatus?.userContext?.name: ANONYMOUS_USER_KEY;
   const cached = parseArboristCookie(
     req.cookies.get(ARBORIST_COOKIE_NAME)?.value,
   );

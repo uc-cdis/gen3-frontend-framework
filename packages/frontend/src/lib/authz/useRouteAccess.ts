@@ -1,4 +1,3 @@
-// lib/arborist/useRouteAccess.ts
 import useSWR from 'swr';
 import { useSession } from '../../lib/session/session';
 
@@ -37,8 +36,6 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   const { status, pending } = useSession(false); // no redirect side-effects here
   const loggedIn = status === 'issued';
 
-  // If user is not logged in yet, you might choose *not* to fetch,
-  // or still fetch to see anonymous/logged-in-group resources.
   const { data, error, isLoading } = useSWR<ArboristApiResponse>(
     '/api/auth/resources',
     fetcher,

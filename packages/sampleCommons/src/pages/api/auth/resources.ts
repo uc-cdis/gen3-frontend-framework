@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAuthzEnabled, getRouteConfig } from '../../../lib/auth/arboristConfig';
+import { ARBORIST_COOKIE_NAME, RESOURCES_TTL_SECONDS } from '../../../lib/auth/constants';
 import { fetchArboristResources } from '@gen3/core/server';
 
-const ARBORIST_COOKIE_NAME = 'arborist_resources';
-const RESOURCES_TTL_SECONDS = 300;
 
 interface ArboristCookiePayload {
   expires: number;
@@ -27,6 +26,7 @@ export default async function handler(
     });
   }
 
+  const sessionToken = req.cookies['sessionToken'];
   let currentUserKey = 'anonymous';
   try {
     const url = new URL('/api/auth/sessionToken',req.url);

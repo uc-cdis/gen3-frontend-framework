@@ -5,7 +5,7 @@ import { fetchJWTKey } from './fetchJWTKey';
 export const isExpired = (value: number) => value - Date.now() > 0;
 
 export interface JWTPayloadAndUser extends JWTPayload {
-  context: Record<string, string>;
+  userContext: Record<string, any>;
 }
 
 /**
@@ -16,7 +16,7 @@ export interface JWTPayloadAndUser extends JWTPayload {
 export interface LoginStatus {
   issued?: number;
   expires?: number;
-  userContext?: string;
+  userContext?: Record<string, any>;
   status: 'issued' | 'expired' | 'invalid' | 'not present';
   error?: string;
 }
@@ -53,7 +53,7 @@ export async function getLoginStatus (
       return ({
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,
-        userContext: decodedAccessToken.context.user,
+        userContext: decodedAccessToken.userContext.user,
         status: decodedAccessToken.exp
           ? isExpired(decodedAccessToken.exp)
             ? 'expired'
