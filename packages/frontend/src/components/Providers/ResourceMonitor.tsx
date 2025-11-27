@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  isTimeGreaterThan,
   RequestedWorkspaceStatus,
   selectRequestedWorkspaceStatus,
   setActiveWorkspaceStatus,
@@ -10,8 +11,6 @@ import {
   useGetWorkspaceStatusQuery,
   useTerminateWorkspaceMutation,
   WorkspaceStatus,
-  isTimeGreaterThan,
-  selectRequestedWorkspaceStatusTimestamp,
 } from '@gen3/core';
 import { notifications } from '@mantine/notifications';
 import { useDeepCompareEffect } from 'use-deep-compare';
@@ -99,9 +98,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
   } : { skip: true });
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
-  const requestedStatusTimestamp = useCoreSelector(
-    selectRequestedWorkspaceStatusTimestamp,
-  ); // last time requested status changed
+  // requestedStatusTimestamp is unused
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -110,15 +107,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       setPollingInterval(0); // stop polling
       setPaymentPollingInterval(0);
     }
-  }, [
-    paymentModelData,
-    isPaymentModelError,
-    paymentModelError,
-    isWorkspaceStatusError,
-    workspaceStatusError,
-    dispatch,
-  ]);
-
+  }, [isWorkspaceStatusError, dispatch]);
   useEffect(() => {
     if (isPaymentModelError) {
       console.error('Payment model error: ', paymentModelError.toString());
@@ -127,9 +116,8 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       console.warn('No payment model defined');
     }
   }, [paymentModelData, isPaymentModelError, paymentModelError]);
-
   // update the polling based on the requested state
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     if (requestedStatus === RequestedWorkspaceStatus.Launch) {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Launching]);
     }
@@ -137,8 +125,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Terminating]);
     }
   }, [requestedStatus]);
-
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     if (workspaceStatusData?.status) {
       setPaymentPollingInterval(
         PaymentPollingInterval[workspaceStatusData.status],
@@ -156,10 +143,11 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
       const { idleTimeLimit, lastActivityTime } = workspaceStatusData;
       // in some state other than idle
       if (!idleTimeLimit || idleTimeLimit <= 0) {
-        // Do not need to poll
+        // Workspace is running but no idle limit set.
+        // Continue to poll to ensure we detect if it crashes or stops.
         dispatch(setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Unset));
         dispatch(setActiveWorkspaceStatus(WorkspaceStatus.Running)); // workspace is running
-        setPollingInterval(0);
+        setPollingInterval(WorkspacePollingInterval[WorkspaceStatus.Running]);
         return;
       }
 
@@ -170,19 +158,20 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
         if (remainingWorkspaceKernelLife <= 0) {
           // kernel has died due to inactivity
           // so terminate
-          try {
-            terminateWorkspace().unwrap(); // Unwrap mutation response
-          } catch (error) {
-            const errorMessage =
-              (error as Error).message || 'Unknown error occurred';
-            console.error('Workspace termination failed: ', errorMessage);
-            notifyUser(
-              'Workspace Error',
-              `Failed to terminate workspace: ${errorMessage}`,
-              NotificationStatus.Error,
-            );
-          }
-
+          (async () => {
+            try {
+              await terminateWorkspace().unwrap();
+            } catch (error) {
+              const errorMessage =
+                (error as Error).message || 'Unknown error occurred';
+              console.error('Workspace termination failed: ', errorMessage);
+              notifyUser(
+                'Workspace Error',
+                `Failed to terminate workspace: ${errorMessage}`,
+                NotificationStatus.Error,
+              );
+            }
+          })();
           dispatch(
             setRequestedWorkspaceStatus(RequestedWorkspaceStatus.Terminate),
           );
