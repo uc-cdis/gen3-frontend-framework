@@ -1,13 +1,6 @@
 import { useSession } from '../../lib/session/session';
-import { RouteConfig } from '../../lib/authz/type';
 import { useProtectedRoutesContext } from './ProtectedRoutesProvider';
 import { useGetAuthzResourcesQuery } from '@gen3/core';
-
-interface ArboristApiResponse {
-  disabled: boolean;
-  resources: string[];
-  routeConfig: RouteConfig;
-}
 
 export interface RouteAccessResult {
   loading: boolean;
@@ -19,22 +12,12 @@ export interface RouteAccessResult {
   loggedIn: boolean;
 }
 
-const fetcher = async (url: string): Promise<ArboristApiResponse> => {
-  const res = await fetch(url, { credentials: 'include' });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch Arborist resources: ${res.status}`);
-  }
-  return res.json();
-};
-
 export function useRouteAccess(pathname: string): RouteAccessResult {
   // Just need to know if user is logged in or not
   const { status, pending } = useSession(false); // no redirect side-effects here
   const loggedIn = status === 'issued';
   const routesConfig =useProtectedRoutesContext();
   const { data, error: authzResourceError, isFetching: isAuthzResourcesFetching, isError: isAuthzResourcesError } = useGetAuthzResourcesQuery();
-
-  console.log("useRouteAccess: ", routesConfig, pathname, loggedIn, data, authzResourceError, isAuthzResourcesFetching, isAuthzResourcesError);
 
   const error =authzResourceError ? Error(`Failed to fetch Arborist resources: ${authzResourceError.toString()}`) : undefined;
   if (pending || isAuthzResourcesFetching || !data) {
@@ -69,8 +52,6 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
 
   const authzRequired = hasAuthzResources && routesConfig?.enableAuthz !== undefined && routesConfig.enableAuthz;
 
-  console.log("useRouteAccess: ", pathname, loginRequired, hasAuthzResources, authzRequired, loggedIn);
-
   // If login is required and user is not logged in → not allowed
   if (loginRequired && !loggedIn) {
     return {
@@ -85,7 +66,7 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   }
 
   // If authz is globally disabled OR no authzResources, then login-only is enough
-  if (authzRequired || !hasAuthzResources) {
+  if (!authzRequired || !hasAuthzResources) {
     return {
       loading: false,
       error: error as Error | undefined,
