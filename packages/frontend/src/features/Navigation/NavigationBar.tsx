@@ -5,13 +5,57 @@ import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
+import { useRouteAccess } from '../../components/AuthorizedRoutes/useRouteAccess';
+import { NavigationButtonProps } from './NavigationButton'; // or wherever this type is defined
+
+interface NavigationBarItemProps {
+  item: NavigationButtonProps;
+  current: string;
+  mergedClassnames: Record<string, string>;
+  hideUnauthorizedLinks: boolean;
+  index: number;
+}
+
+const NavigationBarItem = ({
+  item,
+  current,
+  mergedClassnames,
+  hideUnauthorizedLinks,
+}: NavigationBarItemProps) => {
+  const { allowed } = useRouteAccess(item.href);
+
+  if (hideUnauthorizedLinks && !allowed) {
+    return null;
+  }
+
+  const selectedStyle =
+    current === item.href ? 'border-accent border-b-4 border-b-accent' : '';
+
+  return (
+    <div
+      className={`first:border-l-1 border-r-1 flex-1 border-base-dark ${selectedStyle} ${extractClassName(
+        'buttons',
+        mergedClassnames,
+      )}`}
+    >
+      <NavigationBarButton
+        tooltip={item.tooltip}
+        icon={item.icon}
+        href={item.href}
+        name={item.name}
+        classNames={item.classNames}
+        noBasePath={item?.noBasePath}
+      />
+    </div>
+  );
+};
 
 /**
  * NavigationBar component
- * @param {Object} NavigationProps - The navigation properties
- * @param {Object} NavigationProps.logo - The logo object
- * @param {Array} NavigationProps.items - The array of navigation items
- * @param {Object} NavigationProps.classNames - The custom class names for different elements of the NavigationBar
+ * @param logo - The logo object
+ * @param {Array} items - The array of navigation items
+ * @param {Object} classNames - The custom class names for different elements of the NavigationBar
+ * @param {boolean} hideUnauthorizedLinks - Hist navigation items that the user is not authorized to access. Defaults to false.
  * @returns {ReactElement} The rendered NavigationBar component
  */
 const NavigationBar = ({
@@ -19,6 +63,7 @@ const NavigationBar = ({
   title = undefined,
   items = [],
   classNames = {},
+  hideUnauthorizedLinks = false,
 }: NavigationProps): ReactElement => {
   const classNamesDefaults = {
     root: 'flex bg-base-max border-b-1 border-base-dark',
@@ -56,30 +101,16 @@ const NavigationBar = ({
           mergedClassnames,
         )}`}
       >
-        {items.map((x, index) => {
-          const selectedStyle =
-            current === x.href
-              ? 'border-accent border-b-4 border-b-accent'
-              : '';
-          return (
-            <div
-              key={`${x.name}-${index}`}
-              className={`first:border-l-1 border-r-1 flex-1 border-base-dark ${selectedStyle} ${extractClassName(
-                'buttons',
-                mergedClassnames,
-              )}`}
-            >
-              <NavigationBarButton
-                tooltip={x.tooltip}
-                icon={x.icon}
-                href={x.href}
-                name={x.name}
-                classNames={x.classNames}
-                noBasePath={x?.noBasePath}
-              />
-            </div>
-          );
-        })}
+        {items.map((x, index) => (
+          <NavigationBarItem
+            key={`${x.name}-${index}`}
+            item={x}
+            index={index}
+            current={current}
+            mergedClassnames={mergedClassnames}
+            hideUnauthorizedLinks={hideUnauthorizedLinks}
+          />
+        ))}
       </div>
     </div>
   );

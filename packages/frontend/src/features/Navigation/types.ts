@@ -30,6 +30,7 @@ export interface NavigationProps {
   readonly title?: string;
   readonly loginIcon?: ReactElement | string;
   readonly classNames?: StylingOverrideWithMergeControl;
+  readonly hideUnauthorizedLinks?: boolean;
 }
 
 export interface HeaderMetadata {
