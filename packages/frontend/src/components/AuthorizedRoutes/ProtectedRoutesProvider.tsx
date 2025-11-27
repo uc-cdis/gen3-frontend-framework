@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useMemo } from 'react';
 import { AuthorizedRoutesConfig, RouteConfig } from '../../lib/authz/type';
 
 export const DefaultRouteConfig : RouteConfig= {
@@ -21,7 +21,6 @@ export const DefaultRouteConfig : RouteConfig= {
     "*" : {
       "loginRequired": false
     }
-
 };
 
 const ProtectedRoutesContext = createContext<AuthorizedRoutesConfig>({
@@ -34,13 +33,13 @@ interface ProtectedRoutesProviderProps {
   children?: ReactNode | undefined;
 }
 const ProtectedRoutesProvider = ({ config, children } : ProtectedRoutesProviderProps) => {
+  const value = useMemo(() => ({ ...config }), [config]);
+
   return (
-    <ProtectedRoutesContext.Provider value={{...config}}>
+    <ProtectedRoutesContext.Provider value={value}>
       {children}
     </ProtectedRoutesContext.Provider>
   );
 };
-
 export default ProtectedRoutesProvider;
-
 export const useProtectedRoutesContext = () => useContext(ProtectedRoutesContext);

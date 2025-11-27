@@ -20,24 +20,13 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   const { data, error: authzResourceError, isFetching: isAuthzResourcesFetching, isError: isAuthzResourcesError } = useGetAuthzResourcesQuery();
 
   const error =authzResourceError ? Error(`Failed to fetch Arborist resources: ${authzResourceError.toString()}`) : undefined;
-  if (pending || isAuthzResourcesFetching || !data) {
-    return {
-      loading: true,
-      error: error,
-      isProtected: false,
-      loginRequired: false,
-      authzRequired: false,
-      allowed: false,
-      loggedIn,
-    };
-  }
 
-  const rule = routesConfig.routes[pathname];
+  const rule = routesConfig.routes[pathname] || routesConfig.routes['*'];
   if (!rule) {
     // Not configured: public page
     return {
       loading: false,
-      error: error,
+      error: undefined,
       isProtected: false,
       loginRequired: false,
       authzRequired: false,
@@ -47,6 +36,20 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   }
 
   const loginRequired = rule.loginRequired ?? true;
+
+  // If session is loading and the page might require login, we must wait.
+  if (pending && loginRequired) {
+    return {
+      loading: true,
+      error: error,
+      isProtected: true,
+      loginRequired: true,
+      authzRequired: false,
+      allowed: false,
+      loggedIn,
+    };
+  }
+
   const hasAuthzResources =
     Array.isArray(rule.authzResources) && rule.authzResources.length > 0;
 
@@ -74,6 +77,19 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
       loginRequired,
       authzRequired: false,
       allowed: true,
+      loggedIn,
+    };
+  }
+
+  // Only check authz fetch status if authz is actually required
+  if (isAuthzResourcesFetching || !data) {
+    return {
+      loading: true,
+      error: error,
+      isProtected: true,
+      loginRequired: true,
+      authzRequired: true,
+      allowed: false,
       loggedIn,
     };
   }
