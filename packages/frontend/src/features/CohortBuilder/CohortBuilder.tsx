@@ -3,12 +3,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
 import { CohortPanel } from './CohortPanel';
-import {
-  selectCurrentCohortId,
-  setSharedFilters,
-  useCoreDispatch,
-  useCoreSelector,
-} from '@gen3/core';
+import { selectCurrentCohortId, setSharedFilters, useCoreDispatch, useCoreSelector, } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 import CohortManager from './CohortManager/CohortManager';
 
@@ -62,6 +57,7 @@ const CohortBuilder = ({
               guppyConfig={panelConfig.guppyConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
               chartsSection={panelConfig?.chartsSection}
+              charts={panelConfig?.charts}
               filters={panelConfig.filters}
               tabTitle={panelConfig.tabTitle}
               table={panelConfig.table}
