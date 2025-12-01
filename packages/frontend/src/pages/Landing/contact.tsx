@@ -32,9 +32,9 @@ const ContactPage = ({ footerProps, headerProps }: NavPageLayoutProps) => {
             Platform Team from CTDS-Gen3 at
             <a
               className="text-gen3-base_blue flex flex-row items-baseline no-underline font-bold"
-              href="mailto:heal-support@datacommons.io"
+              href="mailto:heal-support@gen3.org"
             >
-              <FaEnvelope className="pr-1 pt-2" /> heal-support@datacommons.io
+              <FaEnvelope className="pr-1 pt-2" /> heal-support@gen3.org
             </a>
           </Text>
           <Text className="prose text-black text-2xl p-8">
