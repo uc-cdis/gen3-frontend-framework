@@ -8,7 +8,7 @@ const WorkspaceNoAccessPage = ({
   footerProps,
 }: NavPageLayoutProps): JSX.Element => {
   const supportEmail =
-    headerProps?.siteProps?.contactEmail || 'support@datacommons.io';
+    headerProps?.siteProps?.contactEmail || 'support@gen3.org';
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
