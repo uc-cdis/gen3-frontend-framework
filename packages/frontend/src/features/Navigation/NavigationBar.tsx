@@ -1,12 +1,11 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { NavigationProps } from './types';
+import { NavigationButtonProps, NavigationProps } from './types';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
 import { extractClassName } from './utils';
 import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
 import { useRouteAccess } from '../../components/AuthorizedRoutes/useRouteAccess';
-import { NavigationButtonProps } from './NavigationButton'; // or wherever this type is defined
 
 interface NavigationBarItemProps {
   item: NavigationButtonProps;
