@@ -9,7 +9,7 @@ import { JSONObject } from '@gen3/core';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const CACHE_DURATION = 0.25 * 60 * 60 * 1000; // 15 minutes in milliseconds
 const mdsAggregateApi =
   'https://healdata.org/mds/aggregate/metadata?data=True&limit=2000&offset=0';
 const mdsMetadataApi =
@@ -31,25 +31,25 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
     discoveryConfig,
-  ); // Step 3: Search
+  ); // Step 1: Search
   processedData = filterByAdvSearch(
     processedData,
     searchTerms.advancedSearchTerms,
     discoveryConfig,
-  ); //Step 4 Adv Search Filtering (user selected filters)
-  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Step 5: Tags
-  processedData = sortData(processedData, sorting); // Step 6: Sort (example key)
+  ); //Step 2 Adv Search Filtering (user selected filters)
+  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Step 3: Tags
+  processedData = sortData(processedData, sorting); // Step 4: Sort (example key)
 
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
-  ); // Step 7: Pagination */
+  ); // Step 5: Pagination
   return {
     hits: processedData.length,
     displayedData: paginatedData,
+    suggestions: [],
   };
-  // return processedData;
 };
 
 export default async function handler(req: any, res: any) {

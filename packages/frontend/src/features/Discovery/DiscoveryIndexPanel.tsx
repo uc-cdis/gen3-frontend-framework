@@ -108,6 +108,7 @@ const DiscoveryIndexPanel = ({
   const apiUrl = 'http://localhost:3000/api/discovery';
   const [proxyData, setProxyData] = useState<Array<JSONObject>>([]);
   const [proxyHits, setProxyHits] = useState(0);
+  const [proxySuggestions, setProxySuggestions] = useState([]);
   useEffect(() => {
     console.log('discoveryConfig', discoveryConfig);
     const params = {
@@ -118,15 +119,16 @@ const DiscoveryIndexPanel = ({
       },
       searchTerms: searchParam,
       sorting: sorting,
+      // selectedFieldsForSearchIndexing: [],
       selectedFieldsForSearchIndexing: [
         'study_metadata.minimal_info.study_name',
       ],
       selectedTags: {},
-      /*       selectedTags: {
+      /*selectedTags: {
         SPARC: true,
         Dataverse: true,
-      }, // NOTE UI NEEDS TO BE UPDATED TO ALLOW FOR USER TAG SELECTION
- */
+      },*/
+      // NOTE UI NEEDS TO BE UPDATED TO ALLOW FOR USER TAG SELECTION AND selectedFieldsForSearchIndexing
     };
 
     fetch(apiUrl, {
@@ -145,11 +147,12 @@ const DiscoveryIndexPanel = ({
       .then((data) => {
         setProxyHits(data.hits);
         setProxyData(data.displayedData);
+        setProxySuggestions(data.suggestions);
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
-  }, [sorting, searchParam]);
+  }, [sorting, searchParam, pagination]);
   console.log('Returned proxy data', proxyData);
   console.log('Returned proxyHits', proxyHits);
   /** END SPIKE CODE */
@@ -201,7 +204,8 @@ const DiscoveryIndexPanel = ({
               />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
-                  suggestions={suggestions}
+                  // suggestions={suggestions}
+                  suggestions={proxySuggestions}
                   clearSearch={() => {
                     setSearchBarTerm([]);
                   }}
