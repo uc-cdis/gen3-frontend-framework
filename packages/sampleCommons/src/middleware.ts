@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { decodeJwt, JWTPayload } from 'jose';
 import { getRouteConfig, } from './lib/auth/arboristConfig';
 import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
@@ -12,28 +11,10 @@ interface ArboristCookiePayload {
   userKey: string;
 }
 
-function getUserKeyFromToken(token: string | null): string {
-  if (!token) return ANONYMOUS_USER_KEY;
-
-  try {
-    const payload = decodeJwt(token) as JWTPayload & {
-      context?: { user?: { name?: string } };
-    };
-
-    return (
-      payload.sub ??
-      payload.context?.user?.name ??
-      ANONYMOUS_USER_KEY
-    );
-  } catch {
-    return ANONYMOUS_USER_KEY;
-  }
-}
-
 const WILDCARD_ROUTE_KEY = '*';
 
 function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
-  return routeConfig?.[pathname] ?? routeConfig[WILDCARD_ROUTE_KEY];
+  return routeConfig?.[pathname] ?? routeConfig?.[WILDCARD_ROUTE_KEY];
 }
 
 function parseArboristCookie(

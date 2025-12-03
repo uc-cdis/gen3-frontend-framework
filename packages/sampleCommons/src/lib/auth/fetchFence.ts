@@ -1,4 +1,10 @@
-import { buildFetchError, type FetchRequest, GEN3_FENCE_API, type Gen3FenceResponse } from '@gen3/core/server';
+import {
+  buildFetchError,
+  type FetchRequest,
+  GEN3_FENCE_API,
+  GEN3_FENCE_SERVICE,
+  type Gen3FenceResponse,
+} from '@gen3/core/server';
 
 /**
  * Performs an asynchronous HTTP request to the Gen3 Fence API and processes the response.
@@ -21,11 +27,10 @@ export const fetchFence = async <T>({
   method = 'GET',
   isJSON = true,
 }: FetchRequest): Promise<Gen3FenceResponse<T>> => {
-  let url =`${GEN3_FENCE_API}${endpoint}`;
-  if (process.env.NODE_ENV === 'production')
-    {
-      url = `http://fence-service/${endpoint}`;
-    }
+  let url = `${GEN3_FENCE_API}${endpoint}`;
+  if (process.env.NODE_ENV === 'production') {
+    url = `${GEN3_FENCE_SERVICE}/${endpoint}`;
+  }
 
   const res = await fetch(url, {
     method: method,
