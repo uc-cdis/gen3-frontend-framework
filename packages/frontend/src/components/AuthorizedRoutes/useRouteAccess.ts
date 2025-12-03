@@ -16,10 +16,19 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
   // Just need to know if user is logged in or not
   const { status, pending } = useSession(false); // no redirect side-effects here
   const loggedIn = status === 'issued';
-  const routesConfig =useProtectedRoutesContext();
-  const { data, error: authzResourceError, isFetching: isAuthzResourcesFetching, isError: isAuthzResourcesError } = useGetAuthzResourcesQuery();
+  const routesConfig = useProtectedRoutesContext();
+  const {
+    data,
+    error: authzResourceError,
+    isFetching: isAuthzResourcesFetching,
+    isError: isAuthzResourcesError,
+  } = useGetAuthzResourcesQuery();
 
-  const error =authzResourceError ? Error(`Failed to fetch Arborist resources: ${authzResourceError.toString()}`) : undefined;
+  const error = authzResourceError
+    ? Error(
+        `Failed to fetch Arborist resources: ${authzResourceError.toString()}`,
+      )
+    : undefined;
 
   const rule = routesConfig.routes[pathname] || routesConfig.routes['*'];
   if (!rule) {
@@ -37,7 +46,7 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
 
   const loginRequired = rule.loginRequired ?? true;
 
-  // If session is loading and the page might require login, we must wait.
+  // If a session is loading and the page might require login, we must wait.
   if (pending && loginRequired) {
     return {
       loading: true,
@@ -50,10 +59,7 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
     };
   }
 
-  const hasAuthzResources =
-    Array.isArray(rule.authzResources) && rule.authzResources.length > 0;
-
-  const authzRequired = hasAuthzResources && routesConfig?.enableAuthz !== undefined && routesConfig.enableAuthz;
+  const hasAuthzResources = Array.isArray(rule.authz) && rule.authz.length > 0;
 
   // If login is required and user is not logged in → not allowed
   if (loginRequired && !loggedIn) {
@@ -62,14 +68,14 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
       error: error as Error | undefined,
       isProtected: true,
       loginRequired: true,
-      authzRequired: authzRequired,
+      authzRequired: hasAuthzResources,
       allowed: false,
       loggedIn,
     };
   }
 
-  // If authz is globally disabled OR no authzResources, then login-only is enough
-  if (!authzRequired || !hasAuthzResources) {
+  // If no authzResources, then login-only is enough
+  if (!hasAuthzResources) {
     return {
       loading: false,
       error: error as Error | undefined,
@@ -96,7 +102,9 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
 
   // Authz enabled and authzResources defined → check membership
   const userResources = data?.resources || [];
-  const allowed = rule.authzResources!.some((needed: any) =>
+
+  console.log(`User resources:`, data, rule);
+  const allowed = rule.authz!.some((needed: any) =>
     userResources.includes(needed),
   );
 

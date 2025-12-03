@@ -9,16 +9,6 @@ let cachedConfig: AuthorizedRoutesConfig | null = null;
 export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
   if (cachedConfig) return cachedConfig;
 
-  const envConfig = process.env.GEN3_PAGE_AUTHZ;
-  if (envConfig) {
-    try {
-      cachedConfig = JSON.parse(envConfig) as AuthorizedRoutesConfig;
-      return cachedConfig;
-    } catch (e) {
-      console.error('Failed to parse GEN3_PAGE_AUTHZ:', e);
-    }
-  }
-
   try {
     const mod = await import(`../../../config/${GEN3_COMMONS_NAME}/authz.json`);
     cachedConfig = mod.default || mod; // Handle ESM default export compatibility
@@ -35,15 +25,11 @@ export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
     cachedConfig = mod.default || mod;
     return cachedConfig as AuthorizedRoutesConfig;
   } catch (e) {
-    console.error(
-      `Failed to load config/authz_default.json`,
-      e,
-    );
+    console.error(`Failed to load config/authz_default.json`, e);
   }
 
-  return ({
+  return {
     enableAuthz: false,
-    routes: {}
-  });
-
+    routes: {},
+  };
 }

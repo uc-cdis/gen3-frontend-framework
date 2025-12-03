@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRouteConfig, } from './lib/auth/arboristConfig';
-import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
+import { getRouteConfig } from './lib/auth/arboristConfig';
+import {
+  getAccessToken,
+  getLoginStatus,
+  type LoginStatus,
+} from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
-import { ANONYMOUS_USER_KEY, ARBORIST_COOKIE_NAME, RESOURCES_TTL_SECONDS } from './lib/auth/constants';
 import { RouteConfig } from '@gen3/frontend/server';
 
 interface ArboristCookiePayload {
@@ -46,11 +49,13 @@ function parseArboristCookie(
  *
  * We treat status === "issued" as "logged in".
  */
-function isLoggedIn(loginStatus: LoginStatus) { return loginStatus.status === "issued"}
+function isLoggedIn(loginStatus: LoginStatus) {
+  return loginStatus.status === 'issued';
+}
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const {enableAuthz,  routes: routeConfig } = await getRouteConfig();
+  const { routes: routeConfig } = await getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
   // check if there is a wildcard route
   if (!rule) {
@@ -63,8 +68,7 @@ export async function middleware(req: NextRequest) {
   }
 
   const loginRequired = rule.loginRequired ?? true;
-  const needsAuthz =
-    Array.isArray(rule.authzResources) && rule.authzResources.length > 0;
+  const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
 
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
@@ -77,17 +81,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 2) If no authz resources configured, login is enough
+  // If no authz resources configured, login is enough
   if (!needsAuthz) {
     return NextResponse.next();
   }
 
-  // 3) If authz is globally disabled, treat as login-only
-  if (!enableAuthz) {
-    return NextResponse.next();
-  }
-
-  // Defensive: if authz is required but we somehow aren't logged in,
+  // if authz is required but we somehow aren't logged in,
   // send to login (even though in practice loginRequired will almost
   // always be true when authz is configured).
   if (!loggedIn) {
@@ -96,58 +95,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 4) Authz is enabled AND route has authzResources → check Arborist resources
-  const tokenFromCookieOrHeader =
-    req.cookies.get('access_token')?.value ||
-    req.headers.get('Authorization')?.replace('Bearer ', '') ||
-    null;
+  // Authz is enabled AND route has authzResources → check Arborist resources
+  const tokenFromCookie =
+    getAccessToken(req.headers.get('Cookie') || '') ?? null;
 
-  const currentUserKey = isLoggedIn(loginStatus) ? loginStatus?.userContext?.name: ANONYMOUS_USER_KEY;
-  const cached = parseArboristCookie(
-    req.cookies.get(ARBORIST_COOKIE_NAME)?.value,
-  );
+  // Let the server-side helper resolve resources using the active Gen3 session.
+  const resources = await fetchArboristResources(tokenFromCookie);
 
-  const now = Date.now();
-  const cacheValid =
-    !!cached && cached.expires > now && cached.userKey === currentUserKey;
-
-  let resources: string[];
-
-  if (cacheValid) {
-    resources = cached.resources;
-  } else {
-    // Let the server-side helper resolve resources using the active Gen3 session.
-    resources = await fetchArboristResources(tokenFromCookieOrHeader);
-  }
-
-  const allowed = rule.authzResources!.some((needed) =>
-    resources.includes(needed),
-  );
-
+  const allowed = rule?.authz!.some((needed) => resources.includes(needed));
   if (!allowed) {
     // Already logged in if required; they just lack authz for this resource
     return NextResponse.redirect(new URL('/403', req.url));
   }
 
-  const res = NextResponse.next();
-
-  if (!cacheValid) {
-    const payload: ArboristCookiePayload = {
-      expires: now + RESOURCES_TTL_SECONDS * 1000,
-      resources,
-      userKey: currentUserKey,
-    };
-
-    res.cookies.set(ARBORIST_COOKIE_NAME, JSON.stringify(payload), {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: RESOURCES_TTL_SECONDS,
-      secure: process.env.NODE_ENV === 'production',
-    });
-  }
-
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {

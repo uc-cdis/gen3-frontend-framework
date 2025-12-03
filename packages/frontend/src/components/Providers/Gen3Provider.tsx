@@ -106,29 +106,29 @@ const Gen3Provider = ({
       <ModalsProvider modals={contextModals}>
         <Notifications position={defaultNotificationPosition} />
         <SessionProvider {...sessionConfig}>
-          <ProtectedRoutesProvider config={protectedRoutesConfig ?? {
-            "enableAuthz" : true,
-            "routes": {
-            "/DataLibrary": {
-            "loginRequired": true
-          },
-            "/Workspace": {
-            "loginRequired": true,
-          },
-            "/Profile": {
-            "loginRequired": true
-          },
-            "/Login": {
-            "loginRequired": false
-          },
-            "*" : {
-            "loginRequired": false
-          }
-          }
-          }}>
-          <Gen3ModalsProvider config={modalsConfig}>
-            {children}
-          </Gen3ModalsProvider>
+          <ProtectedRoutesProvider
+            config={
+              protectedRoutesConfig ?? {
+                routes: {
+                  '/DataLibrary': {
+                    loginRequired: true,
+                  },
+                  '/Workspace': {
+                    loginRequired: true,
+                  },
+                  '/Profile': {
+                    loginRequired: true,
+                  },
+                  '*': {
+                    loginRequired: false,
+                  },
+                },
+              }
+            }
+          >
+            <Gen3ModalsProvider config={modalsConfig}>
+              {children}
+            </Gen3ModalsProvider>
           </ProtectedRoutesProvider>
         </SessionProvider>
       </ModalsProvider>

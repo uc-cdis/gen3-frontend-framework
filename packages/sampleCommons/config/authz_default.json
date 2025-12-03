@@ -1,20 +1,16 @@
 {
-"enableAuthz" : false,
-"routes" :{
-  "/DataLibrary": {
-    "loginRequired": true,
-    "authzResources": [
-      "/frontend/DataLibrary"
-    ]
-  },
-  "/Workspace": {
-    "loginRequired": true,
-    "authzResources": ["/workspaces"]
-  },
-  "/Profile": {
-    "loginRequired": true
-  },
-  "*" : {
-    "loginRequired": false
+  "routes": {
+    "/DataLibrary": {
+      "loginRequired": true
+    },
+    "/Workspace": {
+      "loginRequired": true
+    },
+    "/Profile": {
+      "loginRequired": true
+    },
+    "*": {
+      "loginRequired": false
+    }
   }
-}}
+}
