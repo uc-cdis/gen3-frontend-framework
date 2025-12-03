@@ -23,10 +23,9 @@ export interface LoginStatus {
 export async function getLoginStatus (
   cookie ?: string
 ): Promise<LoginStatus> {
-
-
   try {
     const cookies =cookie ? parse(cookie) : {};
+
     let accessToken = cookies.access_token;
 
     // in development mode we support "credentials login"
@@ -35,9 +34,9 @@ export async function getLoginStatus (
       // in development mode. Otherwise, the cookie is set as httpOnly
       accessToken =cookies.credentials_token;
     }
-
     if (accessToken) {
       const jwtKey = await fetchJWTKey();
+
       if (!jwtKey) {
         return {
           error: 'No JWT Key to verify token',
@@ -48,9 +47,6 @@ export async function getLoginStatus (
       const publicKey = await importSPKI(jwtKey, 'RS256');
       await jwtVerify(accessToken, publicKey);
       const decodedAccessToken = decodeJwt(accessToken) as JWTPayloadAndUser;
-
-      console.log(decodedAccessToken);
-
       return ({
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,
@@ -67,6 +63,7 @@ export async function getLoginStatus (
       status: 'not present',
     };
   } catch (error: unknown) {
+    console.error('Error getting login status:', error);
     return {
       error: error instanceof Error ? error.message : 'Unknown error',
       status: 'invalid',

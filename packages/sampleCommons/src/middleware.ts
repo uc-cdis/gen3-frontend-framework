@@ -33,7 +33,7 @@ function getUserKeyFromToken(token: string | null): string {
 const WILDCARD_ROUTE_KEY = '*';
 
 function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
-  return routeConfig[pathname] ?? routeConfig[WILDCARD_ROUTE_KEY];
+  return routeConfig?.[pathname] ?? routeConfig[WILDCARD_ROUTE_KEY];
 }
 
 function parseArboristCookie(
@@ -69,12 +69,8 @@ function isLoggedIn(loginStatus: LoginStatus) { return loginStatus.status === "i
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const {enableAuthz,  routes: routeConfig } = getRouteConfig();
-
-  console.log("enableAuthz", enableAuthz);
-  console.log("routeConfig", routeConfig);
+  const {enableAuthz,  routes: routeConfig } = await getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
-
   // check if there is a wildcard route
   if (!rule) {
     rule = getRouteRuleForPath('*', routeConfig);
@@ -91,9 +87,7 @@ export async function middleware(req: NextRequest) {
 
   // Gen3 login check
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
-  console.log("loginStatus", loginStatus);
   const loggedIn = await isLoggedIn(loginStatus);
-
 
   // 1) Enforce login if required
   if (loginRequired && !loggedIn) {
@@ -178,6 +172,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     // Run on almost everything, but skip Next.js internals and common assets
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+    '/((?!_next/static|_next/image|_next/data|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
   ],
 };

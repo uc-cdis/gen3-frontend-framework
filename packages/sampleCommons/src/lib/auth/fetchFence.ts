@@ -21,7 +21,13 @@ export const fetchFence = async <T>({
   method = 'GET',
   isJSON = true,
 }: FetchRequest): Promise<Gen3FenceResponse<T>> => {
-  const res = await fetch(`${GEN3_FENCE_API}${endpoint}`, {
+  let url =`${GEN3_FENCE_API}${endpoint}`;
+  if (process.env.NODE_ENV === 'production')
+    {
+      url = `http://fence-service/${endpoint}`;
+    }
+
+  const res = await fetch(url, {
     method: method,
     credentials: 'include',
     headers: {

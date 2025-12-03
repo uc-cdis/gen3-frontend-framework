@@ -2,5 +2,4 @@ node_modules
 .next
 public
 dist
-/packages/frontend/jest.config_sorta.ts
 /packages/core/jest.config.ts

@@ -14,9 +14,6 @@
   "/Profile": {
     "loginRequired": true
   },
-  "/Login": {
-    "loginRequired": false
-  },
   "*" : {
     "loginRequired": false
   }
