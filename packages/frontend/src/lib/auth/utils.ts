@@ -15,11 +15,14 @@ interface Gen3JTWKeys {
  * @async
  * @returns {Promise<string|null>} A Promise resolving to the JWT key as a string if available, or null if not.
  */
-export const fetchJWTKey = async () => {
-  const response = await fetchFence<Gen3JTWKeys>({
-    endpoint: '/jwt/keys',
-    isJSON: true,
-  });
+export const fetchJWTKey = async (useService: boolean = false) => {
+  const response = await fetchFence<Gen3JTWKeys>(
+    {
+      endpoint: '/jwt/keys',
+      isJSON: true,
+    },
+    useService,
+  );
   if (response.status !== 200) {
     return null;
   }

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { parse } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
-import { fetchJWTKey } from './utils';
+import { fetchJWTKey } from '../../lib/auth/utils';
 import { getWebTokenErrorResponse } from './errorHandler';
 
 export const isExpired = (value: number) => value - Date.now() > 0;
@@ -19,8 +19,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ): Promise<void> {
-
-
   try {
     const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
     let accessToken = cookies.access_token;
@@ -29,11 +27,11 @@ export default async function handler(
     if (!accessToken && process.env.NODE_ENV === 'development') {
       // NOTE: This cookie can only be accessed from the client side
       // in development mode. Otherwise, the cookie is set as httpOnly
-      accessToken =cookies.credentials_token;
+      accessToken = cookies.credentials_token;
     }
 
     if (accessToken) {
-      const jwtKey = await fetchJWTKey();
+      const jwtKey = await fetchJWTKey(process.env.NODE_ENV === 'production');
       if (!jwtKey) {
         res.status(500).json({
           message: 'No JWT Key to verify token',

@@ -1,5 +1,5 @@
 import { type FetchRequest, type Gen3FenceResponse } from './types';
-import { GEN3_FENCE_API } from '../../constants';
+import { GEN3_FENCE_API, GEN3_FENCE_SERVICE } from '../../constants';
 import { buildFetchError } from './utils';
 
 /**
@@ -12,18 +12,21 @@ import { buildFetchError } from './utils';
  * @param {Record<string, any>} [options.body={}] The request body to send with the fetch, used if the HTTP method is POST.
  * @param {string} [options.method='GET'] The HTTP method for the request (e.g., 'GET', 'POST').
  * @param {boolean} [options.isJSON=true] Determines if the response should be parsed as JSON or returned as plain text.
+ * @param useService { boolean } Uses fence_service instead of public fence API
  * @returns {Promise<Gen3FenceResponse<T>>} A promise that resolves to the parsed data and response status
  *                                          or rejects with an error if the request fails.
  * @throws {Error} Throws an error if the fetch request fails or the response is not successful.
  */
-export const fetchFence = async <T>({
-                                      endpoint,
-                                      headers,
-                                      body = {},
-                                      method = 'GET',
-                                      isJSON = true,
-                                    }: FetchRequest): Promise<Gen3FenceResponse<T>> => {
-  const res = await fetch(`${GEN3_FENCE_API}${endpoint}`, {
+export const fetchFence = async <T>(
+  { endpoint, headers, body = {}, method = 'GET', isJSON = true }: FetchRequest,
+  useService: boolean = false,
+): Promise<Gen3FenceResponse<T>> => {
+  let url = `${GEN3_FENCE_API}${endpoint}`;
+  if (useService) {
+    url = `${GEN3_FENCE_SERVICE}/${endpoint}`;
+  }
+
+  const res = await fetch(url, {
     method: method,
     credentials: 'include',
     headers: {

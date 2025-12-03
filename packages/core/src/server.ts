@@ -3,6 +3,7 @@ import {
   Accessibility,
   GEN3_API,
   GEN3_AUTHZ_API,
+  GEN3_AUTHZ_SERVICE,
   GEN3_COMMONS_NAME,
   GEN3_CROSSWALK_API,
   GEN3_DOMAIN,
@@ -21,7 +22,10 @@ import {
 import { fetchArboristResources } from './features/authz/fetchAuthz';
 import { type AuthzResourceResponse } from './features/authz/types';
 import { fetchFence } from './features/fence/fetchFence';
-import { type FetchRequest, type Gen3FenceResponse } from './features/fence/types';
+import {
+  type FetchRequest,
+  type Gen3FenceResponse,
+} from './features/fence/types';
 import { buildFetchError, isFetchError } from './features/fence/utils';
 
 export {
@@ -35,6 +39,7 @@ export {
   GEN3_FENCE_API,
   GEN3_FENCE_SERVICE,
   GEN3_AUTHZ_API,
+  GEN3_AUTHZ_SERVICE,
   GEN3_MDS_API,
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_API,
@@ -42,10 +47,12 @@ export {
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
-  type FetchRequest, type Gen3FenceResponse,type AuthzResourceResponse,
+  type FetchRequest,
+  type Gen3FenceResponse,
+  type AuthzResourceResponse,
   Accessibility,
   fetchArboristResources,
   fetchFence,
   isFetchError,
-  buildFetchError
+  buildFetchError,
 };

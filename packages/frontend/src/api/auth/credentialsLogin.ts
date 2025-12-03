@@ -3,7 +3,7 @@ import { serialize } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
 import { fetchFence } from '@gen3/core';
 import { getWebTokenErrorResponse } from './errorHandler';
-import { fetchJWTKey } from './utils';
+import { fetchJWTKey } from '../../lib/auth/utils';
 
 /**
  * Credentials login set up a access_token cookie. This is used to authenticate the user

@@ -1,8 +1,8 @@
 import { parse } from 'cookie';
 import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
-import { fetchJWTKey } from './fetchJWTKey';
+import { fetchJWTKey } from '@gen3/frontend/server';
 
-export const isExpired = (value: number) => (value * 1000) < Date.now();
+export const isExpired = (value: number) => value * 1000 < Date.now();
 export interface JWTPayloadAndUser extends JWTPayload {
   context: Record<string, any>;
 }
@@ -20,11 +20,9 @@ export interface LoginStatus {
   error?: string;
 }
 
-export async function getLoginStatus (
-  cookie ?: string
-): Promise<LoginStatus> {
+export async function getLoginStatus(cookie?: string): Promise<LoginStatus> {
   try {
-    const cookies =cookie ? parse(cookie) : {};
+    const cookies = cookie ? parse(cookie) : {};
 
     let accessToken = cookies.access_token;
 
@@ -32,7 +30,7 @@ export async function getLoginStatus (
     if (!accessToken && process.env.NODE_ENV === 'development') {
       // NOTE: This cookie can only be accessed from the client side
       // in development mode. Otherwise, the cookie is set as httpOnly
-      accessToken =cookies.credentials_token;
+      accessToken = cookies.credentials_token;
     }
     if (accessToken) {
       const jwtKey = await fetchJWTKey();
@@ -47,7 +45,7 @@ export async function getLoginStatus (
       const publicKey = await importSPKI(jwtKey, 'RS256');
       await jwtVerify(accessToken, publicKey);
       const decodedAccessToken = decodeJwt(accessToken) as JWTPayloadAndUser;
-      return ({
+      return {
         issued: decodedAccessToken.iat,
         expires: decodedAccessToken.exp,
         userContext: decodedAccessToken.context?.user,
@@ -56,7 +54,7 @@ export async function getLoginStatus (
             ? 'expired'
             : 'issued'
           : 'invalid',
-      });
+      };
     }
 
     return {
