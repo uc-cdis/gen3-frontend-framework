@@ -22,7 +22,7 @@ const NavigationBarItem = ({
   hideUnauthorizedLinks,
 }: NavigationBarItemProps) => {
   const { allowed } = useRouteAccess(item.href);
-
+  console.log('hideUnauthorizedLinks', hideUnauthorizedLinks);
   if (hideUnauthorizedLinks && !allowed) {
     return null;
   }

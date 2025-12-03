@@ -102,8 +102,6 @@ export function useRouteAccess(pathname: string): RouteAccessResult {
 
   // Authz enabled and authzResources defined → check membership
   const userResources = data?.resources || [];
-
-  console.log(`User resources:`, data, rule);
   const allowed = rule.authz!.some((needed: any) =>
     userResources.includes(needed),
   );
