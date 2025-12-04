@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
@@ -15,6 +15,7 @@ import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
+import { JSONObject } from '@gen3/core';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -101,6 +102,69 @@ const DiscoveryIndexPanel = ({
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
+  /** SPIKE CODE */
+  // THIS SORT OF CODE LIKELY BELONGS IN packages/frontend/src/features/Discovery/DataLoaders
+  const apiUrl = 'http://localhost:3000/api/discovery';
+  const [proxyData, setProxyData] = useState<Array<JSONObject>>([]);
+  const [proxyHits, setProxyHits] = useState(0);
+  const [proxySuggestions, setProxySuggestions] = useState([]);
+  useEffect(() => {
+    console.log('discoveryConfig', discoveryConfig);
+    const params = {
+      discoveryConfig: discoveryConfig,
+      pagination: {
+        offset: pagination.pageIndex * pagination.pageSize,
+        pageSize: pagination.pageSize,
+      },
+      searchTerms: searchParam,
+      sorting: sorting,
+      // selectedFieldsForSearchIndexing: [],
+      selectedFieldsForSearchIndexing: [
+        'study_metadata.minimal_info.study_name',
+      ],
+      selectedTags: {},
+      /*selectedTags: {
+        SPARC: true,
+        Dataverse: true,
+      },*/
+      // NOTE UI NEEDS TO BE UPDATED TO ALLOW FOR USER TAG SELECTION AND selectedFieldsForSearchIndexing
+    };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProxyHits(data.hits);
+        setProxyData(data.displayedData);
+        setProxySuggestions(data.suggestions);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }, [sorting, searchParam, pagination]);
+
+  const proxySummaryStatistics = [
+    {
+      name: 'Studies',
+      field: '_hdp_uid',
+      type: 'count',
+      value: proxyHits,
+    },
+  ];
+  console.log('Returned proxy data', proxyData);
+  console.log('Returned proxyHits', proxyHits);
+  /** END SPIKE CODE */
+
   if (dataRequestStatus.isLoading) {
     return (
       <div className="flex w-full py-24 relative justify-center">
@@ -135,10 +199,14 @@ const DiscoveryIndexPanel = ({
             )}
             <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
               {indexSelector}
-              <SummaryStatisticPanel summaries={summaryStatistics} />
+              <SummaryStatisticPanel
+                // summaries={summaryStatistics}
+                summaries={proxySummaryStatistics}
+              />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
-                  suggestions={suggestions}
+                  // suggestions={suggestions}
+                  suggestions={proxySuggestions}
                   clearSearch={() => {
                     setSearchBarTerm([]);
                   }}
@@ -202,8 +270,10 @@ const DiscoveryIndexPanel = ({
                 ref={parentDivRef}
               >
                 <DiscoveryTable
-                  data={data}
-                  hits={hits}
+                  // data={data}
+                  data={proxyData}
+                  // hits={hits}
+                  hits={proxyHits}
                   dataRequestStatus={dataRequestStatus}
                   setPagination={setPagination}
                   setSorting={setSorting}
