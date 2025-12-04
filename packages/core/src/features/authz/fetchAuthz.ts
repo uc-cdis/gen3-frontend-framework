@@ -1,13 +1,17 @@
-import { GEN3_AUTHZ_API } from '../../constants';
+import { GEN3_AUTHZ_API, GEN3_AUTHZ_SERVICE } from '../../constants';
 import { AuthzResourceResponse } from './types';
 
 /**
  * Low-level helper to fetch Arborist resources for the current user.
  * Adds an Authorization header when a token is provided and normalizes the response
  * to a simple string[] of resource paths.
+ *
+ * token { string | null } - access token to use for authorization
+ * useService { boolean } - use the arborist service endpoint instead of the public arborist API
  */
 export async function fetchArboristResources(
   token: string | null,
+  useService: boolean = false,
 ): Promise<string[]> {
   const headers: Record<string, string> = {};
 
@@ -15,10 +19,17 @@ export async function fetchArboristResources(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${GEN3_AUTHZ_API}/resources`, { headers });
+  const res = await fetch(
+    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resources`,
+    { headers },
+  );
 
   if (!res.ok) {
-    console.error('Arborist /resources failed:', res.status, await res.text());
+    console.error(
+      '@gen3/core:fetchArboristResources /resources failed:',
+      res.status,
+      await res.text(),
+    );
     return [];
   }
 

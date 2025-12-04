@@ -37,7 +37,7 @@ export async function getLoginStatus(cookie?: string): Promise<LoginStatus> {
   try {
     const accessToken = getAccessToken(cookie);
     if (accessToken) {
-      const jwtKey = await fetchJWTKey();
+      const jwtKey = await fetchJWTKey(process.env.NODE_ENV === 'production');
 
       if (!jwtKey) {
         return {
