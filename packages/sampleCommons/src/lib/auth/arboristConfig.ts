@@ -29,7 +29,6 @@ export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
   }
 
   return {
-    enableAuthz: false,
     routes: {},
   };
 }
