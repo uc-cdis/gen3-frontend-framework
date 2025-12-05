@@ -27,7 +27,7 @@ export const authzApi = authzTags.injectEndpoints({
     }),
     getAuthzResources: builder.query<AuthzResourceResponse, void>({
       query: () => ({
-        url: `${GEN3_AUTHZ_API}/resources`,
+        url: `${GEN3_AUTHZ_API}/resource`,
         method: 'GET',
       }),
     }),
@@ -36,8 +36,7 @@ export const authzApi = authzTags.injectEndpoints({
       CreateAuthzResourceRequest
     >({
       query: (request) => ({
-        // url: `${GEN3_AUTHZ_API}/resources/${request.resourcePath}${request?.path ? `&p=${request.path}` : ''}`,
-        url: `${GEN3_AUTHZ_API}/resources`,
+        url: `${GEN3_AUTHZ_API}/resource`,
         method: 'POST',
         body: request.data,
       }),

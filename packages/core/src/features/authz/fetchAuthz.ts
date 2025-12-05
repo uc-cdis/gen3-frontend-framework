@@ -20,13 +20,13 @@ export async function fetchArboristResources(
   }
 
   const res = await fetch(
-    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resources`,
+    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resource`,
     { headers },
   );
 
   if (!res.ok) {
     console.error(
-      '@gen3/core:fetchArboristResources /resources failed:',
+      '@gen3/core:fetchArboristResources /resource failed:',
       res.status,
       await res.text(),
     );
