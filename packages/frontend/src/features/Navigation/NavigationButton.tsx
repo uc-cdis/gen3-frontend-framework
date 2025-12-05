@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonProps } from '@mantine/core';
 import Link from 'next/link';
 
-type NavigationButtonProps = ButtonProps &
+export type NavigationButtonProps = ButtonProps &
   React.ComponentPropsWithoutRef<typeof Link> & { $selected?: boolean };
 
 const NavigationButton = ({ $selected, ...props }: NavigationButtonProps) => {

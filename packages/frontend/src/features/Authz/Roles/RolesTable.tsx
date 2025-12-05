@@ -1,13 +1,9 @@
 import React, { useContext, useMemo } from 'react';
-import {
-  MantineReactTable,
-  type MRT_ColumnDef,
-  useMantineReactTable,
-} from 'mantine-react-table';
+import { MantineReactTable, type MRT_ColumnDef, useMantineReactTable, } from 'mantine-react-table';
 
 import { Role } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';
-import { Table, Menu, Stack } from '@mantine/core';
+import { Menu, Stack, Table } from '@mantine/core';
 import PermissionDetailRow from './PermissionnDetailsRow';
 
 const RolesTable = () => {

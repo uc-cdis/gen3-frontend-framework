@@ -1,6 +1,6 @@
 import type { NextApiResponse } from 'next';
 import { errors as joseErrors } from 'jose';
-import { isFetchError } from '@gen3/core';
+import { isFetchError } from '@gen3/core/server';
 
 const HTTP_INTERNAL_ERROR = 500;
 /**

@@ -12,3 +12,11 @@ export interface Gen3FenceResponse<H = JSONObject | string> {
   readonly data: H;
   readonly status: number; // HTTP Status code
 }
+
+export interface FetchRequest {
+  readonly endpoint: string;
+  readonly method?: 'GET' | 'POST';
+  readonly body?: object;
+  readonly headers?: Record<string, string>;
+  readonly isJSON?: boolean;
+}
