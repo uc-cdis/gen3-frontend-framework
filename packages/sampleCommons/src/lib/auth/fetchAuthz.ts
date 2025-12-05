@@ -22,14 +22,21 @@ export async function fetchArboristResources(
     headers.Cookie = cookies;
   }
 
+  console.log('fetchArboristResources useService: ', useService);
+  console.log(
+    'fetchArboristResources GEN3_AUTHZ_SERVICE: ',
+    GEN3_AUTHZ_SERVICE,
+  );
+  console.log('fetchArboristResources GEN3_AUTHZ_SERVICE: ', GEN3_AUTHZ_API);
+
   const res = await fetch(
-    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resources`,
+    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resource`,
     { headers, next: { revalidate: revalidate } },
   );
 
   if (!res.ok) {
     console.error(
-      'commons:fetchArboristResources Arborist /resources failed:',
+      'commons:fetchArboristResources Arborist /resource failed:',
       res.status,
       await res.text(),
     );

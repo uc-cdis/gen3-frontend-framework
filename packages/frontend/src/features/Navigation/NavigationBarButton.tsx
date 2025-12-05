@@ -37,7 +37,7 @@ const NavigationBarButton = ({
   authStatus,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
-    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 disabled:opacity-50',
+    root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
     label: 'pt-1.5 body-typo font-heading text-sm text-nowrap',
     icon: 'data-disabled:opacity-50',
     ...TooltipStyle,
@@ -47,9 +47,6 @@ const NavigationBarButton = ({
     classNamesDefaults,
     classNames,
   );
-
-  // const { loading, allowed, isProtected, loginRequired, authzRequired, loggedIn } =
-  //   useRouteAccess(href, resources);
 
   const handleClick = () => {
     if (authStatus !== 'authorized') {
@@ -78,17 +75,18 @@ const NavigationBarButton = ({
           <div
             className={extractClassName('root', mergedClassnames)}
             role="navigation"
+            data-disabled={authStatus !== 'authorized' ? true : undefined}
           >
             <UnstyledButton
               onClick={handleClick}
-              classNames={{ root: 'flex flex-col nowrap' }}
-              disabled={authStatus !== 'authorized'}
+              classNames={{
+                root: 'flex flex-col nowrap',
+              }}
             >
               <Icon
                 height={iconHeight}
                 icon={icon}
                 className={extractClassName('icon', mergedClassnames)}
-                disabled={authStatus !== 'authorized'}
               />
               <p className={extractClassName('label', mergedClassnames)}>
                 {name}
@@ -99,17 +97,18 @@ const NavigationBarButton = ({
           <div
             role="navigation"
             className={extractClassName('root', mergedClassnames)}
+            data-disabled={authStatus !== 'authorized' ? true : undefined}
           >
             <UnstyledButton
               onClick={handleClick}
-              classNames={{ root: 'flex flex-col nowrap' }}
-              disabled={authStatus !== 'authorized'}
+              classNames={{
+                root: 'flex flex-col nowrap',
+              }}
             >
               <Icon
                 height={iconHeight}
                 icon={icon}
                 className={extractClassName('icon', mergedClassnames)}
-                disabled={authStatus !== 'authorized'}
               />
               <p className={extractClassName('label', mergedClassnames)}>
                 {name}
