@@ -13,6 +13,17 @@ export interface NavigationButtonProps {
   classNames?: StylingOverrideWithMergeControl;
 }
 
+export enum LinkAuthStatus {
+  Authorized = 'authorized',
+  Unauthorized = 'unauthorized',
+  Pending = 'pending',
+  LoginRequired = 'loginRequired',
+}
+
+export interface NavigationButtonWithAuthStatus extends NavigationButtonProps {
+  authStatus: LinkAuthStatus;
+}
+
 export interface NavigationBarLogo {
   readonly src: string;
   readonly title?: string;
