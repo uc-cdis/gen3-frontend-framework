@@ -1,15 +1,19 @@
 import React, { ReactElement } from 'react';
 
-import { NavigationProps } from '../types';
+import { LinkAuthStatus, NavigationProps } from '../types';
 import NavigationBarButton from '../NavigationBarButton';
 import NavigationLogo from '../NavigationLogo';
 import LoginButton from '../../../components/Login/LoginButton';
 import { AiOutlineLogin as LoginIcon } from 'react-icons/ai';
-import { extractClassName } from '../utils';
+import { checkRouteAccess, extractClassName } from '../utils';
 import ActionMenu from '../ActionMenu';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { LoginButtonVisibility } from '../../../components/Login/types';
 import { TopBarProps } from '../TopBar/types';
+import { useSession } from '../../../lib/session/session';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+import { useProtectedRoutesContext } from '../../../components/AuthorizedRoutes/ProtectedRoutesProvider';
+import { useGetAuthzResourcesQuery } from '@gen3/core';
 
 export interface HorizontalNavigationBarProps extends NavigationProps {
   readonly actions: TopBarProps;
@@ -22,6 +26,7 @@ const HorizontalNavigationBar = ({
   logo = undefined,
   loginIcon = <LoginIcon size={'3.15rem'} />,
   classNames = {},
+  hideUnauthorizedLinks = false,
 }: HorizontalNavigationBarProps) => {
   const classNamesDefaults = {
     root: 'py-3 border-b-1 border-base-light shadow-sm',
@@ -34,6 +39,23 @@ const HorizontalNavigationBar = ({
     classNamesDefaults,
     classNames,
   );
+
+  const { status, pending } = useSession(false); // no redirect side-effects here
+  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
+  const routesConfig = useProtectedRoutesContext();
+  const {
+    data: resources,
+    error: authzResourceError,
+    isFetching: isAuthzResourcesFetching,
+    isError: isAuthzResourcesError,
+    refetch,
+  } = useGetAuthzResourcesQuery();
+
+  useDeepCompareEffect(() => {
+    if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
+      refetch();
+    }
+  }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
 
   return (
     <div
@@ -57,6 +79,20 @@ const HorizontalNavigationBar = ({
         )}`}
       >
         {items?.map((x, index) => {
+          const linkAuthStatus = checkRouteAccess(
+            x.href,
+            resources?.resources ?? [],
+            routesConfig,
+            loggedIn,
+            pending || isAuthzResourcesFetching,
+          );
+          if (
+            hideUnauthorizedLinks &&
+            linkAuthStatus !== LinkAuthStatus.Authorized
+          ) {
+            return null;
+          }
+
           return (
             <div key={`${x.name}-${index}`}>
               <NavigationBarButton
@@ -65,6 +101,7 @@ const HorizontalNavigationBar = ({
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                authStatus={LinkAuthStatus.Authorized}
               />
             </div>
           );

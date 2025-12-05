@@ -37,8 +37,9 @@ const NavigationBarButton = ({
   authStatus,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
-    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100',
+    root: 'flex flex-col flex-nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 disabled:opacity-50',
     label: 'pt-1.5 body-typo font-heading text-sm text-nowrap',
+    icon: 'data-disabled:opacity-50',
     ...TooltipStyle,
   };
   const router = useRouter();
@@ -74,21 +75,26 @@ const NavigationBarButton = ({
         w={220}
       >
         {noBasePath ? (
-          <a href={`${href}`}>
-            <div
-              className={extractClassName('root', mergedClassnames)}
-              role="navigation"
+          <div
+            className={extractClassName('root', mergedClassnames)}
+            role="navigation"
+          >
+            <UnstyledButton
+              onClick={handleClick}
+              classNames={{ root: 'flex flex-col nowrap' }}
+              disabled={authStatus !== 'authorized'}
             >
               <Icon
                 height={iconHeight}
                 icon={icon}
                 className={extractClassName('icon', mergedClassnames)}
+                disabled={authStatus !== 'authorized'}
               />
               <p className={extractClassName('label', mergedClassnames)}>
                 {name}
               </p>
-            </div>
-          </a>
+            </UnstyledButton>
+          </div>
         ) : (
           <div
             role="navigation"
@@ -97,11 +103,13 @@ const NavigationBarButton = ({
             <UnstyledButton
               onClick={handleClick}
               classNames={{ root: 'flex flex-col nowrap' }}
+              disabled={authStatus !== 'authorized'}
             >
               <Icon
                 height={iconHeight}
                 icon={icon}
                 className={extractClassName('icon', mergedClassnames)}
+                disabled={authStatus !== 'authorized'}
               />
               <p className={extractClassName('label', mergedClassnames)}>
                 {name}
