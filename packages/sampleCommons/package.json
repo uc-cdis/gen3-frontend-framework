@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.11.61",
+  "version": "0.11.62",
   "private": true,
   "scripts": {
     "lint": "next lint",
@@ -37,11 +37,11 @@
     "jose": "^6.1.0",
     "jsonpath-plus": "^10.3.0",
     "mantine-react-table": "^2.0.0-beta.9",
-    "next": "^15.5.3",
+    "next": "^15.5.7",
     "react": "^18.3.1",
     "react-dom": "18.3.1",
     "swr": "^2.2.5",
-    "validator": "^13.15.0"
+    "validator": "13.15.23"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.1",
