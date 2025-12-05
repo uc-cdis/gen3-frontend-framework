@@ -1,6 +1,7 @@
 import { gen3Api } from '../gen3/gen3Api';
 import { GEN3_FENCE_API, GEN3_REDIRECT_URL } from '../../constants';
-import { fetchFence } from './utils';
+
+import { fetchFence } from './fetchFence';
 
 export interface NameUrl {
   readonly name: string;
@@ -56,14 +57,6 @@ export const {
   useGetPresignedUrlQuery,
   useLazyGetPresignedUrlQuery,
 } = loginProvidersApi;
-
-export interface FetchRequest {
-  readonly endpoint: string;
-  readonly method?: 'GET' | 'POST';
-  readonly body?: object;
-  readonly headers?: Record<string, string>;
-  readonly isJSON?: boolean;
-}
 
 /**
  * Logout from fence

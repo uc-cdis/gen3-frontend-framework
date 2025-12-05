@@ -5,6 +5,8 @@ import { MantineProvider } from '@mantine/core';
 import mantinetheme from '../mantineTheme';
 
 import {
+  type AuthorizedRoutesConfig,
+  DefaultAuthorizedRoutesConfig,
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
@@ -44,6 +46,7 @@ interface Gen3AppProps {
   icons: Array<RegisteredIcons>;
   modalsConfig: ModalsConfig;
   sessionConfig: SessionConfiguration;
+  protectedRoutes: AuthorizedRoutesConfig;
 }
 
 const Gen3App = ({
@@ -52,6 +55,7 @@ const Gen3App = ({
   icons,
   sessionConfig,
   modalsConfig,
+  protectedRoutes,
 }: AppProps & Gen3AppProps) => {
   const isFirstRender = useRef(true);
 
@@ -84,8 +88,11 @@ const Gen3App = ({
               icons={icons}
               sessionConfig={sessionConfig}
               modalsConfig={modalsConfig}
+              protectedRoutesConfig={protectedRoutes}
             >
+
               <Component {...pageProps} />
+
             </Gen3Provider>
           </MantineProvider>
         </Suspense>
@@ -126,6 +133,7 @@ Gen3App.getInitialProps = async (
     ],
     modalsConfig: {},
     sessionConfig: {},
+    protectedRoutes: DefaultAuthorizedRoutesConfig
   };
 };
 export default Gen3App;

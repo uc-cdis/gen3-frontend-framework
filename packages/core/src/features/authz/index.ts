@@ -1,16 +1,19 @@
 import {
-  type ServiceAndMethod,
   type AuthzMapping,
+  type AuthzResourceResponse,
   type ResourceAuthzMapping,
+  type ServiceAndMethod,
 } from './types';
 import {
-  useGetAuthzMappingsQuery,
-  useLazyGetAuthzMappingsQuery,
-  useCreateAuthzResourceMutation,
-  useGetAuthzResourcesQuery,
-  useLazyGetAuthzResourcesQuery,
   selectAuthzMappingData,
+  useCreateAuthzResourceMutation,
+  useGetAuthzMappingsQuery,
+  useGetAuthzResourcesQuery,
+  useLazyGetAuthzMappingsQuery,
+  useLazyGetAuthzResourcesQuery,
 } from './authzMappingSlice';
+
+import { fetchArboristResources } from './fetchAuthz';
 
 export {
   useGetAuthzMappingsQuery,
@@ -19,7 +22,9 @@ export {
   useGetAuthzResourcesQuery,
   useLazyGetAuthzResourcesQuery,
   selectAuthzMappingData,
+  fetchArboristResources,
   type ServiceAndMethod,
   type AuthzMapping,
   type ResourceAuthzMapping,
+  type AuthzResourceResponse
 };

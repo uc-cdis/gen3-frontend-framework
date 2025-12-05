@@ -6,8 +6,8 @@ import type { IncomingMessage } from 'http';
 import { getCookie } from 'cookies-next';
 import { decodeJwt, importSPKI, jwtVerify } from 'jose';
 import { isExpired, JWTPayloadAndUser } from '../../api/auth/sessionToken';
-import { fetchJWTKey } from '../../api/auth/';
-import { type LoginStatus, type JWTSessionStatus } from '@gen3/core';
+import { fetchJWTKey } from '../auth/utils';
+import { type JWTSessionStatus, type LoginStatus } from '@gen3/core';
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<AuthTokenData>);
@@ -52,7 +52,7 @@ export const getAuthSession = async (
   if (access_token && typeof access_token === 'string') {
     if (access_token) {
       try {
-        const jwtKey = await fetchJWTKey();
+        const jwtKey = await fetchJWTKey(process.env.NODE_ENV === 'production');
         if (!jwtKey) {
           return {
             status: 'not present',

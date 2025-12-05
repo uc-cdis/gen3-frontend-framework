@@ -10,7 +10,7 @@ const Custom404Page: NextPage = () => {
         <title>Page Not Found</title>
         <meta
           property="og:title"
-          content="Gen3 Portal Page Not Found"
+          content="Gen3 404"
           key="gen3-page-not-found"
         />
       </Head>

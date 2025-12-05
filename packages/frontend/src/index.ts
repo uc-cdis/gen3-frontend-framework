@@ -75,6 +75,7 @@ import DictionaryPage, { DictionaryPageGetServerSideProps, } from './pages/DataD
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom403Page from './pages/403/Custom403Page';
 import Custom404Page from './pages/404/Custom404Page';
 
 import SubmissionPage from './pages/Submission/Submission';
@@ -114,6 +115,9 @@ import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
 import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
+import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
+import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+
 export {
   ContentSource,
   type Fonts,
@@ -121,6 +125,8 @@ export {
   type SessionConfiguration,
   type ExplorerPageProps,
   type AnalysisPageLayoutProps,
+  type RouteConfig,
+  type AuthorizedRoutesConfig,
   // components
   CollapsableSidebar,
   DownloadButton,
@@ -167,6 +173,7 @@ export {
   WorkspaceNoAccessPageServerSideProps,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
+  Custom403Page,
   Custom404Page,
   sessionToken,
   sessionLogout,
@@ -195,4 +202,6 @@ export {
   registerCohortSimilarityApp,
   // appApis
   analysisApiCohortDiscovery,
+  // Defaults
+  DefaultAuthorizedRoutesConfig
 };
