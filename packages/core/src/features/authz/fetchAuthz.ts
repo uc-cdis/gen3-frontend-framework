@@ -19,10 +19,10 @@ export async function fetchArboristResources(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(
-    `${useService ? GEN3_AUTHZ_SERVICE : GEN3_AUTHZ_API}/resource`,
-    { headers },
-  );
+  const url = useService
+    ? `${GEN3_AUTHZ_SERVICE}/resource`
+    : `${GEN3_AUTHZ_API}/resources`;
+  const res = await fetch(url, { headers });
 
   if (!res.ok) {
     console.error(
