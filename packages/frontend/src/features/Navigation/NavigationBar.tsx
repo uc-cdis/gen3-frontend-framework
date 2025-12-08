@@ -1,10 +1,6 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import {
-  LinkAuthStatus,
-  NavigationButtonProps,
-  NavigationProps,
-} from './types';
+import { LinkAuthStatus, NavigationButtonProps, NavigationProps } from './types';
 import { LoadingOverlay } from '@mantine/core';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';
@@ -84,7 +80,10 @@ const NavigationBar = ({
   );
 
   const { status, pending } = useSession(false); // no redirect side-effects here
-  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
+  const loggedIn = useDeepCompareMemo(() => {
+    console.log(status, pending);
+    return status === 'issued';
+  }, [status]);
   const routesConfig = useProtectedRoutesContext();
   const {
     data: resources,
@@ -95,10 +94,9 @@ const NavigationBar = ({
   } = useGetAuthzResourcesQuery();
 
   useDeepCompareEffect(() => {
-    if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
-    }
-  }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
+    console.log('refetching authz resources');
+    if (!pending) refetch();
+  }, [status, pending]);
 
   const router = useRouter();
   const [current, setCurrent] = useState(router.pathname);

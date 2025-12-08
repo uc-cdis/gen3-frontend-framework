@@ -53,7 +53,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           </div>
         </div>
         <div className="flex flex-col mt-2 ml-2">
-          <div className="w-64 h-7 justify-start text-base-contrast-max text-xl font-bold leading-6">
+          <div className="w-full h-7 justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6">
             {title}
           </div>
           <div className="text-xs text-gray-400 h-6">
