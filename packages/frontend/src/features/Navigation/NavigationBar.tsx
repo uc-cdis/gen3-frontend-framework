@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { LinkAuthStatus, NavigationButtonProps, NavigationProps } from './types';
+import {
+  LinkAuthStatus,
+  NavigationButtonProps,
+  NavigationProps,
+} from './types';
 import { LoadingOverlay } from '@mantine/core';
 import NavigationLogo from './NavigationLogo';
 import NavigationBarButton from './NavigationBarButton';

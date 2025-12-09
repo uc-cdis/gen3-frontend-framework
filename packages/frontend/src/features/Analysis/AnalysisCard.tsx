@@ -24,8 +24,8 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       justify="space-between"
       className="rounded-sm rounded-t-md bg-base-max p-0 h-full"
     >
-      <div className="relative">
-        <div className="p-0  h-max-1/2 flex justify-center items-center relative overflow-hidden">
+      <div className="relative h-4/5">
+        <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-center relative overflow-hidden">
           <Image
             src={`${image}`}
             alt={`${title} image`}
@@ -36,7 +36,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           />
         </div>
         <div className="flex -mt-5 relative z-10">
-          <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
+          <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base h-1/6 w-1/6 max-h-24 max-w-24">
             <Image
               component={NextImage}
               src={`${icon}`}
@@ -53,13 +53,13 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           </div>
         </div>
         <div className="flex flex-col mt-2 ml-2">
-          <div className="w-full h-7 justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6">
+          <div className="w-full justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6">
             {title}
           </div>
           <div className="text-xs text-gray-400 h-6">
             {loginRequired ? 'Login Required' : ' '}
           </div>
-          <div className="text-sm font-normal p-2">
+          <div className="sm:text-xs text-sm font-normal p-2">
             <TextDescription description={description} />
           </div>
         </div>

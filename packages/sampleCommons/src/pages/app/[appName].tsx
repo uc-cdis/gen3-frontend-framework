@@ -1,17 +1,17 @@
 import React from 'react';
 import {
-  useCoreSelector,
-  selectGen3AppByName,
   GEN3_COMMONS_NAME,
+  selectGen3AppByName,
+  useCoreSelector,
 } from '@gen3/core';
 import { GetServerSideProps } from 'next';
 import { NextRouter, useRouter } from 'next/dist/client/router';
 
 import {
+  ContentSource,
+  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
   NavPageLayoutProps,
-  getNavPageLayoutPropsFromConfig,
-  ContentSource,
 } from '@gen3/frontend';
 
 interface AppConfig extends NavPageLayoutProps {
@@ -22,11 +22,11 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
   const router = useRouter();
   const appName = getAppName(router);
 
-  const GdcApp = useCoreSelector(
+  const Gen3App = useCoreSelector(
     () => selectGen3AppByName(appName), // TODO update ById to ByName
   ) as React.ElementType;
 
-  if (!GdcApp)
+  if (!Gen3App)
     return (
       <div className="text-utility-warning font-bold m-10 border-base-darkest">
         App not found
@@ -43,7 +43,7 @@ const AppsPage = ({ headerProps, footerProps, config }: AppConfig) => {
         ...(config?.headerMetadata ? config.headerMetadata : {}),
       }}
     >
-      {GdcApp && <GdcApp {...config} />}
+      {Gen3App && <Gen3App {...config} />}
     </NavPageLayout>
   );
 };
