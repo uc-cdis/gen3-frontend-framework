@@ -84,7 +84,9 @@ const NavigationBar = ({
   );
 
   const { status, pending } = useSession(false); // no redirect side-effects here
-  const loggedIn = useDeepCompareMemo(() => status === 'issued', [status]);
+  const loggedIn = useDeepCompareMemo(() => {
+    return status === 'issued';
+  }, [status]);
   const routesConfig = useProtectedRoutesContext();
   const {
     data: resources,
@@ -95,10 +97,8 @@ const NavigationBar = ({
   } = useGetAuthzResourcesQuery();
 
   useDeepCompareEffect(() => {
-    if (loggedIn && !isAuthzResourcesFetching && !isAuthzResourcesError) {
-      refetch();
-    }
-  }, [loggedIn, isAuthzResourcesFetching, isAuthzResourcesError, refetch]);
+    if (!pending) refetch();
+  }, [status, pending]);
 
   const router = useRouter();
   const [current, setCurrent] = useState(router.pathname);
