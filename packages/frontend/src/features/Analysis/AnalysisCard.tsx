@@ -25,11 +25,10 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       className="rounded-sm rounded-t-md bg-base-max p-0 h-full"
     >
       <div className="relative h-4/5">
-        <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-center relative overflow-hidden">
+        <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-start relative overflow-hidden">
           <Image
             src={`${image}`}
             alt={`${title} image`}
-            height={500}
             classNames={{
               root: 'rounded-tl-lg rounded-tr-lg',
             }}
