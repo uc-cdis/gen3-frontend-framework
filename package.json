@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.11.33",
+  "version": "0.12.01",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -48,7 +48,7 @@
     "@mantine/hooks": "^7.17.8",
     "@mantine/modals": "^7.17.8",
     "@mantine/notifications": "^7.17.8",
-    "@next/bundle-analyzer": "^15.5.4",
+    "@next/bundle-analyzer": "^15.5.9",
     "classnames": "^2.3.1",
     "colorette": "^2.0.20",
     "glob": "^10.5.0",
@@ -63,7 +63,7 @@
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
     "@eslint/js": "^9.28.0",
-    "@next/eslint-plugin-next": "^15.5.3",
+    "@next/eslint-plugin-next": "^15.5.9",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.0",
@@ -80,7 +80,7 @@
     "@welldone-software/why-did-you-render": "^8.0.3",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.28.0",
-    "eslint-config-next": "^15.5.3",
+    "eslint-config-next": "^15.5.9",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
