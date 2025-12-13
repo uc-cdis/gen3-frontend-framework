@@ -1,0 +1,32 @@
+{
+  "matcher": [
+    "/403",
+    "/404",
+    "/AISearch",
+    "/Analysis",
+    "/Colors",
+    "/Crosswalk",
+    "/DataDictionary",
+    "/DataLibrary",
+    "/Discovery",
+    "/Explorer/[configId]",
+    "/Explorer",
+    "/NotebookLite",
+    "/Profile",
+    "/Query",
+    "/Repository",
+    "/SamplePage",
+    "/Submission",
+    "/TabbedCohortBuilder",
+    "/Workspace",
+    "/admin/Analysis",
+    "/admin/Authz",
+    "/admin/ESQuery",
+    "/admin/Resources",
+    "/app/[appName]",
+    "/gradio/[gradio]",
+    "/no-workspace-access",
+    "/notebook/[notebook]",
+    "/staticNotebook/[notebook]"
+  ]
+}

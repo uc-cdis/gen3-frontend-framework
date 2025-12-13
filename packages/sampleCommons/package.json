@@ -16,6 +16,7 @@
     "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
     "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
+    "build:middlewarePaths": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {

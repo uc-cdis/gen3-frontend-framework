@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRouteConfig } from './lib/auth/arboristConfig';
-import {
-  getAccessToken,
-  getLoginStatus,
-  type LoginStatus,
-} from './lib/auth/getLoginStatus';
+import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { RouteConfig } from '@gen3/frontend/server';
+import { matcher } from '../config/nextjs-routes.json';
 
 interface ArboristCookiePayload {
   expires: number;
@@ -74,7 +71,7 @@ export async function middleware(req: NextRequest) {
   const loginStatus = await getLoginStatus(req.headers.get('Cookie') || '');
   const loggedIn = await isLoggedIn(loginStatus);
 
-  // 1) Enforce login if required
+  // Enforce login if required
   if (loginRequired && !loggedIn) {
     const loginUrl = new URL('/Login', req.url);
     loginUrl.searchParams.set('referer', pathname);
@@ -95,10 +92,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Authz is enabled AND route has authzResources → check Arborist resources
-  const tokenFromCookie =
-    getAccessToken(req.headers.get('Cookie') || '') ?? null;
-
   // Let the server-side helper resolve resources using the active Gen3 session.
   const cookieHeader = req.headers.get('Cookie') || undefined;
   const resources = await fetchArboristResources(
@@ -116,8 +109,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Run on almost everything but skip Next.js internals and common assets
-    '/((?!_next/static|_next/image|_next/data|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
-  ],
+  matcher: matcher,
 };
