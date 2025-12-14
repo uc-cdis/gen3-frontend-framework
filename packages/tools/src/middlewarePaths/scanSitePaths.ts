@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const EXCLUDED_DIRS = ['/', '/Login', 'admin'];
+const EXCLUDED_DIRS = ['/', '/Login', 'admin', '/404', '/403'];
 
 function scanRoutes(dir: string, base = ''): string[] {
   const routes: string[] = [];

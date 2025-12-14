@@ -1,8 +1,10 @@
 'use strict';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const dns = require('dns');
-
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { writeMatcherConfig } = require('./src/lib/middlewareRoutes');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -10,10 +12,13 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('./src/lib/plugins/index.js');
+writeMatcherConfig({
+  pagesDir: './src/pages',
+  outputFile: './config/nextjs-routes.json',
+  excludeRoutes: ['/403', '/404', '/500', '/Login'],
+});
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {
