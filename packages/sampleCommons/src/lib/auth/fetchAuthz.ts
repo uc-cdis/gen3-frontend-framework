@@ -22,13 +22,16 @@ export async function fetchArboristResources(
     headers.Cookie = cookies;
   }
 
+  console.log('commons:fetchArboristResources Arborist /resource:', cookies);
+
   const url = useService
     ? `${GEN3_AUTHZ_SERVICE}/resource`
     : `${GEN3_AUTHZ_API}/resources`;
   const res = await fetch(url, { headers, next: { revalidate: revalidate } });
 
+  console.log('commons:fetchArboristResources Arborist /resource:', url, res);
   if (!res.ok) {
-    console.error(
+    console.log(
       'commons:fetchArboristResources Arborist /resource failed:',
       res.status,
       await res.text(),
@@ -37,5 +40,6 @@ export async function fetchArboristResources(
   }
 
   const data = (await res.json()) as AuthzResourceResponse;
+  console.log('commons:fetchArboristResources Arborist /resource:', data);
   return data.resources ?? [];
 }

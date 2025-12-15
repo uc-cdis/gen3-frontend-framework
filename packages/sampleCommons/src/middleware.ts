@@ -7,6 +7,7 @@ import {
 } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { RouteConfig } from '@gen3/frontend/server';
+import { matcher } from '../config/nextjs-routes.json';
 
 interface ArboristCookiePayload {
   expires: number;
@@ -107,6 +108,14 @@ export async function middleware(req: NextRequest) {
   );
 
   const allowed = rule?.authz!.some((needed) => resources.includes(needed));
+  console.log(
+    'allowed',
+    allowed,
+    'resources',
+    resources,
+    'needed',
+    rule?.authz,
+  );
   if (!allowed) {
     // Already logged in if required; they just lack authz for this resource
     return NextResponse.redirect(new URL('/403', req.url));
@@ -116,8 +125,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Run on almost everything but skip Next.js internals and common assets
-    '/((?!_next/static|_next/image|_next/data|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
-  ],
+  matcher: matcher,
 };
