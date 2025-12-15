@@ -1,4 +1,5 @@
 import {
+  type AuthzResourceData,
   type AuthzResourceResponse,
   GEN3_AUTHZ_API,
   GEN3_AUTHZ_SERVICE,
@@ -12,26 +13,21 @@ const DEFAULT_TTL_SECONDS = 360;
  * to a simple string[] of resource paths.
  */
 export async function fetchArboristResources(
-  cookies?: string,
+  accessToken: string | null,
   useService: boolean = false,
   revalidate: number = DEFAULT_TTL_SECONDS,
 ): Promise<string[]> {
-  const headers: Record<string, string> = {};
-
-  if (cookies) {
-    headers.Cookie = cookies;
-  }
-
-  console.log('commons:fetchArboristResources Arborist /resource:', cookies);
+  const headers: Record<string, string> = {
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    credentials: 'include',
+  };
 
   const url = useService
     ? `${GEN3_AUTHZ_SERVICE}/resource`
     : `${GEN3_AUTHZ_API}/resources`;
   const res = await fetch(url, { headers, next: { revalidate: revalidate } });
-
-  console.log('commons:fetchArboristResources Arborist /resource:', url, res);
   if (!res.ok) {
-    console.log(
+    console.error(
       'commons:fetchArboristResources Arborist /resource failed:',
       res.status,
       await res.text(),
@@ -39,7 +35,10 @@ export async function fetchArboristResources(
     return [];
   }
 
+  if (useService) {
+    const data = (await res.json()) as { resources: Array<AuthzResourceData> };
+    return data.resources.map((r) => r.path) ?? [];
+  }
   const data = (await res.json()) as AuthzResourceResponse;
-  console.log('commons:fetchArboristResources Arborist /resource:', data);
   return data.resources ?? [];
 }

@@ -7,7 +7,7 @@ import {
 } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { RouteConfig } from '@gen3/frontend/server';
-import { matcher } from '../config/nextjs-routes.json';
+import matcher from '../config/nextjs-routes.json';
 
 interface ArboristCookiePayload {
   expires: number;
@@ -19,28 +19,6 @@ const WILDCARD_ROUTE_KEY = '*';
 
 function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
   return routeConfig?.[pathname] ?? routeConfig?.[WILDCARD_ROUTE_KEY];
-}
-
-function parseArboristCookie(
-  value: string | undefined,
-): ArboristCookiePayload | null {
-  if (!value) return null;
-
-  try {
-    const parsed = JSON.parse(value) as Partial<ArboristCookiePayload>;
-
-    if (
-      typeof parsed.expires === 'number' &&
-      Array.isArray(parsed.resources) &&
-      typeof parsed.userKey === 'string'
-    ) {
-      return parsed as ArboristCookiePayload;
-    }
-  } catch (e) {
-    console.warn('Failed to parse arborist cookie:', e);
-  }
-
-  return null;
 }
 
 /**
@@ -101,21 +79,12 @@ export async function middleware(req: NextRequest) {
     getAccessToken(req.headers.get('Cookie') || '') ?? null;
 
   // Let the server-side helper resolve resources using the active Gen3 session.
-  const cookieHeader = req.headers.get('Cookie') || undefined;
   const resources = await fetchArboristResources(
-    cookieHeader,
+    tokenFromCookie,
     process.env.NODE_ENV === 'production',
   );
 
   const allowed = rule?.authz!.some((needed) => resources.includes(needed));
-  console.log(
-    'allowed',
-    allowed,
-    'resources',
-    resources,
-    'needed',
-    rule?.authz,
-  );
   if (!allowed) {
     // Already logged in if required; they just lack authz for this resource
     return NextResponse.redirect(new URL('/403', req.url));
