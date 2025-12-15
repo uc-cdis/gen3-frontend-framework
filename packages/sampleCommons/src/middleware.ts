@@ -1,14 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRouteConfig } from './lib/auth/arboristConfig';
-import { getLoginStatus, type LoginStatus } from './lib/auth/getLoginStatus';
+import {
+  getAccessToken,
+  getLoginStatus,
+  type LoginStatus,
+} from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { RouteConfig } from '@gen3/frontend/server';
-import { matcher } from '../config/nextjs-routes.json';
+
+interface ArboristCookiePayload {
+  expires: number;
+  resources: string[];
+  userKey: string;
+}
 
 const WILDCARD_ROUTE_KEY = '*';
 
 function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
   return routeConfig?.[pathname] ?? routeConfig?.[WILDCARD_ROUTE_KEY];
+}
+
+function parseArboristCookie(
+  value: string | undefined,
+): ArboristCookiePayload | null {
+  if (!value) return null;
+
+  try {
+    const parsed = JSON.parse(value) as Partial<ArboristCookiePayload>;
+
+    if (
+      typeof parsed.expires === 'number' &&
+      Array.isArray(parsed.resources) &&
+      typeof parsed.userKey === 'string'
+    ) {
+      return parsed as ArboristCookiePayload;
+    }
+  } catch (e) {
+    console.warn('Failed to parse arborist cookie:', e);
+  }
+
+  return null;
 }
 
 /**
@@ -64,6 +95,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Authz is enabled AND route has authzResources → check Arborist resources
+  const tokenFromCookie =
+    getAccessToken(req.headers.get('Cookie') || '') ?? null;
+
   // Let the server-side helper resolve resources using the active Gen3 session.
   const cookieHeader = req.headers.get('Cookie') || undefined;
   const resources = await fetchArboristResources(
@@ -81,5 +116,8 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: matcher,
+  matcher: [
+    // Run on almost everything but skip Next.js internals and common assets
+    '/((?!_next/static|_next/image|_next/data|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+  ],
 };
