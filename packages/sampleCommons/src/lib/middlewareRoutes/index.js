@@ -1,12 +1,11 @@
 // scripts/scan-routes.js
 // eslint-disable no-console
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-// const fs = require('fs');
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const path = require('path');
 
-export const GEN3_COMMONS_NAME =
-  process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
+export const GEN3_COMMONS_NAME = 'gen3';
 
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
