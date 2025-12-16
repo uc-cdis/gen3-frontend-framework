@@ -29,7 +29,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           <Image
             src={`${image}`}
             alt={''}
-            w={500}
+            w="auto"
             classNames={{
               root: 'rounded-tl-lg rounded-tr-lg',
             }}
