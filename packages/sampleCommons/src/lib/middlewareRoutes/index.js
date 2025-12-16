@@ -1,14 +1,49 @@
 // scripts/scan-routes.js
 // eslint-disable no-console
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const path = require('path');
+// const fs = require('fs');
+import fs from 'fs';
+import path from 'path';
+
+export const GEN3_COMMONS_NAME =
+  process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
 function toPosixPath(p) {
   return p.split(path.sep).join('/');
+}
+
+function loadAuthConfig() {
+  // load a json file from the config folder
+  const authConfigFile = path.join(
+    process.cwd(),
+    `config/${GEN3_COMMONS_NAME}`,
+    'authz.json',
+  );
+  const defaultAuthzConfigFile = path.join(
+    process.cwd(),
+    `config`,
+    'authz_default.json',
+  );
+  if (fs.existsSync(authConfigFile)) {
+    console.log(`Loading authz config from ${authConfigFile}`);
+    return JSON.parse(fs.readFileSync(authConfigFile).toString('utf8'));
+  }
+
+  if (fs.existsSync(defaultAuthzConfigFile)) {
+    console.log(`Loading authz config from ${authConfigFile}`);
+    return JSON.parse(fs.readFileSync(defaultAuthzConfigFile).toString('utf8'));
+  }
+  console.log(`No authz config found. Using default authz rules.`);
+  return {
+    '/Profile': {
+      loginRequired: true,
+    },
+    '*': {
+      loginRequired: false,
+    },
+  };
 }
 
 function normalizeRoute(route) {
@@ -79,7 +114,7 @@ function getPagesRoutes(opts = {}) {
   const pagesDir = path.resolve(opts.pagesDir || './src/pages');
 
   const excluded = new Set(
-    (opts.excludeRoutes || ['/403', '/404', '/500', '/Login']).map(
+    (opts.excludeRoutes || ['/403', '/404', '/500', '/Login', '/api:*']).map(
       normalizeRoute,
     ),
   );
@@ -92,9 +127,6 @@ function getPagesRoutes(opts = {}) {
 
       // Exclude '/' route
       if (r === '/') return false;
-
-      // Exclude anything under '/admin/'
-      if (r === '/admin' || r.startsWith('/admin/')) return false;
 
       return true;
     });
@@ -109,7 +141,7 @@ function getPagesRoutes(opts = {}) {
  * @param {string[]} [opts.excludeRoutes]
  * @returns {{ matcher: string[] }}
  */
-function writeMatcherConfig(opts = {}) {
+function writeMatcherConfigForAllRoutes(opts = {}) {
   const outputFile = path.resolve(
     opts.outputFile || './config/nextjs-routes.json',
   );
@@ -120,7 +152,7 @@ function writeMatcherConfig(opts = {}) {
       ? { matcher: routes }
       : {
           matcher: [
-            '/((?!_next/static|_next/image|_next/data|favicon.ico|.*\\.(ico|png|jpg|jpeg|svg|json)$).*)',
+            '/((?!_next/static|_next/image|_next/data|Login|favicon.ico|.*\\.(ico|png|jpg|jpeg|svg|json)$).*)',
           ],
         };
   console.log(`Adding the routes to middleware ${routes.join('\n')}`);
@@ -130,7 +162,33 @@ function writeMatcherConfig(opts = {}) {
   return config;
 }
 
+function writeMatcherConfigForAuthConfig(authConfig, opts = {}) {
+  const paths = Object.keys(authConfig.excludeRoutes);
+  const routes = paths.map((path) => normalizeRoute(path));
+  const outputFile = path.resolve(
+    opts.outputFile || './config/nextjs-routes.json',
+  );
+  console.log(`Adding the routes to middleware ${routes.join('\n')}`);
+  console.log(`Writing Next.js matcher config to ${outputFile}`);
+  const config = { matcher: routes };
+  fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+  fs.writeFileSync(outputFile, JSON.stringify(config, null, 2));
+  return config;
+}
+
+const createMiddlewareRoutes = async () => {
+  // get the authz config from the commons
+  const authConfig = loadAuthConfig();
+  const allPagesRequireLogin = authConfig['*']?.loginRequired;
+  // all pages are protected so we need to find all served routes and
+  // add them to the matcher
+  if (allPagesRequireLogin) {
+    writeMatcherConfigForAllRoutes();
+  } else {
+    writeMatcherConfigForAuthConfig(authConfig);
+  }
+};
+
 module.exports = {
-  getPagesRoutes,
-  writeMatcherConfig,
+  createMiddlewareRoutes,
 };

@@ -1,5 +1,4 @@
 import {
-  type AuthzResourceData,
   type AuthzResourceResponse,
   GEN3_AUTHZ_API,
   GEN3_AUTHZ_SERVICE,
@@ -23,7 +22,7 @@ export async function fetchArboristResources(
   };
 
   const url = useService
-    ? `${GEN3_AUTHZ_SERVICE}/resource`
+    ? `${GEN3_AUTHZ_SERVICE}/auth/resources`
     : `${GEN3_AUTHZ_API}/resources`;
   const res = await fetch(url, { headers, next: { revalidate: revalidate } });
   if (!res.ok) {
@@ -33,11 +32,6 @@ export async function fetchArboristResources(
       await res.text(),
     );
     return [];
-  }
-
-  if (useService) {
-    const data = (await res.json()) as { resources: Array<AuthzResourceData> };
-    return data.resources.map((r) => r.path) ?? [];
   }
   const data = (await res.json()) as AuthzResourceResponse;
   return data.resources ?? [];
