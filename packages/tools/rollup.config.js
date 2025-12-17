@@ -130,7 +130,7 @@ export default [
         banner: '#!/usr/bin/env node',
       },
     ],
-    external: ['path', 'fs'],
+    external: ['path', 'fs', '@next/env', 'node:util'],
     plugins: [peerDepsExternal(), swc()],
   },
 ];

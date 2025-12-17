@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import nextEnv from '@next/env';
+import { parseArgs } from 'node:util';
 
 const { loadEnvConfig } = nextEnv;
 
@@ -159,6 +160,18 @@ function writeGeneratedMiddlewareEntryTs(
   fs.writeFileSync(outputFile, body);
 }
 
+/**
+ * Configures and generates middleware route matchers based on authentication and routing requirements.
+ *
+ * The function determines the set of middleware routes based on the authentication configuration and
+ * whether all pages require login. It generates appropriate route matchers for middleware processing
+ * and writes the resulting matchers to a TypeScript file for use in the application.
+ *
+ * @param {boolean} [useScanAllPaths=false] - A flag to determine whether to include all application routes
+ *                                            in the middleware path matcher. If true, all application routes
+ *                                            are scanned and included; otherwise, specific routes from the
+ *                                            authentication configuration are considered.
+ */
 const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
   const authConfig = loadAuthConfig();
   const allPagesRequireLogin = authConfig?.routes?.['*']?.loginRequired;
@@ -181,7 +194,7 @@ const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
 
   if (matcher.length === 0) {
     matcher = [
-      '/((?!_next/static|_next/image|_next/data|Login|api|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
+      '/((?!_next/static|_next/image|_next/data|Login|api|403|404|no-workspace-access|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
     ];
   }
 
@@ -190,7 +203,32 @@ const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
 };
 
 function main() {
-  createMiddlewareRoutes();
+  try {
+    const {
+      values: { scanAllPages },
+    } = parseArgs({
+      options: {
+        scanAllPages: {
+          type: 'boolean',
+          default: false,
+        },
+      },
+    });
+
+    createMiddlewareRoutes(scanAllPages);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      if (e.name === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') {
+        console.error(`Error: ${e.message}`);
+        // Optionally print usage or help here
+      } else if (e.name === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') {
+        console.error(`Error: Missing value for option.`);
+      } else {
+        console.error('An unexpected error occurred:', e.message);
+      }
+    } else console.error('An unknown error occurred');
+    process.exit(1);
+  }
 }
 
 main();
