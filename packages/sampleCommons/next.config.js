@@ -14,8 +14,6 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
 
-createMiddlewareRoutes();
-
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
