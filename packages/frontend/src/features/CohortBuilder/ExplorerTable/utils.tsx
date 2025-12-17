@@ -8,10 +8,7 @@ import {
   TableColumnsAndFields,
 } from './types';
 import { type MRT_Column } from 'mantine-react-table';
-import {
-  ExplorerTableCellRendererFactory,
-  RenderArrayCell,
-} from './ExplorerTableCellRenderers';
+import { ExplorerTableCellRendererFactory, RenderArrayCellSimple, } from './ExplorerTableCellRenderers';
 import { jsonPathAccessor } from '../../../components/Tables/utils';
 import { ArrayCellRenderer } from './ArrayCellRenderer';
 
@@ -36,6 +33,7 @@ export const isRecordAny = (obj: unknown): obj is Record<string, any> => {
 export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
   const tableColumns = tableConfig.fields.map((field) => {
     const columnDef = tableConfig?.columns?.[field];
+
     const cellRendererFunc = columnDef?.type
       ? ExplorerTableCellRendererFactory().getRenderer(
           columnDef?.type,
@@ -61,7 +59,8 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
               cellRendererFunc(cell, cellRendererFuncParams)
           : cellRendererFunc
             ? cellRendererFunc
-            : undefined,
+            : (cell: CellRendererFunctionProps) =>
+                RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,
@@ -78,7 +77,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       }
       return acc;
     },
-    {} as Record<string, boolean>,
+    { 'mrt-row-actions': true } as Record<string, boolean>,
   );
 
   return {
@@ -120,7 +119,8 @@ export const createArrayTableColumns = (
           : cellRendererFunc
             ? (cell: CellRendererFunctionProps) =>
                 ArrayCellRenderer(cellRendererFunc, cell)
-            : RenderArrayCell,
+            : (cell: CellRendererFunctionProps) =>
+                RenderArrayCellSimple(cell, tableConfig?.defaultIfEmpty),
 
       size: columnDef?.width,
       enableSorting: columnDef?.sortable ?? undefined,

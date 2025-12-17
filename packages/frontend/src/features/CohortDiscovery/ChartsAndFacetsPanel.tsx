@@ -1,13 +1,23 @@
 import React from 'react';
 import { Grid } from '@mantine/core';
-import { AggregationsData, extractEnumFilterValue, FacetDefinition, fieldNameToTitle, } from '@gen3/core';
+import {
+  AggregationsData,
+  CombineMode,
+  extractEnumFilterValue,
+  FacetDefinition,
+  fieldNameToTitle,
+} from '@gen3/core';
 import { AppState, useAppSelector } from './appApi';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
-import { extractRangeValues, processBucketData, processRangeData, } from '../../components/facets';
+import {
+  EnumFacetDataHooks,
+  extractRangeValues,
+  processBucketData,
+  processRangeData,
+} from '../../components/facets';
 import { partial } from 'lodash';
 import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
-import { EnumFacetPanelDataHooks } from './FilterPanels/EnumFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
 import { useFieldNameToTitle } from '../../components/facets/hooks';
@@ -73,7 +83,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
     [data, cohortFilters.root],
   );
 
-  const facetHooks: Record<SupportedFacetTypes, EnumFacetPanelDataHooks> =
+  const facetHooks: Record<SupportedFacetTypes, EnumFacetDataHooks> =
     useDeepCompareMemo(() => {
       return {
         enum: {
@@ -83,6 +93,8 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
           useFieldNameToTitle: useFieldNameToTitle,
+          useUpdateCombineMode: (field: string, mode: CombineMode) => null,
+          useGetCombineMode: (field: string) => 'and',
         }, // TODO: range facets
         // range: {
         //   useGetFacetData: getRangeFacetData,

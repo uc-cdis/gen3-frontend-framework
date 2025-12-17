@@ -17,6 +17,7 @@ export interface RangeBucketElement {
   readonly from: number;
   readonly to: number;
   readonly key: string; // key for facet range
+  readonly queryKey: string;
   readonly label: string; // label for value
   readonly valueLabel?: string; // string representation of the count
   readonly value?: number; // count of items in range

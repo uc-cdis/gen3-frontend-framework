@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 type CountFunction = () => string;
 
@@ -12,6 +13,7 @@ export interface AnalysisToolConfiguration {
   hasDemo?: boolean;
   loginRequired: boolean;
   href: string;
+  demoHref?: string;
   appId?: string; // id of the app
   componentName?: string; // Name of component to load
   count?: number; // TODO replace with function
@@ -23,8 +25,10 @@ export interface AnalysisToolConfiguration {
   cardType?: 'regular' | 'compact';
   btnText?: string;
   tags?: Array<string>;
+  readonly leftComponent?: React.FC;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
+  classNames?: StylingOverrideWithMergeControl;
 }
 
 export interface AnalysisCenterConfiguration extends Gen3AppConfigData {

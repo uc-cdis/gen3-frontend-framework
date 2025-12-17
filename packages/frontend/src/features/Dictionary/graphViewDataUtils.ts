@@ -290,7 +290,10 @@ export function nodesBreadthFirst(nodes: nodeExtendedProps[], edges: nodeLinkLis
   // Run through this once to determine the actual level of each node
   for (let head = 0; head < queue.length; head += 1) {
     const { query, level } = queue[head]; // breadth first
-    name2ActualLvl[query] = level;
+    // set to topmost level if multiple
+    if (name2ActualLvl[query] === undefined) {
+      name2ActualLvl[query] = level;
+    }
     name2EdgesIn[query].forEach((edge) => {
       // At some point the d3 force layout converts edge.source
       //   and edge.target into node references ...
@@ -349,7 +352,7 @@ export function nodesBreadthFirst(nodes: nodeExtendedProps[], edges: nodeLinkLis
 const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProps)=> {
   let currentX = 0;
   let currentY = 0;
-  const xSpacing = 300;
+  const xSpacing = 200;
   const ySpacing = 100;
 
   const positions: {
@@ -360,6 +363,11 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProp
   }[] = [];
 
   treeLevel2Names.forEach((level) => {
+    // find longest name in level
+    const longestName = level.reduce((longest, id) => { 
+      const nameLength = nodesById[id].name.length; 
+      return nameLength > longest ? nameLength : longest; 
+    }, 0);
     level.forEach((id) => {
       positions.push({
         id: id,
@@ -370,7 +378,7 @@ const placeNodesOnGraph = (treeLevel2Names: string[][], nodesById: nodesByIdProp
       currentY += ySpacing;
     });
     currentY = 0;
-    currentX += xSpacing;
+    currentX +=  (longestName * 30) + xSpacing;
   });
 
   return positions;

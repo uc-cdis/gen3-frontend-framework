@@ -1,4 +1,3 @@
-import { JSONObject } from '@gen3/core';
 import { Text, Tooltip } from '@mantine/core';
 import { isArray } from 'lodash';
 import React from 'react';

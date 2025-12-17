@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
-  MRT_Row,
   type MRT_PaginationState,
-  type MRT_SortingState,
-  type MRT_RowSelectionState,
-  useMantineReactTable,
+  MRT_Row,
   MRT_RowData,
+  type MRT_RowSelectionState,
+  type MRT_SortingState,
+  useMantineReactTable,
 } from 'mantine-react-table';
 
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
 import classes from './style/DiscoveryTable.module.css';
 
@@ -23,18 +23,9 @@ import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
-import {
-  OnChangeFn,
-  PaginationState,
-  SortingState,
-} from '@tanstack/table-core';
-import {
-  DataRequestStatus,
-  RowSelectCompareFunctions,
-  SelectableRowConfiguration,
-} from './types';
+import { OnChangeFn, PaginationState, SortingState, } from '@tanstack/table-core';
+import { DataRequestStatus, RowSelectCompareFunctions, SelectableRowConfiguration, } from './types';
 import { LoadingOverlay } from '@mantine/core';
-import { useDeepCompareMemo } from 'use-deep-compare';
 
 const CompareFn = (
   fieldValue: string,

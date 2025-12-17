@@ -95,6 +95,7 @@ export const Default: Story = {
             count: 1000,
             countUnits: 'Cases',
           },
+
           {
             title: 'OncoMatrix',
             type: 'application',

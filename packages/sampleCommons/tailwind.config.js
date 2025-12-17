@@ -80,6 +80,7 @@ module.exports = {
       height: {
         '100px': '100px',
         '200px': '200px',
+        'workspace': 'h-full'
       },
       screens: {
         sm: '640px',

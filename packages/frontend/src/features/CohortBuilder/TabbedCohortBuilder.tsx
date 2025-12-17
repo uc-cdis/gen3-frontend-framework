@@ -9,9 +9,11 @@ import {
   FacetDefinition,
   FacetType,
   isIntersection,
+  NumericFromTo,
   selectCurrentCohortId,
   selectIndexFilters,
   useCoreSelector,
+  useCustomRangeQuery,
   useGetAggsQuery,
   useGetCountsQuery,
   usePrevious,
@@ -20,30 +22,26 @@ import FacetTabs from '../../components/facets/FacetTabs';
 import {
   classifyFacets,
   extractRangeValues,
-  FacetDataHooks,
+  FacetHooks,
   processBucketData,
+  processDefinedRangeData,
   processRangeData,
   removeIntersectionFromEnum,
   useGetFacetFilters,
   useUpdateFilters,
+  useUpdateFiltersFlat,
 } from '../../components/facets';
 import { QueryOptions } from '../../components/facets/types';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { partial } from 'lodash';
-import {
-  useClearFilters,
-  useFieldNameToTitle,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToTitle, } from '../../components/facets/hooks';
 import {
   useCohortFilterCombineState,
   useFilterExpandedState,
   useSetCohortFilterCombineState,
   useToggleExpandFilter,
 } from './hooks';
+import { StylingOverrideWithMergeControl } from '../../types';
 
 export interface CohortBuilderTabCategoryConfig {
   readonly label: string;
@@ -51,20 +49,18 @@ export interface CohortBuilderTabCategoryConfig {
     readonly indexType: string;
   };
   readonly facets: ReadonlyArray<string>;
+  readonly fieldsConfig?: Record<string, FacetDefinition>;
 }
-
 export type TabbedCohortBuilderFacetConfig = Record<
   string,
   CohortBuilderTabCategoryConfig
 >;
-
 const useCustomFacets = () => ({
   data: [],
   isSuccess: true,
 });
 
 const useAddCustomFilter = (x: string) => {};
-
 export const calculateStickyHeaderHeight = (): number => {
   const globalHeader = document.querySelector('#global-header');
   const contextBar = document.querySelector('#context-bar');
@@ -78,22 +74,43 @@ export interface TabbedCohortBuilderConfiguration {
   tabsConfiguration: TabbedCohortBuilderFacetConfig;
   index: string;
   indexPrefix?: string;
-}
+  fieldsAreFlat?: boolean; // do not create nested field if true
+  classNames?: StylingOverrideWithMergeControl;
+};
+
+// Builds a flat list of facet field names from the tabs configuration.
+const buildCohortBuilderFilters = (
+  tabsConfiguration: TabbedCohortBuilderFacetConfig,
+): string[] =>
+  Object.values(tabsConfiguration).reduce(
+    (filters: string[], category) => [...filters, ...category.facets],
+    [],
+  );
+
+// Builds facet configuration definitions from the tabs configuration.
+const buildConfigFacetDefinitions = (
+  tabsConfiguration: TabbedCohortBuilderFacetConfig,
+): Record<string, FacetDefinition> =>
+  Object.values(tabsConfiguration).reduce(
+    (acc: Record<string, FacetDefinition>, tab) => {
+      if (!tab?.fieldsConfig) {
+        return acc;
+      }
+      // merge fieldsConfig (explicit config overrides previously accumulated)
+      return { ...tab.fieldsConfig, ...acc };
+    },
+    {},
+  );
 
 const TabbedCohortBuilder = ({
-  index,
-  tabsConfiguration,
-  indexPrefix = '',
-}: TabbedCohortBuilderConfiguration) => {
+                               index,
+                               tabsConfiguration,
+                               indexPrefix = '',
+                               fieldsAreFlat = false,
+                               classNames = {},
+                             }: TabbedCohortBuilderConfiguration) => {
   const tabsConfig = tabsConfiguration;
-  const cohortBuilderFilters = [
-    ...Object.values(tabsConfiguration).reduce(
-      (filters: string[], category) => {
-        return [...filters, ...category.facets];
-      },
-      [] as string[],
-    ),
-  ];
+  const cohortBuilderFilters = buildCohortBuilderFilters(tabsConfiguration);
 
   const router = useRouter();
   const routerTab = router?.query?.tab;
@@ -104,17 +121,14 @@ const TabbedCohortBuilder = ({
   const [accessLevel, setAccessLevel] = useState<Accessibility>(
     Accessibility.ALL,
   );
-
   const cohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
-
   const cohortFilters = useCoreSelector((state: CoreState) =>
     selectIndexFilters(state, index),
   );
-
   const {
-    data,
+    data: aggsData,
     isSuccess,
     isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
@@ -126,7 +140,6 @@ const TabbedCohortBuilder = ({
     queryId: cohortId,
     indexPrefix: indexPrefix,
   });
-
   const {
     data: counts,
     isSuccess: isCountSuccess,
@@ -138,11 +151,36 @@ const TabbedCohortBuilder = ({
     queryId: cohortId,
     indexPrefix: indexPrefix,
   });
-
+  // for any facets that are continuous, we need to query each one
+  const useContinuousFacet = (
+    field: string,
+    ranges: ReadonlyArray<NumericFromTo>,
+  ) => {
+    const { data, isSuccess, isFetching, isError } = useCustomRangeQuery({
+      field,
+      ranges: ranges as Array<NumericFromTo>,
+      filters: cohortFilters,
+      index,
+      indexPrefix: indexPrefix,
+      accessibility: accessLevel,
+      isNested: !fieldsAreFlat,
+      asTextHistogram: true,
+      rangeBaseName: 'range',
+    });
+    // Transform data to match the format expected by NumericRangeFacet
+    // This depends on what processRangeData expects
+    return {
+      data: data
+        ? processDefinedRangeData(data, ranges, field, index, indexPrefix)
+        : {},
+      isSuccess,
+      isFetching,
+      isError,
+    };
+  };
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
   >({});
-
   useEffect(() => {
     // Check if the router initiated the change
     if (routerTab !== prevRouterTab) {
@@ -157,17 +195,20 @@ const TabbedCohortBuilder = ({
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
   }, [activeTab, routerTab, prevRouterTab, router]);
-
   // Set the facet definitions based on the data only the first time the data is loaded
   useDeepCompareEffect(() => {
     if (isSuccess && Object.keys(facetDefinitions).length === 0) {
-      const facetDefs = classifyFacets(data, index);
+      const configFacetDefs = buildConfigFacetDefinitions(tabsConfiguration);
+      const facetDefs = classifyFacets(
+        aggsData,
+        index,
+        undefined,
+        configFacetDefs,
+      );
       setFacetDefinitions(facetDefs);
-
-      // setup summary charts since nested fields can be listed by the split field nam
+      // setup summary charts since nested fields can be listed by the split field name
     }
-  }, [isSuccess, data, facetDefinitions, index]);
-
+  }, [isSuccess, aggsData, facetDefinitions, index, tabsConfiguration]);
   const getEnumFacetData = useDeepCompareCallback(
     (field: string) => {
       let filters = undefined;
@@ -185,9 +226,8 @@ const TabbedCohortBuilder = ({
           filters = extractEnumFilterValue(cohortFilters.root[field]);
         }
       }
-
       return {
-        data: processBucketData(data?.[field]),
+        data: processBucketData(aggsData?.[field]),
         enumFilters: filters,
         combineMode: combineMode,
         isSuccess: isSuccess,
@@ -195,25 +235,26 @@ const TabbedCohortBuilder = ({
         isError: isAggsQueryError,
       };
     },
-    [cohortFilters, data, isSuccess],
+    [cohortFilters, aggsData, isSuccess, isAggsQueryFetching, isAggsQueryError],
   );
-
   const getRangeFacetData = useDeepCompareCallback(
     (field: string) => {
       return {
-        data: processRangeData(data?.[field]),
+        data: processRangeData(aggsData?.[field]),
         filters: extractRangeValues(cohortFilters.root[field]),
         isSuccess: isSuccess,
         isFetching: isAggsQueryFetching,
         isError: isAggsQueryError,
       };
     },
-    [data, cohortFilters.root, isSuccess],
+    [aggsData, cohortFilters.root, isSuccess, isAggsQueryFetching, isAggsQueryError],
   );
-
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
-    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
@@ -223,10 +264,26 @@ const TabbedCohortBuilder = ({
     useFieldNameToTitle: useFieldNameToTitle,
     useTotalCounts: undefined,
   };
-
   const RangeHookInstances = {
     useGetFacetData: getRangeFacetData,
-    useUpdateFacetFilters: partial(useUpdateFilters, index),
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
+    useGetFacetFilters: partial(useGetFacetFilters, index),
+    useClearFilter: partial(useClearFilters, index),
+    useFilterExpanded: partial(useFilterExpandedState, index),
+    useToggleExpandFilter: partial(useToggleExpandFilter, index),
+    useFieldNameToTitle: useFieldNameToTitle,
+    useTotalCounts: undefined,
+  };
+
+  const ContinuousHookInstances = {
+    useGetFacetData: useContinuousFacet,
+    useUpdateFacetFilters: partial(
+      fieldsAreFlat ? useUpdateFiltersFlat : useUpdateFilters,
+      index,
+    ),
     useGetFacetFilters: partial(useGetFacetFilters, index),
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
@@ -236,7 +293,7 @@ const TabbedCohortBuilder = ({
   };
 
   // Set up the hooks for the facet components to use based on the required index
-  const facetDataHooks: Record<FacetType, FacetDataHooks> =
+  const facetDataHooks: Record<FacetType, FacetHooks> =
     useDeepCompareMemo(() => {
       return {
         // TODO: see if there a better way to do this
@@ -244,11 +301,13 @@ const TabbedCohortBuilder = ({
         exact: EnumHookInstances,
         multiselect: EnumHookInstances,
         range: RangeHookInstances,
-        age: RangeHookInstances,
-        year: RangeHookInstances,
-        years: RangeHookInstances,
-        days: RangeHookInstances,
-        percent: RangeHookInstances,
+        age: ContinuousHookInstances,
+        age_in_years: ContinuousHookInstances,
+        numeric_range: RangeHookInstances,
+        year: ContinuousHookInstances,
+        years: ContinuousHookInstances,
+        days: ContinuousHookInstances,
+        percent: ContinuousHookInstances,
         datetime: RangeHookInstances,
         toggle: RangeHookInstances,
         upload: EnumHookInstances,
@@ -277,6 +336,7 @@ const TabbedCohortBuilder = ({
         getFacetLabel={() => 'Cases'}
         cardScrollMargin={calculateStickyHeaderHeight()}
         useFieldNameToTitle={useFieldNameToTitle}
+        classNames={classNames}
       />
     </Stack>
   );

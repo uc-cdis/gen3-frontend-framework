@@ -31,7 +31,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
       gap="xs"
       key={title}
       classNames={{
-        root: 'rounded-lg border-3 border-contrast bg-base-max h-full',
+        root: 'rounded-lg border-3 border-contrast bg-base-max h-full max-w-90',
       }}
     >
       <div className="rounded-t-lg bg-secondary border-b-4 border-accent-warm h-10" />

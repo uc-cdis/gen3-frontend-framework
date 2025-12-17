@@ -1,17 +1,27 @@
 import React from 'react';
-import { EnumChartProps, FacetDataHooks, QueryOptions } from './types';
+import {
+  EnumChartProps,
+  EnumFacetDataHooks,
+  FacetHooks,
+  FacetValueLabel,
+  QueryOptions,
+  ToggleFacetDataHooks,
+  UploadFacetDataHooks,
+} from './types';
 import EnumFacet from './EnumFacet';
 import RangeFacet from './RangeFacet';
+import ToggleFacet from './ToggleFacet';
 import MultiSelectValueFacet from './MultiSelectValueFacet';
 import ExactValueFacet from './ExactValueFacet';
 import { FacetDefinition } from '@gen3/core';
-import ToggleFacet from './ToggleFacet';
+import UploadFacet from './UploadFacet';
+import NumericRangeFacet from './NumericRangeFacet';
 
 export interface CreateFacetCardProps {
   facetDefinition: FacetDefinition;
-  hooks: FacetDataHooks;
+  hooks: FacetHooks;
   idPrefix: string;
-  valueLabel: string | ((queryOptions?: QueryOptions) => string);
+  valueLabel: FacetValueLabel;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   width?: string;
@@ -38,7 +48,7 @@ export const createFacetCard = ({
   const valueTypeLabel =
     valueLabel === undefined || typeof valueLabel === 'string'
       ? valueLabel
-      : valueLabel(queryOptions);
+      : valueLabel(facetDefinition, queryOptions);
 
   return (
     <div key={`${idPrefix}-facet-${field}`}>
@@ -53,7 +63,7 @@ export const createFacetCard = ({
               description={description}
               hideIfEmpty={hideIfEmpty}
               width={width}
-              hooks={dataFunctions}
+              hooks={dataFunctions as EnumFacetDataHooks}
               showPercent={showPercent}
               sharedWithIndices={facetDefinition?.sharedWithIndices}
               moveValuesToBottom={facetDefinition?.moveValuesToBottom ?? []}
@@ -76,6 +86,125 @@ export const createFacetCard = ({
               sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
+          age: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="age"
+            />
+          ),
+          age_in_years: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="age_in_years"
+            />
+          ),
+          years: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="years"
+            />
+          ),
+          year: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="year"
+            />
+          ),
+          days: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="days"
+            />
+          ),
+          percent: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="percent"
+            />
+          ),
+          numeric_range: (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${field}`}
+              valueLabel={valueTypeLabel}
+              field={field}
+              facetName={facetLabel}
+              description={description}
+              hideIfEmpty={hideIfEmpty}
+              width={width}
+              hooks={dataFunctions}
+              minimum={facetDefinition.range?.minimum}
+              maximum={facetDefinition.range?.maximum}
+              showSettings={showPercent}
+              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              rangeDatatype="range"
+            />
+          ),
           exact: (
             <ExactValueFacet
               key={`${idPrefix}-exact-${field}`}
@@ -90,7 +219,7 @@ export const createFacetCard = ({
           ),
           multiselect: (
             <MultiSelectValueFacet
-              key={`${idPrefix}-exact-${field}`}
+              key={`${idPrefix}-multiselect-${field}`}
               field={field}
               facetName={facetLabel}
               description={description}
@@ -100,17 +229,26 @@ export const createFacetCard = ({
               sharedWithIndices={facetDefinition?.sharedWithIndices}
             />
           ),
+          upload: (
+            <UploadFacet
+              key={`${idPrefix}-upload-${field}`}
+              field={field}
+              valueLabel={valueTypeLabel}
+              hooks={dataFunctions as UploadFacetDataHooks}
+            />
+          ),
           toggle: (
             <ToggleFacet
-              key={`${idPrefix}-exact-${field}`}
+              key={`${idPrefix}-toggle-${field}`}
               field={field}
-              facetName={facetLabel}
-              description={description}
               valueLabel={valueTypeLabel}
               hideIfEmpty={hideIfEmpty}
-              width={width}
-              hooks={dataFunctions}
-              sharedWithIndices={facetDefinition?.sharedWithIndices}
+              showPercent={showPercent}
+              hooks={{
+                ...(dataFunctions as ToggleFacetDataHooks),
+              }}
+              facetName={facetLabel}
+              description={description}
             />
           ),
         }[type as string]

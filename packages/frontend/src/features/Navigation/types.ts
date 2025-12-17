@@ -13,6 +13,17 @@ export interface NavigationButtonProps {
   classNames?: StylingOverrideWithMergeControl;
 }
 
+export enum LinkAuthStatus {
+  Authorized = 'authorized',
+  Unauthorized = 'unauthorized',
+  Pending = 'pending',
+  LoginRequired = 'loginRequired',
+}
+
+export interface NavigationButtonWithAuthStatus extends NavigationButtonProps {
+  authStatus: LinkAuthStatus;
+}
+
 export interface NavigationBarLogo {
   readonly src: string;
   readonly title?: string;
@@ -30,6 +41,7 @@ export interface NavigationProps {
   readonly title?: string;
   readonly loginIcon?: ReactElement | string;
   readonly classNames?: StylingOverrideWithMergeControl;
+  readonly hideUnauthorizedLinks?: boolean;
 }
 
 export interface HeaderMetadata {
@@ -80,7 +92,7 @@ export interface BannerProps {
 }
 
 export interface HeaderProps {
-  top: TopBarProps;
+  topBar: TopBarProps;
   navigation: NavigationProps;
   banners?: Array<BannerProps>;
   type?: 'horizontal' | 'vertical' | 'original';

@@ -49,6 +49,7 @@ export interface SummaryTablePageLimit {
 
 export interface TableColumnsAndFields {
   fields: ReadonlyArray<string>;
+  defaultIfEmpty?: string;
   columns: Record<string, SummaryTableColumn>;
 }
 

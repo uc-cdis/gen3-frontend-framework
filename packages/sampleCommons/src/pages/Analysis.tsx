@@ -1,7 +1,8 @@
 import {
-    AnalysisPage,
-    AnalysisPageGetServerSideProps as getServerSideProps,
-  } from '@gen3/frontend';
-  export default AnalysisPage;
+  AnalysisPage,
+  AnalysisPageGetServerSideProps as getServerSideProps,
+} from '@gen3/frontend';
 
-  export { getServerSideProps };
+export default AnalysisPage;
+
+export { getServerSideProps };

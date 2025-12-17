@@ -15,20 +15,31 @@ const processTopBarItems = (
   dividerClassname: string,
 ): ReactElement[] => {
   return items.reduce(
-    (acc: ReactElement[], item: TopIconButtonPropsWithLink, index: number) => {
+    (acc: ReactElement[], item: TopIconButtonPropsWithLink) => {
       const mergedClassnames = item?.classNames
         ? mergeDefaultTailwindClassnames(classNames, item.classNames)
         : classNames;
+
+      const Custom = item.component;
       acc.push(
         <React.Fragment key={`${item.href}_${item.name}-topbar-item`}>
-          <a className="flex" href={item.href}>
-            <IconButton
-              name={item.name}
-              iconSize={item.iconSize}
-              leftIcon={item.leftIcon}
-              rightIcon={item.rightIcon}
-              classNames={mergedClassnames}
-            />
+          <a
+            className="flex"
+            href={item.href}
+            target={item.newWindow === true ? '_blank' : undefined}
+            rel={item.newWindow === true ? 'noreferrer' : undefined}
+          >
+            {Custom ? (
+              Custom
+            ) : (
+              <IconButton
+                name={item.name}
+                iconSize={item.iconSize}
+                leftIcon={item.leftIcon}
+                rightIcon={item.rightIcon}
+                classNames={mergedClassnames}
+              />
+            )}
           </a>
           <Divider
             size="md"

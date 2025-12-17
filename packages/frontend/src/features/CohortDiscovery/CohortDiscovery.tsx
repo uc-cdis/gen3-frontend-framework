@@ -1,23 +1,18 @@
 import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-import { Title, Loader, Tabs } from '@mantine/core';
+import { Loader, Tabs, Title } from '@mantine/core';
 import { ContextModalProps } from '@mantine/modals';
-import {
-  CohortDiscoveryConfig,
-  DataAccessRequestUserInformation,
-} from './types';
+import { CohortDiscoveryConfig, DataAccessRequestUserInformation, } from './types';
 import IndexPanel from './IndexPanel';
-import { AppStore } from './appApi';
+import { AppStore, useAppDispatch } from './appApi';
 import Image from 'next/image';
 import SavedCohortsPanel from './SavedCohorts/SavedCohortsPanel';
 import RequestsPanel from './Requests/RequestsPanel';
 import DataAccessRequestForm from './Requests/DataAccessRequestForm';
 import TabbedIndex from './TabbedIndex';
 import { extractIndexResourceFromConfiguration } from './utils';
-import { useAppDispatch } from './appApi';
 import { loadCohortsFromStorage } from './CohortManagment/CohortManagerSlice';
-import ProtectedContent from '../../components/Protected/ProtectedContent';
 
 const persistor = persistStore(AppStore);
 
@@ -48,7 +43,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
   useAppDispatch(loadCohortsFromStorage());
   return (
     <React.Fragment>
-      <ProtectedContent>
+
         <PersistGate persistor={persistor} loading={<Loader variant="dots" />}>
           <Title order={3} className="absolute top-6 left-[154px]">
             Cohort Discovery
@@ -117,7 +112,6 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
             </Tabs.Panel>
           </Tabs>
         </PersistGate>
-      </ProtectedContent>
     </React.Fragment>
   );
 };

@@ -1,13 +1,9 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { SharedFieldMapping } from './types';
+import { RangeQueryRequest, SharedFieldMapping } from './types';
 
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
@@ -17,6 +13,8 @@ import {
   rawDataQueryStrForEachField,
   statsQueryStrForEachField,
 } from './queryGenerators';
+import { buildRangeQuery } from './range';
+import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
 
 const statusEndpoint = '/_status';
 
@@ -202,6 +200,69 @@ export const explorerApi = explorerTags.injectEndpoints({
           ...(format && { format }),
         };
         return { query, variables };
+      },
+      // return . seperated fields as proper values
+      transformResponse: (response: Record<string, any>, _meta, args) => {
+        const containsDots = args?.fields?.filter((f) => f.includes('.'));
+        // check if dot seperated in arry and not object
+        if (containsDots && containsDots.length > 0 && response.data) {
+          const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
+            const partsArr = field.split('.');
+            if (partsArr.length < 2) {
+              throw new Error(
+                "Explorer does not support field with more than one '.' separator",
+              );
+            }
+            const basePart = partsArr[0];
+            if (!acc.includes(basePart)) {
+              acc.push(basePart);
+            }
+            return acc;
+          }, [] as string[]);
+
+          // checks if api is returning an array of objects for the base part
+          // if so, it restructures the object to group the sub parts into arrays
+          // e.g. {a: [{b: 1, c:2}, {b:3, c:4}]} becomes {a: {b: [1,3], c:[2,4]}}
+          // this is to make it easier to work with in the table component
+          // currently only supports one level of nesting
+          // also puts original into subRows for dropdown viewing
+          const tempResponse = response.data[
+            `${args?.indexPrefix ?? ''}${args.type}`
+          ].map((item: Record<string, any>) => {
+            const tempItem = item;
+            for (let i = 0; i < containsDotsUniqueBase.length; i++) {
+              const basePart = containsDotsUniqueBase[i];
+              if (item[basePart] && Array.isArray(item[basePart])) {
+                // move original to subRows
+                tempItem.subRows = tempItem[basePart];
+
+                tempItem[basePart] = tempItem[basePart].reduce(
+                  (acc: Record<string, any>, obj: Record<string, any>) => {
+                    for (const key in obj) {
+                      if (Object.hasOwn(obj, key)) {
+                        if (!acc[key]) {
+                          acc[key] = [];
+                        }
+                        acc[key].push(obj[key]);
+                      }
+                    }
+                    return acc;
+                  },
+                  {},
+                );
+              }
+            }
+            return tempItem;
+          });
+
+          return {
+            data: {
+              _aggregation: response.data._aggregation,
+              [`${args?.indexPrefix ?? ''}${args.type}`]: tempResponse,
+            },
+          };
+        }
+        return response;
       },
       providesTags: ['RAW_DATA', 'TABLE_DATA'],
     }),
@@ -422,7 +483,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return response[`${args.indexPrefix}_mapping`];
+        return response[`${args?.indexPrefix ?? ''}_mapping`];
       },
     }),
     getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
@@ -438,6 +499,51 @@ export const explorerApi = explorerTags.injectEndpoints({
           return groupSharedFields(response.data['_mapping']);
         }
         return {};
+      },
+    }),
+    customRange: builder.query<AggregationsData, RangeQueryRequest>({
+      query: ({
+        filters,
+        field,
+        ranges,
+        rangeBaseName,
+        index,
+        indexPrefix,
+        accessibility = Accessibility.ALL,
+        isNested = true,
+                asTextHistogram = false,
+      }: RangeQueryRequest) => {
+        // remove field from FilterSet
+
+
+
+        const queryData = buildRangeQuery(
+          field,
+          ranges,
+          filters,
+          rangeBaseName,
+          index,
+          indexPrefix,
+          isNested,
+          asTextHistogram
+        );
+
+        const gqlFilters = Object.entries(queryData.filters).reduce(
+          (acc: Record<string, GQLFilter>, [key, filter]) => {
+            acc[key] = isNested
+              ? convertFilterSetToNestedGqlFilter(filter)
+              : convertFilterSetToGqlFilter(filter);
+            return acc;
+          },
+          {},
+        );
+        return {
+          query: queryData.query,
+          variables: {
+            accessibility,
+            ...gqlFilters,
+          },
+        };
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -550,4 +656,6 @@ export const {
   useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
+  useCustomRangeQuery,
+  useLazyCustomRangeQuery,
 } = explorerApi;

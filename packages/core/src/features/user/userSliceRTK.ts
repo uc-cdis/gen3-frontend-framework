@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { fetchFence } from '../fence/utils';
 import { type Gen3FenceResponse } from '../fence/types';
 import { Gen3User, LoginStatus } from './types';
 import { CoreState } from '../../reducers';
@@ -7,6 +6,7 @@ import { getCookie } from 'cookies-next';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
+import { fetchFence } from '../fence';
 
 export interface CSRFToken {
   readonly csrfToken: string;

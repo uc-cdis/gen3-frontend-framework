@@ -11,6 +11,7 @@ export interface ReactEChartsProps {
   settings?: SetOptionOpts;
   loading?: boolean;
   theme?: 'light' | 'dark';
+  events?: { [key: string]: (e: any) => void };
 }
 
 const ReactECharts = ({
@@ -19,6 +20,7 @@ const ReactECharts = ({
   settings,
   loading,
   theme,
+  events,
 }: ReactEChartsProps): JSX.Element => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
   const [chartRef, rect] = useResizeObserver();
@@ -45,6 +47,14 @@ const ReactECharts = ({
       const chart = getInstanceByDom(chartRef.current);
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       loading === true ? chart?.showLoading() : chart?.hideLoading();
+
+      // Bind events
+      if (events) {
+        Object.keys(events).forEach((eventName) => {
+          chart?.off(eventName);
+          chart?.on(eventName, events[eventName]);
+        });
+      }
     }
   }, [loading]);
 

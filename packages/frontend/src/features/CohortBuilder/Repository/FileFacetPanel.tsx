@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -6,20 +6,23 @@ import {
 } from 'use-deep-compare';
 import {
   Accessibility,
+  clearCohortFilters,
   CombineMode,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
   isIntersection,
+  selectAllCohortFiltersCollapsed,
   selectIndexFilters,
+  toggleCohortBuilderAllFilters,
+  useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
 
 import DropdownPanel from '../../../components/facets/Panels/DropdownPanel';
 import {
   classifyFacets,
-  EnumFacetDataHooks,
-  FacetDataHooks,
+  FacetHooks,
   FieldToName,
   getAllFieldsFromFilterConfigs,
   processBucketData,
@@ -71,6 +74,20 @@ export const FileFacetPanel = ({
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
   >({});
+
+  const coreDispatch = useCoreDispatch();
+
+  const allFiltersCollapsed = useCoreSelector((state) =>
+    selectAllCohortFiltersCollapsed(state, index),
+  );
+
+  const toggleAllFiltersExpanded = (expand: boolean) => {
+    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
+  };
+
+  const clearAllFilters = useCallback(() => {
+    coreDispatch(clearCohortFilters({ index }));
+  }, [coreDispatch, index]);
 
   const {
     data: facetData,
@@ -133,24 +150,23 @@ export const FileFacetPanel = ({
     [repositoryFilters.root, facetData, isFacetsQuerySuccess],
   );
 
-  const facetDataHooks: Record<'enum', FacetDataHooks | EnumFacetDataHooks> =
-    useDeepCompareMemo(() => {
-      return {
-        enum: {
-          useGetFacetData: getEnumFacetData,
-          useUpdateFacetFilters: partial(useUpdateFilters, index),
-          useGetFacetFilters: partial(useGetFacetFilters, index),
-          useClearFilter: partial(useClearFilters, index),
-          useFilterExpanded: partial(useFilterExpandedState, index),
-          useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useGetCombineMode: partial(useCohortFilterCombineState, index),
-          useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useFieldNameToTitle: useFieldNameToTitle,
-          useTotalCounts: undefined,
-          useUpdateCombineMode: () => null,
-        },
-      };
-    }, [getEnumFacetData, index]);
+  const facetDataHooks: Record<'enum', FacetHooks> = useDeepCompareMemo(() => {
+    return {
+      enum: {
+        useGetFacetData: getEnumFacetData,
+        useUpdateFacetFilters: partial(useUpdateFilters, index),
+        useGetFacetFilters: partial(useGetFacetFilters, index),
+        useClearFilter: partial(useClearFilters, index),
+        useFilterExpanded: partial(useFilterExpandedState, index),
+        useToggleExpandFilter: partial(useToggleExpandFilter, index),
+        useGetCombineMode: partial(useCohortFilterCombineState, index),
+        useSetCombineMode: partial(useSetCohortFilterCombineState, index),
+        useFieldNameToTitle: useFieldNameToTitle,
+        useTotalCounts: undefined,
+        useUpdateCombineMode: () => null,
+      },
+    };
+  }, [getEnumFacetData, index]);
 
   if (isFacetsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
@@ -158,7 +174,6 @@ export const FileFacetPanel = ({
 
   return (
     <DropdownPanel<'enum'>
-      index={index}
       filters={filters}
       facetDefinitions={facetDefinitions}
       facetDataHooks={facetDataHooks}
@@ -166,6 +181,9 @@ export const FileFacetPanel = ({
       tabTitle={tabTitle}
       onAccessChange={setAccessLevel}
       accessLevel={accessLevel}
+      allFiltersCollapsed={allFiltersCollapsed}
+      toggleAllFiltersExpanded={toggleAllFiltersExpanded}
+      clearAllFilters={clearAllFilters}
     />
   );
 };

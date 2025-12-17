@@ -21,7 +21,7 @@ and example configuration:
  {
       "type" : "textWithEmail",
       "text": "If you have any questions about access or the registration process, please contact",
-      "email": "gen3@datacommons.io",
+      "email": "support@gen3.org",
       "className": "text-center text-sm"
     }
   ],

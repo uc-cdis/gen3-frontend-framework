@@ -1,4 +1,4 @@
-import { JSONObject } from '@gen3/core/server';
+import { JSONObject } from '@gen3/core';
 import { HeaderMetadata } from '../../features/Navigation/types';
 
 export interface ContentSourceInterface {

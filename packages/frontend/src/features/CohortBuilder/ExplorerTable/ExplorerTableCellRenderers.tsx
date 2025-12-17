@@ -15,6 +15,21 @@ export interface CellRendererFunctionCatalogEntry {
   [key: string]: CellRendererFunction;
 }
 
+export const RenderArrayCellSimple: CellRendererFunction = ({
+  cell,
+}: CellRendererFunctionProps, defaultIfEmpty: string = '') => {
+  const value = cell.getValue();
+  if (isArray(value)) {
+    const tempValue = value.map((x) => (x == null ? defaultIfEmpty : x));
+    return (
+      <span>
+        {tempValue.join(', ')}
+      </span>
+    );
+  }
+  return (<span>{value? value as string: defaultIfEmpty}</span>);
+};
+
 // TODO need to type this
 export const RenderArrayCell: CellRendererFunction = ({
   cell,
@@ -98,6 +113,7 @@ const FilesizeRenderer = ({ cell }: CellRendererFunctionProps) => {
 const ArrayCellFunctionCatalog = {
   NegativePositive: RenderArrayCellNegativePositive,
   default: RenderArrayCell,
+  simple: RenderArrayCellSimple,
 };
 
 const RenderLinkCell = (

@@ -5,11 +5,13 @@ import {
   FILE_FORMATS,
   GEN3_API,
   GEN3_AUTHZ_API,
+  GEN3_AUTHZ_SERVICE,
   GEN3_COMMONS_NAME,
   GEN3_CROSSWALK_API,
   GEN3_DOMAIN,
   GEN3_DOWNLOADS_ENDPOINT,
   GEN3_FENCE_API,
+  GEN3_FENCE_SERVICE,
   GEN3_GUPPY_API,
   GEN3_MANIFEST_API,
   GEN3_MDS_API,
@@ -48,6 +50,7 @@ export * from './features/sower';
 export * from './features/submission';
 export * from './features/workspace';
 export * from './features/cart';
+export * from './features/config';
 
 export {
   type CoreState,
@@ -57,7 +60,9 @@ export {
   GEN3_DOWNLOADS_ENDPOINT,
   GEN3_GUPPY_API,
   GEN3_FENCE_API,
+  GEN3_FENCE_SERVICE,
   GEN3_AUTHZ_API,
+  GEN3_AUTHZ_SERVICE,
   GEN3_MDS_API,
   GEN3_REDIRECT_URL,
   GEN3_WORKSPACE_API,

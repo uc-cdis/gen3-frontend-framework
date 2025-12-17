@@ -18,9 +18,34 @@ import { GEN3_COMMONS_NAME } from '@gen3/core';
  */
 export const getNavPageLayoutPropsFromConfig =
   async (): Promise<NavPageLayoutProps> => {
-    const navigationConfigJSON = await ContentSource.getContentDatabase().get(
-      `${GEN3_COMMONS_NAME}/navigation.json`,
-    );
+    let navigationConfigJSON: HeaderProps = {
+      topBar: { items: [] },
+      navigation: {
+        items: [
+          {
+            name: 'Site navigation is not configured',
+            icon: '',
+            tooltip: '',
+            href: '',
+          },
+        ],
+      },
+      type: 'original',
+    };
+
+    try {
+      navigationConfigJSON = await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/navigation.json`,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(
+          `Error occurred while getting navigation configuration: ${GEN3_COMMONS_NAME}/navigation.json`,
+        );
+      }
+    }
 
     const bannerConfigJSON: Array<BannerProps> = [];
     // TODO: enable later
@@ -60,15 +85,27 @@ export const getNavPageLayoutPropsFromConfig =
     }
 
     const headerProps: HeaderProps = {
-      top: topBar as unknown as TopBarProps,
+      topBar: topBar as unknown as TopBarProps,
       navigation: navigation as unknown as NavigationProps,
       banners: bannerConfigJSON,
       type,
     };
-    const footerProps: FooterProps =
-      await ContentSource.getContentDatabase().get(
+
+    let footerProps: FooterProps = {};
+    try {
+      footerProps = await ContentSource.getContentDatabase().get(
         `${GEN3_COMMONS_NAME}/footer.json`,
       );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(
+          `Error occurred while getting footer configuration: ${GEN3_COMMONS_NAME}/footer.json`,
+        );
+      }
+    }
+
     return {
       headerProps,
       footerProps,

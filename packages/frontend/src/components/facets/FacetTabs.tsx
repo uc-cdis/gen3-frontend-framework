@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Flex,
@@ -19,10 +19,20 @@ import {
   CohortBuilderCategoryConfig,
   CustomFacetHooks,
   EnumChartProps,
-  FacetDataHooks,
+  FacetHooks,
+  FacetValueLabel,
   QueryOptions,
 } from './types';
 import { FacetDefinition, FacetType } from '@gen3/core';
+import { StylingOverrideWithMergeControl } from '../../types';
+import { mergeDefaultTailwindClassnames } from '../../utils/mergeDefaultTailwindClassnames';
+
+const DefaultTableStyle = {
+  tab: 'pl-0 data-active:pl-4 ml-4 data-active:text-secondary data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1',
+  list: 'flex flex-col bg-primary-lightest text-primary-contrast-dark w-60 md:w-72 lg:w-80 py-4',
+  tabLabel: 'text-left',
+  root: 'bg-base-max',
+};
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
@@ -68,7 +78,7 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
-  readonly hooks?: FacetDataHooks;
+  readonly hooks?: FacetHooks;
   readonly queryOptions?: QueryOptions;
 };
 
@@ -97,14 +107,14 @@ interface CustomFacetGroupProps {
   readonly customFacetHooks: CustomFacetHooks;
   readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
-  readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
+  readonly getFacetLabel: FacetValueLabel;
   readonly useFieldNameToTitle: () => (
     field: string,
     sections?: number,
   ) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<any>;
-  hooks: Record<FacetType, FacetDataHooks>;
+  hooks: Record<FacetType, FacetHooks>;
 }
 
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
@@ -215,18 +225,19 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 type FacetTabProps = {
   readonly activeTab: string | null | undefined;
   readonly setActiveTab: (tab: string | null) => void;
-  hooks: Record<FacetType, FacetDataHooks>;
+  hooks: Record<FacetType, FacetHooks>;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly usedFacets: string[];
   readonly customFacetHooks?: CustomFacetHooks;
-  readonly getFacetLabel: (queryOptions?: QueryOptions) => string;
+  readonly getFacetLabel: FacetValueLabel;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
   readonly useFieldNameToTitle: () => (
     field: string,
     sections?: number,
   ) => string;
+  classNames?: StylingOverrideWithMergeControl;
 };
 
 /**
@@ -236,9 +247,11 @@ type FacetTabProps = {
  * @param hooks - Hooks for retrieving data, modifying cohort, etc. for the various facet types
  * @param facetDefinitions - Description of facets and their properties
  * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
+ * @param usedFacets
  * @param customFacetHooks - Hooks for custom facet selection
- * @param getFacetLabel - Callback for determining the data label
+ * @param getFacetLabel - String or Callback for determining the data label
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
+ * @param useFieldNameToTitle - will use built in hook for facet names
  * @param Chart - Component for rendering a Chart view of the data
  */
 
@@ -254,6 +267,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   cardScrollMargin,
   useFieldNameToTitle,
   Chart,
+  classNames = {},
 }) => {
   const fieldNameToTitle = useFieldNameToTitle();
   const theme = useMantineTheme();
@@ -263,6 +277,11 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
 
   const hash = window?.location?.hash.split('#')?.[1];
   const searchTermParam = searchParams.get('search');
+
+  const tabStyling = useMemo(
+    () => mergeDefaultTailwindClassnames(DefaultTableStyle, classNames),
+    [classNames],
+  );
 
   useEffect(() => {
     if (hash && searchTermParam) {
@@ -309,10 +328,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                 facetNameFormatter: (field: string) => fieldNameToTitle(field),
                 hooks,
                 idPrefix: 'cohort-builder',
-                valueLabel: getFacetLabel
-                  ? getFacetLabel(firstEntry.queryOptions)
-                  : '',
-                queryOptions: firstEntry.queryOptions,
+                valueLabel:  getFacetLabel,
                 cardScrollMargin,
                 Chart,
               })}
@@ -324,12 +340,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
             value={activeTab}
             onChange={setActiveTab}
             keepMounted={false}
-            classNames={{
-              tab: 'pl-0 data-active:pl-4 ml-4 data-active:text-secondary data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1',
-              list: 'flex flex-col bg-primary-lightest text-primary-contrast-dark w-60 md:w-72 lg:w-80 py-4',
-              tabLabel: 'text-left',
-              root: 'bg-base-max',
-            }}
+            classNames={tabStyling}
           >
             <Tabs.List>
               {Object.entries(tabsConfig).map(

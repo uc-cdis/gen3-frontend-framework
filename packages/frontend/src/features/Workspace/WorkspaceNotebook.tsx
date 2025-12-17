@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  GEN3_WORKSPACE_API,
-  selectActiveWorkspaceStatus,
-  useCoreSelector,
-  WorkspaceStatus,
-} from '@gen3/core';
+import { GEN3_WORKSPACE_API, selectActiveWorkspaceStatus, useCoreSelector, WorkspaceStatus, } from '@gen3/core';
 
 const WorkspaceNotebook = () => {
   const currentWorkspaceStatus = useCoreSelector(selectActiveWorkspaceStatus);
@@ -13,7 +8,7 @@ const WorkspaceNotebook = () => {
 
   return (
     <React.Fragment>
-      <div className="flex flex-col w-full  flex-grow content-center items-center">
+      <div className="flex flex-col w-full h-workspace flex-grow content-center items-center">
         <iframe
           className="w-full h-full border-8"
           title="Workspace"

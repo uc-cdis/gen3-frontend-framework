@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { JSONObject } from '@gen3/core';
 
 export interface DataItemRenderFunctionProps<V = any, T = JSONObject> {

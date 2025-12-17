@@ -9,7 +9,6 @@ import {
 } from 'mantine-react-table';
 
 export const jsonPathAccessor = (path: string) => (row: JSONObject) => {
-  // TODO: add logging if path is not found
   return JSONPath({ json: row, path: path });
 };
 

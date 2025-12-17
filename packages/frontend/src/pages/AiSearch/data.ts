@@ -16,7 +16,7 @@ export const AISearchPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         headerProps: {
-          top: {
+          topBar: {
             items: [],
           },
           navigation: {},

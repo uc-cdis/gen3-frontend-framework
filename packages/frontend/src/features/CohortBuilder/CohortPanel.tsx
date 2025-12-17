@@ -1,27 +1,27 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
   Accessibility,
   AggregationsData,
+  clearCohortFilters,
   CombineMode,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
   FacetType,
   isIntersection,
+  selectAllCohortFiltersCollapsed,
   selectCurrentCohortId,
   selectIndexFilters,
   selectSharedFilters,
+  toggleCohortBuilderAllFilters,
+  useCoreDispatch,
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import {
-  Charts,
-  CollapsableCharts,
-  type SummaryChart,
-} from '../../components/charts';
+import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -36,18 +36,11 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import {
-  useClearFilters,
-  useFieldNameToTitle,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToTitle, } from '../../components/facets/hooks';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import {
   useCohortFilterCombineState,
@@ -132,6 +125,8 @@ export const CohortPanel = ({
     [filters?.tabs],
   );
 
+  const coreDispatch = useCoreDispatch();
+
   const [facetDefinitions, setFacetDefinitions] = useState<
     Record<string, FacetDefinition>
   >({});
@@ -147,6 +142,18 @@ export const CohortPanel = ({
   const cohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
+
+  const allFiltersCollapsed = useCoreSelector((state) =>
+    selectAllCohortFiltersCollapsed(state, index),
+  );
+
+  const toggleAllFiltersExpanded = (expand: boolean) => {
+    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
+  };
+
+  const clearAllFilters = useCallback(() => {
+    coreDispatch(clearCohortFilters({ index }));
+  }, [coreDispatch, index]);
 
   const {
     data,
@@ -190,7 +197,11 @@ export const CohortPanel = ({
   const cleanChartData = useDeepCompareMemo(() => {
     if (isChartSuccess && chartData) {
       const cleanedData: AggregationsData = {};
+      const totalCount = chartData._totalCount[0]?.count;
       Object.keys(summaryCharts).forEach((key) => {
+        if (!(key in chartData)) {
+          return;
+        } // handle missing key in  data
         // remove empty keys
         cleanedData[key] = chartData[key]?.filter((x) =>
           typeof x.key !== 'string' ? true : x.key !== '',
@@ -203,6 +214,11 @@ export const CohortPanel = ({
               ? true
               : facetDef?.excludeValues?.includes(String(x.key)) === false,
           );
+        }
+
+        if (cleanedData[key].length === 0 && totalCount) {
+          // if no keys adds back no data
+          cleanedData[key] = [{ key: 'no data', count: totalCount }];
         }
       });
       return cleanedData;
@@ -382,7 +398,6 @@ export const CohortPanel = ({
         >
           {filters?.tabs && (
             <DropdownPanel
-              index={index}
               filters={filters}
               tabTitle={tabTitle}
               facetDefinitions={facetDefinitions}
@@ -390,6 +405,9 @@ export const CohortPanel = ({
               onAccessChange={setAccessLevel}
               accessLevel={accessLevel}
               showAccessLevel={showAccessLevel}
+              allFiltersCollapsed={allFiltersCollapsed}
+              toggleAllFiltersExpanded={toggleAllFiltersExpanded}
+              clearAllFilters={clearAllFilters}
             />
           )}
         </div>

@@ -62,7 +62,6 @@ const httpsAgent = new HTTPSAgent({
 });
 
 const fetchJson = async (url: string) => {
-  console.log(`Fetching ${url}`);
 
   return fetchWithRetry(url, {
     // TODO: fix the typing to remove the ts-ignore

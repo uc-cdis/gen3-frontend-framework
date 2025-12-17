@@ -4,17 +4,7 @@ import FacetEnumList from './FacetEnumList';
 
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 
-import {
-  EnumFacetDataChangedFunction,
-  FacetCardProps,
-  FacetDataHooks,
-  GetEnumFacetDataFunction,
-} from './types';
-
-export interface EnumFacetHooks extends FacetDataHooks {
-  useGetFacetData: GetEnumFacetDataFunction;
-  updateVisibleValues?: EnumFacetDataChangedFunction;
-}
+import { EnumFacetDataHooks, FacetCardProps } from './types';
 
 const EnumFacet = ({
   field,
@@ -38,8 +28,8 @@ const EnumFacet = ({
     Label: FacetText,
     iconStyle: controlsIconStyle,
   },
-}: FacetCardProps<EnumFacetHooks>) => {
-  const [isSettings, setIsSessings] = useState(false);
+}: FacetCardProps<EnumFacetDataHooks>) => {
+  const [isSettings, setIsSettings] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const isFilterExpanded =
@@ -50,7 +40,7 @@ const EnumFacet = ({
   };
 
   const toggleSettings = () => {
-    setIsSessings((isSettings) => !isSettings);
+    setIsSettings((isSettings) => !isSettings);
   };
 
   const toggleFlip = () => {

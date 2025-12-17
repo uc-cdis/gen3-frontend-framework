@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Group,
-  Select,
-  Stack,
-  Switch,
-  Text,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
+import { Group, Select, Stack, Switch, Text, Tooltip, useMantineTheme, } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify-icon/react';
 import type { TabConfig } from '../../../features/CohortBuilder/types';
@@ -16,32 +8,31 @@ import {
   Accessibility,
   FacetDefinition,
   FacetType,
-  selectAllCohortFiltersCollapsed,
   selectSharedFilters,
   selectShouldShareFilters,
   setShouldShareFilters,
-  toggleCohortBuilderAllFilters,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
 import { TabbablePanelProps } from './types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import AccessLevel from '../../../features/CohortBuilder/AccessLevel';
+import { FacetValueLabel } from '../types';
 
 export const DropdownPanel = <T extends FacetType = FacetType>({
-  index,
   filters,
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+  allFiltersCollapsed,
+  toggleAllFiltersExpanded,
+  clearAllFilters,
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
+  valueLabel = undefined as FacetValueLabel | undefined,
 }: TabbablePanelProps<T>) => {
   const [value, setValue] = useState<string | null>('0');
-  const allFiltersCollapsed = useCoreSelector((state) =>
-    selectAllCohortFiltersCollapsed(state, index),
-  );
 
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
 
@@ -51,10 +42,6 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
 
   const theme = useMantineTheme();
   const coreDispatch = useCoreDispatch();
-
-  const toggleAllFiltersExpanded = (expand: boolean) => {
-    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
-  };
 
   const items = useDeepCompareMemo(
     () =>
@@ -89,12 +76,26 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
         <Text size="xl" fw={800}>
           Filters
         </Text>
-        <button
-          className="text-primary text-sm font-normal"
-          onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
-        >
-          {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
-        </button>
+        <Group justify="flex-end" gap="xs">
+          <Tooltip
+            label={`${allFiltersCollapsed ? 'Expand' : 'Collapse'} all filter panels`}
+          >
+            <button
+              className="text-primary text-sm font-normal"
+              onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
+            >
+              {allFiltersCollapsed ? 'Expand All' : 'Collapse All'}
+            </button>
+          </Tooltip>
+          <Tooltip label="Clear all selected filters">
+            <button
+              className="text-primary text-sm font-normal"
+              onClick={clearAllFilters}
+            >
+              Clear All
+            </button>
+          </Tooltip>
+        </Group>
       </Group>
       {showAccessLevel ? (
         <AccessLevel onChange={onAccessChange} accessLevel={accessLevel} />
@@ -148,7 +149,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
           <FiltersPanel
             fields={fields}
             dataFunctions={facetDataHooks}
-            valueLabel={tabTitle}
+            valueLabel={valueLabel ?? tabTitle}
           />
         ) : null}
       </div>

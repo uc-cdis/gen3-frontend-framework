@@ -52,10 +52,14 @@ export const AccountButton = ({
 
   // get the icon size otherwise use the value of iconsSize as a string value: e.g. 2em
   const iconSz = IconSize[iconSize] ?? iconSize;
+  const displayName =
+  userInfo?.email ||
+  userInfo?.preferred_username ||
+  userInfo?.username;
 
   return (
     <IconButton
-      name={userInfo?.username ?? 'Profile'}
+      name={displayName ?? 'Profile'}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       iconSize={iconSize}
