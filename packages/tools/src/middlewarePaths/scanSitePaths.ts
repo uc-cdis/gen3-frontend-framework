@@ -10,7 +10,14 @@ loadEnvConfig(process.cwd());
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
-const DEFAULT_EXCLUDED_ROUTES = ['/403', '/404', '/Login', '/*', '/api'];
+const DEFAULT_EXCLUDED_ROUTES = [
+  '/403',
+  '/404',
+  '/Login',
+  '/*',
+  '/api',
+  '/no-workspace-access',
+];
 
 function toPosixPath(p: string): string {
   return p.split(path.sep).join('/');

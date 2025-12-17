@@ -10,6 +10,7 @@
     "dev": "next dev",
     "devssh": "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",
+    "prebuild": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
     "build": "next build",
     "start": "next start",
     "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons",
