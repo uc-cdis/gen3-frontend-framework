@@ -23,7 +23,6 @@ export async function middleware(req: NextRequest) {
   const { routes: routeConfig } = await getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
 
-  console.log('pa', pathname);
   // check if there is a wildcard route
   if (!rule) {
     rule = getRouteRuleForPath('*', routeConfig);

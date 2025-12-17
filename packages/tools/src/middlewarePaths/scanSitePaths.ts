@@ -1,56 +1,189 @@
-// scripts/scan-routes.ts
 import fs from 'fs';
 import path from 'path';
+import nextEnv from '@next/env';
 
-const EXCLUDED_DIRS = ['/', '/Login', 'admin', '/404', '/403'];
+const { loadEnvConfig } = nextEnv;
 
-function scanRoutes(dir: string, base = ''): string[] {
-  const routes: string[] = [];
-  if (!fs.existsSync(dir)) return routes;
+// Load .env files before reading process.env.*
+loadEnvConfig(process.cwd());
 
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
+const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    const routePath = path.join(base, entry.name);
-    if (
-      entry.isFile() &&
-      routePath.endsWith('.tsx') &&
-      !routePath.startsWith('_')
-    ) {
-      routes.push(`${base}/${entry.name.replace(/\.tsx$/, '') || '/'}`);
-    }
+const DEFAULT_EXCLUDED_ROUTES = ['/403', '/404', '/Login', '/*', '/api'];
 
-    if (entry.isDirectory()) {
-      // Recurse into subdirectories
-      routes.push(...scanRoutes(fullPath, path.join('/', base, entry.name)));
-    }
+function toPosixPath(p: string): string {
+  return p.split(path.sep).join('/');
+}
+
+interface Options {
+  pagesDir?: string;
+  excludeRoutes?: string[];
+  outputFile?: string;
+}
+
+function loadAuthConfig() {
+  const authConfigFile = path.join(
+    process.cwd(),
+    `config/${GEN3_COMMONS_NAME}`,
+    'authz.json',
+  );
+  const defaultAuthzConfigFile = path.join(
+    process.cwd(),
+    `config`,
+    'authz_default.json',
+  );
+
+  if (fs.existsSync(authConfigFile)) {
+    console.log(`Loading authz config from ${authConfigFile}`);
+    return JSON.parse(fs.readFileSync(authConfigFile).toString('utf8'));
   }
 
+  if (fs.existsSync(defaultAuthzConfigFile)) {
+    console.log(`Loading authz config from ${defaultAuthzConfigFile}`);
+    return JSON.parse(fs.readFileSync(defaultAuthzConfigFile).toString('utf8'));
+  }
+
+  console.log(`No authz config found. Using default authz rules.`);
+  return {
+    '/Profile': { loginRequired: true },
+    '*': { loginRequired: false },
+  };
+}
+
+function normalizeRoute(route: string) {
+  let r = route.startsWith('/') ? route : `/${route}`;
+  r = r.replace(/\/{2,}/g, '/');
+  if (r.length > 1) r = r.replace(/\/$/, '');
+  return r;
+}
+
+// ✅ Convert Next.js pages-style dynamic segments to middleware matcher syntax
+function routeToMiddlewareMatcher(route: string) {
+  // route examples:
+  // "/Explorer/[configId]"  -> "/Explorer/:configId"
+  // "/notebook/[...notebook]" -> "/notebook/:notebook*"
+  // "/foo/[[...slug]]" -> "/foo/:slug*"
+  return route
+    .replace(/\[\[\.\.\.(\w+)\]\]/g, ':$1*') // optional catch-all
+    .replace(/\[\.\.\.(\w+)\]/g, ':$1*') // catch-all
+    .replace(/\[(\w+)\]/g, ':$1'); // single segment
+}
+
+function filePathToRoute(relativeFilePosix: string): string | null {
+  if (!PAGE_EXT_RE.test(relativeFilePosix)) return null;
+  if (relativeFilePosix === 'api' || relativeFilePosix.startsWith('api/'))
+    return null;
+
+  const baseName = path.posix.basename(relativeFilePosix);
+  if (baseName.startsWith('_')) return null;
+
+  let noExt = relativeFilePosix.replace(PAGE_EXT_RE, '');
+  noExt = noExt.replace(/\/index$/i, '');
+  if (noExt === 'index') noExt = '';
+  return normalizeRoute(noExt);
+}
+
+function scanPagesRoutes(pagesDirAbs: string, pagesRootAbs: string) {
+  const routes: string[] = [];
+  if (!fs.existsSync(pagesDirAbs)) return routes;
+
+  const entries = fs.readdirSync(pagesDirAbs, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(pagesDirAbs, entry.name);
+
+    if (entry.isDirectory()) {
+      if (entry.name === '.next') continue;
+      routes.push(...scanPagesRoutes(fullPath, pagesRootAbs));
+      continue;
+    }
+
+    if (!entry.isFile()) continue;
+
+    const relFromPages = path.relative(pagesRootAbs, fullPath);
+    const relPosix = toPosixPath(relFromPages);
+    const route = filePathToRoute(relPosix);
+    if (route) routes.push(route);
+  }
   return routes;
 }
 
-// Scan both app and pages directories
-const appRoutes = scanRoutes('./app');
-const pagesRoutes = scanRoutes('./src/pages', '')
-  .map((r) => r.replace(/\/index$/, '') || '/')
-  .filter((r) => !EXCLUDED_DIRS.includes(r));
+function getPagesRoutes(opts: Options = {}) {
+  const pagesDir = path.resolve(opts.pagesDir || './src/pages');
+  const excluded = new Set(
+    (opts.excludeRoutes || DEFAULT_EXCLUDED_ROUTES).map(normalizeRoute),
+  );
 
-const allRoutes = [...new Set([...appRoutes, ...pagesRoutes])];
+  const routes = scanPagesRoutes(pagesDir, pagesDir)
+    .map(normalizeRoute)
+    .filter((r) => {
+      if (excluded.has(r)) return false;
+      if (r === '/') return false;
+      return true;
+    });
 
-console.log('Found routes:', allRoutes);
+  return Array.from(new Set(routes)).sort((a, b) => a.localeCompare(b));
+}
 
-// Generate middleware config
-const config = {
-  matcher:
-    allRoutes.length > 0
-      ? allRoutes
-      : [
-          '/((?!_next/static|_next/image|_next/data|favicon.ico|/Login|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
-        ],
+function getMatcherFromAuthConfig(authConfig: Record<string, any>) {
+  const paths = Object.keys(authConfig?.routes ?? {});
+  const normalizedRoutes = paths.map((p) => normalizeRoute(p));
+  const excluded = new Set(DEFAULT_EXCLUDED_ROUTES.map(normalizeRoute));
+  return normalizedRoutes.filter((r) => !excluded.has(r));
+}
+
+// ✅ Generates the actual Next middleware entry file with literal matcher
+function writeGeneratedMiddlewareEntryTs(
+  matcher: string[],
+  opts: Options = {},
+) {
+  const outputFile = path.resolve(opts.outputFile || './src/middleware.ts');
+
+  const body =
+    `// @generated by tools/scanSitePaths.ts\n` +
+    `// Do not edit manually. Edit src/middleware-impl.ts instead.\n` +
+    `export { middleware } from './middleware-impl';\n\n` +
+    `export const config = {\n` +
+    `  matcher: ${JSON.stringify(matcher, null, 2)},\n` +
+    `};\n`;
+
+  console.log(`Writing generated middleware entry to ${outputFile}`);
+  fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+  fs.writeFileSync(outputFile, body);
+}
+
+const createMiddlewareRoutes = () => {
+  const authConfig = loadAuthConfig();
+  const allPagesRequireLogin = authConfig?.routes?.['*']?.loginRequired;
+
+  let routes;
+  if (allPagesRequireLogin) {
+    console.log(
+      'All pages require login. Adding all routes to middleware path matcher.',
+    );
+    routes = getPagesRoutes();
+  } else {
+    console.log(
+      'Some pages require login. Adding authz routes to middleware  path matcher.',
+    );
+    routes = getMatcherFromAuthConfig(authConfig);
+  }
+
+  // ✅ Convert to valid middleware matcher patterns
+  let matcher = (routes || []).map(routeToMiddlewareMatcher);
+
+  if (matcher.length === 0) {
+    matcher = [
+      '/((?!_next/static|_next/image|_next/data|Login|api|favicon.ico|.*\\.(ico|png|jpg|jpeg|svg|json)$).*)',
+    ];
+  }
+
+  console.log(`middleware matcher entries:\n${matcher.join('\n')}`);
+  writeGeneratedMiddlewareEntryTs(matcher);
 };
 
-fs.writeFileSync(
-  './config/nextjs-routes.json',
-  JSON.stringify(config, null, 2),
-);
+function main() {
+  createMiddlewareRoutes();
+}
+
+main();

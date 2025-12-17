@@ -6,6 +6,7 @@
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "analyze": "ANALYZE=true npm run build",
+    "predev": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
     "dev": "next dev",
     "devssh": "next dev --port 3010 --experimental-https --experimental-https-key /Users/craigrbarnes/ssl_certs/key.pem --experimental-https-cert /Users/craigrbarnes/ssl_certs/cert.pem ",
     "clean": "rm -rf .next && rm -rf out",

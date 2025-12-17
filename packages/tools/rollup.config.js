@@ -121,18 +121,6 @@ export default [
     plugins: [peerDepsExternal(), swc()],
   },
   {
-    input: './src/gdcGqlToGuppyGql/convert.ts',
-    output: [
-      {
-        file: 'dist/gdcGqlToGuppyGql.esm.js',
-        format: 'esm',
-        name: 'gdcGqlToGuppyGql',
-      },
-    ],
-    external: ['@gen3/core', 'url'],
-    plugins: [peerDepsExternal(), swc()],
-  },
-  {
     input: './src/middlewarePaths/scanSitePaths.ts',
     output: [
       {
