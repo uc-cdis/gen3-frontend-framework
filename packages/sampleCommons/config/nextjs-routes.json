@@ -1,9 +1,12 @@
 {
   "matcher": [
+    "/admin/Analysis",
+    "/admin/Authz",
+    "/admin/ESQuery",
+    "/admin/Resources",
     "/AISearch",
     "/Analysis",
     "/app/[appName]",
-    "/Colors",
     "/Crosswalk",
     "/DataDictionary",
     "/DataLibrary",

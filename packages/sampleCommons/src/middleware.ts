@@ -7,13 +7,6 @@ import {
 } from './lib/auth/getLoginStatus';
 import { fetchArboristResources } from './lib/auth/fetchAuthz';
 import { RouteConfig } from '@gen3/frontend/server';
-import matcher from '../config/nextjs-routes.json';
-
-interface ArboristCookiePayload {
-  expires: number;
-  resources: string[];
-  userKey: string;
-}
 
 const WILDCARD_ROUTE_KEY = '*';
 
@@ -21,13 +14,6 @@ function getRouteRuleForPath(pathname: string, routeConfig: RouteConfig) {
   return routeConfig?.[pathname] ?? routeConfig?.[WILDCARD_ROUTE_KEY];
 }
 
-/**
- * Gen3 way of determining login status on the server:
- * delegate to the same /api/auth/sessionToken endpoint that the
- * SessionProvider uses (getSession()).
- *
- * We treat status === "issued" as "logged in".
- */
 function isLoggedIn(loginStatus: LoginStatus) {
   return loginStatus.status === 'issued';
 }
@@ -36,6 +22,8 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const { routes: routeConfig } = await getRouteConfig();
   let rule = getRouteRuleForPath(pathname, routeConfig);
+
+  console.log('pa', pathname);
   // check if there is a wildcard route
   if (!rule) {
     rule = getRouteRuleForPath('*', routeConfig);
@@ -94,5 +82,31 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: matcher,
+  matcher: [
+    '/admin/Analysis',
+    '/admin/Authz',
+    '/admin/ESQuery',
+    '/admin/Resources',
+    '/AISearch',
+    '/Analysis',
+    '/app/[appName]',
+    '/Crosswalk',
+    '/DataDictionary',
+    '/DataLibrary',
+    '/Discovery',
+    '/Explorer',
+    '/Explorer/[configId]',
+    '/gradio/[gradio]',
+    '/no-workspace-access',
+    '/notebook/[notebook]',
+    '/NotebookLite',
+    '/Profile',
+    '/Query',
+    '/Repository',
+    '/SamplePage',
+    '/staticNotebook/[notebook]',
+    '/Submission',
+    '/TabbedCohortBuilder',
+    '/Workspace',
+  ],
 };

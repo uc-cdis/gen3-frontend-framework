@@ -14,10 +14,7 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
 
-createMiddlewareRoutes({
-  pagesDir: './src/pages',
-  outputFile: './config/nextjs-routes.json',
-});
+createMiddlewareRoutes();
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withMDX = require('@next/mdx')({
