@@ -159,7 +159,7 @@ function writeGeneratedMiddlewareEntryTs(
   fs.writeFileSync(outputFile, body);
 }
 
-const createMiddlewareRoutes = () => {
+const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
   const authConfig = loadAuthConfig();
   const allPagesRequireLogin = authConfig?.routes?.['*']?.loginRequired;
 
@@ -168,7 +168,7 @@ const createMiddlewareRoutes = () => {
     console.log(
       'All pages require login. Adding all routes to middleware path matcher.',
     );
-    routes = getPagesRoutes();
+    routes = useScanAllPaths ? getPagesRoutes() : []; // setting to [] will cause the matcher to be set below
   } else {
     console.log(
       'Some pages require login. Adding authz routes to middleware  path matcher.',
@@ -181,7 +181,7 @@ const createMiddlewareRoutes = () => {
 
   if (matcher.length === 0) {
     matcher = [
-      '/((?!_next/static|_next/image|_next/data|Login|api|favicon.ico|.*\\.(ico|png|jpg|jpeg|svg|json)$).*)',
+      '/((?!_next/static|_next/image|_next/data|Login|api|favicon.ico|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.json$).*)',
     ];
   }
 

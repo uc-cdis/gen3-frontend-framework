@@ -4,31 +4,12 @@ export { middleware } from './middleware-impl';
 
 export const config = {
   matcher: [
-  "/admin/Analysis",
-  "/admin/Authz",
-  "/admin/ESQuery",
-  "/admin/Resources",
-  "/AISearch",
-  "/Analysis",
-  "/app/:appName",
-  "/Colors",
-  "/Crosswalk",
-  "/DataDictionary",
   "/DataLibrary",
-  "/Discovery",
-  "/Explorer",
-  "/Explorer/:configId",
-  "/gradio/:gradio",
-  "/no-workspace-access",
-  "/notebook/:notebook",
-  "/NotebookLite",
+  "/DataConnections",
+  "/Analysis",
+  "/Workspace",
   "/Profile",
-  "/Query",
-  "/Repository",
-  "/SamplePage",
-  "/staticNotebook/:notebook",
-  "/Submission",
-  "/TabbedCohortBuilder",
-  "/Workspace"
+  "/app/MetadataDictionary",
+  "/Explorer"
 ],
 };
