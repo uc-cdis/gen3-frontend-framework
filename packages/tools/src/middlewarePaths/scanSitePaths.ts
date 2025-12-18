@@ -9,6 +9,8 @@ const { loadEnvConfig } = nextEnv;
 const dev = process.env.NODE_ENV !== 'production';
 loadEnvConfig(process.cwd(), dev);
 
+console.log(`Getting config for a ${dev ? 'dev' : 'prod'} build.`);
+
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
 
