@@ -1,6 +1,6 @@
 import { type JSONObject, type JSONValue } from './types';
 import {
-  Accessibility,
+  type Accessibility,
   GEN3_API,
   GEN3_AUTHZ_API,
   GEN3_AUTHZ_SERVICE,
@@ -20,7 +20,10 @@ import {
 } from './constants';
 // NOTE: Do NOT change to using the barrel file as that will break the server-only package
 import { fetchArboristResources } from './features/authz/fetchAuthz';
-import { type AuthzResourceResponse } from './features/authz/types';
+import {
+  type AuthzResourceData,
+  type AuthzResourceResponse,
+} from './features/authz/types';
 import { fetchFence } from './features/fence/fetchFence';
 import {
   type FetchRequest,
@@ -29,8 +32,6 @@ import {
 import { buildFetchError, isFetchError } from './features/fence/utils';
 
 export {
-  type JSONObject,
-  type JSONValue,
   GEN3_COMMONS_NAME,
   GEN3_DOMAIN,
   GEN3_API,
@@ -47,10 +48,13 @@ export {
   GEN3_CROSSWALK_API,
   GEN3_SOWER_API,
   GEN3_MANIFEST_API,
+  type JSONObject,
+  type JSONValue,
   type FetchRequest,
   type Gen3FenceResponse,
   type AuthzResourceResponse,
-  Accessibility,
+  type AuthzResourceData,
+  type Accessibility,
   fetchArboristResources,
   fetchFence,
   isFetchError,

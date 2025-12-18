@@ -39,42 +39,6 @@ const main = () => {
         short: 't',
         default: './colors.json',
       },
-      primary: {
-        type: 'string',
-        short: 'p',
-        default: '#532565',
-      },
-      secondary: {
-        type: 'string',
-        short: 's',
-        default: '#982568',
-      },
-      accent: {
-        type: 'string',
-        short: 'a',
-        default: '#E07C3E',
-      },
-      accentWarm: {
-        type: 'string',
-        default: '#E07C3E',
-      },
-      accentCool: {
-        type: 'string',
-        default: '#1552e0',
-      },
-      base: {
-        type: 'string',
-        short: 'b',
-        default: '#858585',
-      },
-      table: {
-        type: 'string',
-        default: '#858585',
-      },
-      navigation: {
-        type: 'string',
-        default: '#eaeaea',
-      },
       out: {
         type: 'string',
         short: 'o',
