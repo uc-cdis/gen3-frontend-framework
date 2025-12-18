@@ -6,7 +6,8 @@ import { parseArgs } from 'node:util';
 const { loadEnvConfig } = nextEnv;
 
 // Load .env files before reading process.env.*
-loadEnvConfig(process.cwd());
+const dev = process.env.NODE_ENV !== 'production';
+loadEnvConfig(process.cwd(), dev);
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 const PAGE_EXT_RE = /\.(tsx|ts|jsx|js)$/;
@@ -42,9 +43,15 @@ function loadAuthConfig() {
     'authz_default.json',
   );
 
+  console.log(`Looking for authz config at ${authConfigFile}`);
   if (fs.existsSync(authConfigFile)) {
     console.log(`Loading authz config from ${authConfigFile}`);
     return JSON.parse(fs.readFileSync(authConfigFile).toString('utf8'));
+  } else {
+    console.log(
+      '\x1b[31m%s\x1b[0m',
+      `${authConfigFile} not found. Using default authz rules.`,
+    );
   }
 
   if (fs.existsSync(defaultAuthzConfigFile)) {
