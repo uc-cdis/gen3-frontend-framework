@@ -119,7 +119,7 @@ const DiscoveryIndexPanel = ({
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-      feat/discoveryProxyLoader!
+      feat/discoveryProxyLoader! {new Date().toLocaleTimeString()}
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
         <StudyProvider>
           <div className="w-full">
