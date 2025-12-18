@@ -13,16 +13,44 @@ export const useAggMetaMDSProxy = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
-  const [data, setData] = useState([{ test: 1 }]);
+  const [data, setData] = useState([{ displayData: [], hits: 0 }]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const url = 'https://jsonplaceholder.typicode.com/posts';
+  const apiUrl = 'http://localhost:3000/api/discovery';
+
+  const params = {
+    discoveryConfig: discoveryConfig,
+    pagination: {
+      offset: 0,
+      pageSize: pagination.pageSize,
+    },
+    searchTerms: searchTerms,
+    sorting: [],
+    selectedFieldsForSearchIndexing: [],
+    /*       selectedFieldsForSearchIndexing: [
+        'study_metadata.minimal_info.study_name',
+      ],
+ */ selectedTags: {},
+    /*       selectedTags: {
+        SPARC: true,
+        Dataverse: true,
+      }, */
+  };
+
   console.log('searchTerms', searchTerms);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(url);
+        // const response = await fetch(url);
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(params),
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -40,8 +68,8 @@ export const useAggMetaMDSProxy = ({
 
   console.log('data', data);
   return {
-    data: data,
-    hits: data.length,
+    data: data.displayedData,
+    hits: data.hits,
     suggestions: [],
     summaryStatistics: [],
     charts: {},

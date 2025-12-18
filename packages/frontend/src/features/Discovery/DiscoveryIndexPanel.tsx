@@ -91,7 +91,7 @@ const DiscoveryIndexPanel = ({
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
-      data.filter(
+      data?.filter(
         (member) => uidField in member && selections.includes(member[uidField]),
       );
     return filterSelectedMembers(data);
