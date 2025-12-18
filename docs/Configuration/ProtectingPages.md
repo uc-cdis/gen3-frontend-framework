@@ -45,11 +45,18 @@ Authorization to a page is controlled by the `authz` entry in a route entry. For
 }
 ```
 
-Will only allow users with the `/workspace` resource to view the `/Workspace` page. Not that the checks look for the existence of the resource in the user YAML, and not the mapping information, such as read/write. Support for mappings 
-can be added, but this should be sufficient for most use cases. 
+Will only allow users with the `/workspace` resource to view the `/Workspace` page. Not that the checks look for the existence of the resource in the user YAML, and not the mapping information, such as read/write. Support for mappings
+can be added, but this should be sufficient for most use cases.
 
 The `*` key in the `routes` object is used to set the default authentication and authorization settings for all pages that do not
 have a specific entry in the `routes` object. This is how you set the default authentication and authorization settings for all pages.
+
+### Protecting all pages
+To protect all pages, use the `*` key in the `routes` object and set `loginRequired` to `true`. Doing this will require all users to login before they can view any page,
+except for the Login, and error pages. This is not recommended as there is a slight performance penalty for protecting every page.
+
+### Protecting the Profile page
+The Profile page is protected by default.
 
 ## Navigation Links
 There are two options for displaying navigation links on the left side of the page.
