@@ -5,8 +5,6 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const dns = require('dns');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { createMiddlewareRoutes } = require('./src/lib/middlewareRoutes');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -26,7 +24,7 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   env: {
-    version: process.env.npm_package_version
+    version: process.env.npm_package_version,
   },
   reactStrictMode: true,
   output: 'standalone',
