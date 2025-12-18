@@ -1,8 +1,10 @@
+// @ts-check
+
 'use strict';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const dns = require('dns');
-
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -10,10 +12,7 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('./src/lib/plugins/index.js');
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {
@@ -25,7 +24,7 @@ const withMDX = require('@next/mdx')({
 // Next configuration with support for rewriting API to existing common services
 const nextConfig = {
   env: {
-    version: process.env.npm_package_version
+    version: process.env.npm_package_version,
   },
   reactStrictMode: true,
   output: 'standalone',

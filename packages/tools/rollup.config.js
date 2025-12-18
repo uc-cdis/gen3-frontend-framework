@@ -1,6 +1,7 @@
 import { swc } from 'rollup-plugin-swc3';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import executable from 'rollup-plugin-executable';
+
 export default [
   {
     input: './src/buildColors/buildColors.ts',
@@ -120,18 +121,16 @@ export default [
     plugins: [peerDepsExternal(), swc()],
   },
   {
-    input: './src/gdcGqlToGuppyGql/convert.ts',
+    input: './src/middlewarePaths/scanSitePaths.ts',
     output: [
       {
-        file: 'dist/gdcGqlToGuppyGql.esm.js',
+        file: 'dist/scanSitePaths.esm.js',
         format: 'esm',
-        name: 'gdcGqlToGuppyGql',
+        name: 'scanSitePaths',
+        banner: '#!/usr/bin/env node',
       },
     ],
-    external: [
-      '@gen3/core',
-      'url',
-    ],
+    external: ['path', 'fs', '@next/env', 'node:util'],
     plugins: [peerDepsExternal(), swc()],
   },
 ];
