@@ -1,7 +1,12 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  GQLFilter,
+  isFilterEmpty,
+} from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 
@@ -421,12 +426,29 @@ export const explorerApi = explorerTags.injectEndpoints({
           },
         };
       },
-
       transformResponse: (
         response: Record<string, any>,
         _meta,
         args,
       ): number => {
+        if (
+          !response.data ||
+          !response.data[`${args?.indexPrefix ?? ''}_aggregation`]
+        ) {
+          throw new Error(
+            'Invalid response: Missing data or _aggregation field',
+          );
+        }
+
+        if (
+          !(
+            args.type in response.data[`${args?.indexPrefix ?? ''}_aggregation`]
+          )
+        ) {
+          throw new Error(
+            `Invalid response: Missing expected key '${args.type}' in _aggregation`,
+          );
+        }
         return (
           response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
             ?._totalCount ?? 0
@@ -511,11 +533,9 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix,
         accessibility = Accessibility.ALL,
         isNested = true,
-                asTextHistogram = false,
+        asTextHistogram = false,
       }: RangeQueryRequest) => {
         // remove field from FilterSet
-
-
 
         const queryData = buildRangeQuery(
           field,
@@ -525,7 +545,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           index,
           indexPrefix,
           isNested,
-          asTextHistogram
+          asTextHistogram,
         );
 
         const gqlFilters = Object.entries(queryData.filters).reduce(

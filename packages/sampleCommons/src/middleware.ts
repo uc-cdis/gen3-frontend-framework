@@ -100,9 +100,8 @@ export async function middleware(req: NextRequest) {
     getAccessToken(req.headers.get('Cookie') || '') ?? null;
 
   // Let the server-side helper resolve resources using the active Gen3 session.
-  const cookieHeader = req.headers.get('Cookie') || undefined;
   const resources = await fetchArboristResources(
-    cookieHeader,
+    tokenFromCookie,
     process.env.NODE_ENV === 'production',
   );
 
