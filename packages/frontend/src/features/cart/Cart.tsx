@@ -1,41 +1,41 @@
-import React from "react";
-import { Grid } from "@mantine/core";
+import React from 'react';
+import { Grid } from '@mantine/core';
 import {
-  // useCartSummaryQuery,
-  useCoreSelector,
-  ////  selectCart,
-  useFetchUserDetailsQuery,
-  UserProfile,
   CoreState,
-  AuthzMapping,
   selectCart,
+  useCoreSelector,
+  useFetchUserDetailsQuery,
 } from '@gen3/core';
-import FilesTable from "./FilesTable";
-import ProjectTable from "./ProjectTable";
-import CartHeader from "./CartHeader";
-import AuthorizationTable from "./AuthorizationTable";
-import { groupByAccess } from "./utils";
-import { HeaderTitle } from "@/components/tailwindComponents";
-import DownloadInfo from "./DownloadInfo";
-import { CartIcon } from "@/utils/icons";
-import {useCartSummaryQuery  } from "@/core";
+import FilesTable from './FilesTable';
+import CartHeader from './CartHeader';
+import AuthorizationTable from './AuthorizationTable';
+import HeaderTitle from '../../components/HeaderTitle';
+import DownloadInfo from './DownloadInfo';
+import { Icon } from '@iconify-icon/react';
+import { CartSummaryFunction, EmptyCartSummary } from './types';
 
-const Cart: React.FC = () => {
-   const cart = useCoreSelector((state:CoreState) => selectCart(state));
+interface CartProps {
+  cartSummaryFunction?: CartSummaryFunction;
+}
 
-  const { data: summaryData } = useCartSummaryQuery(cart.map((f) => f?.file_id));
+const Cart: React.FC = ({
+  cartSummaryFunction = () => EmptyCartSummary,
+}: CartProps) => {
+  const cart = useCoreSelector((state: CoreState) => selectCart(state));
+
+  const summaryData = cartSummaryFunction(cart.map((f) => f?.file_id));
 
   const { data: userDetails, isFetching: userDetailsFetching } =
     useFetchUserDetailsQuery();
 
- //  const filesByCanAccess = groupByAccess(cart, userDetails?.data ? userDetails.data : {} as unknown as AuthzMapping);
+  //  const filesByCanAccess = groupByAccess(cart, userDetails?.data ? userDetails.data : {} as unknown as AuthzMapping);
   // TODO: enable when we have indexed new data
-   const filesByCanAccess: any = {};
+  const filesByCanAccess: any = {};
   const dbGapList = Array.from(
     new Set(
       (filesByCanAccess?.true || [])
         .reduce((acc: any, f: any) => acc.concat(f.acl), [])
-        .filter((f :any) => f !== "open"),
+        .filter((f: any) => f !== 'open'),
     ),
   );
 
@@ -43,7 +43,7 @@ const Cart: React.FC = () => {
     <Grid justify="center" className="bg-base-lightest flex-grow">
       <Grid.Col span={4} className="my-20 flex flex-col items-center">
         <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
-          <CartIcon size={80} className="text-primary-darkest" />
+          <Icon icon="gen3:cart" size={80} className="text-primary-darkest" />
         </div>
         <p className="uppercase text-primary-darkest text-2xl font-montserrat mt-4">
           Your cart is empty.
@@ -67,13 +67,6 @@ const Cart: React.FC = () => {
               customDataTestID="table-file-counts-by-authorization-level"
               filesByCanAccess={filesByCanAccess}
               loading={userDetailsFetching}
-            />
-          </div>
-          <div className="flex-1 w-1/2">
-            <HeaderTitle>File counts by project</HeaderTitle>
-            <ProjectTable
-              customDataTestID="table-file-counts-by-project"
-              projectData={summaryData?.byProject ?? []}
             />
           </div>
         </div>

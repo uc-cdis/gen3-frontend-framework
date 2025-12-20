@@ -2,8 +2,10 @@ import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
 import {
   MRT_Cell,
   MRT_Column,
+  MRT_PaginationState,
   MRT_Row,
   MRT_RowData,
+  MRT_SortingState,
   MRT_TableInstance,
 } from 'mantine-react-table';
 import {
@@ -146,3 +148,19 @@ export type CellRendererFunction = (
 export type ExplorerDataQueryHook = (
   args: RawDataAndTotalCountsParams,
 ) => ReturnType<typeof useGetRawDataAndTotalCountsQuery>;
+
+export interface SimplifiedExplorerDataResponse {
+  data: JSONObject[];
+  totalRowCount: number;
+  limitLabel: string;
+  isLoading: boolean;
+  isError: boolean;
+  isFetching: boolean;
+  isSuccess: boolean;
+}
+
+export type SimplifiedExplorerDataHook = (args: {
+  pagination: MRT_PaginationState;
+  sorting: MRT_SortingState;
+  accessibility: Accessibility;
+}) => SimplifiedExplorerDataResponse;

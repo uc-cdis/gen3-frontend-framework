@@ -8,7 +8,9 @@ import React, {
 } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
+  Accessibility,
   CoreState,
+  FilterSet,
   isJSONValue,
   JSONObject,
   selectIndexFilters,
@@ -28,6 +30,7 @@ import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   ExplorerTableProps,
   RowSelectionConfiguration,
+  SimplifiedExplorerDataHook,
   SummaryTable,
 } from './types';
 import { type TableDetailsPanelProps } from './ExploreTableDetails';
@@ -41,6 +44,7 @@ import TableHeader from '../../../components/Tables/TableHeader';
 import { TableSearchOrPaginationProps } from '../../../components/Tables/types';
 import { TableXPositionContext } from './context';
 import { SingleItemAddToCartButton } from '../../cart/updateCart';
+import { DetailsComponentProps } from '../../../components/Details/types';
 
 const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 const DEFAULT_PAGE_LIMIT = 10000;
@@ -79,14 +83,70 @@ const processRowActions = (
   return { enableRowActions: false };
 };
 
-/**
- * Main table component for the explorer page. Fetches data from guppy using
- * useGetRawDataAndTotalCountsQuery() hook that leverages guppy core API slices
- *
- * @param index - Offset to use for fetching/displaying pages of rows
- * @param tableConfig - Inherited from ExplorerPageGetServerSideProps
- * @param accessibility - set the access level for the cohort data
- */
+const DefaultDataResponse = {
+  id: 'no-data',
+  name: 'No Data',
+  description: 'No Data',
+};
+
+// ... existing code ...
+const useGetTableData = (
+  index: string,
+  fields: string[],
+  filters: FilterSet,
+  pagination: MRT_PaginationState,
+  sorting: MRT_SortingState,
+  accessibility: Accessibility,
+  maxItems?: number,
+  indexPrefix: string = '',
+) => {
+  const { pageIndex, pageSize } = pagination;
+
+  const sort =
+    sorting.length > 0
+      ? (sorting.map((s) => ({ [s.id]: s.desc ? 'desc' : 'asc' })) as Record<
+          string,
+          'desc' | 'asc'
+        >[])
+      : undefined;
+
+  const { data, isLoading, isError, isFetching, isSuccess } =
+    useGetRawDataAndTotalCountsQuery({
+      type: index,
+      fields,
+      filters,
+      offset: pageIndex * pageSize,
+      size: pageSize,
+      sort,
+      accessibility,
+      indexPrefix,
+    });
+
+  const totalRowCount = useDeepCompareMemo(() => {
+    const aggregationKey = `${indexPrefix}_aggregation`;
+    const fetchedTotal =
+      data?.data?.[aggregationKey]?.[index]?._totalCount ?? pageSize;
+    const pageLimit = maxItems ?? DEFAULT_PAGE_LIMIT;
+
+    return pageLimit ? Math.min(pageLimit, fetchedTotal) : fetchedTotal;
+  }, [maxItems, data, pageSize, index, indexPrefix]);
+
+  return {
+    data: data?.data?.[`${indexPrefix}${index}`] ?? [
+      {
+        id: 'no-data',
+        name: 'No Data',
+        description: 'No Data',
+      },
+    ],
+    totalRowCount,
+    isLoading,
+    isError,
+    isFetching,
+    isSuccess,
+  };
+};
+
 const ExplorerTable = ({
   index,
   tableConfig,
@@ -99,23 +159,157 @@ const ExplorerTable = ({
   indexPrefix = '',
   dataHook = useGetRawDataAndTotalCountsQuery,
 }: ExplorerTableProps) => {
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
-    pageIndex: 0,
-    pageSize: 20,
-  });
-  const ref = useRef<HTMLDivElement | null>(null);
+  const cohortFilters = useCoreSelector((state: CoreState) =>
+    selectIndexFilters(state, index),
+  );
 
-  const DetailsComponent = useMemo(() => {
+  const { tableColumns } = useDeepCompareMemo(() => {
+    return createTableColumns(tableConfig);
+  }, [tableConfig]);
+
+  const fields = useMemo(
+    () => tableColumns.map((column) => column.field),
+    [tableColumns],
+  );
+
+  const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
+
+  const DetailsComponentWrapper = useMemo(() => {
     if (
       !tableConfig?.detailsConfig ||
       !tableConfig?.detailsConfig?.panel ||
       tableConfig?.detailsConfig?.mode === 'none'
     )
       return null;
-    return tableConfig?.detailsConfig?.panelContainer === 'drawer'
-      ? DetailsDrawer<TableDetailsPanelProps>
-      : DetailsModal<TableDetailsPanelProps>;
-  }, []);
+
+    const BaseComponent =
+      tableConfig?.detailsConfig?.panelContainer === 'drawer'
+        ? DetailsDrawer<TableDetailsPanelProps>
+        : DetailsModal<TableDetailsPanelProps>;
+
+    const WrappedDetailsComponent = ({
+      id,
+      row,
+      onClose,
+    }: Pick<DetailsComponentProps, 'id' | 'row' | 'onClose'>) => (
+      <BaseComponent
+        title={tableConfig?.detailsConfig?.title}
+        id={id}
+        row={row}
+        onClose={onClose}
+        panel={DetailsPanel}
+        classNames={tableConfig?.detailsConfig?.classNames}
+        panelProps={{
+          index,
+          tableConfig,
+          ...(tableConfig?.detailsConfig?.params ?? {}),
+          accessibility,
+        }}
+      />
+    );
+    WrappedDetailsComponent.displayName = 'WrappedDetailsComponent';
+    return WrappedDetailsComponent;
+  }, [tableConfig, index, accessibility, DetailsPanel]);
+
+  const useSimplifiedData: SimplifiedExplorerDataHook = ({
+    pagination,
+    sorting,
+    accessibility,
+  }) => {
+    const { pageIndex, pageSize } = pagination;
+    const sort = useMemo(
+      () =>
+        sorting.length > 0
+          ? (sorting.map((x) => ({
+              [x.id]: x.desc ? 'desc' : 'asc',
+            })) as Record<string, 'desc' | 'asc'>[])
+          : undefined,
+      [sorting],
+    );
+
+    const { data, isLoading, isError, isFetching, isSuccess } = dataHook({
+      type: index,
+      fields: fields,
+      filters: cohortFilters,
+      offset: pageIndex * pageSize,
+      size: pageSize,
+      sort,
+      accessibility,
+      indexPrefix: indexPrefix,
+    });
+
+    const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
+      const pageLimit = tableConfig?.pageLimit?.limit ?? DEFAULT_PAGE_LIMIT;
+      const aggregationKey = `${indexPrefix}_aggregation`;
+      const fetchedTotal =
+        data?.data?.[aggregationKey]?.[index]?._totalCount ?? pageSize;
+
+      const totalCount = tableConfig?.pageLimit
+        ? Math.min(pageLimit, fetchedTotal)
+        : fetchedTotal;
+
+      const label = tableConfig?.pageLimit
+        ? (tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL)
+        : 'Rows per Page:';
+
+      return { totalRowCount: totalCount, limitLabel: label };
+    }, [data, pageSize]);
+
+    const tableData = useMemo(() => {
+      return data?.data?.[`${indexPrefix}${index}`] ?? [DefaultDataResponse];
+    }, [data]);
+
+    return {
+      data: tableData,
+      totalRowCount,
+      limitLabel,
+      isLoading,
+      isError,
+      isFetching,
+      isSuccess,
+    };
+  };
+
+  return (
+    <ExplorerDataTable
+      tableConfig={tableConfig}
+      accessibility={accessibility}
+      classNames={classNames}
+      size={size}
+      additionalControls={additionalControls}
+      tableTotalDetail={tableTotalDetail}
+      DetailsComponent={DetailsComponentWrapper}
+      tableTitle={tableTitle}
+      dataHook={useSimplifiedData}
+    />
+  );
+};
+
+/**
+ * Main table component for the explorer page. Fetches data from guppy using
+ * the provided dataHook.
+ */
+const ExplorerDataTable = ({
+  tableConfig,
+  accessibility,
+  classNames,
+  size = 'sm',
+  additionalControls,
+  tableTotalDetail,
+  tableTitle,
+  dataHook,
+  DetailsComponent,
+}: Omit<ExplorerTableProps, 'dataHook' | 'index'> & {
+  dataHook: SimplifiedExplorerDataHook;
+  DetailsComponent: React.ComponentType<
+    Pick<DetailsComponentProps, 'id' | 'row' | 'onClose'>
+  > | null;
+}) => {
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: 20,
+  });
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -135,8 +329,6 @@ const ExplorerTable = ({
   //     ),
   //   [tableConfig?.detailsConfig?.panel],
   // );
-
-  const DetailsPanel = useMemo(() => QueryRowDetailsPanel, []);
 
   const handleColumnVisibilityChange = (updater: any) => {
     const newState =
@@ -161,12 +353,6 @@ const ExplorerTable = ({
     [],
   );
 
-  // TODO: add support for nested fields
-  const fields = useMemo(
-    () => tableColumns.map((column) => column.field),
-    [tableColumns],
-  );
-
   const getRowId = useCallback((tableConfig: SummaryTable) => {
     const { detailsConfig } = tableConfig || {};
     const detailsIdField: string | undefined = detailsConfig?.idField; // Old Way
@@ -185,43 +371,21 @@ const ExplorerTable = ({
     };
   }, []);
 
-  const cohortFilters = useCoreSelector((state: CoreState) =>
-    selectIndexFilters(state, index),
-  );
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
-  const { data, isLoading, isError, isFetching, isSuccess } = dataHook({
-    type: index,
-    fields: fields,
-    filters: cohortFilters,
-    offset: pagination.pageIndex * pagination.pageSize,
-    size: pagination.pageSize,
-    sort:
-      sorting.length > 0
-        ? (sorting.map((x) => {
-            return { [x.id]: x.desc ? 'desc' : 'asc' };
-          }) as Record<string, 'desc' | 'asc'>[])
-        : undefined,
-    accessibility: accessibility,
-    indexPrefix: indexPrefix,
-  });
 
-  const { totalRowCount, limitLabel } = useDeepCompareMemo(() => {
-    const pageLimit =
-      (tableConfig?.pageLimit && tableConfig?.pageLimit?.limit) ??
-      DEFAULT_PAGE_LIMIT;
-    const totalRowCount = tableConfig?.pageLimit
-      ? Math.min(
-          pageLimit,
-          data?.data?.[`${indexPrefix}_aggregation`]?.[index]._totalCount ??
-            pagination.pageSize,
-        )
-      : (data?.data?.[`${indexPrefix}_aggregation`]?.[index]._totalCount ??
-        pagination.pageSize);
-    const limitLabel = tableConfig?.pageLimit
-      ? (tableConfig?.pageLimit?.label ?? DEFAULT_PAGE_LIMIT_LABEL)
-      : 'Rows per Page:';
-    return { totalRowCount, limitLabel };
-  }, [tableConfig, data, pagination.pageSize, index]);
+  const {
+    data,
+    totalRowCount,
+    limitLabel,
+    isLoading,
+    isError,
+    isFetching,
+    isSuccess,
+  } = dataHook({
+    pagination,
+    sorting,
+    accessibility,
+  });
 
   const rowActions = useDeepCompareMemo(
     () => processRowActions(tableConfig?.selectableRowsConfiguration),
@@ -249,13 +413,7 @@ const ExplorerTable = ({
 
   const table = useMantineReactTable<JSONObject>({
     columns: tableColumns as any[], //TODO: fix this
-    data: data?.data?.[`${indexPrefix}${index}`] ?? [
-      {
-        id: 'no-data',
-        name: 'No Data',
-        description: 'No Data',
-      },
-    ],
+    data: data,
     manualSorting: true,
     manualPagination: true,
     enableStickyHeader: true,
@@ -407,7 +565,6 @@ const ExplorerTable = ({
       <StudyProvider>
         {DetailsComponent && (
           <DetailsComponent
-            title={tableConfig?.detailsConfig?.title}
             id={
               Object.keys(rowSelection).length > 0
                 ? Object.keys(rowSelection).at(0)
@@ -415,14 +572,6 @@ const ExplorerTable = ({
             }
             row={selectedRow}
             onClose={() => setRowSelection({})}
-            panel={DetailsPanel}
-            classNames={tableConfig?.detailsConfig?.classNames}
-            panelProps={{
-              index,
-              tableConfig,
-              ...(tableConfig?.detailsConfig?.params ?? {}),
-              accessibility,
-            }}
           />
         )}
         <div className="inline-block overflow-x-scroll " ref={ref}>
