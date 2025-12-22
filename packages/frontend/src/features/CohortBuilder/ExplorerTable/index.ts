@@ -1,4 +1,5 @@
 import ExplorerTable from './ExplorerTable';
+import ExplorerDataTable from './ExplorerDataTable';
 import {
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
@@ -10,6 +11,7 @@ export * from './types';
 
 export {
   ExplorerTable,
+  ExplorerDataTable,
   ExplorerTableCellRendererFactory,
   registerExplorerDefaultCellRenderers,
   TableXPositionContext,

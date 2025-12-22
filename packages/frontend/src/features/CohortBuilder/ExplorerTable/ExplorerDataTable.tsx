@@ -1,7 +1,7 @@
 import {
+  ExplorerDataTableHook,
   ExplorerTableProps,
   RowSelectionConfiguration,
-  SimplifiedExplorerDataHook,
   SummaryTable,
 } from './types';
 import {
@@ -81,10 +81,10 @@ export const ExplorerDataTable = ({
   dataHook,
   DetailsComponent,
 }: Omit<ExplorerTableProps, 'dataHook' | 'index'> & {
-  dataHook: SimplifiedExplorerDataHook;
-  DetailsComponent: React.ComponentType<
+  dataHook: ExplorerDataTableHook;
+  DetailsComponent?: React.ComponentType<
     Pick<DetailsComponentProps, 'id' | 'row' | 'onClose'>
-  > | null;
+  >;
 }) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -377,3 +377,5 @@ export const ExplorerDataTable = ({
     </React.Fragment>
   );
 };
+
+export default ExplorerDataTable;

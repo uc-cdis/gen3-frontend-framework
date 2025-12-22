@@ -1,24 +1,18 @@
 import React, { useMemo } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import {
-  Accessibility,
   CoreState,
-  FilterSet,
   selectIndexFilters,
   useCoreSelector,
   useGetRawDataAndTotalCountsQuery,
 } from '@gen3/core';
-import {
-  type MRT_PaginationState,
-  type MRT_SortingState,
-} from 'mantine-react-table';
-import { ExplorerTableProps, SimplifiedExplorerDataHook } from './types';
+import { ExplorerDataTableHook, ExplorerTableProps } from './types';
 import { type TableDetailsPanelProps } from './ExploreTableDetails';
 import { DetailsDrawer, DetailsModal } from '../../../components/Details';
 import { createTableColumns } from './utils';
 import QueryRowDetailsPanel from './ExploreTableDetails/QueryRowDetailsPanel';
 import { DetailsComponentProps } from '../../../components/Details/types';
-import { ExplorerDataTable } from './ExplorerDataTable';
+import ExplorerDataTable from './ExplorerDataTable';
 
 export const DEFAULT_PAGE_LIMIT_LABEL = 'Rows per Page (Limited to 10,0000):';
 export const DEFAULT_PAGE_LIMIT = 10000;
@@ -27,64 +21,6 @@ const DefaultDataResponse = {
   id: 'no-data',
   name: 'No Data',
   description: 'No Data',
-};
-
-// ... existing code ...
-const useGetTableData = (
-  index: string,
-  fields: string[],
-  filters: FilterSet,
-  pagination: MRT_PaginationState,
-  sorting: MRT_SortingState,
-  accessibility: Accessibility,
-  maxItems?: number,
-  indexPrefix: string = '',
-) => {
-  const { pageIndex, pageSize } = pagination;
-
-  const sort =
-    sorting.length > 0
-      ? (sorting.map((s) => ({ [s.id]: s.desc ? 'desc' : 'asc' })) as Record<
-          string,
-          'desc' | 'asc'
-        >[])
-      : undefined;
-
-  const { data, isLoading, isError, isFetching, isSuccess } =
-    useGetRawDataAndTotalCountsQuery({
-      type: index,
-      fields,
-      filters,
-      offset: pageIndex * pageSize,
-      size: pageSize,
-      sort,
-      accessibility,
-      indexPrefix,
-    });
-
-  const totalRowCount = useDeepCompareMemo(() => {
-    const aggregationKey = `${indexPrefix}_aggregation`;
-    const fetchedTotal =
-      data?.data?.[aggregationKey]?.[index]?._totalCount ?? pageSize;
-    const pageLimit = maxItems ?? DEFAULT_PAGE_LIMIT;
-
-    return pageLimit ? Math.min(pageLimit, fetchedTotal) : fetchedTotal;
-  }, [maxItems, data, pageSize, index, indexPrefix]);
-
-  return {
-    data: data?.data?.[`${indexPrefix}${index}`] ?? [
-      {
-        id: 'no-data',
-        name: 'No Data',
-        description: 'No Data',
-      },
-    ],
-    totalRowCount,
-    isLoading,
-    isError,
-    isFetching,
-    isSuccess,
-  };
 };
 
 const ExplorerTable = ({
@@ -151,7 +87,7 @@ const ExplorerTable = ({
     return WrappedDetailsComponent;
   }, [tableConfig, index, accessibility, DetailsPanel]);
 
-  const useSimplifiedData: SimplifiedExplorerDataHook = ({
+  const useSimplifiedData: ExplorerDataTableHook = ({
     pagination,
     sorting,
     accessibility,

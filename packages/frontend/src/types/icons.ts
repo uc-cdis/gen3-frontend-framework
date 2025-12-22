@@ -6,6 +6,7 @@ import {
   MdDelete as DeleteIcon,
   MdDownload as DownloadIcon,
   MdDragIndicator as DragIcon,
+  MdExpandMore as ExpandMoreIcon,
   MdFileUpload as UploadIcon,
   MdLibraryAdd as AddFacetIcon,
   MdLockOutline as LockOutlineIcon,
@@ -18,9 +19,12 @@ import {
 import { RiErrorWarningFill as WarningMessageIcon } from 'react-icons/ri';
 import {
   FaCircle as CircleIcon,
+  FaExclamationCircle as AlertIcon,
   FaPlus as PlusIcon,
   FaUndo as UndoIcon,
 } from 'react-icons/fa';
+import { FiExternalLink as LinkIcon } from 'react-icons/fi';
+
 import {
   BsList as ListIcon,
   BsTrash as TrashIcon,
@@ -30,6 +34,7 @@ import {
 export {
   AddIcon,
   AddFacetIcon,
+  AlertIcon,
   CartIcon,
   CircleIcon,
   CloseIcon,
@@ -37,7 +42,9 @@ export {
   DownloadIcon,
   DeleteIcon,
   DragIcon,
+  ExpandMoreIcon,
   ListIcon,
+  LinkIcon,
   LockOutlineIcon,
   SaveIcon,
   SearchIcon,

@@ -1,7 +1,7 @@
-import React from "react";
-import { ExpandMoreIcon, LinkIcon, AlertIcon } from "@/utils/icons";
-import { Accordion } from "@mantine/core";
-import tw from "tailwind-styled-components";
+import React from 'react';
+import { AlertIcon, ExpandMoreIcon, LinkIcon } from '../../types/icons';
+import { Accordion } from '@mantine/core';
+import tw from 'tailwind-styled-components';
 
 const H2 = tw.h2`
   font-heading
@@ -22,9 +22,9 @@ function DownloadInfo() {
       variant="contained"
       chevron={<ExpandMoreIcon size="1.75em" />}
       classNames={{
-        item: "border-accent-warm border-l-[3rem]",
-        chevron: "text-accent",
-        label: "text-sm font-bold uppercase font-heading py-2 ml-4",
+        item: 'border-accent-warm border-l-[3rem]',
+        chevron: 'text-accent',
+        label: 'text-sm font-bold uppercase font-heading py-2 ml-4',
       }}
     >
       <Accordion.Item
@@ -41,7 +41,7 @@ function DownloadInfo() {
             aria-label="Warning"
           />
           <span className="text-black font-bold">
-          How to download files in my cart?
+            How to download files in my cart?
           </span>
         </Accordion.Control>
         <Accordion.Panel>
@@ -49,7 +49,7 @@ function DownloadInfo() {
             <div className="mb-2 text-black">
               <H2>Download Manifest:</H2>
               <P>
-                Download a manifest for use with the{" "}
+                Download a manifest for use with the{' '}
                 <a
                   data-testid="link-gen3-sdk-tool"
                   href="https://github.com/uc-cdis/gen3sdk-python?tab=readme-ov-file"
@@ -59,8 +59,8 @@ function DownloadInfo() {
                 >
                   <LinkIcon className="inline" /> Gen3 SDK
                 </a>
-                . The Gen3 SDK is recommended for transferring
-                large volumes of data.
+                . The Gen3 SDK is recommended for transferring large volumes of
+                data.
               </P>
             </div>
 
@@ -68,7 +68,6 @@ function DownloadInfo() {
               <H2>Download Cart:</H2>
               <P>Download Files in your Cart directly from the Web Browser.</P>
             </div>
-
           </div>
         </Accordion.Panel>
       </Accordion.Item>

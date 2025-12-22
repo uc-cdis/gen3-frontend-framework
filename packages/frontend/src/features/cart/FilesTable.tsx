@@ -1,6 +1,10 @@
 import React from 'react';
-import { ExplorerTableProps } from '../CohortBuilder/ExplorerTable';
-import { ExplorerTable } from '../CohortBuilder';
+import {
+  ExplorerDataTableHookProps,
+  ExplorerTableProps,
+} from '../CohortBuilder/ExplorerTable';
+import { ExplorerDataTable } from '../CohortBuilder/ExplorerTable/ExplorerDataTable';
+import { Accessibility } from '@gen3/core';
 
 type FilesTableProps = Omit<
   ExplorerTableProps,
@@ -8,7 +12,29 @@ type FilesTableProps = Omit<
 >;
 
 const FilesTable = ({ tableConfig }: FilesTableProps) => {
-  return <ExplorerTable tableConfig={tableConfig} />;
+  const useCartDataHook = ({
+    pagination,
+    sorting,
+    accessibility,
+  }: ExplorerDataTableHookProps) => {
+    return {
+      isSuccess: true,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      data: [],
+      totalRowCount: 0,
+      limitLabel: '',
+    };
+  };
+
+  return (
+    <ExplorerDataTable
+      tableConfig={tableConfig}
+      accessibility={Accessibility.ALL}
+      dataHook={useCartDataHook}
+    />
+  );
 };
 
 export default FilesTable;

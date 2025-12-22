@@ -149,7 +149,7 @@ export type ExplorerDataQueryHook = (
   args: RawDataAndTotalCountsParams,
 ) => ReturnType<typeof useGetRawDataAndTotalCountsQuery>;
 
-export interface SimplifiedExplorerDataResponse {
+export interface ExplorerDataTableResponse {
   data: JSONObject[];
   totalRowCount: number;
   limitLabel: string;
@@ -159,8 +159,12 @@ export interface SimplifiedExplorerDataResponse {
   isSuccess: boolean;
 }
 
-export type SimplifiedExplorerDataHook = (args: {
+export interface ExplorerDataTableHookProps {
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
   accessibility: Accessibility;
-}) => SimplifiedExplorerDataResponse;
+}
+
+export type ExplorerDataTableHook = (
+  args: ExplorerDataTableHookProps,
+) => ExplorerDataTableResponse;
