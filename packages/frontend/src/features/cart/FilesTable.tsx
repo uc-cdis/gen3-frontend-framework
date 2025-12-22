@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   ExplorerDataTableHookProps,
   ExplorerTableProps,
@@ -12,21 +12,20 @@ type FilesTableProps = Omit<
 >;
 
 const FilesTable = ({ tableConfig }: FilesTableProps) => {
-  const useCartDataHook = ({
-    pagination,
-    sorting,
-    accessibility,
-  }: ExplorerDataTableHookProps) => {
-    return {
-      isSuccess: true,
-      isLoading: false,
-      isFetching: false,
-      isError: false,
-      data: [],
-      totalRowCount: 0,
-      limitLabel: '',
-    };
-  };
+  const useCartDataHook = useCallback(
+    ({ pagination, sorting, accessibility }: ExplorerDataTableHookProps) => {
+      return {
+        isSuccess: true,
+        isLoading: false,
+        isFetching: false,
+        isError: false,
+        data: [],
+        totalRowCount: 0,
+        limitLabel: '',
+      };
+    },
+    [],
+  );
 
   return (
     <ExplorerDataTable
