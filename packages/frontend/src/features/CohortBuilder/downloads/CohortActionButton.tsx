@@ -40,7 +40,7 @@ const CohortActionButton = ({
         disabled={disabled}
         className={
           customStyle ||
-          `text-base-lightest ${
+          `${disabled ? 'text-base-lightest' : 'text-primary-contrast'} ${
             disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
           } `
         }

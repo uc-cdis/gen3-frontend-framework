@@ -40,7 +40,7 @@
     "test:watch": "jest unit --watch",
     "test:int": "jest int",
     "test:all": "jest",
-    "dev": "npm run build:watch"
+    "dev": "echo no dev tasks"
   },
   "peerDependencies": {
     "react": "^18.3.1",

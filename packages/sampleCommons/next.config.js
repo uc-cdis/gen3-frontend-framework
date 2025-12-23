@@ -22,6 +22,7 @@ const withMDX = require('@next/mdx')({
 });
 
 // Next configuration with support for rewriting API to existing common services
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     version: process.env.npm_package_version,
@@ -38,6 +39,15 @@ const nextConfig = {
   webpack: (config) => {
     config.infrastructureLogging = {
       level: 'error',
+    };
+    config.watchOptions = {
+      ...(config.watchOptions || {}),
+      ignored: [
+        '**/.next/**',
+        '**/dist/**',
+        '**/.swc/**',
+        '**/node_modules/**',
+      ],
     };
     return config;
   },
@@ -71,6 +81,7 @@ const nextConfig = {
       },
     ];
   },
+  transpilePackages: ['@gen3/core', '@gen3/frontend'],
 };
 
-module.exports = withBundleAnalyzer(withMDX(nextConfig));
+module.exports = nextConfig;

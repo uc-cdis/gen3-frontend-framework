@@ -131,6 +131,14 @@ export interface ExportCohortDataToWorkspaceParams extends ExportCohortData {
   dataPath?: string;
 }
 
+const REQUIRED_FIELDS = [
+  'datasetIdField',
+  'fileIndex',
+  'cohortIndex',
+  'fileIdField',
+  'fileFields',
+];
+
 export interface ExportCohortDataToDataLibraryParams extends ExportCohortData {
   libraryDataItemMapping?: Record<string, string>;
 }
@@ -160,7 +168,16 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
     libraryDataItemMapping,
   } = params as ExportCohortDataToDataLibraryParams;
 
+  console.log('params: ', params);
+
   // get the files information
+  if (REQUIRED_FIELDS.some((field) => !(field in params))) {
+    if (onError)
+      onError(
+        new Error(`Missing required fields: ${REQUIRED_FIELDS.join(', ')}`),
+      );
+    return;
+  }
 
   const cohortFilters = cohort[cohortIndex] ?? EmptyFilterSet;
 
@@ -172,12 +189,15 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
     format: 'json',
   };
 
+  console.log('fileInformationParameters: ', fileInformationParameters);
+
   try {
     let cohortDatafiles = await downloadJSONDataFromGuppy({
       parameters: fileInformationParameters,
       onAbort: onAbort,
       signal: signal,
     });
+    console.log('cohortDatafiles: ', cohortDatafiles);
     cohortDatafiles = processFilesForDataLibrary(
       cohortDatafiles,
       '',
@@ -226,6 +246,8 @@ export const exportCohortToWorkspace = async (
     metadataFields,
     dataPath = '',
   } = params as ExportCohortDataToWorkspaceParams;
+
+  // add check for required fields
 
   // get the files information
 

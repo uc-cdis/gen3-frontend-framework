@@ -3,8 +3,10 @@ import { GEN3_GUPPY_API } from '../../constants';
 import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
 import { GuppyDownloadDataParams, GuppyDownloadDataRequest } from './types';
 
-export interface GuppyDownloadDataQueryParams
-  extends Omit<GuppyDownloadDataRequest, 'filter'> {
+export interface GuppyDownloadDataQueryParams extends Omit<
+  GuppyDownloadDataRequest,
+  'filter'
+> {
   filter: GQLFilter;
 }
 
@@ -34,6 +36,8 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
           filter: convertFilterSetToGqlFilter(filter),
           ...{ type, accessibility, fields, sort },
         };
+
+        console.log('guppy download query: ', queryBody, '');
         return {
           url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',

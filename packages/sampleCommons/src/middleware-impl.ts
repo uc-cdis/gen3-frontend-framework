@@ -34,6 +34,11 @@ export async function middleware(req: NextRequest) {
   }
 
   const loginRequired = rule.loginRequired ?? true;
+
+  if (!loginRequired) {
+    return NextResponse.next();
+  }
+
   const needsAuthz = Array.isArray(rule?.authz) && rule?.authz.length > 0;
 
   // Gen3 login check
