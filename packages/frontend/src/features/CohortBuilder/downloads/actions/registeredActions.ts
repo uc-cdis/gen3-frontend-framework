@@ -1,7 +1,10 @@
 import { ActionButtonWithArgsFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 import { downloadToManifestAction } from './downloadManifest';
-import { exportCohortToWorkspace } from './addCohortToDataLibrary';
+import {
+  addCohortDataFilesToDataLibraryAsDataset,
+  exportCohortToWorkspace,
+} from './addCohortToDataLibrary';
 
 // create a factory for the action creators
 
@@ -60,10 +63,10 @@ export const registerDefaultButtonActions = () => {
     action: downloadToManifestAction,
     args: { format: 'manifest' },
   });
-  // registerButtonAction('cohortDataFilesToDataLibrary', {
-  //   action: addCohortDataFilesToDataLibraryAsDataset,
-  //   args: { format: 'json' },
-  // });
+  registerButtonAction('cohortDataFilesToDataLibrary', {
+    action: addCohortDataFilesToDataLibraryAsDataset,
+    args: { format: 'json' },
+  });
   registerButtonAction('exportCohortToWorkspace', {
     action: exportCohortToWorkspace,
     args: { format: 'json' },
