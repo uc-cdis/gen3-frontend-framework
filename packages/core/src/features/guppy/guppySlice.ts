@@ -1,7 +1,12 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  GQLFilter,
+  isFilterEmpty,
+} from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 
@@ -415,6 +420,10 @@ export const explorerApi = explorerTags.injectEndpoints({
               [filterName]: gqlFilters,
             }),
           },
+          validateStatus: (response: Record<string, any>) => {
+            if (response?.errors && response.errors?.length > 0) return false;
+            return true;
+          },
         };
       },
       transformResponse: (
@@ -441,8 +450,8 @@ export const explorerApi = explorerTags.injectEndpoints({
           );
         }
         return (
-          response.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
-            ._totalCount ?? 0
+          response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
+            ?._totalCount ?? 0
         );
       },
       providesTags: ['COUNTS'],
@@ -524,11 +533,9 @@ export const explorerApi = explorerTags.injectEndpoints({
         indexPrefix,
         accessibility = Accessibility.ALL,
         isNested = true,
-                asTextHistogram = false,
+        asTextHistogram = false,
       }: RangeQueryRequest) => {
         // remove field from FilterSet
-
-
 
         const queryData = buildRangeQuery(
           field,
@@ -538,7 +545,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           index,
           indexPrefix,
           isNested,
-          asTextHistogram
+          asTextHistogram,
         );
 
         const gqlFilters = Object.entries(queryData.filters).reduce(
