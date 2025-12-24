@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   clearCohortFilters,
   CoreState,
@@ -13,16 +13,20 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-} from '@gen3/core';
-import QueryExpressionSection from './QueryExpressionSection';
-import { QueryExpressionContext } from './QueryExpressionContext';
-import { useCohortFacetFilters } from '../hooks';
+} from "@gen3/core";
+import QueryExpressionSection from "./QueryExpressionSection";
+import { QueryExpressionContext } from "./QueryExpressionContext";
+import { useCohortFacetFilters } from "../hooks";
 
 interface QueryExpressionProps {
   index: string;
+  shouldShowSummary?: (field: string, count: number) => boolean;
 }
 
-const QueryExpression = ({ index }: QueryExpressionProps) => {
+const QueryExpression = ({
+  index,
+  shouldShowSummary,
+}: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
@@ -36,6 +40,7 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
         cohortName: currentCohortName,
         cohortId: currentCohortId,
         displayOnly: false,
+        shouldShowSummary: shouldShowSummary,
         useClearCohortFilters: () => {
           const dispatch = useCoreDispatch();
           const shouldShareFilters = useCoreSelector((state) =>
