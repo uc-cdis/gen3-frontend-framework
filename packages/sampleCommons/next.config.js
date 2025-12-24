@@ -36,19 +36,23 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
-  webpack: (config) => {
+  webpack: (config, { dev }) => {
     config.infrastructureLogging = {
       level: 'error',
     };
-    config.watchOptions = {
-      ...(config.watchOptions || {}),
-      ignored: [
-        '**/.next/**',
-        '**/dist/**',
-        '**/.swc/**',
-        '**/node_modules/**',
-      ],
-    };
+
+    if (dev) {
+      config.watchOptions = {
+        ...(config.watchOptions || {}),
+        ignored: [
+          '**/.next/**',
+          '**/dist/**',
+          '**/.swc/**',
+          '**/node_modules/**',
+        ],
+      };
+    }
+
     return config;
   },
   async headers() {
