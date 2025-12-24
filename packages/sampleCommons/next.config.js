@@ -5,6 +5,8 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const dns = require('dns');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -21,7 +23,7 @@ const withMDX = require('@next/mdx')({
   },
 });
 
-// Next configuration with support for rewriting API to existing common services
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     version: process.env.npm_package_version,
@@ -35,10 +37,30 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,
-  webpack: (config) => {
+  webpack: (config, { dev }) => {
     config.infrastructureLogging = {
       level: 'error',
     };
+
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@gen3/core': path.resolve(__dirname, '../core/src/index.ts'),
+      '@gen3/frontend': path.resolve(__dirname, '../frontend/src/index.ts'),
+    };
+
+    if (dev) {
+      config.watchOptions = {
+        ...(config.watchOptions || {}),
+        ignored: [
+          '**/.next/**',
+          '**/dist/**',
+          '**/.swc/**',
+          '**/node_modules/**',
+        ],
+      };
+    }
+
     return config;
   },
   async headers() {
@@ -71,6 +93,7 @@ const nextConfig = {
       },
     ];
   },
+  transpilePackages: ['@gen3/core', '@gen3/frontend'],
 };
 
-module.exports = withBundleAnalyzer(withMDX(nextConfig));
+module.exports = nextConfig;
