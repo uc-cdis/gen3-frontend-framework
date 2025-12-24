@@ -19,7 +19,7 @@ const CountsValue = ({
   configuration,
 }: Readonly<CountsValueProps>) => {
   return (
-    <div className="mr-4 relative">
+    <div className="relative mr-4">
       <LoadingOverlay visible={isFetching} />
       <Paper
         shadow="xs"
