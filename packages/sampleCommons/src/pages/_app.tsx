@@ -15,7 +15,7 @@ import {
   registerExplorerDefaultCellRenderers,
   registerMetadataSchemaApp,
   SessionConfiguration,
-} from '@gen3/frontend';
+} from '@gen3/frontend/app';
 
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 
@@ -90,9 +90,7 @@ const Gen3App = ({
               modalsConfig={modalsConfig}
               protectedRoutesConfig={protectedRoutes}
             >
-
               <Component {...pageProps} />
-
             </Gen3Provider>
           </MantineProvider>
         </Suspense>
@@ -133,7 +131,7 @@ Gen3App.getInitialProps = async (
     ],
     modalsConfig: {},
     sessionConfig: {},
-    protectedRoutes: DefaultAuthorizedRoutesConfig
+    protectedRoutes: DefaultAuthorizedRoutesConfig,
   };
 };
 export default Gen3App;

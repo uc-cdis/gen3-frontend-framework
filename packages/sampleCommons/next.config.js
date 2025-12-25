@@ -47,6 +47,18 @@ const nextConfig = {
       ...(config.resolve.alias || {}),
       '@gen3/core': path.resolve(__dirname, '../core/src/index.ts'),
       '@gen3/frontend': path.resolve(__dirname, '../frontend/src/index.ts'),
+      '@gen3/frontend/app': path.resolve(
+        __dirname,
+        '../frontend/src/exports/app.ts',
+      ),
+      '@gen3/frontend/pages/Login': path.resolve(
+        __dirname,
+        '../frontend/src/pages/Login/index.tsx',
+      ),
+      '@gen3/frontend/pages/Explorer': path.resolve(
+        __dirname,
+        '../frontend/src/pages/Explorer/index.tsx',
+      ),
     };
 
     if (dev) {
