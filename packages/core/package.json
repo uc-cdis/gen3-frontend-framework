@@ -27,10 +27,10 @@
       "import": "./dist/esm/server.js",
       "require": "./dist/cjs/server.cjs"
     },
-    "./exports/constant": {
+    "./exports/constants": {
       "types": "./dist/constant.d.ts",
-      "import": "./dist/esm/constant.js",
-      "require": "./dist/cjs/constant.js"
+      "import": "./dist/esm/constants.js",
+      "require": "./dist/cjs/constants.js"
     }
   },
   "scripts": {

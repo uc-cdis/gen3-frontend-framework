@@ -82,12 +82,12 @@ const config = [
   // JS builds
   jsBundle('./src/index.ts', 'index'), // default/client entry
   jsBundle('./src/server.ts', 'server'), // server entry
-  jsBundle('./src/exports/constant.ts', 'constant'), // constants-only entry
+  jsBundle('./src/exports/constants.ts', 'constants'), // constants-only entry
 
   // Type declarations
   dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
   dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
-  dtsBundle('./dist/dts/constant.d.ts', 'dist/constant.d.ts'),
+  dtsBundle('./dist/dts/constants.d.ts', 'dist/constants.d.ts'),
 ];
 
 export default config;
