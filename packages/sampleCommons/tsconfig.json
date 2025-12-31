@@ -20,7 +20,13 @@
       "@gen3/core": ["../core/src/index.ts"],
       "@gen3/core/*": ["../core/src/*"],
       "@gen3/frontend": ["../frontend/src/index.ts"],
-      "@gen3/frontend/*": ["../frontend/src/*"]
+      "@gen3/frontend/server": ["../frontend/src/server.ts"],
+      "@gen3/frontend/*": ["../frontend/src/*"],
+      "@gen3/frontend/content": ["../frontend/src/exports/content.ts"],
+      "@gen3/frontend/app": ["../frontend/src/exports/app.ts"],
+      "@gen3/frontend/explorerRenderers": [
+        "../frontend/src/exports/explorerRenderers.ts"
+      ]
     },
     "plugins": [
       {

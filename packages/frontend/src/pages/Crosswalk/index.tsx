@@ -1,2 +1,2 @@
-export { default } from './Crosswalk';
+export { default } from './CrosswalkPage';
 export { CrosswalkPageGetServerSideProps } from './data';

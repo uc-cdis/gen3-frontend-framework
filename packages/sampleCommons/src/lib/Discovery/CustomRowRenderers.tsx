@@ -3,13 +3,13 @@ import React, { ReactElement } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import { Badge, Box, Text } from '@mantine/core';
 import {
-  StudyDetailsField,
-  RowRenderFunctionParams,
-  DiscoveryRowRendererFactory,
-  useDiscoveryContext,
   getTagInfo,
+  StudyDetailsField,
   TagData,
-} from '@gen3/frontend';
+} from '@gen3/frontend/features/Study';
+import { useDiscoveryContext } from '@gen3/frontend/features/Discovery/DiscoveryProvider';
+import { DiscoveryRowRendererFactory } from '@gen3/frontend/features/Discovery/TableRenderers/RowRendererFactory';
+import { RowRenderFunctionParams } from '@gen3/frontend/features/Discovery/TableRenderers/RowRenderers';
 
 const DetailsWithTagsRowRenderer = (
   { row }: RowRenderFunctionParams,

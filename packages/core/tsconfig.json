@@ -1,16 +1,12 @@
 {
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/**/*.spec.ts*"
-  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/**/*.spec.ts*"],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist/dts",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "emitDeclarationOnly": true,
     "strictNullChecks": true,
@@ -28,9 +24,6 @@
     "declarationMap": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "lib": [
-      "dom",
-      "esnext"
-    ]
+    "lib": ["dom", "esnext"]
   }
 }

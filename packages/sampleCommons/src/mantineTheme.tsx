@@ -1,6 +1,6 @@
 import { createTheme, mergeThemeOverrides } from '@mantine/core';
 
-import { TenStringArray, createMantineTheme } from '@gen3/frontend';
+import { createMantineTheme, TenStringArray } from '@gen3/frontend/app';
 
 export const GEN3_COMMONS_NAME =
   process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';

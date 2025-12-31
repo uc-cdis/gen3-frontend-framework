@@ -10,7 +10,6 @@ import {
   Gen3Provider,
   type ModalsConfig,
   registerCohortBuilderDefaultPreviewRenderers,
-  registerCohortDiscoveryApp,
   RegisteredIcons,
   registerExplorerDefaultCellRenderers,
   registerMetadataSchemaApp,
@@ -64,7 +63,7 @@ const Gen3App = ({
       setDRSHostnames(drsHostnames);
       registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
-      registerCohortDiscoveryApp();
+      // registerCohortDiscoveryApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
       registerCohortTableCustomCellRenderers();

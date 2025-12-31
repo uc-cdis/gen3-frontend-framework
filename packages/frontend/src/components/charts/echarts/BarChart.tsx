@@ -4,7 +4,7 @@ import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
 import type { EChartsOption } from 'echarts';
-import { graphic, format } from 'echarts';
+import { graphic } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 

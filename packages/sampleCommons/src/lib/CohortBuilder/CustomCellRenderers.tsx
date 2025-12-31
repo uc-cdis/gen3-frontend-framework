@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 import {
-  ExplorerTableCellRendererFactory,
   type CellRendererFunctionProps,
-} from '@gen3/frontend';
+  ExplorerTableCellRendererFactory,
+} from '@gen3/frontend/exports/explorerRenderers';
 import { ActionIcon, Text } from '@mantine/core';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 

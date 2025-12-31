@@ -1,6 +1,5 @@
-import LoginPage, {
-  LoginPageGetServerSideProps as getServerSideProps,
-} from '@gen3/frontend/pages/Login';
+import LoginPage from '@gen3/frontend/pages/Login/Login';
+import { LoginPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/Login/data';
 
 export default LoginPage;
 
