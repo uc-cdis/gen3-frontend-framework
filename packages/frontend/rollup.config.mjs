@@ -97,9 +97,10 @@ const external = [
   '@dnd-kit/sortable',
   '@dnd-kit/utilities',
   '@dnd-kit/modifiers',
+  '@gen3/core/server',
 ];
 
-const jsBundle = (input, baseName) => ({
+const jsBundle = (input, baseName, additionalExternal) => ({
   input,
   output: [
     {
@@ -116,6 +117,7 @@ const jsBundle = (input, baseName) => ({
     },
   ],
   external,
+  ...(additionalExternal && { external: [...external, ...additionalExternal] }),
   plugins: [
     peerDepsExternal(),
     json(),
@@ -168,7 +170,7 @@ const config = [
   // JS builds
   jsBundle('./src/index.ts', 'index'), // default/client entry
   jsBundle('./src/server.ts', 'server'), // server entry
-  jsBundle('./src/pages/index.ts', 'pages'), // server entry
+  jsBundle('./src/pages/index.ts', 'pages', ['@gen3/frontend/server']), // server entry
 
   // Type declarations
   dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
