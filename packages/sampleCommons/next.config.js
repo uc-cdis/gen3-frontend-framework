@@ -6,10 +6,7 @@
 const dns = require('dns');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
@@ -138,4 +135,4 @@ const nextConfig = {
 };
 
 // IMPORTANT: actually export your config (wrapped by plugins)
-module.exports = withBundleAnalyzer(withMDX(nextConfig));
+module.exports = withMDX(nextConfig);

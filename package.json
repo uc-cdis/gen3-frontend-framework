@@ -21,6 +21,7 @@
     "oxlint": "oxlint .",
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
     "build": "lerna run build --include-dependencies --stream",
+    "build:tools": "lerna run build --scope=@gen3/toolsff --stream",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
