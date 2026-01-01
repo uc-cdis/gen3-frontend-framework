@@ -1,4 +1,4 @@
-import DiscoveryPage from '@gen3/frontend/pages/Discovery/Discovery';
+import DiscoveryPage from '@gen3/frontend/pages/Discovery/DiscoveryPage.tsx';
 import { DiscoveryPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/Discovery/data';
 
 import { registerDiscoveryCustomCellRenderers } from '@/lib/Discovery/CustomCellRenderers';

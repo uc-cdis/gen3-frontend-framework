@@ -1,2 +1,4 @@
-export { default } from './AISearch';
-export { AISearchPageGetServerSideProps } from './data';
+import AISearchPage from './AISearchPage';
+import { AISearchPageGetServerSideProps } from './data';
+
+export { AISearchPage, AISearchPageGetServerSideProps };

@@ -54,29 +54,30 @@ import '@gen3/core'; // export Gen3 data UI standard pages
 import Gen3Provider, {
   createMantineTheme,
 } from './components/Providers/Gen3Provider';
-import DiscoveryPage from './pages/Discovery/Discovery';
+import DiscoveryPage from './pages/Discovery/DiscoveryPage';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
-import QueryPage from './pages/Query/Query';
+import QueryPage from './pages/Query/QueryPage';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
-import LandingPage from './pages/Landing/Landing';
+import LandingPage from './pages/Landing/LandingPage';
 import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
-import ExplorerPage from './pages/Explorer/Explorer';
+import ExplorerPage from './pages/Explorer/ExplorerPage';
 import {
   ExplorerPageGetServerSideProps,
   ExplorerPageGetServerSidePropsForConfigId,
   type ExplorerPageProps,
 } from './pages/Explorer';
 
-import ColorThemePage from './pages/Theme/Colors';
+import ColorThemePage from './pages/Theme/ColorThemePage';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
 
-import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
-import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
+import { ProfilePage, ProfilePageGetServerSideProps } from './pages/Profile';
+import { LoginPage, LoginPageGetServerSideProps } from './pages/Login';
 
-import DictionaryPage, {
+import {
+  DataDictionaryPage,
   DictionaryPageGetServerSideProps,
 } from './pages/DataDictionary';
 
@@ -86,17 +87,17 @@ import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 import Custom403Page from './pages/403/Custom403Page';
 import Custom404Page from './pages/404/Custom404Page';
 
-import SubmissionPage from './pages/Submission/Submission';
+import SubmissionPage from './pages/Submission/SubmissionPage';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacePage from './pages/Workspace/Workspace';
+import WorkspacePage from './pages/Workspace/WorkspacePage';
 import { WorkspaceNoAccessPage } from './pages/Workspace/index';
 import {
   WorkspaceNoAccessPageServerSideProps,
   WorkspacePageGetServerSideProps,
 } from './pages/Workspace/data';
 
-import AnalysisPage from './pages/Analysis/Analysis';
+import AnalysisPage from './pages/Analysis/AnalysisPage';
 import {
   AnalysisPageGetServerSideProps,
   type AnalysisPageLayoutProps,
@@ -105,22 +106,28 @@ import {
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
 
-import AiSearchPage from './pages/AISearch/AISearch';
+import AiSearchPage from './pages/AISearch/AISearchPage';
 import { AISearchPageGetServerSideProps } from './pages/AISearch/data';
 
-import NotebookLitePage from './pages/NotebookLite/NotebookLite';
+import NotebookLitePage from './pages/NotebookLite/NotebookLitePage';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
-import DataLibraryPage, {
+import {
+  DataLibraryPage,
   DataLibraryPageGetServerSideProps,
 } from './pages/DataLibrary'; // TODO Replace with AppTool plugin
-import CrosswalkPage from './pages/Crosswalk';
-import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
+import {
+  CrosswalkPage,
+  CrosswalkPageGetServerSideProps,
+} from './pages/Crosswalk';
 
-import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
-import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
+import {
+  TabbedCohortBuilderPage,
+  TabbedCohortBuilderPageGetServerSideProps,
+} from './pages/TabbedCohortBuilder';
 
-import RepositoryPage, {
+import {
+  RepositoryPage,
   RepositoryPageGetServerSideProps,
 } from './pages/Repository';
 
@@ -171,7 +178,7 @@ export {
   LandingPageGetServerSideProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
-  DictionaryPage,
+  DataDictionaryPage,
   DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,

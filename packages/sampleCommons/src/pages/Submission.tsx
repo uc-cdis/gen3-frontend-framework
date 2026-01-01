@@ -1,4 +1,4 @@
-import SubmissionPage from '@gen3/frontend/pages/Submission/Submission';
+import SubmissionPage from '@gen3/frontend/pages/Submission/SubmissionPage.tsx';
 import { SubmissionPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/Submission/data';
 
 export default SubmissionPage;
