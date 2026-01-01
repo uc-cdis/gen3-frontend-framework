@@ -168,11 +168,12 @@ const config = [
   // JS builds
   jsBundle('./src/index.ts', 'index'), // default/client entry
   jsBundle('./src/server.ts', 'server'), // server entry
+  jsBundle('./src/pages/index.ts', 'pages'), // server entry
 
   // Type declarations
   dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
   dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
-
+  dtsBundle('./dist/dts/pages/index.d.ts', 'dist/pages.d.ts'),
   {
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],

@@ -45,6 +45,11 @@
       "import": "./dist/server/esm/server.js",
       "require": "./dist/server/cjs/server.cjs"
     },
+    "./pages": {
+      "types": "./dist/pages.d.ts",
+      "import": "./dist/pages/esm/pages.js",
+      "require": "./dist/pages/cjs/pages.cjs"
+    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",

@@ -1,4 +1,4 @@
-import ExplorerPage from '@gen3/frontend/pages/Explorer';
+import ExplorerPage from '@gen3/frontend/pages/Explorer/ExplorerPage';
 import { ExplorerPageGetServerSideProps as getServerSideProps } from '@gen3/frontend/pages/Explorer/data';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
