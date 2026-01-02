@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "analyze": "lerna run analyze --scope=@gen3/samplecommons",
-    "build": "lerna run build --include-dependencies --stream",
+    "build": "lerna run build",
     "build:clean": "lerna run build:clean",
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "lint": "next lint",
