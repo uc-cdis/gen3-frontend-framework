@@ -3,10 +3,8 @@
   "version": "0.12.4",
   "private": true,
   "scripts": {
-    "analyze": "lerna run analyze --scope=@gen3/samplecommons",
-    "build": "lerna run build",
-    "build:clean": "lerna run build:clean",
-    "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
+    "analyze": "ANALYZE=true npm run build",
+    "build": "next build",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "predev": "[ -f ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ] && node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js || (printf \"\\033[31mError: @gen3/toolsff not built. Please run build in the tools directory first.\\033[0m\\n\" && exit 1)",
