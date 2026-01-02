@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "checkJs":  true,
+    "checkJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,12 +17,17 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./src/*",
-
-      ],
-      "@gen3/core/*": ["../core/*"],
-      "@gen3/frontend/*": ["../frontend/*"]
+      "@/*": ["./src/*"],
+      "@gen3/core": ["../core/src/index.ts"],
+      "@gen3/core/*": ["../core/src/*"],
+      "@gen3/frontend": ["../frontend/src/index.ts"],
+      "@gen3/frontend/server": ["../frontend/src/server.ts"],
+      "@gen3/frontend/*": ["../frontend/src/*"],
+      "@gen3/frontend/content": ["../frontend/src/exports/content.ts"],
+      "@gen3/frontend/app": ["../frontend/src/exports/app.ts"],
+      "@gen3/frontend/explorerRenderers": [
+        "../frontend/src/exports/explorerRenderers.ts"
+      ]
     },
     "plugins": [
       {
@@ -34,14 +36,6 @@
     ],
     "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

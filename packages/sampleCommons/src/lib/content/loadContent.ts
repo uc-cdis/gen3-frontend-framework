@@ -4,8 +4,8 @@ import {
   DefaultAuthorizedRoutesConfig,
   Fonts,
   RegisteredIcons,
-  TenStringArray
-} from '@gen3/frontend';
+  TenStringArray,
+} from '@gen3/frontend/content';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const loadContent = async () => {
@@ -24,12 +24,13 @@ export const loadContent = async () => {
     `${GEN3_COMMONS_NAME}/themeColors.json`,
   );
 
-  const protectedRoutes = await ContentSource.getContentDatabase().get<AuthorizedRoutesConfig>(
-    `${GEN3_COMMONS_NAME}/authz.json`,
-  )
+  const protectedRoutes =
+    await ContentSource.getContentDatabase().get<AuthorizedRoutesConfig>(
+      `${GEN3_COMMONS_NAME}/authz.json`,
+    );
 
   const colors = Object.fromEntries(
-    Object.entries(themeColors).map(([key, values]) => [
+    Object.entries(themeColors).map(([key, values]: [string, any]) => [
       key,
       Object.values(values) as TenStringArray,
     ]),
@@ -46,6 +47,6 @@ export const loadContent = async () => {
     themeFonts: fonts as Fonts,
     colors: colors,
     icons: icons as RegisteredIcons[],
-    protectedRoutes: protectedRoutes ?? DefaultAuthorizedRoutesConfig
+    protectedRoutes: protectedRoutes ?? DefaultAuthorizedRoutesConfig,
   };
 };

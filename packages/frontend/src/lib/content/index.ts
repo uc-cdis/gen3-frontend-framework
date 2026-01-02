@@ -27,6 +27,11 @@ export class ContentSource {
   public getContentDatabase(): ContentDatabase {
     return this.contentDatabase;
   }
+
+  // ✅ Compatibility helper: allow `ContentSource.getContentDatabase()`
+  public static getContentDatabase(): ContentDatabase {
+    return ContentSource.getInstance().getContentDatabase();
+  }
 }
 
 // Export a singleton instance

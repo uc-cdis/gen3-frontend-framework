@@ -177,7 +177,7 @@ export const registerCustomExplorerDetailsPanels = () => {
 };
 ```
 
-In ```packages/sampleCommons/src/pages/Explorer.tsx``` make sure to import and call the function:
+In ```packages/sampleCommons/src/pages/ExplorerPage.tsx``` make sure to import and call the function:
 
 ```typescript
 import { registerCustomExplorerDetailsPanels } from '@/lib/CohortBuilder/FileDetailsPanel';

@@ -12,8 +12,6 @@ import {
 
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 
-import classes from './style/DiscoveryTable.module.css';
-
 import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
@@ -23,8 +21,16 @@ import StudyDetails from '../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
 import { TableIcons } from '../../components/Tables/TableIcons';
-import { OnChangeFn, PaginationState, SortingState, } from '@tanstack/table-core';
-import { DataRequestStatus, RowSelectCompareFunctions, SelectableRowConfiguration, } from './types';
+import {
+  OnChangeFn,
+  PaginationState,
+  SortingState,
+} from '@tanstack/table-core';
+import {
+  DataRequestStatus,
+  RowSelectCompareFunctions,
+  SelectableRowConfiguration,
+} from './types';
 import { LoadingOverlay } from '@mantine/core';
 
 const CompareFn = (
@@ -200,7 +206,10 @@ const DiscoveryTable = ({
           return { ...row.original };
         });
       },
-      className: classes.tableRow,
+      style: {
+        borderWidth: 0,
+        fontSize: 'var(--mantine-font-size-sm)',
+      },
     }),
     mantineTableProps: {
       style: {

@@ -1,2 +1,4 @@
-export { default } from './NotebookLite';
-export { NotebookLitePageGetStaticProps } from './data';
+import NotebookLitePage from './NotebookLitePage';
+import { NotebookLitePageGetStaticProps } from './data';
+
+export { NotebookLitePage, NotebookLitePageGetStaticProps };
