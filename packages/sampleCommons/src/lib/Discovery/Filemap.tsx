@@ -1,9 +1,10 @@
 import React from 'react';
-import {
-  CellRenderFunctionProps,
-  ReactECharts,
+import ReactECharts, {
   ReactEChartsProps,
-} from '@gen3/frontend';
+} from '@gen3/frontend/components/charts/echarts/ReactECharts';
+
+import { CellRenderFunctionProps } from '@gen3/frontend/features/Discovery/TableRenderers/types';
+
 import { Button, Popover, Text } from '@mantine/core';
 import { isArray } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';

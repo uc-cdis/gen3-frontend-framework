@@ -1,25 +1,25 @@
 import React from 'react';
 import {
+  ActionIcon,
   Anchor,
+  Button,
+  CopyButton,
   Group,
   LoadingOverlay,
   Stack,
   Table,
   Text,
-  CopyButton,
-  ActionIcon,
   Tooltip,
-  Button,
 } from '@mantine/core';
-import { useGeneralGQLQuery, GEN3_FENCE_API } from '@gen3/core';
+import { GEN3_FENCE_API, useGeneralGQLQuery } from '@gen3/core';
 import {
   ErrorCard,
-  type TableDetailsPanelProps,
   ExplorerTableDetailsPanelFactory,
-} from '@gen3/frontend';
+  type TableDetailsPanelProps,
+} from '@gen3/frontend/exports/explorerRenderers';
 import {
-  MdContentCopy as IconCopy,
   MdCheck as IconCheck,
+  MdContentCopy as IconCopy,
 } from 'react-icons/md';
 
 // a definition of the query response

@@ -2,11 +2,11 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { NextRouter, useRouter } from 'next/dist/client/router';
 
+import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
 import {
   NavPageLayout,
-  NavPageLayoutProps,
-  getNavPageLayoutPropsFromConfig,
-} from '@gen3/frontend';
+  type NavPageLayoutProps,
+} from '@gen3/frontend/features/Navigation';
 
 const AppsPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const router = useRouter();

@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { GEN3_COMMONS_NAME } = require('@gen3/core');
 const plugin = require('tailwindcss/plugin');
+
+const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
+
 const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 
@@ -80,7 +82,7 @@ module.exports = {
       height: {
         '100px': '100px',
         '200px': '200px',
-        'workspace': 'h-full'
+        workspace: 'h-full',
       },
       screens: {
         sm: '640px',
