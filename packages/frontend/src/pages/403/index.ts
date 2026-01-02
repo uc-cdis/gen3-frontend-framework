@@ -1,1 +1,2 @@
-export { default } from './Custom403Page';
+import Custom403Page from './Custom403Page';
+export { Custom403Page };

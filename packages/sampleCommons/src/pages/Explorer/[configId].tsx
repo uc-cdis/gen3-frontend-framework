@@ -1,17 +1,9 @@
-import {
-  ContentSource,
-  getNavPageLayoutPropsFromConfig,
-  ExplorerPageGetServerSidePropsForConfigId,
-  NavPageLayout,
-  NavPageLayoutProps,
-} from '@gen3/frontend';
+import { NavPageLayout } from '@gen3/frontend/features/Navigation';
 
 import React from 'react';
-import {
-  CohortBuilder,
-  ExplorerPageProps,
-  ExplorerPageGetServerSidePropsForConfigId as getServerSideProps,
-} from '@gen3/frontend';
+import CohortBuilder from '@gen3/frontend/features/CohortBuilder/CohortBuilder';
+import { ExplorerPageProps } from '@gen3/frontend/pages/Explorer/types';
+import { ExplorerPageGetServerSidePropsForConfigId as getServerSideProps } from '@gen3/frontend/pages/Explorer/data';
 import { Center } from '@mantine/core';
 
 const CohortBuilderPage = ({

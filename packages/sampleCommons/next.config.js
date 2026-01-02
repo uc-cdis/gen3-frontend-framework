@@ -6,13 +6,12 @@
 const dns = require('dns');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 dns.setDefaultResultOrder('ipv4first');
+
+const isDev = process.env.NODE_ENV === 'development';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withMDX = require('@next/mdx')({
@@ -43,13 +42,39 @@ const nextConfig = {
     };
 
     config.resolve = config.resolve || {};
+
+    // Important: disable symlinks for faster resolution
+    config.resolve.symlinks = false;
+
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      '@gen3/core': path.resolve(__dirname, '../core/src/index.ts'),
-      '@gen3/frontend': path.resolve(__dirname, '../frontend/src/index.ts'),
+
+      '@gen3/core$': path.resolve(__dirname, '../core/src/index.ts'),
+
+      // Specific sub-path aliases (these bypass barrel files)
+      '@gen3/frontend/app': path.resolve(
+        __dirname,
+        '../frontend/src/exports/app.ts',
+      ),
+      '@gen3/frontend/explorerRenderers': path.resolve(
+        __dirname,
+        '../frontend/src/exports/explorerRenderers.ts',
+      ),
+      '@gen3/frontend/content': path.resolve(
+        __dirname,
+        '../frontend/src/exports/content.ts',
+      ),
     };
 
     if (dev) {
+      // More aggressive caching
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+      };
+
       config.watchOptions = {
         ...(config.watchOptions || {}),
         ignored: [
@@ -57,10 +82,23 @@ const nextConfig = {
           '**/dist/**',
           '**/.swc/**',
           '**/node_modules/**',
+          '**/.git/**',
+          '**/coverage/**',
+          '**/.storybook/**',
+          '**/storybook-static/**',
+          '**/*.test.ts',
+          '**/*.test.tsx',
+          '**/*.spec.ts',
+          '**/*.spec.tsx',
         ],
       };
-    }
 
+      // Reduce module resolution work
+      config.snapshot = {
+        managedPaths: [/^(.+?[\\/]node_modules[\\/])/],
+        immutablePaths: [],
+      };
+    }
     return config;
   },
   async headers() {
@@ -96,4 +134,5 @@ const nextConfig = {
   transpilePackages: ['@gen3/core', '@gen3/frontend'],
 };
 
-module.exports = nextConfig;
+// IMPORTANT: actually export your config (wrapped by plugins)
+module.exports = withMDX(nextConfig);

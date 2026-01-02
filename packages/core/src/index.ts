@@ -21,6 +21,7 @@ import {
   GEN3_WORKSPACE_API,
 } from './constants';
 import { type CoreState } from './reducers';
+import { CoreProvider } from './provider.tsx';
 
 export * from './features/user';
 export * from './types';
@@ -28,7 +29,6 @@ export * from './store';
 export * from './hooks';
 export * from './utils';
 export * from './dataAccess';
-export * from './provider';
 // Gen3 services API's
 export * from './features/aiSearch';
 export * from './features/authz';
@@ -74,4 +74,5 @@ export {
   FILE_DELIMITERS,
   FILE_FORMATS,
   Accessibility,
+  CoreProvider,
 };

@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
+
+import { convertPathsToTree } from '@gen3/frontend/utils/convertResourcePathsToTree';
+import NavPageLayout from '@gen3/frontend/features/Navigation/NavPageLayout';
+import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
+import { NavPageLayoutProps } from '@gen3/frontend/features/Navigation/types';
 import {
-  NavPageLayout,
-  NavPageLayoutProps,
-  getNavPageLayoutPropsFromConfig,
-  convertPathsToTree,
-} from '@gen3/frontend';
-import {
-  useGetAuthzResourcesQuery,
   useCreateAuthzResourceMutation,
+  useGetAuthzResourcesQuery,
 } from '@gen3/core';
 import { GetServerSideProps } from 'next';
 import {

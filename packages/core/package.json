@@ -26,6 +26,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/esm/server.js",
       "require": "./dist/cjs/server.cjs"
+    },
+    "./exports/constants": {
+      "types": "./dist/constant.d.ts",
+      "import": "./dist/esm/constants.js",
+      "require": "./dist/cjs/constants.js"
     }
   },
   "scripts": {

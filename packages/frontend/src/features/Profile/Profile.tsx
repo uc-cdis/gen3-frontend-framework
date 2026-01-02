@@ -12,53 +12,52 @@ export interface ProfileProps {
 
 const Profile = ({ profileConfig }: ProfileProps) => {
   return (
-
-      <ProfileProvider profileConfig={profileConfig}>
-        <div className="flex flex-col w-full">
-          <Accordion
-            multiple
-            variant="separated"
-            chevronPosition="left"
-            chevron={<Caret color="primary.4" size="1.75rem" />}
-            defaultValue={[
-              ...['apiKeys', 'resources'],
-              ...(profileConfig?.hasExternalLogins ? ['externalLogins'] : []),
-            ]}
-            classNames={{
-              label: 'text-secondary-contrast-lighter font-heading font-bold',
-            }}
-          >
-            {profileConfig?.hasExternalLogins && (
-              <Accordion.Item value="externalLogins">
-                <div className="bg-secondary-lighter">
-                  <Accordion.Control>
-                    Link Account from External Data Resources
-                  </Accordion.Control>
-                </div>
-                <Accordion.Panel>
-                  <ExternalProvidersPanel />
-                </Accordion.Panel>
-              </Accordion.Item>
-            )}
-            <Accordion.Item value="apiKeys">
+    <ProfileProvider profileConfig={profileConfig}>
+      <div className="flex flex-col w-full m-2">
+        <Accordion
+          multiple
+          variant="separated"
+          chevronPosition="left"
+          chevron={<Caret color="primary.4" size="1.75rem" />}
+          defaultValue={[
+            ...['apiKeys', 'resources'],
+            ...(profileConfig?.hasExternalLogins ? ['externalLogins'] : []),
+          ]}
+          classNames={{
+            label: 'text-secondary-contrast-lighter font-heading font-bold',
+          }}
+        >
+          {profileConfig?.hasExternalLogins && (
+            <Accordion.Item value="externalLogins">
               <div className="bg-secondary-lighter">
-                <Accordion.Control>Current API Keys</Accordion.Control>
+                <Accordion.Control>
+                  Link Account from External Data Resources
+                </Accordion.Control>
               </div>
               <Accordion.Panel>
-                <Credentials />
+                <ExternalProvidersPanel />
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="resources">
-              <div className="bg-secondary-lighter">
-                <Accordion.Control>Resources</Accordion.Control>
-              </div>
-              <Accordion.Panel>
-                <ResourcesPanel />
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-        </div>
-      </ProfileProvider>
+          )}
+          <Accordion.Item value="apiKeys">
+            <div className="bg-secondary-lighter">
+              <Accordion.Control>Current API Keys</Accordion.Control>
+            </div>
+            <Accordion.Panel>
+              <Credentials />
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="resources">
+            <div className="bg-secondary-lighter">
+              <Accordion.Control>Resources</Accordion.Control>
+            </div>
+            <Accordion.Panel>
+              <ResourcesPanel />
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      </div>
+    </ProfileProvider>
   );
 };
 

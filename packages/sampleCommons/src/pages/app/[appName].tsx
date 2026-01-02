@@ -7,12 +7,13 @@ import {
 import { GetServerSideProps } from 'next';
 import { NextRouter, useRouter } from 'next/dist/client/router';
 
+import { ContentSource } from '@gen3/frontend/lib/content';
+
+import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
 import {
-  ContentSource,
-  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
-  NavPageLayoutProps,
-} from '@gen3/frontend';
+  type NavPageLayoutProps,
+} from '@gen3/frontend/features/Navigation';
 
 interface AppConfig extends NavPageLayoutProps {
   config?: Record<string, any>;

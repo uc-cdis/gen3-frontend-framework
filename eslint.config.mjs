@@ -64,17 +64,29 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
         {
-          "argsIgnorePattern": "^_",
-          "varsIgnorePattern": "^_"
-        }
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
       ],
       'react/prop-types': 'warn',
       'reactHooks/rules-of-hooks': 'error',
       'reactHooks/exhaustive-deps': 'warn',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@gen3/frontend',
+              message:
+                "Avoid importing from '@gen3/frontend' (root barrel). Use a specific subpath entrypoint instead.",
+            },
+          ],
+        },
+      ],
     },
   },
-  ...storybook.configs["flat/recommended"]
+  ...storybook.configs['flat/recommended'],
 ];
