@@ -2,7 +2,6 @@ import {
   Accessibility,
   coreStore,
   DataLibraryDataset,
-  DatasetOrCohort,
   downloadJSONDataFromGuppy,
   EmptyFilterSet,
   fetchJSONDataFromURL,
@@ -15,20 +14,6 @@ import {
 } from '@gen3/core';
 import { JSONPath } from 'jsonpath-plus';
 
-const DEFAULT_FILE_MANIFEST_FIELDS = [
-  'file_name',
-  'file_size',
-  'md5sum',
-  'object_id',
-];
-const DEFAULT_DATA_LIBRARY_FIELDS = [
-  'file_name',
-  'file_size',
-  'md5sum',
-  'object_id',
-  'data_format',
-];
-
 export const processFilesForManifest = (
   data: JSONObject[],
   path = '',
@@ -37,21 +22,22 @@ export const processFilesForManifest = (
     file_size: 'file_size',
     md5sum: 'md5Sum',
     object_id: 'object_id',
-    dataset_id: 'dataset_id',
   },
 ) => mapDataToMappingDefinition(data, path, fieldMapping);
 
 export const processFilesForDataLibrary = (
   data: JSONObject[],
-  path = '',
+  path = '$.*',
   fieldMapping: Record<string, string> = {
     name: 'name',
     size: 'size',
     md5sum: 'md5Sum',
     guid: 'guid',
     type: 'type',
+    dataset_id: 'dataset_id',
   },
-) => mapDataToMappingDefinition(data, path, fieldMapping);
+): Record<string, JSONObject>[] =>
+  mapDataToMappingDefinition(data, path, fieldMapping);
 
 export const mapDataToMappingDefinition = (
   manifestData: JSONObject[],
@@ -60,64 +46,77 @@ export const mapDataToMappingDefinition = (
     file_name: 'file_name',
     file_size: 'file_size',
     md5sum: 'md5Sum',
-    object_id: 'object_id',
+    id: 'id',
+    dataset_id: 'dataset_id',
   },
-  copyAllFields: boolean = false,
-) => {
-  return manifestData.reduce(
-    (acc, data) => {
+): Record<string, JSONObject>[] => {
+  const missing: JSONObject[] = [];
+  const results = manifestData.reduce(
+    (acc: Record<string, JSONObject>[], data) => {
       const root = JSONPath({ path: path, json: data });
       if (root?.length > 0) {
         root[0].forEach((dataFileItem: any) => {
           const manifestEntry = Object.keys(fieldMapping).reduce(
             (entry: Record<string, any>, field) => {
-              // use jsonpath to find data
               if (fieldMapping[field] in dataFileItem) {
                 entry[field] = dataFileItem[fieldMapping[field]];
-              } else if (copyAllFields) {
-                entry[field] = dataFileItem[field];
               }
               return entry;
             },
             {},
           );
-          if (manifestEntry['object_id'] !== undefined) {
+          if (manifestEntry['id'] !== undefined) {
+            // only add if we have an object_id
             acc.push(manifestEntry);
+          } else {
+            missing.push(manifestEntry);
           }
         });
       }
       return acc;
     },
-
-    [] as Record<string, JSONObject>[],
+    [],
   );
+  if (missing.length > 0) {
+    console.warn(
+      `The following files were not added to the manifest because they do not have an object_id: ${JSON.stringify(
+        missing,
+      )}`,
+    );
+  }
+  return results;
 };
 
-export const createDataset = (data: Record<string, any>[], field: string) =>
-  data.reduce<DatasetOrCohort>((acc, item) => {
-    const key = String(item[field]);
-    const existing = acc[key];
-
-    if (!existing) {
-      acc[key] = {
-        id: key,
-        name: item?.name,
+/**
+ * Given a flattened list of data items where the with a dataset_id, create an array of datasets
+ * @param data
+ * @param field
+ */
+export const createDatasets = (data: Record<string, any>[], field: string) =>
+  data.reduce<Record<string, DataLibraryDataset>>((acc, item, index) => {
+    // for every item in the data
+    // get it's dataset is and add it to the acc
+    const datasetId = String(item[field]); // get the id of the dataset or cohort
+    const entryExists = acc[datasetId];
+    const fileItem = item as FileItem;
+    if (entryExists && entryExists.itemType === 'Dataset') {
+      entryExists.members[fileItem.id] = fileItem;
+    } else {
+      acc[datasetId] = {
+        id: datasetId,
+        name: item?.name ?? `${datasetId}-${index}`,
         members: {
-          [key]: item as FileItem,
+          [fileItem.id]: fileItem,
         },
         itemType: 'Dataset',
-      } as DataLibraryDataset;
-    } else if (existing.itemType === 'Dataset') {
-      // existing is now narrowed to DataLibraryDataset
-      existing.members[key] = item as FileItem;
+      };
     }
-
     return acc;
   }, {});
 
 export interface ExportCohortData extends Record<string, any> {
   datasetIdField: string;
-  fileIndex: string;
+  index: string;
   cohortIndex: string;
   fileIdField: string;
   fileFields: string[];
@@ -146,31 +145,27 @@ export interface ExportCohortDataToDataLibraryParams extends ExportCohortData {
 /* TODO: complete this function */
 export const addCohortDataFilesToDataLibraryAsDataset = async (
   params: Record<string, any>,
-  done?: () => void,
+  done?: (params?: unknown) => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
-  manifestFieldMapping: Record<string, string> = {},
-  dataFormat?: string,
+  onComplete?: (arg?: any) => void,
 ): Promise<void> => {
   // query the cohort data using the cohort as filters, and the fields needed for the data object
 
   const cohort = selectCurrentCohortFilters(coreStore.getState());
-  const cohortName = selectCurrentCohortFilters(coreStore.getState())?.name;
-
   const {
-    fileIndex,
+    index,
     cohortIndex,
     accessibility,
-    datasetIdField,
+    datasetIdField = 'dataset_id',
     fileIdField,
     fileFields,
     libraryDataItemMapping,
+    dataPath = '*',
   } = params as ExportCohortDataToDataLibraryParams;
 
-  console.log('params: ', params);
-
-  // get the files information
+  // test if all required fields are present
   if (REQUIRED_FIELDS.some((field) => !(field in params))) {
     if (onError)
       onError(
@@ -183,13 +178,11 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
 
   const fileInformationParameters: GuppyDownloadDataParams = {
     filter: cohortFilters,
-    type: fileIndex,
+    type: index,
     fields: fileFields,
     accessibility: accessibility,
     format: 'json',
   };
-
-  console.log('fileInformationParameters: ', fileInformationParameters);
 
   try {
     let cohortDatafiles = await downloadJSONDataFromGuppy({
@@ -197,10 +190,9 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
       onAbort: onAbort,
       signal: signal,
     });
-    console.log('cohortDatafiles: ', cohortDatafiles);
     cohortDatafiles = processFilesForDataLibrary(
       cohortDatafiles,
-      '',
+      `$.${dataPath}`,
       libraryDataItemMapping,
     );
     if (cohortDatafiles.length === 0) {
@@ -208,18 +200,16 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
     }
 
     // create a list using the cohort name and the data files
-    const dataset = createDataset(cohortDatafiles, datasetIdField);
+    const datasets = createDatasets(cohortDatafiles, datasetIdField);
     // add/update dataset to the data library
+    if (done) done(); // clear the notification
 
-    console.log('Add this dataset to the data library: ', dataset);
-
-    if (done) done();
+    if (onComplete) onComplete(datasets);
   } catch (err) {
     let resultErr;
     if (typeof err === 'string') resultErr = new Error(err);
     if (err instanceof Error) resultErr = err;
     if (!resultErr) resultErr = new Error('unknown error in download manifest');
-
     if (onError) onError(resultErr);
   }
 };
@@ -234,10 +224,9 @@ export const exportCohortToWorkspace = async (
   // query the cohort data using the cohort as filters, and the fields needed for the data object
 
   const cohort = selectCurrentCohortFilters(coreStore.getState());
-  const cohortName = selectCurrentCohortFilters(coreStore.getState())?.name;
 
   const {
-    fileIndex,
+    index,
     cohortIndex,
     accessibility,
     metadataIndex,
@@ -248,14 +237,13 @@ export const exportCohortToWorkspace = async (
   } = params as ExportCohortDataToWorkspaceParams;
 
   // add check for required fields
-
   // get the files information
 
   const cohortFilters = cohort[cohortIndex] ?? EmptyFilterSet;
 
   const fileQueryParameters: GuppyDownloadDataParams = {
     filter: cohortFilters,
-    type: fileIndex,
+    type: index,
     fields: fileFields,
     accessibility: accessibility,
     format: 'json',
@@ -309,9 +297,6 @@ export const exportCohortToWorkspace = async (
       signal,
     );
 
-    // add/update dataset to the data library
-
-    // add/update a list using the current cohort name
     if (done) done();
   } catch (err) {
     let resultErr;

@@ -1,10 +1,10 @@
-import React from 'react';
-import useGuppyActionButton from './downloadActionHook';
+import React, { useCallback } from 'react';
 import { GuppyActionButtonProps } from '../types';
-import { Modals } from '@gen3/core';
+import { DataLibraryDataset, Modals, useDataLibrary } from '@gen3/core';
 import ActionButton from './ActionButton';
+import useGuppyActionButton from './downloadActionHook';
 
-const CohortActionButton = ({
+const AddCohortToDataLibraryButton = ({
   activeText,
   inactiveText,
   customStyle,
@@ -14,36 +14,39 @@ const CohortActionButton = ({
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
   tooltipText,
-  done,
   customErrorMessage,
   hideNotification = false,
   actionFunction,
   actionArgs,
 }: GuppyActionButtonProps) => {
+  const { addListToDataLibrary, updateListInDataLibrary } = useDataLibrary();
+
+  const completeDataset = useCallback((args: unknown) => {
+    const datasets = args as Record<string, DataLibraryDataset>;
+  }, []);
+
   const { handleClick, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
-    done,
     customErrorMessage,
     hideNotification,
     actionFunction,
     actionArgs,
+    onCompleted: completeDataset,
   });
 
   return (
     <ActionButton
-      activeText={activeText}
-      inactiveText={inactiveText}
-      active={active}
-      icon={icon}
       handleClick={handleClick}
-      customStyle={customStyle}
-      showLoading={showLoading}
       showIcon={showIcon}
       disabled={disabled}
       tooltipText={tooltipText}
+      activeText={activeText || 'Add to Data Library'}
+      inactiveText={inactiveText || 'Add to Data Library'}
+      active={active}
+      icon={icon}
     />
   );
 };
 
-export default CohortActionButton;
+export default AddCohortToDataLibraryButton;

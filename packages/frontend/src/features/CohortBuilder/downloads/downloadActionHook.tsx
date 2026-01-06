@@ -13,18 +13,18 @@ const showErrorMessage = (error: Error) => {
   });
 };
 
-interface GuppyDownloadActionHookProps
-  extends Pick<
-    GuppyActionButtonProps,
-    | 'Modal403'
-    | 'Modal400'
-    | 'done'
-    | 'customErrorMessage'
-    | 'hideNotification'
-    | 'actionFunction'
-    | 'actionArgs'
-  > {
+interface GuppyDownloadActionHookProps extends Pick<
+  GuppyActionButtonProps,
+  | 'Modal403'
+  | 'Modal400'
+  | 'done'
+  | 'customErrorMessage'
+  | 'hideNotification'
+  | 'actionFunction'
+  | 'actionArgs'
+> {
   setIsActive?: (active: boolean) => void;
+  onCompleted?: (args?: unknown) => void;
 }
 
 const useGuppyActionButton = ({
@@ -36,6 +36,7 @@ const useGuppyActionButton = ({
   actionFunction,
   actionArgs,
   setIsActive = (_: boolean) => null,
+  onCompleted = () => null,
 }: GuppyDownloadActionHookProps) => {
   const [active, setActive] = useState(false);
   const dispatch = useCoreDispatch();
@@ -130,6 +131,7 @@ const useGuppyActionButton = ({
         cleanNotifications();
       },
       controller.signal,
+      onCompleted,
     );
   };
 
