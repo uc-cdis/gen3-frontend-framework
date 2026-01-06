@@ -6,7 +6,7 @@ import { getCookie } from 'cookies-next';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
-import { fetchFence } from '../fence';
+import { fetchFence } from '../fence/fetchFence';
 
 export interface CSRFToken {
   readonly csrfToken: string;

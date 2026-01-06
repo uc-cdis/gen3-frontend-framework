@@ -1,6 +1,6 @@
 {
   "name": "@gen3/frontend",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "description": "Gen3 frontend components, content management, and pages",
   "keywords": [],
   "author": "Center for Translational Data Science",
@@ -27,7 +27,7 @@
     "build": "npm run compile && npm run types && npm run rollup",
     "build:clean": "npm run clean && npm run build",
     "build:watch": "npm run compile --stream && npm run rollup -- --watch",
-    "dev": "npm run build:watch"
+    "dev": "echo no dev tasks"
   },
   "exports": {
     ".": {
@@ -45,6 +45,11 @@
       "import": "./dist/server/esm/server.js",
       "require": "./dist/server/cjs/server.cjs"
     },
+    "./pages": {
+      "types": "./dist/pages.d.ts",
+      "import": "./dist/pages/esm/pages.js",
+      "require": "./dist/pages/cjs/pages.cjs"
+    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",
@@ -57,7 +62,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
-    "@gen3/core": "^0.12.4",
+    "@gen3/core": "^0.12.5",
     "@graphiql/react": "^0.23.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@iconify-icon/react": "^3.0.3",
@@ -93,63 +98,24 @@
     "json-file-database": "^2.0.3",
     "mantine-react-table": "^2.0.0-beta.9",
     "mathjs": "^14.6.0",
-    "minisearch": "^6.3.0",
+    "minisearch": "^7.1.2",
     "next": "^15.5.9",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
-    "node-json-db": "^2.3.0",
     "pluralize": "^8.0.0",
-    "postcss-loader": "^8.2.0",
-    "postcss-preset-env": "^8.4.2",
-    "react-cookie": "^7.2.2",
-    "react-fast-compare": "^3.2.2",
-    "react-icons": "^4.10.1",
-    "react-markdown": "^9.1.0",
-    "react-minisearch": "^6.3.0",
-    "react-plotly.js": "^2.5.1",
-    "react-redux": "^8.1.0",
-    "react-table": "^7.8.0",
-    "remark-gfm": "^4.0.0",
-    "tailwind-merge": "^2.5.2",
-    "tailwind-styled-components": "^2.2.0",
-    "use-deep-compare": "^1.3.0",
-    "victory": "^36.6.11",
+    "react-minisearch": "^7.1.4",
+    "typescript-pluralize": "^1.0.1",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@iconify/types": "^2.0.0",
-    "@svgr/webpack": "^8.1.0",
-    "@swc/core": "^1.7.28",
-    "@swc/jest": "^0.2.36",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/color": "^3.0.3",
-    "@types/estree": "^1.0.0",
-    "@types/file-saver": "^2.0.5",
-    "@types/isomorphic-fetch": "^0.0.36",
-    "@types/jest": "^29.2.3",
-    "@types/lodash": "^4.14.191",
-    "@types/mdx": "^2.0.3",
-    "@types/pluralize": "^0.0.33",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@types/react-table": "^7.7.15",
-    "@types/recharts": "^1.8.29",
-    "@types/tinycolor2": "^1.4.4",
-    "@types/uuid": "^9.0.4",
-    "autoprefixer": "^10.4.15",
-    "css-loader": "^6.8.1",
-    "html-webpack-plugin": "^5.5.0",
-    "postcss": "^8.4.29",
-    "react-what-changed": "^1.1.2",
-    "style-loader": "^3.3.2",
+    "next": "^15.5.9",
     "swr": "^2.2.5"
   },
   "peerDependencies": {
+    "next": "^15.5.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.18"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

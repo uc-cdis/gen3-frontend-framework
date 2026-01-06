@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API, various types, and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -26,6 +26,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/esm/server.js",
       "require": "./dist/cjs/server.cjs"
+    },
+    "./exports/constants": {
+      "types": "./dist/constant.d.ts",
+      "import": "./dist/esm/constants.js",
+      "require": "./dist/cjs/constants.js"
     }
   },
   "scripts": {
@@ -40,7 +45,7 @@
     "test:watch": "jest unit --watch",
     "test:int": "jest int",
     "test:all": "jest",
-    "dev": "npm run build:watch"
+    "dev": "echo no dev tasks"
   },
   "peerDependencies": {
     "react": "^18.3.1",
