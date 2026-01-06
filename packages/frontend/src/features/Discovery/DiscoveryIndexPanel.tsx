@@ -102,14 +102,14 @@ const DiscoveryIndexPanel = ({
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
-  if (dataRequestStatus.isLoading) {
+  /*   if (dataRequestStatus.isLoading) {
     return (
       <div className="flex w-full py-24 relative justify-center">
         <Loader variant="dots" />{' '}
       </div>
     );
   }
-
+ */
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
@@ -164,6 +164,7 @@ const DiscoveryIndexPanel = ({
                 </div>
               </div>
             )}
+
             <div className="flex flex-row">
               {discoveryConfig?.features?.advSearchFilters?.enabled ? (
                 <Button onClick={toggleAdvancedSearch} color="accent">
@@ -201,21 +202,28 @@ const DiscoveryIndexPanel = ({
               ) : (
                 false
               )}
-              <div
-                className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
-                ref={parentDivRef}
-              >
-                <DiscoveryTable
-                  data={data}
-                  hits={hits}
-                  dataRequestStatus={dataRequestStatus}
-                  setPagination={setPagination}
-                  setSorting={setSorting}
-                  setSelection={setSelections}
-                  pagination={pagination}
-                  sorting={sorting}
-                />
-              </div>
+
+              {dataRequestStatus.isLoading ? (
+                <div className="flex w-full py-24 relative justify-center">
+                  <Loader variant="dots" />{' '}
+                </div>
+              ) : (
+                <div
+                  className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+                  ref={parentDivRef}
+                >
+                  <DiscoveryTable
+                    data={data}
+                    hits={hits}
+                    dataRequestStatus={dataRequestStatus}
+                    setPagination={setPagination}
+                    setSorting={setSorting}
+                    setSelection={setSelections}
+                    pagination={pagination}
+                    sorting={sorting}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </StudyProvider>
