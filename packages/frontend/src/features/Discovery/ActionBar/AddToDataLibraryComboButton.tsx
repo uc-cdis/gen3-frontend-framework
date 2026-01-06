@@ -82,6 +82,8 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
+  console.log('items', items);
+
   const numItems = Object.keys(items).length;
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
@@ -102,7 +104,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
     currentListName,
   );
   const classNamesDefaults = {
-    root: 'w-1/2',
+    root: 'w-full',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
