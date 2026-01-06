@@ -15,6 +15,7 @@ import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -59,7 +60,7 @@ const DiscoveryIndexPanel = ({
       filters: {},
     });
 
-  const searchParam = useMemo(() => {
+  const searchParam = useDeepCompareMemo(() => {
     return {
       keyword: {
         operator: SearchCombination.and,
@@ -139,6 +140,8 @@ const DiscoveryIndexPanel = ({
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
+                  searchBarTerm={searchBarTerm}
+                  setSearchBarTerm={setSearchBarTerm}
                   suggestions={suggestions}
                   clearSearch={() => {
                     setSearchBarTerm([]);

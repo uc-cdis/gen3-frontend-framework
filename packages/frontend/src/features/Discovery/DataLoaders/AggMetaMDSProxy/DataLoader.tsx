@@ -3,7 +3,7 @@ import {
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
-
+import { useDeepCompareEffect } from 'use-deep-compare';
 export const useAggMetaMDSProxy = ({
   pagination,
   searchTerms,
@@ -39,7 +39,8 @@ export const useAggMetaMDSProxy = ({
   };
 
   console.log('searchTerms', searchTerms);
-  useEffect(() => {
+  // useEffect(() => {
+  useDeepCompareEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -64,7 +65,7 @@ export const useAggMetaMDSProxy = ({
       }
     };
     fetchData();
-  }, []);
+  }, [searchTerms]);
 
   console.log('data', data);
   return {
