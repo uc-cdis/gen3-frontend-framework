@@ -22,7 +22,7 @@ export const useAggMetaMDSProxy = ({
   const params = {
     discoveryConfig: discoveryConfig,
     pagination: {
-      offset: 0,
+      offset: pagination.offset,
       pageSize: pagination.pageSize,
     },
     searchTerms: searchTerms,
@@ -38,7 +38,8 @@ export const useAggMetaMDSProxy = ({
       }, */
   };
 
-  console.log('searchTerms', searchTerms);
+  console.log('searchTerm', searchTerms.keyword.keywords);
+
   // useEffect(() => {
   useDeepCompareEffect(() => {
     const fetchData = async () => {
@@ -65,9 +66,8 @@ export const useAggMetaMDSProxy = ({
       }
     };
     fetchData();
-  }, [searchTerms]);
+  }, [searchTerms, pagination.pageSize, pagination.offset]);
 
-  console.log('data', data);
   return {
     data: data.displayedData,
     hits: data.hits,

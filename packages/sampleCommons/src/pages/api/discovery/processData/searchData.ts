@@ -8,7 +8,6 @@ const searchData = (
   selectedFieldsForSearchIndexing: Array<string>,
   discoveryConfig: any,
 ) => {
-  console.log('discoveryConfig in searchData', discoveryConfig);
   console.log('searchTerms pre-processing', searchTerms);
   // do not execute search if there are no search terms
   if (searchTerms.length === 0 || searchTerms.every((item) => item === ''))
