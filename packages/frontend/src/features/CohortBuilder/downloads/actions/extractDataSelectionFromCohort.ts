@@ -90,7 +90,6 @@ export async function extractDataSelectionFromCohort({
 
     const path = normalizeJsonPath(dataPath);
     const files = processFilesForDataLibrary(raw, path, libraryDataItemMapping);
-
     const datasets = createDatasets(files, datasetIdField);
 
     return { ok: true, datasets };

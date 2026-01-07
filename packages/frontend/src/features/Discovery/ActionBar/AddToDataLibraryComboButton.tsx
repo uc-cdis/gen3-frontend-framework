@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  ActionIcon,
+  Badge,
   Button,
   Combobox,
-  Group,
   ScrollArea,
   TextInput,
   Tooltip,
   useCombobox,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-
 import {
   type CoreState,
   type DataLibrary,
@@ -25,6 +25,18 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { StylingOverride } from '../../../types';
 import { ActionButtonConfig } from '../../../components/Buttons/types';
+import { useRouter } from 'next/router';
+import { Icon } from '@iconify-icon/react';
+import { extractClassName } from '../../Navigation/utils';
+
+const STATUS_TO_MESSAGE: Record<number, string> = {
+  401: 'Please log in to save to data library',
+  404: 'Cannot query data library. Please try again later.',
+  409: 'Selections are already saved to the list.',
+};
+
+const getNumberOfDatasets = (selected: DatasetOrCohort) =>
+  Object.keys(selected).length;
 
 type SelectOptions = Record<string, string>;
 
@@ -37,12 +49,7 @@ const extractIdToLabel = (data: DataLibrary): SelectOptions =>
       }, {});
 
 const buildErrorMessage = (error: StorageOperationResults): string => {
-  if (error.status === 401) {
-    return 'Please log in to save to data library';
-  }
-  if (error.status === 404) {
-    return 'Cannot query data library. Please try again later.';
-  }
+  if (STATUS_TO_MESSAGE?.[error.status]) return STATUS_TO_MESSAGE[error.status];
   return 'Error saving to data library. Please try again later.';
 };
 const createTooltipLabel = (
@@ -80,9 +87,16 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
   const [currentListName, setCurrentListName] = useState<string>('');
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
+    onDropdownOpen: () => {
+      setError(null);
+    },
   });
 
-  console.log('items', items);
+  const router = useRouter();
+
+  const gotoDataLibrary = () => {
+    router.push('/DataLibrary');
+  };
 
   const numItems = Object.keys(items).length;
   const userStatus = useCoreSelector((state: CoreState) =>
@@ -104,7 +118,9 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
     currentListName,
   );
   const classNamesDefaults = {
-    root: 'w-full',
+    root: 'w-1/2 flex items-center justify-start',
+    icon: 'rounded-s-none',
+    input: 'w-full rounded-e-none',
   };
 
   const mergedClassnames = mergeDefaultTailwindClassnames(
@@ -170,7 +186,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
       });
     } else {
       addListToDataLibrary(items, listname).then((results) => {
-        if (results.isError)
+        if (results.isError) {
           notifications.show({
             id: 'update-datalibrary-list-error-notification',
             position: 'top-center',
@@ -180,7 +196,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             message: `Error saving to list ${listname}.`,
             loading: isUpdating !== null,
           });
-        else
+        } else {
           notifications.show({
             id: 'update-datalibrary-list-notification',
             position: 'top-center',
@@ -190,6 +206,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             message: `${Object.values(items).length} datasets saved to list ${listname}.`,
             loading: isLoading,
           });
+        }
       });
     }
   };
@@ -233,11 +250,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
   }, [dataLibrary, dataLibraryError]);
 
   return (
-    <Group
-      data-testid="add-to-data-library"
-      wrap="nowrap"
-      classNames={{ root: mergedClassnames.root }}
-    >
+    <div data-testid="add-to-data-library" className={mergedClassnames.root}>
       <Combobox
         onOptionSubmit={(selectedValue) => {
           setCurrentList(selectedValue);
@@ -251,7 +264,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
           <TextInput
             placeholder="Select/Search/Create List"
             value={currentListName ?? ''}
-            className={'w-full'}
+            classNames={{ input: mergedClassnames.input }}
             onChange={(event) => {
               setCurrentListName(event.currentTarget.value);
               combobox.openDropdown();
@@ -260,6 +273,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             onClick={() => combobox.openDropdown()}
             onFocus={() => combobox.openDropdown()}
             onBlur={() => combobox.closeDropdown()}
+            rightSection={<Combobox.Chevron />}
           />
         </Combobox.Target>
 
@@ -275,10 +289,24 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
           </Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>
-
+      <Tooltip label="Open Datalibrary">
+        <ActionIcon
+          size="lg"
+          onClick={gotoDataLibrary}
+          color="primary.4"
+          className={extractClassName('icon', mergedClassnames)}
+        >
+          <Icon
+            icon="gen3:external-link"
+            width={24}
+            height={24}
+            className={extractClassName('icon', mergedClassnames)}
+          />
+        </ActionIcon>
+      </Tooltip>
       <Tooltip label={tooltipLabel}>
         <Button
-          classNames={{ root: 'w-1/3' }}
+          classNames={{ root: 'w-1/3 ml-2' }}
           loading={isLoading}
           disabled={isDisabled}
           onClick={() => {
@@ -294,7 +322,8 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             : (buttonConfig?.label ?? 'Save to List')}
         </Button>
       </Tooltip>
-    </Group>
+      <Badge>{getNumberOfDatasets(items)}</Badge>
+    </div>
   );
 };
 

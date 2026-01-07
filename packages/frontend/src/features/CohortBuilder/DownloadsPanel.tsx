@@ -140,7 +140,7 @@ const DownloadsPanel = ({
   }, [dropdowns, loginRequired, isUserLoggedIn]);
 
   return dropdowns || buttons ? (
-    <div className="flex space-x-1">
+    <div className="flex space-x-2 items-center">
       {Object.values(dropdownsToRender).map(
         (dropdown: DropdownsWithButtonsProps) => {
           return createDownloadMenuButton(dropdown, {
@@ -171,8 +171,6 @@ const DownloadsPanel = ({
         if (loginRequired && !isUserLoggedIn) {
           disabled = true;
         }
-
-        console.log('buttonAction', buttonAction);
         if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
           // TODO: remove this special case
           return (

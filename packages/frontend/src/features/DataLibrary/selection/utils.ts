@@ -121,6 +121,7 @@ const getUniqueItemKey = (
 
 export const selectionToManifest = (
   dataLibrarySelections: ReadonlyArray<ValidatedSelectedItem>,
+  exportAllFields: boolean = false,
 ) => {
   return dataLibrarySelections.reduce((acc, item) => {
     if (isValidFileItemWithParentDatasetNameAndID(item)) {

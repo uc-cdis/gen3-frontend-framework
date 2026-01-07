@@ -63,7 +63,7 @@ export const mapDataToMappingDefinition = (
               }
               return entry;
             },
-            {},
+            { type: 'GA4GH_DRS' },
           );
           if (manifestEntry['id'] !== undefined) {
             // only add if we have an object_id
