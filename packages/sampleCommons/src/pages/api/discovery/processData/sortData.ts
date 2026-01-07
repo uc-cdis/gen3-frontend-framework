@@ -6,6 +6,7 @@ const sortData = (
   sorting: Array<{ id: string; desc: string }>,
 ) => {
   // if there's no sorting array return the unsorted data
+  console.log('sorting', sorting);
   if (sorting.length === 0) return data;
   const sortingObject = sorting[0];
   const sortedData = data.sort((a, b) => {

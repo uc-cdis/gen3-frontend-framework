@@ -54,6 +54,7 @@ const DiscoveryIndexPanel = ({
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
   const [selections, setSelections] = useState<string[]>([]); // table selections
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -87,6 +88,7 @@ const DiscoveryIndexPanel = ({
     },
     searchTerms: searchParam,
     discoveryConfig,
+    sorting,
   });
 
   const selectedRecords = useMemo(() => {
@@ -98,7 +100,6 @@ const DiscoveryIndexPanel = ({
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 

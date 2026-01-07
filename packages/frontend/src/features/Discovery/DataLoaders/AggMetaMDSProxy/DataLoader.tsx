@@ -4,11 +4,13 @@ import {
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
+
 export const useAggMetaMDSProxy = ({
   pagination,
   searchTerms,
   advancedSearchTerms,
   discoveryConfig,
+  sorting,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -16,17 +18,14 @@ export const useAggMetaMDSProxy = ({
   const [data, setData] = useState([{ displayData: [], hits: 0 }]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const url = 'https://jsonplaceholder.typicode.com/posts';
+
   const apiUrl = 'http://localhost:3000/api/discovery';
 
   const params = {
     discoveryConfig: discoveryConfig,
-    pagination: {
-      offset: pagination.offset,
-      pageSize: pagination.pageSize,
-    },
+    pagination: pagination,
     searchTerms: searchTerms,
-    sorting: [],
+    sorting: sorting,
     selectedFieldsForSearchIndexing: [],
     /*       selectedFieldsForSearchIndexing: [
         'study_metadata.minimal_info.study_name',
@@ -38,14 +37,12 @@ export const useAggMetaMDSProxy = ({
       }, */
   };
 
-  console.log('searchTerm', searchTerms.keyword.keywords);
+  console.log('sorting', sorting);
 
-  // useEffect(() => {
   useDeepCompareEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // const response = await fetch(url);
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -66,7 +63,7 @@ export const useAggMetaMDSProxy = ({
       }
     };
     fetchData();
-  }, [searchTerms, pagination.pageSize, pagination.offset]);
+  }, [searchTerms, pagination, sorting]);
 
   return {
     data: data.displayedData,
