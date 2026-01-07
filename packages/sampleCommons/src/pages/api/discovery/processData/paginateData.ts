@@ -7,7 +7,7 @@ const paginateData = (
   offset: number,
 ) => {
   console.log('paginateData pageSize: ', pageSize, 'offset: ', offset);
-  const start = offset * pageSize;
-  return data.slice(start, start + pageSize);
+  // const start = offset;
+  return data.slice(offset, offset + pageSize);
 };
 export default paginateData;
