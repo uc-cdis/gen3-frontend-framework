@@ -72,7 +72,10 @@ const DiscoveryIndexPanel = ({
   }, [searchBarTerm, advancedSearchTerms]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
-
+  console.log(
+    'searchParam.advancedSearchTerms',
+    searchParam.advancedSearchTerms,
+  );
   const {
     data,
     hits,

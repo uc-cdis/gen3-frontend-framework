@@ -98,6 +98,7 @@ const processAdvancedSearchTerms = (
   data: JSONObject[],
   uidField: string,
 ): ReadonlyArray<KeyValueSearchFilter> => {
+  console.log('advSearchFilters HERE!', advSearchFilters);
   return advSearchFilters.filters.map((filter) => {
     const { key, keyDisplayName } = filter;
     const values = getFilterValuesByKey(

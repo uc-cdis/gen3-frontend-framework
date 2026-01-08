@@ -4,6 +4,7 @@ import {
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
+import { processAdvancedSearchTerms } from './processAdvancedSearchTerms';
 
 export const useAggMetaMDSProxy = ({
   pagination,
@@ -18,7 +19,7 @@ export const useAggMetaMDSProxy = ({
   const [data, setData] = useState([{ displayData: [], hits: 0 }]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
   const apiUrl = 'http://localhost:3000/api/discovery';
 
   const params = {
@@ -65,13 +66,27 @@ export const useAggMetaMDSProxy = ({
     fetchData();
   }, [searchTerms, pagination, sorting]);
 
+  let advancedSearchFilterValues = [] as any;
+  const advancedSearchFilters = discoveryConfig.features?.advSearchFilters ?? {
+    enabled: false,
+    field: '',
+    displayName: '',
+    filters: [],
+  };
+  if (data.displayedData)
+    advancedSearchFilterValues = processAdvancedSearchTerms(
+      advancedSearchFilters,
+      data.displayedData,
+      uidField,
+    );
+
   return {
     data: data.displayedData,
     hits: data.hits,
     suggestions: [],
     summaryStatistics: [],
     charts: {},
-    advancedSearchFilterValues: [],
+    advancedSearchFilterValues: advancedSearchFilterValues,
     dataRequestStatus: {
       isUninitialized: false,
       isFetching: loading,
