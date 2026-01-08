@@ -327,3 +327,57 @@ switch to use ```multiselect```. Note that ```multiselect``` is the only type su
 is also searchable.
 
 ![MultiSelectFacet](images/Explorer/MultiSelectFacet.png)
+
+### Export Cohort Datafiles to Data Library
+
+To export a cohort data files to a Data Library, add the following to the config file:
+```json
+    "buttons": [
+      {
+        "enabled": true,
+        "type": "cohortDataFilesToDataLibrary",
+        "title": "Add Cohort Files To DataLibrary List",
+        "tooltip": "Add all files in the cohort to a DataLibrary list.",
+        "leftIcon": "datafile",
+        "actionArgs": {
+          "dataPath": "gen3_discovery.data_files",
+          "fileIndex": "metadata",
+          "cohortIndex": "metadata",
+          "datasetIdField": "dataset_id",
+          "fileIdField": "file_unique_identifier",
+          "fileFields": [
+            "gen3_discovery.data_files.file_data_size",
+            "gen3_discovery.data_files.file_data_source",
+            "gen3_discovery.data_files.file_data_source_id",
+            "gen3_discovery.data_files.file_data_source_project",
+            "gen3_discovery.data_files.file_data_type",
+            "gen3_discovery.data_files.file_download_url",
+            "gen3_discovery.data_files.file_number_of_files",
+            "gen3_discovery.data_files.file_permission",
+            "gen3_discovery.data_files.file_subtype",
+            "gen3_discovery.data_files.file_unique_identifier",
+            "gen3_discovery.data_files.mc2dp_global_id"
+          ],
+          "libraryDataItemMapping": {
+            "size": "file_data_size",
+            "file_type": "file_data_type",
+            "name": "file_data_source",
+            "dataset_guid": "mc2dp_global_id",
+            "dataset_id": "mc2dp_global_id",
+            "url": "file_download_url",
+            "id": "file_unique_identifier",
+            "guid": "file_unique_identifier"
+          }
+        }
+      }
+    ],
+```
+
+where:
+ * ```dataPath``` is the path to the data in the index. This can be specified as a dot notation path or a JSON Path
+ * ```fileIndex``` is the index of the files in the data
+ * ```cohortIndex``` is the index of the cohort in the data
+ * ```datasetIdField``` is the field in the cohort that contains the dataset id
+ * ```fileIdField``` is the field in the files that contains the file id
+ * ```fileFields``` is the list of fields to include in the Data Library item
+ * ```libraryDataItemMapping``` is a map of the fields in the file to the fields in the Data Library item
