@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoadingOverlay, Paper } from '@mantine/core';
+import { Badge, LoadingOverlay } from '@mantine/core';
 import { toCountsString } from '../../utils';
 import { NodeCountConfiguration } from '../../features/CohortBuilder/types';
 
@@ -21,14 +21,15 @@ const CountsValue = ({
   return (
     <div className="relative mr-4">
       <LoadingOverlay visible={isFetching} />
-      <Paper
-        shadow="xs"
-        p="xs"
-        withBorder
-        className="bg-primary text-primary-contrast font-heading text-md font-semibold"
+      <Badge
+        autoContrast
+        size="xl"
+        radius="xs"
+        color="secondary.4"
+        classNames={{ root: 'h-full' }}
       >
         {isError ? 'error' : toCountsString(counts, label, configuration)}
-      </Paper>
+      </Badge>
     </div>
   );
 };
