@@ -71,6 +71,7 @@ export const exportDataListToWorkspace: DataActionFunction = async (
       if (error.name == 'AbortError') {
         onAbort?.();
       }
+      onError?.(error);
     } else onError?.(new Error('unknown error'));
   }
 };
