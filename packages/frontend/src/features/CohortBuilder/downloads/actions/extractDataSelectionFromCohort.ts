@@ -88,8 +88,37 @@ export async function extractDataSelectionFromCohort({
       parameters: fileInformationParameters,
     })) as JSONObject[];
 
+    return extractDataSelectionFromCohortQuery(
+      raw,
+      libraryDataItemMapping,
+      datasetIdField,
+      dataPath,
+    );
+  } catch (err: unknown) {
+    const message = toErrorMessage(err);
+    const kind = message.toLowerCase().includes('abort') ? 'abort' : 'unknown';
+
+    return {
+      ok: false,
+      datasets: {},
+      error: { kind, message },
+    };
+  }
+}
+
+export function extractDataSelectionFromCohortQuery(
+  data: JSONObject[],
+  libraryDataItemMapping: Record<string, string> = {},
+  datasetIdField = 'dataset_id',
+  dataPath = '*',
+): ExtractDataSelectionFromCohortResult {
+  try {
     const path = normalizeJsonPath(dataPath);
-    const files = processFilesForDataLibrary(raw, path, libraryDataItemMapping);
+    const files = processFilesForDataLibrary(
+      data,
+      path,
+      libraryDataItemMapping,
+    );
     const datasets = createDatasets(files, datasetIdField);
 
     return { ok: true, datasets };

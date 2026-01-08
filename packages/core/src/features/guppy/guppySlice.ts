@@ -422,6 +422,15 @@ export const explorerApi = explorerTags.injectEndpoints({
           },
           validateStatus: (response: Record<string, any>) => {
             if (response?.errors && response.errors?.length > 0) return false;
+            if (
+              !response.data ||
+              !response.data[`${indexPrefix ?? ''}_aggregation`]
+            ) {
+              return false;
+            }
+            if (!(type in response.data[`${indexPrefix ?? ''}_aggregation`])) {
+              return false;
+            }
             return true;
           },
         };
@@ -431,24 +440,6 @@ export const explorerApi = explorerTags.injectEndpoints({
         _meta,
         args,
       ): number => {
-        if (
-          !response.data ||
-          !response.data[`${args?.indexPrefix ?? ''}_aggregation`]
-        ) {
-          throw new Error(
-            'Invalid response: Missing data or _aggregation field',
-          );
-        }
-
-        if (
-          !(
-            args.type in response.data[`${args?.indexPrefix ?? ''}_aggregation`]
-          )
-        ) {
-          throw new Error(
-            `Invalid response: Missing expected key '${args.type}' in _aggregation`,
-          );
-        }
         return (
           response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
             ?._totalCount ?? 0

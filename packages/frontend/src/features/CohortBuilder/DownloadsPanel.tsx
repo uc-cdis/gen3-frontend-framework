@@ -175,7 +175,7 @@ const DownloadsPanel = ({
           // TODO: remove this special case
           return (
             <CohortDataLibraryListButton
-              activeText={'Adding to Data Library...'}
+              activeText=""
               inactiveText={button.title}
               tooltipText={button.tooltipText}
               disabled={disabled || !button.enabled}

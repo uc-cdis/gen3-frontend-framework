@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Combobox,
+  LoadingOverlay,
   ScrollArea,
   TextInput,
   Tooltip,
@@ -37,6 +38,16 @@ const STATUS_TO_MESSAGE: Record<number, string> = {
 
 const getNumberOfDatasets = (selected: DatasetOrCohort) =>
   Object.keys(selected).length;
+
+const isListDifferent = (items: DatasetOrCohort, newItems: DatasetOrCohort) => {
+  // test if the new items are different from the current items in the list
+  const newNumberOfDatasets = getNumberOfDatasets(newItems);
+  const currentNumberOfDatasets = getNumberOfDatasets(items);
+  if (newNumberOfDatasets !== currentNumberOfDatasets) return true;
+  return Object.keys(newItems).some(
+    (key) => newItems[key].id !== items[key].id,
+  );
+};
 
 type SelectOptions = Record<string, string>;
 
@@ -73,6 +84,7 @@ export interface AddToDataLibraryComboButtonProps {
   buttonConfig: ActionButtonConfig;
   classNames?: StylingOverride;
   dataLibraryStoreMode?: DataLibraryStoreMode;
+  isItemsLoading?: boolean;
 }
 
 const AddToDataLibraryComboButton = <T extends Record<any, any>>({
@@ -80,6 +92,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
   items,
   dataLibraryStoreMode = DataLibraryStoreMode.ApiOnly,
   classNames = {},
+  isItemsLoading = false,
 }: AddToDataLibraryComboButtonProps) => {
   const [selectItems, setSelectItems] = useState<SelectOptions>({});
   const [currentList, setCurrentList] = useState<string | null>(null);
@@ -103,22 +116,24 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
     selectUserAuthStatus(state),
   );
 
+  const requiresLogin =
+    (buttonConfig?.requiresLogin ? buttonConfig?.requiresLogin : false) ||
+    dataLibraryStoreMode === DataLibraryStoreMode.ApiOnly;
   const isLoggedIn = isAuthenticated(userStatus);
   const isDisabled =
     error !== null ||
-    Object.length === 0 ||
+    numItems === 0 ||
     !currentListName ||
-    (buttonConfig?.requiresLogin && !isLoggedIn);
-
+    (requiresLogin && !isLoggedIn);
   const tooltipLabel = createTooltipLabel(
     error,
     isLoggedIn,
-    buttonConfig.requiresLogin,
+    requiresLogin,
     numItems,
     currentListName,
   );
   const classNamesDefaults = {
-    root: 'w-1/2 flex items-center justify-start',
+    root: 'flex items-center justify-start',
     icon: 'rounded-s-none',
     input: 'w-full rounded-e-none',
   };
@@ -136,6 +151,8 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
     isUpdating,
     error: dataLibraryError,
   } = useDataLibrary({ storageMode: dataLibraryStoreMode });
+
+  const numLists = Object.keys(dataLibrary ?? {}).length;
 
   const saveToList = (
     listname: string,
@@ -158,12 +175,27 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
 
     if (listId) {
       // updating list
+
+      const isDifferent = isListDifferent(dataLibrary[listId].items, items);
+      if (!isDifferent) {
+        notifications.show({
+          id: 'update-datalibrary-list-no-changes-notification',
+          position: 'top-center',
+          withCloseButton: true,
+          autoClose: 5000,
+          title: 'Save to list',
+          message: `No changes to list ${listname}.`,
+          loading: isUpdating !== null,
+        });
+        return;
+      }
+
       updateListInDataLibrary({
         id: listId,
         name: listname,
         items: { ...dataLibrary[listId].items, ...items },
       }).then((results) => {
-        if (results.isError)
+        if (results.isError) {
           notifications.show({
             id: 'update-datalibrary-list-error-notification',
             position: 'top-center',
@@ -173,7 +205,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             message: `Error saving to list ${listname}.`,
             loading: isUpdating !== null,
           });
-        else
+        } else
           notifications.show({
             id: 'update-datalibrary-list-notification',
             position: 'top-center',
@@ -196,6 +228,8 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             message: `Error saving to list ${listname}.`,
             loading: isUpdating !== null,
           });
+          setCurrentListName('');
+          setCurrentList(null);
         } else {
           notifications.show({
             id: 'update-datalibrary-list-notification',
@@ -262,7 +296,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
       >
         <Combobox.Target>
           <TextInput
-            placeholder="Select/Search/Create List"
+            placeholder={numLists > 0 ? 'Select/Search' : 'Create List'}
             value={currentListName ?? ''}
             classNames={{ input: mergedClassnames.input }}
             onChange={(event) => {
@@ -317,12 +351,33 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             }
           }}
         >
-          {options.length === 0 && currentListName.length > 0
-            ? 'Save to New List'
-            : (buttonConfig?.label ?? 'Save to List')}
+          {numLists === 0 ||
+          (options.length === 0 && currentListName.length > 0)
+            ? 'New List'
+            : 'Add to List'}
         </Button>
       </Tooltip>
-      <Badge>{getNumberOfDatasets(items)}</Badge>
+      <div className="flex items-center relative">
+        <LoadingOverlay
+          loaderProps={{ color: 'accent.4', size: 'sm' }}
+          visible={isLoading || isItemsLoading}
+        />
+        <Badge
+          className="ml-2 max-w-48"
+          variant="light"
+          color="primary.4"
+          size="xl"
+          radius="md"
+          fullWidth
+        >
+          <span
+            className="flex items-center justify-center gap-1"
+            data-testid="num-items-badge"
+          >
+            {numItems} Datasets
+          </span>
+        </Badge>
+      </div>
     </div>
   );
 };

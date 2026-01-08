@@ -37,7 +37,6 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
           ...{ type, accessibility, fields, sort },
         };
 
-        console.log('guppy download query: ', queryBody, '');
         return {
           url: `${GEN3_GUPPY_API}/download`,
           method: 'POST',
