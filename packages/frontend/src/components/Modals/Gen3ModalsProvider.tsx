@@ -84,7 +84,10 @@ const Gen3ModalsProvider = ({
   const { isAuthenticated } = useIsAuthenticated();
 
   useDeepCompareEffect(() => {
-    if (!cookie['Gen3-first-time-use'] && modalsConfig.systemUseModal.enabled) {
+    if (
+      !cookie['Gen3-first-time-use'] &&
+      modalsConfig.systemUseModal?.enabled === true
+    ) {
       if (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)
         return;
       if (dispatch) dispatch(showModal({ modal: Modals.FirstTimeModal }));

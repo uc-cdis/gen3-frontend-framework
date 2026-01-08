@@ -18,6 +18,7 @@ import {
 
 import type { Action, Reducer } from 'redux';
 import storage from './storage-persist';
+import { GEN3_COMMONS_NAME } from './server';
 
 /**
  * Update declaration of persistReducer to support redux v5
@@ -34,7 +35,7 @@ declare module 'redux-persist' {
 }
 
 const persistConfig = {
-  key: 'root',
+  key: `${GEN3_COMMONS_NAME}-root`, // stored by domain name but name added for development using localhost which will share store across multiple configurations
   version: 1,
   storage,
   whitelist: ['cohorts', 'activeWorkspace', 'cart'],

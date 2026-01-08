@@ -8,7 +8,6 @@ const meta = {
   decorators: [
     (Story) => (
       <div className="bg-primary-lighter p-4">
-        {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
         <Story />
       </div>
     ),

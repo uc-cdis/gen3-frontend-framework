@@ -25,9 +25,9 @@ export const checkRouteAccess = (
 
   const loginRequired = rule.loginRequired ?? true;
 
-  // If a session is loading and the page might require login, we must wait.
-  if (pending && loginRequired) {
-    return LinkAuthStatus.LoginRequired;
+  // If no authzResources, then login-only is enough
+  if (!loginRequired) {
+    return LinkAuthStatus.Authorized;
   }
 
   const hasAuthzResources = Array.isArray(rule.authz) && rule.authz.length > 0;
@@ -37,12 +37,17 @@ export const checkRouteAccess = (
     return LinkAuthStatus.LoginRequired;
   }
 
+  // If a session is loading and the page might require login, we must wait.
+  if (pending && loginRequired) {
+    return LinkAuthStatus.LoginRequired;
+  }
+
   // If no authzResources, then login-only is enough
   if (!hasAuthzResources) {
     return LinkAuthStatus.Authorized;
   }
 
-  // Only check authz fetch status if authz is actually required
+  // if login is pending...
   if (pending) {
     return LinkAuthStatus.Pending;
   }
