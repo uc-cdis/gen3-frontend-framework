@@ -327,7 +327,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
         <ActionIcon
           size="lg"
           onClick={gotoDataLibrary}
-          color="primary.4"
+          color="secondary.4"
           className={extractClassName('icon', mergedClassnames)}
         >
           <Icon
@@ -340,6 +340,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
       </Tooltip>
       <Tooltip label={tooltipLabel}>
         <Button
+          color="secondary.4"
           classNames={{ root: 'w-1/3 ml-2' }}
           loading={isLoading}
           disabled={isDisabled}
@@ -365,7 +366,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
         <Badge
           className="ml-2 max-w-48"
           variant="light"
-          color="primary.4"
+          color="secondary.4"
           size="xl"
           radius="md"
           fullWidth
