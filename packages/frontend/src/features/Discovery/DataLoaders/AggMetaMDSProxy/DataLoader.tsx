@@ -5,6 +5,14 @@ import {
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { processAdvancedSearchTerms } from './processAdvancedSearchTerms';
+import { JSONObject } from '@gen3/core';
+import { processAllSummaries } from '../utils';
+
+interface ProxyData {
+  displayedData: JSONObject[];
+  hits: number;
+  suggestions: string[];
+}
 
 export const useAggMetaMDSProxy = ({
   pagination,
@@ -16,7 +24,11 @@ export const useAggMetaMDSProxy = ({
   maxStudies = 10000,
   studyField = 'gen3_discovery',
 }: DiscoveryDataLoaderProps): DiscoverDataHookResponse => {
-  const [data, setData] = useState([{ displayData: [], hits: 0 }]);
+  const [data, setData] = useState<ProxyData>({
+    displayedData: [],
+    hits: 0,
+    suggestions: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || 'guid';
@@ -31,14 +43,14 @@ export const useAggMetaMDSProxy = ({
     /*       selectedFieldsForSearchIndexing: [
         'study_metadata.minimal_info.study_name',
       ],
- */ selectedTags: {},
+     */
+    selectedTags: {},
     /*       selectedTags: {
         SPARC: true,
         Dataverse: true,
-      }, */
+      },
+    */
   };
-
-  console.log('sorting', sorting);
 
   useDeepCompareEffect(() => {
     const fetchData = async () => {
@@ -73,18 +85,25 @@ export const useAggMetaMDSProxy = ({
     displayName: '',
     filters: [],
   };
-  if (data.displayedData)
-    advancedSearchFilterValues = processAdvancedSearchTerms(
-      advancedSearchFilters,
-      data.displayedData,
-      uidField,
-    );
+  if (data.displayedData) console.log('data', data);
+  advancedSearchFilterValues = processAdvancedSearchTerms(
+    advancedSearchFilters,
+    data.displayedData,
+    uidField,
+  );
+
+  let summaryStatistics = processAllSummaries(
+    data.displayedData,
+    discoveryConfig?.aggregations,
+  );
+  // update value count to reflect total number of studies
+  summaryStatistics[0].value = data.hits;
 
   return {
     data: data.displayedData,
     hits: data.hits,
-    suggestions: [],
-    summaryStatistics: [],
+    suggestions: data.suggestions,
+    summaryStatistics: summaryStatistics,
     charts: {},
     advancedSearchFilterValues: advancedSearchFilterValues,
     dataRequestStatus: {
