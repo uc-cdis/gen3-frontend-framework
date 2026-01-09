@@ -6,16 +6,20 @@ import { SearchInputProps } from './types';
 interface SearchInputWithAutoSuggestProps extends SearchInputProps {
   suggestions: string[];
   limit?: number;
+  searchBarTerm: string[];
+  setSearchBarTerm: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SearchInputWithSuggestions = ({
+  searchBarTerm,
+  setSearchBarTerm,
   searchChanged,
   placeholder,
   label,
   suggestions,
   clearSearch = () => null,
 }: SearchInputWithAutoSuggestProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <div className="relative">
@@ -26,20 +30,20 @@ const SearchInputWithSuggestions = ({
         placeholder={placeholder || 'Search...'}
         data-testid="discovery-textbox-search-bar"
         aria-label="DiscoverySearch Input"
-        value={searchTerm}
+        value={searchBarTerm.join(' ')}
         onChange={(value) => {
           searchChanged(value);
-          setSearchTerm(value);
+          setSearchBarTerm(value.split(' '));
         }}
         classNames={{
           input: 'focus:border-2 focus:border-primary text-sm',
         }}
         size="sm"
         rightSection={
-          searchTerm.length > 0 && (
+          searchBarTerm.length > 0 && (
             <CloseIcon
               onClick={() => {
-                setSearchTerm('');
+                setSearchBarTerm([]);
                 searchChanged('');
                 clearSearch();
               }}

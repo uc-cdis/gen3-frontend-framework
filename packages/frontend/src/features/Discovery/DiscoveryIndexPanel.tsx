@@ -15,6 +15,7 @@ import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -53,13 +54,14 @@ const DiscoveryIndexPanel = ({
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
   const [selections, setSelections] = useState<string[]>([]); // table selections
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
       filters: {},
     });
 
-  const searchParam = useMemo(() => {
+  const searchParam = useDeepCompareMemo(() => {
     return {
       keyword: {
         operator: SearchCombination.and,
@@ -70,7 +72,10 @@ const DiscoveryIndexPanel = ({
   }, [searchBarTerm, advancedSearchTerms]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
-
+  console.log(
+    'searchParam.advancedSearchTerms',
+    searchParam.advancedSearchTerms,
+  );
   const {
     data,
     hits,
@@ -86,29 +91,29 @@ const DiscoveryIndexPanel = ({
     },
     searchTerms: searchParam,
     discoveryConfig,
+    sorting,
   });
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
-      data.filter(
+      data?.filter(
         (member) => uidField in member && selections.includes(member[uidField]),
       );
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
-  if (dataRequestStatus.isLoading) {
+  /*   if (dataRequestStatus.isLoading) {
     return (
       <div className="flex w-full py-24 relative justify-center">
         <Loader variant="dots" />{' '}
       </div>
     );
   }
-
+ */
   if (dataRequestStatus.isError) {
     return (
       <div className="flex w-full py-24 h-100 relative justify-center">
@@ -138,6 +143,8 @@ const DiscoveryIndexPanel = ({
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
+                  searchBarTerm={searchBarTerm}
+                  setSearchBarTerm={setSearchBarTerm}
                   suggestions={suggestions}
                   clearSearch={() => {
                     setSearchBarTerm([]);
@@ -160,6 +167,7 @@ const DiscoveryIndexPanel = ({
                 </div>
               </div>
             )}
+
             <div className="flex flex-row">
               {discoveryConfig?.features?.advSearchFilters?.enabled ? (
                 <Button onClick={toggleAdvancedSearch} color="accent">
@@ -197,21 +205,28 @@ const DiscoveryIndexPanel = ({
               ) : (
                 false
               )}
-              <div
-                className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
-                ref={parentDivRef}
-              >
-                <DiscoveryTable
-                  data={data}
-                  hits={hits}
-                  dataRequestStatus={dataRequestStatus}
-                  setPagination={setPagination}
-                  setSorting={setSorting}
-                  setSelection={setSelections}
-                  pagination={pagination}
-                  sorting={sorting}
-                />
-              </div>
+
+              {dataRequestStatus.isLoading ? (
+                <div className="flex w-full py-24 relative justify-center">
+                  <Loader variant="dots" />{' '}
+                </div>
+              ) : (
+                <div
+                  className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+                  ref={parentDivRef}
+                >
+                  <DiscoveryTable
+                    data={data}
+                    hits={hits}
+                    dataRequestStatus={dataRequestStatus}
+                    setPagination={setPagination}
+                    setSorting={setSorting}
+                    setSelection={setSelections}
+                    pagination={pagination}
+                    sorting={sorting}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </StudyProvider>
