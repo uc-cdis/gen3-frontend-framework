@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { NameAndIcon } from '../types';
-import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { NextRouter, useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
 import { SessionContext } from '../../../lib/session/session';
@@ -54,7 +53,18 @@ export const LoginButton = ({
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-  const authenticated = isAuthenticated(userStatus);
+
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (userStatus === 'pending') {
+      return
+    }
+    const tempIsAuth = isAuthenticated(userStatus);
+    if (tempIsAuth != authenticated) {
+      setAuthenticated(tempIsAuth);
+    }
+  }, [userStatus]);
 
   if (visibility === LoginButtonVisibility.LogoutOnly && !authenticated)
     return null;
