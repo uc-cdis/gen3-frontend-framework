@@ -17,6 +17,7 @@ import {
 import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
+import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -139,7 +140,7 @@ const DownloadsPanel = ({
   }, [dropdowns, loginRequired, isUserLoggedIn]);
 
   return dropdowns || buttons ? (
-    <div className="flex space-x-1">
+    <div className="flex space-x-2 items-center">
       {Object.values(dropdownsToRender).map(
         (dropdown: DropdownsWithButtonsProps) => {
           return createDownloadMenuButton(dropdown, {
@@ -170,28 +171,52 @@ const DownloadsPanel = ({
         if (loginRequired && !isUserLoggedIn) {
           disabled = true;
         }
-
-        return (
-          <CohortActionButton
-            activeText={'Downloading...'}
-            inactiveText={button.title}
-            tooltipText={button.tooltipText}
-            disabled={disabled || !button.enabled}
-            actionFunction={actionFunction}
-            actionArgs={{
-              ...actionArgs,
-              ...(button.actionArgs ?? ({} as Record<string, any>)),
-              type: index,
-              totalCount,
-              fields,
-              filter,
-              indexPrefix: indexPrefix,
-              accessibility: accessibility ?? Accessibility.ALL,
-              // sort: sort, // TODO add sort
-            }}
-            key={button.title}
-          />
-        );
+        if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
+          // TODO: remove this special case
+          return (
+            <CohortDataLibraryListButton
+              activeText=""
+              inactiveText={button.title}
+              tooltipText={button.tooltipText}
+              disabled={disabled || !button.enabled}
+              actionFunction={actionFunction}
+              actionArgs={{
+                ...actionArgs,
+                ...(button.actionArgs ?? ({} as Record<string, any>)),
+                type: index,
+                totalCount,
+                fields,
+                filter,
+                indexPrefix: indexPrefix,
+                accessibility: accessibility ?? Accessibility.ALL,
+                // sort: sort, // TODO add sort
+              }}
+              key={button.title}
+            />
+          );
+        } else {
+          return (
+            <CohortActionButton
+              activeText={'Downloading...'}
+              inactiveText={button.title}
+              tooltipText={button.tooltipText}
+              disabled={disabled || !button.enabled}
+              actionFunction={actionFunction}
+              actionArgs={{
+                ...actionArgs,
+                ...(button.actionArgs ?? ({} as Record<string, any>)),
+                type: index,
+                totalCount,
+                fields,
+                filter,
+                indexPrefix: indexPrefix,
+                accessibility: accessibility ?? Accessibility.ALL,
+                // sort: sort, // TODO add sort
+              }}
+              key={button.title}
+            />
+          );
+        }
       })}
     </div>
   ) : (

@@ -2,6 +2,7 @@ import { sendExistingPFBToURL } from './exportActions';
 import { exportToManifest } from './actions/exportToManifest';
 import { DataActionFunction } from './types';
 import { exportMetadataToWorkspace } from './actions/exportDatasetsToWorkspace/exportMetadataToWorkspace';
+import { exportDataListToWorkspace } from './actions/exportDatasetsToWorkspace/exportDataListsToWorkspace';
 
 // create a factory for the action creators
 
@@ -49,6 +50,12 @@ export const registerDefaultDataLibraryActions = () => {
   });
   registerAction('export-from-discovery-to-workspace', {
     action: exportMetadataToWorkspace,
+  });
+  registerAction('export-from-files-to-workspace', {
+    action: exportMetadataToWorkspace,
+  });
+  registerAction('export-datalist-to-workspace', {
+    action: exportDataListToWorkspace,
   });
 };
 

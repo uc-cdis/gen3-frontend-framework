@@ -258,7 +258,7 @@ export interface GuppyAggregationsResponse {
  * @interface ManifestItem
  */
 export interface ManifestItem {
-  [k: string]: string | number | undefined;
+  [k: string]: string | number | boolean | string[] | undefined;
   object_id: string;
   file_size?: number;
   file_name?: string;

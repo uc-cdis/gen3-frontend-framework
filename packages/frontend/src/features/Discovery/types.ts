@@ -123,19 +123,24 @@ interface DiscoveryPageTitle {
   text: string;
 }
 
-export interface ExportFromDiscoveryActionButton {
-  type:
-    | 'manifest'
-    | 'zip'
-    | 'download'
-    | 'link'
-    | 'externalLink'
-    | 'addToDataLibrary';
+export interface ActionButtonConfig {
   label?: string; // label for the action button
-  icon?: string;
+  icon?: string; // optional icon for the action button
   requiresLogin?: boolean; // set to true if the action requires login
   tooltip?: string; // tooltip text
   disabled?: boolean;
+}
+
+export type ActionButtonType =
+  | 'manifest'
+  | 'zip'
+  | 'download'
+  | 'link'
+  | 'externalLink'
+  | 'addToDataLibrary';
+
+export interface ExportSelectionActionButton extends ActionButtonConfig {
+  type: ActionButtonType;
 }
 
 export interface SearchBar {
@@ -156,7 +161,7 @@ export interface SearchConfig {
 }
 
 export interface ExportFromDiscoveryActions {
-  buttons: ExportFromDiscoveryActionButton[];
+  buttons: ExportSelectionActionButton[];
   enabled?: boolean;
   verifyExternalLogins?: boolean;
   dataLibraryStoreMode?: DataLibraryStoreMode;

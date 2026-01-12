@@ -1,9 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import AddToDataLibrary from './AddToDataLibrary';
+import { DataLibraryStoreMode } from '@gen3/core';
+import React from 'react';
 
 const meta = {
   component: AddToDataLibrary,
+  decorators: [
+    (Story) => (
+      <div className="bg-base-lighter p-4 h-96">
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     deepControls: { enabled: true },
   },
@@ -18,7 +27,6 @@ export const Default: Story = {
     buttonConfig: {
       label: 'Add to List',
       tooltip: 'Add selections to list',
-      type: 'addToDataLibrary',
     },
     selectedResources: [
       {
@@ -56,5 +64,6 @@ export const Default: Story = {
       datasetIdField: 'dataset_id',
       dataObjectIdField: 'object_id',
     },
+    dataLibraryStoreMode: DataLibraryStoreMode.LocalOnly,
   },
 };

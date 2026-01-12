@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import useGuppyActionButton from './downloadActionHook';
-import { Button, Tooltip } from '@mantine/core';
-import { FiDownload } from 'react-icons/fi';
 import { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
+import ActionButton from './ActionButton';
 
 const CohortActionButton = ({
   activeText,
@@ -31,25 +30,19 @@ const CohortActionButton = ({
     actionArgs,
   });
 
-  const ref = useRef(null);
   return (
-    <Tooltip disabled={!tooltipText} label={tooltipText}>
-      <Button
-        ref={ref}
-        leftSection={showIcon && inactiveText && <FiDownload />}
-        disabled={disabled}
-        className={
-          customStyle ||
-          `text-base-lightest ${
-            disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
-          } `
-        }
-        loading={showLoading && active}
-        onClick={handleClick}
-      >
-        {active ? activeText : inactiveText || icon}
-      </Button>
-    </Tooltip>
+    <ActionButton
+      activeText={activeText}
+      inactiveText={inactiveText}
+      active={active}
+      icon={icon}
+      handleClick={handleClick}
+      customStyle={customStyle}
+      showLoading={showLoading}
+      showIcon={showIcon}
+      disabled={disabled}
+      tooltipText={tooltipText}
+    />
   );
 };
 

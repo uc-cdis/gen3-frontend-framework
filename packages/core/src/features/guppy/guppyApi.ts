@@ -86,6 +86,7 @@ export const guppyApi = createApi({
           error: {
             message: e.message,
             locations: e.locations,
+            path: e.path,
           },
         };
       }
