@@ -52,7 +52,7 @@ const DiscoveryIndexPanel = ({
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
+  const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
@@ -65,11 +65,11 @@ const DiscoveryIndexPanel = ({
     return {
       keyword: {
         operator: SearchCombination.and,
-        keywords: searchBarTerm,
+        keywords: searchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
     };
-  }, [searchBarTerm, advancedSearchTerms]);
+  }, [searchBarTerms, advancedSearchTerms]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
