@@ -82,7 +82,6 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",
     "binguru": "^1.0.0-alpha.18.0",
-    "colorette": "^2.0.20",
     "cookies-next": "^6.1.0",
     "default-composer": "^0.6.0",
     "echarts": "^6.0.0",

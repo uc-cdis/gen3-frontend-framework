@@ -26,6 +26,7 @@ import {
 } from '@gen3/core';
 
 import { Center, Loader } from '@mantine/core';
+import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
@@ -267,6 +268,20 @@ export const SessionProvider = ({
         router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
       });
   }, [getUserDetails, router]);
+
+  /**
+   * Checkes if user session has ended
+  */
+  const isSessionActive = useThrottledCallback(() => {
+    //Check session token, this call updates info 
+    getUserDetails().then((obj)=>{
+      //check to make sure logged out useres are logged out
+      if (obj?.data?.loginStatus != 'authenticated' && userStatus === 'authenticated') {
+        coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+      }
+    });
+  }, 5000); // set the time between api calls
+
   /**
    * Update session value every updateSessionInterval seconds
    */
@@ -285,6 +300,8 @@ export const SessionProvider = ({
           timestamp,
         });
       }
+      // check session token to keep this in sync
+      isSessionActive();
     };
 
     window.addEventListener('mousedown', updateUserActivity);
