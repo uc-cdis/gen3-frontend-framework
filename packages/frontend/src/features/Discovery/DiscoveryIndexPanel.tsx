@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Loader, Text } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -72,10 +72,6 @@ const DiscoveryIndexPanel = ({
   }, [searchBarTerm, advancedSearchTerms]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
-  console.log(
-    'searchParam.advancedSearchTerms',
-    searchParam.advancedSearchTerms,
-  );
   const {
     data,
     hits,
@@ -105,22 +101,6 @@ const DiscoveryIndexPanel = ({
 
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
-
-  /*   if (dataRequestStatus.isLoading) {
-    return (
-      <div className="flex w-full py-24 relative justify-center">
-        <Loader variant="dots" />{' '}
-      </div>
-    );
-  }
- */
-  if (dataRequestStatus.isError) {
-    return (
-      <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
@@ -205,28 +185,21 @@ const DiscoveryIndexPanel = ({
               ) : (
                 false
               )}
-
-              {dataRequestStatus.isLoading ? (
-                <div className="flex w-full py-24 relative justify-center">
-                  <Loader variant="dots" />{' '}
-                </div>
-              ) : (
-                <div
-                  className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
-                  ref={parentDivRef}
-                >
-                  <DiscoveryTable
-                    data={data}
-                    hits={hits}
-                    dataRequestStatus={dataRequestStatus}
-                    setPagination={setPagination}
-                    setSorting={setSorting}
-                    setSelection={setSelections}
-                    pagination={pagination}
-                    sorting={sorting}
-                  />
-                </div>
-              )}
+              <div
+                className="flex w-full grow-0 bg-base-max border-1 border-base-lighter p-4 rounded-md"
+                ref={parentDivRef}
+              >
+                <DiscoveryTable
+                  data={data}
+                  hits={hits}
+                  dataRequestStatus={dataRequestStatus}
+                  setPagination={setPagination}
+                  setSorting={setSorting}
+                  setSelection={setSelections}
+                  pagination={pagination}
+                  sorting={sorting}
+                />
+              </div>
             </div>
           </div>
         </StudyProvider>

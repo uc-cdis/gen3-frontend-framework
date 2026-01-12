@@ -9,9 +9,8 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-
+import { Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-
 import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
@@ -225,6 +224,20 @@ const DiscoveryTable = ({
     setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 
+  if (dataRequestStatus.isLoading) {
+    return (
+      <div className="flex w-full py-24 relative justify-center">
+        <Loader variant="dots" />
+      </div>
+    );
+  }
+  if (dataRequestStatus.isError) {
+    return (
+      <div className="flex w-full py-24 h-100 relative justify-center">
+        <Text size={'xl'}>Error loading discovery data</Text>
+      </div>
+    );
+  }
   return (
     <React.Fragment>
       <StudyDetails
