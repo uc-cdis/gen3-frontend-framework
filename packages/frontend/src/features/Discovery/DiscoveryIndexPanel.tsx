@@ -123,13 +123,13 @@ const DiscoveryIndexPanel = ({
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
-                  searchBarTerm={searchBarTerm}
-                  setSearchBarTerm={setSearchBarTerm}
+                  searchBarTerms={searchBarTerms}
+                  setSearchBarTerms={setSearchBarTerms}
                   suggestions={suggestions}
                   clearSearch={() => {
-                    setSearchBarTerm([]);
+                    setSearchBarTerms([]);
                   }}
-                  searchChanged={(v) => setSearchBarTerm(v.split(' '))}
+                  searchChanged={(v) => setSearchBarTerms(v.split(' '))}
                   placeholder={
                     discoveryConfig?.features?.search?.searchBar?.placeholder ??
                     'Search...'
