@@ -1,6 +1,6 @@
 import addAuthMetaData from './preProcessData/addAuthMetaData';
 import combineData from './preProcessData/combineData';
-import filterByAdvSearch from './processData/filterByAdvSearch';
+import { filterByAdvSearch } from './processData/filterByAdvSearch';
 import filterByTags from './processData/filterByTags';
 import paginateData from './processData/paginateData';
 import searchData from './processData/searchData';
@@ -31,20 +31,20 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
     discoveryConfig,
-  ); // Step 1: Search
+  ); // First: Search
   processedData = filterByAdvSearch(
     processedData,
     searchTerms.advancedSearchTerms,
     discoveryConfig,
-  ); //Step 2 Adv Search Filtering (user selected filters)
-  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Step 3: Tags
-  processedData = sortData(processedData, sorting); // Step 4: Sort (example key)
+  ); // Then Adv Search Filtering (user selected filters)
+  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Next: Tags
+  processedData = sortData(processedData, sorting); // Then: Sort (example key)
 
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
-  ); // Step 5: Pagination
+  ); // Finally: Pagination
   return {
     hits: processedData.length,
     displayedData: paginatedData,
@@ -57,7 +57,6 @@ export default async function handler(req: any, res: any) {
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
     const processedData = processData(cachedData, req.body);
-    console.log('used cachedData');
     res.status(200).json(processedData);
   } else {
     try {
@@ -83,7 +82,6 @@ export default async function handler(req: any, res: any) {
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
-      console.log('used new Data');
       const processedData = processData(combinedData, req.body);
       res.status(200).json(processedData);
     } catch (error) {
