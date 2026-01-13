@@ -92,7 +92,7 @@ export const useAggMetaMDSProxy = ({
     uidField,
   );
 
-  let summaryStatistics = processAllSummaries(
+  const summaryStatistics = processAllSummaries(
     data.displayedData,
     discoveryConfig?.aggregations,
   );
