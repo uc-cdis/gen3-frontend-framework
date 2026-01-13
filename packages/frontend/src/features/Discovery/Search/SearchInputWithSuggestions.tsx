@@ -19,8 +19,6 @@ const SearchInputWithSuggestions = ({
   suggestions,
   clearSearch = () => null,
 }: SearchInputWithAutoSuggestProps) => {
-  // const [searchTerm, setSearchTerm] = useState('');
-
   return (
     <div className="relative">
       <Autocomplete

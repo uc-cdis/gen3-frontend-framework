@@ -57,9 +57,8 @@ const processMDSAggregateData = (metadataResponse: JSONObject[]) => {
         Object({ category: 'Commons', name: commonsName }),
       );
 
-      // If the discoveryConfig has a tag with the same name as one of the fields on an entry,
-      // add the value of that field as a tag.
-
+      // If the discoveryConfig has a tag with the same name as one of the fields
+      // on an entry, add the value of that field as a tag.
       discoveryConfig?.tagCategories.forEach((tag) => {
         if (tag.name in entryUnpacked) {
           if (typeof entryUnpacked[tag.name] === 'string') {

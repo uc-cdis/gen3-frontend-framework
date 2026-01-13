@@ -147,7 +147,6 @@ const DiscoveryIndexPanel = ({
                 </div>
               </div>
             )}
-
             <div className="flex flex-row">
               {discoveryConfig?.features?.advSearchFilters?.enabled ? (
                 <Button onClick={toggleAdvancedSearch} color="accent">
