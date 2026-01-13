@@ -4,9 +4,9 @@ import {
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { processAdvancedSearchTerms } from './processAdvancedSearchTerms';
+
 import { JSONObject } from '@gen3/core';
-import { processAllSummaries } from '../utils';
+import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
 interface ProxyData {
   displayedData: JSONObject[];
@@ -40,12 +40,16 @@ export const useAggMetaMDSProxy = ({
     searchTerms: searchTerms,
     sorting: sorting,
     selectedFieldsForSearchIndexing: [],
-    /*       selectedFieldsForSearchIndexing: [
+    /*
+    TODO: Example param
+    selectedFieldsForSearchIndexing: [
         'study_metadata.minimal_info.study_name',
       ],
      */
     selectedTags: {},
-    /*       selectedTags: {
+    /*
+    TODO: Example param
+    selectedTags: {
         SPARC: true,
         Dataverse: true,
       },
@@ -85,7 +89,6 @@ export const useAggMetaMDSProxy = ({
     displayName: '',
     filters: [],
   };
-  if (data.displayedData) console.log('data', data);
   advancedSearchFilterValues = processAdvancedSearchTerms(
     advancedSearchFilters,
     data.displayedData,
