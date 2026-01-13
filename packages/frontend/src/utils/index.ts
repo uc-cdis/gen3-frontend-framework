@@ -1,4 +1,3 @@
-import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
 import { type TenStringArray } from './types';
 import { getCurrentUnixTimestamp, unixTimeToString } from './time';
 import { convertPathsToTree } from './convertResourcePathsToTree';
@@ -16,8 +15,6 @@ export * from './validators';
 
 export {
   type TenStringArray,
-  create10ColorPallet,
-  create10ColorAccessibleContrast,
   getCurrentUnixTimestamp,
   unixTimeToString,
   convertPathsToTree,
