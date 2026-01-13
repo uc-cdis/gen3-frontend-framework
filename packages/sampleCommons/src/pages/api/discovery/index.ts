@@ -1,11 +1,12 @@
-import addAuthMetaData from './preProcessData/addAuthMetaData';
-import combineData from './preProcessData/combineData';
-import { filterByAdvSearch } from './processData/filterByAdvSearch';
-import filterByTags from './processData/filterByTags';
-import paginateData from './processData/paginateData';
-import searchData from './processData/searchData';
-import sortData from './processData/sortData';
 import { JSONObject } from '@gen3/core';
+import filterByTags from '@/utils/api/discovery/processData/filterByTags';
+import paginateData from '@/utils/api/discovery/processData/paginateData';
+import searchData from '@/utils/api/discovery/processData/searchData';
+import sortData from '@/utils/api/discovery/processData/sortData';
+import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
+import combineData from '@/utils/api/discovery/preProcessData/combineData';
+// TODO:
+// import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
@@ -26,25 +27,29 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     discoveryConfig,
   } = reqBody;
   let processedData: Array<JSONObject> = data;
+  // First: Search
   processedData = searchData(
     data,
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
     discoveryConfig,
-  ); // First: Search
+  );
+  // Then Adv Search Filtering (user selected filters)
   processedData = filterByAdvSearch(
     processedData,
     searchTerms.advancedSearchTerms,
     discoveryConfig,
-  ); // Then Adv Search Filtering (user selected filters)
-  processedData = filterByTags(processedData, selectedTags, discoveryConfig); // Next: Tags
-  processedData = sortData(processedData, sorting); // Then: Sort (example key)
-
+  );
+  // Next: Filter by Tags
+  processedData = filterByTags(processedData, selectedTags, discoveryConfig);
+  // Then: Sort columns
+  processedData = sortData(processedData, sorting);
+  // Finally: Pagination
   const paginatedData = paginateData(
     processedData,
     pagination.pageSize,
     pagination.offset,
-  ); // Finally: Pagination
+  );
   return {
     hits: processedData.length,
     displayedData: paginatedData,
@@ -65,7 +70,6 @@ export default async function handler(req: any, res: any) {
         fetch(mdsAggregateApi),
         fetch(mdsMetadataApi),
       ]);
-
       // Check if both responses are OK
       if (!mdsAggregateResponse.ok || !mdsMetadataResponse.ok) {
         throw new Error(
@@ -74,7 +78,6 @@ export default async function handler(req: any, res: any) {
         mdsMetadataResponse ${mdsMetadataResponse}`,
         );
       }
-
       // Parse the JSON data from both responses
       const mdsAggregateData = await mdsAggregateResponse.json();
       const mdsMetadataData = await mdsMetadataResponse.json();

@@ -1,6 +1,6 @@
 // Metadata Placeholder
 
-import { JSONObject } from '@gen3/core/dist';
+import { JSONObject } from '@gen3/core';
 
 /** Start of Placeholder Variables, should be updated with values from Config and update with working functions */
 

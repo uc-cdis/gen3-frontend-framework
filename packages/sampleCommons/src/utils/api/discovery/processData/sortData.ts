@@ -1,4 +1,4 @@
-import { JSONObject } from '@gen3/core/dist';
+import { JSONObject } from '@gen3/core';
 import _ from 'lodash';
 
 const sortData = (

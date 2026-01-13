@@ -4,13 +4,11 @@ import {
   type ExportDatasetFields,
   type MetadataPaginationParams,
 } from '@gen3/core';
-import {
-  accessibleFieldName,
-  AccessLevel,
-  CollapsableChartsPanelConfiguration,
-  DataAuthorization,
-  Gen3AppConfigData,
-} from '@gen3/frontend/dist';
+import { AccessLevel, DataAuthorization } from '@gen3/frontend/utils';
+import { JSONValue, JSONObject } from '@gen3/core';
+import { accessibleFieldName } from '@gen3/frontend/utils';
+import { CollapsableChartsPanelConfiguration } from '@gen3/frontend/components/charts/types';
+import { Gen3AppConfigData } from '@gen3/frontend/lib/content/types';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -124,7 +122,6 @@ interface DiscoveryPageTitle {
   enabled: boolean;
   text: string;
 }
-import { JSONValue, JSONObject } from '@gen3/core';
 
 export interface StudyDetailsField {
   name: string;
@@ -239,8 +236,10 @@ export interface TagsConfig {
   showUnknownTags?: boolean;
 }
 
-export interface StudyResource
-  extends Record<string, JSONValue | AccessLevel | TagInfo[] | undefined> {
+export interface StudyResource extends Record<
+  string,
+  JSONValue | AccessLevel | TagInfo[] | undefined
+> {
   [accessibleFieldName]?: AccessLevel;
   tags?: Array<TagInfo>;
 }
