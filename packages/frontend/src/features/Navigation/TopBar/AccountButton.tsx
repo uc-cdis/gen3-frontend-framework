@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
 import { useRouter } from 'next/router';
@@ -46,7 +46,18 @@ export const AccountButton = ({
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-  const authenticated = isAuthenticated(userStatus);
+  
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (userStatus === 'pending') {
+      return
+    }
+    const tempIsAuth = isAuthenticated(userStatus);
+    if (tempIsAuth != authenticated) {
+      setAuthenticated(tempIsAuth);
+    }
+  }, [userStatus]);
 
   if (!authenticated) return null;
 

@@ -106,6 +106,41 @@ const NavigationBar = ({
     setCurrent(router.asPath);
   }, [router.asPath]);
 
+  const itemsToRenderSetup = () => {
+    return items.map((x, index) => {
+      const linkAuthStatus = checkRouteAccess(
+        x.href,
+        resources?.resources ?? [],
+        routesConfig,
+        loggedIn,
+        pending || isAuthzResourcesFetching,
+      );
+      if (
+        hideUnauthorizedLinks &&
+        linkAuthStatus !== LinkAuthStatus.Authorized
+      ) {
+        return null;
+      }
+      return (
+        <NavigationBarItem
+          key={`${x.name}-${index}`}
+          item={x}
+          index={index}
+          current={current}
+          mergedClassnames={mergedClassnames}
+          authStatus={linkAuthStatus}
+        />
+      );
+    });
+  }
+
+  const [itemsToRender, setItemsToRender] = useState(itemsToRenderSetup);
+  useEffect(() => {
+    if (!isAuthzResourcesFetching) {
+      setItemsToRender(itemsToRenderSetup());
+    }
+  }, [isAuthzResourcesFetching]);
+
   return (
     <div
       role="navigation"
@@ -122,31 +157,7 @@ const NavigationBar = ({
           mergedClassnames,
         )}`}
       >
-        {items.map((x, index) => {
-          const linkAuthStatus = checkRouteAccess(
-            x.href,
-            resources?.resources ?? [],
-            routesConfig,
-            loggedIn,
-            pending || isAuthzResourcesFetching,
-          );
-          if (
-            hideUnauthorizedLinks &&
-            linkAuthStatus !== LinkAuthStatus.Authorized
-          ) {
-            return null;
-          }
-          return (
-            <NavigationBarItem
-              key={`${x.name}-${index}`}
-              item={x}
-              index={index}
-              current={current}
-              mergedClassnames={mergedClassnames}
-              authStatus={linkAuthStatus}
-            />
-          );
-        })}
+        {itemsToRender}
       </div>
     </div>
   );
