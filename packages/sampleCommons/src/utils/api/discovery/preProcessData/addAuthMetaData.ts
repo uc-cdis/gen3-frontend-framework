@@ -1,8 +1,10 @@
+// TODO
+// Commented out code from /data-portal/src/Discovery/index.tsx
+/*
 // Metadata Placeholder
-
 import { JSONObject } from '@gen3/core';
 
-/** Start of Placeholder Variables, should be updated with values from Config and update with working functions */
+// Start of Placeholder Variables, should be updated with values from Config and update with working functions
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const isEnabled = (str: string) => true;
@@ -49,7 +51,7 @@ const config = {
     },
   },
 };
-/** End of Placeholder Variables, this should be updated with values from Config and update with working functions */
+// End of Placeholder Variables, this should be updated with values from Config and update with working functions
 
 enum AccessLevel {
   ACCESSIBLE = 1,
@@ -68,11 +70,11 @@ const AddAuthMetaData = (data: Array<JSONObject>) => {
     const { supportedValues } = config.features.authorization;
 
     // useArboristUI=true is required for userHasMethodForServiceOnResource
-    /* if (!useArboristUI) {
-      throw new Error(
-        'Arborist UI must be enabled for the Discovery page to work if authorization is enabled in the Discovery page. Set `useArboristUI: true` in the portal config.',
-      );
-    }*/
+    // if (!useArboristUI) {
+    //  throw new Error(
+    //    'Arborist UI must be enabled for the Discovery page to work if authorization is enabled in the Discovery page. Set `useArboristUI: true` in the portal config.',
+    //  );
+    //}
     const studiesWithAccessibleField = data.map((study) => {
       // Added default declaration Nov 2025 for TS issue
       let accessible: AccessLevel = AccessLevel.UNACCESSIBLE;
@@ -160,3 +162,4 @@ const AddAuthMetaData = (data: Array<JSONObject>) => {
 };
 
 export default AddAuthMetaData;
+*/
