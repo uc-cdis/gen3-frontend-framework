@@ -99,7 +99,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     setIsRunning(false);
     notifications.show({
       id: 'data-library-selection-action-done',
-      position: 'bottom-center',
+      position: 'top-center',
       withCloseButton: true,
       autoClose: 5000,
       title: 'Submission Complete',

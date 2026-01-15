@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActionIcon, Button, Group, Tooltip } from '@mantine/core';
-import { MdAdd as PlusIcon, MdSearch as SearchIcon } from 'react-icons/md';
+import { MdAdd as PlusIcon } from 'react-icons/md';
 import { DatasetOrCohort, StorageOperationResults } from '@gen3/core';
 import { Icon } from '@iconify-icon/react';
 import { useDataLibrarySelection } from './selection/SelectionContext';
