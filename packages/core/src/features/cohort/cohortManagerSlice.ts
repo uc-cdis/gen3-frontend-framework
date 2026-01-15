@@ -1,6 +1,15 @@
-import { createEntityAdapter, createSlice, type EntityState, type PayloadAction, } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSlice,
+  type EntityState,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 import { type CoreState } from '../../reducers';
-import { type FilterSet, type IndexedFilterSet, type Operation, } from '../filters';
+import {
+  type FilterSet,
+  type IndexedFilterSet,
+  type Operation,
+} from '../filters';
 import { defaultCohortNameGenerator, generateUniqueName } from './utils';
 import { type Cohort, type CohortId } from './types';
 import { customAlphabet } from 'nanoid';
@@ -111,7 +120,7 @@ interface UpdateCohortNameParams {
  * Redux slice for cohort filters
  */
 
-export const cohortManagerSlice = createSlice({
+const cohortManagerSlice = createSlice({
   name: 'cohort',
   initialState: initialState,
   reducers: {

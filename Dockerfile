@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM node:22-slim AS builder
+FROM node:24-slim AS builder
 WORKDIR /gen3
 
 WORKDIR /gen3
@@ -12,7 +12,7 @@ COPY package.json package-lock.json lerna.json ./
 COPY packages ./packages
 
 # Install lerna globally and dependencies (using CI-friendly, deterministic install)
-RUN npm install --location=global lerna@^8.1.8 \
+RUN npm install --location=global lerna@^9.0.3 \
     && npm ci --include=optional
 
 # Build monorepo (including sampleCommons)
@@ -24,7 +24,7 @@ COPY start.sh ./start.sh
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:22-alpine3.20 AS runner
+FROM node:24-alpine3.20 AS runner
 
 WORKDIR /gen3
 
