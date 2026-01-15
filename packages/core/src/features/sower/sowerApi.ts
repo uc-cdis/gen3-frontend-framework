@@ -1,20 +1,31 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JSONObject } from '../../types';
-import { JobStatus } from './types';
+import { DispatchJobParams, DispatchJobResponse, JobStatus } from './types';
 
-export interface DispatchJobParams {
-  action: string;
-  input: JSONObject;
-}
-
-export interface DispatchJobResponse {
-  uid: string;
-  name: string;
-  status: string;
-}
+const processResults = (results: any[], ids: string[]) => {
+  // Extract Function: Processes the results and handles any errors
+  return results.reduce(
+    (acc, { error, data }, index) => {
+      // Destructuring
+      if (error) {
+        acc.errors[ids[index]] = error;
+      } else {
+        acc.data[ids[index]] = data;
+      }
+      return acc;
+    },
+    { data: {}, errors: {} }, // Renaming: combinedResults
+  );
+};
 
 type JobListResponse = Array<JobStatus>;
+type JobsListResponse = Record<string, DispatchJobResponse>;
+
+const TAGS = 'sower';
+
+export const sowerTags = gen3Api.enhanceEndpoints({
+  addTagTypes: [TAGS],
+});
 
 /**
  * Creates a loadingStatusApi for checking the status of a sower data download job
@@ -23,23 +34,47 @@ type JobListResponse = Array<JobStatus>;
  * @param getDownloadStatus Shows the status of a selected job
  * @returns: A sower job response dict which returns job information of file downloads
  */
-export const loadingStatusApi = gen3Api.injectEndpoints({
+export const sowerApi = sowerTags.injectEndpoints({
   endpoints: (builder) => ({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
     }),
+
     submitSowerJob: builder.mutation<DispatchJobResponse, DispatchJobParams>({
       query: (params) => ({
         url: `${GEN3_SOWER_API}/dispatch`,
         method: 'POST',
         body: params,
+        validateStatus: (response) => {
+          if ('originalStatus' in response)
+            return response.status === 200 && response.originalStatus === 200;
+          return response.status === 200;
+        },
       }),
+      transformErrorResponse(response) {
+        if ('originalStatus' in response)
+          return { error: response.originalStatus };
+        return { error: response };
+      },
+      invalidatesTags: [TAGS],
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
-    getSowerOutput: builder.query<DispatchJobResponse, string>({
+    getSowerJobsStatus: builder.query<JobsListResponse, string[]>({
+      async queryFn(ids, _queryApi, _extraOptions, fetchWithBQ) {
+        const results = await Promise.all(
+          ids.map((id) => fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${id}`)),
+        );
+        const combinedResults = processResults(results, ids); // Renamed variable
+        return { data: combinedResults };
+      },
+    }),
+    getSowerOutput: builder.query<string, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
+      transformResponse: (response: { output: string }) => {
+        return response['output'];
+      },
     }),
     getSowerServiceStatus: builder.query<JSON, void>({
       query: () => `${GEN3_SOWER_API}/_status`,
@@ -52,6 +87,9 @@ export const {
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
   useGetSowerJobStatusQuery,
+  useLazyGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
+  useLazyGetSowerOutputQuery,
+  useGetSowerJobsStatusQuery,
   useGetSowerServiceStatusQuery,
-} = loadingStatusApi;
+} = sowerApi;
