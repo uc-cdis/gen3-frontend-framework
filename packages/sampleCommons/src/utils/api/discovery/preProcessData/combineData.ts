@@ -1,3 +1,7 @@
+// Adapted from:
+// data-portal/src/Discovery/Utils/MDSUtils/MDSUtils.jsx
+// data-portal/src/Discovery/Utils/aggMDSUtils/aggMDSUtils.jsx
+
 import _ from 'lodash';
 import { JSONObject } from '@gen3/core';
 
