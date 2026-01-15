@@ -207,7 +207,7 @@ const updateAutoSave = (cohortId: string, state: CohortManagerState) => {
   }
 };
 
-export const cohortManagerSlice = createSlice({
+const cohortManagerSlice = createSlice({
   name: 'CohortDiscovery/CohortManager',
   initialState,
   reducers: {
