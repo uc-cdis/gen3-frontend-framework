@@ -1,3 +1,7 @@
+// Adapted from:
+// gen3-frontend-framework/packages/frontend/src/features/Discovery/Statistics/types.ts
+// gen3-frontend-framework/packages/frontend/src/features/Discovery/types.ts
+
 import {
   type AggregationsData,
   DataLibraryStoreMode,
