@@ -75,7 +75,6 @@ export const sowerJobsListSlice = createSlice({
       return initialState;
     },
     refreshSowerJobs: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     initSowerPolling: (
       state: Draft<SowerJobsListState>,
       _action: PayloadAction<void>,
