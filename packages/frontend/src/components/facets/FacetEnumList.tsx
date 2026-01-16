@@ -16,7 +16,12 @@ import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
 import { EnumFacetDataHooks, FacetSortType, SortType } from './types';
-import { compareKeysAscending, compareKeysDescending, mapFacetSortToSortType, updateFacetEnum, } from './utils';
+import {
+  compareKeysAscending,
+  compareKeysDescending,
+  mapFacetSortToSortType,
+  updateFacetEnum,
+} from './utils';
 import { useDeepCompareCallback, useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify-icon/react';
 
@@ -204,19 +209,17 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
           )
         : [];
 
-      const remainingValues =
-        tempFilteredData.length +
-        selectedEnumNotInData.length -
-        maxValuesToDisplay;
-      const cardStyle = calcCardStyle(remainingValues);
-      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
-        tempFilteredData.length + selectedEnumNotInData.length,
-      );
-
       const allData = [...tempFilteredData, ...selectedEnumNotInData];
       // remove any enum in excludeValues
       const filteredData = allData.filter(
         (x) => !excludeValues?.includes(x[0].toString()),
+      );
+
+      const remainingValues =
+        filteredData.length + selectedEnumNotInData.length - maxValuesToDisplay;
+      const cardStyle = calcCardStyle(remainingValues);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
+        tempFilteredData.length + selectedEnumNotInData.length,
       );
 
       setFacetChartData((prevFacetChartData) => ({
