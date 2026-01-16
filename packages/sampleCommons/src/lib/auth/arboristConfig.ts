@@ -19,7 +19,7 @@ export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
       e,
     );
     throw Error(
-      '`Failed to load ../../../config/${GEN3_COMMONS_NAME}/authz2.json',
+      '`Failed to load ../../../config/${GEN3_COMMONS_NAME}/authz.json',
     );
   }
 }
