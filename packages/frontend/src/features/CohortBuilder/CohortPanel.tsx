@@ -97,7 +97,7 @@ interface CohortPanelConfigurationWithAccessLevel extends CohortPanelConfigurati
  *                                                summary charts, cohort manager, and data display components.
  */
 export const CohortPanel = ({
-  guppyConfig,
+  dataConfig,
   filters,
   charts = {},
   chartsSection = undefined,
@@ -128,8 +128,8 @@ export const CohortPanel = ({
     return 3;
   }, [isSm, isMd, isXl]);
 
-  const index = guppyConfig.dataType;
-  const indexPrefix = guppyConfig?.indexPrefix ?? '';
+  const index = dataConfig.dataType;
+  const indexPrefix = dataConfig?.indexPrefix ?? '';
   const fields = useMemo(
     () => getAllFieldsFromFilterConfigs(filters?.tabs ?? []),
     [filters?.tabs],
@@ -340,7 +340,7 @@ export const CohortPanel = ({
       const facetDefs = classifyFacets(
         data,
         index,
-        guppyConfig?.fieldMapping ?? [],
+        dataConfig?.fieldMapping ?? [],
         configFacetDefs ?? {},
         sharedFiltersMap,
       );
@@ -375,7 +375,7 @@ export const CohortPanel = ({
     data,
     facetDefinitions,
     index,
-    guppyConfig.fieldMapping,
+    dataConfig.fieldMapping,
     charts,
     chartsSection,
   ]);
@@ -439,8 +439,8 @@ export const CohortPanel = ({
               filter={cohortFilters}
             />
             <CountsValue
-              label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
-              configuration={guppyConfig?.nodeCountConfiguration}
+              label={dataConfig?.nodeCountTitle || toDisplayName(index)}
+              configuration={dataConfig?.nodeCountConfiguration}
               counts={counts}
               isFetching={isCountsFetching}
               isError={isCountsError}

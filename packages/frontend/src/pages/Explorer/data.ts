@@ -37,7 +37,7 @@ const GetSharedFieldMapping = async (
     if (cohortBuilderConfiguration?.sharedFilters?.autoCreate) {
       // create shared filter from Gen3 graphql mapping
       const indices = cohortBuilderConfiguration?.explorerConfig.map(
-        (tab) => tab.guppyConfig.dataType,
+        (tab) => tab.dataConfig.dataType,
       );
 
       try {
@@ -64,7 +64,7 @@ const GetSharedFieldMapping = async (
         cohortBuilderConfiguration?.explorerConfig,
       ).reduce(
         (acc: Record<string, string>, panel: CohortPanelConfiguration) => {
-          acc[panel.guppyConfig.dataType] = panel.tabTitle;
+          acc[panel.dataConfig.dataType] = panel.tabTitle;
           return acc;
         },
         {},

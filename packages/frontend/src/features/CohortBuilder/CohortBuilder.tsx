@@ -59,7 +59,7 @@ const CohortBuilder = ({
             key={`${panelConfig.tabTitle}-tabPanel`}
           >
             <CohortPanel
-              guppyConfig={panelConfig.guppyConfig}
+              dataConfig={panelConfig.dataConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
               chartsSection={panelConfig?.chartsSection}
               charts={panelConfig?.charts}
