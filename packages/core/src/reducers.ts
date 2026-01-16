@@ -15,6 +15,7 @@ import {
   userAuthApiReducerPath,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
+import { sowerJobsListSliceReducer } from './features/sower/jobsListSlice';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -24,6 +25,7 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
+  sowerJobsList: sowerJobsListSliceReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [cartReducerPath]: cartReducer,

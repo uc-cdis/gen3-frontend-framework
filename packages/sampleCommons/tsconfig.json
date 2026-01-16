@@ -27,6 +27,9 @@
       "@gen3/frontend/app": ["../frontend/src/exports/app.ts"],
       "@gen3/frontend/explorerRenderers": [
         "../frontend/src/exports/explorerRenderers.ts"
+      ],
+      "@gen3/frontend/features": [
+        "../frontend/src/features/index.ts"
       ]
     },
     "plugins": [

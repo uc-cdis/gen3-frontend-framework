@@ -1,15 +1,21 @@
-import { Card, Text, Stack, Badge } from '@mantine/core';
-import { CoreState, selectAllJobs, useCoreSelector } from '@gen3/core';
+import React from 'react';
+import { Badge, Card, Stack, Text } from '@mantine/core';
+import {
+  CoreState,
+  JobWithActions,
+  selectSowerJobs,
+  useCoreSelector,
+} from '@gen3/core';
 
-export default function JobList() {
-  const jobs = useCoreSelector((state: CoreState) => selectAllJobs(state));
+const JobList = () => {
+  const jobs = useCoreSelector((state: CoreState) => selectSowerJobs(state));
 
   return (
     <Stack>
-      {jobs.map((job) => (
-        <Card key={job.uid} shadow="sm" padding="lg">
+      {Object.values(jobs).map((job: JobWithActions) => (
+        <Card key={job.jobId} shadow="sm" padding="lg">
           <Text size="lg" fw={500}>
-            Job {job.uid}
+            Job {job.jobId}
           </Text>
           <Badge
             color={
@@ -26,4 +32,6 @@ export default function JobList() {
       ))}
     </Stack>
   );
-}
+};
+
+export default JobList;
