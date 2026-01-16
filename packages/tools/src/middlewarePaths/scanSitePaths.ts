@@ -44,11 +44,8 @@ function loadAuthConfig() {
     return JSON.parse(fs.readFileSync(authConfigFile).toString('utf8'));
   }
 
-  console.log(`No authz config found. Using default authz rules.`);
-  return {
-    '/Profile': { loginRequired: true },
-    '*': { loginRequired: false },
-  };
+  console.log(`No authz config found. `);
+  throw new Error('No authz config found.');
 }
 
 function normalizeRoute(route: string) {
