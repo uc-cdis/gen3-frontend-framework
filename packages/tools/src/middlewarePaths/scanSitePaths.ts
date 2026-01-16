@@ -37,26 +37,11 @@ function loadAuthConfig() {
     `config/${GEN3_COMMONS_NAME}`,
     'authz.json',
   );
-  const defaultAuthzConfigFile = path.join(
-    process.cwd(),
-    `config`,
-    'authz_default.json',
-  );
 
   console.log(`Looking for authz config at ${authConfigFile}`);
   if (fs.existsSync(authConfigFile)) {
     console.log(`Loading authz config from ${authConfigFile}`);
     return JSON.parse(fs.readFileSync(authConfigFile).toString('utf8'));
-  } else {
-    console.log(
-      '\x1b[31m%s\x1b[0m',
-      `${authConfigFile} not found. Using default authz rules.`,
-    );
-  }
-
-  if (fs.existsSync(defaultAuthzConfigFile)) {
-    console.log(`Loading authz config from ${defaultAuthzConfigFile}`);
-    return JSON.parse(fs.readFileSync(defaultAuthzConfigFile).toString('utf8'));
   }
 
   console.log(`No authz config found. Using default authz rules.`);
