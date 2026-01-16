@@ -15,20 +15,11 @@ export async function getRouteConfig(): Promise<AuthorizedRoutesConfig> {
     return cachedConfig as AuthorizedRoutesConfig;
   } catch (e) {
     console.error(
-      `Failed to load ../../../config/${GEN3_COMMONS_NAME}/authz.json, falling back to ./config/authz_default.json:`,
+      `Failed to load ../../../config/${GEN3_COMMONS_NAME}/authz.json`,
       e,
     );
+    throw Error(
+      '`Failed to load ../../../config/${GEN3_COMMONS_NAME}/authz2.json',
+    );
   }
-
-  try {
-    const mod = await import(`../../../config/authz_default.json`);
-    cachedConfig = mod.default || mod;
-    return cachedConfig as AuthorizedRoutesConfig;
-  } catch (e) {
-    console.error(`Failed to load config/authz_default.json`, e);
-  }
-
-  return {
-    routes: {},
-  };
 }
