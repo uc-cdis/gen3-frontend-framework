@@ -51,6 +51,7 @@ export * from './features/submission';
 export * from './features/workspace';
 export * from './features/cart';
 export * from './features/config';
+export * from './features/api32';
 
 export {
   type CoreState,

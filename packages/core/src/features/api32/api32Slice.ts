@@ -1,26 +1,15 @@
-import { GEN3_AI_SEARCH_API } from '../../constants';
+import { GEN3_SEARCH_API } from '../../constants';
 import { gen3Api } from '../gen3';
+import { FilterSet } from '../filters';
+import { AggregationsData } from '../../types';
+import { convertFilterSetToApiFilter } from './filters.ts';
+import { processApiHistogramResponse } from './processing.ts';
 
-interface Api32SearchParams {
-  readonly query: string;
-}
-
-interface Api32SearchRequestParams extends Api32SearchParams {
-  readonly topic?: string;
-  readonly conversationId?: string;
-}
-
-export interface Api32SearchResponse extends Api32SearchParams {
-  readonly topic: string;
-  readonly conversationId: string;
-  readonly response: string;
-  readonly documents: {
-    readonly page_content: string;
-    readonly metadata: {
-      readonly row: number;
-      readonly source: string;
-    };
-  }[];
+interface Api32SearchRequestParams {
+  index: string;
+  filters: FilterSet;
+  fields?: Array<string>;
+  page?: { limit: number; offset: number };
 }
 
 /**
@@ -31,11 +20,11 @@ export interface Api32SearchResponse extends Api32SearchParams {
 export const api32SearchApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     searchAggregations: builder.query<
-      Api32SearchResponse,
+      AggregationsData,
       Api32SearchRequestParams
     >({
       query: (searchParams: Api32SearchRequestParams) => ({
-        url: `${GEN3_AI_SEARCH_API}/ask`,
+        url: `${GEN3_SEARCH_API}/${searchParams.index}/counts`,
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -43,43 +32,39 @@ export const api32SearchApi = gen3Api.injectEndpoints({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: searchParams.query,
-          ...(searchParams.topic ? { topic: searchParams.topic } : {}),
-          ...(searchParams.conversationId
-            ? { conversation_id: searchParams.conversationId }
-            : {}),
+          filters: convertFilterSetToApiFilter(searchParams.filters),
+          select: searchParams.fields,
         }),
       }),
-      transformResponse: (data: Record<string, any>, _, arg) => {
+      transformResponse: (data: Record<string, any>, _) => {
+        const buckets = processApiHistogramResponse<AggregationsData>(
+          data?.counts ?? {},
+        );
+
         return {
-          query: arg.query,
-          response: data.response,
-          topic: data.topic,
-          conversationId: data.conversation_id,
-          documents: data.documents,
+          ...buckets,
         };
       },
     }),
-    /**
-     * returns the status of the AI search service
-     * @returns {
-     *   status: string
-     *   timestamp: string
-     * }
-     */
-    getAISearchStatus: builder.query<Api32SearchResponse, void>({
-      query: () => `${GEN3_AI_SEARCH_API}/_status`,
-    }),
-    getAISearchVersion: builder.query<Api32SearchResponse, void>({
-      query: () => `${GEN3_AI_SEARCH_API}/_version`,
+    tableData: builder.query<AggregationsData, Api32SearchRequestParams>({
+      query: (searchParams: Api32SearchRequestParams) => ({
+        url: `${GEN3_SEARCH_API}/${searchParams.index}/counts`,
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filters: convertFilterSetToApiFilter(searchParams.filters),
+          page: searchParams.page,
+          select: searchParams.fields,
+        }),
+      }),
     }),
   }),
 });
 
 // Add more endpoints here
 
-export const {
-  useSearchAggregationsQuery,
-  useGetAISearchStatusQuery,
-  useGetAISearchVersionQuery,
-} = api32SearchApi;
+export const { useSearchAggregationsQuery, useTableDataQuery } = api32SearchApi;
