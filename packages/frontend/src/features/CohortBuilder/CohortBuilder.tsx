@@ -2,7 +2,7 @@ import React from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
-import { CohortPanel } from './CohortPanel';
+import { CohortPanelNew as CohortPanel } from './CohortPanelNew';
 import {
   selectCurrentCohortId,
   setSharedFilters,

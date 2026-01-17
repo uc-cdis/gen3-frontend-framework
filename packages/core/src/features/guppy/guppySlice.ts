@@ -206,10 +206,10 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
         return { query, variables };
       },
-      // return . seperated fields as proper values
+      // return . separated fields as proper values
       transformResponse: (response: Record<string, any>, _meta, args) => {
         const containsDots = args?.fields?.filter((f) => f.includes('.'));
-        // check if dot seperated in arry and not object
+        // check if dot separated in array and not object
         if (containsDots && containsDots.length > 0 && response.data) {
           const containsDotsUniqueBase = containsDots.reduce((acc, field) => {
             const partsArr = field.split('.');

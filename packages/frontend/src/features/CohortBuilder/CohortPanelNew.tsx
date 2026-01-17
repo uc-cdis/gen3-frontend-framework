@@ -17,8 +17,9 @@ import {
   toggleCohortBuilderAllFilters,
   useCoreDispatch,
   useCoreSelector,
-  useGetAggsQuery,
   useGetCountsQuery,
+  useSearchAggregationsQuery,
+  useTableDataQuery,
 } from '@gen3/core';
 import { type CohortPanelNewConfiguration } from './types';
 import {
@@ -174,13 +175,10 @@ export const CohortPanelNew = ({
     isSuccess,
     isFetching: isAggsQueryFetching,
     isError: isAggsQueryError,
-  } = useGetAggsQuery({
-    type: index,
+  } = useSearchAggregationsQuery({
+    index: index,
     fields: fields,
     filters: cohortFilters,
-    accessibility: accessLevel,
-    queryId: cohortId,
-    indexPrefix: indexPrefix,
   });
 
   const chartKeys = useDeepCompareMemo(
@@ -193,15 +191,11 @@ export const CohortPanelNew = ({
     isSuccess: isChartSuccess,
     isFetching: isChartFetching,
     isError: isChartError,
-  } = useGetAggsQuery(
+  } = useSearchAggregationsQuery(
     {
-      type: index,
+      index: index,
       fields: chartKeys,
       filters: cohortFilters,
-      accessibility: accessLevel,
-      filterSelf: true,
-      queryId: cohortId,
-      indexPrefix: indexPrefix,
     },
     {
       skip: chartKeys.length === 0,
@@ -478,6 +472,7 @@ export const CohortPanelNew = ({
                 index={index}
                 tableConfig={table}
                 accessibility={accessLevel}
+                dataHook={useTableDataQuery}
               />
             </div>
           )}
