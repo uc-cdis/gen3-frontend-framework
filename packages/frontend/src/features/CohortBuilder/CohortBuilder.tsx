@@ -25,6 +25,8 @@ const CohortBuilder = ({
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 
+  console.log('CohortBuilder component rendered', explorerConfig);
+
   const configuration = useDeepCompareMemo(
     () => explorerConfig,
     [explorerConfig],

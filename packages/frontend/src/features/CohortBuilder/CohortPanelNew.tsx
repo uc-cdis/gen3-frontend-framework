@@ -15,9 +15,9 @@ import {
   selectIndexFilters,
   selectSharedFilters,
   toggleCohortBuilderAllFilters,
+  useApi32CountsQuery,
   useCoreDispatch,
   useCoreSelector,
-  useGetCountsQuery,
   useSearchAggregationsQuery,
   useTableDataQuery,
 } from '@gen3/core';
@@ -205,7 +205,7 @@ export const CohortPanelNew = ({
   const cleanChartData = useDeepCompareMemo(() => {
     if (isChartSuccess && chartData) {
       const cleanedData: AggregationsData = {};
-      const totalCount = chartData._totalCount[0]?.count;
+      //  const totalCount = chartData._totalCount[0]?.count;
       Object.keys(summaryCharts).forEach((key) => {
         if (!(key in chartData)) {
           return;
@@ -223,12 +223,13 @@ export const CohortPanelNew = ({
               : facetDef?.excludeValues?.includes(String(x.key)) === false,
           );
         }
-
-        if (cleanedData[key].length === 0 && totalCount) {
-          // if no keys adds back no data
-          cleanedData[key] = [{ key: 'no data', count: totalCount }];
-        }
+        // TODO: move data cleaning
+        // if (cleanedData[key].length === 0 && totalCount) {
+        //   // if no keys adds back no data
+        //   cleanedData[key] = [{ key: 'no data', count: totalCount }];
+        // }
       });
+      console.log(cleanedData);
       return cleanedData;
     }
     return chartData;
@@ -382,11 +383,9 @@ export const CohortPanelNew = ({
     data: counts,
     isFetching: isCountsFetching,
     isError: isCountsError,
-  } = useGetCountsQuery({
-    type: index,
+  } = useApi32CountsQuery({
+    index,
     filters: cohortFilters,
-    accessibility: accessLevel,
-    queryId: cohortId,
   });
 
   if (isCountsError || isAggsQueryError) {
@@ -432,14 +431,14 @@ export const CohortPanelNew = ({
               buttons={defaultButtons}
               loginForDownload={loginForDownload}
               index={index}
-              totalCount={counts ?? 0}
+              totalCount={counts?.count ?? 0}
               fields={table?.fields ?? []}
               filter={cohortFilters}
             />
             <CountsValue
               label={dataConfig?.nodeCountTitle || toDisplayName(index)}
               configuration={dataConfig?.nodeCountConfiguration}
-              counts={counts}
+              counts={counts?.count}
               isFetching={isCountsFetching}
               isError={isCountsError}
             />
@@ -458,7 +457,7 @@ export const CohortPanelNew = ({
             <Charts
               charts={summaryCharts}
               data={cleanChartData ?? EmptyData}
-              counts={counts}
+              counts={counts?.count}
               isSuccess={isChartSuccess}
               isError={isChartError}
               numCols={numCols}

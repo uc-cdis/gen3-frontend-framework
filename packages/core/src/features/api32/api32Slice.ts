@@ -25,6 +25,10 @@ interface Api32TableRequestParams {
   filterName?: string;
 }
 
+interface Api32CountsResponse {
+  count: number;
+}
+
 /**
  * returns a response from the AI search service
  * @param searchParams - the parameters for the AI search service
@@ -49,10 +53,8 @@ export const api32SearchApi = gen3Api.injectEndpoints({
           select: searchParams.fields,
         }),
       }),
-      transformResponse: (data: Record<string, any>, _) => {
-        const buckets = processApiHistogramResponse<AggregationsData>(
-          data?.counts ?? {},
-        );
+      transformResponse: (data: Record<string, any>) => {
+        const buckets = processApiHistogramResponse(data?.counts ?? {});
 
         return {
           ...buckets,
@@ -61,7 +63,7 @@ export const api32SearchApi = gen3Api.injectEndpoints({
     }),
     tableData: builder.query<JSONObject, Api32TableRequestParams>({
       query: (args: Api32TableRequestParams) => ({
-        url: `${GEN3_SEARCH_API}/${args.type}/counts`,
+        url: `${GEN3_SEARCH_API}/${args.type}/query`,
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -74,8 +76,38 @@ export const api32SearchApi = gen3Api.injectEndpoints({
           page: { limit: args.size, offset: args.offset },
         }),
       }),
+      transformResponse: (data: Record<string, any>, _, args) => {
+        return {
+          data: { [args.type]: data.rows },
+        };
+      },
+    }),
+    api32Counts: builder.query<Api32CountsResponse, Api32SearchRequestParams>({
+      query: (args: Api32SearchRequestParams) => ({
+        url: `${GEN3_SEARCH_API}/${args.index}/query`,
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filters: convertFilterSetToApiFilter(args.filters),
+          select: args.fields,
+          page: { limit: 1, offset: 0 },
+        }),
+      }),
+      transformResponse: (data: Record<string, any>) => {
+        return {
+          count: data?.total ?? 0,
+        };
+      },
     }),
   }),
 });
 
-export const { useSearchAggregationsQuery, useTableDataQuery } = api32SearchApi;
+export const {
+  useSearchAggregationsQuery,
+  useTableDataQuery,
+  useApi32CountsQuery,
+} = api32SearchApi;
