@@ -7,6 +7,7 @@ import { QueryStatus } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { GEN3_API } from '../../constants';
 import { fetchFence } from '../fence/fetchFence';
+import { JSONObject } from '../../types';
 
 export interface CSRFToken {
   readonly csrfToken: string;
@@ -15,6 +16,11 @@ export interface CSRFToken {
 export interface UserAuthResponse {
   readonly data: Gen3User;
   readonly loginStatus: LoginStatus;
+}
+
+export interface UserStatusResponse {
+  status: string;
+  timestamp: string;
 }
 
 export const userAuthApi = createApi({
@@ -98,6 +104,13 @@ export const userAuthApi = createApi({
         };
       },
     }),
+    userStatus: builder.query<UserStatusResponse, void>({
+      query: () => `${GEN3_API}/_status`,
+      transformResponse: (results: JSONObject) => ({
+        status: results ? 'ok' : 'error',
+        timestamp: new Date().toISOString(),
+      }),
+    }),
   }),
 });
 
@@ -110,6 +123,7 @@ export const {
   useLazyFetchUserDetailsQuery,
   useGetCSRFQuery,
   useLazyGetCSRFQuery,
+  useUserStatusQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
 export const userAuthApiReducerPath = userAuthApi.reducerPath;

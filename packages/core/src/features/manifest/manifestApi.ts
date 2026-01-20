@@ -1,6 +1,7 @@
 import { gen3Api } from '../gen3';
 import { GEN3_MANIFEST_API } from '../../constants';
 import { Manifest } from './types';
+import { JSONObject } from '../../types';
 
 const TAGS = 'manifest';
 
@@ -8,10 +9,21 @@ export const manifestTags = gen3Api.enhanceEndpoints({
   addTagTypes: [TAGS],
 });
 
+export interface MDSStatusResponse {
+  status: string;
+  timestamp: string;
+  aggregateMDSEnabled: boolean;
+}
+
 export const manifestApi = manifestTags.injectEndpoints({
   endpoints: (builder) => ({
-    getManifestServiceStatus: builder.query<string, void>({
+    getManifestServiceStatus: builder.query<MDSStatusResponse, void>({
       query: () => `${GEN3_MANIFEST_API}/_status`,
+      transformResponse: (data: JSONObject) => ({
+        status: data?.status?.toString() === 'OK' ? 'ok' : 'error',
+        timestamp: data?.timestamp?.toString() ?? 'error',
+        aggregateMDSEnabled: (data?.aggregateMDSEnabled as boolean) ?? false,
+      }),
     }),
     getFileManifest: builder.query<Manifest, void>({
       query: () => `${GEN3_MANIFEST_API}`,

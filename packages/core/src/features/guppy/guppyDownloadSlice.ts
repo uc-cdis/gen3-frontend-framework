@@ -2,6 +2,7 @@ import { gen3Api } from '../gen3';
 import { GEN3_GUPPY_API } from '../../constants';
 import { convertFilterSetToGqlFilter, GQLFilter } from '../filters';
 import { GuppyDownloadDataParams, GuppyDownloadDataRequest } from './types';
+import { JSONObject } from '../../types';
 
 export interface GuppyDownloadDataQueryParams extends Omit<
   GuppyDownloadDataRequest,
@@ -13,6 +14,12 @@ export interface GuppyDownloadDataQueryParams extends Omit<
 interface DownloadRequestStatus {
   readonly status: string;
   readonly message: string;
+}
+
+export interface GuppyStatusResponse {
+  readonly status: string;
+  readonly timestamp: string;
+  readonly statusCode: string;
 }
 
 /**
@@ -48,8 +55,25 @@ export const guppyDownloadApi = gen3Api.injectEndpoints({
         return response;
       },
     }),
+    guppyStatus: builder.query<GuppyStatusResponse, void>({
+      query: () => {
+        return {
+          url: `${GEN3_GUPPY_API}/_status`,
+        };
+      },
+      transformResponse: (data: JSONObject) => {
+        return {
+          status: data?.status?.toString() ?? 'error',
+          timestamp: new Date().toLocaleTimeString(),
+          statusCode: data?.statusCode?.toString() ?? 'error',
+        };
+      },
+    }),
   }),
 });
 
-export const { useDownloadFromGuppyQuery, useLazyDownloadFromGuppyQuery } =
-  guppyDownloadApi;
+export const {
+  useDownloadFromGuppyQuery,
+  useLazyDownloadFromGuppyQuery,
+  useGuppyStatusQuery,
+} = guppyDownloadApi;
