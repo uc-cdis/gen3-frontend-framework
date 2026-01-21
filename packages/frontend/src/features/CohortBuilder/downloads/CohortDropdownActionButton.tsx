@@ -1,7 +1,11 @@
 import React, { ReactNode, useState } from 'react';
-import { Button, Menu, MenuItemProps } from '@mantine/core';
-import { FloatingPosition } from '@mantine/core';
-import { Tooltip } from '@mantine/core';
+import {
+  Button,
+  FloatingPosition,
+  Menu,
+  MenuItemProps,
+  Tooltip,
+} from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
 import useGuppyActionButton from './downloadActionHook';
@@ -9,18 +13,17 @@ import { Modals } from '@gen3/core';
 import { ActionButtonWithArgsFunction, GuppyActionButtonProps } from '../types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
-interface GuppyDropdownMenuItemProps
-  extends Pick<
-    GuppyActionButtonProps,
-    | 'disabled'
-    | 'Modal400'
-    | 'Modal403'
-    | 'done'
-    | 'customErrorMessage'
-    | 'hideNotification'
-    | 'actionFunction'
-    | 'actionArgs'
-  > {
+interface GuppyDropdownMenuItemProps extends Pick<
+  GuppyActionButtonProps,
+  | 'disabled'
+  | 'Modal400'
+  | 'Modal403'
+  | 'done'
+  | 'customErrorMessage'
+  | 'hideNotification'
+  | 'actionFunction'
+  | 'actionArgs'
+> {
   title: string;
   idx: number;
   setIsActive?: (active: boolean) => void;
@@ -159,7 +162,7 @@ const CohortDropdownActionButton = ({
   const [isActive, setIsActive] = useState(false);
 
   const menuLabelText = useDeepCompareMemo(() => {
-    return isActive ? activeText : inactiveText;
+    return isActive && activeText ? activeText : inactiveText;
   }, [isActive, activeText, inactiveText]);
 
   return (
@@ -180,8 +183,8 @@ const CohortDropdownActionButton = ({
             root: fullHeight ? 'h-full' : undefined,
           }}
           aria-label={buttonAriaLabel}
-          loading={isActive}
           key={menuLabelText}
+          loading={isActive}
         >
           <div>
             {tooltip?.length && !disabled ? (
