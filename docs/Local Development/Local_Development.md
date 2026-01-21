@@ -55,6 +55,13 @@ running commons.
 ```NEXT_PUBLIC_GEN3_REDIRECT_URL=http://localhost:3000``` this is needed to correctly login
 to the local commons
 
+#### Tracking
+```
+NEXT_PUBLIC_DATADOG_APPLICATION_ID=""
+NEXT_PUBLIC_DATADOG_CLIENT_TOKEN=""
+``` 
+this is needed to be setup in DataDog and the values need to match for tracking 
+
 ### CORs errors
 
 When you set you remote commons via ```NEXT_PUBLIC_GEN3_API``` to a URL other than http:://localhost:3000 you will
