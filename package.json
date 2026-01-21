@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.12.01",
+  "version": "0.12.10",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -11,8 +11,8 @@
     "packages/sampleCommons"
   ],
   "engines": {
-    "npm": ">=10.2.3",
-    "node": ">=22.11.0"
+    "npm": ">=11.6.2",
+    "node": ">=24.12.0"
   },
   "scripts": {
     "lint": "lerna run lint",
@@ -25,6 +25,7 @@
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
+    "predev": "if [ ! -f ./node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ]; then printf \"\\033[31mError: @gen3/toolsff not built (missing dist file). Run: npm run build:tools\\033[0m\\n\"; exit 1; fi",
     "dev": "NODE_OPTIONS='--max_old_space_size=4096' lerna run dev",
     "dev:watch": "lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME --include-dependencies",
     "dev:app": "lerna run dev --scope=@gen3/samplecommons",
@@ -54,7 +55,6 @@
     "@mantine/notifications": "^7.17.8",
     "@next/bundle-analyzer": "^15.5.9",
     "classnames": "^2.3.1",
-    "colorette": "^2.0.20",
     "glob": "^10.5.0",
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
@@ -97,9 +97,9 @@
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
-    "lerna": "^8.1.8",
+    "lerna": "^9.0.3",
     "msw": "^2.7.3",
-    "nx": "19.4.3 ",
+    "nx": "22.3.3",
     "oxlint": "^0.16.4",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^6.0.0",

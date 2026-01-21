@@ -1,5 +1,5 @@
 import { DataLibraryStoreMode, ExportDatasetFields } from '@gen3/core';
-import { ExportFromDiscoveryActionButton } from '../types';
+import { ExportSelectionActionButton } from '../types';
 import { StylingOverride } from '../../../types';
 
 export interface ExportActionProps<
@@ -14,7 +14,7 @@ export interface ExportActionProps<
 export interface ExportActionButtonProps<
   T extends Record<string, any> = Record<string, any>,
 > extends ExportActionProps<T> {
-  buttonConfig: ExportFromDiscoveryActionButton;
+  buttonConfig: ExportSelectionActionButton;
   classNames?: StylingOverride;
 }
 

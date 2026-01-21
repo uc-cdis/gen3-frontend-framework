@@ -150,6 +150,7 @@ export const downloadJSONDataFromGuppy = async ({
 
   const url = prepareUrl(GEN3_GUPPY_API);
   const fetchConfig = prepareFetchConfig(parameters, csrfToken);
+
   try {
     const response = await fetch(url.toString(), {
       ...fetchConfig,

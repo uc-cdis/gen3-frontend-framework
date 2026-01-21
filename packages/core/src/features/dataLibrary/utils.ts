@@ -270,7 +270,7 @@ export const extractFileDatasetsInRecords = (
         return acc;
       }
 
-      const datasetId = resource[dataFieldMapping.datasetIdField] as string; // Note: typo still preserved
+      const datasetId = resource[dataFieldMapping.datasetIdField] as string;
       if (datasetId === undefined) {
         return acc; // Skip if dataset ID is missing
       }

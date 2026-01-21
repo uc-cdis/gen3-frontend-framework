@@ -31,7 +31,7 @@ export const HTTPUserFriendlyErrorMessages: Record<number, string> = {
   451: 'This content is not available for legal reasons.',
 
   // 5xx Server Errors
-  500: "Something went wrong on our end. We're working to fix it. Please try again later.",
+  500: 'Something went wrong with the service. Please try again later.',
   501: "This feature isn't available yet. Check back later.",
   502: "We're having trouble connecting to our servers. Please try again in a few minutes.",
   503: "Our service is temporarily unavailable. We're working to restore it as quickly as possible.",

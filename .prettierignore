@@ -3,3 +3,6 @@ node_modules
 public
 dist
 /packages/core/jest.config.ts
+
+/.nx/cache
+/.nx/workspace-data

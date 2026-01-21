@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.12.5",
+  "version": "0.12.13",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -74,7 +74,6 @@
     "autoprefixer": "^10.4.20",
     "jest-fixed-jsdom": "^0.0.9",
     "msw": "^2.7.0",
-    "null-loader": "^4.0.1",
     "postcss": "^8.4.29",
     "postcss-import": "^16.1.0",
     "postcss-loader": "^8.2.0",

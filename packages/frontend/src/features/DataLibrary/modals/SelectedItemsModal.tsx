@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Button,
+  ComboboxItem,
   Group,
   Modal,
-  ComboboxItem,
   ModalProps,
-  Stack,
   Select,
+  Stack,
   Text,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -16,17 +16,17 @@ import { HTTPUserFriendlyErrorMessages } from './utils';
 
 import SelectedItemsTable from '../tables/SelectedItemsTable';
 import {
-  getActionById,
-  doesItemFailRule,
   doesGroupFailRule,
+  doesItemFailRule,
+  getActionById,
 } from '../selection/selectedItemActions';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
 import { MRT_RowSelectionState } from 'mantine-react-table';
 import { ValidatedSelectedItem } from '../types';
 import {
-  DataLibraryActionsConfig,
   DataLibraryActionConfig,
+  DataLibraryActionsConfig,
 } from '../selection/types';
 import {
   ActionCreatorFactoryItem,
@@ -79,16 +79,17 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
 
   const onError = (error: HTTPError | Error) => {
     setIsRunning(false);
+    console.warn('Error running action:', error);
     if (error instanceof HTTPError) {
       notifications.show({
         id: 'data-library-selection-action-error',
-        position: 'bottom-center',
+        position: 'top-center',
         withCloseButton: true,
         autoClose: 5000,
         title: 'Action Error',
         message: HTTPUserFriendlyErrorMessages[error.status],
         color: 'red',
-        icon: <Icon icon="gen3:outline-error" />,
+        icon: <Icon icon="gen3:error-outline" />,
         loading: false,
       });
     }
@@ -98,7 +99,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
     setIsRunning(false);
     notifications.show({
       id: 'data-library-selection-action-done',
-      position: 'bottom-center',
+      position: 'top-center',
       withCloseButton: true,
       autoClose: 5000,
       title: 'Submission Complete',

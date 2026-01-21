@@ -1,6 +1,6 @@
 import { selectCSRFToken } from '../features/user';
 import { coreStore } from '../store';
-import { GEN3_FENCE_API, GEN3_API } from '../constants';
+import { GEN3_API, GEN3_FENCE_API } from '../constants';
 import { getCookie } from 'cookies-next';
 
 export enum HttpMethod {
@@ -217,7 +217,7 @@ export const fetchJSONDataFromURL = async <T = unknown>(
   } as RequestInit);
 
   if (!response.ok) {
-    throw new HTTPError(response.status, response.statusText, response.text());
+    throw new HTTPError(response.status, response.statusText);
   }
 
   if (response.status === 204) {
