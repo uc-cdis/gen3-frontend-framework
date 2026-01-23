@@ -22,6 +22,7 @@ import {
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import {
+  processAdvancedSearchTerms,
   processAllSummaries,
   processAuthorizations,
   processChartData,
@@ -91,33 +92,6 @@ const suffixes = (term: string, minLength: number): string[] => {
   }
 
   return tokens;
-};
-
-const processAdvancedSearchTerms = (
-  advSearchFilters: AdvancedSearchFilters,
-  data: JSONObject[],
-  uidField: string,
-): ReadonlyArray<KeyValueSearchFilter> => {
-  return advSearchFilters.filters.map((filter) => {
-    const { key, keyDisplayName } = filter;
-    const values = getFilterValuesByKey(
-      key,
-      data,
-      advSearchFilters.field,
-      uidField,
-    );
-    return {
-      key,
-      keyDisplayName,
-      valueDisplayNames: values.reduce(
-        (acc, cur) => {
-          acc[cur] = cur;
-          return acc;
-        },
-        {} as Record<string, string>,
-      ),
-    };
-  });
 };
 
 const useGetMDSData = ({

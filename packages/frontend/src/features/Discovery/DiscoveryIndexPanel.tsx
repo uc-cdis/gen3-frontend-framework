@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Loader, Text } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDisclosure } from '@mantine/hooks';
@@ -15,6 +15,7 @@ import SearchInputWithSuggestions from './Search/SearchInputWithSuggestions';
 import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -51,26 +52,26 @@ const DiscoveryIndexPanel = ({
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [searchBarTerm, setSearchBarTerm] = useState<string[]>([]);
+  const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
   const [selections, setSelections] = useState<string[]>([]); // table selections
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
       filters: {},
     });
 
-  const searchParam = useMemo(() => {
+  const searchParam = useDeepCompareMemo(() => {
     return {
       keyword: {
         operator: SearchCombination.and,
-        keywords: searchBarTerm,
+        keywords: searchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
     };
-  }, [searchBarTerm, advancedSearchTerms]);
+  }, [searchBarTerms, advancedSearchTerms]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
-
   const {
     data,
     hits,
@@ -86,36 +87,20 @@ const DiscoveryIndexPanel = ({
     },
     searchTerms: searchParam,
     discoveryConfig,
+    sorting,
   });
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
-      data.filter(
+      data?.filter(
         (member) => uidField in member && selections.includes(member[uidField]),
       );
     return filterSelectedMembers(data);
   }, [data, discoveryConfig?.minimalFieldMapping?.uid, selections]);
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
-
-  if (dataRequestStatus.isLoading) {
-    return (
-      <div className="flex w-full py-24 relative justify-center">
-        <Loader variant="dots" />{' '}
-      </div>
-    );
-  }
-
-  if (dataRequestStatus.isError) {
-    return (
-      <div className="flex w-full py-24 h-100 relative justify-center">
-        <Text size={'xl'}>Error loading discovery data</Text>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
@@ -138,11 +123,13 @@ const DiscoveryIndexPanel = ({
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
                 <SearchInputWithSuggestions
+                  searchBarTerms={searchBarTerms}
+                  setSearchBarTerms={setSearchBarTerms}
                   suggestions={suggestions}
                   clearSearch={() => {
-                    setSearchBarTerm([]);
+                    setSearchBarTerms([]);
                   }}
-                  searchChanged={(v) => setSearchBarTerm(v.split(' '))}
+                  searchChanged={(v) => setSearchBarTerms(v.split(' '))}
                   placeholder={
                     discoveryConfig?.features?.search?.searchBar?.placeholder ??
                     'Search...'

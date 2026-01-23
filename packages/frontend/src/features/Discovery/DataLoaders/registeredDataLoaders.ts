@@ -8,6 +8,7 @@ import {
   useLoadAllMDSData,
 } from './MDSAllLocal/DataLoader';
 import { useLoadAllIndexedAggMDSData } from './IndexedMetadata/DataLoader';
+import { useAggMetaMDSProxy } from './AggMetaMDSProxy/DataLoader';
 
 export type DiscoveryDataLoader = (
   _: DiscoveryDataLoaderProps,
@@ -49,6 +50,7 @@ export const registerDefaultDiscoveryDataLoaders = () => {
     'IndexedAggMDSAllLocal',
     useLoadAllIndexedAggMDSData,
   );
+  registerDiscoveryDataLoader('AggMetaMDSProxy', useAggMetaMDSProxy);
 };
 
 registerDefaultDiscoveryDataLoaders();
