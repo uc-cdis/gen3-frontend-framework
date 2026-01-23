@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Button, Tooltip } from '@mantine/core';
+import { Button, Loader, Tooltip } from '@mantine/core';
 import { FiDownload } from 'react-icons/fi';
 
 interface ActionButtonProps {
@@ -33,6 +33,7 @@ const ActionButton = ({
       <Button
         ref={ref}
         leftSection={showIcon && inactiveText && <FiDownload />}
+        rightSection={active && <Loader color="accent.4" size="xs" />}
         disabled={disabled}
         className={
           customStyle ||
