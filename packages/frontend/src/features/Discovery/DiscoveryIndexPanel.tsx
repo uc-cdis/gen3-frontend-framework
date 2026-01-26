@@ -16,6 +16,7 @@ import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -136,6 +137,12 @@ const DiscoveryIndexPanel = ({
                   }
                   label={
                     discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                  }
+                />
+                <SearchInputSelectableFields
+                  searchableAndSelectableTextFields={
+                    discoveryConfig?.features?.search?.searchBar
+                      ?.searchableAndSelectableTextFields
                   }
                 />
               </div>

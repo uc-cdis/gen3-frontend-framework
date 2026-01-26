@@ -1,0 +1,72 @@
+import React, { useState } from 'react';
+import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
+import { Checkbox, Radio, TextInput } from '@mantine/core';
+import { SearchInputProps } from './types';
+import { SearchMode } from '../constants';
+
+const SearchInputSelectableFields = ({
+  searchableAndSelectableTextFields,
+}: {
+  [key: string]: string | undefined;
+}) => {
+  if (!searchableAndSelectableTextFields) return;
+
+  const [searchMode, setSearchMode] = useState(SearchMode.FULL_TEXT);
+  const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
+    useState({});
+  const searchableTextFields: string[] = [];
+  const [checkboxGroupValues, setCheckboxGroupValues] = useState([]);
+
+  const onRadioChange = (value: string) => {
+    setSearchMode(value as SearchMode);
+    if (value === SearchMode.FULL_TEXT) {
+      setSelectedFieldsForSearchIndexing([
+        ...searchableTextFields,
+        ...Object.values(searchableAndSelectableTextFields),
+      ]);
+      console.log(
+        'value === SearchMode.FULL_TEXT and selectedFieldsForSearchIndexing:',
+        selectedFieldsForSearchIndexing,
+      );
+    } else {
+      setCheckboxGroupValues(checkboxGroupValues);
+      setSelectedFieldsForSearchIndexing(checkboxGroupValues);
+      console.log(
+        'value === SearchMode.RESTRICTED and selectedFieldsForSearchIndexing:',
+        selectedFieldsForSearchIndexing,
+      );
+    }
+  };
+
+  const checkboxGroupOptions = Object.entries(
+    searchableAndSelectableTextFields,
+  ).map(([key, value]) => ({ label: key, value }));
+
+  return (
+    <>
+      <Radio.Group onChange={onRadioChange} value={searchMode}>
+        <div className="flex space-x-4 pt-4">
+          <Radio value={SearchMode.FULL_TEXT} label="Full Text Search" />
+          <Radio
+            value={SearchMode.RESTRICTED}
+            label="Restrict Search to Selected Fields"
+          />
+        </div>
+      </Radio.Group>
+      <div className="flex flex-wrap">
+        {checkboxGroupOptions.map((checkbox, index) => (
+          <div key={index} className="flex items-center mt-1 mr-4">
+            <Checkbox
+              key={index}
+              label={checkbox.label}
+              value={checkbox.value}
+              disabled={searchMode === SearchMode.FULL_TEXT}
+            />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+export default SearchInputSelectableFields;
