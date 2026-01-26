@@ -148,6 +148,7 @@ export interface SearchBar {
   inputSubtitle: string;
   placeholder?: string;
   searchableTextFields: Array<string>;
+  searchableAndSelectableTextFields: { [key: string]: string };
 }
 
 interface TagSearchDropdown {
