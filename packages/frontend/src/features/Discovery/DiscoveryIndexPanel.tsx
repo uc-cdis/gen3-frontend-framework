@@ -72,6 +72,9 @@ const DiscoveryIndexPanel = ({
     };
   }, [searchBarTerms, advancedSearchTerms]);
 
+  const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
+    useState([]);
+
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
     data,
@@ -89,8 +92,12 @@ const DiscoveryIndexPanel = ({
     searchTerms: searchParam,
     discoveryConfig,
     sorting,
+    selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
   });
-
+  console.log(
+    'selectedFieldsForSearchIndexing in DiscoveryIndexPanel',
+    selectedFieldsForSearchIndexing,
+  );
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
@@ -143,6 +150,9 @@ const DiscoveryIndexPanel = ({
                   searchableAndSelectableTextFields={
                     discoveryConfig?.features?.search?.searchBar
                       ?.searchableAndSelectableTextFields
+                  }
+                  setSelectedFieldsForSearchIndexing={
+                    setSelectedFieldsForSearchIndexing
                   }
                 />
               </div>

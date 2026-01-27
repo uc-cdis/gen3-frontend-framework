@@ -6,36 +6,44 @@ import { SearchMode } from '../constants';
 
 const SearchInputSelectableFields = ({
   searchableAndSelectableTextFields,
-}: {
-  [key: string]: string | undefined;
+  setSelectedFieldsForSearchIndexing,
 }) => {
   if (!searchableAndSelectableTextFields) return;
 
   const [searchMode, setSearchMode] = useState(SearchMode.FULL_TEXT);
-  const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
-    useState({});
+  /* const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
+    useState([]); */
   const searchableTextFields: string[] = [];
   const [checkboxGroupValues, setCheckboxGroupValues] = useState([]);
 
   const onRadioChange = (value: string) => {
     setSearchMode(value as SearchMode);
     if (value === SearchMode.FULL_TEXT) {
-      setSelectedFieldsForSearchIndexing([
+      /*       setSelectedFieldsForSearchIndexing([
         ...searchableTextFields,
         ...Object.values(searchableAndSelectableTextFields),
-      ]);
-      console.log(
+      ]); */
+      setSelectedFieldsForSearchIndexing([]);
+      /*       console.log(
         'value === SearchMode.FULL_TEXT and selectedFieldsForSearchIndexing:',
         selectedFieldsForSearchIndexing,
-      );
+      ); */
     } else {
+      console.log('checkboxGroupValues', checkboxGroupValues);
       setCheckboxGroupValues(checkboxGroupValues);
       setSelectedFieldsForSearchIndexing(checkboxGroupValues);
-      console.log(
+      /*       console.log(
         'value === SearchMode.RESTRICTED and selectedFieldsForSearchIndexing:',
         selectedFieldsForSearchIndexing,
-      );
+      ); */
     }
+  };
+
+  const onCheckboxGroupChange = (currentCheckedValues) => {
+    setCheckboxGroupValues(currentCheckedValues);
+    console.log('checkboxGroupValues', checkboxGroupValues);
+    console.log('currentCheckedValues', currentCheckedValues);
+    setSelectedFieldsForSearchIndexing(currentCheckedValues);
   };
 
   const checkboxGroupOptions = Object.entries(
@@ -53,18 +61,24 @@ const SearchInputSelectableFields = ({
           />
         </div>
       </Radio.Group>
-      <div className="flex flex-wrap">
-        {checkboxGroupOptions.map((checkbox, index) => (
-          <div key={index} className="flex items-center mt-1 mr-4">
-            <Checkbox
-              key={index}
-              label={checkbox.label}
-              value={checkbox.value}
-              disabled={searchMode === SearchMode.FULL_TEXT}
-            />
-          </div>
-        ))}
-      </div>
+
+      <Checkbox.Group
+        value={checkboxGroupValues}
+        onChange={onCheckboxGroupChange}
+      >
+        <div className="flex flex-wrap">
+          {checkboxGroupOptions.map((checkbox, index) => (
+            <div key={index} className="flex items-center mt-1 mr-4">
+              <Checkbox
+                key={index}
+                label={checkbox.label}
+                value={checkbox.value as string}
+                disabled={searchMode === SearchMode.FULL_TEXT}
+              />
+            </div>
+          ))}{' '}
+        </div>
+      </Checkbox.Group>
     </>
   );
 };

@@ -34,6 +34,7 @@ export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryIndexConfig;
+  selectedFieldsForSearchIndexing: string[];
 }
 
 export interface DataRequestStatus {
