@@ -56,7 +56,7 @@ const createDownloadMenuButton = (
 
     return {
       title: button.title,
-      activeText: 'Downloading...',
+      activeText: 'Cancel',
       disabled: button.enabled !== undefined ? !button.enabled : true,
       icon: button?.leftIcon ? (
         <Icon icon={button.leftIcon} />
@@ -202,7 +202,7 @@ const DownloadsPanel = ({
         } else {
           return (
             <CohortActionButton
-              activeText={'Downloading...'}
+              activeText={'Cancel'}
               inactiveText={button.title}
               tooltipText={button.tooltipText}
               disabled={disabled || !button.enabled}

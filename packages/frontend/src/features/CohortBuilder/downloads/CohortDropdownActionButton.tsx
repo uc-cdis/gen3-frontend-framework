@@ -1,11 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import {
-  Button,
-  FloatingPosition,
-  Menu,
-  MenuItemProps,
-  Tooltip,
-} from '@mantine/core';
+import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
+import { Button, FloatingPosition, Menu, MenuItemProps, Tooltip, } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
 import useGuppyActionButton from './downloadActionHook';
@@ -31,7 +25,7 @@ interface GuppyDropdownMenuItemProps extends Pick<
 
 interface GuppyDropdownElementProps {
   title: string;
-  icon?: JSX.Element;
+  icon?: ReactElement;
   disabled?: boolean;
   actionFunction: ActionButtonWithArgsFunction;
   actionArgs: Record<string, any>;
@@ -51,7 +45,7 @@ const GuppyDropdownMenuItem = ({
   actionArgs,
   children,
 }: GuppyDropdownMenuItemProps & MenuItemProps) => {
-  const { handleClick, icon } = useGuppyActionButton({
+  const { handleClick, cancel, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
     done,
@@ -61,11 +55,14 @@ const GuppyDropdownMenuItem = ({
     actionArgs,
     setIsActive,
   });
+  const clickHandler = useCallback(() => {
+    if (disabled) return;
+    if (!active) handleClick();
+    else cancel();
+  }, [active, disabled, handleClick, cancel]);
   return (
     <Menu.Item
-      onClick={() => {
-        if (handleClick) handleClick();
-      }}
+      onClick={clickHandler}
       key={`${title}-${idx}`}
       data-testid={`${title}-${idx}`}
       leftSection={icon}
@@ -82,27 +79,27 @@ interface DropdownWithIconProps {
    */
   disableTargetWidth?: string;
   /**
-   *   Left Icon for the taret button, can be undefined too
+   *   Left Icon for the target button can be undefined too
    */
-  leftIcon?: JSX.Element;
+  leftIcon?: ReactElement;
   /**
-   *   Right Icon for the taret button, can be undefined too (default to dropdown icon)
+   *   Right Icon for the target button can be undefined too (default to dropdown icon)
    */
-  rightIcon?: JSX.Element;
+  rightIcon?: ReactElement;
   /**
-   *    Content for target button
+   *    Content for the target button
    */
   TargetButtonChildren: ReactNode;
   /**
-   *    array dropdown items. Need to pass title, onClick and icon event handler is optional
+   *    array dropdown items. Need to pass the title onClick and icon event handler is optional
    */
   dropdownElements: Array<GuppyDropdownElementProps>;
   /**
-   *    only provide inactiveText if we want label for dropdown elements
+   *    only provide inactiveText if we want a label for dropdown elements
    */
   inactiveText?: string;
   /**
-   *    label to show when menu item's action is executing
+   *    label to show when a menu item's action is executing
    */
   activeText?: string;
   /**
@@ -158,7 +155,7 @@ const CohortDropdownActionButton = ({
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
-}: DropdownWithIconProps): JSX.Element => {
+}: DropdownWithIconProps): ReactElement => {
   const [isActive, setIsActive] = useState(false);
 
   const menuLabelText = useDeepCompareMemo(() => {

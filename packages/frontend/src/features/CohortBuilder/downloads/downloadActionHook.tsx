@@ -101,17 +101,15 @@ const useGuppyActionButton = ({
     [Modal400, Modal403, customErrorMessage, dispatch],
   );
 
-  const showDownloadNotification = useCallback(
-    (controller: AbortController) => {
-      showNotification({
-        title: 'Downloading',
-        message: <DownloadNotification />,
-        closeButtonProps: { 'aria-label': 'Close notification' },
-        autoClose: false,
-      });
-    },
-    [hideNotification],
-  );
+  const showDownloadNotification = useCallback(() => {
+    if (hideNotification) return;
+    showNotification({
+      title: 'Downloading',
+      message: <DownloadNotification />,
+      closeButtonProps: { 'aria-label': 'Close notification' },
+      autoClose: false,
+    });
+  }, [hideNotification]);
 
   const cancel = useCallback(() => {
     controllerRef.current?.abort();
@@ -132,7 +130,7 @@ const useGuppyActionButton = ({
     const controller = new AbortController();
     controllerRef.current = controller;
 
-    showDownloadNotification(controller);
+    showDownloadNotification();
     setBusy(true);
 
     try {
