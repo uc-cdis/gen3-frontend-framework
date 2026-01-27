@@ -1,11 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import {
-  Button,
-  FloatingPosition,
-  Menu,
-  MenuItemProps,
-  Tooltip,
-} from '@mantine/core';
+import { Button, FloatingPosition, Menu, MenuItemProps, Tooltip, } from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
 import useGuppyActionButton from './downloadActionHook';
@@ -51,7 +45,7 @@ const GuppyDropdownMenuItem = ({
   actionArgs,
   children,
 }: GuppyDropdownMenuItemProps & MenuItemProps) => {
-  const { handleClick, icon } = useGuppyActionButton({
+  const { handleClick, cancel, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
     done,
@@ -61,11 +55,15 @@ const GuppyDropdownMenuItem = ({
     actionArgs,
     setIsActive,
   });
+  const clickHandler = () => {
+      if (disabled) return;
+      if (!active) handleClick();
+      else cancel();
+    },
+    [active, disabled, handleClick, cancel];
   return (
     <Menu.Item
-      onClick={() => {
-        if (handleClick) handleClick();
-      }}
+      onClick={clickHandler}
       key={`${title}-${idx}`}
       data-testid={`${title}-${idx}`}
       leftSection={icon}
@@ -141,6 +139,8 @@ interface DropdownWithIconProps {
    */
   disabled?: boolean;
 }
+
+type CencelFunction = () => void;
 
 const CohortDropdownActionButton = ({
   disableTargetWidth,
