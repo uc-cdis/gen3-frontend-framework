@@ -8,7 +8,7 @@ import {
   DownloadButtonProps,
   type DropdownButtonProps,
 } from '../../components/Buttons/DropdownButtons';
-import { Accessibility, FilterSet, useIsUserLoggedIn } from '@gen3/core';
+import { Accessibility, FilterSet } from '@gen3/core';
 import CohortActionButton from './downloads/CohortActionButton';
 import {
   findButtonAction,
@@ -18,6 +18,7 @@ import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
+import { useSession } from '../../lib/session/session';
 
 const makeActionArgs = (button: DownloadButtonProps) => {
   let actionFunction = NullButtonAction;
@@ -55,7 +56,7 @@ const createDownloadMenuButton = (
 
     return {
       title: button.title,
-      activeText: 'Downloading...',
+      activeText: 'Cancel',
       disabled: button.enabled !== undefined ? !button.enabled : true,
       icon: button?.leftIcon ? (
         <Icon icon={button.leftIcon} />
@@ -111,7 +112,11 @@ const DownloadsPanel = ({
   sort,
   indexPrefix = '',
 }: DownloadsPanelProps): JSX.Element => {
-  const isUserLoggedIn = useIsUserLoggedIn();
+  const { status, pending } = useSession(false);
+  const isUserLoggedIn = useDeepCompareMemo(() => {
+    return status === 'issued';
+  }, [status]);
+
   const loginRequired = loginForDownload ? loginForDownload : false;
 
   const dropdownsToRender = useDeepCompareMemo(() => {
@@ -124,10 +129,10 @@ const DownloadsPanel = ({
             ...acc,
             [key]: {
               ...dropdown,
-              title: `${dropdown.title} (Login Required)`,
+              title: `${dropdown.title}`,
               buttons: dropdown.dropdownItems?.map((button) => ({
                 ...button,
-                title: `${button.title} (Login Required)`,
+                title: `${button.title}`,
                 enabled: false,
               })),
             },
@@ -197,7 +202,7 @@ const DownloadsPanel = ({
         } else {
           return (
             <CohortActionButton
-              activeText={'Downloading...'}
+              activeText={'Cancel'}
               inactiveText={button.title}
               tooltipText={button.tooltipText}
               disabled={disabled || !button.enabled}
