@@ -19,12 +19,6 @@ const searchData = (
     searchOverFields =
       discoveryConfig?.features?.search?.searchBar?.searchableTextFields || [];
   }
-  console.log(
-    'selectedFieldsForSearchIndexing',
-    selectedFieldsForSearchIndexing,
-  );
-  console.log('searchOverFields', searchOverFields);
-
   const uidField = discoveryConfig?.minimalFieldMapping?.uid || '_hdp_uid';
   // Convert Search Terms into single string
   const searchTermsSpaceSeparated = searchTerms.join(' ').trim();

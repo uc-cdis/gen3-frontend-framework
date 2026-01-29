@@ -5,6 +5,7 @@ import { SearchInputProps } from './types';
 import { SearchMode } from '../constants';
 
 interface SearchInputSelectableFieldsProps {
+  searchableTextFields: string[] | undefined;
   searchableAndSelectableTextFields:
     | {
         [key: string]: string;
@@ -16,13 +17,13 @@ interface SearchInputSelectableFieldsProps {
 }
 
 const SearchInputSelectableFields = ({
+  searchableTextFields,
   searchableAndSelectableTextFields,
   setSelectedFieldsForSearchIndexing,
 }: SearchInputSelectableFieldsProps) => {
-  if (!searchableAndSelectableTextFields) return;
+  if (!searchableAndSelectableTextFields || !searchableTextFields) return;
 
   const [searchMode, setSearchMode] = useState(SearchMode.FULL_TEXT);
-  const searchableTextFields: string[] = [];
   const [checkboxGroupValues, setCheckboxGroupValues] = useState(
     [] as string[],
   );
@@ -34,15 +35,7 @@ const SearchInputSelectableFields = ({
         ...searchableTextFields,
         ...Object.values(searchableAndSelectableTextFields),
       ]);
-      console.log(
-        'value === SearchMode.FULL_TEXT and selectedFieldsForSearchIndexing:',
-        [
-          ...searchableTextFields,
-          ...Object.values(searchableAndSelectableTextFields),
-        ],
-      );
     } else {
-      console.log('checkboxGroupValues', checkboxGroupValues);
       setCheckboxGroupValues(checkboxGroupValues);
       setSelectedFieldsForSearchIndexing(checkboxGroupValues);
     }
@@ -70,7 +63,6 @@ const SearchInputSelectableFields = ({
           />
         </div>
       </Radio.Group>
-
       <Checkbox.Group
         value={checkboxGroupValues}
         onChange={onCheckboxGroupChange}

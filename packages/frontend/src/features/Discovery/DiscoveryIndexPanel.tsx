@@ -94,10 +94,6 @@ const DiscoveryIndexPanel = ({
     sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
   });
-  console.log(
-    'selectedFieldsForSearchIndexing in DiscoveryIndexPanel',
-    selectedFieldsForSearchIndexing,
-  );
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
@@ -147,6 +143,10 @@ const DiscoveryIndexPanel = ({
                   }
                 />
                 <SearchInputSelectableFields
+                  searchableTextFields={
+                    discoveryConfig?.features?.search?.searchBar
+                      ?.searchableTextFields
+                  }
                   searchableAndSelectableTextFields={
                     discoveryConfig?.features?.search?.searchBar
                       ?.searchableAndSelectableTextFields
