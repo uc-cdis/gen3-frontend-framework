@@ -11,7 +11,9 @@ import React, { ComponentType, ReactNode } from 'react';
 
 export type QueryOptions = Record<string, unknown>;
 
-export type FacetValueLabel = string | ((def?: FacetDefinition,  queryOptions?: QueryOptions) => string);
+export type FacetValueLabel =
+  | string
+  | ((def?: FacetDefinition, queryOptions?: QueryOptions) => string);
 
 export interface EnumChartProps {
   readonly field: string;
@@ -82,11 +84,6 @@ export type GetRangeFacetWithDefinedRangesDataFunction = (
   ranges: ReadonlyArray<NumericFromTo>,
 ) => RangeFacetResponse;
 
-// export type GetFacetDataFunction =
-//   | GetEnumFacetDataFunction
-//   | GetRangeFacetDataFunction
-//   | GetRangeFacetWithDefinedRangesDataFunction;
-
 export type FacetDataFunctionType = 'enum' | 'range' | 'rangeWithDefined';
 
 export type GetFacetDataFunction<
@@ -133,8 +130,9 @@ export interface FacetCommonHooks {
   ) => void;
 }
 
-export interface FacetDataHooks<T extends FacetDataFunctionType>
-  extends FacetCommonHooks {
+export interface FacetDataHooks<
+  T extends FacetDataFunctionType,
+> extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetFilters: SelectFacetFilterFunction;
   useGetFacetData: GetFacetDataFunction<T>; // gets data for EnumFacets and ToggleFacet

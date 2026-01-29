@@ -3,5 +3,13 @@
 export { middleware } from './middleware-impl';
 
 export const config = {
-  matcher: ['/Explorer', '/Query', '/Workspace', '/Profile'],
+  matcher: [
+    '/DataLibrary',
+    '/DataConnections',
+    '/Analysis',
+    '/Workspace',
+    '/Profile',
+    '/app/MetadataDictionary',
+    '/Explorer',
+  ],
 };

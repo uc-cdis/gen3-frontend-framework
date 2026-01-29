@@ -1,4 +1,7 @@
-const FieldNameOverrides: Record<string, string> = {};
+const FieldNameOverrides: Record<string, string> = {
+  gender: 'Sex',
+  Gender: 'Sex',
+};
 
 const COMMON_PREPOSITIONS = [
   'a',
