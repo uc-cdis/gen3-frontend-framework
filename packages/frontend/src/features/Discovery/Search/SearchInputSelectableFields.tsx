@@ -25,12 +25,10 @@ const SearchInputSelectableFields = ({
   searchableAndSelectableTextFields,
   setSelectedFieldsForSearchIndexing,
 }: SearchInputSelectableFieldsProps) => {
-  if (!searchableAndSelectableTextFields || !searchableTextFields) return;
-
   const [checkboxGroupValues, setCheckboxGroupValues] = useState(
     [] as string[],
   );
-
+  if (!searchableAndSelectableTextFields || !searchableTextFields) return;
   const onRadioChange = (value: string) => {
     setSearchMode(value as SearchMode);
     if (value === SearchMode.FULL_TEXT) {
