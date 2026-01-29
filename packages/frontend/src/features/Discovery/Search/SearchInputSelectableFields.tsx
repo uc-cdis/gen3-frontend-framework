@@ -4,42 +4,51 @@ import { Checkbox, Radio, TextInput } from '@mantine/core';
 import { SearchInputProps } from './types';
 import { SearchMode } from '../constants';
 
+interface SearchInputSelectableFieldsProps {
+  searchableAndSelectableTextFields:
+    | {
+        [key: string]: string;
+      }
+    | undefined;
+  setSelectedFieldsForSearchIndexing: React.Dispatch<
+    React.SetStateAction<string[]>
+  >;
+}
+
 const SearchInputSelectableFields = ({
   searchableAndSelectableTextFields,
   setSelectedFieldsForSearchIndexing,
-}) => {
+}: SearchInputSelectableFieldsProps) => {
   if (!searchableAndSelectableTextFields) return;
 
   const [searchMode, setSearchMode] = useState(SearchMode.FULL_TEXT);
-  /* const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
-    useState([]); */
   const searchableTextFields: string[] = [];
-  const [checkboxGroupValues, setCheckboxGroupValues] = useState([]);
+  const [checkboxGroupValues, setCheckboxGroupValues] = useState(
+    [] as string[],
+  );
 
   const onRadioChange = (value: string) => {
     setSearchMode(value as SearchMode);
     if (value === SearchMode.FULL_TEXT) {
-      /*       setSelectedFieldsForSearchIndexing([
+      setSelectedFieldsForSearchIndexing([
         ...searchableTextFields,
         ...Object.values(searchableAndSelectableTextFields),
-      ]); */
-      setSelectedFieldsForSearchIndexing([]);
-      /*       console.log(
+      ]);
+      console.log(
         'value === SearchMode.FULL_TEXT and selectedFieldsForSearchIndexing:',
-        selectedFieldsForSearchIndexing,
-      ); */
+        [
+          ...searchableTextFields,
+          ...Object.values(searchableAndSelectableTextFields),
+        ],
+      );
     } else {
       console.log('checkboxGroupValues', checkboxGroupValues);
       setCheckboxGroupValues(checkboxGroupValues);
       setSelectedFieldsForSearchIndexing(checkboxGroupValues);
-      /*       console.log(
-        'value === SearchMode.RESTRICTED and selectedFieldsForSearchIndexing:',
-        selectedFieldsForSearchIndexing,
-      ); */
     }
   };
 
-  const onCheckboxGroupChange = (currentCheckedValues) => {
+  const onCheckboxGroupChange = (currentCheckedValues: string[]) => {
     setCheckboxGroupValues(currentCheckedValues);
     console.log('checkboxGroupValues', checkboxGroupValues);
     console.log('currentCheckedValues', currentCheckedValues);

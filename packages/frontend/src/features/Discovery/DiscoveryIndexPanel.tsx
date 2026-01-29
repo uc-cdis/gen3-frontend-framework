@@ -73,7 +73,7 @@ const DiscoveryIndexPanel = ({
   }, [searchBarTerms, advancedSearchTerms]);
 
   const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
-    useState([]);
+    useState([] as string[]);
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
