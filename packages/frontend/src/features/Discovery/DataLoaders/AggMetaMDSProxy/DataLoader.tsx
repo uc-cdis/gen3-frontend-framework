@@ -18,6 +18,7 @@ export const useAggMetaMDSProxy = ({
   pagination,
   searchTerms,
   selectedFieldsForSearchIndexing,
+  searchMode,
   discoveryConfig,
   sorting,
   guidType = 'discovery_metadata',
@@ -40,12 +41,7 @@ export const useAggMetaMDSProxy = ({
     searchTerms: searchTerms,
     sorting: sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
-    /*
-    TODO: Example param
-    selectedFieldsForSearchIndexing: [
-        'study_metadata.minimal_info.study_name',
-      ],
-     */
+    searchMode: searchMode,
     selectedTags: {},
     /*
     TODO: Example param

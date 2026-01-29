@@ -18,6 +18,7 @@ import {
 } from '../Study/types';
 import { DataAuthorization } from '../../utils';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { SearchMode } from './constants';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -34,7 +35,8 @@ export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryIndexConfig;
-  selectedFieldsForSearchIndexing: string[];
+  selectedFieldsForSearchIndexing?: string[];
+  searchMode?: SearchMode;
 }
 
 export interface DataRequestStatus {

@@ -17,6 +17,7 @@ import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
+import { SearchMode } from './constants';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -74,6 +75,9 @@ const DiscoveryIndexPanel = ({
 
   const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
     useState([] as string[]);
+  const [searchMode, setSearchMode] = useState<SearchMode>(
+    SearchMode.FULL_TEXT,
+  );
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
@@ -93,7 +97,9 @@ const DiscoveryIndexPanel = ({
     discoveryConfig,
     sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
+    searchMode: searchMode,
   });
+
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
@@ -143,6 +149,8 @@ const DiscoveryIndexPanel = ({
                   }
                 />
                 <SearchInputSelectableFields
+                  searchMode={searchMode}
+                  setSearchMode={setSearchMode}
                   searchableTextFields={
                     discoveryConfig?.features?.search?.searchBar
                       ?.searchableTextFields

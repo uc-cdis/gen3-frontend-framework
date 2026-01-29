@@ -5,6 +5,8 @@ import { SearchInputProps } from './types';
 import { SearchMode } from '../constants';
 
 interface SearchInputSelectableFieldsProps {
+  searchMode: SearchMode;
+  setSearchMode: React.Dispatch<React.SetStateAction<SearchMode>>;
   searchableTextFields: string[] | undefined;
   searchableAndSelectableTextFields:
     | {
@@ -17,13 +19,14 @@ interface SearchInputSelectableFieldsProps {
 }
 
 const SearchInputSelectableFields = ({
+  searchMode,
+  setSearchMode,
   searchableTextFields,
   searchableAndSelectableTextFields,
   setSelectedFieldsForSearchIndexing,
 }: SearchInputSelectableFieldsProps) => {
   if (!searchableAndSelectableTextFields || !searchableTextFields) return;
 
-  const [searchMode, setSearchMode] = useState(SearchMode.FULL_TEXT);
   const [checkboxGroupValues, setCheckboxGroupValues] = useState(
     [] as string[],
   );
@@ -43,8 +46,6 @@ const SearchInputSelectableFields = ({
 
   const onCheckboxGroupChange = (currentCheckedValues: string[]) => {
     setCheckboxGroupValues(currentCheckedValues);
-    console.log('checkboxGroupValues', checkboxGroupValues);
-    console.log('currentCheckedValues', currentCheckedValues);
     setSelectedFieldsForSearchIndexing(currentCheckedValues);
   };
 
@@ -77,7 +78,7 @@ const SearchInputSelectableFields = ({
                 disabled={searchMode === SearchMode.FULL_TEXT}
               />
             </div>
-          ))}{' '}
+          ))}
         </div>
       </Checkbox.Group>
     </>
