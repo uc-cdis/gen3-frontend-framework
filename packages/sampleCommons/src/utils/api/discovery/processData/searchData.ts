@@ -13,7 +13,6 @@ const searchData = (
   // do not execute search if there are no search terms
   if (searchTerms.length === 0 || searchTerms.every((item) => item === ''))
     return data;
-  console.log('searchMode:', searchMode);
   let searchOverFields;
   if (
     selectedFieldsForSearchIndexing.length > 0 ||
