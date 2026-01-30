@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from 'react-icons/md';
-import { Checkbox, Radio, TextInput } from '@mantine/core';
-import { SearchInputProps } from './types';
+import { Checkbox, Radio } from '@mantine/core';
 import { SearchMode } from '../constants';
 
 interface SearchInputSelectableFieldsProps {
