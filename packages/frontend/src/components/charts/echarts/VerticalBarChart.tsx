@@ -7,21 +7,10 @@ import { HistogramData, HistogramDataArray } from '@gen3/core';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { filterMissing } from './utils';
+import { chartColors, filterMissing } from './utils';
 
 // Colors aligned to facet bins by index (dataIndex).
-const BIN_COLORS: string[] = [
-  '#1f77b4',
-  '#ff7f0e',
-  '#2ca02c',
-  '#d62728',
-  '#9467bd',
-  '#8c564b',
-  '#e377c2',
-  '#7f7f7f',
-  '#bcbd22',
-  '#17becf',
-];
+const BIN_COLORS = chartColors;
 
 type BarItem = {
   name: string;
@@ -212,7 +201,7 @@ const VerticalBarChart = ({
       </div>
 
       {showLegendInChart && (
-        <div className="overflow-hidden flex flex-col">
+        <div className="w-1/4 overflow-hidden flex flex-col">
           <div className="text-md font-bold mb-2">Legend</div>
 
           <div className="border overflow-hidden">

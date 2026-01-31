@@ -1,8 +1,8 @@
+import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { init, getInstanceByDom } from 'echarts';
-import type { CSSProperties } from 'react';
-import type { EChartsOption, ECharts, SetOptionOpts } from 'echarts';
+import type { ECharts, EChartsOption, SetOptionOpts } from 'echarts';
+import { getInstanceByDom, init } from 'echarts';
 import { useResizeObserver } from '@mantine/hooks';
 
 export interface ReactEChartsProps {
@@ -10,7 +10,7 @@ export interface ReactEChartsProps {
   style?: CSSProperties;
   settings?: SetOptionOpts;
   loading?: boolean;
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | 'gen3';
   events?: { [key: string]: (e: any) => void };
 }
 
@@ -19,7 +19,7 @@ const ReactECharts = ({
   style,
   settings,
   loading,
-  theme,
+  theme = 'gen3',
   events,
 }: ReactEChartsProps): JSX.Element => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);

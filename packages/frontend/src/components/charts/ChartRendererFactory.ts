@@ -5,6 +5,7 @@ import PieChart from './echarts/PieChart';
 import DonutChart from './echarts/DonutChart';
 import HorizontalBarChart from './echarts/HorizontalBarChart';
 import VerticalBarChart from './echarts/VerticalBarChart';
+import { registerEchartsTheme } from './echarts/utils';
 
 const DefaultChartCatalog = {
   chart: {
@@ -22,6 +23,7 @@ const ChartRendererFactory = (): RenderFactoryTypedInstance<ChartProps> => {
   if (!instance) {
     instance = new RenderFactoryTypedInstance<ChartProps>();
     instance.registerRendererCatalog(DefaultChartCatalog);
+    registerEchartsTheme();
   }
   return instance;
 };
