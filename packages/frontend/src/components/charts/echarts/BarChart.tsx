@@ -7,14 +7,12 @@ import type { EChartsOption } from 'echarts';
 import { graphic } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
+import { filterMissing } from './utils';
 
 interface BarChartData {
   value: number;
   name: string;
 }
-
-const filterMissing = (facetData: any) =>
-  facetData.filter((d: any) => d.key !== '_missing');
 
 const processChartData = (
   facetData: HistogramDataArray,
