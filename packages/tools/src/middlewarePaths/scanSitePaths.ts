@@ -29,6 +29,7 @@ interface Options {
   pagesDir?: string;
   excludeRoutes?: string[];
   outputFile?: string;
+  forceMatchAll?: boolean;
 }
 
 function loadAuthConfig() {
@@ -160,13 +161,17 @@ function writeGeneratedMiddlewareEntryTs(
  *                                            in the middleware path matcher. If true, all application routes
  *                                            are scanned and included; otherwise, specific routes from the
  *                                            authentication configuration are considered.
+ * @param forceMatchAll - set to true to force all routes to be matched by the middleware.
  */
-const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
+const createMiddlewareRoutes = (
+  useScanAllPaths: boolean = false,
+  forceMatchAll = false,
+) => {
   const authConfig = loadAuthConfig();
   const allPagesRequireLogin = authConfig?.routes?.['*']?.loginRequired;
 
   let routes;
-  if (allPagesRequireLogin) {
+  if (allPagesRequireLogin || forceMatchAll) {
     console.log(
       'All pages require login. Adding all routes to middleware path matcher.',
     );
@@ -194,17 +199,21 @@ const createMiddlewareRoutes = (useScanAllPaths: boolean = false) => {
 function main() {
   try {
     const {
-      values: { scanAllPages },
+      values: { scanAllPages, forceMatchAll },
     } = parseArgs({
       options: {
         scanAllPages: {
           type: 'boolean',
           default: false,
         },
+        forceMatchAll: {
+          type: 'boolean',
+          default: false,
+        },
       },
     });
 
-    createMiddlewareRoutes(scanAllPages);
+    createMiddlewareRoutes(scanAllPages, forceMatchAll);
   } catch (e: unknown) {
     if (e instanceof Error) {
       if (e.name === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') {

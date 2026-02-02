@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.12.15",
+  "version": "0.12.16",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -19,6 +19,7 @@
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
     "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
     "build:middlewarePaths": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js",
+    "build:middlewarePathsMatchAll": "node ../../node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js --forceMatchAll",
     "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
