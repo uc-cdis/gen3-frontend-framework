@@ -5,7 +5,7 @@ import DiscoveryProvider from './DiscoveryProvider';
 import { Button, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
-import { useDisclosure } from '@mantine/hooks';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { CollapsableCharts } from '../../components/charts';
@@ -17,7 +17,7 @@ import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
-import { SearchMode } from './constants';
+import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -55,6 +55,10 @@ const DiscoveryIndexPanel = ({
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
+  const [debouncedSearchBarTerms] = useDebouncedValue(
+    searchBarTerms,
+    DEBOUNCE_DELAY_TIME,
+  );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
@@ -67,11 +71,11 @@ const DiscoveryIndexPanel = ({
     return {
       keyword: {
         operator: SearchCombination.and,
-        keywords: searchBarTerms,
+        keywords: debouncedSearchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
     };
-  }, [searchBarTerms, advancedSearchTerms]);
+  }, [debouncedSearchBarTerms, advancedSearchTerms]);
 
   const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
     useState([] as string[]);
