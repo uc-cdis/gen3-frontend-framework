@@ -76,7 +76,13 @@ export const useAggMetaMDSProxy = ({
       }
     };
     fetchData();
-  }, [searchTerms, pagination, sorting, selectedFieldsForSearchIndexing]);
+  }, [
+    searchTerms,
+    pagination,
+    sorting,
+    selectedFieldsForSearchIndexing,
+    searchMode,
+  ]);
 
   let advancedSearchFilterValues = [] as any;
   const advancedSearchFilters = discoveryConfig.features?.advSearchFilters ?? {
