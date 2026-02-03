@@ -1,4 +1,8 @@
-import { buildAliasedNestedCountsQuery, buildRangeFilters, buildRangeQuery, } from '../utils';
+import {
+  buildAliasedNestedCountsQuery,
+  buildRangeFilters,
+  buildRangeQuery,
+} from '../utils';
 import { Operation } from '../../filters/types';
 
 const case_filters = {
