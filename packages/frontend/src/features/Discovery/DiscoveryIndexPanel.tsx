@@ -5,7 +5,7 @@ import DiscoveryProvider from './DiscoveryProvider';
 import { Button, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
-import { useDisclosure } from '@mantine/hooks';
+import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';
 import { CollapsableCharts } from '../../components/charts';
@@ -16,6 +16,8 @@ import AiSearch from './Search/AiSearch';
 import { getDiscoveryDataLoader } from './DataLoaders/registeredDataLoaders';
 import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
+import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -53,6 +55,10 @@ const DiscoveryIndexPanel = ({
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
+  const [debouncedSearchBarTerms] = useDebouncedValue(
+    searchBarTerms,
+    DEBOUNCE_DELAY_TIME,
+  );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
@@ -65,11 +71,17 @@ const DiscoveryIndexPanel = ({
     return {
       keyword: {
         operator: SearchCombination.and,
-        keywords: searchBarTerms,
+        keywords: debouncedSearchBarTerms,
       },
       advancedSearchTerms: advancedSearchTerms,
     };
-  }, [searchBarTerms, advancedSearchTerms]);
+  }, [debouncedSearchBarTerms, advancedSearchTerms]);
+
+  const [selectedFieldsForSearchIndexing, setSelectedFieldsForSearchIndexing] =
+    useState([] as string[]);
+  const [searchMode, setSearchMode] = useState<SearchMode>(
+    SearchMode.FULL_TEXT,
+  );
 
   // Get all required data from the data hook. This includes the metadata, search suggestions, and results, pagination, etc.
   const {
@@ -88,6 +100,8 @@ const DiscoveryIndexPanel = ({
     searchTerms: searchParam,
     discoveryConfig,
     sorting,
+    selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
+    searchMode: searchMode,
   });
 
   const selectedRecords = useMemo(() => {
@@ -136,6 +150,21 @@ const DiscoveryIndexPanel = ({
                   }
                   label={
                     discoveryConfig?.features?.search?.searchBar?.inputSubtitle
+                  }
+                />
+                <SearchInputSelectableFields
+                  searchMode={searchMode}
+                  setSearchMode={setSearchMode}
+                  searchableTextFields={
+                    discoveryConfig?.features?.search?.searchBar
+                      ?.searchableTextFields
+                  }
+                  searchableAndSelectableTextFields={
+                    discoveryConfig?.features?.search?.searchBar
+                      ?.searchableAndSelectableTextFields
+                  }
+                  setSelectedFieldsForSearchIndexing={
+                    setSelectedFieldsForSearchIndexing
                   }
                 />
               </div>

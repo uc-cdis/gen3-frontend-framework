@@ -73,7 +73,9 @@ export const downloadToManifestAction = async (
       let resultManifest = await downloadJSONDataFromGuppy({
         parameters: {
           ...cohortFilterParams,
-          fields: [referenceIdFieldInDataIndex, ...manifestFields],
+          fields: resourceIdField
+            ? [resourceIdField, ...manifestFields]
+            : manifestFields,
         },
         onAbort: onAbort,
         signal: signal,

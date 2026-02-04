@@ -18,6 +18,7 @@ import {
 } from '../Study/types';
 import { DataAuthorization } from '../../utils';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { SearchMode } from './constants';
 
 interface KeywordSearch {
   keywords?: string[];
@@ -34,6 +35,8 @@ export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
   discoveryConfig: DiscoveryIndexConfig;
+  selectedFieldsForSearchIndexing?: string[];
+  searchMode?: SearchMode;
 }
 
 export interface DataRequestStatus {
@@ -148,6 +151,7 @@ export interface SearchBar {
   inputSubtitle: string;
   placeholder?: string;
   searchableTextFields: Array<string>;
+  searchableAndSelectableTextFields: { [key: string]: string };
 }
 
 interface TagSearchDropdown {
