@@ -1,5 +1,11 @@
 import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
-import { Button, FloatingPosition, Menu, MenuItemProps, Tooltip, } from '@mantine/core';
+import {
+  Button,
+  FloatingPosition,
+  Menu,
+  MenuItemProps,
+  Tooltip,
+} from '@mantine/core';
 import { IoMdArrowDropdown as Dropdown } from 'react-icons/io';
 import { focusStyles } from '../../../utils';
 import useGuppyActionButton from './downloadActionHook';
@@ -222,4 +228,4 @@ const CohortDropdownActionButton = ({
   );
 };
 
-export default CohortDropdownActionButton;
+export default React.memo(CohortDropdownActionButton);

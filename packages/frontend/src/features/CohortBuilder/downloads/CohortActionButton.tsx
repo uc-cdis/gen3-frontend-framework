@@ -52,4 +52,4 @@ const CohortActionButton = ({
   );
 };
 
-export default CohortActionButton;
+export default React.memo(CohortActionButton);

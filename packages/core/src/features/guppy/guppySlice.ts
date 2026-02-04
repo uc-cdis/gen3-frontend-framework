@@ -1,12 +1,7 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  GQLFilter,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 
@@ -206,7 +201,14 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
         return { query, variables };
       },
-      // return . seperated fields as proper values
+      transformErrorResponse: () => {
+        return {
+          data: {
+            _aggregation: [],
+          },
+        };
+      },
+      // return . separated fields as proper values
       transformResponse: (response: Record<string, any>, _meta, args) => {
         const containsDots = args?.fields?.filter((f) => f.includes('.'));
         // check if dot seperated in arry and not object
