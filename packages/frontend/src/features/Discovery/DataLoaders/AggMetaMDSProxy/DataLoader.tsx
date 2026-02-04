@@ -17,7 +17,8 @@ interface ProxyData {
 export const useAggMetaMDSProxy = ({
   pagination,
   searchTerms,
-  advancedSearchTerms,
+  selectedFieldsForSearchIndexing,
+  searchMode,
   discoveryConfig,
   sorting,
   guidType = 'discovery_metadata',
@@ -39,13 +40,8 @@ export const useAggMetaMDSProxy = ({
     pagination: pagination,
     searchTerms: searchTerms,
     sorting: sorting,
-    selectedFieldsForSearchIndexing: [],
-    /*
-    TODO: Example param
-    selectedFieldsForSearchIndexing: [
-        'study_metadata.minimal_info.study_name',
-      ],
-     */
+    selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
+    searchMode: searchMode,
     selectedTags: {},
     /*
     TODO: Example param
@@ -80,7 +76,13 @@ export const useAggMetaMDSProxy = ({
       }
     };
     fetchData();
-  }, [searchTerms, pagination, sorting]);
+  }, [
+    searchTerms,
+    pagination,
+    sorting,
+    selectedFieldsForSearchIndexing,
+    searchMode,
+  ]);
 
   let advancedSearchFilterValues = [] as any;
   const advancedSearchFilters = discoveryConfig.features?.advSearchFilters ?? {

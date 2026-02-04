@@ -24,6 +24,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     sorting,
     selectedTags,
     selectedFieldsForSearchIndexing,
+    searchMode,
     discoveryConfig,
   } = reqBody;
   let processedData: Array<JSONObject> = data;
@@ -32,6 +33,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     data,
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
+    searchMode,
     discoveryConfig,
   );
   // Then Adv Search Filtering (user selected filters)
