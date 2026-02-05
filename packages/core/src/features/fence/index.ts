@@ -4,7 +4,9 @@ import {
   type NameUrl,
   useGetDownloadQuery,
   useGetLoginProvidersQuery,
+  useGetPresignedUrlQuery,
   useLazyGetDownloadQuery,
+  useLazyGetPresignedUrlQuery,
 } from './fenceApi';
 
 import {
@@ -40,4 +42,6 @@ export {
   useGetLoginProvidersQuery,
   useGetJWKKeysQuery,
   useAuthorizeFromCredentialsMutation,
+  useGetPresignedUrlQuery,
+  useLazyGetPresignedUrlQuery,
 };
