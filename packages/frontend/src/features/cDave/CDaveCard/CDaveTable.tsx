@@ -54,7 +54,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
       setSelectedFacets([]);
     } else {
       setSelectedFacets(
-        validData.map(({ key, count }) => ({ value: key, numCases: count })),
+        validData.map(({ key, count }) => ({ value: key, count: count })),
       );
     }
   };
@@ -135,10 +135,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           ? selectedFacets.filter(
                               (facet) => facet.value !== key,
                             )
-                          : [
-                              ...selectedFacets,
-                              { value: key, numCases: count },
-                            ],
+                          : [...selectedFacets, { value: key, count: count }],
                       )
                     }
                   />

@@ -4,20 +4,20 @@ import saveAs from 'file-saver';
 import tw from 'tailwind-styled-components';
 import { ActionIcon, Button, Menu, Tooltip } from '@mantine/core';
 import { useResizeObserver } from '@mantine/hooks';
+import { ClinicalContinuousStatsData, DataDimension } from '../types';
 import {
-  ClinicalContinuousStatsData,
-  convertFilterSetToGqlFilter as buildCohortGqlOperator,
   FilterSet,
-  joinFilters,
   selectCurrentCohortFilters,
   useCoreSelector,
 } from '@gen3/core';
-import { useGetCaseSsmsQuery } from '@/core/features/api';
-import OffscreenWrapper from '@/components/OffscreenWrapper';
-import { handleDownloadPNG, handleDownloadSVG } from '@/features/charts/utils';
-import { DashboardDownloadContext } from '@/components/analysis';
+import OffscreenWrapper from '../../../components/OffscreenWrapper';
+import {
+  handleDownloadPNG,
+  handleDownloadSVG,
+} from '../../../components/charts/downloads';
+import { DashboardDownloadContext } from '../../Analysis/context';
 import { getFormattedTimestamp } from '../../../utils/time';
-import { COLOR_MAP, DATA_DIMENSIONS, DEMO_COHORT_FILTERS } from '../constants';
+import { COLOR_MAP, DATA_DIMENSIONS } from '../constants';
 import {
   convertDataDimension,
   parseNestedQQResponseData,
@@ -26,7 +26,6 @@ import {
 } from '../utils';
 import QQPlot from './QQPlot';
 import BoxPlot from './BoxPlot';
-import { DataDimension } from '../types';
 import { DownloadIcon } from '@/utils/icons';
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
@@ -122,24 +121,21 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     mode: 'and',
   };
 
-  const isDemoMode = useIsDemoApp();
   const cohortFilters = useCoreSelector((state) =>
-    isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+    selectCurrentCohortFilters(state),
   );
 
   const {
     data: qqData,
     isLoading,
     isSuccess,
-  } = useGetCaseSsmsQuery({
-    request: {
-      fields: [field],
-      filters: buildCohortGqlOperator(
-        joinFilters(missingFilter, cohortFilters),
-      ),
-      size: 10000,
+  } = {
+    data: {
+      hits: [],
     },
-  });
+    isSuccess: true,
+    isLoading: false,
+  };
 
   const parsedQQValues = useDeepCompareMemo(
     () => (isSuccess ? parseNestedQQResponseData(qqData?.hits, field) : []),

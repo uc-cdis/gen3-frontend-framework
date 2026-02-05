@@ -287,11 +287,11 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: '-32612.0--31470.4',
-          numCases: 6,
+          count: 6,
         },
         {
           value: '-31470.4--30328.8',
-          numCases: 8,
+          count: 8,
         },
       ],
       null,
@@ -348,7 +348,7 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: '5000.0-10000.0',
-          numCases: 17,
+          count: 17,
         },
       ],
       {
@@ -393,7 +393,7 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: 'bin a',
-          numCases: 17,
+          count: 17,
         },
       ],
       [
@@ -440,7 +440,7 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: 'not hispanic or latino',
-          numCases: 6179,
+          count: 6179,
         },
       ],
       null,
@@ -465,11 +465,11 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: '_missing',
-          numCases: 100,
+          count: 100,
         },
         {
           value: 'etoposide',
-          numCases: 20,
+          count: 20,
         },
       ],
       null,
@@ -503,11 +503,11 @@ describe('createFiltersFromSelectedValues', () => {
       [
         {
           value: 'selected value 1',
-          numCases: 5788,
+          count: 5788,
         },
         {
           value: 'not hispanic or latino',
-          numCases: 6179,
+          count: 6179,
         },
       ],
       {

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { Tooltip, Box } from "@mantine/core";
+import React, { useState } from 'react';
+import { Box, Tooltip } from '@mantine/core';
 import {
+  Box as VictoryBox,
+  BoxProps,
   LineSegment,
   VictoryAxis,
   VictoryBoxPlot,
   VictoryChart,
+  VictoryContainer,
   VictoryLabel,
   VictoryLabelProps,
   VictoryScatter,
-  Box as VictoryBox,
-  BoxProps,
-  VictoryContainer,
-} from "victory";
+} from 'victory';
 
 const CustomQ1 = (props: BoxProps) => {
   // Provide default values for potentially undefined properties
@@ -62,13 +62,13 @@ interface BoxPlotTooltipProps {
 }
 
 const BoxPlotTooltip: React.FC<BoxPlotTooltipProps> = ({
-                                                         x,
-                                                         y,
-                                                         text,
-                                                         visible,
-                                                       }: BoxPlotTooltipProps) => {
+  x,
+  y,
+  text,
+  visible,
+}: BoxPlotTooltipProps) => {
   return visible ? (
-    <g style={{ pointerEvents: "none" }}>
+    <g style={{ pointerEvents: 'none' }}>
       <foreignObject x={x} y={y}>
         <Tooltip label={text} withArrow opened withinPortal>
           <Box />
@@ -102,15 +102,15 @@ interface BoxPlotProps {
 }
 
 const BoxPlot: React.FC<BoxPlotProps> = ({
-                                           data,
-                                           field,
-                                           color,
-                                           height,
-                                           width,
-                                           chartPadding = { left: 60, right: 20, bottom: 40, top: 50 },
-                                           chartRef,
-                                           label = ["Box Plot"],
-                                         }: BoxPlotProps) => {
+  data,
+  field,
+  color,
+  height,
+  width,
+  chartPadding = { left: 60, right: 20, bottom: 40, top: 50 },
+  chartRef,
+  label = ['Box Plot'],
+}: BoxPlotProps) => {
   const [tooltipProps, setShowTooltipProps] = useState<{
     visible: boolean;
     x?: number;
@@ -138,8 +138,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           containerRef={
             chartRef
               ? (ref: HTMLElement | null) => {
-                if (ref) chartRef.current = ref;
-              }
+                  if (ref) chartRef.current = ref;
+                }
               : undefined
           }
           aria-label={`This Box Plot visualizes the distribution of ${field} values. Refer to the accompanying Statistics table or download the TSV file for details.`}
@@ -150,14 +150,14 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         dy={20}
         dx={(width + paddingLeft - paddingRight) / 2}
         text={label}
-        style={{ fontSize: 16, fontFamily: "Noto Sans" }}
+        style={{ fontSize: 16, fontFamily: 'Noto Sans' }}
         textAnchor="middle"
       />
       <VictoryAxis
         dependentAxis
         style={{
           grid: {
-            stroke: "",
+            stroke: '',
             strokeWidth: 1,
           },
         }}
@@ -165,10 +165,10 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         tickCount={8}
         tickLabelComponent={emptyChart ? <></> : undefined}
         tickFormat={(value: number) =>
-          value.toLocaleString("en-US", {
+          value.toLocaleString('en-US', {
             maximumFractionDigits: 2,
-            notation: "compact",
-            compactDisplay: "short",
+            notation: 'compact',
+            compactDisplay: 'short',
           })
         }
       />
@@ -201,12 +201,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         ]}
         events={[
           {
-            target: "min",
+            target: 'min',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "minLabels",
+                    target: 'minLabels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
@@ -224,12 +224,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             },
           },
           {
-            target: "max",
+            target: 'max',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "maxLabels",
+                    target: 'maxLabels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
@@ -247,12 +247,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             },
           },
           {
-            target: "median",
+            target: 'median',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "medianLabels",
+                    target: 'medianLabels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
@@ -270,12 +270,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             },
           },
           {
-            target: "q1",
+            target: 'q1',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "q1Labels",
+                    target: 'q1Labels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
@@ -293,12 +293,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             },
           },
           {
-            target: "q3",
+            target: 'q3',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "q3Labels",
+                    target: 'q3Labels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
@@ -322,22 +322,22 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         data={[{ y: data.mean, x: 1 }]}
         style={{
           data: {
-            fill: "white",
-            stroke: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+            fill: 'white',
+            stroke: '#444444',
             strokeWidth: 1.5,
           },
         }}
         size={5}
-        symbol={"plus"}
-        labels={() => ""}
+        symbol={'plus'}
+        labels={() => ''}
         events={[
           {
-            target: "data",
+            target: 'data',
             eventHandlers: {
               onMouseOver: () => {
                 return [
                   {
-                    target: "labels",
+                    target: 'labels',
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,

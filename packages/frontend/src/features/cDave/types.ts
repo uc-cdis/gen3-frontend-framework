@@ -16,7 +16,7 @@ export type CategoricalBins = Record<string, number | Record<string, number>>;
 
 export type ChartTypes = 'histogram' | 'survival' | 'boxqq';
 
-export type SelectedFacet = { value: string; numCases: number };
+export type SelectedFacet = { value: string; count: number };
 
 export type DataDimension =
   | 'Years'
@@ -59,6 +59,17 @@ export const isCategoricalBins = (value: unknown): value is CategoricalBins => {
 
   return true;
 };
+
+export interface ClinicalContinuousStatsData {
+  readonly min: number;
+  readonly max: number;
+  readonly mean: number;
+  readonly std_dev: number;
+  readonly iqr: number;
+  readonly median: number;
+  readonly q1: number;
+  readonly q3: number;
+}
 
 interface ClinicalDataFacet extends FacetDefinition {
   cardType: 'categorical' | 'continuous';

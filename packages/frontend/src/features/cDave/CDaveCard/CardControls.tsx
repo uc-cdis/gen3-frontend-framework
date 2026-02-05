@@ -90,7 +90,7 @@ const CardControls: React.FC<CardControlsProps> = ({
                 selectedFacets.length === 0
                   ? 0
                   : selectedFacets
-                      .map((facet) => facet.numCases)
+                      .map((facet) => facet.count)
                       .reduce((a, b) => a + b)
               }
             />
