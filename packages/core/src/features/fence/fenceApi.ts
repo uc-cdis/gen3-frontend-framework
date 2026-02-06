@@ -28,6 +28,10 @@ interface PresignedUrlRequest {
   readonly what: string;
 }
 
+interface PresignedUrlResponse {
+  readonly url: string;
+}
+
 /**
  * Creates a fence API endpoint for handling login/data processes
  * @param endpoints - defined endpoint query for logging in
@@ -38,13 +42,10 @@ export const loginProvidersApi = gen3Api.injectEndpoints({
     getLoginProviders: builder.query<Gen3FenceLoginProviders, void>({
       query: () => `${GEN3_FENCE_API}/login`,
     }),
-    getDownload: builder.query<Gen3FenceLoginProviders, string>({
+    getDownload: builder.query<PresignedUrlResponse, string>({
       query: (guid) => `${GEN3_FENCE_API}/data/download/${guid}`,
     }),
-    getPresignedUrl: builder.query<
-      Gen3FenceLoginProviders,
-      PresignedUrlRequest
-    >({
+    getPresignedUrl: builder.query<PresignedUrlResponse, PresignedUrlRequest>({
       query: ({ guid, what }) => `${GEN3_FENCE_API}/data/${what}/${guid}`,
     }),
   }),
