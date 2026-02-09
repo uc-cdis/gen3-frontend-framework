@@ -1,7 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
+import {
+  colorType,
+  create10ColorAccessibleContrast,
+  create10ColorPallet,
+} from './colors';
 
 const utility = {
   link: '#155276',
@@ -31,7 +35,7 @@ const utilityContrast = {
 
 const main = () => {
   const {
-    values: { themeFile, out, colorShift, colorSaturation },
+    values: { themeFile, out, colorShift, colorSaturation, vars },
   } = parseArgs({
     options: {
       themeFile: {
@@ -52,6 +56,9 @@ const main = () => {
         type: 'string',
         default: '20',
       },
+      vars: {
+        type: 'boolean',
+      },
     },
   });
 
@@ -69,6 +76,26 @@ const main = () => {
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
+
+  if (vars) {
+    // vars only output
+    const theme = [...Object.keys(themeColors), 'utility'].reduce(
+      (acc: Record<string, string>, colorName) => {
+        for (const value of Object.values(colorType)) {
+          const colorVar = `${colorName}${value !== 'DEFAULT' ? '--' + colorName : ''}`;
+          acc[colorVar] = `(var --${colorVar})`;
+          acc[`${colorVar}-contrast`] = `(var --${colorVar}-contrast)`;
+        }
+        return acc;
+      },
+      {},
+    );
+    writeFileSync(
+      join(out ?? './', 'themeColors.vars'),
+      JSON.stringify(theme, null, 2),
+    );
+    return;
+  }
 
   // build a list of colors
   const theme = Object.entries(themeColors).reduce(
