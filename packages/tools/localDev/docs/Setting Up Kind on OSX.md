@@ -183,6 +183,6 @@ delete secret
  kubectl delete secret gen3-certs --namespace default
 ```
 
-If you have certificate issues confirm secret is correct by
+If you have certificate issues, confirm the secret is correct by
 viewing the ingress config and confirm the secret name is the same in the
 configuration
