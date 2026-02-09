@@ -9,7 +9,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Loader, Text } from '@mantine/core';
+import { Box, Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -31,6 +31,8 @@ import {
   SelectableRowConfiguration,
 } from './types';
 import { LoadingOverlay } from '@mantine/core';
+import HighlightSearchTerm from './TableRenderers/HighlightSearchTerm';
+import _ from 'lodash';
 
 const CompareFn = (
   fieldValue: string,
@@ -55,11 +57,6 @@ const isSelectable = (
   return CompareFn(fieldValue, config.comparer, config.value);
 };
 
-const extractCellValue =
-  (func: CellRendererFunction) =>
-  ({ cell, row }: { cell: MRT_Cell<JSONObject>; row: MRT_Row<MRT_RowData> }) =>
-    func({ value: cell.getValue() as never, cell, row });
-
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
   hits: number;
@@ -69,6 +66,7 @@ interface DiscoveryTableProps {
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
   setSelection: (selection: Array<string>) => void;
+  searchTerm: string;
 }
 
 const DiscoveryTable = ({
@@ -80,12 +78,29 @@ const DiscoveryTable = ({
   setSelection,
   pagination,
   sorting,
+  searchTerm,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   const { setStudyDetails } = useStudyContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
+  const extractCellValue =
+    (func: CellRendererFunction) =>
+    ({
+      cell,
+      row,
+    }: {
+      cell: MRT_Cell<JSONObject>;
+      row: MRT_Row<MRT_RowData>;
+    }) =>
+      func({
+        value: HighlightSearchTerm(
+          (cell.getValue() as string[])[0] as string,
+          searchTerm,
+        ),
+      });
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -119,7 +134,7 @@ const DiscoveryTable = ({
             ),
       };
     });
-  }, [config.studyColumns]);
+  }, [config.studyColumns, searchTerm]);
 
   const checkIfRowIsSelectable = (row: MRT_RowData) => {
     if (config.tableConfig?.selectableRows) return true;
@@ -162,9 +177,44 @@ const DiscoveryTable = ({
     //     },
     //   };
     // },
-    renderDetailPanel: config.studyPreviewField
+    /*     renderDetailPanel: config.studyPreviewField
       ? DiscoveryTableRowRenderer(config.studyPreviewField)
-      : undefined,
+      : undefined, */
+
+    renderDetailPanel: ({ row }) => {
+      if (config.studyPreviewField) {
+        const studyPreviewData = _.get(
+          row.original,
+          config.studyPreviewField.field as unknown as string,
+        );
+
+        return (
+          <Box display={'flex'} w={'100%'}>
+            <Text size="xs" lineClamp={2}>
+              {HighlightSearchTerm(studyPreviewData, searchTerm)}
+            </Text>
+          </Box>
+        );
+      } else {
+        return undefined;
+      }
+    },
+
+    /*     renderDetailPanel: ({ row }) => {
+      console.log(
+        'config.studyPreviewField.field',
+        config?.studyPreviewField?.field,
+      );
+      return (
+        <span>
+          {HighlightSearchTerm(
+            row.original.study_metadata.minimal_info.study_description,
+            'Development',
+          )}
+        </span>
+      );
+    }, */
+
     onRowSelectionChange: setRowSelection,
     state: {
       rowSelection,
