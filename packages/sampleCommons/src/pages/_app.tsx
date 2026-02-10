@@ -2,7 +2,7 @@ import whyDidYouRender from '@welldone-software/why-did-you-render';
 import App, { AppContext, AppInitialProps, AppProps } from 'next/app';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { MantineProvider } from '@mantine/core';
-import mantinetheme from '../mantineTheme';
+import mantinetheme, { registerCSSVariables } from '../mantineTheme';
 
 import {
   type AuthorizedRoutesConfig,
@@ -15,7 +15,6 @@ import {
   registerMetadataSchemaApp,
   SessionConfiguration,
 } from '@gen3/frontend/app';
-
 import { registerDefaultRemoteSupport, setDRSHostnames } from '@gen3/core';
 
 import { registerCohortTableCustomCellRenderers } from '@/lib/CohortBuilder/CustomCellRenderers';
@@ -28,6 +27,10 @@ import '@fontsource/poppins';
 import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
 import Loading from '../components/Loading';
+
+console.log('Loading sample commons app', process.env.NEXT_PUBLIC_USE_CSS_VARS);
+
+const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   whyDidYouRender(React);
@@ -70,6 +73,10 @@ const Gen3App = ({
       registerCustomExplorerDetailsPanels();
       isFirstRender.current = false;
       console.log('Gen3 App initialized');
+      if (USE_CSS_VARS) {
+        console.log('Registering CSS variables');
+        registerCSSVariables();
+      }
     }
   }, []);
 

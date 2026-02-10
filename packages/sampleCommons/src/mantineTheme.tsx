@@ -1,6 +1,10 @@
 import { createTheme, mergeThemeOverrides } from '@mantine/core';
 
-import { createMantineTheme, TenStringArray } from '@gen3/frontend/app';
+import {
+  createCSSVariables,
+  createMantineTheme,
+  TenStringArray,
+} from '@gen3/frontend/app';
 
 export const GEN3_COMMONS_NAME =
   process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
@@ -23,5 +27,9 @@ const localTheme = createTheme({
     /*Add components overrides here},*/
   },
 });
+
+export const registerCSSVariables = () => {
+  createCSSVariables(themeColors);
+};
 
 export default mergeThemeOverrides(gen3Theme, localTheme);

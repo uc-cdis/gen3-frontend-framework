@@ -79,19 +79,22 @@ const main = () => {
 
   if (vars) {
     // vars only output
-    const theme = [...Object.keys(themeColors), 'utility'].reduce(
-      (acc: Record<string, string>, colorName) => {
-        for (const value of Object.values(colorType)) {
-          const colorVar = `${colorName}${value !== 'DEFAULT' ? '--' + colorName : ''}`;
-          acc[colorVar] = `(var --${colorVar})`;
-          acc[`${colorVar}-contrast`] = `(var --${colorVar}-contrast)`;
-        }
-        return acc;
-      },
-      {},
-    );
+    const theme = [
+      ...Object.keys(themeColors),
+      'utility',
+      'table',
+      'navigation',
+    ].reduce((acc: Record<string, string>, colorName) => {
+      for (const value of Object.values(colorType)) {
+        const colorVar = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
+        const contrastColorVar = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
+        acc[colorVar] = `var(--${colorVar})`;
+        acc[contrastColorVar] = `var(--${contrastColorVar})`;
+      }
+      return acc;
+    }, {});
     writeFileSync(
-      join(out ?? './', 'themeColors.vars'),
+      join(out ?? './', 'themeColorCSSVars.json'),
       JSON.stringify(theme, null, 2),
     );
     return;
