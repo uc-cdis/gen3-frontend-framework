@@ -1,15 +1,15 @@
 import DiscoveryIndexPanel from './DiscoveryIndexPanel';
 import TagCloud from './TagCloud';
-import { registerDiscoveryDefaultCellRenderers } from './TableRenderers/CellRenderers';
-import { type RowRenderFunctionParams } from './TableRenderers/RowRenderers';
-import { type CellRenderFunctionProps } from './TableRenderers/types';
-import { DiscoveryCellRendererFactory } from './TableRenderers/CellRendererFactory';
+import { registerDiscoveryDefaultCellRenderers } from './DiscoveryTable/TableRenderers/CellRenderers';
+import { type RowRenderFunctionParams } from './DiscoveryTable/TableRenderers/RowRenderers';
+import { type CellRenderFunctionProps } from './DiscoveryTable/TableRenderers/types';
+import { DiscoveryCellRendererFactory } from './DiscoveryTable/TableRenderers/CellRendererFactory';
 import ActionBar from './ActionBar/ActionBar';
 import AiSearch from './Search/AiSearch';
 import {
   DiscoveryRowRendererFactory,
   registerDiscoveryDefaultStudyPreviewRenderers,
-} from './TableRenderers/RowRendererFactory';
+} from './DiscoveryTable/TableRenderers/RowRendererFactory';
 import DiscoveryConfigProvider, {
   useDiscoveryContext,
 } from './DiscoveryProvider';

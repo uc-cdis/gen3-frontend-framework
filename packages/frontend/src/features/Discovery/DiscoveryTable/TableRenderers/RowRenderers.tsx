@@ -1,10 +1,12 @@
 import { MRT_Row } from 'mantine-react-table';
-import { StudyDetailsField } from '../../Study/types';
+import { StudyDetailsField } from '../../../Study/types';
 import React, { ReactElement } from 'react';
 import { Box, Text } from '@mantine/core';
 import { JSONPath } from 'jsonpath-plus';
 
-export interface RowRenderFunctionParams<TData extends Record<string, any> = Record<string, any>> {
+export interface RowRenderFunctionParams<
+  TData extends Record<string, any> = Record<string, any>,
+> {
   row: MRT_Row<TData>;
 }
 
@@ -25,10 +27,7 @@ const StringRowRenderer = (
   });
 
   return (
-    <Box
-      display={'flex'}
-      w={'100%'}
-    >
+    <Box display={'flex'} w={'100%'}>
       <Text size="xs" lineClamp={2}>
         {value}
       </Text>

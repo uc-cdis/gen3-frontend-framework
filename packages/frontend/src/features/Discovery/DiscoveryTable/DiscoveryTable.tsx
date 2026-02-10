@@ -11,15 +11,15 @@ import {
 } from 'mantine-react-table';
 import { Box, Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
+import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
 import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
-import { useDiscoveryContext } from './DiscoveryProvider';
-import { useStudyContext } from '../Study/StudyProvider';
-import StudyDetails from '../Study/StudyDetails/StudyDetails';
+import { useDiscoveryContext } from '../DiscoveryProvider';
+import { useStudyContext } from '../../Study/StudyProvider';
+import StudyDetails from '../../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
-import { TableIcons } from '../../components/Tables/TableIcons';
+import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   OnChangeFn,
   PaginationState,
@@ -27,12 +27,14 @@ import {
 } from '@tanstack/table-core';
 import {
   DataRequestStatus,
+  DiscoveryIndexConfig,
   RowSelectCompareFunctions,
   SelectableRowConfiguration,
-} from './types';
+} from '../types';
 import { LoadingOverlay } from '@mantine/core';
 import HighlightSearchTerm from './TableRenderers/HighlightSearchTerm';
 import _ from 'lodash';
+import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 
 const CompareFn = (
   fieldValue: string,
@@ -67,8 +69,8 @@ interface DiscoveryTableProps {
   setSorting: OnChangeFn<SortingState>;
   setSelection: (selection: Array<string>) => void;
   searchTerm: string;
+  discoveryConfig: DiscoveryIndexConfig;
 }
-
 const DiscoveryTable = ({
   data,
   hits,
@@ -79,6 +81,7 @@ const DiscoveryTable = ({
   pagination,
   sorting,
   searchTerm,
+  discoveryConfig,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   const { setStudyDetails } = useStudyContext();
@@ -94,13 +97,19 @@ const DiscoveryTable = ({
     }: {
       cell: MRT_Cell<JSONObject>;
       row: MRT_Row<MRT_RowData>;
-    }) =>
-      func({
+    }) => {
+      const columnIsSearchable = IsColumnSearchable(
+        cell.column,
+        discoveryConfig,
+        [],
+      );
+      return func({
         value: HighlightSearchTerm(
           (cell.getValue() as string[])[0] as string,
           searchTerm,
         ),
       });
+    };
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -187,7 +196,6 @@ const DiscoveryTable = ({
           row.original,
           config.studyPreviewField.field as unknown as string,
         );
-
         return (
           <Box display={'flex'} w={'100%'}>
             <Text size="xs" lineClamp={2}>

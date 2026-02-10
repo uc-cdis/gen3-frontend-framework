@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
-import DiscoveryTable from './DiscoveryTable';
+import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
 import { Button, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
@@ -227,6 +227,7 @@ const DiscoveryIndexPanel = ({
                   pagination={pagination}
                   sorting={sorting}
                   searchTerm={searchBarTerms.join(' ')}
+                  discoveryConfig={discoveryConfig}
                 />
               </div>
             </div>

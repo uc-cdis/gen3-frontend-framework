@@ -8,8 +8,8 @@ import {
   TagData,
 } from '@gen3/frontend/features/Study';
 import { useDiscoveryContext } from '@gen3/frontend/features/Discovery/DiscoveryProvider';
-import { DiscoveryRowRendererFactory } from '@gen3/frontend/features/Discovery/TableRenderers/RowRendererFactory';
-import { RowRenderFunctionParams } from '@gen3/frontend/features/Discovery/TableRenderers/RowRenderers';
+import { DiscoveryRowRendererFactory } from '@gen3/frontend/features/Discovery/DiscoveryTable/TableRenderers/RowRendererFactory';
+import { RowRenderFunctionParams } from '@gen3/frontend/features/Discovery/DiscoveryTable/TableRenderers/RowRenderers';
 
 const DetailsWithTagsRowRenderer = (
   { row }: RowRenderFunctionParams,
