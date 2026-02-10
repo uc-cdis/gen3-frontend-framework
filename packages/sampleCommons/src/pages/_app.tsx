@@ -28,8 +28,6 @@ import drsHostnames from '../../config/drsHostnames.json';
 import { loadContent } from '@/lib/content/loadContent';
 import Loading from '../components/Loading';
 
-console.log('Loading sample commons app', process.env.NEXT_PUBLIC_USE_CSS_VARS);
-
 const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {

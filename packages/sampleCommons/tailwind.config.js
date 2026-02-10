@@ -8,11 +8,6 @@ const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 const themeColorCSSVars = require(`./config/themeColorCSSVars.json`);
-console.log('Using CSS variables:', GEN3_COMMONS_NAME);
-console.log('Using CSS variables:', USE_CSS_VARS);
-console.log('Gen3 Colors:', {
-  ...(USE_CSS_VARS ? themeColorCSSVars : themeColors),
-});
 
 module.exports = {
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
