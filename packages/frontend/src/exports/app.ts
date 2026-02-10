@@ -5,7 +5,10 @@ export { registerCohortDiscoveryApp } from '../features/CohortDiscovery/register
 export { registerExplorerDefaultCellRenderers } from '../features/CohortBuilder/ExplorerTable/ExplorerTableCellRenderers';
 export { registerCohortBuilderDefaultPreviewRenderers } from '../features/CohortBuilder/ExplorerTable/ExploreTableDetails/ExplorerTableDetailsPanelFactory';
 export { type TenStringArray } from '../utils/types';
-export { createMantineTheme } from '../components/Providers/Gen3Provider';
+export {
+  createMantineTheme,
+  createCSSVariables,
+} from '../components/Providers/Gen3Provider';
 
 import Gen3Provider from '../components/Providers/Gen3Provider';
 

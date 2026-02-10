@@ -204,6 +204,7 @@ export {
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  // theming
   createMantineTheme,
   AiSearchPage,
   AISearchPageGetServerSideProps,

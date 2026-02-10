@@ -59,7 +59,7 @@ export const getColorsList = (
   return colorsList;
 };
 
-const colorType = [
+export const colorType = [
   'min',
   'darkest',
   'darker',
