@@ -39,7 +39,6 @@ export const createCSSVariables = (colors: Record<string, TenStringArray>) => {
           `--${key}${colorName}`,
           color,
         );
-        console.log(`--${key}${colorName}: ${color}`);
       }
     });
   });
