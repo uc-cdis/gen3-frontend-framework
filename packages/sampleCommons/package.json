@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.12.17",
+  "version": "0.12.18",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -15,6 +15,7 @@
     "start": "next start",
     "build:colors": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons",
     "build:colors:noshift": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/$npm_config_commons --colorShift=0 --colorSaturation=100",
+    "build:colors:vars": "node ../../node_modules/@gen3/toolsff/dist/buildColors.esm.js --themeFile=config/$npm_config_commons/colors.json --out=config/ --vars",
     "build:icons": "node ../../node_modules/@gen3/toolsff/dist/bundleIcons.esm.js --inpath=config/icons --outpath=config/icons",
     "getSchema": "node ../../node_modules/@gen3/toolsff/dist/getSchema.esm.js --out=config/",
     "getDRSToHostname": "node ../../node_modules/@gen3/toolsff/dist/getDRSToHostname.esm.js --out=config/",
