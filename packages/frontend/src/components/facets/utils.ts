@@ -115,7 +115,8 @@ export const processDefinedRangeData = (
       const parts = pointer.split('/');
       if (parts.length < 4) return acc;
       const key = parts[3];
-      acc[key] = valueData[index];
+      if (key in acc) acc[key] += valueData[index];
+      else acc[key] = valueData[index];
 
       return acc;
     },
@@ -209,8 +210,14 @@ export const classifyFacets = (
           moveValuesToBottom: facetDef?.moveValuesToBottom,
           excludeValues: facetDef?.excludeValues,
           range: facetDef?.range
-            ? { minimum: facetDef.range?.minimum ?? Math.floor(Number(value[0].key[0])),
-                maximum: facetDef?.range?.maximum ?? Math.floor((Number(value[0].key[1])))} // prefer config-defined range (if any)
+            ? {
+                minimum:
+                  facetDef.range?.minimum ??
+                  Math.floor(Number(value[0].key[0])),
+                maximum:
+                  facetDef?.range?.maximum ??
+                  Math.floor(Number(value[0].key[1])),
+              } // prefer config-defined range (if any)
             : type === 'range' // if computed type is range use that
               ? {
                   minimum: Math.floor(Number(value[0].key[0])),
