@@ -236,6 +236,7 @@ export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
   readonly rangeDatatype?: string;
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;
+  readonly step?: number;
   readonly clearValues?: boolean;
 };
 
