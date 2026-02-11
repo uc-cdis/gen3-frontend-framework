@@ -335,7 +335,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
           </Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>
-      <Tooltip label="Open Datalibrary">
+      <Tooltip label="Open Data Library">
         <ActionIcon
           size="lg"
           onClick={gotoDataLibrary}
