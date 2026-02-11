@@ -13,7 +13,7 @@ import { Box, Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
-import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
+import { DiscoveryTableRowRenderer } from './TableRenderers/DEADCODERowRendererFactory';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
@@ -32,7 +32,7 @@ import {
   SelectableRowConfiguration,
 } from '../types';
 import { LoadingOverlay } from '@mantine/core';
-import HighlightSearchTerm from './TableRenderers/HighlightSearchTerm';
+import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import _ from 'lodash';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 
