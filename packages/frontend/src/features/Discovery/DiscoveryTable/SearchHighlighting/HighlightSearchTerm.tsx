@@ -6,15 +6,12 @@ const HighlightSearchTerm = (
   if (Array.isArray(value)) {
     value = value.join('').replace(/  +/g, ' ');
   }
-  console.log('value', value);
-
   const matchIndex =
     typeof value === 'string'
       ? value.toLowerCase().indexOf(searchTerm.toLowerCase())
       : -1;
   const noMatchFound = matchIndex === -1;
   if (noMatchFound) {
-    console.log('noMatchFound for value', value);
     return <>{value}</>;
   }
   const prev = value.slice(0, matchIndex);
