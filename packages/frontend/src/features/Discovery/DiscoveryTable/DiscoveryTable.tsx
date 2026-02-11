@@ -99,10 +99,6 @@ const DiscoveryTable = ({
       cell: MRT_Cell<JSONObject>;
       row: MRT_Row<MRT_RowData>;
     }) => {
-      console.log(
-        'selectedFieldsForSearchIndexing ln 104',
-        selectedFieldsForSearchIndexing,
-      );
       return IsColumnSearchable(
         cell.column,
         discoveryConfig,
