@@ -1,7 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { colorType, create10ColorAccessibleContrast, create10ColorPallet, } from './colors';
+import {
+  colorType,
+  create10ColorAccessibleContrast,
+  create10ColorPallet,
+} from './colors';
 
 const utility = {
   link: '#155276',
