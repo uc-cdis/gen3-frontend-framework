@@ -9,11 +9,10 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Box, Loader, Text } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
-import { DiscoveryTableRowRenderer } from './TableRenderers/DEADCODERowRendererFactory';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { useStudyContext } from '../../Study/StudyProvider';
 import StudyDetails from '../../Study/StudyDetails/StudyDetails';
@@ -33,8 +32,7 @@ import {
 } from '../types';
 import { LoadingOverlay } from '@mantine/core';
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
-import _ from 'lodash';
-import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
+import RenderDetailPanel from './TableRenderers/RenderDetailPanel';
 
 const CompareFn = (
   fieldValue: string,
@@ -88,7 +86,6 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
-
   const extractCellValue =
     (func: CellRendererFunction) =>
     ({
@@ -98,11 +95,6 @@ const DiscoveryTable = ({
       cell: MRT_Cell<JSONObject>;
       row: MRT_Row<MRT_RowData>;
     }) => {
-      const columnIsSearchable = IsColumnSearchable(
-        cell.column,
-        discoveryConfig,
-        [],
-      );
       return func({
         value: HighlightSearchTerm(
           (cell.getValue() as string[])[0] as string,
@@ -110,7 +102,6 @@ const DiscoveryTable = ({
         ),
       });
     };
-
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
@@ -178,51 +169,9 @@ const DiscoveryTable = ({
       config.minimalFieldMapping.uid in originalRow
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
-    // TODO: keep this to explore later
-    // mantineTableContainerProps: ({ table }) => {
-    //   return {
-    //     sx: {
-    //       maxHeight: 'calc(100vh - 560px) !important;',
-    //     },
-    //   };
-    // },
-    /*     renderDetailPanel: config.studyPreviewField
-      ? DiscoveryTableRowRenderer(config.studyPreviewField)
-      : undefined, */
-
-    renderDetailPanel: ({ row }) => {
-      if (config.studyPreviewField) {
-        const studyPreviewData = _.get(
-          row.original,
-          config.studyPreviewField.field as unknown as string,
-        );
-        return (
-          <Box display={'flex'} w={'100%'}>
-            <Text size="xs" lineClamp={2}>
-              {HighlightSearchTerm(studyPreviewData, searchTerm)}
-            </Text>
-          </Box>
-        );
-      } else {
-        return undefined;
-      }
-    },
-
-    /*     renderDetailPanel: ({ row }) => {
-      console.log(
-        'config.studyPreviewField.field',
-        config?.studyPreviewField?.field,
-      );
-      return (
-        <span>
-          {HighlightSearchTerm(
-            row.original.study_metadata.minimal_info.study_description,
-            'Development',
-          )}
-        </span>
-      );
-    }, */
-
+    renderDetailPanel: ({ row }) => (
+      <RenderDetailPanel row={row} config={config} searchTerm={searchTerm} />
+    ),
     onRowSelectionChange: setRowSelection,
     state: {
       rowSelection,

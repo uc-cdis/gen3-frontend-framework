@@ -23,7 +23,7 @@ const HighlightSearchTerm = (
   return (
     <>
       {prev}
-      <span className="text-green-500 text-4xl">{matched}</span>
+      <span className="font-bold underline">{matched}</span>
       {after}
     </>
   );
