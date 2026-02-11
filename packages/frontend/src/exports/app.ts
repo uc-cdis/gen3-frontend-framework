@@ -1,11 +1,14 @@
-export type { RegisteredIcons } from '../lib/content/types';
+export type { Fonts, RegisteredIcons } from '../lib/content/types';
 
 export { registerMetadataSchemaApp } from '../features/Dictionary/metadata/registerApp';
 export { registerCohortDiscoveryApp } from '../features/CohortDiscovery/registerApp';
 export { registerExplorerDefaultCellRenderers } from '../features/CohortBuilder/ExplorerTable/ExplorerTableCellRenderers';
 export { registerCohortBuilderDefaultPreviewRenderers } from '../features/CohortBuilder/ExplorerTable/ExploreTableDetails/ExplorerTableDetailsPanelFactory';
 export { type TenStringArray } from '../utils/types';
-export { createMantineTheme } from '../components/Providers/Gen3Provider';
+export {
+  createMantineTheme,
+  createCSSVariables,
+} from '../components/Providers/Gen3Provider';
 
 import Gen3Provider from '../components/Providers/Gen3Provider';
 

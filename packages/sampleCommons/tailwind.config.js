@@ -4,8 +4,8 @@ const plugin = require('tailwindcss/plugin');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 
-const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
+const themeColorCSSVars = require(`./config/themeColorCSSVars.json`);
 
 module.exports = {
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
@@ -58,7 +58,7 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
-        ...themeColors,
+        ...themeColorCSSVars,
       },
       fontFamily: {
         heading: themeFonts.heading,

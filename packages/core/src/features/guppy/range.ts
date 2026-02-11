@@ -1,4 +1,10 @@
-import { buildNestedFilterForOperation, FilterSet, Intersection, NumericFromTo, Operation, } from '../filters';
+import {
+  buildNestedFilterForOperation,
+  FilterSet,
+  Intersection,
+  NumericFromTo,
+  Operation,
+} from '../filters';
 import { FromToRange } from '../../types';
 
 export interface Range<T> {
@@ -45,12 +51,15 @@ export const convertNumericFromToArrayToFilters = (
   } satisfies Intersection;
 };
 
-export const rawDataQueryStrForEachField = (field: string, asTextHistogram: boolean = false): string => {
+export const rawDataQueryStrForEachField = (
+  field: string,
+  asTextHistogram: boolean = false,
+): string => {
   const splitFieldArray = field.split('.');
   const splitField = splitFieldArray.shift();
   let middleQuery: string = '';
   if (splitFieldArray.length === 0) {
-    middleQuery = `${splitField} { ${asTextHistogram ? "histogram: asTextHistogram" :  "histogram"} { count } }`;
+    middleQuery = `${splitField} { ${asTextHistogram ? 'histogram: asTextHistogram' : 'histogram'} { count } }`;
   } else {
     middleQuery = `${splitField} { ${rawDataQueryStrForEachField(splitFieldArray.join('.'), asTextHistogram)} }`;
   }
@@ -123,7 +132,7 @@ export const buildRangeQuery = (
     ranges,
     filters,
     rangeBaseName,
-    isNested
+    isNested,
   );
 
   let query = `query rangeQuery ($accessibility: Accessibility, ${Object.keys(
@@ -136,7 +145,7 @@ export const buildRangeQuery = (
       type: index,
       field,
       rangeName: rangeKey,
-       asTextHistogram
+      asTextHistogram,
     });
     query += rangeQuery + ' \n';
   });

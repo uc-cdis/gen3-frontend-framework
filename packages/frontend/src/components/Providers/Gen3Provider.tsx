@@ -28,6 +28,21 @@ interface Gen3ProviderProps {
     | 'bottom-center';
 }
 
+// define CSS Variables for document.styleSheets[0]
+export const createCSSVariables = (colors: Record<string, string>) => {
+  Object.entries(colors).forEach(([key, values]) => {
+    Object.entries(values).forEach(([name, color]) => {
+      if (color) {
+        const colorName = name !== 'DEFAULT' ? '-' + name : '';
+        document.documentElement.style.setProperty(
+          `--${key}${colorName}`,
+          color,
+        );
+      }
+    });
+  });
+};
+
 // Define theme for mantine v7
 export const createMantineTheme = (
   fonts: Fonts,
