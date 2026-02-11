@@ -4,17 +4,13 @@ import { MRT_Row, MRT_RowData } from 'mantine-react-table';
 import { DiscoveryIndexConfig } from '../../types';
 import _ from 'lodash';
 
-interface RenderDetailPanelProps {
+interface RowDetailPanelProps {
   row: MRT_Row<MRT_RowData>;
   config: DiscoveryIndexConfig;
   searchTerm: string;
 }
 
-const RenderDetailPanel = ({
-  row,
-  config,
-  searchTerm,
-}: RenderDetailPanelProps) => {
+const RowDetailPanel = ({ row, config, searchTerm }: RowDetailPanelProps) => {
   if (config.studyPreviewField) {
     const studyPreviewData = _.get(
       row.original,
@@ -32,4 +28,4 @@ const RenderDetailPanel = ({
   }
 };
 
-export default RenderDetailPanel;
+export default RowDetailPanel;

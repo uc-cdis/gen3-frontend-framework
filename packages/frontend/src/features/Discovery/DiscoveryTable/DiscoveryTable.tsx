@@ -32,7 +32,7 @@ import {
 } from '../types';
 import { LoadingOverlay } from '@mantine/core';
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
-import RenderDetailPanel from './TableRenderers/RenderDetailPanel';
+import RowDetailPanel from './TableRenderers/RowDetailPanel';
 
 const CompareFn = (
   fieldValue: string,
@@ -170,7 +170,7 @@ const DiscoveryTable = ({
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
     renderDetailPanel: ({ row }) => (
-      <RenderDetailPanel row={row} config={config} searchTerm={searchTerm} />
+      <RowDetailPanel row={row} config={config} searchTerm={searchTerm} />
     ),
     onRowSelectionChange: setRowSelection,
     state: {
