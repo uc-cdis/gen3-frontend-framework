@@ -226,7 +226,7 @@ const DiscoveryIndexPanel = ({
                   setSelection={setSelections}
                   pagination={pagination}
                   sorting={sorting}
-                  searchTerm={searchBarTerms.join(' ')}
+                  searchTerm={debouncedSearchBarTerms.join(' ')}
                   discoveryConfig={discoveryConfig}
                 />
               </div>
