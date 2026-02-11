@@ -5,7 +5,6 @@ import { MantineProvider, mergeThemeOverrides } from '@mantine/core';
 
 import {
   type AuthorizedRoutesConfig,
-  createCSSVariables,
   createMantineTheme,
   DefaultAuthorizedRoutesConfig,
   type Fonts,
@@ -90,7 +89,6 @@ const Gen3App = ({
       const gen3ThemeDynamic = createMantineTheme(fonts, colors);
       const mergedTheme = mergeThemeOverrides(gen3ThemeDynamic);
       setMantineTheme(mergedTheme);
-      createCSSVariables(themeColors);
     }
     console.log('Gen3 App initialized');
   }, []);
