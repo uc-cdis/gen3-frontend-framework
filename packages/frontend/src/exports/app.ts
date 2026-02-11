@@ -1,4 +1,4 @@
-export type { RegisteredIcons } from '../lib/content/types';
+export type { Fonts, RegisteredIcons } from '../lib/content/types';
 
 export { registerMetadataSchemaApp } from '../features/Dictionary/metadata/registerApp';
 export { registerCohortDiscoveryApp } from '../features/CohortDiscovery/registerApp';

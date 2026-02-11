@@ -3,9 +3,7 @@
 const plugin = require('tailwindcss/plugin');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
-const USE_CSS_VARS = process.env.NEXT_PUBLIC_USE_CSS_VARS;
 
-const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
 const themeColorCSSVars = require(`./config/themeColorCSSVars.json`);
 
@@ -60,7 +58,7 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
-        ...(USE_CSS_VARS ? themeColorCSSVars : themeColors),
+        ...themeColorCSSVars,
       },
       fontFamily: {
         heading: themeFonts.heading,

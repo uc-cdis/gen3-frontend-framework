@@ -1,11 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import {
-  colorType,
-  create10ColorAccessibleContrast,
-  create10ColorPallet,
-} from './colors';
+import { colorType, create10ColorAccessibleContrast, create10ColorPallet, } from './colors';
 
 const utility = {
   link: '#155276',
@@ -85,11 +81,13 @@ const main = () => {
       'table',
       'navigation',
     ].reduce((acc: Record<string, string>, colorName) => {
-      for (const value of Object.values(colorType)) {
-        const colorVar = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
-        const contrastColorVar = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
-        acc[colorVar] = `var(--${colorVar})`;
-        acc[contrastColorVar] = `var(--${contrastColorVar})`;
+      for (const [idx, value] of Object.entries(colorType.toReversed())) {
+        const colorVar = `mantine-color-${colorName}-${idx}`;
+        const contrastColorVar = `mantine-color-${colorName}-contrast-${idx}`;
+        const colorVarName = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
+        const contrastColorVarName = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
+        acc[colorVarName] = `var(--${colorVar})`;
+        acc[contrastColorVarName] = `var(--${contrastColorVar})`;
       }
       return acc;
     }, {});
