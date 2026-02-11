@@ -33,6 +33,7 @@ import {
 import { LoadingOverlay } from '@mantine/core';
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
+import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 
 const CompareFn = (
   fieldValue: string,
@@ -67,6 +68,7 @@ interface DiscoveryTableProps {
   setSorting: OnChangeFn<SortingState>;
   setSelection: (selection: Array<string>) => void;
   searchTerm: string;
+  selectedFieldsForSearchIndexing: string[];
   discoveryConfig: DiscoveryIndexConfig;
 }
 const DiscoveryTable = ({
@@ -79,6 +81,7 @@ const DiscoveryTable = ({
   pagination,
   sorting,
   searchTerm,
+  selectedFieldsForSearchIndexing,
   discoveryConfig,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
@@ -86,6 +89,7 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
   const extractCellValue =
     (func: CellRendererFunction) =>
     ({
@@ -95,13 +99,24 @@ const DiscoveryTable = ({
       cell: MRT_Cell<JSONObject>;
       row: MRT_Row<MRT_RowData>;
     }) => {
-      return func({
-        value: HighlightSearchTerm(
-          (cell.getValue() as string[])[0] as string,
-          searchTerm,
-        ),
-      });
+      console.log(
+        'selectedFieldsForSearchIndexing ln 104',
+        selectedFieldsForSearchIndexing,
+      );
+      return IsColumnSearchable(
+        cell.column,
+        discoveryConfig,
+        selectedFieldsForSearchIndexing,
+      )
+        ? func({
+            value: HighlightSearchTerm(
+              (cell.getValue() as string[])[0] as string,
+              searchTerm,
+            ),
+          })
+        : func({ value: cell.getValue() as never, cell, row });
     };
+
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
@@ -134,7 +149,7 @@ const DiscoveryTable = ({
             ),
       };
     });
-  }, [config.studyColumns, searchTerm]);
+  }, [config.studyColumns, searchTerm, selectedFieldsForSearchIndexing]);
 
   const checkIfRowIsSelectable = (row: MRT_RowData) => {
     if (config.tableConfig?.selectableRows) return true;
