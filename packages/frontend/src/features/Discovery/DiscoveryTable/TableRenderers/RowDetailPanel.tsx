@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Text } from '@mantine/core';
 import HighlightSearchTerm from '../SearchHighlighting/HighlightSearchTerm';
 import { MRT_Row, MRT_RowData } from 'mantine-react-table';

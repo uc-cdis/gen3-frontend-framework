@@ -1,3 +1,5 @@
+import React from 'react';
+
 const HighlightSearchTerm = (
   value: string | string[] | undefined,
   searchTerm: string,
