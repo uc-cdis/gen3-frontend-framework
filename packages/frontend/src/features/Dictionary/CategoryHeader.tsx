@@ -16,7 +16,7 @@ interface CategoryHeaderProps {
 const CategoryHeader = ({ category }: CategoryHeaderProps) => {
   return (
     <h3
-      className="flex text-secondary-contrast-darker font-bold font-size-md bg-secondary-darker mb-0 justify-between h-16 uppercase"
+      className="flex text-secondary-contrast font-bold font-size-md bg-secondary mb-0 justify-between h-16 uppercase"
       id={category}
     >
       <div className="flex items-center ml-4">
