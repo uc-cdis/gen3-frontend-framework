@@ -78,18 +78,20 @@ const main = () => {
   const themeColors = JSON.parse(themeData);
 
   if (vars) {
-    // vars only output
+    // vars only output used to create the tailwind config/themeColorCSSVars.json file
     const theme = [
       ...Object.keys(themeColors),
       'utility',
       'table',
       'navigation',
     ].reduce((acc: Record<string, string>, colorName) => {
-      for (const value of Object.values(colorType)) {
-        const colorVar = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
-        const contrastColorVar = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
-        acc[colorVar] = `var(--${colorVar})`;
-        acc[contrastColorVar] = `var(--${contrastColorVar})`;
+      for (const [idx, value] of Object.entries(colorType.toReversed())) {
+        const colorVar = `mantine-color-${colorName}-${idx}`;
+        const contrastColorVar = `mantine-color-${colorName}-contrast-${idx}`;
+        const colorVarName = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
+        const contrastColorVarName = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
+        acc[colorVarName] = `var(--${colorVar})`;
+        acc[contrastColorVarName] = `var(--${contrastColorVar})`;
       }
       return acc;
     }, {});
@@ -97,7 +99,7 @@ const main = () => {
       join(out ?? './', 'themeColorCSSVars.json'),
       JSON.stringify(theme, null, 2),
     );
-    return;
+    return; // done creating vars file
   }
 
   // build a list of colors

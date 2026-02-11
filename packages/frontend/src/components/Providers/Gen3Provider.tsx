@@ -29,8 +29,7 @@ interface Gen3ProviderProps {
 }
 
 // define CSS Variables for document.styleSheets[0]
-export const createCSSVariables = (colors: Record<string, TenStringArray>) => {
-  const root = document.querySelector(':root');
+export const createCSSVariables = (colors: Record<string, string>) => {
   Object.entries(colors).forEach(([key, values]) => {
     Object.entries(values).forEach(([name, color]) => {
       if (color) {
@@ -39,7 +38,6 @@ export const createCSSVariables = (colors: Record<string, TenStringArray>) => {
           `--${key}${colorName}`,
           color,
         );
-        console.log(`--${key}${colorName}: ${color}`);
       }
     });
   });
