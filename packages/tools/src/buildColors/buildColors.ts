@@ -74,7 +74,7 @@ const main = () => {
   const themeColors = JSON.parse(themeData);
 
   if (vars) {
-    // vars only output
+    // vars only output used to create the tailwind config/themeColorCSSVars.json file
     const theme = [
       ...Object.keys(themeColors),
       'utility',
@@ -95,7 +95,7 @@ const main = () => {
       join(out ?? './', 'themeColorCSSVars.json'),
       JSON.stringify(theme, null, 2),
     );
-    return;
+    return; // done creating vars file
   }
 
   // build a list of colors
