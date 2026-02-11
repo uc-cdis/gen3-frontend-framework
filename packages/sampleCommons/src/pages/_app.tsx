@@ -55,7 +55,6 @@ interface Gen3AppProps {
   protectedRoutes: AuthorizedRoutesConfig;
   publicConfig?: PublicConfig;
   colors: Record<string, TenStringArray>;
-  themeColors: Record<string, string>;
   fonts: Fonts;
 }
 
@@ -64,7 +63,6 @@ const Gen3App = ({
   pageProps,
   icons,
   colors,
-  themeColors,
   fonts,
   sessionConfig,
   modalsConfig,
@@ -151,7 +149,6 @@ Gen3App.getInitialProps = async (
     modalsConfig: {},
     sessionConfig: {},
     colors: {},
-    themeColors: {},
     fonts: {
       heading: ['Poppins', 'sans-serif'],
       content: ['Poppins', 'sans-serif'],
