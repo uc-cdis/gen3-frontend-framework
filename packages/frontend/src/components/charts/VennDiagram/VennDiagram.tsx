@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLayout } from './useLayouts';
 import { VennDiagramProps } from './types';
-import EChartWrapperResponsive from '../EChartWrapperResponsive';
+import EChartWrapperResponsive from '../echarts/EChartWrapperResponsive';
 
 const VennDiagram: React.FC<VennDiagramProps> = ({
   chartData,

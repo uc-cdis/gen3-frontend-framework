@@ -5,6 +5,7 @@ import {
   GQLFilter,
   NumericFromTo,
   Operation,
+  Statistics,
   useGeneralGQLQuery,
 } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
@@ -12,7 +13,6 @@ import CDaveTable from './CDaveTable';
 import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
 import CardControls from './CardControls';
 import { isArray } from 'lodash';
-import { Statistics } from '@/core/features/api/types';
 import {
   ChartTypes,
   CustomInterval,
@@ -37,8 +37,6 @@ import ContinuousBinningModal from '../ContinuousBinningModal/ContinuousBinningM
 import BoxQQSection from './BoxQQSection';
 import { buildRangeQuery } from '@/core/features/clinicalDataAnalysis';
 import { JSONPath } from 'jsonpath-plus';
-
-const RANGE_BASE_NAME = 'range';
 
 const EmptyContinuousStats = {
   min: 0,

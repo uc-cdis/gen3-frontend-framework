@@ -1,18 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ActionIcon, Group, Loader, Menu, Radio, Tooltip } from '@mantine/core';
-import OffscreenWrapper from '@/components/OffscreenWrapper';
-import { handleDownloadPNG, handleDownloadSVG } from '@/features/charts/utils';
-import { getFormattedTimestamp } from '@/utils/date';
+import OffscreenWrapper from '../../../components/OffscreenWrapper';
+import {
+  handleDownloadPNG,
+  handleDownloadSVG,
+} from '../../../components/charts/downloads';
+import { getFormattedTimestamp } from '../../../utils/date';
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
-} from '@/components/analysis/context';
-import VictoryBarChart from '../../charts/VictoryBarChart';
-import { COLOR_MAP } from '../constants';
+} from '../../Analysis/context';
+import VictoryBarChart from '../../../components/charts/VictoryBarChart';
 import { toDisplayName } from '../utils';
 import { DisplayData } from '../types';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { DownloadIcon } from '@/utils/icons';
+import { DownloadIcon } from '../icons';
 
 const formatBarChartData = (
   data: DisplayData,
@@ -32,21 +34,23 @@ const formatBarChartData = (
 };
 
 interface HistogramProps {
-  readonly data: DisplayData;
-  readonly yTotal: number;
-  readonly isFetching: boolean;
-  readonly noData: boolean;
-  readonly field: string;
-  readonly hideYTicks?: boolean;
+  data: DisplayData;
+  yTotal: number;
+  isFetching: boolean;
+  noData: boolean;
+  field: string;
+  hideYTicks?: boolean;
+  color: string;
 }
 
-const CDaveHistogram: React.FC<HistogramProps> = ({
+const CDaveHistogram: React.FC<Readonly<HistogramProps>> = ({
   data,
   yTotal,
   isFetching,
   field,
   noData,
   hideYTicks = false,
+  color,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(true);
   const downloadChartRef = useRef<HTMLElement>(null!);
@@ -60,11 +64,6 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   );
 
   const fieldType = field.split('.').at(-2);
-  const variant =
-    fieldType === 'other_clinical_attributes' ? 'darker' : 'DEFAULT';
-  const color = fieldType
-    ? tailwindConfig.theme.extend.colors[COLOR_MAP[fieldType]]?.[variant]
-    : tailwindConfig.theme.extend.colors[COLOR_MAP['demographic']]?.[variant];
 
   const hideXTicks = barChartData.length > 20;
   const fieldName = toDisplayName(field);

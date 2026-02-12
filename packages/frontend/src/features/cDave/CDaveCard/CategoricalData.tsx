@@ -19,10 +19,11 @@ import { flattenBinnedData, toDisplayName } from '../utils';
 
 interface CategoricalDataProps {
   initialData: ReadonlyArray<Bucket>;
-  readonly field: string;
-  readonly fieldName: string;
-  readonly chartType: ChartTypes;
-  readonly noData: boolean;
+  field: string;
+  fieldName: string;
+  chartType: ChartTypes;
+  noData: boolean;
+  color: string;
 }
 
 const CategoricalData: React.FC<CategoricalDataProps> = ({
@@ -31,6 +32,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   fieldName,
   chartType,
   noData,
+  color,
 }: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CategoricalBins | NamedFromTo[] | CustomInterval | null
@@ -95,6 +97,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
             yTotal={yTotal}
             isFetching={false}
             noData={noData}
+            color={color}
           />
         ) : (
           <ClinicalSurvivalPlot
