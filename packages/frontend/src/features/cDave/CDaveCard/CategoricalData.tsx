@@ -3,7 +3,6 @@ import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { Bucket } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
 import CDaveTable from './CDaveTable';
-import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
 import CardControls from './CardControls';
 import CategoricalBinningModal from '../CategoricalBinningModal';
 import {
@@ -90,23 +89,26 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   return (
     <>
       <div className="flex-grow">
-        {chartType === 'histogram' ? (
-          <CDaveHistogram
-            field={field}
-            data={displayedData}
-            yTotal={yTotal}
-            isFetching={false}
-            noData={noData}
-            color={color}
-          />
-        ) : (
+        {
+          chartType === 'histogram' ? (
+            <CDaveHistogram
+              field={field}
+              data={displayedData}
+              yTotal={yTotal}
+              isFetching={false}
+              noData={noData}
+              color={color}
+            />
+          ) : null /* (
+          // TODO: Add once survival plot is implemented
           <ClinicalSurvivalPlot
             field={field}
             selectedSurvivalPlots={selectedSurvivalPlots}
             continuous={false}
             customBinnedData={customBinnedData}
           />
-        )}
+        ) */
+        }
       </div>
       <CardControls
         continuous={false}

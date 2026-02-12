@@ -8,17 +8,12 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { groupBy, sortBy } from 'lodash';
-import { Buckets, Stats } from '@/core/features/api/types';
-import { createKeyboardAccessibleFunction } from 'src/utils';
-import {
-  COLOR_CLASS_HOVER_MAP,
-  COLOR_MAP,
-  DEFAULT_FIELDS,
-  FACET_SORT,
-  TABS,
-} from './constants';
+import { Buckets, Stats } from '@gen3/core';
+import { createKeyboardAccessibleFunction } from '../../utils/keyboardAccessible';
+import { COLOR_CLASS_HOVER_MAP, DEFAULT_FIELDS, FACET_SORT } from './constants';
 import { toDisplayName } from './utils';
 import FacetExpander from '../../components/facets/FacetExpander';
+import { ClinicalDataTab } from './types';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -31,7 +26,7 @@ import {
   DownArrowIcon,
   SearchIcon,
   UpArrowIcon,
-} from '@/utils/icons';
+} from './icons';
 
 interface CDaveField {
   readonly field_type: string;
@@ -41,19 +36,21 @@ interface CDaveField {
 }
 
 interface ControlGroupProps {
-  readonly name: string;
-  readonly fields: CDaveField[];
-  readonly updateFields: (field: string) => void;
-  readonly activeFields: string[];
-  readonly searchTerm?: string;
+  name: string;
+  fields: CDaveField[];
+  updateFields: (field: string) => void;
+  activeFields: string[];
+  searchTerm?: string;
+  color: string;
 }
 
-const ControlGroup: React.FC<ControlGroupProps> = ({
+const ControlGroup: React.FC<Readonly<ControlGroupProps>> = ({
   name,
   fields,
   updateFields,
   activeFields,
   searchTerm,
+  color,
 }) => {
   const [groupOpen, setGroupOpen] = useState(true);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
@@ -108,6 +105,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
                 updateFields={updateFields}
                 activeFields={activeFields}
                 searchTerm={searchTerm}
+                fieldColor={color}
               />
             ))}
           </ul>
@@ -125,17 +123,19 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
 };
 
 interface FieldControlProps {
-  readonly field: CDaveField;
-  readonly updateFields: (field: string) => void;
-  readonly activeFields: string[];
-  readonly searchTerm?: string;
+  field: CDaveField;
+  updateFields: (field: string) => void;
+  activeFields: string[];
+  searchTerm?: string;
+  fieldColor: string;
 }
 
-const FieldControl: React.FC<FieldControlProps> = ({
+const FieldControl: React.FC<Readonly<FieldControlProps>> = ({
   field,
   updateFields,
   activeFields,
   searchTerm = '',
+  fieldColor,
 }) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 
@@ -144,11 +144,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
   }, [activeFields, field.full]);
 
   const displayName = toDisplayName(field.field_name);
-  const variant =
-    field.field_type === 'other_clinical_attributes' ? 'darker' : 'DEFAULT';
-  const fieldColor =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.[variant];
-
   const handleChange = useDeepCompareCallback(
     (e: any) => {
       setChecked(e.currentTarget.checked);
@@ -211,6 +206,7 @@ interface ControlPanelProps {
   readonly activeFields: string[];
   readonly controlsExpanded: boolean;
   readonly setControlsExpanded: (expanded: boolean) => void;
+  tabs: Array<ClinicalDataTab>;
 }
 
 const Controls: React.FC<ControlPanelProps> = ({
@@ -220,6 +216,7 @@ const Controls: React.FC<ControlPanelProps> = ({
   activeFields,
   controlsExpanded,
   setControlsExpanded,
+  tabs,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const groupedFields = useDeepCompareMemo(
@@ -286,7 +283,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           <strong>{cDaveFields.length}</strong> fields with values
         </p>
         <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
-          {Object.entries(TABS).map(([key, label]) => (
+          {Object.entries(tabs).map(([key, label]) => (
             <ControlGroup
               name={label}
               fields={sortFacetFields(groupedFields[key] || [], key)}

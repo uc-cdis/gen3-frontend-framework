@@ -1,13 +1,14 @@
 import { capitalize, flatten, isNumber, omitBy, some } from 'lodash';
 import {
   AggregationsData,
-  CoreState,
+  Buckets,
   FacetDefinition,
   FilterSet,
   HistogramDataArray,
   HistogramDataAsStringKey,
   isObject,
   NumericFromTo,
+  Statistics,
   StatsData,
   StatValues,
 } from '@gen3/core';
@@ -54,12 +55,12 @@ const ZeroStats: StatValues = {
 };
 
 export const filterUsefulFacets = (
-  facets: Record<string, HistogramDataAsStringKey | StatValues>,
+  facets: Record<string, Array<HistogramDataAsStringKey> | StatValues>,
 ): Record<string, HistogramDataArray | StatValues> => {
   return omitBy(facets, (aggregation) =>
     some([
-      (aggregation as HistogramDataArray) &&
-        (aggregation as HistogramDataArray).filter(
+      aggregation &&
+        (aggregation as Array<HistogramDataAsStringKey>).filter(
           (bucket: HistogramDataAsStringKey) => bucket.key !== '_missing',
         ).length === 0,
       (aggregation as StatValues) && (aggregation as StatValues).count === 0,
@@ -70,17 +71,14 @@ export const filterUsefulFacets = (
 export const combineAnalysisResults = (
   aggregations: AggregationsData,
   stats: StatsData,
-): Record<string, HistogramDataArray | StatValues> => {
+): Record<string, Buckets | Statistics> => {
   const processedAggregations = Object.entries(aggregations).reduce(
-    (acc: Record<string, HistogramDataArray>, [field, data]) => {
-      const convertedData = data.reduce(
-        (results: Array<HistogramDataAsStringKey>, x) => {
-          if (typeof x.key === 'string')
-            results.push({ key: x.key.toString(), count: x.count });
-          return results;
-        },
-        [],
-      );
+    (acc: Record<string, Buckets>, [field, data]) => {
+      const convertedData = data.reduce((results: Array<Bucket>, x) => {
+        if (typeof x.key === 'string')
+          results.push({ key: x.key.toString(), count: x.count });
+        return results;
+      }, []);
 
       acc[field] = { buckets: convertedData };
 
@@ -90,10 +88,9 @@ export const combineAnalysisResults = (
   );
 
   const processStats = Object.entries(stats).reduce(
-    (acc: Record<string, StatValues>, [field, data]) => {
+    (acc: Record<string, Statistics>, [field, data]) => {
       const convertedData = data.map((x) => {
         return {
-          ...ZeroStats,
           count: x.count ?? 0,
           max: x.max ?? 0,
           min: x.min ?? 0,
@@ -101,7 +98,9 @@ export const combineAnalysisResults = (
         };
       }, []);
 
-      acc[field] = convertedData.length > 0 ? convertedData[0] : ZeroStats;
+      acc[field] = {
+        stats: convertedData.length > 0 ? convertedData[0] : ZeroStats,
+      };
 
       return acc;
     },
@@ -462,8 +461,8 @@ export const parseNestedQQResponseData = (
 };
 
 export const selectFacetDefinitionByName = (
-  _state: CoreState,
   field: string,
-): FacetDefinition => {
-  return (FacetDefinitions as Record<string, any>)?.[field];
+  facetDefinitions: Record<string, FacetDefinition> | undefined,
+): FacetDefinition | undefined => {
+  return facetDefinitions?.[field];
 };

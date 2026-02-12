@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import {
+  buildRangeQuery,
   convertFilterToGqlFilter,
   GQLFilter,
   NumericFromTo,
@@ -10,7 +11,7 @@ import {
 } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
 import CDaveTable from './CDaveTable';
-import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
+// import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
 import CardControls from './CardControls';
 import { isArray } from 'lodash';
 import {
@@ -35,7 +36,6 @@ import {
 } from '../utils';
 import ContinuousBinningModal from '../ContinuousBinningModal/ContinuousBinningModal';
 import BoxQQSection from './BoxQQSection';
-import { buildRangeQuery } from '@/core/features/clinicalDataAnalysis';
 import { JSONPath } from 'jsonpath-plus';
 
 const EmptyContinuousStats = {
@@ -162,7 +162,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   const rangeQuery = useMemo(() => {
-    return buildRangeQuery(field, cohortFilters, ranges);
+    return buildRangeQuery(field, ranges, cohortFilters);
   }, [field, ranges]);
 
   const gqlFilters = Object.entries(rangeQuery.variables).reduce(

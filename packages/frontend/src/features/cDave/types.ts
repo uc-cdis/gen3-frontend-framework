@@ -76,14 +76,14 @@ interface ClinicalDataFacet extends FacetDefinition {
   facetDefinition?: FacetDefinition;
 }
 
-interface ClinicalDataTab {
+export interface ClinicalDataTab {
   label: string;
-  facets: ClinicalDataFacet;
+  facets: Array<ClinicalDataFacet>;
   color?: string | null;
 }
 
 export interface ClinicalDataConfiguration {
-  tabs: ClinicalDataTab;
+  tabs: Array<ClinicalDataTab>;
 }
 
 export type DownloadType = 'svg' | 'png' | null;

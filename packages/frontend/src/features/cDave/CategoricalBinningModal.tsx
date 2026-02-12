@@ -14,7 +14,7 @@ import {
   ReplayIcon,
   ShowIcon,
   UngroupIcon,
-} from '@/utils/icons';
+} from './icons';
 
 const DEFAULT_GROUP_NAME_PREFIX = 'selected value ';
 
@@ -508,7 +508,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
           <PencilIcon
             data-testid="button-custom-bins-edit-group-name"
             className="ml-2 shrink-0"
-            onClick={(e: Event) => {
+            onClick={(e: MouseEvent) => {
               e.stopPropagation();
               setEditField(groupName);
             }}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SurvivalChartIcon } from '@/utils/icons';
+import { SurvivalChartIcon } from '../icons';
 import { ActionIcon, Checkbox, Tooltip } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';

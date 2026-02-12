@@ -1,16 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import { Alert, Grid, Loader } from '@mantine/core';
-import { convertFilterToGqlFilter, Operation, usePrevious } from '@gen3/core';
-import { useGetSurvivalPlotQuery } from '@/core/features/survival';
-import { EmptySurvivalPlot } from '@/core/features/survival/types';
+import {
+  Buckets,
+  convertFilterToGqlFilter,
+  Operation,
+  Stats,
+  usePrevious,
+} from '@gen3/core';
 
-import { Buckets, Stats } from '@/core/features/api/types';
-
-import { getFormattedTimestamp } from '@/utils/date';
-import SurvivalPlot from '../charts/SurvivalPlot/SurvivalPlot';
+import { getFormattedTimestamp } from '../../utils/date';
+// import { useGetSurvivalPlotQuery } from '@/core/features/survival';
+// import { EmptySurvivalPlot } from '@/core/features/survival/types';
+// import { SurvivalPlotTypes } from '../charts/SurvivalPlot/types';
+//import SurvivalPlot from '../charts/SurvivalPlot/SurvivalPlot';
 import CDaveCard from './CDaveCard/CDaveCard';
 import { useDeepCompareMemo } from 'use-deep-compare';
-import { SurvivalPlotTypes } from '../charts/SurvivalPlot/types';
 
 interface DashboardProps {
   readonly cohortFilters: Operation;
@@ -76,6 +80,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}
               cohortFilters={cohortFilters}
+              color={color}
             />
           </Grid.Col>
         );

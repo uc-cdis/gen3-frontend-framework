@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActionIcon, Card, SegmentedControlItem, Tooltip } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
-import { Buckets, Operation, Statistics, useCoreSelector } from '@gen3/core';
+import { Buckets, FacetDefinition, Operation, Statistics } from '@gen3/core';
 import SegmentedControl from '../../../components/SegmentedControl';
 // restore later when API and FacetDictionary is implemented
 import { DownloadProgressContext } from '../../Analysis/context';
@@ -14,43 +14,41 @@ import {
   HIDE_QQ_BOX_FIELDS,
   MISSING_KEY,
 } from '../constants';
-import {
-  selectFacetDefinitionByName,
-  toDisplayName,
-  useDataDimension,
-} from '../utils';
+import { toDisplayName, useDataDimension } from '../utils';
 import { BarChartIcon, CloseIcon, SurvivalChartIcon } from '..//icons';
 
 interface CDaveCardProps {
-  readonly field: string;
-  readonly data: Buckets | Statistics;
-  readonly updateFields: (field: string) => void;
-  readonly initialDashboardRender: boolean;
-  readonly cohortFilters: Operation;
+  field: string;
+  facetDefinition: FacetDefinition;
+  data: Buckets | Statistics;
+  updateFields: (field: string) => void;
+  initialDashboardRender: boolean;
+  cohortFilters: Operation;
+  color: string;
 }
 
-const CDaveCard: React.FC<CDaveCardProps> = ({
+const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
   field,
+  facetDefinition,
   data,
   updateFields,
   initialDashboardRender,
   cohortFilters,
+  color,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>('histogram');
   const [downloadInProgress, setDownloadInProgress] = useState(false);
   const [downloadType, setDownloadType] = useState<DownloadType>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(field);
-  const facet = useCoreSelector((state) =>
-    selectFacetDefinitionByName(state, `cases.${field}`),
-  );
+
   const [dataDimension, setDataDimension] = useState<DataDimension>(
     displayDataDimension && DATA_DIMENSIONS?.[field]?.toggleValue
       ? DATA_DIMENSIONS?.[field]?.toggleValue
       : (DATA_DIMENSIONS?.[field]?.unit ?? 'Unset'),
   );
 
-  const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
+  const continuous = CONTINUOUS_FACET_TYPES.includes(facetDefinition.type);
 
   let noData = true; // start off assuming no data
   if (data) {
@@ -204,6 +202,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             fieldName={fieldName}
             chartType={chartType}
             noData={noData}
+            color={color}
           />
         )}
       </DownloadProgressContext.Provider>
