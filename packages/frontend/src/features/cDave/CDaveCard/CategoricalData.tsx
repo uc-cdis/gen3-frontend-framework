@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { Bucket } from '@/core/types';
+import { Bucket } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
 import CDaveTable from './CDaveTable';
 import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';

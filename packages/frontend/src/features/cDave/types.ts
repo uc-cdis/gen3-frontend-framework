@@ -85,3 +85,5 @@ interface ClinicalDataTab {
 export interface ClinicalDataConfiguration {
   tabs: ClinicalDataTab;
 }
+
+export type DownloadType = 'svg' | 'png' | null;

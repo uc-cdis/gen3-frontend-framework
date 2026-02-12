@@ -17,7 +17,7 @@ import {
   formatPercent,
   useDataDimension,
 } from '../utils';
-import { DropdownIcon } from '@/utils/icons';
+import { DropdownIcon } from '../icons';
 import { CasesCohortButtonFromFilters } from '@/features/cases/CasesCohortButton/CasesCohortButton';
 
 interface CardControlsProps {

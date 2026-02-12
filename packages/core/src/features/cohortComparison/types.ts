@@ -1,12 +1,12 @@
 import { GQLFilter } from '../filters';
 
-export interface Buckets {
-  buckets: ReadonlyArray<Bucket>;
-}
-
 export interface Bucket {
   readonly count: number;
   readonly key: string;
+}
+
+export interface Buckets {
+  buckets: ReadonlyArray<Bucket>;
 }
 
 export interface Stats {

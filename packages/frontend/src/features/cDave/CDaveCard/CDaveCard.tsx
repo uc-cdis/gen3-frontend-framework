@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ActionIcon, Card, SegmentedControlItem, Tooltip } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
-import { Operation, useCoreSelector } from '@gen3/core';
-import { Buckets, Stats } from '@/core/features/api/types';
-import { SegmentedControl } from '@gen3/frontend';
+import { Buckets, Operation, Statistics, useCoreSelector } from '@gen3/core';
+import SegmentedControl from '../../../components/SegmentedControl';
 // restore later when API and FacetDictionary is implemented
-//import { selectFacetDefinitionByName } from '@/core/features/facets/selectors';
-import { DownloadProgressContext } from '@/components/analysis/context';
-import { DownloadType } from '@/components/analysis/types';
+import { DownloadProgressContext } from '../../Analysis/context';
+import { ChartTypes, DataDimension, DownloadType } from '../types';
 import ContinuousData from './ContinuousData';
 import CategoricalData from './CategoricalData';
-import { ChartTypes, DataDimension } from '../types';
 import {
   CONTINUOUS_FACET_TYPES,
   DATA_DIMENSIONS,
@@ -22,11 +19,11 @@ import {
   toDisplayName,
   useDataDimension,
 } from '../utils';
-import { BarChartIcon, CloseIcon, SurvivalChartIcon } from '@/utils/icons';
+import { BarChartIcon, CloseIcon, SurvivalChartIcon } from '..//icons';
 
 interface CDaveCardProps {
   readonly field: string;
-  readonly data: Buckets | Stats;
+  readonly data: Buckets | Statistics;
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
   readonly cohortFilters: Operation;
@@ -59,7 +56,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   if (data) {
     // check if we have enough data to display
     if (continuous) {
-      noData = (data as Stats)?.stats?.count === 0;
+      noData = (data as Statistics)?.count === 0;
     } else {
       noData = (data as Buckets)?.buckets?.every(
         (bucket) => bucket.key === MISSING_KEY,
@@ -192,7 +189,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </div>
         ) : continuous ? (
           <ContinuousData
-            initialData={(data as Stats)?.stats}
+            initialData={data as Statistics}
             field={field}
             fieldName={fieldName}
             chartType={chartType}

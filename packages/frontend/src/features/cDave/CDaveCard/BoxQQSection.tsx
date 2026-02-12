@@ -17,7 +17,7 @@ import {
 } from '../../../components/charts/downloads';
 import { DashboardDownloadContext } from '../../Analysis/context';
 import { getFormattedTimestamp } from '../../../utils/time';
-import { COLOR_MAP, DATA_DIMENSIONS } from '../constants';
+import { DATA_DIMENSIONS } from '../constants';
 import {
   convertDataDimension,
   parseNestedQQResponseData,
@@ -26,25 +26,27 @@ import {
 } from '../utils';
 import QQPlot from './QQPlot';
 import BoxPlot from './BoxPlot';
-import { DownloadIcon } from '@/utils/icons';
+import { DownloadIcon } from '../icons';
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
 
 interface BoxQQPlotProps {
-  readonly field: string;
-  readonly displayName: string;
-  readonly data: ClinicalContinuousStatsData;
-  readonly hasCustomBins: boolean;
-  readonly dataDimension?: DataDimension;
+  field: string;
+  displayName: string;
+  data: ClinicalContinuousStatsData;
+  hasCustomBins: boolean;
+  dataDimension?: DataDimension;
+  color: string;
 }
 
-const BoxQQSection: React.FC<BoxQQPlotProps> = ({
+const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
   field,
   displayName,
   data,
   hasCustomBins,
   dataDimension,
+  color,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split('.');
@@ -62,8 +64,6 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const field_type = clinicalNestedField ? clinicalField : clinicalType;
   const variant =
     field_type === 'other_clinical_attributes' ? 'darker' : 'DEFAULT';
-  const color =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field_type]]?.[variant];
 
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
 
