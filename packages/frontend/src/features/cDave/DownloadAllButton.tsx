@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { handleDownloadPNG, handleDownloadSVG } from '@/features/charts/utils';
-import { DropdownWithIcon } from '@gen3/frontend';
-import { DashboardDownloadContext } from '@/components/analysis';
-import { DownloadIcon } from '@/utils/icons';
+import { DropdownWithIcon } from '../../components/DropdownWithIcon/DropdownWithIcon';
+import { DashboardDownloadContext } from '../Analysis/context';
+import { DownloadIcon } from './icons';
 
 const DownloadAllButton: React.FC = () => {
   const { state } = useContext(DashboardDownloadContext);
