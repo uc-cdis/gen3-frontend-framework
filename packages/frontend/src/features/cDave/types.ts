@@ -71,19 +71,30 @@ export interface ClinicalContinuousStatsData {
   readonly q3: number;
 }
 
-interface ClinicalDataFacet extends FacetDefinition {
-  cardType: 'categorical' | 'continuous';
-  facetDefinition?: FacetDefinition;
+export interface DataDimensionUnitAndToggle {
+  unit: DataDimension;
+  toggleUnit?: DataDimension;
+}
+
+export type CDaveCardType = 'categorical' | 'continuous';
+
+export interface ClinicalDataFacet extends FacetDefinition {
+  cardType: CDaveCardType;
+  dataDimension: DataDimensionUnitAndToggle;
+  color: string;
+  label?: string;
 }
 
 export interface ClinicalDataTab {
   label: string;
   facets: Array<ClinicalDataFacet>;
-  color?: string | null;
+  color: string;
 }
 
 export interface ClinicalDataConfiguration {
   tabs: Array<ClinicalDataTab>;
+  index: string; // data index to pull data from
+  initialFields: Array<string>;
 }
 
 export type DownloadType = 'svg' | 'png' | null;

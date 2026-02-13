@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { ActionIcon, Card, SegmentedControlItem, Tooltip } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
-import { Buckets, FacetDefinition, Operation, Statistics } from '@gen3/core';
+import { FilterSet, HistogramDataAsStringKey, StatValues } from '@gen3/core';
 import SegmentedControl from '../../../components/SegmentedControl';
 // restore later when API and FacetDictionary is implemented
 import { DownloadProgressContext } from '../../Analysis/context';
-import { ChartTypes, DataDimension, DownloadType } from '../types';
+import {
+  ChartTypes,
+  ClinicalDataFacet,
+  DataDimension,
+  DownloadType,
+} from '../types';
 import ContinuousData from './ContinuousData';
 import CategoricalData from './CategoricalData';
-import {
-  CONTINUOUS_FACET_TYPES,
-  DATA_DIMENSIONS,
-  HIDE_QQ_BOX_FIELDS,
-  MISSING_KEY,
-} from '../constants';
+import { CONTINUOUS_FACET_TYPES, MISSING_KEY } from '../constants';
 import { toDisplayName, useDataDimension } from '../utils';
 import { BarChartIcon, CloseIcon, SurvivalChartIcon } from '..//icons';
 
 interface CDaveCardProps {
-  field: string;
-  facetDefinition: FacetDefinition;
-  data: Buckets | Statistics;
+  facet: ClinicalDataFacet;
+  data: Array<HistogramDataAsStringKey> | StatValues;
   updateFields: (field: string) => void;
   initialDashboardRender: boolean;
-  cohortFilters: Operation;
+  cohortFilters: FilterSet;
   color: string;
 }
 
 const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
-  field,
-  facetDefinition,
+  facet,
   data,
   updateFields,
   initialDashboardRender,
@@ -40,29 +38,29 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
   const [downloadInProgress, setDownloadInProgress] = useState(false);
   const [downloadType, setDownloadType] = useState<DownloadType>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
-  const displayDataDimension = useDataDimension(field);
+  const displayDataDimension = useDataDimension(facet);
 
   const [dataDimension, setDataDimension] = useState<DataDimension>(
-    displayDataDimension && DATA_DIMENSIONS?.[field]?.toggleValue
-      ? DATA_DIMENSIONS?.[field]?.toggleValue
-      : (DATA_DIMENSIONS?.[field]?.unit ?? 'Unset'),
+    displayDataDimension && facet.dataDimension?.toggleUnit
+      ? facet.dataDimension?.toggleUnit
+      : (facet.dataDimension?.unit ?? 'Unset'),
   );
 
-  const continuous = CONTINUOUS_FACET_TYPES.includes(facetDefinition.type);
+  const continuous = CONTINUOUS_FACET_TYPES.includes(facet.type);
 
   let noData = true; // start off assuming no data
   if (data) {
     // check if we have enough data to display
     if (continuous) {
-      noData = (data as Statistics)?.count === 0;
+      noData = (data as StatValues)?.count === 0;
     } else {
-      noData = (data as Buckets)?.buckets?.every(
+      noData = (data as Array<HistogramDataAsStringKey>)?.every(
         (bucket) => bucket.key === MISSING_KEY,
       );
     }
   }
 
-  const fieldName = toDisplayName(field);
+  const fieldName = toDisplayName(facet.field);
 
   useEffect(() => {
     if (!initialDashboardRender) {
@@ -108,7 +106,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
   ];
 
   if (continuous && !HIDE_QQ_BOX_FIELDS.includes(field)) {
-    // TODO: Re-enable when API are completed
+    // TODO: Re-enable when API is completed
     /* ----
     chartButtons.push({
       value: "boxqq",
@@ -143,8 +141,8 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
           {displayDataDimension && (
             <SegmentedControl
               data={[
-                DATA_DIMENSIONS?.[field]?.toggleValue ?? 'Unset',
-                DATA_DIMENSIONS?.[field]?.unit,
+                facet.dataDimension?.toggleUnit ?? 'Unset',
+                facet.dataDimension?.unit,
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData || downloadInProgress}
@@ -165,7 +163,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
           >
             <ActionIcon
               data-testid="button-remove-card"
-              onClick={() => updateFields(field)}
+              onClick={() => updateFields(facet.field)}
               className="border-primary bg-white"
               aria-label={`Remove ${fieldName} card`}
             >
@@ -187,18 +185,19 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
           </div>
         ) : continuous ? (
           <ContinuousData
-            initialData={data as Statistics}
-            field={field}
+            initialData={data as StatValues}
+            field={facet.field}
             fieldName={fieldName}
             chartType={chartType}
             noData={noData}
             cohortFilters={cohortFilters}
             dataDimension={dataDimension}
+            color={color}
           />
         ) : (
           <CategoricalData
-            initialData={(data as Buckets)?.buckets}
-            field={field}
+            initialData={data as Array<HistogramDataAsStringKey>}
+            field={facet.field}
             fieldName={fieldName}
             chartType={chartType}
             noData={noData}

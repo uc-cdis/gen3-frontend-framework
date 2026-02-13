@@ -508,7 +508,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
           <PencilIcon
             data-testid="button-custom-bins-edit-group-name"
             className="ml-2 shrink-0"
-            onClick={(e: MouseEvent) => {
+            onClick={(e: any) => {
               e.stopPropagation();
               setEditField(groupName);
             }}

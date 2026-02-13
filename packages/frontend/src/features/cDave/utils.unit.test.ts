@@ -1,3 +1,4 @@
+import { FacetType } from '@gen3/core';
 import {
   createBuckets,
   createFiltersFromSelectedValues,
@@ -8,18 +9,18 @@ import {
   roundContinuousValue,
   toDisplayName,
 } from './utils';
+import { CDaveCardType, DataDimension } from './types';
 
 describe('filterUsefulFacets', () => {
   it('remove empty bucket fields', () => {
     expect(
       filterUsefulFacets({
-        'demographic.gender': {
-          buckets: [
-            { count: 10, key: 'female' },
-            { count: 25, key: 'male' },
-          ],
-        },
-        'demographic.race': { buckets: [{ key: '_missing', count: 35 }] },
+        'demographic.gender': [
+          { count: 10, key: 'female' },
+          { count: 25, key: 'male' },
+        ],
+
+        'demographic.race': [{ key: '_missing', count: 35 }],
       }),
     ).toEqual({
       'demographic.gender': {
@@ -35,15 +36,16 @@ describe('filterUsefulFacets', () => {
     expect(
       filterUsefulFacets({
         'exposures.height': {
-          stats: {
-            count: 0,
-            min: null as unknown as number,
-            max: null as unknown as number,
-            sum: 0,
-          },
+          count: 0,
+          min: null as unknown as number,
+          max: null as unknown as number,
+          sum: 0,
         },
         'exposures.years_smoked': {
-          stats: { count: 947, min: 0, max: 68, sum: 32170 },
+          count: 947,
+          min: 0,
+          max: 68,
+          sum: 32170,
         },
       }),
     ).toEqual({
@@ -539,29 +541,44 @@ describe('createFiltersFromSelectedValues', () => {
   });
 });
 
+const ClinicalAgeFacet = {
+  field: 'diagnoses.age_at_diagnosis',
+  index: 'clinical_data',
+  type: 'age' as FacetType,
+  dataDimension: {
+    unit: 'Years' as DataDimension,
+    toggleUnit: 'Days' as DataDimension,
+  },
+  cardType: 'continuous' as CDaveCardType,
+  color: '#000000',
+};
+
+const ClinicalNumberFacet = {
+  field: 'follow_ups.other_clinical_attributes.weight',
+  index: 'clinical_data',
+  type: 'age' as FacetType,
+  dataDimension: {
+    unit: 'Kilograms' as DataDimension,
+  },
+  cardType: 'continuous' as CDaveCardType,
+  color: '#000000',
+};
+
 describe('roundContinuousValue', () => {
   it('format years or days as whole integer', () => {
-    const expectedValue = roundContinuousValue(
-      2.25,
-      'diagnoses.age_at_diagnosis',
-      false,
-    );
+    const expectedValue = roundContinuousValue(2.25, ClinicalAgeFacet, false);
     expect(expectedValue).toEqual(2);
   });
 
   it('format years or days as whole integer less than ABS 1', () => {
-    const expectedValue = roundContinuousValue(
-      0.25,
-      'diagnoses.age_at_diagnosis',
-      false,
-    );
+    const expectedValue = roundContinuousValue(0.25, ClinicalAgeFacet, false);
     expect(expectedValue).toEqual(0);
   });
 
   it('format non-year/day values as integer', () => {
     const expectedValue = roundContinuousValue(
       2.25,
-      'treatments.treatment_dose',
+      ClinicalNumberFacet,
       false,
     );
     expect(expectedValue).toEqual(2);
@@ -570,25 +587,21 @@ describe('roundContinuousValue', () => {
   it('format non-year/day values less than ABS 1 to 2 decimal place', () => {
     const expectedValue = roundContinuousValue(
       0.25,
-      'treatments.treatment_dose',
+      ClinicalNumberFacet,
       false,
     );
     expect(expectedValue).toEqual(0.25);
 
     const expectedValue2 = roundContinuousValue(
       -0.25,
-      'treatments.treatment_dose',
+      ClinicalNumberFacet,
       false,
     );
     expect(expectedValue2).toEqual(-0.25);
   });
 
   it('format values in a custom bin to 2 decimal place', () => {
-    const expectedValue = roundContinuousValue(
-      2.25,
-      'diagnoses.age_at_diagnosis',
-      true,
-    );
+    const expectedValue = roundContinuousValue(2.25, ClinicalAgeFacet, true);
     expect(expectedValue).toEqual(2.25);
   });
 });

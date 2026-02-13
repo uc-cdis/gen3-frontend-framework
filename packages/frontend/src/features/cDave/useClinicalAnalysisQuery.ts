@@ -14,7 +14,8 @@ interface UseClinicalDataParams {
   aggFields: string[];
   statsFields: string[];
   filters: FilterSet;
-  accessibility: Accessibility;
+  indexPrefix?: string;
+  accessibility?: Accessibility;
 }
 
 interface UseClinicalDataReturn {
@@ -35,7 +36,8 @@ export const useClinicalAnalysisQuery = ({
   aggFields,
   statsFields,
   filters,
-  accessibility,
+  accessibility = Accessibility.ALL,
+  indexPrefix = '',
 }: UseClinicalDataParams): UseClinicalDataReturn => {
   const {
     data: cDaveAggResults,
@@ -49,7 +51,7 @@ export const useClinicalAnalysisQuery = ({
     filters,
     accessibility,
     filterSelf: true,
-    indexPrefix: 'CaseCentric_',
+    indexPrefix,
   });
 
   const {
@@ -64,7 +66,7 @@ export const useClinicalAnalysisQuery = ({
     filters,
     accessibility,
     filterSelf: true,
-    indexPrefix: 'CaseCentric_',
+    indexPrefix: indexPrefix,
   });
 
   // Memoized combined states

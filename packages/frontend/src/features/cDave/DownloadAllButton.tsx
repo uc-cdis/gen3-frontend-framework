@@ -1,5 +1,8 @@
 import React, { useContext } from 'react';
-import { handleDownloadPNG, handleDownloadSVG } from '@/features/charts/utils';
+import {
+  handleDownloadPNG,
+  handleDownloadSVG,
+} from '../../components/charts/downloads';
 import { DropdownWithIcon } from '../../components/DropdownWithIcon/DropdownWithIcon';
 import { DashboardDownloadContext } from '../Analysis/context';
 import { DownloadIcon } from './icons';

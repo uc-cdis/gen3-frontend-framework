@@ -1,25 +1,23 @@
 import React, { useEffect, useRef } from 'react';
-import { Alert, Grid, Loader } from '@mantine/core';
+import { Grid } from '@mantine/core';
 import {
-  Buckets,
-  convertFilterToGqlFilter,
-  Operation,
-  Stats,
+  FilterSet,
+  HistogramDataAsStringKey,
+  StatValues,
   usePrevious,
 } from '@gen3/core';
+import { ClinicalDataFacet } from './types';
 
-import { getFormattedTimestamp } from '../../utils/date';
-// import { useGetSurvivalPlotQuery } from '@/core/features/survival';
-// import { EmptySurvivalPlot } from '@/core/features/survival/types';
-// import { SurvivalPlotTypes } from '../charts/SurvivalPlot/types';
-//import SurvivalPlot from '../charts/SurvivalPlot/SurvivalPlot';
 import CDaveCard from './CDaveCard/CDaveCard';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface DashboardProps {
-  readonly cohortFilters: Operation;
-  readonly activeFields: string[];
-  readonly results: Record<string, Buckets | Stats>;
+  readonly cohortFilters: FilterSet;
+  readonly activeFields: Array<ClinicalDataFacet>;
+  readonly results: Record<
+    string,
+    Array<HistogramDataAsStringKey> | StatValues
+  >;
   readonly updateFields: (field: string) => void;
 }
 
@@ -35,6 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     () => cohortFilters && [cohortFilters],
     [cohortFilters],
   );
+  /* -- TOO: reenable when Survival Plot is ready
   const {
     data: survivalData,
     isError,
@@ -43,6 +42,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   } = useGetSurvivalPlotQuery({
     filters: filters.map((x: Operation) => convertFilterToGqlFilter(x)),
   });
+  --- */
 
   useEffect(() => {
     if (lastDashboardRender) {
@@ -52,6 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <Grid gutter={24} overflow="hidden" className="flex-grow">
+      {/* --- TODO: reenable when Survival Plot is ready
       <Grid.Col span={{ base: 12, lg: 6 }}>
         <div
           data-testid="overall-survival-plot"
@@ -70,17 +71,19 @@ const Dashboard: React.FC<DashboardProps> = ({
             />
           )}
         </div>
-      </Grid.Col>
-      {activeFields.map((field) => {
+        </Grid.Col>
+        --- */}
+      {activeFields.map((facet) => {
         return (
-          <Grid.Col span={{ base: 12, lg: 6 }} key={field}>
+          <Grid.Col span={{ base: 12, lg: 6 }} key={facet.field}>
             <CDaveCard
-              field={field}
-              data={results[field]}
+              field={facet.field}
+              facetDefinition={facet}
+              data={results[facet.field]}
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}
               cohortFilters={cohortFilters}
-              color={color}
+              color={facet.color}
             />
           </Grid.Col>
         );

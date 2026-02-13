@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { LoadingOverlay } from '@mantine/core';
 import {
   Accessibility,
+  EmptyFilterSet,
   filterSetToOperation,
   Operation,
+  selectCohortFilters,
   useCoreSelector,
 } from '@gen3/core';
 
@@ -12,44 +14,33 @@ import { useClinicalAnalysisQuery } from './useClinicalAnalysisQuery';
 // import { useClinicalFieldsQuery, useGetClinicalAnalysisQuery } from '@/core/features/clinicalDataAnalysis'
 import Controls from './Controls';
 import Dashboard from './Dashboard';
-import { DEFAULT_FIELDS, FACET_SORT } from './constants';
-import {
-  combineAnalysisResults,
-  filterUsefulFacets,
-  parseFieldName,
-} from './utils';
+import { combineAnalysisResults, filterUsefulFacets } from './utils';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
-import { selectCurrentCohortCaseFilters } from '@/core/utils';
-import { COHORT_FILTER_INDEX } from '@/core';
+import { ClinicalDataConfiguration, ClinicalDataFacet } from './types';
 
-const ClinicalDataAnalysis: React.FC = () => {
+const ClinicalDataAnalysis = ({
+  tabs,
+  initialFields,
+  index,
+}: ClinicalDataConfiguration) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [accessLevel] = useState<Accessibility>(Accessibility.ALL);
-  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
+  const [activeFields, setActiveFields] = useState(initialFields); // the fields that have been selected by the user
 
-  const cDaveFields = useDeepCompareMemo(
-    () =>
-      Object.values(fields || {})
-        .map((d) => ({ ...d, ...parseFieldName(d.name) }))
-        .filter(
-          (d) =>
-            FACET_SORT?.[d.field_type] &&
-            FACET_SORT[d.field_type].includes(d.field_name),
-        ),
-    [fields],
-  );
+  const cDaveFields = tabs.reduce((acc: Array<ClinicalDataFacet>, tab) => {
+    return [...acc, ...tab.facets];
+  }, []);
 
   const cDaveStatsFields = useDeepCompareMemo(
     () =>
-      cDaveFields
-        .filter((f) => f.type.name == 'NumericAggregations')
-        .map((x) => x.full),
+      cDaveFields.filter((f) => f.cardType == 'continuous').map((x) => x.field),
     [cDaveFields],
   );
 
-  const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortCaseFilters(state, COHORT_FILTER_INDEX),
+  const allCohortFilters = useCoreSelector((state) =>
+    selectCohortFilters(state),
   );
+  const currentCohortFilters = allCohortFilters[index] ?? EmptyFilterSet;
 
   const cohortFilters = useDeepCompareMemo(
     () =>
@@ -58,13 +49,13 @@ const ClinicalDataAnalysis: React.FC = () => {
     [currentCohortFilters],
   );
   const facets = useDeepCompareMemo(
-    () => cDaveFields.map((f) => f.full),
+    () => cDaveFields.map((f) => f.field),
     [cDaveFields],
   );
 
   const { cDaveAggResults, cDaveStatsResults, isFetching, isError, isSuccess } =
     useClinicalAnalysisQuery({
-      type: COHORT_FILTER_INDEX,
+      type: index,
       aggFields: facets,
       statsFields: cDaveStatsFields,
       filters: currentCohortFilters,
@@ -115,6 +106,7 @@ const ClinicalDataAnalysis: React.FC = () => {
           zIndex={0}
         />
         <Controls
+          tabs={tabs}
           updateFields={updateFields}
           cDaveFields={cDaveFields}
           fieldsWithData={filterUsefulFacets(convertedData)}

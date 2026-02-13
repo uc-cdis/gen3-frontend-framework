@@ -1,13 +1,11 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import {
-  buildRangeQuery,
-  convertFilterToGqlFilter,
-  GQLFilter,
+  Accessibility,
+  FilterSet,
   NumericFromTo,
-  Operation,
   Statistics,
-  useGeneralGQLQuery,
+  useCustomRangeQuery,
 } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
 import CDaveTable from './CDaveTable';
@@ -114,16 +112,21 @@ const toBucketDisplayName = (
 };
 
 interface ContinuousDataProps {
-  readonly initialData: Statistics;
-  readonly field: string;
-  readonly fieldName: string;
-  readonly chartType: ChartTypes;
-  readonly noData: boolean;
-  readonly cohortFilters: Operation;
-  readonly dataDimension: DataDimension;
+  initialData: Statistics;
+  field: string;
+  fieldName: string;
+  chartType: ChartTypes;
+  noData: boolean;
+  cohortFilters: FilterSet;
+  dataDimension: DataDimension;
+  index: string;
+  indexPrefix?: string;
+  accessLevel?: Accessibility;
+  fieldsAreFlat?: boolean;
+  color: string;
 }
 
-const ContinuousData: React.FC<ContinuousDataProps> = ({
+const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
   initialData,
   field,
   fieldName,
@@ -131,6 +134,11 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   noData,
   cohortFilters,
   dataDimension,
+  index,
+  indexPrefix = '',
+  accessLevel = Accessibility.ALL,
+  fieldsAreFlat = true,
+  color,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[] | null
@@ -161,23 +169,21 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     [customBinnedData, initialData],
   );
 
-  const rangeQuery = useMemo(() => {
-    return buildRangeQuery(field, ranges, cohortFilters);
-  }, [field, ranges]);
-
-  const gqlFilters = Object.entries(rangeQuery.variables).reduce(
-    (acc: Record<string, GQLFilter>, [key, filter]: [string, Operation]) => {
-      acc[key] = convertFilterToGqlFilter(filter);
-      return acc;
-    },
-    {},
-  );
-
   const {
     data: rangeData,
     isFetching,
     isSuccess,
-  } = useGeneralGQLQuery({ query: rangeQuery.query, variables: gqlFilters });
+  } = useCustomRangeQuery({
+    field,
+    ranges: ranges as Array<NumericFromTo>,
+    filters: cohortFilters,
+    index,
+    indexPrefix: indexPrefix,
+    accessibility: accessLevel,
+    isNested: !fieldsAreFlat,
+    asTextHistogram: true,
+    rangeBaseName: 'range',
+  });
 
   const statsData = null; // TODO: enable stats data
 
@@ -224,6 +230,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           data={statsData ?? EmptyContinuousStats}
           dataDimension={dataDimension}
           hasCustomBins={hasCustomBins}
+          color={color}
         />
       ) : (
         <>
@@ -236,15 +243,9 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
                 isFetching={isFetching}
                 hideYTicks={displayedData.every((val) => val.count === 0)}
                 noData={noData}
+                color={color}
               />
-            ) : (
-              <ClinicalSurvivalPlot
-                field={field}
-                selectedSurvivalPlots={selectedSurvivalPlots}
-                continuous={true}
-                customBinnedData={customBinnedData}
-              />
-            )}
+            ) : null}
           </div>
           <CardControls
             continuous={true}

@@ -52,7 +52,6 @@ export * from './features/workspace';
 export * from './features/cart';
 export * from './features/config';
 export * from './features/cohortComparison';
-export * from './features/clinicalDataAnalysis';
 
 export {
   type CoreState,

@@ -7,13 +7,12 @@ import {
   Switch,
   Tooltip,
 } from '@mantine/core';
-import { groupBy, sortBy } from 'lodash';
-import { Buckets, Stats } from '@gen3/core';
+import { groupBy } from 'lodash';
+import { HistogramDataAsStringKey } from '@gen3/core';
 import { createKeyboardAccessibleFunction } from '../../utils/keyboardAccessible';
-import { COLOR_CLASS_HOVER_MAP, DEFAULT_FIELDS, FACET_SORT } from './constants';
 import { toDisplayName } from './utils';
 import FacetExpander from '../../components/facets/FacetExpander';
-import { ClinicalDataTab } from './types';
+import { ClinicalDataFacet, ClinicalDataTab } from './types';
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -28,16 +27,9 @@ import {
   UpArrowIcon,
 } from './icons';
 
-interface CDaveField {
-  readonly field_type: string;
-  readonly field_name: string;
-  readonly description?: string | null;
-  readonly full: string;
-}
-
 interface ControlGroupProps {
   name: string;
-  fields: CDaveField[];
+  fields: ClinicalDataFacet[];
   updateFields: (field: string) => void;
   activeFields: string[];
   searchTerm?: string;
@@ -55,14 +47,17 @@ const ControlGroup: React.FC<Readonly<ControlGroupProps>> = ({
   const [groupOpen, setGroupOpen] = useState(true);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
 
+  const allFields = useDeepCompareMemo(
+    () => fields.map((f) => f.field),
+    [fields],
+  );
+
   const filteredFields = useDeepCompareMemo(() => {
     if (!searchTerm) return fields;
     return fields.filter(
       (f) =>
         f.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        toDisplayName(f.field_name)
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()),
+        toDisplayName(f.field).toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [searchTerm, fields]);
 
@@ -100,10 +95,11 @@ const ControlGroup: React.FC<Readonly<ControlGroupProps>> = ({
           <ul className="bg-base-max text-md">
             {visibleFields.map((field) => (
               <FieldControl
-                key={field.full}
-                field={field}
+                key={field.field}
+                facet={field}
                 updateFields={updateFields}
                 activeFields={activeFields}
+                defaultFields={allFields}
                 searchTerm={searchTerm}
                 fieldColor={color}
               />
@@ -123,33 +119,35 @@ const ControlGroup: React.FC<Readonly<ControlGroupProps>> = ({
 };
 
 interface FieldControlProps {
-  field: CDaveField;
+  facet: ClinicalDataFacet;
   updateFields: (field: string) => void;
   activeFields: string[];
+  defaultFields: string[];
   searchTerm?: string;
   fieldColor: string;
 }
 
 const FieldControl: React.FC<Readonly<FieldControlProps>> = ({
-  field,
+  facet,
   updateFields,
   activeFields,
   searchTerm = '',
   fieldColor,
+  defaultFields,
 }) => {
-  const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
+  const [checked, setChecked] = useState(defaultFields.includes(facet.field));
 
   useDeepCompareEffect(() => {
-    setChecked(activeFields.includes(field.full));
-  }, [activeFields, field.full]);
+    setChecked(activeFields.includes(facet.field));
+  }, [activeFields, facet.field]);
 
-  const displayName = toDisplayName(field.field_name);
+  const displayName = toDisplayName(facet.field);
   const handleChange = useDeepCompareCallback(
     (e: any) => {
       setChecked(e.currentTarget.checked);
-      updateFields(field.full);
+      updateFields(facet.field);
     },
-    [field.full, updateFields],
+    [facet.field, updateFields],
   );
 
   return (
@@ -160,7 +158,7 @@ const FieldControl: React.FC<Readonly<FieldControlProps>> = ({
             <Highlight highlight={searchTerm}>{displayName}</Highlight>
           ) : (
             <Tooltip
-              label={field?.description || 'No description available'}
+              label={facet?.description || 'No description available'}
               withArrow
               w={200}
               multiline
@@ -176,33 +174,25 @@ const FieldControl: React.FC<Readonly<FieldControlProps>> = ({
           root: 'py-1',
           body: 'flex justify-between items-center',
           label: 'cursor-pointer text-sm text-black font-content font-medium',
-          track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
+          track: `cursor-pointer`,
         }}
         checked={checked}
         onChange={handleChange}
       />
       {searchTerm && (
-        <Highlight highlight={searchTerm}>{field?.description || ''}</Highlight>
+        <Highlight highlight={searchTerm}>{facet?.description || ''}</Highlight>
       )}
     </li>
   );
 };
 
-const sortFacetFields = (
-  fields: CDaveField[],
-  facet_type: string,
-): CDaveField[] => {
-  return sortBy(fields, (item) =>
-    FACET_SORT[facet_type].indexOf(item.field_name) !== -1
-      ? FACET_SORT[facet_type].indexOf(item.field_name)
-      : fields.length,
-  );
-};
-
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
-  readonly cDaveFields: CDaveField[];
-  readonly fieldsWithData: Record<string, Stats | Buckets>;
+  readonly cDaveFields: ClinicalDataFacet[];
+  readonly fieldsWithData: Record<
+    string,
+    Array<HistogramDataAsStringKey> | StatValues
+  >;
   readonly activeFields: string[];
   readonly controlsExpanded: boolean;
   readonly setControlsExpanded: (expanded: boolean) => void;
@@ -283,14 +273,15 @@ const Controls: React.FC<ControlPanelProps> = ({
           <strong>{cDaveFields.length}</strong> fields with values
         </p>
         <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
-          {Object.entries(tabs).map(([key, label]) => (
+          {tabs.map((tab) => (
             <ControlGroup
-              name={label}
-              fields={sortFacetFields(groupedFields[key] || [], key)}
+              name={tab.label}
+              fields={groupedFields[tab.label] || []}
               updateFields={updateFields}
               activeFields={activeFields}
               searchTerm={searchTerm}
-              key={key}
+              key={tab.label}
+              color={tab.color}
             />
           ))}
         </div>

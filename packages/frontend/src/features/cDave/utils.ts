@@ -1,26 +1,21 @@
-import { capitalize, flatten, isNumber, omitBy, some } from 'lodash';
+import { flatten, isNumber, omitBy, some } from 'lodash';
 import {
   AggregationsData,
-  Buckets,
   FacetDefinition,
+  fieldNameToTitle,
   FilterSet,
   HistogramDataArray,
   HistogramDataAsStringKey,
   isObject,
   NumericFromTo,
-  Statistics,
   StatsData,
   StatValues,
 } from '@gen3/core';
 import { DAYS_IN_YEAR } from '../../components/facets/constants';
-import {
-  CAPITALIZED_TERMS,
-  DATA_DIMENSIONS,
-  MISSING_KEY,
-  SPECIAL_CASE_FIELDS,
-} from './constants';
+import { MISSING_KEY } from './constants';
 import {
   CategoricalBins,
+  ClinicalDataFacet,
   ContinuousCustomBinnedData,
   CustomInterval,
   DataDimension,
@@ -31,28 +26,6 @@ import {
 } from './types';
 
 const RANGE_DECIMAL_PRECISION = 1;
-
-const createFromToKeyAndLabel = (v: NumericFromTo, units: string) => {
-  return {
-    key: `${v.from.toFixed(RANGE_DECIMAL_PRECISION)}-${v.to.toFixed(
-      RANGE_DECIMAL_PRECISION,
-    )}`,
-    label: `\u2265 ${v.from} to < ${v.to} ${units}`,
-  };
-};
-
-const ZeroStats: StatValues = {
-  count: 0,
-  max: 0,
-  min: 0,
-  sum: 0,
-  avg: 0,
-  stddev: 0,
-  median: 0,
-  p25: 0,
-  p50: 0,
-  p75: 0,
-};
 
 export const filterUsefulFacets = (
   facets: Record<string, Array<HistogramDataAsStringKey> | StatValues>,
@@ -71,36 +44,34 @@ export const filterUsefulFacets = (
 export const combineAnalysisResults = (
   aggregations: AggregationsData,
   stats: StatsData,
-): Record<string, Buckets | Statistics> => {
+): Record<string, Array<HistogramDataAsStringKey> | StatValues> => {
   const processedAggregations = Object.entries(aggregations).reduce(
-    (acc: Record<string, Buckets>, [field, data]) => {
-      const convertedData = data.reduce((results: Array<Bucket>, x) => {
-        if (typeof x.key === 'string')
-          results.push({ key: x.key.toString(), count: x.count });
-        return results;
-      }, []);
+    (acc: Record<string, Array<HistogramDataAsStringKey>>, [field, data]) => {
+      const convertedData = data.reduce(
+        (results: Array<HistogramDataAsStringKey>, x) => {
+          if (typeof x.key === 'string')
+            results.push({ key: x.key.toString(), count: x.count });
+          return results;
+        },
+        [],
+      );
 
-      acc[field] = { buckets: convertedData };
-
+      acc[field] = convertedData;
       return acc;
     },
     {},
   );
 
   const processStats = Object.entries(stats).reduce(
-    (acc: Record<string, Statistics>, [field, data]) => {
-      const convertedData = data.map((x) => {
-        return {
-          count: x.count ?? 0,
-          max: x.max ?? 0,
-          min: x.min ?? 0,
-          sum: x.sum ?? 0,
-        };
-      }, []);
-
-      acc[field] = {
-        stats: convertedData.length > 0 ? convertedData[0] : ZeroStats,
+    (acc: Record<string, StatValues>, [field, x]) => {
+      const convertedData = {
+        count: x.count ?? 0,
+        max: x.max ?? 0,
+        min: x.min ?? 0,
+        sum: x.sum ?? 0,
       };
+
+      acc[field] = convertedData;
 
       return acc;
     },
@@ -140,16 +111,7 @@ export const toDisplayName = (field: string): string => {
   const fieldName = parsed.at(-1);
 
   if (fieldName) {
-    if (fieldName in SPECIAL_CASE_FIELDS) {
-      return SPECIAL_CASE_FIELDS[fieldName];
-    }
-
-    return fieldName
-      .split('_')
-      .map((w) =>
-        CAPITALIZED_TERMS.includes(w) ? w.toUpperCase() : capitalize(w),
-      )
-      .join(' ');
+    return fieldNameToTitle(fieldName);
   }
   return 'Not Set';
 };
@@ -225,21 +187,21 @@ export const isInterval = (
   return false;
 };
 
-export const useDataDimension = (field: string): boolean => {
-  return DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
+export const useDataDimension = (facet: ClinicalDataFacet): boolean => {
+  return facet.dataDimension?.toggleUnit !== undefined;
 };
 
 export const formatValue = (value: number): number => Number(value?.toFixed(2));
 
 export const roundContinuousValue = (
   value: number,
-  field: string,
+  facet: ClinicalDataFacet,
   hasCustomBins: boolean,
 ): number => {
   if (hasCustomBins) {
     return formatValue(value);
   } else {
-    const unit = DATA_DIMENSIONS?.[field]?.unit;
+    const unit = facet.dataDimension?.unit;
     if (unit === 'Days' || unit === 'Years') {
       return Math.round(value);
     } else {
