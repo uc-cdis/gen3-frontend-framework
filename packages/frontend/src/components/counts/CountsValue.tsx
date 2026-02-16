@@ -26,7 +26,10 @@ const CountsValue = ({
         size="xl"
         radius="xs"
         color="secondary.4"
-        classNames={{ root: 'h-full' }}
+        classNames={{
+          root: 'h-full',
+          label: 'font-bold text-contrast-secondary',
+        }}
       >
         {isError ? 'error' : toCountsString(counts, label, configuration)}
       </Badge>
