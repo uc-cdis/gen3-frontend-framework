@@ -14,17 +14,14 @@ import CardControls from './CardControls';
 import { isArray } from 'lodash';
 import {
   ChartTypes,
+  ClinicalDataFacet,
   CustomInterval,
   DataDimension,
   DisplayData,
   NamedFromTo,
   SelectedFacet,
 } from '../types';
-import {
-  DATA_DIMENSIONS,
-  MISSING_KEY,
-  SURVIVAL_PLOT_MIN_COUNT,
-} from '../constants';
+import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';
 import {
   convertDataDimension,
   createBuckets,
@@ -52,7 +49,7 @@ const EmptyContinuousStats = {
 const processContinuousResultData = (
   data: Record<string, any>,
   customBinnedData: NumericFromTo[],
-  field: string,
+  facet: ClinicalDataFacet,
   dataDimension: DataDimension,
 ): DisplayData => {
   // convert data to buckets
@@ -79,7 +76,7 @@ const processContinuousResultData = (
   return Object.entries(countByRangeBucket).map(([k, v]) => ({
     displayName: toBucketDisplayName(
       k,
-      field,
+      facet,
       dataDimension,
       customBinnedData !== null,
     ),
@@ -90,31 +87,30 @@ const processContinuousResultData = (
 
 const toBucketDisplayName = (
   bucket: string,
-  field: string,
+  facet: ClinicalDataFacet,
   dataDimension: DataDimension,
   hasCustomBins: boolean,
 ): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
-  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
+  const originalDataDimension = facet.dataDimension.unit;
   return `${roundContinuousValue(
     convertDataDimension(
       Number(fromValue),
       originalDataDimension,
       dataDimension,
     ),
-    field,
+    facet,
     hasCustomBins,
   )?.toLocaleString()} to <${roundContinuousValue(
     convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
-    field,
+    facet,
     hasCustomBins,
   )?.toLocaleString()}`;
 };
 
 interface ContinuousDataProps {
   initialData: Statistics;
-  field: string;
-  fieldName: string;
+  facet: ClinicalDataFacet;
   chartType: ChartTypes;
   noData: boolean;
   cohortFilters: FilterSet;
@@ -128,8 +124,7 @@ interface ContinuousDataProps {
 
 const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
   initialData,
-  field,
-  fieldName,
+  facet,
   chartType,
   noData,
   cohortFilters,
@@ -174,7 +169,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
     isFetching,
     isSuccess,
   } = useCustomRangeQuery({
-    field,
+    field: facet.field,
     ranges: ranges as Array<NumericFromTo>,
     filters: cohortFilters,
     index,
@@ -192,10 +187,10 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
       processContinuousResultData(
         isSuccess ? rangeData : {},
         ranges,
-        field,
+        facet,
         dataDimension,
       ),
-    [isSuccess, rangeData, customBinnedData, field, dataDimension],
+    [isSuccess, rangeData, customBinnedData, facet, dataDimension],
   );
 
   useDeepCompareEffect(() => {
@@ -225,8 +220,8 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
     <>
       {chartType === 'boxqq' ? (
         <BoxQQSection
-          field={field}
-          displayName={fieldName}
+          facet={facet}
+          displayName={facet?.label ?? facet.field}
           data={statsData ?? EmptyContinuousStats}
           dataDimension={dataDimension}
           hasCustomBins={hasCustomBins}
@@ -237,8 +232,8 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
           <div className="flex-grow">
             {chartType === 'histogram' ? (
               <CDaveHistogram
-                field={field}
                 data={displayedData}
+                field={facet.field}
                 yTotal={yTotal}
                 isFetching={isFetching}
                 hideYTicks={displayedData.every((val) => val.count === 0)}
@@ -249,8 +244,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
           </div>
           <CardControls
             continuous={true}
-            field={field}
-            fieldName={fieldName}
+            facet={facet}
             displayedData={displayedData}
             yTotal={yTotal}
             setBinningModalOpen={setBinningModalOpen}
@@ -260,8 +254,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
             dataDimension={dataDimension}
           />
           <CDaveTable
-            field={field}
-            fieldName={fieldName}
+            facet={facet}
             yTotal={yTotal}
             displayedData={displayedData}
             hasCustomBins={customBinnedData !== null}
@@ -278,7 +271,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
       <ContinuousBinningModal
         opened={binningModalOpen}
         setModalOpen={setBinningModalOpen}
-        field={field}
+        facet={facet}
         stats={initialData}
         updateBins={setCustomBinnedData}
         customBins={customBinnedData}

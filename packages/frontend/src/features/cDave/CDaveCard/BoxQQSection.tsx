@@ -4,26 +4,13 @@ import saveAs from 'file-saver';
 import tw from 'tailwind-styled-components';
 import { ActionIcon, Button, Menu, Tooltip } from '@mantine/core';
 import { useResizeObserver } from '@mantine/hooks';
-import { ClinicalContinuousStatsData, DataDimension } from '../types';
-import {
-  FilterSet,
-  selectCurrentCohortFilters,
-  useCoreSelector,
-} from '@gen3/core';
+import { ClinicalContinuousStatsData, ClinicalDataFacet, DataDimension, } from '../types';
+import { selectCurrentCohortFilters, useCoreSelector } from '@gen3/core';
 import OffscreenWrapper from '../../../components/OffscreenWrapper';
-import {
-  handleDownloadPNG,
-  handleDownloadSVG,
-} from '../../../components/charts/downloads';
+import { handleDownloadPNG, handleDownloadSVG, } from '../../../components/charts/downloads';
 import { DashboardDownloadContext } from '../../Analysis/context';
 import { getFormattedTimestamp } from '../../../utils/time';
-import { DATA_DIMENSIONS } from '../constants';
-import {
-  convertDataDimension,
-  parseNestedQQResponseData,
-  qnorm,
-  roundContinuousValue,
-} from '../utils';
+import { convertDataDimension, parseNestedQQResponseData, qnorm, roundContinuousValue, } from '../utils';
 import QQPlot from './QQPlot';
 import BoxPlot from './BoxPlot';
 import { DownloadIcon } from '../icons';
@@ -32,7 +19,7 @@ const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-b
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
 
 interface BoxQQPlotProps {
-  field: string;
+  facet: ClinicalDataFacet;
   displayName: string;
   data: ClinicalContinuousStatsData;
   hasCustomBins: boolean;
@@ -41,7 +28,7 @@ interface BoxQQPlotProps {
 }
 
 const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
-  field,
+  facet,
   displayName,
   data,
   hasCustomBins,
@@ -49,76 +36,60 @@ const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
   color,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
-  const [clinicalType, clinicalField, clinicalNestedField] = field.split('.');
   const [boxPlotRef, boundingRectBox] = useResizeObserver();
   const [qqPlotRef, boundingRectQQ] = useResizeObserver();
 
   const { dispatch } = useContext(DashboardDownloadContext);
   const boxDownloadChartRef = useRef<HTMLElement>(null!);
   const qqDownloadChartRef = useRef<HTMLElement>(null!);
-  const fieldName = clinicalNestedField ?? clinicalField;
+  const fieldName = facet.field;
   const date = getFormattedTimestamp();
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
   const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
-  const field_type = clinicalNestedField ? clinicalField : clinicalType;
-  const variant =
-    field_type === 'other_clinical_attributes' ? 'darker' : 'DEFAULT';
-
-  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
+  const originalDataDimension = facet.dataDimension.unit;
 
   const formattedData = {
     min: roundContinuousValue(
       convertDataDimension(data.min, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     max: roundContinuousValue(
       convertDataDimension(data.max, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     mean: roundContinuousValue(
       convertDataDimension(data.mean, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     median: roundContinuousValue(
       convertDataDimension(data.median, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     q1: roundContinuousValue(
       convertDataDimension(data.q1, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     q3: roundContinuousValue(
       convertDataDimension(data.q3, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     std_dev: roundContinuousValue(
       convertDataDimension(data.std_dev, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
     iqr: roundContinuousValue(
       convertDataDimension(data.iqr, originalDataDimension, dataDimension),
-      field,
+      facet,
       hasCustomBins,
     ),
-  };
-
-  const missingFilter: FilterSet = {
-    root: {
-      [`cases.${field}`]: {
-        field: `cases.${field}`,
-        operator: 'exists',
-        operand: 'cases.${field}',
-      },
-    },
-    mode: 'and',
   };
 
   const cohortFilters = useCoreSelector((state) =>
@@ -138,8 +109,9 @@ const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
   };
 
   const parsedQQValues = useDeepCompareMemo(
-    () => (isSuccess ? parseNestedQQResponseData(qqData?.hits, field) : []),
-    [qqData, isSuccess, field],
+    () =>
+      isSuccess ? parseNestedQQResponseData(qqData?.hits, facet.field) : [],
+    [qqData, isSuccess, facet.field],
   );
   const formattedQQValues = useDeepCompareMemo(
     () =>

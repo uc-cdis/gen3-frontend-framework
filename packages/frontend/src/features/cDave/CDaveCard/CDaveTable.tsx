@@ -3,12 +3,16 @@ import { SurvivalChartIcon } from '../icons';
 import { ActionIcon, Checkbox, Tooltip } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';
-import { DataDimension, DisplayData, SelectedFacet } from '../types';
+import {
+  ClinicalDataFacet,
+  DataDimension,
+  DisplayData,
+  SelectedFacet,
+} from '../types';
 import { formatPercent, useDataDimension } from '../utils';
 
 interface CDaveTableProps {
-  readonly field: string;
-  readonly fieldName: string;
+  readonly facet: ClinicalDataFacet;
   readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly hasCustomBins: boolean;
@@ -21,8 +25,7 @@ interface CDaveTableProps {
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
-  field,
-  fieldName,
+  facet,
   displayedData,
   yTotal,
   hasCustomBins = false,
@@ -33,7 +36,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedFacets,
   dataDimension,
 }: CDaveTableProps) => {
-  const displayDataDimension = useDataDimension(field);
+  const displayDataDimension = useDataDimension(facet);
 
   const validData = useDeepCompareMemo(
     () => displayedData.filter(({ count }) => count > 0),
@@ -73,7 +76,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 size="xs"
                 aria-label={`${
                   allSelected ? 'Unselect' : 'Select'
-                } all the rows of ${fieldName} table`}
+                } all the rows of ${facet.label} table`}
                 checked={allSelected}
                 onChange={toggleSelectAll}
                 disabled={validData.length === 0}
@@ -92,7 +95,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               </th>
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {fieldName}
+              {facet.label}
               {displayDataDimension && ` (${dataDimension})`}
               {hasCustomBins && ' (User Defined Bins Applied)'}
             </th>
@@ -117,7 +120,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     ? 'bg-base-lightest text-base-contrast-lightest'
                     : 'bg-base-max text-base-contrast-max'
                 }`}
-                key={`${fieldName}-${key}`}
+                key={`${facet.label}-${key}`}
               >
                 <td className="pl-2 py-1">
                   <Checkbox

@@ -8,6 +8,7 @@ import CategoricalBinningModal from '../CategoricalBinningModal';
 import {
   CategoricalBins,
   ChartTypes,
+  ClinicalDataFacet,
   CustomInterval,
   DisplayData,
   NamedFromTo,
@@ -18,8 +19,7 @@ import { flattenBinnedData, toDisplayName } from '../utils';
 
 interface CategoricalDataProps {
   initialData: ReadonlyArray<Bucket>;
-  field: string;
-  fieldName: string;
+  facet: ClinicalDataFacet;
   chartType: ChartTypes;
   noData: boolean;
   color: string;
@@ -27,8 +27,7 @@ interface CategoricalDataProps {
 
 const CategoricalData: React.FC<CategoricalDataProps> = ({
   initialData,
-  field,
-  fieldName,
+  facet,
   chartType,
   noData,
   color,
@@ -92,7 +91,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         {
           chartType === 'histogram' ? (
             <CDaveHistogram
-              field={field}
+              field={facet.field}
               data={displayedData}
               yTotal={yTotal}
               isFetching={false}
@@ -112,8 +111,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       </div>
       <CardControls
         continuous={false}
-        field={field}
-        fieldName={fieldName}
+        facet={facet}
         displayedData={displayedData}
         yTotal={yTotal}
         setBinningModalOpen={setBinningModalOpen}
@@ -122,8 +120,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         selectedFacets={selectedFacets}
       />
       <CDaveTable
-        field={field}
-        fieldName={fieldName}
+        facet={facet}
         displayedData={displayedData}
         yTotal={yTotal}
         hasCustomBins={customBinnedData !== null}
@@ -137,7 +134,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       <CategoricalBinningModal
         opened={binningModalOpen}
         setModalOpen={setBinningModalOpen}
-        field={fieldName}
+        field={facet.field}
         results={resultData}
         updateBins={setCustomBinnedData}
         customBins={customBinnedData as CategoricalBins}

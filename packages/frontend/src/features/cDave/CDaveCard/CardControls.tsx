@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { Button } from '@mantine/core';
 import { saveAs } from 'file-saver';
-import { FilterSet } from '@gen3/core';
+import { EmptyFilterSet, FilterSet } from '@gen3/core';
 import { DropdownWithIcon } from '../../../components/DropdownWithIcon/DropdownWithIcon';
 import { getFormattedTimestamp } from '../../../utils/time';
 import {
   CategoricalBins,
+  ClinicalDataFacet,
   CustomBinData,
   CustomInterval,
   DisplayData,
@@ -18,12 +19,12 @@ import {
   useDataDimension,
 } from '../utils';
 import { DropdownIcon } from '../icons';
-import { CasesCohortButtonFromFilters } from '@/features/cases/CasesCohortButton/CasesCohortButton';
+// import { CasesCohortButtonFromFilters } from '@/features/cases/CasesCohortButton/CasesCohortButton';
+import CasesCohortButtonFromFilters from './CasesCohortButtonFromFilters';
 
 interface CardControlsProps {
   readonly continuous: boolean;
-  readonly field: string;
-  readonly fieldName: string;
+  readonly facet: ClinicalDataFacet;
   readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly setBinningModalOpen: (open: boolean) => void;
@@ -38,8 +39,7 @@ interface CardControlsProps {
 
 const CardControls: React.FC<CardControlsProps> = ({
   continuous,
-  field,
-  fieldName,
+  facet,
   displayedData,
   yTotal,
   setBinningModalOpen,
@@ -48,11 +48,11 @@ const CardControls: React.FC<CardControlsProps> = ({
   selectedFacets,
   dataDimension,
 }: CardControlsProps) => {
-  const displayDataDimension = useDataDimension(field);
+  const displayDataDimension = useDataDimension(facet);
 
   const downloadTSVFile = () => {
     const header = [
-      displayDataDimension ? `${fieldName} (${dataDimension})` : fieldName,
+      displayDataDimension ? `${facet.label} (${dataDimension})` : facet.label,
       '# Cases',
     ];
     const body = displayedData.map(({ displayName, count }) =>
@@ -64,7 +64,7 @@ const CardControls: React.FC<CardControlsProps> = ({
       new Blob([tsv], {
         type: 'text/tsv',
       }),
-      `${fieldName.replaceAll(' ', '-')}-table.${getFormattedTimestamp()}.tsv`,
+      `${facet.label?.replaceAll(' ', '-')}-table.${getFormattedTimestamp()}.tsv`,
     );
   };
 
@@ -72,11 +72,11 @@ const CardControls: React.FC<CardControlsProps> = ({
     () =>
       createFiltersFromSelectedValues(
         continuous,
-        field,
+        facet.field,
         selectedFacets,
         customBinnedData,
       ),
-    [continuous, field, selectedFacets, customBinnedData],
+    [continuous, facet.field, selectedFacets, customBinnedData],
   );
 
   return (
@@ -85,7 +85,7 @@ const CardControls: React.FC<CardControlsProps> = ({
         <div className="flex flex-wrap gap-2">
           <div className="order-2 md:order-1">
             <CasesCohortButtonFromFilters
-              filters={selectedFacets.length === 0 ? undefined : filters}
+              filters={selectedFacets.length === 0 ? EmptyFilterSet : filters}
               numCases={
                 selectedFacets.length === 0
                   ? 0

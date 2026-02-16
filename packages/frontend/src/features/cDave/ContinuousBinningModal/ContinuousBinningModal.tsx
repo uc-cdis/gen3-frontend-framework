@@ -3,7 +3,12 @@ import { Button, Divider, Modal, Radio, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { StatValues } from '@gen3/core';
 import { validateIntervalInput, validateRangeInput } from './validateInputs';
-import { CustomInterval, DataDimension, NamedFromTo } from '../types';
+import {
+  ClinicalDataFacet,
+  CustomInterval,
+  DataDimension,
+  NamedFromTo,
+} from '../types';
 import {
   convertDataDimension,
   formatValue,
@@ -12,13 +17,12 @@ import {
   useDataDimension,
 } from '../utils';
 import FunctionButton from '../../../components/FunctionButton';
-import { DATA_DIMENSIONS } from '../constants';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { Icon } from '@iconify-icon/react';
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
-  readonly field: string;
+  readonly facet: ClinicalDataFacet;
   readonly stats: Partial<StatValues>;
   readonly updateBins: (bins: NamedFromTo[] | CustomInterval | null) => void;
   readonly customBins: NamedFromTo[] | CustomInterval | null;
@@ -28,7 +32,7 @@ interface ContinuousBinningModalProps {
 
 const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   setModalOpen,
-  field,
+  facet,
   stats,
   updateBins,
   customBins,
@@ -38,8 +42,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const [hasReset, setHasReset] = useState(false);
   const customIntervalSet = isInterval(customBins);
 
-  const displayDataDimension = useDataDimension(field);
-  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
+  const displayDataDimension = useDataDimension(facet);
+  const originalDataDimension = facet?.dataDimension.unit;
   const formattedStats = {
     min: formatValue(
       convertDataDimension(
@@ -261,7 +265,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       onClose={() => setModalOpen(false)}
       size={1000}
       zIndex={350}
-      title={`Create Custom Bins: ${toDisplayName(field)}`}
+      title={`Create Custom Bins: ${facet?.label ?? toDisplayName(facet.field)}`}
       classNames={{
         header: 'text-xl !m-0 !px-0',
         content: 'p-4',

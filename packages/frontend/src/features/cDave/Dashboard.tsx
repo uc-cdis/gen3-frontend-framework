@@ -77,8 +77,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         return (
           <Grid.Col span={{ base: 12, lg: 6 }} key={facet.field}>
             <CDaveCard
-              field={facet.field}
-              facetDefinition={facet}
+              facet={facet}
               data={results[facet.field]}
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}

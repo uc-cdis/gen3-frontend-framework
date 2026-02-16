@@ -27,14 +27,24 @@ const ClinicalDataAnalysis = ({
   const [accessLevel] = useState<Accessibility>(Accessibility.ALL);
   const [activeFields, setActiveFields] = useState(initialFields); // the fields that have been selected by the user
 
-  const cDaveFields = tabs.reduce((acc: Array<ClinicalDataFacet>, tab) => {
-    return [...acc, ...tab.facets];
-  }, []);
+  const allCDaveFields = tabs.reduce(
+    (acc: Record<string, ClinicalDataFacet>, tab) => {
+      tab.facets.forEach((t) => (acc[t.field] = t));
+      return acc;
+    },
+    {},
+  );
+
+  const activeCDaveFields = useDeepCompareMemo(() => {
+    return activeFields.map((f) => allCDaveFields[f]);
+  }, [activeFields, allCDaveFields]);
 
   const cDaveStatsFields = useDeepCompareMemo(
     () =>
-      cDaveFields.filter((f) => f.cardType == 'continuous').map((x) => x.field),
-    [cDaveFields],
+      Object.values(allCDaveFields)
+        .filter((f) => f.cardType == 'continuous')
+        .map((x) => x.field),
+    [allCDaveFields],
   );
 
   const allCohortFilters = useCoreSelector((state) =>
@@ -49,8 +59,8 @@ const ClinicalDataAnalysis = ({
     [currentCohortFilters],
   );
   const facets = useDeepCompareMemo(
-    () => cDaveFields.map((f) => f.field),
-    [cDaveFields],
+    () => Object.values(allCDaveFields).map((f) => f.field),
+    [allCDaveFields],
   );
 
   const { cDaveAggResults, cDaveStatsResults, isFetching, isError, isSuccess } =
@@ -108,16 +118,15 @@ const ClinicalDataAnalysis = ({
         <Controls
           tabs={tabs}
           updateFields={updateFields}
-          cDaveFields={cDaveFields}
-          fieldsWithData={filterUsefulFacets(convertedData)}
+          fieldsWithData={Object.keys(filterUsefulFacets(convertedData))}
           activeFields={activeFields}
           controlsExpanded={controlsExpanded}
           setControlsExpanded={setControlsExpanded}
         />
         {isSuccess && Object.keys(convertedData).length > 0 && (
           <Dashboard
-            activeFields={activeFields}
-            cohortFilters={cohortFilters}
+            activeFields={activeCDaveFields}
+            cohortFilters={currentCohortFilters}
             results={convertedData}
             updateFields={updateFields}
           />

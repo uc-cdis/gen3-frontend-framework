@@ -1,31 +1,11 @@
 import React, { useState } from 'react';
-import {
-  ActionIcon,
-  Collapse,
-  Highlight,
-  Input,
-  Switch,
-  Tooltip,
-} from '@mantine/core';
-import { groupBy } from 'lodash';
-import { HistogramDataAsStringKey } from '@gen3/core';
+import { ActionIcon, Collapse, Highlight, Input, Switch, Tooltip, } from '@mantine/core';
 import { createKeyboardAccessibleFunction } from '../../utils/keyboardAccessible';
 import { toDisplayName } from './utils';
 import FacetExpander from '../../components/facets/FacetExpander';
 import { ClinicalDataFacet, ClinicalDataTab } from './types';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
-import {
-  CloseIcon,
-  DoubleLeftIcon,
-  DoubleRightIcon,
-  DownArrowIcon,
-  SearchIcon,
-  UpArrowIcon,
-} from './icons';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import { CloseIcon, DoubleLeftIcon, DoubleRightIcon, DownArrowIcon, SearchIcon, UpArrowIcon, } from './icons';
 
 interface ControlGroupProps {
   name: string;
@@ -188,11 +168,7 @@ const FieldControl: React.FC<Readonly<FieldControlProps>> = ({
 
 interface ControlPanelProps {
   readonly updateFields: (field: string) => void;
-  readonly cDaveFields: ClinicalDataFacet[];
-  readonly fieldsWithData: Record<
-    string,
-    Array<HistogramDataAsStringKey> | StatValues
-  >;
+  readonly fieldsWithData: string[];
   readonly activeFields: string[];
   readonly controlsExpanded: boolean;
   readonly setControlsExpanded: (expanded: boolean) => void;
@@ -201,7 +177,6 @@ interface ControlPanelProps {
 
 const Controls: React.FC<ControlPanelProps> = ({
   updateFields,
-  cDaveFields,
   fieldsWithData,
   activeFields,
   controlsExpanded,
@@ -209,9 +184,13 @@ const Controls: React.FC<ControlPanelProps> = ({
   tabs,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const groupedFields = useDeepCompareMemo(
-    () => groupBy(cDaveFields, 'field_type'),
-    [cDaveFields],
+  const facets = useDeepCompareMemo(
+    () =>
+      tabs.reduce(
+        (acc: ClinicalDataFacet[], tab) => [...acc, ...tab.facets],
+        [],
+      ),
+    [tabs],
   );
 
   return (
@@ -269,14 +248,14 @@ const Controls: React.FC<ControlPanelProps> = ({
         />
 
         <p data-testid="text-fields-with-values" className="p-2 font-heading">
-          <strong>{Object.keys(fieldsWithData).length}</strong> of{' '}
-          <strong>{cDaveFields.length}</strong> fields with values
+          <strong>{fieldsWithData.length}</strong> of{' '}
+          <strong>{facets.length}</strong> fields with values
         </p>
         <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
           {tabs.map((tab) => (
             <ControlGroup
               name={tab.label}
-              fields={groupedFields[tab.label] || []}
+              fields={tab.facets}
               updateFields={updateFields}
               activeFields={activeFields}
               searchTerm={searchTerm}

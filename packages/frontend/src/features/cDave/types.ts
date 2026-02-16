@@ -83,6 +83,7 @@ export interface ClinicalDataFacet extends FacetDefinition {
   dataDimension: DataDimensionUnitAndToggle;
   color: string;
   label?: string;
+  allowQQPlot?: boolean;
 }
 
 export interface ClinicalDataTab {

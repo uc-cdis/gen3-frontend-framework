@@ -3,7 +3,7 @@ import { ActionIcon, Card, SegmentedControlItem, Tooltip } from '@mantine/core';
 import { useScrollIntoView } from '@mantine/hooks';
 import { FilterSet, HistogramDataAsStringKey, StatValues } from '@gen3/core';
 import SegmentedControl from '../../../components/SegmentedControl';
-// restore later when API and FacetDictionary is implemented
+// restore later when API and FacetDictionary are implemented
 import { DownloadProgressContext } from '../../Analysis/context';
 import {
   ChartTypes,
@@ -105,7 +105,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
     },
   ];
 
-  if (continuous && !HIDE_QQ_BOX_FIELDS.includes(field)) {
+  if (continuous && facet?.allowQQPlot) {
     // TODO: Re-enable when API is completed
     /* ----
     chartButtons.push({
@@ -186,19 +186,18 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
         ) : continuous ? (
           <ContinuousData
             initialData={data as StatValues}
-            field={facet.field}
-            fieldName={fieldName}
+            facet={facet}
             chartType={chartType}
             noData={noData}
             cohortFilters={cohortFilters}
             dataDimension={dataDimension}
+            index={facet.index}
             color={color}
           />
         ) : (
           <CategoricalData
             initialData={data as Array<HistogramDataAsStringKey>}
-            field={facet.field}
-            fieldName={fieldName}
+            facet={facet}
             chartType={chartType}
             noData={noData}
             color={color}
