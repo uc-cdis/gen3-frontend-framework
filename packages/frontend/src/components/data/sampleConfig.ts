@@ -22,7 +22,7 @@ const sampleConfig = {
       ],
       table: {
         enabled: true,
-        fields: ['race', 'ethnicity', 'sex', 'vital_status'],
+        fields: ['race', 'ethnicity', 'gender', 'vital_status'],
       },
       guppyConfig: {
         dataType: 'subject',
