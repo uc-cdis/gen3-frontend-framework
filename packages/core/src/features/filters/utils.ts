@@ -48,9 +48,6 @@ export const trimFirstFieldNameToTitle = (
  */
 
 export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
-  if (fieldName in FieldNameOverrides) {
-    return FieldNameOverrides[fieldName];
-  }
   if (fieldName === undefined) return 'No Title';
 
   return fieldName
@@ -60,6 +57,9 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
     .flat()
     .map((word) =>
       COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
+    )
+    .map((word) =>
+      word in FieldNameOverrides ? FieldNameOverrides[word] : word,
     )
     .join(' ');
 };
