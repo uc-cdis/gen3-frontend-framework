@@ -7,22 +7,22 @@ const sampleConfig = {
           tabs: [
             {
               title: 'Project',
-              fields: ['project', 'study']
+              fields: ['project', 'study'],
             },
             {
               title: 'Subject',
-              fields: ['race', 'ethnicity', 'gender', 'vital_status']
+              fields: ['race', 'ethnicity', 'sex', 'vital_status'],
             },
             {
               title: 'File',
-              fields: ['file_count', 'file_type', 'file_format']
-            }
-          ]
-        }
+              fields: ['file_count', 'file_type', 'file_format'],
+            },
+          ],
+        },
       ],
       table: {
         enabled: true,
-        fields: ['race', 'ethnicity', 'gender', 'vital_status']
+        fields: ['race', 'ethnicity', 'sex', 'vital_status'],
       },
       guppyConfig: {
         dataType: 'subject',
@@ -30,24 +30,24 @@ const sampleConfig = {
         fieldMapping: [
           {
             field: 'project',
-            name: 'Project'
+            name: 'Project',
           },
           {
             field: 'study',
-            name: 'Study'
-          }
+            name: 'Study',
+          },
         ],
         manifestMapping: {
           resourceIndexType: 'imaging_data_file',
           resourceIdField: 'object_id',
           referenceIdFieldInResourceIndex: '_case_id',
-          referenceIdFieldInDataIndex: '_case_id'
+          referenceIdFieldInDataIndex: '_case_id',
         },
         accessibleFieldCheckList: ['project'],
-        accessibleValidationField: 'project'
-      }
-    }
-  ]
+        accessibleValidationField: 'project',
+      },
+    },
+  ],
 };
 
 export default sampleConfig;

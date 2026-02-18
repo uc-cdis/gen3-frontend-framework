@@ -3,12 +3,7 @@ import { SurvivalChartIcon } from '../icons';
 import { ActionIcon, Checkbox, Tooltip } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';
-import {
-  ClinicalDataFacet,
-  DataDimension,
-  DisplayData,
-  SelectedFacet,
-} from '../types';
+import { ClinicalDataFacet, DataDimension, DisplayData, SelectedFacet, } from '../types';
 import { formatPercent, useDataDimension } from '../utils';
 
 interface CDaveTableProps {

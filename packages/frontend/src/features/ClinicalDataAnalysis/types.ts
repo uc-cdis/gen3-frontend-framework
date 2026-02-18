@@ -1,4 +1,5 @@
 import { FacetDefinition, NumericFromTo } from '@gen3/core';
+import { Gen3AppConfigData } from '../../lib/content/types';
 
 export interface CustomInterval {
   readonly interval: number;
@@ -80,10 +81,12 @@ export type CDaveCardType = 'categorical' | 'continuous';
 
 export interface ClinicalDataFacet extends FacetDefinition {
   cardType: CDaveCardType;
-  dataDimension: DataDimensionUnitAndToggle;
-  color: string;
-  label?: string;
+  dataDimension?: DataDimensionUnitAndToggle;
   allowQQPlot?: boolean;
+}
+
+export interface ClinicalDataFacetProps extends ClinicalDataFacet {
+  color: string;
 }
 
 export interface ClinicalDataTab {
@@ -92,9 +95,10 @@ export interface ClinicalDataTab {
   color: string;
 }
 
-export interface ClinicalDataConfiguration {
+export interface ClinicalDataConfiguration extends Gen3AppConfigData {
   tabs: Array<ClinicalDataTab>;
   index: string; // data index to pull data from
+  indexPrefix?: string;
   initialFields: Array<string>;
 }
 

@@ -7,6 +7,7 @@ export * from './Crosswalk';
 export * from './DataDictionary';
 export * from './DataLibrary';
 export * from './Discovery';
+export * from './ClinicalDataAnalysis';
 export * from './Explorer';
 export * from './Landing';
 export * from './Login';

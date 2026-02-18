@@ -43,7 +43,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const customIntervalSet = isInterval(customBins);
 
   const displayDataDimension = useDataDimension(facet);
-  const originalDataDimension = facet?.dataDimension.unit;
+  const originalDataDimension = facet?.dataDimension?.unit ?? 'Unset';
   const formattedStats = {
     min: formatValue(
       convertDataDimension(

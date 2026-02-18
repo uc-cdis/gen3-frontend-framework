@@ -16,7 +16,7 @@ import Controls from './Controls';
 import Dashboard from './Dashboard';
 import { combineAnalysisResults, filterUsefulFacets } from './utils';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
-import { ClinicalDataConfiguration, ClinicalDataFacet } from './types';
+import { ClinicalDataConfiguration, ClinicalDataFacetProps } from './types';
 
 const ClinicalDataAnalysis = ({
   tabs,
@@ -27,9 +27,14 @@ const ClinicalDataAnalysis = ({
   const [accessLevel] = useState<Accessibility>(Accessibility.ALL);
   const [activeFields, setActiveFields] = useState(initialFields); // the fields that have been selected by the user
 
+  console.log('initialFields: ', initialFields);
+
   const allCDaveFields = tabs.reduce(
-    (acc: Record<string, ClinicalDataFacet>, tab) => {
-      tab.facets.forEach((t) => (acc[t.field] = t));
+    (acc: Record<string, ClinicalDataFacetProps>, tab) => {
+      tab.facets.forEach(
+        (t) =>
+          (acc[t.field] = { ...t, color: tab.color } as ClinicalDataFacetProps),
+      );
       return acc;
     },
     {},

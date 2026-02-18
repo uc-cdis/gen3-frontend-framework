@@ -142,7 +142,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
             <SegmentedControl
               data={[
                 facet.dataDimension?.toggleUnit ?? 'Unset',
-                facet.dataDimension?.unit,
+                facet.dataDimension?.unit ?? 'Unset',
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData || downloadInProgress}

@@ -6,14 +6,14 @@ import {
   StatValues,
   usePrevious,
 } from '@gen3/core';
-import { ClinicalDataFacet } from './types';
 
 import CDaveCard from './CDaveCard/CDaveCard';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { ClinicalDataFacetProps } from './types';
 
 interface DashboardProps {
   readonly cohortFilters: FilterSet;
-  readonly activeFields: Array<ClinicalDataFacet>;
+  readonly activeFields: Array<ClinicalDataFacetProps>;
   readonly results: Record<
     string,
     Array<HistogramDataAsStringKey> | StatValues
@@ -49,6 +49,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       initialDashboardRender.current = false;
     }
   });
+
+  console.log('Dashboard results: ', results, activeFields);
 
   return (
     <Grid gutter={24} overflow="hidden" className="flex-grow">

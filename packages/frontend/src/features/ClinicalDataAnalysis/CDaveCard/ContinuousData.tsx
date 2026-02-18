@@ -92,7 +92,7 @@ const toBucketDisplayName = (
   hasCustomBins: boolean,
 ): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
-  const originalDataDimension = facet.dataDimension.unit;
+  const originalDataDimension = facet.dataDimension?.unit ?? 'Unset';
   return `${roundContinuousValue(
     convertDataDimension(
       Number(fromValue),

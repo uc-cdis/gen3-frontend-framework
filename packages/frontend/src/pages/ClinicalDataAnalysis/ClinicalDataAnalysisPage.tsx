@@ -1,24 +1,26 @@
 import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
-import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
+import ClinicalDataAnalysis from '../../features/ClinicalDataAnalysis/ClinicalDataAnalysis';
+import { ClinicalDataAnalysisPageProps } from './types';
+import { Stack } from '@mantine/core';
 import CohortManager from '../../features/CohortBuilder/CohortManager/CohortManager';
 import QueryExpression from '../../features/CohortBuilder/QueryExpression';
-import { Stack } from '@mantine/core';
-import { TabbedCohortBuilderPageProps } from './types';
 import CountsPanel from '../../features/CountsPanel/CountsPanel';
 
-const TabbedCohortBuilderPage = ({
+const ClinicalDataAnalysisPage = ({
   headerProps,
   footerProps,
   configuration,
-}: TabbedCohortBuilderPageProps): JSX.Element => {
+}: ClinicalDataAnalysisPageProps) => {
+  console.log('ClinicalDataAnalysisPage configuration:', configuration);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerMetadata={{
-        title: 'Gen3 Tabbed Cohort Builder Page',
-        content: 'Tabbed Cohort Builder Page',
-        key: 'gen3-tabbed-cohort-builder-page',
+        title: 'Gen3 Crosswalk Page',
+        content: 'Crosswalk Data',
+        key: 'gen3-crosswalk-page',
+        ...(configuration?.headerMetadata ? configuration.headerMetadata : {}),
       }}
     >
       <Stack align="stretch" classNames={{ root: 'w-full' }}>
@@ -32,13 +34,16 @@ const TabbedCohortBuilderPage = ({
             }
           />
           <QueryExpression index={configuration.index}></QueryExpression>
-        </div>
-        <div className="w-full mt-80 mr-4">
-          <TabbedCohortBuilder {...configuration} />
+          <ClinicalDataAnalysis
+            index={configuration.index}
+            indexPrefix={configuration.index}
+            tabs={configuration.tabs}
+            initialFields={configuration.initialFields}
+          />
         </div>
       </Stack>
     </NavPageLayout>
   );
 };
 
-export default TabbedCohortBuilderPage;
+export default ClinicalDataAnalysisPage;

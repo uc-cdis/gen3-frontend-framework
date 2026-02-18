@@ -4,13 +4,25 @@ import saveAs from 'file-saver';
 import tw from 'tailwind-styled-components';
 import { ActionIcon, Button, Menu, Tooltip } from '@mantine/core';
 import { useResizeObserver } from '@mantine/hooks';
-import { ClinicalContinuousStatsData, ClinicalDataFacet, DataDimension, } from '../types';
+import {
+  ClinicalContinuousStatsData,
+  ClinicalDataFacet,
+  DataDimension,
+} from '../types';
 import { selectCurrentCohortFilters, useCoreSelector } from '@gen3/core';
 import OffscreenWrapper from '../../../components/OffscreenWrapper';
-import { handleDownloadPNG, handleDownloadSVG, } from '../../../components/charts/downloads';
+import {
+  handleDownloadPNG,
+  handleDownloadSVG,
+} from '../../../components/charts/downloads';
 import { DashboardDownloadContext } from '../../Analysis/context';
 import { getFormattedTimestamp } from '../../../utils/time';
-import { convertDataDimension, parseNestedQQResponseData, qnorm, roundContinuousValue, } from '../utils';
+import {
+  convertDataDimension,
+  parseNestedQQResponseData,
+  qnorm,
+  roundContinuousValue,
+} from '../utils';
 import QQPlot from './QQPlot';
 import BoxPlot from './BoxPlot';
 import { DownloadIcon } from '../icons';
@@ -47,7 +59,8 @@ const BoxQQSection: React.FC<Readonly<BoxQQPlotProps>> = ({
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
   const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
-  const originalDataDimension = facet.dataDimension.unit;
+  const originalDataDimension: DataDimension =
+    facet.dataDimension?.unit ?? 'Unset';
 
   const formattedData = {
     min: roundContinuousValue(
