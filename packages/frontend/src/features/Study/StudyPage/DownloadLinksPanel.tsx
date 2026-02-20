@@ -54,7 +54,7 @@ const DownloadLinksPanel = ({
             {downloadEntries &&
               downloadEntries.map(
                 (entry: Record<string, string | undefined>) => {
-                  // minimum required fields are title and id
+                  // the minimum required fields are title and id
                   if (
                     entry['titleField'] === undefined ||
                     entry['idField'] === undefined
@@ -62,12 +62,13 @@ const DownloadLinksPanel = ({
                     return null;
                   }
                   const id = entry[downloadLinkFields.idField];
+                  if (!id) return null;
                   return (
                     <Group justify="space-between" key={id} gap="md">
                       <Text>{entry['titleField'] || ''}</Text>
                       <Button
                         component="a"
-                        href={`${GEN3_FENCE_API}/data/${id}?expires_in=900&redirect`}
+                        href={`${GEN3_FENCE_API}/data/${encodeURIComponent(id)}?expires_in=900&redirect`}
                         target="_blank"
                         rel="noreferrer"
                         type="text"
