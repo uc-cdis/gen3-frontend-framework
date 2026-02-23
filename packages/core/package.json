@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.12.20",
+  "version": "0.12.22",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API, various types, and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -59,7 +59,7 @@
     "@types/fastestsmallesttextencoderdecoder": "^1.0.2",
     "@types/flat": "^5.0.3",
     "@types/isomorphic-fetch": "^0.0.39",
-    "@types/lodash": "^4.14.191",
+    "@types/lodash": "^4.17.23",
     "@types/papaparse": "^5.3.14",
     "@types/uuid": "^9.0.0",
     "fake-indexeddb": "^6.0.0"
