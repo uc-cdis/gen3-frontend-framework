@@ -47,6 +47,7 @@ export const combineAnalysisResults = (
 ): Record<string, Array<HistogramDataAsStringKey> | StatValues> => {
   const processedAggregations = Object.entries(aggregations).reduce(
     (acc: Record<string, Array<HistogramDataAsStringKey>>, [field, data]) => {
+      if (field === '_totalCount') return acc;
       const convertedData = data.reduce(
         (results: Array<HistogramDataAsStringKey>, x) => {
           if (typeof x.key === 'string')

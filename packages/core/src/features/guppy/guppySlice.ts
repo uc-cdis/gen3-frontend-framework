@@ -1,7 +1,12 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  GQLFilter,
+  isFilterEmpty,
+} from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 
@@ -15,6 +20,7 @@ import {
 } from './queryGenerators';
 import { buildRangeQuery } from './range';
 import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
+import { JSONPath } from 'jsonpath-plus';
 
 const statusEndpoint = '/_status';
 
@@ -88,6 +94,19 @@ export interface RawDataAndTotalCountsParams extends GuppyBaseQueryParams {
   offset?: number;
   size?: number;
   format?: string;
+}
+
+interface ObjectIdQueryRequest {
+  filters: FilterSet;
+  field: string;
+  index: string;
+  indexPrefix?: string;
+  accessibility?: Accessibility;
+}
+
+interface ObjectIdQueryResponse {
+  ids: string[];
+  index: string;
 }
 
 export const explorerTags = guppyApi.enhanceEndpoints({
@@ -559,6 +578,44 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
     }),
+    getObjectIds: builder.query<ObjectIdQueryResponse, ObjectIdQueryRequest>({
+      query: ({
+        filters,
+        field,
+        index,
+        indexPrefix,
+        accessibility = Accessibility.ALL,
+      }: ObjectIdQueryRequest) => {
+        const gqlFilter = convertFilterSetToGqlFilter(filters);
+        const query = `query summary ($filter: JSON) {
+          ${indexPrefix}${index} {
+            ${index} (filter: $filter, accessibility: ${accessibility}) {
+              ${rawDataQueryStrForEachField(field)}
+              }
+            }
+          }
+        }`;
+        return {
+          query,
+          variables: {
+            filter: gqlFilter,
+            accessibility,
+          },
+        };
+      },
+      transformResponse: (response: Record<string, any>, _, args) => {
+        const valueData = JSONPath({
+          json: response?.data ?? [],
+          path: `$..${args.field}`,
+          resultType: 'value',
+        });
+
+        return {
+          ids: valueData,
+          index: args.index,
+        };
+      },
+    }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
       query: ({ query, variables }) => {
         return {
@@ -671,4 +728,6 @@ export const {
   useLazyGeneralGQLQuery,
   useCustomRangeQuery,
   useLazyCustomRangeQuery,
+  useGetObjectIdsQuery,
+  useLazyGetObjectIdsQuery,
 } = explorerApi;

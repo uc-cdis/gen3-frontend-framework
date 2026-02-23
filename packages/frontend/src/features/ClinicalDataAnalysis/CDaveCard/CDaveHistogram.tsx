@@ -40,6 +40,7 @@ interface HistogramProps {
   noData: boolean;
   field: string;
   hideYTicks?: boolean;
+  initiallyDisplayPercent?: boolean;
   color: string;
 }
 
@@ -50,9 +51,10 @@ const CDaveHistogram: React.FC<Readonly<HistogramProps>> = ({
   field,
   noData,
   hideYTicks = false,
+  initiallyDisplayPercent = false,
   color,
 }: HistogramProps) => {
-  const [displayPercent, setDisplayPercent] = useState(true);
+  const [displayPercent, setDisplayPercent] = useState(initiallyDisplayPercent);
   const downloadChartRef = useRef<HTMLElement>(null!);
   const { downloadInProgress, setDownloadInProgress } = useContext(
     DownloadProgressContext,
@@ -62,8 +64,6 @@ const CDaveHistogram: React.FC<Readonly<HistogramProps>> = ({
     () => formatBarChartData(data, yTotal, displayPercent),
     [data, yTotal, displayPercent],
   );
-
-  const fieldType = field.split('.').at(-2);
 
   const hideXTicks = barChartData.length > 20;
   const fieldName = toDisplayName(field);

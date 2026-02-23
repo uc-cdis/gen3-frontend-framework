@@ -20,7 +20,7 @@ import {
 } from '../utils';
 import { DropdownIcon } from '../icons';
 // import { CasesCohortButtonFromFilters } from '@/features/cases/CasesCohortButton/CasesCohortButton';
-import CasesCohortButtonFromFilters from './CasesCohortButtonFromFilters';
+import CasesCohortButtonFromFilters from './CreateCohortFromFiltersButton';
 
 interface CardControlsProps {
   readonly continuous: boolean;

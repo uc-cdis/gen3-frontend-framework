@@ -23,8 +23,8 @@ const ClinicalDataAnalysisPage = ({
         ...(configuration?.headerMetadata ? configuration.headerMetadata : {}),
       }}
     >
-      <Stack align="stretch" classNames={{ root: 'w-full' }}>
-        <div className="w-full flex-col flex gap-4 fixed bg-white z-10">
+      <Stack classNames={{ root: 'w-full' }}>
+        <div className="w-full flex-col flex gap-4 bg-white z-10">
           <CohortManager
             rightPanel={
               <CountsPanel

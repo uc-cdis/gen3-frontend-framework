@@ -53,7 +53,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   console.log('Dashboard results: ', results, activeFields);
 
   return (
-    <Grid gutter={24} overflow="hidden" className="flex-grow">
+    <Grid gutter={24} grow={false} overflow="visible">
       {/* --- TODO: reenable when Survival Plot is ready
       <Grid.Col span={{ base: 12, lg: 6 }}>
         <div

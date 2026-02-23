@@ -27,8 +27,6 @@ const ClinicalDataAnalysis = ({
   const [accessLevel] = useState<Accessibility>(Accessibility.ALL);
   const [activeFields, setActiveFields] = useState(initialFields); // the fields that have been selected by the user
 
-  console.log('initialFields: ', initialFields);
-
   const allCDaveFields = tabs.reduce(
     (acc: Record<string, ClinicalDataFacetProps>, tab) => {
       tab.facets.forEach(
@@ -112,7 +110,7 @@ const ClinicalDataAnalysis = ({
   }
 
   return (
-    <>
+    <div data-testid="clinical-data-analysis-page">
       <div className="flex gap-4 pt-4 pb-16 px-4 w-full">
         <LoadingOverlay
           loaderProps={{ size: 'xl', color: 'primary' }}
@@ -137,7 +135,7 @@ const ClinicalDataAnalysis = ({
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 
