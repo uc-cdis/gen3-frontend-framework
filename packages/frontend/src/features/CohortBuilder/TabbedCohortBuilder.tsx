@@ -32,9 +32,16 @@ import {
   useUpdateFiltersFlat,
 } from '../../components/facets';
 import { QueryOptions } from '../../components/facets/types';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import { partial } from 'lodash';
-import { useClearFilters, useFieldNameToTitle, } from '../../components/facets/hooks';
+import {
+  useClearFilters,
+  usefieldNameToLabel,
+} from '../../components/facets/hooks';
 import {
   useCohortFilterCombineState,
   useFilterExpandedState,
@@ -76,7 +83,7 @@ export interface TabbedCohortBuilderConfiguration {
   indexPrefix?: string;
   fieldsAreFlat?: boolean; // do not create nested field if true
   classNames?: StylingOverrideWithMergeControl;
-};
+}
 
 // Builds a flat list of facet field names from the tabs configuration.
 const buildCohortBuilderFilters = (
@@ -103,12 +110,12 @@ const buildConfigFacetDefinitions = (
   );
 
 const TabbedCohortBuilder = ({
-                               index,
-                               tabsConfiguration,
-                               indexPrefix = '',
-                               fieldsAreFlat = false,
-                               classNames = {},
-                             }: TabbedCohortBuilderConfiguration) => {
+  index,
+  tabsConfiguration,
+  indexPrefix = '',
+  fieldsAreFlat = false,
+  classNames = {},
+}: TabbedCohortBuilderConfiguration) => {
   const tabsConfig = tabsConfiguration;
   const cohortBuilderFilters = buildCohortBuilderFilters(tabsConfiguration);
 
@@ -247,7 +254,13 @@ const TabbedCohortBuilder = ({
         isError: isAggsQueryError,
       };
     },
-    [aggsData, cohortFilters.root, isSuccess, isAggsQueryFetching, isAggsQueryError],
+    [
+      aggsData,
+      cohortFilters.root,
+      isSuccess,
+      isAggsQueryFetching,
+      isAggsQueryError,
+    ],
   );
   const EnumHookInstances = {
     useGetFacetData: getEnumFacetData,
@@ -261,7 +274,7 @@ const TabbedCohortBuilder = ({
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
     useGetCombineMode: partial(useCohortFilterCombineState, index),
     useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-    useFieldNameToTitle: useFieldNameToTitle,
+    usefieldNameToLabel: usefieldNameToLabel,
     useTotalCounts: undefined,
   };
   const RangeHookInstances = {
@@ -274,7 +287,7 @@ const TabbedCohortBuilder = ({
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
-    useFieldNameToTitle: useFieldNameToTitle,
+    usefieldNameToLabel: usefieldNameToLabel,
     useTotalCounts: undefined,
   };
 
@@ -288,7 +301,7 @@ const TabbedCohortBuilder = ({
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
-    useFieldNameToTitle: useFieldNameToTitle,
+    usefieldNameToLabel: usefieldNameToLabel,
     useTotalCounts: undefined,
   };
 
@@ -335,7 +348,7 @@ const TabbedCohortBuilder = ({
         }}
         getFacetLabel={() => 'Cases'}
         cardScrollMargin={calculateStickyHeaderHeight()}
-        useFieldNameToTitle={useFieldNameToTitle}
+        usefieldNameToLabel={usefieldNameToLabel}
         classNames={classNames}
       />
     </Stack>

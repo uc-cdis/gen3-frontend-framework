@@ -19,7 +19,7 @@ export const Default: Story = {
     description: 'Age range panel',
     hooks: {
       useClearFilter: (() => {}) as any,
-      useFieldNameToTitle: ((field: string) => field) as any,
+      usefieldNameToLabel: ((field: string) => field) as any,
       useUpdateFacetFilters: (() => {}) as any,
       useGetFacetFilters: (() => {}) as any,
       useGetFacetData: (() => ({

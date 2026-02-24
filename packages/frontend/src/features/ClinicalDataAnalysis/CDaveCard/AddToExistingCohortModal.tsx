@@ -3,22 +3,45 @@ import FunctionButton from '../../../components/FunctionButton';
 import DarkFunctionButton from '../../../components/StyledComponents/DarkFunctionButton';
 import { Loader, Modal, Radio, Text } from '@mantine/core';
 import { createColumnHelper } from '@tanstack/react-table';
+import { BaseQueryFn, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react';
 import {
+  Accessibility,
   Cohort,
   FilterSet,
   IndexedFilterSet,
-  isIncludes,
   selectAvailableCohorts,
   useCoreSelector,
 } from '@gen3/core';
 import {
+  MantineReactTable,
   type MRT_PaginationState,
   type MRT_Row,
   useMantineReactTable,
 } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
+import { getObjectIdsFromFilter } from './utils';
+import { LazyQueryHookResult } from './types';
 
 export type WithOrWithoutCohortType = 'with' | 'without' | undefined;
+
+/**
+ * A generic type representing a lazy query hook return value.
+ * TArg = query argument, TResult = resolved data.
+ */
+type UseLazyQueryHook<TArg, TResult> = () => LazyQueryHookResult<TArg, TResult>;
+
+interface ObjectIdQueryRequest {
+  filters: FilterSet;
+  field: string;
+  index: string;
+  indexPrefix?: string;
+  accessibility?: Accessibility;
+}
+
+interface ObjectIdQueryResponse {
+  ids: string[];
+  index: string;
+}
 
 interface CohortListData {
   id: string;
@@ -27,32 +50,26 @@ interface CohortListData {
   numItems: string;
 }
 
-/**
- * A generic type representing a lazy query hook return value.
- * TArg = query argument, TResult = resolved data.
- */
-type UseLazyQueryHook<TArg, TResult> = () => [
-  trigger: (arg: TArg) => { unwrap: () => Promise<TResult> },
-  result: {
-    isFetching: boolean;
-    isError: boolean;
-  },
-];
+type ObjectIdLazyQueryHook = TypedUseLazyQuery<
+  ObjectIdQueryResponse,
+  ObjectIdQueryRequest,
+  BaseQueryFn
+>;
 
-interface SelectCohortsModalProps {
+interface AddToExistingCohortModalProps {
   opened: boolean;
   onClose: () => void;
   withOrWithoutCohort: WithOrWithoutCohortType;
   index: string;
-  lazyHook: UseLazyQueryHook<any, ReadonlyArray<string>>;
+  lazyHook: ObjectIdLazyQueryHook;
   currentFilters: any;
   objectIdField: string;
   objectTypename: string;
-  onSaveCohort: (caseIds: ReadonlyArray<string>) => void;
+  onSaveCohort: (objectIds: ReadonlyArray<string>) => void;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export const SelectCohortsModal = ({
+export const AddToExistingCohortModal = ({
   opened,
   onClose,
   withOrWithoutCohort,
@@ -63,7 +80,7 @@ export const SelectCohortsModal = ({
   objectTypename,
   lazyHook,
   size = 'sm',
-}: SelectCohortsModalProps) => {
+}: AddToExistingCohortModalProps) => {
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [checkedValue, setCheckedValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -84,7 +101,7 @@ export const SelectCohortsModal = ({
           id: cohort?.id,
           filters: cohort?.filters,
           name: cohort?.name,
-          numItems: cohort?.counts?.[index].toLocaleString() ?? '0',
+          numItems: cohort?.counts?.[index]?.toLocaleString() ?? '0',
         })),
     [cohorts],
   );
@@ -123,22 +140,6 @@ export const SelectCohortsModal = ({
     [cohortListTableColumnHelper, checkedValue],
   );
 
-  const getCaseIdsFromFilter = (
-    filter: FilterSet,
-  ): ReadonlyArray<string> | null => {
-    // Check if filter only contains the objectIdField
-    const rootKeys = Object.keys(filter?.root || {});
-    if (
-      rootKeys.length === 1 &&
-      rootKeys[0] === objectIdField &&
-      isIncludes(filter.root[objectIdField]) &&
-      filter.root[objectIdField]?.operands
-    ) {
-      return filter.root[objectIdField].operands.map((id) => id.toString());
-    }
-    return null;
-  };
-
   const handleSubmit = async () => {
     if (loading || !checkedValue) return;
 
@@ -155,20 +156,38 @@ export const SelectCohortsModal = ({
       }
 
       // Get current case IDs - either extract or fetch
-      const directCurrentObjectIds = getCaseIdsFromFilter(currentFilters);
+      const directCurrentObjectIds = getObjectIdsFromFilter(
+        currentFilters,
+        objectIdField,
+      );
 
-      const currentIdsResult = directCurrentObjectIds
-        ? directCurrentObjectIds
-        : await fetchObjectIds({
-            filter: currentFilters,
-          }).unwrap();
+      let currentIdsResult;
+      if (directCurrentObjectIds) currentIdsResult = directCurrentObjectIds;
+      else {
+        const r = await fetchObjectIds({
+          index: index,
+          filters: currentFilters,
+          field: objectIdField,
+        }).unwrap();
+        currentIdsResult = r?.ids ?? ([] as ReadonlyArray<string>);
+      }
 
       // Get cohort case IDs - either extract or fetch
       const cohortFilterSet = selectedCohort.filters[index];
-      const directCohortObjectIds = getCaseIdsFromFilter(cohortFilterSet);
-      const cohortIdsResult = directCohortObjectIds
-        ? directCohortObjectIds
-        : await fetchObjectIds({ filter: cohortFilterSet }).unwrap();
+      const directCohortObjectIds = getObjectIdsFromFilter(
+        cohortFilterSet,
+        objectIdField,
+      );
+      let cohortIdsResult;
+      if (directCohortObjectIds) cohortIdsResult = directCohortObjectIds;
+      else {
+        const r = await fetchObjectIds({
+          index: index,
+          filters: cohortFilterSet,
+          field: objectIdField,
+        }).unwrap();
+        cohortIdsResult = r?.ids ?? ([] as ReadonlyArray<string>);
+      }
 
       let finalCaseIds: ReadonlyArray<string>;
 
@@ -192,7 +211,7 @@ export const SelectCohortsModal = ({
     }
   };
 
-  const title = `save new cohort: existing cohort ${
+  const title = `Save new cohort: existing cohort ${
     isWithCohort ? 'with' : 'without'
   } selected cases`;
 
@@ -268,6 +287,7 @@ export const SelectCohortsModal = ({
       <div className="px-4">
         <Text className="text-sm mb-4 block font-content">{description}</Text>
       </div>
+      <MantineReactTable table={table} />
       <div
         data-testid="modal-button-container"
         className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
@@ -288,3 +308,5 @@ export const SelectCohortsModal = ({
     </Modal>
   );
 };
+
+export default AddToExistingCohortModal;

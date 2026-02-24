@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Text, Tooltip } from '@mantine/core';
 import { EnumFacetDataHooks } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
-import { FacetDefinition, fieldNameToTitle, HistogramData } from '@gen3/core';
+import { FacetDefinition, fieldNameToLabel, HistogramData } from '@gen3/core';
 import FacetEnumList from '../../../components/facets/FacetEnumList';
 import { FacetIconButton } from '../../../components/facets/components';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
@@ -39,7 +39,7 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
   );
 
   const facetName = useMemo(
-    () => label ?? fieldNameToTitle(field),
+    () => label ?? fieldNameToLabel(field),
     [label, field],
   );
 

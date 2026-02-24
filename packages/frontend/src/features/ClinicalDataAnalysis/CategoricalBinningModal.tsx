@@ -179,8 +179,13 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       zIndex={350}
       title={`Create Custom Bins: ${field}`}
       classNames={{
-        header: 'text-xl !m-0 !px-0',
-        content: 'p-4',
+        header: 'mb-2',
+        body: 'm-4',
+      }}
+      style={{
+        body: {
+          backgroundColor: 'red',
+        },
       }}
     >
       <p className="font-content">
@@ -390,7 +395,7 @@ const ListValue: React.FC<ListValueProps> = ({
   return (
     <li
       className={`${
-        selectedValues?.[name] ? 'bg-accent-warm-light' : ''
+        selectedValues?.[name] ? 'bg-accent-light' : ''
       } cursor-pointer list-inside font-content`}
     >
       <div

@@ -6,10 +6,12 @@ import { type NavPageLayoutProps } from '../../features/Navigation';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 import { ClinicalDataAnalysisPageProps } from './types';
 
-const NullConfiguration = {
+const NullConfiguration: ClinicalDataConfiguration = {
   tabs: [],
   index: '',
   initialFields: [],
+  objectIdField: '',
+  objectTypename: '',
 };
 
 export const ClinicalDataAnalysisServerSideProps: GetServerSideProps<

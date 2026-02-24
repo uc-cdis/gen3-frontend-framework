@@ -7,7 +7,7 @@ import SegmentedControl from '../../../components/SegmentedControl';
 import { DownloadProgressContext } from '../../Analysis/context';
 import {
   ChartTypes,
-  ClinicalDataFacet,
+  ClinicalDataFacetProps,
   DataDimension,
   DownloadType,
 } from '../types';
@@ -18,7 +18,7 @@ import { toDisplayName, useDataDimension } from '../utils';
 import { BarChartIcon, CloseIcon, SurvivalChartIcon } from '..//icons';
 
 interface CDaveCardProps {
-  facet: ClinicalDataFacet;
+  facet: ClinicalDataFacetProps;
   data: Array<HistogramDataAsStringKey> | StatValues;
   updateFields: (field: string) => void;
   initialDashboardRender: boolean;
@@ -66,7 +66,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
     if (!initialDashboardRender) {
       scrollIntoView();
     }
-    // this should only happen on initial component mount
+    // this should only happen on the initial component mount
   }, []);
 
   const chartButtons: SegmentedControlItem[] = [

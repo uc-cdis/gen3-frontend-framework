@@ -271,12 +271,15 @@ export const SessionProvider = ({
 
   /**
    * Checkes if user session has ended
-  */
+   */
   const isSessionActive = useThrottledCallback(() => {
-    //Check session token, this call updates info 
-    getUserDetails().then((obj)=>{
+    //Check session token, this call updates info
+    getUserDetails().then((obj) => {
       //check to make sure logged out useres are logged out
-      if (obj?.data?.loginStatus != 'authenticated' && userStatus === 'authenticated') {
+      if (
+        obj?.data?.loginStatus != 'authenticated' &&
+        userStatus === 'authenticated'
+      ) {
         coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
       }
     });
@@ -327,7 +330,8 @@ export const SessionProvider = ({
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-
+      console.log(`Time since last activity: ${timeSinceLastActivity}`);
+      console.log(`logoutInactiveUsers: ${logoutInactiveUsers}`);
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&

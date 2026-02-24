@@ -39,6 +39,8 @@ const ClinicalDataAnalysisPage = ({
             indexPrefix={configuration.index}
             tabs={configuration.tabs}
             initialFields={configuration.initialFields}
+            objectIdField={configuration.objectIdField}
+            objectTypename={configuration.objectTypename}
           />
         </div>
       </Stack>

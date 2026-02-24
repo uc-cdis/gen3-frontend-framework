@@ -4,7 +4,7 @@ import type { BaseQueryFn, TypedLazyQueryTrigger, } from '@reduxjs/toolkit/query
  * Generic type for an RTK Query lazy query hook result.
  * TArg = the query argument type, TResult = the query return type.
  */
-type LazyQueryHookResult<TArg, TResult> = [
+export type LazyQueryHookResult<TArg, TResult> = [
   trigger: (
     arg: TArg,
   ) => ReturnType<TypedLazyQueryTrigger<TResult, TArg, BaseQueryFn>>,

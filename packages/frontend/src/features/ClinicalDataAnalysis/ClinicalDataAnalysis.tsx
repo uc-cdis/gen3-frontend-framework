@@ -21,6 +21,8 @@ import { ClinicalDataConfiguration, ClinicalDataFacetProps } from './types';
 const ClinicalDataAnalysis = ({
   tabs,
   initialFields,
+  objectIdField,
+  objectTypename,
   index,
 }: ClinicalDataConfiguration) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
@@ -31,7 +33,13 @@ const ClinicalDataAnalysis = ({
     (acc: Record<string, ClinicalDataFacetProps>, tab) => {
       tab.facets.forEach(
         (t) =>
-          (acc[t.field] = { ...t, color: tab.color } as ClinicalDataFacetProps),
+          (acc[t.field] = {
+            ...t,
+            color: tab.color,
+            objectIdField: objectIdField,
+            objectTypename: objectTypename,
+            index: index,
+          } as ClinicalDataFacetProps),
       );
       return acc;
     },

@@ -15,6 +15,7 @@ import { isArray } from 'lodash';
 import {
   ChartTypes,
   ClinicalDataFacet,
+  ClinicalDataFacetProps,
   CustomInterval,
   DataDimension,
   DisplayData,
@@ -110,7 +111,7 @@ const toBucketDisplayName = (
 
 interface ContinuousDataProps {
   initialData: Statistics;
-  facet: ClinicalDataFacet;
+  facet: ClinicalDataFacetProps;
   chartType: ChartTypes;
   noData: boolean;
   cohortFilters: FilterSet;

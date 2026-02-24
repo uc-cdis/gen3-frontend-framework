@@ -8,7 +8,7 @@ import CategoricalBinningModal from '../CategoricalBinningModal';
 import {
   CategoricalBins,
   ChartTypes,
-  ClinicalDataFacet,
+  ClinicalDataFacetProps,
   CustomInterval,
   DisplayData,
   NamedFromTo,
@@ -16,10 +16,11 @@ import {
 } from '../types';
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';
 import { flattenBinnedData, toDisplayName } from '../utils';
+import { labelToPlural } from '../../../utils/labels';
 
 interface CategoricalDataProps {
   initialData: ReadonlyArray<Bucket>;
-  facet: ClinicalDataFacet;
+  facet: ClinicalDataFacetProps;
   chartType: ChartTypes;
   noData: boolean;
   color: string;
@@ -41,6 +42,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   );
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
+  const unitLabel = labelToPlural(facet.objectTypename, true);
 
   const resultData = useMemo(
     () =>
@@ -97,6 +99,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
               isFetching={false}
               noData={noData}
               color={color}
+              unitLabel={unitLabel}
             />
           ) : null /* (
           // TODO: Add once survival plot is implemented
@@ -129,6 +132,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
         selectedFacets={selectedFacets}
         setSelectedFacets={setSelectedFacets}
+        unitLabel={unitLabel}
       />
 
       <CategoricalBinningModal

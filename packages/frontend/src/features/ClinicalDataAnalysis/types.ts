@@ -87,6 +87,8 @@ export interface ClinicalDataFacet extends FacetDefinition {
 
 export interface ClinicalDataFacetProps extends ClinicalDataFacet {
   color: string;
+  objectTypename: string;
+  objectIdField: string;
 }
 
 export interface ClinicalDataTab {
@@ -97,7 +99,9 @@ export interface ClinicalDataTab {
 
 export interface ClinicalDataConfiguration extends Gen3AppConfigData {
   tabs: Array<ClinicalDataTab>;
-  index: string; // data index to pull data from
+  index: string;
+  objectIdField: string; // data index to pull data from
+  objectTypename: string;
   indexPrefix?: string;
   initialFields: Array<string>;
 }

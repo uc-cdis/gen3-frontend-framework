@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import React, { useState } from 'react';
+import React, { forwardRef, JSX, useImperativeHandle, useState } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type { ECharts, EChartsOption, SetOptionOpts } from 'echarts';
 import { getInstanceByDom, init } from 'echarts';
@@ -14,64 +14,79 @@ export interface ReactEChartsProps {
   events?: { [key: string]: (e: any) => void };
 }
 
-const ReactECharts = ({
-  option,
-  style,
-  settings,
-  loading,
-  theme = 'gen3',
-  events,
-}: ReactEChartsProps): JSX.Element => {
-  const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
-  const [chartRef, rect] = useResizeObserver();
-  useDeepCompareEffect(() => {
-    // Initialize chart
-    let chart: ECharts | undefined;
-    if (chartRoot === undefined && chartRef.current !== null) {
-      chart = init(chartRef.current, theme);
-    }
-    setChartRoot(chart);
-  }, [theme]);
+export interface ReactEChartsHandle {
+  getEchartsInstance: () => ECharts | undefined;
+  getContainerElement: () => HTMLDivElement | null;
+}
 
-  useDeepCompareEffect(() => {
-    // Update chart if theme, options, or settings change
-    if (chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current);
-      chart?.setOption(option, settings);
-    }
-  }, [option, settings, theme]);
+const ReactECharts = forwardRef<ReactEChartsHandle, ReactEChartsProps>(
+  (
+    { option, style, settings, loading, theme = 'gen3', events },
+    ref,
+  ): JSX.Element => {
+    const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
+    const [chartRef, rect] = useResizeObserver();
 
-  useDeepCompareEffect(() => {
-    // Update chart
-    if (chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      loading === true ? chart?.showLoading() : chart?.hideLoading();
+    useImperativeHandle(ref, () => ({
+      getEchartsInstance: () => {
+        if (chartRef.current) {
+          return getInstanceByDom(chartRef.current);
+        }
+        return undefined;
+      },
+      getContainerElement: () => chartRef.current,
+    }));
 
-      // Bind events
-      if (events) {
-        Object.keys(events).forEach((eventName) => {
-          chart?.off(eventName);
-          chart?.on(eventName, events[eventName]);
-        });
+    useDeepCompareEffect(() => {
+      let chart: ECharts | undefined;
+      if (chartRoot === undefined && chartRef.current !== null) {
+        chart = init(chartRef.current, theme);
       }
-    }
-  }, [loading]);
+      setChartRoot(chart);
+    }, [theme]);
 
-  useDeepCompareEffect(() => {
-    if (chartRoot && rect.height && rect.width) {
-      chartRoot.resize();
-    }
-  }, [rect]);
+    useDeepCompareEffect(() => {
+      // Update chart if theme, options, or settings change
+      if (chartRef.current !== null) {
+        const chart = getInstanceByDom(chartRef.current);
+        chart?.setOption(option, settings);
+      }
+    }, [option, settings, theme]);
 
-  return (
-    <div
-      role="figure"
-      aria-label="Data Chart"
-      ref={chartRef}
-      style={{ width: '100%', height: '100%', ...style }}
-    />
-  );
-};
+    useDeepCompareEffect(() => {
+      // Update chart
+      if (chartRef.current !== null) {
+        const chart = getInstanceByDom(chartRef.current);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        loading === true ? chart?.showLoading() : chart?.hideLoading();
+
+        // Bind events
+        if (events) {
+          Object.keys(events).forEach((eventName) => {
+            chart?.off(eventName);
+            chart?.on(eventName, events[eventName]);
+          });
+        }
+      }
+    }, [loading]);
+
+    useDeepCompareEffect(() => {
+      if (chartRoot && rect.height && rect.width) {
+        chartRoot.resize();
+      }
+    }, [rect]);
+
+    return (
+      <div
+        role="figure"
+        aria-label="Data Chart"
+        ref={chartRef}
+        style={{ width: '100%', height: '100%', ...style }}
+      />
+    );
+  },
+);
+
+ReactECharts.displayName = 'ReactECharts';
 
 export default ReactECharts;

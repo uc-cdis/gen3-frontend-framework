@@ -3,8 +3,14 @@ import { SurvivalChartIcon } from '../icons';
 import { ActionIcon, Checkbox, Tooltip } from '@mantine/core';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from '../constants';
-import { ClinicalDataFacet, DataDimension, DisplayData, SelectedFacet, } from '../types';
+import {
+  ClinicalDataFacet,
+  DataDimension,
+  DisplayData,
+  SelectedFacet,
+} from '../types';
 import { formatPercent, useDataDimension } from '../utils';
+import { fieldNameToLabel } from '@gen3/core';
 
 interface CDaveTableProps {
   readonly facet: ClinicalDataFacet;
@@ -17,6 +23,7 @@ interface CDaveTableProps {
   readonly selectedFacets: SelectedFacet[];
   readonly setSelectedFacets: (facets: SelectedFacet[]) => void;
   readonly dataDimension?: DataDimension;
+  readonly unitLabel: string;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
@@ -30,6 +37,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   selectedFacets,
   setSelectedFacets,
   dataDimension,
+  unitLabel,
 }: CDaveTableProps) => {
   const displayDataDimension = useDataDimension(facet);
 
@@ -90,12 +98,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               </th>
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {facet.label}
+              {facet.label ?? fieldNameToLabel(facet.field)}
               {displayDataDimension && ` (${dataDimension})`}
               {hasCustomBins && ' (User Defined Bins Applied)'}
             </th>
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
-              # Cases
+              # {unitLabel}
             </th>
           </tr>
         </thead>

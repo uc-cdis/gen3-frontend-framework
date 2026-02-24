@@ -2,7 +2,7 @@ import { flatten, isNumber, omitBy, some } from 'lodash';
 import {
   AggregationsData,
   FacetDefinition,
-  fieldNameToTitle,
+  fieldNameToLabel,
   FilterSet,
   HistogramDataArray,
   HistogramDataAsStringKey,
@@ -112,7 +112,7 @@ export const toDisplayName = (field: string): string => {
   const fieldName = parsed.at(-1);
 
   if (fieldName) {
-    return fieldNameToTitle(fieldName);
+    return fieldNameToLabel(fieldName);
   }
   return 'Not Set';
 };

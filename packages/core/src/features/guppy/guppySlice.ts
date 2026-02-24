@@ -9,7 +9,6 @@ import {
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
-
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
 import {
@@ -21,6 +20,8 @@ import {
 import { buildRangeQuery } from './range';
 import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
 import { JSONPath } from 'jsonpath-plus';
+
+const GUPPY_MAX_ITEMS = 10000;
 
 const statusEndpoint = '/_status';
 
@@ -102,6 +103,7 @@ interface ObjectIdQueryRequest {
   index: string;
   indexPrefix?: string;
   accessibility?: Accessibility;
+  limit?: number;
 }
 
 interface ObjectIdQueryResponse {
@@ -583,18 +585,16 @@ export const explorerApi = explorerTags.injectEndpoints({
         filters,
         field,
         index,
-        indexPrefix,
+        indexPrefix = '',
         accessibility = Accessibility.ALL,
+        limit = GUPPY_MAX_ITEMS,
       }: ObjectIdQueryRequest) => {
         const gqlFilter = convertFilterSetToGqlFilter(filters);
-        const query = `query summary ($filter: JSON) {
-          ${indexPrefix}${index} {
-            ${index} (filter: $filter, accessibility: ${accessibility}) {
+        const query = `query getObjectIds ($filter: JSON) {
+          ${indexPrefix}${index} (filter: $filter, accessibility: ${accessibility}, first: ${limit}) {
               ${rawDataQueryStrForEachField(field)}
               }
-            }
-          }
-        }`;
+           }`;
         return {
           query,
           variables: {

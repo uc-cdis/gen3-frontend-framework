@@ -6,7 +6,7 @@ import { DropdownWithIcon } from '../../../components/DropdownWithIcon/DropdownW
 import { getFormattedTimestamp } from '../../../utils/time';
 import {
   CategoricalBins,
-  ClinicalDataFacet,
+  ClinicalDataFacetProps,
   CustomBinData,
   CustomInterval,
   DisplayData,
@@ -19,12 +19,13 @@ import {
   useDataDimension,
 } from '../utils';
 import { DropdownIcon } from '../icons';
-// import { CasesCohortButtonFromFilters } from '@/features/cases/CasesCohortButton/CasesCohortButton';
-import CasesCohortButtonFromFilters from './CreateCohortFromFiltersButton';
+
+import CreateCohortFromFiltersButton from './CreateCohortFromFiltersButton';
+import { labelToPlural } from '../../../utils/labels';
 
 interface CardControlsProps {
   readonly continuous: boolean;
-  readonly facet: ClinicalDataFacet;
+  readonly facet: ClinicalDataFacetProps;
   readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly setBinningModalOpen: (open: boolean) => void;
@@ -53,7 +54,7 @@ const CardControls: React.FC<CardControlsProps> = ({
   const downloadTSVFile = () => {
     const header = [
       displayDataDimension ? `${facet.label} (${dataDimension})` : facet.label,
-      '# Cases',
+      `# ${labelToPlural(facet.objectTypename, true)}`,
     ];
     const body = displayedData.map(({ displayName, count }) =>
       [displayName, `${count} (${formatPercent(count, yTotal)})`].join('\t'),
@@ -84,15 +85,18 @@ const CardControls: React.FC<CardControlsProps> = ({
       <div className="flex justify-between gap-2 py-2 flex-reverse-wrap md:flex-wrap">
         <div className="flex flex-wrap gap-2">
           <div className="order-2 md:order-1">
-            <CasesCohortButtonFromFilters
+            <CreateCohortFromFiltersButton
               filters={selectedFacets.length === 0 ? EmptyFilterSet : filters}
-              numCases={
+              numObjects={
                 selectedFacets.length === 0
                   ? 0
                   : selectedFacets
                       .map((facet) => facet.count)
                       .reduce((a, b) => a + b)
               }
+              index={facet.index}
+              objectIdField={facet.objectIdField}
+              objectTypename={facet.objectTypename}
             />
           </div>
           <Button
