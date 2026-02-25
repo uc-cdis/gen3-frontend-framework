@@ -18,8 +18,15 @@ import QueryExpressionSection from './QueryExpressionSection';
 import { QueryExpressionContext } from './QueryExpressionContext';
 import { useCohortFacetFilters } from '../hooks';
 
+const SUMMARY_THRESHOLD = 10;
+
+/**
+ * Default summary function for facet values. Any count above the threshold will be shown as a summary.
+ * @param field
+ * @param count
+ */
 const DefaultShouldShowSummary = (field: string, count: number) => {
-  return count > 10;
+  return count > SUMMARY_THRESHOLD;
 };
 
 interface QueryExpressionProps {
@@ -29,7 +36,7 @@ interface QueryExpressionProps {
 
 const QueryExpression = ({
   index,
-  shouldShowSummary,
+  shouldShowSummary = DefaultShouldShowSummary,
 }: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),

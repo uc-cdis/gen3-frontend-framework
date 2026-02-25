@@ -21,7 +21,11 @@ import {
   useGetCountsQuery,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
+import {
+  Charts,
+  CollapsableCharts,
+  type SummaryChart,
+} from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -36,11 +40,18 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import { useClearFilters, usefieldNameToLabel, } from '../../components/facets/hooks';
+import {
+  useClearFilters,
+  usefieldNameToLabel,
+} from '../../components/facets/hooks';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import {
   useCohortFilterCombineState,
@@ -429,7 +440,6 @@ export const CohortPanel = ({
             />
             <CountsValue
               label={guppyConfig?.nodeCountTitle || toDisplayName(index)}
-              configuration={guppyConfig?.nodeCountConfiguration}
               counts={counts}
               isFetching={isCountsFetching}
               isError={isCountsError}

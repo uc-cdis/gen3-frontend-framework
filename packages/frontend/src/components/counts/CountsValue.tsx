@@ -1,14 +1,12 @@
 import React from 'react';
 import { Badge, LoadingOverlay } from '@mantine/core';
-import { toCountsString } from '../../utils';
-import { NodeCountConfiguration } from '../../features/CohortBuilder/types';
+import { labelToPlural } from '../../utils/labels';
 
 interface CountsValueProps {
   label: string;
   counts?: number;
   isFetching: boolean;
   isError: boolean;
-  configuration?: NodeCountConfiguration;
 }
 
 const CountsValue = ({
@@ -16,7 +14,6 @@ const CountsValue = ({
   isFetching,
   isError,
   counts,
-  configuration,
 }: Readonly<CountsValueProps>) => {
   return (
     <div className="relative mr-4">
@@ -28,7 +25,9 @@ const CountsValue = ({
         color="secondary.4"
         classNames={{ root: 'h-full' }}
       >
-        {isError ? 'error' : toCountsString(counts, label, configuration)}
+        {isError
+          ? 'error'
+          : `${counts ? counts.toLocaleString() : '--'} ${counts != 1 ? labelToPlural(label) : label}`}
       </Badge>
     </div>
   );

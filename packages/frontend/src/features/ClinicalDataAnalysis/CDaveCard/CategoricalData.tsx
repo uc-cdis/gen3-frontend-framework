@@ -42,7 +42,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   );
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
-  const unitLabel = labelToPlural(facet.dataTypename, true);
+  const unitLabel = labelToPlural(facet.dataTypename);
 
   const resultData = useMemo(
     () =>

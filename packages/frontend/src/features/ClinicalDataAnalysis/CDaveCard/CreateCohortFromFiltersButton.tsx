@@ -108,7 +108,7 @@ const CreateCohortFromFiltersButton = ({
       disableTargetWidth={true}
       targetButtonDisabled={numObjects === 0}
       menuLabelText={`${numObjects.toLocaleString()}
-        ${numObjects != 1 ? labelToPlural(dataTypename, true) : dataTypename}`}
+        ${numObjects != 1 ? labelToPlural(dataTypename) : dataTypename}`}
       menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
       LeftSection={
         numObjects ? (

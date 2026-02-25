@@ -33,6 +33,7 @@ import {
 import ContinuousBinningModal from '../ContinuousBinningModal/ContinuousBinningModal';
 import BoxQQSection from './BoxQQSection';
 import { JSONPath } from 'jsonpath-plus';
+import { labelToPlural } from '../../../utils/labels';
 
 const EmptyContinuousStats = {
   min: 0,
@@ -183,6 +184,8 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
 
   const statsData = null; // TODO: enable stats data
 
+  const unitLabel = labelToPlural(facet.dataTypename);
+
   const displayedData = useDeepCompareMemo(
     () =>
       processContinuousResultData(
@@ -240,6 +243,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
                 hideYTicks={displayedData.every((val) => val.count === 0)}
                 noData={noData}
                 color={color}
+                unitLabel={unitLabel}
               />
             ) : null}
           </div>
@@ -265,6 +269,7 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
             selectedFacets={selectedFacets}
             setSelectedFacets={setSelectedFacets}
             dataDimension={dataDimension}
+            unitLabel={facet.dataDimension?.unit ?? 'Unset'}
           />
         </>
       )}
