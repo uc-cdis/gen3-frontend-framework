@@ -75,11 +75,11 @@ The topbar section is defined by:
   "topBar": {
     "items": [
       {
-        "href": "https://gen3.org/resources/user/",
+        "href": "https://docs.gen3.org/gen3-resources/user-guide/",
         "name": "About"
       },
       {
-        "href": "https://gen3.org/resources/user/",
+        "href": "https://docs.gen3.org/gen3-resources/user-guide/",
         "name": "Resources"
       }
     ],
