@@ -13,16 +13,16 @@ interface CreateCohortFromFiltersButtonProps {
   filters: FilterSet;
   numObjects: number;
   index: string;
-  objectIdField: string;
-  objectTypename: string;
+  uniqueIdField: string;
+  dataTypename: string;
 }
 
 const CreateCohortFromFiltersButton = ({
   filters,
   numObjects,
   index,
-  objectIdField,
-  objectTypename,
+  uniqueIdField,
+  dataTypename,
 }: CreateCohortFromFiltersButtonProps) => {
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
@@ -33,9 +33,9 @@ const CreateCohortFromFiltersButton = ({
     const cohortFilters = {
       mode: 'and',
       root: {
-        [objectIdField]: {
+        [uniqueIdField]: {
           operator: 'in',
-          field: objectIdField,
+          field: uniqueIdField,
           operands: Array.from(caseIds ?? []),
         },
       },
@@ -59,7 +59,7 @@ const CreateCohortFromFiltersButton = ({
 
     try {
       // Check if we can extract case IDs directly
-      const directCaseIds = getObjectIdsFromFilter(filters, objectIdField);
+      const directCaseIds = getObjectIdsFromFilter(filters, uniqueIdField);
 
       if (directCaseIds) {
         // Use extracted IDs directly
@@ -68,7 +68,7 @@ const CreateCohortFromFiltersButton = ({
         // Fetch case IDs from current filters
         const result = await fetchIds({
           filters: filters,
-          field: objectIdField,
+          field: uniqueIdField,
           index: index,
         }).unwrap();
         openSaveCohortModal(result?.ids ?? ([] as ReadonlyArray<string>));
@@ -78,7 +78,7 @@ const CreateCohortFromFiltersButton = ({
     }
   };
 
-  const unitLabel = labelToPlural(objectTypename);
+  const unitLabel = labelToPlural(dataTypename);
 
   const dropDownIcon = (
     <DropdownWithIcon
@@ -108,7 +108,7 @@ const CreateCohortFromFiltersButton = ({
       disableTargetWidth={true}
       targetButtonDisabled={numObjects === 0}
       menuLabelText={`${numObjects.toLocaleString()}
-        ${numObjects != 1 ? labelToPlural(objectTypename, true) : objectTypename}`}
+        ${numObjects != 1 ? labelToPlural(dataTypename, true) : dataTypename}`}
       menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
       LeftSection={
         numObjects ? (
@@ -137,8 +137,8 @@ const CreateCohortFromFiltersButton = ({
       <AddToExistingCohortModal
         opened={openSelectCohorts}
         index={index}
-        objectTypename={objectTypename}
-        objectIdField={objectIdField}
+        dataTypename={dataTypename}
+        uniqueIdField={uniqueIdField}
         lazyHook={useLazyGetObjectIdsQuery}
         onClose={() => setOpenSelectCohorts(false)}
         withOrWithoutCohort={withOrWithoutCohort}

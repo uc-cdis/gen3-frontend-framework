@@ -21,8 +21,8 @@ import { ClinicalDataConfiguration, ClinicalDataFacetProps } from './types';
 const ClinicalDataAnalysis = ({
   tabs,
   initialFields,
-  objectIdField,
-  objectTypename,
+  uniqueIdField,
+  dataTypename,
   index,
 }: ClinicalDataConfiguration) => {
   const [controlsExpanded, setControlsExpanded] = useState(true);
@@ -36,8 +36,8 @@ const ClinicalDataAnalysis = ({
           (acc[t.field] = {
             ...t,
             color: tab.color,
-            objectIdField: objectIdField,
-            objectTypename: objectTypename,
+            uniqueIdField: uniqueIdField,
+            dataTypename: dataTypename,
             index: index,
           } as ClinicalDataFacetProps),
       );

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   clearCohortFilters,
   CoreState,
@@ -13,10 +13,14 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-} from "@gen3/core";
-import QueryExpressionSection from "./QueryExpressionSection";
-import { QueryExpressionContext } from "./QueryExpressionContext";
-import { useCohortFacetFilters } from "../hooks";
+} from '@gen3/core';
+import QueryExpressionSection from './QueryExpressionSection';
+import { QueryExpressionContext } from './QueryExpressionContext';
+import { useCohortFacetFilters } from '../hooks';
+
+const DefaultShouldShowSummary = (field: string, count: number) => {
+  return count > 10;
+};
 
 interface QueryExpressionProps {
   index: string;

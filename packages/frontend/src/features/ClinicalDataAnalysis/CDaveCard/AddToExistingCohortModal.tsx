@@ -63,8 +63,8 @@ interface AddToExistingCohortModalProps {
   index: string;
   lazyHook: ObjectIdLazyQueryHook;
   currentFilters: any;
-  objectIdField: string;
-  objectTypename: string;
+  uniqueIdField: string;
+  dataTypename: string;
   onSaveCohort: (objectIds: ReadonlyArray<string>) => void;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
@@ -75,9 +75,9 @@ export const AddToExistingCohortModal = ({
   withOrWithoutCohort,
   currentFilters,
   onSaveCohort,
-  objectIdField,
+  uniqueIdField,
   index,
-  objectTypename,
+  dataTypename,
   lazyHook,
   size = 'sm',
 }: AddToExistingCohortModalProps) => {
@@ -133,7 +133,7 @@ export const AddToExistingCohortModal = ({
       },
       {
         id: 'numItems',
-        header: `# ${objectTypename}`,
+        header: `# ${dataTypename}`,
         accessorKey: 'numItems',
       },
     ],
@@ -158,7 +158,7 @@ export const AddToExistingCohortModal = ({
       // Get current case IDs - either extract or fetch
       const directCurrentObjectIds = getObjectIdsFromFilter(
         currentFilters,
-        objectIdField,
+        uniqueIdField,
       );
 
       let currentIdsResult;
@@ -167,7 +167,7 @@ export const AddToExistingCohortModal = ({
         const r = await fetchObjectIds({
           index: index,
           filters: currentFilters,
-          field: objectIdField,
+          field: uniqueIdField,
         }).unwrap();
         currentIdsResult = r?.ids ?? ([] as ReadonlyArray<string>);
       }
@@ -176,7 +176,7 @@ export const AddToExistingCohortModal = ({
       const cohortFilterSet = selectedCohort.filters[index];
       const directCohortObjectIds = getObjectIdsFromFilter(
         cohortFilterSet,
-        objectIdField,
+        uniqueIdField,
       );
       let cohortIdsResult;
       if (directCohortObjectIds) cohortIdsResult = directCohortObjectIds;
@@ -184,7 +184,7 @@ export const AddToExistingCohortModal = ({
         const r = await fetchObjectIds({
           index: index,
           filters: cohortFilterSet,
-          field: objectIdField,
+          field: uniqueIdField,
         }).unwrap();
         cohortIdsResult = r?.ids ?? ([] as ReadonlyArray<string>);
       }

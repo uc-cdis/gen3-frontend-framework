@@ -35,14 +35,9 @@ export type DisplayData = {
 export type CustomBinData = CategoricalBins | any[] | CustomInterval | null;
 
 export const isCategoricalBins = (value: unknown): value is CategoricalBins => {
-  // Early exit for non-objects
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     return false;
   }
-
-  // TypeScript already knows this is an object at this point
-  // We just need to check if it's a valid Record<string, number | Record<string, number>>
-  // Since Object.entries gives us string keys by default, we only need to validate values
 
   for (const val of Object.values(value)) {
     if (typeof val === 'number') {
@@ -50,14 +45,10 @@ export const isCategoricalBins = (value: unknown): value is CategoricalBins => {
     }
 
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      // Quick check: if it's an object, assume it's Record<string, number>
-      // TypeScript's structural typing will catch type mismatches at compile time
-      continue; // Valid: assumed Record<string, number>
+      continue;
     }
-
-    return false; // Invalid: not number or object
+    return false;
   }
-
   return true;
 };
 
@@ -87,8 +78,8 @@ export interface ClinicalDataFacet extends FacetDefinition {
 
 export interface ClinicalDataFacetProps extends ClinicalDataFacet {
   color: string;
-  objectTypename: string;
-  objectIdField: string;
+  dataTypename: string;
+  uniqueIdField: string;
 }
 
 export interface ClinicalDataTab {
@@ -99,9 +90,9 @@ export interface ClinicalDataTab {
 
 export interface ClinicalDataConfiguration extends Gen3AppConfigData {
   tabs: Array<ClinicalDataTab>;
-  index: string;
-  objectIdField: string; // data index to pull data from
-  objectTypename: string;
+  index: string; // index name
+  uniqueIdField: string; // the primary key field of the index (e.g. case_id)
+  dataTypename: string; // the data type of the index (e.g. case)
   indexPrefix?: string;
   initialFields: Array<string>;
 }

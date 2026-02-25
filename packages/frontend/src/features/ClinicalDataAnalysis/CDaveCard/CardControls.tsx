@@ -54,7 +54,7 @@ const CardControls: React.FC<CardControlsProps> = ({
   const downloadTSVFile = () => {
     const header = [
       displayDataDimension ? `${facet.label} (${dataDimension})` : facet.label,
-      `# ${labelToPlural(facet.objectTypename, true)}`,
+      `# ${labelToPlural(facet.dataTypename, true)}`,
     ];
     const body = displayedData.map(({ displayName, count }) =>
       [displayName, `${count} (${formatPercent(count, yTotal)})`].join('\t'),
@@ -95,8 +95,8 @@ const CardControls: React.FC<CardControlsProps> = ({
                       .reduce((a, b) => a + b)
               }
               index={facet.index}
-              objectIdField={facet.objectIdField}
-              objectTypename={facet.objectTypename}
+              uniqueIdField={facet.uniqueIdField}
+              dataTypename={facet.dataTypename}
             />
           </div>
           <Button

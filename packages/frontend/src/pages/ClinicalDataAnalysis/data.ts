@@ -10,8 +10,8 @@ const NullConfiguration: ClinicalDataConfiguration = {
   tabs: [],
   index: '',
   initialFields: [],
-  objectIdField: '',
-  objectTypename: '',
+  uniqueIdField: '',
+  dataTypename: '',
 };
 
 export const ClinicalDataAnalysisServerSideProps: GetServerSideProps<
