@@ -8,10 +8,16 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
+interface categoryData {
+  categoryDisplayName: string;
+  color: string;
+  tags: string[];
+}
 interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
+  tagCategoryData: categoryData[];
 }
 
 export const useAggMetaMDSProxy = ({
@@ -29,6 +35,7 @@ export const useAggMetaMDSProxy = ({
     displayedData: [],
     hits: 0,
     suggestions: [],
+    tagCategoryData: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -111,6 +118,7 @@ export const useAggMetaMDSProxy = ({
     summaryStatistics: summaryStatistics,
     charts: {},
     advancedSearchFilterValues: advancedSearchFilterValues,
+    tagCategoryData: data.tagCategoryData,
     dataRequestStatus: {
       isUninitialized: false,
       isFetching: loading,

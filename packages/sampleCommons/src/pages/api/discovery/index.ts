@@ -5,6 +5,7 @@ import searchData from '@/utils/api/discovery/processData/searchData';
 import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
+import getTagCategoryData from '@/utils/api/discovery/processData/getTagCategoryData';
 // TODO:
 // import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
 
@@ -52,10 +53,12 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     pagination.pageSize,
     pagination.offset,
   );
+
   return {
     hits: processedData.length,
     displayedData: paginatedData,
     suggestions: [],
+    tagCategoryData: getTagCategoryData(data, discoveryConfig),
   };
 };
 

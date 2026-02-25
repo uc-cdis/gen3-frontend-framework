@@ -92,6 +92,7 @@ const DiscoveryIndexPanel = ({
     suggestions,
     summaryStatistics,
     charts: chartData,
+    allTags,
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -103,6 +104,7 @@ const DiscoveryIndexPanel = ({
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
   });
+  console.log('allTags', allTags);
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
