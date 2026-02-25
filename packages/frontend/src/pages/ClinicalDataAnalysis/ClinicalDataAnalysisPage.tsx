@@ -12,14 +12,13 @@ const ClinicalDataAnalysisPage = ({
   footerProps,
   configuration,
 }: ClinicalDataAnalysisPageProps) => {
-  console.log('ClinicalDataAnalysisPage configuration:', configuration);
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
       headerMetadata={{
-        title: 'Gen3 Crosswalk Page',
-        content: 'Crosswalk Data',
-        key: 'gen3-crosswalk-page',
+        title: 'Gen3 Clinical Data Analysis Page',
+        content: ' Clinical Data Analysis',
+        key: 'gen3-clinical-data-analysis-page',
         ...(configuration?.headerMetadata ? configuration.headerMetadata : {}),
       }}
     >
