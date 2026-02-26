@@ -2,14 +2,10 @@ import React from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import Discovery from '../../features/Discovery/Discovery';
 import { DiscoveryPageProps } from './types';
-import {
-  registerDiscoveryDefaultCellRenderers,
-  registerDiscoveryDefaultStudyPreviewRenderers,
-} from '../../features/Discovery';
+import { registerDiscoveryDefaultCellRenderers } from '../../features/Discovery';
 import { Center } from '@mantine/core';
 
 registerDiscoveryDefaultCellRenderers();
-registerDiscoveryDefaultStudyPreviewRenderers();
 
 const DiscoveryPage = ({
   headerProps,
