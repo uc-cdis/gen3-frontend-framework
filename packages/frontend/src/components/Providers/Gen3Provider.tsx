@@ -11,6 +11,7 @@ import { SessionConfiguration } from '../../lib/session/types';
 import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -166,9 +167,11 @@ const Gen3Provider = ({
               }
             }
           >
-            <Gen3ModalsProvider config={modalsConfig}>
+            <CookiesProvider>
+               <Gen3ModalsProvider config={modalsConfig}>
               {children}
             </Gen3ModalsProvider>
+            </CookiesProvider>
           </ProtectedRoutesProvider>
         </SessionProvider>
       </ModalsProvider>
