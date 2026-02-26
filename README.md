@@ -58,7 +58,7 @@ npm run dev
 
 By default, this will start a dev server listening to http://localhost:3000
 
-If you want to run the dev server but connect it to a remote Gen3 data commons, create a `.env.development.local` file
+If you want to run the dev server but connect it to a remote Gen3 datacommons, create a `.env.development.local` file
 in the `packages/sampleCommons` directory and add the following:
 ```bash
 NEXT_PUBLIC_GEN3_API_TARGET=https://gen3.datacommons.io/
