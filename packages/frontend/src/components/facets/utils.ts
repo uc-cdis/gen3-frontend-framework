@@ -6,7 +6,7 @@ import {
   EnumFilterValue,
   extractEnumFilterValue,
   FacetDefinition,
-  fieldNameToTitle,
+  fieldNameToLabel,
   HistogramData,
   HistogramDataArray,
   Includes,
@@ -187,7 +187,7 @@ export const classifyFacets = (
         value.length === 1 && isArray(value[0].key) ? 'range' : 'enum';
       const facetName =
         fieldMapping.find((x) => x.field === fieldKey)?.name ??
-        fieldNameToTitle(fieldKey);
+        fieldNameToLabel(fieldKey);
 
       const facetDef = facetDefinitionsFromConfig[fieldKey] ?? {};
 

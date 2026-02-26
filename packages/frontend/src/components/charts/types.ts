@@ -23,6 +23,14 @@ export interface ChartProps {
     show?: boolean;
   };
   showLegendInChart?: boolean;
+  labelTruncation?: number;
+  showXTicks?: boolean;
+  showYTicks?: boolean;
+  xLabel?: string;
+  yLabel?: string;
+  maxBins?: number;
+  color?: string;
+  xLabelRotation?: number;
 }
 
 export interface CollapsableChartsPanelConfiguration {

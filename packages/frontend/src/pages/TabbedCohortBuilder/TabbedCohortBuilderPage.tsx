@@ -5,56 +5,7 @@ import CohortManager from '../../features/CohortBuilder/CohortManager/CohortMana
 import QueryExpression from '../../features/CohortBuilder/QueryExpression';
 import { Stack } from '@mantine/core';
 import { TabbedCohortBuilderPageProps } from './types';
-import CountsValue from '../../components/counts/CountsValue';
-import {
-  Accessibility,
-  CoreState,
-  selectCurrentCohortId,
-  selectIndexFilters,
-  useCoreSelector,
-  useLazyGetCountsQuery,
-} from '@gen3/core';
-import { useDeepCompareEffect } from 'use-deep-compare';
-
-interface CountsPanelProps {
-  index: string;
-  accessibility?: Accessibility;
-  indexPrefix?: string;
-}
-
-const CountsPanel: React.FC<CountsPanelProps> = ({
-  index,
-  accessibility = Accessibility.ALL,
-  indexPrefix = '',
-}: CountsPanelProps) => {
-  const [getCounts, { data: counts, isFetching, isError, isSuccess }] =
-    useLazyGetCountsQuery();
-  const currentCohortId = useCoreSelector((state: CoreState) =>
-    selectCurrentCohortId(state),
-  );
-  const cohortFilters = useCoreSelector((state: CoreState) =>
-    selectIndexFilters(state, index),
-  );
-
-  useDeepCompareEffect(() => {
-    getCounts({
-      type: index,
-      filters: cohortFilters,
-      accessibility: accessibility,
-      queryId: currentCohortId,
-      indexPrefix: indexPrefix,
-    });
-  }, [cohortFilters, currentCohortId, accessibility]);
-
-  return (
-    <CountsValue
-      label="Case"
-      counts={counts}
-      isFetching={isFetching}
-      isError={isError}
-    />
-  );
-};
+import CountsPanel from '../../features/CountsPanel/CountsPanel';
 
 const TabbedCohortBuilderPage = ({
   headerProps,
@@ -77,6 +28,7 @@ const TabbedCohortBuilderPage = ({
               <CountsPanel
                 index={configuration.index}
                 indexPrefix={configuration?.indexPrefix}
+                unitTypename={configuration?.dataTypename ?? 'Case'}
               />
             }
           />

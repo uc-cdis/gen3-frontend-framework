@@ -102,6 +102,7 @@
     "next-compose-plugins": "^2.2.1",
     "pluralize": "^8.0.0",
     "react-minisearch": "^7.1.4",
+    "rehype-sanitize": "^6.0.0",
     "typescript-pluralize": "^1.0.1",
     "yaml": "^2.3.4"
   },

@@ -1,7 +1,7 @@
-import { Card, Group, Text, SegmentedControl } from '@mantine/core';
-import React, { useState, ReactNode } from 'react';
+import { Card, Group, SegmentedControl, Text } from '@mantine/core';
+import React, { ReactNode, useState } from 'react';
 import { SimilarityChart } from '../types';
-import { AggregationsData, fieldNameToTitle } from '@gen3/core';
+import { AggregationsData, fieldNameToLabel } from '@gen3/core';
 import CohortSimilarityChartsFactory, {
   DefaultComparisonChart,
 } from './cohortSimilarityChartsFactory';
@@ -38,7 +38,7 @@ export const generateChart = (
   return chartRenderer({
     baseDataset: { data: groundData[field], label: groundLabel },
     comparisonDataset: { data: comparisonData[field], label: comparisonLabel },
-    title: showTitle ? fieldNameToTitle(field) : '',
+    title: showTitle ? fieldNameToLabel(field) : '',
   });
 };
 

@@ -54,19 +54,17 @@ export interface HistogramDataAsStringKey {
 export type HistogramDataArray = Array<HistogramData>;
 
 export interface StatValues {
-  count: number | null;
-  min: number | null;
-  max: number | null;
-  avg: number | null;
-  sum: number | null;
-  stddev: number | null;
-  median: number | null;
-  p25: number | null;
-  p50: number | null;
-  p75: number | null;
+  count: number;
+  min?: number;
+  max?: number;
+  avg?: number;
+  sum?: number;
+  stddev?: number;
+  median?: number;
+  percentiles?: { p25: number; p50: number; p75: number };
 }
 
-export type StatsValuesArray = Array<Partial<StatValues>>;
+export type StatsValuesArray = Array<StatValues>;
 
 const isValidObject = (input: any): boolean =>
   typeof input === 'object' && input !== null;
@@ -124,7 +122,7 @@ export const isHistogramDataAnEnum = (data: unknown): data is HistogramData => {
   );
 };
 
-export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
+export const isStatsValue = (item: unknown): item is StatValues => {
   if (typeof item !== 'object' || item === null) {
     return false;
   }
@@ -141,10 +139,13 @@ export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
     'stddev',
     'median',
   ];
-  for (const field of numericFields) {
-    if (field in obj && typeof obj[field] !== 'number') {
-      return false;
-    }
+
+  if (
+    !numericFields.some(
+      (field) => field in obj && typeof obj[field] !== 'number',
+    )
+  ) {
+    return false;
   }
 
   // Check percentiles structure if present
@@ -152,13 +153,6 @@ export const isStatsValue = (item: unknown): item is Partial<StatValues> => {
     const percentiles = obj.percentiles;
     if (typeof percentiles !== 'object' || percentiles === null) {
       return false;
-    }
-    const pObj = percentiles as Record<string, unknown>;
-    const requiredPercentiles = ['p25', 'p50', 'p75'];
-    for (const p of requiredPercentiles) {
-      if (p in pObj && typeof pObj[p] !== 'number') {
-        return false;
-      }
     }
   }
 
@@ -242,9 +236,9 @@ export function isFetchParseError(error: unknown): error is ParsingError {
   );
 }
 
+// facet data:  discrete or continuous values
 export type AggregationsData = Record<string, HistogramDataArray>;
-
-export type StatsData = Record<string, StatsValuesArray>;
+export type StatsData = Record<string, StatValues>;
 
 /**
  *  Represents the results of a guppy aggregation query

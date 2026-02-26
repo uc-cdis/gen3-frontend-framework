@@ -1,9 +1,6 @@
 // set of interfaces which follows the current explorer configuration
 
-import {
-  CollapsableChartsPanelConfiguration,
-  SummaryChart,
-} from '../../components/charts';
+import { CollapsableChartsPanelConfiguration, SummaryChart, } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
 import { FacetSortType, FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
@@ -39,8 +36,8 @@ export interface NodeCountConfiguration {
 
 export interface DataTypeConfig {
   dataType: string;
+  uniqueIdField: string;
   nodeCountTitle?: string;
-  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this

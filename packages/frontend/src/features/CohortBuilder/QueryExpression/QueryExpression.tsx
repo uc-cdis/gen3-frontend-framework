@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   clearCohortFilters,
   CoreState,
@@ -13,10 +13,21 @@ import {
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-} from "@gen3/core";
-import QueryExpressionSection from "./QueryExpressionSection";
-import { QueryExpressionContext } from "./QueryExpressionContext";
-import { useCohortFacetFilters } from "../hooks";
+} from '@gen3/core';
+import QueryExpressionSection from './QueryExpressionSection';
+import { QueryExpressionContext } from './QueryExpressionContext';
+import { useCohortFacetFilters } from '../hooks';
+
+const SUMMARY_THRESHOLD = 10;
+
+/**
+ * Default summary function for facet values. Any count above the threshold will be shown as a summary.
+ * @param field
+ * @param count
+ */
+const DefaultShouldShowSummary = (field: string, count: number) => {
+  return count > SUMMARY_THRESHOLD;
+};
 
 interface QueryExpressionProps {
   index: string;
@@ -25,7 +36,7 @@ interface QueryExpressionProps {
 
 const QueryExpression = ({
   index,
-  shouldShowSummary,
+  shouldShowSummary = DefaultShouldShowSummary,
 }: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),

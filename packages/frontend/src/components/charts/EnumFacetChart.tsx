@@ -17,7 +17,7 @@ import {
 } from 'victory';
 import ChartTitleBar from './ChartTitleBar';
 import { capitalize } from './utils';
-import { EnumFilterValue, fieldNameToTitle } from '@gen3/core';
+import { EnumFilterValue, fieldNameToLabel } from '@gen3/core';
 import { removeKey } from '../../utils/removeKey';
 
 const maxValuesToDisplay = 7;
@@ -83,7 +83,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
-          title={fieldNameToTitle(field)}
+          title={fieldNameToLabel(field)}
           divId={chartDivId}
           filename={field}
         />

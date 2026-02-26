@@ -108,7 +108,7 @@ interface CustomFacetGroupProps {
   readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
   readonly getFacetLabel: FacetValueLabel;
-  readonly useFieldNameToTitle: () => (
+  readonly useFieldNameToLabel: () => (
     field: string,
     sections?: number,
   ) => string;
@@ -125,14 +125,14 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   cardScrollMargin,
   Chart,
   usedFacets,
-  useFieldNameToTitle,
+  useFieldNameToLabel,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
     customFacetHooks.useCustomFacets();
   const addCustomFilter = customFacetHooks.useAddCustomFilter();
   const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
-  const fieldNameToTitle = useFieldNameToTitle();
+  const fieldNameToLabel = useFieldNameToLabel();
   // const { usePopulateFacetData = () => {} } = hooks;
 
   const handleFilterSelected = (filter: string) => {
@@ -209,7 +209,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
               hooks,
               idPrefix: 'cohort-builder',
               valueLabel: getFacetLabel,
-              facetNameFormatter: (field: string) => fieldNameToTitle(field, 2),
+              facetNameFormatter: (field: string) => fieldNameToLabel(field, 2),
               queryOptions,
               dismissCallback: removeCustomFilter,
               cardScrollMargin,
@@ -233,7 +233,7 @@ type FacetTabProps = {
   readonly getFacetLabel: FacetValueLabel;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
-  readonly useFieldNameToTitle: () => (
+  readonly useFieldNameToLabel: () => (
     field: string,
     sections?: number,
   ) => string;
@@ -251,7 +251,7 @@ type FacetTabProps = {
  * @param customFacetHooks - Hooks for custom facet selection
  * @param getFacetLabel - String or Callback for determining the data label
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
- * @param useFieldNameToTitle - will use built in hook for facet names
+ * @param useFieldNameToLabel - will use built in hook for facet names
  * @param Chart - Component for rendering a Chart view of the data
  */
 
@@ -265,11 +265,11 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   customFacetHooks,
   getFacetLabel,
   cardScrollMargin,
-  useFieldNameToTitle,
+  useFieldNameToLabel,
   Chart,
   classNames = {},
 }) => {
-  const fieldNameToTitle = useFieldNameToTitle();
+  const fieldNameToLabel = useFieldNameToLabel();
   const theme = useMantineTheme();
 
   const searchParams = new URLSearchParams(window.location.search);
@@ -285,12 +285,12 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
 
   useEffect(() => {
     if (hash && searchTermParam) {
-      const facetName = fieldNameToTitle(hash);
+      const facetName = fieldNameToLabel(hash);
       if (liveRegionRef.current) {
         liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
       }
     }
-  }, [hash, searchTermParam, fieldNameToTitle]);
+  }, [hash, searchTermParam, fieldNameToLabel]);
 
   const firstEntry = Object.values(tabsConfig)[0];
   const firstFacetList = firstEntry?.facets
@@ -316,7 +316,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
               usedFacets={usedFacets}
-              useFieldNameToTitle={useFieldNameToTitle}
+              useFieldNameToLabel={useFieldNameToLabel}
             />
           ) : (
             <FacetGroup
@@ -325,10 +325,10 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
             >
               {createFacetCards({
                 facets: firstFacetList,
-                facetNameFormatter: (field: string) => fieldNameToTitle(field),
+                facetNameFormatter: (field: string) => fieldNameToLabel(field),
                 hooks,
                 idPrefix: 'cohort-builder',
-                valueLabel:  getFacetLabel,
+                valueLabel: getFacetLabel,
                 cardScrollMargin,
                 Chart,
               })}
@@ -382,7 +382,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         cardScrollMargin={cardScrollMargin}
                         Chart={Chart}
                         usedFacets={usedFacets}
-                        useFieldNameToTitle={useFieldNameToTitle}
+                        useFieldNameToLabel={useFieldNameToLabel}
                       />
                     ) : (
                       <FacetGroup
@@ -392,7 +392,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         {createFacetCards({
                           facets: facetList,
                           facetNameFormatter: (field: string) =>
-                            fieldNameToTitle(field),
+                            fieldNameToLabel(field),
                           hooks,
                           idPrefix: 'cohort-builder',
                           valueLabel: getFacetLabel,
