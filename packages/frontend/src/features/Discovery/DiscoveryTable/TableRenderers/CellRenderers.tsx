@@ -4,15 +4,15 @@ import { Badge, Text } from '@mantine/core';
 import Link from 'next/link';
 import { Icon } from '@iconify-icon/react';
 import { DiscoveryCellRendererFactory } from './CellRendererFactory';
-import { getTagInfo } from '../../Study/utils';
-import { TagData } from '../../Study/types';
-import { useDiscoveryContext } from '../DiscoveryProvider';
+import { getTagInfo } from '../../../Study/utils';
+import { TagData } from '../../../Study/types';
+import { useDiscoveryContext } from '../../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
-import { TruncatedStringWithTooltip } from '../../../components/DataItems/TruncatedStringWithTooltip';
+import { TruncatedStringWithTooltip } from '../../../../components/DataItems/TruncatedStringWithTooltip';
 import { JSONObject } from '@gen3/core';
 
-import { getParamsValueAsString } from '../../../utils/values';
+import { getParamsValueAsString } from '../../../../utils/values';
 
 const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
