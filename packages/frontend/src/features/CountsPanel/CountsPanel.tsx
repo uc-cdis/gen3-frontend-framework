@@ -12,16 +12,18 @@ import CountsValue from '../../components/counts/CountsValue';
 
 export interface CountsPanelProps {
   index: string;
+  unitTypename: string;
   accessibility?: Accessibility;
   indexPrefix?: string;
 }
 
 const CountsPanel: React.FC<CountsPanelProps> = ({
   index,
+  unitTypename,
   accessibility = Accessibility.ALL,
   indexPrefix = '',
 }: CountsPanelProps) => {
-  const [getCounts, { data: counts, isFetching, isError, isSuccess }] =
+  const [getCounts, { data: counts, isFetching, isError }] =
     useLazyGetCountsQuery();
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
@@ -42,7 +44,7 @@ const CountsPanel: React.FC<CountsPanelProps> = ({
 
   return (
     <CountsValue
-      label="Case"
+      label={unitTypename}
       counts={counts}
       isFetching={isFetching}
       isError={isError}

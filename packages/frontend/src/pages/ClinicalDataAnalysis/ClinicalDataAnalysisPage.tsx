@@ -29,6 +29,7 @@ const ClinicalDataAnalysisPage = ({
               <CountsPanel
                 index={configuration.index}
                 indexPrefix={configuration?.indexPrefix}
+                unitTypename={configuration.dataTypename}
               />
             }
           />

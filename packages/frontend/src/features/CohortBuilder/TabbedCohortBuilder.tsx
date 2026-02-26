@@ -83,6 +83,7 @@ export interface TabbedCohortBuilderConfiguration {
   indexPrefix?: string;
   fieldsAreFlat?: boolean; // do not create nested field if true
   classNames?: StylingOverrideWithMergeControl;
+  dataTypename?: string;
 }
 
 // Builds a flat list of facet field names from the tabs configuration.
