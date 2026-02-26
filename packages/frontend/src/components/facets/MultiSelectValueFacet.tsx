@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { EnumFacetResponse, FacetCardProps, FacetDataHooks } from './types';
 import { ActionIcon, MultiSelect } from '@mantine/core';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
-import { Excludes, Includes, Operation, trimFirstFieldNameToTitle, } from '@gen3/core';
+import {
+  Excludes,
+  Includes,
+  Operation,
+  trimFirstfieldNameToLabel,
+} from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { updateFacetEnum } from './utils';
 import FacetControlsHeader from './FacetControlsHeader';
@@ -80,7 +85,7 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+    : trimFirstfieldNameToLabel(field, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const facetDataValues = hooks.useGetFacetData(field) as EnumFacetResponse;
   const isFilterExpanded =
@@ -141,11 +146,12 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
         <div className="flex flex-nowrap items-center p-2">
           <MultiSelect
             data-testid="multiselect-add-filter-value"
-            placeholder='Add value'
+            placeholder="Add value"
             styles={{
               root: {
                 marginTop: 0,
-            }}}
+              },
+            }}
             classNames={{
               root: 'grow',
               input: 'border-r-0 rounded-r-none py-1 mt-0 text-sm',
@@ -160,12 +166,18 @@ const MultiSelectValueFacet: React.FC<ExactValueProps> = ({
             withScrollArea={true}
             dropdownOpened={dropdownOpened}
           />
-        <ActionIcon
-          variant="filled" aria-label={`toggle dropdown for ${facetTitle} facet`}
-           className="bg-accent text-accent-contrast border-base-min border-1 ml-2"
-          onClick={toggle}>
-          <Icon icon="gen3:chevron-down" aria-label="close dropdown for facet" className={dropdownOpened ? '' : '-rotate-90'}/>
-        </ActionIcon>
+          <ActionIcon
+            variant="filled"
+            aria-label={`toggle dropdown for ${facetTitle} facet`}
+            className="bg-accent text-accent-contrast border-base-min border-1 ml-2"
+            onClick={toggle}
+          >
+            <Icon
+              icon="gen3:chevron-down"
+              aria-label="close dropdown for facet"
+              className={dropdownOpened ? '' : '-rotate-90'}
+            />
+          </ActionIcon>
         </div>
       </div>
     </div>

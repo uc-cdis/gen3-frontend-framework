@@ -28,7 +28,7 @@ import {
   processBucketData,
   removeIntersectionFromEnum,
   useClearFilters,
-  useFieldNameToTitle,
+  useFieldNameToLabel,
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../../components/facets';
@@ -161,7 +161,7 @@ export const FileFacetPanel = ({
         useToggleExpandFilter: partial(useToggleExpandFilter, index),
         useGetCombineMode: partial(useCohortFilterCombineState, index),
         useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-        useFieldNameToTitle: useFieldNameToTitle,
+        useFieldNameToLabel: useFieldNameToLabel,
         useTotalCounts: undefined,
         useUpdateCombineMode: () => null,
       },

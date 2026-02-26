@@ -1,5 +1,5 @@
-import { DiscoveryCellRendererFactory } from '@gen3/frontend/features/Discovery/TableRenderers/CellRendererFactory';
-import { CellRenderFunctionProps } from '@gen3/frontend/features/Discovery/TableRenderers/types';
+import { DiscoveryCellRendererFactory } from '@gen3/frontend/features/Discovery/DiscoveryTable/TableRenderers/CellRendererFactory';
+import { CellRenderFunctionProps } from '@gen3/frontend/features/Discovery/DiscoveryTable/TableRenderers/types';
 import { Badge, Text } from '@mantine/core';
 import React from 'react';
 import {

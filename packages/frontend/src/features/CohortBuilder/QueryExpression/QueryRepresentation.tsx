@@ -6,7 +6,7 @@ import {
   ExcludeIfAny,
   Excludes,
   Exists,
-  fieldNameToTitle,
+  fieldNameToLabel,
   GreaterThan,
   GreaterThanOrEquals,
   handleOperation,
@@ -156,7 +156,7 @@ const IncludeExcludeQueryElement = ({
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToTitle(field);
+  const fieldName = fieldNameToLabel(field);
   const operandsArray = isArray(operands) ? operands : [operands];
 
   const showSummaryView = shouldShowSummary
@@ -165,7 +165,7 @@ const IncludeExcludeQueryElement = ({
 
   const getSummaryLabel = () => {
     const count = operandsArray.length.toLocaleString();
-    const entityName = fieldNameToTitle(field).toLowerCase();
+    const entityName = fieldNameToLabel(field).toLowerCase();
     return `${count} input ${entityName}s`;
   };
 
@@ -173,7 +173,7 @@ const IncludeExcludeQueryElement = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>{fieldNameToTitle(field)}</QueryFieldLabel>
+      <QueryFieldLabel>{fieldNameToLabel(field)}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size="xs"
@@ -312,7 +312,7 @@ const ComparisonElement = ({
   return (
     <React.Fragment>
       {showLabel ? (
-        <QueryFieldLabel>{fieldNameToTitle(filter.field)}</QueryFieldLabel>
+        <QueryFieldLabel>{fieldNameToLabel(filter.field)}</QueryFieldLabel>
       ) : null}
       <div className="flex flex-row items-center">
         <button
@@ -333,7 +333,7 @@ const ComparisonElement = ({
 const ExistsElement = ({ field, operator }: Exists | Missing) => {
   return (
     <div className="flex flex-row items-center">
-      {fieldNameToTitle(field)} is
+      {fieldNameToLabel(field)} is
       <span className="px-1 underline">{operator}</span>
     </div>
   );
@@ -425,7 +425,7 @@ export const QueryElement = ({
         <button
           className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
           onClick={handleRemoveFilter}
-          aria-label={`remove ${fieldNameToTitle(field)}`}
+          aria-label={`remove ${fieldNameToLabel(field)}`}
         >
           <ClearIcon size="1.5em" className="px-1" />
         </button>
