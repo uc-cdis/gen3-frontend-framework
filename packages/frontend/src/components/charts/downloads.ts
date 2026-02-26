@@ -76,7 +76,7 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
       console.warn(e, sheet.href);
     }
   }
-  styleTag.innerHTML = styles.join('\n');
+  styleTag.textContent = styles.join('\n');
   svgElement.append(styleTag);
 
   const chartWrapper = document.createElementNS(
