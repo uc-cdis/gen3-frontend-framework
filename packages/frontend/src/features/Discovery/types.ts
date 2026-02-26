@@ -56,7 +56,7 @@ export interface DiscoverDataHookResponse {
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
-  allTags?: Array<string>;
+  tagCategoryData?: Array<JSONObject>;
 }
 
 export type DiscoveryTableDataHook = (
