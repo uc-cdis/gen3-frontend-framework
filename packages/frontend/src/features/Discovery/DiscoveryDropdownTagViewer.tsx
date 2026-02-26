@@ -10,8 +10,6 @@ const DiscoveryDropdownTagViewer = (
     tagCategoryData.tagCategoryData?.length === 0
   )
     return null;
-  const [value, setValue] = useState<string[]>([]);
-
   const [selectedValues, setSelectedValues] = useState({});
 
   const handleChange = (category, value) => {
@@ -23,7 +21,7 @@ const DiscoveryDropdownTagViewer = (
 
   return (
     <div>
-      <Button onClick={() => setValue([])}>Reset</Button>
+      <Button onClick={() => setSelectedValues([])}>Reset</Button>
       {tagCategoryData.tagCategoryData.map((category) => (
         <div key={category.categoryDisplayName?.toString()}>
           <MultiSelect
