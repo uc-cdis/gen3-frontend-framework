@@ -1,4 +1,4 @@
-import { flatten, isNumber, omitBy, some } from 'lodash';
+import { flatten, isArray, isNumber, omitBy, some } from 'lodash';
 import {
   AggregationsData,
   FacetDefinition,
@@ -52,6 +52,9 @@ export const combineAnalysisResults = (
         (results: Array<HistogramDataAsStringKey>, x) => {
           if (typeof x.key === 'string')
             results.push({ key: x.key.toString(), count: x.count });
+          if (isArray(x.key)) {
+            results.push({ key: x.key.join('-'), count: x.count });
+          }
           return results;
         },
         [],

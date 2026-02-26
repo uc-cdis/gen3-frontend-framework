@@ -213,8 +213,9 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
       );
     }
 
+    console.log('displayedData', displayedData);
     if (customBinnedData === null) {
-      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
+      setYTotal(displayedData.reduce((a, b) => a + (b?.count ?? 0), 0));
     }
 
     setSelectedFacets([]);

@@ -117,6 +117,8 @@ const ClinicalDataAnalysis = ({
     );
   }
 
+  console.log('convertedData', convertedData);
+
   return (
     <div data-testid="clinical-data-analysis-page">
       <div className="flex gap-4 pt-4 pb-16 px-4 w-full">
