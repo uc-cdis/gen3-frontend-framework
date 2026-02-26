@@ -15,7 +15,7 @@ import FacetControlsHeader from './FacetControlsHeader';
 import FacetSortPanel from './FacetSortPanel';
 import FacetExpander from './FacetExpander';
 import FiltersPanel from './FiltersPanel';
-import { usefieldNameToLabel } from './hooks';
+import { useFieldNameToLabel } from './hooks';
 
 export {
   FacetSelector,
@@ -28,5 +28,5 @@ export {
   FacetSortPanel,
   FacetExpander,
   FiltersPanel,
-  usefieldNameToLabel,
+  useFieldNameToLabel,
 };

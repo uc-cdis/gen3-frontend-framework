@@ -59,7 +59,7 @@ export const useExtractRangeFilterValues = (
   return filter ? extractRangeValues(filter) : undefined;
 };
 
-export const usefieldNameToLabel = () => {
+export const useFieldNameToLabel = () => {
   const fieldToTitle = useCallback((field: string, sections?: number) => {
     return field === 'genes.gene_id'
       ? 'Mutated Gene'

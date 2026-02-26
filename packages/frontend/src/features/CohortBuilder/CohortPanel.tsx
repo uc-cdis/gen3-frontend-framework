@@ -21,11 +21,7 @@ import {
   useGetCountsQuery,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import {
-  Charts,
-  CollapsableCharts,
-  type SummaryChart,
-} from '../../components/charts';
+import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -40,18 +36,11 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import {
-  useClearFilters,
-  usefieldNameToLabel,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToLabel, } from '../../components/facets/hooks';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import {
   useCohortFilterCombineState,
@@ -291,7 +280,7 @@ export const CohortPanel = ({
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useGetCombineMode: partial(useCohortFilterCombineState, index),
           useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          usefieldNameToLabel: usefieldNameToLabel,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         exact: {
@@ -301,7 +290,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          usefieldNameToLabel: usefieldNameToLabel,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -311,7 +300,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          usefieldNameToLabel: usefieldNameToLabel,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         range: {
@@ -321,7 +310,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          usefieldNameToLabel: usefieldNameToLabel,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
       };

@@ -20,7 +20,7 @@ import { SupportedFacetTypes } from './types';
 import { createFacetPanel } from './FilterPanels/createFacetPanel';
 import { selectCurrentCohortIndexFilters } from './CohortManagment/CohortManagerSelectors';
 import { useClearFilters, useGetFacetFilters, useUpdateFilters } from './hooks';
-import { usefieldNameToLabel } from '../../components/facets/hooks';
+import { useFieldNameToLabel } from '../../components/facets/hooks';
 
 interface ChartsAndFacetsPanelProps {
   index: string;
@@ -92,7 +92,7 @@ const ChartsAndFacetsPanel: React.FC<ChartsAndFacetsPanelProps> = ({
           useGetFacetFilters: partial(useGetFacetFilters, index),
           useClearFilter: partial(useClearFilters, index),
           useTotalCounts: undefined,
-          usefieldNameToLabel: usefieldNameToLabel,
+          useFieldNameToLabel: useFieldNameToLabel,
           useUpdateCombineMode: (field: string, mode: CombineMode) => null,
           useGetCombineMode: (field: string) => 'and',
         }, // TODO: range facets

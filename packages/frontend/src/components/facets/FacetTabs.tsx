@@ -108,7 +108,7 @@ interface CustomFacetGroupProps {
   readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
   readonly getFacetLabel: FacetValueLabel;
-  readonly usefieldNameToLabel: () => (
+  readonly useFieldNameToLabel: () => (
     field: string,
     sections?: number,
   ) => string;
@@ -125,14 +125,14 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   cardScrollMargin,
   Chart,
   usedFacets,
-  usefieldNameToLabel,
+  useFieldNameToLabel,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
     customFacetHooks.useCustomFacets();
   const addCustomFilter = customFacetHooks.useAddCustomFilter();
   const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
-  const fieldNameToLabel = usefieldNameToLabel();
+  const fieldNameToLabel = useFieldNameToLabel();
   // const { usePopulateFacetData = () => {} } = hooks;
 
   const handleFilterSelected = (filter: string) => {
@@ -233,7 +233,7 @@ type FacetTabProps = {
   readonly getFacetLabel: FacetValueLabel;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
-  readonly usefieldNameToLabel: () => (
+  readonly useFieldNameToLabel: () => (
     field: string,
     sections?: number,
   ) => string;
@@ -251,7 +251,7 @@ type FacetTabProps = {
  * @param customFacetHooks - Hooks for custom facet selection
  * @param getFacetLabel - String or Callback for determining the data label
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
- * @param usefieldNameToLabel - will use built in hook for facet names
+ * @param useFieldNameToLabel - will use built in hook for facet names
  * @param Chart - Component for rendering a Chart view of the data
  */
 
@@ -265,11 +265,11 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   customFacetHooks,
   getFacetLabel,
   cardScrollMargin,
-  usefieldNameToLabel,
+  useFieldNameToLabel,
   Chart,
   classNames = {},
 }) => {
-  const fieldNameToLabel = usefieldNameToLabel();
+  const fieldNameToLabel = useFieldNameToLabel();
   const theme = useMantineTheme();
 
   const searchParams = new URLSearchParams(window.location.search);
@@ -316,7 +316,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
               usedFacets={usedFacets}
-              usefieldNameToLabel={usefieldNameToLabel}
+              useFieldNameToLabel={useFieldNameToLabel}
             />
           ) : (
             <FacetGroup
@@ -382,7 +382,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         cardScrollMargin={cardScrollMargin}
                         Chart={Chart}
                         usedFacets={usedFacets}
-                        usefieldNameToLabel={usefieldNameToLabel}
+                        useFieldNameToLabel={useFieldNameToLabel}
                       />
                     ) : (
                       <FacetGroup

@@ -148,7 +148,7 @@ const IndexPanel = ({
             useClearFilter: () => (field: string) => null,
             useToggleExpandFilter: useToggleExpandFilter,
             useFilterExpanded: useFilterExpandedState,
-            usefieldNameToLabel: () => (field: string) => field,
+            useFieldNameToLabel: () => (field: string) => field,
           }}
         />
         <Stack className="w-full md:w-[40rem] lg:w-[50rem] xl:w-[60rem] mr-2 min-h-[500px]">

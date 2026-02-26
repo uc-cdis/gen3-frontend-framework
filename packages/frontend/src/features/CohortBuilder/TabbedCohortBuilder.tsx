@@ -40,7 +40,7 @@ import {
 import { partial } from 'lodash';
 import {
   useClearFilters,
-  usefieldNameToLabel,
+  useFieldNameToLabel,
 } from '../../components/facets/hooks';
 import {
   useCohortFilterCombineState,
@@ -275,7 +275,7 @@ const TabbedCohortBuilder = ({
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
     useGetCombineMode: partial(useCohortFilterCombineState, index),
     useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-    usefieldNameToLabel: usefieldNameToLabel,
+    useFieldNameToLabel: useFieldNameToLabel,
     useTotalCounts: undefined,
   };
   const RangeHookInstances = {
@@ -288,7 +288,7 @@ const TabbedCohortBuilder = ({
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
-    usefieldNameToLabel: usefieldNameToLabel,
+    useFieldNameToLabel: useFieldNameToLabel,
     useTotalCounts: undefined,
   };
 
@@ -302,7 +302,7 @@ const TabbedCohortBuilder = ({
     useClearFilter: partial(useClearFilters, index),
     useFilterExpanded: partial(useFilterExpandedState, index),
     useToggleExpandFilter: partial(useToggleExpandFilter, index),
-    usefieldNameToLabel: usefieldNameToLabel,
+    useFieldNameToLabel: useFieldNameToLabel,
     useTotalCounts: undefined,
   };
 
@@ -349,7 +349,7 @@ const TabbedCohortBuilder = ({
         }}
         getFacetLabel={() => 'Cases'}
         cardScrollMargin={calculateStickyHeaderHeight()}
-        usefieldNameToLabel={usefieldNameToLabel}
+        useFieldNameToLabel={useFieldNameToLabel}
         classNames={classNames}
       />
     </Stack>

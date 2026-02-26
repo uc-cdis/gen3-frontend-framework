@@ -23,7 +23,7 @@ export const Default: Story = {
     },
     hooks: {
       useClearFilter: (() => {}) as any,
-      usefieldNameToLabel: ((field: string) => field) as any,
+      useFieldNameToLabel: ((field: string) => field) as any,
       useUpdateFacetFilters: (() => {}) as any,
       useGetFacetFilters: (() => {}) as any,
       useGetFacetData: (() => ({

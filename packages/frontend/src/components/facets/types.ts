@@ -121,7 +121,7 @@ export interface FacetCommonHooks {
   /**
    * Hook that takes the API field and returns a human readable field name
    */
-  usefieldNameToLabel: () => (field: string, sections?: number) => string;
+  useFieldNameToLabel: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   usePopulateFacetData?: (

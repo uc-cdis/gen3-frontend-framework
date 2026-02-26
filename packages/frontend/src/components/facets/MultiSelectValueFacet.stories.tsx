@@ -32,7 +32,7 @@ export const Default: Story = {
           field: 'facet',
         };
       },
-      usefieldNameToLabel:
+      useFieldNameToLabel:
         () =>
         (_field: string, _sections: number | undefined = undefined) =>
           'Facet',
