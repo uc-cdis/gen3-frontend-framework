@@ -18,6 +18,7 @@ import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
 import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
+import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -61,6 +62,7 @@ const DiscoveryIndexPanel = ({
   );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -169,6 +171,7 @@ const DiscoveryIndexPanel = ({
                     setSelectedFieldsForSearchIndexing
                   }
                 />
+                <DiscoveryDropdownTagViewer tagCategoryData={tagCategoryData} />
               </div>
             </div>
             {discoveryConfig?.features?.aiSearch && (
