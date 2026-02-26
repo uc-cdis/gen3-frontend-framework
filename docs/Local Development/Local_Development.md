@@ -71,5 +71,9 @@ see: [Credentials Login](https://github.com/uc-cdis/gen3-frontend-framework/blob
 
 ## Configuration
 
-There is some basic and not quite current documentation in
+There is some basic documentation in
  [Configurations](https://github.com/uc-cdis/gen3-frontend-framework/tree/develop/docs/Configuration)
+
+## Gen3 Commons to test features:
+
+### Discovery Page:
