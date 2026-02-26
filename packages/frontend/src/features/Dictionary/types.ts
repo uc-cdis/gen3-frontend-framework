@@ -22,13 +22,13 @@ export interface DDLink {
   multiplicity: string;
   name: string;
   required: boolean;
-  target_type?: string;
+  target_type: string;
 }
 
 export interface DDLinkWithSubgroup {
   exclusive: boolean;
   required: boolean;
-  subgroup: Array<DDLink>;
+  subgroup: Array<DDLink | DDLinkWithSubgroup>;
 }
 
 interface Term {
@@ -72,7 +72,7 @@ export interface DictionaryEntry {
   additionalProperties?: boolean;
   category?: string;
   description?: string;
-  id?: string;
+  id: string;
   links?: DDLink[] | DDLinkWithSubgroup[];
   namespace?: string;
   nodeTerms?: null | any;
