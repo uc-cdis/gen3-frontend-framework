@@ -17,7 +17,7 @@ cd into ```gen3-frontend-framework``` and install the packages:
 npm i
 ```
 
-once installed you should be able to run:
+once installed, you should be able to run:
 ```
 npm run dev
 ```
@@ -49,9 +49,8 @@ The important ENV variables are:
 For example, since we have copied the ```gen3``` config directory to ```my-datacommons```, we need to add
 that variable in ```.env.development.local``` as ```NEXT_PUBLIC_GEN3_COMMONS_NAME=my-datacommons```.
 
-```NEXT_PUBLIC_GEN3_API=http://gen3.datacommons.io``` this defines the commons URL the FEF will
-use for all the Gen3 services. This is how you can run a commons locally on your machine using a
-running commons.
+```NEXT_PUBLIC_GEN3_API=http://localhost:3000``` this defines the commons URL the FEF will
+use for all the Gen3 services.
 
 ```NEXT_PUBLIC_GEN3_API_TARGET=https://gen3.datacommons.io/``` set this to point the locally running
 frontend to a remote commons.
