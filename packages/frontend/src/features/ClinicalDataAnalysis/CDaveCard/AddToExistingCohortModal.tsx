@@ -3,7 +3,6 @@ import FunctionButton from '../../../components/FunctionButton';
 import DarkFunctionButton from '../../../components/StyledComponents/DarkFunctionButton';
 import { Loader, Modal, Radio, Text } from '@mantine/core';
 import { createColumnHelper } from '@tanstack/react-table';
-import { BaseQueryFn, TypedUseLazyQuery } from '@reduxjs/toolkit/query/react';
 import {
   Accessibility,
   Cohort,
@@ -12,12 +11,7 @@ import {
   selectAvailableCohorts,
   useCoreSelector,
 } from '@gen3/core';
-import {
-  MantineReactTable,
-  type MRT_PaginationState,
-  type MRT_Row,
-  useMantineReactTable,
-} from 'mantine-react-table';
+import { MantineReactTable, type MRT_PaginationState, type MRT_Row, useMantineReactTable, } from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { getObjectIdsFromFilter } from './utils';
 import { LazyQueryHookResult } from './types';
@@ -50,10 +44,9 @@ interface CohortListData {
   numItems: string;
 }
 
-type ObjectIdLazyQueryHook = TypedUseLazyQuery<
-  ObjectIdQueryResponse,
+type ObjectIdLazyQueryHook = () => LazyQueryHookResult<
   ObjectIdQueryRequest,
-  BaseQueryFn
+  ObjectIdQueryResponse
 >;
 
 interface AddToExistingCohortModalProps {

@@ -17,6 +17,7 @@ export type LazyQueryHookResult<TArg, TResult> = [
     isSuccess: boolean;
     isUninitialized: boolean;
   },
+  lastPromiseInfo: { lastArg: TArg },
 ];
 
 export type WithOrWithoutCohortType = 'with' | 'without' | undefined;
