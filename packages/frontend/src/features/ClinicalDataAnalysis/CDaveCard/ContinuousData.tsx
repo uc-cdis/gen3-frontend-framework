@@ -1,12 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import {
-  Accessibility,
-  FilterSet,
-  NumericFromTo,
-  Statistics,
-  useCustomRangeQuery,
-} from '@gen3/core';
+import { Accessibility, FilterSet, NumericFromTo, Statistics, useCustomRangeQuery, } from '@gen3/core';
 import CDaveHistogram from './CDaveHistogram';
 import CDaveTable from './CDaveTable';
 // import ClinicalSurvivalPlot from './ClinicalSurvivalPlot';
@@ -213,7 +207,6 @@ const ContinuousData: React.FC<Readonly<ContinuousDataProps>> = ({
       );
     }
 
-    console.log('displayedData', displayedData);
     if (customBinnedData === null) {
       setYTotal(displayedData.reduce((a, b) => a + (b?.count ?? 0), 0));
     }
