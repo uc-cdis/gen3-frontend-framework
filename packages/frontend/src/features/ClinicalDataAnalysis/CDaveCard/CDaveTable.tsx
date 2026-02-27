@@ -201,7 +201,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 </td>
                 <td className="text-right">
                   <div className="pr-4 whitespace-nowrap">
-                    {count.toLocaleString()} ({formatPercent(count, yTotal)})
+                    {count?.toLocaleString() ?? '--'} (
+                    {formatPercent(count ?? 0, yTotal)})
                   </div>
                 </td>
               </tr>

@@ -82,13 +82,13 @@ export const createMantineTheme = (
             title: {
               color: 'var(--mantine-color-primary-contrast-3)',
               fontFamily: '"Montserrat", "sans-serif"',
-              fontSize: '1.25em',
+              fontSize: '1.05em',
               fontWeight: 500,
               letterSpacing: '.1rem',
               textTransform: 'uppercase',
             },
             body: {
-              padding: 0,
+              padding: '0.5rem',
             },
             close: {
               backgroundColor: 'var(--mantine-color-accent-3)',
