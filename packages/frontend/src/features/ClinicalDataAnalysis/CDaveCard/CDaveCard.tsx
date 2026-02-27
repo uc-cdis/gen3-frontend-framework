@@ -9,7 +9,6 @@ import {
   ChartTypes,
   ClinicalDataFacetProps,
   DataDimension,
-  DownloadType,
 } from '../types';
 import ContinuousData from './ContinuousData';
 import CategoricalData from './CategoricalData';
@@ -36,7 +35,6 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>('histogram');
   const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const [downloadType, setDownloadType] = useState<DownloadType>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(facet);
 
@@ -132,7 +130,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
       data-testid={`${fieldName}-card`}
       padding="md"
       radius={0}
-      ref={targetRef}
+      ref={targetRef as React.Ref<HTMLDivElement> }
       className="border-1 border-base-lighter h-full flex flex-col relative"
     >
       <div className="flex justify-between mb-1">
