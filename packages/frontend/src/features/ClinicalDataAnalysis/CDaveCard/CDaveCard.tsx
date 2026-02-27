@@ -132,7 +132,7 @@ const CDaveCard: React.FC<Readonly<CDaveCardProps>> = ({
       data-testid={`${fieldName}-card`}
       padding="md"
       radius={0}
-      ref={targetRef}
+      ref={targetRef as React.Ref<HTMLDivElement>}
       className="border-1 border-base-lighter h-full flex flex-col relative"
     >
       <div className="flex justify-between mb-1">
