@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import {
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
+  selectedTags,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-
 import { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
@@ -27,6 +27,7 @@ export const useAggMetaMDSProxy = ({
   searchMode,
   discoveryConfig,
   sorting,
+  selectedTags,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -49,7 +50,7 @@ export const useAggMetaMDSProxy = ({
     sorting: sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
-    selectedTags: {},
+    selectedTags: selectedTags,
     /*
     TODO: Example param
     selectedTags: {
@@ -89,6 +90,7 @@ export const useAggMetaMDSProxy = ({
     sorting,
     selectedFieldsForSearchIndexing,
     searchMode,
+    selectedTags,
   ]);
 
   let advancedSearchFilterValues = [] as any;

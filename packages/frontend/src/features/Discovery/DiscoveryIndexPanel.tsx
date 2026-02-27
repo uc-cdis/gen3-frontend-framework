@@ -62,7 +62,9 @@ const DiscoveryIndexPanel = ({
   );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
+    {},
+  );
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -105,6 +107,7 @@ const DiscoveryIndexPanel = ({
     sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
+    selectedTags: selectedTags,
   });
   console.log('tagCategoryData', tagCategoryData);
 
@@ -171,7 +174,12 @@ const DiscoveryIndexPanel = ({
                     setSelectedFieldsForSearchIndexing
                   }
                 />
-                <DiscoveryDropdownTagViewer tagCategoryData={tagCategoryData} />
+                <DiscoveryDropdownTagViewer
+                  tagCategoryData={tagCategoryData}
+                  setSelectedTags={setSelectedTags}
+                />
+                <h3>CURRENT SELECTED TAGS</h3>
+                {JSON.stringify(selectedTags)}
               </div>
             </div>
             {discoveryConfig?.features?.aiSearch && (

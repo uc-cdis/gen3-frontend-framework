@@ -31,6 +31,9 @@ export interface SearchTerms {
   selectedTags?: Record<string, boolean>;
 }
 
+export interface selectedTags {
+  [key: string]: boolean;
+}
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
