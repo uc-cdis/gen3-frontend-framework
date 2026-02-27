@@ -5,6 +5,9 @@
       "experimental_group": {
         "chartType": "fullPie",
         "title": "Experimental Group",
+        "label": {
+          "show": true
+        },
         "showLegendInChart": false
       },
       "ethnicity": {
@@ -112,7 +115,7 @@
     "loginForDownload": false,
     "guppyConfig": {
       "dataType": "subject",
-      "nodeCountTitle": "Subjects",
+      "nodeCountTitle": "Subject",
       "fieldMapping": [
         {
           "field": "_samples_count",
