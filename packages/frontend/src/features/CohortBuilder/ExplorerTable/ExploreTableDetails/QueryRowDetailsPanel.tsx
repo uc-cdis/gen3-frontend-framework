@@ -59,7 +59,6 @@ export const QueryRowDetailsPanel = ({
   const idField = tableConfig.detailsConfig?.idField;
   const simpleDetailsView = tableConfig.detailsConfig?.simpleDetailsView;
   const { setStudyDetails } = useStudyContext();
-  const [opened, { open, close }] = useDisclosure(false);
 
   const { data, isError, isFetching } = useGetRawDataAndTotalCountsQuery(
     {
