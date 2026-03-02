@@ -66,7 +66,7 @@ const getTagCategoryData = (
     };
     // console.log('categoryData', categoryData);
 
-    if (category.display) {
+    if (category.display || 1 == 1) {
       allCategoryData.push(categoryData);
     }
   });

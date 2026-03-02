@@ -6,6 +6,7 @@ interface selectedValues {
   [key: string]: string[];
 }
 
+// Transforms selected values from dropdown into format for proxy API
 const transformSelectedValuesFormat = (
   input: selectedValues,
 ): Record<string, boolean> => {
@@ -30,34 +31,39 @@ const DiscoveryDropdownTagViewer = ({
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
   const [selectedValues, setSelectedValues] = useState({});
 
-  const handleChange = (category, value) => {
-    setSelectedTags(transformSelectedValuesFormat(selectedValues));
-    setSelectedValues((prev) => ({
-      ...prev,
-      [category]: value,
-    }));
-    console.log('selectedValues', selectedValues);
-    // setSelectedTags({ 'BioSystics-AP': true });
+  const handleChange = (category: string, value: string[]) => {
+    setSelectedValues((prev) => {
+      const newSelectedValues = {
+        ...prev,
+        [category]: value,
+      };
+      setSelectedTags(transformSelectedValuesFormat(newSelectedValues));
+      return newSelectedValues;
+    });
   };
 
   return (
     <div>
       <Button onClick={() => setSelectedValues([])}>Reset</Button>
-      {tagCategoryData.map((category) => (
-        <div key={category.categoryDisplayName?.toString()}>
-          <MultiSelect
-            label={`Select tags for ${category.categoryDisplayName}`}
-            placeholder="Pick values"
-            value={selectedValues[category.categoryDisplayName] || []}
-            onChange={(value) =>
-              handleChange(category.categoryDisplayName, value)
-            }
-            clearable
-            searchable
-            data={category.tags.map((tag) => ({ value: tag, label: tag }))} // Format to { value, label }
-          />
-        </div>
-      ))}
+      <div
+        className={`grid ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
+      >
+        {tagCategoryData.map((category) => (
+          <div key={category.categoryDisplayName?.toString()}>
+            <MultiSelect
+              label={`Select tags for ${category.categoryDisplayName}`}
+              placeholder="Pick values"
+              value={selectedValues[category.categoryDisplayName] || []}
+              onChange={(value) =>
+                handleChange(category.categoryDisplayName, value)
+              }
+              clearable
+              searchable
+              data={category.tags.map((tag) => ({ value: tag, label: tag }))}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
