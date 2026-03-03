@@ -61,14 +61,15 @@ const DownloadLinksPanel = ({
                   ) {
                     return null;
                   }
-                  const id = entry[downloadLinkFields.idField];
-                  if (!id) return null;
+                  const id = entry['idField'];
+
+                  if (id === undefined) return null;
                   return (
                     <Group justify="space-between" key={id} gap="md">
                       <Text>{entry['titleField'] || ''}</Text>
                       <Button
                         component="a"
-                        href={`${GEN3_FENCE_API}/data/${encodeURIComponent(id)}?expires_in=900&redirect`}
+                        href={`${GEN3_FENCE_API}/data/download/${encodeURIComponent(id)}?expires_in=900&redirect`}
                         target="_blank"
                         rel="noreferrer"
                         type="text"
