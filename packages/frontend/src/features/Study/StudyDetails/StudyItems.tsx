@@ -3,18 +3,14 @@ import Link from 'next/link';
 import { isArray, toString } from 'lodash';
 import { JSONPath } from 'jsonpath-plus';
 import { Alert, Text } from '@mantine/core';
-import {
-  StudyResource,
-  StudyDetailsField,
-  StudyTabTagField,
-} from '../types';
+import { StudyDetailsField, StudyResource, StudyTabTagField } from '../types';
 import { accessibleFieldName, AccessLevel } from '../../../utils';
 import { RenderTagsCell } from '../TableRenderers/CellRenderers';
 import {
-  StudyFieldRendererFactory,
   FieldRendererFunction,
   FieldRendererFunctionMap,
   StudyDetailsRenderer,
+  StudyFieldRendererFactory,
 } from './RendererFactory';
 import { JSONValue } from '@gen3/core';
 
@@ -64,7 +60,7 @@ const jsonValueToElement = (value: JSONValue): ReactElement => {
 /**
  * Default style for discovery field.
  */
-const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap';
+const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap gap-x-2';
 
 /**
  * Renders a block of text.
