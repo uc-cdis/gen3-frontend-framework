@@ -58,20 +58,31 @@ const MultiSelectContainer = ({ category, selectedTags, setSelectedTags }) => {
     const updatedSelections = Object.keys(selectedTags).filter(
       (tag) => selectedTags[tag],
     );
-    console.log('updatedSelections', updatedSelections);
+    // console.log('updatedSelections', updatedSelections);
     const selectedItemsThatExistInContainer = updatedSelections.filter((item) =>
       category.tags.includes(item),
     );
     setContainerSelections(selectedItemsThatExistInContainer);
   }, [selectedTags]);
 
+  const [previousContainerValues, setPreviousContainerValues] = useState([]);
   const handleChange = (category: string, value: string[]) => {
+    setPreviousContainerValues(value);
     setSelectedTags((prevTags) => {
       // Create a copy of the previous tags
       const updatedTags = { ...prevTags };
       // Check if the tag exists and toggle it
-      if (updatedTags[value.at(-1)]) {
+      /*      if (updatedTags[value.at(-1)]) {
         delete updatedTags[value.at(-1)]; // Remove the tag if it exists
+      } */
+      if (previousContainerValues.length > value.length) {
+        const valuesToBeRemoved = previousContainerValues.filter(
+          (curr) => !value.includes(curr),
+        );
+        console.log('valuesToBeRemoved', valuesToBeRemoved);
+        valuesToBeRemoved.forEach(
+          (valueToBeRemoved) => delete updatedTags[valueToBeRemoved],
+        );
       } else {
         updatedTags[value.at(-1)] = true; // Add the tag if it doesn't exist
       }

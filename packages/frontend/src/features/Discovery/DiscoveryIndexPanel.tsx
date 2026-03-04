@@ -110,7 +110,7 @@ const DiscoveryIndexPanel = ({
     searchMode: searchMode,
     selectedTags: selectedTags,
   });
-  console.log('tagCategoryData', tagCategoryData);
+  // console.log('tagCategoryData', tagCategoryData);
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
