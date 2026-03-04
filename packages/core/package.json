@@ -1,6 +1,6 @@
 {
   "name": "@gen3/core",
-  "version": "0.12.24",
+  "version": "0.12.26",
   "author": "CTDS",
   "description": "Core module for Gen3.2. Packages provides an interface for interacting with the gen3 API, various types, and a redux store for managing state.",
   "license": "Apache-2.0",
@@ -49,7 +49,7 @@
   },
   "peerDependencies": {
     "react": "^18.3.1",
-    "react-cookie": "^8.0.1",
+    "react-cookie": "^7.2.2",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {

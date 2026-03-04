@@ -20,6 +20,8 @@ export * from './features/Profile';
 export * from './utils/';
 export * from './types';
 
+import { ClinicalDataAnalysisPage, ClinicalDataAnalysisServerSideProps, } from './pages/ClinicalDataAnalysis';
+
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
@@ -171,6 +173,8 @@ export {
   WorkspaceNoAccessPageServerSideProps,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
+  ClinicalDataAnalysisPage,
+  ClinicalDataAnalysisServerSideProps,
   Custom403Page,
   Custom404Page,
   sessionToken,
