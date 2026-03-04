@@ -144,37 +144,37 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
-        <Notifications position={defaultNotificationPosition} />
-        <SessionProvider {...sessionConfig}>
-          <ProtectedRoutesProvider
-            config={
-              protectedRoutesConfig ?? {
-                routes: {
-                  '/DataLibrary': {
-                    loginRequired: true,
+      <CookiesProvider>
+        <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
+          <Notifications position={defaultNotificationPosition} />
+          <SessionProvider {...sessionConfig}>
+            <ProtectedRoutesProvider
+              config={
+                protectedRoutesConfig ?? {
+                  routes: {
+                    '/DataLibrary': {
+                      loginRequired: true,
+                    },
+                    '/Workspace': {
+                      loginRequired: true,
+                    },
+                    '/Profile': {
+                      loginRequired: true,
+                    },
+                    '*': {
+                      loginRequired: false,
+                    },
                   },
-                  '/Workspace': {
-                    loginRequired: true,
-                  },
-                  '/Profile': {
-                    loginRequired: true,
-                  },
-                  '*': {
-                    loginRequired: false,
-                  },
-                },
+                }
               }
-            }
-          >
-            <CookiesProvider>
+            >
               <Gen3ModalsProvider config={modalsConfig}>
                 {children}
               </Gen3ModalsProvider>
-            </CookiesProvider>
-          </ProtectedRoutesProvider>
-        </SessionProvider>
-      </ModalsProvider>
+            </ProtectedRoutesProvider>
+          </SessionProvider>
+        </ModalsProvider>
+      </CookiesProvider>
     </CoreProvider>
   );
 };
