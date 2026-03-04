@@ -19,6 +19,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
 import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
+import DiscoveryDropdownTagViewerNew from './DiscoveryDropdownTagViewerNew';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -174,8 +175,14 @@ const DiscoveryIndexPanel = ({
                     setSelectedFieldsForSearchIndexing
                   }
                 />
-                <DiscoveryDropdownTagViewer
+                {/*                 <DiscoveryDropdownTagViewer
                   tagCategoryData={tagCategoryData}
+                  setSelectedTags={setSelectedTags}
+                /> */}
+                <Button onClick={() => setSelectedTags({})}>Reset</Button>
+                <DiscoveryDropdownTagViewerNew
+                  tagCategoryData={tagCategoryData}
+                  selectedTags={selectedTags}
                   setSelectedTags={setSelectedTags}
                 />
                 <h3>CURRENT SELECTED TAGS</h3>

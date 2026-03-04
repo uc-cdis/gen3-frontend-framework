@@ -77,6 +77,7 @@ const DiscoveryDropdownTagViewer = ({
   return (
     <div>
       <Button onClick={() => setSelectedValues({})}>Reset</Button>
+      selectedValues {JSON.stringify(selectedValues)}
       <div
         className={`grid ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
       >
