@@ -35,7 +35,7 @@ export interface selectedTags {
   [key: string]: boolean;
 }
 
-export interface categoryObjects {
+export interface categoryObject {
   categoryDisplayName: string;
   tags: string[];
   color: string;
@@ -66,7 +66,7 @@ export interface DiscoverDataHookResponse {
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
-  tagCategoryData?: Array<JSONObject>;
+  tagCategoryData?: categoryObject[] | undefined;
 }
 
 export type DiscoveryTableDataHook = (

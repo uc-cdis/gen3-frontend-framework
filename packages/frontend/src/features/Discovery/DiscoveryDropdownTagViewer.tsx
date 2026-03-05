@@ -1,7 +1,7 @@
 import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { categoryObjects } from './types';
+import { categoryObject } from './types';
 
 interface RenderMultiSelectOptionProps {
   option: { value: string };
@@ -31,7 +31,7 @@ const renderMultiSelectOption = (
 };
 
 interface DiscoveryDropdownTagViewerProps {
-  tagCategoryData: Array<categoryObjects> | undefined;
+  tagCategoryData: Array<categoryObject> | undefined;
   selectedTags: { [key: string]: boolean };
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
@@ -39,7 +39,7 @@ interface DiscoveryDropdownTagViewerProps {
 }
 
 interface MultiSelectContainerProps {
-  category: categoryObjects;
+  category: categoryObject;
   selectedTags: { [key: string]: boolean };
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
@@ -98,8 +98,7 @@ const MultiSelectContainer = ({
   return (
     <div key={category.categoryDisplayName?.toString()}>
       <MultiSelect
-        label={`Select tags for ${category.categoryDisplayName}`}
-        placeholder="Pick values"
+        placeholder={category.categoryDisplayName}
         value={containerSelections}
         onChange={(value) => handleChange(category.categoryDisplayName, value)}
         clearable

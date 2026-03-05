@@ -1,8 +1,8 @@
 import React, { ReactNode, RefObject, useMemo, useRef, useState } from 'react';
-import { categoryObjects, DiscoveryIndexConfig } from './types';
+import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Grid, Col, Text } from '@mantine/core';
+import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
@@ -215,7 +215,7 @@ const DiscoveryIndexPanel = ({
                 />
                 <div
                   ref={contentRef}
-                  className={`transition-all duration-300 ease-in-out ${
+                  className={`transition-all duration-300 ease-in-out mt-2 ${
                     isDropdownTagViewerOpen
                       ? 'max-h-screen opacity-100'
                       : 'max-h-0 opacity-0'
@@ -228,9 +228,7 @@ const DiscoveryIndexPanel = ({
                   }}
                 >
                   <DiscoveryDropdownTagViewer
-                    tagCategoryData={
-                      tagCategoryData as categoryObjects | undefined
-                    }
+                    tagCategoryData={tagCategoryData}
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
                   />

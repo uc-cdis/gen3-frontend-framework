@@ -1,23 +1,18 @@
 import { useEffect, useState } from 'react';
 import {
+  categoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
-  selectedTags,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
-interface categoryData {
-  categoryDisplayName: string;
-  color: string;
-  tags: string[];
-}
 interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
-  tagCategoryData: categoryData[];
+  tagCategoryData: categoryObject[];
 }
 
 export const useAggMetaMDSProxy = ({
@@ -51,13 +46,6 @@ export const useAggMetaMDSProxy = ({
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
-    /*
-    TODO: Example param
-    selectedTags: {
-        SPARC: true,
-        Dataverse: true,
-      },
-    */
   };
 
   useDeepCompareEffect(() => {
