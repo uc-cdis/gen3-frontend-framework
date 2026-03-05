@@ -34,6 +34,13 @@ export interface SearchTerms {
 export interface selectedTags {
   [key: string]: boolean;
 }
+
+export interface categoryObjects {
+  categoryDisplayName: string;
+  tags: string[];
+  color: string;
+}
+
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;

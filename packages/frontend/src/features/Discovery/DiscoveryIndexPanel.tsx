@@ -1,5 +1,5 @@
 import React, { ReactNode, RefObject, useMemo, useRef, useState } from 'react';
-import { DiscoveryIndexConfig } from './types';
+import { categoryObjects, DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
 import { Button, Grid, Col, Text } from '@mantine/core';
@@ -125,7 +125,8 @@ const DiscoveryIndexPanel = ({
     useDisclosure(false);
 
   const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  null;
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
@@ -220,13 +221,16 @@ const DiscoveryIndexPanel = ({
                       : 'max-h-0 opacity-0'
                   } overflow-hidden`}
                   style={{
-                    height: isDropdownTagViewerOpen
-                      ? `${contentRef.current.scrollHeight}px`
-                      : '0px',
+                    height:
+                      isDropdownTagViewerOpen && contentRef.current
+                        ? `${contentRef.current.scrollHeight}px`
+                        : '0px',
                   }}
                 >
                   <DiscoveryDropdownTagViewer
-                    tagCategoryData={tagCategoryData}
+                    tagCategoryData={
+                      tagCategoryData as categoryObjects | undefined
+                    }
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
                   />

@@ -1,28 +1,24 @@
 import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
+import { categoryObjects } from './types';
 
 interface RenderMultiSelectOptionProps {
   option: { value: string };
-}
-interface selectedValues {
-  [key: string]: string[];
 }
 
 const renderMultiSelectOption = (
   { option }: RenderMultiSelectOptionProps,
   highlightColor: string,
-  containerSelections: any,
+  containerSelections: string[],
 ): JSX.Element => {
-  const active = _.some(_.values(containerSelections), (array) =>
-    _.includes(array, option.value),
-  );
+  const active = containerSelections.includes(option.value);
   return (
     <Group gap="sm">
       <div
         style={{
           border: '2px solid' + highlightColor,
-          background: active ? highlightColor : 'inherit',
+          background: active ? highlightColor : 'transparent',
           color: active ? 'white' : 'inherit',
           borderRadius: '5px',
           padding: '0 10px',
@@ -34,18 +30,26 @@ const renderMultiSelectOption = (
   );
 };
 
-interface categoryObjects {
-  categoryDisplayName: string;
-  tags: string[];
-  color: string;
-}
 interface DiscoveryDropdownTagViewerProps {
   tagCategoryData: Array<categoryObjects> | undefined;
-  selectedTags: any;
-  setSelectedTags: Function;
+  selectedTags: { [key: string]: boolean };
+  setSelectedTags: React.Dispatch<
+    React.SetStateAction<{ [key: string]: boolean }>
+  >;
 }
 
-const MultiSelectContainer = ({ category, selectedTags, setSelectedTags }) => {
+interface MultiSelectContainerProps {
+  category: categoryObjects;
+  selectedTags: { [key: string]: boolean };
+  setSelectedTags: React.Dispatch<
+    React.SetStateAction<{ [key: string]: boolean }>
+  >;
+}
+const MultiSelectContainer = ({
+  category,
+  selectedTags,
+  setSelectedTags,
+}: MultiSelectContainerProps) => {
   const containerData = category.tags.map((tag) => ({
     value: tag,
     label: tag,
@@ -58,29 +62,35 @@ const MultiSelectContainer = ({ category, selectedTags, setSelectedTags }) => {
     const updatedSelections = Object.keys(selectedTags).filter(
       (tag) => selectedTags[tag],
     );
-    // console.log('updatedSelections', updatedSelections);
     const selectedItemsThatExistInContainer = updatedSelections.filter((item) =>
       category.tags.includes(item),
     );
     setContainerSelections(selectedItemsThatExistInContainer);
   }, [selectedTags]);
 
-  const [previousContainerValues, setPreviousContainerValues] = useState([]);
+  const [previousContainerValues, setPreviousContainerValues] = useState(
+    [] as string[],
+  );
   const handleChange = (category: string, value: string[]) => {
     setPreviousContainerValues(value);
     setSelectedTags((prevTags) => {
       // Create a copy of the previous tags
       const updatedTags = { ...prevTags };
       if (previousContainerValues.length > value.length) {
+        // Need to remove tags since the update removes tags
         const valuesToBeRemoved = previousContainerValues.filter(
           (curr) => !value.includes(curr),
         );
-        console.log('valuesToBeRemoved', valuesToBeRemoved);
         valuesToBeRemoved.forEach(
           (valueToBeRemoved) => delete updatedTags[valueToBeRemoved],
         );
       } else {
-        updatedTags[value.at(-1)] = true; // Add the tag if it doesn't exist
+        // Need to add tags
+        _.forEach(value, (tag) => {
+          if (!updatedTags[tag]) {
+            updatedTags[tag] = true;
+          }
+        });
       }
       return updatedTags; // Update state with the new tags
     });
