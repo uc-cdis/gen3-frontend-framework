@@ -1,7 +1,7 @@
 import { createGen3App } from '@gen3/core';
 import IGVApp from './IGVApp';
 
-const _APP_NAME = 'IGV Bam Viewer';
+const _APP_NAME = 'IGVBamViewer';
 const _APP_VERSION = '1.0.0';
 
 export const registerIGVApp = () =>

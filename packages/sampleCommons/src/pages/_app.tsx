@@ -13,6 +13,7 @@ import {
   registerCohortBuilderDefaultPreviewRenderers,
   RegisteredIcons,
   registerExplorerDefaultCellRenderers,
+  registerIGVApp,
   registerMetadataSchemaApp,
   SessionConfiguration,
   TenStringArray,
@@ -77,6 +78,7 @@ const Gen3App = ({
       setDRSHostnames(drsHostnames);
       registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
+      registerIGVApp();
       // registerCohortDiscoveryApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();

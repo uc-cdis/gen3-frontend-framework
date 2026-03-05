@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetDownloadQuery } from '@gen3/core';
-import { Button, Loader, Stack } from '@mantine/core';
+import { Button, Group, Loader, Stack } from '@mantine/core';
 import { useRouter } from 'next/dist/client/router';
 import { IgvBrowserConfiguration } from './types';
 import IGVBrowser from './IGVBrowser';
@@ -30,13 +30,19 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
     return (
       <div className="w-full m-10">
         <Stack>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => router.push('/Explorer')}
-          >
-            Return to Explorer
-          </Button>
+          <Group justify="flex-start">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                router.push(
+                  `${configuration?.returnTab ? '/Explorer?activeTab=' + configuration?.returnTab : '/Explorer'}`,
+                )
+              }
+            >
+              Return To Data Files
+            </Button>
+          </Group>
           <IGVBrowser
             bamUrl={data.url}
             genome={configuration.genome}

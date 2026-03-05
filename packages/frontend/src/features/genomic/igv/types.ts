@@ -11,4 +11,5 @@ export interface IgvBrowserConfiguration {
   genome: string;
   showDefaultTracks?: boolean;
   track: AnnotationTrack;
+  returnTab?: string;
 }

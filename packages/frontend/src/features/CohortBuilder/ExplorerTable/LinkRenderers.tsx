@@ -66,7 +66,7 @@ export const RenderOpenAppLink = (
           size={size}
           variant={variant}
           color={color}
-          onClick={() => router.push(`${baseUrl}/${cell.getValue()}`)}
+          onClick={() => router.push(`${baseUrl}${cell.getValue()}`)}
         >
           <FaExternalLinkAlt />
         </ActionIcon>
