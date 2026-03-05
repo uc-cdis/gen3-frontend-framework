@@ -1,8 +1,8 @@
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, RefObject, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Text } from '@mantine/core';
+import { Button, Grid, Col, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
@@ -19,7 +19,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
 import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
-import DiscoveryDropdownTagViewerNew from './DiscoveryDropdownTagViewerNew';
+import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -124,6 +124,8 @@ const DiscoveryIndexPanel = ({
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
 
+  const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
+  const contentRef = useRef(null);
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
@@ -144,22 +146,57 @@ const DiscoveryIndexPanel = ({
               {indexSelector}
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
-                <SearchInputWithSuggestions
-                  searchBarTerms={searchBarTerms}
-                  setSearchBarTerms={setSearchBarTerms}
-                  suggestions={suggestions}
-                  clearSearch={() => {
-                    setSearchBarTerms([]);
-                  }}
-                  searchChanged={(v) => setSearchBarTerms(v.split(' '))}
-                  placeholder={
-                    discoveryConfig?.features?.search?.searchBar?.placeholder ??
-                    'Search...'
-                  }
-                  label={
-                    discoveryConfig?.features?.search?.searchBar?.inputSubtitle
-                  }
-                />
+                <Grid>
+                  <Grid.Col span={7}>
+                    <SearchInputWithSuggestions
+                      searchBarTerms={searchBarTerms}
+                      setSearchBarTerms={setSearchBarTerms}
+                      suggestions={suggestions}
+                      clearSearch={() => {
+                        setSearchBarTerms([]);
+                      }}
+                      searchChanged={(v) => setSearchBarTerms(v.split(' '))}
+                      placeholder={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.placeholder ?? 'Search...'
+                      }
+                      label={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.inputSubtitle
+                      }
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={5} className="mt-5">
+                    <Button
+                      onClick={() => setSelectedTags({})}
+                      variant="outline"
+                      leftSection={<IoIosRefresh />}
+                      className={
+                        Object.keys(selectedTags).length === 0
+                          ? 'border-gray-400 mr-1 mt-1'
+                          : 'mr-1  mt-1'
+                      }
+                      data-disabled={Object.keys(selectedTags).length === 0}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      className="mt-1"
+                      onClick={() =>
+                        setIsDropdownTagViewerOpen((prev) => !prev)
+                      }
+                      leftSection={
+                        isDropdownTagViewerOpen ? (
+                          <IoIosArrowUp />
+                        ) : (
+                          <IoIosArrowDown />
+                        )
+                      }
+                    >
+                      Data Repository
+                    </Button>
+                  </Grid.Col>
+                </Grid>
                 <SearchInputSelectableFields
                   searchMode={searchMode}
                   setSearchMode={setSearchMode}
@@ -175,18 +212,27 @@ const DiscoveryIndexPanel = ({
                     setSelectedFieldsForSearchIndexing
                   }
                 />
-                {/*                 <DiscoveryDropdownTagViewer
-                  tagCategoryData={tagCategoryData}
-                  setSelectedTags={setSelectedTags}
-                /> */}
-                <Button onClick={() => setSelectedTags({})}>Reset</Button>
-                <DiscoveryDropdownTagViewerNew
-                  tagCategoryData={tagCategoryData}
-                  selectedTags={selectedTags}
-                  setSelectedTags={setSelectedTags}
-                />
-                <h3>CURRENT SELECTED TAGS</h3>
-                {JSON.stringify(selectedTags)}
+                <div
+                  ref={contentRef}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isDropdownTagViewerOpen
+                      ? 'max-h-screen opacity-100'
+                      : 'max-h-0 opacity-0'
+                  } overflow-hidden`}
+                  style={{
+                    height: isDropdownTagViewerOpen
+                      ? `${contentRef.current.scrollHeight}px`
+                      : '0px',
+                  }}
+                >
+                  <DiscoveryDropdownTagViewer
+                    tagCategoryData={tagCategoryData}
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
+                  />
+                  <h3>CURRENT SELECTED TAGS</h3>
+                  {JSON.stringify(selectedTags)}
+                </div>
               </div>
             </div>
             {discoveryConfig?.features?.aiSearch && (

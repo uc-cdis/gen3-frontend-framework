@@ -1,19 +1,6 @@
-import { Button, Group, MultiSelect } from '@mantine/core';
+import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
-import { useState } from 'react';
-
-// Transforms selected values from dropdown into format for proxy API
-const transformSelectedValuesFormat = (
-  input: selectedValues,
-): Record<string, boolean> => {
-  const result: Record<string, boolean> = {};
-  for (const key in input) {
-    input[key].forEach((value) => {
-      result[value] = true;
-    });
-  }
-  return result;
-};
+import { useEffect, useState } from 'react';
 
 interface RenderMultiSelectOptionProps {
   option: { value: string };
@@ -25,9 +12,9 @@ interface selectedValues {
 const renderMultiSelectOption = (
   { option }: RenderMultiSelectOptionProps,
   highlightColor: string,
-  selectedValues: selectedValues,
+  containerSelections: any,
 ): JSX.Element => {
-  const active = _.some(_.values(selectedValues), (array) =>
+  const active = _.some(_.values(containerSelections), (array) =>
     _.includes(array, option.value),
   );
   return (
@@ -54,60 +41,96 @@ interface categoryObjects {
 }
 interface DiscoveryDropdownTagViewerProps {
   tagCategoryData: Array<categoryObjects> | undefined;
+  selectedTags: any;
   setSelectedTags: Function;
 }
+
+const MultiSelectContainer = ({ category, selectedTags, setSelectedTags }) => {
+  const containerData = category.tags.map((tag) => ({
+    value: tag,
+    label: tag,
+  }));
+  const [containerSelections, setContainerSelections] = useState(
+    [] as string[],
+  );
+
+  useEffect(() => {
+    const updatedSelections = Object.keys(selectedTags).filter(
+      (tag) => selectedTags[tag],
+    );
+    // console.log('updatedSelections', updatedSelections);
+    const selectedItemsThatExistInContainer = updatedSelections.filter((item) =>
+      category.tags.includes(item),
+    );
+    setContainerSelections(selectedItemsThatExistInContainer);
+  }, [selectedTags]);
+
+  const [previousContainerValues, setPreviousContainerValues] = useState([]);
+  const handleChange = (category: string, value: string[]) => {
+    setPreviousContainerValues(value);
+    setSelectedTags((prevTags) => {
+      // Create a copy of the previous tags
+      const updatedTags = { ...prevTags };
+      if (previousContainerValues.length > value.length) {
+        const valuesToBeRemoved = previousContainerValues.filter(
+          (curr) => !value.includes(curr),
+        );
+        console.log('valuesToBeRemoved', valuesToBeRemoved);
+        valuesToBeRemoved.forEach(
+          (valueToBeRemoved) => delete updatedTags[valueToBeRemoved],
+        );
+      } else {
+        updatedTags[value.at(-1)] = true; // Add the tag if it doesn't exist
+      }
+      return updatedTags; // Update state with the new tags
+    });
+  };
+  return (
+    <div key={category.categoryDisplayName?.toString()}>
+      <MultiSelect
+        label={`Select tags for ${category.categoryDisplayName}`}
+        placeholder="Pick values"
+        value={containerSelections}
+        onChange={(value) => handleChange(category.categoryDisplayName, value)}
+        clearable
+        searchable
+        data={containerData}
+        renderOption={(option) =>
+          renderMultiSelectOption(
+            option,
+            category.color as string,
+            containerSelections,
+          )
+        }
+        styles={{
+          pill: {
+            backgroundColor: category.color as string,
+            color: '#fff',
+          },
+        }}
+      />
+    </div>
+  );
+};
+
 const DiscoveryDropdownTagViewer = ({
   tagCategoryData,
+  selectedTags,
   setSelectedTags,
 }: DiscoveryDropdownTagViewerProps) => {
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
-  const [selectedValues, setSelectedValues] = useState({} as selectedValues);
-
-  const handleChange = (category: string, value: string[]) => {
-    setSelectedValues((prev) => {
-      const newSelectedValues = {
-        ...prev,
-        [category]: value,
-      };
-      setSelectedTags(transformSelectedValuesFormat(newSelectedValues));
-      return newSelectedValues;
-    });
-  };
 
   return (
     <div>
-      <Button onClick={() => setSelectedValues({})}>Reset</Button>
-      selectedValues {JSON.stringify(selectedValues)}
       <div
         className={`grid ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
       >
         {tagCategoryData.map((category) => (
-          <div key={category.categoryDisplayName?.toString()}>
-            <MultiSelect
-              label={`Select tags for ${category.categoryDisplayName}`}
-              placeholder="Pick values"
-              value={selectedValues[category.categoryDisplayName] || []}
-              onChange={(value) =>
-                handleChange(category.categoryDisplayName, value)
-              }
-              clearable
-              searchable
-              data={category.tags.map((tag) => ({ value: tag, label: tag }))}
-              renderOption={(option) =>
-                renderMultiSelectOption(
-                  option,
-                  category.color as string,
-                  selectedValues,
-                )
-              }
-              styles={{
-                pill: {
-                  backgroundColor: category.color as string,
-                  color: 'white',
-                },
-              }}
-            />
-          </div>
+          <MultiSelectContainer
+            category={category}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+          />
         ))}
       </div>
     </div>
