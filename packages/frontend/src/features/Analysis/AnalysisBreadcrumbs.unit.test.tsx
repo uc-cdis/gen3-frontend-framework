@@ -1,49 +1,49 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import { SelectionScreenContext } from "./context";
-import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+import React from 'react';
+import { render } from '@testing-library/react';
+import { SelectionScreenContext } from './context';
+import AnalysisBreadcrumbs from './AnalysisBreadcrumbs';
 import { AnalysisToolConfiguration } from './types';
 
-export const REGISTERED_APPS : AnalysisToolConfiguration[] = [
+export const REGISTERED_APPS: AnalysisToolConfiguration[] = [
   {
-    title: "Mutation Frequency",
-    href: "apps/",
+    title: 'Mutation Frequency',
+    href: 'apps/',
     icon: <></>,
-    tags: ["variantAnalysis", "ssm"],
+    tags: ['variantAnalysis', 'ssm'],
     hasDemo: true,
-    type: "application",
+    type: 'application',
     loginRequired: false,
-    appId: "MutationFrequencyApp",
-    countIndex: "cnvOrSsmCaseCount",
+    appId: 'MutationFrequencyApp',
+    countIndex: 'cnvOrSsmCaseCount',
     description:
-      "Visualize most frequently mutated genes and somatic mutations.",
+      'Visualize most frequently mutated genes and somatic mutations.',
     noDataTooltip:
-      "Current cohort does not have SSM or CNV data available for visualization.",
+      'Current cohort does not have SSM or CNV data available for visualization.',
   },
   {
-    title: "Cohort Comparison",
-    href: "apps/",
+    title: 'Cohort Comparison',
+    href: 'apps/',
     icon: <></>,
-    tags: ["clinicalAnalysis"],
+    tags: ['clinicalAnalysis'],
     hasDemo: true,
-    type: "application",
+    type: 'application',
     loginRequired: false,
-    appId: "CohortComparisonApp",
-    countIndex: "cnvOrSsmCaseCount",
+    appId: 'CohortComparisonApp',
+    countIndex: 'cnvOrSsmCaseCount',
     description:
-      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+      'Display the survival analysis of your cohorts and compare characteristics such as sex, vital status and age at diagnosis.',
     noDataTooltip:
-      "Current cohort does not have cases available for visualization.",
+      'Current cohort does not have cases available for visualization.',
     selectionScreen: () => <></>,
   },
 ];
 
-describe("<AnalysisBreadcrumb />", () => {
-  it("Apps without selection only displays name", () => {
+describe('<AnalysisBreadcrumb />', () => {
+  it('Apps without selection only displays name', () => {
     const { queryByText } = render(
       <SelectionScreenContext.Provider
         value={{
-          app: "MutationFrequencyApp",
+          app: 'MutationFrequencyApp',
           setActiveApp: jest.fn(),
           selectionScreenOpen: false,
           setSelectionScreenOpen: jest.fn(),
@@ -58,15 +58,15 @@ describe("<AnalysisBreadcrumb />", () => {
       </SelectionScreenContext.Provider>,
     );
 
-    expect(queryByText("Mutation Frequency")).toBeInTheDocument();
-    expect(queryByText("Results")).not.toBeInTheDocument();
+    expect(queryByText('Mutation Frequency')).toBeInTheDocument();
+    expect(queryByText('Results')).not.toBeInTheDocument();
   });
 
-  it("Demo apps only displays name", () => {
+  it('Demo apps only displays name', () => {
     const { queryByText } = render(
       <SelectionScreenContext.Provider
         value={{
-          app: "CohortComparisonApp",
+          app: 'CohortComparisonApp',
           setActiveApp: jest.fn(),
           selectionScreenOpen: false,
           setSelectionScreenOpen: jest.fn(),
@@ -81,15 +81,15 @@ describe("<AnalysisBreadcrumb />", () => {
       </SelectionScreenContext.Provider>,
     );
 
-    expect(queryByText("Cohort Comparison Demo")).toBeInTheDocument();
-    expect(queryByText("Results")).not.toBeInTheDocument();
+    expect(queryByText('Cohort Comparison Demo')).toBeInTheDocument();
+    expect(queryByText('Results')).not.toBeInTheDocument();
   });
 
-  it("Displays selection crumb when cohort selection is open", () => {
+  it('Displays selection crumb when cohort selection is open', () => {
     const { queryByText } = render(
       <SelectionScreenContext.Provider
         value={{
-          app: "CohortComparisonApp",
+          app: 'CohortComparisonApp',
           setActiveApp: jest.fn(),
           selectionScreenOpen: true,
           setSelectionScreenOpen: jest.fn(),
@@ -104,16 +104,16 @@ describe("<AnalysisBreadcrumb />", () => {
       </SelectionScreenContext.Provider>,
     );
 
-    expect(queryByText("Cohort Comparison")).toBeInTheDocument();
-    expect(queryByText("Selection")).toBeInTheDocument();
-    expect(queryByText("Results")).not.toBeInTheDocument();
+    expect(queryByText('Cohort Comparison')).toBeInTheDocument();
+    expect(queryByText('Selection')).toBeInTheDocument();
+    expect(queryByText('Results')).not.toBeInTheDocument();
   });
 
-  it("Displays results crumb when on an app with selection", () => {
+  it('Displays results crumb when on an app with selection', () => {
     const { queryByText } = render(
       <SelectionScreenContext.Provider
         value={{
-          app: "CohortComparisonApp",
+          app: 'CohortComparisonApp',
           setActiveApp: jest.fn(),
           selectionScreenOpen: false,
           setSelectionScreenOpen: jest.fn(),
@@ -128,8 +128,8 @@ describe("<AnalysisBreadcrumb />", () => {
       </SelectionScreenContext.Provider>,
     );
 
-    expect(queryByText("Cohort Comparison")).toBeInTheDocument();
-    expect(queryByText("Selection")).toBeInTheDocument();
-    expect(queryByText("Results")).toBeInTheDocument();
+    expect(queryByText('Cohort Comparison')).toBeInTheDocument();
+    expect(queryByText('Selection')).toBeInTheDocument();
+    expect(queryByText('Results')).toBeInTheDocument();
   });
 });

@@ -129,9 +129,6 @@ const GraphView = ({
       }
     };
   }, [dataAndLinks, zoomLevel]);
-//TODO: import real data
-//TODO: connections between nodes
-//TODO: ZOOM IN AND OUT AND MOVE AROUND controls? 
   return (
     <div className="w-full h-full min-h-[800px]">
       <ReactECharts option={chartDefinition} events={{

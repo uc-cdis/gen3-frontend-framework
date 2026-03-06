@@ -66,7 +66,7 @@ const nextConfig = {
       ),
     };
 
-    if (dev) {
+    if (isDev) {
       // More aggressive caching
       config.cache = {
         type: 'filesystem',
@@ -100,6 +100,53 @@ const nextConfig = {
       };
     }
     return config;
+  },
+  async rewrites() {
+    if (isDev) {
+      const GEN3_TARGET =
+        process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
+      return [
+        { source: '/_status', destination: `${GEN3_TARGET}/_status` },
+        { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
+        {
+          source: '/guppy/:path*',
+          destination: `${GEN3_TARGET}/guppy/:path*`,
+        },
+        { source: '/mds/:path*', destination: `${GEN3_TARGET}/mds/:path*` },
+        {
+          source: '/ai-search/:path*',
+          destination: `${GEN3_TARGET}/ai-search/:path*`,
+        },
+        {
+          source: '/authz/:path*',
+          destination: `${GEN3_TARGET}/authz/:path*`,
+        },
+        {
+          source: '/lw-workspace/:path*',
+          destination: `${GEN3_TARGET}/lw-workspace/:path*`,
+        },
+        {
+          source: '/api/v0/submission/:path*',
+          destination: `${GEN3_TARGET}/api/v0/submission/:path*`,
+        },
+        { source: '/wts/:path*', destination: `${GEN3_TARGET}/wts/:path*` },
+        {
+          source: '/library/lists/:path*',
+          destination: `${GEN3_TARGET}/library/lists/:path*`,
+        },
+        { source: '/jobs/:path*', destination: `${GEN3_TARGET}/jobs/:path*` },
+        {
+          source: '/manifests/:path*',
+          destination: `${GEN3_TARGET}/manifests/:path*`,
+        },
+        {
+          source: '/requestor/:path*',
+          destination: `${GEN3_TARGET}/requestor/:path*`,
+        },
+      ];
+    } else {
+      return [];
+    }
   },
   async headers() {
     return [

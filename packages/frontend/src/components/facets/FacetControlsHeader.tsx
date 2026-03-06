@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
 import { ActionIcon, Badge, Text, Tooltip } from '@mantine/core';
 import {
-  MdFlip as FlipIcon,
-  MdSearch as SearchIcon,
   MdClose as CloseIcon,
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
+  MdFlip as FlipIcon,
+  MdSearch as SearchIcon,
 } from 'react-icons/md';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToLabel } from '@gen3/core';
 import {
-  FacetIconButton,
   controlsIconStyle,
-  FacetText,
   FacetHeader,
+  FacetIconButton,
+  FacetText,
 } from './components';
 import { FacetCardProps, FacetCommonHooks } from './types';
 import { Icon } from '@iconify-icon/react';
@@ -156,7 +156,7 @@ const FacetControlsHeader = ({
           disabled={!description}
         >
           <header.Label>
-            {facetName ? facetName : fieldNameToTitle(field)}
+            {facetName ? facetName : fieldNameToLabel(field)}
           </header.Label>
         </Tooltip>
       </div>

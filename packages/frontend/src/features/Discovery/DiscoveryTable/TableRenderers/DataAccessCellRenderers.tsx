@@ -1,6 +1,6 @@
 import React from 'react';
 import { CellRenderFunctionProps } from './types';
-import { AccessLevel } from '../../../utils';
+import { AccessLevel } from '../../../../utils';
 import { Divider, Group, Text, Tooltip } from '@mantine/core';
 import {
   LuCircleSlash as NotAvailableIcon,
@@ -8,9 +8,9 @@ import {
   LuLock as LockedIcon,
   LuLockOpen as UnlockedIcon,
 } from 'react-icons/lu';
-import { getAccessLevelFromNumber } from '../utils';
+import { getAccessLevelFromNumber } from '../../utils';
 import { isArray } from 'lodash';
-import { useDiscoveryContext } from '../DiscoveryProvider';
+import { useDiscoveryContext } from '../../DiscoveryProvider';
 
 const buildTooltip = (mainMessage: string, secondaryMessage?: string) => {
   return (

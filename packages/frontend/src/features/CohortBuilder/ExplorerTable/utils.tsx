@@ -1,4 +1,4 @@
-import { fieldNameToTitle } from '@gen3/core';
+import { fieldNameToLabel } from '@gen3/core';
 import {
   CellRendererFunctionProps,
   ColumnDefinition,
@@ -18,7 +18,7 @@ export const convertGuppyTableConfig = (
   // convert the config to the format that guppy table expects
   return config.map((column: SummaryTableColumn) => {
     return {
-      header: column.title ?? fieldNameToTitle(column.field),
+      header: column.title ?? fieldNameToLabel(column.field),
       accessorKey: column.field,
     };
   });
@@ -49,7 +49,7 @@ export const createTableColumns = (tableConfig: TableColumnsAndFields) => {
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToTitle(field),
+      header: columnDef?.title ?? fieldNameToLabel(field),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,
@@ -108,7 +108,7 @@ export const createArrayTableColumns = (
       id: field,
       field: field,
       accessorKey: field as never,
-      header: columnDef?.title ?? fieldNameToTitle(field),
+      header: columnDef?.title ?? fieldNameToLabel(field),
       accessorFn: columnDef?.accessorPath
         ? jsonPathAccessor(columnDef.accessorPath)
         : undefined,

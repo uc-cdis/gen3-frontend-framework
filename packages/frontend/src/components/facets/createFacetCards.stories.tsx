@@ -16,20 +16,24 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     facetDefinition: {
-      field: "demographic",
-      index: "cases",
-      type: "enum",
-      description: "aaa"
+      field: 'demographic',
+      index: 'cases',
+      type: 'enum',
+      description: 'aaa',
     },
     hooks: {
       useClearFilter: (() => {}) as any,
-      useFieldNameToTitle: ((field: string) => field) as any,
+      useFieldNameToLabel: ((field: string) => field) as any,
       useUpdateFacetFilters: (() => {}) as any,
       useGetFacetFilters: (() => {}) as any,
-      useGetFacetData: (() => ({ data: { white: 50 }, isFetching: false, isSuccess: true })) as any,
+      useGetFacetData: (() => ({
+        data: { white: 50 },
+        isFetching: false,
+        isSuccess: true,
+      })) as any,
     } as any,
-    valueLabel: "cases",
-    idPrefix: "cohort-builder",
+    valueLabel: 'cases',
+    idPrefix: 'cohort-builder',
     facetNameFormatter: (name) => name,
-  }
-}
+  },
+};

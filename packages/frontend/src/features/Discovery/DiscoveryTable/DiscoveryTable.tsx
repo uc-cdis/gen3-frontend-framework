@@ -11,15 +11,14 @@ import {
 } from 'mantine-react-table';
 import { Loader, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
-import { getManualSortingAndPagination, jsonPathAccessor } from './utils';
+import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
-import { DiscoveryTableRowRenderer } from './TableRenderers/RowRendererFactory';
-import { useDiscoveryContext } from './DiscoveryProvider';
-import { useStudyContext } from '../Study/StudyProvider';
-import StudyDetails from '../Study/StudyDetails/StudyDetails';
+import { useDiscoveryContext } from '../DiscoveryProvider';
+import { useStudyContext } from '../../Study/StudyProvider';
+import StudyDetails from '../../Study/StudyDetails/StudyDetails';
 import { CellRendererFunction } from './TableRenderers/types';
 import { JSONObject } from '@gen3/core';
-import { TableIcons } from '../../components/Tables/TableIcons';
+import { TableIcons } from '../../../components/Tables/TableIcons';
 import {
   OnChangeFn,
   PaginationState,
@@ -27,10 +26,14 @@ import {
 } from '@tanstack/table-core';
 import {
   DataRequestStatus,
+  DiscoveryIndexConfig,
   RowSelectCompareFunctions,
   SelectableRowConfiguration,
-} from './types';
+} from '../types';
 import { LoadingOverlay } from '@mantine/core';
+import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
+import RowDetailPanel from './TableRenderers/RowDetailPanel';
+import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
 
 const CompareFn = (
   fieldValue: string,
@@ -55,11 +58,6 @@ const isSelectable = (
   return CompareFn(fieldValue, config.comparer, config.value);
 };
 
-const extractCellValue =
-  (func: CellRendererFunction) =>
-  ({ cell, row }: { cell: MRT_Cell<JSONObject>; row: MRT_Row<MRT_RowData> }) =>
-    func({ value: cell.getValue() as never, cell, row });
-
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
   hits: number;
@@ -69,8 +67,10 @@ interface DiscoveryTableProps {
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
   setSelection: (selection: Array<string>) => void;
+  searchTerm: string;
+  selectedFieldsForSearchIndexing: string[];
+  discoveryConfig: DiscoveryIndexConfig;
 }
-
 const DiscoveryTable = ({
   data,
   hits,
@@ -80,12 +80,38 @@ const DiscoveryTable = ({
   setSelection,
   pagination,
   sorting,
+  searchTerm,
+  selectedFieldsForSearchIndexing,
+  discoveryConfig,
 }: DiscoveryTableProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   const { setStudyDetails } = useStudyContext();
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
+  const extractCellValue =
+    (func: CellRendererFunction) =>
+    ({
+      cell,
+      row,
+    }: {
+      cell: MRT_Cell<JSONObject>;
+      row: MRT_Row<MRT_RowData>;
+    }) => {
+      return IsColumnSearchable(
+        cell.column,
+        discoveryConfig,
+        selectedFieldsForSearchIndexing,
+      )
+        ? func({
+            value: HighlightSearchTerm(
+              (cell.getValue() as string[])[0] as string,
+              searchTerm,
+            ),
+          })
+        : func({ value: cell.getValue() as never, cell, row });
+    };
 
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
@@ -119,7 +145,7 @@ const DiscoveryTable = ({
             ),
       };
     });
-  }, [config.studyColumns]);
+  }, [config.studyColumns, searchTerm, selectedFieldsForSearchIndexing]);
 
   const checkIfRowIsSelectable = (row: MRT_RowData) => {
     if (config.tableConfig?.selectableRows) return true;
@@ -154,17 +180,9 @@ const DiscoveryTable = ({
       config.minimalFieldMapping.uid in originalRow
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
-    // TODO: keep this to explore later
-    // mantineTableContainerProps: ({ table }) => {
-    //   return {
-    //     sx: {
-    //       maxHeight: 'calc(100vh - 560px) !important;',
-    //     },
-    //   };
-    // },
-    renderDetailPanel: config.studyPreviewField
-      ? DiscoveryTableRowRenderer(config.studyPreviewField)
-      : undefined,
+    renderDetailPanel: ({ row }) => (
+      <RowDetailPanel row={row} config={config} searchTerm={searchTerm} />
+    ),
     onRowSelectionChange: setRowSelection,
     state: {
       rowSelection,

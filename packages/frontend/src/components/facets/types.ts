@@ -99,7 +99,7 @@ export type GetFacetDataFunction<
           | GetRangeFacetDataFunction
           | GetRangeFacetWithDefinedRangesDataFunction;
 
-export type FieldNameToTitleFunction = (
+export type fieldNameToLabelFunction = (
   field: string,
   sections?: number,
 ) => string;
@@ -121,7 +121,7 @@ export interface FacetCommonHooks {
   /**
    * Hook that takes the API field and returns a human readable field name
    */
-  useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  useFieldNameToLabel: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   usePopulateFacetData?: (

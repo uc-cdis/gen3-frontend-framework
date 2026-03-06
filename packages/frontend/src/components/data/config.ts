@@ -6,7 +6,7 @@ export const filterConfig = {
     },
     {
       title: 'Subject',
-      fields: ['race', 'ethnicity', 'gender', 'vital_status'],
+      fields: ['race', 'ethnicity', 'sex', 'vital_status'],
     },
     {
       title: 'File',
@@ -20,7 +20,7 @@ export const tableConfig = [
   { field: 'study', name: 'Study' },
   { field: 'race', name: 'Race' },
   { field: 'ethnicity', name: 'Ethnicity' },
-  { field: 'gender', name: 'Gender' },
+  { field: 'sex', name: 'Sex' },
   { field: 'vital_status', name: 'Vital Status' },
   { field: 'whatever_lab_result_value', name: 'Lab Result Value' },
   { field: 'file_count', name: 'File Count' },
@@ -44,9 +44,9 @@ export const sampleConfig = {
           chartType: 'fullPie',
           title: 'Projects',
         },
-        gender: {
+        sex: {
           chartType: 'fullPie',
-          title: 'Gender',
+          title: 'Sex',
         },
         race: {
           chartType: 'fullPie',
@@ -61,7 +61,7 @@ export const sampleConfig = {
           },
           {
             title: 'Subject',
-            fields: ['race', 'ethnicity', 'gender', 'vital_status'],
+            fields: ['race', 'ethnicity', 'sex', 'vital_status'],
           },
           {
             title: 'File',
@@ -71,7 +71,7 @@ export const sampleConfig = {
       },
       table: {
         enabled: true,
-        fields: ['race', 'ethnicity', 'gender', 'vital_status'],
+        fields: ['race', 'ethnicity', 'sex', 'vital_status'],
       },
       guppyConfig: {
         dataType: 'subject',
