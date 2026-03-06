@@ -193,6 +193,7 @@ const DiscoveryIndexPanel = ({
                           setIsDropdownTagViewerOpen((prev) => !prev)
                         }
                         disabled={data.length === 0}
+                        variant="outline"
                         leftSection={
                           isDropdownTagViewerOpen ? (
                             <IoIosArrowUp />
