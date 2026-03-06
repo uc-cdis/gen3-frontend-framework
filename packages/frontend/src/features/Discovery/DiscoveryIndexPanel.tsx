@@ -110,6 +110,7 @@ const DiscoveryIndexPanel = ({
     searchMode: searchMode,
     selectedTags: selectedTags,
   });
+  console.log('data', data);
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
@@ -191,6 +192,7 @@ const DiscoveryIndexPanel = ({
                         onClick={() =>
                           setIsDropdownTagViewerOpen((prev) => !prev)
                         }
+                        disabled={data.length === 0}
                         leftSection={
                           isDropdownTagViewerOpen ? (
                             <IoIosArrowUp />
