@@ -13,6 +13,6 @@ jobs:
       - name: Install modules
         run: npm ci --include=optional
       - name: Run ESLint
-        run: lerna run lint -- --quiet
+        run: npm run lint
       - name: Run Build
         run: npm run build
