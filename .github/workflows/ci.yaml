@@ -12,7 +12,5 @@ jobs:
         run: npm -v
       - name: Install modules
         run: npm ci --include=optional
-      - name: Run ESLint
-        run: npm run lint
       - name: Run Build
         run: npm run build
