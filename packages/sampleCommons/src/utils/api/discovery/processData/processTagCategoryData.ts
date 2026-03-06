@@ -17,21 +17,17 @@ interface tag {
   name: string;
 }
 
-const getTagCategoryData = (
+const processTagCategoryData = (
   data: Array<JSONObject>,
   discoveryConfig: DiscoveryIndexConfig,
 ) => {
   const allCategoryData: categoryData[] = [];
-  const getTagsInCategory = (
-    category: category,
-    categoryDisplayName: string,
-  ) => {
+  const getTagsInCategory = (category: category) => {
     if (!data || !data.length) {
       return [];
     }
     const tagMap: { [key: string]: number } = {};
     const tagField = discoveryConfig.minimalFieldMapping.tagsListFieldName;
-    console.log('tagField', tagField);
     data.forEach((study) => {
       if (study[tagField]) {
         (study[tagField] as []).forEach((tag: tag) => {
@@ -42,11 +38,9 @@ const getTagCategoryData = (
       }
     });
     const tagArray = Object.keys(tagMap).sort((a, b) => a.localeCompare(b));
-    // console.log('tagArray', tagArray);
     return tagArray;
   };
 
-  // console.log('discoveryConfig', discoveryConfig);
   discoveryConfig.tags.tagCategories.map((category: category) => {
     let categoryDisplayName = category.displayName;
     if (!categoryDisplayName) {
@@ -58,20 +52,17 @@ const getTagCategoryData = (
         categoryWords[0].charAt(0).toUpperCase() + categoryWords[0].slice(1);
       categoryDisplayName = categoryWords.join(' ');
     }
-    const tagsInCategory = getTagsInCategory(category, categoryDisplayName);
+    const tagsInCategory = getTagsInCategory(category);
     const categoryData = {
       categoryDisplayName: categoryDisplayName,
       color: category.color,
       tags: tagsInCategory,
     };
-    // console.log('categoryData', categoryData);
-
-    if (category.display || 1 == 1) {
+    if (category.display) {
       allCategoryData.push(categoryData);
     }
   });
-  console.log(allCategoryData);
   return allCategoryData;
 };
 
-export default getTagCategoryData;
+export default processTagCategoryData;

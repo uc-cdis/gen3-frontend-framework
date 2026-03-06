@@ -5,7 +5,7 @@ import searchData from '@/utils/api/discovery/processData/searchData';
 import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
-import getTagCategoryData from '@/utils/api/discovery/processData/getTagCategoryData';
+import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
 // TODO:
 // import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
 
@@ -58,7 +58,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     hits: processedData.length,
     displayedData: paginatedData,
     suggestions: [],
-    tagCategoryData: getTagCategoryData(data, discoveryConfig),
+    tagCategoryData: processTagCategoryData(data, discoveryConfig),
   };
 };
 

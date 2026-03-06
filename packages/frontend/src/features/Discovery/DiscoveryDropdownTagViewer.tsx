@@ -30,14 +30,6 @@ const renderMultiSelectOption = (
   );
 };
 
-interface DiscoveryDropdownTagViewerProps {
-  tagCategoryData: Array<categoryObject> | undefined;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >;
-}
-
 interface MultiSelectContainerProps {
   category: categoryObject;
   selectedTags: { [key: string]: boolean };
@@ -122,6 +114,14 @@ const MultiSelectContainer = ({
   );
 };
 
+interface DiscoveryDropdownTagViewerProps {
+  tagCategoryData: Array<categoryObject> | undefined;
+  selectedTags: { [key: string]: boolean };
+  setSelectedTags: React.Dispatch<
+    React.SetStateAction<{ [key: string]: boolean }>
+  >;
+}
+
 const DiscoveryDropdownTagViewer = ({
   tagCategoryData,
   selectedTags,
@@ -132,7 +132,8 @@ const DiscoveryDropdownTagViewer = ({
   return (
     <div>
       <div
-        className={`grid ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
+        className={`grid
+          ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
       >
         {tagCategoryData.map((category) => (
           <MultiSelectContainer

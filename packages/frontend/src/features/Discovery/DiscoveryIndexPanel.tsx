@@ -1,4 +1,4 @@
-import React, { ReactNode, RefObject, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
@@ -110,7 +110,6 @@ const DiscoveryIndexPanel = ({
     searchMode: searchMode,
     selectedTags: selectedTags,
   });
-  // console.log('tagCategoryData', tagCategoryData);
 
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
@@ -125,8 +124,11 @@ const DiscoveryIndexPanel = ({
     useDisclosure(false);
 
   const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  null;
+  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
+  const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
+  const enableSearchableTags =
+    discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
+
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
       <DiscoveryProvider discoveryIndexConfig={discoveryConfig}>
@@ -148,55 +150,62 @@ const DiscoveryIndexPanel = ({
               <SummaryStatisticPanel summaries={summaryStatistics} />
               <div className="w-3/4 flex flex-col">
                 <Grid>
-                  <Grid.Col span={7}>
-                    <SearchInputWithSuggestions
-                      searchBarTerms={searchBarTerms}
-                      setSearchBarTerms={setSearchBarTerms}
-                      suggestions={suggestions}
-                      clearSearch={() => {
-                        setSearchBarTerms([]);
-                      }}
-                      searchChanged={(v) => setSearchBarTerms(v.split(' '))}
-                      placeholder={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.placeholder ?? 'Search...'
-                      }
-                      label={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.inputSubtitle
-                      }
-                    />
+                  <Grid.Col span={enableSearchableTags ? 7 : 10}>
+                    {enableSearchBar && (
+                      <SearchInputWithSuggestions
+                        searchBarTerms={searchBarTerms}
+                        setSearchBarTerms={setSearchBarTerms}
+                        suggestions={suggestions}
+                        clearSearch={() => {
+                          setSearchBarTerms([]);
+                        }}
+                        searchChanged={(v) => setSearchBarTerms(v.split(' '))}
+                        placeholder={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.placeholder ?? 'Search...'
+                        }
+                        label={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.inputSubtitle
+                        }
+                      />
+                    )}
                   </Grid.Col>
-                  <Grid.Col span={5} className="mt-5">
-                    <Button
-                      onClick={() => setSelectedTags({})}
-                      variant="outline"
-                      leftSection={<IoIosRefresh />}
-                      className={
-                        Object.keys(selectedTags).length === 0
-                          ? 'border-gray-400 mr-1 mt-1'
-                          : 'mr-1  mt-1'
-                      }
-                      data-disabled={Object.keys(selectedTags).length === 0}
-                    >
-                      Reset
-                    </Button>
-                    <Button
-                      className="mt-1"
-                      onClick={() =>
-                        setIsDropdownTagViewerOpen((prev) => !prev)
-                      }
-                      leftSection={
-                        isDropdownTagViewerOpen ? (
-                          <IoIosArrowUp />
-                        ) : (
-                          <IoIosArrowDown />
-                        )
-                      }
-                    >
-                      Data Repository
-                    </Button>
-                  </Grid.Col>
+                  {enableSearchableTags && (
+                    <Grid.Col span={5} className="mt-5">
+                      <Button
+                        onClick={() => setSelectedTags({})}
+                        variant="outline"
+                        leftSection={<IoIosRefresh />}
+                        className={
+                          Object.keys(selectedTags).length === 0
+                            ? 'border-gray-400 mr-1 mt-1'
+                            : 'mr-1  mt-1'
+                        }
+                        data-disabled={Object.keys(selectedTags).length === 0}
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        className="mt-1"
+                        onClick={() =>
+                          setIsDropdownTagViewerOpen((prev) => !prev)
+                        }
+                        leftSection={
+                          isDropdownTagViewerOpen ? (
+                            <IoIosArrowUp />
+                          ) : (
+                            <IoIosArrowDown />
+                          )
+                        }
+                      >
+                        {`${
+                          discoveryConfig?.features?.search?.tagSearchDropdown
+                            ?.collapsibleButtonText || 'Tag Panel'
+                        }`}
+                      </Button>
+                    </Grid.Col>
+                  )}
                 </Grid>
                 <SearchInputSelectableFields
                   searchMode={searchMode}
@@ -214,7 +223,7 @@ const DiscoveryIndexPanel = ({
                   }
                 />
                 <div
-                  ref={contentRef}
+                  ref={tagViewerContentRef}
                   className={`transition-all duration-300 ease-in-out mt-2 ${
                     isDropdownTagViewerOpen
                       ? 'max-h-screen opacity-100'
@@ -222,8 +231,8 @@ const DiscoveryIndexPanel = ({
                   } overflow-hidden`}
                   style={{
                     height:
-                      isDropdownTagViewerOpen && contentRef.current
-                        ? `${contentRef.current.scrollHeight}px`
+                      isDropdownTagViewerOpen && tagViewerContentRef.current
+                        ? `${tagViewerContentRef.current.scrollHeight}px`
                         : '0px',
                   }}
                 >
@@ -232,8 +241,6 @@ const DiscoveryIndexPanel = ({
                     selectedTags={selectedTags}
                     setSelectedTags={setSelectedTags}
                   />
-                  <h3>CURRENT SELECTED TAGS</h3>
-                  {JSON.stringify(selectedTags)}
                 </div>
               </div>
             </div>
