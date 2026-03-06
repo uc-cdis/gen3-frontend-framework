@@ -1,3 +1,4 @@
+import React from 'react';
 import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -135,12 +136,14 @@ const DiscoveryDropdownTagViewer = ({
         className={`grid
           ${tagCategoryData.length > 1 ? 'grid-cols-2 gap-4' : 'grid-cols-1'}`}
       >
-        {tagCategoryData.map((category) => (
-          <MultiSelectContainer
-            category={category}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-          />
+        {tagCategoryData.map((category, i) => (
+          <div key={i}>
+            <MultiSelectContainer
+              category={category}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+            />
+          </div>
         ))}
       </div>
     </div>
