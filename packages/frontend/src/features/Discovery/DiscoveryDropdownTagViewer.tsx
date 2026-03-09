@@ -20,7 +20,7 @@ const renderMultiSelectOption = (
         style={{
           border: '2px solid' + highlightColor,
           background: active ? highlightColor : 'transparent',
-          color: active ? 'white' : 'inherit',
+          color: active ? '#fff' : 'inherit',
           borderRadius: '5px',
           padding: '0 10px',
         }}
