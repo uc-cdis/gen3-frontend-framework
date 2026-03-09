@@ -152,7 +152,9 @@ const DiscoveryIndexPanel = ({
               {enableSearchBar && (
                 <div className="w-3/4 flex flex-col">
                   <Grid>
-                    <Grid.Col span={enableSearchableTags ? 7 : 10}>
+                    <Grid.Col
+                      span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
+                    >
                       <SearchInputWithSuggestions
                         searchBarTerms={searchBarTerms}
                         setSearchBarTerms={setSearchBarTerms}
@@ -172,7 +174,10 @@ const DiscoveryIndexPanel = ({
                       />
                     </Grid.Col>
                     {enableSearchableTags && (
-                      <Grid.Col span={5} className="mt-5">
+                      <Grid.Col
+                        span={{ sm: 12, md: 5 }}
+                        className="md:mt-5 sm:mt-1"
+                      >
                         <Button
                           onClick={() => setSelectedTags({})}
                           variant="outline"
