@@ -149,10 +149,10 @@ const DiscoveryIndexPanel = ({
             <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
               {indexSelector}
               <SummaryStatisticPanel summaries={summaryStatistics} />
-              <div className="w-3/4 flex flex-col">
-                <Grid>
-                  <Grid.Col span={enableSearchableTags ? 7 : 10}>
-                    {enableSearchBar && (
+              {enableSearchBar && (
+                <div className="w-3/4 flex flex-col">
+                  <Grid>
+                    <Grid.Col span={enableSearchableTags ? 7 : 10}>
                       <SearchInputWithSuggestions
                         searchBarTerms={searchBarTerms}
                         setSearchBarTerms={setSearchBarTerms}
@@ -170,82 +170,82 @@ const DiscoveryIndexPanel = ({
                             ?.inputSubtitle
                         }
                       />
-                    )}
-                  </Grid.Col>
-                  {enableSearchableTags && (
-                    <Grid.Col span={5} className="mt-5">
-                      <Button
-                        onClick={() => setSelectedTags({})}
-                        variant="outline"
-                        leftSection={<IoIosRefresh />}
-                        className={
-                          Object.keys(selectedTags).length === 0
-                            ? 'border-gray-400 mr-1 mt-1'
-                            : 'mr-1  mt-1'
-                        }
-                        data-disabled={Object.keys(selectedTags).length === 0}
-                      >
-                        Reset
-                      </Button>
-                      <Button
-                        className="mt-1"
-                        onClick={() =>
-                          setIsDropdownTagViewerOpen((prev) => !prev)
-                        }
-                        disabled={data.length === 0}
-                        variant="outline"
-                        leftSection={
-                          isDropdownTagViewerOpen ? (
-                            <IoIosArrowUp />
-                          ) : (
-                            <IoIosArrowDown />
-                          )
-                        }
-                      >
-                        {`${
-                          discoveryConfig?.features?.search?.tagSearchDropdown
-                            ?.collapsibleButtonText || 'Tag Panel'
-                        }`}
-                      </Button>
                     </Grid.Col>
-                  )}
-                </Grid>
-                <SearchInputSelectableFields
-                  searchMode={searchMode}
-                  setSearchMode={setSearchMode}
-                  searchableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableTextFields
-                  }
-                  searchableAndSelectableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableAndSelectableTextFields
-                  }
-                  setSelectedFieldsForSearchIndexing={
-                    setSelectedFieldsForSearchIndexing
-                  }
-                />
-                <div
-                  ref={tagViewerContentRef}
-                  className={`transition-all duration-300 ease-in-out mt-2 ${
-                    isDropdownTagViewerOpen
-                      ? 'max-h-screen opacity-100'
-                      : 'max-h-0 opacity-0'
-                  } overflow-hidden`}
-                  style={{
-                    height:
-                      isDropdownTagViewerOpen && tagViewerContentRef.current
-                        ? `${tagViewerContentRef.current.scrollHeight}px`
-                        : '0px',
-                  }}
-                >
-                  <DiscoveryDropdownTagViewer
-                    tagCategoryData={tagCategoryData}
-                    selectedTags={selectedTags}
-                    setSelectedTags={setSelectedTags}
+                    {enableSearchableTags && (
+                      <Grid.Col span={5} className="mt-5">
+                        <Button
+                          onClick={() => setSelectedTags({})}
+                          variant="outline"
+                          leftSection={<IoIosRefresh />}
+                          className={
+                            Object.keys(selectedTags).length === 0
+                              ? 'border-gray-400 mr-1 mt-1'
+                              : 'mr-1  mt-1'
+                          }
+                          data-disabled={Object.keys(selectedTags).length === 0}
+                        >
+                          Reset
+                        </Button>
+                        <Button
+                          className="mt-1"
+                          onClick={() =>
+                            setIsDropdownTagViewerOpen((prev) => !prev)
+                          }
+                          disabled={data.length === 0}
+                          variant="outline"
+                          leftSection={
+                            isDropdownTagViewerOpen ? (
+                              <IoIosArrowUp />
+                            ) : (
+                              <IoIosArrowDown />
+                            )
+                          }
+                        >
+                          {`${
+                            discoveryConfig?.features?.search?.tagSearchDropdown
+                              ?.collapsibleButtonText || 'Tag Panel'
+                          }`}
+                        </Button>
+                      </Grid.Col>
+                    )}
+                  </Grid>
+                  <SearchInputSelectableFields
+                    searchMode={searchMode}
+                    setSearchMode={setSearchMode}
+                    searchableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableTextFields
+                    }
+                    searchableAndSelectableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableAndSelectableTextFields
+                    }
+                    setSelectedFieldsForSearchIndexing={
+                      setSelectedFieldsForSearchIndexing
+                    }
                   />
+                  <div
+                    ref={tagViewerContentRef}
+                    className={`transition-all duration-300 ease-in-out mt-2 ${
+                      isDropdownTagViewerOpen
+                        ? 'max-h-screen opacity-100'
+                        : 'max-h-0 opacity-0'
+                    } overflow-hidden`}
+                    style={{
+                      height:
+                        isDropdownTagViewerOpen && tagViewerContentRef.current
+                          ? `${tagViewerContentRef.current.scrollHeight}px`
+                          : '0px',
+                    }}
+                  >
+                    <DiscoveryDropdownTagViewer
+                      tagCategoryData={tagCategoryData}
+                      selectedTags={selectedTags}
+                      setSelectedTags={setSelectedTags}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             {discoveryConfig?.features?.aiSearch && (
               <div className="mb-4">
