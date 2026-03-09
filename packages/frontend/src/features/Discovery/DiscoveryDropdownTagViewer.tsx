@@ -134,7 +134,7 @@ const DiscoveryDropdownTagViewer = ({
     <div>
       <div
         className={`grid sm:grid-cols-1
-          ${tagCategoryData.length > 1 ? ' md:grid-cols-2 gap-4' : ' md:grid-cols-1'}`}
+          ${tagCategoryData.length > 1 && ' md:grid-cols-2 gap-4'}`}
       >
         {tagCategoryData.map((category, i) => (
           <div key={i}>
