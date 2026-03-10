@@ -148,6 +148,8 @@ const QueryExpression = ({
             );
         },
         useGetFilters: useCohortFacetFilters,
+        useFormatFilters: () => (value: string, _field: string) =>
+          Promise.resolve(value),
       }}
     >
       <QueryExpressionSection index={index} />
