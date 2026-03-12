@@ -1,22 +1,16 @@
 import React from 'react';
 import { FilterSet, Operation } from '@gen3/core';
 import { useCohortFacetFilters } from './hooks';
-import {
-  QueryExpressionContext,
-  QueryExpressionSection,
-} from '../CohortBuilder';
-import { useAppSelector, AppState, useAppDispatch } from './appApi';
+import { QueryExpressionContext, QueryExpressionSection, } from '../CohortBuilder';
+import { AppState, useAppDispatch, useAppSelector } from './appApi';
 import {
   clearCohortFilters,
   removeCohortFilter,
-  updateCohortFilter,
   setCohortFilter,
+  updateCohortFilter,
 } from './CohortManagment/CohortManagerSlice';
 
-import {
-  selectCurrentCohortId,
-  selectCurrentCohortName,
-} from './CohortManagment/CohortManagerSelectors';
+import { selectCurrentCohortId, selectCurrentCohortName, } from './CohortManagment/CohortManagerSelectors';
 
 interface CohortManagerProps {
   index: string;
@@ -73,6 +67,8 @@ const CohortQueryExpression = ({ index }: CohortManagerProps) => {
               );
           },
           useGetFilters: useCohortFacetFilters,
+          useFormatFilters: () => (value: string, _field: string) =>
+            Promise.resolve(value),
         }}
       >
         <QueryExpressionSection index={index} />
