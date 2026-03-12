@@ -6,7 +6,6 @@ import MetadataPropertiesTable from './MetadataPropertiesTable';
 import { ErrorCard } from '../../../components/MessageCards';
 
 interface MetadataSchema {
-  url: string;
   version: string;
   date: string;
   elements: Array<MetadataElement>;
@@ -23,7 +22,6 @@ const isMetadataSchema = (
   const record = obj as Record<string, unknown>;
 
   return (
-    typeof record.url === 'string' &&
     typeof record.version === 'string' &&
     typeof record.date === 'string' &&
     definitionsFieldName in record &&
