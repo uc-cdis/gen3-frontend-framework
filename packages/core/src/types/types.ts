@@ -277,3 +277,8 @@ export interface DataFetchingStatus {
 }
 
 export type DataFetchingHook<T> = () => DataFetchingResult<T>;
+
+export interface KeyValuePair {
+  key: string;
+  value: string;
+}

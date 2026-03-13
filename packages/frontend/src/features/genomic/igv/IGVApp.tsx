@@ -1,10 +1,9 @@
 import React from 'react';
-import { useGetDownloadQuery } from '@gen3/core';
 import { Button, Group, Loader, Stack } from '@mantine/core';
 import { useRouter } from 'next/dist/client/router';
 import { IgvBrowserConfiguration } from './types';
-import IGVBrowser from './IGVBrowser';
 import { NextRouter } from 'next/router';
+import { useGetBAMAndBAIFileFromGUID } from './hooks';
 
 const getBamFileURL = (router: NextRouter): string => {
   const { bam } = router.query;
@@ -18,7 +17,14 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
   const router = useRouter();
   const bamId = getBamFileURL(router);
 
-  const { data, isFetching, isSuccess, isError } = useGetDownloadQuery(bamId);
+  const { bamMetadata, baiMetadata, isFetching, isSuccess, isError } =
+    useGetBAMAndBAIFileFromGUID(bamId);
+
+  console.log('bamMetadata', bamMetadata);
+
+  const data = baiMetadata;
+
+  //const { data, isFetching, isSuccess, isError } = useGetDownloadQuery(bamId);
   if (isError) return <div className="w-full m-10">Error fetching data</div>;
   if (isFetching)
     return (
@@ -43,6 +49,7 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
               Return To Data Files
             </Button>
           </Group>
+          {/* --
           <IGVBrowser
             bamUrl={data.url}
             genome={configuration.genome}
@@ -50,6 +57,7 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
             track={configuration.track}
             showDefaultTracks={configuration.showDefaultTracks}
           />
+          -- */}
         </Stack>
       </div>
     );

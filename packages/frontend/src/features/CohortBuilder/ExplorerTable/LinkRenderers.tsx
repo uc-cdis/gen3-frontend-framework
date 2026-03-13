@@ -12,6 +12,10 @@ interface OpenAppLinkOptions {
   variant: string;
   size: string;
   tooltip: string;
+  filter?: {
+    field: string;
+    value: string;
+  };
 }
 
 const RenderOpenAppLinkDefaultParameters: OpenAppLinkOptions = {
@@ -46,20 +50,29 @@ export const RenderOpenAppLink = (
     return <span></span>;
   }
 
-  if (cell?.getValue() && row?.original?.data_format !== 'BAM') {
+  const mergedParams = {
+    ...RenderOpenAppLinkDefaultParameters,
+    ...(params ? params[0] : {}),
+  };
+  const {
+    variant,
+    color = 'accent.4',
+    size = 24,
+    tooltip = '',
+    baseUrl,
+    filter,
+  } = mergedParams;
+
+  console.log('mergedParamaters', mergedParams);
+
+  let rowMatchesFilter = true;
+  if (filter) {
+    rowMatchesFilter = row?.original?.[filter.field] === filter.value;
+  }
+
+  if (cell?.getValue() && rowMatchesFilter) {
     return <span>{cell.getValue() as string}</span>;
   } else {
-    const mergedParams = {
-      ...RenderOpenAppLinkDefaultParameters,
-      ...(params ? params[0] : {}),
-    };
-    const {
-      variant,
-      color = 'accent.4',
-      size = 24,
-      tooltip = '',
-      baseUrl,
-    } = mergedParams;
     return (
       <Tooltip label={tooltip} disabled={tooltip ? !tooltip : true}>
         <ActionIcon
