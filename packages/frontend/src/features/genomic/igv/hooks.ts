@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import {
+  useLazyGetDownloadQuery,
   useLazyGetIndexdMetdataQuery,
   useLazyGetIndexObjectQuery,
 } from '@gen3/core';
@@ -27,6 +28,28 @@ export const useGetBAMAndBAIFileFromGUID = (bamId: string) => {
     },
   ] = useLazyGetIndexdMetdataQuery();
 
+  const [
+    fetchBAMDownloadURL,
+    {
+      data: bamUrl,
+      error: downloadBAMURLError,
+      isFetching: isFetchingBAMUrl,
+      isSuccess: isSuccessBAMUrl,
+      isError: isErrorBAMUrl,
+    },
+  ] = useLazyGetDownloadQuery();
+
+  const [
+    fetchBAIDownloadURL,
+    {
+      data: baiUrl,
+      error: downloadBAIURLError,
+      isFetching: isFetchingBAIUrl,
+      isSuccess: isSuccessBAIUrl,
+      isError: isErrorBAIUrl,
+    },
+  ] = useLazyGetDownloadQuery();
+
   useEffect(() => {
     if (!bamId) return;
 
@@ -41,18 +64,50 @@ export const useGetBAMAndBAIFileFromGUID = (bamId: string) => {
     fetchBAIMetadata({
       filters: [{ key: 'file_name', value: baiFilename }],
     });
-  }, [isSuccessBamMetadata, bamMetadata, fetchBAIMetadata]);
 
-  const isFetching = isFetchingBamMetadata || isFetchingBaiMetadata;
-  const isError = isErrorBamMetadata || isErrorBaiMetadata;
-  const isSuccess = isSuccessBamMetadata && isSuccessBaiMetadata;
+    fetchBAMDownloadURL(bamId);
+  }, [
+    bamId,
+    isSuccessBamMetadata,
+    bamMetadata,
+    fetchBAIMetadata,
+    fetchBAMDownloadURL,
+  ]);
+
+  useEffect(() => {
+    const baiId = baiMetadata?.records?.[0]?.baseid;
+    if (!isSuccessBaiMetadata || !baiId) return;
+
+    fetchBAIDownloadURL(baiId);
+  }, [isSuccessBaiMetadata, baiMetadata, fetchBAIDownloadURL]);
+
+  const isFetching =
+    isFetchingBamMetadata ||
+    isFetchingBaiMetadata ||
+    isFetchingBAMUrl ||
+    isFetchingBAIUrl;
+
+  const isError =
+    isErrorBamMetadata || isErrorBaiMetadata || isErrorBAMUrl || isErrorBAIUrl;
+
+  const isSuccess =
+    isSuccessBamMetadata &&
+    isSuccessBaiMetadata &&
+    isSuccessBAMUrl &&
+    isSuccessBAIUrl;
 
   return {
     bamMetadata: isSuccess ? bamMetadata : undefined,
-    baiMetadata: isSuccess ? baiMetadata : undefined,
+    baiMetadata: isSuccess ? baiMetadata?.records?.[0] : undefined,
+    bamUrl: isSuccess ? bamUrl : undefined,
+    baiUrl: isSuccess ? baiUrl : undefined,
     isFetching,
     isError,
     isSuccess,
-    error: bamMetadataError ?? baiMetadataError,
+    error:
+      bamMetadataError ??
+      baiMetadataError ??
+      downloadBAMURLError ??
+      downloadBAIURLError,
   };
 };

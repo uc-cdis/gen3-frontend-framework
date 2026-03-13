@@ -4,6 +4,7 @@ import { useRouter } from 'next/dist/client/router';
 import { IgvBrowserConfiguration } from './types';
 import { NextRouter } from 'next/router';
 import { useGetBAMAndBAIFileFromGUID } from './hooks';
+import IGVBrowser from './IGVBrowser';
 
 const getBamFileURL = (router: NextRouter): string => {
   const { bam } = router.query;
@@ -17,12 +18,10 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
   const router = useRouter();
   const bamId = getBamFileURL(router);
 
-  const { bamMetadata, baiMetadata, isFetching, isSuccess, isError } =
+  const { bamUrl, baiUrl, isFetching, isSuccess, isError } =
     useGetBAMAndBAIFileFromGUID(bamId);
 
-  console.log('bamMetadata', bamMetadata);
-
-  const data = baiMetadata;
+  console.log('bamMetadata', bamUrl, baiUrl);
 
   //const { data, isFetching, isSuccess, isError } = useGetDownloadQuery(bamId);
   if (isError) return <div className="w-full m-10">Error fetching data</div>;
@@ -32,7 +31,7 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
         <Loader />
       </div>
     );
-  if (isSuccess && data)
+  if (isSuccess && bamUrl && baiUrl)
     return (
       <div className="w-full m-10">
         <Stack>
@@ -49,15 +48,15 @@ const IGVApp = (configuration: IgvBrowserConfiguration) => {
               Return To Data Files
             </Button>
           </Group>
-          {/* --
+
           <IGVBrowser
-            bamUrl={data.url}
+            bamUrl={bamUrl.url}
+            baiUrl={baiUrl.url}
             genome={configuration.genome}
             locus={configuration.locus}
             track={configuration.track}
             showDefaultTracks={configuration.showDefaultTracks}
           />
-          -- */}
         </Stack>
       </div>
     );

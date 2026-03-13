@@ -1,11 +1,6 @@
 import { GEN3_INDEXD_API } from '../../constants';
 import { gen3Api } from '../gen3';
-import { JSONObject, KeyValuePair } from '../../types';
-
-export interface IndexdResponse {
-  data: Array<JSONObject>;
-  hits: number;
-}
+import { KeyValuePair } from '../../types';
 
 export interface IndexdMetadataRequestParams {
   limit?: number;
@@ -14,7 +9,7 @@ export interface IndexdMetadataRequestParams {
 
 export interface IndexObject {
   acl: string[];
-  authz: unknown[];
+  authz: string[];
   baseid: string;
   content_created_date: string | null;
   content_updated_date: string | null;
@@ -38,6 +33,24 @@ export interface IndexObject {
   urls: string[];
   urls_metadata: Record<string, Record<string, unknown>>;
   version: string | null;
+}
+
+export interface IndexdResponse {
+  acl: string | null;
+  authz: string | null;
+  file_name: string | null;
+  hashes: string | null;
+  ids: string | null;
+  limit: number;
+  metadata: Record<string, unknown>;
+  page: number | null;
+  did: string;
+  size: number | null;
+  start: number | null;
+  urls: string[];
+  urls_metadata: string | null;
+  version: string | null;
+  records: Array<IndexObject>;
 }
 
 export const indexdApi = gen3Api.injectEndpoints({
