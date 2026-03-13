@@ -15,7 +15,10 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import QueryExpressionSection from './QueryExpressionSection';
-import { QueryExpressionContext } from './QueryExpressionContext';
+import {
+  QueryExpressionContext,
+  QueryExpressionHooks,
+} from './QueryExpressionContext';
 import { useCohortFacetFilters } from '../hooks';
 
 const SUMMARY_THRESHOLD = 10;
@@ -29,14 +32,16 @@ const DefaultShouldShowSummary = (field: string, count: number) => {
   return count > SUMMARY_THRESHOLD;
 };
 
-interface QueryExpressionProps {
+export interface QueryExpressionProps {
   index: string;
   shouldShowSummary?: (field: string, count: number) => boolean;
+  hooks?: Partial<QueryExpressionHooks>;
 }
 
 const QueryExpression = ({
   index,
   shouldShowSummary = DefaultShouldShowSummary,
+  hooks,
 }: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
@@ -44,6 +49,8 @@ const QueryExpression = ({
   const currentCohortName = useCoreSelector((state: CoreState) =>
     selectCurrentCohortName(state),
   );
+
+  console.log('hooks', hooks);
 
   return (
     <QueryExpressionContext.Provider
@@ -148,6 +155,10 @@ const QueryExpression = ({
             );
         },
         useGetFilters: useCohortFacetFilters,
+        useFormatFilters: () => (value: string, _field: string) =>
+          Promise.resolve(value),
+
+        ...(hooks ?? {}),
       }}
     >
       <QueryExpressionSection index={index} />

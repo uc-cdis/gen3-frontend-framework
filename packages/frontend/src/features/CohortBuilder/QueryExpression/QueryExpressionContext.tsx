@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   clearCohortFilters,
   FilterSet,
@@ -7,7 +7,7 @@ import {
   setCohortFilter,
   updateCohortFilter,
   useCoreDispatch,
-} from "@gen3/core";
+} from '@gen3/core';
 
 export interface QueryExpressionHooks {
   useClearCohortFilters: () => (index: string) => void;
@@ -19,6 +19,7 @@ export interface QueryExpressionHooks {
   useRemoveFilter: () => (index: string, field: string) => void;
   useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
   useGetFilters: (index: string) => FilterSet;
+  useFormatFilters: () => (value: string, field: string) => Promise<string>;
 }
 
 export interface QueryExpressionContextProps extends QueryExpressionHooks {
@@ -32,7 +33,7 @@ export const QueryExpressionContext =
   React.createContext<QueryExpressionContextProps>({
     displayOnly: false,
     cohortId: null,
-    cohortName: "default",
+    cohortName: 'default',
     shouldShowSummary: () => false,
     useClearCohortFilters: () => {
       const dispatch = useCoreDispatch();
@@ -70,6 +71,8 @@ export const QueryExpressionContext =
         );
     },
     useGetFilters: () => {
-      return { mode: "and", root: {} } as FilterSet;
+      return { mode: 'and', root: {} } as FilterSet;
     },
+    useFormatFilters: () => (value: string, _field: string) =>
+      Promise.resolve(value),
   });

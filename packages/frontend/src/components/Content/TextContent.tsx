@@ -1,10 +1,9 @@
 import React from 'react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 import { hashCode } from '../../utils/hash';
 import { twMerge } from 'tailwind-merge';
 import { Anchor } from '@mantine/core';
+import MarkdownContent from './MarkdownContent';
 
 /**
  * Enum representing various content types for text-based data.
@@ -81,34 +80,7 @@ const TextContent = ({
       );
     }
     case ContentType.Markdown: {
-      const textString = Array.isArray(text) ? text.join('') : text;
-      return (
-        <div>
-          <Markdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              p(props: any) {
-                const { _node, ...rest } = props;
-                return <p className="text-lg my-1" {...rest} />;
-              },
-              ol(props: any) {
-                const { _node, ...rest } = props;
-                return <ol className="list-disc list-inside my-1" {...rest} />;
-              },
-              ul(props: any) {
-                const { _node, ...rest } = props;
-                return <ul className="list-disc list-inside my-1" {...rest} />;
-              },
-              li(props: any) {
-                const { _node, ...rest } = props;
-                return <li className="text-md" {...rest} />;
-              },
-            }}
-          >
-            {textString}
-          </Markdown>
-        </div>
-      );
+      return <MarkdownContent content={text} />;
     }
     case ContentType.TextWithEmail: {
       const DEFAULT_STYLE =

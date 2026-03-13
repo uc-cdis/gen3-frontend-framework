@@ -94,6 +94,12 @@ type ValueOperation = RangeOperation | Equals | NotEquals;
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
 export type SetOperation = Includes | Excludes | ExcludeIfAny;
 
+const FieldNameOverrides: Record<string, string> = {
+  gender: 'gex',
+  Gender: 'Sex',
+};
+
+
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
     x !== undefined &&
@@ -156,7 +162,9 @@ const IncludeExcludeQueryElement = ({
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToLabel(field);
+  const fieldName = FieldNameOverrides[field]
+    ? fieldNameToLabel(FieldNameOverrides[field])
+    : fieldNameToLabel(field);
   const operandsArray = isArray(operands) ? operands : [operands];
 
   const showSummaryView = shouldShowSummary
@@ -173,7 +181,7 @@ const IncludeExcludeQueryElement = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>{fieldNameToLabel(field)}</QueryFieldLabel>
+      <QueryFieldLabel>{fieldName}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size="xs"
@@ -275,7 +283,10 @@ const IncludeExcludeQueryElement = ({
                       label={value}
                       className="flex-grow text-md font-content"
                     >
-                      <QueryRepresentationLabel value={value.toString()} />
+                      <QueryRepresentationLabel
+                        value={value.toString()}
+                        field={field}
+                      />
                     </OverflowTooltippedLabel>
                   </Badge>
                 );
