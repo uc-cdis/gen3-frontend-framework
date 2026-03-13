@@ -15,10 +15,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import QueryExpressionSection from './QueryExpressionSection';
-import {
-  QueryExpressionContext,
-  QueryExpressionHooks,
-} from './QueryExpressionContext';
+import { QueryExpressionContext, QueryExpressionHooks, } from './QueryExpressionContext';
 import { useCohortFacetFilters } from '../hooks';
 
 const SUMMARY_THRESHOLD = 10;
@@ -49,8 +46,6 @@ const QueryExpression = ({
   const currentCohortName = useCoreSelector((state: CoreState) =>
     selectCurrentCohortName(state),
   );
-
-  console.log('hooks', hooks);
 
   return (
     <QueryExpressionContext.Provider
