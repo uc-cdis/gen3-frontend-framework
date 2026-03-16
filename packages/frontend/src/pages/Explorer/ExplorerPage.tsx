@@ -7,7 +7,6 @@ import { NextRouter, useRouter } from 'next/router';
 
 const getActiveTab = (router: NextRouter): string | undefined => {
   const { activeTab } = router.query;
-  console.log(activeTab);
   if (typeof activeTab === 'string') return activeTab;
   else if (typeof activeTab === 'object') return activeTab[0];
 

@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 import { CellRendererFunctionProps } from './types';
-import { ActionIcon, Tooltip } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import { removeMultipleSlashes } from '../../../utils';
 
 // TODO: move additional Link renderers to here
 
@@ -71,20 +72,18 @@ export const RenderOpenAppLink = (
   if (cell?.getValue() && !rowMatchesFilter) {
     return <span>{cell.getValue() as string}</span>;
   } else {
-    const url = encodeURIComponent(`${baseUrl}${cell.getValue()}`);
+    const url = removeMultipleSlashes(`${baseUrl}${cell.getValue()}`);
     return (
       <div className="flex flex-nowrap items-center align-middle gap-2">
-        <Tooltip label={tooltip} disabled={tooltip ? !tooltip : true}>
-          <ActionIcon
-            size={size}
-            variant={variant}
-            color={color}
-            onClick={() => router.push(url)}
-          >
-            <FaExternalLinkAlt />
-          </ActionIcon>
-          <span>{cell.getValue() as string}</span>;
-        </Tooltip>
+        <ActionIcon
+          size={size}
+          variant={variant}
+          color={color}
+          onClick={() => router.push(url)}
+        >
+          <FaExternalLinkAlt />
+        </ActionIcon>
+        <span>{cell.getValue() as string}</span>
       </div>
     );
   }

@@ -79,7 +79,6 @@ const Gen3App = ({
       registerDefaultRemoteSupport();
       registerMetadataSchemaApp();
       registerIGVApp();
-      // registerCohortDiscoveryApp();
       registerExplorerDefaultCellRenderers();
       registerCohortBuilderDefaultPreviewRenderers();
       registerCohortTableCustomCellRenderers();

@@ -1,67 +1,184 @@
-import React from 'react';
-import { Button, Group, Loader, Stack } from '@mantine/core';
+import React, { useMemo, useState } from 'react';
+import {
+  Button,
+  Combobox,
+  Group,
+  Input,
+  InputBase,
+  Loader,
+  ScrollArea,
+  Stack,
+  useCombobox,
+} from '@mantine/core';
 import { useRouter } from 'next/dist/client/router';
 import { IgvBrowserConfiguration } from './types';
 import { NextRouter } from 'next/router';
-import { useGetBAMAndBAIFileFromGUID } from './hooks';
-import IGVBrowser from './IGVBrowser';
+import IGVAppPage from './IGVAppPage';
+import { useGetRawDataAndTotalCountsQuery } from '@gen3/core';
 
-const getBamFileURL = (router: NextRouter): string => {
-  const { bam } = router.query;
-  if (typeof bam === 'string') return bam;
-  else if (typeof bam === 'object') return bam[0];
+interface IGVAppProps {
+  bamId: string;
+  mode: string;
+  returnData: string;
+}
+const getBamFileURL = (router: NextRouter): Partial<IGVAppProps> => {
+  const { bam, mode, returnData } = router.query;
 
-  return 'notFound';
+  return {
+    bamId: typeof bam === 'object' ? bam[0] : bam,
+    mode: typeof mode === 'object' ? mode[0] : mode,
+    returnData: typeof returnData === 'object' ? returnData[0] : returnData,
+  };
 };
 
-const IGVApp = (configuration: IgvBrowserConfiguration) => {
+interface IGVExplorerViewerProps {
+  bamId: string;
+  returnData: string;
+  configuration: IgvBrowserConfiguration;
+}
+
+const IGVExplorerViewer = ({
+  bamId,
+  returnData,
+  configuration,
+}: IGVExplorerViewerProps) => {
   const router = useRouter();
-  const bamId = getBamFileURL(router);
 
-  const { bamUrl, baiUrl, isFetching, isSuccess, isError } =
-    useGetBAMAndBAIFileFromGUID(bamId);
+  return (
+    <div className="w-full m-10">
+      <Stack>
+        <Group justify="flex-start">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              router.push(`${'/Explorer?activeTab=' + returnData}`)
+            }
+          >
+            Return To Data Files
+          </Button>
+        </Group>
 
-  console.log('bamMetadata', bamUrl, baiUrl);
+        <IGVAppPage bamId={bamId} configuration={configuration} />
+      </Stack>
+    </div>
+  );
+};
 
-  //const { data, isFetching, isSuccess, isError } = useGetDownloadQuery(bamId);
-  if (isError) return <div className="w-full m-10">Error fetching data</div>;
-  if (isFetching)
+interface IGVBamPickerProps {
+  configuration: IgvBrowserConfiguration;
+}
+const IGVBamPicker = ({ configuration }: IGVBamPickerProps) => {
+  const [value, setValue] = useState<string | null>(null);
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+  const { data, isFetching, isSuccess, isError } =
+    useGetRawDataAndTotalCountsQuery({
+      type: 'file',
+      filters: {
+        mode: 'and',
+        root: {
+          data_types: {
+            operator: 'in',
+            field: 'data_format',
+            operands: ['BAM'],
+          },
+        },
+      },
+      fields: ['object_id', 'file_name'],
+      size: 200,
+    });
+
+  const files = data?.data?.file ?? [];
+
+  const selectedFile = files.find(
+    (x: { file_name: string; object_id: string }) => x.object_id === value,
+  );
+
+  const bamList = useMemo(() => {
+    if (!isSuccess || !data) return null;
+
+    return files.map((x: { file_name: string; object_id: string }) => (
+      <Combobox.Option value={x.object_id} key={x.object_id}>
+        {x.file_name}
+      </Combobox.Option>
+    ));
+  }, [data, files, isSuccess]);
+
+  if (isError) {
+    return <div className="w-full m-10">Error fetching data</div>;
+  }
+
+  if (isFetching) {
     return (
       <div className="w-full m-10">
         <Loader />
       </div>
     );
-  if (isSuccess && bamUrl && baiUrl)
+  }
+
+  return (
+    <div className="w-full m-10">
+      <Stack>
+        <Group justify="flex-start">
+          <Combobox
+            store={combobox}
+            withinPortal={false}
+            onOptionSubmit={(val) => {
+              setValue(val);
+              combobox.closeDropdown();
+            }}
+          >
+            <Combobox.Target>
+              <InputBase
+                component="button"
+                type="button"
+                pointer
+                rightSection={<Combobox.Chevron />}
+                onClick={() => combobox.toggleDropdown()}
+                rightSectionPointerEvents="none"
+              >
+                {selectedFile?.file_name || (
+                  <Input.Placeholder>
+                    Select a BAM File to View
+                  </Input.Placeholder>
+                )}
+              </InputBase>
+            </Combobox.Target>
+
+            <Combobox.Dropdown>
+              <ScrollArea.Autosize mah={200} type="scroll">
+                <Combobox.Options>{bamList}</Combobox.Options>
+              </ScrollArea.Autosize>
+            </Combobox.Dropdown>
+          </Combobox>
+        </Group>
+
+        {value ? (
+          <IGVAppPage bamId={value} configuration={configuration} />
+        ) : null}
+      </Stack>
+    </div>
+  );
+};
+
+const IGVApp = (configuration: IgvBrowserConfiguration) => {
+  const router = useRouter();
+  const { bamId, mode, returnData } = getBamFileURL(router);
+
+  if (mode == 'explorer') {
     return (
-      <div className="w-full m-10">
-        <Stack>
-          <Group justify="flex-start">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() =>
-                router.push(
-                  `${configuration?.returnTab ? '/Explorer?activeTab=' + configuration?.returnTab : '/Explorer'}`,
-                )
-              }
-            >
-              Return To Data Files
-            </Button>
-          </Group>
-
-          <IGVBrowser
-            bamUrl={bamUrl.url}
-            baiUrl={baiUrl.url}
-            genome={configuration.genome}
-            locus={configuration.locus}
-            track={configuration.track}
-            showDefaultTracks={configuration.showDefaultTracks}
-          />
-        </Stack>
-      </div>
+      <IGVExplorerViewer
+        bamId={bamId ?? ''}
+        configuration={configuration}
+        returnData={returnData ?? ''}
+      />
     );
-
-  return null;
+  }
+  if (mode === 'app') {
+    return <IGVBamPicker configuration={configuration} />;
+  }
 };
 
 export default IGVApp;
