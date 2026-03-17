@@ -1,0 +1,23 @@
+{
+  "data": {
+    "viewer": {
+      "explore": {
+        "intersection": {
+          "hits": {
+            "total": 80
+          }
+        },
+        "set1": {
+          "hits": {
+            "total": 522
+          }
+        },
+        "set2": {
+          "hits": {
+            "total": 58
+          }
+        }
+      }
+    }
+  }
+}

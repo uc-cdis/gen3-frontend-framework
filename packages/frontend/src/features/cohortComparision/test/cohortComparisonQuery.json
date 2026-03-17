@@ -1,0 +1,96 @@
+{
+  "data": {
+    "viewer": {
+      "explore": {
+        "cohort1": {
+          "aggregations": {
+            "diagnoses__age_at_diagnosis": {
+              "histogram": {
+                "buckets": [
+                  {
+                    "doc_count": 1,
+                    "key": "7305.0"
+                  },
+                  {
+                    "doc_count": 11,
+                    "key": "10957.5"
+                  },
+                  {
+                    "doc_count": 40,
+                    "key": "14610.0"
+                  },
+                  {
+                    "doc_count": 151,
+                    "key": "18262.5"
+                  },
+                  {
+                    "doc_count": 230,
+                    "key": "21915.0"
+                  },
+                  {
+                    "doc_count": 110,
+                    "key": "25567.5"
+                  },
+                  {
+                    "doc_count": 37,
+                    "key": "29220.0"
+                  }
+                ]
+              },
+              "stats": {
+                "max": 32196.0,
+                "min": 10136.0
+              }
+            }
+          },
+          "facets": "{\"diagnoses.age_at_diagnosis\": {\"stats\": {\"count\": 580, \"min\": 10136.0, \"max\": 32196.0, \"avg\": 23131.879310344826, \"sum\": 13416490.0}}, \"demographic.gender\": {\"buckets\": [{\"doc_count\": 602, \"key\": \"male\"}]}, \"demographic.race\": {\"buckets\": [{\"doc_count\": 388, \"key\": \"white\"}, {\"doc_count\": 113, \"key\": \"not reported\"}, {\"doc_count\": 80, \"key\": \"black or african american\"}, {\"doc_count\": 10, \"key\": \"asian\"}, {\"doc_count\": 7, \"key\": \"not allowed to collect\"}, {\"doc_count\": 4, \"key\": \"other\"}]}, \"demographic.ethnicity\": {\"buckets\": [{\"doc_count\": 441, \"key\": \"not hispanic or latino\"}, {\"doc_count\": 119, \"key\": \"not reported\"}, {\"doc_count\": 42, \"key\": \"hispanic or latino\"}]}, \"demographic.vital_status\": {\"buckets\": [{\"doc_count\": 470, \"key\": \"alive\"}, {\"doc_count\": 132, \"key\": \"dead\"}]}}",
+          "hits": {
+            "total": 602
+          }
+        },
+        "cohort2": {
+          "aggregations": {
+            "diagnoses__age_at_diagnosis": {
+              "histogram": {
+                "buckets": [
+                  {
+                    "doc_count": 5,
+                    "key": "10957.5"
+                  },
+                  {
+                    "doc_count": 15,
+                    "key": "14610.0"
+                  },
+                  {
+                    "doc_count": 31,
+                    "key": "18262.5"
+                  },
+                  {
+                    "doc_count": 51,
+                    "key": "21915.0"
+                  },
+                  {
+                    "doc_count": 22,
+                    "key": "25567.5"
+                  },
+                  {
+                    "doc_count": 14,
+                    "key": "29220.0"
+                  }
+                ]
+              },
+              "stats": {
+                "max": 32005.0,
+                "min": 11848.0
+              }
+            }
+          },
+          "facets": "{\"diagnoses.age_at_diagnosis\": {\"stats\": {\"count\": 138, \"min\": 11848.0, \"max\": 32005.0, \"avg\": 22986.565217391304, \"sum\": 3172146.0}}, \"demographic.gender\": {\"buckets\": [{\"doc_count\": 80, \"key\": \"male\"}, {\"doc_count\": 58, \"key\": \"female\"}]}, \"demographic.race\": {\"buckets\": [{\"doc_count\": 138, \"key\": \"black or african american\"}]}, \"demographic.ethnicity\": {\"buckets\": [{\"doc_count\": 137, \"key\": \"not hispanic or latino\"}, {\"doc_count\": 1, \"key\": \"not reported\"}]}, \"demographic.vital_status\": {\"buckets\": [{\"doc_count\": 96, \"key\": \"alive\"}, {\"doc_count\": 42, \"key\": \"dead\"}]}}",
+          "hits": {
+            "total": 138
+          }
+        }
+      }
+    }
+  }
+}
