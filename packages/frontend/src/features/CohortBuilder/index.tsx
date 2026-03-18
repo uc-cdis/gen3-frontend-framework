@@ -26,6 +26,8 @@ import QueryExpressionSection from './QueryExpression/QueryExpressionSection';
 import QueryExpression from './QueryExpression/QueryExpression';
 import CohortManager from './CohortManager/CohortManager';
 
+import { registerButtonAction } from './downloads/actions/registeredActions';
+
 import CohortManagerAndExpression from './CohortManagerAndExpression';
 import TabbedCohortBuilder, {
   type CohortBuilderTabCategoryConfig,
@@ -72,4 +74,5 @@ export {
   DownloadsPanel,
   QueryExpressionContext, // TODO move context to own feature folder
   TableXPositionContext,
+  registerButtonAction,
 };
