@@ -6,13 +6,21 @@ import { DiscoveryIndexConfig } from '../../types';
 import _ from 'lodash';
 import RowDetailPanelTags from './RowDetailPanelTags';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
+import { OnChangeFn } from '@tanstack/table-core';
 
 interface RowDetailPanelProps {
   row: MRT_Row<MRT_RowData>;
   searchTerm: string;
+  selectedTags: { [key: string]: boolean };
+  setSelectedTags: OnChangeFn<{ [key: string]: boolean }>;
 }
 
-const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
+const RowDetailPanel = ({
+  row,
+  searchTerm,
+  selectedTags,
+  setSelectedTags,
+}: RowDetailPanelProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
   if (config.studyPreviewField) {
     const studyPreviewData = _.get(
@@ -26,7 +34,12 @@ const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
             {HighlightSearchTerm(studyPreviewData, searchTerm)}
           </Text>
         </Box>
-        <RowDetailPanelTags rowTags={row.original.tags} />;
+        <RowDetailPanelTags
+          rowTags={row.original.tags}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
+        ;
       </div>
     );
   } else {

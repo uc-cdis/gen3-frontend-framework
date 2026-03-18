@@ -307,6 +307,8 @@ const DiscoveryIndexPanel = ({
                   setSelection={setSelections}
                   pagination={pagination}
                   sorting={sorting}
+                  selectedTags={selectedTags}
+                  setSelectedTags={setSelectedTags}
                   searchTerm={debouncedSearchBarTerms.join(' ')}
                   selectedFieldsForSearchIndexing={
                     selectedFieldsForSearchIndexing
