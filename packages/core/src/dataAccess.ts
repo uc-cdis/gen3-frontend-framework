@@ -41,7 +41,7 @@ export interface UseCoreDataHook<P, T> {
 }
 
 export const usePrevious = <T>(value: T): T | undefined => {
-  const ref = useRef<T>();
+  const ref = useRef<T>(undefined);
   useEffect(() => {
     ref.current = value;
   });

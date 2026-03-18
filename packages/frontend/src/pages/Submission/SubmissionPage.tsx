@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import SubmissionPanel from '../../features/Submission/SubmissionPanel';
 import { SubmissionsPageLayoutProps } from './types';

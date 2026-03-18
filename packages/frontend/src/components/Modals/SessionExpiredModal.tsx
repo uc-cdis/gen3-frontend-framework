@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';

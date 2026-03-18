@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Center } from '@mantine/core';
 import { NavPageLayout } from '../../features/Navigation';
 import AnalysisPanel from '../../features/Analysis/AnalysisPanel';

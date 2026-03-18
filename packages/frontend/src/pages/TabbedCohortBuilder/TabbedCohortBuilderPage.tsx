@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
 import CohortManager from '../../features/CohortBuilder/CohortManager/CohortManager';
