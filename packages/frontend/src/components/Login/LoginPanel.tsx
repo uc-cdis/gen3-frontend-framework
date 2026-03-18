@@ -15,10 +15,10 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
   if (Array.isArray(redirect)) {
     redirectPath = redirect[0];
   } else {
-    redirectPath = redirect ?? '';
+    redirectPath = redirect ?? '/';
   }
   // do not go back to /Login as a redirect
-  if (redirect?.includes('Login')) redirectPath = '';
+  if (redirect?.includes('Login')) redirectPath = '/';
 
   if (!GEN3_REDIRECT_URL) {
     return redirectPath;
@@ -44,16 +44,16 @@ const LoginPanel = (loginConfig: LoginConfig) => {
 
   const handleFenceLoginSelected = useCallback(
     async (loginURL: string) => {
-      const loginWithPossibleRedirect =
-        referer == ''
-          ? loginURL
-          : `${appendParameterToUrl(loginURL, 'redirect', filterRedirect(referer))}`;
-      router.push(loginWithPossibleRedirect).catch((e) => {
-        showNotification({
-          title: 'Login Error',
-          message: `error logging in ${e.message}`,
+      router
+        .push(
+          `${appendParameterToUrl(loginURL, 'redirect', filterRedirect(referer))}`,
+        )
+        .catch((e) => {
+          showNotification({
+            title: 'Login Error',
+            message: `error logging in ${e.message}`,
+          });
         });
-      });
     },
     [referer, router],
   );
