@@ -1,6 +1,5 @@
 // hooks/useFirstTimeUse.ts
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { DEFAULT_EXPIRATION_DAYS, FTU_KEY, FTU_VALUE } from './constants';
 
 type StorageError = {
@@ -8,19 +7,26 @@ type StorageError = {
   error: unknown;
 };
 
+type StoredData = {
+  value: string;
+  expiresAt: number;
+};
+
 function logStorageError({ store, error }: StorageError) {
   console.warn(`[useFirstTimeUse] Failed to access ${store}:`, error);
 }
 
-function getCookieExpiry(days: number): Date {
-  const expires = new Date();
-  expires.setDate(expires.getDate() + days);
-  return expires;
+function getExpirationTimestamp(days: number): number {
+  return Date.now() + days * 24 * 60 * 60 * 1000;
 }
 
-function setLocalStorage(): void {
+function setLocalStorage(expirationDays: number): void {
   try {
-    localStorage.setItem(FTU_KEY, FTU_VALUE);
+    const data: StoredData = {
+      value: FTU_VALUE,
+      expiresAt: getExpirationTimestamp(expirationDays),
+    };
+    localStorage.setItem(FTU_KEY, JSON.stringify(data));
   } catch (error) {
     logStorageError({ store: 'localStorage', error });
   }
@@ -34,7 +40,7 @@ function setSessionStorage(): void {
   }
 }
 
-function setIndexedDB(): void {
+function setIndexedDB(expirationDays: number): void {
   try {
     const req = indexedDB.open('app_prefs', 1);
 
@@ -49,7 +55,11 @@ function setIndexedDB(): void {
       try {
         const db = (e.target as IDBOpenDBRequest).result;
         const tx = db.transaction('flags', 'readwrite');
-        tx.objectStore('flags').put(FTU_VALUE, FTU_KEY);
+        const data: StoredData = {
+          value: FTU_VALUE,
+          expiresAt: getExpirationTimestamp(expirationDays),
+        };
+        tx.objectStore('flags').put(data, FTU_KEY);
         tx.onerror = () =>
           logStorageError({ store: 'indexedDB.transaction', error: tx.error });
       } catch (error) {
@@ -72,7 +82,34 @@ function setIndexedDB(): void {
 
 function checkLocalStorage(): boolean {
   try {
-    return localStorage.getItem(FTU_KEY) === FTU_VALUE;
+    const item = localStorage.getItem(FTU_KEY);
+    if (!item) return false;
+
+    // Try parsing as JSON (new format with expiration)
+    try {
+      const data = JSON.parse(item);
+      // Check if it's an object with the expected structure
+      if (typeof data === 'object' && data !== null && 'value' in data) {
+        const storedData = data as StoredData;
+        if (storedData.expiresAt && Date.now() > storedData.expiresAt) {
+          // Expired, remove it
+          localStorage.removeItem(FTU_KEY);
+          return false;
+        }
+        return storedData.value === FTU_VALUE;
+      }
+      // Parsed as JSON but not the expected format - treat as legacy
+      if (item === FTU_VALUE) {
+        return true;
+      }
+      return false;
+    } catch {
+      // JSON parse failed - treat as legacy format (plain string)
+      if (item === FTU_VALUE) {
+        return true; // Still valid
+      }
+      return false;
+    }
   } catch (error) {
     logStorageError({ store: 'localStorage.read', error });
     return false;
@@ -98,7 +135,29 @@ function checkIndexedDB(): Promise<boolean> {
             .transaction('flags')
             .objectStore('flags')
             .get(FTU_KEY);
-          getReq.onsuccess = () => resolve(getReq.result === FTU_VALUE);
+          getReq.onsuccess = () => {
+            const result = getReq.result;
+            if (!result) {
+              resolve(false);
+              return;
+            }
+
+            // Check if it's the new format with expiration
+            if (typeof result === 'object' && 'expiresAt' in result) {
+              const data = result as StoredData;
+              if (Date.now() > data.expiresAt) {
+                // Expired, remove it
+                const deleteTx = db.transaction('flags', 'readwrite');
+                deleteTx.objectStore('flags').delete(FTU_KEY);
+                resolve(false);
+                return;
+              }
+              resolve(data.value === FTU_VALUE);
+            } else {
+              // Legacy format
+              resolve(result === FTU_VALUE);
+            }
+          };
           getReq.onerror = () => {
             logStorageError({ store: 'indexedDB.get', error: getReq.error });
             resolve(false);
@@ -129,14 +188,12 @@ function checkIndexedDB(): Promise<boolean> {
 }
 
 export function useFirstTimeUse() {
-  const [cookies, setCookie] = useCookies([FTU_KEY]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAllStores = async (): Promise<boolean> => {
-      // react-cookie handles the cookie check reactively
-      if (cookies[FTU_KEY] === FTU_VALUE) return true;
+      // Check localStorage and IndexedDB (persists across logout)
       if (checkLocalStorage()) return true;
       if (await checkIndexedDB()) return true;
       return false;
@@ -146,17 +203,12 @@ export function useFirstTimeUse() {
       setShowModal(!seen);
       setIsLoading(false);
     });
-  }, [cookies]);
+  }, []);
 
   const markSeen = (expirationDays: number = DEFAULT_EXPIRATION_DAYS) => {
-    setCookie(FTU_KEY, FTU_VALUE, {
-      path: '/',
-      expires: getCookieExpiry(expirationDays),
-      sameSite: 'lax',
-    });
-    setLocalStorage();
+    setLocalStorage(expirationDays);
     setSessionStorage();
-    setIndexedDB();
+    setIndexedDB(expirationDays);
     setShowModal(false);
   };
 
