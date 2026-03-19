@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { pickBy } from 'lodash';
 import { LoadingOverlay } from '@mantine/core';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  useCohortFacetsQuery,
-} from '@gen3/core';
+import { convertFilterSetToGqlFilter, FilterSet, useCohortFacetsQuery, } from '@gen3/core';
 
 import CohortCard from './CohortCard/CohortCard';
 import FacetCard from './FacetCard';
@@ -123,7 +119,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             setSelectedCards={setSelectedCards}
             counts={counts}
             cohorts={cohorts}
-            options={fields}
+            options={{}}
             index={index}
             survivalPlotSelectable={survivalPlotSelectable}
             objectsFetching={cohortFacetsFetching}
