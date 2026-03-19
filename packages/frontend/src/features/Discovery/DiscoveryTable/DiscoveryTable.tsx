@@ -67,8 +67,6 @@ interface DiscoveryTableProps {
   setPagination: OnChangeFn<PaginationState>;
   setSorting: OnChangeFn<SortingState>;
   setSelection: (selection: Array<string>) => void;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: OnChangeFn<{ [key: string]: boolean }>;
   searchTerm: string;
   selectedFieldsForSearchIndexing: string[];
   discoveryConfig: DiscoveryIndexConfig;
@@ -83,8 +81,6 @@ const DiscoveryTable = ({
   pagination,
   sorting,
   searchTerm,
-  selectedTags,
-  setSelectedTags,
   selectedFieldsForSearchIndexing,
   discoveryConfig,
 }: DiscoveryTableProps) => {
@@ -185,12 +181,7 @@ const DiscoveryTable = ({
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
     renderDetailPanel: ({ row }) => (
-      <RowDetailPanel
-        row={row}
-        searchTerm={searchTerm}
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-      />
+      <RowDetailPanel row={row} searchTerm={searchTerm} />
     ),
     onRowSelectionChange: setRowSelection,
     state: {

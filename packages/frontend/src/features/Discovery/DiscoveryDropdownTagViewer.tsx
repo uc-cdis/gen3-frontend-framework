@@ -3,6 +3,7 @@ import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { categoryObject } from './types';
+import { useDiscoveryContext } from './DiscoveryProvider';
 
 interface RenderMultiSelectOptionProps {
   option: { value: string };
@@ -33,16 +34,13 @@ const renderMultiSelectOption = (
 
 interface MultiSelectContainerProps {
   category: categoryObject;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >;
 }
-const MultiSelectContainer = ({
-  category,
-  selectedTags,
-  setSelectedTags,
-}: MultiSelectContainerProps) => {
+const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
+  const {
+    discoveryConfig: discoveryConfig,
+    selectedTags,
+    setSelectedTags,
+  } = useDiscoveryContext();
   const containerData = category.tags.map((tag) => ({
     value: tag,
     label: tag,
@@ -117,16 +115,10 @@ const MultiSelectContainer = ({
 
 interface DiscoveryDropdownTagViewerProps {
   tagCategoryData: Array<categoryObject> | undefined;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >;
 }
 
 const DiscoveryDropdownTagViewer = ({
   tagCategoryData,
-  selectedTags,
-  setSelectedTags,
 }: DiscoveryDropdownTagViewerProps) => {
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
 
@@ -138,11 +130,7 @@ const DiscoveryDropdownTagViewer = ({
       >
         {tagCategoryData.map((category, i) => (
           <div key={i}>
-            <MultiSelectContainer
-              category={category}
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-            />
+            <MultiSelectContainer category={category} />
           </div>
         ))}
       </div>

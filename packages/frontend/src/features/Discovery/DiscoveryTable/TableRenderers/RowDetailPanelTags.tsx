@@ -7,17 +7,15 @@ import { OnChangeFn } from '@tanstack/table-core';
 
 interface RowDetailPanelProps {
   rowTags: TagData[];
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: OnChangeFn<{ [key: string]: boolean }>;
 }
 
-const RowDetailPanelTags = ({
-  rowTags,
-  selectedTags,
-  setSelectedTags,
-}: RowDetailPanelProps) => {
+const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
   rowTags as TagData[];
-  const { discoveryConfig: config } = useDiscoveryContext();
+  const {
+    discoveryConfig: config,
+    selectedTags,
+    setSelectedTags,
+  } = useDiscoveryContext();
   return (
     <div className="flex mt-2">
       {rowTags.map((tag: TagData) => {
