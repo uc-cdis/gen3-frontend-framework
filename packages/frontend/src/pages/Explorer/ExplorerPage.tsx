@@ -3,6 +3,15 @@ import dynamic from 'next/dynamic';
 import { NavPageLayout } from '../../features/Navigation';
 import { ExplorerPageProps } from './types';
 import { Center } from '@mantine/core';
+import { NextRouter, useRouter } from 'next/router';
+
+const getActiveTab = (router: NextRouter): string | undefined => {
+  const { activeTab } = router.query;
+  if (typeof activeTab === 'string') return activeTab;
+  else if (typeof activeTab === 'object') return activeTab[0];
+
+  return undefined;
+};
 
 const CohortBuilder = dynamic(
   () => import('../../features/CohortBuilder/CohortBuilder'),
@@ -19,6 +28,9 @@ const ExplorerPage = ({
   tabsLayout,
   sharedFiltersMap,
 }: ExplorerPageProps): JSX.Element => {
+  const router = useRouter();
+  const activeTab = getActiveTab(router);
+
   if (explorerConfig === undefined) {
     return (
       <Center maw={400} h={100} mx="auto">
@@ -41,6 +53,7 @@ const ExplorerPage = ({
         tabsLayout={tabsLayout}
         explorerConfig={explorerConfig}
         sharedFiltersMap={sharedFiltersMap}
+        activeTab={activeTab}
       />
     </NavPageLayout>
   );

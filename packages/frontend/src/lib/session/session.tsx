@@ -330,8 +330,6 @@ export const SessionProvider = ({
       if (isUserOnPage('Login') /* || this.popupShown */) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-      console.log(`Time since last activity: ${timeSinceLastActivity}`);
-      console.log(`logoutInactiveUsers: ${logoutInactiveUsers}`);
       if (logoutInactiveUsers) {
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&

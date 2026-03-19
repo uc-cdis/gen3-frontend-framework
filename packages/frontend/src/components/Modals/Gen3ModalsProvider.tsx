@@ -15,6 +15,7 @@ import { defaultComposer } from 'default-composer';
 import { ContentType } from '../Content/TextContent';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useIsAuthenticated } from '../../lib/session/session';
+import { useFirstTimeUse } from './FirstTimeModal/hooks';
 
 interface Gen3StandardModalsProviderProps {
   config: ModalsConfig;
@@ -44,6 +45,8 @@ const Gen3ModalsProvider = ({
   const { isError } = useGetCSRFQuery(undefined, { refetchOnFocus: true });
   useGetAuthzMappingsQuery();
 
+  const { showModal, markSeen } = useFirstTimeUse();
+
   const [cookie] = useCookies(['Gen3-first-time-use']);
   const modal = useCoreSelector((state: CoreState) =>
     selectCurrentModal(state),
@@ -57,12 +60,12 @@ const Gen3ModalsProvider = ({
 
   useDeepCompareEffect(() => {
     if (
-      !cookie['Gen3-first-time-use'] &&
-      modalsConfig.systemUseModal?.enabled === true
-    ) {
-      if (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)
-        return;
+      !modalsConfig.systemUseModal?.enabled === true ||
+      (modalsConfig.systemUseModal.showOnlyOnLogin && !isAuthenticated)
+    )
+      return;
 
+    if (showModal && modalsConfig.systemUseModal?.enabled === true) {
       openContextModal({
         modal: 'firstTimeModal',
         title: modalsConfig.systemUseModal.title,
@@ -72,13 +75,14 @@ const Gen3ModalsProvider = ({
         withCloseButton: false,
         innerProps: {
           config: modalsConfig.systemUseModal,
+          markSeen,
         },
       });
     }
   }, [
     cookie['Gen3-first-time-use'],
     modalsConfig.systemUseModal.enabled,
-    isAuthenticated
+    isAuthenticated,
   ]);
 
   if (isError) {
