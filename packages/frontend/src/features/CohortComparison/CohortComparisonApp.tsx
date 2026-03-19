@@ -13,19 +13,22 @@ import { SelectionScreenContext } from '../Analysis/context';
 import CohortComparison from './CohortComparison';
 import AdditionalCohortSelection from './AdditionalCohortSelection';
 import { CohortComparisonConfiguration } from './types';
+import { ErrorCard } from '../../index';
 
 const VoidFunction = () => {};
 
 const CohortComparisonApp = (configuration: CohortComparisonConfiguration) => {
-  const { index: COHORT_FILTER_INDEX } = configuration;
-  const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
+  const { index: COHORT_FILTER_INDEX, dataTypename } = configuration;
+  const { selectionScreenOpen, setSelectionScreenOpen, setActiveApp } =
     useContext(SelectionScreenContext);
 
   const allCohortsIds = useCoreSelector(selectCohortIds);
 
   const primaryCohort = useCoreSelector((state) => selectCurrentCohort(state));
 
-  const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
+  const [comparisonCohort, setComparisonCohort] = useState<Cohort | undefined>(
+    undefined,
+  );
   const comparisonCohortObj: Cohort | null = useCoreSelector((state) =>
     comparisonCohort?.id ? selectCohortById(state, comparisonCohort.id) : null,
   );
@@ -83,12 +86,10 @@ const CohortComparisonApp = (configuration: CohortComparisonConfiguration) => {
       index={COHORT_FILTER_INDEX}
       dataTypename={configuration.dataTypename}
     />
+  ) : comparisonCohort ? (
+    <CohortComparison cohorts={cohorts} demoMode={false} {...configuration} />
   ) : (
-    <CohortComparison
-      cohorts={cohorts}
-      demoMode={false}
-      configuration={configuration}
-    />
+    <ErrorCard message="No cohort available" />
   );
 };
 

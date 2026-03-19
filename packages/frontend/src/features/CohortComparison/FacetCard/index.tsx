@@ -10,15 +10,9 @@ import {
 } from '@gen3/core';
 import FunctionButton from '../../../components/FunctionButton';
 import CohortCreationButton from '../../../components/Buttons/CohortCreationButton';
-import {
-  COHORT_A_COLOR,
-  COHORT_B_COLOR,
-  CohortComparisonType,
-  UPPER_FIRST_FIELDS,
-} from '../types';
+import { COHORT_A_COLOR, COHORT_B_COLOR, CohortComparisonType } from '../types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { createFilters, formatBucket } from './utils';
-import { upperFirst } from 'lodash';
 import { labelToPlural } from '../../../utils/labels';
 import ComparisonBarChart from '../../../components/charts/echarts/ComparisonBarChart';
 
@@ -75,10 +69,6 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     [formattedData],
   );
 
-  if (field === 'diagnoses.age_at_diagnosis') {
-    uniqueValues.sort();
-  }
-
   formattedData = useMemo(
     () =>
       formattedData.map((cohort) =>
@@ -92,22 +82,6 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       ),
     [formattedData, uniqueValues],
   );
-
-  const barChartData = formattedData.map((cohort, idx) => ({
-    x: cohort.map((facet) =>
-      UPPER_FIRST_FIELDS.includes(field)
-        ? upperFirst(facet.key)
-        : fieldNameToLabel(facet.key),
-    ),
-    y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
-    customdata: cohort.map((facet) => facet.count),
-    hovertemplate: `<b>${
-      cohorts[idx === 0 ? 'primary_cohort' : 'comparison_cohort']?.name
-    }</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
-    marker: {
-      color: idx === 0 ? COHORT_A_COLOR : COHORT_B_COLOR,
-    },
-  }));
 
   const downloadTSVFile = () => {
     const header = [
@@ -139,6 +113,8 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       `${fieldLabel}-comparison.tsv`,
     );
   };
+
+  console.log('formattedData', formattedData);
 
   return (
     <Paper
@@ -204,9 +180,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                   key={`${field}_${value}`}
                 >
                   <td data-testid={`text-analysis-${value}`} className="pl-2">
-                    {UPPER_FIRST_FIELDS.includes(field)
-                      ? upperFirst(value)
-                      : fieldNameToLabel(value)}
+                    {fieldNameToLabel(value)}
                   </td>
                   <td>
                     <CohortCreationButton

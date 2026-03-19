@@ -2,10 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { ActionIcon, Menu, Tooltip } from '@mantine/core';
 import { processLabel } from '../utils';
 import { ChartProps } from '../types';
-import ReactECharts, {
-  ReactEChartsHandle,
-  ReactEChartsProps,
-} from './ReactECharts';
+import ReactECharts, { ReactEChartsHandle, ReactEChartsProps, } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
@@ -110,16 +107,18 @@ const ComparisonBarChart = ({
           return `${colorSquare}${p.name}: <b>${p.value}</b>`;
         },
       },
-      ...processAxis(
-        data[0],
-        maxBins,
-        labelTruncation,
-        xLabel,
-        yLabel,
-        showXTicks,
-        showYTicks,
-        xLabelRotation,
-      ),
+      ...(data.length > 0
+        ? processAxis(
+            data[0],
+            maxBins,
+            labelTruncation,
+            xLabel,
+            yLabel,
+            showXTicks,
+            showYTicks,
+            xLabelRotation,
+          )
+        : {}),
       series: data.map((d: HistogramDataArray, i: number) => ({
         name: labels[i],
         type: 'bar',
@@ -130,15 +129,16 @@ const ComparisonBarChart = ({
       })),
     };
   }, [
-    colors,
     data,
-    labelTruncation,
     maxBins,
-    showXTicks,
-    showYTicks,
+    labelTruncation,
     xLabel,
     yLabel,
+    showXTicks,
+    showYTicks,
     xLabelRotation,
+    labels,
+    colors,
   ]);
 
   if (!data || data.length === 0)

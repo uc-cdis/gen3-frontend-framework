@@ -38,10 +38,16 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
 
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
 
+  console.log('Available cohorts:', availableCohorts);
+  console.log('index', index);
+  console.log('dataTypename', dataTypename);
+
   const cohorts = useDeepCompareMemo(
     () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort.id),
     [primaryCohort, availableCohorts],
   );
+
+  console.log('Available cohorts:', cohorts);
 
   const [selectedCohort, setSelectedCohort] = useState<Cohort | undefined>();
 
@@ -49,6 +55,17 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     //do something when the row selection changes...
     console.info({ rowSelection });
   }, [rowSelection]);
+
+  const cohortList = useMemo(
+    () =>
+      cohorts.map((cohort) => ({
+        id: cohort.id,
+        name: cohort.name,
+        counts: cohort.counts,
+        select: false,
+      })),
+    [cohorts],
+  );
 
   const cohortListTableColumns = useMemo(
     () =>
@@ -84,6 +101,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         },
         {
           accessorKey: 'name',
+          accessorFn: (cohort) => cohort.name,
           header: 'Name',
           Cell: ({ row }) => (
             <label
@@ -121,10 +139,10 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     manualSorting: true,
     manualPagination: false,
     paginateExpandedRows: false,
-    rowCount: cohorts.length,
+    rowCount: cohortList.length,
     enableTopToolbar: false,
     layoutMode: 'semantic',
-    enableRowSelection: true,
+    enableRowSelection: false,
     getRowId: (row) => row.id,
     onRowSelectionChange: setRowSelection,
     mantineTableHeadCellProps: {

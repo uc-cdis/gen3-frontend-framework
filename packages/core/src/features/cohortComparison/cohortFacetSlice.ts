@@ -24,22 +24,25 @@ export const cohortFacetSlice = graphQLAPI.injectEndpoints({
         primaryCohort,
         comparisonCohort,
         continuousFacetsInterval = undefined,
-      }) => ({
-        url: `${GEN3_ANALYSIS_API}/compare/facets`,
-        method: 'POST',
-        body: {
-          doc_type: index,
-          cohort1: primaryCohort,
-          cohort2: comparisonCohort,
-          facets: facetFields,
-          interval:
-            continuousFacetsInterval ??
-            continuousFacets.reduce((acc: Record<string, number>, x) => {
-              acc[x] = DAYS_IN_DECADE;
-              return acc;
-            }, {}),
-        },
-      }),
+      }) => {
+        console.log('Fetching cohort facets for index:', index);
+        return {
+          url: `${GEN3_ANALYSIS_API}/compare/facets`,
+          method: 'POST',
+          body: {
+            doc_type: index,
+            cohort1: primaryCohort,
+            cohort2: comparisonCohort,
+            facets: facetFields,
+            interval:
+              continuousFacetsInterval ??
+              continuousFacets.reduce((acc: Record<string, number>, x) => {
+                acc[x] = DAYS_IN_DECADE;
+                return acc;
+              }, {}),
+          },
+        };
+      },
       transformResponse: (response: any) => {
         const facets1 = response?.cohort1?.facets;
         const facets2 = response?.cohort2?.facets;

@@ -25,6 +25,11 @@ import {
   ClinicalDataAnalysisServerSideProps,
 } from './pages/ClinicalDataAnalysis';
 
+import {
+  CohortComparisonPage,
+  CohortComparisonServerSideProps,
+} from './pages/CohortComparison';
+
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
@@ -207,6 +212,8 @@ export {
   AnalysisPageGetServerSideProps,
   ClinicalDataAnalysisPage,
   ClinicalDataAnalysisServerSideProps,
+  CohortComparisonPage,
+  CohortComparisonServerSideProps,
   Custom403Page,
   Custom404Page,
   sessionToken,

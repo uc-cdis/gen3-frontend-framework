@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { pickBy } from 'lodash';
 import { LoadingOverlay } from '@mantine/core';
-import { convertFilterSetToGqlFilter, FilterSet, useCohortFacetsQuery, } from '@gen3/core';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  useCohortFacetsQuery,
+} from '@gen3/core';
 
 import CohortCard from './CohortCard/CohortCard';
 import FacetCard from './FacetCard';
-import { CohortComparisonConfiguration, CohortComparisonFields } from './types';
+import { CohortComparisonConfiguration } from './types';
 import { DemoText } from '../../components/tailwindComponents';
 
 export interface CohortComparisonType {
@@ -23,27 +27,29 @@ export interface CohortComparisonType {
   };
 }
 
-interface CohortComparisonProps {
-  configuration: CohortComparisonConfiguration;
+interface CohortComparisonProps extends CohortComparisonConfiguration {
   cohorts: CohortComparisonType;
   demoMode: boolean;
 }
 
 const CohortComparison: React.FC<CohortComparisonProps> = ({
-  configuration,
+  index,
+  dataTypename,
+  uniqueIdField,
+  facets,
   cohorts,
   demoMode = false,
 }: CohortComparisonProps) => {
-  const [selectedCards, setSelectedCards] = useState({
-    survival: true,
-    ethnicity: false,
-    gender: true,
-    race: true,
-    vital_status: true,
-    age_at_diagnosis: true,
-  } as Record<string, boolean>);
+  const facetCards = facets.reduce(
+    (acc, facet) => {
+      acc[facet.field] = true;
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
 
-  const { index, dataTypename, uniqueIdField, facets } = configuration;
+  const [selectedCards, setSelectedCards] =
+    useState<Record<string, boolean>>(facetCards);
 
   const [survivalPlotSelectable, setSurvivalPlotSelectable] = useState(true);
   const fieldsToQuery = facets.map((f) => f.field);
@@ -53,6 +59,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     isFetching: cohortFacetsFetching,
     isLoading: cohortFacetsLoading,
     isUninitialized: cohortFacetsUninitialized,
+    isError: cohortFacetsError,
   } = useCohortFacetsQuery({
     index,
     continuousFacets: ['diagnoses.age_at_diagnosis'],
@@ -62,6 +69,9 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
       cohorts.comparison_cohort.filter,
     ),
   });
+
+  console.log('cohortFacetsData', cohortFacetsData);
+  console.log('cohortFacetsError', cohortFacetsError);
 
   const counts = [
     cohorts.primary_cohort.counts,
@@ -91,19 +101,14 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                 visible={
                   cohortFacetsFetching ||
                   cohortFacetsUninitialized ||
-                  cohortFacetsLoading
+                  cohortFacetsLoading ||
+                  cohortFacetsData === undefined
                 }
                 zIndex={1} // need z-index 1
               />
               <FacetCard
-                data={
-                  cohortFacetsData?.aggregations
-                    ? cohortFacetsData.aggregations.map(
-                        (d: any) => d[CohortComparisonFields[selectedCard]],
-                      )
-                    : []
-                }
-                field={CohortComparisonFields[selectedCard]}
+                data={[]}
+                field={selectedCard}
                 counts={counts}
                 cohorts={cohorts}
                 dataTypename={dataTypename}

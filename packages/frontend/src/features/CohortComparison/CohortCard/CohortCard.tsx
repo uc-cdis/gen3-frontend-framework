@@ -2,8 +2,9 @@ import React from 'react';
 import { Switch, useMantineTheme } from '@mantine/core';
 import CohortVennDiagram from '../CohortVennDiagram';
 import Link from 'next/link';
-import { CohortComparisonType, FIELD_LABELS } from '../types';
+import { CohortComparisonType } from '../types';
 import CohortTable from './CohortTable';
+import { fieldNameToLabel } from '@gen3/core';
 
 interface CohortCardProps {
   selectedCards: Record<string, boolean>;
@@ -91,7 +92,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
                   })
                 }
                 disabled={value === 'survival' && !survivalPlotSelectable}
-                label={value === 'survival' ? field : FIELD_LABELS[field]}
+                label={value === 'survival' ? field : fieldNameToLabel(field)}
               />
             </li>
           ))}
