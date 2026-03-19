@@ -41,9 +41,13 @@ export const UPPER_FIRST_FIELDS = ['demographic.vital_status'];
 
 export interface ComparisonFacetDefinition extends FacetDefinition {
   color: string;
+  dataTypename: string;
+  uniqueIdField: string;
 }
 
 export interface CohortComparisonConfiguration {
   index: string;
+  uniqueIdField: string;
+  dataTypename: string;
   facets: Array<ComparisonFacetDefinition>;
 }

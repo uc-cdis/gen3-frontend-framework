@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { LoadingOverlay, Tooltip } from '@mantine/core';
 import { FilterSet, useLazyGetObjectIdsQuery } from '@gen3/core';
-import { WithOrWithoutCohortType } from './types';
-import AddToExistingCohortModal from './AddToExistingCohortModal';
+import { WithOrWithoutCohortType } from '../../features/ClinicalDataAnalysis/CDaveCard/types';
+import AddToExistingCohortModal from '../../features/ClinicalDataAnalysis/CDaveCard/AddToExistingCohortModal';
 import { modals } from '@mantine/modals';
-import { getObjectIdsFromFilter } from './utils';
-import { DropdownWithIcon } from '../../../components/DropdownWithIcon/DropdownWithIcon';
-import { CountsIcon } from '../../../components/tailwindComponents';
-import { labelToPlural } from '../../../utils/labels';
+import { getObjectIdsFromFilter } from '../../features/ClinicalDataAnalysis/CDaveCard/utils';
+import { DropdownWithIcon } from '../DropdownWithIcon/DropdownWithIcon';
+import { CountsIcon } from '../tailwindComponents';
+import { labelToPlural } from '../../utils/labels';
 
 interface CreateCohortFromFiltersButtonProps {
   filters: FilterSet;

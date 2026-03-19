@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { pickBy } from 'lodash';
 import { LoadingOverlay } from '@mantine/core';
-import { convertFilterSetToGqlFilter, FilterSet } from '@gen3/core';
-import { useCohortFacetsQuery } from '@/core/features/cohortComparison';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  useCohortFacetsQuery,
+} from '@gen3/core';
 
 import CohortCard from './CohortCard/CohortCard';
-import SurvivalCard from './SurvivalCard';
 import FacetCard from './FacetCard';
-import { DemoText } from '@/components/tailwindComponents';
-import { CohortComparisonFields } from './types';
+import { CohortComparisonConfiguration, CohortComparisonFields } from './types';
+import { DemoText } from '../../components/tailwindComponents';
 
 export interface CohortComparisonType {
   primary_cohort: {
@@ -26,20 +28,13 @@ export interface CohortComparisonType {
 }
 
 interface CohortComparisonProps {
-  readonly cohorts: CohortComparisonType;
-  readonly demoMode: boolean;
+  configuration: CohortComparisonConfiguration;
+  cohorts: CohortComparisonType;
+  demoMode: boolean;
 }
 
-const fields = {
-  survival: 'Survival',
-  ethnicity: 'demographic.ethnicity',
-  gender: 'demographic.gender',
-  race: 'demographic.race',
-  vital_status: 'demographic.vital_status',
-  age_at_diagnosis: 'diagnoses.age_at_diagnosis',
-};
-
 const CohortComparison: React.FC<CohortComparisonProps> = ({
+  configuration,
   cohorts,
   demoMode = false,
 }: CohortComparisonProps) => {
@@ -52,8 +47,10 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     age_at_diagnosis: true,
   } as Record<string, boolean>);
 
+  const { index, dataTypename, uniqueIdField, facets } = configuration;
+
   const [survivalPlotSelectable, setSurvivalPlotSelectable] = useState(true);
-  const fieldsToQuery = Object.values(fields).filter((v) => v !== 'Survival');
+  const fieldsToQuery = facets.map((f) => f.field);
 
   const {
     data: cohortFacetsData,
@@ -61,7 +58,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     isLoading: cohortFacetsLoading,
     isUninitialized: cohortFacetsUninitialized,
   } = useCohortFacetsQuery({
-    index: 'case_centric',
+    index,
     continuousFacets: ['diagnoses.age_at_diagnosis'],
     facetFields: fieldsToQuery,
     primaryCohort: convertFilterSetToGqlFilter(cohorts.primary_cohort.filter),
@@ -86,16 +83,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-5">
         <div className="flex flex-col gap-y-4 lg:col-span-3 order-2 lg:order-1">
-          {selectedCards.survival && (
-            <div className="border-1 border-base-lighter">
-              <SurvivalCard
-                cohorts={cohorts}
-                counts={counts}
-                setSurvivalPlotSelectable={setSurvivalPlotSelectable}
-                isSetsloading={false}
-              />
-            </div>
-          )}
           {Object.keys(
             pickBy(selectedCards, (v, k) => v && k !== 'survival'),
           ).map((selectedCard) => (
@@ -123,6 +110,9 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                 field={CohortComparisonFields[selectedCard]}
                 counts={counts}
                 cohorts={cohorts}
+                dataTypename={dataTypename}
+                uniqueIdField={uniqueIdField}
+                index={index}
               />
             </div>
           ))}
@@ -134,8 +124,9 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             counts={counts}
             cohorts={cohorts}
             options={fields}
+            index={index}
             survivalPlotSelectable={survivalPlotSelectable}
-            casesFetching={cohortFacetsFetching}
+            objectsFetching={cohortFacetsFetching}
           />
         </div>
       </div>

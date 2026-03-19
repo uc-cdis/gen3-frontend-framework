@@ -20,7 +20,7 @@ import {
 } from '../utils';
 import { DropdownIcon } from '../icons';
 
-import CreateCohortFromFiltersButton from './CreateCohortFromFiltersButton';
+import CreateCohortFromFiltersButton from '../../../components/Buttons/CreateCohortFromFiltersButton';
 import { labelToPlural } from '../../../utils/labels';
 
 interface CardControlsProps {

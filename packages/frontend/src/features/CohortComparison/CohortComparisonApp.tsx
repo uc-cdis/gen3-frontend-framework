@@ -9,12 +9,15 @@ import {
   usePrevious,
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
-import { SelectionScreenContext } from '@/components/analysis';
+import { SelectionScreenContext } from '../Analysis/context';
 import CohortComparison from './CohortComparison';
 import AdditionalCohortSelection from './AdditionalCohortSelection';
-import { COHORT_FILTER_INDEX } from '@/core';
+import { CohortComparisonConfiguration } from './types';
 
-const CohortComparisonApp = () => {
+const VoidFunction = () => {};
+
+const CohortComparisonApp = (configuration: CohortComparisonConfiguration) => {
+  const { index: COHORT_FILTER_INDEX } = configuration;
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
 
@@ -74,14 +77,18 @@ const CohortComparisonApp = () => {
 
   return selectionScreenOpen ? (
     <AdditionalCohortSelection
-      app={app}
-      setOpen={setSelectionScreenOpen}
-      setActiveApp={setActiveApp}
+      setOpen={setSelectionScreenOpen ?? VoidFunction}
+      setActiveApp={setActiveApp ?? VoidFunction}
       setComparisonCohort={setComparisonCohort}
       index={COHORT_FILTER_INDEX}
+      dataTypename={configuration.dataTypename}
     />
   ) : (
-    <CohortComparison cohorts={cohorts} demoMode={false} />
+    <CohortComparison
+      cohorts={cohorts}
+      demoMode={false}
+      configuration={configuration}
+    />
   );
 };
 

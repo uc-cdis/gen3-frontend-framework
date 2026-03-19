@@ -712,6 +712,7 @@ export const buildGetStatsAggregationQuery = (
 
 export const {
   useGetRawDataAndTotalCountsQuery,
+  useLazyGetRawDataAndTotalCountsQuery,
   useGetAccessibleDataQuery,
   useGetAllFieldsForTypeQuery,
   useGetAggsQuery,

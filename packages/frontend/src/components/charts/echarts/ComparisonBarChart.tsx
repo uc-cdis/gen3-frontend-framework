@@ -1,116 +1,23 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { ActionIcon, Menu, Tooltip } from '@mantine/core';
-import { processLabel, truncateString } from '../utils';
+import { processLabel } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, {
   ReactEChartsHandle,
   ReactEChartsProps,
 } from './ReactECharts';
 import { HistogramDataArray } from '@gen3/core';
-import type { EChartsOption } from 'echarts';
-import { graphic } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { filterMissing } from './utils';
+import { ErrorCard } from '../../../index';
+import { processAxis, processChartData } from './BarChart';
 
-interface BarChartData {
-  value: number;
-  name: string;
+interface ComparisonBarChartProps extends Omit<ChartProps, 'data' | 'color'> {
+  data: Array<HistogramDataArray>;
+  labels: string[];
+  colors?: string[];
 }
-
-export const processChartData = (
-  facetData: HistogramDataArray,
-  maxBins = 100,
-  truncateLength = 35,
-): BarChartData[] => {
-  if (!facetData) {
-    return [];
-  }
-  const data = filterMissing(facetData);
-
-  if (data.length === 0) return [];
-
-  // get max value in data
-
-  let max = Math.max(...data.map((d: any) => d.count));
-  if (max < 0) {
-    max = 1;
-  }
-
-  const results = data.slice(0, maxBins).map((d: any) => {
-    if (d.count >= 0)
-      return {
-        value: d.count,
-        name: truncateString(processLabel(d.key), truncateLength),
-      };
-
-    // handle redacted data
-    return {
-      value: max,
-      groupId: 'redacted',
-      name: truncateString(processLabel(d.key), 35),
-      itemStyle: {
-        opacity: 0.5,
-        color: new graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: '#0264ff00' },
-          { offset: 1, color: '#0264ff' },
-        ]),
-        decal: {
-          symbolSize: 1.15,
-          dashArrayX: [2, 1],
-          dashArrayY: [2, 1],
-        },
-      },
-    };
-  });
-  return results;
-};
-
-export const processAxis = (
-  facetData: HistogramDataArray,
-  maxBins = 100,
-  truncateLength = 35,
-  xAxisLabel: string | undefined = undefined,
-  yAxisLabel: string | undefined = undefined,
-  showXAxisTicks = true,
-  showYAxisTicks = true,
-  xLabelRotation = 0,
-) => {
-  const data = filterMissing(facetData);
-
-  const categories = data
-    .slice(0, maxBins)
-    .map((d: any) => truncateString(processLabel(d.key), truncateLength));
-  return {
-    yAxis: [
-      {
-        type: 'value',
-        name: yAxisLabel,
-        axisTick: { show: showYAxisTicks },
-        axisLine: { show: false },
-        nameLocation: 'middle',
-        nameGap: 35,
-        nameRotate: 90,
-      },
-    ],
-    xAxis: [
-      {
-        label: { show: !!xAxisLabel, name: xAxisLabel },
-        type: 'category',
-        data: categories,
-        name: xAxisLabel,
-        axisLabel: {
-          rotate: xLabelRotation,
-          width: 80,
-          overflow: 'truncate', // 'truncate' | 'break' | 'breakAll'
-          ellipsis: '...',
-        },
-        axisTick: { show: showXAxisTicks },
-        axisLine: { show: false },
-      },
-    ],
-  } as EChartsOption;
-};
 
 interface BarChartDownloadProps {
   /** Enable the download menu on the chart */
@@ -119,19 +26,20 @@ interface BarChartDownloadProps {
   downloadFileName?: string;
 }
 
-const BarChart = ({
+const ComparisonBarChart = ({
   data,
+  labels,
+  colors,
   maxBins = 100,
   labelTruncation = 35,
   showXTicks = false,
   showYTicks = true,
   xLabel = undefined,
   yLabel = undefined,
-  color = undefined,
   xLabelRotation = 0,
   enableDownload = false,
   downloadFileName = 'bar-chart',
-}: ChartProps & BarChartDownloadProps) => {
+}: ComparisonBarChartProps & BarChartDownloadProps) => {
   const chartRef = useRef<ReactEChartsHandle>(null);
 
   const handleDownloadPNG = useCallback(() => {
@@ -203,7 +111,7 @@ const BarChart = ({
         },
       },
       ...processAxis(
-        data,
+        data[0],
         maxBins,
         labelTruncation,
         xLabel,
@@ -212,22 +120,17 @@ const BarChart = ({
         showYTicks,
         xLabelRotation,
       ),
-      series: [
-        {
-          type: 'bar',
-          ...(color
-            ? {
-                itemStyle: {
-                  color: color,
-                },
-                data: processChartData(data, maxBins, labelTruncation),
-              }
-            : {}),
+      series: data.map((d: HistogramDataArray, i: number) => ({
+        name: labels[i],
+        type: 'bar',
+        itemStyle: {
+          color: colors ? colors[i] : undefined,
         },
-      ],
+        data: processChartData(d, maxBins, labelTruncation),
+      })),
     };
   }, [
-    color,
+    colors,
     data,
     labelTruncation,
     maxBins,
@@ -237,6 +140,14 @@ const BarChart = ({
     yLabel,
     xLabelRotation,
   ]);
+
+  if (!data || data.length === 0)
+    return <ErrorCard message="No data available" />;
+
+  if (data.length !== labels.length)
+    throw new Error(
+      'ComparisonBarChart: data and labels must be arrays of the same length',
+    );
 
   return (
     <div className="w-full h-64 relative">
@@ -275,4 +186,4 @@ const BarChart = ({
   );
 };
 
-export default BarChart;
+export default ComparisonBarChart;
