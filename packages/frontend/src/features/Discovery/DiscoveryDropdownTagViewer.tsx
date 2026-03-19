@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
 import { categoryObject } from './types';
 import { useDiscoveryContext } from './DiscoveryProvider';
 
@@ -41,6 +40,7 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
     selectedTags,
     setSelectedTags,
   } = useDiscoveryContext();
+
   const containerData = category.tags.map((tag) => ({
     value: tag,
     label: tag,
@@ -48,7 +48,7 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
   const [containerSelections, setContainerSelections] = useState(
     [] as string[],
   );
-
+  const prevSelectionsRef = useRef<string[]>([]);
   useEffect(() => {
     const updatedSelections = Object.keys(selectedTags).filter(
       (tag) => selectedTags[tag],
@@ -57,41 +57,35 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
       category.tags.includes(item),
     );
     setContainerSelections(selectedItemsThatExistInContainer);
+    prevSelectionsRef.current = selectedItemsThatExistInContainer;
   }, [selectedTags]);
 
-  const [previousContainerValues, setPreviousContainerValues] = useState(
-    [] as string[],
-  );
-  const handleChange = (category: string, value: string[]) => {
-    setPreviousContainerValues(value);
-    setSelectedTags((prevTags) => {
-      // Create a copy of the previous tags
-      const updatedTags = { ...prevTags };
-      if (previousContainerValues.length > value.length) {
-        // Need to remove tags since the update removes tags
-        const valuesToBeRemoved = previousContainerValues.filter(
-          (curr) => !value.includes(curr),
-        );
-        valuesToBeRemoved.forEach(
-          (valueToBeRemoved) => delete updatedTags[valueToBeRemoved],
-        );
-      } else {
-        // Need to add tags
-        _.forEach(value, (tag) => {
-          if (!updatedTags[tag]) {
-            updatedTags[tag] = true;
-          }
-        });
-      }
-      return updatedTags; // Update state with the new tags
+  const handleChange = (value: string[]) => {
+    const previousValues = prevSelectionsRef.current;
+    const removedTags = previousValues.filter((tag) => !value.includes(tag));
+    console.log('value', value);
+
+    const addedTags = value.filter((tag) => !previousValues.includes(tag));
+
+    setSelectedTags((prev) => {
+      const updated = { ...prev };
+      removedTags.forEach((tag) => delete updated[tag]);
+
+      addedTags.forEach((tag) => {
+        updated[tag] = true;
+      });
+      return updated;
     });
+    setContainerSelections(value);
+    prevSelectionsRef.current = value;
   };
+
   return (
     <div key={category.categoryDisplayName?.toString()}>
       <MultiSelect
         placeholder={category.categoryDisplayName}
         value={containerSelections}
-        onChange={(value) => handleChange(category.categoryDisplayName, value)}
+        onChange={(value) => handleChange(value)}
         clearable
         searchable
         data={containerData}
