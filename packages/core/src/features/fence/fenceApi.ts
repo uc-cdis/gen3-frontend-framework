@@ -28,7 +28,7 @@ interface PresignedUrlRequest {
   readonly what: string;
 }
 
-interface PresignedUrlResponse {
+export interface PresignedUrlResponse {
   readonly url: string;
 }
 

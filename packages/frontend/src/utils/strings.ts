@@ -19,3 +19,7 @@ export const toDisplayName = (field: string): string => {
     .map((w) => capitalize(w))
     .join(' ');
 };
+
+export const removeMultipleSlashes = (str: string): string => {
+  return str.replace(/\/+/g, '/');
+};
