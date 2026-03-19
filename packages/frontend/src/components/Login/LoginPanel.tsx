@@ -18,8 +18,7 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
     redirectPath = redirect ?? '/';
   }
   // do not go back to /Login as a redirect
-  if (redirect?.includes('Login'))
-    redirectPath = '/';
+  if (redirect?.includes('Login')) redirectPath = '/';
 
   if (!GEN3_REDIRECT_URL) {
     return redirectPath;

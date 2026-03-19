@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import DiscoveryProvider from './DiscoveryProvider';
-import { Button, Text } from '@mantine/core';
+import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
 import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
@@ -18,6 +18,8 @@ import StudyProvider from '../Study/StudyProvider';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import SearchInputSelectableFields from './Search/SearchInputSelectableFields';
 import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
+import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
+import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 
 export interface DiscoveryIndexPanelProps {
   discoveryConfig: DiscoveryIndexConfig;
@@ -61,6 +63,9 @@ const DiscoveryIndexPanel = ({
   );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
+    {},
+  );
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
@@ -92,6 +97,7 @@ const DiscoveryIndexPanel = ({
     suggestions,
     summaryStatistics,
     charts: chartData,
+    tagCategoryData,
   } = dataHook({
     pagination: {
       offset: pagination.pageIndex * pagination.pageSize,
@@ -102,8 +108,8 @@ const DiscoveryIndexPanel = ({
     sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
+    selectedTags: selectedTags,
   });
-
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';
     const filterSelectedMembers = (data: Array<Record<string, any>>) =>
@@ -115,6 +121,12 @@ const DiscoveryIndexPanel = ({
 
   const [showAdvancedSearch, { toggle: toggleAdvancedSearch }] =
     useDisclosure(false);
+
+  const [isDropdownTagViewerOpen, setIsDropdownTagViewerOpen] = useState(false);
+  const tagViewerContentRef = useRef<HTMLDivElement | null>(null);
+  const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
+  const enableSearchableTags =
+    discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
@@ -135,39 +147,108 @@ const DiscoveryIndexPanel = ({
             <div className="flex items-center p-2 mb-4 bg-base-max rounded-lg">
               {indexSelector}
               <SummaryStatisticPanel summaries={summaryStatistics} />
-              <div className="w-3/4 flex flex-col">
-                <SearchInputWithSuggestions
-                  searchBarTerms={searchBarTerms}
-                  setSearchBarTerms={setSearchBarTerms}
-                  suggestions={suggestions}
-                  clearSearch={() => {
-                    setSearchBarTerms([]);
-                  }}
-                  searchChanged={(v) => setSearchBarTerms(v.split(' '))}
-                  placeholder={
-                    discoveryConfig?.features?.search?.searchBar?.placeholder ??
-                    'Search...'
-                  }
-                  label={
-                    discoveryConfig?.features?.search?.searchBar?.inputSubtitle
-                  }
-                />
-                <SearchInputSelectableFields
-                  searchMode={searchMode}
-                  setSearchMode={setSearchMode}
-                  searchableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableTextFields
-                  }
-                  searchableAndSelectableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableAndSelectableTextFields
-                  }
-                  setSelectedFieldsForSearchIndexing={
-                    setSelectedFieldsForSearchIndexing
-                  }
-                />
-              </div>
+              {enableSearchBar && (
+                <div className="w-3/4 flex flex-col">
+                  <Grid>
+                    <Grid.Col
+                      span={{ md: enableSearchableTags ? 7 : 10, sm: 12 }}
+                    >
+                      <SearchInputWithSuggestions
+                        searchBarTerms={searchBarTerms}
+                        setSearchBarTerms={setSearchBarTerms}
+                        suggestions={suggestions}
+                        clearSearch={() => {
+                          setSearchBarTerms([]);
+                        }}
+                        searchChanged={(v) => setSearchBarTerms(v.split(' '))}
+                        placeholder={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.placeholder ?? 'Search...'
+                        }
+                        label={
+                          discoveryConfig?.features?.search?.searchBar
+                            ?.inputSubtitle
+                        }
+                      />
+                    </Grid.Col>
+                    {enableSearchableTags && (
+                      <Grid.Col
+                        span={{ sm: 12, md: 5 }}
+                        className="md:mt-5 sm:mt-1"
+                      >
+                        <Button
+                          onClick={() => setSelectedTags({})}
+                          variant="outline"
+                          leftSection={<IoIosRefresh />}
+                          className={
+                            Object.keys(selectedTags).length === 0
+                              ? 'border-gray-400 mr-1 mt-1'
+                              : 'mr-1  mt-1'
+                          }
+                          data-disabled={Object.keys(selectedTags).length === 0}
+                        >
+                          Reset
+                        </Button>
+                        <Button
+                          className="mt-1"
+                          onClick={() =>
+                            setIsDropdownTagViewerOpen((prev) => !prev)
+                          }
+                          disabled={data.length === 0}
+                          variant="outline"
+                          leftSection={
+                            isDropdownTagViewerOpen ? (
+                              <IoIosArrowUp />
+                            ) : (
+                              <IoIosArrowDown />
+                            )
+                          }
+                        >
+                          {`${
+                            discoveryConfig?.features?.search?.tagSearchDropdown
+                              ?.collapsibleButtonText || 'Tag Panel'
+                          }`}
+                        </Button>
+                      </Grid.Col>
+                    )}
+                  </Grid>
+                  <SearchInputSelectableFields
+                    searchMode={searchMode}
+                    setSearchMode={setSearchMode}
+                    searchableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableTextFields
+                    }
+                    searchableAndSelectableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableAndSelectableTextFields
+                    }
+                    setSelectedFieldsForSearchIndexing={
+                      setSelectedFieldsForSearchIndexing
+                    }
+                  />
+                  <div
+                    ref={tagViewerContentRef}
+                    className={`transition-all duration-300 ease-in-out mt-2 ${
+                      isDropdownTagViewerOpen
+                        ? 'max-h-screen opacity-100'
+                        : 'max-h-0 opacity-0'
+                    } overflow-hidden`}
+                    style={{
+                      height:
+                        isDropdownTagViewerOpen && tagViewerContentRef.current
+                          ? `${tagViewerContentRef.current.scrollHeight}px`
+                          : '0px',
+                    }}
+                  >
+                    <DiscoveryDropdownTagViewer
+                      tagCategoryData={tagCategoryData}
+                      selectedTags={selectedTags}
+                      setSelectedTags={setSelectedTags}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             {discoveryConfig?.features?.aiSearch && (
               <div className="mb-4">
