@@ -117,7 +117,6 @@ const DiscoveryDropdownTagViewer = ({
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
 
   return (
-    <div>
       <div
         className={`grid sm:grid-cols-1
           ${tagCategoryData.length > 1 && ' md:grid-cols-2 gap-4'}`}
@@ -128,7 +127,6 @@ const DiscoveryDropdownTagViewer = ({
           </div>
         ))}
       </div>
-    </div>
   );
 };
 

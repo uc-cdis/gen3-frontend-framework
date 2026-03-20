@@ -4,6 +4,7 @@ export { registerMetadataSchemaApp } from '../features/Dictionary/metadata/regis
 export { registerCohortDiscoveryApp } from '../features/CohortDiscovery/registerApp';
 export { registerExplorerDefaultCellRenderers } from '../features/CohortBuilder/ExplorerTable/ExplorerTableCellRenderers';
 export { registerCohortBuilderDefaultPreviewRenderers } from '../features/CohortBuilder/ExplorerTable/ExploreTableDetails/ExplorerTableDetailsPanelFactory';
+export { registerIGVApp } from '../features/genomic/igv/registerApp';
 export { type TenStringArray } from '../utils/types';
 export {
   createMantineTheme,
