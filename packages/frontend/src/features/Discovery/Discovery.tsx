@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Select, Tabs } from '@mantine/core';
 import { DiscoveryConfig, DiscoveryIndexConfig } from './types';
-import DiscoveryIndexPanel from './DiscoveryIndexPanel';
+import DiscoveryIndexPanel, {
+  DiscoveryIndexPanelProps,
+} from './DiscoveryIndexPanel';
 import MessagePanel from '../../components/MessagePanel';
 import DiscoveryProvider from './DiscoveryProvider';
 
@@ -61,9 +63,6 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
           {menuItems.map((item, i) => (
             <Tabs.Panel value={item.value} key={item.value}>
               <DiscoveryIndexPanel
-                discoveryConfig={
-                  discoveryConfig.metadataConfig[Number.parseInt(item.value)]
-                }
                 indexSelector={
                   menuItems.length < 0 ? (
                     <Select
