@@ -31,6 +31,16 @@ export interface SearchTerms {
   selectedTags?: Record<string, boolean>;
 }
 
+export interface selectedTags {
+  [key: string]: boolean;
+}
+
+export interface categoryObject {
+  categoryDisplayName: string;
+  tags: string[];
+  color: string;
+}
+
 export interface DiscoveryDataLoaderProps extends Record<string, any> {
   pagination: MetadataPaginationParams;
   searchTerms: SearchTerms;
@@ -56,6 +66,7 @@ export interface DiscoverDataHookResponse {
   charts: AggregationsData; // bucket counts for charts
   suggestions: Array<string>;
   clearSearch?: () => void;
+  tagCategoryData?: categoryObject[] | undefined;
 }
 
 export type DiscoveryTableDataHook = (

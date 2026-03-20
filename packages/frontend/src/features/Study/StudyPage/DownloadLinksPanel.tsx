@@ -80,9 +80,7 @@ const DownloadLinksPanel = ({
                       <Button
                         component="a"
                         href={`${GEN3_FENCE_API}/data/download/${encodeURIComponent(id)}?expires_in=900&redirect`}
-                        target="_blank"
-                        rel="noreferrer"
-                        type="text"
+                        download={entry['titleField'] || 'download_from_gen3'}
                         leftSection={<DownloadIcon />}
                         data-disabled={!id}
                       >

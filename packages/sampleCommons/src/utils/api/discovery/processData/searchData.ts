@@ -1,14 +1,14 @@
 import MiniSearch from 'minisearch';
 import { JSONObject } from '@gen3/core';
 import { JSONPath } from 'jsonpath-plus';
-import { SearchMode } from '../types/discoveryApi';
+import { DiscoveryIndexConfig, SearchMode } from '../types/discoveryApi';
 
 const searchData = (
   data: Array<JSONObject>,
   searchTerms: Array<string>,
   selectedFieldsForSearchIndexing: Array<string>,
   searchMode: SearchMode,
-  discoveryConfig: any,
+  discoveryConfig: DiscoveryIndexConfig,
 ) => {
   // do not execute search if there are no search terms
   if (searchTerms.length === 0 || searchTerms.every((item) => item === ''))
