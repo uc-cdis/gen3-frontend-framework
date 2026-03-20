@@ -1,19 +1,18 @@
 import React, { createContext, useState } from 'react';
 import { DiscoveryIndexConfig } from './types';
-import { JSONObject } from '@gen3/core';
 
 interface DiscoveryProviderValue {
   discoveryConfig: DiscoveryIndexConfig;
-  selectedTags: { [key: string]: boolean }; // Include selectedTags in the context
+  selectedTags: { [key: string]: boolean };
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
-  >; // Include setter
+  >;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryIndexConfig,
   selectedTags: {},
-  setSelectedTags: () => {}, // Default function to avoid undefined error
+  setSelectedTags: () => {},
 });
 
 const useDiscoveryContext = () => {
@@ -33,14 +32,14 @@ const DiscoveryProvider = ({
 }) => {
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
-  ); // Initialize selectedTags state
+  );
 
   return (
     <DiscoveryContext.Provider
       value={{
         discoveryConfig: discoveryIndexConfig,
-        selectedTags, // Provide selectedTags
-        setSelectedTags, // Provide setter function
+        selectedTags,
+        setSelectedTags,
       }}
     >
       {children}
