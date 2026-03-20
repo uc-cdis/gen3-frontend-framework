@@ -1,12 +1,7 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  GQLFilter,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 import { groupSharedFields } from './utils';
@@ -109,6 +104,11 @@ interface ObjectIdQueryRequest {
 interface ObjectIdQueryResponse {
   ids: string[];
   index: string;
+}
+
+interface MultiIndexFieldQueryRequest {
+  indexAndFields: Array<QueryAggsParams>;
+  accessibility?: Accessibility;
 }
 
 export const explorerTags = guppyApi.enhanceEndpoints({
@@ -616,6 +616,35 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
     }),
+    getGetMultiIndexAggregation: builder.query<
+      ObjectIdQueryResponse,
+      MultiIndexFieldQueryRequest
+    >({
+      query: ({
+        indexAndFields,
+        accessibility = Accessibility.ALL,
+      }: MultiIndexFieldQueryRequest) => {
+        // build each query
+        const filters = indexAndFields.reduce(
+          (acc, curr) => {
+            acc[curr.type] = convertFilterSetToGqlFilter(curr.filters);
+            return acc;
+          },
+          {} as Record<string, GQLFilter>,
+        );
+        const query = buildMultiIndexAggregationQuery(indexAndFields);
+        return {
+          query,
+          variables: {
+            ...filters,
+            accessibility,
+          },
+        };
+      },
+      transformResponse: (response: Record<string, any>) => {
+        return response?.data?._aggregation ?? {};
+      },
+    }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
       query: ({ query, variables }) => {
         return {
@@ -643,6 +672,32 @@ export const useGetIndexFields = (index: string, indexPrefix = '') => {
     indexPrefix: indexPrefix,
   });
   return data ?? [];
+};
+
+const buildMultiIndexAggregationQuery = (
+  indexesAndFields: Array<QueryAggsParams>,
+  filterBasename: string = 'filter',
+) => {
+  const filterNames = indexesAndFields.reduce(
+    (acc, curr) => acc + `$${curr.type}${filterBasename}: JSON,`,
+    '',
+  );
+
+  let queryString = `query getAggs (${filterNames}) {`;
+
+  indexesAndFields.forEach((indexQuery) => {
+    queryString += `  ${indexQuery.type}_aggregation {
+      ${indexQuery.type} (filter: ${indexQuery.type}${filterBasename}, filterSelf: ${indexQuery.filterSelf ? 'true' : 'false'}, accessibility: ${indexQuery.accessibility}) { _totalCount
+    `;
+    queryString += indexQuery.fields.map((field: string) =>
+      histogramQueryStrForEachField(field),
+    );
+    queryString += ' } }';
+  });
+
+  queryString += '}';
+
+  return queryString;
 };
 
 export const buildGetAggregationQuery = (
@@ -730,4 +785,6 @@ export const {
   useLazyCustomRangeQuery,
   useGetObjectIdsQuery,
   useLazyGetObjectIdsQuery,
+  useGetGetMultiIndexAggregationQuery,
+  useLazyGetGetMultiIndexAggregationQuery,
 } = explorerApi;
