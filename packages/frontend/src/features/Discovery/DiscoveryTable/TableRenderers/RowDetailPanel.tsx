@@ -21,14 +21,14 @@ const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
       config.studyPreviewField.field,
     );
     return (
-      <div>
+      <>
         <Box display={'flex'} w={'100%'}>
           <Text size="xs" lineClamp={2}>
             {HighlightSearchTerm(studyPreviewData, searchTerm)}
           </Text>
         </Box>
         <RowDetailPanelTags rowTags={row.original.tags} />;
-      </div>
+      </>
     );
   } else {
     return undefined;
