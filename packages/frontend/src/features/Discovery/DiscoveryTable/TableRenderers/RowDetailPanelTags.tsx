@@ -9,7 +9,6 @@ interface RowDetailPanelProps {
 }
 
 const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
-  rowTags as TagData[];
   const {
     discoveryConfig: config,
     selectedTags,

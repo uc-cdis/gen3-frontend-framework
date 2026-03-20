@@ -63,14 +63,10 @@ const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
   const handleChange = (value: string[]) => {
     const previousValues = prevSelectionsRef.current;
     const removedTags = previousValues.filter((tag) => !value.includes(tag));
-    console.log('value', value);
-
     const addedTags = value.filter((tag) => !previousValues.includes(tag));
-
     setSelectedTags((prev) => {
       const updated = { ...prev };
       removedTags.forEach((tag) => delete updated[tag]);
-
       addedTags.forEach((tag) => {
         updated[tag] = true;
       });
@@ -117,16 +113,16 @@ const DiscoveryDropdownTagViewer = ({
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
 
   return (
-      <div
-        className={`grid sm:grid-cols-1
+    <div
+      className={`grid sm:grid-cols-1
           ${tagCategoryData.length > 1 && ' md:grid-cols-2 gap-4'}`}
-      >
-        {tagCategoryData.map((category, i) => (
-          <div key={i}>
-            <MultiSelectContainer category={category} />
-          </div>
-        ))}
-      </div>
+    >
+      {tagCategoryData.map((category, i) => (
+        <div key={i}>
+          <MultiSelectContainer category={category} />
+        </div>
+      ))}
+    </div>
   );
 };
 

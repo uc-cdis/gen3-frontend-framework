@@ -1,5 +1,4 @@
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
-import { DiscoveryIndexConfig } from './types';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
@@ -65,9 +64,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   );
   const [selections, setSelections] = useState<string[]>([]); // table selections
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
-    {},
-  );
+
   const [advancedSearchTerms, setAdvancedSearchTerms] =
     useState<AdvancedSearchTerms>({
       operation: SearchCombination.and,
