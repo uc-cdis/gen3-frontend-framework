@@ -42,7 +42,9 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
 
   return (
     <DiscoveryProvider
-      discoveryIndexConfig={discoveryConfig as unknown as DiscoveryIndexConfig}
+      discoveryIndexConfig={
+        discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
+      }
     >
       <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
         <Tabs
