@@ -17,6 +17,7 @@ export enum ContentType {
   Markdown = 'markdown', // text content is Markdown
   TextWithEmail = 'textWithEmail', // text is a string and the email field is appended to it
   TextWithLink = 'textWithLink', // test followed by a link
+  Chart = 'chart',
 }
 
 /**
