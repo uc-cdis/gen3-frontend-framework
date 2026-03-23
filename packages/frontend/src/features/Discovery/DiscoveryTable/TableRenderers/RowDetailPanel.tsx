@@ -2,11 +2,9 @@ import React from 'react';
 import { Box, Text } from '@mantine/core';
 import HighlightSearchTerm from '../SearchHighlighting/HighlightSearchTerm';
 import { MRT_Row, MRT_RowData } from 'mantine-react-table';
-import { DiscoveryIndexConfig } from '../../types';
 import _ from 'lodash';
 import RowDetailPanelTags from './RowDetailPanelTags';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
-import { OnChangeFn } from '@tanstack/table-core';
 
 interface RowDetailPanelProps {
   row: MRT_Row<MRT_RowData>;
@@ -27,7 +25,7 @@ const RowDetailPanel = ({ row, searchTerm }: RowDetailPanelProps) => {
             {HighlightSearchTerm(studyPreviewData, searchTerm)}
           </Text>
         </Box>
-        <RowDetailPanelTags rowTags={row.original.tags} />;
+        <RowDetailPanelTags rowTags={row.original.tags} />
       </>
     );
   } else {
