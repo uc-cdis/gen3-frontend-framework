@@ -88,7 +88,8 @@ const main = () => {
       for (const [idx, value] of Object.entries(colorType.toReversed())) {
         const colorVar = `mantine-color-${colorName}-${idx}`;
         const contrastColorVar = `mantine-color-${colorName}-contrast-${idx}`;
-        const colorVarName = `${colorName}${value !== 'DEFAULT' ? '-' + value : ''}`;
+        const baseVarNameDefault = (colorName === 'base' && value === 'DEFAULT' ? '-default' : '');
+        const colorVarName = `${colorName}${value !== 'DEFAULT' ? '-' + value : baseVarNameDefault}`;
         const contrastColorVarName = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
         acc[colorVarName] = `var(--${colorVar})`;
         acc[contrastColorVarName] = `var(--${contrastColorVar})`;
