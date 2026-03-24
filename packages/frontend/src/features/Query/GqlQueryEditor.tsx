@@ -8,6 +8,7 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
+import 'graphiql/setup-workers/webpack';
 
 /**
  * Fetches graphql data from a graphql endpoint if one is specified, or guppy by default.
