@@ -12,7 +12,7 @@ import CohortActionButton from './downloads/CohortActionButton';
 import {
   findButtonAction,
   NullButtonAction,
-} from './downloads/actions/registeredActions';
+} from './downloads/actions/registeredDownloadButtonActions';
 import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
