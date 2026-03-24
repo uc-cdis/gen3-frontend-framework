@@ -617,7 +617,7 @@ export const explorerApi = explorerTags.injectEndpoints({
       },
     }),
     getGetMultiIndexAggregation: builder.query<
-      ObjectIdQueryResponse,
+      Record<string, any>,
       MultiIndexFieldQueryRequest
     >({
       query: ({

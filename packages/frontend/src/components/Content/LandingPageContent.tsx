@@ -9,7 +9,9 @@ import { MdFormatQuote, MdGroup, MdOutlineBarChart, MdOutlineSearch, } from 'rea
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
+import ChartContent from './ChartContent';
 import { Gen3AppConfigData } from '../../lib/content/types';
+import { ChartProps } from '../charts';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -26,6 +28,13 @@ export interface leftRightProps {
   readonly image?: {
     readonly src: string;
     readonly alt: string;
+  };
+  readonly chart?: {
+    readonly chartType: string;
+    parameters: {
+      readonly chart?: ChartProps;
+      readonly dataFetch: Record<string, any>;
+    };
   };
 }
 export interface LandingPageProps extends Gen3AppConfigData {
@@ -119,6 +128,16 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                 return (
                   <div key={index} className="h-full relative">
                     <Image src={obj.image.src} alt={obj.image.alt} fill />
+                  </div>
+                );
+              }
+              if (obj.type === 'chart') {
+                return (
+                  <div key="chart" className="h-full relative">
+                    <ChartContent
+                      chartType={obj.chart?.chartType}
+                      parameters={obj.chart?.parameters}
+                    />
                   </div>
                 );
               }
