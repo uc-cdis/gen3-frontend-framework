@@ -2,6 +2,7 @@ import React from 'react';
 import { createChart } from '../charts/createChart';
 import { ChartProps } from '../charts';
 import {
+  EmptyFilterSet,
   HistogramDataArray,
   useGetGetMultiIndexAggregationQuery,
 } from '@gen3/core';
@@ -17,8 +18,17 @@ interface ChartContentProps {
 const ChartContent = ({ chartType, parameters }: ChartContentProps) => {
   const chart: ChartProps = parameters?.chart;
   const dataFunctionParameters = parameters?.dataFetch;
+
+  const processedDataFunctionParameters = dataFunctionParameters?.map(
+    (props: any) => ({
+      ...props,
+      filters: EmptyFilterSet,
+    }),
+  );
+
   const { data, isFetching, isError } = useGetGetMultiIndexAggregationQuery(
-    dataFunctionParameters,
+    processedDataFunctionParameters,
+    { skip: !processedDataFunctionParameters },
   );
 
   if (!chartType) {

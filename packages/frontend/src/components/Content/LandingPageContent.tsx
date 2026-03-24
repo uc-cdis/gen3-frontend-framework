@@ -131,7 +131,7 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                   </div>
                 );
               }
-              if (obj.type === 'chart') {
+              if (obj?.chart) {
                 return (
                   <div key="chart" className="h-full relative">
                     <ChartContent
