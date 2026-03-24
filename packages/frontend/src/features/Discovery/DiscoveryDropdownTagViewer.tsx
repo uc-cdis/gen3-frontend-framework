@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
