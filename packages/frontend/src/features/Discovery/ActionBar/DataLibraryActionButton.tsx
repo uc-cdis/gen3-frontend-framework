@@ -12,7 +12,7 @@ export interface ExportActionButtonProps {
   showIcon?: boolean;
   loginRequired?: boolean;
   onClick?: (items: Record<string, any> | Array<any>) => void;
-  ref: React.RefObject<HTMLButtonElement>;
+  ref?: React.RefObject<HTMLButtonElement>;
 }
 
 const DataLibraryActionButton = (
