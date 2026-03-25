@@ -111,6 +111,20 @@ interface MultiIndexFieldQueryRequest {
   accessibility?: Accessibility;
 }
 
+interface FieldAggregation {
+  histogram: AggregationsData;
+  totalCount: number;
+}
+
+interface IndexAggregation {
+  [field: string]: FieldAggregation | number;
+  totalCount: number;
+}
+
+interface MultiIndexFieldAggregationResponse {
+  [index: string]: IndexAggregation;
+}
+
 export const explorerTags = guppyApi.enhanceEndpoints({
   addTagTypes: ['AGGS', 'COUNTS', 'STATS', 'TABLE_DATA', 'RAW_DATA'] as const,
 });
@@ -463,8 +477,10 @@ export const explorerApi = explorerTags.injectEndpoints({
         _meta,
         args,
       ): number => {
+        if (!('data' in response) || !response.data) return 0;
+
         return (
-          response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
+          response?.data?.[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
             ?._totalCount ?? 0
         );
       },
@@ -617,7 +633,7 @@ export const explorerApi = explorerTags.injectEndpoints({
       },
     }),
     getGetMultiIndexAggregation: builder.query<
-      Record<string, any>,
+      MultiIndexFieldAggregationResponse,
       MultiIndexFieldQueryRequest
     >({
       query: ({
@@ -632,17 +648,23 @@ export const explorerApi = explorerTags.injectEndpoints({
           },
           {} as Record<string, GQLFilter>,
         );
-        const query = buildMultiIndexAggregationQuery(indexAndFields);
+        const query = buildMultiIndexAggregationQuery(
+          indexAndFields,
+          accessibility,
+        );
         return {
           query,
           variables: {
             ...filters,
-            accessibility,
           },
         };
       },
-      transformResponse: (response: Record<string, any>) => {
-        return response?.data?._aggregation ?? {};
+      transformResponse: (response: {
+        data: { _aggregation?: IndexAggregation };
+      }) => {
+        if (!response?.data?._aggregation) return {};
+
+        return response.data._aggregation;
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -676,6 +698,7 @@ export const useGetIndexFields = (index: string, indexPrefix = '') => {
 
 const buildMultiIndexAggregationQuery = (
   indexesAndFields: Array<QueryAggsParams>,
+  accessibility = Accessibility.ALL,
   filterBasename: string = 'filter',
 ) => {
   const filterNames = indexesAndFields.reduce(
@@ -683,11 +706,10 @@ const buildMultiIndexAggregationQuery = (
     '',
   );
 
-  let queryString = `query getAggs (${filterNames}) {`;
+  let queryString = `query getMultiIndexAggs (${filterNames}) {`;
 
   indexesAndFields.forEach((indexQuery) => {
-    queryString += `  ${indexQuery.type}_aggregation {
-      ${indexQuery.type} (filter: ${indexQuery.type}${filterBasename}, filterSelf: ${indexQuery.filterSelf ? 'true' : 'false'}, accessibility: ${indexQuery.accessibility}) { _totalCount
+    queryString += `  ${indexQuery.indexPrefix ?? ''}_aggregation { ${indexQuery.type} (filter: $${indexQuery.type}${filterBasename}, filterSelf: ${indexQuery.filterSelf ? 'true' : 'false'}, accessibility: ${accessibility}) { totalCount:_totalCount
     `;
     queryString += indexQuery.fields.map((field: string) =>
       histogramQueryStrForEachField(field),

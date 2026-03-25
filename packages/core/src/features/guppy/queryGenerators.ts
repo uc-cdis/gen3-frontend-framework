@@ -23,7 +23,7 @@ export const histogramQueryStrForEachField = (field: string): string => {
   if (splittedFieldArray.length === 0) {
     return `
     ${splittedField} {
-      _totalCount
+      totalCount: _totalCount
       histogram {
         key
         count

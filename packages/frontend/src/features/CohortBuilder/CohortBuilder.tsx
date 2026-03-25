@@ -59,19 +59,7 @@ const CohortBuilder = ({
             value={panelConfig.tabTitle}
             key={`${panelConfig.tabTitle}-tabPanel`}
           >
-            <CohortPanel
-              guppyConfig={panelConfig.guppyConfig}
-              key={`${panelConfig.tabTitle}-CohortPanel`}
-              chartsSection={panelConfig?.chartsSection}
-              charts={panelConfig?.charts}
-              filters={panelConfig.filters}
-              tabTitle={panelConfig.tabTitle}
-              table={panelConfig.table}
-              dropdowns={panelConfig.dropdowns}
-              buttons={panelConfig.buttons}
-              loginForDownload={panelConfig.loginForDownload}
-              sharedFiltersMap={panelConfig.sharedFiltersMap}
-            />
+            <CohortPanel {...panelConfig} />
           </Tabs.Panel>
         ))}
       </Tabs>

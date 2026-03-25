@@ -1,14 +1,11 @@
 // set of interfaces which follows the current explorer configuration
 
-import {
-  CollapsableChartsPanelConfiguration,
-  SummaryChart,
-} from '../../components/charts';
+import { CollapsableChartsPanelConfiguration, SummaryChart, } from '../../components/charts';
 import { SummaryTable } from './ExplorerTable/types';
 import { FacetSortType, FieldToName } from '../../components/facets/types';
 import { DownloadButtonProps } from '../../components/Buttons/DropdownButtons';
 import { Dispatch, SetStateAction } from 'react';
-import { FacetDefinition, Modals, SharedFieldMapping } from '@gen3/core';
+import { Accessibility, FacetDefinition, Modals, SharedFieldMapping, } from '@gen3/core';
 import { StylingOverride } from '../../types/styling';
 import { Gen3AppConfigData } from '../../lib/content/types';
 
@@ -77,6 +74,8 @@ export interface CohortPanelConfiguration {
   buttons?: ReadonlyArray<DownloadButtonConfig>; // row of action buttons
   loginForDownload?: boolean; // login required for download
   sharedFiltersMap?: SharedFieldMapping;
+  showAccessLevel?: boolean;
+  defaultAccessLevel?: Accessibility;
 }
 
 export interface SharedFieldConfiguration {

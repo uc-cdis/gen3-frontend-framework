@@ -2,6 +2,7 @@ import React from 'react';
 import { createChart } from '../charts/createChart';
 import { ChartProps } from '../charts';
 import {
+  Accessibility,
   EmptyFilterSet,
   HistogramDataArray,
   useGetGetMultiIndexAggregationQuery,
@@ -19,15 +20,17 @@ const ChartContent = ({ chartType, parameters }: ChartContentProps) => {
   const chart: ChartProps = parameters?.chart;
   const dataFunctionParameters = parameters?.dataFetch;
 
-  const processedDataFunctionParameters = dataFunctionParameters?.map(
-    (props: any) => ({
+  const processedDataFunctionParameters =
+    dataFunctionParameters?.indexAndFields?.map((props: any) => ({
       ...props,
       filters: EmptyFilterSet,
-    }),
-  );
+    }));
 
   const { data, isFetching, isError } = useGetGetMultiIndexAggregationQuery(
-    processedDataFunctionParameters,
+    {
+      indexAndFields: processedDataFunctionParameters,
+      accessibility: dataFunctionParameters?.accessibility ?? Accessibility.ALL,
+    },
     { skip: !processedDataFunctionParameters },
   );
 
@@ -39,6 +42,7 @@ const ChartContent = ({ chartType, parameters }: ChartContentProps) => {
     return <ErrorCard message="Error fetching chart data" />;
   }
 
+  console.log('chart data', data);
   const chartComponent = createChart(chartType, {
     data: data === undefined ? [] : (data as HistogramDataArray),
     total: 1,
