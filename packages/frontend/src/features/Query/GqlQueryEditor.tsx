@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { GraphiQL } from 'graphiql';
-import { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher } from '@graphiql/toolkit';
 import { Text } from '@mantine/core';
 import {
   GEN3_GUPPY_API,
