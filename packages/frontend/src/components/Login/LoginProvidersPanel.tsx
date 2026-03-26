@@ -14,21 +14,31 @@ import {
 } from '@gen3/core';
 import { LoginSelectedProps } from './types';
 import { ErrorCard } from '../MessageCards';
+import TextContent, { TextContentProps } from '../Content/TextContent';
 
 interface LoginProviderItemProps extends LoginSelectedProps {
   readonly provider: Gen3LoginProvider;
 }
 
+const logninExtraText = (extra: ReadonlyArray<TextContentProps>) => {
+  return extra?.map((content, index) => (
+          <TextContent {...content} key={index} />
+        ));
+}
+
 const LoginProviderMultipleItems = ({
   provider,
   handleLoginSelected,
+  loginProviderExtra,
 }: LoginProviderItemProps) => {
   const [value, setValue] = useState<string | null>(null);
+  const extra = loginProviderExtra && loginProviderExtra[provider.name];
   return (
     <div
       className="flex flex-col w-full font-medium hover:text-accent-light hover:font-bold"
       key={`${provider.name}-login-item`}
     >
+      {extra && logninExtraText(extra)}
       <Select
         data={provider.urls.map((item: NameUrl) => ({
           value: item.url,
@@ -65,21 +75,26 @@ const LoginProviderMultipleItems = ({
 const LoginProviderSingleItem = ({
   provider,
   handleLoginSelected,
+  loginProviderExtra,
 }: LoginProviderItemProps) => {
+  const extra = loginProviderExtra && loginProviderExtra[provider.name];
   return (
-    <Button
-      fullWidth
-      key={provider.name}
-      color="accent.3"
-      onClick={() => handleLoginSelected(provider.urls[0].url)}
-    >
-      {' '}
-      {provider.name}{' '}
-    </Button>
+    <React.Fragment>
+      {extra && logninExtraText(extra)}
+      <Button
+        fullWidth
+        key={provider.name}
+        color="accent.3"
+        onClick={() => handleLoginSelected(provider.urls[0].url)}
+      >
+        {' '}
+        {provider.name}{' '}
+      </Button>
+    </React.Fragment>
   );
 };
 
-const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
+const LoginProvidersPanel = ({ handleLoginSelected, loginProviderExtra }: LoginSelectedProps) => {
   const { data, isSuccess, isError, isLoading, isFetching } =
     useGetLoginProvidersQuery();
 
@@ -110,12 +125,14 @@ const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
           <LoginProviderMultipleItems
             provider={data.default_provider}
             handleLoginSelected={handleLoginSelected}
+            loginProviderExtra={loginProviderExtra}
           />
         ) : (
           data && (
             <LoginProviderSingleItem
               provider={data.default_provider}
               handleLoginSelected={handleLoginSelected}
+              loginProviderExtra={loginProviderExtra}
             />
           )
         )}
@@ -127,12 +144,14 @@ const LoginProvidersPanel = ({ handleLoginSelected }: LoginSelectedProps) => {
                 key={x.name}
                 provider={x}
                 handleLoginSelected={handleLoginSelected}
+                loginProviderExtra={loginProviderExtra}
               />
             ) : (
               <LoginProviderSingleItem
                 key={x.name}
                 provider={x}
                 handleLoginSelected={handleLoginSelected}
+                loginProviderExtra={loginProviderExtra}
               />
             ),
           )}

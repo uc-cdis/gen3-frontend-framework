@@ -80,9 +80,9 @@ const TextContent = ({
       );
     }
     case ContentType.Markdown: {
-      return <MarkdownContent content={text} />;
+      return <MarkdownContent content={text} className={className}/>;
     }
-    case ContentType.TextWithEmail: {
+    case ContentType.TextWithEmail: {//TODO remove use markdown instead 
       const DEFAULT_STYLE =
         'inline text-base-contrast-max font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
@@ -109,7 +109,7 @@ const TextContent = ({
         </div>
       );
     }
-    case ContentType.TextWithLink: {
+    case ContentType.TextWithLink: { //TODO remove use markdown instead 
       const DEFAULT_STYLE =
         'inline text-base-contrast-max font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
