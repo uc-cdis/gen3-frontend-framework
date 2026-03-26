@@ -42,3 +42,13 @@ export interface CollapsableChartsPanelConfiguration {
   };
   charts?: Record<string, SummaryChart>;
 }
+export interface MultiTrackChartData {
+  data: HistogramDataArray;
+  color: string;
+  label: string;
+  total: number;
+}
+
+export interface MultitrackChartProps extends Omit<ChartProps, 'data'> {
+  data: Array<MultiTrackChartData>;
+}

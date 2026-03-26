@@ -107,7 +107,7 @@ const LegendOverflow = ({
         <Grid>
           <Grid.Col span={6} key="modal-col-1">
             {createChart(chart.chartType, {
-              data: data === undefined ? [] : data,
+              data: data ?? [],
               total: counts ?? 1,
               valueType: chart.valueType ?? 'count',
               label: chart.label,

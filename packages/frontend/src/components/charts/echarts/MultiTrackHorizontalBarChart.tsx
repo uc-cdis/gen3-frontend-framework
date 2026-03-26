@@ -1,9 +1,15 @@
 import React from 'react';
 import { processLabel, truncateString } from '../utils';
-import { ChartProps } from '../types';
+import { MultiTrackChartData, MultitrackChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';
-import { HistogramData, HistogramDataArray } from '@gen3/core';
-import { CallbackDataParams } from 'echarts/types/dist/shared';
+import { fieldNameToLabel, HistogramData } from '@gen3/core';
+import {
+  CallbackDataParams,
+  GridOption,
+  SeriesOption,
+  XAXisOption,
+  YAXisOption,
+} from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
@@ -17,26 +23,11 @@ export interface BarChartData {
   };
 }
 
-interface MultiTrackHorizontalBarChartData {
-  data: HistogramDataArray;
-  color: string;
-  label: string;
-  total: number;
-}
-
-export interface MultitrackHorizontalBarChartProps extends Omit<
-  ChartProps,
-  'data'
-> {
-  data: Array<MultiTrackHorizontalBarChartData>;
-  valueType?: 'count' | 'percent';
-  showLegendInChart?: boolean;
-  labelTruncation?: number;
-  showXTicks?: boolean;
-  showYTicks?: boolean;
-  xLabel?: string;
-  yLabel?: string;
-  maxBins?: number;
+interface ChartDefinition {
+  xAxes: XAXisOption[];
+  yAxes: YAXisOption[];
+  grids: GridOption[];
+  series: SeriesOption[];
 }
 
 const ExtractDataCount = (
@@ -49,22 +40,27 @@ const ExtractDataPercent = (d: HistogramData, total?: number): number =>
     : 0;
 
 const processChartData = (
-  data: Array<MultiTrackHorizontalBarChartData>,
+  data: Array<MultiTrackChartData>,
   valueType = 'count',
   maxBins = 100,
-): Array<BarChartData[]> => {
-  if (!data) {
-    return [];
+): ChartDefinition => {
+  if (!data || data.length === 0) {
+    return {
+      xAxes: [],
+      yAxes: [],
+      grids: [],
+      series: [],
+    };
   }
   // create x and y axis for each track
 
-  const xAxis = data.map(
-    (g: MultiTrackHorizontalBarChartData, idx: number) => ({
+  const xAxes: XAXisOption[] = data.map(
+    (g: MultiTrackChartData, idx: number) => ({
       id: `x${idx}`,
       type: 'value',
       min: 0,
       max: g.total,
-      show: idx === 0, // only show tick labels on the first axis
+      show: false, // only show tick labels on the first axis
       gridIndex: idx,
       axisLine: { show: false },
       axisTick: { show: false },
@@ -73,26 +69,26 @@ const processChartData = (
     }),
   );
 
-  const yAxis = data.map(
-    (g: MultiTrackHorizontalBarChartData, idx: number) => ({
+  const yAxes: YAXisOption[] = data.map(
+    (g: MultiTrackChartData, idx: number) => ({
       id: `y${idx}`,
       type: 'category',
-      data: [g.label],
+      data: [truncateString(fieldNameToLabel(g.label), 35)],
       gridIndex: idx,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
         color: '#000000',
         fontSize: 13,
-        fontWeight: '500',
+        fontWeight: 'bold',
         margin: 12,
       },
       splitLine: { show: false },
     }),
   );
 
-  const grids = data.map(
-    (g: MultiTrackHorizontalBarChartData, idx: number) => ({
+  const grids: GridOption[] = data.map(
+    (g: MultiTrackChartData, idx: number) => ({
       left: 110,
       right: 24,
       top: 16 + idx * 56,
@@ -100,40 +96,48 @@ const processChartData = (
     }),
   );
 
-  return data.map((d: MultiTrackHorizontalBarChartData) =>
-    processTrackChartData(d.data, valueType, d.total, maxBins),
-  );
-};
-
-const processTrackChartData = (
-  facetData: HistogramDataArray,
-  valueType = 'count',
-  total?: number,
-  maxBins = 100,
-): BarChartData[] => {
-  if (!facetData) {
-    return [];
-  }
-  const data = facetData.filter((d: any) => d.key !== '_missing');
+  // create a color palette for each track for 10 tracks
+  const palette = [
+    '#1f77b4',
+    '#ff7f0e',
+    '#2ca02c',
+    '#d62728',
+    '#9467bd',
+    '#8c564b',
+    '#e377c2',
+    '#7f7f7f',
+    '#bcbd22',
+    '#17becf',
+  ];
 
   const dataExtractor =
     valueType === 'count' ? ExtractDataCount : ExtractDataPercent;
 
-  const results = data.slice(0, maxBins).map(
-    (d: any) =>
-      ({
-        // TODO: fix type of d
-        data: [dataExtractor(d, total)] as number[],
-        name: truncateString(processLabel(d.key), 35),
-        type: 'bar' as const,
-        stack: 'value',
+  const series = [] as SeriesOption[];
+  data.forEach((g, gi) => {
+    g.data.forEach((item, ki) => {
+      series.push({
+        name: truncateString(processLabel(item.key.toLocaleString()), 35),
+        type: 'bar',
+        stack: `stack${gi}`, // stacks within the same group only
+        xAxisIndex: gi,
+        yAxisIndex: gi,
+        data: [dataExtractor(item, g.total)] as number[],
+        itemStyle: { color: palette[ki] },
+        barMaxWidth: 48,
         label: {
           show: true,
-          moveOverlap: true,
         },
-      }) as BarChartData,
-  );
-  return results;
+      });
+    });
+  });
+
+  return {
+    xAxes,
+    yAxes,
+    grids,
+    series,
+  };
 };
 
 const MultiTrackHorizontalBarChart = ({
@@ -141,9 +145,14 @@ const MultiTrackHorizontalBarChart = ({
   valueType,
   total,
   showLegendInChart = true,
-}: MultitrackHorizontalBarChartProps) => {
-  const chartData = processChartData(data, valueType, total);
+}: MultitrackChartProps) => {
+  const { xAxes, yAxes, grids, series } = processChartData(
+    data,
+    valueType,
+    total,
+  );
 
+  console.log('series: ', series);
   const chartDefinition =
     useDeepCompareMemo((): ReactEChartsProps['option'] => {
       return {
@@ -160,36 +169,12 @@ const MultiTrackHorizontalBarChart = ({
             return `${colorSquare}${p.seriesName}: <b>${p.value}</b>`;
           },
         },
-        legend: {
-          orient: 'vertical',
-          left: '73%',
-          type: 'scroll',
-          right: 15,
-          show: showLegendInChart,
-        },
-        grid: {
-          left: '0%',
-          right: showLegendInChart ? '30%' : '3%',
-          bottom: '25%',
-          containLabel: true,
-          height: '50%',
-        },
-        xAxis: {
-          type: 'value',
-          max: 'dataMax',
-          axisLine: {
-            lineStyle: {
-              color: '--mantine-color-base-9',
-            },
-          },
-        },
-        yAxis: {
-          type: 'category',
-          data: [''],
-        },
-        series: chartData as any,
+        grid: grids,
+        xAxis: xAxes,
+        yAxis: yAxes,
+        series: series as any,
       };
-    }, [chartData, showLegendInChart]);
+    }, [xAxes, yAxes, grids, series, showLegendInChart]);
 
   return (
     <div className="w-full h-64">

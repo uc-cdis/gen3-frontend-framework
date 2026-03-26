@@ -1,5 +1,6 @@
 import { FilterSet, NumericFromTo } from '../filters';
 import { Accessibility } from '../../constants';
+import { HistogramDataArray } from '../../types';
 
 // Guppy data request parameters
 export interface GuppyDownloadDataRequest {
@@ -33,8 +34,7 @@ export interface GuppyActionParams<T extends Record<string, any>> {
   signal?: AbortSignal; // AbortSignal to use for the request
 }
 
-export interface GuppyDownloadActionFunctionParams
-  extends GuppyDownloadDataParams {
+export interface GuppyDownloadActionFunctionParams extends GuppyDownloadDataParams {
   filename: string;
 }
 
@@ -65,3 +65,17 @@ export type RangeQueryRequest = {
 };
 
 export type SharedFieldMapping = Record<string, Array<IndexAndField>>;
+interface FieldAggregation {
+  histogram: HistogramDataArray;
+  totalCount: number;
+}
+
+export type IndexAggregation = {
+  totalCount: number;
+} & {
+  [field: string]: FieldAggregation;
+};
+
+export interface MultiIndexFieldAggregationResponse {
+  [index: string]: IndexAggregation;
+}

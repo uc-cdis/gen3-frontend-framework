@@ -1,9 +1,19 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
+import {
+  convertFilterSetToGqlFilter,
+  FilterSet,
+  GQLFilter,
+  isFilterEmpty,
+} from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { RangeQueryRequest, SharedFieldMapping } from './types';
+import {
+  IndexAggregation,
+  MultiIndexFieldAggregationResponse,
+  RangeQueryRequest,
+  SharedFieldMapping,
+} from './types';
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
 import {
@@ -109,20 +119,6 @@ interface ObjectIdQueryResponse {
 interface MultiIndexFieldQueryRequest {
   indexAndFields: Array<QueryAggsParams>;
   accessibility?: Accessibility;
-}
-
-interface FieldAggregation {
-  histogram: AggregationsData;
-  totalCount: number;
-}
-
-interface IndexAggregation {
-  [field: string]: FieldAggregation | number;
-  totalCount: number;
-}
-
-interface MultiIndexFieldAggregationResponse {
-  [index: string]: IndexAggregation;
 }
 
 export const explorerTags = guppyApi.enhanceEndpoints({

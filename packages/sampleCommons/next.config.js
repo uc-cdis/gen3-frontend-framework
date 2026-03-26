@@ -134,7 +134,7 @@ const nextConfig = {
           source: '/library/lists/:path*',
           destination: `${GEN3_TARGET}/library/lists/:path*`,
         },
-        { source: '/jobs/:path*', destination: `${GEN3_TARGET}/jobs/:path*` },
+        { source: '/job/:path*', destination: `${GEN3_TARGET}/job/:path*` },
         {
           source: '/manifests/:path*',
           destination: `${GEN3_TARGET}/manifests/:path*`,
