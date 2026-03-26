@@ -181,7 +181,7 @@ const DiscoveryTable = ({
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
     renderDetailPanel: ({ row }) => (
-      <RowDetailPanel row={row} config={config} searchTerm={searchTerm} />
+      <RowDetailPanel row={row} searchTerm={searchTerm} />
     ),
     onRowSelectionChange: setRowSelection,
     state: {
