@@ -57,8 +57,8 @@ frontend to a remote commons.
 
 #### Tracking
 ```
-NEXT_PUBLIC_DATADOG_APPLICATION_ID=""
-NEXT_PUBLIC_DATADOG_CLIENT_TOKEN=""
+DATADOG_APPLICATION_ID=""
+DATADOG_CLIENT_TOKEN=""
 ```
 
 this is needed to be setup in DataDog and the values need to match for tracking
