@@ -14,9 +14,13 @@ import { selectCurrentCohortId, selectCurrentCohortName, } from './CohortManagme
 
 interface CohortManagerProps {
   index: string;
+  fieldsAreFlat?: boolean;
 }
 
-const CohortQueryExpression = ({ index }: CohortManagerProps) => {
+const CohortQueryExpression = ({
+  index,
+  fieldsAreFlat = true,
+}: CohortManagerProps) => {
   const currentCohortId = useAppSelector((state: AppState) =>
     selectCurrentCohortId(state),
   );
@@ -31,6 +35,7 @@ const CohortQueryExpression = ({ index }: CohortManagerProps) => {
           cohortName: currentCohortName,
           cohortId: currentCohortId,
           displayOnly: false,
+          fieldsAreFlat: true,
           useClearCohortFilters: () => {
             const dispatch = useAppDispatch();
             return (index: string) => dispatch(clearCohortFilters({ index }));

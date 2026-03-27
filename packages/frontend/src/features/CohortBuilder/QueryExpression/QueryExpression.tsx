@@ -58,7 +58,7 @@ const QueryExpression = ({
         cohortName: currentCohortName,
         cohortId: currentCohortId,
         displayOnly: false,
-        fieldsAreFlat,
+        fieldsAreFlat: fieldsAreFlat,
         shouldShowSummary: shouldShowSummary,
         useClearCohortFilters: () => {
           const dispatch = useCoreDispatch();
