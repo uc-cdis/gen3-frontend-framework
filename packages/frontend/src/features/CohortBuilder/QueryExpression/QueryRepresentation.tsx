@@ -99,7 +99,6 @@ const FieldNameOverrides: Record<string, string> = {
   Gender: 'Sex',
 };
 
-
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
     x !== undefined &&
@@ -142,6 +141,7 @@ const IncludeExcludeQueryElement = ({
     useRemoveFilter,
     useUpdateFilters,
     shouldShowSummary,
+    fieldsAreFlat,
   } = useContext(QueryExpressionContext);
 
   const removeCohortFilter = useRemoveFilter();
@@ -270,11 +270,17 @@ const IncludeExcludeQueryElement = ({
                         updateCohortFilter(
                           index,
                           fieldToUpdate,
-                          buildNestedFilterForOperation(fieldToUpdate, {
-                            operator: operator,
-                            field: field,
-                            operands: newOperands,
-                          }),
+                          fieldsAreFlat
+                            ? {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }
+                            : buildNestedFilterForOperation(fieldToUpdate, {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }),
                         );
                       }
                     }}
