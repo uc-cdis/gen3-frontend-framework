@@ -505,7 +505,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
           role="button"
           className={`${
             Object.keys(groupValues).every((k) => selectedValues?.[k])
-              ? 'bg-accent-warm-light'
+              ? 'bg-accentWarm-light'
               : ''
           } cursor-pointer flex items-center`}
         >
