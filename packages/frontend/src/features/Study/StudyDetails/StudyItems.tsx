@@ -12,7 +12,7 @@ import {
   StudyDetailsRenderer,
   StudyFieldRendererFactory,
 } from './RendererFactory';
-import { JSONValue } from '@gen3/core';
+import { fieldNameToLabel, JSONValue } from '@gen3/core';
 
 /**
  * Converts a JSON value into a React element.
@@ -80,7 +80,8 @@ const label = (labelText?: string): ReactElement =>
   labelText ? (
     <Text
       tt="uppercase"
-      fw="500"
+      fw="700"
+      size="sm"
       className="p-0.75 whitespace-pre-wrap break-words"
     >
       {labelText}
@@ -99,7 +100,7 @@ const textField = (fieldValue: JSONValue, style = ''): ReactElement => (
   <span
     className={`text-left overflow-hidden p-0.75 whitespace-pre-wrap break-words ${style}`}
   >
-    {toString(fieldValue)}
+    <Text size="sm">{toString(fieldValue)}</Text>
   </span>
 );
 
@@ -377,6 +378,9 @@ const renderDetailTags: FieldRendererFunction = (
   //TODO - fix this type
   const resource = fieldValue as StudyResource;
 
+  console.log('renderDetailTags', fieldValue);
+  console.log('fieldConfig', fieldConfig);
+
   if (fieldConfig === undefined) {
     return <React.Fragment />;
   }
@@ -408,7 +412,11 @@ export const createFieldRendererElement = (
   let resourceFieldValue =
     field.field && JSONPath({ json: resource, path: field.field });
 
-  if (!isArray(resourceFieldValue) || resourceFieldValue.length == 0 || resourceFieldValue[0] === null) {
+  if (
+    !isArray(resourceFieldValue) ||
+    resourceFieldValue.length == 0 ||
+    resourceFieldValue[0] === null
+  ) {
     if (field.includeIfNotAvailable === false) return null;
     if (field.valueIfNotAvailable) {
       resourceFieldValue = field.valueIfNotAvailable as JSONValue;
@@ -419,10 +427,12 @@ export const createFieldRendererElement = (
     resourceFieldValue = resourceFieldValue[0];
   }
 
-  const label =
-    field.includeLabel === undefined || field?.includeLabel
-      ? field.name
-      : undefined;
+  // This is a change from the original
+  const hideLabel = field?.includeLabel !== undefined && !field?.includeLabel;
+
+  const label = !hideLabel
+    ? (field?.label ?? fieldNameToLabel(field.field ?? ''))
+    : undefined;
 
   const studyFieldRenderer = StudyDetailsRenderer(
     field.contentType,
@@ -454,7 +464,8 @@ export const createFieldRendererElement = (
   }
 
   return null;
-};
+};;;;
+
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
   string,

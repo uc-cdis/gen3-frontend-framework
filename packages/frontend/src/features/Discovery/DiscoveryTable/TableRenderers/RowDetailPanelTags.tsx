@@ -16,7 +16,7 @@ const RowDetailPanelTags = ({ rowTags }: RowDetailPanelProps) => {
   } = useDiscoveryContext();
   return (
     <div className="flex mt-2">
-      {rowTags.map((tag: TagData) => {
+      {rowTags?.map((tag: TagData) => {
         const { color, display, label } = getTagInfo(tag, config.tags);
         if (!display) return null;
         const active = Object.keys(selectedTags).includes(tag.name);
