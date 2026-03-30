@@ -18,7 +18,7 @@ break-all
 
 export const PercentBar = tw.div`
 relative
-border border-accent-cool-lighter
+border border-accentCool-lighter
 rounded-sm
 px-1
 w-16
@@ -38,7 +38,7 @@ absolute
 left-0
 top-0
 h-full
-bg-accent-cool-lighter
+bg-accentCool-lighter
 rounded-sm`;
 
 export const CountSpan = tw.span`font-bold p-0 m-0`;

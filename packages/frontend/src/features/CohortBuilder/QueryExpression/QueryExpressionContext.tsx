@@ -26,12 +26,14 @@ export interface QueryExpressionContextProps extends QueryExpressionHooks {
   displayOnly: boolean;
   cohortName: string;
   cohortId: string | null;
+  fieldsAreFlat: boolean;
   shouldShowSummary?: (field: string, count: number) => boolean;
 }
 
 export const QueryExpressionContext =
   React.createContext<QueryExpressionContextProps>({
     displayOnly: false,
+    fieldsAreFlat: true,
     cohortId: null,
     cohortName: 'default',
     shouldShowSummary: () => false,

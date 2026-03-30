@@ -52,7 +52,7 @@ const StatusAndControls = () => {
                   <StopIcon
                     color="utility.2"
                     size="1rem"
-                    className="text-accent-warm"
+                    className="text-accentWarm"
                   />
                 }
               >
@@ -70,7 +70,7 @@ const StatusAndControls = () => {
                 aria-label={
                   isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'
                 }
-                leftSection={<FullscreenIcon className="text-accent-warm" />}
+                leftSection={<FullscreenIcon className="text-accentWarm" />}
               >
                 {isFullscreen ? 'Exit Fullscreen' : 'Make Fullscreen'}
               </Button>

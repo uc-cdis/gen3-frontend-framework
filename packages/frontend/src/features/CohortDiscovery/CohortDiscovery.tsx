@@ -55,7 +55,7 @@ const CohortDiscovery = (config: CohortDiscoveryConfig) => {
             classNames={{
               root: 'w-full h-full',
               list: 'bg-base-light before:content-none pt-20',
-              tab: 'border-0 border-l-4 rounded-none data-[active=true]:border-accent-warm data-[active=true]:bg-base-max text-center',
+              tab: 'border-0 border-l-4 rounded-none data-[active=true]:border-accentWarm data-[active=true]:bg-base-max text-center',
               tabLabel: 'w-full',
               panel: 'pt-16',
             }}
