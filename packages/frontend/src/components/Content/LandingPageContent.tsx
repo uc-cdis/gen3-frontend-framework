@@ -5,13 +5,20 @@ import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
 import { Gen3Button, Gen3ButtonReverse } from '../Buttons/Gen3Button';
 
-import { MdFormatQuote, MdGroup, MdOutlineBarChart, MdOutlineSearch, } from 'react-icons/md';
+import {
+  MdFormatQuote,
+  MdGroup,
+  MdOutlineBarChart,
+  MdOutlineSearch,
+} from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
 import ChartContent from './ChartContent';
+import StatisticsContent from './summaryStatistics/StatisticsContent';
 import { Gen3AppConfigData } from '../../lib/content/types';
 import { ChartProps } from '../charts';
+import { SummaryStatisticConfiguration } from './summaryStatistics/types';
 
 export interface LandingPageContentProp {
   content: LandingPageProps;
@@ -35,6 +42,9 @@ export interface leftRightProps {
       readonly chart?: ChartProps;
       readonly dataFetch: Record<string, any>;
     };
+  };
+  readonly statistics?: {
+    configuration: SummaryStatisticConfiguration;
   };
 }
 export interface LandingPageProps extends Gen3AppConfigData {
@@ -138,6 +148,13 @@ const LandingPageContent = ({ content }: LandingPageContentProp) => {
                       chartType={obj.chart?.chartType}
                       parameters={obj.chart?.parameters}
                     />
+                  </div>
+                );
+              }
+              if (obj?.statistics) {
+                return (
+                  <div key="statistics" className="h-full relative">
+                    <StatisticsContent {...obj.statistics.configuration} />
                   </div>
                 );
               }

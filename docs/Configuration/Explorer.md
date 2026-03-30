@@ -1,6 +1,7 @@
 # Configuring Explorer
 
-The Gen3 explorer component is a cohort builder that provides Summary Statistics and  Tables view of filter data. The Cohort builder can have multiple tabs representing each configure index.
+The Gen3 explorer component is a cohort builder that provides Summary StatisticsContent and Tables view of filter data.
+The Cohort builder can have multiple tabs representing each configure index.
 For example, "Cases", "Images", "Data Files".
 
 ## Configuration

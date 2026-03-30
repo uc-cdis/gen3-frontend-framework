@@ -1,43 +1,20 @@
 import React, { useMemo } from 'react';
 import { createChart } from '../charts/createChart';
-import { type ChartProps, type MultiTrackChartData } from '../charts';
+import { type ChartProps } from '../charts';
 import {
   Accessibility,
   EmptyFilterSet,
-  MultiIndexFieldAggregationResponse,
   useGetGetMultiIndexAggregationQuery,
 } from '@gen3/core';
 import { LoadingOverlay } from '@mantine/core';
 import { ErrorCard } from '../../index';
+import { convertToMultiTrackChartData } from './utils';
 
 interface ChartContentProps {
   chartType?: string;
   parameters?: Record<string, any>;
   width?: string;
 }
-
-const convertToMultiTrackChartData = (
-  data?: MultiIndexFieldAggregationResponse,
-  colors?: string[],
-): Array<MultiTrackChartData> => {
-  if (!data) {
-    return [];
-  }
-
-  const result: Array<MultiTrackChartData> = [];
-  Object.keys(data).forEach((index) => {
-    Object.keys(data[index]).forEach((field, idx) => {
-      if (field === 'totalCount') return;
-      result.push({
-        data: data[index][field].histogram,
-        label: field,
-        color: colors?.[idx] ?? '#A200FF',
-        total: data[index][field].totalCount,
-      });
-    });
-  });
-  return result;
-};
 
 const ChartContent = ({ chartType, parameters }: ChartContentProps) => {
   const chart: ChartProps = parameters?.chart;
@@ -57,11 +34,8 @@ const ChartContent = ({ chartType, parameters }: ChartContentProps) => {
     { skip: !processedDataFunctionParameters },
   );
 
-  console.log('data', data, isFetching, isError);
-
   const chartData = useMemo(() => convertToMultiTrackChartData(data), [data]);
 
-  console.log('chart data', chartData);
   const chartComponent = createChart(chartType ?? 'not set', {
     ...chart,
     data: chartData,

@@ -18,6 +18,7 @@ export enum ContentType {
   TextWithEmail = 'textWithEmail', // text is a string and the email field is appended to it
   TextWithLink = 'textWithLink', // test followed by a link
   Chart = 'chart',
+  Statistics = 'statistics',
 }
 
 /**
@@ -81,9 +82,10 @@ const TextContent = ({
       );
     }
     case ContentType.Markdown: {
-      return <MarkdownContent content={text} className={className}/>;
+      return <MarkdownContent content={text} className={className} />;
     }
-    case ContentType.TextWithEmail: {//TODO remove use markdown instead 
+    case ContentType.TextWithEmail: {
+      //TODO remove use markdown instead
       const DEFAULT_STYLE =
         'inline text-base-contrast-max font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
@@ -110,7 +112,8 @@ const TextContent = ({
         </div>
       );
     }
-    case ContentType.TextWithLink: { //TODO remove use markdown instead 
+    case ContentType.TextWithLink: {
+      //TODO remove use markdown instead
       const DEFAULT_STYLE =
         'inline text-base-contrast-max font-medium margin-block-start-1 margin-block-end-1';
       const mergedClassname = className
@@ -118,11 +121,7 @@ const TextContent = ({
         : DEFAULT_STYLE;
       const textString = Array.isArray(text) ? text.join('') : text;
       if (!link) {
-        return (
-          <div className={mergedClassname}>
-            Link is not defined.
-          </div>
-        );
+        return <div className={mergedClassname}>Link is not defined.</div>;
       }
 
       return (
@@ -134,10 +133,7 @@ const TextContent = ({
           <span>
             {textString}
             {link && (
-              <Anchor
-                classNames={{ root: mergedClassname }}
-                href={link}
-              >
+              <Anchor classNames={{ root: mergedClassname }} href={link}>
                 {` ${linkText ?? link}.`}
               </Anchor>
             )}

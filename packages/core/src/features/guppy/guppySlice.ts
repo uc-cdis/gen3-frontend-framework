@@ -1,19 +1,9 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  GQLFilter,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import {
-  IndexAggregation,
-  MultiIndexFieldAggregationResponse,
-  RangeQueryRequest,
-  SharedFieldMapping,
-} from './types';
+import { IndexAggregation, MultiIndexFieldAggregationResponse, RangeQueryRequest, SharedFieldMapping, } from './types';
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
 import {
@@ -72,7 +62,7 @@ interface AccessibleDataSliceParams {
   indexPrefix?: string;
 }
 
-interface QueryAggsParams extends GuppyBaseQueryParams {
+export interface QueryAggsParams extends GuppyBaseQueryParams {
   fields: ReadonlyArray<string>;
   filterSelf?: boolean;
   queryId?: string;
@@ -116,7 +106,7 @@ interface ObjectIdQueryResponse {
   index: string;
 }
 
-interface MultiIndexFieldQueryRequest {
+export interface MultiIndexFieldQuery {
   indexAndFields: Array<QueryAggsParams>;
   accessibility?: Accessibility;
 }
@@ -630,12 +620,12 @@ export const explorerApi = explorerTags.injectEndpoints({
     }),
     getGetMultiIndexAggregation: builder.query<
       MultiIndexFieldAggregationResponse,
-      MultiIndexFieldQueryRequest
+      MultiIndexFieldQuery
     >({
       query: ({
         indexAndFields,
         accessibility = Accessibility.ALL,
-      }: MultiIndexFieldQueryRequest) => {
+      }: MultiIndexFieldQuery) => {
         // build each query
         const filters = indexAndFields.reduce(
           (acc, curr) => {

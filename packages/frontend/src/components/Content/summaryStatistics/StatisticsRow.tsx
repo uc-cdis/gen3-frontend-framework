@@ -1,7 +1,7 @@
 import React from 'react';
 import StatisticsCell, { type StatisticsCellInfo } from './StatisticsCell';
 
-const StatisticsRow = (stats: Array<StatisticsCellInfo>) => {
+const StatisticsRow = ({ stats }: { stats: Array<StatisticsCellInfo> }) => {
   return (
     <div
       className="grid border border-base-lightest divide-x divide-base-light"
