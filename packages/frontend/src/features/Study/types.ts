@@ -83,6 +83,10 @@ export interface StudyDetailView {
     field: string;
     className?: string;
   };
+  subheader: {
+    field: string;
+    className?: string;
+  };
   tabs: StudyDetailTab[];
 }
 
