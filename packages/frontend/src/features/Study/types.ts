@@ -79,14 +79,8 @@ export interface StudyDetailTab {
 }
 
 export interface StudyDetailView {
-  header: {
-    field: string;
-    className?: string;
-  };
-  subheader: {
-    field: string;
-    className?: string;
-  };
+  headerField: string;
+  subHeaderField: string;
   tabs: StudyDetailTab[];
 }
 

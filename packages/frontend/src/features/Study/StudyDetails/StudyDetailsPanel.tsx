@@ -16,11 +16,11 @@ const StudyDetailsPanel = ({
 }: StudyDetailsPanelProps): ReactElement => {
   const headerText = JSONPath({
     json: data,
-    path: studyConfig?.header?.field ?? '',
+    path: studyConfig?.headerField ?? '',
   });
   const subHeaderText = JSONPath({
     json: data,
-    path: studyConfig?.subheader?.field ?? '',
+    path: studyConfig?.subHeaderField ?? '',
   });
   return (
     <div>
