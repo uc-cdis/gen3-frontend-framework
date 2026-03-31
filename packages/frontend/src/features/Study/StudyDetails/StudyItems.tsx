@@ -404,6 +404,23 @@ const renderDetailTags: FieldRendererFunction = (
   return <React.Fragment />;
 };
 
+/**
+ * Renders a field element based on the provided field configuration and resource data.
+ *
+ * @param {StudyDetailsField | StudyTabTagField} field - Field configuration that determines how the data should be rendered. This includes:
+ *   @property {string} [field.field] - A JSONPath expression used to extract the field's value from the resource object.
+ *   @property {boolean} [field.includeLabel] - Indicates whether to include a label for the rendered field.
+ *   @property {string} [field.label] - Custom label to use for the field. If not provided, a default label is derived.
+ *   @property {boolean} [field.includeIfNotAvailable] - Determines whether the field should be rendered if its value is not available.
+ *   @property {JSONValue} [field.valueIfNotAvailable] - Fallback value to use when the desired value is unavailable.
+ *   @property {string} field.contentType - Specifies the type of content to render (e.g., 'accessDescriptor', 'tags').
+ *   @property {string} [field.renderer] - Specifies the rendering method. Defaults to 'default' if not provided.
+ *   @property {object} [field.params] - Additional parameters to customize the field rendering.
+ *
+ * @param {JSONValue} resource - JSON object containing the data from which the field's value is extracted.
+ *
+ * @returns {ReactElement | null} A React element representing the rendered field, or null if the field should not be rendered.
+ */
 export const createFieldRendererElement = (
   field: StudyDetailsField | StudyTabTagField,
   resource: JSONValue,
@@ -438,7 +455,10 @@ export const createFieldRendererElement = (
     field.contentType,
     field?.renderer ?? 'default',
   );
-  switch (field.contentType) {
+  switch (
+    field.contentType // These are handled differently since these require the resource itself and not it's value
+  ) {
+    // the value
     case 'accessDescriptor': {
       return studyFieldRenderer(resource, label, field.params);
     }
@@ -464,7 +484,7 @@ export const createFieldRendererElement = (
   }
 
   return null;
-};;;;
+};
 
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
