@@ -378,9 +378,6 @@ const renderDetailTags: FieldRendererFunction = (
   //TODO - fix this type
   const resource = fieldValue as StudyResource;
 
-  console.log('renderDetailTags', fieldValue);
-  console.log('fieldConfig', fieldConfig);
-
   if (fieldConfig === undefined) {
     return <React.Fragment />;
   }
@@ -485,7 +482,6 @@ export const createFieldRendererElement = (
 
   return null;
 };
-
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
   string,

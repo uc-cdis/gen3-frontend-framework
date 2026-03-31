@@ -18,8 +18,6 @@ const StudyDetailsPanel = ({
     json: data,
     path: studyConfig?.header?.field ?? '',
   });
-
-  console.log('StudyDetailsPanel: data', data);
   return (
     <div>
       <Text size="lg" w={700} className="mb-4">
