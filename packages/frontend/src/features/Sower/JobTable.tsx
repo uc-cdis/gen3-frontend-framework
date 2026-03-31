@@ -12,7 +12,7 @@ import { JobListResponse, JobStatus } from '@gen3/core';
 export interface JobTableProps {
   readonly data: JobListResponse | undefined;
   readonly isLoading: boolean;
-  readonly sowerJobDatetimeCache: Record<string, Date>;
+  readonly sowerJobDatetimeCache: Record<string, number>;
 }
 
 interface ColorConfig {

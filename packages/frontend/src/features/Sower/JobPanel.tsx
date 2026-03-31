@@ -9,7 +9,7 @@ export interface JobPanelProps {
   readonly data: JobListResponse | undefined;
   readonly isLoading: boolean;
   readonly refetch: () => QueryActionCreatorResult<GetSowerJobListQueryType>;
-  readonly sowerJobDatetimeCache: Record<string, Date>;
+  readonly sowerJobDatetimeCache: Record<string, number>;
 }
 
 const JobPanel = ({

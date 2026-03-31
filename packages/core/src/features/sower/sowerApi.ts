@@ -1,12 +1,12 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JSONObject } from '../../types';
 import { JobStatus } from './types';
 import { setSowerJobDatetime } from './sowerJobDatetime';
+import { GQLFilter } from '../filters';
 
 export interface DispatchJobParams {
   action: string;
-  input: JSONObject;
+  input: { filter : GQLFilter };
 }
 
 export interface DispatchJobResponse {
