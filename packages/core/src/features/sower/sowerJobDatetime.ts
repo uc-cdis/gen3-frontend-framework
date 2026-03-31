@@ -13,4 +13,5 @@ const sowerJobDatetimeSlice = createSlice({
 
 export const { setSowerJobDatetime } = sowerJobDatetimeSlice.actions;
 export const selectSowerJobDatetimeCache = (state: CoreState) =>
-  state.sowerJobDatetime;
+  state.sower.sowerJobDatetime;
+export const sowerJobDatetimeReducer = sowerJobDatetimeSlice.reducer;

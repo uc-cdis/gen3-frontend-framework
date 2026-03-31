@@ -43,6 +43,21 @@ export const sowerJobApi = gen3Api.injectEndpoints({
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
+    getMultipleSowerJobStatus: builder.query<Record<string, DispatchJobResponse>, string[]>({
+      queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const statuses: Record<string, DispatchJobResponse> = {};
+        for (const uid of arg) {
+          const result = await fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${uid}`);
+          if (result.error) {
+            return { error: result.error };
+          } else {
+            statuses[uid] = result.data as DispatchJobResponse;
+          }
+        }
+
+        return { data: statuses };
+      },
+    }),
     getSowerOutput: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
     }),
@@ -60,6 +75,10 @@ export const {
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
   useGetSowerJobStatusQuery,
+  useLazyGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
+  useLazyGetMultipleSowerJobStatusQuery,
 } = sowerJobApi;
+
+export const sowerApiReducer = sowerJobApi.reducer;
