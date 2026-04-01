@@ -343,7 +343,6 @@ const dataDownloadList: FieldRendererFunction = (
   console.log('Ln 343 StudyItems. _:', _, ' Resource: ', resource);
   return (
     <>
-      <DownloadButtonsRow data={resource as JSONObject} />
       <DataDownloadList data={resource as JSONObject} />
     </>
   );

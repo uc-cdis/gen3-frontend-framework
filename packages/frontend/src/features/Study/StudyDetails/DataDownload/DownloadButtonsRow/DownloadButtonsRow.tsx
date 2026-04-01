@@ -41,14 +41,16 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
     console.log('called onDownloadAllFiles with resource', data);
 
   return (
-    <div className="flex flex-wrap gap-3 items-center">
+    <div className="flex flex-wrap gap-3 mt-3">
       <Button
         onClick={onDownloadVariableLevelMetadata}
         variant="outline"
         size="md"
         disabled={disabled}
       >
-        Download Variable-Level Metadata
+        Download
+        <br />
+        Variable-Level Metadata
       </Button>
 
       <Button
@@ -57,7 +59,9 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
         size="md"
         disabled={disabled}
       >
-        Download Study-level Metadata
+        Download
+        <br />
+        Study-level Metadata
       </Button>
 
       <Button
@@ -71,7 +75,7 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
 
       <Button
         onClick={onDownloadAllFiles}
-        color="blue"
+        variant="outline"
         size="md"
         disabled={disabled}
       >
