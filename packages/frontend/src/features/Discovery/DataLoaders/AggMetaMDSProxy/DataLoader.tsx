@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
+  categoryObject,
   DiscoverDataHookResponse,
   DiscoveryDataLoaderProps,
 } from '../../types';
 import { useDeepCompareEffect } from 'use-deep-compare';
-
 import { JSONObject } from '@gen3/core';
 import { processAdvancedSearchTerms, processAllSummaries } from '../utils';
 
@@ -12,6 +12,7 @@ interface ProxyData {
   displayedData: JSONObject[];
   hits: number;
   suggestions: string[];
+  tagCategoryData: categoryObject[];
 }
 
 export const useAggMetaMDSProxy = ({
@@ -21,6 +22,7 @@ export const useAggMetaMDSProxy = ({
   searchMode,
   discoveryConfig,
   sorting,
+  selectedTags,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -29,6 +31,7 @@ export const useAggMetaMDSProxy = ({
     displayedData: [],
     hits: 0,
     suggestions: [],
+    tagCategoryData: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -42,14 +45,7 @@ export const useAggMetaMDSProxy = ({
     sorting: sorting,
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
-    selectedTags: {},
-    /*
-    TODO: Example param
-    selectedTags: {
-        SPARC: true,
-        Dataverse: true,
-      },
-    */
+    selectedTags: selectedTags,
   };
 
   useDeepCompareEffect(() => {
@@ -82,6 +78,7 @@ export const useAggMetaMDSProxy = ({
     sorting,
     selectedFieldsForSearchIndexing,
     searchMode,
+    selectedTags,
   ]);
 
   let advancedSearchFilterValues = [] as any;
@@ -111,6 +108,7 @@ export const useAggMetaMDSProxy = ({
     summaryStatistics: summaryStatistics,
     charts: {},
     advancedSearchFilterValues: advancedSearchFilterValues,
+    tagCategoryData: data.tagCategoryData,
     dataRequestStatus: {
       isUninitialized: false,
       isFetching: loading,

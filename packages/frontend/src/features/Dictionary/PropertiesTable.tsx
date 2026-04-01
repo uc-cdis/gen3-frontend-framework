@@ -174,7 +174,7 @@ const PropertiesTable = ({
     state: { rowSelection },
     mantineTableHeadRowProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-3)',
+        '--mrt-base-background-color': 'var(--mantine-color-accentCool-3)',
       },
     },
     mantineTableHeadCellProps: {

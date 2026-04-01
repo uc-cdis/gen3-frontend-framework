@@ -2,7 +2,7 @@ import React from 'react';
 import type { Preview } from '@storybook/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { GEN3_API, GEN3_AUTHZ_API, GEN3_FENCE_API } from '@gen3/core';
-import { Gen3Provider } from '@gen3/frontend';
+import { Gen3Provider } from '@gen3/frontend/app';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { http, HttpResponse } from 'msw';
 import theme from '../src/mantineTheme';

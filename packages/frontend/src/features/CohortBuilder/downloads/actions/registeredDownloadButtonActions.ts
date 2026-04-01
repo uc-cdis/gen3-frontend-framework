@@ -1,10 +1,7 @@
 import { ActionButtonWithArgsFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
 import { downloadToManifestAction } from './downloadManifest';
-import {
-  addCohortDataFilesToDataLibraryAsDataset,
-  exportCohortToWorkspace,
-} from './addCohortToDataLibrary';
+import { addCohortDataFilesToDataLibraryAsDataset, exportCohortToWorkspace, } from './addCohortToDataLibrary';
 
 // create a factory for the action creators
 
@@ -24,7 +21,7 @@ export const NullButtonAction: ActionButtonWithArgsFunction = (
   });
 };
 
-export const registerButtonAction = (
+export const registerDownloadButtonAction = (
   buttonName: string,
   actionItem: ActionCreatorFactoryItem,
 ) => {
@@ -47,27 +44,27 @@ export const findButtonAction = (
 };
 
 export const registerDefaultButtonActions = () => {
-  registerButtonAction('data-json', {
+  registerDownloadButtonAction('data-json', {
     action: downloadToFileAction,
     args: { format: 'json' },
   });
-  registerButtonAction('data-csv', {
+  registerDownloadButtonAction('data-csv', {
     action: downloadToFileAction,
     args: { format: 'csv' },
   });
-  registerButtonAction('data-tsv', {
+  registerDownloadButtonAction('data-tsv', {
     action: downloadToFileAction,
     args: { format: 'tsv' },
   });
-  registerButtonAction('manifest', {
+  registerDownloadButtonAction('manifest', {
     action: downloadToManifestAction,
     args: { format: 'manifest' },
   });
-  registerButtonAction('cohortDataFilesToDataLibrary', {
+  registerDownloadButtonAction('cohortDataFilesToDataLibrary', {
     action: addCohortDataFilesToDataLibraryAsDataset,
     args: { format: 'json' },
   });
-  registerButtonAction('exportCohortToWorkspace', {
+  registerDownloadButtonAction('exportCohortToWorkspace', {
     action: exportCohortToWorkspace,
     args: { format: 'json' },
   });

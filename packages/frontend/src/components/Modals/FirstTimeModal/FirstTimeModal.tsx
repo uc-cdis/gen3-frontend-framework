@@ -1,12 +1,12 @@
 import React from 'react';
 import { ContextModalProps } from '@mantine/modals';
 import { Button } from '@mantine/core';
-import { useCookies } from 'react-cookie';
-import TextContent from '../Content/TextContent';
-import { FirstTimeModalConfig } from './types';
+import TextContent from '../../Content/TextContent';
+import { FirstTimeModalConfig } from '../types';
 
 export interface FirstTimeModalProps {
   config: FirstTimeModalConfig;
+  markSeen: (_arg: number) => void;
 }
 
 export const FirstTimeModal = ({
@@ -14,14 +14,10 @@ export const FirstTimeModal = ({
   id,
   innerProps,
 }: ContextModalProps<FirstTimeModalProps>) => {
-  const { config } = innerProps;
-  const [cookie, setCookie] = useCookies(['Gen3-first-time-use']);
+  const { config, markSeen } = innerProps;
 
   const handleAccept = () => {
-    if (!cookie['Gen3-first-time-use']) {
-      const maxAge = 60 * 60 * 24 * (config?.expireDays ?? 365);
-      setCookie('Gen3-first-time-use', true, { maxAge });
-    }
+    markSeen(config?.expireDays ?? 365);
     context.closeModal(id);
   };
 

@@ -168,9 +168,9 @@ const Gen3Provider = ({
                 }
               }
             >
-                <Gen3ModalsProvider config={modalsConfig}>
-                  {children}
-                </Gen3ModalsProvider>
+              <Gen3ModalsProvider config={modalsConfig}>
+                {children}
+              </Gen3ModalsProvider>
             </ProtectedRoutesProvider>
           </SessionProvider>
         </ModalsProvider>

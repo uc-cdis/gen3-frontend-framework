@@ -52,7 +52,7 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.div`
-bg-accent-cool-lightest
+bg-accentCool-lightest
 text-base-darkest
 uppercase
 px-2 pl-1
@@ -93,6 +93,11 @@ type RangeOperation =
 type ValueOperation = RangeOperation | Equals | NotEquals;
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
 export type SetOperation = Includes | Excludes | ExcludeIfAny;
+
+const FieldNameOverrides: Record<string, string> = {
+  gender: 'gex',
+  Gender: 'Sex',
+};
 
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
@@ -136,6 +141,7 @@ const IncludeExcludeQueryElement = ({
     useRemoveFilter,
     useUpdateFilters,
     shouldShowSummary,
+    fieldsAreFlat,
   } = useContext(QueryExpressionContext);
 
   const removeCohortFilter = useRemoveFilter();
@@ -156,7 +162,9 @@ const IncludeExcludeQueryElement = ({
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToLabel(field);
+  const fieldName = FieldNameOverrides[field]
+    ? fieldNameToLabel(FieldNameOverrides[field])
+    : fieldNameToLabel(field);
   const operandsArray = isArray(operands) ? operands : [operands];
 
   const showSummaryView = shouldShowSummary
@@ -173,7 +181,7 @@ const IncludeExcludeQueryElement = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>{fieldNameToLabel(field)}</QueryFieldLabel>
+      <QueryFieldLabel>{fieldName}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size="xs"
@@ -262,11 +270,17 @@ const IncludeExcludeQueryElement = ({
                         updateCohortFilter(
                           index,
                           fieldToUpdate,
-                          buildNestedFilterForOperation(fieldToUpdate, {
-                            operator: operator,
-                            field: field,
-                            operands: newOperands,
-                          }),
+                          fieldsAreFlat
+                            ? {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }
+                            : buildNestedFilterForOperation(fieldToUpdate, {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }),
                         );
                       }
                     }}
@@ -275,7 +289,10 @@ const IncludeExcludeQueryElement = ({
                       label={value}
                       className="flex-grow text-md font-content"
                     >
-                      <QueryRepresentationLabel value={value.toString()} />
+                      <QueryRepresentationLabel
+                        value={value.toString()}
+                        field={field}
+                      />
                     </OverflowTooltippedLabel>
                   </Badge>
                 );
@@ -316,7 +333,7 @@ const ComparisonElement = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accentCool-lightest text-accentCool-lightest-contrast"
           onClick={() => {
             if (displayOnly) return;
             handleKeepMember(filter);
