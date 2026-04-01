@@ -13,6 +13,8 @@ import {
   StudyFieldRendererFactory,
 } from './RendererFactory';
 import { fieldNameToLabel, JSONObject, JSONValue } from '@gen3/core';
+import DataDownloadList from './DataDownload/DataDownloadList';
+import DownloadButtonsRow from './DataDownload/DownloadButtonsRow/DownloadButtonsRow';
 
 /**
  * Converts a JSON value into a React element.
@@ -71,21 +73,6 @@ const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap gap-x-2';
 const blockTextField = (fieldValue: JSONValue): ReactElement => (
   <div className={discoveryFieldStyle}>{jsonValueToElement(fieldValue)}</div>
 );
-
-/**
- * Renders a datadownload list
-
-const dataDownloadList = (
-  value: JSONValue,
-  par2: any,
-  par3: any,
-): ReactElement => (
-  <h1>
-    Datadownload List! <br />
-    {toString(value)} <br /> PAR2: {toString(par2)} <br /> par3 {toString(par3)}
-  </h1>
-);
- */
 
 /**
  * Renders a label for a field. If the label text is undefined, returns an empty fragment.
@@ -353,11 +340,12 @@ const dataDownloadList: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
+  console.log('Ln 343 StudyItems. _:', _, ' Resource: ', resource);
   return (
-    <h1>
-      HERE! Resource: {JSON.stringify(resource)}
-      _: {toString(_)}
-    </h1>
+    <>
+      <DownloadButtonsRow data={resource as JSONObject} />
+      <DataDownloadList data={resource as JSONObject} />
+    </>
   );
 };
 
