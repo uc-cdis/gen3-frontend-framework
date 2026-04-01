@@ -105,6 +105,7 @@ const SinglePageStudyDetailsPanel = ({
         <DownloadLinksPanel
           studyData={data}
           downloadLinks={studyConfig?.downloadLinks}
+          downloadLinkFields={studyConfig?.downloadLinkFields}
         />
       )}
     </div>

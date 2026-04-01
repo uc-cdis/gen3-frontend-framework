@@ -23,7 +23,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
       // route not available on SSR
       router.push({
         pathname: '/Login',
-        query: { referer: redirect },
+        query: { referer: redirect?.includes('Login') ? '' : redirect },
       });
   };
 
@@ -37,7 +37,7 @@ const ProtectedContent = ({ children, referer }: ProtectedContentProps) => {
   const { status, pending } = useSession(true, delayRedirect);
   useEffect(() => {
     if (!pending && (stableStatus !== status)) {
-      // only update stableStatus if session is not pending
+      // only update stableStatus if the session is not pending
       // this prevents flickering of the status
       setStableStatus(status);
     }

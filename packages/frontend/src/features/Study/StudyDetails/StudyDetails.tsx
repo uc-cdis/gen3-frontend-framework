@@ -12,12 +12,12 @@ const StudyDetails = ({
   index,
   detailView,
   simpleDetailsView,
-  authz
+  authz,
 }: {
-  index: string,
-  detailView: StudyDetailView,
-  simpleDetailsView?: StudyPageConfig,
-  authz: DataAuthorization
+  index: string;
+  detailView: StudyDetailView;
+  simpleDetailsView?: StudyPageConfig;
+  authz: DataAuthorization;
 }) => {
   const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
@@ -26,7 +26,7 @@ const StudyDetails = ({
   if (studyDetails) {
     const studyId = studyDetails[index];
     const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ? 'string' :  'unknown',
+      typeof studyId == 'string' ? 'string' : 'unknown',
     )}`;
     permalink = `/${pagePath}`;
   }
@@ -59,13 +59,20 @@ const StudyDetails = ({
           </CopyButton>
         </Drawer.Header>
         <Drawer.Body>
-          {detailView ?
-          <StudyDetailsPanel
-            data={studyDetails ?? {}}
-            studyConfig={detailView}
-          /> : simpleDetailsView ?
-          <SinglePageStudyDetailsPanel data={studyDetails ?? {}} studyConfig={simpleDetailsView} authorization={authz} /> :
-          <div>Study Details Panel not configured</div>}
+          {detailView ? (
+            <StudyDetailsPanel
+              data={studyDetails ?? {}}
+              studyConfig={detailView}
+            />
+          ) : simpleDetailsView ? (
+            <SinglePageStudyDetailsPanel
+              data={studyDetails ?? {}}
+              studyConfig={simpleDetailsView}
+              authorization={authz}
+            />
+          ) : (
+            <div>Study Details Panel not configured</div>
+          )}
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

@@ -54,29 +54,29 @@ const Gen3FrontendContrastColors: Record<string, ReadonlyArray<string>> = {
     'text-accent-contrast-darkest',
     'text-accent-contrast-min',
   ],
-  'accent-warm-contrast': [
-    'text-accent-warm-contrast-max',
-    'text-accent-warm-contrast-lightest',
-    'text-accent-warm-contrast-lighter',
-    'text-accent-warm-contrast-light',
-    'text-accent-warm-contrast',
-    'text-accent-warm-contrast-vivid',
-    'text-accent-warm-contrast-dark',
-    'text-accent-warm-contrast-darker',
-    'text-accent-warm-contrast-darkest',
-    'text-accent-warm-contrast-min',
+  'accentWarm-contrast': [
+    'text-accentWarm-contrast-max',
+    'text-accentWarm-contrast-lightest',
+    'text-accentWarm-contrast-lighter',
+    'text-accentWarm-contrast-light',
+    'text-accentWarm-contrast',
+    'text-accentWarm-contrast-vivid',
+    'text-accentWarm-contrast-dark',
+    'text-accentWarm-contrast-darker',
+    'text-accentWarm-contrast-darkest',
+    'text-accentWarm-contrast-min',
   ],
-  'accent-cool-contrast': [
-    'text-accent-cool-contrast-max',
-    'text-accent-cool-contrast-lightest',
-    'text-accent-cool-contrast-lighter',
-    'text-accent-cool-contrast-light',
-    'text-accent-cool-contrast',
-    'text-accent-cool-contrast-vivid',
-    'text-accent-cool-contrast-dark',
-    'text-accent-cool-contrast-darker',
-    'text-accent-cool-contrast-darkest',
-    'text-accent-cool-contrast-min',
+  'accentCool-contrast': [
+    'text-accentCool-contrast-max',
+    'text-accentCool-contrast-lightest',
+    'text-accentCool-contrast-lighter',
+    'text-accentCool-contrast-light',
+    'text-accentCool-contrast',
+    'text-accentCool-contrast-vivid',
+    'text-accentCool-contrast-dark',
+    'text-accentCool-contrast-darker',
+    'text-accentCool-contrast-darkest',
+    'text-accentCool-contrast-min',
   ],
   'chart-contrast': [
     'text-chart-contrast-max',
@@ -156,29 +156,29 @@ const Gen3FrontEndColors: Record<string, ReadonlyArray<string>> = {
     'bg-accent-min',
   ],
 
-  'accent-warm': [
-    'bg-accent-warm-max',
-    'bg-accent-warm-lightest',
-    'bg-accent-warm-lighter',
-    'bg-accent-warm-light',
-    'bg-accent-warm',
-    'bg-accent-warm-vivid',
-    'bg-accent-warm-dark',
-    'bg-accent-warm-darker',
-    'bg-accent-warm-darkest',
-    'bg-accent-warm-min',
+  'accentWarm': [
+    'bg-accentWarm-max',
+    'bg-accentWarm-lightest',
+    'bg-accentWarm-lighter',
+    'bg-accentWarm-light',
+    'bg-accentWarm',
+    'bg-accentWarm-vivid',
+    'bg-accentWarm-dark',
+    'bg-accentWarm-darker',
+    'bg-accentWarm-darkest',
+    'bg-accentWarm-min',
   ],
-  'accent-cool': [
-    'bg-accent-cool-max',
-    'bg-accent-cool-lightest',
-    'bg-accent-cool-lighter',
-    'bg-accent-cool-light',
-    'bg-accent-cool',
-    'bg-accent-cool-vivid',
-    'bg-accent-cool-dark',
-    'bg-accent-cool-darker',
-    'bg-accent-cool-darkest',
-    'bg-accent-cool-min',
+  'accentCool': [
+    'bg-accentCool-max',
+    'bg-accentCool-lightest',
+    'bg-accentCool-lighter',
+    'bg-accentCool-light',
+    'bg-accentCool',
+    'bg-accentCool-vivid',
+    'bg-accentCool-dark',
+    'bg-accentCool-darker',
+    'bg-accentCool-darkest',
+    'bg-accentCool-min',
   ],
 
   chart: [
@@ -287,7 +287,7 @@ const ColorTheme = () => {
             <b>Gen3 Color Theme is based on USWDS theme color tokens</b> which
             are divided into several high-level role-based color families:{' '}
             <em>
-              base, primary, secondary, accent, accent-warm, accent-cool, chart,
+              base, primary, secondary, accent, accentWarm, accentCool, chart,
               and utility.
             </em>
           </p>
@@ -298,7 +298,7 @@ const ColorTheme = () => {
             falling into a proportional 60/30/10 relationship: about 60% of your
             site’s color would be the primary color family, about 30% would be
             the secondary color family, and about 10% would be the accent color
-            families (accent-warm and accent-cool). Note that these proportions
+            families (accentWarm and accentCool). Note that these proportions
             are for non-base colors. In many cases, the neutral base text color
             will be the predominant tone on your site.
           </p>

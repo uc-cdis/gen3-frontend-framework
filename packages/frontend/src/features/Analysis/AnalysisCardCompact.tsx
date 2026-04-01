@@ -34,7 +34,7 @@ const AnalysisCardCompact: React.FC<AnalysisCardCompactProps> = ({
         root: 'rounded-lg border-3 border-contrast bg-base-max h-full max-w-90',
       }}
     >
-      <div className="rounded-t-lg bg-secondary border-b-4 border-accent-warm h-10" />
+      <div className="rounded-t-lg bg-secondary border-b-4 border-accentWarm h-10" />
       <div className="flex relative -mt-10 z-10 p-1 max-w-90">
         <div className="relative rounded-lg bg-base-lightest ml-5 border-4 border-base-light mx-1 w-1/4 aspect-square">
           <Image
