@@ -219,7 +219,6 @@ const DiscoveryTable = ({
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
-          console.log('row.original', row.original);
           return { ...row.original };
         });
       },

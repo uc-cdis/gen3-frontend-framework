@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useId } from 'react';
 import Link from 'next/link';
 import { isArray, toString } from 'lodash';
 import { JSONPath } from 'jsonpath-plus';
@@ -220,10 +220,11 @@ const labeledSingleTextField: FieldRendererFunction = (
   } else if (typeof fieldValue !== 'string') return <React.Fragment />;
 
   stringFieldValue = fieldValue as string;
+  const id = useId();
   return (
     <div
       className={discoveryFieldStyle}
-      key={`study-details-${fieldLabel}-${stringFieldValue}`}
+      key={`study-details-${fieldLabel}-${stringFieldValue}-${id}`}
     >
       {label(fieldLabel)} {textField(stringFieldValue, params?.style ?? '')}
     </div>
@@ -337,11 +338,13 @@ const accessDescriptor: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
+  console.log('called accessDescripto line 340');
   if (
     resource === null ||
     typeof resource !== 'object' ||
     !(accessibleFieldName in resource)
   ) {
+    return <h1>LOL</h1>;
     return <React.Fragment />;
   }
 
@@ -457,6 +460,7 @@ export const createFieldRendererElement = (
   ) {
     // the value
     case 'accessDescriptor': {
+      console.log('line 462');
       return studyFieldRenderer(resource, label, field.params);
     }
     case 'tags': {
