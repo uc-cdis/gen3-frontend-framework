@@ -12,7 +12,7 @@ import {
   StudyDetailsRenderer,
   StudyFieldRendererFactory,
 } from './RendererFactory';
-import { fieldNameToLabel, JSONValue } from '@gen3/core';
+import { fieldNameToLabel, JSONObject, JSONValue } from '@gen3/core';
 
 /**
  * Converts a JSON value into a React element.
@@ -71,6 +71,21 @@ const discoveryFieldStyle = 'flex w-full justify-between px-1 no-wrap gap-x-2';
 const blockTextField = (fieldValue: JSONValue): ReactElement => (
   <div className={discoveryFieldStyle}>{jsonValueToElement(fieldValue)}</div>
 );
+
+/**
+ * Renders a datadownload list
+
+const dataDownloadList = (
+  value: JSONValue,
+  par2: any,
+  par3: any,
+): ReactElement => (
+  <h1>
+    Datadownload List! <br />
+    {toString(value)} <br /> PAR2: {toString(par2)} <br /> par3 {toString(par3)}
+  </h1>
+);
+ */
 
 /**
  * Renders a label for a field. If the label text is undefined, returns an empty fragment.
@@ -334,24 +349,40 @@ const labeledMultipleTextField: FieldRendererFunction = (
   );
 };
 
+const dataDownloadList: FieldRendererFunction = (
+  resource: JSONValue,
+  _: string | undefined,
+) => {
+  return (
+    <h1>
+      HERE! Resource: {JSON.stringify(resource)}
+      _: {toString(_)}
+    </h1>
+  );
+};
+
 const accessDescriptor: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
-  console.log('called accessDescripto line 340');
   if (
     resource === null ||
-    typeof resource !== 'object' ||
-    !(accessibleFieldName in resource)
+    typeof resource !== 'object' /*
+    COMMENTING THIS OUT WILL BE IMPLEMENTED UNTIL HP-2378
+    ||
+    !(accessibleFieldName in resource) */
   ) {
-    return <h1>LOL</h1>;
-    return <React.Fragment />;
+    return <></>;
   }
 
-  if (resource[accessibleFieldName] === AccessLevel.ACCESSIBLE) {
+  if (
+    (resource as JSONObject)[accessibleFieldName] === AccessLevel.ACCESSIBLE
+  ) {
     return <Alert color="green">You have access to this study.</Alert>;
   }
-  if (resource[accessibleFieldName] === AccessLevel.UNACCESSIBLE) {
+  if (
+    (resource as JSONObject)[accessibleFieldName] === AccessLevel.UNACCESSIBLE
+  ) {
     return <Alert color="red">You do not have access to this study.</Alert>;
   }
   return (
@@ -460,11 +491,14 @@ export const createFieldRendererElement = (
   ) {
     // the value
     case 'accessDescriptor': {
-      console.log('line 462');
       return studyFieldRenderer(resource, label, field.params);
     }
     case 'tags': {
       return studyFieldRenderer(resource, label, { ...field.params, ...field });
+    }
+    case 'dataDownloadList': {
+      console.log('line 490');
+      return studyFieldRenderer(resource, label, field.params);
     }
     default:
       if (
@@ -496,6 +530,7 @@ const DefaultGen3StudyDetailsFieldsRenderers: Record<
     default: labeledSingleTextField,
     yearOfBirthRestricted: labeledYearOfBirthRestricted,
   },
+  dataDownloadList: { default: dataDownloadList },
   link: { default: labeledSingleLinkField },
   textList: { default: labeledMultipleTextField },
   linkList: {
