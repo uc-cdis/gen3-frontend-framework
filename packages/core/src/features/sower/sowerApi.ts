@@ -2,6 +2,7 @@ import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
 import { JSONObject } from '../../types';
 import { JobStatus } from './types';
+import { setSowerJobDatetime } from './sowerJobDatetime';
 
 export interface DispatchJobParams {
   action: string;
@@ -14,7 +15,7 @@ export interface DispatchJobResponse {
   status: string;
 }
 
-type JobListResponse = Array<JobStatus>;
+export type JobListResponse = Array<JobStatus>;
 
 /**
  * Creates a loadingStatusApi for checking the status of a sower data download job
@@ -23,7 +24,7 @@ type JobListResponse = Array<JobStatus>;
  * @param getDownloadStatus Shows the status of a selected job
  * @returns: A sower job response dict which returns job information of file downloads
  */
-export const loadingStatusApi = gen3Api.injectEndpoints({
+export const sowerJobApi = gen3Api.injectEndpoints({
   endpoints: (builder) => ({
     getSowerJobList: builder.query<JobListResponse, void>({
       query: () => `${GEN3_SOWER_API}/list`,
@@ -34,11 +35,15 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
         method: 'POST',
         body: params,
       }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(setSowerJobDatetime(data.uid));
+      },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
-    getSowerOutput: builder.query<DispatchJobResponse, string>({
+    getSowerOutput: builder.query<{ output: string }, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
     }),
     getSowerServiceStatus: builder.query<JSON, void>({
@@ -47,11 +52,15 @@ export const loadingStatusApi = gen3Api.injectEndpoints({
   }),
 });
 
+export type GetSowerJobListQueryType =
+  typeof sowerJobApi.endpoints.getSowerJobList.Types.QueryDefinition;
+
 export const {
   useGetSowerJobListQuery,
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
   useGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
+  useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
-} = loadingStatusApi;
+} = sowerJobApi;
