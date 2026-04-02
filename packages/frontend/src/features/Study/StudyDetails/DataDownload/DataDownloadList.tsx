@@ -3,6 +3,7 @@ import React from 'react';
 import DownloadButtonsRow from './DownloadButtonsRow/DownloadButtonsRow';
 import StandaloneDataDownloadButton from './StandaloneDataDownloadButton';
 import {
+  MAX_NUMBER_OF_ITEMS_IN_LIST,
   ProcessData,
   processedDatumForDataDownloadList,
 } from './Utils/ProcessData';
@@ -23,13 +24,13 @@ const DataDownloadList = ({ data }: DataDownloadListProps) => {
   const DataDownloadListData = ProcessData(data['__manifest']);
   console.log('dataDownloadList', DataDownloadListData);
 
-  const MAX_NUMBER_STAND_ALONE_DATA_DOWNLOAD_BUTTONS = 200;
   return (
     <>
       <DownloadButtonsRow data={data} />
       {DataDownloadListData.dataForDataDownloadListHasBeenTruncated && (
         <Alert
-          title={`More than ${MAX_NUMBER_STAND_ALONE_DATA_DOWNLOAD_BUTTONS} files found. Visit repository to view all files.`}
+          className="mt-4 mb-4"
+          title={`More than ${MAX_NUMBER_OF_ITEMS_IN_LIST} files found. Visit repository to view all files.`}
         />
       )}
       {DataDownloadListData.processedDataForDataDownloadList.map((fileInfo) => (
