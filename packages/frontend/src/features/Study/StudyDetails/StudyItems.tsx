@@ -340,7 +340,6 @@ const dataDownloadList: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
-  console.log('Ln 343 StudyItems. _:', _, ' Resource: ', resource);
   return (
     <>
       <DataDownloadList data={resource as JSONObject} />
@@ -484,7 +483,6 @@ export const createFieldRendererElement = (
       return studyFieldRenderer(resource, label, { ...field.params, ...field });
     }
     case 'dataDownloadList': {
-      console.log('line 490');
       return studyFieldRenderer(resource, label, field.params);
     }
     default:

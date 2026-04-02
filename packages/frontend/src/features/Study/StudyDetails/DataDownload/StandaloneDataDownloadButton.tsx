@@ -4,17 +4,19 @@ import React from 'react';
 import { Button } from '@mantine/core';
 
 interface StandaloneDataDownloadButtonProps {
+  title: string;
   readonly data: JSONObject;
 }
 
 const StandaloneDataDownloadButton = ({
+  title,
   data,
 }: StandaloneDataDownloadButtonProps) => {
   return (
     <div className="flex flex-wrap gap-3 mt-3">
-      BUTTON LABEL:
+      {title}
       <Button
-        onClick={() => alert('called on click here')}
+        onClick={() => alert(JSON.stringify(data))}
         variant="outline"
         size="md"
       >

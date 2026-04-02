@@ -21,7 +21,6 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
           json: data,
           path: field.field,
         });
-        console.log('resourceFieldValue', resourceFieldValue);
         return (
           resourceFieldValue &&
           resourceFieldValue.length > 0 &&
