@@ -31,10 +31,9 @@ and example configuration:
     ]
   },
   "bottomContent": [
- {
-      "type" : "textWithEmail",
-      "text": "If you have any questions about access or the registration process, please contact",
-      "email": "support@gen3.org",
+    {
+      "type": "markdown",
+      "text": "If you have any questions about access or the registration process, please contact [support@gen3.org](mailto:support@gen3.org)",
       "className": "text-center text-sm"
     }
   ],
