@@ -19,6 +19,7 @@ export type FacetType =
 export interface AllowableRange {
   readonly minimum: number;
   readonly maximum: number;
+  readonly step?: number;
 }
 
 export interface FacetDefinition {

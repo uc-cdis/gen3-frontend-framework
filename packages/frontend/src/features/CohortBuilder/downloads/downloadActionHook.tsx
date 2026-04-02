@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Modals, showModal, useCoreDispatch } from '@gen3/core';
 import { GuppyActionButtonProps } from '../types';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
@@ -27,6 +27,27 @@ interface GuppyDownloadActionHookProps extends Pick<
   onCompleted?: (args?: unknown) => void;
 }
 
+/**
+ * useGuppyActionButton is a custom hook that provides functionality for handling
+ * asynchronous actions with error handling, notifications, and a loading state.
+ *
+ * @param {Object} config - Configuration options for the hook.
+ * @param {React.Component} [config.Modal403=Modals.NoAccessModal] - The modal to display for 403 error scenarios.
+ * @param {React.Component} [config.Modal400=Modals.GeneralErrorModal] - The modal to display for general 400 error scenarios.
+ * @param {Function} [config.done] - Callback function to execute when an action is completed or canceled.
+ * @param {string} [config.customErrorMessage] - Custom error message to override the default error message.
+ * @param {boolean} [config.hideNotification=false] - Whether to hide notification during action execution.
+ * @param {Function} config.actionFunction - The asynchronous function to execute.
+ * @param {any} config.actionArgs - Arguments to be passed to the `actionFunction`.
+ * @param {Function} [config.setIsActive] - Callback function to track active state changes.
+ * @param {Function} [config.onCompleted] - Callback function to execute after the action completes successfully.
+ *
+ * @returns {Object} - Hook utilities.
+ * @returns {Function} handleClick - Function that triggers the primary action when invoked.
+ * @returns {Function} cancel - Function to cancel the in-progress action.
+ * @returns {React.ReactNode} icon - The icon rendered based on the active state (loading or ready).
+ * @returns {boolean} active - The current active/busy state of the hook.
+ */
 const useGuppyActionButton = ({
   Modal403 = Modals.NoAccessModal,
   Modal400 = Modals.GeneralErrorModal,
@@ -40,6 +61,17 @@ const useGuppyActionButton = ({
 }: GuppyDownloadActionHookProps) => {
   const [active, setActive] = useState(false);
   const dispatch = useCoreDispatch();
+
+  const controllerRef = useRef<AbortController | null>(null);
+
+  const setBusy = useCallback(
+    (isBusy: boolean) => {
+      setActive(isBusy);
+      setIsActive?.(isBusy);
+      if (!isBusy) cleanNotifications();
+    },
+    [setIsActive],
+  );
 
   const handleError = useDeepCompareCallback(
     (error: Error) => {
@@ -69,71 +101,71 @@ const useGuppyActionButton = ({
     [Modal400, Modal403, customErrorMessage, dispatch],
   );
 
-  const showDownloadNotification = useCallback(
-    (controller: AbortController) => {
-      showNotification({
-        message: (
-          <DownloadNotification
-            onClick={() => {
-              controller.abort();
-              cleanNotifications();
-              if (done) {
-                done();
-              }
-            }}
-          />
-        ),
-        styles: () => ({
-          root: {
-            textAlign: 'center',
-            display: hideNotification ? 'none' : 'block',
-          },
-          closeButton: {
-            color: 'black',
-            '&:hover': {
-              backgroundColor: 'lightslategray',
-            },
-          },
-        }),
-        closeButtonProps: { 'aria-label': 'Close notification' },
-        autoClose: false,
-      });
-    },
-    [done, hideNotification],
-  );
+  const showDownloadNotification = useCallback(() => {
+    if (hideNotification) return;
+    showNotification({
+      title: 'Downloading',
+      message: <DownloadNotification />,
+      closeButtonProps: { 'aria-label': 'Close notification' },
+      autoClose: false,
+    });
+  }, [hideNotification]);
 
-  const handleClick = async () => {
+  const cancel = useCallback(() => {
+    controllerRef.current?.abort();
+    controllerRef.current = null;
+    setBusy(false);
+    done?.(); // optional: only keep this if "cancel implies done" is intended
+  }, [done, setBusy]);
+
+  useEffect(() => {
+    // Abort if the component using this hook unmounts mid-request
+    return () => controllerRef.current?.abort();
+  }, []);
+
+  const handleClick = useCallback(async () => {
+    // Optional: prevent multiple concurrent requests
+    if (active) return;
+
     const controller = new AbortController();
+    controllerRef.current = controller;
 
-    showDownloadNotification(controller);
-    setActive(true);
-    if (setIsActive) setIsActive(true);
-    await actionFunction(
-      actionArgs,
-      () => {
-        setActive(false);
-        if (setIsActive) setIsActive(false);
-        // Clean up notifications...
-        cleanNotifications();
-      },
-      (error) => {
-        handleError(error);
-        setActive(false);
-        if (setIsActive) setIsActive(false);
-        // Clean up notifications...
-        cleanNotifications();
-        showErrorMessage(error);
-      },
-      () => {
-        setActive(false);
-        if (setIsActive) setIsActive(false);
-        // Clean up notifications...
-        cleanNotifications();
-      },
-      controller.signal,
-      onCompleted,
-    );
-  };
+    showDownloadNotification();
+    setBusy(true);
+
+    try {
+      await actionFunction(
+        actionArgs,
+        () => {
+          controllerRef.current = null;
+          setBusy(false);
+        },
+        (error) => {
+          controllerRef.current = null;
+          handleError(error);
+          setBusy(false);
+          showErrorMessage(error);
+        },
+        () => {
+          controllerRef.current = null;
+          setBusy(false);
+        },
+        controller.signal,
+        onCompleted,
+      );
+    } finally {
+      // In case actionFunction throws before it calls your callbacks
+      controllerRef.current = null;
+    }
+  }, [
+    active,
+    actionArgs,
+    actionFunction,
+    handleError,
+    onCompleted,
+    setBusy,
+    showDownloadNotification,
+  ]);
 
   const icon = active ? (
     <Loader size="sm" className="p-1" />
@@ -143,6 +175,7 @@ const useGuppyActionButton = ({
 
   return {
     handleClick,
+    cancel,
     icon,
     active,
   };

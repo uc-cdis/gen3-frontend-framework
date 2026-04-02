@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import useGuppyActionButton from './downloadActionHook';
 import { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
@@ -20,7 +20,7 @@ const CohortActionButton = ({
   actionFunction,
   actionArgs,
 }: GuppyActionButtonProps) => {
-  const { handleClick, icon, active } = useGuppyActionButton({
+  const { handleClick, cancel, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
     done,
@@ -30,13 +30,19 @@ const CohortActionButton = ({
     actionArgs,
   });
 
+  const clickHandler = useCallback(() => {
+    if (disabled) return;
+    if (!active) handleClick();
+    else cancel();
+  }, [active, disabled, handleClick, cancel]);
+
   return (
     <ActionButton
       activeText={activeText}
       inactiveText={inactiveText}
       active={active}
       icon={icon}
-      handleClick={handleClick}
+      handleClick={clickHandler}
       customStyle={customStyle}
       showLoading={showLoading}
       showIcon={showIcon}
@@ -46,4 +52,4 @@ const CohortActionButton = ({
   );
 };
 
-export default CohortActionButton;
+export default React.memo(CohortActionButton);

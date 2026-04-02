@@ -20,6 +20,11 @@ export * from './features/Profile';
 export * from './utils/';
 export * from './types';
 
+import {
+  ClinicalDataAnalysisPage,
+  ClinicalDataAnalysisServerSideProps,
+} from './pages/ClinicalDataAnalysis';
+
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
 import { type SessionConfiguration } from './lib/session/types';
@@ -31,6 +36,7 @@ import {
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
+import { registerIGVApp } from './features/genomic/igv/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
 import { CollapsableSidebar } from './components/CollapsableSidebar';
 import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
@@ -52,6 +58,7 @@ import TopBar from './features/Navigation/TopBar/TopBar';
 
 import '@gen3/core'; // export Gen3 data UI standard pages
 import Gen3Provider, {
+  createCSSVariables,
   createMantineTheme,
 } from './components/Providers/Gen3Provider';
 import DiscoveryPage from './pages/Discovery/DiscoveryPage';
@@ -198,13 +205,17 @@ export {
   WorkspaceNoAccessPageServerSideProps,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
+  ClinicalDataAnalysisPage,
+  ClinicalDataAnalysisServerSideProps,
   Custom403Page,
   Custom404Page,
   sessionToken,
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  // theming
   createMantineTheme,
+  createCSSVariables,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   CrosswalkPage,
@@ -225,6 +236,7 @@ export {
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,
+  registerIGVApp,
   // appApis
   analysisApiCohortDiscovery,
   // Defaults

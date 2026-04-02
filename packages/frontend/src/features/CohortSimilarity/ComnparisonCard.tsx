@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SimilarityChart } from './types';
-import { AggregationsData, fieldNameToTitle } from '@gen3/core';
+import { AggregationsData, fieldNameToLabel } from '@gen3/core';
 import { generateChart } from './charts/ChartCard';
 import { Card, Group, SegmentedControl, Text } from '@mantine/core';
 import StatisticsCard from './statistics/StatisticsCard';
@@ -64,7 +64,7 @@ const ComparisonCard: React.FC<ComparisonCardProps> = ({
     <Card shadow="xs" withBorder={style === 'box'} className="h-full">
       <Card.Section inheritPadding py="xs" withBorder={style === 'box'}>
         <Group justify="space-between">
-          <Text fw={600}>{fieldNameToTitle(field)}</Text>
+          <Text fw={600}>{fieldNameToLabel(field)}</Text>
           <SegmentedControl
             value={viewType}
             onChange={setViewType}

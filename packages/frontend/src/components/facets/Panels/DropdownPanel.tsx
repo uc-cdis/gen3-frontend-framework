@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Group, Select, Stack, Switch, Text, Tooltip, useMantineTheme, } from '@mantine/core';
+import {
+  Group,
+  Select,
+  Stack,
+  Switch,
+  Text,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { Icon } from '@iconify-icon/react';
 import type { TabConfig } from '../../../features/CohortBuilder/types';
@@ -71,7 +79,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
   };
 
   return (
-    <Stack align="flex-start">
+    <Stack align="flex-start" gap="xs">
       <Group justify="space-between" className="w-full">
         <Text size="xl" fw={800}>
           Filters
@@ -138,6 +146,7 @@ export const DropdownPanel = <T extends FacetType = FacetType>({
             classNames={{
               options: 'border-1 border-base-dark',
               option: 'hover:bg-primary-lightest',
+              root: 'mb-2',
             }}
             withCheckIcon={false}
             data={items}

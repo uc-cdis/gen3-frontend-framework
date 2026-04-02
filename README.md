@@ -58,11 +58,13 @@ npm run dev
 
 By default, this will start a dev server listening to http://localhost:3000
 
-Note: Recompiling the type definitions for core needs to be done manually:
-
+If you want to run the dev server but connect it to a remote Gen3 datacommons, create a `.env.development.local` file
+in the `packages/sampleCommons` directory and add the following:
 ```bash
-npm run compile --w=packages/core
+NEXT_PUBLIC_GEN3_API_TARGET=https://gen3.datacommons.io/
 ```
+
+Note that the configuration in config needs to match the backend.
 
 ### Linting
 

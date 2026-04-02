@@ -9,7 +9,6 @@ import {
 } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
-
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
 import {
@@ -20,6 +19,9 @@ import {
 } from './queryGenerators';
 import { buildRangeQuery } from './range';
 import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
+import { JSONPath } from 'jsonpath-plus';
+
+const GUPPY_MAX_ITEMS = 10000;
 
 const statusEndpoint = '/_status';
 
@@ -93,6 +95,20 @@ export interface RawDataAndTotalCountsParams extends GuppyBaseQueryParams {
   offset?: number;
   size?: number;
   format?: string;
+}
+
+interface ObjectIdQueryRequest {
+  filters: FilterSet;
+  field: string;
+  index: string;
+  indexPrefix?: string;
+  accessibility?: Accessibility;
+  limit?: number;
+}
+
+interface ObjectIdQueryResponse {
+  ids: string[];
+  index: string;
 }
 
 export const explorerTags = guppyApi.enhanceEndpoints({
@@ -206,7 +222,14 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
         return { query, variables };
       },
-      // return . seperated fields as proper values
+      transformErrorResponse: () => {
+        return {
+          data: {
+            _aggregation: [],
+          },
+        };
+      },
+      // return . separated fields as proper values
       transformResponse: (response: Record<string, any>, _meta, args) => {
         const containsDots = args?.fields?.filter((f) => f.includes('.'));
         // check if dot seperated in arry and not object
@@ -557,6 +580,42 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
     }),
+    getObjectIds: builder.query<ObjectIdQueryResponse, ObjectIdQueryRequest>({
+      query: ({
+        filters,
+        field,
+        index,
+        indexPrefix = '',
+        accessibility = Accessibility.ALL,
+        limit = GUPPY_MAX_ITEMS,
+      }: ObjectIdQueryRequest) => {
+        const gqlFilter = convertFilterSetToGqlFilter(filters);
+        const query = `query getObjectIds ($filter: JSON) {
+          ${indexPrefix}${index} (filter: $filter, accessibility: ${accessibility}, first: ${limit}) {
+              ${rawDataQueryStrForEachField(field)}
+              }
+           }`;
+        return {
+          query,
+          variables: {
+            filter: gqlFilter,
+            accessibility,
+          },
+        };
+      },
+      transformResponse: (response: Record<string, any>, _, args) => {
+        const valueData = JSONPath({
+          json: response?.data ?? [],
+          path: `$..${args.field}`,
+          resultType: 'value',
+        });
+
+        return {
+          ids: valueData,
+          index: args.index,
+        };
+      },
+    }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
       query: ({ query, variables }) => {
         return {
@@ -669,4 +728,6 @@ export const {
   useLazyGeneralGQLQuery,
   useCustomRangeQuery,
   useLazyCustomRangeQuery,
+  useGetObjectIdsQuery,
+  useLazyGetObjectIdsQuery,
 } = explorerApi;

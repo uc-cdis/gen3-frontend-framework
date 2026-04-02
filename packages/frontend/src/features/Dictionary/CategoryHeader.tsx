@@ -1,12 +1,12 @@
-import React, { forwardRef, ReactElement } from 'react';
+import React from 'react';
 import { snakeCaseToLabel } from './utils';
 import { Avatar } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 
 const getIcon = (category: string) => {
-  const iconName = `gen3:dictionary-icon-${category.replace('_', '-')}`;
+  const iconName = `dataDictionary:${category.replace('_', '-')}`;
   return (
-    <Icon color="primary-contrast.4" icon={iconName} height={24} width={24} />
+    <Icon color="primary-contrast.4" icon={iconName} height={32} width={32} />
   );
 };
 
@@ -16,13 +16,13 @@ interface CategoryHeaderProps {
 const CategoryHeader = ({ category }: CategoryHeaderProps) => {
   return (
     <h3
-      className="flex text-secondary-contrast-darker font-bold font-size-md bg-secondary-darker mb-0 justify-between h-16 uppercase"
+      className="flex text-secondary-contrast font-bold font-size-md bg-secondary mb-0 justify-between h-16 uppercase"
       id={category}
     >
       <div className="flex items-center ml-4">
         <Avatar
           variant="light"
-          size="sm"
+          size="md"
           color="accent.4"
           radius="xl"
           style={{ '--avatar-bg': 'var(--mantine-color-accent-0' }}

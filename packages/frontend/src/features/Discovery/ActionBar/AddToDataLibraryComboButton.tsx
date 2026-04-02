@@ -119,7 +119,19 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
   const requiresLogin =
     (buttonConfig?.requiresLogin ? buttonConfig?.requiresLogin : false) ||
     dataLibraryStoreMode === DataLibraryStoreMode.ApiOnly;
-  const isLoggedIn = isAuthenticated(userStatus);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (userStatus === 'pending') {
+      return
+    }
+    const tempIsAuth = isAuthenticated(userStatus);
+    if (tempIsAuth != isLoggedIn) {
+      setIsLoggedIn(tempIsAuth);
+    }
+  }, [userStatus]);
+
   const isDisabled =
     error !== null ||
     numItems === 0 ||
@@ -202,7 +214,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             withCloseButton: true,
             autoClose: 5000,
             title: 'Save to list',
-            message: `Error saving to list ${listname}.`,
+            message: `Error saving to list ${listname}: ${results.message}`,
             loading: isUpdating !== null,
           });
         } else
@@ -225,7 +237,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             withCloseButton: true,
             autoClose: 5000,
             title: 'Save to list',
-            message: `Error saving to list ${listname}.`,
+            message: `Error saving to list ${listname}: ${results.message}`,
             loading: isUpdating !== null,
           });
           setCurrentListName('');
@@ -238,7 +250,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
             autoClose: 5000,
             title: 'Save to list',
             message: `${Object.values(items).length} datasets saved to list ${listname}.`,
-            loading: isLoading,
+            loading: isLoading || !!isUpdating,
           });
         }
       });
@@ -323,7 +335,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
           </Combobox.Options>
         </Combobox.Dropdown>
       </Combobox>
-      <Tooltip label="Open Datalibrary">
+      <Tooltip label="Open Data Library">
         <ActionIcon
           size="lg"
           onClick={gotoDataLibrary}
@@ -342,7 +354,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
         <Button
           color="secondary.4"
           classNames={{ root: 'w-1/3 ml-2' }}
-          loading={isLoading}
+          loading={isLoading || !!isUpdating}
           disabled={isDisabled}
           onClick={() => {
             if (currentList) {
@@ -361,7 +373,7 @@ const AddToDataLibraryComboButton = <T extends Record<any, any>>({
       <div className="flex items-center relative">
         <LoadingOverlay
           loaderProps={{ color: 'accent.4', size: 'sm' }}
-          visible={isLoading || isItemsLoading}
+          visible={isLoading || isItemsLoading  || !!isUpdating}
         />
         <Badge
           className="ml-2 max-w-48"

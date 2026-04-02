@@ -24,7 +24,7 @@ COPY start.sh ./start.sh
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24-alpine3.20 AS runner
+FROM node:24.14.0-trixie-slim AS runner
 
 WORKDIR /gen3
 

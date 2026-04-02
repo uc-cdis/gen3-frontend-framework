@@ -8,9 +8,10 @@ import { ContextModalProps, ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { addCollection } from '@iconify-icon/react';
 import { SessionConfiguration } from '../../lib/session/types';
-import { Gen3ModalsProvider, type ModalsConfig } from '../Modals';
+import { gen3Modals, Gen3ModalsProvider, type ModalsConfig } from '../Modals';
 import { AuthorizedRoutesConfig } from '../../lib/authz/type';
 import ProtectedRoutesProvider from '../AuthorizedRoutes/ProtectedRoutesProvider';
+import { CookiesProvider } from 'react-cookie';
 
 interface Gen3ProviderProps {
   icons: Array<RegisteredIcons>;
@@ -27,6 +28,21 @@ interface Gen3ProviderProps {
     | 'bottom-right'
     | 'bottom-center';
 }
+
+// define CSS Variables for document.styleSheets[0]
+export const createCSSVariables = (colors: Record<string, string>) => {
+  Object.entries(colors).forEach(([key, values]) => {
+    Object.entries(values).forEach(([name, color]) => {
+      if (color) {
+        const colorName = name !== 'DEFAULT' ? '-' + name : '';
+        document.documentElement.style.setProperty(
+          `--${key}${colorName}`,
+          color,
+        );
+      }
+    });
+  });
+};
 
 // Define theme for mantine v7
 export const createMantineTheme = (
@@ -52,8 +68,33 @@ export const createMantineTheme = (
     components: {
       Modal: Modal.extend({
         defaultProps: {
-          classNames: {
-            title: 'font-bold',
+          zIndex: 400,
+          radius: 'md',
+          closeButtonProps: { 'aria-label': 'Close Modal' },
+          styles: {
+            header: {
+              backgroundColor: 'var(--mantine-color-primary-3)',
+              borderColor: 'var(--mantine-color-base-3)',
+              borderStyle: 'solid',
+              borderWidth: '0px 0px 2px 0px',
+              padding: '15px 15px 15px 15px',
+              minHeight: '0',
+            },
+            title: {
+              color: 'var(--mantine-color-primary-contrast-3)',
+              fontFamily: '"Montserrat", "sans-serif"',
+              fontSize: '1.05em',
+              fontWeight: 500,
+              letterSpacing: '.1rem',
+              textTransform: 'uppercase',
+            },
+            body: {
+              padding: '0.5rem',
+            },
+            close: {
+              backgroundColor: 'var(--mantine-color-accent-3)',
+              color: 'var(--mantine-color-accent-contrast-3)',
+            },
           },
         },
       }),
@@ -92,7 +133,7 @@ const Gen3Provider = ({
   icons,
   sessionConfig,
   modalsConfig,
-  contextModals,
+  contextModals = {},
   protectedRoutesConfig,
   defaultNotificationPosition = 'top-center',
   children,
@@ -103,35 +144,37 @@ const Gen3Provider = ({
 
   return (
     <CoreProvider>
-      <ModalsProvider modals={contextModals}>
-        <Notifications position={defaultNotificationPosition} />
-        <SessionProvider {...sessionConfig}>
-          <ProtectedRoutesProvider
-            config={
-              protectedRoutesConfig ?? {
-                routes: {
-                  '/DataLibrary': {
-                    loginRequired: true,
+      <CookiesProvider>
+        <ModalsProvider modals={{ ...contextModals, ...gen3Modals }}>
+          <Notifications position={defaultNotificationPosition} />
+          <SessionProvider {...sessionConfig}>
+            <ProtectedRoutesProvider
+              config={
+                protectedRoutesConfig ?? {
+                  routes: {
+                    '/DataLibrary': {
+                      loginRequired: true,
+                    },
+                    '/Workspace': {
+                      loginRequired: true,
+                    },
+                    '/Profile': {
+                      loginRequired: true,
+                    },
+                    '*': {
+                      loginRequired: false,
+                    },
                   },
-                  '/Workspace': {
-                    loginRequired: true,
-                  },
-                  '/Profile': {
-                    loginRequired: true,
-                  },
-                  '*': {
-                    loginRequired: false,
-                  },
-                },
+                }
               }
-            }
-          >
-            <Gen3ModalsProvider config={modalsConfig}>
-              {children}
-            </Gen3ModalsProvider>
-          </ProtectedRoutesProvider>
-        </SessionProvider>
-      </ModalsProvider>
+            >
+              <Gen3ModalsProvider config={modalsConfig}>
+                {children}
+              </Gen3ModalsProvider>
+            </ProtectedRoutesProvider>
+          </SessionProvider>
+        </ModalsProvider>
+      </CookiesProvider>
     </CoreProvider>
   );
 };

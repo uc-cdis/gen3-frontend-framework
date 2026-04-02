@@ -32,10 +32,10 @@ const createBucket = (
   ],
 });
 
-export interface RangeFacetCardProps
-  extends FacetCardProps<RangeFacetDataHooks> {
+export interface RangeFacetCardProps extends FacetCardProps<RangeFacetDataHooks> {
   minimum?: number;
   maximum?: number;
+  step?: number;
 }
 
 const RangeFacet = ({
@@ -46,6 +46,7 @@ const RangeFacet = ({
   facetName,
   minimum = DEFAULT_MINIMUM,
   maximum = DEFAULT_MAXIMUM,
+  step = undefined,
   showSearch = false,
   showFlip = false,
   showSettings = false,

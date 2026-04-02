@@ -1,4 +1,4 @@
-import { AggregationsData, HistogramBucket } from '@gen3/core';
+import { AggregationsData, HistogramData } from '@gen3/core';
 
 export const capitalize = (original: string): string => {
   if (original === undefined) {
@@ -27,6 +27,16 @@ export const removeKey = (key: any, { [key]: _, ...rest }) => rest;
 
 export const processLabel = (label: string): string => {
   return capitalize(label);
+};
+
+export const createLabelFromHistogramData = (
+  histogramData: HistogramData,
+): string => {
+  if (typeof histogramData.key === 'string')
+    return capitalize(histogramData.key);
+
+  const [start, end] = histogramData.key;
+  return `${start}-${end}`;
 };
 
 export const processRangeKeyLabel = (key: [number, number]): string => {
