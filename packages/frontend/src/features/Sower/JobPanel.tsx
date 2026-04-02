@@ -1,6 +1,7 @@
+import React from 'react';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
 import { Button } from '@mantine/core';
-import { JobListResponse, GetSowerJobListQueryType } from '@gen3/core';
+import { GetSowerJobListQueryType, JobListResponse } from '@gen3/core';
 import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
 import JobTable from './JobTable';
 import JobOverview from './JobOverview';
