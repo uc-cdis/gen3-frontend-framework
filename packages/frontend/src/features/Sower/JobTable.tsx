@@ -4,6 +4,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
+  type MRT_Cell,
 } from 'mantine-react-table';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import {
@@ -58,14 +59,14 @@ const JobTable = ({
     }
   }, [outputResponse]);
 
-  const columns: MRT_ColumnDef<JobStatus>[] = useMemo(
+  const columns = useMemo(
     () => [
       { accessorKey: 'uid', header: 'Job ID' },
       { accessorKey: 'name', header: 'Name' },
       {
         accessorKey: 'status',
         header: 'Status',
-        Cell: ({ row }) => {
+        Cell: ({ row } : MRT_Cell<JobStatus>) => {
           const color = STATUS_TO_COLOR[row.original.status];
           return (
             <Badge
@@ -84,7 +85,7 @@ const JobTable = ({
       {
         id: 'datetime',
         header: 'Datetime',
-        Cell: ({ row }) =>
+        Cell: ({ row } : MRT_Cell<JobStatus>) =>
           sowerJobDatetimeCache?.[row.original.uid]
             ? dateFormat.format(sowerJobDatetimeCache[row.original.uid])
             : '--',
@@ -92,7 +93,7 @@ const JobTable = ({
       {
         id: 'options',
         header: '',
-        Cell: ({ row }) => (
+        Cell: ({ row } : MRT_Cell<JobStatus>) => (
           <>
             {row.original.status === 'Completed' ? (
               <Menu>
@@ -116,7 +117,7 @@ const JobTable = ({
   );
 
   const table = useMantineReactTable({
-    columns,
+    columns: columns as  MRT_ColumnDef<JobStatus>[],
     data: filteredData,
     state: { isLoading },
     enableTopToolbar: false,
