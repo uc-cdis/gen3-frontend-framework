@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useArgs } from 'storybook/preview-api';
 
@@ -141,7 +142,7 @@ export const Default: Story = {
       'a1b2c3d4-0013': new Date(),
     },
   } as any,
-  render: (args: any) => {
+  render: function Render(args: any) {
     const [{ data }, updateArgs] = useArgs();
     const refetch = () => updateArgs({ data: [...additionalJobs, ...data] });
     return <JobPanel {...args} refetch={refetch} />;

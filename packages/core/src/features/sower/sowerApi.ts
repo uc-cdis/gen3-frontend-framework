@@ -58,7 +58,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
         return { data: statuses };
       },
     }),
-    getSowerOutput: builder.query<DispatchJobResponse, string>({
+    getSowerOutput: builder.query<{ output: string }, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
     }),
     getSowerServiceStatus: builder.query<JSON, void>({
@@ -77,6 +77,7 @@ export const {
   useGetSowerJobStatusQuery,
   useLazyGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
+  useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
   useLazyGetMultipleSowerJobStatusQuery,
 } = sowerJobApi;

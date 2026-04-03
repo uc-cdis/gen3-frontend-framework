@@ -1,13 +1,16 @@
-import React, { useMemo, useState } from 'react';
-
-import { Badge, SegmentedControl } from '@mantine/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Badge, SegmentedControl, Menu } from '@mantine/core';
 import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from 'mantine-react-table';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
-import { JobListResponse, JobStatus } from '@gen3/core';
+import {
+  JobListResponse,
+  JobStatus,
+  useLazyGetSowerOutputQuery,
+} from '@gen3/core';
 
 export interface JobTableProps {
   readonly data: JobListResponse | undefined;
@@ -32,6 +35,7 @@ const JobTable = ({
   sowerJobDatetimeCache,
 }: JobTableProps) => {
   const [filterValue, setFilterValue] = useState('Running');
+  const [getOutput, outputResponse] = useLazyGetSowerOutputQuery();
   const filteredData = useMemo(
     () =>
       filterValue === 'All'
@@ -47,6 +51,12 @@ const JobTable = ({
     hour: 'numeric',
     minute: 'numeric',
   });
+
+  useEffect(() => {
+    if (outputResponse.isSuccess && !outputResponse.isFetching) {
+      window.open(outputResponse.data.output, '_blank');
+    }
+  }, [outputResponse]);
 
   const columns: MRT_ColumnDef<JobStatus>[] = useMemo(
     () => [
@@ -82,7 +92,24 @@ const JobTable = ({
       {
         id: 'options',
         header: '',
-        Cell: () => <DotIcon />,
+        Cell: ({ row }) => (
+          <>
+            {row.original.status === 'Completed' ? (
+              <Menu>
+                <Menu.Target>
+                  <button>
+                    <DotIcon />
+                  </button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item onClick={() => getOutput(row.original.uid)}>
+                    {'Download'}
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            ) : null}
+          </>
+        ),
       },
     ],
     [],
