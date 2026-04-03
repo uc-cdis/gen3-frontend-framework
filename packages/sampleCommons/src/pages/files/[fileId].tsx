@@ -6,7 +6,7 @@ import {
   NavPageLayoutProps,
 } from '@gen3/frontend/features/Navigation';
 import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
-import { FileSummary } from '@gen3/frontend';
+import { FileSummary } from '@gen3/frontend/features/FileSummary';
 
 const FileSummaryPage = ({ headerProps, footerProps }: NavPageLayoutProps) => {
   const router = useRouter();

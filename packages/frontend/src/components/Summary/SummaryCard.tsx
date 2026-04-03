@@ -10,26 +10,31 @@ export interface SummaryCardProps {
   readonly ref?: React.Ref<HTMLTableElement>;
 }
 
-export const SummaryCard = React.forwardRef<HTMLTableElement, SummaryCardProps>(
-  (
-    { title = "Summary", tableData, customDataTestID, enableSync = false },
+export const SummaryCard = (
+  {
     ref,
-  ): JSX.Element => {
-    return (
-      <div className="flex flex-col gap-2 flex-grow">
-        {title !== "" ? (
-          <HeaderTitle>{title}</HeaderTitle>
-        ) : (
-          <div className="h-7" />
-        )}
+    title = "Summary",
+    tableData,
+    customDataTestID,
+    enableSync = false
+  }: SummaryCardProps & {
+    ref: React.RefObject<HTMLTableElement>;
+  }
+): JSX.Element => {
+  return (
+    <div className="flex flex-col gap-2 flex-grow">
+      {title !== "" ? (
+        <HeaderTitle>{title}</HeaderTitle>
+      ) : (
+        <div className="h-7" />
+      )}
 
-        <HorizontalTable
-          customDataTestID={customDataTestID}
-          tableData={tableData}
-          enableSync={enableSync}
-          ref={ref}
-        />
-      </div>
-    );
-  },
-);
+      <HorizontalTable
+        customDataTestID={customDataTestID}
+        tableData={tableData}
+        enableSync={enableSync}
+        ref={ref}
+      />
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Loader } from '@mantine/core';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { filesize } from 'filesize';

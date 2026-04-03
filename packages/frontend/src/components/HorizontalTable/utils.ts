@@ -10,6 +10,7 @@ export const formatDataForHorizontalTable = (
   headersConfig: ReadonlyArray<{
     readonly field: string;
     readonly name: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     readonly modifier?: (value: any) => any;
   }>,
 ): HorizontalTableProps['tableData'] => {
@@ -27,5 +28,4 @@ export const formatDataForHorizontalTable = (
     });
     return output;
   }, []);
-};`:w
-`
+};
