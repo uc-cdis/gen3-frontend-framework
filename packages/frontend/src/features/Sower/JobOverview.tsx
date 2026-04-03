@@ -34,7 +34,11 @@ const JobOverviewCard = ({
         <Icon size={32} className={`text-${color}`} />
       </div>
       <div className="flex flex-col">
-        {isLoading ? <Loader type="dots" /> : <p className="text-2xl font-bold">{count}</p>}
+        {isLoading ? (
+          <Loader type="dots" />
+        ) : (
+          <p className="text-2xl font-bold">{count}</p>
+        )}
         {text}
       </div>
     </Paper>

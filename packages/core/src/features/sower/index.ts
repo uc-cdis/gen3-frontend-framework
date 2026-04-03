@@ -8,6 +8,8 @@ import {
   useGetSowerServiceStatusQuery,
   type JobListResponse,
   type GetSowerJobListQueryType,
+  useLazyGetSowerJobStatusQuery,
+  useLazyGetMultipleSowerJobStatusQuery,
 } from './sowerApi';
 
 import { type JobStatus } from './types';
@@ -19,6 +21,7 @@ export {
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
   useGetSowerJobStatusQuery,
+  useLazyGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
   useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
@@ -26,4 +29,5 @@ export {
   GetSowerJobListQueryType,
   JobStatus,
   selectSowerJobDatetimeCache,
+  useLazyGetMultipleSowerJobStatusQuery,
 };
