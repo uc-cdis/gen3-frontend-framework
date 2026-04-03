@@ -152,7 +152,7 @@ const CrosswalkPanel = ({
             <Button
               variant="outline"
               size="md"
-              color={clipboard.copied ? 'accent.4' : 'accent-warm.4'}
+              color={clipboard.copied ? 'accent.4' : 'accentWarm.4'}
               onClick={() => {
                 if (data)
                   clipboard.copy(

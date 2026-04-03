@@ -124,7 +124,7 @@
     },
     "tailwindcss": {
       "sucrase": {
-        "glob": "^10.5.0"
+        "glob": "^13.0.6"
       }
     },
     "mantine-react-table": {

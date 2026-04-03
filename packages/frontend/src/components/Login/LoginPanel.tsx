@@ -33,7 +33,7 @@ const filterRedirect = (redirect: string | string[] | undefined) => {
 };
 
 const LoginPanel = (loginConfig: LoginConfig) => {
-  const { image, topContent, bottomContent } = loginConfig;
+  const { image, topContent, loginProviderExtra, bottomContent } = loginConfig;
 
   const router = useRouter();
   const {
@@ -76,7 +76,7 @@ const LoginPanel = (loginConfig: LoginConfig) => {
           <TextContent {...content} key={index} />
         ))}
 
-        <LoginProvidersPanel handleLoginSelected={handleFenceLoginSelected} />
+        <LoginProvidersPanel handleLoginSelected={handleFenceLoginSelected} loginProviderExtra={loginProviderExtra} />
 
         {loginConfig?.showCredentialsLogin &&
           process.env.NODE_ENV === 'development' && (
