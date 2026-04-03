@@ -2,7 +2,7 @@
 
 ## Overview
 
-The TextContent component is a versatile React component designed to render various types of text-based content with different formatting options. It supports multiple content types including plain text, HTML, Markdown, text arrays, and text with email or link attachments.
+The TextContent component is a versatile React component designed to render various types of text-based content with different formatting options. It supports multiple content types including plain text, HTML, Markdown, and text arrays.
 
 ## Installation
 
@@ -17,9 +17,6 @@ import TextContent, { ContentType } from './path/to/TextContent';
 | text | `string \| string[]` | Required | The content to be displayed. Can be a single string or an array of strings. |
 | className | `string` | `'inline text-base-contrast-max font-medium margin-block-start-1 margin-block-end-1'` | Custom Tailwind CSS classes for styling the component. |
 | type | `ContentType` | `ContentType.Text` | Determines how the content will be rendered. |
-| email | `string` | `undefined` | Optional email address for TextWithEmail type. |
-| link | `string` | `undefined` | Optional URL for TextWithLink type. |
-| linkText | `string` | `undefined` | Optional display text for the link. |
 
 ## Content Types
 
@@ -71,32 +68,6 @@ The component supports six different content types through the `ContentType` enu
 />
 ```
 
-### 5. Text With Email (`ContentType.TextWithEmail`)
-- Combines text content with a clickable email link
-- Email is appended to the text with proper formatting
-- Uses Mantine's Anchor component for the email link
-
-```jsx
-<TextContent
-  type={ContentType.TextWithEmail}
-  text="Contact us at"
-  email="example@domain.com"
-/>
-```
-
-### 6. Text With Link (`ContentType.TextWithLink`)
-- Combines text content with a clickable URL
-- Optional custom link text
-- Uses Mantine's Anchor component for the link
-
-```jsx
-<TextContent
-  type={ContentType.TextWithLink}
-  text="Visit our website at"
-  link="https://example.com"
-  linkText="Example.com"
-/>
-```
 
 ## Styling
 
@@ -162,24 +133,5 @@ The component requires the following dependencies:
   type={ContentType.TextArray}
   text={["First paragraph", "Second paragraph"]}
   className="text-lg font-serif"
-/>
-```
-
-### Email Contact
-```jsx
-<TextContent
-  type={ContentType.TextWithEmail}
-  text="For support, please contact"
-  email="support@example.com"
-/>
-```
-
-### External Link
-```jsx
-<TextContent
-  type={ContentType.TextWithLink}
-  text="Check out our documentation at"
-  link="https://docs.example.com"
-  linkText="our docs site"
 />
 ```
