@@ -129,5 +129,5 @@ const renderValue = (
     );
   }
 
-  return <span key={`${headerName}-${index}`}>{String(value)}</span>;
+  return <span className="break-all" key={`${headerName}-${index}`}>{String(value)}</span>;
 };
