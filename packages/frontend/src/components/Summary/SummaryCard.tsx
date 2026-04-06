@@ -17,9 +17,7 @@ export const SummaryCard = (
     tableData,
     customDataTestID,
     enableSync = false
-  }: SummaryCardProps & {
-    ref: React.RefObject<HTMLTableElement>;
-  }
+  }: SummaryCardProps
 ): JSX.Element => {
   return (
     <div className="flex flex-col gap-2 flex-grow">
