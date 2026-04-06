@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, JSX } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';

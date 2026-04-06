@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, JSX } from 'react';
 import { DataStatus } from '@gen3/core';
 import { Pagination, Select } from '@mantine/core';
 import ShowingCount from './ShowingCount';

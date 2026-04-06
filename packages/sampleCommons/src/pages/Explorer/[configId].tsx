@@ -1,6 +1,6 @@
 import { NavPageLayout } from '@gen3/frontend/features/Navigation';
 
-import React from 'react';
+import React, { JSX } from 'react';
 import CohortBuilder from '@gen3/frontend/features/CohortBuilder/CohortBuilder';
 import { ExplorerPageProps } from '@gen3/frontend/pages/Explorer/types';
 import { ExplorerPageGetServerSidePropsForConfigId as getServerSideProps } from '@gen3/frontend/pages/Explorer/data';

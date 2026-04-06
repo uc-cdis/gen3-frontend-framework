@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, JSX } from "react";
 import { Badge } from "@mantine/core";
 import { TableIcons } from "../../components/Tables/TableIcons";
 
