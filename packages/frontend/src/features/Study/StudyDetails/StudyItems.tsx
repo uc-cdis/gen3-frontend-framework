@@ -118,7 +118,9 @@ const linkFieldWithOptionalLabel = (
   linkText?: string,
 ): ReactElement => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    {linkText ?? linkValue}
+    <Text color="utility.0" className="underline">
+      {linkText ?? linkValue}
+    </Text>
   </Link>
 );
 
@@ -169,8 +171,35 @@ const labeledNumberField = (fieldValue: JSONValue, labelText?: string) => {
   );
 };
 
-const labeledMultipleLinkField = (value: JSONValue, labelText?: string) => {
+type LinkTitle = { link: string; title: string };
+const labeledMultipleLinkField = (
+  value: JSONValue | LinkTitle[],
+  labelText?: string,
+) => {
+  const isLinkTitle = (obj: any): boolean => {
+    return (
+      obj !== null &&
+      typeof obj === 'object' &&
+      typeof (obj as any).link === 'string' &&
+      typeof (obj as any).title === 'string'
+    );
+  };
+  const isArrayOfLinkTitle = (arr: LinkTitle[]): boolean => {
+    return Array.isArray(arr) && arr.every(isLinkTitle);
+  };
   const linksText = isArray(value) ? value : [toString(value)];
+  // Return for when data is informat {link:'',title:''}
+  if (value && isArrayOfLinkTitle(value as LinkTitle[])) {
+    return (value as LinkTitle[]).map((linkTitle: LinkTitle, i: number) => (
+      <div
+        className={`${discoveryFieldStyle} mb-5`}
+        key={`${linkTitle.link}-${i}`}
+      >
+        {linkFieldWithOptionalLabel(linkTitle.link, linkTitle.title)}
+      </div>
+    ));
+  }
+  // Output for all other formats
   return linksText.length ? (
     <div>
       {[
@@ -203,7 +232,6 @@ const unlabeledMultipleLinkField = (
 ) => {
   if (!isArray(fieldData) || fieldData.length === 0) return <React.Fragment />;
   const links = fieldData[0] as unknown as LinkWithTitle[];
-
   return (
     <div className="flex flex-col" key={`${fieldName}-links`}>
       {links.map((link) => labeledSingleLinkField(link.link, link.title))}
@@ -459,6 +487,8 @@ export const createFieldRendererElement = (
     }
   } else {
     resourceFieldValue = resourceFieldValue[0];
+    console.log('resourceFieldValue', resourceFieldValue);
+    console.log('field.contentType', field.contentType);
   }
 
   // This is a change from the original
