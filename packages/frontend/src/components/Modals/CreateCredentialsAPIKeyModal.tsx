@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
 import FileSaver from 'file-saver';

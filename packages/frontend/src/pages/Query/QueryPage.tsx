@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import dynamic from 'next/dynamic';
 import { NavPageLayout } from '../../features/Navigation';
 import { QueryPageLayoutProps } from './types';

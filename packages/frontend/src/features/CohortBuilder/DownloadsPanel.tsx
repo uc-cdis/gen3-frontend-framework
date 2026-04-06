@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, JSX } from 'react';
 import {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
