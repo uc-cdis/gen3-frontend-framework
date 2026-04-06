@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState, JSX } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
   Accessibility,
   AggregationsData,
   clearCohortFilters,
   CombineMode,
+  convertFilterSetToGqlFilter,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
@@ -20,7 +21,6 @@ import {
   useGetAggsQuery,
   useGetCountsQuery,
   useSubmitSowerJobMutation,
-  convertFilterSetToGqlFilter,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
 import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
@@ -389,9 +389,9 @@ export const CohortPanel = ({
 
   useEffect(() => {
     if (result?.data) {
-      update(result.data?.uid)
+      update(result.data?.uid);
     }
-  }, [result])
+  }, [result]);
 
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
@@ -471,13 +471,18 @@ export const CohortPanel = ({
           {/* Table Section */}
           {table?.enabled && (
             <>
-              <Button onClick={() =>
-                submitJob({
-                  action: "export",
-                  input: { filter: convertFilterSetToGqlFilter(cohortFilters)}
-                })}>
-                  Export
-                </Button>
+              <Button
+                onClick={() =>
+                  submitJob({
+                    action: 'export',
+                    input: {
+                      filter: convertFilterSetToGqlFilter(cohortFilters),
+                    },
+                  })
+                }
+              >
+                Export
+              </Button>
               <div className="mt-2 flex flex-col">
                 <ExplorerTable
                   index={index}
