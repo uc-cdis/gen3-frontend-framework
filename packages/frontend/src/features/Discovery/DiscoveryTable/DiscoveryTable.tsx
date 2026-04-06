@@ -9,7 +9,7 @@ import {
   type MRT_SortingState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Loader, Text } from '@mantine/core';
+import { Loader, LoadingOverlay, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
 import { DiscoveryTableCellRenderer } from './TableRenderers/CellRendererFactory';
@@ -30,7 +30,6 @@ import {
   RowSelectCompareFunctions,
   SelectableRowConfiguration,
 } from '../types';
-import { LoadingOverlay } from '@mantine/core';
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
@@ -181,7 +180,7 @@ const DiscoveryTable = ({
         ? originalRow[config.minimalFieldMapping.uid]
         : (originalRow?.id ?? undefined),
     renderDetailPanel: ({ row }) => (
-      <RowDetailPanel row={row} config={config} searchTerm={searchTerm} />
+      <RowDetailPanel row={row} searchTerm={searchTerm} />
     ),
     onRowSelectionChange: setRowSelection,
     state: {
@@ -220,6 +219,7 @@ const DiscoveryTable = ({
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
+          console.log('row.original', row.original);
           return { ...row.original };
         });
       },

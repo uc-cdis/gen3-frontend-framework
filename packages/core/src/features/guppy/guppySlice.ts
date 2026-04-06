@@ -1,12 +1,7 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  GQLFilter,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
 import { RangeQueryRequest, SharedFieldMapping } from './types';
 import { groupSharedFields } from './utils';
@@ -464,8 +459,9 @@ export const explorerApi = explorerTags.injectEndpoints({
         args,
       ): number => {
         return (
-          response?.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
-            ?._totalCount ?? 0
+          response?.data?.[`${args?.indexPrefix ?? ''}_aggregation`]?.[
+            args.type
+          ]?._totalCount ?? 0
         );
       },
       providesTags: ['COUNTS'],

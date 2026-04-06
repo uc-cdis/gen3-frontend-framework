@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Grid, Group, Stack, Text, Switch } from '@mantine/core';
-import { useForm, UseFormReturnType } from '@mantine/form';
+import { Card, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { User } from '../../types';
 import {
   EmailInput,

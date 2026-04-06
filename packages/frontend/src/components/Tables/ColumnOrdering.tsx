@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState, JSX } from 'react';
 import {
   ActionIcon,
   Divider,

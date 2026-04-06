@@ -52,7 +52,7 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.div`
-bg-accent-cool-lightest
+bg-accentCool-lightest
 text-base-darkest
 uppercase
 px-2 pl-1
@@ -99,7 +99,6 @@ const FieldNameOverrides: Record<string, string> = {
   Gender: 'Sex',
 };
 
-
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
     x !== undefined &&
@@ -142,6 +141,7 @@ const IncludeExcludeQueryElement = ({
     useRemoveFilter,
     useUpdateFilters,
     shouldShowSummary,
+    fieldsAreFlat,
   } = useContext(QueryExpressionContext);
 
   const removeCohortFilter = useRemoveFilter();
@@ -270,11 +270,17 @@ const IncludeExcludeQueryElement = ({
                         updateCohortFilter(
                           index,
                           fieldToUpdate,
-                          buildNestedFilterForOperation(fieldToUpdate, {
-                            operator: operator,
-                            field: field,
-                            operands: newOperands,
-                          }),
+                          fieldsAreFlat
+                            ? {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }
+                            : buildNestedFilterForOperation(fieldToUpdate, {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }),
                         );
                       }
                     }}
@@ -327,7 +333,7 @@ const ComparisonElement = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accentCool-lightest text-accentCool-lightest-contrast"
           onClick={() => {
             if (displayOnly) return;
             handleKeepMember(filter);

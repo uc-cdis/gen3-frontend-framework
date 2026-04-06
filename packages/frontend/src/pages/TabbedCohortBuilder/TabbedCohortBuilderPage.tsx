@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import TabbedCohortBuilder from '../../features/CohortBuilder/TabbedCohortBuilder';
 import CohortManager from '../../features/CohortBuilder/CohortManager/CohortManager';
@@ -32,7 +32,10 @@ const TabbedCohortBuilderPage = ({
               />
             }
           />
-          <QueryExpression index={configuration.index}></QueryExpression>
+          <QueryExpression
+            index={configuration.index}
+            fieldsAreFlat={configuration.fieldsAreFlat}
+          ></QueryExpression>
         </div>
         <div className="w-full mt-80 mr-4">
           <TabbedCohortBuilder {...configuration} />

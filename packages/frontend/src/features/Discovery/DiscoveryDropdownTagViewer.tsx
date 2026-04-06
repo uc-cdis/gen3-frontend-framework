@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { Group, MultiSelect } from '@mantine/core';
-import _ from 'lodash';
-import { useEffect, useState } from 'react';
 import { categoryObject } from './types';
+import { useDiscoveryContext } from './DiscoveryProvider';
 
 interface RenderMultiSelectOptionProps {
   option: { value: string };
@@ -33,16 +32,14 @@ const renderMultiSelectOption = (
 
 interface MultiSelectContainerProps {
   category: categoryObject;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >;
 }
-const MultiSelectContainer = ({
-  category,
-  selectedTags,
-  setSelectedTags,
-}: MultiSelectContainerProps) => {
+const MultiSelectContainer = ({ category }: MultiSelectContainerProps) => {
+  const {
+    discoveryConfig: discoveryConfig,
+    selectedTags,
+    setSelectedTags,
+  } = useDiscoveryContext();
+
   const containerData = category.tags.map((tag) => ({
     value: tag,
     label: tag,
@@ -50,7 +47,7 @@ const MultiSelectContainer = ({
   const [containerSelections, setContainerSelections] = useState(
     [] as string[],
   );
-
+  const prevSelectionsRef = useRef<string[]>([]);
   useEffect(() => {
     const updatedSelections = Object.keys(selectedTags).filter(
       (tag) => selectedTags[tag],
@@ -59,41 +56,33 @@ const MultiSelectContainer = ({
       category.tags.includes(item),
     );
     setContainerSelections(selectedItemsThatExistInContainer);
+    prevSelectionsRef.current = selectedItemsThatExistInContainer;
   }, [selectedTags]);
 
-  const [previousContainerValues, setPreviousContainerValues] = useState(
-    [] as string[],
-  );
-  const handleChange = (category: string, value: string[]) => {
-    setPreviousContainerValues(value);
-    setSelectedTags((prevTags) => {
-      // Create a copy of the previous tags
-      const updatedTags = { ...prevTags };
-      if (previousContainerValues.length > value.length) {
-        // Need to remove tags since the update removes tags
-        const valuesToBeRemoved = previousContainerValues.filter(
-          (curr) => !value.includes(curr),
-        );
-        valuesToBeRemoved.forEach(
-          (valueToBeRemoved) => delete updatedTags[valueToBeRemoved],
-        );
-      } else {
-        // Need to add tags
-        _.forEach(value, (tag) => {
-          if (!updatedTags[tag]) {
-            updatedTags[tag] = true;
-          }
-        });
-      }
-      return updatedTags; // Update state with the new tags
+  const handleChange = (value: string[]) => {
+    const previousValues = prevSelectionsRef.current;
+    const removedTags = previousValues.filter(
+      (tag: string) => !value.includes(tag),
+    );
+    const addedTags = value.filter((tag) => !previousValues.includes(tag));
+    setSelectedTags((prev) => {
+      const updated = { ...prev };
+      removedTags.forEach((tag) => delete updated[tag]);
+      addedTags.forEach((tag) => {
+        updated[tag] = true;
+      });
+      return updated;
     });
+    setContainerSelections(value);
+    prevSelectionsRef.current = value;
   };
+
   return (
     <div key={category.categoryDisplayName?.toString()}>
       <MultiSelect
         placeholder={category.categoryDisplayName}
         value={containerSelections}
-        onChange={(value) => handleChange(category.categoryDisplayName, value)}
+        onChange={(value) => handleChange(value)}
         clearable
         searchable
         data={containerData}
@@ -117,35 +106,23 @@ const MultiSelectContainer = ({
 
 interface DiscoveryDropdownTagViewerProps {
   tagCategoryData: Array<categoryObject> | undefined;
-  selectedTags: { [key: string]: boolean };
-  setSelectedTags: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >;
 }
 
 const DiscoveryDropdownTagViewer = ({
   tagCategoryData,
-  selectedTags,
-  setSelectedTags,
 }: DiscoveryDropdownTagViewerProps) => {
   if (!tagCategoryData || tagCategoryData?.length === 0) return null;
 
   return (
-    <div>
-      <div
-        className={`grid sm:grid-cols-1
+    <div
+      className={`grid sm:grid-cols-1
           ${tagCategoryData.length > 1 && ' md:grid-cols-2 gap-4'}`}
-      >
-        {tagCategoryData.map((category, i) => (
-          <div key={i}>
-            <MultiSelectContainer
-              category={category}
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-            />
-          </div>
-        ))}
-      </div>
+    >
+      {tagCategoryData.map((category, i) => (
+        <div key={i}>
+          <MultiSelectContainer category={category} />
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,5 +1,6 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, JSX } from 'react';
 import { JSONValue } from '@gen3/core';
+import { Text } from '@mantine/core';
 
 export type FieldRendererFunction = (
   fieldValue: JSONValue,
@@ -13,8 +14,12 @@ const defaultStudyFieldRenderer = (
 ): ReactElement => {
   return (
     <div className="flex w-full justify-between px-1 no-wrap'">
-      {fieldLabel ? <span>{fieldLabel}</span> : null};
-      <span>{fieldValue as string}</span>;
+      {fieldLabel ? (
+        <Text fw={700} size="sm">
+          {fieldLabel}
+        </Text>
+      ) : null}
+      <Text size="sm">{fieldValue as string}</Text>;
     </div>
   );
 };

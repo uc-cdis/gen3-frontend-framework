@@ -72,6 +72,7 @@ const globals = {
   graphql: 'graphql',
   'isomorphic-dompurify': 'isomorphic-dompurify',
   '@iconify-icon/react': 'iconify-iconReact',
+  'igv/dist/igv.esm.min.js': 'igv',
 };
 
 const external = [
@@ -98,6 +99,10 @@ const external = [
   '@dnd-kit/utilities',
   '@dnd-kit/modifiers',
   '@gen3/core/server',
+  'graphiql/setup-workers/webpack',
+  '@theothergothamdev/pluralize-ts',
+  '@tanstack/react-table',
+  'rehype-sanitize',
 ];
 
 const jsBundle = (input, baseName, additionalExternal) => ({

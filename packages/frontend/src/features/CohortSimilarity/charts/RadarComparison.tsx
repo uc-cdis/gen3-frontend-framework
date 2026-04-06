@@ -48,12 +48,12 @@ const processComparisonData = (
   };
 };
 
-const RadarComparison: React.FC<ComparisonChartProps> = ({
+const RadarComparison = ({
   baseDataset,
   comparisonDataset,
   title,
   yAxisLabel = 'percent',
-}) => {
+} : ComparisonChartProps) => {
   const categories = baseDataset.data.map((d: any) =>
     truncateString(processLabel(d.key), 35),
   );

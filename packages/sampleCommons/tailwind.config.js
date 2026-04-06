@@ -197,28 +197,28 @@ module.exports = {
     'focus-visible:ring-focusColor',
     {
       pattern:
-        /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /bg-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /border-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /bg-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /text-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /border-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
   ],
 };
