@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gen3User, LoginStatus, type JWTSessionStatus } from '@gen3/core';
+import { Gen3User, type JWTSessionStatus, LoginStatus } from '@gen3/core';
 
 export interface AuthTokenData {
   issued?: number;
@@ -42,6 +42,11 @@ export interface SessionConfiguration {
    * logout the user if the session is inactive for the specified time defined by 'inactiveTimeLimit'.
    */
   logoutInactiveUsers?: boolean;
+
+  /**
+   * if the user is inactive for the specified time, a warning will be displayed to the user.
+   */
+  inactiveWarningTimeLimit?: number;
 
   /**
    *  should workspaces be monitored

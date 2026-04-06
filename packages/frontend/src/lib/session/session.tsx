@@ -30,6 +30,7 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
+import { openContextModal } from '@mantine/modals';
 
 const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
@@ -176,6 +177,7 @@ export const SessionProvider = ({
   updateSessionTime = 5,
   inactiveTimeLimit = 20,
   workspaceInactivityTimeLimit = 0,
+  inactiveWarningTimeLimit = 5,
   logoutInactiveUsers = true,
   monitorWorkspace = true,
 }: SessionProviderProps) => {
@@ -233,6 +235,10 @@ export const SessionProvider = ({
 
   const inactiveTimeLimitMilliseconds =
     MinutesToMilliseconds(inactiveTimeLimit);
+
+  const inactiveWarningTimeLimitMilliseconds = MinutesToMilliseconds(
+    inactiveWarningTimeLimit,
+  );
 
   const workspaceInactivityTimeLimitMilliseconds = MinutesToMilliseconds(
     workspaceInactivityTimeLimit,
@@ -327,10 +333,39 @@ export const SessionProvider = ({
   useInterval(
     () => {
       if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
-      if (isUserOnPage('Login') /* || this.popupShown */) return;
+      if (isUserOnPage('Login')) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
       if (logoutInactiveUsers) {
+        if (isUserOnPage('Workspace')) {
+          const timestamp = Date.now();
+          setMostRecentActivityTimestamp(timestamp);
+          return; // do not log out if user is on workspace page
+        }
+
+        if (
+          timeSinceLastActivity >=
+          inactiveWarningTimeLimitMilliseconds -
+            inactiveWarningTimeLimitMilliseconds
+        ) {
+          openContextModal({
+            modal: 'sessionInactivityModal',
+            title: 'Inactivity Warning',
+            size: '60%',
+            closeOnClickOutside: false,
+            closeOnEscape: false,
+            withCloseButton: false,
+            innerProps: {
+              config: modalsConfig.systemUseModal,
+              markSeen,
+            },
+          });
+          // if (timeSinceLastActivity > inactiveWarningTimeLimitMilliseconds ) {
+          //   // show inactivity modal
+          //   return;
+          // }
+        }
+
         if (
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
           !isUserOnPage('Workspace')
