@@ -1,12 +1,12 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JSONObject } from '../../types';
 import { JobStatus } from './types';
 import { setSowerJobDatetime } from './sowerJobDatetime';
+import { GQLFilter } from '../filters';
 
 export interface DispatchJobParams {
   action: string;
-  input: JSONObject;
+  input: { filter : GQLFilter };
 }
 
 export interface DispatchJobResponse {
@@ -43,6 +43,21 @@ export const sowerJobApi = gen3Api.injectEndpoints({
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
     }),
+    getMultipleSowerJobStatus: builder.query<Record<string, DispatchJobResponse>, string[]>({
+      queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const statuses: Record<string, DispatchJobResponse> = {};
+        for (const uid of arg) {
+          const result = await fetchWithBQ(`${GEN3_SOWER_API}/status?UID=${uid}`);
+          if (result.error) {
+            return { error: result.error };
+          } else {
+            statuses[uid] = result.data as DispatchJobResponse;
+          }
+        }
+
+        return { data: statuses };
+      },
+    }),
     getSowerOutput: builder.query<{ output: string }, string>({
       query: (uid) => `${GEN3_SOWER_API}/output?UID=${uid}`,
     }),
@@ -60,7 +75,11 @@ export const {
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
   useGetSowerJobStatusQuery,
+  useLazyGetSowerJobStatusQuery,
   useGetSowerOutputQuery,
   useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
+  useLazyGetMultipleSowerJobStatusQuery,
 } = sowerJobApi;
+
+export const sowerApiReducer = sowerJobApi.reducer;

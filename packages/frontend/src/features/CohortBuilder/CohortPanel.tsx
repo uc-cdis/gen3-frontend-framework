@@ -19,6 +19,8 @@ import {
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
+  useSubmitSowerJobMutation,
+  convertFilterSetToGqlFilter,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
 import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
@@ -50,6 +52,8 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
+import { Button } from '@mantine/core';
+import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
 
@@ -380,6 +384,15 @@ export const CohortPanel = ({
     queryId: cohortId,
   });
 
+  const [submitJob, result] = useSubmitSowerJobMutation();
+  const { update } = useSowerJobEventBus();
+
+  useEffect(() => {
+    if (result?.data) {
+      update(result.data?.uid)
+    }
+  }, [result])
+
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
@@ -457,13 +470,22 @@ export const CohortPanel = ({
 
           {/* Table Section */}
           {table?.enabled && (
-            <div className="mt-2 flex flex-col">
-              <ExplorerTable
-                index={index}
-                tableConfig={table}
-                accessibility={accessLevel}
-              />
-            </div>
+            <>
+              <Button onClick={() =>
+                submitJob({
+                  action: "export",
+                  input: { filter: convertFilterSetToGqlFilter(cohortFilters)}
+                })}>
+                  Export
+                </Button>
+              <div className="mt-2 flex flex-col">
+                <ExplorerTable
+                  index={index}
+                  tableConfig={table}
+                  accessibility={accessLevel}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
