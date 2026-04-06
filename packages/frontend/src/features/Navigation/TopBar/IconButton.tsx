@@ -12,11 +12,15 @@ export interface TopIconButtonProps extends NameAndIcon {
   clickHandler?: () => void;
   ariaLabel?: string;
   component?: React.ReactElement;
-}
+ }
 
 export interface TopIconButtonPropsWithLink extends TopIconButtonProps {
   href: string;
   newWindow?: boolean;
+}
+
+export interface TopIconButtonPropsWithModal extends TopIconButtonProps {
+  modal: string;
 }
 
 export const IconButton = ({
