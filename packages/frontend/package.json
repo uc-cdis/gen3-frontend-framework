@@ -69,8 +69,15 @@
     "@gen3/core": "^0.12.34",
 =======
     "@gen3/core": "^0.12.33",
+<<<<<<< HEAD
 >>>>>>> 6215f0f4 (GFF-544 - Update to React version 19 (#678))
+<<<<<<< HEAD
 >>>>>>> a8c9a7bc (feat(discoveryDetailsPlaceholders): handled merge conflict)
+=======
+=======
+>>>>>>> b3721af5 (GFF-544 - Update to React version 19 (#678))
+>>>>>>> cd7ed1e7 (Resolved merge conflicts)
+>>>>>>> 47925f4b (Resolved merge conflicts)
     "@graphiql/react": "^0.37.3",
     "@hello-pangea/dnd": "^18.0.0",
     "@iconify-icon/react": "^3.0.3",
