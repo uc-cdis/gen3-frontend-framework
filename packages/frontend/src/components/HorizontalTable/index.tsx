@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { useState } from 'react';
 
 export interface CollapsableTableItemsProps {
   readonly expandBtnText: string;
@@ -42,66 +42,62 @@ export interface HorizontalTableProps {
   slideImageDetails?: boolean;
   customDataTestID?: string;
   enableSync?: boolean;
+  ref?: React.RefObject<HTMLTableElement>;
 }
 
-export const HorizontalTable = forwardRef<
-  HTMLTableElement,
-  HorizontalTableProps
->(
-  (
-    {
-      tableData,
-      customContainerStyles,
-      slideImageDetails = false,
-      customDataTestID,
-      enableSync = false,
-    },
+export const HorizontalTable = (
+  {
+    tableData,
+    customContainerStyles,
+    slideImageDetails = false,
+    customDataTestID,
+    enableSync = false,
     ref,
-  ) => {
-    const containerClassName =
-      'w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm';
-    const updatedContainerClassName = customContainerStyles
-      ? containerClassName + ` ${customContainerStyles}`
-      : containerClassName;
+  }: HorizontalTableProps
+) => {
+  const containerClassName =
+    'w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm';
+  const updatedContainerClassName = customContainerStyles
+    ? containerClassName + ` ${customContainerStyles}`
+    : containerClassName;
 
-    return (
-      <table
-        data-testid={customDataTestID}
-        className={updatedContainerClassName}
-        ref={enableSync ? ref : undefined}
-      >
-        <tbody>
-          {tableData.map((obj, rowIndex: number): JSX.Element => {
-            return (
-              <tr
-                key={`row-${obj.headerName}`}
-                data-testid={`horizontal-table-row-${rowIndex}`}
-                className={rowIndex % 2 ? 'transparent' : 'bg-base-lightest'}
+  return (
+    <table
+      data-testid={customDataTestID}
+      className={updatedContainerClassName}
+      ref={enableSync ? ref : undefined}
+    >
+      <tbody>
+        {tableData.map((obj, rowIndex: number): JSX.Element => {
+          return (
+            <tr
+              key={`row-${obj.headerName}`}
+              data-testid={`horizontal-table-row-${rowIndex}`}
+              className={rowIndex % 2 ? 'transparent' : 'bg-base-lightest'}
+            >
+              <th
+                className={`w-2/5 align-top px-2 ${
+                  !slideImageDetails && 'py-2.5'
+                } border-gen3-smoke border-1 whitespace-normal font-semibold font-heading`}
+                key={`head-${obj.headerName}`}
+                scope="row"
               >
-                <th
-                  className={`w-2/5 align-top px-2 ${
-                    !slideImageDetails && 'py-2.5'
-                  } border-gen3-smoke border-1 whitespace-normal font-semibold font-heading`}
-                  key={`head-${obj.headerName}`}
-                  scope="row"
-                >
-                  {obj.headerName}
-                </th>
-                <td className="w-3/5 border-1 border-gen3-smoke px-2 font-content-noto font-normal">
-                  <div className="flex flex-wrap gap-2">
-                    {obj.values.map((value, index) =>
-                      renderValue(value, obj.headerName, index),
-                    )}
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    );
-  },
-);
+                {obj.headerName}
+              </th>
+              <td className="w-3/5 border-1 border-gen3-smoke px-2 font-content-noto font-normal">
+                <div className="flex flex-wrap gap-2">
+                  {obj.values.map((value, index) =>
+                    renderValue(value, obj.headerName, index),
+                  )}
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
 HorizontalTable.displayName = 'HorizontalTable';
 const renderValue = (
   value: string | ReadonlyArray<string> | boolean | number | JSX.Element | undefined,

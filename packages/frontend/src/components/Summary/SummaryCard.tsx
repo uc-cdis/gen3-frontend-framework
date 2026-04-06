@@ -7,7 +7,7 @@ export interface SummaryCardProps {
   readonly tableData: HorizontalTableProps["tableData"];
   readonly customDataTestID?: string;
   readonly enableSync?: boolean;
-  readonly ref?: React.Ref<HTMLTableElement>;
+  readonly ref?: React.RefObject<HTMLTableElement>;
 }
 
 export const SummaryCard = (

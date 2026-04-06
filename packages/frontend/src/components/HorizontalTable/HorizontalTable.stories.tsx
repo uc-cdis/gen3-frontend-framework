@@ -88,7 +88,7 @@ export const Default: Story = {
     ],
     customDataTestID: 'customDataTestID',
     enableSync: true,
-    ref: null,
+    ref: undefined,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
