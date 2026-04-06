@@ -16,6 +16,10 @@ export interface SessionExpiredModalConfig extends BaseModalConfig {
   externalLoginUrl?: string;
 }
 
+export interface SessionInactivityModalConfiguration extends SessionExpiredModalConfig {
+  message?: string;
+}
+
 export interface ModalsConfig {
   systemUseModal?: FirstTimeModalConfig;
   sessionExpiredModal?: SessionExpiredModalConfig;
