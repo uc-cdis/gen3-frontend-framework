@@ -36,7 +36,11 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
 
   return (
     <div className=" flex flex-col">
+<<<<<<< HEAD
       <div className="bg-accent-lightest w-full p-1 mb-2 mt-1">
+=======
+      <div className="bg-accent-lightest w-full p-1 mb-2">
+>>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
         <Text c="primary" fw={700}>
           {header}
         </Text>

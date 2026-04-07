@@ -8,10 +8,8 @@ import { JSONValue } from '@gen3/core';
  * @param {JSONValue} fieldValue - The value to render.
  * @returns {ReactElement} The rendered block of text.
  */
-const BlockTextField = (fieldValue: JSONValue): ReactElement => {
-  console.log('fieldValue', fieldValue);
-  return (
-    <div className={discoveryFieldStyle}>{jsonValueToElement(fieldValue)}</div>
-  );
-};
+const BlockTextField = (fieldValue: JSONValue): ReactElement => (
+  <div className={discoveryFieldStyle}>{jsonValueToElement(fieldValue)}</div>
+);
+
 export default BlockTextField;

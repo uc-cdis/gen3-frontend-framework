@@ -1,14 +1,8 @@
 import React, { ReactElement } from 'react';
 import { isArray } from 'lodash';
 import { JSONPath } from 'jsonpath-plus';
+import { StudyDetailsField, StudyTabTagField } from '../../types';
 import {
-  StudyDetailsField,
-  StudyResource,
-  StudyTabTagField,
-} from '../../types';
-import { RenderTagsCell } from '../../TableRenderers/CellRenderers';
-import {
-  FieldRendererFunction,
   FieldRendererFunctionMap,
   StudyDetailsRenderer,
   StudyFieldRendererFactory,

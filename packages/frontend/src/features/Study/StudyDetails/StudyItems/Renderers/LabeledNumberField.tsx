@@ -3,6 +3,7 @@ import { JSONValue } from '@gen3/core';
 import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 
+<<<<<<< HEAD
 /**
  * Renders a labeled number field
  *
@@ -10,6 +11,8 @@ import Label from './Label';
  * @param {string} labelText - Label for the number
  * @returns {ReactElement | null} Returns a label followed a number
  */
+=======
+>>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledNumberField = (fieldValue: JSONValue, labelText?: string) => {
   if (typeof fieldValue !== 'number' && typeof fieldValue !== 'string')
     return <React.Fragment />;

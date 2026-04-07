@@ -3,9 +3,7 @@ import { Text } from '@mantine/core';
 
 /**
  * Renders a label for a field. If the label text is undefined, returns an empty fragment.
- *
  * @param labelText - the label text to render.
- * @returns {ReactElement} The rendered label text
  */
 const Label = (labelText?: string): ReactElement =>
   labelText ? (
