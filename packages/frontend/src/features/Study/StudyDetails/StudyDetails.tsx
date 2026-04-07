@@ -47,8 +47,7 @@ const StudyDetails = ({
       <Drawer.Content className="pl-2">
         <Drawer.Header>
           <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            {' '}
-            Back{' '}
+            Back
           </Button>
           <CopyButton value={permalink}>
             {({ copied, copy }) => (
