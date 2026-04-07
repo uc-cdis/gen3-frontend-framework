@@ -7,6 +7,7 @@ import { JSONValue } from '@gen3/core';
 import LinkFieldWithOptionalLabel from './LinkFieldWithOptionalLabel';
 
 type LinkTitle = { link: string; title: string };
+<<<<<<< HEAD
 
 /**
  * Renders an UI of multiple labeled links
@@ -15,6 +16,8 @@ type LinkTitle = { link: string; title: string };
  * or an array of LinkTitle when the field is represented as link titles.
  * @returns {ReactElement | null} Returns a Labeled multiple link field formated either as with labels for the items
  */
+=======
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledMultipleLinkField = (
   value: JSONValue | LinkTitle[],
   labelText?: string,
@@ -31,7 +34,11 @@ const LabeledMultipleLinkField = (
     return Array.isArray(arr) && arr.every(isLinkTitle);
   };
   const linksText = isArray(value) ? value : [toString(value)];
+<<<<<<< HEAD
   // Return for when data is in format {link:'',title:''}
+=======
+  // Return for when data is informat {link:'',title:''}
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
   if (value && isArrayOfLinkTitle(value as LinkTitle[])) {
     return (
       <>
@@ -55,10 +62,17 @@ const LabeledMultipleLinkField = (
           {Label(labelText)} {LinkField(linksText[0] as string)}
         </div>,
         // unlabeled subsequent fields
+<<<<<<< HEAD
         ...linksText.slice(1).map((linkText: any, i: number) => (
           <div className={discoveryFieldStyle} key={`${linkText}-${i}`}>
             {Label(labelText)}
             {LinkField(linkText)}
+=======
+        ...linksText.slice(1).map((linkText: string, i: number) => (
+          <div className={discoveryFieldStyle} key={`${linkText}-${i}`}>
+            {Label(labelText)}
+            {LinkField(linkText as string)}
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
           </div>
         )),
       ]}

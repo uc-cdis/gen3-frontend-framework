@@ -7,6 +7,7 @@ export { default as LabeledSingleTextField } from './LabeledSingleTextField';
 export { default as LabeledSingleLinkField } from './LabeledSingleLinkField';
 export { default as LabeledParagraph } from './LabeledParagraph';
 <<<<<<< HEAD
+<<<<<<< HEAD
 export { default as UnlabeledMultipleLinkField } from './UnlabeledMultipleLinkField';
 export { default as LabeledYearOfBirthRestricted } from './LabeledYearOfBirthRestricted';
 export { default as AccessDescriptor } from './AccessDescriptor';
@@ -14,3 +15,5 @@ export { default as DataDownloadListField } from './DataDownloadListField';
 export { default as RenderDetailTags } from './RenderDetailTags';
 =======
 >>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
+=======
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)

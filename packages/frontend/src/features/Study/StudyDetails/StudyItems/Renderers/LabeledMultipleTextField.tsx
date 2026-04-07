@@ -7,6 +7,7 @@ import Label from './Label';
 import TextField from './TextField';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * Renders multiple labeled text fields
  *
@@ -16,6 +17,8 @@ import TextField from './TextField';
  */
 =======
 >>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
+=======
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledMultipleTextField: FieldRendererFunction = (
   fieldsText: JSONValue,
   labelText?: string,

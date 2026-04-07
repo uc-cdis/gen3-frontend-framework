@@ -4,6 +4,7 @@ import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * Renders a labeled number field
  *
@@ -13,6 +14,8 @@ import Label from './Label';
  */
 =======
 >>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
+=======
+>>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledNumberField = (fieldValue: JSONValue, labelText?: string) => {
   if (typeof fieldValue !== 'number' && typeof fieldValue !== 'string')
     return <React.Fragment />;
