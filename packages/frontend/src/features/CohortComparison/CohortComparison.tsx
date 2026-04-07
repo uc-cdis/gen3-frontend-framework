@@ -10,7 +10,6 @@ import {
 import CohortCard from './CohortCard/CohortCard';
 import FacetCard from './FacetCard';
 import { CohortComparisonConfiguration } from './types';
-import { DemoText } from '../../components/tailwindComponents';
 
 export interface CohortComparisonType {
   primary_cohort: {
@@ -38,7 +37,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   uniqueIdField,
   facets,
   cohorts,
-  demoMode = false,
 }: CohortComparisonProps) => {
   const facetCards = facets.reduce(
     (acc, facet) => {
@@ -57,12 +55,13 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   const {
     data: cohortFacetsData,
     isFetching: cohortFacetsFetching,
-    isLoading: cohortFacetsLoading,
     isUninitialized: cohortFacetsUninitialized,
     isError: cohortFacetsError,
   } = useCohortFacetsQuery({
     index,
-    continuousFacets: ['diagnoses.age_at_diagnosis'],
+    continuousFacets: facets
+      .filter((f) => f?.isContinuous ?? false)
+      .map((f) => f.field),
     facetFields: fieldsToQuery,
     primaryCohort: convertFilterSetToGqlFilter(cohorts.primary_cohort.filter),
     comparisonCohort: convertFilterSetToGqlFilter(
@@ -80,13 +79,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   return (
     <div className="mt-6 px-4 mb-16">
-      {demoMode && (
-        <DemoText>
-          Demo showing cases with low grade gliomas with and without mutations
-          in the genes IDH1 and IDH2.
-        </DemoText>
-      )}
-
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-5">
         <div className="flex flex-col gap-y-4 lg:col-span-3 order-2 lg:order-1">
           {Object.keys(
@@ -101,13 +93,18 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                 visible={
                   cohortFacetsFetching ||
                   cohortFacetsUninitialized ||
-                  cohortFacetsLoading ||
                   cohortFacetsData === undefined
                 }
                 zIndex={1} // need z-index 1
               />
               <FacetCard
-                data={[]}
+                data={
+                  cohortFacetsData?.aggregations
+                    ? cohortFacetsData.aggregations.map(
+                        (d: any) => d[selectedCard],
+                      )
+                    : []
+                }
                 field={selectedCard}
                 counts={counts}
                 cohorts={cohorts}

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Paper } from '@mantine/core';
+import { Paper, useMantineTheme } from '@mantine/core';
 import saveAs from 'file-saver';
 import {
   calculatePercentageAsNumber,
@@ -10,7 +10,7 @@ import {
 } from '@gen3/core';
 import FunctionButton from '../../../components/FunctionButton';
 import CohortCreationButton from '../../../components/Buttons/CohortCreationButton';
-import { COHORT_A_COLOR, COHORT_B_COLOR, CohortComparisonType } from '../types';
+import { CohortComparisonType } from '../types';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { createFilters, formatBucket } from './utils';
 import { labelToPlural } from '../../../utils/labels';
@@ -115,6 +115,11 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   };
 
   console.log('formattedData', formattedData);
+
+  const theme = useMantineTheme();
+
+  const COHORT_A_COLOR = theme.colors.primary[5];
+  const COHORT_B_COLOR = theme.colors.accent[5];
 
   return (
     <Paper

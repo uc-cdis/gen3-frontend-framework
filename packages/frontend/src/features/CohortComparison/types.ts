@@ -24,6 +24,7 @@ export interface ComparisonFacetDefinition extends FacetDefinition {
   color: string;
   dataTypename: string;
   uniqueIdField: string;
+  isContinuous?: boolean;
 }
 
 export interface CohortComparisonConfiguration {

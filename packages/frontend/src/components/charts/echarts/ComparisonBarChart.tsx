@@ -3,7 +3,7 @@ import { ActionIcon, Menu, Tooltip } from '@mantine/core';
 import { processLabel } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsHandle, ReactEChartsProps, } from './ReactECharts';
-import { HistogramDataArray } from '@gen3/core';
+import { HistogramData, HistogramDataArray } from '@gen3/core';
 import { CallbackDataParams } from 'echarts/types/dist/shared';
 import { isArray } from 'lodash';
 import { filterMissing } from './utils';
@@ -73,10 +73,12 @@ const ComparisonBarChart = ({
 
   const jsonData = useMemo(() => {
     if (!data) return [];
-    return filterMissing(data).map((d: any) => ({
-      label: processLabel(d.key),
-      value: d.count,
-    }));
+    return filterMissing(data).map((x: HistogramDataArray) =>
+      x.map((d: HistogramData) => ({
+        label: processLabel(d.key.toString()),
+        value: d.count,
+      })),
+    );
   }, [data]);
 
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
