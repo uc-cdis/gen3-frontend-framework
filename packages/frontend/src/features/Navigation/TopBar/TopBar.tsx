@@ -78,6 +78,11 @@ const processTopBarItems = (
                 }
               />
             )}
+            <Divider
+              size="md"
+              orientation="vertical"
+              classNames={{ root: dividerClassname }}
+            />
           </React.Fragment>
         ),
       );
