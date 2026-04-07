@@ -190,14 +190,18 @@ const labeledMultipleLinkField = (
   const linksText = isArray(value) ? value : [toString(value)];
   // Return for when data is informat {link:'',title:''}
   if (value && isArrayOfLinkTitle(value as LinkTitle[])) {
-    return (value as LinkTitle[]).map((linkTitle: LinkTitle, i: number) => (
-      <div
-        className={`${discoveryFieldStyle} mb-5`}
-        key={`${linkTitle.link}-${i}`}
-      >
-        {linkFieldWithOptionalLabel(linkTitle.link, linkTitle.title)}
-      </div>
-    ));
+    return (
+      <>
+        {(value as LinkTitle[]).map((linkTitle: LinkTitle, i: number) => (
+          <div
+            className={`${discoveryFieldStyle} mb-5`}
+            key={`${linkTitle.link}-${i}`}
+          >
+            {linkFieldWithOptionalLabel(linkTitle.link, linkTitle.title)}
+          </div>
+        ))}
+      </>
+    );
   }
   // Output for all other formats
   return linksText.length ? (

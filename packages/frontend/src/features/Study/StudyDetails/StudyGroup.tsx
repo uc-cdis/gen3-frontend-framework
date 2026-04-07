@@ -41,11 +41,11 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
           {header}
         </Text>
       </div>
-      <div className="p-4">
+      <>
         {fields.map((field) => {
           return createFieldRendererElement(field, data as any);
         })}
-      </div>
+      </>
     </div>
   );
 };

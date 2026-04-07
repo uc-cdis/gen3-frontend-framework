@@ -13,8 +13,8 @@ const StandaloneDataDownloadButton = ({
   data,
 }: StandaloneDataDownloadButtonProps) => {
   return (
-    <div className="flex flex-wrap gap-3 mt-3">
-      {title}
+    <div className="flex items-center gap-3 mt-3 pb-3 border-b border-gray-300">
+      <div className="flex-1">{title}</div>
       <Button
         onClick={() => alert(JSON.stringify(data))}
         variant="outline"
@@ -22,6 +22,7 @@ const StandaloneDataDownloadButton = ({
       >
         Download
       </Button>
+      <hr />
     </div>
   );
 };

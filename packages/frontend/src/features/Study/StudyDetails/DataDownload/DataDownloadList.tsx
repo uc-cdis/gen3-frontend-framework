@@ -19,11 +19,7 @@ type DataDownloadListData = {
 };
 
 const DataDownloadList = ({ data }: DataDownloadListProps) => {
-  console.log('data', data);
-  console.log('data.__manifest', data.__manifest);
   const DataDownloadListData = ProcessData(data['__manifest']);
-  console.log('dataDownloadList', DataDownloadListData);
-
   return (
     <>
       <DownloadButtonsRow data={data} />

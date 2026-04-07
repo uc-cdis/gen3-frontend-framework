@@ -44,7 +44,7 @@ const StudyDetails = ({
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
-      <Drawer.Content>
+      <Drawer.Content className="pl-2">
         <Drawer.Header>
           <Button leftSection={<BackIcon />} onClick={close} variant="outline">
             {' '}
