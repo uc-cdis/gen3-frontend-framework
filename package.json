@@ -96,7 +96,7 @@
     "lerna": "^9.0.3",
     "msw": "^2.7.3",
     "nx": "22.3.3",
-    "oxlint": "^0.16.4",
+    "oxlint": "^1.59.0",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^6.0.0",
     "postcss-preset-mantine": "^1.17.0",
