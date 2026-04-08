@@ -8,13 +8,14 @@ const LabeledSingleLinkField = (
   linkValue: JSONValue,
   labelText?: string,
   parans?: Record<string, any>,
-) =>
-  typeof linkValue !== 'string' ? (
+) => {
+  const id = useId();
+  return typeof linkValue !== 'string' ? (
     <React.Fragment />
   ) : (
-    <div className={discoveryFieldStyle} key={labelText}>
+    <div className={discoveryFieldStyle} key={labelText + id}>
       {Label(labelText)} {LinkField(linkValue)}
     </div>
   );
-
+};
 export default LabeledSingleLinkField;

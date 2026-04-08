@@ -47,10 +47,10 @@ const LabeledMultipleLinkField = (
           {Label(labelText)} {LinkField(linksText[0] as string)}
         </div>,
         // unlabeled subsequent fields
-        ...linksText.slice(1).map((linkText: string, i: number) => (
+        ...linksText.slice(1).map((linkText: any, i: number) => (
           <div className={discoveryFieldStyle} key={`${linkText}-${i}`}>
             {Label(labelText)}
-            {LinkField(linkText as string)}
+            {LinkField(linkText)}
           </div>
         )),
       ]}

@@ -36,7 +36,7 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
 
   return (
     <div className=" flex flex-col">
-      <div className="bg-accent-lightest w-full p-1 mb-2">
+      <div className="bg-accent-lightest w-full p-1 mb-2 mt-1">
         <Text c="primary" fw={700}>
           {header}
         </Text>

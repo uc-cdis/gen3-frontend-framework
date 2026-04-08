@@ -1,5 +1,5 @@
-import { JSONObject } from '@gen3/core';
 import React from 'react';
+import { JSONObject } from '@gen3/core';
 import DownloadButtonsRow from './DownloadButtonsRow/DownloadButtonsRow';
 import StandaloneDataDownloadButton from './StandaloneDataDownloadButton';
 import {
