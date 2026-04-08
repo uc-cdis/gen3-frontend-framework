@@ -1,4 +1,5 @@
 import React from 'react';
+import { Table } from '@mantine/core';
 import { CohortComparisonType } from '../types';
 
 const CohortTable = ({
@@ -10,65 +11,60 @@ const CohortTable = ({
   counts: number[];
   casesFetching: boolean;
 }) => {
-  const headerClass =
-    'px-4 py-2 text-left font-bold text-primary-dark border-b border-base-lighter';
-
-  const cellClass = 'px-4 py-2 border-b border-base-lighter';
-
   const formatCount = (index: number) => {
     if (casesFetching || counts.length === 0) return '...';
     return counts[index] ? counts[index].toLocaleString() : '0';
   };
 
   return (
-    <table className="w-full border border-base-lighter">
-      <thead>
-        <tr className="bg-base-max">
-          <th className={headerClass}>Cohort</th>
-          <th className={`${headerClass} text-right`}># Cases</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table withTableBorder withColumnBorders>
+      <Table.Thead className="bg-base-max">
+        <Table.Tr>
+          <Table.Th className="text-primary-dark">Cohort</Table.Th>
+          <Table.Th className="text-primary-dark text-right"># Cases</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
         {cohorts && (
           <>
-            <tr
+            <Table.Tr
               className="bg-base-lightest"
               data-testid="text-first-cohort-cohort-comparison"
             >
-              <td
-                className={`${cellClass} font-bold text-mmrf-plum`}
+              <Table.Td
+                className="font-bold text-mmrf-plum"
                 data-testid="text-cohort-name-cohort-comparison"
               >
                 {cohorts.primary_cohort?.name}
-              </td>
-              <td
-                className={`${cellClass} text-right text-base-contrast`}
+              </Table.Td>
+              <Table.Td
+                className="text-right text-base-contrast"
                 data-testid="text-cohort-case-count-cohort-comparison"
               >
                 {formatCount(0)}
-              </td>
-            </tr>
-            <tr
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr
               className="bg-base-max"
               data-testid="text-second-cohort-cohort-comparison"
             >
-              <td
-                className={`${cellClass} font-bold text-mmrf-rust`}
+              <Table.Td
+                className="font-bold text-mmrf-rust"
                 data-testid="text-cohort-name-cohort-comparison"
               >
                 {cohorts.comparison_cohort?.name}
-              </td>
-              <td
-                className={`${cellClass} text-right text-base-contrast`}
+              </Table.Td>
+              <Table.Td
+                className="text-right text-base-contrast"
                 data-testid="text-cohort-case-count-cohort-comparison"
               >
                 {formatCount(1)}
-              </td>
-            </tr>
+              </Table.Td>
+            </Table.Tr>
           </>
         )}
-      </tbody>
-    </table>
+      </Table.Tbody>
+    </Table>
   );
 };
 
