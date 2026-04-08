@@ -9,8 +9,6 @@ export type processedDatumForDataDownloadList = {
 };
 
 export const ProcessData = (sourceFieldData: sourceFieldData) => {
-  console.log('sourceFieldData', sourceFieldData);
-
   if (!Array.isArray(sourceFieldData)) {
     return {
       processedDataForDataDownloadList: [],

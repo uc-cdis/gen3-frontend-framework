@@ -9,7 +9,6 @@ interface DownloadButtonsRowProps {
 
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
-  console.log('data from action buttons', data);
   // Study level meta button should show only if the downloading study level metadata value is enabled
   // and resourceInfo includes the study metadata field name reference from the discovery config
   const showDownloadStudyLevelMetadataButton = Boolean(

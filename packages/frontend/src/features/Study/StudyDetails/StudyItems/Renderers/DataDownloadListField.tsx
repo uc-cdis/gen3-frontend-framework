@@ -7,6 +7,7 @@ const DataDownloadListField: FieldRendererFunction = (
   resource: JSONValue,
   _: string | undefined,
 ) => {
+  console.log('resource', resource);
   return (
     <>
       <DataDownloadList data={resource as JSONObject} />
