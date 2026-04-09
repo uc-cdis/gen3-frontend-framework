@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react';
 import { ContextModalProps } from '@mantine/modals';
 import { Button } from '@mantine/core';
-import { useSession } from '../../lib/session/session';
 
 export interface SessionInactivityModalProps {
-  inactiveWarningTimeLimitMilliseconds: number;
+  remainingTimeMilliseconds: number;
+  endSession: () => void;
+  extendSession: () => void;
 }
 
-const calculateMinRemaining = (inactivityWarningTime: number) => {
-  const minRemain = Math.ceil((inactivityWarningTime - Date.now()) / 60000);
+const calculateMinRemaining = (remainingTime: number) => {
+  const minRemain = Math.ceil(remainingTime / 60000);
   return [
     `Due to inactivity, your session will expire in ${minRemain} minute${minRemain > 1 ? 's' : ''}`,
   ];
@@ -19,17 +20,19 @@ export const SessionInactivityModal = ({
   id,
   innerProps,
 }: ContextModalProps<SessionInactivityModalProps>) => {
-  const { inactiveWarningTimeLimitMilliseconds } = innerProps;
-
-  const { endSession } = useSession();
+  const { remainingTimeMilliseconds, endSession, extendSession } = innerProps;
 
   const handleLogout = useCallback(() => {
     endSession();
-  }, [endSession]);
+    context.closeModal(id);
+  }, [context, endSession, id]);
 
-  const message = calculateMinRemaining(
-    inactiveWarningTimeLimitMilliseconds || Date.now(),
-  );
+  const handleExtendSession = useCallback(() => {
+    extendSession();
+    context.closeModal(id);
+  }, [context, endSession, id]);
+
+  const message = calculateMinRemaining(remainingTimeMilliseconds);
   return (
     <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
       <p>{message}</p>
@@ -40,6 +43,13 @@ export const SessionInactivityModal = ({
           className="!bg-primary hover:!bg-primary-darker"
         >
           Logout
+        </Button>
+        <Button
+          data-testid="button-intro-warning-accept"
+          onClick={handleExtendSession}
+          className="!bg-primary hover:!bg-primary-darker"
+        >
+          Extend
         </Button>
       </div>
     </div>

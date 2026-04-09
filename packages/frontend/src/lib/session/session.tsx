@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -66,7 +72,7 @@ export const SessionContext = React.createContext<Session | undefined>(
 );
 
 /**
- *  Wwe eventually want to use the session token to determine if the user is logged in
+ *  We eventually want to use the session token to determine if the user is logged in
  *  as opposed to the user status since that check will happen on the server using httpOnly cookies
  *  and verification of the session token
  */
@@ -270,7 +276,7 @@ export const SessionProvider = ({
   }, [getUserDetails, router]);
 
   /**
-   * Checks if user session has ended
+   * Checks if a user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
@@ -330,6 +336,21 @@ export const SessionProvider = ({
       if (isUserOnPage('Login')) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
+
+      console.log('timeSinceLastActivity', timeSinceLastActivity);
+      console.log(
+        'inactiveTimeLimitMilliseconds',
+        inactiveTimeLimitMilliseconds,
+      );
+      console.log(
+        'inactiveWarningTimeLimitMilliseconds',
+        inactiveWarningTimeLimitMilliseconds,
+      );
+      console.log('logoutInactiveUsers', logoutInactiveUsers);
+      console.log(
+        'updateSessionIntervalMilliseconds',
+        updateSessionIntervalMilliseconds,
+      );
       if (logoutInactiveUsers) {
         if (isUserOnPage('Workspace')) {
           const timestamp = Date.now();
@@ -339,18 +360,20 @@ export const SessionProvider = ({
 
         if (
           timeSinceLastActivity >=
-          inactiveWarningTimeLimitMilliseconds -
-            inactiveWarningTimeLimitMilliseconds
+          inactiveTimeLimitMilliseconds - inactiveWarningTimeLimitMilliseconds
         ) {
           openContextModal({
             modal: 'sessionInactivityModal',
             title: 'Inactivity Warning',
-            size: '60%',
+            size: '40%',
             closeOnClickOutside: false,
             closeOnEscape: false,
             withCloseButton: false,
             innerProps: {
-              inactiveWarningTimeLimitMilliseconds,
+              remainingTimeMilliseconds:
+                inactiveTimeLimitMilliseconds - timeSinceLastActivity,
+              endSession,
+              extendSession: updateSession,
             },
           });
         }
