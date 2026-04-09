@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -276,7 +270,7 @@ export const SessionProvider = ({
   }, [getUserDetails, router]);
 
   /**
-   * Checkes if user session has ended
+   * Checks if user session has ended
    */
   const isSessionActive = useThrottledCallback(() => {
     //Check session token, this call updates info
@@ -332,7 +326,7 @@ export const SessionProvider = ({
 
   useInterval(
     () => {
-      if (sessionInfo.status != 'issued') return; // no need to update session if user is not logged in
+      if (sessionInfo.status !== 'issued') return; // no need to update session if user is not logged in
       if (isUserOnPage('Login')) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
@@ -356,14 +350,9 @@ export const SessionProvider = ({
             closeOnEscape: false,
             withCloseButton: false,
             innerProps: {
-              config: modalsConfig.systemUseModal,
-              markSeen,
+              inactiveWarningTimeLimitMilliseconds,
             },
           });
-          // if (timeSinceLastActivity > inactiveWarningTimeLimitMilliseconds ) {
-          //   // show inactivity modal
-          //   return;
-          // }
         }
 
         if (

@@ -1,12 +1,10 @@
 import React, { useCallback } from 'react';
 import { ContextModalProps } from '@mantine/modals';
-import { useRouter } from 'next/router';
-import { SessionInactivityModalConfiguration } from './types';
 import { Button } from '@mantine/core';
+import { useSession } from '../../lib/session/session';
 
 export interface SessionInactivityModalProps {
-  configuration: SessionInactivityModalConfiguration | undefined;
-  inactivityWarningTime: number;
+  inactiveWarningTimeLimitMilliseconds: number;
 }
 
 const calculateMinRemaining = (inactivityWarningTime: number) => {
@@ -21,13 +19,17 @@ export const SessionInactivityModal = ({
   id,
   innerProps,
 }: ContextModalProps<SessionInactivityModalProps>) => {
-  const { configuration, inactivityWarningTime } = innerProps;
-  const router = useRouter();
-  const handleLogout = useCallback(() => {
-    router.push(configuration?.externalLoginUrl || '/Login');
-  }, [configuration?.externalLoginUrl, router]);
+  const { inactiveWarningTimeLimitMilliseconds } = innerProps;
 
-  const message = calculateMinRemaining(inactivityWarningTime || Date.now());
+  const { endSession } = useSession();
+
+  const handleLogout = useCallback(() => {
+    endSession();
+  }, [endSession]);
+
+  const message = calculateMinRemaining(
+    inactiveWarningTimeLimitMilliseconds || Date.now(),
+  );
   return (
     <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
       <p>{message}</p>
