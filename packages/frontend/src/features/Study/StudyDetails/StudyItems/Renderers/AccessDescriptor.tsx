@@ -4,10 +4,13 @@ import { JSONObject, JSONValue } from '@gen3/core';
 import { Alert } from '@mantine/core';
 import { accessibleFieldName, AccessLevel } from '../../../../../utils';
 
-const AccessDescriptor: FieldRendererFunction = (
-  resource: JSONValue,
-  _: string | undefined,
-) => {
+/**
+ * Renders an AccessDescriptor based resource data accessibleFieldName value
+ *
+ * @param {JSONValue} resource - JSON object containing the data from which the field's value is extracted.
+ * @returns {ReactElement | null} A React element showing the user's access
+ */
+const AccessDescriptor: FieldRendererFunction = (resource: JSONValue) => {
   if (
     resource === null ||
     typeof resource !== 'object' /*

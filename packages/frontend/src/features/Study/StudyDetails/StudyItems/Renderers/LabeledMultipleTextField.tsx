@@ -6,6 +6,13 @@ import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 import TextField from './TextField';
 
+/**
+ * Renders multiple labeled text fields
+ *
+ * @param {JSONValue} fieldsText - JSON object containing the data from which the field's value is extracted
+ * @param {string} labelText - Label for the text fields
+ * @returns {ReactElement | null} Returns a label followed by multiple text fields
+ */
 const LabeledMultipleTextField: FieldRendererFunction = (
   fieldsText: JSONValue,
   labelText?: string,

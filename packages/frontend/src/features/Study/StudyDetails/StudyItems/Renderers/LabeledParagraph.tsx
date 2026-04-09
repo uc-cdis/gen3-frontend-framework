@@ -5,6 +5,12 @@ import { discoveryFieldStyle } from './utils';
 import { toString } from 'lodash';
 import React from 'react';
 
+/**
+ * Renders a labeled paragraph
+ * @param {JSONValue} fieldValue - JSON object containing the data from which the field's value is extracted
+ * @param {string} fieldLabel - Label for the paragraph
+ * @returns {ReactElement | null} Returns a label followed a paragraph
+ */
 const LabeledParagraph: FieldRendererFunction = (
   fieldValue: JSONValue,
   fieldLabel?: string,
@@ -28,7 +34,6 @@ const LabeledParagraph: FieldRendererFunction = (
       ) : (
         <React.Fragment />
       )}
-
       <div>
         <Text className="pl-4 text-left p-0.75 whitespace-pre-wrap break-words">
           {toString(fieldValue)}

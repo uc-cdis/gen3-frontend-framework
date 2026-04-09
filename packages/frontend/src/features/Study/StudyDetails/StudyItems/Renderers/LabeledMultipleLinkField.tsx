@@ -7,6 +7,14 @@ import { JSONValue } from '@gen3/core';
 import LinkFieldWithOptionalLabel from './LinkFieldWithOptionalLabel';
 
 type LinkTitle = { link: string; title: string };
+
+/**
+ * Renders an UI of multiple labeled links
+ *
+ * @param {JSONValue | LinkTitle[]} value - JSON object containing the data from which the field's value is extracted,
+ * or an array of LinkTitle when the field is represented as link titles.
+ * @returns {ReactElement | null} Returns a Labeled multiple link field formated either as with labels for the items
+ */
 const LabeledMultipleLinkField = (
   value: JSONValue | LinkTitle[],
   labelText?: string,
@@ -23,7 +31,7 @@ const LabeledMultipleLinkField = (
     return Array.isArray(arr) && arr.every(isLinkTitle);
   };
   const linksText = isArray(value) ? value : [toString(value)];
-  // Return for when data is informat {link:'',title:''}
+  // Return for when data is in format {link:'',title:''}
   if (value && isArrayOfLinkTitle(value as LinkTitle[])) {
     return (
       <>
