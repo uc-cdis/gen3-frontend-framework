@@ -19,19 +19,17 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
+export const Default: any = {
   args: {
     __accessible: 1,
   },
 };
-export const UNACCESSIBLE: Story = {
+export const UNACCESSIBLE: any = {
   args: {
     __accessible: 2,
   },
 };
-export const UNKNOWN: Story = {
+export const UNKNOWN: any = {
   args: {
     __accessible: 5,
   },

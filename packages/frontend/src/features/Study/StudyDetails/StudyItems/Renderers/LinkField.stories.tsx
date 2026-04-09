@@ -21,18 +21,16 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
-
 const render = (args: { linkValue: string }) => LinkField(args.linkValue);
 
-export const Default: Story = {
+export const Default: any = {
   render,
   args: {
     linkValue: 'https://example.com',
   } as unknown as never,
 };
 
-export const Empty: Story = {
+export const Empty: any = {
   render,
   args: {
     linkValue: '',

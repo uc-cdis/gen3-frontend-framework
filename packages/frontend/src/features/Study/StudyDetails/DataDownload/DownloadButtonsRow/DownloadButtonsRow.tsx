@@ -9,8 +9,9 @@ interface DownloadButtonsRowProps {
 
 const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   const { discoveryConfig: discoveryConfig } = useDiscoveryContext();
-  // Study level meta button should show only if the downloading study level metadata value is enabled
-  // and resourceInfo includes the study metadata field name reference from the discovery config
+  /*
+  Showing, disabling and downloading logic will addressed: HP-2379, HP-2380, HP-2381, HP-2382
+
   const showDownloadStudyLevelMetadataButton = Boolean(
     discoveryConfig?.features?.exportToWorkspace?.enableDownloadStudyMetadata &&
     studyMetadataFieldNameReference &&
@@ -27,9 +28,10 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   );
   const showDownloadVariableMetadataButton = Boolean(
     discoveryConfig.features?.exportToWorkspace?.variableMetadataFieldName &&
-    discoveryConfig.features?.exportToWorkspace?.enableDownloadVariableMetadata,
+    discoveryConfig.features?.exportToWorkspace?.enableDownloadVariableMetadata,n n
   );
-  const disabled = false;
+  */
+
   const onDownloadVariableLevelMetadata = () =>
     console.log('called onDownloadVariableLevelMetadata with resource', data);
   const onDownloadStudyLevelMetadata = () =>
@@ -45,7 +47,6 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
         onClick={onDownloadVariableLevelMetadata}
         variant="outline"
         size="md"
-        disabled={disabled}
       >
         Download
         <br />
@@ -55,28 +56,15 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
         onClick={onDownloadStudyLevelMetadata}
         variant="outline"
         size="md"
-        disabled={disabled}
       >
         Download
         <br />
         Study-level Metadata
       </Button>
-
-      <Button
-        onClick={onDownloadManifest}
-        variant="outline"
-        size="md"
-        disabled={disabled}
-      >
+      <Button onClick={onDownloadManifest} variant="outline" size="md">
         Download Manifest
       </Button>
-
-      <Button
-        onClick={onDownloadAllFiles}
-        variant="outline"
-        size="md"
-        disabled={disabled}
-      >
+      <Button onClick={onDownloadAllFiles} variant="outline" size="md">
         Download All Files
       </Button>
     </div>

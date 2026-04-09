@@ -6,6 +6,7 @@ import {
   MAX_NUMBER_OF_ITEMS_IN_LIST,
   ProcessData,
   processedDatumForDataDownloadList,
+  sourceFieldData,
 } from './Utils/ProcessData';
 import { Alert } from '@mantine/core';
 
@@ -19,7 +20,9 @@ type DataDownloadListData = {
 };
 
 const DataDownloadList = ({ data }: DataDownloadListProps) => {
-  const DataDownloadListData = ProcessData(data['__manifest']);
+  const DataDownloadListData = ProcessData(
+    data['__manifest'] as sourceFieldData,
+  );
   return (
     <>
       <DownloadButtonsRow data={data} />
@@ -31,8 +34,8 @@ const DataDownloadList = ({ data }: DataDownloadListProps) => {
       )}
       {DataDownloadListData.processedDataForDataDownloadList.map((fileInfo) => (
         <StandaloneDataDownloadButton
-          data={fileInfo.guid}
-          title={fileInfo.title}
+          data={fileInfo.guid as unknown as JSONObject}
+          title={fileInfo.title as string}
         />
       ))}
     </>

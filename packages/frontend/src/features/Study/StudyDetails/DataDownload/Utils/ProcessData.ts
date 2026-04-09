@@ -1,7 +1,7 @@
 export const MAX_NUMBER_OF_ITEMS_IN_LIST = 200;
 
 type FileInfo = Record<string, string | number>;
-type sourceFieldData = string | FileInfo[];
+export type sourceFieldData = string | FileInfo[];
 
 export type processedDatumForDataDownloadList = {
   title: string;
@@ -63,7 +63,7 @@ export const ProcessData = (sourceFieldData: sourceFieldData) => {
     );
   }
   if (nonRootLevelFiles.length) {
-    nonRootLevelFiles = nonRootLevelFiles.sort((a, b) =>
+    nonRootLevelFiles = nonRootLevelFiles.sort((a: any, b: any) =>
       a.title.localeCompare(b.title, undefined, {
         numeric: true,
         sensitivity: 'base',

@@ -23,12 +23,10 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
-
 const render = (args: { linkValue: JSONValue; labelText?: string }) =>
   LabeledSingleLinkField(args.linkValue, args.labelText);
 
-export const Default: Story = {
+export const Default: any = {
   render,
   args: {
     linkValue: 'https://example.com',
@@ -36,7 +34,7 @@ export const Default: Story = {
   },
 };
 
-export const NoLabel: Story = {
+export const NoLabel: any = {
   render,
   args: {
     linkValue: 'https://example.com/page',
@@ -44,7 +42,7 @@ export const NoLabel: Story = {
   },
 };
 
-export const EmptyValue: Story = {
+export const EmptyValue: any = {
   render,
   args: {
     linkValue: '',
@@ -52,7 +50,7 @@ export const EmptyValue: Story = {
   },
 };
 
-export const InvalidType: Story = {
+export const InvalidType: any = {
   render,
   args: {
     linkValue: { not: 'a string' } as unknown as JSONValue,
