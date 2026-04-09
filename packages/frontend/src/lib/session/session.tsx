@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -336,21 +330,6 @@ export const SessionProvider = ({
       if (isUserOnPage('Login')) return;
 
       const timeSinceLastActivity = Date.now() - mostRecentActivityTimestamp;
-
-      console.log('timeSinceLastActivity', timeSinceLastActivity);
-      console.log(
-        'inactiveTimeLimitMilliseconds',
-        inactiveTimeLimitMilliseconds,
-      );
-      console.log(
-        'inactiveWarningTimeLimitMilliseconds',
-        inactiveWarningTimeLimitMilliseconds,
-      );
-      console.log('logoutInactiveUsers', logoutInactiveUsers);
-      console.log(
-        'updateSessionIntervalMilliseconds',
-        updateSessionIntervalMilliseconds,
-      );
       if (logoutInactiveUsers) {
         if (isUserOnPage('Workspace')) {
           const timestamp = Date.now();
