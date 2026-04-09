@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import {
   MantineReactTable,
+  MRT_ColumnDef,
   type MRT_PaginationState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Loader, Text } from '@mantine/core';
+import { Button, Loader, Text } from '@mantine/core';
 import { useGetProjectsDetailsQuery } from '@gen3/core';
 import { ProjectTableConfig } from '../types';
 import { buildQuery } from '../utils';
@@ -12,6 +13,8 @@ import { buildQuery } from '../utils';
 const projectQuery = {
   query: 'query { project(first:0) {code, project_id, availability_type}}',
 };
+
+const ActionColumn = () => <Button>Submit Data</Button>
 
 const ProjectTable = ({ columns }: ProjectTableConfig) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -44,8 +47,11 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
     size: 10,
     projectQuery: projectQuery,
     projectDetailsQuery: detailQuery,
-    mapping: mapping,
+    //mapping: mapping,
   });
+
+  console.log({ data });
+
   const cols = useMemo(() => {
     return [
       {
@@ -60,6 +66,11 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
           header: columnDef.name,
         };
       }),
+      {
+        field: 'actions',
+        header: 'Actions',
+        Cell: ActionColumn,
+      }
     ];
   }, [columns]);
 
@@ -82,22 +93,6 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
         'mrt-row-expand': false,
       },
     },
-    mantineTableHeadCellProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-table-8)',
-        color: 'var(--mantine-color-table-0)',
-        textAlign: 'center',
-        padding: 'var(--mantine-spacing-md)',
-        fontWeight: 'bold',
-        fontSize: 'var(--mantine-font-size-lg)',
-        textTransform: 'uppercase',
-      },
-    },
-    mantineTableProps: {
-      style: {
-        backgroundColor: 'var(--mantine-color-base-9)',
-      },
-    },
   });
 
   if (isLoading) {
@@ -117,7 +112,7 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
   }
 
   return (
-    <div className="flex w-full bg-base-max p-4 rounded-lg">
+    <div className="flex w-full bg-base-max pt-4 rounded-lg">
       <div className="grow w-auto inline-block overflow-x-scroll">
         <MantineReactTable table={table} />
       </div>
