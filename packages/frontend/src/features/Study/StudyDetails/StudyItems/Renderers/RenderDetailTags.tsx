@@ -11,6 +11,7 @@ const RenderDetailTags: FieldRendererFunction = (
 ): ReactElement => {
   //TODO - fix this type
   const resource = fieldValue as StudyResource;
+  console.log('resource', resource);
 
   if (fieldConfig === undefined) {
     return <React.Fragment />;

@@ -9,6 +9,7 @@ export const RenderTagsCell: CellRendererFunction = ({
   value,
 }: CellRenderFunctionProps) => {
   const { discoveryConfig: config } = useDiscoveryContext();
+  console.log('config.tags', config.tags);
   const content = value as TagData[];
   return (
     <div className="flex space-x-1 ">

@@ -33,13 +33,13 @@ const DownloadButtonsRow = ({ data }: DownloadButtonsRowProps) => {
   */
 
   const onDownloadVariableLevelMetadata = () =>
-    console.log('called onDownloadVariableLevelMetadata with resource', data);
+    alert(`called onDownloadVariableLevelMetadata with resource  ${data}`);
   const onDownloadStudyLevelMetadata = () =>
-    console.log('called onDownloadStudyLevelMetadata with resource', data);
+    console.log(`called onDownloadStudyLevelMetadata with resource ${data}`);
   const onDownloadManifest = () =>
-    console.log('called onDownloadManifest with resource', data);
+    console.log(`called onDownloadManifest with resource ${data}`);
   const onDownloadAllFiles = () =>
-    console.log('called onDownloadAllFiles with resource', data);
+    console.log(`called onDownloadAllFiles with resource ${data}`);
 
   return (
     <div className="flex flex-wrap gap-3 mt-3 mb-5">
