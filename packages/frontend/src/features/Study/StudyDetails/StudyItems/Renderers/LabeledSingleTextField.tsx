@@ -16,13 +16,12 @@ const LabeledSingleTextField: FieldRendererFunction = (
   fieldLabel?: string,
   params?: Record<string, any>,
 ) => {
+  const id = useId();
   let stringFieldValue = '';
   if (typeof fieldValue === 'number') {
     stringFieldValue = fieldValue.toLocaleString();
   } else if (typeof fieldValue !== 'string') return <React.Fragment />;
-
   stringFieldValue = fieldValue as string;
-  const id = useId();
   return (
     <div
       className={discoveryFieldStyle}

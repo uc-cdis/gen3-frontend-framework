@@ -18,9 +18,9 @@ const UnlabeledMultipleLinkField = (
   fieldData: JSONValue,
   fieldName?: string,
 ) => {
+  const id = useId();
   if (!isArray(fieldData) || fieldData.length === 0) return <React.Fragment />;
   const links = fieldData[0] as unknown as LinkWithTitle[];
-  const id = useId();
   return (
     <div className="flex flex-col" key={`${fieldName}-links-${id}`}>
       {links.map((link) => LabeledSingleLinkField(link.link, link.title))}

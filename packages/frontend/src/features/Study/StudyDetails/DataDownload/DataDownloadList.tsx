@@ -32,12 +32,15 @@ const DataDownloadList = ({ data }: DataDownloadListProps) => {
           title={`More than ${MAX_NUMBER_OF_ITEMS_IN_LIST} files found. Visit repository to view all files.`}
         />
       )}
-      {DataDownloadListData.processedDataForDataDownloadList.map((fileInfo) => (
-        <StandaloneDataDownloadButton
-          data={fileInfo.guid as unknown as JSONObject}
-          title={fileInfo.title as string}
-        />
-      ))}
+      {DataDownloadListData.processedDataForDataDownloadList.map(
+        (fileInfo, i: number) => (
+          <StandaloneDataDownloadButton
+            key={`${fileInfo.guid}_${i}`}
+            data={fileInfo.guid as unknown as JSONObject}
+            title={fileInfo.title as string}
+          />
+        ),
+      )}
     </>
   );
 };
