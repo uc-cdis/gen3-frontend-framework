@@ -1,25 +1,29 @@
-// HOC — primary entry point
-export { withChatbot } from './withChatbot';
+// // HOC — primary entry point
+// export { withChatbot } from './withChatbot';
+//
+// // Context + hook — for consuming chat state anywhere in the tree
+// export { ChatProvider, useChatContext } from './context/ChatContext';
+//
+// // Shell — the default full layout; pass as WrappedComponent to withChatbot
+// export { ChatShell } from './components/ChatShell';
+//
+// // Default slot components — import to use directly or as fallback references
+//
+// // Types — everything a consumer needs to type their config and slots
+// export type {
+//   ChatbotConfig,
+//   ChatbotAuth,
+//   ChatbotFeatures,
+//   ChatbotSlots,
+//   ChatContextValue,
+//   MessageRendererProps,
+//   ToolRendererProps,
+//   InputAreaProps,
+//   EmptyStateProps,
+//   KnownToolPart,
+//   ToolCallState,
+// } from './types';
 
-// Context + hook — for consuming chat state anywhere in the tree
-export { ChatProvider, useChatContext } from './context/ChatContext';
+import Gen3Copilot from './Gen3Copilot';
 
-// Shell — the default full layout; pass as WrappedComponent to withChatbot
-export { ChatShell } from './components/ChatShell';
-
-// Default slot components — import to use directly or as fallback references
-
-// Types — everything a consumer needs to type their config and slots
-export type {
-  ChatbotConfig,
-  ChatbotAuth,
-  ChatbotFeatures,
-  ChatbotSlots,
-  ChatContextValue,
-  MessageRendererProps,
-  ToolRendererProps,
-  InputAreaProps,
-  EmptyStateProps,
-  KnownToolPart,
-  ToolCallState,
-} from './types';
+export { Gen3Copilot };

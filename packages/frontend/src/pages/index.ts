@@ -19,3 +19,4 @@ export * from './Submission';
 export * from './TabbedCohortBuilder';
 export * from './Theme';
 export * from './Workspace';
+export * from './AIChat';

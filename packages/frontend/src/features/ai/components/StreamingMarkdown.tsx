@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Streamdown } from 'streamdown';
 import { code } from '@streamdown/code';

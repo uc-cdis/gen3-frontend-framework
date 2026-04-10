@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useRef } from 'react';
 import { useChatContext } from '../context/ChatContext';
 import type { KnownToolPart } from '../types';
@@ -8,6 +6,7 @@ import { default as DefaultInputArea } from './InputArea';
 import { default as DefaultMessageRenderer } from './MessageRenderer';
 import { default as DefaultToolRenderer } from './ToolRenderer';
 import { default as DefaultEmptyState } from './EmptyState';
+import { Stack } from '@mantine/core';
 
 // ─── StatusBar ────────────────────────────────────────────────────────────────
 
@@ -216,17 +215,7 @@ const ChatShell = () => {
   const isDisabled = status === 'submitted' || status === 'streaming';
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        overflow: 'hidden',
-        background: '#fff',
-        borderRadius: '12px',
-        border: '1px solid #dee2e6',
-      }}
-    >
+    <Stack gap="md" classNames={{ root: 'w-full' }}>
       <MessageList />
       <StatusBar />
       <InputArea
@@ -234,7 +223,7 @@ const ChatShell = () => {
         disabled={isDisabled}
         placeholder={config.inputPlaceholder}
       />
-    </div>
+    </Stack>
   );
 };
 

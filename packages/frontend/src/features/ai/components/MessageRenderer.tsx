@@ -1,18 +1,11 @@
 import React from 'react';
-import {
-  Avatar,
-  Box,
-  Group,
-  Paper,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
+import { Avatar, Box, Group, Paper, Stack, Text, useMantineTheme, } from '@mantine/core';
 import { IconRobot, IconUser } from '@tabler/icons-react';
 import type { UIMessage } from '@ai-sdk/react';
 import { StreamingMarkdown } from './StreamingMarkdown';
 import ReasoningBlock from './ReasoningBlock';
 import { useChatContext } from '../context/ChatContext';
+import { ReasoningUIPart } from 'ai'; // ─── Types ────────────────────────────────────────────────────────────────────
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -43,15 +36,16 @@ function TextPart({ text, isStreaming, isUser }: TextPartProps) {
 
 interface ReasoningPartProps {
   // AI SDK v5 reasoning part shape: { type: 'reasoning', reasoning: string }
-  reasoning: string;
-  isStreaming: boolean;
+  reasoning: ReasoningUIPart;
 }
 
-function ReasoningPart({ reasoning, isStreaming }: ReasoningPartProps) {
+function ReasoningPart({ reasoning }: ReasoningPartProps) {
+  const { state, text } = reasoning;
+
   return (
     <ReasoningBlock
-      content={reasoning}
-      isStreaming={isStreaming}
+      content={text}
+      isStreaming={state === 'streaming'}
       label="Reasoning"
     />
   );
@@ -112,6 +106,8 @@ const MessageRenderer = ({ message }: MessageRendererProps) => {
           }}
         >
           {message.parts.map((part, i) => {
+            console.log('Rendering part:', part);
+
             // ── Text part ────────────────────────────────────────────────────
             if (part.type === 'text') {
               return (
@@ -127,13 +123,7 @@ const MessageRenderer = ({ message }: MessageRendererProps) => {
             // ── Reasoning part (extended thinking) ───────────────────────────
             // AI SDK surfaces this as { type: 'reasoning', reasoning: string }
             if (part.type === 'reasoning') {
-              return (
-                <ReasoningPart
-                  key={i}
-                  reasoning={(part as any).reasoning ?? ''}
-                  isStreaming={isStreaming}
-                />
-              );
+              return <ReasoningPart key={i} reasoning={part} />;
             }
 
             // ── Tool call parts ───────────────────────────────────────────────

@@ -1,4 +1,3 @@
-'use client';
 
 /**
  * MANTINE CHATBOT — COMPLETE WIRING EXAMPLE
@@ -7,18 +6,15 @@
  * and StreamingMarkdown into the withChatbot HOC via the slots config.
  */
 
-import React from 'react';
-import { MantineProvider } from '@mantine/core';
 import { withChatbot } from './withChatbot';
-import { MessageRenderer } from './components/MessageRenderer';
-import { MantineInputArea } from './components/InputArea';
+import MessageRenderer from './components/MessageRenderer';
+import InputArea from './components/InputArea';
 import ChatShell from './components/ChatShell';
+import { ChatbotConfig } from './types';
 
-// ─── 1. Fully Mantine-themed copilot ─────────────────────────────────────────
-// Drop-in replacement for the default ChatShell with all Mantine components.
-
-export const MantineCopilot = withChatbot(ChatShell, {
+const DefaultChatConfiguration: ChatbotConfig = {
   api: '/api/copilot',
+  body: {},
   features: {
     stopButton: false, // stop is handled inside MantineInputArea directly
     toolRendering: true,
@@ -28,7 +24,7 @@ export const MantineCopilot = withChatbot(ChatShell, {
     // Full Mantine message bubbles with reasoning accordion + streaming markdown
     MessageRenderer: MessageRenderer,
     // Auto-grow textarea with stop/send action icons
-    InputArea: MantineInputArea,
+    InputArea: InputArea,
     // EmptyState and ToolRenderer can be left as defaults or overridden
   },
   emptyState: {
@@ -36,20 +32,13 @@ export const MantineCopilot = withChatbot(ChatShell, {
     description: 'Ask anything — I can reason through complex problems.',
   },
   inputPlaceholder: 'Ask me anything…',
-});
+};
 
-// ─── 2. Usage in a page ───────────────────────────────────────────────────────
-// Wrap with MantineProvider if not already at the layout level.
+ const Gen3Copilot = (configuration: Partial<ChatbotConfig>) =>
+   withChatbot(ChatShell, { ...DefaultChatConfiguration, ...configuration });
 
-export default function CopilotPage() {
-  return (
-    <MantineProvider>
-      <div style={{ height: '600px', width: '480px' }}>
-        <MantineCopilot />
-      </div>
-    </MantineProvider>
-  );
-}
+ export default Gen3Copilot;
+
 
 // ─── 3. How parts flow through the message ────────────────────────────────────
 //

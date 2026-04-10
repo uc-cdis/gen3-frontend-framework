@@ -149,6 +149,7 @@ import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
 import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
 import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+import { Gen3Copilot } from './features/ai';
 
 export {
   ContentSource,
@@ -241,4 +242,5 @@ export {
   analysisApiCohortDiscovery,
   // Defaults
   DefaultAuthorizedRoutesConfig,
+  Gen3Copilot,
 };

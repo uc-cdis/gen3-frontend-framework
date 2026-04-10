@@ -50,6 +50,11 @@
       "import": "./dist/pages/esm/pages.js",
       "require": "./dist/pages/cjs/pages.cjs"
     },
+    "./aiChat": {
+      "types": "./dist/aiChat.d.ts",
+      "import": "./dist/aiChat/esm/aiChat.js",
+      "require": "./dist/aiChat/cjs/aiChat.cjs"
+    },
     "./dist/styles.css": "./dist/styles.css"
   },
   "style": "dist/styles.css",

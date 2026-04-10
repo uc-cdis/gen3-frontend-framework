@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { ChatProvider } from './context/ChatContext';
 import type { ChatbotConfig } from './types';
