@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ChatProvider } from '../context/ChatContext';
-import type { ChatbotConfig } from '../types/chatbot.types';
+import { ChatProvider } from './context/ChatContext';
+import type { ChatbotConfig } from './types';
 
 /**
  * withChatbot — Higher Order Component

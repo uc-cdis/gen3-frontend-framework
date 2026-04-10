@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useChatContext } from './ChatContext';
-import {
-  DefaultEmptyState,
-  DefaultInputArea,
-  DefaultMessageRenderer,
-  DefaultToolRenderer,
-} from './defaults';
-import type { KnownToolPart } from './types';
+import { useChatContext } from '../context/ChatContext';
+import type { KnownToolPart } from '../types';
 import type { UIMessage } from '@ai-sdk/react';
+import { default as DefaultInputArea } from './InputArea';
+import { default as DefaultMessageRenderer } from './MessageRenderer';
+import { default as DefaultToolRenderer } from './ToolRenderer';
+import { default as DefaultEmptyState } from './EmptyState';
 
 // ─── StatusBar ────────────────────────────────────────────────────────────────
 
@@ -209,9 +207,9 @@ function MessageWithTools({
 }
 
 // ─── ChatShell ────────────────────────────────────────────────────────────────
-// The top-level layout. Composed from slots; knows nothing about transport or auth.
+// The top-level layout. Composed of slots; knows nothing about transport or auth.
 
-export function ChatShell() {
+const ChatShell = () => {
   const { sendMessage, status, config } = useChatContext();
   const { InputArea = DefaultInputArea } = config.slots ?? {};
 
@@ -238,4 +236,6 @@ export function ChatShell() {
       />
     </div>
   );
-}
+};
+
+export default ChatShell;

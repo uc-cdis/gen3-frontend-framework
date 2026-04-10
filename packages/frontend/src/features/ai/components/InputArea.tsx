@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActionIcon,
@@ -13,7 +11,11 @@ import { IconArrowUp, IconPlayerStop } from '@tabler/icons-react';
 import { useChatContext } from '../context/ChatContext';
 import type { InputAreaProps } from '../types';
 
-const ChatInput = ({ onSend, disabled, placeholder }: InputAreaProps) => {
+// ─── MantineInputArea ─────────────────────────────────────────────────────────
+// Uses Mantine Textarea with auto-grow, submit on Enter (Shift+Enter = newline),
+// and a stop button that appears when streaming.
+
+const InputArea = ({ onSend, disabled, placeholder }: InputAreaProps) => {
   const [value, setValue] = useState('');
   const { status, stop } = useChatContext();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -114,4 +116,4 @@ const ChatInput = ({ onSend, disabled, placeholder }: InputAreaProps) => {
   );
 };
 
-export default ChatInput;
+export default InputArea;

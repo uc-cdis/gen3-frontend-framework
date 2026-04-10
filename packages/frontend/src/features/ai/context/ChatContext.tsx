@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import type { ChatbotConfig, ChatContextValue } from './types';
+import type { ChatbotConfig, ChatContextValue } from '../types';
 import { CoreState, selectCSRFToken, useCoreSelector } from '@gen3/core';
 import { getCookie } from 'cookies-next';
 

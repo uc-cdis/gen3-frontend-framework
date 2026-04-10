@@ -1,5 +1,5 @@
 // HOC — primary entry point
-export { withChatbot } from './hoc/withChatbot';
+export { withChatbot } from './withChatbot';
 
 // Context + hook — for consuming chat state anywhere in the tree
 export { ChatProvider, useChatContext } from './context/ChatContext';
@@ -8,12 +8,6 @@ export { ChatProvider, useChatContext } from './context/ChatContext';
 export { ChatShell } from './components/ChatShell';
 
 // Default slot components — import to use directly or as fallback references
-export {
-  DefaultMessageRenderer,
-  DefaultToolRenderer,
-  DefaultInputArea,
-  DefaultEmptyState,
-} from './components/defaults';
 
 // Types — everything a consumer needs to type their config and slots
 export type {
@@ -28,4 +22,4 @@ export type {
   EmptyStateProps,
   KnownToolPart,
   ToolCallState,
-} from './types/chatbot.types';
+} from './types';

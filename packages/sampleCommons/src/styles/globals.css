@@ -20,4 +20,12 @@
     height: 100dvh !important;
 }
 
+.chatbot-shell {
+    --primary: var(--mantine-color-primary-4);
+    --muted: var(--mantine-color-primary-2);
+    --muted-foreground: var(--mantine-color-primary-contrast-2);
+    --border: var(--mantine-color-primary-contrast-2);
+    --radius: var(--mantine-radius-md);
+}
+
 @tailwind variants;

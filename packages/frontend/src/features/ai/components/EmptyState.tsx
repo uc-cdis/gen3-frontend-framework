@@ -1,32 +1,30 @@
 import React from 'react';
+import { Stack, Text } from '@mantine/core';
 
 export interface EmptyStateProps {
   title?: string;
   description?: string;
 }
 
-export function EmptyState({ title, description }: EmptyStateProps) {
+const EmptyState = ({ title, description }: EmptyStateProps) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        gap: '8px',
-        color: '#868e96',
-        textAlign: 'center',
-        padding: '32px',
-      }}
+    <Stack
+      align="center"
+      justify="center"
+      gap="xs"
+      className="h-full text-center px-8 py-8 text-gray-500"
     >
-      <div style={{ fontSize: '36px' }}>💬</div>
-      <div style={{ fontWeight: 600, fontSize: '16px', color: '#495057' }}>
+      <div className="text-4xl">💬</div>
+      <Text fw={600} size="md" className="text-gray-700">
         {title ?? 'Start a conversation'}
-      </div>
+      </Text>
       {description && (
-        <div style={{ fontSize: '14px', maxWidth: '300px' }}>{description}</div>
+        <Text size="sm" className="max-w-[300px]">
+          {description}
+        </Text>
       )}
-    </div>
+    </Stack>
   );
-}
+};
+
+export default EmptyState;
