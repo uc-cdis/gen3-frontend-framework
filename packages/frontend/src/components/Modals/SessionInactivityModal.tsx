@@ -30,7 +30,7 @@ export const SessionInactivityModal = ({
   const handleExtendSession = useCallback(() => {
     extendSession();
     context.closeModal(id);
-  }, [context, endSession, id]);
+  }, [context, extendSession, id]);
 
   const message = calculateMinRemaining(remainingTimeMilliseconds);
   return (
@@ -38,14 +38,14 @@ export const SessionInactivityModal = ({
       <p>{message}</p>
       <div className="flex justify-end mt-2.5 gap-2 p-4">
         <Button
-          data-testid="button-intro-warning-accept"
+          data-testid="button-inactive_warning-logout"
           onClick={handleLogout}
           className="!bg-primary hover:!bg-primary-darker"
         >
           Logout
         </Button>
         <Button
-          data-testid="button-intro-warning-accept"
+          data-testid="button-inactive_warning-extend"
           onClick={handleExtendSession}
           className="!bg-primary hover:!bg-primary-darker"
         >

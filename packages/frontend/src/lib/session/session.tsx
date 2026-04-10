@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
@@ -24,7 +30,7 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-import { openContextModal } from '@mantine/modals';
+import { closeModal, openContextModal } from '@mantine/modals';
 
 const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
@@ -361,7 +367,10 @@ export const SessionProvider = ({
           timeSinceLastActivity >= inactiveTimeLimitMilliseconds &&
           !isUserOnPage('Workspace')
         ) {
+          // close the inactivity modal
+          closeModal('sessionInactivityModal');
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
+
           endSession();
           return;
         }
