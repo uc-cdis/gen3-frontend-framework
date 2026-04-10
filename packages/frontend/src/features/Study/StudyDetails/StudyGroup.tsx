@@ -14,7 +14,7 @@ const StudyGroup = ({ data, header, fields }: StudyTabGroupProps) => {
     () =>
       fields.some((field) => {
         // TDDO: handle ifFieldIsNotAvailable
-        if (!field.field && field.contentType != 'accessDescriptor') {
+        if (!field.field) {
           return false;
         }
         const resourceFieldValue = JSONPath({

@@ -32,7 +32,6 @@ const RenderDetailTags: FieldRendererFunction = (
       : resource.tags;
     return (
       <div key={`detail-tag-${fieldConfig.field}`}>
-        {_label ? _label : ''}
         {RenderTagsCell({ value: tags })}
       </div>
     );
