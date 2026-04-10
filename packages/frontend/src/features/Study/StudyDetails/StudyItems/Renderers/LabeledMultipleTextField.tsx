@@ -1,13 +1,11 @@
 import React, { ReactElement } from 'react';
 import { JSONValue } from '@gen3/core';
-import { isArray, toString } from 'lodash';
+import { isArray } from 'lodash';
 import { FieldRendererFunction } from '../RendererFactory';
 import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 import TextField from './TextField';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 /**
  * Renders multiple labeled text fields
  *
@@ -15,10 +13,6 @@ import TextField from './TextField';
  * @param {string} labelText - Label for the text fields
  * @returns {ReactElement | null} Returns a label followed by multiple text fields
  */
-=======
->>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
-=======
->>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledMultipleTextField: FieldRendererFunction = (
   fieldsText: JSONValue,
   labelText?: string,

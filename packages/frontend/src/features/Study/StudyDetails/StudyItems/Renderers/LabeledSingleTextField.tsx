@@ -5,18 +5,12 @@ import { discoveryFieldStyle } from './utils';
 import Label from './Label';
 import TextField from './TextField';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 /**
  * Renders a labeled text field
  * @param {JSONValue} fieldValue - JSON object containing the data from which the field's value is extracted
  * @param {string} fieldLabel - Label for the text field
  * @returns {ReactElement | null} Returns a label followed a text field
  */
-=======
->>>>>>> 49ef6982 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
-=======
->>>>>>> d6ad4328 (feat(discoveryDetailsPlaceholders): Began refactoring renderers into separate files)
 const LabeledSingleTextField: FieldRendererFunction = (
   fieldValue: JSONValue,
   fieldLabel?: string,
