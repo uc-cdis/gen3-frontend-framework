@@ -6,7 +6,7 @@ import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
 
 interface StudyDetailsHeaderButtonsProps {
-  studyIndex: number;
+  studyIndex: string;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   studyIndex,
