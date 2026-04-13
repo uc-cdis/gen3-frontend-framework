@@ -31,8 +31,10 @@ const LabeledMultipleLinkField = (
     return Array.isArray(arr) && arr.every(isLinkTitle);
   };
   const linksText = isArray(value) ? value : [toString(value)];
+
+  if (!value) return <></>;
   // Return for when data is in format {link:'',title:''}
-  if (value && isArrayOfLinkTitle(value as LinkTitle[])) {
+  if (isArrayOfLinkTitle(value as LinkTitle[])) {
     return (
       <>
         {(value as LinkTitle[]).map((linkTitle: LinkTitle, i: number) => (
