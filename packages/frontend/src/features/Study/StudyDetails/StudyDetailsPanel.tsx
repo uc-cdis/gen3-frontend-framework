@@ -14,8 +14,6 @@ const StudyDetailsPanel = ({
   data,
   studyConfig,
 }: StudyDetailsPanelProps): ReactElement => {
-  console.log('data', data);
-  console.log('studyConfig', studyConfig);
   const headerText = JSONPath({
     json: data,
     path: studyConfig?.headerField ?? '',
