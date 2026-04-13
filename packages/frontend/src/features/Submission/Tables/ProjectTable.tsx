@@ -4,7 +4,7 @@ import {
   type MRT_PaginationState,
   useMantineReactTable,
 } from 'mantine-react-table';
-import { Button, Loader, Text } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import { useGetProjectsDetailsQuery } from '@gen3/core';
 import { ProjectTableConfig } from '../types';
 import { buildQuery } from '../utils';
@@ -44,10 +44,7 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
     size: 10,
     projectQuery: projectQuery,
     projectDetailsQuery: detailQuery,
-    //mapping: mapping,
   });
-
-  console.log({ data });
 
   const cols = useMemo(() => {
     return [
