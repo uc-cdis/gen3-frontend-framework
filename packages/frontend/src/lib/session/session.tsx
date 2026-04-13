@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
@@ -198,6 +192,7 @@ export const SessionProvider = ({
 
   useDeepCompareEffect(() => {
     if (userStatus === 'authenticated' && sessionToken === undefined) {
+      console.log('getting session token from server:');
       getSession().then((res) => setSessionToken(res));
     } else setSessionToken(undefined);
   }, [userStatus]);
