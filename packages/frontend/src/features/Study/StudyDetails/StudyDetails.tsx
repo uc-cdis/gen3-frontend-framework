@@ -1,12 +1,12 @@
-import { Button, CopyButton, Drawer } from '@mantine/core';
-import StudyDetailsPanel from './StudyDetailsPanel';
 import React, { useEffect } from 'react';
+import { Drawer } from '@mantine/core';
+import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
-import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
+import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 
 const StudyDetails = ({
   index,
@@ -21,16 +21,6 @@ const StudyDetails = ({
 }) => {
   const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  let permalink = 'Discovery/notfound';
-
-  if (studyDetails) {
-    const studyId = studyDetails[index];
-    const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ? 'string' : 'unknown',
-    )}`;
-    permalink = `/${pagePath}`;
-  }
-
   useEffect(() => {
     if (Object.keys(studyDetails).length > 0) {
       open();
@@ -46,16 +36,7 @@ const StudyDetails = ({
       <Drawer.Overlay opacity={0.5} blur={4} />
       <Drawer.Content className="pl-2">
         <Drawer.Header>
-          <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            Back
-          </Button>
-          <CopyButton value={permalink}>
-            {({ copied, copy }) => (
-              <Button color={copied ? 'primary' : 'secondary'} onClick={copy}>
-                {copied ? 'Copied Permalink' : 'Permalink'}
-              </Button>
-            )}
-          </CopyButton>
+          <StudyDetailsHeaderButtons studyIndex={index} />
         </Drawer.Header>
         <Drawer.Body>
           {detailView ? (
