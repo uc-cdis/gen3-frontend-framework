@@ -24,12 +24,12 @@ export interface SessionConfiguration {
   updateSessionTime?: number;
 
   /**
-   * number of seconds after which the session will be considered inactive.
+   * number of minutes after which the session will be considered inactive.
    */
   inactiveTimeLimit?: number;
 
   /**
-   * number of seconds after which the session will be considered inactive if using a workspace.
+   * number of minutes after which the session will be considered inactive if using a workspace.
    */
   workspaceInactivityTimeLimit?: number;
   /**
@@ -44,12 +44,12 @@ export interface SessionConfiguration {
   logoutInactiveUsers?: boolean;
 
   /**
-   * if the user is inactive for the specified time, a warning will be displayed to the user.
+   * if the user is inactive for the specified time (in minutes), a warning will be displayed to the user.
    */
   inactiveWarningTimeLimit?: number;
 
   /**
-   *  should workspaces be monitored
+   *  should workspaces be monitored?
    */
 
   monitorWorkspace?: boolean;

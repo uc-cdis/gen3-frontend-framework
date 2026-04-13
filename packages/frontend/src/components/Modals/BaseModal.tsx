@@ -1,5 +1,5 @@
-import React, { ReactNode, JSX } from 'react';
-import { hideModal, useCoreDispatch, CoreDispatch } from '@gen3/core';
+import React, { JSX, ReactNode } from 'react';
+import { CoreDispatch, hideModal, useCoreDispatch } from '@gen3/core';
 import { Button, Modal } from '@mantine/core';
 
 interface ButtonOptions {
@@ -153,7 +153,9 @@ export const BaseModal = ({
       size={size}
     >
       {children}
-      <div className="flex justify-between items-center">
+      <div
+        className={`flex ${leftButtons ? 'justify-between' : 'justify-end'} items-center`}
+      >
         {leftButtons && renderButtons(leftButtons, dispatch)}
         {buttons && renderButtons(buttons, dispatch)}
       </div>

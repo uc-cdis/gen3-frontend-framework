@@ -1,6 +1,6 @@
 {
   "updateSessionTime": 1,
-  "inactiveTimeLimit": 2,
-  "inactiveWarningTimeLimit": 1,
+  "inactiveTimeLimit": 3,
+  "inactiveWarningTimeLimit": 21,
   "logoutInactiveUsers": true
 }

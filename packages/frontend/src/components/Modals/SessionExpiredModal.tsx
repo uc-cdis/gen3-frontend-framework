@@ -1,4 +1,4 @@
-import React, { useCallback, JSX } from 'react';
+import React, { JSX, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Text } from '@mantine/core';
 import { BaseModal } from './BaseModal';
@@ -38,7 +38,7 @@ export const SessionExpiredModal = ({
       closeOnClickOutside={false}
       closeOnEscape={false}
     >
-      <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
+      <div className="pt-2 space-y-2 font-content">
         <p>
           Your session has expired or you are logged out. Please log in to
           continue.

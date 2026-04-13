@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
-import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
 import { Session, SessionProviderProps } from './types';
@@ -24,7 +24,11 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-import { closeModal, openContextModal } from '@mantine/modals';
+import {
+  closeModal,
+  openContextModal,
+  updateContextModal,
+} from '@mantine/modals';
 
 const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
@@ -177,9 +181,7 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
-  const [sessionToken, setSessionToken] = useState<
-    Record<string, any> | undefined
-  >(undefined);
+  const inactivityModalId = useRef<string | undefined>(undefined);
 
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
@@ -189,15 +191,6 @@ export const SessionProvider = ({
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-
-  useDeepCompareEffect(() => {
-    if (userStatus === 'authenticated' && sessionToken === undefined) {
-      console.log('getting session token from server:');
-      getSession().then((res) => setSessionToken(res));
-    } else setSessionToken(undefined);
-  }, [userStatus]);
-
-  console.log('session token', sessionToken);
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());
@@ -257,13 +250,13 @@ export const SessionProvider = ({
   const sessionInfo = useManageSession(userStatus);
 
   // for now, we are using the user status to determine if the user is logged in
-  const updateSession = useCallback(() => {
+  const updateSession = useDeepCompareCallback(() => {
     const updateSessionWithUserStatus = async () => {
       await getUserDetails();
     };
 
     updateSessionWithUserStatus();
-  }, [getUserDetails]);
+  }, [getUserDetails, logoutInactiveUsers]);
 
   const endSession = useCallback(async () => {
     logoutSession()
@@ -309,15 +302,23 @@ export const SessionProvider = ({
       const timestamp = Date.now();
       setMostRecentActivityTimestamp(timestamp);
 
+      // inactivityModalId is a ref — the closure captures the object, not .current,
+      // so this always reflects the latest value set by the interval callback.
+      if (inactivityModalId.current) {
+        closeModal(inactivityModalId.current);
+        inactivityModalId.current = undefined;
+      }
+
       if (broadcastChannelRef.current) {
         broadcastChannelRef.current.postMessage({
           type: 'activity-update',
           timestamp,
         });
       }
+
       // check session token to keep this in sync
       isSessionActive();
-    };
+    };;
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
@@ -353,20 +354,43 @@ export const SessionProvider = ({
           timeSinceLastActivity >=
           inactiveTimeLimitMilliseconds - inactiveWarningTimeLimitMilliseconds
         ) {
-          openContextModal({
-            modal: 'sessionInactivityModal',
-            title: 'Inactivity Warning',
-            size: '40%',
-            closeOnClickOutside: false,
-            closeOnEscape: false,
-            withCloseButton: false,
-            innerProps: {
-              remainingTimeMilliseconds:
-                inactiveTimeLimitMilliseconds - timeSinceLastActivity,
-              endSession,
-              extendSession: updateSession,
-            },
-          });
+          if (!inactivityModalId.current) {
+            const id = openContextModal({
+              modal: 'sessionInactivityModal',
+              title: 'Inactivity Warning',
+              size: '40%',
+              closeOnClickOutside: false,
+              closeOnEscape: false,
+              withCloseButton: false,
+              innerProps: {
+                remainingTimeMilliseconds:
+                  inactiveTimeLimitMilliseconds - timeSinceLastActivity,
+                endSession,
+                extendSession: updateSession,
+              },
+            });
+            inactivityModalId.current = id;
+          } else {
+            updateContextModal({
+              modalId: inactivityModalId.current,
+              title: 'Inactivity Warning',
+              size: '40%',
+              closeOnClickOutside: false,
+              closeOnEscape: false,
+              withCloseButton: false,
+              innerProps: {
+                remainingTimeMilliseconds:
+                  inactiveTimeLimitMilliseconds - timeSinceLastActivity,
+                endSession,
+                extendSession: updateSession,
+              },
+            });
+          }
+        } else {
+          if (inactivityModalId.current) {
+            closeModal(inactivityModalId.current);
+            inactivityModalId.current = undefined;
+          }
         }
 
         if (
@@ -374,9 +398,11 @@ export const SessionProvider = ({
           !isUserOnPage('Workspace')
         ) {
           // close the inactivity modal
-          closeModal('sessionInactivityModal');
+          if (inactivityModalId.current) {
+            closeModal(inactivityModalId.current);
+            inactivityModalId.current = undefined;
+          }
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
-
           endSession();
           return;
         }
@@ -385,6 +411,10 @@ export const SessionProvider = ({
           timeSinceLastActivity >= workspaceInactivityTimeLimitMilliseconds &&
           isUserOnPage('Workspace')
         ) {
+          if (inactivityModalId.current) {
+            closeModal(inactivityModalId.current);
+            inactivityModalId.current = undefined;
+          }
           coreDispatch(showModal({ modal: Modals.SessionExpireModal }));
           endSession();
           return;

@@ -9,3 +9,9 @@ export const gen3Modals = {
   firstTimeModal: FirstTimeModal,
   sessionInactivityModal: SessionInactivityModal,
 };
+
+declare module '@mantine/modals' {
+  export interface MantineModalsOverride {
+    modals: typeof gen3Modals;
+  }
+}
