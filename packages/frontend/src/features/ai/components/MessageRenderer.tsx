@@ -111,7 +111,12 @@ const MantineMessageRenderer = ({
   message,
   ToolRenderer = DefaultToolRenderer,
 }: MantineMessageRendererProps) => {
-  const { status } = useChatContext();
+  const {
+    status,
+    config: {
+      features: { toolRendering },
+    },
+  } = useChatContext();
 
   const isUser = message.role === 'user';
   const isStreaming =
@@ -144,7 +149,7 @@ const MantineMessageRenderer = ({
 
         {segments.map((segment) => {
           // ── Tool card — outside bubble, at its natural position ──────────
-          if (segment.kind === 'tool') {
+          if (segment.kind === 'tool' && toolRendering) {
             return (
               <ToolRenderer
                 key={`tool-${segment.index}`}
@@ -162,6 +167,7 @@ const MantineMessageRenderer = ({
             if (part.type === 'file') return true;
             return false;
           });
+          console.log('visibleParts', visibleParts);
           if (visibleParts.length === 0) return null;
 
           return (
