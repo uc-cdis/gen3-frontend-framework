@@ -24,11 +24,7 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 import { MinutesToMilliseconds } from '../../utils';
 import { useWorkspaceResourceMonitor } from '../../components/Providers/ResourceMonitor';
-import {
-  closeModal,
-  openContextModal,
-  updateContextModal,
-} from '@mantine/modals';
+import { closeModal, openContextModal, updateContextModal, } from '@mantine/modals';
 
 const ACTIVITY_CHANNEL = 'gen3-user-activity';
 
@@ -318,7 +314,7 @@ export const SessionProvider = ({
 
       // check session token to keep this in sync
       isSessionActive();
-    };;
+    };
 
     window.addEventListener('mousedown', updateUserActivity);
     window.addEventListener('keypress', updateUserActivity);
