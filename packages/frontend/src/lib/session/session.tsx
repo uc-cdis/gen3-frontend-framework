@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useRouter } from 'next/router';
 import { getCookie } from 'cookies-next';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
 import { Session, SessionProviderProps } from './types';
@@ -183,6 +183,9 @@ export const SessionProvider = ({
 }: SessionProviderProps) => {
   const router = useRouter();
   const coreDispatch = useCoreDispatch();
+  const [sessionToken, setSessionToken] = useState<
+    Record<string, any> | undefined
+  >(undefined);
 
   const { isSuccess: isGetCSRFSuccess, isError: isGetCSRFError } =
     useGetCSRFQuery();
@@ -192,6 +195,14 @@ export const SessionProvider = ({
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
+
+  useDeepCompareEffect(() => {
+    if (userStatus === 'authenticated' && sessionToken === undefined) {
+      getSession().then((res) => setSessionToken(res));
+    } else setSessionToken(undefined);
+  }, [userStatus]);
+
+  console.log('session token', sessionToken);
 
   const [mostRecentActivityTimestamp, setMostRecentActivityTimestamp] =
     useState(Date.now());

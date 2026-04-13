@@ -34,7 +34,7 @@ export const SessionInactivityModal = ({
 
   const message = calculateMinRemaining(remainingTimeMilliseconds);
   return (
-    <div className="border-y border-y-base-darker py-4 space-y-4 font-content">
+    <div className="py-4 space-y-4 font-content">
       <p>{message}</p>
       <div className="flex justify-end mt-2.5 gap-2 p-4">
         <Button
