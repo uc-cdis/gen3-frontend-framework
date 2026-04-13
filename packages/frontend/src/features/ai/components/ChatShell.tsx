@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { useChatContext } from '../context/ChatContext';
-import type { KnownToolPart } from '../types';
-import type { UIMessage } from '@ai-sdk/react';
 import { default as DefaultInputArea } from './InputArea';
 import { default as DefaultMessageRenderer } from './MessageRenderer';
 import { default as DefaultToolRenderer } from './ToolRenderer';
 import { default as DefaultEmptyState } from './EmptyState';
-import { Stack } from '@mantine/core';
+
+import React, { useEffect, useRef } from 'react';
+import { useChatContext } from '../context/ChatContext';
 
 // ─── StatusBar ────────────────────────────────────────────────────────────────
 
@@ -153,52 +151,15 @@ function MessageList() {
       }}
     >
       {messages.map((message) => (
-        <MessageWithTools
+        // MessageRenderer receives ToolRenderer as a prop so it can call it
+        // inline at each tool part's actual index in message.parts.
+        // This preserves the model's emission order: reasoning → tool → text.
+        <MessageRenderer
           key={message.id}
           message={message}
-          MessageRenderer={MessageRenderer}
-          ToolRenderer={ToolRenderer}
-          toolRendering={config.features?.toolRendering ?? true}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ─── MessageWithTools ─────────────────────────────────────────────────────────
-// Splits a UIMessage into text parts (→ MessageRenderer) and tool parts
-// (→ ToolRenderer). This keeps each slot focused on one responsibility.
-
-interface MessageWithToolsProps {
-  message: UIMessage;
-  MessageRenderer: React.ComponentType<{ message: UIMessage }>;
-  ToolRenderer: React.ComponentType<{ part: KnownToolPart; messageId: string }>;
-  toolRendering: boolean;
-}
-
-function MessageWithTools({
-  message,
-  MessageRenderer,
-  ToolRenderer,
-  toolRendering,
-}: MessageWithToolsProps) {
-  const toolParts = toolRendering
-    ? (message.parts.filter((p) =>
-        p.type.startsWith('tool-'),
-      ) as KnownToolPart[])
-    : [];
-
-  return (
-    <div>
-      {/* Render the message bubble (text parts handled inside) */}
-      <MessageRenderer message={message} />
-
-      {/* Render each tool call part via the swappable ToolRenderer slot */}
-      {toolParts.map((part, i) => (
-        <ToolRenderer
-          key={`${message.id}-tool-${i}`}
-          part={part}
-          messageId={message.id}
+          ToolRenderer={
+            config.features?.toolRendering !== false ? ToolRenderer : undefined
+          }
         />
       ))}
     </div>
@@ -206,7 +167,7 @@ function MessageWithTools({
 }
 
 // ─── ChatShell ────────────────────────────────────────────────────────────────
-// The top-level layout. Composed of slots; knows nothing about transport or auth.
+// The top-level layout. Composed from slots; knows nothing about transport or auth.
 
 const ChatShell = () => {
   const { sendMessage, status, config } = useChatContext();
@@ -215,7 +176,17 @@ const ChatShell = () => {
   const isDisabled = status === 'submitted' || status === 'streaming';
 
   return (
-    <Stack gap="md" classNames={{ root: 'w-full' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflow: 'hidden',
+        background: '#fff',
+        borderRadius: '12px',
+        border: '1px solid #dee2e6',
+      }}
+    >
       <MessageList />
       <StatusBar />
       <InputArea
@@ -223,7 +194,7 @@ const ChatShell = () => {
         disabled={isDisabled}
         placeholder={config.inputPlaceholder}
       />
-    </Stack>
+    </div>
   );
 };
 
