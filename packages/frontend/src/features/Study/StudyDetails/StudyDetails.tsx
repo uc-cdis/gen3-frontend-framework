@@ -36,7 +36,7 @@ const StudyDetails = ({
       <Drawer.Overlay opacity={0.5} blur={4} />
       <Drawer.Content className="pl-2">
         <Drawer.Header>
-          <StudyDetailsHeaderButtons studyIndex={index} />
+          <StudyDetailsHeaderButtons studyIndex={index} onClose={close} />
         </Drawer.Header>
         <Drawer.Body>
           {detailView ? (

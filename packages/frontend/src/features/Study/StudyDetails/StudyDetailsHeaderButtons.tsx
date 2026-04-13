@@ -7,9 +7,11 @@ import { useIsUserLoggedIn } from '@gen3/core';
 
 interface StudyDetailsHeaderButtonsProps {
   studyIndex: string;
+  onClose: () => void;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   studyIndex,
+  onClose,
 }) => {
   // Note: This doesn't seem to work, will be addressed in HP-2384
   let permalink = 'Discovery/notfound';
@@ -24,7 +26,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   const requiresLogin = !useIsUserLoggedIn();
   return (
     <>
-      <Button leftSection={<BackIcon />} onClick={close} variant="outline">
+      <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
         Back
       </Button>
       <Button leftSection={<LoginIcon size={14} />} variant="subtle">
