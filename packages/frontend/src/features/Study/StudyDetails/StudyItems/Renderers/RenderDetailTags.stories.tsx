@@ -4,28 +4,7 @@ import RenderDetailTags from './RenderDetailTags';
 import { JSONValue } from '@gen3/core';
 import DiscoveryProvider from '../../../../Discovery/DiscoveryProvider';
 import { DiscoveryIndexConfig } from '../../../../Discovery/types';
-
-const discoveryConfigTags = {
-  tags: {
-    tagCategories: [
-      {
-        name: 'Study Type',
-        color: '#532565',
-        display: true,
-      },
-      {
-        name: 'Data Type',
-        color: '#982568',
-        display: true,
-      },
-      {
-        name: 'Data Repository',
-        color: '#bf362e',
-        display: true,
-      },
-    ],
-  },
-};
+import { discoveryConfigTestTags } from '../../StudyDetailsPanelTestData';
 
 const meta = {
   component: RenderDetailTags as any,
@@ -33,7 +12,7 @@ const meta = {
     (Story) => (
       <DiscoveryProvider
         discoveryIndexConfig={
-          discoveryConfigTags as unknown as DiscoveryIndexConfig
+          discoveryConfigTestTags as unknown as DiscoveryIndexConfig
         }
       >
         <div className="bg-base-lighter p-4" style={{ minHeight: 120 }}>

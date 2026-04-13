@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import Label from './Label';
-import { JSONValue } from '@gen3/core';
 
 const meta = {
   component: Label as any,

@@ -16,9 +16,9 @@ const LabeledSingleLinkField = (
   parans?: Record<string, any>,
 ) => {
   const id = useId();
-  return typeof linkValue !== 'string' ? (
-    <React.Fragment />
-  ) : (
+  if (typeof linkValue !== 'string' || linkValue === '')
+    return <React.Fragment />;
+  return (
     <div className={discoveryFieldStyle} key={labelText + id}>
       {Label(labelText)} {LinkField(linkValue)}
     </div>

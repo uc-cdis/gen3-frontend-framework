@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import DataDownloadListField from './DataDownloadListField';
-import { accessibleFieldName, AccessLevel } from '../../../../../utils';
 
 const meta = {
   component: DataDownloadListField,
