@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
   MantineReactTable,
-  MRT_ColumnDef,
   type MRT_PaginationState,
   useMantineReactTable,
 } from 'mantine-react-table';
@@ -13,8 +12,6 @@ import { buildQuery } from '../utils';
 const projectQuery = {
   query: 'query { project(first:0) {code, project_id, availability_type}}',
 };
-
-const ActionColumn = () => <Button>Submit Data</Button>
 
 const ProjectTable = ({ columns }: ProjectTableConfig) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -66,11 +63,6 @@ const ProjectTable = ({ columns }: ProjectTableConfig) => {
           header: columnDef.name,
         };
       }),
-      {
-        field: 'actions',
-        header: 'Actions',
-        Cell: ActionColumn,
-      }
     ];
   }, [columns]);
 
