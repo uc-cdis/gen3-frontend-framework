@@ -7,6 +7,7 @@ import {
   Collapse,
   Group,
   Loader,
+  LoadingOverlay,
   Paper,
   Stack,
   Text,
@@ -21,7 +22,7 @@ import {
   IconChevronUp,
   IconTool,
 } from '@tabler/icons-react';
-import type { KnownToolPart, ToolRendererProps } from '../types/chatbot.types';
+import type { KnownToolPart, ToolRendererProps } from '../types'; // ─── State helpers ────────────────────────────────────────────────────────────
 
 // ─── State helpers ────────────────────────────────────────────────────────────
 
@@ -80,6 +81,8 @@ const ToolRenderer = ({ part }: ToolRendererProps) => {
   const label = toolLabel(part.type);
 
   const hasDetails = !!(part.input || (state === 'done' && part.output));
+
+  console.log('ToolRenderer', part);
 
   return (
     <Paper
@@ -173,51 +176,50 @@ const ToolRenderer = ({ part }: ToolRendererProps) => {
       {/* ── Collapsible details ──────────────────────────────────────────── */}
       <Collapse in={detailsOpen}>
         <Stack gap="xs" mt="xs">
-          {/* Input args */}
-          {part.input && (
-            <Stack gap={2}>
-              <Text size="xs" c="dimmed" fw={500}>
-                Input
-              </Text>
-              <Code
-                block
-                fz="xs"
-                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
-              >
-                {JSON.stringify(part.input, null, 2)}
-              </Code>
-            </Stack>
-          )}
+          <LoadingOverlay visible={state === 'loading'}>
+            {part?.input ? (
+              <Stack gap={2}>
+                <Text size="xs" c="dimmed" fw={500}>
+                  Input
+                </Text>
+                <Code
+                  block
+                  fz="xs"
+                  style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
+                >
+                  {JSON.stringify(part?.input ?? {}, null, 2)}
+                </Code>
+              </Stack>
+            ) : null}
 
-          {/* Output */}
-          {state === 'done' && part.output && (
-            <Stack gap={2}>
-              <Text size="xs" c="dimmed" fw={500}>
-                Output
-              </Text>
-              <Code
-                block
-                fz="xs"
-                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
-              >
-                {JSON.stringify(part.output, null, 2)}
-              </Code>
-            </Stack>
-          )}
+            {state === 'done' && part.output ? (
+              <Stack gap={2}>
+                <Text size="xs" c="dimmed" fw={500}>
+                  Output
+                </Text>
+                <Code
+                  block
+                  fz="xs"
+                  style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
+                >
+                  {JSON.stringify(part.output, null, 2)}
+                </Code>
+              </Stack>
+            ) : null}
 
-          {/* Error */}
-          {state === 'error' && (
-            <Alert
-              color="red"
-              variant="light"
-              icon={<IconAlertTriangle size={14} />}
-              p="xs"
-            >
-              <Text size="xs">
-                {(part as any).errorText ?? 'Tool execution failed.'}
-              </Text>
-            </Alert>
-          )}
+            {state === 'error' && (
+              <Alert
+                color="red"
+                variant="light"
+                icon={<IconAlertTriangle size={14} />}
+                p="xs"
+              >
+                <Text size="xs">
+                  {(part as any).errorText ?? 'Tool execution failed.'}
+                </Text>
+              </Alert>
+            )}
+          </LoadingOverlay>
         </Stack>
       </Collapse>
     </Paper>

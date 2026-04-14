@@ -11,6 +11,7 @@ import MessageRenderer from './components/MessageRenderer';
 import InputArea from './components/InputArea';
 import ChatShell from './components/ChatShell';
 import { ChatbotConfig } from './types';
+import FieldLookupToolRenderer from './components/tools/FieldLookupToolRenderer';
 
 const DefaultChatConfiguration: ChatbotConfig = {
   api: '/api/copilot',
@@ -32,6 +33,10 @@ const DefaultChatConfiguration: ChatbotConfig = {
     description: 'Ask anything — I can reason through complex problems.',
   },
   inputPlaceholder: 'Ask me anything…',
+  tools: {
+    field_lookup_tool: FieldLookupToolRenderer,
+    // add more tools here without touching any shared types
+  },
 };
 
  const Gen3Copilot = (configuration: Partial<ChatbotConfig>) =>

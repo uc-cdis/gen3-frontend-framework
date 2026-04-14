@@ -36,8 +36,6 @@ export function ChatProvider({ config, children }: ChatProviderProps) {
     selectCSRFToken(state),
   );
 
-  console.log('ChatProvider config:', config);
-
   const transport = useMemo(() => {
     return new DefaultChatTransport({
       api: config.api,
@@ -98,6 +96,7 @@ export function ChatProvider({ config, children }: ChatProviderProps) {
     regenerate,
     clearError,
     config,
+    tools: config.tools ?? {},
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -3,34 +3,26 @@ import type { UIMessage } from '@ai-sdk/react';
 // ─── Tool Part Types ──────────────────────────────────────────────────────────
 // Extend this discriminated union with your domain-specific tool names.
 // Each tool call part from useChat will have a `type` of `tool-{toolName}`.
-
-export type KnownToolPart =
-  | {
-      type: 'tool-search';
-      toolCallId: string;
-      state: ToolCallState;
-      input?: { query: string };
-      output?: unknown;
-    }
-  | {
-      type: 'tool-geneQuery';
-      toolCallId: string;
-      state: ToolCallState;
-      input?: { geneId: string };
-      output?: unknown;
-    }
-  | {
-      type: 'tool-navigateIGV';
-      toolCallId: string;
-      state: ToolCallState;
-      input?: { locus: string };
-      output?: unknown;
-    };
-
 export type ToolCallState =
   | 'input-available'
   | 'output-available'
   | 'output-error';
+
+export interface KnownToolPart {
+  type: `tool-${string}`; // e.g. 'tool-field_lookup_tool'
+  toolCallId: string;
+  state: ToolCallState;
+  input?: unknown;
+  output?: unknown;
+}
+
+// Per-tool component type for the registry.
+// Uses the same props so registered components are drop-in replacements.
+export type ToolRendererComponent = React.ComponentType<ToolRendererProps>;
+
+// Registry: tool type suffix → component
+// e.g. { 'field_lookup_tool': FieldLookupToolRenderer }
+export type ToolRegistry = Record<string, ToolRendererComponent>;
 
 // ─── Slot Component Props ─────────────────────────────────────────────────────
 
@@ -72,8 +64,6 @@ export interface ChatbotFeatures {
 export interface ChatbotSlots {
   /** Renders a single message bubble. Falls back to DefaultMessageRenderer. */
   MessageRenderer?: React.ComponentType<MessageRendererProps>;
-  /** Renders a single tool call part inside a message. Falls back to DefaultToolRenderer. */
-  ToolRenderer?: React.ComponentType<ToolRendererProps>;
   /** Renders the input area at the bottom. Falls back to DefaultInputArea. */
   InputArea?: React.ComponentType<InputAreaProps>;
   /** Renders when the message list is empty. Falls back to DefaultEmptyState. */
@@ -110,6 +100,7 @@ export interface ChatbotConfig {
   emptyState?: Pick<EmptyStateProps, 'title' | 'description'>;
   /** Passed through to InputArea slot. */
   inputPlaceholder?: string;
+  tools?: ToolRegistry; // 👈 replaces slots.ToolRenderer
 }
 
 // ─── Context Value ────────────────────────────────────────────────────────────
@@ -123,4 +114,5 @@ export interface ChatContextValue {
   regenerate: () => Promise<void>;
   clearError: () => void;
   config: ChatbotConfig;
+  tools: ToolRegistry;
 }

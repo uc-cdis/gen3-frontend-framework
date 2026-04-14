@@ -6,9 +6,8 @@ import { StreamingMarkdown } from './StreamingMarkdown';
 import ReasoningBlock from './ReasoningBlock';
 import { default as DefaultToolRenderer } from './ToolRenderer';
 import { useChatContext } from '../context/ChatContext';
-import type { KnownToolPart, ToolRendererProps } from '../types'; // ─── Types ────────────────────────────────────────────────────────────────────
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+import type { KnownToolPart, ToolRendererProps } from '../types';
+import { RegistryToolRenderer } from './RegistryToolRenderer';
 
 export interface MantineMessageRendererProps {
   message: UIMessage;
@@ -35,6 +34,15 @@ type ToolSegment = {
   part: KnownToolPart;
   index: number;
 };
+
+// implement typeguard for BubbleSegment
+const isBubbleSegment = (segment: Segment): segment is BubbleSegment =>
+  segment.kind === 'bubble';
+
+// implement typeguard for ToolSegment
+const isToolSegment = (segment: Segment): segment is ToolSegment =>
+  segment.kind === 'tool';
+
 type Segment = BubbleSegment | ToolSegment;
 
 function buildSegments(parts: UIMessage['parts']): Segment[] {
@@ -111,12 +119,7 @@ const MantineMessageRenderer = ({
   message,
   ToolRenderer = DefaultToolRenderer,
 }: MantineMessageRendererProps) => {
-  const {
-    status,
-    config: {
-      features: { toolRendering },
-    },
-  } = useChatContext();
+  const { status, config } = useChatContext();
 
   const isUser = message.role === 'user';
   const isStreaming =
@@ -148,10 +151,10 @@ const MantineMessageRenderer = ({
         </Text>
 
         {segments.map((segment) => {
-          // ── Tool card — outside bubble, at its natural position ──────────
-          if (segment.kind === 'tool' && toolRendering) {
+          console.log('segment', segment);
+          if (segment.kind === 'tool' && config?.features?.toolRendering) {
             return (
-              <ToolRenderer
+              <RegistryToolRenderer
                 key={`tool-${segment.index}`}
                 part={segment.part}
                 messageId={message.id}
@@ -159,73 +162,74 @@ const MantineMessageRenderer = ({
             );
           }
 
-          // ── Bubble — wraps consecutive non-tool parts ────────────────────
-          const visibleParts = segment.parts.filter(({ part }) => {
-            if (part.type === 'text') return (part as any).text?.length > 0;
-            if (part.type === 'reasoning')
-              return (part as any).reasoning?.length > 0;
-            if (part.type === 'file') return true;
-            return false;
-          });
-          console.log('visibleParts', visibleParts);
-          if (visibleParts.length === 0) return null;
+          if (isBubbleSegment(segment)) {
+            // ── Bubble — wraps consecutive non-tool parts ────────────────────
+            const visibleParts = segment.parts.filter(({ part }) => {
+              if (part.type === 'text') return (part as any).text?.length > 0;
+              if (part.type === 'reasoning')
+                return (part as any).reasoning?.length > 0;
+              if (part.type === 'file') return true;
+              return false;
+            });
+            if (visibleParts.length === 0) return null;
 
-          return (
-            <Paper
-              key={`bubble-${segment.parts[0].index}`}
-              px="md"
-              py="sm"
-              radius="lg"
-              style={{
-                background: isUser
-                  ? 'var(--mantine-color-blue-6)'
-                  : 'var(--mantine-color-gray-1)',
-                color: isUser
-                  ? 'var(--mantine-color-white)'
-                  : 'var(--mantine-color-dark-7)',
-                borderBottomRightRadius: isUser ? '4px' : undefined,
-                borderBottomLeftRadius: !isUser ? '4px' : undefined,
-                width: '100%',
-              }}
-            >
-              {visibleParts.map(({ part, index }) => {
-                if (part.type === 'text') {
-                  return (
-                    <TextPart
-                      key={index}
-                      text={(part as any).text}
-                      isStreaming={isStreaming}
-                      isUser={isUser}
-                    />
-                  );
-                }
-                if (part.type === 'reasoning') {
-                  return (
-                    <ReasoningPart
-                      key={index}
-                      reasoning={(part as any).reasoning ?? ''}
-                      isStreaming={isStreaming}
-                    />
-                  );
-                }
-                if (
-                  part.type === 'file' &&
-                  (part as any).mediaType?.startsWith('image/')
-                ) {
-                  return (
-                    <Box key={index} mt="xs">
-                      <img
-                        src={(part as any).url}
-                        alt="Attached image"
-                        style={{ maxWidth: '100%', borderRadius: '8px' }}
+            return (
+              <Paper
+                key={`bubble-${segment.parts[0].index}`}
+                px="md"
+                py="sm"
+                radius="lg"
+                style={{
+                  background: isUser
+                    ? 'var(--mantine-color-blue-6)'
+                    : 'var(--mantine-color-gray-1)',
+                  color: isUser
+                    ? 'var(--mantine-color-white)'
+                    : 'var(--mantine-color-dark-7)',
+                  borderBottomRightRadius: isUser ? '4px' : undefined,
+                  borderBottomLeftRadius: !isUser ? '4px' : undefined,
+                  width: '100%',
+                }}
+              >
+                {visibleParts.map(({ part, index }) => {
+                  if (part.type === 'text') {
+                    return (
+                      <TextPart
+                        key={index}
+                        text={(part as any).text}
+                        isStreaming={isStreaming}
+                        isUser={isUser}
                       />
-                    </Box>
-                  );
-                }
-                return null;
-              })}
-            </Paper>
-          );
+                    );
+                  }
+                  if (part.type === 'reasoning') {
+                    return (
+                      <ReasoningPart
+                        key={index}
+                        reasoning={(part as any).reasoning ?? ''}
+                        isStreaming={isStreaming}
+                      />
+                    );
+                  }
+                  if (
+                    part.type === 'file' &&
+                    (part as any).mediaType?.startsWith('image/')
+                  ) {
+                    return (
+                      <Box key={index} mt="xs">
+                        <img
+                          src={(part as any).url}
+                          alt="Attached image"
+                          style={{ maxWidth: '100%', borderRadius: '8px' }}
+                        />
+                      </Box>
+                    );
+                  }
+                  return null;
+                })}
+              </Paper>
+            );
+          }
         })}
       </Stack>
 
