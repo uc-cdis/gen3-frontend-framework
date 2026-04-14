@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Paper, Skeleton, Stack, Text } from '@mantine/core';
+import { Badge, Group, Paper, Skeleton, Stack, Text } from '@mantine/core';
 import type { ToolRendererProps } from '../../types';
 
 interface FieldLookupInput {
@@ -9,7 +9,11 @@ interface FieldLookupInput {
 interface FieldLookupOutput {
   search_term: string;
   matches_found: number;
-  fields: string[];
+  fields: {
+    field: string;
+    description: string;
+    sample_values: string;
+  }[];
 }
 
 const FieldLookupToolRenderer = ({ part }: ToolRendererProps) => {
@@ -20,7 +24,7 @@ const FieldLookupToolRenderer = ({ part }: ToolRendererProps) => {
   return (
     <Paper withBorder radius="md" px="sm" py="xs" my={4} className="max-w-sm">
       <Stack gap="xs">
-        <div className="flex items-center gap-2">
+        <Group>
           <Text size="xs" fw={600}>
             Field Lookup:
           </Text>
@@ -29,20 +33,20 @@ const FieldLookupToolRenderer = ({ part }: ToolRendererProps) => {
               {input.search_term}
             </Badge>
           )}
-        </div>
+        </Group>
 
         {isLoading && <Skeleton height={36} radius="sm" />}
 
         {output && (
           <Stack gap={4}>
             <Text size="xs" c="dimmed">
-              Fields: {output.matches_found.toLocaleString()}
+              Found: {output.matches_found.toLocaleString()}
             </Text>
             {output.fields && (
               <div className="flex flex-wrap gap-1">
-                {output.fields.map((v) => (
-                  <Badge key={v} size="xs" variant="outline">
-                    {v}
+                {output.fields.map((x) => (
+                  <Badge key={x.field} size="xs" variant="outline">
+                    {x.field}
                   </Badge>
                 ))}
               </div>

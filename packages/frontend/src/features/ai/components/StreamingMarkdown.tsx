@@ -1,8 +1,11 @@
 import React from 'react';
 import { Streamdown } from 'streamdown';
 import { code } from '@streamdown/code';
+import { math } from '@streamdown/math';
+import { mermaid } from '@streamdown/mermaid';
 import 'streamdown/styles.css'; // base styles required by Streamdown
-import 'katex/dist/katex.min.css'; // required if using math
+import 'katex/dist/katex.min.css';
+import { convertLatexDelimiters } from '../utils'; // required if using math
 
 // ─── StreamingMarkdown ────────────────────────────────────────────────────────
 
@@ -26,11 +29,11 @@ export const StreamingMarkdown = ({
 }: StreamingMarkdownProps) => {
   return (
     <Streamdown
-      plugins={{ code }} // add mermaid, math here if needed
-      isAnimating={isStreaming} // drives caret + unterminated block styling
+      plugins={{ code, math, mermaid }}
+      isAnimating={isStreaming}
       className={className}
     >
-      {content}
+      {convertLatexDelimiters(content)}
     </Streamdown>
   );
 };
