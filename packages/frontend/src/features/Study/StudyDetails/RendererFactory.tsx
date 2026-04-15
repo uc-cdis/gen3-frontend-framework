@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, JSX } from 'react';
 import { JSONValue } from '@gen3/core';
 import { Text } from '@mantine/core';
 

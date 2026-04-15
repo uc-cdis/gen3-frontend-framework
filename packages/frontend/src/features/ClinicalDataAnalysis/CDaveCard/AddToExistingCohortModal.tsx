@@ -11,18 +11,17 @@ import {
   selectAvailableCohorts,
   useCoreSelector,
 } from '@gen3/core';
-import { MantineReactTable, type MRT_PaginationState, type MRT_Row, useMantineReactTable, } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  type MRT_PaginationState,
+  type MRT_Row,
+  useMantineReactTable,
+} from 'mantine-react-table';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { getObjectIdsFromFilter } from './utils';
 import { LazyQueryHookResult } from './types';
 
 export type WithOrWithoutCohortType = 'with' | 'without' | undefined;
-
-/**
- * A generic type representing a lazy query hook return value.
- * TArg = query argument, TResult = resolved data.
- */
-type UseLazyQueryHook<TArg, TResult> = () => LazyQueryHookResult<TArg, TResult>;
 
 interface ObjectIdQueryRequest {
   filters: FilterSet;

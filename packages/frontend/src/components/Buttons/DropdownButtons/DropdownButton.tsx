@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { Menu, Button, Text } from '@mantine/core';
 import { type DropdownButtonProps } from './types';
 import { Icon } from '@iconify-icon/react';

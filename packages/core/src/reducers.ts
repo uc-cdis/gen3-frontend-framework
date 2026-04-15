@@ -15,6 +15,7 @@ import {
   userAuthApiReducerPath,
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
+import { sowerReducer } from './features/sower/reducers';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -27,6 +28,7 @@ export const rootReducer = combineReducers({
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [cartReducerPath]: cartReducer,
+  sower: sowerReducer,
 });
 
 export type CoreState = ReturnType<typeof rootReducer>;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, JSX } from 'react';
 import { MdClose as CloseIcon, MdInfo } from 'react-icons/md';
 import { PiSparkleFill, PiTrash } from 'react-icons/pi';
 import {

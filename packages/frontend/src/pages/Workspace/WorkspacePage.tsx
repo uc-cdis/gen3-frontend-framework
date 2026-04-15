@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import Workspace from '../../features/Workspace/Workspace';
 import { WorkspacePageLayoutProps } from './types';
