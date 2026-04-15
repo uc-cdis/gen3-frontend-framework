@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, JSX } from 'react';
 import { FacetDefinition, FacetType, fieldNameToLabel } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
 import { FacetHooks, FacetValueLabel } from './types';
