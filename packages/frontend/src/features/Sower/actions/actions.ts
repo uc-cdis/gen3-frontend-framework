@@ -1,7 +1,5 @@
 import {
-  addSowerJob,
   type CoreDispatch,
-  type CreateAndExportActionConfig,
   isFetchBaseQueryError,
   useSubmitSowerJobMutation,
 } from '@gen3/core';
@@ -10,7 +8,11 @@ import {
   findCreateJobAction,
   findSendResultsAction,
 } from './TwoStepActionButton';
-import { SendResultsActionNotFoundError, SowerJobNotFoundError } from './types';
+import {
+  type CreateAndExportActionConfig,
+  SendResultsActionNotFoundError,
+  SowerJobNotFoundError,
+} from './types';
 
 export const submitSowerJob = async (
   actions: CreateAndExportActionConfig,

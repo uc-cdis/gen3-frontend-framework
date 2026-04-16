@@ -1,9 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  useGetSowerJobListQuery,
-  useCoreSelector,
-  selectSowerJobDatetimeCache,
-} from '@gen3/core';
+import { selectSowerJobDatetimeCache, useCoreSelector, useGetSowerJobListQuery, } from '@gen3/core';
 import JobPanel from './JobPanel';
 import useSowerJobEventBus from './useSowerJobEventBus';
 import { showNotification } from '@mantine/notifications';
@@ -26,7 +22,7 @@ const SowerJobListWrapper = () => {
     );
 
     return () => off('jobWrapper');
-  }, [activeJobs]);
+  }, [activeJobs, off, on]);
 
   return (
     <JobPanel
