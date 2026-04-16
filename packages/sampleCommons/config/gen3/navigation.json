@@ -71,6 +71,11 @@
         "name": "Browse Data"
       },
       {
+        "rightIcon": "gen3:upload",
+        "modal": "jobModal",
+        "name": "Jobs"
+      },
+      {
         "href": "https://docs.gen3.org/gen3-resources/user-guide/",
         "name": "Documentation"
       }

@@ -5,7 +5,6 @@ import {
   AggregationsData,
   clearCohortFilters,
   CombineMode,
-  convertFilterSetToGqlFilter,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
@@ -52,7 +51,6 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
-import { Button } from '@mantine/core';
 import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
@@ -391,7 +389,7 @@ export const CohortPanel = ({
     if (result?.data) {
       update(result.data?.uid);
     }
-  }, [result]);
+  }, [result, update]);
 
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
@@ -471,18 +469,18 @@ export const CohortPanel = ({
           {/* Table Section */}
           {table?.enabled && (
             <>
-              <Button
-                onClick={() =>
-                  submitJob({
-                    action: 'export',
-                    input: {
-                      filter: convertFilterSetToGqlFilter(cohortFilters),
-                    },
-                  })
-                }
-              >
-                Export
-              </Button>
+              {/*<Button*/}
+              {/*  onClick={() =>*/}
+              {/*    submitJob({*/}
+              {/*      action: 'export',*/}
+              {/*      input: {*/}
+              {/*        filter: convertFilterSetToGqlFilter(cohortFilters),*/}
+              {/*      },*/}
+              {/*    })*/}
+              {/*  }*/}
+              {/*>*/}
+              {/*  Export*/}
+              {/*</Button>*/}
               <div className="mt-2 flex flex-col">
                 <ExplorerTable
                   index={index}
