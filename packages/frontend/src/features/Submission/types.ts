@@ -1,5 +1,3 @@
-
-
 export interface ProjectTableColumn {
   name: string;
   field: string;
@@ -7,11 +5,12 @@ export interface ProjectTableColumn {
   valueIfNotAvailable?: string | number;
 }
 
-
 export interface ProjectTableConfig {
   columns: ProjectTableColumn[];
 }
 
 export interface SubmissionConfig {
   projectTable: ProjectTableConfig;
+  docLinkLocation: string;
+  docLinkText: string;
 }
