@@ -5,7 +5,6 @@ import {
   AggregationsData,
   clearCohortFilters,
   CombineMode,
-  convertFilterSetToGqlFilter,
   CoreState,
   extractEnumFilterValue,
   FacetDefinition,
@@ -52,7 +51,6 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
-import { Button } from '@mantine/core';
 import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
@@ -471,6 +469,7 @@ export const CohortPanel = ({
           {/* Table Section */}
           {table?.enabled && (
             <>
+              {/* TODO: replace this with JobActionButton
               <Button
                 onClick={() =>
                   submitJob({
@@ -483,6 +482,7 @@ export const CohortPanel = ({
               >
                 Export
               </Button>
+              */}
               <div className="mt-2 flex flex-col">
                 <ExplorerTable
                   index={index}
