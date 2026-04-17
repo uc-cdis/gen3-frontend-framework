@@ -3,7 +3,7 @@ import { NavPageLayout } from '../../features/Navigation';
 import { UploadedFiles } from '../../features/Submission';
 import { SubmissionsPageLayoutProps } from './types';
 
-const SubmissionPage = ({
+const FilesPage = ({
   submissionConfig,
   headerProps,
   footerProps,
@@ -13,9 +13,9 @@ const SubmissionPage = ({
       footerProps={footerProps}
       headerProps={headerProps}
       headerMetadata={{
-        title: 'Gen3 Submission Page',
-        content: 'Submission page',
-        key: 'gen3-submission-page',
+        title: 'Gen3 Submission Files Page',
+        content: 'Submission Files page',
+        key: 'gen3-submission-files-page',
       }}
     >
       <UploadedFiles config={submissionConfig} />
@@ -23,4 +23,4 @@ const SubmissionPage = ({
   );
 };
 
-export default SubmissionPage;
+export default FilesPage;
