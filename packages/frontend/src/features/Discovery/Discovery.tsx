@@ -11,10 +11,11 @@ const extractLabel = (c: DiscoveryIndexConfig, idx: number) =>
   c.label ?? c.features?.pageTitle?.text ?? `Index ${idx.toString()}`;
 
 export interface DiscoveryProps {
+  studyId: string;
   discoveryConfig: DiscoveryConfig;
 }
 
-const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
+const Discovery = ({ discoveryConfig, studyId }: DiscoveryProps) => {
   const [metadataIndex, setMetadataIndex] = useState<string>('0');
 
   const menuItems = useMemo(() => {
@@ -35,6 +36,7 @@ const Discovery = ({ discoveryConfig }: DiscoveryProps) => {
           discoveryConfig.metadataConfig[0] as DiscoveryIndexConfig
         }
       >
+        <h1 className="w-full">studyId: {studyId}</h1>
         <DiscoveryIndexPanel indexSelector={null} />
       </DiscoveryProvider>
     );

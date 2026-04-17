@@ -1,12 +1,14 @@
 import { Button, CopyButton, Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
+import { useRouter } from 'next/router';
+import { toString } from 'lodash';
 
 const StudyDetails = ({
   index,
@@ -21,21 +23,47 @@ const StudyDetails = ({
 }) => {
   const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  let permalink = 'Discovery/notfound';
-
-  if (studyDetails) {
-    const studyId = studyDetails[index];
-    const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ? 'string' : 'unknown',
-    )}`;
-    permalink = `/${pagePath}`;
-  }
+  // let permalink = 'Discovery/notfound';
+  const defaultPermaLinkValue = 'Discovery/notfound';
+  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const router = useRouter();
+  /*
+  const updateStudyDetailsDependencies = () => {
+    if (studyDetails) {
+      const studyId = studyDetails[index];
+      const pagePath = `/discovery/${encodeURIComponent(
+        typeof studyId == 'string' ? 'string' : 'unknown',
+      )}`;
+      permalink = `/${pagePath}`;
+    }
+  }; */
 
   useEffect(() => {
     if (Object.keys(studyDetails).length > 0) {
       open();
     }
   }, [studyDetails, open]);
+
+  useEffect(() => {
+    const studyId = toString(studyDetails[index]);
+    if (studyId) {
+      if (opened) {
+        if (typeof window !== 'undefined') {
+          window.history.pushState(
+            null,
+            '',
+            `/Discovery/${encodeURI(studyId)}`,
+          );
+        }
+        setPermalink(window.location.href);
+      } else {
+        setPermalink(defaultPermaLinkValue);
+        if (typeof window !== 'undefined') {
+          window.history.pushState(null, '', `/Discovery`);
+        }
+      }
+    }
+  }, [opened]);
 
   if (!studyDetails) {
     return null;
@@ -47,8 +75,7 @@ const StudyDetails = ({
       <Drawer.Content>
         <Drawer.Header>
           <Button leftSection={<BackIcon />} onClick={close} variant="outline">
-            {' '}
-            Back{' '}
+            Back
           </Button>
           <CopyButton value={permalink}>
             {({ copied, copy }) => (

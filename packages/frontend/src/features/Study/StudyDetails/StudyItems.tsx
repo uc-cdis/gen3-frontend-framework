@@ -134,7 +134,7 @@ const linkFieldOnly = (linkValue: string, _?: string) => (
  */
 const linkField = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    <Text color="utility.0" className="underline">
+    <Text c="utility.0" className="underline">
       {linkValue}
     </Text>
   </Link>
@@ -485,7 +485,6 @@ export const createFieldRendererElement = (
 
   return null;
 };
-
 
 const DefaultGen3StudyDetailsFieldsRenderers: Record<
   string,
