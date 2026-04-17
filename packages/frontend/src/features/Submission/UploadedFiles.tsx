@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { Loader } from '@mantine/core';
 import { useUserAuth, useGetIndexdMetdataQuery } from '@gen3/core';
 import { TbFileUpload as UploadIcon } from 'react-icons/tb';
