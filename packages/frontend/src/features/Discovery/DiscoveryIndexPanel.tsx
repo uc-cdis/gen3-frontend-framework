@@ -22,6 +22,7 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 
 export interface DiscoveryIndexPanelProps {
   indexSelector: ReactNode | null;
+  studyId: string;
 }
 
 /**
@@ -38,7 +39,10 @@ export interface DiscoveryIndexPanelProps {
  * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
  */
 
-const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
+const DiscoveryIndexPanel = ({
+  indexSelector,
+  studyId,
+}: DiscoveryIndexPanelProps) => {
   const {
     discoveryConfig: discoveryConfig,
     selectedTags,
@@ -57,7 +61,10 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [searchBarTerms, setSearchBarTerms] = useState<string[]>([]);
+  const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
+    studyId ? [studyId] : [],
+  );
+
   const [debouncedSearchBarTerms] = useDebouncedValue(
     searchBarTerms,
     DEBOUNCE_DELAY_TIME,
@@ -72,6 +79,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     });
 
   const searchParam = useDeepCompareMemo(() => {
+    console.log('debouncedSearchBarTerms', debouncedSearchBarTerms);
     return {
       keyword: {
         operator: SearchCombination.and,

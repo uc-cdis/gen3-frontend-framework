@@ -37,7 +37,7 @@ const Discovery = ({ discoveryConfig, studyId }: DiscoveryProps) => {
         }
       >
         <h1 className="w-full">studyId: {studyId}</h1>
-        <DiscoveryIndexPanel indexSelector={null} />
+        <DiscoveryIndexPanel indexSelector={null} studyId={studyId} />
       </DiscoveryProvider>
     );
   }
