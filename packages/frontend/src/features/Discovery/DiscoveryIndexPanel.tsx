@@ -22,7 +22,6 @@ import { useDiscoveryContext } from './DiscoveryProvider';
 
 export interface DiscoveryIndexPanelProps {
   indexSelector: ReactNode | null;
-  studyId: string;
 }
 
 /**
@@ -39,10 +38,7 @@ export interface DiscoveryIndexPanelProps {
  * @return {JSX.Element} A fully featured discovery interface including search functionality, a table, charts, filters, and more.
  */
 
-const DiscoveryIndexPanel = ({
-  indexSelector,
-  studyId,
-}: DiscoveryIndexPanelProps) => {
+const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   const {
     discoveryConfig: discoveryConfig,
     selectedTags,
@@ -61,6 +57,18 @@ const DiscoveryIndexPanel = ({
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
+
+  // Helper: extract the segment after /Discovery/
+  function getStudyIdFromPath(pathname?: string): string | null {
+    if (!pathname) return null;
+    const match = pathname.match(/^\/Discovery\/([^\/?#]+)/i);
+    return match ? match[1] : null;
+  }
+  const studyId = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    return getStudyIdFromPath(window.location.pathname);
+  }, []);
+
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
     studyId ? [studyId] : [],
   );

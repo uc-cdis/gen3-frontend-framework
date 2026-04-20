@@ -7,13 +7,6 @@ import { Center } from '@mantine/core';
 
 registerDiscoveryDefaultCellRenderers();
 
-// Helper: extract the segment after /Discovery/
-function getStudyIdFromPath(pathname?: string): string | null {
-  if (!pathname) return null;
-  const match = pathname.match(/^\/Discovery\/([^\/?#]+)/i);
-  return match ? match[1] : null;
-}
-
 const DiscoveryPage = ({
   headerProps,
   footerProps,
@@ -27,11 +20,6 @@ const DiscoveryPage = ({
     );
   }
 
-  const studyId = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    return getStudyIdFromPath(window.location.pathname);
-  }, []);
-
   return (
     <NavPageLayout
       {...{ headerProps, footerProps }}
@@ -44,10 +32,7 @@ const DiscoveryPage = ({
           : {}),
       }}
     >
-      <Discovery
-        discoveryConfig={discoveryConfig}
-        studyId={studyId as string}
-      />
+      <Discovery discoveryConfig={discoveryConfig} />
     </NavPageLayout>
   );
 };
