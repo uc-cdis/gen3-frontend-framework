@@ -304,6 +304,7 @@ const DiscoveryIndexPanel = ({
               <DiscoveryTable
                 data={data}
                 hits={hits}
+                initialStudyId={studyId}
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}

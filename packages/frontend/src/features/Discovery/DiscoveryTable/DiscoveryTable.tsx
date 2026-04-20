@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -60,6 +60,7 @@ const isSelectable = (
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
   hits: number;
+  initialStudyId?: string;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
@@ -73,6 +74,7 @@ interface DiscoveryTableProps {
 const DiscoveryTable = ({
   data,
   hits,
+  initialStudyId,
   dataRequestStatus,
   setSorting,
   setPagination,
@@ -88,6 +90,21 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
+  // If we have an initial studyId, set the study details to show it
+  if (initialStudyId) {
+    console.log('initialStudyId', initialStudyId);
+    console.log('data', data);
+    // Go through the data, find the study where the initialStudyId matches the study identifier
+    // Set that object to show in the discovery drawer with setStudyDetails
+    const target = 'HDP00001'; // or variable _hdp_uid
+    const uidKey = '_hdp_uid';
+    const firstMatch = data.find((item) => item[uidKey] === initialStudyId);
+    console.log('firstMatch', firstMatch);
+    if (firstMatch) {
+      setStudyDetails(firstMatch as SetStateAction<JSONObject>);
+    }
+  }
 
   const extractCellValue =
     (func: CellRendererFunction) =>
