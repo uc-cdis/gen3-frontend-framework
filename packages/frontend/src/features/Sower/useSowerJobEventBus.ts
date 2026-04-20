@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyGetMultipleSowerJobStatusQuery } from '@gen3/core';
 
 /**
@@ -20,34 +20,37 @@ const useSowerJobEventBus = () => {
    * @param callback function to call when a job completes
    */
 
-  const on = (
-    listenerKey: string,
-    newPollers: string[],
-    callback: (uid: string) => void,
-  ) => {
-    setListeners({ ...listeners, [listenerKey]: callback });
-    setPollers(new Set([...pollers, ...newPollers]));
-  };
+  const on = useCallback(
+    (
+      listenerKey: string,
+      newPollers: string[],
+      callback: (uid: string) => void,
+    ) => {
+      setListeners((prev) => ({ ...prev, [listenerKey]: callback }));
+      setPollers((prev) => new Set([...prev, ...newPollers]));
+    },
+    [],
+  );
 
   /**
    * Function for component to unsubscribe to updates
    * @param listenerKey unique key for component
    */
-  const off = (listenerKey: string) => {
-    setListeners(
+  const off = useCallback((listenerKey: string) => {
+    setListeners((prev) =>
       Object.fromEntries(
-        Object.entries(listeners).filter(([key]) => key === listenerKey),
+        Object.entries(prev).filter(([key]) => key !== listenerKey),
       ),
     );
-  };
+  }, []);
 
   /**
    * Function to update the jobs that are polling
    * @param job new job to add to pollers
    */
-  const update = (job: string) => {
-    setPollers(new Set([...pollers, job]));
-  };
+  const update = useCallback((job: string) => {
+    setPollers((prev) => new Set([...prev, job]));
+  }, []);
 
   useEffect(() => {
     trigger(Array.from(pollers));
@@ -59,7 +62,9 @@ const useSowerJobEventBus = () => {
         if (response.status === 'Completed') {
           Object.values(listeners).forEach((callback) => callback(job));
           // Remove job from pollers after it has completed
-          setPollers(new Set([...pollers].filter((poller) => poller !== job)));
+          setPollers(
+            (prev) => new Set([...prev].filter((poller) => poller !== job)),
+          );
         }
       });
     }

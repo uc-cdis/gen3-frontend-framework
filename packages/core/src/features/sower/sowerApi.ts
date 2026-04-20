@@ -36,6 +36,7 @@ export const sowerJobApi = gen3Api.injectEndpoints({
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
+        console.log('queryFulfilled', data);
         dispatch(setSowerJobDatetime(data.uid));
       },
     }),

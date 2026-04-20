@@ -469,18 +469,6 @@ export const CohortPanel = ({
           {/* Table Section */}
           {table?.enabled && (
             <>
-              {/*<Button*/}
-              {/*  onClick={() =>*/}
-              {/*    submitJob({*/}
-              {/*      action: 'export',*/}
-              {/*      input: {*/}
-              {/*        filter: convertFilterSetToGqlFilter(cohortFilters),*/}
-              {/*      },*/}
-              {/*    })*/}
-              {/*  }*/}
-              {/*>*/}
-              {/*  Export*/}
-              {/*</Button>*/}
               <div className="mt-2 flex flex-col">
                 <ExplorerTable
                   index={index}

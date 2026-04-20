@@ -1,37 +1,70 @@
-import {
-  convertFilterSetToGqlFilter,
-  DispatchJobParams,
-  FilterSet,
-} from '@gen3/core';
+import { DispatchJobParams } from '@gen3/core';
+import { findCreateJobAction } from './sowerJobsFactory';
 
-interface DispatchJobActionParams {
-  action: string;
-  filters: FilterSet;
-  index: string;
-  dispatchJob: (arg: DispatchJobParams) => void;
-}
+/**
+ * Called from a ActionButton. This function dispatchs a sower job by first creating the
+ * action and then submit it to sower.
+ * @param params
+ * @param done
+ * @param onError
+ */
+// export const submitJobAction = (
+//   params: Record<string, any>,
+//   done?: () => void,
+//   onError?: (error: Error) => void,
+// ): Promise<void> => {
+//   try {
+//     const { action } = params;
+//
+//     console.log(action);
+//
+//     const jobBody = buildSowerJob(action, params);
+//     if (!jobBody) return Promise.resolve();
+//
+//     dispatchJob(jobBody);
+//
+//     if (done) done();
+//     return Promise.resolve();
+//   } catch (error) {
+//     if (onError) onError(error as Error);
+//     return Promise.reject(error);
+//   }
+// };
 
-export const submitJobAction = (
-  params: Record<string, any>,
-  done?: () => void,
+/**
+ * Uses the action and parameters to build the body of the sower job
+ * @param action
+ * @param parameters
+ * @param onError
+ */
+export const buildSowerJob = (
+  action?: string,
+  parameters?: Record<string, any>,
   onError?: (error: Error) => void,
-): Promise<void> => {
+): DispatchJobParams | null => {
+  if (!action) {
+    if (onError) onError(new Error('No jobAction provided'));
+    return null;
+  }
+  if (!parameters) {
+    if (onError) onError(new Error('No jobParameters provided'));
+    return null;
+  }
+
+  // find the job action
+
+  const jobAction = findCreateJobAction(action);
+  if (!jobAction) {
+    if (onError) onError(new Error(`${action} not registered`));
+    return null;
+  }
+
   try {
-    const { action, filters, index, dispatchJob } =
-      params as DispatchJobActionParams;
-
-    dispatchJob({
-      action: action,
-      input: {
-        filter: convertFilterSetToGqlFilter(filters),
-        root_node: index,
-      },
-    });
-
-    if (done) done();
-    return Promise.resolve();
+    const jobBody = jobAction(parameters);
+    console.log('jobBody', jobBody);
+    return jobBody;
   } catch (error) {
     if (onError) onError(error as Error);
-    return Promise.reject(error);
+    return null;
   }
 };

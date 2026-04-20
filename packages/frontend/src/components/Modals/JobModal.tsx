@@ -1,11 +1,9 @@
-import React from "react";
-import SowerJobListWrapper from "../../features/Sower/SowerJobsWrapper";
+import React from 'react';
+import SowerJobListWrapper from '../../features/Sower/SowerJobsWrapper';
 
 const JobModal = () => {
-
-  return (
-    <SowerJobListWrapper />
-  )
-}
+  console.log('JobModal');
+  return <SowerJobListWrapper />;
+};
 
 export default JobModal;

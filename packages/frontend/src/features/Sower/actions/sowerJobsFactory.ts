@@ -1,20 +1,14 @@
-import React, { forwardRef, ReactElement } from 'react';
-import { Button, ButtonProps } from '@mantine/core';
 import {
   convertFilterSetToGqlFilter,
   fetchFencePresignedURL,
   type FilterSet,
-  useCoreDispatch,
-  useSubmitSowerJobMutation,
 } from '@gen3/core';
 import {
-  type CreateAndExportActionConfig,
   type JobBuilderAction,
   type SendJobOutputAction,
   SendResultsActionNotFoundError,
   SowerJobNotFoundError,
 } from './types';
-import { submitSowerJob } from './actions';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -110,10 +104,14 @@ interface BuildPFBFromCohortParams extends Record<string, unknown> {
   index: string;
 }
 
+/**
+ * Creates an export to PFB action to submit to sower
+ * @param params
+ */
 const buildPFBFromCohort: JobBuilderAction = (params) => {
   const { filter, index } = params as BuildPFBFromCohortParams;
   return {
-    action: 'export-files',
+    action: 'export',
     input: {
       filters: convertFilterSetToGqlFilter(filter),
       root_node: index,
@@ -159,141 +157,3 @@ export const findSendResultsAction = (
     );
   }
 };
-
-interface CohortSubmitJobActionButtonProps {
-  actions: CreateAndExportActionConfig;
-  jobParameters: Record<string, any>;
-  /**
-   * label of button
-   */
-  label: string;
-  /**
-   *   Left Icon for the button, can be undefined too
-   */
-  leftIcon?: ReactElement;
-  /**
-   *   Right Icon for the  button, can be undefined too (default to dropdown icon)
-   */
-  rightIcon?: ReactElement;
-  /**
-   *    only provide inactiveText if we want label for dropdown elements
-   */
-  inactiveText?: string;
-  /**
-   *    label to show when menu item's action is executing
-   */
-  activeText?: string;
-  /**
-   * custom test id
-   */
-  customDataTestId?: string;
-  /**
-   tooltip
-   */
-  tooltipText?: string;
-
-  /**
-   * aria-label for the button
-   */
-  buttonAriaLabel?: string;
-
-  /**
-   *    disables the target button and menu
-   */
-  disabled?: boolean;
-}
-
-const CohortSubmitJobActionButton = forwardRef<
-  HTMLButtonElement,
-  CohortSubmitJobActionButtonProps & ButtonProps
->(
-  (
-    {
-      actions,
-      jobParameters,
-      tooltipText = undefined,
-      disabled = false,
-      label = 'Submit',
-      ...props
-    }: CohortSubmitJobActionButtonProps,
-    ref,
-  ) => {
-    const [submitJob, { isLoading, isSuccess, error, isError }] =
-      useSubmitSowerJobMutation();
-
-    const dispatch = useCoreDispatch();
-
-    const handleSubmitJob = async () => {
-      return await submitSowerJob(actions, jobParameters, dispatch, submitJob);
-    };
-
-    // const handleSubmitJob = async () => {
-    //   try {
-    //     const createSowerJobAction = findCreateJobAction(
-    //       actions.createAction.actionName,
-    //     );
-    //
-    //     const sowerJobConfig = createSowerJobAction({
-    //       ...actions.createAction.parameters,
-    //       ...jobParameters,
-    //     });
-    //     const timestamp = Date.now();
-    //
-    //     console.log('jobConfig', sowerJobConfig);
-    //     // submit the job to sower
-    //     const { uid, name, status } = await submitJob(sowerJobConfig).unwrap();
-    //     console.log('submit job', uid);
-    //     // Register with global monitor
-    //     // add Job to slice so we can both manage and persist it
-    //     dispatch(
-    //       addSowerJob({
-    //         jobId: uid,
-    //         name,
-    //         status,
-    //         part: 1,
-    //         config: actions,
-    //         created: timestamp,
-    //         updated: timestamp,
-    //       }),
-    //     );
-    //   } catch (e: unknown) {
-    //     console.log('error', e);
-    //     if (isFetchBaseQueryError(e)) {
-    //       const errMsg = 'error' in e ? e.error : JSON.stringify(e.data);
-    //       notifications.show({
-    //         title: 'Error from Service',
-    //         message: errMsg,
-    //         color: 'red',
-    //       });
-    //     } else if (e instanceof Error)
-    //       notifications.show({
-    //         title: 'Error',
-    //         message: e.message,
-    //         color: 'red',
-    //       });
-    //     else
-    //       notifications.show({
-    //         title: 'Error',
-    //         message: 'Failed to start job',
-    //         color: 'red',
-    //       });
-    //   }
-    // };
-
-    return (
-      <Button
-        ref={ref}
-        loading={isLoading}
-        onClick={handleSubmitJob}
-        disabled={disabled}
-        {...props}
-      >
-        {label}
-      </Button>
-    );
-  },
-);
-
-CohortSubmitJobActionButton.displayName = 'CohortSubmitJobActionButton';
-
-export default CohortSubmitJobActionButton;

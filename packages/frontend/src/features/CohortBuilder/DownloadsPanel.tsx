@@ -1,4 +1,4 @@
-import React, { useMemo, JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
@@ -18,6 +18,7 @@ import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
 import { useSession } from '../../lib/session/session';
+import SubmitSowerJobButton from '../Sower/actions/SubmitSowerJobButton';
 
 const resolveAction = (buttonAction?: string) => {
   let actionFunction = NullButtonAction;
@@ -106,7 +107,7 @@ const DownloadsPanel = ({
 
   const commonActionArgs = useMemo(
     () => ({
-      type: index,
+      type: index, // TODO: replace with index
       totalCount,
       fields,
       filter,
@@ -149,10 +150,25 @@ const DownloadsPanel = ({
   const buttonElements = useMemo(() => {
     return buttons.map((button) => {
       const buttonAction = button.action ?? button.type;
-      const { actionFunction, actionArgs } = resolveAction(buttonAction);
-
       const disabled = loginRequired && !isUserLoggedIn;
 
+      if (buttonAction === 'sower') {
+        return (
+          <SubmitSowerJobButton
+            label={button.title}
+            tooltipText={button.tooltipText}
+            disabled={disabled || !button.enabled}
+            parameters={{
+              ...(button.actionArgs ?? {}),
+              ...commonActionArgs,
+              index: index,
+            }}
+            key={button.title}
+          />
+        );
+      }
+
+      const { actionFunction, actionArgs } = resolveAction(buttonAction);
       if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
         return (
           <CohortDataLibraryListButton

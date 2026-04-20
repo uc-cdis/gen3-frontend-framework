@@ -1,9 +1,9 @@
-import React, { createContext, useMemo, useState, ReactNode } from 'react';
+import React, { createContext, ReactNode, useMemo, useState } from 'react';
 import {
-  DictionaryProps,
-  DictionaryEntry,
-  DictionarySearchDocument,
   DataDictionary,
+  DictionaryEntry,
+  DictionaryProps,
+  DictionarySearchDocument,
 } from './types';
 import { JSONObject } from '@gen3/core';
 import {
@@ -40,9 +40,7 @@ const DictionaryContext = createContext<DictionaryProviderValue>({
 const useDictionaryContext = () => {
   const context = React.useContext(DictionaryContext);
   if (context === undefined) {
-    throw Error(
-      'Discovery must be used  must be used inside of a DiscoveryContext',
-    );
+    throw Error('Dictionary must be used inside of a DictionaryContext');
   }
   return context;
 };
