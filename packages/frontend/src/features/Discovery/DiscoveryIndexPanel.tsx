@@ -19,6 +19,7 @@ import { DEBOUNCE_DELAY_TIME, SearchMode } from './constants';
 import DiscoveryDropdownTagViewer from './DiscoveryDropdownTagViewer';
 import { IoIosArrowDown, IoIosArrowUp, IoIosRefresh } from 'react-icons/io';
 import { useDiscoveryContext } from './DiscoveryProvider';
+import { useStudyIdFromWindow } from './utils/useStudyIdFromWindow';
 
 export interface DiscoveryIndexPanelProps {
   indexSelector: ReactNode | null;
@@ -57,20 +58,12 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   });
 
   const parentDivRef = useRef<HTMLDivElement>(null);
-
-  // Helper: extract the segment after /Discovery/
-  function getStudyIdFromPath(pathname?: string): string | null {
-    if (!pathname) return null;
-    const match = pathname.match(/^\/Discovery\/([^\/?#]+)/i);
-    return match ? match[1] : null;
-  }
-  const studyId = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    return getStudyIdFromPath(window.location.pathname);
-  }, []);
+  const studyIdFromWindow = useStudyIdFromWindow();
+  const [displayedStudyIdFromWindow, setDisplayedStudyIdFromWindow] =
+    useState<boolean>(false);
 
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
-    studyId ? [studyId] : [],
+    studyIdFromWindow ? [studyIdFromWindow] : [],
   );
 
   const [debouncedSearchBarTerms] = useDebouncedValue(
@@ -312,7 +305,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
               <DiscoveryTable
                 data={data}
                 hits={hits}
-                initialStudyId={studyId}
+                studyIdFromWindow={studyIdFromWindow as string}
                 dataRequestStatus={dataRequestStatus}
                 setPagination={setPagination}
                 setSorting={setSorting}

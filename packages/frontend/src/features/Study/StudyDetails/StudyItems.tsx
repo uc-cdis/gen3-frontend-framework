@@ -134,7 +134,7 @@ const linkFieldOnly = (linkValue: string, _?: string) => (
  */
 const linkField = (linkValue: string) => (
   <Link href={linkValue} target="_blank" rel="noreferrer">
-    <Text c="utility.0" className="underline">
+    <Text color="utility.0" className="underline">
       {linkValue}
     </Text>
   </Link>
@@ -377,10 +377,6 @@ const renderDetailTags: FieldRendererFunction = (
 ): ReactElement => {
   //TODO - fix this type
   const resource = fieldValue as StudyResource;
-
-  console.log('renderDetailTags', fieldValue);
-  console.log('fieldConfig', fieldConfig);
-
   if (fieldConfig === undefined) {
     return <React.Fragment />;
   }

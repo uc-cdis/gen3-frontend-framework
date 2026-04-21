@@ -9,6 +9,7 @@ import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
+import { JSONObject } from '@gen3/core';
 
 const StudyDetails = ({
   index,
@@ -21,7 +22,7 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const { studyDetails } = useStudyContext();
+  const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   // let permalink = 'Discovery/notfound';
   const defaultPermaLinkValue = 'Discovery/notfound';
@@ -62,6 +63,12 @@ const StudyDetails = ({
           window.history.pushState(null, '', `/Discovery`);
         }
       }
+    }
+    if (opened === false) {
+      // drawer just closed
+      console.log('drawer closed (effect)');
+      // trigger event here
+      setStudyDetails({});
     }
   }, [opened]);
 
