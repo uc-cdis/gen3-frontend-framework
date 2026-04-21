@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   selectSowerJobDatetimeCache,
   useCoreSelector,
@@ -10,6 +10,7 @@ import { showNotification } from '@mantine/notifications';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SowerJobListWrapper = () => {
+  const [pollingInterval, setPollingInterval] = useState<number>(0);
   const { data, isLoading, refetch } = useGetSowerJobListQuery();
   const sowerJobDatetimeCache = useCoreSelector(selectSowerJobDatetimeCache);
   const { on, off } = useSowerJobEventBus();
@@ -29,6 +30,14 @@ const SowerJobListWrapper = () => {
     return () => off('jobWrapper');
   }, [activeJobs, off, on]);
 
+  useEffect(() => {
+    if (activeJobs.length > 0) {
+      setPollingInterval(3000);
+    } else {
+      setPollingInterval(0);
+    }
+  }, [activeJobs]);
+
   return (
     <JobPanel
       data={data}
@@ -38,5 +47,7 @@ const SowerJobListWrapper = () => {
     />
   );
 };
+
+SowerJobListWrapper.displayName = 'SowerJobListWrapper';
 
 export default SowerJobListWrapper;

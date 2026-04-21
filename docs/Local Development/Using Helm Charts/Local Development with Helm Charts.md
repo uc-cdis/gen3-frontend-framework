@@ -34,10 +34,11 @@ Start the gen3 helm charts with `helm upgrade --install gen3 ./helm/gen3 -f ./va
 
 1. Add the following to `.env.development.local`:
 
+```
    NEXT_PUBLIC_GEN3_COMMONS_NAME=canine
    NEXT_PUBLIC_GEN3_API=http://localhost:3000
    NEXT_PUBLIC_GEN3_API_TARGET=https://localhost
-
+```
 3. Run the portal using `npm run dev`
 4. After these steps, you can access the commons on `http://localhost:3000`
 5. You will likely see a warning about a self-signed certificate. You can ignore this warning and accept the

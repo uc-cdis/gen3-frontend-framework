@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Loader } from '@mantine/core';
+import { Loader, Paper } from '@mantine/core';
 import { FaExclamationTriangle as FailedIcon } from 'react-icons/fa';
 import { LuClock as CompletedIcon } from 'react-icons/lu';
 import { FiActivity as ActiveIcon } from 'react-icons/fi';
@@ -23,21 +23,17 @@ const JobOverviewCard = ({
 }: JobOverviewCardProps) => {
   return (
     <Paper
-      shadow="md"
       radius="lg"
       p="md"
-      className="w-full flex flex-row gap-4"
+      className="w-full flex justify-center items-center gap-4"
     >
-      <div
-        className={`w-16 h-16 flex justify-center items-center rounded-md bg-${color} bg-opacity-25`}
-      >
-        <Icon size={32} className={`text-${color}`} />
-      </div>
-      <div className="flex flex-col">
+      <Icon size={24} className={`text-${color}`} />
+
+      <div className="flex gap-2 items-center ">
         {isLoading ? (
           <Loader type="dots" />
         ) : (
-          <p className="text-2xl font-bold">{count}</p>
+          <p className="text-md font-bold">{count}</p>
         )}
         {text}
       </div>

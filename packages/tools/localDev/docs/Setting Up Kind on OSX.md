@@ -144,9 +144,17 @@ spec:
                 port:
                   number: 80
 ```
-add to cluster:
+
+add to cluster (gen3dev.local.io):
 ```bash
   kubectl apply -f ingress-gen3dev_local_io.yaml
+```
+
+or
+add to cluster (localhost):
+
+```bash
+  kubectl apply -f ingress-local-dev.yaml
 ```
 
 ## Create mkcert CA Secret

@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Badge, SegmentedControl, Menu } from '@mantine/core';
+import { Badge, Code, Menu, SegmentedControl, Tooltip } from '@mantine/core';
 import {
   MantineReactTable,
-  useMantineReactTable,
-  type MRT_ColumnDef,
   type MRT_Cell,
+  type MRT_ColumnDef,
+  useMantineReactTable,
 } from 'mantine-react-table';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import {
@@ -29,6 +29,17 @@ const STATUS_TO_COLOR: Record<string, ColorConfig> = {
   Failed: { mantine: 'utility.3', tailwind: 'utility-error' },
   Completed: { mantine: 'utility.1', tailwind: 'utility-success' },
 };
+
+function ShortUUID({ uuid }: { uuid: string }) {
+  // Take first 8 chars and add ellipsis
+  const shortUuid = `${uuid.slice(0, 8)}...`;
+
+  return (
+    <Tooltip label={uuid} withArrow>
+      <Code style={{ cursor: 'pointer' }}>{shortUuid}</Code>
+    </Tooltip>
+  );
+}
 
 const JobTable = ({
   data,
@@ -61,12 +72,18 @@ const JobTable = ({
 
   const columns = useMemo(
     () => [
-      { accessorKey: 'uid', header: 'Job ID' },
+      {
+        accessorKey: 'uid',
+        header: 'Job ID',
+        Cell: ({ row }: MRT_Cell<JobStatus>) => {
+          return <ShortUUID uuid={row.original.uid} />;
+        },
+      },
       { accessorKey: 'name', header: 'Name' },
       {
         accessorKey: 'status',
         header: 'Status',
-        Cell: ({ row } : MRT_Cell<JobStatus>) => {
+        Cell: ({ row }: MRT_Cell<JobStatus>) => {
           const color = STATUS_TO_COLOR[row.original.status];
           return (
             <Badge
@@ -85,7 +102,7 @@ const JobTable = ({
       {
         id: 'datetime',
         header: 'Datetime',
-        Cell: ({ row } : MRT_Cell<JobStatus>) =>
+        Cell: ({ row }: MRT_Cell<JobStatus>) =>
           sowerJobDatetimeCache?.[row.original.uid]
             ? dateFormat.format(sowerJobDatetimeCache[row.original.uid])
             : '--',
@@ -93,7 +110,7 @@ const JobTable = ({
       {
         id: 'options',
         header: '',
-        Cell: ({ row } : MRT_Cell<JobStatus>) => (
+        Cell: ({ row }: MRT_Cell<JobStatus>) => (
           <>
             {row.original.status === 'Completed' ? (
               <Menu>
@@ -117,7 +134,7 @@ const JobTable = ({
   );
 
   const table = useMantineReactTable({
-    columns: columns as  MRT_ColumnDef<JobStatus>[],
+    columns: columns as MRT_ColumnDef<JobStatus>[],
     data: filteredData,
     state: { isLoading },
     enableTopToolbar: false,

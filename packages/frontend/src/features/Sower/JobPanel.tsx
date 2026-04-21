@@ -19,7 +19,6 @@ const JobPanel = ({
   refetch,
   sowerJobDatetimeCache,
 }: JobPanelProps) => {
-  console.log('JobPanel');
   return (
     <div className="p-4">
       <div className="flex justify-between">

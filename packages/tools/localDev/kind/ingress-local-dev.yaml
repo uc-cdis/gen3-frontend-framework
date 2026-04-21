@@ -25,7 +25,7 @@ spec:
   tls:
   - hosts:
     - localhost
-    secretName: localhost-gen3
+    secretName: gen3-local-tls
   rules:
   - host: "localhost"
     http:

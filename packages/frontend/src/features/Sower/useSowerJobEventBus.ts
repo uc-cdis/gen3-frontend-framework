@@ -49,17 +49,22 @@ const useSowerJobEventBus = () => {
    * @param job new job to add to pollers
    */
   const update = useCallback((job: string) => {
+    console.log('update', job);
+
     setPollers((prev) => new Set([...prev, job]));
   }, []);
 
   useEffect(() => {
     trigger(Array.from(pollers));
-  }, [pollers]);
+  }, [pollers, trigger]);
 
   useEffect(() => {
     if (statusResult.isSuccess) {
+      console.log('statusResult', statusResult);
       Object.entries(statusResult.currentData || {}).map(([job, response]) => {
-        if (response.status === 'Completed') {
+        console.log('job', job);
+        console.log('listeners', listeners);
+        if (response.status === 'Completed' || response.status === 'Failed') {
           Object.values(listeners).forEach((callback) => callback(job));
           // Remove job from pollers after it has completed
           setPollers(

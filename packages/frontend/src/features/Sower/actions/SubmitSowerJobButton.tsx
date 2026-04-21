@@ -1,7 +1,8 @@
-import React, { forwardRef, ReactElement } from 'react';
+import React, { forwardRef, ReactElement, useEffect } from 'react';
 import { Button, ButtonProps, Tooltip } from '@mantine/core';
 import { useSubmitSowerJobMutation } from '@gen3/core';
 import { buildSowerJob } from './sowerActions';
+import useSowerJobEventBus from '../useSowerJobEventBus';
 
 interface SubmitSowerJobButtonProps {
   parameters: Record<string, any>;
@@ -59,16 +60,26 @@ const SubmitSowerJobButton = forwardRef<
     }: SubmitSowerJobButtonProps,
     ref,
   ) => {
-    const [submitJob, { isLoading, isSuccess, error, isError }] =
+    const [submitJob, { data, isLoading, isSuccess, error, isError }] =
       useSubmitSowerJobMutation();
+
+    const { update, on, off } = useSowerJobEventBus();
+    useEffect(() => {
+      if (data?.uid) {
+        console.log('data', data);
+        update(data.uid);
+      }
+    }, [data, update]);
 
     const { action } = parameters;
 
     const handleSubmitJob = async () => {
       const jobBody = buildSowerJob(action, parameters);
-      console.log('handleSubmitJob', jobBody);
       if (jobBody) {
         submitJob(jobBody);
+        on(action, [action], (uid) => {
+          console.log('uid', uid);
+        });
       }
     };
 
