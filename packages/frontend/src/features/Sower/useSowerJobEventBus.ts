@@ -68,7 +68,7 @@ const useSowerJobEventBus = () => {
         }
       });
     }
-  }, [statusResult]);
+  }, [listeners, statusResult]);
 
   return { on, off, update };
 };
