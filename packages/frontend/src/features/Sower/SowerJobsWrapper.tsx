@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   selectSowerJobDatetimeCache,
   useCoreSelector,
@@ -10,7 +10,6 @@ import { showNotification } from '@mantine/notifications';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SowerJobListWrapper = () => {
-  const [pollingInterval, setPollingInterval] = useState<number>(0);
   const { data, isLoading, refetch } = useGetSowerJobListQuery();
   const sowerJobDatetimeCache = useCoreSelector(selectSowerJobDatetimeCache);
   const { on, off } = useSowerJobEventBus();
@@ -23,20 +22,22 @@ const SowerJobListWrapper = () => {
   );
 
   useEffect(() => {
-    on('jobWrapper', activeJobs, (uid) =>
-      showNotification({ message: `Job ${uid} completed` }),
-    );
+    on('jobWrapper', activeJobs, (uid, status) => {
+      if (status === 'Completed')
+        showNotification({
+          title: `Jobs Manager`,
+          message: `Job ${uid} completed`,
+        });
+      if (status === 'Completed')
+        showNotification({
+          title: `Jobs Manager`,
+          message: `Job ${uid} failed`,
+          color: 'red',
+        });
+    });
 
     return () => off('jobWrapper');
   }, [activeJobs, off, on]);
-
-  useEffect(() => {
-    if (activeJobs.length > 0) {
-      setPollingInterval(3000);
-    } else {
-      setPollingInterval(0);
-    }
-  }, [activeJobs]);
 
   return (
     <JobPanel

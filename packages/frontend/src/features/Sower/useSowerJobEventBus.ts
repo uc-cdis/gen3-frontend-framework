@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLazyGetMultipleSowerJobStatusQuery } from '@gen3/core';
+import { useDeepCompareEffect } from 'use-deep-compare';
 
 /**
  * Hook that sets up an event bus for components to subscribe to and fire off events
@@ -8,8 +9,9 @@ import { useLazyGetMultipleSowerJobStatusQuery } from '@gen3/core';
 const useSowerJobEventBus = () => {
   const [listeners, setListeners] = useState<Record<string, any>>({});
   const [pollers, setPollers] = useState<Set<string>>(new Set());
+  const [activePollingInterval, setActivePollingInterval] = useState(0);
   const [trigger, statusResult] = useLazyGetMultipleSowerJobStatusQuery({
-    pollingInterval: 10000,
+    pollingInterval: activePollingInterval,
     skipPollingIfUnfocused: true,
   });
 
@@ -24,7 +26,7 @@ const useSowerJobEventBus = () => {
     (
       listenerKey: string,
       newPollers: string[],
-      callback: (uid: string) => void,
+      callback: (uid: string, status: string) => void,
     ) => {
       setListeners((prev) => ({ ...prev, [listenerKey]: callback }));
       setPollers((prev) => new Set([...prev, ...newPollers]));
@@ -49,23 +51,28 @@ const useSowerJobEventBus = () => {
    * @param job new job to add to pollers
    */
   const update = useCallback((job: string) => {
-    console.log('update', job);
-
     setPollers((prev) => new Set([...prev, job]));
   }, []);
 
   useEffect(() => {
-    trigger(Array.from(pollers));
+    if (pollers.size > 0) {
+      setActivePollingInterval(10000);
+      trigger(Array.from(pollers));
+    } else {
+      setActivePollingInterval(0);
+    }
   }, [pollers, trigger]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (statusResult.isSuccess) {
       console.log('statusResult', statusResult);
       Object.entries(statusResult.currentData || {}).map(([job, response]) => {
         console.log('job', job);
         console.log('listeners', listeners);
         if (response.status === 'Completed' || response.status === 'Failed') {
-          Object.values(listeners).forEach((callback) => callback(job));
+          Object.values(listeners).forEach((callback) =>
+            callback(job, response.status),
+          );
           // Remove job from pollers after it has completed
           setPollers(
             (prev) => new Set([...prev].filter((poller) => poller !== job)),

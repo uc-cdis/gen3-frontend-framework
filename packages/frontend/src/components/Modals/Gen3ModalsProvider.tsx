@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { openContextModal } from '@mantine/modals';
 import {
@@ -8,14 +8,17 @@ import {
   useCoreSelector,
   useGetAuthzMappingsQuery,
   useGetCSRFQuery,
+  useGetSowerJobListQuery,
 } from '@gen3/core';
 import { SessionExpiredModal } from './SessionExpiredModal';
 import { ModalsConfig } from './types';
 import { defaultComposer } from 'default-composer';
 import { ContentType } from '../Content/TextContent';
-import { useDeepCompareEffect } from 'use-deep-compare';
+import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { useIsAuthenticated } from '../../lib/session/session';
 import { useFirstTimeUse } from './FirstTimeModal/hooks';
+import useSowerJobEventBus from '../../features/Sower/useSowerJobEventBus';
+import { showNotification } from '@mantine/notifications';
 
 interface Gen3StandardModalsProviderProps {
   config: ModalsConfig;
@@ -51,12 +54,36 @@ const Gen3ModalsProvider = ({
   const modal = useCoreSelector((state: CoreState) =>
     selectCurrentModal(state),
   );
-
+  const [sowerJobsPollingInterval, setSowerJobsPollingInterva] =
+    useState<number>(0);
   const modalsConfig = useMemo(
     () => defaultComposer(defaultConfig, config),
     [],
   );
   const { isAuthenticated } = useIsAuthenticated();
+
+  const { data } = useGetSowerJobListQuery(undefined, {
+    skip: !isAuthenticated,
+    refetchOnMountOrArgChange: isAuthenticated,
+    refetchOnFocus: isAuthenticated,
+    refetchOnReconnect: isAuthenticated,
+  });
+  const { on, off } = useSowerJobEventBus();
+  const activeJobs = useDeepCompareMemo(
+    () =>
+      (data || [])
+        .filter((job) => job.status === 'Running')
+        .map((job) => job.uid),
+    [data],
+  );
+
+  useEffect(() => {
+    on('Gen3ModalsProvider', activeJobs, (uid) =>
+      showNotification({ message: `Job ${uid} completed` }),
+    );
+
+    return () => off('Gen3ModalsProvider');
+  }, [activeJobs, off, on]);
 
   useDeepCompareEffect(() => {
     if (
