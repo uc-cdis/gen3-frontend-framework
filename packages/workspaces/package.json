@@ -1,0 +1,35 @@
+{
+  "name": "@gen3/workspaces",
+  "version": "0.12.34",
+  "description": "Workspaces for Gen3",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "author": "Center for Translational Data Science",
+  "engines": {
+    "npm": ">=11.9.0",
+    "node": ">=24.14.0"
+  },
+  "main": "dist/index/cjs/index.js",
+  "module": "dist/index/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "compile": "tsc",
+    "types": "tsc --emitDeclarationOnly",
+    "clean": "rm -rf dist",
+    "rollup": "rollup --config rollup.config.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run compile && npm run types && npm run rollup"
+  },
+  "dependencies": {
+    "@gen3/core": "^0.12.34",
+    "@gen3/frontend": "^0.12.34",
+    "@mantine/core": "^8.3.15",
+    "@mantine/dates": "^8.3.15",
+    "@mantine/form": "^8.3.15",
+    "@mantine/hooks": "^8.3.15",
+    "@mantine/modals": "^8.3.15",
+    "@mantine/notifications": "^8.3.15"
+  },
+  "devDependencies": {}
+}
