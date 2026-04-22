@@ -18,7 +18,7 @@ const Custom403Page = ({
         ...(config403?.headerMetadata ? config403.headerMetadata : {}),
       }}
     >
-      <div className="w-full">
+      <div className="w-full max-w-[500px] m-auto">
         {config403?.content?.map((content, index) => (
           <TextContent {...content} key={index} />
         ))}

@@ -18,7 +18,7 @@ const Custom404Page = ({
         ...(config404?.headerMetadata ? config404.headerMetadata : {}),
       }}
     >
-      <div className="w-full">
+      <div className="w-full max-w-[500px] m-auto">
         {config404?.content?.map((content, index) => (
           <TextContent {...content} key={index} />
         ))}
