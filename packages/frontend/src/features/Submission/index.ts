@@ -1,6 +1,3 @@
+import SubmissionPanel from './SubmissionPanel';
 
-import SubmissionPanel  from './SubmissionPanel';
-
-export {
-  SubmissionPanel
-};
+export { SubmissionPanel };
