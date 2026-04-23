@@ -17,6 +17,7 @@ export * from './features/Workspace';
 export * from './features/Analysis';
 export * from './features/StaticNotebook';
 export * from './features/Profile';
+export * from './features/FileSummary';
 export * from './utils/';
 export * from './types';
 
