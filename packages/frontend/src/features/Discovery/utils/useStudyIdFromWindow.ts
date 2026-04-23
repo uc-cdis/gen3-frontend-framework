@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 
-export const getStudyIdFromPath = (pathname = '') => {
+function getStudyIdFromPath(pathname?: string): string | null {
   if (!pathname) return null;
-  const match = pathname.match(/^\/Discovery\/([^\/?#]+)/i);
+  const match = pathname.match(new RegExp('^/Discovery/([^/?#]+)', 'i'));
   return match ? match[1] : null;
-};
+}
 
-export const useStudyIdFromWindow = () =>
-  useMemo(() => {
+export function useStudyIdFromWindow(): string | null {
+  return useMemo(() => {
     if (typeof window === 'undefined') return null;
     return getStudyIdFromPath(window.location.pathname);
   }, []);
+}
