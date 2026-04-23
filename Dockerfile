@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM node:24-slim AS builder
+FROM --platform=$BUILDPLATFORM node:24.14.1-trixie-slim AS builder
 WORKDIR /gen3
 
 WORKDIR /gen3
@@ -16,7 +16,7 @@ RUN npm install --location=global lerna@^9.0.3 \
     && npm ci --include=optional
 
 # Build monorepo (including sampleCommons)
-RUN lerna run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" lerna run build
 
 # If start.sh is needed only at runtime, don't keep it here.
 # If you need it for build, copy it here and later again to runtime:
@@ -24,12 +24,9 @@ COPY start.sh ./start.sh
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24-alpine3.20 AS runner
+FROM node:24.14.1-trixie-slim AS runner
 
 WORKDIR /gen3
-
-# Reduce apk layer size
-RUN apk add --no-cache bash
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nextjs \

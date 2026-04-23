@@ -2,9 +2,12 @@ import {
   type Gen3LoginProvider,
   logoutFence,
   type NameUrl,
+  type PresignedUrlResponse,
   useGetDownloadQuery,
   useGetLoginProvidersQuery,
+  useGetPresignedUrlQuery,
   useLazyGetDownloadQuery,
+  useLazyGetPresignedUrlQuery,
 } from './fenceApi';
 
 import {
@@ -29,6 +32,7 @@ export {
   type Gen3FenceCredentials,
   type Gen3LoginProvider,
   type NameUrl,
+  type PresignedUrlResponse,
   fetchFence,
   logoutFence,
   isFetchError,
@@ -40,4 +44,6 @@ export {
   useGetLoginProvidersQuery,
   useGetJWKKeysQuery,
   useAuthorizeFromCredentialsMutation,
+  useGetPresignedUrlQuery,
+  useLazyGetPresignedUrlQuery,
 };

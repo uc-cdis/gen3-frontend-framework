@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { FacetDefinition, FacetType, fieldNameToTitle } from '@gen3/core';
+import React, { useMemo, JSX } from 'react';
+import { FacetDefinition, FacetType, fieldNameToLabel } from '@gen3/core';
 import { createFacetCard } from './createFacetCard';
 import { FacetHooks, FacetValueLabel } from './types';
 import { useResizeObserver } from '@mantine/hooks';
@@ -42,7 +42,7 @@ const FiltersPanel = <T extends FacetType = FacetType>({
           facetDefinition,
           valueLabel,
           hooks: dataFunctions[facetDefinition.type as T],
-          facetNameFormatter: fieldNameToTitle,
+          facetNameFormatter: fieldNameToLabel,
           idPrefix: 'filters-panel',
           showPercent: false,
         });

@@ -8,10 +8,15 @@ import {
 } from '@gen3/core';
 import { SummaryStatisticsConfig } from '../Statistics';
 import { SummaryStatistics } from '../Statistics/types';
-import { DiscoveryIndexConfig } from '../types';
+import {
+  AdvancedSearchFilters,
+  DiscoveryIndexConfig,
+  KeyValueSearchFilter,
+} from '../types';
 import { AccessLevel } from '../../../utils';
 import { userHasMethodForServiceOnResource } from '../../authorization/utils';
 import { METADATA_ITEM_AUTHORIZATION_FIELD } from '../constants';
+import { getFilterValuesByKey } from '../Search/utils';
 
 /**
  * Parses a single value into a number
@@ -243,4 +248,31 @@ export const processChartData = (
   });
 
   return results;
+};
+
+export const processAdvancedSearchTerms = (
+  advSearchFilters: AdvancedSearchFilters,
+  data: JSONObject[],
+  uidField: string,
+): ReadonlyArray<KeyValueSearchFilter> => {
+  return advSearchFilters.filters.map((filter) => {
+    const { key, keyDisplayName } = filter;
+    const values = getFilterValuesByKey(
+      key,
+      data,
+      advSearchFilters.field,
+      uidField,
+    );
+    return {
+      key,
+      keyDisplayName,
+      valueDisplayNames: values.reduce(
+        (acc, cur) => {
+          acc[cur] = cur;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+    };
+  });
 };

@@ -1,61 +1,48 @@
-import React from 'react';
+import React, { useMemo, JSX } from 'react';
 import {
   DownloadButtonPropsWithAction,
   DropdownsWithButtonsProps,
 } from './types';
-import { useDeepCompareMemo } from 'use-deep-compare';
 import {
   DownloadButtonProps,
   type DropdownButtonProps,
 } from '../../components/Buttons/DropdownButtons';
-import { Accessibility, FilterSet, useIsUserLoggedIn } from '@gen3/core';
+import { Accessibility, FilterSet } from '@gen3/core';
 import CohortActionButton from './downloads/CohortActionButton';
 import {
   findButtonAction,
   NullButtonAction,
-} from './downloads/actions/registeredActions';
+} from './downloads/actions/registeredDownloadButtonActions';
 import { Icon } from '@iconify-icon/react';
 import { MdDownload as DownloadIcon } from 'react-icons/md';
 import CohortDropdownActionButton from './downloads/CohortDropdownActionButton';
 import CohortDataLibraryListButton from './downloads/CohortDataLibraryListButton';
+import { useSession } from '../../lib/session/session';
 
-const makeActionArgs = (button: DownloadButtonProps) => {
+const resolveAction = (buttonAction?: string) => {
   let actionFunction = NullButtonAction;
-  let actionArgs = {} as Record<string, any>; // not required but just for clarity
-  if (button.action) {
-    const actionItem = findButtonAction(button.action);
+  let actionArgs: Record<string, any> = {};
+  if (buttonAction) {
+    const actionItem = findButtonAction(buttonAction);
     if (actionItem) {
-      const funcArgs = actionItem.args ?? {};
-      const func = actionItem.action;
-      actionFunction = func;
-      actionArgs = funcArgs;
+      actionFunction = actionItem.action;
+      actionArgs = actionItem.args ?? {};
     }
   }
-
   return { actionFunction, actionArgs };
 };
 
 const createDownloadMenuButton = (
   props: DropdownButtonProps,
-  args: Record<string, any>,
+  commonActionArgs: Record<string, any>,
 ): JSX.Element => {
   const elements = props.dropdownItems?.map((button) => {
-    let actionFunction = NullButtonAction;
-    let actionArgs = {};
-
     const buttonAction = button.action ?? button.type;
-
-    if (buttonAction) {
-      const actionItem = findButtonAction(buttonAction);
-      if (actionItem) {
-        actionFunction = actionItem.action;
-        actionArgs = actionItem.args ?? ({} as Record<string, any>);
-      }
-    }
+    const { actionFunction, actionArgs } = resolveAction(buttonAction);
 
     return {
       title: button.title,
-      activeText: 'Downloading...',
+      activeText: 'Cancel',
       disabled: button.enabled !== undefined ? !button.enabled : true,
       icon: button?.leftIcon ? (
         <Icon icon={button.leftIcon} />
@@ -65,9 +52,9 @@ const createDownloadMenuButton = (
       rightSection: button?.rightIcon ? <Icon icon={button.rightIcon} /> : null,
       actionFunction: actionFunction,
       actionArgs: {
-        ...args,
+        ...commonActionArgs,
         ...actionArgs,
-        ...(button.actionArgs ?? ({} as Record<string, any>)),
+        ...(button.actionArgs ?? {}),
       },
     } as DownloadButtonPropsWithAction;
   });
@@ -111,113 +98,101 @@ const DownloadsPanel = ({
   sort,
   indexPrefix = '',
 }: DownloadsPanelProps): JSX.Element => {
-  const isUserLoggedIn = useIsUserLoggedIn();
-  const loginRequired = loginForDownload ? loginForDownload : false;
+  const { status } = useSession(false);
 
-  const dropdownsToRender = useDeepCompareMemo(() => {
-    let dropdownsToRender = dropdowns;
+  const isUserLoggedIn = useMemo(() => status === 'issued', [status]);
 
-    if (loginRequired && !isUserLoggedIn) {
-      dropdownsToRender = Object.entries(dropdowns ?? {}).reduce(
-        (acc, [key, dropdown]) => {
-          return {
-            ...acc,
-            [key]: {
-              ...dropdown,
-              title: `${dropdown.title} (Login Required)`,
-              buttons: dropdown.dropdownItems?.map((button) => ({
-                ...button,
-                title: `${button.title} (Login Required)`,
-                enabled: false,
-              })),
-            },
-          };
-        },
-        {},
-      );
-    }
-    return dropdownsToRender;
+  const loginRequired = !!loginForDownload;
+
+  const commonActionArgs = useMemo(
+    () => ({
+      type: index,
+      totalCount,
+      fields,
+      filter,
+      indexPrefix,
+      accessibility: accessibility ?? Accessibility.ALL,
+      // sort: sort, // TODO add sort
+    }),
+    [index, totalCount, fields, filter, indexPrefix, accessibility],
+  );
+
+  const dropdownsToRender = useMemo(() => {
+    if (!loginRequired || isUserLoggedIn) return dropdowns;
+
+    return Object.entries(dropdowns ?? {}).reduce(
+      (acc, [key, dropdown]) => {
+        return {
+          ...acc,
+          [key]: {
+            ...dropdown,
+            title: `${dropdown.title}`,
+            buttons: dropdown.dropdownItems?.map((button) => ({
+              ...button,
+              title: `${button.title}`,
+              enabled: false,
+            })),
+          },
+        };
+      },
+      {} as Record<string, DropdownsWithButtonsProps>,
+    );
   }, [dropdowns, loginRequired, isUserLoggedIn]);
+
+  const dropdownElements = useMemo(() => {
+    return Object.values(dropdownsToRender).map(
+      (dropdown: DropdownsWithButtonsProps) =>
+        createDownloadMenuButton(dropdown, commonActionArgs),
+    );
+  }, [dropdownsToRender, commonActionArgs]);
+
+  const buttonElements = useMemo(() => {
+    return buttons.map((button) => {
+      const buttonAction = button.action ?? button.type;
+      const { actionFunction, actionArgs } = resolveAction(buttonAction);
+
+      const disabled = loginRequired && !isUserLoggedIn;
+
+      if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
+        return (
+          <CohortDataLibraryListButton
+            activeText=""
+            inactiveText={button.title}
+            tooltipText={button.tooltipText}
+            disabled={disabled || !button.enabled}
+            actionFunction={actionFunction}
+            actionArgs={{
+              ...actionArgs,
+              ...(button.actionArgs ?? {}),
+              ...commonActionArgs,
+            }}
+            key={button.title}
+          />
+        );
+      }
+
+      return (
+        <CohortActionButton
+          activeText="Cancel"
+          inactiveText={button.title}
+          tooltipText={button.tooltipText}
+          disabled={disabled || !button.enabled}
+          actionFunction={actionFunction}
+          actionArgs={{
+            ...(button.actionArgs ?? {}),
+            ...commonActionArgs,
+            ...actionArgs,
+          }}
+          key={button.title}
+        />
+      );
+    });
+  }, [buttons, commonActionArgs, loginRequired, isUserLoggedIn]);
 
   return dropdowns || buttons ? (
     <div className="flex space-x-2 items-center">
-      {Object.values(dropdownsToRender).map(
-        (dropdown: DropdownsWithButtonsProps) => {
-          return createDownloadMenuButton(dropdown, {
-            type: index,
-            totalCount,
-            fields,
-            filter,
-            accessibility: accessibility ?? Accessibility.ALL,
-            // sort: sort, // TODO add sort
-          });
-        },
-      )}
-
-      {buttons.map((button) => {
-        let disabled = false;
-        let actionFunction = NullButtonAction;
-        let actionArgs = {};
-        const buttonAction = button.action ?? button.type;
-        if (buttonAction) {
-          const actionItem = findButtonAction(buttonAction);
-          if (actionItem) {
-            const funcArgs = actionItem.args ?? {};
-            const func = actionItem.action;
-            actionFunction = func;
-            actionArgs = funcArgs ?? ({} as Record<string, any>);
-          }
-        }
-        if (loginRequired && !isUserLoggedIn) {
-          disabled = true;
-        }
-        if (actionFunction && buttonAction === 'cohortDataFilesToDataLibrary') {
-          // TODO: remove this special case
-          return (
-            <CohortDataLibraryListButton
-              activeText=""
-              inactiveText={button.title}
-              tooltipText={button.tooltipText}
-              disabled={disabled || !button.enabled}
-              actionFunction={actionFunction}
-              actionArgs={{
-                ...actionArgs,
-                ...(button.actionArgs ?? ({} as Record<string, any>)),
-                type: index,
-                totalCount,
-                fields,
-                filter,
-                indexPrefix: indexPrefix,
-                accessibility: accessibility ?? Accessibility.ALL,
-                // sort: sort, // TODO add sort
-              }}
-              key={button.title}
-            />
-          );
-        } else {
-          return (
-            <CohortActionButton
-              activeText={'Downloading...'}
-              inactiveText={button.title}
-              tooltipText={button.tooltipText}
-              disabled={disabled || !button.enabled}
-              actionFunction={actionFunction}
-              actionArgs={{
-                ...actionArgs,
-                ...(button.actionArgs ?? ({} as Record<string, any>)),
-                type: index,
-                totalCount,
-                fields,
-                filter,
-                indexPrefix: indexPrefix,
-                accessibility: accessibility ?? Accessibility.ALL,
-                // sort: sort, // TODO add sort
-              }}
-              key={button.title}
-            />
-          );
-        }
-      })}
+      {dropdownElements}
+      {buttonElements}
     </div>
   ) : (
     <React.Fragment></React.Fragment>

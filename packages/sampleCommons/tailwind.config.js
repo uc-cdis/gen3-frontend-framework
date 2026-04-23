@@ -4,8 +4,8 @@ const plugin = require('tailwindcss/plugin');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';
 
-const themeColors = require(`./config/${GEN3_COMMONS_NAME}/themeColors.json`);
 const themeFonts = require(`./config/${GEN3_COMMONS_NAME}/themeFonts.json`);
+const themeColorCSSVars = require(`./config/themeColorCSSVars.json`);
 
 module.exports = {
   // important: '#__next', // Uncommenting this affects tailwind styling in Modals
@@ -58,7 +58,7 @@ module.exports = {
           titanium: '#707070',
           obsidian: '#757575',
         },
-        ...themeColors,
+        ...themeColorCSSVars,
       },
       fontFamily: {
         heading: themeFonts.heading,
@@ -197,28 +197,28 @@ module.exports = {
     'focus-visible:ring-focusColor',
     {
       pattern:
-        /bg-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /bg-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /text-(primary|secondary|accent|accent-warm|accent-cool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /text-(primary|secondary|accent|accentWarm|accentCool|base)-contrast-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
       pattern:
-        /border-(primary|secondary|accent|accent-warm|accent-cool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
+        /border-(primary|secondary|accent|accentWarm|accentCool|base)-(min|lightest|lighter|light|dark|darker|darkest|max)/,
     },
     {
-      pattern: /bg-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /bg-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /text-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /text-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
     {
-      pattern: /border-(primary|secondary|accent|accent-warm|accent-cool|base)/,
+      pattern: /border-(primary|secondary|accent|accentWarm|accentCool|base)/,
     },
   ],
 };

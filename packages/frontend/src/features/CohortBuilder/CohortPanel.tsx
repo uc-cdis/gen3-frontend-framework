@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { partial } from 'lodash';
 import {
   Accessibility,
@@ -19,13 +19,10 @@ import {
   useCoreSelector,
   useGetAggsQuery,
   useGetCountsQuery,
+  useSubmitSowerJobMutation,
 } from '@gen3/core';
 import { type CohortPanelConfiguration } from './types';
-import {
-  Charts,
-  CollapsableCharts,
-  type SummaryChart,
-} from '../../components/charts';
+import { Charts, CollapsableCharts, type SummaryChart, } from '../../components/charts';
 import { ErrorCard } from '../../components/MessageCards';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -40,18 +37,11 @@ import {
   useGetFacetFilters,
   useUpdateFilters,
 } from '../../components/facets';
-import {
-  useClearFilters,
-  useFieldNameToTitle,
-} from '../../components/facets/hooks';
+import { useClearFilters, useFieldNameToLabel, } from '../../components/facets/hooks';
 import ExplorerTable from './ExplorerTable/ExplorerTable';
 import CountsValue from '../../components/counts/CountsValue';
 import DownloadsPanel from './DownloadsPanel';
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from 'use-deep-compare';
+import { useDeepCompareCallback, useDeepCompareEffect, useDeepCompareMemo, } from 'use-deep-compare';
 import { toDisplayName } from '../../utils';
 import {
   useCohortFilterCombineState,
@@ -61,6 +51,7 @@ import {
 } from './hooks';
 import DropdownPanel from '../../components/facets/Panels/DropdownPanel';
 import QueryExpression from './QueryExpression';
+import useSowerJobEventBus from '../Sower/useSowerJobEventBus';
 
 const EmptyData = {};
 
@@ -291,7 +282,7 @@ export const CohortPanel = ({
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
           useGetCombineMode: partial(useCohortFilterCombineState, index),
           useSetCombineMode: partial(useSetCohortFilterCombineState, index),
-          useFieldNameToTitle: useFieldNameToTitle,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         exact: {
@@ -301,7 +292,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToTitle: useFieldNameToTitle,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         multiselect: {
@@ -311,7 +302,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToTitle: useFieldNameToTitle,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
         range: {
@@ -321,7 +312,7 @@ export const CohortPanel = ({
           useClearFilter: partial(useClearFilters, index),
           useFilterExpanded: partial(useFilterExpandedState, index),
           useToggleExpandFilter: partial(useToggleExpandFilter, index),
-          useFieldNameToTitle: useFieldNameToTitle,
+          useFieldNameToLabel: useFieldNameToLabel,
           useTotalCounts: undefined,
         },
       };
@@ -391,6 +382,15 @@ export const CohortPanel = ({
     queryId: cohortId,
   });
 
+  const [submitJob, result] = useSubmitSowerJobMutation();
+  const { update } = useSowerJobEventBus();
+
+  useEffect(() => {
+    if (result?.data) {
+      update(result.data?.uid);
+    }
+  }, [result]);
+
   if (isCountsError || isAggsQueryError) {
     return <ErrorCard message="Unable to fetch data from server" />; // TODO: replace with configurable message
   }
@@ -440,7 +440,6 @@ export const CohortPanel = ({
             />
             <CountsValue
               label={dataConfig?.nodeCountTitle || toDisplayName(index)}
-              configuration={dataConfig?.nodeCountConfiguration}
               counts={counts}
               isFetching={isCountsFetching}
               isError={isCountsError}
@@ -469,13 +468,29 @@ export const CohortPanel = ({
 
           {/* Table Section */}
           {table?.enabled && (
-            <div className="mt-2 flex flex-col">
-              <ExplorerTable
-                index={index}
-                tableConfig={table}
-                accessibility={accessLevel}
-              />
-            </div>
+            <>
+              {/* TODO: replace this with JobActionButton
+              <Button
+                onClick={() =>
+                  submitJob({
+                    action: 'export',
+                    input: {
+                      filter: convertFilterSetToGqlFilter(cohortFilters),
+                    },
+                  })
+                }
+              >
+                Export
+              </Button>
+              */}
+              <div className="mt-2 flex flex-col">
+                <ExplorerTable
+                  index={index}
+                  tableConfig={table}
+                  accessibility={accessLevel}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>

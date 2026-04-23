@@ -1,6 +1,6 @@
 {
   "name": "gen3-frontend-framework",
-  "version": "0.12.10",
+  "version": "0.12.34",
   "description": "The Gen3 Frontend Framework mono repo for Gen 3.2 development",
   "private": true,
   "workspaces": [
@@ -11,8 +11,8 @@
     "packages/sampleCommons"
   ],
   "engines": {
-    "npm": ">=11.6.2",
-    "node": ">=24.12.0"
+    "npm": ">=11.9.0",
+    "node": ">=24.14.0"
   },
   "scripts": {
     "lint": "lerna run lint",
@@ -25,7 +25,7 @@
     "build:pkg": "lerna run build --include-dependencies --stream --ignore=@gen3/samplecommons",
     "build:clean": "lerna run build:clean",
     "compile": "lerna run compile",
-    "predev": "[ -f ./node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ] || (printf \"\\033[31mError: @gen3/toolsff not built. Please npm run build:tools.\\033[0m\\n\" && exit 1)",
+    "predev": "if [ ! -f ./node_modules/@gen3/toolsff/dist/scanSitePaths.esm.js ]; then printf \"\\033[31mError: @gen3/toolsff not built (missing dist file). Run: npm run build:tools\\033[0m\\n\"; exit 1; fi",
     "dev": "NODE_OPTIONS='--max_old_space_size=4096' lerna run dev",
     "dev:watch": "lerna watch -- lerna run dev --scope=\\$LERNA_PACKAGE_NAME --include-dependencies",
     "dev:app": "lerna run dev --scope=@gen3/samplecommons",
@@ -47,20 +47,16 @@
     "@grafana/faro-react": "^1.9.1",
     "@grafana/faro-web-sdk": "^1.9.1",
     "@grafana/faro-web-tracing": "^1.9.1",
-    "@mantine/core": "^7.17.8",
-    "@mantine/dates": "^7.17.8",
-    "@mantine/form": "^7.17.8",
-    "@mantine/hooks": "^7.17.8",
-    "@mantine/modals": "^7.17.8",
-    "@mantine/notifications": "^7.17.8",
     "@next/bundle-analyzer": "^15.5.9",
     "classnames": "^2.3.1",
+    "dayjs": "^1.11.19",
     "glob": "^10.5.0",
     "idb": "^8.0.3",
     "isomorphic-fetch": "^3.0.0",
     "jsonpath-plus": "10.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.4",
+    "react-cookie": "^7.2.2",
+    "react-dom": "^19.2.4",
     "react-responsive-carousel": "^3.2.23",
     "url-join": "^5.0.0"
   },
@@ -75,14 +71,14 @@
     "@swc/cli": "^0.5.0",
     "@swc/core": "^1.7.28",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/react": "^16.3.2",
     "@types/jest": "^29.5.13",
     "@types/node": "22.7.2",
-    "@types/react": "^18.3.18",
+    "@types/react": "^19.2.14",
     "@types/tinycolor2": "^1.4.6",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
-    "@welldone-software/why-did-you-render": "^8.0.3",
+    "@welldone-software/why-did-you-render": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.28.0",
     "eslint-config-next": "^15.5.9",
@@ -100,7 +96,7 @@
     "lerna": "^9.0.3",
     "msw": "^2.7.3",
     "nx": "22.3.3",
-    "oxlint": "^0.16.4",
+    "oxlint": "^1.59.0",
     "postcss-import": "^16.1.0",
     "postcss-modules": "^6.0.0",
     "postcss-preset-mantine": "^1.17.0",
@@ -128,8 +124,16 @@
     },
     "tailwindcss": {
       "sucrase": {
-        "glob": "^10.5.0"
+        "glob": "^13.0.6"
       }
+    },
+    "mantine-react-table": {
+      "@mantine/core": "^8.3.15",
+      "@mantine/hooks": "^8.3.15",
+      "@mantine/dates": "^8.3.15",
+      "@mantine/form": "^8.3.15",
+      "@mantine/modals": "^8.3.15",
+      "@mantine/notifications": "^8.3.15"
     }
   },
   "optionalDependencies": {

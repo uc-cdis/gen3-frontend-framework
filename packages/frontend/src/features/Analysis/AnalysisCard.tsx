@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, NavLink, Stack } from '@mantine/core';
+import { Image, NavLink, Stack, Tooltip } from '@mantine/core';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
 import { AnalysisToolConfiguration } from './types';
@@ -53,9 +53,11 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
           </div>
         </div>
         <div className="flex flex-col mt-2 ml-2">
-          <div className="w-full justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6">
-            {title}
-          </div>
+          <Tooltip label={title} multiline withArrow w={400}>
+            <div className="w-full justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6 line-clamp-2">
+              {title}
+            </div>
+          </Tooltip>
           <div className="text-xs text-gray-400 h-6">
             {loginRequired ? 'Login Required' : ' '}
           </div>

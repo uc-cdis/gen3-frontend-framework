@@ -127,7 +127,7 @@ const MetadataPropertiesTable = ({
     },
     mantineTableHeadRowProps: {
       style: {
-        '--mrt-base-background-color': 'var(--mantine-color-accent-cool-2)',
+        '--mrt-base-background-color': 'var(--mantine-color-accentCool-2)',
         fontSize: `var(--mantine-font-size-${fontSize})`,
       },
     },

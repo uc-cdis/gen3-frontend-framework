@@ -36,8 +36,9 @@ export const fetchFromDataLibraryAPI = async (
         error: {
           status: error.status,
           message:
-            HTTPErrorMessages[error.status] ||
             error.responseData?.message ||
+            error.responseData?.detail ||
+            HTTPErrorMessages[error.status] ||
             'No HTTP Error Message',
         },
       };

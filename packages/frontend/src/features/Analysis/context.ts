@@ -1,4 +1,4 @@
-import { createContext, Dispatch } from "react";
+import { createContext, Dispatch } from 'react';
 
 // Chart download context
 
@@ -9,12 +9,12 @@ interface ChartDownloadInfo {
 
 export const chartDownloadReducer = (
   state: ChartDownloadInfo[],
-  action: { type: "add" | "remove"; payload: ChartDownloadInfo[] },
+  action: { type: 'add' | 'remove'; payload: ChartDownloadInfo[] },
 ): ChartDownloadInfo[] => {
   switch (action.type) {
-    case "add":
+    case 'add':
       return [...state, ...action.payload];
-    case "remove":
+    case 'remove':
       return state.filter(
         (d) =>
           !action.payload.map((chart) => chart.filename).includes(d.filename),
@@ -24,17 +24,19 @@ export const chartDownloadReducer = (
   }
 };
 
+const NullSetDownloadInProgress = () => {};
+
 export const DashboardDownloadContext = createContext<{
   state: ChartDownloadInfo[];
-  dispatch: Dispatch<{ type: "add" | "remove"; payload: ChartDownloadInfo[] }>;
+  dispatch: Dispatch<{ type: 'add' | 'remove'; payload: ChartDownloadInfo[] }>;
 }>({ state: [], dispatch: () => {} });
 
 export const DownloadProgressContext = createContext<{
   downloadInProgress: boolean;
-  setDownloadInProgress: ((inProgress: boolean) => void) | undefined;
+  setDownloadInProgress: (inProgress: boolean) => void;
 }>({
   downloadInProgress: false,
-  setDownloadInProgress: undefined,
+  setDownloadInProgress: NullSetDownloadInProgress,
 });
 
 // Selection screen context

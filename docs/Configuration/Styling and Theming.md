@@ -40,10 +40,10 @@ and added to the ```src/styles/globals.css```:
 
 ### Colors
 
-Gen3 Color Theme is based on USWDS theme color tokens which are divided into several high-level role-based color families: base, primary, secondary, accent, accent-warm, accent-cool, chart, and utility.
+Gen3 Color Theme is based on USWDS theme color tokens which are divided into several high-level role-based color families: base, primary, secondary, accent, accentWarm, accentCool, chart, and utility.
 
 Base is a project’s neutral color, typically some tint of gray, and usually used as the text color throughout.
-Primary, secondary, and accent colors can be thought of as falling into a proportional 60/30/10 relationship: about 60% of your site’s color would be the primary color family, about 30% would be the secondary color family, and about 10% would be the accent color families (accent-warm and accent-cool). Note that these proportions are for non-base colors. In many cases, the neutral base text color will be the predominant tone on your site.
+Primary, secondary, and accent colors can be thought of as falling into a proportional 60/30/10 relationship: about 60% of your site’s color would be the primary color family, about 30% would be the secondary color family, and about 10% would be the accent color families (accentWarm and accentCool). Note that these proportions are for non-base colors. In many cases, the neutral base text color will be the predominant tone on your site.
 
 Each color in the theme has 10 colors:max, lightest, lighter, light, DEFAULT, vivid, dark, darker, darkest, min These are padded to 10 color arrays for compatibility with Mantine&amp.s color theme. This allows you to pass color="primary|secondary|accent...." to Mantine components as documented, this includes accessing lighter or darker version vis the primary.N (where N 0..9).
 
@@ -61,8 +61,8 @@ Colors can be configured by editing ```config/<commonsName>/colors.json```. The 
   "primary": "#1a202c",
   "secondary": "#2d3748",
   "accent": "#e53e3e",
-  "accent-warm": "#ed8936",
-  "accent-cool": "#63b3ed",
+  "accentWarm": "#ed8936",
+  "accentCool": "#63b3ed",
   "chart": "#3182ce"
 }
 ```

@@ -8,6 +8,7 @@ import {
   useLoadAllMDSData,
 } from './MDSAllLocal/DataLoader';
 import { useLoadAllIndexedAggMDSData } from './IndexedMetadata/DataLoader';
+import { useAggMetaMDSProxy } from './AggMetaMDSProxy/DataLoader';
 
 export type DiscoveryDataLoader = (
   _: DiscoveryDataLoaderProps,
@@ -26,12 +27,12 @@ export const getDiscoveryDataLoader = (
   name?: string,
 ): DiscoveryDataLoader | undefined => {
   if (name === undefined) {
-    console.error('getDiscoveryDataLoader: no name provided');
+    console.warn('getDiscoveryDataLoader: no name provided');
     return undefined;
   }
 
   if (!(name in discoveryDataLoaders)) {
-    console.error('getDiscoveryDataLoader: no data loader found for', name);
+    console.warn('getDiscoveryDataLoader: no data loader found for', name);
     return undefined;
   }
   return discoveryDataLoaders[name];
@@ -49,6 +50,7 @@ export const registerDefaultDiscoveryDataLoaders = () => {
     'IndexedAggMDSAllLocal',
     useLoadAllIndexedAggMDSData,
   );
+  registerDiscoveryDataLoader('AggMetaMDSProxy', useAggMetaMDSProxy);
 };
 
 registerDefaultDiscoveryDataLoaders();

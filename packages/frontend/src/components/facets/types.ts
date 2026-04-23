@@ -11,7 +11,9 @@ import React, { ComponentType, ReactNode } from 'react';
 
 export type QueryOptions = Record<string, unknown>;
 
-export type FacetValueLabel = string | ((def?: FacetDefinition,  queryOptions?: QueryOptions) => string);
+export type FacetValueLabel =
+  | string
+  | ((def?: FacetDefinition, queryOptions?: QueryOptions) => string);
 
 export interface EnumChartProps {
   readonly field: string;
@@ -82,11 +84,6 @@ export type GetRangeFacetWithDefinedRangesDataFunction = (
   ranges: ReadonlyArray<NumericFromTo>,
 ) => RangeFacetResponse;
 
-// export type GetFacetDataFunction =
-//   | GetEnumFacetDataFunction
-//   | GetRangeFacetDataFunction
-//   | GetRangeFacetWithDefinedRangesDataFunction;
-
 export type FacetDataFunctionType = 'enum' | 'range' | 'rangeWithDefined';
 
 export type GetFacetDataFunction<
@@ -102,7 +99,7 @@ export type GetFacetDataFunction<
           | GetRangeFacetDataFunction
           | GetRangeFacetWithDefinedRangesDataFunction;
 
-export type FieldNameToTitleFunction = (
+export type fieldNameToLabelFunction = (
   field: string,
   sections?: number,
 ) => string;
@@ -124,7 +121,7 @@ export interface FacetCommonHooks {
   /**
    * Hook that takes the API field and returns a human readable field name
    */
-  useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  useFieldNameToLabel: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   usePopulateFacetData?: (
@@ -133,8 +130,9 @@ export interface FacetCommonHooks {
   ) => void;
 }
 
-export interface FacetDataHooks<T extends FacetDataFunctionType>
-  extends FacetCommonHooks {
+export interface FacetDataHooks<
+  T extends FacetDataFunctionType,
+> extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetFilters: SelectFacetFilterFunction;
   useGetFacetData: GetFacetDataFunction<T>; // gets data for EnumFacets and ToggleFacet
@@ -238,6 +236,7 @@ export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
   readonly rangeDatatype?: string;
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;
+  readonly step?: number;
   readonly clearValues?: boolean;
 };
 

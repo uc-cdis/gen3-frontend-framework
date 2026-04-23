@@ -39,8 +39,8 @@ export interface NodeCountConfiguration {
 
 export interface DataTypeConfig {
   dataType: string;
+  uniqueIdField: string;
   nodeCountTitle?: string;
-  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
@@ -123,6 +123,7 @@ export interface CohortBuilderProps extends Omit<
   'sharedFilters'
 > {
   sharedFiltersMap: SharedFieldMapping | null;
+  activeTab?: string;
 }
 
 export enum DownloadFileFormats {

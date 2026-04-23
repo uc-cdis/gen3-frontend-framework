@@ -1,10 +1,8 @@
 import React from 'react';
 import Cookies from 'universal-cookie';
 import { CoreDispatch, Modals, showModal } from '@gen3/core';
-import { Button } from '@mantine/core';
 import { cleanNotifications, showNotification } from '@mantine/notifications';
 import { includes, isPlainObject, reduce, uniqueId } from 'lodash';
-import { RiCloseCircleLine as CloseIcon } from 'react-icons/ri';
 
 const hashString = (s: string) =>
   s.split('').reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
@@ -35,18 +33,10 @@ const processParamObj = (key: string, value: any) =>
  * selected file downloads are in progress
  * @param onClick - Function to handle click on cancel button
  */
-export const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
+export const DownloadNotification = () => {
   return (
-    <div>
-      <p>Download preparation in progress. Please wait...</p>
-      <Button
-        variant="white"
-        leftSection={<CloseIcon aria-hidden="true" />}
-        style={{ color: '#155276', cursor: 'pointer' }}
-        onClick={onClick}
-      >
-        Cancel Download
-      </Button>
+    <div className="flex flex-col justify-center items-center p-4">
+      <p>Preparing download.</p>
     </div>
   );
 };
@@ -147,29 +137,8 @@ const download = async <T extends Record<string, any> = Record<string, any>>({
   const showNotificationTimeout = setTimeout(
     () =>
       showNotification({
-        message: (
-          <DownloadNotification
-            onClick={() => {
-              iFrame.remove();
-              cleanNotifications();
-              if (done) {
-                done();
-              }
-            }}
-          />
-        ),
-        styles: () => ({
-          root: {
-            textAlign: 'center',
-            display: hideNotification ? 'none' : 'flex nowrap',
-          },
-          closeButton: {
-            color: 'black',
-            '&:hover': {
-              backgroundColor: 'lightslategray',
-            },
-          },
-        }),
+        title: 'Download in progress',
+        message: <DownloadNotification />,
         closeButtonProps: { 'aria-label': 'Close notification' },
       }),
     100,

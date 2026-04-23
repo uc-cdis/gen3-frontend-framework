@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { NavPageLayout } from '../../features/Navigation';
 import { NavPageLayoutProps } from '../../features/Navigation';
 import { CardContainer } from '../../components/MessageCards';

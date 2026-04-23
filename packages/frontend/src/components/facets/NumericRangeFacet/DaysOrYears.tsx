@@ -12,6 +12,7 @@ const DaysOrYears: React.FC<NumericFacetProps> = ({
   isFacetView,
   minimum,
   maximum,
+  step,
   queryOptions,
   Chart,
 }) => {
@@ -19,7 +20,18 @@ const DaysOrYears: React.FC<NumericFacetProps> = ({
   // no data if true means the Day/Year SegmentedControl should not be rendered.
   // TODO: this is not ideal and perhaps should be refactored
   const [hasData, setHasData] = useState(true);
-  const numBuckets = 18;
+  let numBuckets = step || 18; // TODO refine step to compute numBuckets
+
+  if (step === undefined && maximum !== undefined && minimum !== undefined) {
+    if (rangeDatatype === 'days') {
+      numBuckets = Math.round((maximum - minimum) / 3655.2);
+    }
+    if (rangeDatatype === 'years') {
+      numBuckets = Math.round((maximum - minimum) / 10);
+    } else if (rangeDatatype === 'age') {
+      numBuckets = 10;
+    }
+  }
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">

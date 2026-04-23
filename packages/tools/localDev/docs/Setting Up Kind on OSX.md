@@ -47,17 +47,77 @@ nodes:
   --selector=app.kubernetes.io/component=controller \
   --timeout=90s
 ```
-Create a Kubernetes secret:
+
+## Setting up a self-signed certificate
+
+You will need to create a self-signed certificate for the ingress. You can use mkcert to generate a certificate for
+localhost. You can install mkcert by following the instructions here: https://github.com/FiloSottile/mkcert#installation
+
+You can use localhost or gen3dev.local.io for the domain name. 127.0.0.1 is the IP address for localhost. You need to
+add gen3dev.local.io to your hosts file `/etc/hosts`, by adding:
+
+```aiignore
+127.0.0.1       gen3dev.local.io
+```
+
+You have two options for hostname configuration:
+
+### Option 1: Use gen3dev.local.io (Requires DNS Configuration)
+
 ```bash
-kubectl create secret tls localhost-gen3 --cert=cert.pem --key=key.pem --namespace default
+# Generate certificates for gen3dev.local.io and localhost
+mkdir ~/ssl_certs
+mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.local.io localhost 127.0.0.1
+
+# This creates:
+# - gen3dev.local.io+2.pem (certificate)
+# - gen3dev.local.io+2-key.pem (private key)
 ```
 
-confirm secret:
-```
-kubectl get secrets --namespace default
+### Option 2: Use host.docker.internal (Simpler)
+
+```bash
+mkdir ~/ssl_certs
+# Generate certificates using host.docker.internal (works out-of-the-box with Kind)
+mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker.internal localhost 127.0.0.1
+
+# This creates:
+# - host.docker.internal+2.pem (certificate)
+# - host.docker.internal+2-key.pem (private key)
 ```
 
-use ```packages/tools/localDev/kind/ingress-kind.yaml``` or create a file ```ingress-kind.yaml```:
+### Create Kubernetes TLS Secret
+
+Create a Kubernetes secret with your SSL certificate:
+
+### If using gen3dev.local.io:
+
+```bash
+kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem
+```
+
+### If using host.docker.internal:
+
+```bash
+kubectl create secret tls gen3-local-tls \
+  --cert=host.docker.internal+2.pem \
+  --key=host.docker.internal+2-key.pem
+```
+
+```bash
+# Verify the secret was created
+kubectl get secret gen3-local-tls
+```
+
+returns something like:
+
+```aiignore
+NAME             TYPE                DATA   AGE
+gen3-local-tls   kubernetes.io/tls   2      33s
+```
+
+use ```packages/tools/localDev/kind/ingress-gen3dev_local_io.yaml``` or create a file
+```ingress-gen3dev_local_io.yaml```:
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -69,29 +129,47 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
-  - hosts:
-    - localhost
-    secretName: localhost-gen3
+    - hosts:
+        - localhost
+      secretName: gen3-local-tls
   rules:
-    - host: "localhost"
+    - host: "gen3dev.local.io"
       http:
         paths:
-        - pathType: Prefix
-          path: "/"
-          backend:
-            service:
-              name: revproxy-service
-              port:
-                number: 80
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: revproxy-service
+                port:
+                  number: 80
 ```
 add to cluster:
 ```bash
-  kubectl apply -f ingress-kind.yaml
+  kubectl apply -f ingress-gen3dev_local_io.yaml
 ```
+
+## Create mkcert CA Secret
+
+Create a Kubernetes secret with the mkcert CA certificate for container trust:
+
+```bash
+# Get the CA certificate location
+CAROOT=$(mkcert -CAROOT)
+echo "mkcert CA location: $CAROOT"
+
+# Create a secret from the CA certificate
+kubectl create secret generic mkcert-ca --from-file=ca.crt="$CAROOT/rootCA.pem"
+
+# Verify the secret was created
+kubectl get secret mkcert-ca
+
+Note that mkcert should add your CA to the system-wide trust store. If not you will need to add them to OSX
+keychain and trust them.
 
 ### Workspace support
 
-If you are running frontend development on https://localhost:3010 you will need to follow
+If you are running frontend development on https://localhost:3000 you will need to follow
 these instructions to update the Content-Security-Policy:
 ```
  kubectl edit configmap ingress-nginx-controller -n ingress-nginx
@@ -154,13 +232,13 @@ spec:
 ```
 
 ## Gen3 Helm
-start gen3-helm
 
+You can now run gen3 helm charts. You will need to edit your values.yaml and set up the services you want to run.
 
 ## Additional Notes
 To check the contents of a certificate:
 ```bash
-kubectl get secret localhost-gen3 -n default -o json | jq '."data"."tls.crt"'| sed 's/"//g'| base64 -d | openssl x509  -text -noout
+kubectl get secret gen3-local-tls -n default -o json | jq '."data"."tls.crt"'| sed 's/"//g'| base64 -d | openssl x509  -text -noout
 ```
 
 To get all ingresses
@@ -180,9 +258,9 @@ kubectl delete ingress revproxy-dev
 
 delete secret
 ```bash
- kubectl delete secret gen3-certs --namespace default
+ kubectl delete secret gen3-local-tls --namespace default
 ```
 
-If you have certificate issues confirm secret is correct by
+If you have certificate issues, confirm the secret is correct by
 viewing the ingress config and confirm the secret name is the same in the
 configuration
