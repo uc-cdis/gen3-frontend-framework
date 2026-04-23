@@ -4,6 +4,7 @@ import { Loader, Switch } from '@mantine/core';
 import { removeUnusedFieldsFromDictionaryObject } from '../../Dictionary/utils';
 import DictionaryProvider from '../../Dictionary/DictionaryProvider';
 import { DataDictionary, DictionaryConfig } from '../../Dictionary';
+import MessagePanel from '../../../components/MessagePanel';
 import SubmissionForm from './SubmissionForm';
 
 const DictionaryPanel = ({ config }: { config?: DictionaryConfig }) => {
@@ -43,7 +44,9 @@ const DictionaryPanel = ({ config }: { config?: DictionaryConfig }) => {
         {showFormSubmission ? <SubmissionForm dictionary={dictionary} /> : null}
       </div>
     </DictionaryProvider>
-  ) : null;
+  ) : (
+    <MessagePanel message="Dictionary config is not defined. Page disabled" />
+  );
 };
 
 export default DictionaryPanel;

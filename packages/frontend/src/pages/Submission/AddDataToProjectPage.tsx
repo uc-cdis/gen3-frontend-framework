@@ -8,9 +8,9 @@ const AddDataToProjectPage = ({ footerProps, headerProps, dictionaryConfig } : S
        footerProps={footerProps}
        headerProps={headerProps}
        headerMetadata={{
-         title: 'Gen3 Submission Page',
-         content: 'Submission page',
-         key: 'gen3-submission-page',
+         title: 'Gen3 Submission Add to Project Page',
+         content: 'Submission Add to Project page',
+         key: 'gen3-submission-add-to-project-page',
        }}
      >
        <AddDataToProject config={dictionaryConfig} />
