@@ -59,9 +59,6 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
 
   const parentDivRef = useRef<HTMLDivElement>(null);
   const studyIdFromWindow = useStudyIdFromWindow();
-  const [displayedStudyIdFromWindow, setDisplayedStudyIdFromWindow] =
-    useState<boolean>(false);
-
   const [searchBarTerms, setSearchBarTerms] = useState<string[]>(
     studyIdFromWindow ? [studyIdFromWindow] : [],
   );

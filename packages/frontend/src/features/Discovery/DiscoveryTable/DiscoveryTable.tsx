@@ -93,8 +93,6 @@ const DiscoveryTable = ({
 
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
-    console.log('data', data);
-    console.log(typeof data);
     const uidKey = config.minimalFieldMapping.uid;
     let foundStudy;
     if (Array.isArray(data)) {
