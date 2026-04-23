@@ -17,9 +17,7 @@ const DictionaryPanel = ({ config }: { config?: DictionaryConfig }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      const dictionary = removeUnusedFieldsFromDictionaryObject(
-        data as unknown as Record<string, any>,
-      );
+      const dictionary = removeUnusedFieldsFromDictionaryObject(data);
       setDictionary(dictionary);
     }
   }, [data, isSuccess]);

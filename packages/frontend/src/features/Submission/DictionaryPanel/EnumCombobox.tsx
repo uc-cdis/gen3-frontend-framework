@@ -63,7 +63,9 @@ const EnumCombobox = (props: DictionaryProperty & { id: string }) => {
       <Combobox.Dropdown>
         <Combobox.Options>
           {(props?.enum || []).map((enumVal) => (
-            <Combobox.Option value={enumVal}>{enumVal}</Combobox.Option>
+            <Combobox.Option value={enumVal} key={enumVal}>
+              {enumVal}
+            </Combobox.Option>
           ))}
         </Combobox.Options>
       </Combobox.Dropdown>

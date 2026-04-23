@@ -158,6 +158,7 @@ const SubmissionForm = ({ dictionary }: { dictionary: DataDictionary }) => {
             {Object.entries(dictionary[selectedNode].properties).map(
               ([entry, dictionaryProperties]) => (
                 <FormElement
+                  key={entry}
                   field={entry}
                   required={(dictionary[selectedNode]?.required || []).includes(
                     entry,

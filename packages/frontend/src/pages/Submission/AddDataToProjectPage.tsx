@@ -1,3 +1,4 @@
+import React from "react";
 import { NavPageLayout } from "../../features/Navigation"
 import AddDataToProject from "../../features/Submission/AddDataToProject";
 import { SubmissionsPageLayoutProps } from "./types"
