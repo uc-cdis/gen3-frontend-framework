@@ -38,6 +38,7 @@ and example configuration:
     }
   ],
   "image": "images/gene_side_texture.svg",
+  "loginBtnHorizontal" : true,
   "showCredentialsLogin" : true
 }
 
@@ -47,5 +48,6 @@ Both topContent and bottomContent are arrays of the [TextContent](../../packages
 loginProviderExtra is an object with keys matching provider name; value is arrays of the [TextContent](../../packages/frontend/docs/components/TextContent.md) component.
 
 * image: the side image for the login page
+* loginBtnHorizontal: Optional Display login buttons group horizontally defalts to false 
 * showCredentialsLogin: is for development and allows logins using a credentials file instead of logging in which
 usually will not work because fence will not allow redirects back to https://localhost
