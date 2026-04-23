@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import { Button, CopyButton, Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
-import React, { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
@@ -9,7 +9,6 @@ import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import { useRouter } from 'next/router';
 import { toString } from 'lodash';
-import { JSONObject } from '@gen3/core';
 
 const StudyDetails = ({
   index,
@@ -24,20 +23,8 @@ const StudyDetails = ({
 }) => {
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  // let permalink = 'Discovery/notfound';
   const defaultPermaLinkValue = 'Discovery/notfound';
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
-  const router = useRouter();
-  /*
-  const updateStudyDetailsDependencies = () => {
-    if (studyDetails) {
-      const studyId = studyDetails[index];
-      const pagePath = `/discovery/${encodeURIComponent(
-        typeof studyId == 'string' ? 'string' : 'unknown',
-      )}`;
-      permalink = `/${pagePath}`;
-    }
-  }; */
 
   useEffect(() => {
     if (Object.keys(studyDetails).length > 0) {
@@ -47,27 +34,19 @@ const StudyDetails = ({
 
   useEffect(() => {
     const studyId = toString(studyDetails[index]);
+    const pushUrl = (path: string) =>
+      typeof window !== 'undefined' && window.history.pushState(null, '', path);
     if (studyId) {
       if (opened) {
-        if (typeof window !== 'undefined') {
-          window.history.pushState(
-            null,
-            '',
-            `/Discovery/${encodeURI(studyId)}`,
-          );
-        }
-        setPermalink(window.location.href);
+        pushUrl(`/Discovery/${encodeURI(studyId)}`);
+        setPermalink(window?.location?.href ?? defaultPermaLinkValue);
       } else {
+        pushUrl('/Discovery');
         setPermalink(defaultPermaLinkValue);
-        if (typeof window !== 'undefined') {
-          window.history.pushState(null, '', `/Discovery`);
-        }
       }
     }
     if (opened === false) {
-      // drawer just closed
-      console.log('drawer closed (effect)');
-      // trigger event here
+      // if drawer has been shut, reset study details
       setStudyDetails({});
     }
   }, [opened]);

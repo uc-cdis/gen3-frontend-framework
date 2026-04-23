@@ -80,7 +80,6 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     });
 
   const searchParam = useDeepCompareMemo(() => {
-    console.log('debouncedSearchBarTerms', debouncedSearchBarTerms);
     return {
       keyword: {
         operator: SearchCombination.and,

@@ -75,7 +75,6 @@ const DiscoveryTable = ({
   data,
   hits,
   studyIdFromWindow,
-
   dataRequestStatus,
   setSorting,
   setPagination,
@@ -94,14 +93,13 @@ const DiscoveryTable = ({
 
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
-
-    const uidKey = '_hdp_uid';
-    const foundStudy = Array.isArray(data)
-      ? data.find((item) => item[uidKey] === studyIdFromWindow)
-      : data && data[uidKey] === studyIdFromWindow
-        ? data
-        : undefined;
-
+    console.log('data', data);
+    console.log(typeof data);
+    const uidKey = config.minimalFieldMapping.uid;
+    let foundStudy;
+    if (Array.isArray(data)) {
+      foundStudy = data.find((item) => item[uidKey] === studyIdFromWindow);
+    }
     if (foundStudy) {
       setStudyDetails(foundStudy);
     }
