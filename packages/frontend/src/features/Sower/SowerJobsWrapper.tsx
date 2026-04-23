@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   selectSowerJobDatetimeCache,
   useCoreSelector,
@@ -6,7 +6,6 @@ import {
 } from '@gen3/core';
 import JobPanel from './JobPanel';
 import useSowerJobEventBus from './useSowerJobEventBus';
-import { showNotification } from '@mantine/notifications';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 const SowerJobListWrapper = () => {
@@ -20,24 +19,6 @@ const SowerJobListWrapper = () => {
         .map((job) => job.uid),
     [data],
   );
-
-  useEffect(() => {
-    on('jobWrapper', activeJobs, (uid, status) => {
-      if (status === 'Completed')
-        showNotification({
-          title: `Jobs Manager`,
-          message: `Job ${uid} completed`,
-        });
-      if (status === 'Completed')
-        showNotification({
-          title: `Jobs Manager`,
-          message: `Job ${uid} failed`,
-          color: 'red',
-        });
-    });
-
-    return () => off('jobWrapper');
-  }, [activeJobs, off, on]);
 
   return (
     <JobPanel

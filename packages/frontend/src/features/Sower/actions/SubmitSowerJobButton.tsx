@@ -68,8 +68,11 @@ const SubmitSowerJobButton = forwardRef<
       if (data?.uid) {
         console.log('data', data);
         update(data.uid);
+        on('SubmitSowerJobButton', [data?.uid], (uid) => {
+          console.log('uid', uid);
+        });
       }
-    }, [data, update]);
+    }, [data, on, update]);
 
     const { action } = parameters;
 
@@ -77,9 +80,6 @@ const SubmitSowerJobButton = forwardRef<
       const jobBody = buildSowerJob(action, parameters);
       if (jobBody) {
         submitJob(jobBody);
-        on(action, [action], (uid) => {
-          console.log('uid', uid);
-        });
       }
     };
 

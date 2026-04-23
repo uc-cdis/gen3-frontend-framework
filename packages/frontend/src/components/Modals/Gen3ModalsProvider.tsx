@@ -78,9 +78,19 @@ const Gen3ModalsProvider = ({
   );
 
   useEffect(() => {
-    on('Gen3ModalsProvider', activeJobs, (uid) =>
-      showNotification({ message: `Job ${uid} completed` }),
-    );
+    on('Gen3ModalsProvider', activeJobs, (uid, status) => {
+      if (status === 'Completed')
+        showNotification({
+          title: `Jobs Manager`,
+          message: `Job ${uid} completed`,
+        });
+      if (status === 'Failed' || status === 'Cancelled' || status === 'Error')
+        showNotification({
+          title: `Jobs Manager`,
+          message: `Job ${uid} ${status}`,
+          color: 'red',
+        });
+    });
 
     return () => off('Gen3ModalsProvider');
   }, [activeJobs, off, on]);
