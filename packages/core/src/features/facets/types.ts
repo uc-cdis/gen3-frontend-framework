@@ -5,10 +5,12 @@ export type FacetType =
   | 'exact'
   | 'range'
   | 'age'
+  | 'age_in_years'
   | 'year'
   | 'years'
   | 'days'
   | 'percent'
+  | 'numeric_range'
   | 'datetime'
   | 'toggle'
   | 'multiselect'
@@ -17,6 +19,7 @@ export type FacetType =
 export interface AllowableRange {
   readonly minimum: number;
   readonly maximum: number;
+  readonly step?: number;
 }
 
 export interface FacetDefinition {

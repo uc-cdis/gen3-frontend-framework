@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { deleteCookie, setCookie } from 'cookies-next';
-import { decodeJwt, jwtVerify, importSPKI, JWTPayload } from 'jose';
+import { serialize } from 'cookie';
+import { decodeJwt, importSPKI, JWTPayload, jwtVerify } from 'jose';
 import { fetchFence } from '@gen3/core';
 import { getWebTokenErrorResponse } from './errorHandler';
-import { fetchJWTKey } from './utils';
+import { fetchJWTKey } from '../../lib/auth/utils';
 
 /**
  * Credentials login set up a access_token cookie. This is used to authenticate the user
@@ -29,13 +29,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (response.status !== 200) {
-      deleteCookie('credentials_token', {
-        req,
-        res,
-        sameSite: 'lax',
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
-      });
+      res.setHeader(
+        'Set-Cookie',
+        serialize('credentials_token', '', {
+          maxAge: -1,
+          path: '/',
+          sameSite: 'lax',
+          httpOnly: process.env.NODE_ENV === 'production',
+          secure: process.env.NODE_ENV === 'production',
+        }),
+      );
       return res.status(response.status).json({ message: 'Invalid token' });
     }
 
@@ -54,26 +57,32 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const payload = decodeJwt(access_token) as JWTPayload;
 
     if (!payload) {
-      deleteCookie('credentials_token', {
-        req,
-        res,
+      res.setHeader(
+        'Set-Cookie',
+        serialize('credentials_token', '', {
+          maxAge: -1,
+          path: '/',
+          sameSite: 'lax',
+          httpOnly: process.env.NODE_ENV === 'production',
+          secure: process.env.NODE_ENV === 'production',
+        }),
+      );
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    res.setHeader(
+      'Set-Cookie',
+      serialize('credentials_token', access_token, {
+        maxAge:
+          payload && payload.exp && payload.iat
+            ? payload.exp - payload.iat
+            : 60 * 60 * 20,
+        path: '/',
         sameSite: 'lax',
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
-      });
-      return res.status(400).json({ message: 'Invalid token' });
-    }
-    setCookie('credentials_token', access_token, {
-      req,
-      res,
-      maxAge:
-        payload && payload.exp && payload.iat
-          ? payload.exp - payload.iat
-          : 60 * 60 * 20,
-      sameSite: 'lax',
-      httpOnly: process.env.NODE_ENV === 'production',
-      secure: process.env.NODE_ENV === 'production',
-    });
+      }),
+    );
 
     return res.status(200).json({ message: 'Session token set' });
   } catch (error: unknown) {

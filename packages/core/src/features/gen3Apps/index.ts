@@ -1,16 +1,15 @@
 import {
-  createGen3App,
-  getGen3AppId,
-  createAppStore,
-  createGen3AppWithOwnStore,
   type AppDataSelectorResponse,
-  type UseAppDataResponse,
+  createAppStore,
+  createGen3App,
+  createGen3AppWithOwnStore,
+  getGen3AppId,
   type UseAppDataHook,
-} from './Gen3App';
-import {
-  selectGen3AppMetadataByName,
-  selectGen3AppByName,
-} from './gen3AppsSlice';
+  type UseAppDataResponse,
+} from './Gen3App.tsx';
+import { selectGen3AppByName, selectGen3AppMetadataByName, } from './gen3AppsSlice';
+
+import { printRegistry } from './gen3AppRegistry';
 
 import { createAppApiForRTKQ } from './Gen3AppRTKQ';
 
@@ -22,6 +21,7 @@ export {
   getGen3AppId,
   createAppStore,
   createAppApiForRTKQ,
+  printRegistry,
   type AppDataSelectorResponse,
   type UseAppDataResponse,
   type UseAppDataHook,

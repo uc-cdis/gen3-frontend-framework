@@ -21,6 +21,7 @@ const CohortBuilder = ({
   sharedFiltersMap = null,
   tabsLayout = 'left',
   enableCohortManager = true,
+  activeTab,
 }: CohortBuilderProps) => {
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
@@ -34,10 +35,10 @@ const CohortBuilder = ({
     <div className="flex flex-col w-full mt-2">
       {enableCohortManager ? <CohortManager /> : null}
       <Tabs
-        color="primary.4"
+        color="primary.5"
         variant={explorerConfig[0]?.tabType}
         keepMounted={true}
-        defaultValue={explorerConfig[0].tabTitle}
+        defaultValue={activeTab ?? explorerConfig[0].tabTitle}
       >
         <Tabs.List
           className="w-full"
@@ -62,6 +63,7 @@ const CohortBuilder = ({
               guppyConfig={panelConfig.guppyConfig}
               key={`${panelConfig.tabTitle}-CohortPanel`}
               chartsSection={panelConfig?.chartsSection}
+              charts={panelConfig?.charts}
               filters={panelConfig.filters}
               tabTitle={panelConfig.tabTitle}
               table={panelConfig.table}

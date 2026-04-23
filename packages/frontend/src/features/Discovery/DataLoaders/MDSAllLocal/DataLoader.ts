@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { JSONPath } from 'jsonpath-plus';
 import {
   AggregationsData,
+  CoreState,
   JSONObject,
   MetadataPaginationParams,
   selectAuthzMappingData,
@@ -21,6 +22,7 @@ import {
 import filterByAdvSearch from './filterByAdvSearch';
 import { getFilterValuesByKey, hasSearchTerms } from '../../Search/utils';
 import {
+  processAdvancedSearchTerms,
   processAllSummaries,
   processAuthorizations,
   processChartData,
@@ -30,7 +32,6 @@ import { SummaryStatistics } from '../../Statistics/types';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { GetDataProps, GetDataResponse, MetadataDataHook } from '../types';
 import { getManualSortingAndPagination } from '../../utils';
-import { CoreState } from '@gen3/core';
 
 // TODO remove after debugging
 // import { reactWhatChanged as RWC } from 'react-what-changed';
@@ -93,33 +94,6 @@ const suffixes = (term: string, minLength: number): string[] => {
   return tokens;
 };
 
-const processAdvancedSearchTerms = (
-  advSearchFilters: AdvancedSearchFilters,
-  data: JSONObject[],
-  uidField: string,
-): ReadonlyArray<KeyValueSearchFilter> => {
-  return advSearchFilters.filters.map((filter) => {
-    const { key, keyDisplayName } = filter;
-    const values = getFilterValuesByKey(
-      key,
-      data,
-      advSearchFilters.field,
-      uidField,
-    );
-    return {
-      key,
-      keyDisplayName,
-      valueDisplayNames: values.reduce(
-        (acc, cur) => {
-          acc[cur] = cur;
-          return acc;
-        },
-        {} as Record<string, string>,
-      ),
-    };
-  });
-};
-
 const useGetMDSData = ({
   guidType = 'unregistered_discovery_metadata',
   maxStudies = 10000,
@@ -158,7 +132,7 @@ const useGetMDSData = ({
         [],
       );
 
-      if (discoveryConfig?.features?.authorization.enabled) {
+      if (discoveryConfig?.features?.authorization?.enabled) {
         setMDSData(
           processAuthorizations(studyData, discoveryConfig, {
             default: authMapping,

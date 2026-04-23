@@ -41,4 +41,5 @@ export interface WorkspaceConfig extends Gen3AppConfigData {
   workspaceInfo?: Record<string, WorkspaceAdditionalInfo>;
   launchStepIndicatorConfig: LaunchStepIndicatorConfiguration;
   requirePayModel?: boolean;
+  externalLoginsNotUsed?: boolean;
 }

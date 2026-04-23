@@ -8,8 +8,8 @@ const meta = {
     deepControls: { enabled: true },
     nextjs: {
       appDirectory: true,
-    }
-  }
+    },
+  },
 } satisfies Meta<typeof AnalysisCenterWithSections>;
 
 export default meta;
@@ -77,7 +77,7 @@ export const Default: Story = {
             hasDemo: true,
             loginRequired: false,
             description:
-              'Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.',
+              'Display the survival analysis of your cohorts and compare characteristics such as sex, vital status and age at diagnosis.',
             icon: '/icons/apps/CohortComparison.svg',
             href: '/',
             count: 1000,
@@ -95,6 +95,7 @@ export const Default: Story = {
             count: 1000,
             countUnits: 'Cases',
           },
+
           {
             title: 'OncoMatrix',
             type: 'application',

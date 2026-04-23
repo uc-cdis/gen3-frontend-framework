@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { mergeDefaultTailwindClassnames } from '../../../utils/mergeDefaultTailwindClassnames';
 import { IconSize } from '../../DataLibrary/types';
 import { useRouter } from 'next/router';
@@ -46,16 +46,31 @@ export const AccountButton = ({
   const userStatus = useCoreSelector((state: CoreState) =>
     selectUserAuthStatus(state),
   );
-  const authenticated = isAuthenticated(userStatus);
+  
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (userStatus === 'pending') {
+      return
+    }
+    const tempIsAuth = isAuthenticated(userStatus);
+    if (tempIsAuth != authenticated) {
+      setAuthenticated(tempIsAuth);
+    }
+  }, [userStatus]);
 
   if (!authenticated) return null;
 
   // get the icon size otherwise use the value of iconsSize as a string value: e.g. 2em
   const iconSz = IconSize[iconSize] ?? iconSize;
+  const displayName =
+  userInfo?.email ||
+  userInfo?.preferred_username ||
+  userInfo?.username;
 
   return (
     <IconButton
-      name={userInfo?.username ?? 'Profile'}
+      name={displayName ?? 'Profile'}
       leftIcon={leftIcon}
       rightIcon={rightIcon}
       iconSize={iconSize}

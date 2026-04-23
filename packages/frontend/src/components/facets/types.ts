@@ -11,6 +11,10 @@ import React, { ComponentType, ReactNode } from 'react';
 
 export type QueryOptions = Record<string, unknown>;
 
+export type FacetValueLabel =
+  | string
+  | ((def?: FacetDefinition, queryOptions?: QueryOptions) => string);
+
 export interface EnumChartProps {
   readonly field: string;
   readonly data: Record<string, number>;
@@ -70,9 +74,9 @@ export interface EnumFacetData {
 // hook types for facets
 export type ClearFacetHook = () => ClearFacetFunction;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
-export type GetFacetDataFunction = (
-  field: string,
-) => EnumFacetResponse | RangeFacetResponse;
+// export type GetFacetDataFunction = (
+//   field: string,
+// ) => EnumFacetResponse | RangeFacetResponse ;
 export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
 export type GetRangeFacetDataFunction = (field: string) => RangeFacetResponse;
 export type GetRangeFacetWithDefinedRangesDataFunction = (
@@ -80,7 +84,22 @@ export type GetRangeFacetWithDefinedRangesDataFunction = (
   ranges: ReadonlyArray<NumericFromTo>,
 ) => RangeFacetResponse;
 
-export type FieldNameToTitleFunction = (
+export type FacetDataFunctionType = 'enum' | 'range' | 'rangeWithDefined';
+
+export type GetFacetDataFunction<
+  T extends 'enum' | 'range' | 'rangeWithDefined' = any,
+> = T extends 'enum'
+  ? GetEnumFacetDataFunction
+  : T extends 'range'
+    ? GetRangeFacetDataFunction
+    : T extends 'rangeWithDefined'
+      ? GetRangeFacetWithDefinedRangesDataFunction
+      :
+          | GetEnumFacetDataFunction
+          | GetRangeFacetDataFunction
+          | GetRangeFacetWithDefinedRangesDataFunction;
+
+export type fieldNameToLabelFunction = (
   field: string,
   sections?: number,
 ) => string;
@@ -102,7 +121,7 @@ export interface FacetCommonHooks {
   /**
    * Hook that takes the API field and returns a human readable field name
    */
-  useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  useFieldNameToLabel: () => (field: string, sections?: number) => string;
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   usePopulateFacetData?: (
@@ -111,27 +130,29 @@ export interface FacetCommonHooks {
   ) => void;
 }
 
-export interface FacetDataHooks extends FacetCommonHooks {
+export interface FacetDataHooks<
+  T extends FacetDataFunctionType,
+> extends FacetCommonHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetFilters: SelectFacetFilterFunction;
-  useGetFacetData: GetFacetDataFunction; // gets data for EnumFacets and ToggleFacet
+  useGetFacetData: GetFacetDataFunction<T>; // gets data for EnumFacets and ToggleFacet
   useTotalCounts?: GetTotalCountsFunction;
 }
 
-export interface EnumFacetDataHooks extends FacetDataHooks {
+export type EnumFacetDataHooks = FacetDataHooks<'enum'> & {
   useGetCombineMode: GetFacetCombineModeFunction;
   useUpdateCombineMode: SetFacetCombineModeFunction;
-}
+  updateVisibleValues?: EnumFacetDataChangedFunction;
+};
 
-export interface RangeFacetHooks extends FacetCommonHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetData: GetRangeFacetDataFunction;
-}
+export type RangeFacetDataHooks = FacetDataHooks<'range'>;
 
-export interface UploadFacetHooks extends FacetCommonHooks {
+export type ToggleFacetDataHooks = FacetDataHooks<'enum'>;
+
+export type UploadFacetDataHooks = FacetDataHooks<'enum'> & {
   /**
-  * Hook that returns a list of the uploaded items
-  */
+   * Hook that returns a list of the uploaded items
+   */
   useFilterItems: (field: string) => {
     noData: boolean;
     items: EnumOperandValue;
@@ -140,18 +161,6 @@ export interface UploadFacetHooks extends FacetCommonHooks {
    * Hook that return a function to open the upload modal
    */
   useOpenUploadModal: () => (field: string) => void;
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-}
-
-export type AdvancedRangeFacetHooks = FacetCommonHooks & {
-  /**
-   * Hook that returns range values and counts
-   */
-  useGetRangeFacetData: GetRangeFacetDataFunction;
-  /**
-   * Hook that returns the currently selected filters
-   */
-  useGetFacetFilters: SelectFacetFilterFunction;
 };
 
 export interface CustomFacetHooks {
@@ -184,6 +193,7 @@ export interface FacetResponse {
   readonly data?: Record<string, number>;
   readonly isSuccess: boolean;
   readonly isFetching: boolean;
+  readonly isError?: boolean;
   readonly error?: unknown;
 }
 
@@ -220,21 +230,13 @@ export interface FieldToName {
   readonly name: string;
 }
 
-export type NumericRangeFacetHooks = FacetDataHooks & {
-  /**
-   * Hook that returns range values and counts
-   */
-  useGetRangeFacetData: GetRangeFacetWithDefinedRangesDataFunction;
-  /**
-   * Hook that returns the currently selected filters
-   */
-  useGetFacetFilters: SelectFacetFilterFunction;
-};
+export type NumericRangeFacetHooks = FacetDataHooks<'rangeWithDefined'>;
 
 export type NumericFacetCardProps = FacetCardProps<NumericRangeFacetHooks> & {
   readonly rangeDatatype?: string;
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;
+  readonly step?: number;
   readonly clearValues?: boolean;
 };
 
@@ -265,7 +267,10 @@ export interface CohortBuilderCategoryConfig {
   readonly facets: ReadonlyArray<string>;
   readonly queryOptions?: QueryOptions;
 }
-export type FacetRequiredHooks = EnumFacetDataHooks | RangeFacetHooks | UploadFacetHooks;
+export type FacetRequiredHooks =
+  | EnumFacetDataHooks
+  | RangeFacetDataHooks
+  | UploadFacetDataHooks;
 
 export interface EnumChartProps {
   readonly field: string;
@@ -277,3 +282,8 @@ export interface EnumChartProps {
   readonly height: number;
   readonly valueLabel?: string;
 }
+
+export type FacetHooks =
+  | FacetDataHooks<'enum' | 'range' | 'rangeWithDefined'>
+  | EnumFacetDataHooks
+  | UploadFacetDataHooks;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { processLabel, truncateString } from '../utils';
 import { ChartProps } from '../types';
 import ReactECharts, { ReactEChartsProps } from './ReactECharts';

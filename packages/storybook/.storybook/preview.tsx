@@ -2,9 +2,9 @@ import React from 'react';
 import type { Preview } from '@storybook/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { GEN3_API, GEN3_AUTHZ_API, GEN3_FENCE_API } from '@gen3/core';
-import { Gen3Provider } from '@gen3/frontend';
+import { Gen3Provider } from '@gen3/frontend/app';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse } from 'msw';
 import theme from '../src/mantineTheme';
 import icons from './loadIcons';
 
@@ -20,19 +20,15 @@ import '@fontsource/poppins';
 initialize({}, [
   http.get(`${GEN3_API}/_status`, () => {
     return HttpResponse.json({
-      "message": "Feeling good with storybook!",
-      "csrf": "6640e4857e5cb3b42db303d8ee3a4ace11900.0002025-06-17T15:24:53+00:00"
+      message: 'Feeling good with storybook!',
+      csrf: '6640e4857e5cb3b42db303d8ee3a4ace11900.0002025-06-17T15:24:53+00:00',
     });
   }),
   http.get(`${GEN3_AUTHZ_API}/mapping`, () => {
-    return HttpResponse.json({
-    });
+    return HttpResponse.json({});
   }),
   http.get(`${GEN3_FENCE_API}/user`, () => {
-    return HttpResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
+    return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }),
 ]);
 
@@ -52,6 +48,23 @@ const sessionConfig = {
   monitorWorkspace: false,
 };
 
+const protectecRoutes = {
+  routes: {
+    '/DataLibrary': {
+      loginRequired: true,
+    },
+    '/Workspace': {
+      loginRequired: true,
+    },
+    '/Profile': {
+      loginRequired: true,
+    },
+    '*': {
+      loginRequired: false,
+    },
+  },
+};
+
 const preview: Preview = {
   parameters: {
     controls: {
@@ -59,7 +72,7 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
-    }
+    },
   },
   tags: ['autodocs'],
   decorators: [
@@ -69,6 +82,7 @@ const preview: Preview = {
           icons={icons}
           sessionConfig={sessionConfig}
           modalsConfig={modalsConfig}
+          protectedRoutesConfig={protectecRoutes}
         >
           <Story />
         </Gen3Provider>

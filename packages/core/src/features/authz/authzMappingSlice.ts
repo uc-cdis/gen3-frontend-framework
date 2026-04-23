@@ -36,7 +36,6 @@ export const authzApi = authzTags.injectEndpoints({
       CreateAuthzResourceRequest
     >({
       query: (request) => ({
-        // url: `${GEN3_AUTHZ_API}/resources/${request.resourcePath}${request?.path ? `&p=${request.path}` : ''}`,
         url: `${GEN3_AUTHZ_API}/resources`,
         method: 'POST',
         body: request.data,

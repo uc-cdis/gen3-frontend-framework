@@ -15,14 +15,36 @@ import {
   useCoreSelector,
 } from '@gen3/core';
 import QueryExpressionSection from './QueryExpressionSection';
-import { QueryExpressionContext } from './QueryExpressionContext';
+import {
+  QueryExpressionContext,
+  QueryExpressionHooks,
+} from './QueryExpressionContext';
 import { useCohortFacetFilters } from '../hooks';
 
-interface QueryExpressionProps {
+const SUMMARY_THRESHOLD = 10;
+
+/**
+ * Default summary function for facet values. Any count above the threshold will be shown as a summary.
+ * @param field
+ * @param count
+ */
+const DefaultShouldShowSummary = (field: string, count: number) => {
+  return count > SUMMARY_THRESHOLD;
+};
+
+export interface QueryExpressionProps {
   index: string;
+  shouldShowSummary?: (field: string, count: number) => boolean;
+  hooks?: Partial<QueryExpressionHooks>;
+  fieldsAreFlat?: boolean;
 }
 
-const QueryExpression = ({ index }: QueryExpressionProps) => {
+const QueryExpression = ({
+  index,
+  shouldShowSummary = DefaultShouldShowSummary,
+  hooks,
+  fieldsAreFlat = true,
+}: QueryExpressionProps) => {
   const currentCohortId = useCoreSelector((state: CoreState) =>
     selectCurrentCohortId(state),
   );
@@ -36,6 +58,8 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
         cohortName: currentCohortName,
         cohortId: currentCohortId,
         displayOnly: false,
+        fieldsAreFlat: fieldsAreFlat,
+        shouldShowSummary: shouldShowSummary,
         useClearCohortFilters: () => {
           const dispatch = useCoreDispatch();
           const shouldShareFilters = useCoreSelector((state) =>
@@ -132,6 +156,10 @@ const QueryExpression = ({ index }: QueryExpressionProps) => {
             );
         },
         useGetFilters: useCohortFacetFilters,
+        useFormatFilters: () => (value: string, _field: string) =>
+          Promise.resolve(value),
+
+        ...(hooks ?? {}),
       }}
     >
       <QueryExpressionSection index={index} />

@@ -1,14 +1,11 @@
 import React from 'react';
 import QueryExpression from './QueryExpression';
+import { type QueryExpressionProps } from './QueryExpression/QueryExpression';
 
-interface CohortManagerProps {
-  index: string;
-}
-
-const CohortManagerAndExpression = ({ index }: CohortManagerProps) => {
+const CohortManagerAndExpression = (props: QueryExpressionProps) => {
   return (
     <div className="flex flex-col mb-2">
-      <QueryExpression index={index} />
+      <QueryExpression {...props} />
     </div>
   );
 };

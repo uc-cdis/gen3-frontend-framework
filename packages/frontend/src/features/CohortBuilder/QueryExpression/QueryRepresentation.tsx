@@ -6,7 +6,7 @@ import {
   ExcludeIfAny,
   Excludes,
   Exists,
-  fieldNameToTitle,
+  fieldNameToLabel,
   GreaterThan,
   GreaterThanOrEquals,
   handleOperation,
@@ -52,7 +52,7 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.div`
-bg-accent-cool-lightest
+bg-accentCool-lightest
 text-base-darkest
 uppercase
 px-2 pl-1
@@ -94,6 +94,11 @@ type ValueOperation = RangeOperation | Equals | NotEquals;
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
 export type SetOperation = Includes | Excludes | ExcludeIfAny;
 
+const FieldNameOverrides: Record<string, string> = {
+  gender: 'gex',
+  Gender: 'Sex',
+};
+
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   return (
     x !== undefined &&
@@ -110,11 +115,10 @@ export const isNestedFilter = (x: Operation): x is NestedFilter => {
   return 'path' in x;
 };
 
-interface IncludeExcludeQueryElementProps
-  extends Pick<
-    Includes | Excludes | ExcludeIfAny,
-    'field' | 'operator' | 'operands'
-  > {
+interface IncludeExcludeQueryElementProps extends Pick<
+  Includes | Excludes | ExcludeIfAny,
+  'field' | 'operator' | 'operands'
+> {
   index: string;
   path?: string;
   displayOnly?: boolean;
@@ -131,10 +135,13 @@ const IncludeExcludeQueryElement = ({
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
+
   const {
     cohortId: currentCohortId,
     useRemoveFilter,
     useUpdateFilters,
+    shouldShowSummary,
+    fieldsAreFlat,
   } = useContext(QueryExpressionContext);
 
   const removeCohortFilter = useRemoveFilter();
@@ -155,15 +162,29 @@ const IncludeExcludeQueryElement = ({
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName = fieldNameToTitle(field);
+  const fieldName = FieldNameOverrides[field]
+    ? fieldNameToLabel(FieldNameOverrides[field])
+    : fieldNameToLabel(field);
   const operandsArray = isArray(operands) ? operands : [operands];
+
+  const showSummaryView = shouldShowSummary
+    ? shouldShowSummary(field, operandsArray.length)
+    : false;
+
+  const getSummaryLabel = () => {
+    const count = operandsArray.length.toLocaleString();
+    const entityName = fieldNameToLabel(field).toLowerCase();
+    return `${count} input ${entityName}s`;
+  };
+
+  const fieldToUpdate = path && path != '.' ? [path, field].join('.') : field;
 
   return (
     <QueryContainer>
       <QueryFieldLabel>{fieldName}</QueryFieldLabel>
       <ActionIcon
         variant="transparent"
-        size={'xs'}
+        size="xs"
         onClick={() => {
           if (currentCohortId)
             setQueryExpressionsExpanded({
@@ -191,55 +212,93 @@ const IncludeExcludeQueryElement = ({
         </b>
       ) : (
         <QueryRepresentationText>
-          <Group gap="xs">
-            {operandsArray.map((x: string | number, i) => {
-              const value = x.toString();
-              return (
-                <Badge
-                  key={`query-rep-${field}-${value}-${i}`}
-                  data-testid={`query-rep-${field}-${value}-${i}`}
-                  variant="filled"
-                  color="accent.5"
-                  size="md"
-                  className={`normal-case items-center max-w-[162px] cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
-                  rightSection={!displayOnly && <RemoveButton value={value} />}
-                  onClick={() => {
-                    if (displayOnly) return;
-                    const newOperands = operandsArray.filter((o) => o !== x);
-                    const fieldToUpdate =
-                      path && path != '.' ? [path, field].join('.') : field;
+          {showSummaryView ? (
+            <Badge
+              variant="filled"
+              color="accent.5"
+              size="md"
+              className={`normal-case items-center pr-3 cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
+              rightSection={!displayOnly && <RemoveButton value="all" />}
+              onClick={() => {
+                if (displayOnly) return;
 
-                    if (currentCohortId && newOperands.length === 0) {
-                      setQueryExpressionsExpanded({
-                        type: 'clear',
-                        cohortId: currentCohortId,
-                        field: fieldToUpdate,
-                      });
-
-                      removeCohortFilter(index, fieldToUpdate);
-                    } else {
-                      updateCohortFilter(
-                        index,
-                        fieldToUpdate,
-                        buildNestedFilterForOperation(fieldToUpdate, {
-                          operator: operator,
-                          field: field,
-                          operands: newOperands,
-                        }),
-                      );
+                if (currentCohortId) {
+                  setQueryExpressionsExpanded({
+                    type: 'clear',
+                    cohortId: currentCohortId,
+                    field: fieldToUpdate,
+                  });
+                  removeCohortFilter(index, fieldToUpdate);
+                }
+              }}
+            >
+              <OverflowTooltippedLabel
+                label={getSummaryLabel()}
+                className="flex-grow text-md font-content"
+              >
+                {getSummaryLabel()}
+              </OverflowTooltippedLabel>
+            </Badge>
+          ) : (
+            <Group gap="xs">
+              {operandsArray.map((x: string | number, i) => {
+                const value = x.toString();
+                return (
+                  <Badge
+                    key={`query-rep-${field}-${value}-${i}`}
+                    data-testid={`query-rep-${field}-${value}-${i}`}
+                    variant="filled"
+                    color="accent.5"
+                    size="md"
+                    className={`normal-case items-center max-w-[162px] cursor-pointer hover:bg-accent-darker pl-2 ${displayOnly ? 'pr-3' : 'pr-0'}`}
+                    rightSection={
+                      !displayOnly && <RemoveButton value={value} />
                     }
-                  }}
-                >
-                  <OverflowTooltippedLabel
-                    label={value}
-                    className="flex-grow text-md font-content"
+                    onClick={() => {
+                      if (displayOnly) return;
+                      const newOperands = operandsArray.filter((o) => o !== x);
+
+                      if (currentCohortId && newOperands.length === 0) {
+                        setQueryExpressionsExpanded({
+                          type: 'clear',
+                          cohortId: currentCohortId,
+                          field: fieldToUpdate,
+                        });
+
+                        removeCohortFilter(index, fieldToUpdate);
+                      } else {
+                        updateCohortFilter(
+                          index,
+                          fieldToUpdate,
+                          fieldsAreFlat
+                            ? {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }
+                            : buildNestedFilterForOperation(fieldToUpdate, {
+                                operator: operator,
+                                field: field,
+                                operands: newOperands,
+                              }),
+                        );
+                      }
+                    }}
                   >
-                    <QueryRepresentationLabel value={value.toString()} />
-                  </OverflowTooltippedLabel>
-                </Badge>
-              );
-            })}
-          </Group>
+                    <OverflowTooltippedLabel
+                      label={value}
+                      className="flex-grow text-md font-content"
+                    >
+                      <QueryRepresentationLabel
+                        value={value.toString()}
+                        field={field}
+                      />
+                    </OverflowTooltippedLabel>
+                  </Badge>
+                );
+              })}
+            </Group>
+          )}
         </QueryRepresentationText>
       )}
     </QueryContainer>
@@ -270,11 +329,11 @@ const ComparisonElement = ({
   return (
     <React.Fragment>
       {showLabel ? (
-        <QueryFieldLabel>{fieldNameToTitle(filter.field)}</QueryFieldLabel>
+        <QueryFieldLabel>{fieldNameToLabel(filter.field)}</QueryFieldLabel>
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-lightest text-accent-cool-lightest-contrast pb-1"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accentCool-lightest text-accentCool-lightest-contrast"
           onClick={() => {
             if (displayOnly) return;
             handleKeepMember(filter);
@@ -291,7 +350,7 @@ const ComparisonElement = ({
 const ExistsElement = ({ field, operator }: Exists | Missing) => {
   return (
     <div className="flex flex-row items-center">
-      {fieldNameToTitle(field)} is
+      {fieldNameToLabel(field)} is
       <span className="px-1 underline">{operator}</span>
     </div>
   );
@@ -329,10 +388,6 @@ export const ClosedRangeQueryElement = ({
   );
 };
 
-interface QueryElementBaseProps {
-  readonly index: string;
-}
-
 interface QueryElementProps {
   index: string;
   field: string;
@@ -362,14 +417,15 @@ export const QueryElement = ({
   //   selectCurrentCohortId(state),
   // );
 
-  const fieldName = path && path != '.' ? [path, field].join('.') : field;
+  const fieldToUpdate = path && path != '.' ? [path, field].join('.') : field;
+
   const handleRemoveFilter = () => {
-    removeCohortFilter(index, fieldName);
+    removeCohortFilter(index, fieldToUpdate);
     if (currentCohortId)
       setQueryExpressionsExpanded({
         type: 'clear',
         cohortId: currentCohortId,
-        field: fieldName,
+        field: fieldToUpdate,
       });
   };
 
@@ -386,7 +442,7 @@ export const QueryElement = ({
         <button
           className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
           onClick={handleRemoveFilter}
-          aria-label={`remove ${fieldNameToTitle(field)}`}
+          aria-label={`remove ${fieldNameToLabel(field)}`}
         >
           <ClearIcon size="1.5em" className="px-1" />
         </button>

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchFence, Gen3FenceResponse } from '../fence';
+import { fetchFence } from '../fence/fetchFence';
+import { type Gen3FenceResponse } from '../fence/types';
 import { CoreDispatch } from '../../store';
 import { CoreState } from '../../reducers';
 import { CoreDataSelectorResponse, DataStatus } from '../../dataAccess';
@@ -109,8 +110,9 @@ export const userReducer = slice.reducer;
 
 export const { resetUserState } = slice.actions;
 
-export interface Gen3UserSelectorResponse<T>
-  extends CoreDataSelectorResponse<T> {
+export interface Gen3UserSelectorResponse<
+  T,
+> extends CoreDataSelectorResponse<T> {
   readonly loginStatus: LoginStatus;
 }
 

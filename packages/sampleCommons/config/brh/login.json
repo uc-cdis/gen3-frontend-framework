@@ -15,11 +15,12 @@
   ],
   "bottomContent": [
     {
-      "text": "If you have any questions about access or the registration process, please contact ",
+      "type": "markdown",
+      "text": "If you have any questions about access or the registration process, please contact [support@gen3.org](mailto:support@gen3.org])",
       "className": "text-center text-sm"
     }
   ],
   "image": "images/brh/gene_bgy.png",
-  "email": "brhsupport@datacommons.io",
+  "email": "brhsupport@gen3.org",
   "showCredentialsLogin" : true
 }

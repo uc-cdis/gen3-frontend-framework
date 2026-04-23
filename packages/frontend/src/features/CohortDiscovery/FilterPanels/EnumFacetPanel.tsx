@@ -1,26 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Text, Tooltip } from '@mantine/core';
-import {
-  EnumFacetDataChangedFunction,
-  FacetDataHooks,
-  GetEnumFacetDataFunction,
-} from '../../../components/facets';
+import { EnumFacetDataHooks } from '../../../components/facets';
 import { createChart } from '../../../components/charts/createChart';
-import { fieldNameToTitle, HistogramData } from '@gen3/core';
+import { FacetDefinition, fieldNameToLabel, HistogramData } from '@gen3/core';
 import FacetEnumList from '../../../components/facets/FacetEnumList';
 import { FacetIconButton } from '../../../components/facets/components';
 import { FaUndo as UndoIcon } from 'react-icons/fa';
-import { FacetDefinition } from '@gen3/core';
-
-export interface EnumFacetPanelDataHooks extends FacetDataHooks {
-  useGetFacetData: GetEnumFacetDataFunction;
-  updateVisibleValues?: EnumFacetDataChangedFunction;
-}
 
 interface EnumFacetPanelProps {
   facet: FacetDefinition;
   valueLabel: string;
-  hooks: EnumFacetPanelDataHooks;
+  hooks: EnumFacetDataHooks;
   showTotals?: boolean;
   chartType?: string;
 }
@@ -49,7 +39,7 @@ const EnumFacetPanel: React.FC<EnumFacetPanelProps> = ({
   );
 
   const facetName = useMemo(
-    () => label ?? fieldNameToTitle(field),
+    () => label ?? fieldNameToLabel(field),
     [label, field],
   );
 

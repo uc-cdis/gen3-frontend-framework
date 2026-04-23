@@ -14,9 +14,18 @@ const TextDescription = ({
 }: TextDescriptionProps): ReactElement => {
   return (
     <Spoiler
+      classNames={{ control: 'text-sm font-semibold' }}
       maxHeight={80}
-      showLabel={<span>Extend Text <DownArrowIcon className="inline"/></span>}
-      hideLabel={<span>Collapse Text <UpArrowIcon className="inline" /></span>}
+      showLabel={
+        <span>
+          Extend Text <DownArrowIcon className="inline" />
+        </span>
+      }
+      hideLabel={
+        <span>
+          Collapse Text <UpArrowIcon className="inline" />
+        </span>
+      }
     >
       {description}
     </Spoiler>

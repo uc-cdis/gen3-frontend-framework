@@ -21,7 +21,6 @@ const UploadJSONButton: React.FC<UploadJSONButtonProps> = ({
       onChange={async (file) => {
         if (file !== null) {
           setProcessingFile(true);
-          setFile(file);
           const contents = await file.text();
           handleFileChange(contents);
           setProcessingFile(false);

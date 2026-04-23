@@ -10,13 +10,12 @@ import {
 } from '@mantine/core';
 import { CloseIcon, LockOutlineIcon } from '../../types/icons';
 import FacetSortPanel from './FacetSortPanel';
-import { type CombineMode, fieldNameToTitle } from '@gen3/core';
+import { type CombineMode, fieldNameToLabel } from '@gen3/core';
 import OverflowTooltippedLabel from '../OverflowTooltippedLabel';
 import FacetExpander from './FacetExpander';
 import { EnumFacetChart } from '../charts';
 import React, { useEffect, useRef, useState } from 'react';
-import { EnumFacetHooks } from './EnumFacet';
-import { FacetSortType, SortType } from './types';
+import { EnumFacetDataHooks, FacetSortType, SortType } from './types';
 import {
   compareKeysAscending,
   compareKeysDescending,
@@ -30,7 +29,7 @@ interface FacetEnumListProps {
   field: string;
   facetName?: string;
   valueLabel: string;
-  hooks: EnumFacetHooks;
+  hooks: EnumFacetDataHooks;
   isSettings?: boolean;
   isSearching?: boolean;
   isFacetView?: boolean;
@@ -210,19 +209,17 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
           )
         : [];
 
-      const remainingValues =
-        tempFilteredData.length +
-        selectedEnumNotInData.length -
-        maxValuesToDisplay;
-      const cardStyle = calcCardStyle(remainingValues);
-      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
-        tempFilteredData.length + selectedEnumNotInData.length,
-      );
-
       const allData = [...tempFilteredData, ...selectedEnumNotInData];
       // remove any enum in excludeValues
       const filteredData = allData.filter(
         (x) => !excludeValues?.includes(x[0].toString()),
+      );
+
+      const remainingValues =
+        filteredData.length + selectedEnumNotInData.length - maxValuesToDisplay;
+      const cardStyle = calcCardStyle(remainingValues);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
+        tempFilteredData.length + selectedEnumNotInData.length,
       );
 
       setFacetChartData((prevFacetChartData) => ({
@@ -371,7 +368,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                     sortType={sortType}
                     valueLabel={valueLabel}
                     setSort={setSortType}
-                    field={facetName ? facetName : fieldNameToTitle(field)}
+                    field={facetName ? facetName : fieldNameToLabel(field)}
                   />
                 ) : (
                   false
@@ -404,7 +401,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               <Checkbox
                                 data-testid={`checkbox-${value}`}
                                 value={value}
-                                size="xs"
+                                size="sm"
                                 color="accent.4"
                                 onChange={(e) =>
                                   handleChange(
@@ -415,7 +412,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                                 aria-label={`${value}`}
                                 classNames={{
                                   input: 'hover:bg-accent-darker',
-                                  label: 'text-xs font-normal font-content',
+                                  label: 'text-sm font-normal font-content',
                                 }}
                                 checked={
                                   selectedEnums && selectedEnums.includes(value)
@@ -423,11 +420,11 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               />
                             </div>
                             <OverflowTooltippedLabel label={value.toString()}>
-                              <span className="text-xs font-normal font-content">
+                              <span className="text-sm font-normal font-content">
                                 {value}
                               </span>
                             </OverflowTooltippedLabel>
-                            <div className="flex-none text-right w-14 text-xs font-normal font-content">
+                            <div className="flex-none text-right w-14 text-sm font-normal font-content">
                               {count < 0 ? (
                                 <LockOutlineIcon
                                   size="1.1em"
@@ -438,7 +435,7 @@ const FacetEnumList: React.FC<FacetEnumListProps> = ({
                               )}
                             </div>
                             {showPercent ? (
-                              <div className="flex-none text-right w-18 text-xs font-normal font-content">
+                              <div className="flex-none text-right w-18 text-sm font-normal font-content">
                                 (
                                 {count < 0 ? (
                                   <LockOutlineIcon

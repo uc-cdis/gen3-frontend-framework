@@ -19,19 +19,24 @@ export interface QueryExpressionHooks {
   useRemoveFilter: () => (index: string, field: string) => void;
   useSetCohortFilters: () => (index: string, filters: FilterSet) => void;
   useGetFilters: (index: string) => FilterSet;
+  useFormatFilters: () => (value: string, field: string) => Promise<string>;
 }
 
 export interface QueryExpressionContextProps extends QueryExpressionHooks {
   displayOnly: boolean;
   cohortName: string;
   cohortId: string | null;
+  fieldsAreFlat: boolean;
+  shouldShowSummary?: (field: string, count: number) => boolean;
 }
 
 export const QueryExpressionContext =
   React.createContext<QueryExpressionContextProps>({
     displayOnly: false,
+    fieldsAreFlat: true,
     cohortId: null,
     cohortName: 'default',
+    shouldShowSummary: () => false,
     useClearCohortFilters: () => {
       const dispatch = useCoreDispatch();
       return (index: string) => dispatch(clearCohortFilters({ index }));
@@ -70,4 +75,6 @@ export const QueryExpressionContext =
     useGetFilters: () => {
       return { mode: 'and', root: {} } as FilterSet;
     },
+    useFormatFilters: () => (value: string, _field: string) =>
+      Promise.resolve(value),
   });

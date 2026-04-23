@@ -1,13 +1,12 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { NextRouter, useRouter } from 'next/dist/client/router';
-
+import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
 import {
-  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
-  NavPageLayoutProps,
-  StaticNotebookIFrame,
-} from '@gen3/frontend';
+  type NavPageLayoutProps,
+} from '@gen3/frontend/features/Navigation';
+import StaticNotebookIFrame from '@gen3/frontend/features/StaticNotebook/StaticNotebookIFrame';
 
 const StaticNotebookApp = ({
   headerProps,

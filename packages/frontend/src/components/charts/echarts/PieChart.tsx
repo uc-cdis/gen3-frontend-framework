@@ -25,7 +25,7 @@ const processChartData = (
   return results;
 };
 
-const PieChart = ({ data, label }: ChartProps) => {
+const PieChart = ({ data, label, showLegendInChart }: ChartProps) => {
   const chartDefinition = useMemo((): ReactEChartsProps['option'] => {
     return {
       emphasis: {
@@ -37,16 +37,21 @@ const PieChart = ({ data, label }: ChartProps) => {
       tooltip: {
         trigger: 'item',
       },
+      legend: showLegendInChart ? {
+        top: '5%',
+        left: 'center',
+        height: '40%',
+        type: 'scroll',
+        orient: 'vertical',
+      } : undefined,
       series: [
         {
           type: 'pie',
-          radius: '60%',
+          top: showLegendInChart ?'45%': '2%',
+          radius: '85%',
           data: processChartData(data),
           label: {
-            show: label?.show !== undefined ? label.show : true,
-            fontSize: '14',
-            fontWeight: 'bold',
-            overflow: 'break',
+            show: label?.show,
           },
         },
       ],

@@ -1,11 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import {
-  Autocomplete,
-  AutocompleteProps,
-  Button,
-  Stack,
-  Group,
-} from '@mantine/core';
+import { Autocomplete, AutocompleteProps, Button, Group, Stack, } from '@mantine/core';
 import { MdClose as CloseIcon, MdSearch as SearchIcon } from 'react-icons/md';
 import ResultCard from './ResultCard';
 import { useMiniSearch } from 'react-minisearch';
@@ -211,7 +205,7 @@ const TableSearch = ({ selectItem }: TableSearchProps): ReactElement => {
             });
           }}
           classNames={{
-            input: 'focus:border-2 focus:border-primary text-sm p-5',
+            input: 'focus:border-2 focus:border-primary text-sm',
           }}
           size="sm"
           rightSection={

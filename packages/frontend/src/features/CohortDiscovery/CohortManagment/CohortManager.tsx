@@ -244,6 +244,11 @@ const CohortManagerPanel = ({
               onConfirm: () => {
                 appDispatch(removeCohort(currentCohort.id));
               },
+              styles: {
+                body: {
+                  padding: '1rem',
+                },
+              },
             });
           }}
         >

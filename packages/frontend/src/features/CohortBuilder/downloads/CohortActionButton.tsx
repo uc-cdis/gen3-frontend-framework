@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useCallback } from 'react';
 import useGuppyActionButton from './downloadActionHook';
-import { Button, Tooltip } from '@mantine/core';
-import { FiDownload } from 'react-icons/fi';
 import { GuppyActionButtonProps } from '../types';
 import { Modals } from '@gen3/core';
+import ActionButton from './ActionButton';
 
 const CohortActionButton = ({
   activeText,
@@ -21,7 +20,7 @@ const CohortActionButton = ({
   actionFunction,
   actionArgs,
 }: GuppyActionButtonProps) => {
-  const { handleClick, icon, active } = useGuppyActionButton({
+  const { handleClick, cancel, icon, active } = useGuppyActionButton({
     Modal403,
     Modal400,
     done,
@@ -31,26 +30,26 @@ const CohortActionButton = ({
     actionArgs,
   });
 
-  const ref = useRef(null);
+  const clickHandler = useCallback(() => {
+    if (disabled) return;
+    if (!active) handleClick();
+    else cancel();
+  }, [active, disabled, handleClick, cancel]);
+
   return (
-    <Tooltip disabled={!tooltipText} label={tooltipText}>
-      <Button
-        ref={ref}
-        leftSection={showIcon && inactiveText && <FiDownload />}
-        disabled={disabled}
-        className={
-          customStyle ||
-          `text-base-lightest ${
-            disabled ? 'bg-base' : 'bg-primary hover:bg-primary-darker'
-          } `
-        }
-        loading={showLoading && active}
-        onClick={handleClick}
-      >
-        {active ? activeText : inactiveText || icon}
-      </Button>
-    </Tooltip>
+    <ActionButton
+      activeText={activeText}
+      inactiveText={inactiveText}
+      active={active}
+      icon={icon}
+      handleClick={clickHandler}
+      customStyle={customStyle}
+      showLoading={showLoading}
+      showIcon={showIcon}
+      disabled={disabled}
+      tooltipText={tooltipText}
+    />
   );
 };
 
-export default CohortActionButton;
+export default React.memo(CohortActionButton);

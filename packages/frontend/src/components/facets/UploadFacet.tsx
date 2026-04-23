@@ -1,19 +1,19 @@
-import React from "react";
-import { Button, Tooltip } from "@mantine/core";
-import FilterBadge from "../../features/CohortBuilder/QueryExpression/FilterBadge";
-import FacetControlsHeader from "./FacetControlsHeader";
-import { FacetCardProps, UploadFacetHooks } from "./types";
+import React from 'react';
+import { Button, Tooltip } from '@mantine/core';
+import FilterBadge from '../../features/CohortBuilder/QueryExpression/FilterBadge';
+import FacetControlsHeader from './FacetControlsHeader';
+import { FacetCardProps, UploadFacetDataHooks } from './types';
 
 /**
  * Facet card component for fields were a user can upload a list of values
  */
-const UploadFacet: React.FC<FacetCardProps<UploadFacetHooks>> = ({
+const UploadFacet: React.FC<FacetCardProps<UploadFacetDataHooks>> = ({
   field,
   facetName,
   facetBtnToolTip,
   hooks,
 }) => {
-  const hash = window?.location?.hash.split("#")?.[1];
+  const hash = window?.location?.hash.split('#')?.[1];
   const cardSelected = hash !== undefined && hash === field;
   const openModal = hooks.useOpenUploadModal();
 
@@ -43,7 +43,7 @@ const UploadFacet: React.FC<FacetCardProps<UploadFacetHooks>> = ({
   return (
     <div
       className={`flex flex-col mx-0 bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
-        cardSelected ? "animate-border-highlight " : undefined
+        cardSelected ? 'animate-border-highlight ' : undefined
       }`}
       id={field}
     >
@@ -60,7 +60,7 @@ const UploadFacet: React.FC<FacetCardProps<UploadFacetHooks>> = ({
             multiline
             w={220}
             withArrow
-            transitionProps={{ duration: 200, transition: "fade" }}
+            transitionProps={{ duration: 200, transition: 'fade' }}
           >
             <Button
               variant="outline"

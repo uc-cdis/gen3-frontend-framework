@@ -1,20 +1,12 @@
-import {
-  Accordion,
-  Group,
-  Stack,
-  Switch,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
+import { Accordion, Group, Stack, Switch, Text, useMantineTheme, } from '@mantine/core';
 import type { TabConfig } from '../../../features/CohortBuilder/types';
 import FiltersPanel from '../FiltersPanel';
 import {
   Accessibility,
-  selectAllCohortFiltersCollapsed,
+  FacetDefinition,
   selectSharedFilters,
   selectShouldShareFilters,
   setShouldShareFilters,
-  toggleCohortBuilderAllFilters,
   useCoreDispatch,
   useCoreSelector,
 } from '@gen3/core';
@@ -22,17 +14,20 @@ import React from 'react';
 import { TabbablePanelProps } from './types';
 import { Icon } from '@iconify-icon/react';
 import { modals } from '@mantine/modals';
-import { FacetDefinition } from '@gen3/core';
+import { FacetValueLabel } from '../types';
 
 export const AccordionPanel = ({
-  index,
   filters,
   tabTitle,
   facetDefinitions,
   facetDataHooks,
+  allFiltersCollapsed,
+  toggleAllFiltersExpanded,
+  clearAllFilters,
   onAccessChange = (value: Accessibility) => null,
   accessLevel = Accessibility.ALL,
   showAccessLevel = false,
+                                 valueLabel = undefined as FacetValueLabel | undefined,
 }: TabbablePanelProps) => {
   const coreDispatch = useCoreDispatch();
   const sharedFilters = useCoreSelector((state) => selectSharedFilters(state));
@@ -40,12 +35,7 @@ export const AccordionPanel = ({
   const shareFilters = useCoreSelector((state) =>
     selectShouldShareFilters(state),
   );
-  const allFiltersCollapsed = useCoreSelector((state) =>
-    selectAllCohortFiltersCollapsed(state, index),
-  );
-  const toggleAllFiltersExpanded = (expand: boolean) => {
-    coreDispatch(toggleCohortBuilderAllFilters({ expand, index }));
-  };
+
   const handleSharedFiltersChange = (value: boolean) => {
     modals.openConfirmModal({
       title: 'Confirm change of shared filters mode',
@@ -115,7 +105,7 @@ export const AccordionPanel = ({
                         return [...acc, facetDefinitions[field]];
                       }, [] as FacetDefinition[])}
                       dataFunctions={facetDataHooks}
-                      valueLabel={tabTitle}
+                      valueLabel={valueLabel ?? tabTitle}
                     />
                   ) : null}
                 </Accordion.Panel>

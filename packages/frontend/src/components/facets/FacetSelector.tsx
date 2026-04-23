@@ -5,7 +5,7 @@ import { useDeepCompareMemo } from 'use-deep-compare';
 import FacetControlsHeader from './FacetControlsHeader';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { toDisplayName } from '../../utils';
-import { fieldNameToTitle, FacetDefinition } from '@gen3/core';
+import { FacetDefinition, fieldNameToLabel } from '@gen3/core';
 import FacetExpander from './FacetExpander';
 import { BAD_DATA_MESSAGE } from './constants';
 import { MdClose as CloseIcon } from 'react-icons/md';
@@ -139,7 +139,7 @@ const FacetSelector: React.FC<FacetSelectorCardProps> = ({
                   </div>
                 ) : (
                   visibleFields.map((facet) => {
-                    const label = facet?.label ?? fieldNameToTitle(facet.field);
+                    const label = facet?.label ?? fieldNameToLabel(facet.field);
                     return (
                       <div
                         key={facet.field}

@@ -1,4 +1,4 @@
-import { FilterSet } from '../filters';
+import { FilterSet, NumericFromTo } from '../filters';
 import { Accessibility } from '../../constants';
 
 // Guppy data request parameters
@@ -50,6 +50,18 @@ export type IndexAndField = {
   index: string; // guppyIndex
   indexAlias?: string; // alias for index, e.g. tabTitle
   field: string; // name of field in index
+};
+
+export type RangeQueryRequest = {
+  filters: FilterSet; // cohort filters
+  accessibility: Accessibility;
+  field: string;
+  index: string;
+  indexPrefix: string;
+  isNested?: boolean;
+  asTextHistogram?: boolean;
+  rangeBaseName?: string;
+  ranges: Array<NumericFromTo>;
 };
 
 export type SharedFieldMapping = Record<string, Array<IndexAndField>>;

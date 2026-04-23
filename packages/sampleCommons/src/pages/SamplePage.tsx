@@ -1,10 +1,10 @@
 import React from 'react';
 import { Center, Paper, Text } from '@mantine/core';
+import { getNavPageLayoutPropsFromConfig } from '@gen3/frontend/lib/common/staticProps';
 import {
-  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
-  NavPageLayoutProps,
-} from '@gen3/frontend';
+  type NavPageLayoutProps,
+} from '@gen3/frontend/features/Navigation';
 import { GetServerSideProps } from 'next';
 
 const CustomHeader = () => {

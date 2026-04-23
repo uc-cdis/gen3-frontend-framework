@@ -12,7 +12,7 @@ function getAutoWidthDuration(width: number | string) {
 }
 
 export function getElementWidth(
-  el: React.RefObject<HTMLElement> | { current?: { scrollWidth: number } },
+  el: React.RefObject<HTMLElement | null> | { current?: { scrollWidth: number } },
 ) {
   return el?.current ? el.current.scrollWidth : 'auto';
 }

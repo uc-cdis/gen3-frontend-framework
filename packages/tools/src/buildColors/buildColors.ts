@@ -1,7 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { create10ColorAccessibleContrast, create10ColorPallet } from './colors';
+import {
+  colorType,
+  create10ColorAccessibleContrast,
+  create10ColorPallet,
+} from './colors';
 
 const utility = {
   link: '#155276',
@@ -31,49 +35,13 @@ const utilityContrast = {
 
 const main = () => {
   const {
-    values: { themeFile, out, colorShift, colorSaturation },
+    values: { themeFile, out, colorShift, colorSaturation, vars },
   } = parseArgs({
     options: {
       themeFile: {
         type: 'string',
         short: 't',
         default: './colors.json',
-      },
-      primary: {
-        type: 'string',
-        short: 'p',
-        default: '#532565',
-      },
-      secondary: {
-        type: 'string',
-        short: 's',
-        default: '#982568',
-      },
-      accent: {
-        type: 'string',
-        short: 'a',
-        default: '#E07C3E',
-      },
-      accentWarm: {
-        type: 'string',
-        default: '#E07C3E',
-      },
-      accentCool: {
-        type: 'string',
-        default: '#1552e0',
-      },
-      base: {
-        type: 'string',
-        short: 'b',
-        default: '#858585',
-      },
-      table: {
-        type: 'string',
-        default: '#858585',
-      },
-      navigation: {
-        type: 'string',
-        default: '#eaeaea',
       },
       out: {
         type: 'string',
@@ -87,6 +55,9 @@ const main = () => {
       colorSaturation: {
         type: 'string',
         default: '20',
+      },
+      vars: {
+        type: 'boolean',
       },
     },
   });
@@ -105,6 +76,32 @@ const main = () => {
   }
   const themeData = readFileSync(themeFile, { encoding: 'utf8', flag: 'r' });
   const themeColors = JSON.parse(themeData);
+
+  if (vars) {
+    // vars only output used to create the tailwind config/themeColorCSSVars.json file
+    const theme = [
+      ...Object.keys(themeColors),
+      'utility',
+      'table',
+      'navigation',
+    ].reduce((acc: Record<string, string>, colorName) => {
+      for (const [idx, value] of Object.entries(colorType.toReversed())) {
+        const colorVar = `mantine-color-${colorName}-${idx}`;
+        const contrastColorVar = `mantine-color-${colorName}-contrast-${idx}`;
+        const baseVarNameDefault = (colorName === 'base' && value === 'DEFAULT' ? '-default' : '');
+        const colorVarName = `${colorName}${value !== 'DEFAULT' ? '-' + value : baseVarNameDefault}`;
+        const contrastColorVarName = `${colorName}-contrast${value !== 'DEFAULT' ? '-' + value : ''}`;
+        acc[colorVarName] = `var(--${colorVar})`;
+        acc[contrastColorVarName] = `var(--${contrastColorVar})`;
+      }
+      return acc;
+    }, {});
+    writeFileSync(
+      join(out ?? './', 'themeColorCSSVars.json'),
+      JSON.stringify(theme, null, 2),
+    );
+    return; // done creating vars file
+  }
 
   // build a list of colors
   const theme = Object.entries(themeColors).reduce(

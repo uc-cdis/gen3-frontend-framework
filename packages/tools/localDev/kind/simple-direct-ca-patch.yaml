@@ -1,0 +1,13 @@
+spec:
+  template:
+    spec:
+      volumes:
+        - name: ca-certs
+          secret:
+            secretName: mkcert-ca
+      containers:
+        - name: revproxy
+          volumeMounts:
+            - name: ca-certs
+              mountPath: /etc/ssl/certs/mkcert-ca.crt
+              subPath: ca.crt

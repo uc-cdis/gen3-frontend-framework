@@ -1,14 +1,9 @@
 import useSWR, { Fetcher, SWRResponse } from 'swr';
 import { AggregationsData, JSONObject, StatsData } from '../../types';
 import { Accessibility, GEN3_GUPPY_API } from '../../constants';
-import {
-  convertFilterSetToGqlFilter,
-  FilterSet,
-  isFilterEmpty,
-} from '../filters';
+import { convertFilterSetToGqlFilter, FilterSet, GQLFilter, isFilterEmpty, } from '../filters';
 import { guppyApi, guppyApiSliceRequest } from './guppyApi';
-import { SharedFieldMapping } from './types';
-
+import { RangeQueryRequest, SharedFieldMapping } from './types';
 import { groupSharedFields } from './utils';
 import { processHistogramResponse } from './processing';
 import {
@@ -17,6 +12,11 @@ import {
   rawDataQueryStrForEachField,
   statsQueryStrForEachField,
 } from './queryGenerators';
+import { buildRangeQuery } from './range';
+import { convertFilterSetToNestedGqlFilter } from '../filters/nestedFilters';
+import { JSONPath } from 'jsonpath-plus';
+
+const GUPPY_MAX_ITEMS = 10000;
 
 const statusEndpoint = '/_status';
 
@@ -90,6 +90,20 @@ export interface RawDataAndTotalCountsParams extends GuppyBaseQueryParams {
   offset?: number;
   size?: number;
   format?: string;
+}
+
+interface ObjectIdQueryRequest {
+  filters: FilterSet;
+  field: string;
+  index: string;
+  indexPrefix?: string;
+  accessibility?: Accessibility;
+  limit?: number;
+}
+
+interface ObjectIdQueryResponse {
+  ids: string[];
+  index: string;
 }
 
 export const explorerTags = guppyApi.enhanceEndpoints({
@@ -203,7 +217,14 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
         return { query, variables };
       },
-      // return . seperated fields as proper values
+      transformErrorResponse: () => {
+        return {
+          data: {
+            _aggregation: [],
+          },
+        };
+      },
+      // return . separated fields as proper values
       transformResponse: (response: Record<string, any>, _meta, args) => {
         const containsDots = args?.fields?.filter((f) => f.includes('.'));
         // check if dot seperated in arry and not object
@@ -229,7 +250,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           // currently only supports one level of nesting
           // also puts original into subRows for dropdown viewing
           const tempResponse = response.data[
-            `${args.indexPrefix}${args.type}`
+            `${args?.indexPrefix ?? ''}${args.type}`
           ].map((item: Record<string, any>) => {
             const tempItem = item;
             for (let i = 0; i < containsDotsUniqueBase.length; i++) {
@@ -260,7 +281,7 @@ export const explorerApi = explorerTags.injectEndpoints({
           return {
             data: {
               _aggregation: response.data._aggregation,
-              [`${args.indexPrefix}${args.type}`]: tempResponse,
+              [`${args?.indexPrefix ?? ''}${args.type}`]: tempResponse,
             },
           };
         }
@@ -417,6 +438,19 @@ export const explorerApi = explorerTags.injectEndpoints({
               [filterName]: gqlFilters,
             }),
           },
+          validateStatus: (response: Record<string, any>) => {
+            if (response?.errors && response.errors?.length > 0) return false;
+            if (
+              !response.data ||
+              !response.data[`${indexPrefix ?? ''}_aggregation`]
+            ) {
+              return false;
+            }
+            if (!(type in response.data[`${indexPrefix ?? ''}_aggregation`])) {
+              return false;
+            }
+            return true;
+          },
         };
       },
       transformResponse: (
@@ -424,27 +458,10 @@ export const explorerApi = explorerTags.injectEndpoints({
         _meta,
         args,
       ): number => {
-        if (
-          !response.data ||
-          !response.data[`${args?.indexPrefix ?? ''}_aggregation`]
-        ) {
-          throw new Error(
-            'Invalid response: Missing data or _aggregation field',
-          );
-        }
-
-        if (
-          !(
-            args.type in response.data[`${args?.indexPrefix ?? ''}_aggregation`]
-          )
-        ) {
-          throw new Error(
-            `Invalid response: Missing expected key '${args.type}' in _aggregation`,
-          );
-        }
         return (
-          response.data[`${args?.indexPrefix ?? ''}_aggregation`][args.type]
-            ._totalCount ?? 0
+          response?.data?.[`${args?.indexPrefix ?? ''}_aggregation`]?.[
+            args.type
+          ]?._totalCount ?? 0
         );
       },
       providesTags: ['COUNTS'],
@@ -498,7 +515,7 @@ export const explorerApi = explorerTags.injectEndpoints({
         };
       },
       transformResponse: (response: Record<string, any>, _meta, args) => {
-        return response[`${args.indexPrefix}_mapping`];
+        return response[`${args?.indexPrefix ?? ''}_mapping`];
       },
     }),
     getSharedFieldsForIndex: builder.query<SharedFieldMapping, string[]>({
@@ -514,6 +531,85 @@ export const explorerApi = explorerTags.injectEndpoints({
           return groupSharedFields(response.data['_mapping']);
         }
         return {};
+      },
+    }),
+    customRange: builder.query<AggregationsData, RangeQueryRequest>({
+      query: ({
+        filters,
+        field,
+        ranges,
+        rangeBaseName,
+        index,
+        indexPrefix,
+        accessibility = Accessibility.ALL,
+        isNested = true,
+        asTextHistogram = false,
+      }: RangeQueryRequest) => {
+        // remove field from FilterSet
+
+        const queryData = buildRangeQuery(
+          field,
+          ranges,
+          filters,
+          rangeBaseName,
+          index,
+          indexPrefix,
+          isNested,
+          asTextHistogram,
+        );
+
+        const gqlFilters = Object.entries(queryData.filters).reduce(
+          (acc: Record<string, GQLFilter>, [key, filter]) => {
+            acc[key] = isNested
+              ? convertFilterSetToNestedGqlFilter(filter)
+              : convertFilterSetToGqlFilter(filter);
+            return acc;
+          },
+          {},
+        );
+        return {
+          query: queryData.query,
+          variables: {
+            accessibility,
+            ...gqlFilters,
+          },
+        };
+      },
+    }),
+    getObjectIds: builder.query<ObjectIdQueryResponse, ObjectIdQueryRequest>({
+      query: ({
+        filters,
+        field,
+        index,
+        indexPrefix = '',
+        accessibility = Accessibility.ALL,
+        limit = GUPPY_MAX_ITEMS,
+      }: ObjectIdQueryRequest) => {
+        const gqlFilter = convertFilterSetToGqlFilter(filters);
+        const query = `query getObjectIds ($filter: JSON) {
+          ${indexPrefix}${index} (filter: $filter, accessibility: ${accessibility}, first: ${limit}) {
+              ${rawDataQueryStrForEachField(field)}
+              }
+           }`;
+        return {
+          query,
+          variables: {
+            filter: gqlFilter,
+            accessibility,
+          },
+        };
+      },
+      transformResponse: (response: Record<string, any>, _, args) => {
+        const valueData = JSONPath({
+          json: response?.data ?? [],
+          path: `$..${args.field}`,
+          resultType: 'value',
+        });
+
+        return {
+          ids: valueData,
+          index: args.index,
+        };
       },
     }),
     generalGQL: builder.query<Record<string, unknown>, guppyApiSliceRequest>({
@@ -626,4 +722,8 @@ export const {
   useGetSharedFieldsForIndexQuery,
   useGeneralGQLQuery,
   useLazyGeneralGQLQuery,
+  useCustomRangeQuery,
+  useLazyCustomRangeQuery,
+  useGetObjectIdsQuery,
+  useLazyGetObjectIdsQuery,
 } = explorerApi;

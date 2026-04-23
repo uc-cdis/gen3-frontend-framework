@@ -1,9 +1,9 @@
 import React from 'react';
-import { Image, NavLink, Stack } from '@mantine/core';
-import NextImage from 'next/image';
+import { Image, NavLink, Stack, Tooltip } from '@mantine/core';
 import TextDescription from './TextDescription';
 import Link from 'next/link';
 import { AnalysisToolConfiguration } from './types';
+import NextImage from 'next/image';
 
 const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   title,
@@ -14,6 +14,7 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
   hasDemo,
   loginRequired,
   href,
+  demoHref,
   btnText,
 }) => {
   return (
@@ -23,21 +24,19 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
       justify="space-between"
       className="rounded-sm rounded-t-md bg-base-max p-0 h-full"
     >
-      <div className="relative">
-        <div className="p-0 rounded-sm h-[200px] h-max-1/2 flex justify-center items-center relative overflow-hidden">
-          <div>
-            <Image
-              component={NextImage}
-              src={`${image}`}
-              alt=""
-              radius="md"
-              width={500}
-              height={500}
-            />
-          </div>
+      <div className="relative h-4/5">
+        <div className="p-0 h-max-1/3 h-1/3 flex justify-center items-start relative overflow-hidden">
+          <Image
+            src={`${image}`}
+            alt={''}
+            w="auto"
+            classNames={{
+              root: 'rounded-tl-lg rounded-tr-lg',
+            }}
+          />
         </div>
         <div className="flex -mt-5 relative z-10">
-          <div className="p-0.5 rounded-sm bg-base-lightest ml-5 border-2 border-base w-1/5 h-1/5">
+          <div className="p-0.5 bg-base-lightest ml-5 border-2 border-base h-1/6 w-1/6 max-h-24 max-w-24">
             <Image
               component={NextImage}
               src={`${icon}`}
@@ -48,29 +47,33 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             />
           </div>
           <div className="relative mb-0 ml-2">
-            <span className="absolute bottom-0 left-0 text-xs text-gray-700 w-max">
-              {type === 'application' ? 'Application' : 'Jupyter Notebook'}
+            <span className="absolute bottom-0 left-0 text-sm font-normal text-gray-700 w-max capitalize">
+              {type}
             </span>
           </div>
         </div>
         <div className="flex flex-col mt-2 ml-2">
-          <div className="text-sm font-black h-6">{title}</div>
+          <Tooltip label={title} multiline withArrow w={400}>
+            <div className="w-full justify-start text-base-contrast-max sm:text-lg md:text-xl lg:text-2xl font-bold leading-6 line-clamp-2">
+              {title}
+            </div>
+          </Tooltip>
           <div className="text-xs text-gray-400 h-6">
             {loginRequired ? 'Login Required' : ' '}
           </div>
-          <div className="text-sm p-2 h-fit mt-2">
+          <div className="sm:text-xs text-sm font-normal p-2">
             <TextDescription description={description} />
           </div>
         </div>
       </div>
-      <div className="flex mb-4 rounded-b-md">
-        <div className="m-auto">
+      <div className="m-auto">
+        <div className="flex mb-4 rounded-b-md mx-4 flex-nowrap justify-between gap-x-2">
           <NavLink
             component={Link}
             href={href ?? '_blank'}
             classNames={{
-              root: 'bg-accent text-accent-contrast hover:bg-accent-darker p-2 rounded-sm',
-              label: 'text-sm font-semibold',
+              root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded',
+              label: 'text-sm font-semibold px-2',
             }}
             label={
               btnText
@@ -79,9 +82,17 @@ const AnalysisCard: React.FC<AnalysisToolConfiguration> = ({
             }
           />
           {hasDemo && (
-            <button className="ml-2 p-1.5 rounded-sm text-sm font-semibold">
-              Demo
-            </button>
+            <NavLink
+              component={Link}
+              href={demoHref ?? '_blank'}
+              rel="noopener noreferrer"
+              target="_blank"
+              classNames={{
+                root: 'bg-accent text-accent-contrast text-nowrap text-center hover:bg-accent-darker p-2 rounded',
+                label: 'text-sm font-semibold px-2',
+              }}
+              label="Demo"
+            />
           )}
         </div>
       </div>

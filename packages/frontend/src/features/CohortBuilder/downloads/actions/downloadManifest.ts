@@ -45,7 +45,6 @@ export const downloadToManifestAction = async (
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
-  dataFormat?: string,
 ): Promise<void> => {
   const {
     referenceIdFieldInDataIndex,
@@ -53,6 +52,7 @@ export const downloadToManifestAction = async (
     resourceIndexType,
     resourceIdField,
     fileFields,
+    dataFormat,
   } = params;
 
   const manifestFields = fileFields ?? DEFAULT_FILE_FIELDS;
@@ -73,7 +73,9 @@ export const downloadToManifestAction = async (
       let resultManifest = await downloadJSONDataFromGuppy({
         parameters: {
           ...cohortFilterParams,
-          fields: [referenceIdFieldInDataIndex, ...manifestFields],
+          fields: resourceIdField
+            ? [resourceIdField, ...manifestFields]
+            : manifestFields,
         },
         onAbort: onAbort,
         signal: signal,

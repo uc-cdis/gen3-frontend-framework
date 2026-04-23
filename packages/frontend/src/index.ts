@@ -9,14 +9,21 @@ export * from './components/Protected';
 // features
 export * from './features/Navigation';
 export * from './features/Discovery';
+export * from './features/Dictionary';
 export * from './features/Study';
 export * from './features/CohortBuilder';
 export * from './features/Query';
 export * from './features/Workspace';
 export * from './features/Analysis';
 export * from './features/StaticNotebook';
+export * from './features/Profile';
 export * from './utils/';
 export * from './types';
+
+import {
+  ClinicalDataAnalysisPage,
+  ClinicalDataAnalysisServerSideProps,
+} from './pages/ClinicalDataAnalysis';
 
 import { getNavPageLayoutPropsFromConfig } from './lib/common/staticProps';
 import ContentSource from './lib/content';
@@ -29,6 +36,7 @@ import {
 import ErrorCard from './components/MessageCards/ErrorCard';
 import { registerCohortDiscoveryApp } from './features/CohortDiscovery/registerApp';
 import { registerCohortSimilarityApp } from './features/CohortSimilarity/registerApp';
+import { registerIGVApp } from './features/genomic/igv/registerApp';
 import { registerMetadataSchemaApp } from './features/Dictionary';
 import { CollapsableSidebar } from './components/CollapsableSidebar';
 import { DropdownWithIcon } from './components/DropdownWithIcon/DropdownWithIcon';
@@ -50,50 +58,53 @@ import TopBar from './features/Navigation/TopBar/TopBar';
 
 import '@gen3/core'; // export Gen3 data UI standard pages
 import Gen3Provider, {
+  createCSSVariables,
   createMantineTheme,
 } from './components/Providers/Gen3Provider';
-import DiscoveryPage from './pages/Discovery/Discovery';
+import DiscoveryPage from './pages/Discovery/DiscoveryPage';
 import { DiscoveryPageGetServerSideProps } from './pages/Discovery/data';
 
-import QueryPage from './pages/Query/Query';
+import QueryPage from './pages/Query/QueryPage';
 import { QueryPageGetServerSideProps } from './pages/Query/data';
 
-import LandingPage from './pages/Landing/Landing';
+import LandingPage from './pages/Landing/LandingPage';
 import { LandingPageGetServerSideProps } from './pages/Landing/data';
 
-import ExplorerPage from './pages/Explorer/Explorer';
+import ExplorerPage from './pages/Explorer/ExplorerPage';
 import {
   ExplorerPageGetServerSideProps,
   ExplorerPageGetServerSidePropsForConfigId,
   type ExplorerPageProps,
 } from './pages/Explorer';
 
-import ColorThemePage from './pages/Theme/Colors';
+import ColorThemePage from './pages/Theme/ColorThemePage';
 import { ColorThemePageGetServerSideProps } from './pages/Theme';
 
-import ProfilePage, { ProfilePageGetServerSideProps } from './pages/Profile';
-import LoginPage, { LoginPageGetServerSideProps } from './pages/Login';
+import { ProfilePage, ProfilePageGetServerSideProps } from './pages/Profile';
+import { LoginPage, LoginPageGetServerSideProps } from './pages/Login';
 
-import DictionaryPage, {
+import {
+  DataDictionaryPage,
   DictionaryPageGetServerSideProps,
 } from './pages/DataDictionary';
 
 import AuthzPage from './pages/admin/authz/Authz';
 import { AdminAuthZPageGetServerSideProps } from './pages/admin/authz/data';
 
+import Custom403Page from './pages/403/Custom403Page';
 import Custom404Page from './pages/404/Custom404Page';
 
-import SubmissionPage from './pages/Submission/Submission';
+import SubmissionPage from './pages/Submission/SubmissionPage';
 import { SubmissionPageGetServerSideProps } from './pages/Submission/data';
 
-import WorkspacePage from './pages/Workspace/Workspace';
+import WorkspacePage from './pages/Workspace/WorkspacePage';
 import { WorkspaceNoAccessPage } from './pages/Workspace/index';
 import {
   WorkspaceNoAccessPageServerSideProps,
   WorkspacePageGetServerSideProps,
 } from './pages/Workspace/data';
 
-import AnalysisPage from './pages/Analysis/Analysis';
+import AnalysisPage from './pages/Analysis/AnalysisPage';
 import {
   AnalysisPageGetServerSideProps,
   type AnalysisPageLayoutProps,
@@ -102,22 +113,28 @@ import {
 import AnalysisEditorPage from './pages/admin/analysis/Analysis';
 import { AnalysisEditorPageGetServerSideProps } from './pages/admin/analysis/data';
 
-import AiSearchPage from './pages/AiSearch/AiSearch';
-import { AISearchPageGetServerSideProps } from './pages/AiSearch/data';
+import AiSearchPage from './pages/AISearch/AISearchPage';
+import { AISearchPageGetServerSideProps } from './pages/AISearch/data';
 
-import NotebookLitePage from './pages/NotebookLite/NotebookLite';
+import NotebookLitePage from './pages/NotebookLite/NotebookLitePage';
 import { NotebookLitePageGetStaticProps } from './pages/NotebookLite';
 
-import DataLibraryPage, {
+import {
+  DataLibraryPage,
   DataLibraryPageGetServerSideProps,
 } from './pages/DataLibrary'; // TODO Replace with AppTool plugin
-import CrosswalkPage from './pages/Crosswalk';
-import { CrosswalkPageGetServerSideProps } from './pages/Crosswalk/data';
+import {
+  CrosswalkPage,
+  CrosswalkPageGetServerSideProps,
+} from './pages/Crosswalk';
 
-import TabbedCohortBuilderPage from './pages/TabbedCohortBuilder';
-import { TabbedCohortBuilderPageGetServerSideProps } from './pages/TabbedCohortBuilder/data';
+import {
+  TabbedCohortBuilderPage,
+  TabbedCohortBuilderPageGetServerSideProps,
+} from './pages/TabbedCohortBuilder';
 
-import RepositoryPage, {
+import {
+  RepositoryPage,
   RepositoryPageGetServerSideProps,
 } from './pages/Repository';
 
@@ -130,6 +147,9 @@ import credentialsLogout from './api/auth/credentialsLogout';
 import analysisApiCohortDiscovery from './features/CohortDiscovery/api/analysisApiCohortDiscovery';
 import { type QueryPageLayoutProps, type QueryProps } from './pages/Query';
 
+import type { AuthorizedRoutesConfig, RouteConfig } from './lib/authz/type';
+import { DefaultAuthorizedRoutesConfig } from './lib/authz/type';
+
 export {
   ContentSource,
   type Fonts,
@@ -137,6 +157,8 @@ export {
   type SessionConfiguration,
   type ExplorerPageProps,
   type AnalysisPageLayoutProps,
+  type RouteConfig,
+  type AuthorizedRoutesConfig,
   // components
   CollapsableSidebar,
   DownloadButton,
@@ -163,7 +185,7 @@ export {
   LandingPageGetServerSideProps,
   ColorThemePage,
   ColorThemePageGetServerSideProps,
-  DictionaryPage,
+  DataDictionaryPage,
   DictionaryPageGetServerSideProps,
   ExplorerPage,
   ExplorerPageGetServerSideProps,
@@ -183,12 +205,17 @@ export {
   WorkspaceNoAccessPageServerSideProps,
   AnalysisPage,
   AnalysisPageGetServerSideProps,
+  ClinicalDataAnalysisPage,
+  ClinicalDataAnalysisServerSideProps,
+  Custom403Page,
   Custom404Page,
   sessionToken,
   sessionLogout,
   credentialsLogin,
   credentialsLogout,
+  // theming
   createMantineTheme,
+  createCSSVariables,
   AiSearchPage,
   AISearchPageGetServerSideProps,
   CrosswalkPage,
@@ -209,6 +236,9 @@ export {
   // apps
   registerCohortDiscoveryApp,
   registerCohortSimilarityApp,
+  registerIGVApp,
   // appApis
   analysisApiCohortDiscovery,
+  // Defaults
+  DefaultAuthorizedRoutesConfig,
 };

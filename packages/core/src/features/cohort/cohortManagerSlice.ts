@@ -108,6 +108,7 @@ const getCurrentCohortId = (
 interface CreateCohortParams {
   name?: string;
   filters?: IndexedFilterSet;
+  setAsCurrent?: boolean;
 }
 
 interface UpdateCohortNameParams {
@@ -119,7 +120,7 @@ interface UpdateCohortNameParams {
  * Redux slice for cohort filters
  */
 
-export const cohortManagerSlice = createSlice({
+const cohortManagerSlice = createSlice({
   name: 'cohort',
   initialState: initialState,
   reducers: {
@@ -135,7 +136,9 @@ export const cohortManagerSlice = createSlice({
         customName: uniqueName,
       });
       cohortsAdapter.addOne(state, cohort);
-      state.currentCohortId = cohort.id;
+      if (action.payload?.setAsCurrent) {
+        state.currentCohortId = cohort.id;
+      }
     },
 
     updateCohortName: (

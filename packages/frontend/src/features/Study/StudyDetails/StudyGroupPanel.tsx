@@ -9,6 +9,7 @@ interface StudyGroupPanelProps {
 }
 
 const StudyGroupPanel = ({ data, groups }: StudyGroupPanelProps) => {
+
   return (
     <div className="flex flex-col my-2 w-full">
       {groups.map(({ header, fields }) => {

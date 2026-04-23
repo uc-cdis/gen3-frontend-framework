@@ -1,17 +1,11 @@
 import * as React from 'react';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import { Title, TitleOrder } from '@mantine/core';
 import { IconType } from 'react-icons';
 import { Gen3Button, Gen3ButtonReverse } from '../Buttons/Gen3Button';
 
-import {
-  MdFormatQuote,
-  MdOutlineSearch,
-  MdOutlineBarChart,
-  MdGroup,
-} from 'react-icons/md';
+import { MdFormatQuote, MdGroup, MdOutlineBarChart, MdOutlineSearch, } from 'react-icons/md';
 import { FaGraduationCap, FaRegQuestionCircle, FaVideo } from 'react-icons/fa';
 import Gen3Link from '../../features/Navigation/Gen3Link';
 import TextContent, { ContentType } from './TextContent';
@@ -69,7 +63,6 @@ export interface LandingPageProps extends Gen3AppConfigData {
  * located at sampleCommons/config/{commons}/landingPage.json
  */
 const LandingPageContent = ({ content }: LandingPageContentProp) => {
-  const { basePath } = useRouter();
   return (
     <div className="sm:mt-8 2xl:mt-10 w-full bg-base-max">
       {content?.body?.map((component, index) => {

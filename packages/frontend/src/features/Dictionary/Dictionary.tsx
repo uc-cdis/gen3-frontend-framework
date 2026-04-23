@@ -65,13 +65,13 @@ const Dictionary = () => {
         </div>
       </div>
       <div
-        className="w-3/4 overflow-auto p-4 bg-base-lighter"
-        ref={scrollableRef}
+        className="w-3/4 overflow-auto bg-base-lighter"
+        ref={scrollableRef as React.Ref<HTMLDivElement>}
       >
         <div className="h-full">
           {config?.showGraph ? (
             <Tabs value={view} keepMounted={false} className="h-full">
-              <Tabs.Panel value="table">{categoryPanelTable}</Tabs.Panel>
+              <Tabs.Panel value="table" className="p-4">{categoryPanelTable}</Tabs.Panel>
               <Tabs.Panel value="graph" className="h-full">
                 <GraphView
                   categories={categories}

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { DataDownloadLinks, DownloadLinkFields } from '../types';
 import { GEN3_FENCE_API, JSONObject } from '@gen3/core';
-import { Accordion, Button, Group, Stack, Text } from '@mantine/core';
+import { Accordion, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { FiDownload as DownloadIcon } from 'react-icons/fi';
 
 const extractFieldData = (
@@ -54,23 +54,33 @@ const DownloadLinksPanel = ({
             {downloadEntries &&
               downloadEntries.map(
                 (entry: Record<string, string | undefined>) => {
-                  // minimum required fields are title and id
+                  // the minimum required fields are title and id
                   if (
                     entry['titleField'] === undefined ||
                     entry['idField'] === undefined
                   ) {
                     return null;
                   }
-                  const id = entry[downloadLinkFields.idField];
+                  const id = entry['idField'];
+
+                  if (id === undefined) return null;
                   return (
-                    <Group justify="space-between" key={id} gap="md">
-                      <Text>{entry['titleField'] || ''}</Text>
+                    <Group
+                      justify="space-between"
+                      preventGrowOverflow={true}
+                      wrap="nowrap"
+                      key={id}
+                      gap="md"
+                    >
+                      <Tooltip label={entry['titleField'] || ''}>
+                        <Text className="w-3/4" truncate="end">
+                          {entry['titleField'] || ''}
+                        </Text>
+                      </Tooltip>
                       <Button
                         component="a"
-                        href={`${GEN3_FENCE_API}/data/${id}?expires_in=900&redirect`}
-                        target="_blank"
-                        rel="noreferrer"
-                        type="text"
+                        href={`${GEN3_FENCE_API}/data/download/${encodeURIComponent(id)}?expires_in=900&redirect`}
+                        download={entry['titleField'] || 'download_from_gen3'}
                         leftSection={<DownloadIcon />}
                         data-disabled={!id}
                       >

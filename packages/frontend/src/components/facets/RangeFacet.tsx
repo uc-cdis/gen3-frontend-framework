@@ -1,5 +1,9 @@
 import React, { useCallback } from 'react';
-import { FacetCardProps, FromToRangeValues, RangeFacetHooks } from './types';
+import {
+  FacetCardProps,
+  FromToRangeValues,
+  RangeFacetDataHooks,
+} from './types';
 import { DEFAULT_MAXIMUM, DEFAULT_MINIMUM } from './constants';
 
 import { LoadingOverlay, NumberInput, RangeSlider, Text } from '@mantine/core';
@@ -28,9 +32,10 @@ const createBucket = (
   ],
 });
 
-export interface RangeFacetCardProps extends FacetCardProps<RangeFacetHooks> {
+export interface RangeFacetCardProps extends FacetCardProps<RangeFacetDataHooks> {
   minimum?: number;
   maximum?: number;
+  step?: number;
 }
 
 const RangeFacet = ({
@@ -41,6 +46,7 @@ const RangeFacet = ({
   facetName,
   minimum = DEFAULT_MINIMUM,
   maximum = DEFAULT_MAXIMUM,
+  step = undefined,
   showSearch = false,
   showFlip = false,
   showSettings = false,

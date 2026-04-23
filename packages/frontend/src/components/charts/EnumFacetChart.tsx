@@ -2,24 +2,23 @@
  * A BarChart for Enumerated Facets. The as the chart is wrapped from EnumFacet it does not
  * require the Core Data hooks.
  */
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { Box, Loader, Tooltip } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { Box, Loader, Tooltip, useMantineTheme } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
 import {
+  Bar,
+  VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryContainer,
-  VictoryTheme,
-  Bar,
-  VictoryAxis,
   VictoryStack,
+  VictoryTheme,
   VictoryTooltip,
 } from 'victory';
-import { useMantineTheme } from '@mantine/core';
 import ChartTitleBar from './ChartTitleBar';
 import { capitalize } from './utils';
-import { fieldNameToTitle, EnumFilterValue } from '@gen3/core';
+import { EnumFilterValue, fieldNameToLabel } from '@gen3/core';
+import { removeKey } from '../../utils/removeKey';
 
 const maxValuesToDisplay = 7;
 
@@ -34,19 +33,15 @@ interface FacetChartProps {
   readonly valueLabel?: string;
 }
 
-// from https://stackoverflow.com/questions/33053310/remove-value-from-object-without-mutation
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const removeKey = (key : string| number, { [key]: _, ...rest }) : Record<string|number, any> => rest;
-
 const processChartData = (
-  facetData: Record<string|number, any>,
+  facetData: Record<string | number, any>,
   selectedEnums: EnumFilterValue,
   maxBins = 100,
 ) => {
   const data = removeKey('_missing', facetData);
 
   const results = Object.keys(data)
-    .filter((d : string| number) =>
+    .filter((d: string | number) =>
       !selectedEnums || selectedEnums.length === 0
         ? d
         : selectedEnums.includes(d),
@@ -69,7 +64,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
   maxBins = maxValuesToDisplay,
   valueLabel = 'Cases',
 }: FacetChartProps) => {
-  const [chart_data, setChartData] = useState<{x:string, y:any}[]>([]);
+  const [chart_data, setChartData] = useState<{ x: string; y: any }[]>([]);
   const { ref, width } = useElementSize();
 
   useEffect(() => {
@@ -88,7 +83,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     <div ref={ref}>
       {showTitle ? (
         <ChartTitleBar
-          title={fieldNameToTitle(field)}
+          title={fieldNameToLabel(field)}
           divId={chartDivId}
           filename={field}
         />

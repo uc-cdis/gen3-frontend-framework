@@ -1,26 +1,38 @@
-import React, { ReactElement} from 'react';
+import React, { ReactElement } from 'react';
 import { SubmissionConfig } from './types';
 import ProjectTable from './Tables/ProjectTable';
-import  MessagePanel from '../../components/MessagePanel';
+import MessagePanel from '../../components/MessagePanel';
 import SubmissionsTable from './Tables/SubmissionsTable';
-import ProtectedContent from '../../components/Protected/ProtectedContent';
+import SectionCollapse from './SectionCollapse';
+import DataSubmissionCard from './DataSubmissionCard';
 
-
-
-const SubmissionPanel = ( { config }:  { config?: SubmissionConfig}) : ReactElement  => {
+const SubmissionPanel = ({
+  config,
+}: {
+  config?: SubmissionConfig;
+}): ReactElement => {
   return (
-    <ProtectedContent>
-      {
-        config ? (
-          <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
-            <ProjectTable columns={ config.projectTable.columns } />
-            <SubmissionsTable  />
-          </div>
-        ) : (
-          <MessagePanel message="Submission config is not defined. Page disabled" />
-        )
-      }
-    </ProtectedContent>
+    <>
+      {config ? (
+        <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
+          <SectionCollapse text="Data Submission">
+            <div className="flex basis-1/2 gap-4">
+              {(config?.dataSubmissionCards || []).map((card) => (
+                <DataSubmissionCard key={card.title} {...card} />
+              ))}
+            </div>
+          </SectionCollapse>
+          <SectionCollapse text="List of Projects">
+            <ProjectTable columns={config.projectTable.columns} />
+          </SectionCollapse>
+          <SectionCollapse text="Recent Submissions">
+            <SubmissionsTable />
+          </SectionCollapse>
+        </div>
+      ) : (
+        <MessagePanel message="Submission config is not defined. Page disabled" />
+      )}
+    </>
   );
 };
 

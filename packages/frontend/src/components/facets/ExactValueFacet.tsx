@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FacetCardProps, FacetDataHooks } from './types';
+import { FacetCardProps, FacetHooks } from './types';
 import { ActionIcon, Badge, Group, TextInput } from '@mantine/core';
 import { controlsIconStyle, FacetHeader, FacetText } from './components';
 import { MdClose as CloseIcon } from 'react-icons/md';
@@ -9,12 +9,12 @@ import {
   Excludes,
   Includes,
   Operation,
-  trimFirstFieldNameToTitle,
+  trimFirstfieldNameToLabel,
 } from '@gen3/core';
 import FacetControlsHeader from './FacetControlsHeader';
 
 type ExactValueProps = Omit<
-  FacetCardProps<FacetDataHooks>,
+  FacetCardProps<FacetHooks>,
   'showSearch' | 'showFlip' | 'showPercent' | 'valueLabel'
 >;
 
@@ -64,7 +64,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+    : trimFirstfieldNameToLabel(field, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
   const isFilterExpanded =

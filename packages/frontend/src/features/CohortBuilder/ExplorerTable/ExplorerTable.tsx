@@ -359,9 +359,6 @@ const ExplorerTable = ({
           })
         : {},
     ...rowActions,
-    // ...processRowActions(
-    //   tableConfig?.selectableRowsConfiguration,
-    // ),
     renderDetailPanel:
       tableConfig.detailsConfig?.mode === 'expand' || tableConfig?.subTables
         ? ({ row }) => {

@@ -1,3 +1,5 @@
-export { default } from './DataLibrary';
+import DataLibraryPage from './DataLibraryPage';
 
-export { DataLibraryPageGetServerSideProps } from './data';
+import { DataLibraryPageGetServerSideProps } from './data';
+
+export { DataLibraryPage, DataLibraryPageGetServerSideProps };

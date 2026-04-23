@@ -15,10 +15,16 @@ export const GEN3_DOWNLOADS_ENDPOINT =
   process.env.NEXT_PUBLIC_GEN3_DOWNLOADS_ENDPOINT || 'downloads';
 export const GEN3_FENCE_API =
   process.env.NEXT_PUBLIC_GEN3_FENCE_API || `${GEN3_API}/user`;
+export const GEN3_FENCE_SERVICE =
+  process.env.GEN3_FENCE_SERVICE || 'http://fence-service';
+export const GEN3_INDEXD_API =
+  process.env.NEXT_PUBLIC_GEN3_INDEXD_API || `${GEN3_API}/index`;
 export const GEN3_AI_SEARCH_API =
   process.env.NEXT_PUBLIC_GEN3_AI_SEARCH_API || `${GEN3_API}/ai-search`;
 export const GEN3_AUTHZ_API =
   process.env.NEXT_PUBLIC_GEN3_AUTHZ_API || `${GEN3_API}/authz`;
+export const GEN3_AUTHZ_SERVICE =
+  process.env.GEN3_AUTHZ_SERVICE || 'http://arborist-service';
 export const GEN3_REDIRECT_URL =
   process.env.NEXT_PUBLIC_GEN3_REDIRECT_URL || GEN3_API;
 export const GEN3_WORKSPACE_API =
@@ -34,11 +40,13 @@ export const GEN3_DATA_LIBRARY_API =
 export const GEN3_CROSSWALK_API =
   process.env.NEXT_PUBLIC_GEN3_CROSSWALK_API || `${GEN3_API}/mds`;
 export const GEN3_SOWER_API =
-  process.env.NEXT_PUBLIC_GEN3_SOWER_API || `${GEN3_API}/jobs`;
+  process.env.NEXT_PUBLIC_GEN3_SOWER_API || `${GEN3_API}/job`;
 export const GEN3_MANIFEST_API =
   process.env.NEXT_PUBLIC_GEN3_MANIFEST_API || `${GEN3_API}/manifests`;
 export const GEN3_REQUESTOR_API =
   process.env.NEXT_PUBLIC_GEN3_REQUESTOR_API || `${GEN3_API}/requestor`;
+export const GEN3_ANALYSIS_API =
+  process.env.NEXT_PUBLIC_GEN3_ANALYSIS_API || `${GEN3_API}/analysis/v0`;
 
 export enum Accessibility {
   ACCESSIBLE = 'accessible',

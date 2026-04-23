@@ -39,8 +39,8 @@ export interface NodeCountConfiguration {
 
 export interface DataTypeConfig {
   dataType: string;
+  uniqueIdField: string;
   nodeCountTitle?: string;
-  nodeCountConfiguration?: NodeCountConfiguration;
   accessibleFieldCheckList?: string[];
   accessibleValidationField?: string;
   tierAccessLevel?: 'libre' | 'regular' | 'private'; // TODO See if guppy can serve this
@@ -104,9 +104,12 @@ export interface CohortBuilderConfiguration extends Gen3AppConfigData {
   enableCohortManager?: boolean;
 }
 
-export interface CohortBuilderProps
-  extends Omit<CohortBuilderConfiguration, 'sharedFilters'> {
+export interface CohortBuilderProps extends Omit<
+  CohortBuilderConfiguration,
+  'sharedFilters'
+> {
   sharedFiltersMap: SharedFieldMapping | null;
+  activeTab?: string;
 }
 
 export enum DownloadFileFormats {
@@ -122,6 +125,7 @@ export type ActionButtonFunction = (
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
+  onCompleted?: (data: any) => void,
 ) => Promise<void>;
 
 export type ActionButtonWithArgsFunction = (
@@ -130,10 +134,13 @@ export type ActionButtonWithArgsFunction = (
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
+  onCompleted?: (data: any) => void,
 ) => Promise<void>;
 
-export interface DownloadButtonPropsWithAction
-  extends Omit<DownloadButtonProps, 'action' | 'actionArgs'> {
+export interface DownloadButtonPropsWithAction extends Omit<
+  DownloadButtonProps,
+  'action' | 'actionArgs'
+> {
   actionFunction: ActionButtonWithArgsFunction;
   actionArgs: Record<string, any>;
 }
