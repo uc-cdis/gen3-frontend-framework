@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { JSX, useState } from 'react';
 
 export interface CollapsableTableItemsProps {
   readonly expandBtnText: string;
@@ -45,16 +45,14 @@ export interface HorizontalTableProps {
   ref?: React.RefObject<HTMLTableElement>;
 }
 
-export const HorizontalTable = (
-  {
-    tableData,
-    customContainerStyles,
-    slideImageDetails = false,
-    customDataTestID,
-    enableSync = false,
-    ref,
-  }: HorizontalTableProps
-) => {
+export const HorizontalTable = ({
+  tableData,
+  customContainerStyles,
+  slideImageDetails = false,
+  customDataTestID,
+  enableSync = false,
+  ref,
+}: HorizontalTableProps) => {
   const containerClassName =
     'w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm';
   const updatedContainerClassName = customContainerStyles
@@ -100,7 +98,13 @@ export const HorizontalTable = (
 };
 HorizontalTable.displayName = 'HorizontalTable';
 const renderValue = (
-  value: string | ReadonlyArray<string> | boolean | number | JSX.Element | undefined,
+  value:
+    | string
+    | ReadonlyArray<string>
+    | boolean
+    | number
+    | JSX.Element
+    | undefined,
   headerName: string,
   index: number,
 ): JSX.Element => {
@@ -125,5 +129,9 @@ const renderValue = (
     );
   }
 
-  return <span className="break-all" key={`${headerName}-${index}`}>{String(value)}</span>;
+  return (
+    <span className="break-all" key={`${headerName}-${index}`}>
+      {String(value)}
+    </span>
+  );
 };
