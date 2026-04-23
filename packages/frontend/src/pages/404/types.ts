@@ -5,6 +5,10 @@ import { Gen3AppConfigData } from '../../lib/content/types';
 
 export interface Config404Props extends Gen3AppConfigData {
   content?: ReadonlyArray<TextContentProps>;
+  topIcon?: {
+    src: string;
+    alt: string;
+  }
 }
 
 //& 404Props;
