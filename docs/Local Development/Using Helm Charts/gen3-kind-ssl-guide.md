@@ -40,7 +40,7 @@ mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker
 # - host.docker.internal+2-key.pem (private key)
 ```
 
-Note: the ~/ssl_cert directory is read by the npm run setProxy command for 
+Note: the ~/ssl_cert directory is read by the npm run setProxy command for
 proxying to gen3 services for gen3 frontend development.
 
 ## Step 2: Create Kubernetes TLS Secret
@@ -49,14 +49,7 @@ Create a Kubernetes secret with your SSL certificate:
 
 ### If using gen3dev.local.io:
 ```bash
-kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem 
-```
-
-### If using host.docker.internal:
-```bash
-kubectl create secret tls gen3-local-tls \
-  --cert=host.docker.internal+2.pem \
-  --key=host.docker.internal+2-key.pem
+kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem
 ```
 
 ```bash
@@ -381,7 +374,7 @@ kubectl wait --for=condition=available deployment/requestor-deployment --timeout
 
 # Apply CA patches
 kubectl patch deployment revproxy-deployment --patch-file simple-direct-ca-patch.yaml
-kubectl patch deployment requestor-deployment --patch-file requestor-ca-bundle-patch.yaml
+kubectl patch deployment requestor-deployment --patch-file requestor-python-ca-patch.yaml
 
 echo "SSL setup complete!"
 echo "Access your Gen3 cluster at: https://$HOSTNAME"

@@ -90,18 +90,8 @@ mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker
 
 Create a Kubernetes secret with your SSL certificate:
 
-### If using gen3dev.local.io:
-
 ```bash
 kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$HOME/ssl_certs/key.pem
-```
-
-### If using host.docker.internal:
-
-```bash
-kubectl create secret tls gen3-local-tls \
-  --cert=host.docker.internal+2.pem \
-  --key=host.docker.internal+2-key.pem
 ```
 
 ```bash
