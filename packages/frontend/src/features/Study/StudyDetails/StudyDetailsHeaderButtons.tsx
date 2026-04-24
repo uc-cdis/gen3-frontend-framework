@@ -17,9 +17,6 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   //opened,
   permalink,
 }) => {
-  // Note: This doesn't seem to work, will be addressed in HP-2384
-  const { studyDetails, setStudyDetails } = useStudyContext();
-
   const requiresLogin = !useIsUserLoggedIn();
 
   return (

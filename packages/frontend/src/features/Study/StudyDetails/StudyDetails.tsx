@@ -19,7 +19,7 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const { studyDetails } = useStudyContext();
+  const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   if (!studyDetails) {
     return null;
@@ -27,6 +27,7 @@ const StudyDetails = ({
 
   const defaultPermaLinkValue = 'Discovery/notfound';
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const hasStudyDetails = Object.keys(studyDetails).length > 0;
 
   useEffect(() => {
     const studyId = toString(studyDetails[index]);
@@ -43,45 +44,42 @@ const StudyDetails = ({
     }
     if (opened === false) {
       // if drawer has been shut, reset study details
-      // setStudyDetails({});
+      setStudyDetails({});
     }
   }, [opened]);
 
   useEffect(() => {
-    if (Object.keys(studyDetails).length > 0) {
+    if (hasStudyDetails) {
       open();
     }
   }, [studyDetails, open]);
 
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
-      <Drawer.Overlay opacity={0.5} blur={4} />
-      <Drawer.Content className="pl-2">
-        <Drawer.Header>
-          <StudyDetailsHeaderButtons
-            studyIndex={index}
-            onClose={close}
-            opened={opened}
-            permalink={permalink}
-          />
-        </Drawer.Header>
-        <Drawer.Body>
-          {detailView ? (
-            <StudyDetailsPanel
-              data={studyDetails ?? {}}
-              studyConfig={detailView}
-            />
-          ) : simpleDetailsView ? (
-            <SinglePageStudyDetailsPanel
-              data={studyDetails ?? {}}
-              studyConfig={simpleDetailsView}
-              authorization={authz}
-            />
-          ) : (
-            <div>Study Details Panel not configured</div>
-          )}
-        </Drawer.Body>
-      </Drawer.Content>
+      <Drawer.Overlay opacity={0.5} blur={4} />{' '}
+      {hasStudyDetails && (
+        <Drawer.Content className="pl-2">
+          <Drawer.Header>
+            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
+          </Drawer.Header>
+          <Drawer.Body>
+            {detailView ? (
+              <StudyDetailsPanel
+                data={studyDetails ?? {}}
+                studyConfig={detailView}
+              />
+            ) : simpleDetailsView ? (
+              <SinglePageStudyDetailsPanel
+                data={studyDetails ?? {}}
+                studyConfig={simpleDetailsView}
+                authorization={authz}
+              />
+            ) : (
+              <div>Study Details Panel not configured</div>
+            )}
+          </Drawer.Body>
+        </Drawer.Content>
+      )}
     </Drawer.Root>
   );
 };
