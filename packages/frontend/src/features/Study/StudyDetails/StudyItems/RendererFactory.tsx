@@ -29,7 +29,6 @@ export type FieldRendererFunctionMap = Record<string, FieldRendererFunction>;
 export class StudyFieldRendererFactory {
   private static instance: StudyFieldRendererFactory;
   private fieldRendererCatalog: Record<string, FieldRendererFunctionMap> = {};
-
   private constructor() {
     this.fieldRendererCatalog = {};
   }

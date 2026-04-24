@@ -29,7 +29,7 @@ const MarkdownContent: React.FC<MarkdownContentProps> = ({
   content,
   className,
 }) => {
-  const markdownString = Array.isArray(content) ? content.join('\n') : content;
+  const markdownString = Array.isArray(content) ? content.join('  \n') : content;
 
   return (
     <div className={className}>

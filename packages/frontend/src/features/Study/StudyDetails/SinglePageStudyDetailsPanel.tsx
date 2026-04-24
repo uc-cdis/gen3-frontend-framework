@@ -9,7 +9,7 @@ import { DataAuthorization } from '../../../utils';
 import DetailsAuthorizationIcon from './DetailsAuthorizationIcon';
 import { JSONPath } from 'jsonpath-plus';
 import { toString } from 'lodash';
-import { createFieldRendererElement } from './StudyItems';
+import { createFieldRendererElement } from './StudyItems/StudyItems';
 import DownloadLinksPanel from '../StudyPage/DownloadLinksPanel';
 
 const StudyTitle = ({
@@ -55,7 +55,8 @@ const SinglePageStudyDetailsPanel = ({
           <div
             key={`${fieldToShow.fields.join('-')}-details`}
             className={`px-2 ${
-              fieldToShow.groupWidth == 'full' || fieldToShow.groupWidth === undefined
+              fieldToShow.groupWidth == 'full' ||
+              fieldToShow.groupWidth === undefined
                 ? 'w-full'
                 : 'w-1/2'
             }`}
