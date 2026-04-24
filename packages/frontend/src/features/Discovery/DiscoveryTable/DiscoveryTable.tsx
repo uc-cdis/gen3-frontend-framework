@@ -98,7 +98,7 @@ const DiscoveryTable = ({
       const foundStudy = data.find(
         (item) => item[uidKey] === studyIdFromWindow,
       );
-      foundStudy && setStudyDetails(foundStudy);
+      if (foundStudy) setStudyDetails(foundStudy);
     }
   }, [studyIdFromWindow, data]);
 
