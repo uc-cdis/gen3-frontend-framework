@@ -8,7 +8,6 @@ import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 import { toString } from 'lodash';
-
 const StudyDetails = ({
   index,
   detailView,
@@ -20,18 +19,12 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-
-  useEffect(() => {
-    if (Object.keys(studyDetails).length > 0) {
-      open();
-    }
-  }, [studyDetails, open]);
-
   if (!studyDetails) {
     return null;
   }
+
   const defaultPermaLinkValue = 'Discovery/notfound';
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
 
@@ -50,16 +43,27 @@ const StudyDetails = ({
     }
     if (opened === false) {
       // if drawer has been shut, reset study details
-      setStudyDetails({});
+      // setStudyDetails({});
     }
   }, [opened]);
+
+  useEffect(() => {
+    if (Object.keys(studyDetails).length > 0) {
+      open();
+    }
+  }, [studyDetails, open]);
 
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
       <Drawer.Content className="pl-2">
         <Drawer.Header>
-          <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
+          <StudyDetailsHeaderButtons
+            studyIndex={index}
+            onClose={close}
+            opened={opened}
+            permalink={permalink}
+          />
         </Drawer.Header>
         <Drawer.Body>
           {detailView ? (

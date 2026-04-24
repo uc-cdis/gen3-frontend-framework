@@ -14,20 +14,14 @@ const StudyContext = createContext<StudyProviderValue>({
 const useStudyContext = () => {
   const context = React.useContext(StudyContext);
   if (context === undefined) {
-    throw Error(
-      'Study must be used must be used inside of a StudyContext',
-    );
+    throw Error('Study must be used must be used inside of a StudyContext');
   }
   return context;
 };
 
-const StudyProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const StudyProvider = ({ children }: { children: React.ReactNode }) => {
   const [studyDetails, setStudyDetails] = React.useState<JSONObject>({});
-
+  console.log('studyDetails', studyDetails);
   return (
     <StudyContext.Provider
       value={{

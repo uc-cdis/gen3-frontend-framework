@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Button, CopyButton } from '@mantine/core';
-import { MdKeyboardArrowLeft as BackIcon } from 'react-icons/md';
+import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
+import { useStudyContext } from '../StudyProvider';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
+
 interface StudyDetailsHeaderButtonsProps {
+  //studyIndex: string;
   onClose: () => void;
+  // opened: boolean;
   permalink: string;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
+  //studyIndex,
   onClose,
+  //opened,
   permalink,
 }) => {
+  // Note: This doesn't seem to work, will be addressed in HP-2384
+  const { studyDetails, setStudyDetails } = useStudyContext();
+
   const requiresLogin = !useIsUserLoggedIn();
+
   return (
     <>
       <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
