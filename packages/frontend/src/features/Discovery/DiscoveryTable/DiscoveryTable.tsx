@@ -94,7 +94,6 @@ const DiscoveryTable = ({
   useEffect(() => {
     if (!studyIdFromWindow || !data) return;
     const uidKey = config.minimalFieldMapping.uid;
-
     if (Array.isArray(data)) {
       const foundStudy = data.find(
         (item) => item[uidKey] === studyIdFromWindow,

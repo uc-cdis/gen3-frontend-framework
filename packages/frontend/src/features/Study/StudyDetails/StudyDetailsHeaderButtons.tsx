@@ -13,7 +13,6 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   permalink,
 }) => {
   const requiresLogin = !useIsUserLoggedIn();
-
   return (
     <>
       <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
