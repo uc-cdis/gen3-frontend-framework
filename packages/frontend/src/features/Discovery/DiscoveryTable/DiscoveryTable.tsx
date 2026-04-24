@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -60,6 +60,7 @@ const isSelectable = (
 interface DiscoveryTableProps {
   data: Array<Record<string, any>>;
   hits: number;
+  studyIdFromWindow?: string;
   dataRequestStatus: DataRequestStatus;
   pagination: MRT_PaginationState;
   sorting: MRT_SortingState;
@@ -73,6 +74,7 @@ interface DiscoveryTableProps {
 const DiscoveryTable = ({
   data,
   hits,
+  studyIdFromWindow,
   dataRequestStatus,
   setSorting,
   setPagination,
@@ -88,6 +90,19 @@ const DiscoveryTable = ({
   const { isLoading, isError, isFetching } = dataRequestStatus;
   const manualSortingAndPagination = getManualSortingAndPagination(config);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({}); //ts type available
+
+  useEffect(() => {
+    if (!studyIdFromWindow || !data) return;
+    const uidKey = config.minimalFieldMapping.uid;
+
+    if (Array.isArray(data)) {
+      const foundStudy = data.find(
+        (item) => item[uidKey] === studyIdFromWindow,
+      );
+
+      foundStudy && setStudyDetails(foundStudy);
+    }
+  }, [studyIdFromWindow, data]);
 
   const extractCellValue =
     (func: CellRendererFunction) =>
@@ -219,6 +234,7 @@ const DiscoveryTable = ({
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
+          console.log('row.original', row.original);
           return { ...row.original };
         });
       },

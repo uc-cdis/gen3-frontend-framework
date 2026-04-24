@@ -1,28 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, CopyButton } from '@mantine/core';
-import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
-import { useStudyContext } from '../StudyProvider';
+import { MdKeyboardArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
-
 interface StudyDetailsHeaderButtonsProps {
-  studyIndex: string;
   onClose: () => void;
+  permalink: string;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
-  studyIndex,
   onClose,
+  permalink,
 }) => {
-  // Note: This doesn't seem to work, will be addressed in HP-2384
-  let permalink = 'Discovery/notfound';
-  const { studyDetails } = useStudyContext();
-  if (studyDetails) {
-    const studyId = studyDetails[studyIndex];
-    const pagePath = `/discovery/${encodeURIComponent(
-      typeof studyId == 'string' ? 'string' : 'unknown',
-    )}`;
-    permalink = `/${pagePath}`;
-  }
   const requiresLogin = !useIsUserLoggedIn();
   return (
     <>
