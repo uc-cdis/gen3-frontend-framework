@@ -7,7 +7,6 @@ import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
-import { useRouter } from 'next/router';
 import { toString } from 'lodash';
 
 const StudyDetails = ({
