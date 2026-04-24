@@ -18,7 +18,7 @@ const NavPageLayout = ({
     ? 'flex-1 flex overflow-hidden relative'
     : 'flex grow relative';
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-full min-h-screen">
       <Head>
         <title>{headerMetadata.title}</title>
         <meta
