@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
-import { useStudyContext } from '../StudyProvider';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
 
 interface StudyDetailsHeaderButtonsProps {
-  //studyIndex: string;
   onClose: () => void;
-  // opened: boolean;
   permalink: string;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
-  //studyIndex,
   onClose,
-  //opened,
   permalink,
 }) => {
   const requiresLogin = !useIsUserLoggedIn();

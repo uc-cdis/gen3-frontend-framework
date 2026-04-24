@@ -8,6 +8,7 @@ import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 import { toString } from 'lodash';
+
 const StudyDetails = ({
   index,
   detailView,
@@ -21,9 +22,6 @@ const StudyDetails = ({
 }) => {
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-  if (!studyDetails) {
-    return null;
-  }
 
   const defaultPermaLinkValue = 'Discovery/notfound';
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
