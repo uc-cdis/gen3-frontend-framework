@@ -22,7 +22,6 @@ const StudyDetails = ({
 }) => {
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-
   const defaultPermaLinkValue = 'Discovery/notfound';
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
   const hasStudyDetails = Object.keys(studyDetails).length > 0;

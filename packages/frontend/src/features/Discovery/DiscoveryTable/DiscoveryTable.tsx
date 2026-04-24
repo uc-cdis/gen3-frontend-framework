@@ -99,7 +99,6 @@ const DiscoveryTable = ({
       const foundStudy = data.find(
         (item) => item[uidKey] === studyIdFromWindow,
       );
-
       foundStudy && setStudyDetails(foundStudy);
     }
   }, [studyIdFromWindow, data]);
@@ -234,7 +233,6 @@ const DiscoveryTable = ({
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         setStudyDetails(() => {
-          console.log('row.original', row.original);
           return { ...row.original };
         });
       },
