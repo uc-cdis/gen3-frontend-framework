@@ -97,11 +97,14 @@ const HorizontalNavigationBar = ({
             <div key={`${x.name}-${index}`}>
               <NavigationBarButton
                 tooltip={x.tooltip}
+                tooltipNoAccess={x?.tooltipNoAccess}
                 icon={x.icon}
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                noBasePath={x?.noBasePath}
                 authStatus={LinkAuthStatus.Authorized}
+                enabledWithNoAccess={x?.enabledWithNoAccess}
               />
             </div>
           );

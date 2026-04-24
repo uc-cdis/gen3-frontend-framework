@@ -6,11 +6,13 @@ import { FooterProps } from './Footer/types';
 export interface NavigationButtonProps {
   icon: string;
   tooltip: string;
+  tooltipNoAccess?: string;
   href: string;
   noBasePath?: boolean;
   name: string;
   iconHeight?: string;
   classNames?: StylingOverrideWithMergeControl;
+  enabledWithNoAccess?: boolean;
 }
 
 export enum LinkAuthStatus {
