@@ -28,7 +28,6 @@ const AuthTooltips: Record<LinkAuthStatus, string> = {
  */
 const NavigationBarButton = ({
   tooltip,
-  tooltipNoAccess,
   icon,
   href,
   name,
@@ -63,19 +62,20 @@ const NavigationBarButton = ({
     router.push(href);
   };
 
-  let tooltipText = tooltip;
-  if (authStatus !== 'authorized') {
-    if (tooltipNoAccess && authStatus === 'unauthorized') {
-      tooltipText = tooltipNoAccess;
-    } else {
-      tooltipText = AuthTooltips[authStatus];
-    }
+  let tooltipObj = AuthTooltips;
+
+  // enable old string setting to still work
+  if (typeof tooltip === 'string') {
+    tooltipObj.authorized = tooltip;
+  // new override method allowing full configuraion
+  } else if (typeof tooltip === 'object') {
+    tooltipObj = { ...tooltipObj, ...tooltip };
   }
 
   return (
     <React.Fragment>
       <Tooltip
-        label={tooltipText}
+        label={tooltipObj[authStatus]}
         disabled={!tooltip}
         multiline
         position="bottom"

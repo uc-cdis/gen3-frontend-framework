@@ -5,8 +5,7 @@ import { FooterProps } from './Footer/types';
 
 export interface NavigationButtonProps {
   icon: string;
-  tooltip: string;
-  tooltipNoAccess?: string;
+  tooltip: Record<LinkAuthStatus, string> | string;
   href: string;
   noBasePath?: boolean;
   name: string;

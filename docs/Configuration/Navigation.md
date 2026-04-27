@@ -33,8 +33,7 @@ Each item in the navigation menu can be configured with the following properties
 - **icon**: The icon class to be displayed alongside the item name. This usually follows a naming convention that should be consistent across the interface.
 - **href**: The hyperlink reference where the item links to.
 - **name**: The display name of the navigation item.
-- **tooltip**: A brief description of the item that appears when the user hovers 
-- **tooltipNoAccess**: A brief description of the item that appears when the user hovers over it if they do not have permissions to view the page: defaults to normal tooltip.
+- **tooltip**: A brief description of the item that appears when the user hovers, with settings for each user state. All optional if none are provided no tooltip is shown. 
 - **enabledWithNoAccess**: When user is logged in enabled button even if user does not have permission
 
 Example of a navigation item:
@@ -44,8 +43,12 @@ Example of a navigation item:
   "icon": "gen3:query",
   "href": "/Discovery",
   "name": "Discovery",
-  "tooltip": "Use free-text search and tags to rapidly find relevant studies.",
-  "tooltipNoAccess": "You don't have access to this section. Request access after login.",
+  "tooltip": {
+    "loginRequired": "Login required to access this page",
+    "pending": "Checking your access…",
+    "unauthorized": "You are logged in but not authorized to access this page",
+    "authorized": "Use free-text search and tags to rapidly find relevant studies."
+  },
   "enabledWithNoAccess": true
 }
 ```
@@ -107,7 +110,12 @@ Below is an example of a full navigation configuration file combining both `navi
         "icon": "gen3:query",
         "href": "/Discovery",
         "name": "Discovery",
-        "tooltip": "Use free-text search and tags to rapidly find relevant studies."
+        "tooltip": {
+          "loginRequired": "Login required to access this page",
+          "pending": "Checking your access…",
+          "unauthorized": "You are logged in but not authorized to access this page",
+          "authorized": "Use free-text search and tags to rapidly find relevant studies."
+        },
       },
       // More items...
     ]

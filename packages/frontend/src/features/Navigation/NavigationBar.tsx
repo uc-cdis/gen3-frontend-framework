@@ -43,7 +43,6 @@ const NavigationBarItem = ({
       <LoadingOverlay visible={authStatus === LinkAuthStatus.Pending} />
       <NavigationBarButton
         tooltip={item.tooltip}
-        tooltipNoAccess={item?.tooltipNoAccess}
         icon={item.icon}
         href={item.href}
         name={item.name}
