@@ -1,14 +1,7 @@
-import {
-  convertFilterSetToGqlFilter,
-  DispatchJobParams,
-  FilterSet,
-} from '@gen3/core';
+import { convertFilterSetToGqlFilter, DispatchJobParams, FilterSet, } from '@gen3/core';
 import { JobBuilderAction } from '../../../Sower/actions/types';
 import { SowerJobBuilderActionFactory } from '../../../Sower/actions/sowerJobsFactory';
-import {
-  buildManifestAction,
-  DownloadToManifestParams,
-} from './downloadManifest';
+import { DownloadToManifestParams } from './downloadManifest';
 
 interface BuildPFBFromCohortParams extends Record<string, unknown> {
   filter: FilterSet;

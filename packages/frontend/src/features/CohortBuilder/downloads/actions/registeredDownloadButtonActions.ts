@@ -1,9 +1,6 @@
 import { ActionButtonWithArgsFunction } from '../../types';
 import { downloadToFileAction } from './downloadToFile';
-import {
-  buildManifestAction,
-  downloadToManifestAction,
-} from './downloadManifest';
+import { downloadToManifestAction } from './downloadManifest';
 import {
   addCohortDataFilesToDataLibraryAsDataset,
   exportCohortToWorkspace,
@@ -64,10 +61,6 @@ export const registerDefaultButtonActions = () => {
   });
   registerDownloadButtonAction('manifest', {
     action: downloadToManifestAction,
-    args: { format: 'manifest' },
-  });
-  registerDownloadButtonAction('buildManifest', {
-    action: buildManifestAction,
     args: { format: 'manifest' },
   });
   registerDownloadButtonAction('cohortDataFilesToDataLibrary', {
