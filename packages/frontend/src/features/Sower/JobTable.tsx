@@ -8,15 +8,16 @@ import {
 } from 'mantine-react-table';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import {
-  JobListResponse,
-  JobStatus,
+  type JobListResponse,
+  type JobStatus,
+  type SowerJobCacheEntry,
   useLazyGetSowerOutputQuery,
 } from '@gen3/core';
 
 export interface JobTableProps {
   readonly data: JobListResponse | undefined;
   readonly isLoading: boolean;
-  readonly sowerJobDatetimeCache: Record<string, number>;
+  readonly sowerJobDatetimeCache: Record<string, SowerJobCacheEntry>;
 }
 
 interface ColorConfig {
@@ -104,7 +105,9 @@ const JobTable = ({
         header: 'Datetime',
         Cell: ({ row }: MRT_Cell<JobStatus>) =>
           sowerJobDatetimeCache?.[row.original.uid]
-            ? dateFormat.format(sowerJobDatetimeCache[row.original.uid])
+            ? dateFormat.format(
+                sowerJobDatetimeCache[row.original.uid].createdAt,
+              )
             : '--',
       },
       {

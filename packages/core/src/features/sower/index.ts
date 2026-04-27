@@ -15,7 +15,10 @@ import {
 
 import { type JobStatus } from './types';
 
-import { selectSowerJobDatetimeCache } from './sowerJobDatetime';
+import {
+  selectSowerJobDatetimeCache,
+  type SowerJobCacheEntry,
+} from './sowerJobDatetime';
 
 export {
   useGetSowerJobListQuery,
@@ -30,6 +33,7 @@ export {
   GetSowerJobListQueryType,
   JobStatus,
   DispatchJobParams,
+  type SowerJobCacheEntry,
   selectSowerJobDatetimeCache,
   useLazyGetMultipleSowerJobStatusQuery,
 };

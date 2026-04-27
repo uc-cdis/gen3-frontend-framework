@@ -216,7 +216,7 @@ export const addCohortDataFilesToDataLibraryAsDataset = async (
 
 export const exportCohortToWorkspace = async (
   params: Record<string, any>,
-  done?: () => void,
+  done?: (args?: Record<string, unknown>) => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,

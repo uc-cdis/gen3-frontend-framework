@@ -121,7 +121,7 @@ export enum DownloadFileFormats {
 }
 
 export type ActionButtonFunction = (
-  done?: () => void,
+  done?: (args?: Record<string, unknown>) => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,
@@ -130,7 +130,7 @@ export type ActionButtonFunction = (
 
 export type ActionButtonWithArgsFunction = (
   params: Record<string, any>,
-  done?: () => void,
+  done?: (args?: unknown) => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,

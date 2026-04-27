@@ -1,7 +1,11 @@
 import React from 'react';
 import { QueryActionCreatorResult } from '@reduxjs/toolkit/query';
 import { Button } from '@mantine/core';
-import { GetSowerJobListQueryType, JobListResponse } from '@gen3/core';
+import {
+  type GetSowerJobListQueryType,
+  type JobListResponse,
+  type SowerJobCacheEntry,
+} from '@gen3/core';
 import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
 import JobTable from './JobTable';
 import JobOverview from './JobOverview';
@@ -10,7 +14,7 @@ export interface JobPanelProps {
   readonly data: JobListResponse | undefined;
   readonly isLoading: boolean;
   readonly refetch: () => QueryActionCreatorResult<GetSowerJobListQueryType>;
-  readonly sowerJobDatetimeCache: Record<string, number>;
+  readonly sowerJobDatetimeCache: Record<string, SowerJobCacheEntry>;
 }
 
 const JobPanel = ({

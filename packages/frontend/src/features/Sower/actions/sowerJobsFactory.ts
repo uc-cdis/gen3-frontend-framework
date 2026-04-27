@@ -1,8 +1,4 @@
-import {
-  convertFilterSetToGqlFilter,
-  fetchFencePresignedURL,
-  type FilterSet,
-} from '@gen3/core';
+import { fetchFencePresignedURL } from '@gen3/core';
 import {
   type JobBuilderAction,
   type SendJobOutputAction,
@@ -67,7 +63,7 @@ export const sendPFBToURL: SendJobOutputAction = async ({
   }
 };
 
-class SowerJobBuilderActionFactory {
+export class SowerJobBuilderActionFactory {
   private static actions = new Map<string, JobBuilderAction>();
 
   static register(name: string, action: JobBuilderAction) {
@@ -98,31 +94,6 @@ class SendSowerJobOutputActionFactory {
     return action;
   }
 }
-
-interface BuildPFBFromCohortParams extends Record<string, unknown> {
-  filter: FilterSet;
-  index: string;
-}
-
-/**
- * Creates an export to PFB action to submit to sower
- * @param params
- */
-const buildPFBFromCohort: JobBuilderAction = (params) => {
-  const { filter, index } = params as BuildPFBFromCohortParams;
-  return {
-    action: 'export',
-    input: {
-      filters: convertFilterSetToGqlFilter(filter),
-      root_node: index,
-    },
-  };
-};
-
-SowerJobBuilderActionFactory.register(
-  'export-cohort-to-pfb',
-  buildPFBFromCohort,
-);
 
 SendSowerJobOutputActionFactory.register('handoff-pfb-to-url', sendPFBToURL);
 

@@ -66,11 +66,7 @@ const useSowerJobEventBus = () => {
 
   useDeepCompareEffect(() => {
     if (statusResult.isSuccess) {
-      console.log('statusResult', statusResult);
       Object.entries(statusResult.currentData || {}).map(([job, response]) => {
-        console.log('job', job);
-        console.log('listeners', listeners);
-        console.log('pollers', pollers);
         if (
           (pollers.has(job) && response.status === 'Completed') ||
           response.status === 'Failed'

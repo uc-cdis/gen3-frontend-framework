@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { CohortBuilderProps, CohortPanelConfiguration } from './types';
 import { Tabs } from '@mantine/core';
@@ -11,6 +11,7 @@ import {
 } from '@gen3/core';
 import { TabsLayoutToComponentProp } from '../../utils/layout';
 import CohortManager from './CohortManager/CohortManager';
+import { registerSowerActions } from './downloads/actions/sowerActions';
 
 export const useGetCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohortId(state));
@@ -23,6 +24,10 @@ const CohortBuilder = ({
   enableCohortManager = true,
   activeTab,
 }: CohortBuilderProps) => {
+  useEffect(() => {
+    registerSowerActions();
+  }, []);
+
   const dispatch = useCoreDispatch();
   dispatch(setSharedFilters(sharedFiltersMap ?? {}));
 

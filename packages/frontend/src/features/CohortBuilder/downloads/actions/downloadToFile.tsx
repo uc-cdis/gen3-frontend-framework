@@ -3,7 +3,7 @@ import { handleDownload } from './utils';
 
 export const downloadToFileAction = async (
   params: Record<string, any>,
-  done?: () => void,
+  done?: (args?: unknown) => void,
   onError?: (error: Error) => void,
   onAbort?: () => void,
   signal?: AbortSignal,

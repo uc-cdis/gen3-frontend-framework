@@ -1,7 +1,10 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
 import { JobStatus } from './types';
-import { setSowerJobDatetime } from './sowerJobDatetime';
+import {
+  setSowerJobDatetime,
+  updateSowerJobDatetime,
+} from './sowerJobDatetime';
 
 export interface DispatchJobParams {
   action: string;
@@ -36,17 +39,32 @@ export const sowerJobApi = gen3Api.injectEndpoints({
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
-        dispatch(setSowerJobDatetime(data.uid));
+        dispatch(
+          setSowerJobDatetime({
+            id: data.uid,
+            status: data.status,
+            action: data.name,
+          }),
+        );
       },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({
       query: (uid) => `${GEN3_SOWER_API}/status?UID=${uid}`,
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(
+          updateSowerJobDatetime({
+            id: data.uid,
+            status: data.status,
+          }),
+        );
+      },
     }),
     getMultipleSowerJobStatus: builder.query<
       Record<string, DispatchJobResponse>,
       string[]
     >({
-      queryFn: async (arg, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async (arg, { dispatch }, _extraOptions, fetchWithBQ) => {
         const statuses: Record<string, DispatchJobResponse> = {};
         for (const uid of arg) {
           const result = await fetchWithBQ(
@@ -55,10 +73,16 @@ export const sowerJobApi = gen3Api.injectEndpoints({
           if (result.error) {
             return { error: result.error };
           } else {
-            statuses[uid] = result.data as DispatchJobResponse;
+            const data = result.data as DispatchJobResponse;
+            statuses[uid] = data;
+            dispatch(
+              updateSowerJobDatetime({
+                id: data.uid,
+                status: data.status,
+              }),
+            );
           }
         }
-
         return { data: statuses };
       },
     }),
