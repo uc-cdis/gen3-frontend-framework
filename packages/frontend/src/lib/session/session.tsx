@@ -1,12 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, } from 'react';
 import { useRouter } from 'next/router';
-import { getCookie } from 'cookies-next';
+import { getCookie, hasCookie } from 'cookies-next';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useManageSession } from './hooks';
 import { showNotification } from '@mantine/notifications';
@@ -39,10 +33,6 @@ export const logoutSession = async () => {
   if (accessToken) {
     await fetch('/api/auth/credentialsLogout');
   }
-
-  await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
-    cache: 'no-store',
-  });
 };
 
 function useOnline() {
@@ -254,6 +244,8 @@ export const SessionProvider = ({
   }, [getUserDetails]);
 
   const endSession = useCallback(async () => {
+    const isCredentialLogin = await hasCookie('credentials_token')!;
+
     logoutSession()
       .then(() => {
         getUserDetails();
@@ -265,7 +257,10 @@ export const SessionProvider = ({
         });
       })
       .finally(() => {
-        router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
+        if (isCredentialLogin) {
+          router.push(GEN3_REDIRECT_URL);
+        } else
+          router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
       });
   }, [getUserDetails, router]);
 
