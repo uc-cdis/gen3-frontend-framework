@@ -64,7 +64,6 @@ export const {
  */
 
 export const logoutFence = async (redirect = '/') =>
-  // possibly change here
   await fetchFence({
     endpoint: `${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}${redirect}`,
     method: 'GET',
