@@ -39,10 +39,6 @@ export const logoutSession = async () => {
   if (accessToken) {
     await fetch('/api/auth/credentialsLogout');
   }
-
-  await fetch(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}/`, {
-    cache: 'no-store',
-  });
 };
 
 function useOnline() {
@@ -265,7 +261,7 @@ export const SessionProvider = ({
         });
       })
       .finally(() => {
-        router.push(`${GEN3_REDIRECT_URL}`); // TODO replace with config option
+        router.push(`${GEN3_FENCE_API}/logout?next=${GEN3_REDIRECT_URL}`);
       });
   }, [getUserDetails, router]);
 
