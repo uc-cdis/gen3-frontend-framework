@@ -7,10 +7,12 @@ import { useIsUserLoggedIn } from '@gen3/core';
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
+  showSubmitButton?: boolean;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
+  showSubmitButton = false,
 }) => {
   const requiresLogin = !useIsUserLoggedIn();
   return (
@@ -18,11 +20,13 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
       <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
         Back
       </Button>
-      <Button leftSection={<LoginIcon size={14} />} variant="subtle">
-        {requiresLogin
-          ? 'Login to submit variable level metadata'
-          : 'Request Access to Submit Variable-level Metadata'}
-      </Button>
+      {showSubmitButton && (
+        <Button leftSection={<LoginIcon size={14} />} variant="subtle">
+          {requiresLogin
+            ? 'Login to submit variable level metadata'
+            : 'Request Access to Submit Variable-level Metadata'}
+        </Button>
+      )}
       <CopyButton value={permalink}>
         {({ copied, copy }) => (
           <Button color={copied ? 'primary' : 'secondary'} onClick={copy}>
