@@ -3,8 +3,23 @@ import { gen3Api } from '../gen3';
 import { KeyValuePair } from '../../types';
 
 export interface IndexdMetadataRequestParams {
-  limit?: number;
   filters: KeyValuePair[];
+  params?: {
+    limit?: number;
+    page?: number;
+    size?: number;
+    form?: 'bundle' | 'object' | 'all';
+    urls_metadata?: string;
+    metadata?: string;
+    hash?: string;
+    uploader?: string;
+    ids?: string;
+    urls?: string[];
+    acl?: string;
+    authz?: string;
+    negate_params?: string;
+    start?: string;
+  }
 }
 
 export interface IndexObject {
@@ -59,12 +74,29 @@ export const indexdApi = gen3Api.injectEndpoints({
       IndexdResponse,
       IndexdMetadataRequestParams
     >({
-      query: ({ filters, limit = 1000 }: IndexdMetadataRequestParams) => {
+      query: ({ filters, params } : IndexdMetadataRequestParams) => {
         const query = filters.reduce(
           (acc, filter) => `${acc}&${filter.key}=${filter.value}`,
           '',
         );
-        return `${GEN3_INDEXD_API}/index?${query}&limit=${limit}`;
+
+        const formattedParams : [string, string][] = [];
+
+        Object.entries(params || {}).forEach(([k, v]) => {
+          if (v) {
+            if (typeof v === "number") {
+              formattedParams.push([k, v.toString()])
+            } else if (Array.isArray(v)) {
+              v.forEach(v => formattedParams.push([k, v]))
+            } else {
+              formattedParams.push([k, v])
+            }
+          }
+        });
+
+        const queryString = new URLSearchParams(formattedParams).toString();
+
+        return `${GEN3_INDEXD_API}/index?${query}&${queryString}`;
       },
     }),
     getIndexObject: builder.query<IndexObject, string>({
