@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import React, { JSX, useImperativeHandle, useState } from 'react';
+import React, { JSX, useImperativeHandle, useState, useRef } from 'react';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import type { ECharts, EChartsOption, SetOptionOpts } from 'echarts';
 import { getInstanceByDom, init } from 'echarts';
@@ -31,7 +31,8 @@ const ReactECharts = (
     ref
   } : ReactEChartsProps ): JSX.Element => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
-  const [chartRef, rect] = useResizeObserver();
+  const [containerRef, rect] = useResizeObserver<HTMLDivElement>();
+  const chartRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => ({
     getEchartsInstance: () => {
@@ -83,12 +84,14 @@ const ReactECharts = (
   }, [rect]);
 
   return (
-    <div
-      role="figure"
-      aria-label="Data Chart"
-      ref={chartRef}
-      style={{ width: '100%', height: '100%', ...style }}
-    />
+    <div ref={containerRef} style={{ width: '100%', height: '100%', ...style }}>
+      <div
+        style={{ width: '100%', height: '100%', ...style }}
+        role="figure"
+        aria-label="Data Chart"
+        ref={chartRef}
+      />
+    </div>
   );
 };
 
