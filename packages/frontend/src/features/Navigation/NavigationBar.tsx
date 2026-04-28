@@ -49,6 +49,7 @@ const NavigationBarItem = ({
         classNames={item.classNames}
         noBasePath={item?.noBasePath}
         authStatus={authStatus}
+        enabledWithNoAccess={item?.enabledWithNoAccess}
       />
     </div>
   );
