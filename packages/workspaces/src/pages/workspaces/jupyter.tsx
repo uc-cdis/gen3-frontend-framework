@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { GetServerSideProps } from 'next';
-import {
-  getNavPageLayoutPropsFromConfig,
-  type NavPageLayoutProps,
-} from '@gen3/frontend/lib/common/staticProps';
 import { useUserAuth } from '@gen3/core';
 import {
-  HostedWorkspaceExperience,
+  HostedWorkspace,
   type WorkspaceAuthContext,
 } from '../../workspace/HostedWorkspace';
+import {
+  NavPageLayout,
+  NavPageLayoutProps,
+} from '@gen3/frontend/features/Navigation';
 
 const jegEnabled = process.env.NEXT_PUBLIC_JEG_ENABLED === 'true';
 
@@ -107,7 +107,7 @@ const JupyterWorkspacePage = ({
           </div>
         </div>
       ) : isDevelopment ? (
-        <HostedWorkspaceExperience
+        <HostedWorkspace
           leftPanel={null}
           authContext={authContext}
           accessPolicy={{
@@ -143,7 +143,7 @@ const JupyterWorkspacePage = ({
           </div>
         </div>
       ) : (
-        <HostedWorkspaceExperience
+        <HostedWorkspace
           leftPanel={null}
           authContext={authContext}
           accessPolicy={{ requireUsername: true, requireJwt: false }}

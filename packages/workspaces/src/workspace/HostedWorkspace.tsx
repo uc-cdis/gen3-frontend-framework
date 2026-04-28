@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import TierSelectorLanding, {
-  type WorkspaceTier,
-} from '../components/TierSelectorLanding';
+import TierSelectorLanding from '../components/TierSelectorLanding';
+import { type WorkspaceTier } from '../types';
 import InfrastructureRightPanel from '../components/InfrastructureRightPanel';
 import MicroContainerPanel from '../components/MicroContainerPanel';
 import type { KernelLifecyclePanelProps } from '../components/KernelLifecyclePanel';
@@ -19,7 +18,7 @@ import {
   verifyWorkspaceAccess,
   type WorkspaceAccessPolicy,
   type WorkspaceAuthContext,
-} from '../auth';
+} from '../auth/auth';
 
 type HostedWorkspaceExperienceProps = {
   leftPanel: React.ReactNode;

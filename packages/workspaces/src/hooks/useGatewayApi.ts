@@ -167,7 +167,7 @@ export function useKernels(
 }
 
 /* ------------------------------------------------------------------ */
-/*  useSessions — GET /api/sessions                                    */
+/*  useSessions — GET /api/sessions                                   */
 /* ------------------------------------------------------------------ */
 
 export function useSessions(baseUrl: string, jwt: string | undefined) {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { WorkspaceAuthContext } from '../auth';
+import type { WorkspaceAuthContext } from '../auth/auth';
 import type { RemoteComputeWorkspaceHandle } from '../workspace/RemoteComputeWorkspace';
 import {
   type GatewayKernel,
@@ -131,7 +131,7 @@ export function useGatewayConnection({
   kernelPollIntervalMs = 5000,
 }: UseGatewayConnectionOpts): UseGatewayConnectionReturn {
   const jwt = authContext?.jwt;
-  const workspaceRef = useRef<RemoteComputeWorkspaceHandle>(null);
+  const workspaceRef = useRef<RemoteComputeWorkspaceHandle | null>(null);
 
   const [connectionState, setConnectionState] =
     useState<GatewayConnectionState>('idle');
@@ -269,7 +269,7 @@ export function useGatewayConnection({
     void check();
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gatewayBaseUrl]); // Only re-run if the base URL changes
+  }, [gatewayBaseUrl, jwt, kernelPollIntervalMs, setGatewayState]); // Only re-run if the base URL changes
 
   /* ── Watch kernel list for errors → trigger reconnect ──────────── */
 

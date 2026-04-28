@@ -1,12 +1,15 @@
 import React from 'react';
-import { type WorkspaceTier } from './types';
+import { WorkspaceCardConfig, type WorkspaceTier } from './types';
+import WorkspaceTierCard from './WorkspaceTierCard';
 
 type TierSelectorLandingProps = {
+  cards: WorkspaceCardConfig[];
   onSelectTier: (tier: WorkspaceTier) => void;
   className?: string;
 };
 
 const TierSelectorLanding = ({
+  cards,
   onSelectTier,
   className,
 }: TierSelectorLandingProps) => {
@@ -42,76 +45,18 @@ const TierSelectorLanding = ({
           role="list"
           aria-label="Workspace tier selection"
         >
-          <button
-            type="button"
-            onClick={() => onSelectTier('free')}
-            className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm ring-1 ring-slate-100 transition-all duration-200 hover:-translate-y-1 hover:border-primary-light hover:shadow-lg hover:shadow-primary-light/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            aria-label="Select Free tier"
-          >
-            <div className="inline-flex rounded-full bg-primary-light/20 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-primary">
-              Free
-            </div>
-            <p className="mt-3 text-xl font-black text-slate-900">
-              JupyterLite in browser
-            </p>
-            <p className="mt-2 text-sm text-slate-600">
-              Instant startup and lightweight notebooks directly in your
-              browser.
-            </p>
-            <ul className="mt-4 space-y-2 text-xs font-semibold text-slate-600">
-              <li>Fast startup, no remote kernel wait</li>
-              <li>Great for exploratory analysis</li>
-            </ul>
-            <p className="mt-6 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-primary">
-              Launch Local Workspace
-              <span aria-hidden="true">→</span>
-            </p>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onSelectTier('remote')}
-            className="group rounded-2xl border border-accent-light/60 bg-gradient-to-b from-accent-max to-white p-6 text-left shadow-sm ring-1 ring-accent-light/30 transition-all duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-lg hover:shadow-accent-light/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            aria-label="Select Paid Remote Kernel tier"
-          >
-            <div className="inline-flex rounded-full bg-accent-light/20 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-accent-dark">
-              Paid
-            </div>
-            <p className="mt-3 text-xl font-black text-slate-900">
-              Remote kernel runtime
-            </p>
-            <p className="mt-2 text-sm text-slate-600">
-              Attach to remote compute for longer sessions and larger workloads.
-            </p>
-            <ul className="mt-4 space-y-2 text-xs font-semibold text-slate-600">
-              <li>Persistent sessions and gateway routing</li>
-              <li>Designed for heavier workloads</li>
-            </ul>
-            <p className="mt-6 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-accent-dark">
-              Launch Remote Workspace
-              <span aria-hidden="true">→</span>
-            </p>
-          </button>
-
-          <div
-            className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 p-6 text-left"
-            role="listitem"
-            aria-label="Secure tier coming soon"
-          >
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
-              Coming Soon
-            </p>
-            <p className="mt-2 text-xl font-black text-slate-900">
-              High assurance mode
-            </p>
-            <p className="mt-2 text-sm text-slate-600">
-              Dedicated mode for workflows that need additional policy controls
-              and hardened runtime posture.
-            </p>
-            <p className="mt-4 inline-flex rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-slate-600">
-              Not yet available
-            </p>
-          </div>
+          {cards.map((card) => (
+            <WorkspaceTierCard
+              key={card.tier}
+              tier={card.tier}
+              onSelectTier={onSelectTier}
+              label={card.label}
+              description={card.description}
+              features={card.features}
+              tooltip={card.tooltip}
+              buttonLabel={card.buttonLabel}
+            />
+          ))}
         </div>
       </div>
     </div>
