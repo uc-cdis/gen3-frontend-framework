@@ -36,9 +36,7 @@ const StudyDetails = ({
     }
   }, [index, studyDetails]);
 
-  // `opened` intentionally omitted: the effect should only fire when
-  // hasStudyDetails changes, not when the drawer opens/closes.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // using Object.keys(studyDetails).length > 0 fires this effect correctly
   useEffect(() => {
     if (Object.keys(studyDetails).length > 0) {
       open();
