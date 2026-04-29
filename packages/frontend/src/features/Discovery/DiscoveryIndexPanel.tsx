@@ -214,39 +214,46 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                     </Grid.Col>
                   )}
                 </Grid>
-                <SearchInputSelectableFields
-                  searchMode={searchMode}
-                  setSearchMode={setSearchMode}
-                  searchableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableTextFields
-                  }
-                  searchableAndSelectableTextFields={
-                    discoveryConfig?.features?.search?.searchBar
-                      ?.searchableAndSelectableTextFields
-                  }
-                  setSelectedFieldsForSearchIndexing={
-                    setSelectedFieldsForSearchIndexing
-                  }
-                />
-                <div
-                  ref={tagViewerContentRef}
-                  className={`transition-all duration-300 ease-in-out mt-2 ${
-                    isDropdownTagViewerOpen
-                      ? 'max-h-screen opacity-100'
-                      : 'max-h-0 opacity-0'
-                  } overflow-hidden`}
-                  style={{
-                    height:
-                      isDropdownTagViewerOpen && tagViewerContentRef.current
-                        ? `${tagViewerContentRef.current.scrollHeight}px`
-                        : '0px',
-                  }}
-                >
-                  <DiscoveryDropdownTagViewer
-                    tagCategoryData={tagCategoryData}
-                  />
-                </div>
+                {discoveryConfig?.features?.search?.searchBar
+                  ?.searchableTextFields ||
+                  (discoveryConfig?.features?.search?.searchBar
+                    ?.searchableAndSelectableTextFields && (
+                    <SearchInputSelectableFields
+                      searchMode={searchMode}
+                      setSearchMode={setSearchMode}
+                      searchableTextFields={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.searchableTextFields
+                      }
+                      searchableAndSelectableTextFields={
+                        discoveryConfig?.features?.search?.searchBar
+                          ?.searchableAndSelectableTextFields
+                      }
+                      setSelectedFieldsForSearchIndexing={
+                        setSelectedFieldsForSearchIndexing
+                      }
+                    />
+                  ))}
+                {tagCategoryData && tagCategoryData.length > 0 && (
+                  <div
+                    ref={tagViewerContentRef}
+                    className={`transition-all duration-300 ease-in-out mt-2 ${
+                      isDropdownTagViewerOpen
+                        ? 'max-h-screen opacity-100'
+                        : 'max-h-0 opacity-0'
+                    } overflow-hidden`}
+                    style={{
+                      height:
+                        isDropdownTagViewerOpen && tagViewerContentRef.current
+                          ? `${tagViewerContentRef.current.scrollHeight}px`
+                          : '0px',
+                    }}
+                  >
+                    <DiscoveryDropdownTagViewer
+                      tagCategoryData={tagCategoryData}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>
