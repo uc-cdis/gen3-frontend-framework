@@ -130,6 +130,10 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
   const enableSearchBar = discoveryConfig?.features?.search?.searchBar?.enabled;
   const enableSearchableTags =
     discoveryConfig?.features?.search?.tagSearchDropdown?.enabled;
+  const enableSearchInputSelectableFields =
+    discoveryConfig?.features?.search?.searchBar?.searchableTextFields ||
+    discoveryConfig?.features?.search?.searchBar
+      ?.searchableAndSelectableTextFields;
 
   return (
     <div className="flex flex-col items-center p-4 w-full bg-base-lightest">
@@ -214,26 +218,23 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
                     </Grid.Col>
                   )}
                 </Grid>
-                {discoveryConfig?.features?.search?.searchBar
-                  ?.searchableTextFields ||
-                  (discoveryConfig?.features?.search?.searchBar
-                    ?.searchableAndSelectableTextFields && (
-                    <SearchInputSelectableFields
-                      searchMode={searchMode}
-                      setSearchMode={setSearchMode}
-                      searchableTextFields={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.searchableTextFields
-                      }
-                      searchableAndSelectableTextFields={
-                        discoveryConfig?.features?.search?.searchBar
-                          ?.searchableAndSelectableTextFields
-                      }
-                      setSelectedFieldsForSearchIndexing={
-                        setSelectedFieldsForSearchIndexing
-                      }
-                    />
-                  ))}
+                {enableSearchInputSelectableFields && (
+                  <SearchInputSelectableFields
+                    searchMode={searchMode}
+                    setSearchMode={setSearchMode}
+                    searchableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableTextFields
+                    }
+                    searchableAndSelectableTextFields={
+                      discoveryConfig?.features?.search?.searchBar
+                        ?.searchableAndSelectableTextFields
+                    }
+                    setSelectedFieldsForSearchIndexing={
+                      setSelectedFieldsForSearchIndexing
+                    }
+                  />
+                )}
                 {tagCategoryData && tagCategoryData.length > 0 && (
                   <div
                     ref={tagViewerContentRef}

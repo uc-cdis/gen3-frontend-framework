@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
@@ -7,7 +7,6 @@ import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
-import { useRouter } from 'next/router';
 
 const StudyDetails = ({
   index,
@@ -20,23 +19,13 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const router = useRouter();
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   const defaultPermaLinkValue = 'Discovery/notfound';
-  // const [permalink, setPermalink] = useState(defaultPermaLinkValue);
-
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
-  const studyId = studyDetails?.[index];
 
-  console.log('studyDetails', studyDetails);
-
-  const handleClose = useCallback(() => {
-    // close();
-    setStudyDetails({});
-  }, [setStudyDetails]);
-
-  const link = useMemo(() => {
+  const permalink = useMemo(() => {
+    const studyId = studyDetails?.[index];
     if (studyId) {
       const origin = window?.location?.href ?? defaultPermaLinkValue;
       const studyPath = `${origin}/${encodeURIComponent(studyId as string)}`;
@@ -45,25 +34,23 @@ const StudyDetails = ({
     } else {
       return defaultPermaLinkValue;
     }
-  }, [router.asPath, studyId]);
+  }, [index, studyDetails]);
 
   // `opened` intentionally omitted: the effect should only fire when
   // hasStudyDetails changes, not when the drawer opens/closes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (studyId && !opened) {
+    if (Object.keys(studyDetails).length > 0) {
       open();
-    } else {
-      close();
     }
-  }, [studyId, open, close]);
-
-  console.log('permalink', link);
+  }, [studyDetails, open]);
 
   return (
     <Drawer.Root
       opened={opened}
-      onClose={handleClose}
+      onClose={() => {
+        close();
+      }}
       size="50%"
       position="right"
     >
@@ -72,8 +59,8 @@ const StudyDetails = ({
         <Drawer.Content className="pl-2">
           <Drawer.Header>
             <StudyDetailsHeaderButtons
-              onClose={handleClose}
-              permalink={link}
+              onClose={close}
+              permalink={permalink}
               showSubmitButton={simpleDetailsView?.showSubmitButton}
             />
           </Drawer.Header>
