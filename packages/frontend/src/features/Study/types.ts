@@ -26,6 +26,7 @@ export interface StudyPageConfig {
     field: string;
     className?: string;
   };
+  showSubmitButton?: boolean;
   downloadLinks?: DataDownloadLinks;
   downloadLinkFields?: DownloadLinkFields;
   classNames?: Record<string, string>;
