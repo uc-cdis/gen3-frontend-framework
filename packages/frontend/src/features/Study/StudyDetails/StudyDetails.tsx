@@ -51,7 +51,7 @@ const StudyDetails = ({
   // hasStudyDetails changes, not when the drawer opens/closes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (studyId) {
+    if (studyId && !opened) {
       open();
     } else {
       close();
