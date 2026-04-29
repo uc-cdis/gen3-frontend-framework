@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
@@ -7,7 +7,6 @@ import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
-import { toString } from 'lodash';
 
 const StudyDetails = ({
   index,
@@ -20,44 +19,48 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const { studyDetails, setStudyDetails } = useStudyContext();
+  const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   const defaultPermaLinkValue = 'Discovery/notfound';
-  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
 
-  useEffect(() => {
-    const studyId = toString(studyDetails[index]);
-    const pushUrl = (path: string) =>
-      typeof window !== 'undefined' && window.history.pushState(null, '', path);
+  const permalink = useMemo(() => {
+    const studyId = studyDetails?.[index];
     if (studyId) {
-      if (opened) {
-        pushUrl(`/Discovery/${encodeURI(studyId)}`);
-        setPermalink(window?.location?.href ?? defaultPermaLinkValue);
-      } else {
-        pushUrl('/Discovery');
-        setPermalink(defaultPermaLinkValue);
-      }
+      const origin = window?.location?.href ?? defaultPermaLinkValue;
+      const studyPath = `${origin}/${encodeURIComponent(studyId as string)}`;
+      // router.push(studyPath, undefined, { shallow: true });
+      return studyPath;
+    } else {
+      return defaultPermaLinkValue;
     }
-    if (opened === false) {
-      // if drawer has been shut, reset study details
-      setStudyDetails({});
-    }
-  }, [opened]);
+  }, [index, studyDetails]);
 
+  // using Object.keys(studyDetails).length > 0 fires this effect correctly
   useEffect(() => {
-    if (hasStudyDetails) {
+    if (Object.keys(studyDetails).length > 0) {
       open();
     }
   }, [studyDetails, open]);
 
   return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
+    <Drawer.Root
+      opened={opened}
+      onClose={() => {
+        close();
+      }}
+      size="50%"
+      position="right"
+    >
       <Drawer.Overlay opacity={0.5} blur={4} />{' '}
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
-            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
+            <StudyDetailsHeaderButtons
+              onClose={close}
+              permalink={permalink}
+              showSubmitButton={simpleDetailsView?.showSubmitButton}
+            />
           </Drawer.Header>
           <Drawer.Body>
             {detailView ? (
