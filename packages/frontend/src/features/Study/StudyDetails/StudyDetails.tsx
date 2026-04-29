@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
@@ -7,7 +7,7 @@ import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
-import { toString } from 'lodash';
+import { useRouter } from 'next/router';
 
 const StudyDetails = ({
   index,
@@ -20,46 +20,60 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
+  const router = useRouter();
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   const defaultPermaLinkValue = 'Discovery/notfound';
-  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  // const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
+  const studyId = studyDetails?.[index];
 
-  useEffect(() => {
-    const studyId = toString(studyDetails[index]);
-    const pushUrl = (path: string) =>
-      typeof window !== 'undefined' && window.history.pushState(null, '', path);
+  console.log('studyDetails', studyDetails);
+
+  const handleClose = useCallback(() => {
+    // close();
+    setStudyDetails({});
+  }, [setStudyDetails]);
+
+  const link = useMemo(() => {
     if (studyId) {
-      if (opened) {
-        pushUrl(`/Discovery/${encodeURI(studyId)}`);
-        setPermalink(window?.location?.href ?? defaultPermaLinkValue);
-      } else {
-        pushUrl('/Discovery');
-        setPermalink(defaultPermaLinkValue);
-      }
+      const origin = window?.location?.href ?? defaultPermaLinkValue;
+      const studyPath = `${origin}/${encodeURIComponent(studyId as string)}`;
+      // router.push(studyPath, undefined, { shallow: true });
+      return studyPath;
+    } else {
+      return defaultPermaLinkValue;
     }
-    if (opened === false) {
-      // if drawer has been shut, reset study details
-      setStudyDetails({});
-    }
-  }, [opened]);
+  }, [router.asPath, studyId]);
 
+  // `opened` intentionally omitted: the effect should only fire when
+  // hasStudyDetails changes, not when the drawer opens/closes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (hasStudyDetails) {
+    if (studyId) {
       open();
+    } else {
+      close();
     }
-  }, [studyDetails, open]);
+  }, [studyId, open, close]);
+
+  console.log('permalink', link);
 
   return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
+    <Drawer.Root
+      opened={opened}
+      onClose={handleClose}
+      size="50%"
+      position="right"
+    >
       <Drawer.Overlay opacity={0.5} blur={4} />{' '}
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
             <StudyDetailsHeaderButtons
-              onClose={close}
-              permalink={permalink}
+              onClose={handleClose}
+              permalink={link}
               showSubmitButton={simpleDetailsView?.showSubmitButton}
             />
           </Drawer.Header>
