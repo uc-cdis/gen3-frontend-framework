@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MantineReactTable,
   MRT_Cell,
@@ -249,8 +249,7 @@ const DiscoveryTable = ({
   });
 
   useDeepCompareEffect(() => {
-    //fetch data based on row selection state or something
-
+    //fetch data based on row selection state
     setSelection(rowSelection ? Object.keys(rowSelection) : []);
   }, [rowSelection, setSelection]);
 
