@@ -47,9 +47,9 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         return !!(response && response === 'Success');
       },
     }),
-    terminateHatcheryWorkspace: builder.mutation<void, void>({
+    terminateHatcheryWorkspace: builder.mutation<void, string>({
       query: () => ({
-        url: `${GEN3_HATCHERY_API}/terminate`,
+        url: `${GEN3_HATCHERY_API}/terminate/`,
         method: 'POST',
         invalidatesTags: ['Hatchery'],
         responseHandler: (response) => response.text(),

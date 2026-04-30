@@ -11,7 +11,8 @@ import {
   useHatcheryStatusQuery,
   useLaunchHatcheryWorkspaceMutation,
   useTerminateHatcheryWorkspaceMutation,
-} from '@/core/hatcheryApi';
+} from '../core/hatcheryApi';
+import { getRTKQErrorMessage } from '../utils';
 
 export type MicroContainerStatus =
   | 'unknown'
@@ -92,6 +93,7 @@ export function MicroContainerProvider({
     error: statusError,
     isFetching: isStausFetching,
     isError: isStatusError,
+    refetch: refetchStatus,
   } = useHatcheryStatusQuery(containerHash, {
     skip: containerHash === null,
     pollingInterval: POLL_INTERVALS[status],
@@ -120,14 +122,19 @@ export function MicroContainerProvider({
       setStatus((hatcheryStatus ?? 'unknown') as MicroContainerStatus);
   }, [hatcheryStatus]);
 
-  const updateStatus = useCallback((s: MicroContainerStatus) => {
-    setStatus(s);
-  }, []);
-
-  const lastError = useMemo(
-    () => optionsError ?? statusError,
-    [optionsError, statusError],
-  );
+  const lastError = useMemo(() => {
+    if (!optionsError && !statusError) return null;
+    let errorStr: string = '';
+    if (optionsError) {
+      const msg = getRTKQErrorMessage(optionsError);
+      errorStr += msg;
+    }
+    if (statusError) {
+      const msg = getRTKQErrorMessage(statusError);
+      errorStr += msg;
+    }
+    return errorStr;
+  }, [optionsError, statusError]);
 
   const launch = useCallback(async (): Promise<void> => {
     if (
@@ -137,27 +144,32 @@ export function MicroContainerProvider({
     )
       return;
 
-    updateStatus('launching');
+    setStatus('launching');
 
-    try {
-      const hash = containerHash;
-
-      const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
-      const res = await launchTrigger(query);
-      if (!res.data) {
-      }
-      // Status will resolve to 'running' on the next poll
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      updateStatus('error');
+    const hash = containerHash;
+    const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
+    const res = await launchTrigger(query);
+    if (!res.data || res?.error) {
+      // some error
+      setStatus('error');
     }
+    // Status will resolve to 'running' on the next poll
+  }, [enabled, hatcheryStatus, containerHash, launchTrigger]);
+
+  const terminate = useCallback(async () => {
+    const hash = containerHash;
+    const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
+
+    if (!enabled || hatcheryStatus === 'terminating') return;
+    setStatus('terminating');
+    terminateWorkspace(query);
+    refetchStatus();
   }, [
-    enabled,
-    updateStatus,
     containerHash,
-    fetchOptions,
-    hatcheryBaseUrl,
-    jwt,
+    enabled,
+    hatcheryStatus,
+    terminateWorkspace,
+    refetchStatus,
   ]);
 
   const value = useMemo(
@@ -165,10 +177,10 @@ export function MicroContainerProvider({
       status,
       containerHash,
       lastError,
-      launch: () => Promise.resolve(),
-      terminate: () => Promise.resolve(),
+      launch,
+      terminate,
     }),
-    [containerHash, lastError, status],
+    [containerHash, lastError, launch, status, terminate],
   );
 
   return (
