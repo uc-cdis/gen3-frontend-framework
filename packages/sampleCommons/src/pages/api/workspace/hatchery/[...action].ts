@@ -1,7 +1,7 @@
 // Hatchery proxy — strict allowlist: /options, /status, /launch, /terminate
 // Injects Authorization + REMOTE_USER headers; sanitizes id param (SSRF prevention).
 // getToken reuses this app's cookie extraction — no JWT reinvention.
-import { createHatcheryProxyHandler } from '@gen3/jupyter-workspaces/server';
+import { createHatcheryProxyHandler } from '@gen3/workspaces';
 import { getAccessToken } from '@/lib/auth/getLoginStatus';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
