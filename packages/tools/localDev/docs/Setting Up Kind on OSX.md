@@ -163,7 +163,7 @@ kubectl create secret generic mkcert-ca --from-file=ca.crt="$CAROOT/rootCA.pem"
 
 # Verify the secret was created
 kubectl get secret mkcert-ca
-
+```
 Note that mkcert should add your CA to the system-wide trust store. If not you will need to add them to OSX
 keychain and trust them.
 
@@ -171,11 +171,13 @@ keychain and trust them.
 
 If you are running frontend development on https://localhost:3000 you will need to follow
 these instructions to update the Content-Security-Policy:
-```
+
+```bash
  kubectl edit configmap ingress-nginx-controller -n ingress-nginx
 ```
 add to the end of the file:
-```
+
+```bash
 data:
   allow-snippet-annotations: "true"
   annotations-risk-level: Critical
@@ -184,11 +186,11 @@ data:
 write the config and exit: It will reload and allow snippets used
 by running
 ```bash
- :qingress-local-dev.yaml
+ kubectl apply -f ingress-local-dev.yaml
 ```
 or use in the alternate config below:
 
-```
+```yaml
 #
 # Version to support development with iframes which add https://localhost:3010
 # to the Content-Security-Policy for iframes
