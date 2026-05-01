@@ -1,4 +1,8 @@
-import { convertFilterSetToGqlFilter, DispatchJobParams, FilterSet, } from '@gen3/core';
+import {
+  convertFilterSetToGqlFilter,
+  DispatchJobParams,
+  FilterSet,
+} from '@gen3/core';
 import { JobBuilderAction } from '../../../Sower/actions/types';
 import { SowerJobBuilderActionFactory } from '../../../Sower/actions/sowerJobsFactory';
 import { DownloadToManifestParams } from './downloadManifest';
@@ -59,7 +63,6 @@ const exportFileManifestToZip: JobBuilderAction = (params) => {
   };
 
   console.log('exportFileManifestToZip', resultManifest);
-  buildManifestAction(params, onDone);
 
   return resultManifest;
 };
