@@ -1,6 +1,4 @@
+import SubmissionPanel from './SubmissionPanel';
+import UploadedFiles from './UploadedFiles';
 
-import SubmissionPanel  from './SubmissionPanel';
-
-export {
-  SubmissionPanel
-};
+export { SubmissionPanel, UploadedFiles };
