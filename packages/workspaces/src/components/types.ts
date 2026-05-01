@@ -1,4 +1,4 @@
-import type { WorkspaceTier } from '../types';
+import { type WorkspaceTier } from '../types';
 
 export interface WorkspaceCardConfig {
   label: string;

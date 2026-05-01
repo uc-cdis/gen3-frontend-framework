@@ -44,5 +44,6 @@
     "dev": {
       "dependsOn": []
     }
-  }
+  },
+  "analytics": true
 }

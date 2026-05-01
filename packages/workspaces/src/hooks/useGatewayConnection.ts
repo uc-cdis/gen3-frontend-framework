@@ -31,7 +31,7 @@ export interface UseGatewayConnectionOpts {
 
 export interface UseGatewayConnectionReturn {
   /** Ref to pass to <RemoteComputeWorkspace ref={...} /> */
-  workspaceRef: React.RefObject<RemoteComputeWorkspaceHandle>;
+  workspaceRef: React.RefObject<RemoteComputeWorkspaceHandle | null>;
   /** Available kernel specs from the Gateway. */
   specs: ReturnType<typeof useKernelSpecs>;
   /** Running kernels on the Gateway. */
@@ -268,10 +268,9 @@ export function useGatewayConnection({
     };
     void check();
     return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gatewayBaseUrl, jwt, kernelPollIntervalMs, setGatewayState]); // Only re-run if the base URL changes
 
-  /* ── Watch kernel list for errors → trigger reconnect ──────────── */
+  /* ── Watch kernel list for errors → trigger reconnection ──────────── */
 
   useEffect(() => {
     if (
@@ -345,7 +344,6 @@ export function useGatewayConnection({
 
     void restoreFromGateway();
     return () => restoreController.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ── Visibility-change handler ──────────────────────────────────── */

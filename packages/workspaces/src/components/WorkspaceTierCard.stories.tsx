@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import WorkspaceTierCard from './WorkspaceTierCard';
-import { WorkspaceTier } from './types';
+import { WorkspaceTier } from '../types';
 
 const meta = {
   component: WorkspaceTierCard,

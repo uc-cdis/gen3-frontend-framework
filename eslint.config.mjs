@@ -21,6 +21,7 @@ export default [
       '**/build/*',
       'packages/core/dist/*',
       'packages/frontend/dist/*',
+      'packages/workspaces/dist/*',
       'packages/frontend/.rollup.cache/*',
       'packages/sampleCommons/.next/*',
       'packages/sampleCommons/public/*',

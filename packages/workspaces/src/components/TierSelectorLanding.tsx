@@ -1,5 +1,6 @@
 import React from 'react';
-import { WorkspaceCardConfig, type WorkspaceTier } from './types';
+import { WorkspaceCardConfig } from './types';
+import { type WorkspaceTier } from '../types';
 import WorkspaceTierCard from './WorkspaceTierCard';
 
 type TierSelectorLandingProps = {

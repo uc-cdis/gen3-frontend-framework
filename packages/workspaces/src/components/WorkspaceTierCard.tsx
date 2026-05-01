@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { Button, Card, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
-import { WorkspaceCardConfig, WorkspaceTier } from './types';
+import { WorkspaceCardConfig } from './types';
+import { type WorkspaceTier } from '../types';
 
 export interface WorkspaceTierCardProps extends WorkspaceCardConfig {
   onSelectTier: (tier: WorkspaceTier) => void;

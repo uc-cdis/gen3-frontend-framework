@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import TierSelectorLanding from '../components/TierSelectorLanding';
+import type { MicroContainerConfig } from '../types';
 import { type WorkspaceTier } from '../types';
-import InfrastructureRightPanel from '../components/InfrastructureRightPanel';
-import MicroContainerPanel from '../components/MicroContainerPanel';
-import type { KernelLifecyclePanelProps } from '../components/KernelLifecyclePanel';
-import type { UpgradeActionsPanelProps } from '../components/UpgradeActionsPanel';
+// TODO:  import when these components are ready
+// import InfrastructureRightPanel from '../components/InfrastructureRightPanel';
+// import MicroContainerPanel from '../components/MicroContainerPanel';
+// import type { KernelLifecyclePanelProps } from '../components/KernelLifecyclePanel';
+// import type { UpgradeActionsPanelProps } from '../components/UpgradeActionsPanel';
 import SharedWorkspaceLayout from './SharedWorkspaceLayout';
-import FreeTierWorkspace, {
-  type FreeTierWorkspaceConfig,
-} from './FreeTierWorkspace';
+import FreeTierWorkspace, { type FreeTierWorkspaceConfig, } from './FreeTierWorkspace';
 import RemoteComputeWorkspace from './RemoteComputeWorkspace';
 import { useGatewayConnection } from '../hooks/useGatewayConnection';
 import { useMicroContainer } from '../hooks/useMicroContainer';
-import type { MicroContainerConfig } from '../config/workspace-config';
+import { MicroContainerStatus } from '../providers/MicroContainerProvider';
 import {
   type AuthVerificationResult,
   verifyWorkspaceAccess,
@@ -20,7 +20,86 @@ import {
   type WorkspaceAuthContext,
 } from '../auth/auth';
 
-type HostedWorkspaceExperienceProps = {
+/** Stubs/temporary declarations for components commented out above
+ *
+ */
+
+export type KernelLifecyclePanelProps = {
+  kernels: any[];
+  kernelSpecs: any[];
+  loading?: boolean;
+  error?: string | null;
+  notice?: string | null;
+  launching?: boolean;
+  /** Current gateway connection state — drives status badge and reconnect strip. */
+  connectionState?: any;
+  /** The currently active kernel (for billing banner). */
+  activeKernelName?: string | null;
+  /** How long the micro-container has been online, in minutes. Shown per-kernel as "Container Uptime". */
+  containerUptimeMinutes?: number | null;
+  /** Called when user clicks Retry in the error badge. */
+  onRetryConnection?: () => void;
+  onRunStaleReap?: () => void;
+  onLaunchKernel?: (input: any) => void;
+  onOpenNotebook?: (kernelId: string) => void;
+  onTerminateKernel?: (kernelId: string) => void;
+  onKernelSelectionChange?: (selection: any) => void;
+  idleKillDays?: number;
+  maxKernelAgeDays?: number;
+  /**
+   * When true, the Terminate button on each kernel row is labeled "Force Terminate"
+   * and is always visible regardless of the kernel execution state.
+   * Use this in JEG mode where GPU kernels can get stuck and must be force-evicted.
+   */
+  forceTerminate?: boolean;
+};
+
+interface UpgradeActionsPanelProps {
+  currentTier: WorkspaceTier;
+  onUpgradeToRemote?: () => void;
+  onRequestQuotaIncrease?: () => void;
+  onOpenBillingSupport?: () => void;
+}
+
+type MicroContainerPanelProps = {
+  status: MicroContainerStatus;
+  lastError?: string | null;
+  /** Called when user clicks "Launch Workspace". */
+  onLaunch: () => void;
+  /** Called when user clicks "Stop Workspace". */
+  onTerminate: () => void;
+  /** Whether the panel should render in compact mode (status === 'running'). */
+  compact?: boolean;
+};
+
+type InfrastructureRightPanelProps = {
+  kernelPanel: KernelLifecyclePanelProps;
+  upgradePanel: UpgradeActionsPanelProps;
+  showKernelPanel?: boolean;
+  /**
+   * When false, hides the UpgradeActionsPanel. Set to false once a user is already
+   * in the remote-tier micro-container experience — upgrade messaging is irrelevant.
+   * Default: true.
+   */
+  showUpgradePanel?: boolean;
+};
+
+export const InfrastructureRightPanel = (
+  _params: InfrastructureRightPanelProps,
+): JSX.Element => {
+  return <div>InfrastructureRightPanel Placeholder</div>;
+};
+export const MicroContainerPanel = (_params: MicroContainerPanelProps): JSX.Element => {
+  return <div>MicroContainerPanel Placeholder</div>;
+};
+
+/**
+ * end stubs
+ */
+
+
+
+export type HostedWorkspaceProps = {
   leftPanel: React.ReactNode;
   freeTierConfig?: FreeTierWorkspaceConfig;
   initialTier?: WorkspaceTier;
@@ -70,7 +149,7 @@ type HostedWorkspaceExperienceProps = {
   jegGatewayBaseUrl?: string;
 };
 
-const HostedWorkspaceExperience = ({
+const HostedWorkspace = ({
   leftPanel,
   freeTierConfig,
   initialTier,
@@ -94,7 +173,7 @@ const HostedWorkspaceExperience = ({
   className,
   jegEnabled = false,
   jegGatewayBaseUrl,
-}: HostedWorkspaceExperienceProps) => {
+}: HostedWorkspaceProps) => {
   const [tier, setTier] = useState<WorkspaceTier | null>(initialTier || null);
   const [runtimeEpoch, setRuntimeEpoch] = useState(0);
 
@@ -198,13 +277,13 @@ const HostedWorkspaceExperience = ({
       notice: jegNotice,
       forceTerminate: jegEnabled,
       onRetryConnection: () => gateway.startReconnect(),
-      onLaunchKernel: (input) => {
+      onLaunchKernel: (input: any) => {
         void gateway.launchAndAttach(input.kernelName);
       },
-      onTerminateKernel: (kernelId) => {
+      onTerminateKernel: (kernelId: any) => {
         void gateway.terminate(kernelId);
       },
-    };
+    } as KernelLifecyclePanelProps;
   }, [gateway, jegEnabled, jegNotice, containerUptimeMinutes]);
 
   useEffect(() => {
@@ -293,7 +372,7 @@ const HostedWorkspaceExperience = ({
           .filter(Boolean)
           .join(' ')}
       >
-        <TierSelectorLanding onSelectTier={setTier} />
+        <TierSelectorLanding onSelectTier={setTier} cards={[]} />
       </div>
     );
   }
@@ -369,7 +448,7 @@ const HostedWorkspaceExperience = ({
             showUpgradePanel={tier !== 'remote'}
           />
         }
-        leftLaåbel="Data & Tools"
+        leftLabel="Data & Tools"
         rightLabel={
           tier === 'remote' ? 'Compute & Kernel' : 'Workspace Actions'
         }
@@ -445,5 +524,4 @@ const HostedWorkspaceExperience = ({
   );
 };
 
-export type { HostedWorkspaceExperienceProps };
-export default HostedWorkspaceExperience;
+export default HostedWorkspace;

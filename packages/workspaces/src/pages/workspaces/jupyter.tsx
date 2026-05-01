@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { GetServerSideProps } from 'next';
 import { useUserAuth } from '@gen3/core';
+import HostedWorkspace from '../../workspace/HostedWorkspace';
+import { type WorkspaceAuthContext } from '../../auth/auth';
+// eslint-disable-next-line no-restricted-imports
 import {
-  HostedWorkspace,
-  type WorkspaceAuthContext,
-} from '../../workspace/HostedWorkspace';
-import {
+  getNavPageLayoutPropsFromConfig,
   NavPageLayout,
-  NavPageLayoutProps,
-} from '@gen3/frontend/features/Navigation';
+  type NavPageLayoutProps,
+} from '@gen3/frontend';
 
 const jegEnabled = process.env.NEXT_PUBLIC_JEG_ENABLED === 'true';
 
