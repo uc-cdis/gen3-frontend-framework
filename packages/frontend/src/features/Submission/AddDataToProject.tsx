@@ -32,15 +32,20 @@ const AddDataToProject = ({ config }: { config?: DictionaryConfig }) => {
   }, [file]);
 
   const columns = useMemo(
-    () =>
-      (uploadedData?.headers || []).map((header) => ({
+    () => [
+      { accessorKey: 'status', header: 'Status' },
+      ...(uploadedData?.headers || []).map((header) => ({
         accessorKey: header,
         header,
       })),
+    ],
     [uploadedData],
   );
 
-  const data = useMemo(() => uploadedData?.rows || [], [uploadedData]);
+  const data = useMemo(
+    () => uploadedData?.rows.map((row) => ({ status: '--', ...row })) || [],
+    [uploadedData],
+  );
 
   const table = useMantineReactTable({
     columns,
