@@ -35,6 +35,7 @@ const NavigationBarButton = ({
   classNames = {},
   noBasePath = false,
   authStatus,
+  enabledWithNoAccess = false,
 }: NavigationButtonWithAuthStatus) => {
   const classNamesDefaults = {
     root: 'flex flex-col nowrap px-3 py-2 pt-4 justify-between items-center align-center text-primary hover:text-accent opacity-80 hover:opacity-100 data-disabled:opacity-35 data-disabled:hover:text-primary data-disabled:hover:opacity-35',
@@ -48,21 +49,33 @@ const NavigationBarButton = ({
     classNames,
   );
 
+  let dataDisabled = authStatus !== 'authorized';
+  if (enabledWithNoAccess && authStatus === 'unauthorized') {
+    dataDisabled = false;
+  }
+
   const handleClick = () => {
-    if (authStatus !== 'authorized') {
+    if (dataDisabled) {
       // Optional: open a modal / toast instead of doing nothing
       return;
     }
     router.push(href);
   };
 
-  const tooltipText =
-    authStatus !== 'authorized' ? AuthTooltips[authStatus] : tooltip;
+  let tooltipObj = AuthTooltips;
+
+  // enable old string setting to still work
+  if (typeof tooltip === 'string') {
+    tooltipObj.authorized = tooltip;
+  // new override method allowing full configuraion
+  } else if (typeof tooltip === 'object') {
+    tooltipObj = { ...tooltipObj, ...tooltip };
+  }
 
   return (
     <React.Fragment>
       <Tooltip
-        label={tooltipText}
+        label={tooltipObj[authStatus]}
         disabled={!tooltip}
         multiline
         position="bottom"
@@ -75,13 +88,14 @@ const NavigationBarButton = ({
           <div
             className={extractClassName('root', mergedClassnames)}
             role="navigation"
-            data-disabled={authStatus !== 'authorized' ? true : undefined}
+            data-disabled={dataDisabled ? true : undefined}
           >
             <UnstyledButton
               onClick={handleClick}
               classNames={{
-                root: 'flex flex-col nowrap',
+                root: 'flex flex-col nowrap disabled:cursor-not-allowed',
               }}
+              disabled={dataDisabled}
             >
               <Icon
                 height={iconHeight}
@@ -97,13 +111,14 @@ const NavigationBarButton = ({
           <div
             role="navigation"
             className={extractClassName('root', mergedClassnames)}
-            data-disabled={authStatus !== 'authorized' ? true : undefined}
+            data-disabled={dataDisabled ? true : undefined}
           >
             <UnstyledButton
               onClick={handleClick}
               classNames={{
-                root: 'flex flex-col nowrap',
+                root: 'flex flex-col nowrap disabled:cursor-not-allowed',
               }}
+              disabled={dataDisabled}
             >
               <Icon
                 height={iconHeight}

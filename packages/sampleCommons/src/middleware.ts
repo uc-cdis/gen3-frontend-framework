@@ -4,8 +4,19 @@ export { middleware } from './middleware-impl';
 
 export const config = {
   matcher: [
-  "/DataLibrary",
-  "/Workspace",
-  "/Profile"
-],
+    '/AISearch',
+    '/Analysis',
+    '/Crosswalk',
+    '/DataConnections',
+    '/DataDictionary',
+    '/DataLibrary',
+    '/Explorer',
+    '/notebook',
+    '/Profile',
+    '/Query',
+    '/Submission',
+    '/Workspace',
+    '/app/CohortDiscovery',
+    '/app/MetadataDictionary',
+  ],
 };

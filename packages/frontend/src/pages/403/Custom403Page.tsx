@@ -1,28 +1,45 @@
 import React from 'react';
-import { NextPage } from 'next';
-import Head from 'next/head';
-import Link from 'next/link';
+import { NavPageLayout } from '../../features/Navigation';
+import { Custom403PageProps } from './types';
+import TextContent from '../../components/Content/TextContent';
+import Image from 'next/image';
+import { Button } from '@mantine/core';
 
-const Custom403Page: NextPage = () => {
+const Custom403Page = ({
+  headerProps,
+  footerProps,
+  config403,
+}: Custom403PageProps) => {
   return (
-    <React.Fragment>
-      <Head>
-        <title>Not Authorized</title>
-        <meta
-          property="og:title"
-          content="Gen3 403"
-          key="gen3-not-authorized"
-        />
-      </Head>
-      <div className="flex flex-col justify-center items-center h-full p-8 gap-2">
-        <h1 className="text-2xl">Not Authorized</h1>
-        <span>Your account is authenticated, but it is not authorized to access this page.
-              If you believe this is an error, contact your administrator or support.</span>
-        <Link href="/" className="text-primary underline">
-          Click here to go to the Portal&apos;s home page.
-        </Link>
+    <NavPageLayout
+      {...{ headerProps, footerProps }}
+      headerMetadata={{
+        title: '403: Not Authorized',
+        content: '403',
+        key: 'gen3-not-authorized',
+        ...(config403?.headerMetadata ? config403.headerMetadata : {}),
+      }}
+    >
+      <div className="w-full max-w-[500px] m-auto text-center">
+        {config403?.topIcon && (
+          <div className="bg-white rounded-lg inline-block p-3">
+            <Image src={config403.topIcon.src} alt={config403.topIcon.alt} width={36} height={36}/>
+          </div>
+        )}
+        {config403?.content?.map((content, index) => (
+          <TextContent {...content} key={index} />
+        ))}
+        {config403?.button && (
+          <Button
+            component="a"
+            variant={config403.button.variant}
+            href={config403.button.href}
+            target="_blank"
+            className="mt-3"
+          >{config403.button.text}</Button>
+        )}
       </div>
-    </React.Fragment>
+    </NavPageLayout>
   );
 };
 

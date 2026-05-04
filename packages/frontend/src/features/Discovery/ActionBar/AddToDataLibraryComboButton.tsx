@@ -74,7 +74,7 @@ const createTooltipLabel = (
     return 'Please log in to save to data library';
   if (numSelected === 0)
     return 'Please select at least one study to save to data library';
-  if (!currentListName) return 'Please select or create a list';
+  if (!currentListName) return "Datasets save datasets you've discovered";
   if (error) return buildErrorMessage(error);
   return 'Add selections to list';
 };
