@@ -11,8 +11,9 @@ import { CellRendererFunction, CellRenderFunctionProps } from './types';
 import { DataAccessCellRenderer } from './DataAccessCellRenderers';
 import { TruncatedStringWithTooltip } from '../../../../components/DataItems/TruncatedStringWithTooltip';
 import { JSONObject } from '@gen3/core';
-
 import { getParamsValueAsString } from '../../../../utils/values';
+import { FaRegCircleCheck as RegisteredStudyIcon } from 'react-icons/fa6';
+import { FiMinusCircle as UnregisteredStudyIcon } from 'react-icons/fi';
 
 const TruncatedStringWithTooltipCellRenderer: CellRendererFunction = (
   { value }: CellRenderFunctionProps,
@@ -258,6 +259,39 @@ const RenderParagraphsCell: CellRendererFunction = ({
   );
 };
 
+const RegistrationStatusCellRenderer: CellRendererFunction = ({
+  value,
+}: CellRenderFunctionProps) => {
+  const isRegistered = value[0];
+  return (
+    <>
+      {isRegistered ? (
+        <Badge
+          leftSection={<RegisteredStudyIcon />}
+          style={{
+            backgroundColor: 'lightgreen',
+            borderColor: 'darkgreen',
+            color: 'darkgreen',
+          }}
+        >
+          Linked
+        </Badge>
+      ) : (
+        <Badge
+          leftSection={<UnregisteredStudyIcon />}
+          style={{
+            backgroundColor: 'lightgrey',
+            borderColor: 'black',
+            color: 'black',
+          }}
+        >
+          Not Linked
+        </Badge>
+      )}
+    </>
+  );
+};
+
 const RenderIfArrayHasData: CellRendererFunction = ({
   value,
 }: CellRenderFunctionProps) => {
@@ -343,6 +377,9 @@ export const Gen3DiscoveryStandardCellRenderers = {
   },
   dataAccess: {
     default: DataAccessCellRenderer,
+  },
+  registrationStatus: {
+    default: RegistrationStatusCellRenderer,
   },
 };
 
