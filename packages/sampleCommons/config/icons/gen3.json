@@ -221,6 +221,11 @@
       "width": 511.999,
       "height": 511.999
     },
+    "right_arrow": {
+      "body": "<path fill=\"currentColor\" d=\"M4 12h12.25L11 6.75l.66-.75l6.5 6.5l-6.5 6.5l-.66-.75L16.25 13H4z\" />",
+      "width": 24,
+      "height": 24
+    },
     "request": {
       "body": "<g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M13.333 8.667V3.833a.4.4 0 00-.117-.284l-2.099-2.098a.4.4 0 00-.283-.118H3.068a.4.4 0 00-.4.4v12.534a.4.4 0 00.4.4h6.266\"/><path d=\"M10.667 1.333V3.6a.4.4 0 00.4.4h2.266m-2.667 8.667h4m0 0-2-2m2 2-2 2\"/></g>",
       "width": 16,
