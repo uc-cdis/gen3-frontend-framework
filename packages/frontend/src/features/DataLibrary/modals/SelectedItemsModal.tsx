@@ -196,6 +196,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
           <Group>
             <Text fw={600}>Destination:</Text>
             <Select
+              comboboxProps={{ zIndex: 1200 }}
               data={destinations}
               value={value ? value.value : null}
               onChange={(value, option) => {
