@@ -42,6 +42,29 @@ export const RenderArrayCell: CellRendererFunction = ({
       </div>
     );
   }
+  return <span>{value}</span>;
+};
+
+export const RenderArrayNamesList: CellRendererFunction = ({
+  value,
+  cell,
+}: CellRenderFunctionProps) => {
+  if (isArray(value)) {
+    return (
+      <div className="w-64 flex flex-wrap gap-0.5">
+        {value.map((x, index) => (
+          <Badge
+            variant="outline"
+            classNames={{ root: 'basis-1/3' }}
+            color="accent-light"
+            key={`${x}-value-${index}`}
+          >
+            {x}
+          </Badge>
+        ))}
+      </div>
+    );
+  }
   return <span>value</span>;
 };
 
@@ -354,6 +377,7 @@ export const DiscoveryRenderTagsCell: CellRendererFunction = ({
 export const Gen3DiscoveryStandardCellRenderers = {
   array: {
     NegativePositive: RenderArrayCellNegativePositive,
+    NamesList: RenderArrayNamesList,
     HasData: RenderIfArrayHasData,
     default: RenderArrayCell,
   },
