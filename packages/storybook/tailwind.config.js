@@ -15,6 +15,10 @@ module.exports = {
     './../frontend/src/pages/**/*.{js,ts,jsx,tsx}',
     './../frontend/src/components/**/*.{js,ts,jsx,tsx}',
     './../frontend/src/features/**/*.{js,ts,jsx,tsx}',
+
+    './../workspaces/src/pages/**/*.{js,ts,jsx,tsx}',
+    './../workspaces/src/components/**/*.{js,ts,jsx,tsx}',
+    './../workspaces/src/features/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
