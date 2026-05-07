@@ -1,3 +1,21 @@
+import { JSONObject } from '@gen3/core';
+import { DiscoveryIndexConfig } from '../types/discoveryApi';
+
+const addAccessibleMetaData = (
+  data: Array<JSONObject>,
+  discoveryConfig: DiscoveryIndexConfig,
+) => {
+  // Mock this method for now
+  return data.map((obj) => {
+    const randomAccessibleNum = Math.floor(Math.random() * 6) + 1;
+    return {
+      ...obj,
+      __accessible: randomAccessibleNum,
+    };
+  });
+};
+export default addAccessibleMetaData;
+
 // TODO
 // Commented out code from /data-portal/src/Discovery/index.tsx
 /*

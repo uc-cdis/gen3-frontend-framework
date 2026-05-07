@@ -6,6 +6,7 @@ import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
 import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
+import addAccessibleMetaData from '@/utils/api/discovery/preProcessData/addAccessibleMetaData';
 // TODO:
 // import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
 
@@ -29,9 +30,11 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     discoveryConfig,
   } = reqBody;
   let processedData: Array<JSONObject> = data;
-  // First: Search
+  // Preprocess Data with study accessiblity levels
+  processedData = addAccessibleMetaData(data, discoveryConfig);
+  // Then: Search
   processedData = searchData(
-    data,
+    processedData,
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
     searchMode,
