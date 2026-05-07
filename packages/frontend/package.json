@@ -98,7 +98,6 @@
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
     "mantine-react-table": "^2.0.0-beta.9",
-    "mathjs": "^14.6.0",
     "minisearch": "^7.1.2",
     "next": "^15.5.10",
     "next-compose-plugins": "^2.2.1",
