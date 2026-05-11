@@ -251,6 +251,7 @@ const nodes : SchemaNode[] = [
 
 
 const meta = {
+  title: "Workspace Components/CompactDictionaryPanel",
   component: CompactDictionaryPanel,
 } satisfies Meta<typeof CompactDictionaryPanel>;
 

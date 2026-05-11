@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import MessageBubble from './MessageBubble';
 
 const meta = {
+  title: "Workspace Components/MessageBubble",
   component: MessageBubble,
 } satisfies Meta<typeof MessageBubble>;
 

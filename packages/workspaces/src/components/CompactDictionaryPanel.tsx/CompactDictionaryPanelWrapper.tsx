@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import CompactDictionaryPanel from './CompactDictionaryPanel';
-import { parseSchemaNodes, type SchemaNode } from '../lib/ragContext';
+import { parseSchemaNodes, type SchemaNode } from '../../lib/ragContext';
 
 export interface CompactDictionaryPanelWrapperProps {
   schemaUrl?: string;

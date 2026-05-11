@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs } from '@mantine/core';
 import { FaBookOpen as DictionaryIcon, FaBell as AssistantIcon } from "react-icons/fa";
-import CompactDictionaryPanelWrapper from './CompactDictionaryPanelWrapper';
+import CompactDictionaryPanelWrapper from './CompactDictionaryPanel.tsx/CompactDictionaryPanelWrapper';
 import CodingAssistantPanel from './CodingAssistantPanel';
 
 // Error boundary to surface render crashes instead of silent white-screen

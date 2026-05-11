@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import TierSelectorLanding from './TierSelectorLanding';
 
 const meta = {
+  title: "Workspace Components/TierSelectorLanding",
   component: TierSelectorLanding,
 } satisfies Meta<typeof TierSelectorLanding>;
 

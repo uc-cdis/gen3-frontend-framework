@@ -4,6 +4,7 @@ import KernelLifecyclePanel from './KernelLifecyclePanel';
 import { KernelLifecyclePanelProps } from '@/workspace/HostedWorkspace';
 
 const meta = {
+  title: "Workspace Components/KernelLifecyclePanel",
   component: KernelLifecyclePanel,
 } satisfies Meta<typeof KernelLifecyclePanel>;
 

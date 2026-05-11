@@ -4,6 +4,7 @@ import WorkspaceTierCard from './WorkspaceTierCard';
 import { WorkspaceTier } from '../types';
 
 const meta = {
+  title: "Workspace Components/WorkspaceTierCard",
   component: WorkspaceTierCard,
 } satisfies Meta<typeof WorkspaceTierCard>;
 

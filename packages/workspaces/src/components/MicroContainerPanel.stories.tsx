@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import MicroContainerPanel from './MicroContainerPanel';
 
 const meta = {
+  title: "Workspace Components/MicroContainerPanel",
   component: MicroContainerPanel,
 } satisfies Meta<typeof MicroContainerPanel>;
 

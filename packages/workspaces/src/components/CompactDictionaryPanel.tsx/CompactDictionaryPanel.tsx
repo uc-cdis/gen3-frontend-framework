@@ -4,7 +4,7 @@ import {
   MdKeyboardArrowRight as RightArrowIcon,
   MdKeyboardArrowDown as DownArrowIcon,
 } from 'react-icons/md';
-import { type SchemaNode } from '../lib/ragContext';
+import { type SchemaNode } from '../../lib/ragContext';
 
 export interface CompactDictionaryPanelProps {
   nodes: SchemaNode[];

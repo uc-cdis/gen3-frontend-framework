@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import DataToolsPanel from './DataToolsPanel';
 
 const meta = {
+  title: "Workspace Components/DataToolsPanel",
   component: DataToolsPanel,
 } satisfies Meta<typeof DataToolsPanel>;
 
