@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import KernelLifecyclePanel from './KernelLifecyclePanel';
+import { KernelLifecyclePanelProps } from '@/workspace/HostedWorkspace';
 
 const meta = {
   component: KernelLifecyclePanel,
@@ -10,9 +11,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    kernels: [
+export const KERNEL_DEFAULT_ARGS : KernelLifecyclePanelProps = {
+  kernels: [
       {
         kernelId: "123",
         kernelName: "kernel1",
@@ -20,7 +20,7 @@ export const Default: Story = {
         staleState: "healthy"
       }
     ],
-    kernelSpecs: [
+  kernelSpecs: [
       {
         name: "kernel1",
         displayName: "Kernel 1",
@@ -29,11 +29,14 @@ export const Default: Story = {
         gpuType: "integrated",
         costPerHour: 50,
       }
-    ],
-    onRunStaleReap: () => {},
-    onLaunchKernel: () => {},
-    onOpenNotebook: () => {},
-    onTerminateKernel: () => {},
-    notice: "ATTENTION"
-  }
+  ],
+  onRunStaleReap: () => {},
+  onLaunchKernel: () => {},
+  onOpenNotebook: () => {},
+  onTerminateKernel: () => {},
+  notice: "ATTENTION"
+}
+
+export const Default: Story = {
+  args: KERNEL_DEFAULT_ARGS,
 };

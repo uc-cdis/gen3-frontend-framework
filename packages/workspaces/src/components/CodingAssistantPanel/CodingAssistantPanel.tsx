@@ -338,7 +338,7 @@ const CodingAssistantPanel = ({
           <button
             type="button"
             onClick={clearChat}
-            className="text-sm text-base-dark hover:text-utility-error"
+            className="text-sm text-base-dark hover:text-accentWarm-dark"
           >
             Clear
           </button>
