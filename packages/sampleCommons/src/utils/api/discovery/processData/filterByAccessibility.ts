@@ -1,10 +1,3 @@
-import { JSONObject } from '@gen3/core';
-import {
-  AdvancedSearchTerms,
-  DiscoveryIndexConfig,
-  SearchKV,
-} from '../types/discoveryApi';
-
 /**
  * Filters a list of studies based on an array of allowed accessibility levels.
  * * @param studies - The array of study objects
