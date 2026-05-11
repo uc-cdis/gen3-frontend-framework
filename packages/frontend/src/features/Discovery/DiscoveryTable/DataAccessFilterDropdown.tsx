@@ -54,6 +54,7 @@ const DataAccessFilterDropdown: React.FC<
 
   const handleReset = () => {
     setDraftAccessibility([]);
+    setSelectedAccessibility([]);
     setOpened(false);
   };
 
