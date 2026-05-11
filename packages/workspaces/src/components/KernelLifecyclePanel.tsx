@@ -1,0 +1,359 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Select } from "@mantine/core";
+import ConnectionStatusBadge from './ConnectionStatusBadge';
+import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
+
+export type KernelSpecEntry = {
+  name: string;
+  displayName: string;
+  language?: string;
+  /** Cost per hour from KernelSpecPolicy. 0 = included. Injected by kernel lifecycle proxy. */
+  costPerHour?: number;
+  /** Display tier from KernelSpecPolicy. e.g. "micro" | "gpu" */
+  nodeType?: string;
+  /** CPU allocation (e.g. "4" cores). From JEG resources or policy. */
+  cpu?: string;
+  /** Memory allocation (e.g. "16Gi"). From JEG resources or policy. */
+  memory?: string;
+  /** GPU type/size (e.g. "NVIDIA A100 40GB"). From JEG resources or policy. */
+  gpuType?: string;
+};
+
+export type KernelRow = {
+  kernelId: string;
+  kernelName?: string;
+  executionState?: string;
+  /** How long the kernel has been alive, in minutes. */
+  uptimeMinutes?: number | null;
+  staleState?: 'healthy' | 'warning' | 'kill';
+  idleDays?: number | null;
+};
+
+type LaunchKernelInput = {
+  kernelName: string;
+};
+
+export type KernelSelection = {
+  kernelName?: string;
+  kernelId?: string;
+};
+
+export interface KernelLifecyclePanelProps {
+  kernels: KernelRow[];
+  kernelSpecs: KernelSpecEntry[];
+  loading?: boolean;
+  error?: string | null;
+  notice?: string | null;
+  launching?: boolean;
+  /** Current gateway connection state — drives status badge and reconnect strip. */
+  connectionState?: GatewayConnectionState;
+  /** The currently active kernel (for billing banner). */
+  activeKernelName?: string | null;
+  /** How long the micro-container has been online, in minutes. Shown per-kernel as "Container Uptime". */
+  containerUptimeMinutes?: number | null;
+  /** Called when user clicks Retry in the error badge. */
+  onRetryConnection?: () => void;
+  onRunStaleReap?: () => void;
+  onLaunchKernel?: (input: LaunchKernelInput) => void;
+  onOpenNotebook?: (kernelId: string) => void;
+  onTerminateKernel?: (kernelId: string) => void;
+  onKernelSelectionChange?: (selection: KernelSelection) => void;
+  idleKillDays?: number;
+  maxKernelAgeDays?: number;
+  /**
+   * When true, the terminate button on each kernel row is labelled "Force Terminate"
+   * and is always visible regardless of kernel execution state.
+   * Use this in JEG mode where GPU kernels can get stuck and must be force-evicted.
+   */
+  forceTerminate?: boolean;
+};
+
+const formatUptime = (minutes: number | null | undefined): string => {
+  if (minutes == null) return '—';
+  if (minutes < 60) return `${minutes}m`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+};
+
+const KernelLifecyclePanel = ({
+  kernels,
+  kernelSpecs,
+  loading = false,
+  error = null,
+  notice = null,
+  launching = false,
+  connectionState,
+  activeKernelName,
+  containerUptimeMinutes,
+  onRetryConnection,
+  onRunStaleReap,
+  onLaunchKernel,
+  onOpenNotebook,
+  onTerminateKernel,
+  onKernelSelectionChange,
+  idleKillDays = 10,
+  maxKernelAgeDays = 15,
+  forceTerminate = false,
+}: KernelLifecyclePanelProps) => {
+  const safeSpecs = kernelSpecs || [];
+  const safeKernels = kernels || [];
+  const [selectedKernelName, setSelectedKernelName] = useState<string>(
+    safeSpecs[0]?.name || 'python3',
+  );
+
+  // When specs arrive after first render (async load), reset selectedKernelName
+  // if the current value is no longer a valid spec name.
+  useEffect(() => {
+    if (safeSpecs.length > 0) {
+      setSelectedKernelName((prev) => {
+        if (!safeSpecs.find((s) => s.name === prev)) {
+          return safeSpecs[0].name;
+        }
+        return prev;
+      });
+    }
+  }, [safeSpecs]);
+
+  const displayRows = useMemo(() => safeKernels, [safeKernels]);
+
+  // Billing banner: show when any active kernel has a cost > 0
+  const selectedSpec = safeSpecs.find((s) => s.name === selectedKernelName);
+  const selectedSpecCost = selectedSpec?.costPerHour ?? 0;
+  const activeKernelSpec = activeKernelName
+    ? safeSpecs.find((s) => s.name === activeKernelName)
+    : null;
+  const billingActive = (activeKernelSpec?.costPerHour ?? 0) > 0;
+
+  useEffect(() => {
+    onKernelSelectionChange?.({
+      kernelName: selectedKernelName || undefined,
+    });
+  }, [selectedKernelName, onKernelSelectionChange]);
+
+  const canLaunch = Boolean(onLaunchKernel);
+
+  return (
+    <div className="flex min-w-0 flex-col overflow-hidden">
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="truncate text-base font-bold text-base-darkest">Kernel Lifecycle</h2>
+          <p className="mt-1 text-sm text-base-darker">
+            Launch and manage compute kernels.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {connectionState && (
+            <ConnectionStatusBadge state={connectionState} onRetry={onRetryConnection} />
+          )}
+          <Button
+            onClick={onRunStaleReap}
+            disabled={!onRunStaleReap}
+            variant="default"
+          >
+            Run Stale Reap
+          </Button>
+        </div>
+      </div>
+
+      {/* Reconnect strip — non-disruptive yellow banner; lifecycle panel stays usable */}
+      {connectionState === 'reconnecting' && (
+        <div role="status" aria-live="polite" className="mt-3 flex items-center gap-2 rounded-md border border-accentWarm-light bg-accentWarm-max px-3 py-2 text-xs text-accentWarm-dark">
+          <span aria-hidden="true">⟳</span>
+          Connection to kernel interrupted — reconnecting automatically. Your work is safe.
+        </div>
+      )}
+
+      {/* Billing banner — persistent warning when a paid kernel is active */}
+      {billingActive && activeKernelSpec && (
+        <div role="status" aria-live="polite" className="mt-3 flex items-center justify-between gap-2 rounded-md border border-accentWarm bg-accentWarm-max px-3 py-2 text-xs font-semibold text-accentWarm-darkest">
+          <span>
+            GPU kernel running — billing active (${activeKernelSpec.costPerHour?.toFixed(2)}/hr).
+            Terminate to stop charges.
+          </span>
+        </div>
+      )}
+
+      {notice && (
+        <p role="status" className="mt-4 rounded-md border border-base-lighter bg-base-lightest bg-opacity-50 px-3 py-2 text-sm text-base-darker">
+          {notice}
+        </p>
+      )}
+
+      <div className="mt-5 rounded-xl border border-base-lighter bg-white p-5 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wider text-base-darker">Launch Kernel</p>
+        <div className="mt-4 space-y-4">
+          <div>
+            {/*<label htmlFor="klp-kernel-spec" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-base-dark">Kernel Spec</label>*/}
+            <Select
+              id="klp-kernel-spec"
+              value={selectedKernelName}
+              onChange={(value) => setSelectedKernelName(value as string)}
+              data={safeSpecs.length === 0  ?
+                [{ value: "python3", label: "python3" }] :
+                safeSpecs.map((spec) => {
+                 const parts: string[] = [];
+                  if (spec.cpu) parts.push(`${spec.cpu} CPU`);
+                  if (spec.memory) parts.push(spec.memory);
+                  if (spec.gpuType) parts.push(spec.gpuType);
+                  const resources = parts.length > 0 ? ` · ${parts.join(' · ')}` : '';
+                  const cost = spec.costPerHour != null && spec.costPerHour > 0
+                    ? ` — $${spec.costPerHour.toFixed(2)}/hr`
+                    : spec.nodeType === 'micro' ? ' — included' : '';
+                return { value: spec.name, label: `${spec.displayName}${resources}${cost}`}
+              })}
+              label="Kernel Spec"
+            />
+            {selectedSpecCost > 0 && (
+              <p className="mt-1 text-xs text-accentWarm-dark">
+                GPU kernels auto-terminate after 4h idle. Max 1 GPU kernel per user.
+              </p>
+            )}
+          </div>
+
+          {/* Resource summary for the selected spec */}
+          {selectedSpec && (selectedSpec.cpu || selectedSpec.memory || selectedSpec.gpuType) && (
+            <div className="flex flex-wrap gap-2 text-xs">
+              {selectedSpec.cpu && (
+                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-medium text-base-darker">
+                  CPU: {selectedSpec.cpu}
+                </span>
+              )}
+              {selectedSpec.memory && (
+                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-medium text-base-darker">
+                  RAM: {selectedSpec.memory}
+                </span>
+              )}
+              {selectedSpec.gpuType && (
+                <span className="rounded-full bg-accent-max px-2.5 py-1 font-semibold text-accent-dark">
+                  GPU: {selectedSpec.gpuType}
+                </span>
+              )}
+            </div>
+          )}
+
+          <Button
+            onClick={() =>
+              onLaunchKernel?.({
+                kernelName: selectedKernelName || 'python3',
+              })
+            }
+            disabled={launching || !canLaunch}
+            className="w-full"
+          >
+            {launching ? 'Working...' : 'Launch Kernel'}
+          </Button>
+        </div>
+      </div>
+
+      {loading && <p role="status" className="mt-4 text-sm text-base-darker">Loading kernels...</p>}
+      {error && <p role="alert" className="mt-4 text-sm text-primary">{error}</p>}
+
+      {!loading && !error && displayRows.length === 0 && (
+        <p className="mt-4 text-sm text-base-darker">No active kernels.</p>
+      )}
+
+      {!loading && !error && displayRows.length > 0 && (
+        <div role="list" className="mt-4 space-y-4">
+          {displayRows.map((row) => {
+            const state = (row.executionState || '').toLowerCase();
+            const isStaleOrIdle =
+              state === 'idle' || row.staleState === 'warning' || row.staleState === 'kill';
+            const rowSpec = safeSpecs.find((s) => s.name === row.kernelName);
+
+            return (
+              <div
+                role="listitem"
+                key={row.kernelId}
+                className={`min-w-0 rounded-xl border border-base-lighter bg-white p-6 shadow-sm transition hover:shadow-md ${
+                  isStaleOrIdle ? 'border-l-4 border-l-accentWarm' : 'border-l-4 border-l-accent-dark'
+                }`}
+              >
+                <div className="flex min-w-0 items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-base font-bold text-base-darkest">
+                      {row.kernelName || 'python3'}
+                    </p>
+                    <p className="mt-1 text-xs font-medium text-base-darker">
+                      State: <span className="uppercase">{row.executionState || 'unknown'}</span>
+                    </p>
+                    {row.staleState === 'warning' && (
+                      <p className="mt-1 text-xs text-accentWarm-dark">
+                        Idle warning: inactive for about {Math.floor(row.idleDays || 0)} day(s).
+                      </p>
+                    )}
+                    {row.staleState === 'kill' && (
+                      <p className="mt-1 text-xs text-primary">
+                        Stale kill policy applies; autosave + terminate pending.
+                      </p>
+                    )}
+                  </div>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
+                      isStaleOrIdle
+                        ? 'bg-accentWarm-max text-accentWarm-dark'
+                        : 'bg-accent-max text-accent-dark'
+                    }`}
+                  >
+                    {isStaleOrIdle ? 'Stale/Idle' : 'Active'}
+                  </span>
+                </div>
+
+                <div className="mt-4 rounded-lg border border-base-lightest bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="font-semibold text-base-darker">Container Uptime:</span>
+                    <span className="font-bold text-base-darkest">
+                      {formatUptime(containerUptimeMinutes)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-base-lighter pt-2">
+                    <span className="font-semibold text-base-darker">GPU:</span>
+                    <span className="font-bold text-accent-dark">
+                      {rowSpec?.gpuType || 'none'}
+                    </span>
+                  </div>
+                  {(rowSpec?.cpu || rowSpec?.memory) && (
+                    <div className="mt-2 flex gap-3 border-t border-base-lighter pt-2">
+                      {rowSpec?.cpu && (
+                        <span className="text-base-darker">CPU: <strong className="text-base-darkest">{rowSpec.cpu}</strong></span>
+                      )}
+                      {rowSpec?.memory && (
+                        <span className="text-base-darker">RAM: <strong className="text-base-darkest">{rowSpec.memory}</strong></span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-5 flex gap-3">
+                  <Button
+                    aria-label={`Open notebook for ${row.kernelName || 'python3'} kernel`}
+                    onClick={() => onOpenNotebook?.(row.kernelId)}
+                    disabled={!onOpenNotebook}
+                    color="accent"
+                    variant="light"
+                    className="flex-1 border-accent-light/60"
+                  >
+                    Open Notebook
+                  </Button>
+                  <Button
+                    aria-label={`${forceTerminate ? 'Force terminate' : 'Terminate'} ${row.kernelName || 'python3'} kernel`}
+                    onClick={() => onTerminateKernel?.(row.kernelId)}
+                    disabled={!onTerminateKernel}
+                    variant="light"
+                    className="flex-1 border-primary-light/70"
+                  >
+                    {forceTerminate ? 'Force Terminate' : 'Terminate'}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export type { LaunchKernelInput };
+export default KernelLifecyclePanel;
