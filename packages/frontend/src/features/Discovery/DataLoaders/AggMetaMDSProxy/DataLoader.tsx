@@ -23,7 +23,7 @@ export const useAggMetaMDSProxy = ({
   discoveryConfig,
   sorting,
   selectedTags,
-  selectedAccessibilityLevels,
+  selectedAccessLevels,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -47,7 +47,7 @@ export const useAggMetaMDSProxy = ({
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
-    selectedAccessibilityLevels: selectedAccessibilityLevels,
+    selectedAccessLevels: selectedAccessLevels,
   };
 
   useDeepCompareEffect(() => {
@@ -81,7 +81,7 @@ export const useAggMetaMDSProxy = ({
     selectedFieldsForSearchIndexing,
     searchMode,
     selectedTags,
-    selectedAccessibilityLevels,
+    selectedAccessLevels,
   ]);
 
   let advancedSearchFilterValues = [] as any;

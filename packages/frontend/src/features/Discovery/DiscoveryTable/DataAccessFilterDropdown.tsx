@@ -24,23 +24,22 @@ const DataAccessFilterDropdown: React.FC<
   DataAccessFilterDropdownProps
 > = ({}) => {
   const [opened, setOpened] = useState(false);
-  const { selectedAccessibilityLevels, setSelectedAccessibilityLevels } =
+  const { selectedAccessLevels, setSelectedAccessLevels } =
     useDiscoveryContext();
 
   // User selections before they click OK
-  const [draftAccessibilityLevels, setDraftAccessibilityLevels] = useState<
-    AccessLevel[]
-  >(selectedAccessibilityLevels);
+  const [draftAccessLevels, setDraftAccessLevels] =
+    useState<AccessLevel[]>(selectedAccessLevels);
 
   // Sync draft with global state whenever the popover opens
   useEffect(() => {
     if (opened) {
-      setDraftAccessibilityLevels(selectedAccessibilityLevels);
+      setDraftAccessLevels(selectedAccessLevels);
     }
-  }, [opened, selectedAccessibilityLevels]);
+  }, [opened, selectedAccessLevels]);
 
   const handleCheckboxToggle = (level: AccessLevel) => {
-    setDraftAccessibilityLevels((current) =>
+    setDraftAccessLevels((current) =>
       current.includes(level)
         ? current.filter((id) => id !== level)
         : [...current, level],
@@ -48,13 +47,13 @@ const DataAccessFilterDropdown: React.FC<
   };
 
   const handleApply = () => {
-    setSelectedAccessibilityLevels(draftAccessibilityLevels);
+    setSelectedAccessLevels(draftAccessLevels);
     setOpened(false);
   };
 
   const handleReset = () => {
-    setDraftAccessibilityLevels([]);
-    setSelectedAccessibilityLevels([]);
+    setDraftAccessLevels([]);
+    setSelectedAccessLevels([]);
     setOpened(false);
   };
 
@@ -117,7 +116,7 @@ const DataAccessFilterDropdown: React.FC<
                 }}
               >
                 <Checkbox
-                  checked={draftAccessibilityLevels.includes(item.level)}
+                  checked={draftAccessLevels.includes(item.level)}
                   readOnly
                   radius="xs"
                   className="pointer-events-none"

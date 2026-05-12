@@ -266,15 +266,7 @@ const RegistrationStatusCellRenderer: CellRendererFunction = ({
   return (
     <>
       {isRegistered ? (
-        <Badge
-          leftSection={<RegisteredStudyIcon />}
-          color="green"
-          /*     style={{
-            backgroundColor: 'lightgreen',
-            borderColor: 'darkgreen',
-            color: 'darkgreen',
-          }} */
-        >
+        <Badge leftSection={<RegisteredStudyIcon />} color="green">
           Linked
         </Badge>
       ) : (

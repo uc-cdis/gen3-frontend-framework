@@ -6,10 +6,8 @@ import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
 import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
-import addAccessibleMetaData from '@/utils/api/discovery/preProcessData/addAccessibleMetaData';
-import filterByAccessibility from '@/utils/api/discovery/processData/filterByAccessibility';
-// TODO:
-// import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
+import addAccessLevelsMetaData from '@/utils/api/discovery/preProcessData/addAccessLevelsMetaData';
+import filterByAccessLevels from '@/utils/api/discovery/processData/filterByAccessLevels';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
@@ -28,16 +26,13 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     selectedTags,
     selectedFieldsForSearchIndexing,
     searchMode,
-    selectedAccessibilityLevels,
+    selectedAccessLevels,
     discoveryConfig,
   } = reqBody;
-  const preprocessedData = addAccessibleMetaData(data, discoveryConfig);
+  const preprocessedData = addAccessLevelsMetaData(data, discoveryConfig);
   let processedData: Array<JSONObject> = preprocessedData;
   // Study accessiblity levels filtering (user selected data availability)
-  processedData = filterByAccessibility(
-    processedData,
-    selectedAccessibilityLevels,
-  );
+  processedData = filterByAccessLevels(processedData, selectedAccessLevels);
   // Then: Search
   processedData = searchData(
     processedData,

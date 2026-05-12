@@ -7,18 +7,16 @@ interface DiscoveryProviderValue {
   setSelectedTags: React.Dispatch<
     React.SetStateAction<{ [key: string]: boolean }>
   >;
-  selectedAccessibilityLevels: number[];
-  setSelectedAccessibilityLevels: React.Dispatch<
-    React.SetStateAction<number[]>
-  >;
+  selectedAccessLevels: number[];
+  setSelectedAccessLevels: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const DiscoveryContext = createContext<DiscoveryProviderValue>({
   discoveryConfig: {} as DiscoveryIndexConfig,
   selectedTags: {},
   setSelectedTags: () => {},
-  selectedAccessibilityLevels: [],
-  setSelectedAccessibilityLevels: () => [],
+  selectedAccessLevels: [],
+  setSelectedAccessLevels: () => [],
 });
 
 const useDiscoveryContext = () => {
@@ -39,8 +37,9 @@ const DiscoveryProvider = ({
   const [selectedTags, setSelectedTags] = useState<{ [key: string]: boolean }>(
     {},
   );
-  const [selectedAccessibilityLevels, setSelectedAccessibilityLevels] =
-    useState<number[]>([]);
+  const [selectedAccessLevels, setSelectedAccessLevels] = useState<number[]>(
+    [],
+  );
 
   return (
     <DiscoveryContext.Provider
@@ -48,8 +47,8 @@ const DiscoveryProvider = ({
         discoveryConfig: discoveryIndexConfig,
         selectedTags,
         setSelectedTags,
-        selectedAccessibilityLevels,
-        setSelectedAccessibilityLevels,
+        selectedAccessLevels,
+        setSelectedAccessLevels,
       }}
     >
       {children}
