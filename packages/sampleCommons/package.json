@@ -1,6 +1,6 @@
 {
   "name": "@gen3/samplecommons",
-  "version": "0.12.38",
+  "version": "0.12.39",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -43,10 +43,10 @@
     "jose": "^6.1.0",
     "jsonpath-plus": "^10.3.0",
     "mantine-react-table": "^2.0.0-beta.9",
-    "next": "^15.5.10",
+    "next": "^15.5.16",
     "pluralize": "^8.0.0",
     "react": "^19.2.4",
-    "react-dom": "19.2.4",
+    "react-dom": "^19.2.4",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-minisearch": "^7.1.4",
