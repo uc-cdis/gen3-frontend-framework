@@ -18,7 +18,7 @@ import { LuFilter as FilterIcon } from 'react-icons/lu';
 import { useDiscoveryContext } from '../DiscoveryProvider';
 import { AccessLevel } from '../../../utils';
 
-const DataAccessFilterDropdown = ({}) => {
+const DataAccessFilterDropdown = () => {
   const [opened, setOpened] = useState(false);
   const { selectedAccessLevels, setSelectedAccessLevels } =
     useDiscoveryContext();
