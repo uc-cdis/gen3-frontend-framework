@@ -59,7 +59,7 @@ const MicroContainerPanel = ({
             Start your personal micro compute environment. Use it for light analysis — upgrade
             to a GPU kernel when you need to run large workflows.
           </p>
-          <p className="mt-1 text-xs text-base-dark">
+          <p className="mt-1 text-xs text-base-darker">
             Included with your subscription · typically ready in under 60 s
           </p>
         </div>
@@ -151,7 +151,7 @@ const MicroContainerPanel = ({
           <p className="text-base font-bold text-base-darkest">
             Stopping your workspace…
           </p>
-          <p className="mt-1 text-xs text-base-dark">
+          <p className="mt-1 text-xs text-base-darker">
             Waiting for the container to shut down. This usually takes under a minute.
           </p>
         </div>

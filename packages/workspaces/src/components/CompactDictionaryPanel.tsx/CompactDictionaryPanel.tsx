@@ -76,12 +76,12 @@ const CompactDictionaryPanel = ({
               >
                 {isExpanded ? <DownArrowIcon /> : <RightArrowIcon />}
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-xs font-medium text-base-darkest">{node.title}</div>
+                  <div className="truncate text-xs font-semibold text-base-darkest">{node.title}</div>
                   {node.category && (
-                    <div className="truncate text-sm text-base-dark">{node.category}</div>
+                    <div className="truncate text-sm text-base-darker">{node.category}</div>
                   )}
                 </div>
-                <span className="shrink-0 text-sm text-base-dark">
+                <span className="shrink-0 text-sm text-base-darker">
                   {propCount}f{linkCount ? ` · ${linkCount}l` : ''}
                 </span>
               </button>
@@ -96,11 +96,11 @@ const CompactDictionaryPanel = ({
 
                   {propCount > 0 && (
                     <div className="mb-2">
-                      <div className="mb-1 text-sm font-semibold uppercase tracking-wider text-base-dark">Fields</div>
+                      <div className="mb-1 text-sm font-semibold uppercase tracking-wider text-base-darker">Fields</div>
                       <div className="flex flex-col gap-0.5">
                         {Object.entries(node.properties).map(([name, info]) => (
                           <div key={name} className="flex items-baseline gap-1.5 text-sm">
-                            <span className="font-mono text-base-darker">{name}</span>
+                            <span className="font-mono text-base-darkest">{name}</span>
                             {info.type && (
                               <span className="text-xs text-utility-category1">{info.type}</span>
                             )}
@@ -110,7 +110,7 @@ const CompactDictionaryPanel = ({
                               </span>
                             )}
                             {info.enum && (
-                              <span className="truncate text-xs text-base-dark" title={info.enum.join(', ')}>
+                              <span className="truncate text-xs text-base-darker" title={info.enum.join(', ')}>
                                 [{info.enum.slice(0, 3).join(', ')}{info.enum.length > 3 ? '…' : ''}]
                               </span>
                             )}
@@ -122,13 +122,13 @@ const CompactDictionaryPanel = ({
 
                   {linkCount > 0 && (
                     <div>
-                      <div className="mb-1 text-sm font-semibold uppercase tracking-wider text-base-dark">Links</div>
+                      <div className="mb-1 text-sm font-semibold uppercase tracking-wider text-base-darker">Links</div>
                       <div className="flex flex-col gap-0.5">
                         {node.links.map((link, i) => (
                           <div key={i} className="text-sm text-base-darker">
                             <span className="font-mono">{link.name}</span>
                             <span className="text-base-dark"> → </span>
-                            <span className="text-utility-category4">{link.target_type}</span>
+                            <span className="text-utility-category3">{link.target_type}</span>
                             {link.multiplicity && (
                               <span className="text-xs text-base-dark"> ({link.multiplicity})</span>
                             )}

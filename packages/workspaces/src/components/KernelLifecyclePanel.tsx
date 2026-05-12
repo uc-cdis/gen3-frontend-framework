@@ -92,8 +92,6 @@ const KernelLifecyclePanel = ({
   onOpenNotebook,
   onTerminateKernel,
   onKernelSelectionChange,
-  idleKillDays = 10,
-  maxKernelAgeDays = 15,
   forceTerminate = false,
 }: KernelLifecyclePanelProps) => {
   const safeSpecs = kernelSpecs || [];
@@ -215,12 +213,12 @@ const KernelLifecyclePanel = ({
           {selectedSpec && (selectedSpec.cpu || selectedSpec.memory || selectedSpec.gpuType) && (
             <div className="flex flex-wrap gap-2 text-xs">
               {selectedSpec.cpu && (
-                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-medium text-base-darker">
+                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-semibold text-base-darkest">
                   CPU: {selectedSpec.cpu}
                 </span>
               )}
               {selectedSpec.memory && (
-                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-medium text-base-darker">
+                <span className="rounded-full bg-base-lightest px-2.5 py-1 font-semibold text-base-darkest">
                   RAM: {selectedSpec.memory}
                 </span>
               )}

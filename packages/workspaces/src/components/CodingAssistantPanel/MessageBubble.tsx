@@ -47,7 +47,7 @@ const MessageBubble = ({
       const code = match[2].trim();
       parts.push(
         <div key={`c-${match.index}`} className="my-1.5 rounded-md bg-base-darkest">
-          <div className="flex items-center justify-between px-2.5 py-1 text-xs text-base-dark">
+          <div className="flex items-center justify-between px-2.5 py-1 text-xs text-base-darker">
             <span>{lang || 'code'}</span>
             <Button
               onClick={() => onInsert(code)}
@@ -80,11 +80,11 @@ const MessageBubble = ({
     <div
       className={`rounded-lg px-2.5 py-2 text-xs leading-relaxed ${
         isUser
-          ? 'bg-utility-category1 bg-opacity-10 text-utility-category1'
+          ? 'bg-utility-category1 bg-opacity-5 text-utility-category1'
           : 'bg-base-lightest bg-opacity-50 text-base-darkest'
       }`}
     >
-      <div className="mb-0.5 text-xs font-semibold uppercase tracking-wider text-base-dark">
+      <div className="mb-0.5 text-xs font-semibold uppercase tracking-wider text-base-darkest">
         {isUser ? 'You' : message.streaming ? 'AI ●' : 'AI'}
       </div>
       <div>{renderedContent}</div>

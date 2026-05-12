@@ -314,7 +314,7 @@ const CodingAssistantPanel = ({
           </p>
           {settingsForm}
         </div>
-        <div className="mt-1 text-center text-sm text-base-dark">
+        <div className="mt-1 text-center text-sm text-base-darker">
           Your key stays in this browser tab and is never stored on our servers.
         </div>
       </div>
@@ -338,7 +338,7 @@ const CodingAssistantPanel = ({
           <button
             type="button"
             onClick={clearChat}
-            className="text-sm text-base-dark hover:text-accentWarm-dark"
+            className="text-sm text-base-darker hover:text-accentWarm-dark"
           >
             Clear
           </button>
@@ -359,7 +359,7 @@ const CodingAssistantPanel = ({
               Ready — using <strong>{provider}</strong> ({model})
             </span>
             <div className="flex flex-col gap-1">
-              <span className="text-sm text-base">Try asking:</span>
+              <span className="text-sm text-base-darker">Try asking:</span>
               {[
                 'Write a pandas query to count rows by category',
                 'How do I read a TSV file from the Gen3 workspace?',
