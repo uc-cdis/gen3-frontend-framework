@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge, Loader } from '@mantine/core';
 import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
 
-type ConnectionStatusBadgeProps = {
+export interface ConnectionStatusBadgeProps {
   state: GatewayConnectionState;
   /** Called when user clicks the "Retry" link in error state. */
   onRetry?: () => void;
@@ -98,4 +98,3 @@ const ConnectionStatusBadge = ({ state, onRetry }: ConnectionStatusBadgeProps) =
 };
 
 export default ConnectionStatusBadge;
-export type { ConnectionStatusBadgeProps };

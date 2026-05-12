@@ -3,7 +3,7 @@ import { Button, Select } from "@mantine/core";
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
 
-export type KernelSpecEntry = {
+interface KernelSpecEntry {
   name: string;
   displayName: string;
   language?: string;
@@ -19,7 +19,7 @@ export type KernelSpecEntry = {
   gpuType?: string;
 };
 
-export type KernelRow = {
+interface KernelRow {
   kernelId: string;
   kernelName?: string;
   executionState?: string;
@@ -29,11 +29,11 @@ export type KernelRow = {
   idleDays?: number | null;
 };
 
-type LaunchKernelInput = {
+interface LaunchKernelInput {
   kernelName: string;
 };
 
-export type KernelSelection = {
+interface KernelSelection {
   kernelName?: string;
   kernelId?: string;
 };

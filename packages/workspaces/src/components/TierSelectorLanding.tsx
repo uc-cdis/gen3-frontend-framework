@@ -3,7 +3,7 @@ import { WorkspaceCardConfig } from './types';
 import { type WorkspaceTier } from '../types';
 import WorkspaceTierCard from './WorkspaceTierCard';
 
-type TierSelectorLandingProps = {
+export interface TierSelectorLandingProps {
   cards: WorkspaceCardConfig[];
   onSelectTier: (tier: WorkspaceTier) => void;
   className?: string;
@@ -64,5 +64,4 @@ const TierSelectorLanding = ({
   );
 };
 
-export type { TierSelectorLandingProps };
 export default TierSelectorLanding;
