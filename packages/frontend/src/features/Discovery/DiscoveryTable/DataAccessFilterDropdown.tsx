@@ -138,12 +138,7 @@ const DataAccessFilterDropdown: React.FC<
               >
                 OK
               </Button>
-              <Button
-                variant="subtle"
-                color="gray"
-                size="xs"
-                onClick={handleReset}
-              >
+              <Button size="xs" onClick={handleReset}>
                 Reset
               </Button>
             </Group>
