@@ -34,27 +34,27 @@ export const DataAccessCellRenderer = ({
   const { discoveryConfig: config } = useDiscoveryContext();
   const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();
-  console.log('value', value);
   const authorization = (row?.original?.[authzField] as string) || undefined;
+  console.log('authzField', authzField);
+  console.log('row?.original', row?.original);
+  console.log('authorization', authorization);
   const dataObjectField =
     config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
-
   if (isArray(value)) value = value[0];
   const accessLevel = getAccessLevelFromNumber(value);
-  console.log('row original', row?.original);
   const numFileObjects =
     dataObjectField && row?.original?.[dataObjectField]
       ? row?.original?.[dataObjectField]
       : 0;
 
-  // Commenting this out to validate UI
-  /*   if (numFileObjects === 0) {
+  // Fallback approach for when accessLevel is not defined by Proxy API
+  if (numFileObjects === 0 && accessLevel === undefined) {
     return (
       <Tooltip label={buildTooltip('No data attached to this study')}>
         <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
       </Tooltip>
     );
-  } */
+  }
   if (!accessLevel) {
     return (
       <Tooltip label={buildTooltip('Unable to determine access level')}>

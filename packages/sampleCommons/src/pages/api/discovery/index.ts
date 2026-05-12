@@ -28,13 +28,16 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     selectedTags,
     selectedFieldsForSearchIndexing,
     searchMode,
-    selectedAccessibility,
+    selectedAccessibilityLevels,
     discoveryConfig,
   } = reqBody;
   const preprocessedData = addAccessibleMetaData(data, discoveryConfig);
   let processedData: Array<JSONObject> = preprocessedData;
   // Study accessiblity levels filtering (user selected data availability)
-  processedData = filterByAccessibility(processedData, selectedAccessibility);
+  processedData = filterByAccessibility(
+    processedData,
+    selectedAccessibilityLevels,
+  );
   // Then: Search
   processedData = searchData(
     processedData,

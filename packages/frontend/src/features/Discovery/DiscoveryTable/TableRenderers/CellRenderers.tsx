@@ -45,29 +45,6 @@ export const RenderArrayCell: CellRendererFunction = ({
   return <span>{value}</span>;
 };
 
-export const RenderArrayNamesList: CellRendererFunction = ({
-  value,
-  cell,
-}: CellRenderFunctionProps) => {
-  if (isArray(value)) {
-    return (
-      <div className="w-64 flex flex-wrap gap-0.5">
-        {value.map((x, index) => (
-          <Badge
-            variant="outline"
-            classNames={{ root: 'basis-1/3' }}
-            color="accent-light"
-            key={`${x}-value-${index}`}
-          >
-            {x}
-          </Badge>
-        ))}
-      </div>
-    );
-  }
-  return <span>value</span>;
-};
-
 // Define the valid textTransform values
 const validTextTransforms: Array<CSSProperties['textTransform']> = [
   'none',
@@ -291,23 +268,17 @@ const RegistrationStatusCellRenderer: CellRendererFunction = ({
       {isRegistered ? (
         <Badge
           leftSection={<RegisteredStudyIcon />}
-          style={{
+          color="green"
+          /*     style={{
             backgroundColor: 'lightgreen',
             borderColor: 'darkgreen',
             color: 'darkgreen',
-          }}
+          }} */
         >
           Linked
         </Badge>
       ) : (
-        <Badge
-          leftSection={<UnregisteredStudyIcon />}
-          style={{
-            backgroundColor: 'lightgrey',
-            borderColor: 'black',
-            color: 'black',
-          }}
-        >
+        <Badge leftSection={<UnregisteredStudyIcon />} color="grey">
           Not Linked
         </Badge>
       )}
@@ -377,7 +348,6 @@ export const DiscoveryRenderTagsCell: CellRendererFunction = ({
 export const Gen3DiscoveryStandardCellRenderers = {
   array: {
     NegativePositive: RenderArrayCellNegativePositive,
-    NamesList: RenderArrayNamesList,
     HasData: RenderIfArrayHasData,
     default: RenderArrayCell,
   },

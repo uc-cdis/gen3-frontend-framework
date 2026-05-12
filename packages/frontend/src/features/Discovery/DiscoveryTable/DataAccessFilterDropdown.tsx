@@ -24,23 +24,23 @@ const DataAccessFilterDropdown: React.FC<
   DataAccessFilterDropdownProps
 > = ({}) => {
   const [opened, setOpened] = useState(false);
-  const { selectedAccessibility, setSelectedAccessibility } =
+  const { selectedAccessibilityLevels, setSelectedAccessibilityLevels } =
     useDiscoveryContext();
 
-  // Secondary data structure: Local "Draft" state
-  const [draftAccessibility, setDraftAccessibility] = useState<AccessLevel[]>(
-    selectedAccessibility,
-  );
+  // User selections before they click OK
+  const [draftAccessibilityLevels, setDraftAccessibilityLevels] = useState<
+    AccessLevel[]
+  >(selectedAccessibilityLevels);
 
   // Sync draft with global state whenever the popover opens
   useEffect(() => {
     if (opened) {
-      setDraftAccessibility(selectedAccessibility);
+      setDraftAccessibilityLevels(selectedAccessibilityLevels);
     }
-  }, [opened, selectedAccessibility]);
+  }, [opened, selectedAccessibilityLevels]);
 
   const handleCheckboxToggle = (level: AccessLevel) => {
-    setDraftAccessibility((current) =>
+    setDraftAccessibilityLevels((current) =>
       current.includes(level)
         ? current.filter((id) => id !== level)
         : [...current, level],
@@ -48,13 +48,13 @@ const DataAccessFilterDropdown: React.FC<
   };
 
   const handleApply = () => {
-    setSelectedAccessibility(draftAccessibility);
+    setSelectedAccessibilityLevels(draftAccessibilityLevels);
     setOpened(false);
   };
 
   const handleReset = () => {
-    setDraftAccessibility([]);
-    setSelectedAccessibility([]);
+    setDraftAccessibilityLevels([]);
+    setSelectedAccessibilityLevels([]);
     setOpened(false);
   };
 
@@ -117,7 +117,7 @@ const DataAccessFilterDropdown: React.FC<
                 }}
               >
                 <Checkbox
-                  checked={draftAccessibility.includes(item.level)}
+                  checked={draftAccessibilityLevels.includes(item.level)}
                   readOnly
                   radius="xs"
                   className="pointer-events-none"
@@ -127,7 +127,6 @@ const DataAccessFilterDropdown: React.FC<
               </label>
             ))}
           </Stack>
-
           <div className="border-t border-gray-100 p-3">
             <Group grow gap="sm">
               <Button

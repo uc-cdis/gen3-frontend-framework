@@ -6,16 +6,16 @@
  */
 const filterByAccessibility = (
   studies: any[],
-  selectedAccessibility: number[],
+  selectedAccessibilityLevels: number[],
 ) => {
   // If no filters are selected, return the full list
-  if (selectedAccessibility.length === 0) {
+  if (selectedAccessibilityLevels.length === 0) {
     return studies;
   }
 
   // Return only studies where __accessible matches one of the values in selectedAccessibility
   return studies.filter((study) =>
-    selectedAccessibility.includes(study.__accessible),
+    selectedAccessibilityLevels.includes(study.__accessible),
   );
 };
 export default filterByAccessibility;

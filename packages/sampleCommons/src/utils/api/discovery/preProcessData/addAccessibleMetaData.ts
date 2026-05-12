@@ -5,12 +5,13 @@ const addAccessibleMetaData = (
   data: Array<JSONObject>,
   discoveryConfig: DiscoveryIndexConfig,
 ) => {
-  // Mock this method for now
+  // Mocking this method for now to test UI. This will be updated in HP-2363.
   return data.map((obj) => {
-    const randomAccessibleNum = Math.floor(Math.random() * 6) + 1;
+    let accessibleLevelNum = Math.floor(Math.random() * 6) + 1;
+    if (obj.authz) accessibleLevelNum = 1;
     return {
       ...obj,
-      __accessible: randomAccessibleNum,
+      __accessible: accessibleLevelNum,
     };
   });
 };
