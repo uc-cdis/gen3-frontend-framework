@@ -31,7 +31,7 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
   } = reqBody;
   const preprocessedData = addAccessLevelsMetaData(data, discoveryConfig);
   let processedData: Array<JSONObject> = preprocessedData;
-  // Study accessiblity levels filtering (user selected data availability)
+  // Study access levels filtering (user selected data availability)
   processedData = filterByAccessLevels(processedData, selectedAccessLevels);
   // Then: Search
   processedData = searchData(

@@ -35,9 +35,6 @@ export const DataAccessCellRenderer = ({
   const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();
   const authorization = (row?.original?.[authzField] as string) || undefined;
-  console.log('authzField', authzField);
-  console.log('row?.original', row?.original);
-  console.log('authorization', authorization);
   const dataObjectField =
     config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
   if (isArray(value)) value = value[0];

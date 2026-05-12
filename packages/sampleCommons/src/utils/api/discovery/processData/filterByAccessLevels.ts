@@ -13,7 +13,7 @@ const filterByAccessLevels = (
     return studies;
   }
 
-  // Return only studies where __accessible matches one of the values in selectedAccessibility
+  // Return only studies where __accessible matches one of the values in selected access levels
   return studies.filter((study) =>
     selectedAccessLevels.includes(study.__accessible),
   );
