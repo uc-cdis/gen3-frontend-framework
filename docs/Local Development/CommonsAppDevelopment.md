@@ -47,7 +47,7 @@ npm run build:clean
 yalc publish --push
 ```
 which will update the local copy of the Gen3.2 packages and any linked applications.
-You will need to run 'npm install' in the linked applications to pick up the new version.
+
 
 ### Removing the local copy of the Gen3.2 packages
 

@@ -16,14 +16,19 @@ const StudyDetailsPanel = ({
 }: StudyDetailsPanelProps): ReactElement => {
   const headerText = JSONPath({
     json: data,
-    path: studyConfig?.header?.field ?? '',
+    path: studyConfig?.headerField ?? '',
   });
-
-  console.log('StudyDetailsPanel: data', data);
+  const subHeaderText = JSONPath({
+    json: data,
+    path: studyConfig?.subHeaderField ?? '',
+  });
   return (
     <div>
-      <Text size="lg" w={700} className="mb-4">
+      <Text size="lg" className="mb-4">
         {headerText}
+      </Text>
+      <Text size="sm" className="mb-4">
+        {subHeaderText}
       </Text>
       <Tabs defaultValue={studyConfig?.tabs?.[0]?.tabName}>
         <Tabs.List>
