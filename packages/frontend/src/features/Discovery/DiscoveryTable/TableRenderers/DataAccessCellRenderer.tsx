@@ -31,6 +31,8 @@ export const DataAccessCellRenderer = ({
   cell,
   row,
 }: CellRenderFunctionProps) => {
+  console.log('cell', cell);
+  console.log('row', row);
   const { discoveryConfig: config } = useDiscoveryContext();
   const authzField = config.minimalFieldMapping?.authzField || 'authz';
   let value = cell?.getValue<number>();

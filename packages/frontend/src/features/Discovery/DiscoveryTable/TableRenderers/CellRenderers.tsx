@@ -8,7 +8,7 @@ import { getTagInfo } from '../../../Study/utils';
 import { TagData } from '../../../Study/types';
 import { useDiscoveryContext } from '../../DiscoveryProvider';
 import { CellRendererFunction, CellRenderFunctionProps } from './types';
-import { DataAccessCellRenderer } from './DataAccessCellRenderers';
+import { DataAccessCellRenderer } from './DataAccessCellRenderer';
 import { TruncatedStringWithTooltip } from '../../../../components/DataItems/TruncatedStringWithTooltip';
 import { JSONObject } from '@gen3/core';
 import { getParamsValueAsString } from '../../../../utils/values';
