@@ -71,7 +71,7 @@ const CompactDictionaryPanel = ({
                 type="button"
                 onClick={() => setExpandedId(isExpanded ? null : node.id)}
                 className="flex w-full items-center gap-2 px-2.5 py-2 text-left hover:bg-base-lightest hover:bg-opacity-50"
-                aria-label="Expand description"
+                aria-label={`Expand description for ${node.title}`}
                 aria-expanded={isExpanded}
               >
                 {isExpanded ? <DownArrowIcon /> : <RightArrowIcon />}

@@ -305,7 +305,7 @@ const CodingAssistantPanel = ({
       <div className="flex h-full flex-col gap-3">
         <div className="rounded-lg border border-blue-200 bg-gradient-to-b from-blue-50 to-white p-3">
           <div className="mb-2 flex items-center gap-2">
-            <InfoIcon className="text-utility-info" />
+            <InfoIcon className="text-utility-info" aria-hidden="true" />
             <span className="text-xs font-semibold text-base-darkest">AI Coding Assistant</span>
           </div>
           <p className="mb-3 text-sm leading-relaxed text-base-darker">
@@ -330,6 +330,7 @@ const CodingAssistantPanel = ({
           type="button"
           onClick={() => setShowSettings((v) => !v)}
           className="flex items-center gap-1 text-sm font-medium text-base-darker hover:text-base-darkest"
+          aria-label={showSettings ? 'Hide provider settings' : 'Show provider settings'}
         >
           <SettingsIcon aria-hidden="true" />
           {showSettings ? 'Hide' : provider}

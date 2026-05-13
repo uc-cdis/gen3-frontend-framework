@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@mantine/core';
 
 export interface UpgradeActionsPanelProps {
   currentTier: 'free' | 'remote';
@@ -33,32 +34,32 @@ const UpgradeActionsPanel = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <Button
           onClick={onUpgradeToRemote}
           disabled={!canUpgrade}
-          className="w-full rounded-md border border-primary-light bg-primary-max px-3 py-2.5 text-sm font-bold text-primary hover:bg-primary-light/20 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full border-primary-light"
+          variant="light"
         >
           Upgrade To Remote Tier
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
           onClick={onRequestQuotaIncrease}
           disabled={!onRequestQuotaIncrease}
-          className="w-full rounded-md border border-base bg-white px-3 py-2.5 text-sm font-semibold text-base-darkest hover:bg-base-lightest disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full"
+          variant="default"
         >
           Request Quota Increase
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
           onClick={onOpenBillingSupport}
           disabled={!onOpenBillingSupport}
-          className="w-full rounded-md border border-base bg-white px-3 py-2.5 text-sm font-semibold text-base-darkest hover:bg-base-lightest disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full"
+          variant="default"
         >
           Contact Workspace Support
-        </button>
+        </Button>
       </div>
     </section>
   );
