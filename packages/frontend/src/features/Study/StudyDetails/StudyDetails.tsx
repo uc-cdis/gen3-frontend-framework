@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
@@ -21,40 +21,65 @@ const StudyDetails = ({
 }) => {
   const { studyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
+  const defaultPermaLinkValue = 'Discovery/notfound';
+  const hasStudyDetails = Object.keys(studyDetails).length > 0;
+
+  const permalink = useMemo(() => {
+    const studyId = studyDetails?.[index];
+    if (studyId) {
+      const origin = window?.location?.href ?? defaultPermaLinkValue;
+      const studyPath = `${origin}/${encodeURIComponent(studyId as string)}`;
+      // router.push(studyPath, undefined, { shallow: true });
+      return studyPath;
+    } else {
+      return defaultPermaLinkValue;
+    }
+  }, [index, studyDetails]);
+
+  // using Object.keys(studyDetails).length > 0 fires this effect correctly
   useEffect(() => {
     if (Object.keys(studyDetails).length > 0) {
       open();
     }
   }, [studyDetails, open]);
 
-  if (!studyDetails) {
-    return null;
-  }
-
   return (
-    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
-      <Drawer.Overlay opacity={0.5} blur={4} />
-      <Drawer.Content className="pl-2">
-        <Drawer.Header>
-          <StudyDetailsHeaderButtons studyIndex={index} onClose={close} />
-        </Drawer.Header>
-        <Drawer.Body>
-          {detailView ? (
-            <StudyDetailsPanel
-              data={studyDetails ?? {}}
-              studyConfig={detailView}
+    <Drawer.Root
+      opened={opened}
+      onClose={() => {
+        close();
+      }}
+      size="50%"
+      position="right"
+    >
+      <Drawer.Overlay opacity={0.5} blur={4} />{' '}
+      {hasStudyDetails && (
+        <Drawer.Content className="pl-2">
+          <Drawer.Header>
+            <StudyDetailsHeaderButtons
+              onClose={close}
+              permalink={permalink}
+              showSubmitButton={simpleDetailsView?.showSubmitButton}
             />
-          ) : simpleDetailsView ? (
-            <SinglePageStudyDetailsPanel
-              data={studyDetails ?? {}}
-              studyConfig={simpleDetailsView}
-              authorization={authz}
-            />
-          ) : (
-            <div>Study Details Panel not configured</div>
-          )}
-        </Drawer.Body>
-      </Drawer.Content>
+          </Drawer.Header>
+          <Drawer.Body>
+            {detailView ? (
+              <StudyDetailsPanel
+                data={studyDetails ?? {}}
+                studyConfig={detailView}
+              />
+            ) : simpleDetailsView ? (
+              <SinglePageStudyDetailsPanel
+                data={studyDetails ?? {}}
+                studyConfig={simpleDetailsView}
+                authorization={authz}
+              />
+            ) : (
+              <div>Study Details Panel not configured</div>
+            )}
+          </Drawer.Body>
+        </Drawer.Content>
+      )}
     </Drawer.Root>
   );
 };

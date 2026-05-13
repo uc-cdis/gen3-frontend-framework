@@ -101,7 +101,9 @@ const HorizontalNavigationBar = ({
                 href={x.href}
                 name={x.name}
                 classNames={x.classNames}
+                noBasePath={x?.noBasePath}
                 authStatus={LinkAuthStatus.Authorized}
+                enabledWithNoAccess={x?.enabledWithNoAccess}
               />
             </div>
           );

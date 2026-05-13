@@ -220,7 +220,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
       hasInvalidRows,
     };
   }, [validatedItems]);
-
+  //TODO: get table to work better in modal
   const table = useMantineReactTable<SelectedItemsTableRow>({
     columns,
     data: tableRows.rows,
@@ -235,6 +235,7 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
     enableStickyHeader: true,
     enableStickyFooter: true,
     enableHiding: true,
+    enableColumnActions: false,
     onRowSelectionChange: handleRowSelectionChange,
     state: { rowSelection },
     initialState: {

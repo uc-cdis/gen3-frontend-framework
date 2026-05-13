@@ -129,11 +129,13 @@ const CohortManagerPanel = ({
     <Group gap="xs" className="bg-primary flex pt-4 pl-4 p-4 mb-4">
       {!isEditing ? (
         <Group>
-          <Select
-            data={selectData}
-            value={currentCohort?.id ?? null}
-            onChange={onSelectCohort}
-          />
+          <Tooltip label="A cohort saves a set of filters which generates subjects." position="top" withArrow>
+            <Select
+              data={selectData}
+              value={currentCohort?.id ?? null}
+              onChange={onSelectCohort}
+            />
+          </Tooltip>
           <Tooltip label="Rename selected cohort" position="bottom" withArrow>
             <Button
               variant="action"
