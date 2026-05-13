@@ -56,4 +56,4 @@ const DiscoveryProvider = ({
   );
 };
 
-export { useDiscoveryContext, DiscoveryProvider as default };
+export { useDiscoveryContext, DiscoveryContext, DiscoveryProvider as default };
