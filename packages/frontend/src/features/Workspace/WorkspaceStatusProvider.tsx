@@ -22,7 +22,7 @@ import {
 } from '@gen3/core';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { notifications } from '@mantine/notifications';
-import { useFullscreenDocument } from '@mantine/hooks';
+import { useFullscreen } from '@mantine/hooks';
 import { PayModelStatus } from './types';
 import { useWorkspaceContext } from './WorkspaceProvider';
 
@@ -79,7 +79,7 @@ export const useWorkspaceStatusContext = () => {
 
 const WorkspaceStatusProvider = ({ children }: { children: ReactNode }) => {
   const { toggle: switchScreenMode, fullscreen: isFullscreen } =
-    useFullscreenDocument();
+    useFullscreen();
   const [payModelStatus, setPayModelStatus] = useState<PayModelStatus>(
     PayModelStatus.INVALID,
   );
