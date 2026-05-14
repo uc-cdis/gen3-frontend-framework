@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ECharts, EChartsOption, init } from 'echarts';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useResizeObserver } from '@mantine/hooks';
@@ -17,12 +17,12 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
   style,
   onDimensionsChange,
 }: EChartWrapperResponsiveProps) => {
-  const chartRef = useRef<HTMLDivElement>(null);
+  //  const containerRef = useRef<HTMLDivElement>(null);
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
   const [containerRef, rect] = useResizeObserver();
 
   useEffect(() => {
-    const node = chartRef.current;
+    const node = containerRef.current;
     if (!node) return;
 
     const chart = init(node, null, { renderer: 'svg' });
@@ -53,15 +53,12 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
     <div
       ref={containerRef}
       style={{
-          width: '100%',
-          aspectRatio: '4 / 3',
-          ...style,
-    }}>
-      <div
-        ref={chartRef}
-        role="img"
-      />
-    </div>
+        width: '100%',
+        aspectRatio: '4 / 3',
+        ...style,
+      }}
+      role="img"
+    />
   );
 };
 

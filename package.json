@@ -128,12 +128,12 @@
       }
     },
     "mantine-react-table": {
-      "@mantine/core": "^9.1.0",
-      "@mantine/hooks": "^9.1.0",
-      "@mantine/dates": "^9.1.0",
-      "@mantine/form": "^9.1.0",
-      "@mantine/modals": "^9.1.0",
-      "@mantine/notifications": "^9.1.0"
+      "@mantine/core": "^8.3.15",
+      "@mantine/hooks": "^8.3.15",
+      "@mantine/dates": "^8.3.15",
+      "@mantine/form": "^8.3.15",
+      "@mantine/modals": "^8.3.15",
+      "@mantine/notifications": "^8.3.15"
     }
   },
   "optionalDependencies": {
