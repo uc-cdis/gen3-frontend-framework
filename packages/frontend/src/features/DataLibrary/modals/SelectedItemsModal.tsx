@@ -22,7 +22,7 @@ import {
 } from '../selection/selectedItemActions';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
-import { MRT_RowSelectionState } from 'mantine-react-table';
+import { MRT_RowSelectionState } from 'mantine-react-table-open';
 import { ValidatedSelectedItem } from '../types';
 import {
   DataLibraryActionConfig,

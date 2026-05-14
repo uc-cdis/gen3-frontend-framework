@@ -2,7 +2,10 @@ import React, { ReactNode, useMemo, useRef, useState } from 'react';
 import DiscoveryTable from './DiscoveryTable/DiscoveryTable';
 import { Button, Grid, Text } from '@mantine/core';
 import AdvancedSearchPanel from './Search/AdvancedSearchPanel';
-import { MRT_PaginationState, MRT_SortingState } from 'mantine-react-table';
+import {
+  MRT_PaginationState,
+  MRT_SortingState,
+} from 'mantine-react-table-open';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
 import ActionBar from './ActionBar/ActionBar';
 import SummaryStatisticPanel from './Statistics/SummaryStatisticPanel';

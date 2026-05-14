@@ -127,7 +127,7 @@
         "glob": "^13.0.6"
       }
     },
-    "mantine-react-table": {
+    "mantine-react-table-open": {
       "@mantine/core": "^9.1.0",
       "@mantine/hooks": "^9.1.0",
       "@mantine/dates": "^9.1.0",

@@ -8,7 +8,7 @@ import {
   type MRT_RowSelectionState,
   type MRT_SortingState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { Loader, LoadingOverlay, Text } from '@mantine/core';
 import { useDeepCompareEffect, useDeepCompareMemo } from 'use-deep-compare';
 import { getManualSortingAndPagination, jsonPathAccessor } from '../utils';
