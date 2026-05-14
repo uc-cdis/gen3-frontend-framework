@@ -6,7 +6,7 @@ import { AccessLevel } from '../../../utils';
 import DataAccessFilterDropdown from './DataAccessFilterDropdown';
 
 const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
-  return (Story: React.ComponentType) => {
+  const DecoratorComponent = (Story: React.ComponentType) => {
     const [selectedAccessLevels, setSelectedAccessLevels] =
       useState<number[]>(initialLevels);
     return (
@@ -27,6 +27,8 @@ const DataAccessFilterDropdownWrapper = (initialLevels: number[] = []) => {
       </MantineProvider>
     );
   };
+  DecoratorComponent.displayName = 'DataAccessFilterDropdownWrapper';
+  return DecoratorComponent;
 };
 
 const meta = {
