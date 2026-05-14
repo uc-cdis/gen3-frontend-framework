@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { ECharts, EChartsOption, init } from 'echarts';
 import { useDeepCompareEffect } from 'use-deep-compare';
 import { useResizeObserver } from '@mantine/hooks';
@@ -16,18 +16,17 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
   width,
 }: EChartWrapperProps) => {
   const [chartRoot, setChartRoot] = useState<ECharts | undefined>(undefined);
-  const [containerRef, rect] = useResizeObserver<HTMLDivElement>();
-  const chartRef = useRef<HTMLDivElement>(null);
+  const [containerRef, rect] = useResizeObserver();
 
   useDeepCompareEffect(() => {
     let chart: ECharts | undefined;
 
     if (
-      containerRef !== null &&
-      rect.height !== 0 &&
-      rect.width !== 0
+      containerRef.current !== null &&
+      containerRef?.current?.clientHeight !== 0 &&
+      containerRef?.current?.clientWidth !== 0
     ) {
-      chart = init(chartRef.current, null, {
+      chart = init(containerRef.current, null, {
         renderer: 'svg',
         height,
         width,
@@ -50,12 +49,11 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
   }, [rect]);
 
   return (
-    <div ref={containerRef} style={{ height, width, margin: '0 auto' }}>
-      <div
-        ref={chartRef}
-        role="img"
-      />
-    </div>
+    <div
+      ref={containerRef}
+      style={{ height, width, margin: '0 auto' }}
+      role="img"
+    />
   );
 };
 
