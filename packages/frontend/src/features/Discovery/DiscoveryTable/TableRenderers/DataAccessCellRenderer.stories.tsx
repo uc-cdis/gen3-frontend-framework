@@ -66,7 +66,7 @@ export const Waiting: Story = {
 };
 
 export const NoData: Story = {
-  args: createMockProps(undefined as any, '', 0) as any,
+  args: createMockProps(undefined as any, '') as any,
 };
 
 export const MixedAccess: Story = {
