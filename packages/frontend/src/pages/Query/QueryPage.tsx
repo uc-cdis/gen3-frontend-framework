@@ -10,8 +10,9 @@ const QueryPanel = dynamic(() => import('../../features/Query/QueryPanel'), {
 const QueryPage = ({
   headerProps,
   footerProps,
-  queryProps,
+  configuration: queryProps,
 }: QueryPageLayoutProps): JSX.Element => {
+  console.log(queryProps);
   return (
     <FixedNavPageLayout
       {...{ headerProps, footerProps }}
@@ -22,7 +23,7 @@ const QueryPage = ({
         ...(queryProps?.headerMetadata ? queryProps.headerMetadata : {}),
       }}
     >
-      <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint} />
+      <QueryPanel graphQLEndpoints={queryProps.graphQLEndpoints} />
     </FixedNavPageLayout>
   );
 };
