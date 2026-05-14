@@ -52,7 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <Grid
-      gap={24}
+      gutter={24}
       grow={false}
       overflow="visible"
       classNames={{ root: 'w-full' }}

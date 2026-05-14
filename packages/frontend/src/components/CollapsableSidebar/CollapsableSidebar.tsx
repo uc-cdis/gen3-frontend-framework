@@ -42,7 +42,7 @@ const defaultProps: Partial<CollapsableSidebarProps> = {
 };
 
 export const CollapsableSidebar = factory<CollapseSidebarFactory>(
-  (_props) => {
+  (props, ref) => {
     const {
       children,
       in: opened,
@@ -52,7 +52,7 @@ export const CollapsableSidebar = factory<CollapseSidebarFactory>(
       onTransitionEnd,
       animateOpacity,
       ...others
-    } = useProps('Collapse', defaultProps, _props);
+    } = useProps('Collapse', defaultProps, props);
 
     const theme = useMantineTheme();
     const shouldReduceMotion = useReducedMotion();
@@ -82,6 +82,7 @@ export const CollapsableSidebar = factory<CollapseSidebarFactory>(
               : 'none',
             ...getStyleObject(style, theme),
           },
+          ref,
           ...others,
         })}
       >

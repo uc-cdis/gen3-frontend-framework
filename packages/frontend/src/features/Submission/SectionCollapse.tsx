@@ -36,7 +36,7 @@ const SectionCollapse = ({
         </div>
         <Text>{text}</Text>
       </div>
-      <Collapse expanded={expanded} className="w-full py-4">
+      <Collapse in={expanded} className="w-full py-4">
         {children}
       </Collapse>
     </>
