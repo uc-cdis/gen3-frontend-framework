@@ -2,6 +2,7 @@ import { ExplorerDetailsConfig } from './ExploreTableDetails/types';
 import {
   MRT_Cell,
   MRT_Column,
+  MRT_ColumnDef,
   MRT_Row,
   MRT_RowData,
   MRT_TableInstance,
@@ -103,13 +104,11 @@ export interface ExplorerTableProps {
   dataHook?: ExplorerDataQueryHook;
 }
 
-export interface ExplorerTableColumnMRT {
-  id: string;
+export interface ExplorerTableColumnMRT<
+  T extends MRT_RowData = JSONObject,
+> extends MRT_ColumnDef<T> {
   field: string;
-  accessorKey: never;
   header: string;
-  accessorFn?: (originalRow: JSONObject) => any;
-  Cell?: ((cell: CellRendererFunctionProps) => React.ReactNode) | undefined;
   size?: number;
   enableSorting?: boolean;
   visible?: boolean;
@@ -124,7 +123,7 @@ export interface CellRendererFunctionProps<T extends MRT_RowData = JSONObject> {
   renderedCellValue: ReactNode;
   column: MRT_Column<T>;
   row: MRT_Row<T>;
-  rowRef?: RefObject<HTMLTableRowElement> | undefined;
+  rowRef?: RefObject<HTMLTableRowElement | null> | undefined;
   table: MRT_TableInstance<T>;
   params?: Record<string, unknown>;
 }
