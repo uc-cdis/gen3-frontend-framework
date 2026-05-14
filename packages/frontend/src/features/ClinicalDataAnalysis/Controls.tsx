@@ -67,7 +67,7 @@ const ControlGroup: React.FC<Readonly<ControlGroupProps>> = ({
         {name}
       </span>
       <Collapse
-        in={groupOpen}
+        expanded={groupOpen}
         id={`cdave-control-group-${name}`}
         className="border-1 border-base-lighter rounded-b-md"
       >
