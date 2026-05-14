@@ -1,9 +1,88 @@
-export interface JobStatus {
-  uid: string;
-  status: 'Running' | 'Completed' | 'Failed' | 'Unknown';
-  name: string;
+export const enum SowerJobStatus {
+  Running = 'Running',
+  Completed = 'Completed',
+  Failed = 'Failed',
+  Unknown = 'Unknown',
 }
 
-export interface JobOutput {
-  output: string;
+export interface JobStatus {
+  uid: string;
+  status: SowerJobStatus;
+  name: string;
+  error?: string;
+}
+
+export interface ActionParams<T extends Record<string, any>> {
+  parameters: T; // query parameters for the action
+  onStart?: () => void; // function to call when the action starts
+  onDone?: (arg?: T) => void; // function to call when the action is done
+  onError?: (error: Error) => void; // function to call when the action fails
+  onAbort?: () => void; // function to call when the download is aborted
+  signal?: AbortSignal; // optional signal to stop a fetch
+}
+
+export type ActionFunction<
+  T extends Record<string, any> = Record<string, any>,
+  R extends Record<string, any> | void = Record<string, any>,
+> = ({
+  parameters,
+  onStart,
+  onDone,
+  onError,
+  onAbort,
+}: ActionParams<T>) => Promise<R>;
+
+export type JobBuilderAction = (
+  params: Record<string, unknown>,
+) => DispatchJobParams;
+
+export type SendJobOutputAction = ActionFunction<Record<string, unknown>, void>;
+
+interface ActionFunctionConfig {
+  actionName: string;
+  parameters: Record<string, unknown>;
+}
+
+interface BoundActionConfig<T> extends ActionFunctionConfig {
+  actionFunction: T;
+}
+
+// handles Sower job: consist of the sower job action and optionally an action which uses the output of the job
+// used in the JobsSlice and is serializable
+export interface CreateAndExportActionConfig {
+  createAction: ActionFunctionConfig;
+  sendJobAction?: ActionFunctionConfig;
+}
+
+// Bound actions: action that are bound to a function
+export interface BoundCreateAndExportAction {
+  createAction: BoundActionConfig<JobBuilderAction>;
+  sendJobAction?: BoundActionConfig<SendJobOutputAction>;
+}
+
+export enum SowerJobStage {
+  JobDispatched = 1,
+  SendJobOutput = 2,
+}
+
+export interface JobWithActions {
+  jobId: string;
+  config?: CreateAndExportActionConfig;
+  stage: SowerJobStage;
+  created: number;
+  updated: number;
+  name: string;
+  status: SowerJobStatus;
+  outputGUID?: string;
+}
+
+export interface DispatchJobParams {
+  action: string;
+  input: Record<string, any>;
+}
+
+export interface DispatchJobResponse {
+  uid: string;
+  name: string;
+  status: SowerJobStatus;
 }
