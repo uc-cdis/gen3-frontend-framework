@@ -92,7 +92,7 @@
     "js-cookie": "^3.0.5",
     "json-file-database": "^2.0.3",
     "minisearch": "^7.1.2",
-    "next": "^15.5.16",
+    "next": "^15.6.0-canary.61",
     "next-compose-plugins": "^2.2.1",
     "react-minisearch": "^7.1.4",
     "rehype-sanitize": "^6.0.0",

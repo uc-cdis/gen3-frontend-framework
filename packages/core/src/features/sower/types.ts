@@ -12,7 +12,7 @@ export interface JobStatus {
   error?: string;
 }
 
-export interface SowerActionParams<T extends Record<string, any>> {
+export interface JobActionParams<T extends Record<string, any>> {
   parameters: T; // query parameters for the action
   onStart?: () => void; // function to call when the action starts
   onDone?: (arg?: T) => void; // function to call when the action is done
@@ -21,7 +21,7 @@ export interface SowerActionParams<T extends Record<string, any>> {
   signal?: AbortSignal; // optional signal to stop a fetch
 }
 
-export type SowerActionFunction<
+export type JobActionFunction<
   T extends Record<string, any> = Record<string, any>,
   R extends Record<string, any> | void = Record<string, any>,
 > = ({
@@ -30,40 +30,40 @@ export type SowerActionFunction<
   onDone,
   onError,
   onAbort,
-}: SowerActionParams<T>) => Promise<R>;
+}: JobActionParams<T>) => Promise<R>;
 
 export type JobBuilderAction = (
   params: Record<string, unknown>,
 ) => DispatchJobParams;
 
-export type SendJobOutputAction = SowerActionFunction<
+export type SendJobOutputAction = JobActionFunction<
   Record<string, unknown>,
   void
 >;
 
-interface ActionFunctionConfig {
+export interface JobActionFunctionConfig {
   actionName: string;
   parameters: Record<string, unknown>;
 }
 
-interface BoundActionConfig<T> extends ActionFunctionConfig {
+export interface BoundJobActionConfig<T> extends JobActionFunctionConfig {
   actionFunction: T;
 }
 
 // handles Sower job: consist of the sower job action and optionally an action which uses the output of the job
 // used in the JobsSlice and is serializable
 export interface CreateAndExportActionConfig {
-  createAction: ActionFunctionConfig;
-  sendJobAction?: ActionFunctionConfig;
+  createAction: JobActionFunctionConfig;
+  sendJobAction?: JobActionFunctionConfig;
 }
 
 // Bound actions: action that are bound to a function
 export interface BoundCreateAndExportAction {
-  createAction: BoundActionConfig<JobBuilderAction>;
-  sendJobAction?: BoundActionConfig<SendJobOutputAction>;
+  createAction: BoundJobActionConfig<JobBuilderAction>;
+  sendJobAction?: BoundJobActionConfig<SendJobOutputAction>;
 }
 
-export enum SowerJobStage {
+export enum JobStage {
   JobDispatched = 1,
   SendJobOutput = 2,
 }
@@ -71,7 +71,7 @@ export enum SowerJobStage {
 export interface JobWithActions {
   jobId: string;
   config?: CreateAndExportActionConfig;
-  stage: SowerJobStage;
+  stage: JobStage;
   created: number;
   updated: number;
   name: string;

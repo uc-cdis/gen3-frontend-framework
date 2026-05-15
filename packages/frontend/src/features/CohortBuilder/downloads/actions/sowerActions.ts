@@ -1,9 +1,9 @@
 import {
   convertFilterSetToGqlFilter,
-  DispatchJobParams,
-  FilterSet,
+  type DispatchJobParams,
+  type FilterSet,
+  type JobBuilderAction,
 } from '@gen3/core';
-import { JobBuilderAction } from '../../../Sower/actions/types';
 import { SowerJobBuilderActionFactory } from '../../../Sower/actions/sowerJobsFactory';
 import { DownloadToManifestParams } from './downloadManifest';
 

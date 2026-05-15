@@ -1,5 +1,4 @@
 import {
-  type DispatchJobParams,
   type GetSowerJobListQueryType,
   type JobListResponse,
   useGetSowerJobListQuery,
@@ -12,13 +11,12 @@ import {
   useLazyGetSowerOutputQuery,
   useSubmitSowerJobMutation,
 } from './sowerApi';
-
-import { type JobStatus } from './types';
-
 import {
   selectSowerJobDatetimeCache,
   type SowerJobCacheEntry,
 } from './sowerJobDatetime';
+
+export * from './types';
 
 export {
   useGetSowerJobListQuery,
@@ -31,8 +29,6 @@ export {
   useGetSowerServiceStatusQuery,
   type JobListResponse,
   type GetSowerJobListQueryType,
-  type JobStatus,
-  type DispatchJobParams,
   type SowerJobCacheEntry,
   selectSowerJobDatetimeCache,
   useLazyGetMultipleSowerJobStatusQuery,

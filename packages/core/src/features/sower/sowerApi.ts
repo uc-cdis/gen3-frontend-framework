@@ -1,21 +1,10 @@
 import { gen3Api } from '../gen3';
 import { GEN3_SOWER_API } from '../../constants';
-import { JobStatus } from './types';
+import { DispatchJobParams, DispatchJobResponse, JobStatus } from './types';
 import {
   setSowerJobDatetime,
   updateSowerJobDatetime,
 } from './sowerJobDatetime';
-
-export interface DispatchJobParams {
-  action: string;
-  input: Record<string, unknown>;
-}
-
-export interface DispatchJobResponse {
-  uid: string;
-  name: string;
-  status: string;
-}
 
 export type JobListResponse = Array<JobStatus>;
 

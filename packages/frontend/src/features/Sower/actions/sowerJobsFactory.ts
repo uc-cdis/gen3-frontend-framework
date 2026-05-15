@@ -1,10 +1,9 @@
-import { fetchFencePresignedURL } from '@gen3/core';
 import {
+  fetchFencePresignedURL,
   type JobBuilderAction,
   type SendJobOutputAction,
-  SendResultsActionNotFoundError,
-  SowerJobNotFoundError,
-} from './types';
+} from '@gen3/core';
+import { SendResultsActionNotFoundError, SowerJobNotFoundError } from './types';
 
 const PRESIGNED_URL_TEMPLATE_VARIABLE = '{{PRESIGNED_URL}}';
 interface SendPFBToURLParameters {
@@ -114,6 +113,10 @@ export const findCreateJobAction = (actionName: string): JobBuilderAction => {
   }
 };
 
+/**
+ * find the action to send the results of a job (e.g., download the results)
+ * @param actionName
+ */
 export const findSendResultsAction = (
   actionName: string,
 ): SendJobOutputAction => {

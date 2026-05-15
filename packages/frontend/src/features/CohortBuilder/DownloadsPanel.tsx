@@ -105,6 +105,8 @@ const DownloadsPanel = ({
 
   const loginRequired = !!loginForDownload;
 
+  // common parameters for action from Explorer Downloads
+
   const commonActionArgs = useMemo(
     () => ({
       type: index, // TODO: replace with index
