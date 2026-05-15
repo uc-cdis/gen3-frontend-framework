@@ -19,7 +19,7 @@ export interface CardGridItem {
  */
 const CardGrid = ({ content }: CardGridProps) => {
   return (
-    <Grid gutter="xl" className="m-0">
+    <Grid gap="xl" className="m-0">
       {/* m-0 added to override default -12px margin */}
       {content.map(({ title, content, linkText, link }, i) => (
         <Grid.Col key={i} span={4} className="min-w-[250px] max-w-[400px]">

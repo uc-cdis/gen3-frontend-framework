@@ -3,7 +3,7 @@ import {
   MantineReactTable,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 
 import { Resource } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';

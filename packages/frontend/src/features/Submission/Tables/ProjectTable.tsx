@@ -3,7 +3,7 @@ import {
   MantineReactTable,
   type MRT_PaginationState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { Loader, Text } from '@mantine/core';
 import { useGetProjectsDetailsQuery } from '@gen3/core';
 import { ProjectTableConfig } from '../types';
