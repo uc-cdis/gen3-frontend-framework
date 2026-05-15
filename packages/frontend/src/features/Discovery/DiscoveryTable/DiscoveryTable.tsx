@@ -33,6 +33,7 @@ import {
 import HighlightSearchTerm from './SearchHighlighting/HighlightSearchTerm';
 import RowDetailPanel from './TableRenderers/RowDetailPanel';
 import { IsColumnSearchable } from './SearchHighlighting/IsColumnSearchable';
+import DataAccessFilterDropdown from './DataAccessFilterDropdown';
 
 const CompareFn = (
   fieldValue: string,
@@ -128,11 +129,17 @@ const DiscoveryTable = ({
   const cols = useDeepCompareMemo(() => {
     const studyColumns = config.studyColumns ?? [];
     return studyColumns.map((columnDef, idx) => {
+      const isDataAccessFilter = columnDef?.contentType === 'dataAccess';
       return {
         key: `${columnDef.field}-${idx}`,
         field: columnDef.field,
         accessorKey: columnDef.field,
-        header: columnDef.name,
+        header: (
+          <>
+            {columnDef.name}
+            {isDataAccessFilter && <DataAccessFilterDropdown />}
+          </>
+        ),
         accessorFn: jsonPathAccessor(columnDef.field),
         Cell: columnDef?.contentType
           ? extractCellValue(
