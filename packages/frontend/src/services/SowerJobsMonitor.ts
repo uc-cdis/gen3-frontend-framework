@@ -13,7 +13,7 @@ import { findSendResultsAction } from '../features/CohortBuilder/downloads/actio
 import { SendResultsActionNotFoundError } from '../features/CohortBuilder/downloads/actions/types';
 
 interface JobMonitorConfig {
-  pollingInterval?: number; // in milliseconds
+  pollingInterval?: number; // in seconds
   debug?: boolean;
 }
 
@@ -24,7 +24,7 @@ export class SowerJobsMonitor {
   private config: JobMonitorConfig;
 
   private static DEFAULT_CONFIG: JobMonitorConfig = {
-    pollingInterval: 1000 * 10, // 5 seconds default
+    pollingInterval: 1000 * 10, // 5-second default
     debug: true,
   };
 
