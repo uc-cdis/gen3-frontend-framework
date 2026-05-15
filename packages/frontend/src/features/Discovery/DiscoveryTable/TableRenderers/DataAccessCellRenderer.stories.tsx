@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import { MantineProvider } from '@mantine/core';
 import { DiscoveryContext } from '../../DiscoveryProvider';
 import { DataAccessCellRenderer } from './DataAccessCellRenderer';
-import { MRT_Cell, MRT_Row } from 'mantine-react-table';
+import { MRT_Cell, MRT_Row } from 'mantine-react-table-open';
 import { JSONObject } from '@gen3/core';
 import { AccessLevel } from '../../../../utils';
 
