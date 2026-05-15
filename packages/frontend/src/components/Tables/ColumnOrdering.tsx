@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState, JSX } from 'react';
+import React, { Dispatch, JSX, SetStateAction, useState } from 'react';
 import {
   ActionIcon,
   Divider,
@@ -12,7 +12,7 @@ import {
   MRT_ColumnOrderState,
   MRT_RowData,
   MRT_TableInstance,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { isEqual } from 'lodash';
 import { humanify } from '@gen3/core';
 import {

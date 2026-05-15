@@ -9,7 +9,7 @@
   ],
   "engines": {
     "npm": ">=11.9.0",
-    "node": ">=24.14.0"
+    "node": ">=24.15.0"
   },
   "author": "craigrbarnes <craig.barnes@intelligentlight.com>",
   "license": "Apache-2.0",
@@ -19,12 +19,12 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@mantine/core": "^8.3.15",
-    "@mantine/dates": "^8.3.15",
-    "@mantine/form": "^8.3.15",
-    "@mantine/hooks": "^8.3.15",
-    "@mantine/modals": "^8.3.15",
-    "@mantine/notifications": "^8.3.15",
+    "@mantine/core": "^9.1.0",
+    "@mantine/dates": "^9.1.0",
+    "@mantine/form": "^9.1.0",
+    "@mantine/hooks": "^9.1.0",
+    "@mantine/modals": "^9.1.0",
+    "@mantine/notifications": "^9.1.0",
     "next": "^15.5.10",
     "storybook": "^9.1.19"
   },

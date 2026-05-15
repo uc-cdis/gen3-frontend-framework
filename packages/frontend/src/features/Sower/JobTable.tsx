@@ -5,7 +5,7 @@ import {
   type MRT_Cell,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { PiDotsThreeOutlineFill as DotIcon } from 'react-icons/pi';
 import {
   type JobListResponse,

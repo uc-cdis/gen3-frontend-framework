@@ -6,8 +6,8 @@ import sortData from '@/utils/api/discovery/processData/sortData';
 import filterByAdvSearch from '@/utils/api/discovery/processData/filterByAdvSearch';
 import combineData from '@/utils/api/discovery/preProcessData/combineData';
 import processTagCategoryData from '@/utils/api/discovery/processData/processTagCategoryData';
-// TODO:
-// import addAuthMetaData from '@/utils/api/discovery/preProcessData/addAuthMetaData';
+import addAccessLevelsMetaData from '@/utils/api/discovery/preProcessData/addAccessLevelsMetaData';
+import filterByAccessLevels from '@/utils/api/discovery/processData/filterByAccessLevels';
 
 let cachedData: Array<JSONObject> = [];
 let cacheTime = 0;
@@ -26,12 +26,16 @@ const processData = (data: Array<JSONObject>, reqBody: any) => {
     selectedTags,
     selectedFieldsForSearchIndexing,
     searchMode,
+    selectedAccessLevels,
     discoveryConfig,
   } = reqBody;
-  let processedData: Array<JSONObject> = data;
-  // First: Search
+  const preprocessedData = addAccessLevelsMetaData(data, discoveryConfig);
+  let processedData: Array<JSONObject> = preprocessedData;
+  // Study access levels filtering (user selected data availability)
+  processedData = filterByAccessLevels(processedData, selectedAccessLevels);
+  // Then: Search
   processedData = searchData(
-    data,
+    processedData,
     searchTerms.keyword.keywords,
     selectedFieldsForSearchIndexing,
     searchMode,

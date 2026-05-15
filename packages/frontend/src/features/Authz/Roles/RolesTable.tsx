@@ -1,5 +1,9 @@
 import React, { useContext, useMemo } from 'react';
-import { MantineReactTable, type MRT_ColumnDef, useMantineReactTable, } from 'mantine-react-table';
+import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+  useMantineReactTable,
+} from 'mantine-react-table-open';
 
 import { Role } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';

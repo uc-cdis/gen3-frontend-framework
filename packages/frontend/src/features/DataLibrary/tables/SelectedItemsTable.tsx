@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import {
   MantineReactTable,
+  MRT_Cell,
+  MRT_Row,
   MRT_RowSelectionState,
   MRT_Updater,
-  MRT_Cell,
   useMantineReactTable,
-  MRT_Row,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { Text, Tooltip } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';

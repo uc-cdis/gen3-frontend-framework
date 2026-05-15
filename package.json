@@ -12,7 +12,7 @@
   ],
   "engines": {
     "npm": ">=11.9.0",
-    "node": ">=24.14.0"
+    "node": ">=24.15.0"
   },
   "scripts": {
     "lint": "lerna run lint",
@@ -126,14 +126,6 @@
       "sucrase": {
         "glob": "^13.0.6"
       }
-    },
-    "mantine-react-table": {
-      "@mantine/core": "^8.3.15",
-      "@mantine/hooks": "^8.3.15",
-      "@mantine/dates": "^8.3.15",
-      "@mantine/form": "^8.3.15",
-      "@mantine/modals": "^8.3.15",
-      "@mantine/notifications": "^8.3.15"
     }
   },
   "optionalDependencies": {
