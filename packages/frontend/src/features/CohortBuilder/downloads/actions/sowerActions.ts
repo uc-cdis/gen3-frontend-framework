@@ -39,7 +39,7 @@ interface ExportFileToZip {
 // given the file manifest parameters build the sower job body
 
 /**
- * Creates an export to PFB action to submit to sower
+ * Creates an export zip files action to submit to sower
  * @param params
  */
 const exportFileManifestToZip: JobBuilderAction = (params) => {

@@ -1,5 +1,6 @@
 import { DispatchJobParams } from '@gen3/core';
-import { findCreateJobAction } from './sowerJobsFactory';
+import { findCreateJobAction, findSendResultsAction } from './sowerJobsFactory';
+import { BoundCreateAndExportAction } from '@gen3/core/dist/dts';
 
 /**
  * Called from a ActionButton. This function dispatchs a sower job by first creating the
@@ -67,4 +68,33 @@ export const buildSowerJob = (
     if (onError) onError(error as Error);
     return null;
   }
+};
+
+export const bindSowerJob = (
+  action: string,
+  parameters: Record<string, any>,
+  onError?: (error: Error) => void,
+): BoundCreateAndExportAction | null => {
+  if (!action) {
+    if (onError) onError(new Error('No jobAction provided'));
+    return null;
+  }
+  if (!parameters) {
+    if (onError) onError(new Error('No jobParameters provided'));
+    return null;
+  }
+
+  const jobAction = findCreateJobAction(action);
+  if (!jobAction) {
+    if (onError) onError(new Error(`${action} not registered`));
+    return null;
+  }
+
+  // look for a send action
+  let sendAction = undefined;
+  if (hasSendToAction(parameters)) {
+    sendAction = findSendResultsAction();
+  }
+
+  return {};
 };

@@ -6,19 +6,12 @@ import { guppyAPISliceMiddleware } from './features/guppy/guppyApi';
 import { userAuthApiMiddleware } from './features/user/userSliceRTK';
 import { coreStoreListenerMiddleware } from './listeners';
 import type { PersistConfig, PersistState } from 'redux-persist';
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  persistReducer,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE, } from 'redux-persist';
 
 import type { Action, Reducer } from 'redux';
 import storage from './storage-persist';
 import { GEN3_COMMONS_NAME } from './server';
+import { sowerListenerMiddleware } from './features/sower/listeners.ts';
 
 /**
  * Update declaration of persistReducer to support redux v5
@@ -58,6 +51,7 @@ export const setupCoreStore = (preloadedState?: Partial<CoreState>) =>
           guppyAPISliceMiddleware,
           userAuthApiMiddleware,
         )
+        .prepend(sowerListenerMiddleware.middleware)
         .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended,
   });
 

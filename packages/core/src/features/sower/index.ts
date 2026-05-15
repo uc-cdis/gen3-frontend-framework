@@ -16,9 +16,16 @@ import {
   type SowerJobCacheEntry,
 } from './sowerJobDatetime';
 
+import { isJobActionFunctionConfig } from './utils';
+
 export * from './types';
 
 export {
+  type JobListResponse,
+  type GetSowerJobListQueryType,
+  type SowerJobCacheEntry,
+  selectSowerJobDatetimeCache,
+  isJobActionFunctionConfig,
   useGetSowerJobListQuery,
   useLazyGetSowerJobListQuery,
   useSubmitSowerJobMutation,
@@ -27,9 +34,5 @@ export {
   useGetSowerOutputQuery,
   useLazyGetSowerOutputQuery,
   useGetSowerServiceStatusQuery,
-  type JobListResponse,
-  type GetSowerJobListQueryType,
-  type SowerJobCacheEntry,
-  selectSowerJobDatetimeCache,
   useLazyGetMultipleSowerJobStatusQuery,
 };
