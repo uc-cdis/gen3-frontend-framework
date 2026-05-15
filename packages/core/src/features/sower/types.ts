@@ -12,7 +12,7 @@ export interface JobStatus {
   error?: string;
 }
 
-export interface ActionParams<T extends Record<string, any>> {
+export interface SowerActionParams<T extends Record<string, any>> {
   parameters: T; // query parameters for the action
   onStart?: () => void; // function to call when the action starts
   onDone?: (arg?: T) => void; // function to call when the action is done
@@ -21,7 +21,7 @@ export interface ActionParams<T extends Record<string, any>> {
   signal?: AbortSignal; // optional signal to stop a fetch
 }
 
-export type ActionFunction<
+export type SowerActionFunction<
   T extends Record<string, any> = Record<string, any>,
   R extends Record<string, any> | void = Record<string, any>,
 > = ({
@@ -30,13 +30,16 @@ export type ActionFunction<
   onDone,
   onError,
   onAbort,
-}: ActionParams<T>) => Promise<R>;
+}: SowerActionParams<T>) => Promise<R>;
 
 export type JobBuilderAction = (
   params: Record<string, unknown>,
 ) => DispatchJobParams;
 
-export type SendJobOutputAction = ActionFunction<Record<string, unknown>, void>;
+export type SendJobOutputAction = SowerActionFunction<
+  Record<string, unknown>,
+  void
+>;
 
 interface ActionFunctionConfig {
   actionName: string;
