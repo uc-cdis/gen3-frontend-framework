@@ -47,6 +47,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     discoveryConfig: discoveryConfig,
     selectedTags,
     setSelectedTags,
+    selectedAccessLevels,
   } = useDiscoveryContext();
   const dataHook = useMemo(
     () =>
@@ -115,6 +116,7 @@ const DiscoveryIndexPanel = ({ indexSelector }: DiscoveryIndexPanelProps) => {
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
+    selectedAccessLevels: selectedAccessLevels,
   });
   const selectedRecords = useMemo(() => {
     const uidField = discoveryConfig?.minimalFieldMapping?.uid ?? 'guid';

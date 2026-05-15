@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   categoryObject,
   DiscoverDataHookResponse,
@@ -23,6 +23,7 @@ export const useAggMetaMDSProxy = ({
   discoveryConfig,
   sorting,
   selectedTags,
+  selectedAccessLevels,
   guidType = 'discovery_metadata',
   maxStudies = 10000,
   studyField = 'gen3_discovery',
@@ -46,6 +47,7 @@ export const useAggMetaMDSProxy = ({
     selectedFieldsForSearchIndexing: selectedFieldsForSearchIndexing,
     searchMode: searchMode,
     selectedTags: selectedTags,
+    selectedAccessLevels: selectedAccessLevels,
   };
 
   useDeepCompareEffect(() => {
@@ -79,6 +81,7 @@ export const useAggMetaMDSProxy = ({
     selectedFieldsForSearchIndexing,
     searchMode,
     selectedTags,
+    selectedAccessLevels,
   ]);
 
   let advancedSearchFilterValues = [] as any;
