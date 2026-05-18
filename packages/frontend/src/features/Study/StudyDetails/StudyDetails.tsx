@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router'; // Or 'next/navigation' if using App Router
 import { Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -8,6 +8,7 @@ import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
+import { toString } from 'lodash';
 
 const StudyDetails = ({
   index,
@@ -23,11 +24,43 @@ const StudyDetails = ({
   const router = useRouter();
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
-
-  const defaultPath = '/Discovery';
-  const studyId = studyDetails?.[index];
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
 
+  const origin = window.location.origin;
+  const defaultPath = 'Discovery';
+  const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
+  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+
+  useEffect(() => {
+    const studyId = toString(studyDetails[index]);
+    /*     const pushUrl = (path: string) =>
+      typeof window !== 'undefined' && window.history.pushState(null, '', path); */
+
+    const pushUrl = (path: string) =>
+      router.push(path, undefined, { shallow: true });
+
+    if (studyId) {
+      if (opened) {
+        pushUrl(`/Discovery/${encodeURI(studyId)}`);
+        setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
+      } else {
+        pushUrl('/Discovery');
+        setPermalink(defaultPermaLinkValue);
+      }
+    }
+    if (opened === false) {
+      // if drawer has been shut, reset study details
+      setStudyDetails({});
+    }
+  }, [opened]);
+
+  useEffect(() => {
+    if (hasStudyDetails) {
+      open();
+    }
+  }, [studyDetails, open]);
+
+  /*
   const permalink = useMemo(() => {
     if (studyId && typeof window !== 'undefined') {
       const origin = window.location.origin;
@@ -59,20 +92,16 @@ const StudyDetails = ({
     close();
     setStudyDetails({});
   };
+*/
 
   return (
-    <Drawer.Root
-      opened={opened}
-      onClose={handleClose}
-      size="50%"
-      position="right"
-    >
+    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
             <StudyDetailsHeaderButtons
-              onClose={handleClose}
+              onClose={close}
               permalink={permalink}
               showSubmitButton={simpleDetailsView?.showSubmitButton}
             />
