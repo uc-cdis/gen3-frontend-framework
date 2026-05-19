@@ -27,6 +27,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
           leftSection={<LoginIcon size={14} />}
           variant="subtle"
           color="black"
+          size="xs"
         >
           {requiresLogin
             ? 'Login to submit variable level metadata'

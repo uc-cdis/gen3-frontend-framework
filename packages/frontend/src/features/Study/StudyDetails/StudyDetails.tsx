@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'; // Or 'next/navigation' if using App Router
 import { Drawer } from '@mantine/core';
+import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
+import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
-import StudyDetailsPanel from './StudyDetailsPanel';
-import SinglePageStudyDetailsPanel from './SinglePageStudyDetailsPanel';
 import { toString } from 'lodash';
 
 const StudyDetails = ({
@@ -21,20 +21,19 @@ const StudyDetails = ({
   simpleDetailsView?: StudyPageConfig;
   authz: DataAuthorization;
 }) => {
-  const router = useRouter();
   const { studyDetails, setStudyDetails } = useStudyContext();
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
   const origin = window.location.origin;
   const defaultPath = 'Discovery';
   const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const pushUrl = (path: string) =>
+    router.push(path, undefined, { shallow: true });
+  const studyId = toString(studyDetails[index]);
 
   useEffect(() => {
-    const studyId = toString(studyDetails[index]);
-    const pushUrl = (path: string) =>
-      router.push(path, undefined, { shallow: true });
-
     if (studyId) {
       if (opened) {
         pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
