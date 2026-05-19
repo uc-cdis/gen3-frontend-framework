@@ -15,7 +15,7 @@ const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
 }) => {
   const requiresLogin = !useIsUserLoggedIn();
   const { discoveryConfig: config } = useDiscoveryContext();
-  const showSubmitButton = Boolean(config.detailView?.showSubmitButton);
+  const showSubmitButton = config.detailView?.showSubmitButton;
 
   return (
     <>
