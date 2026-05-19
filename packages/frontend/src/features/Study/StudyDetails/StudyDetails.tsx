@@ -25,7 +25,6 @@ const StudyDetails = ({
   const { studyDetails, setStudyDetails } = useStudyContext();
   const [opened, { open, close }] = useDisclosure(false);
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
-
   const origin = window.location.origin;
   const defaultPath = 'Discovery';
   const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
@@ -33,18 +32,15 @@ const StudyDetails = ({
 
   useEffect(() => {
     const studyId = toString(studyDetails[index]);
-    /*     const pushUrl = (path: string) =>
-      typeof window !== 'undefined' && window.history.pushState(null, '', path); */
-
     const pushUrl = (path: string) =>
       router.push(path, undefined, { shallow: true });
 
     if (studyId) {
       if (opened) {
-        pushUrl(`/Discovery/${encodeURI(studyId)}`);
+        pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
         setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
       } else {
-        pushUrl('/Discovery');
+        pushUrl(`/${defaultPath}`);
         setPermalink(defaultPermaLinkValue);
       }
     }
@@ -59,41 +55,6 @@ const StudyDetails = ({
       open();
     }
   }, [studyDetails, open]);
-
-  /*
-  const permalink = useMemo(() => {
-    if (studyId && typeof window !== 'undefined') {
-      const origin = window.location.origin;
-      return `${origin}${defaultPath}/${encodeURIComponent(studyId as string)}`;
-    }
-    return `${origin}${defaultPath}/notfound`;
-  }, [studyId]);
-
-  // Sync Browser URL with Drawer state
-  useEffect(() => {
-    if (opened && studyId) {
-      const studyPath = `${defaultPath}/${encodeURIComponent(studyId as string)}`;
-      if (router.asPath !== studyPath) {
-        router.push(studyPath, undefined, { shallow: true });
-      }
-    }
-    if (!opened && hasStudyDetails === false) {
-      router.push(defaultPath, undefined, { shallow: true });
-    }
-  }, [opened, studyId]);
-
-  useEffect(() => {
-    if (hasStudyDetails) {
-      open();
-    }
-  }, [hasStudyDetails, open]);
-
-  const handleClose = () => {
-    close();
-    setStudyDetails({});
-  };
-*/
-
   return (
     <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
       <Drawer.Overlay opacity={0.5} blur={4} />
