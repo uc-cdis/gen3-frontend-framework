@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { ActionIcon, TextInput, Tooltip } from '@mantine/core';
-import { MRT_RowData, MRT_TableInstance } from 'mantine-react-table';
+import { MRT_RowData, MRT_TableInstance } from 'mantine-react-table-open';
 
 import ColumnOrdering from './ColumnOrdering';
 import { useViewportSize } from '@mantine/hooks';

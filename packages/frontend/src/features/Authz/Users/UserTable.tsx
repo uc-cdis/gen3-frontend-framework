@@ -4,7 +4,7 @@ import {
   type MRT_ColumnDef,
   type MRT_RowSelectionState,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { User } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';
 import { Menu } from '@mantine/core';

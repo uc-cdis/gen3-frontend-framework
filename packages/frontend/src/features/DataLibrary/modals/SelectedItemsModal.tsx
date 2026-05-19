@@ -22,7 +22,7 @@ import {
 } from '../selection/selectedItemActions';
 import { useDeepCompareMemo } from 'use-deep-compare';
 import { useDataLibrarySelection } from '../selection/SelectionContext';
-import { MRT_RowSelectionState } from 'mantine-react-table';
+import { MRT_RowSelectionState } from 'mantine-react-table-open';
 import { ValidatedSelectedItem } from '../types';
 import {
   DataLibraryActionConfig,
@@ -178,7 +178,6 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
       {...props}
       closeOnEscape
       centered
-      withinPortal={false}
       title={<ModalHeader />}
       classNames={{
         header: 'm-0 p-2 min-h-10 bg-secondary',
@@ -198,6 +197,7 @@ const SelectedItemsModal: React.FC<SelectedItemsModelProps> = (props) => {
             <Select
               data={destinations}
               value={value ? value.value : null}
+              comboboxProps={{ zIndex: 500 }}
               onChange={(value, option) => {
                 setValue(option);
                 if (value) setSelectionAction(value);

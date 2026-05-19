@@ -16,7 +16,7 @@ import {
   type MRT_PaginationState,
   type MRT_Row,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
 import { TableIcons } from '../../../components/Tables/TableIcons';
 import { getObjectIdsFromFilter } from './utils';
 import { LazyQueryHookResult } from './types';

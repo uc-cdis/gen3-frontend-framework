@@ -1,6 +1,6 @@
 import React, { JSX } from 'react';
 import dynamic from 'next/dynamic';
-import { NavPageLayout } from '../../features/Navigation';
+import FixedNavPageLayout from '../../features/Navigation/FixedNavPageLayout';
 import { QueryPageLayoutProps } from './types';
 
 const QueryPanel = dynamic(() => import('../../features/Query/QueryPanel'), {
@@ -10,10 +10,11 @@ const QueryPanel = dynamic(() => import('../../features/Query/QueryPanel'), {
 const QueryPage = ({
   headerProps,
   footerProps,
-  queryProps,
+  configuration: queryProps,
 }: QueryPageLayoutProps): JSX.Element => {
+  console.log(queryProps);
   return (
-    <NavPageLayout
+    <FixedNavPageLayout
       {...{ headerProps, footerProps }}
       headerMetadata={{
         title: 'Gen3 Query Page',
@@ -22,8 +23,8 @@ const QueryPage = ({
         ...(queryProps?.headerMetadata ? queryProps.headerMetadata : {}),
       }}
     >
-      <QueryPanel graphQLEndpoint={queryProps.graphQLEndpoint} />
-    </NavPageLayout>
+      <QueryPanel graphQLEndpoints={queryProps.graphQLEndpoints} />
+    </FixedNavPageLayout>
   );
 };
 
