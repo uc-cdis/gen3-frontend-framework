@@ -29,11 +29,7 @@ const StudyDetails = ({
   const defaultPath = 'Discovery';
   const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
-  const showSubmitButton =
-    simpleDetailsView?.showSubmitButton || detailView.showSubmitButton;
 
-  console.log('simpleDetailsView', simpleDetailsView);
-  console.log('detailsView', detailView);
   useEffect(() => {
     const studyId = toString(studyDetails[index]);
     const pushUrl = (path: string) =>
