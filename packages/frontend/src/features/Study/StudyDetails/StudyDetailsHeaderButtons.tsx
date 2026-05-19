@@ -3,25 +3,31 @@ import { Button, CopyButton } from '@mantine/core';
 import { MdKeyboardDoubleArrowLeft as BackIcon } from 'react-icons/md';
 import { FiLogIn as LoginIcon } from 'react-icons/fi';
 import { useIsUserLoggedIn } from '@gen3/core';
+import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 
 interface StudyDetailsHeaderButtonsProps {
   onClose: () => void;
   permalink: string;
-  showSubmitButton?: boolean;
 }
 const StudyDetailsHeaderButtons: React.FC<StudyDetailsHeaderButtonsProps> = ({
   onClose,
   permalink,
-  showSubmitButton = false,
 }) => {
   const requiresLogin = !useIsUserLoggedIn();
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const showSubmitButton = Boolean(config.detailView?.showSubmitButton);
+
   return (
     <>
       <Button leftSection={<BackIcon />} onClick={onClose} variant="outline">
         Back
       </Button>
       {showSubmitButton && (
-        <Button leftSection={<LoginIcon size={14} />} variant="subtle">
+        <Button
+          leftSection={<LoginIcon size={14} />}
+          variant="subtle"
+          color="black"
+        >
           {requiresLogin
             ? 'Login to submit variable level metadata'
             : 'Request Access to Submit Variable-level Metadata'}

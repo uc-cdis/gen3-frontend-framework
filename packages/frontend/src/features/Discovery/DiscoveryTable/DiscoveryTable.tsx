@@ -274,6 +274,7 @@ const DiscoveryTable = ({
       </div>
     );
   }
+  console.log('config', config);
   return (
     <React.Fragment>
       <StudyDetails

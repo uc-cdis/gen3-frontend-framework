@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'; // Or 'next/navigation' if using App Router
 import { Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -29,7 +29,11 @@ const StudyDetails = ({
   const defaultPath = 'Discovery';
   const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
   const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const showSubmitButton =
+    simpleDetailsView?.showSubmitButton || detailView.showSubmitButton;
 
+  console.log('simpleDetailsView', simpleDetailsView);
+  console.log('detailsView', detailView);
   useEffect(() => {
     const studyId = toString(studyDetails[index]);
     const pushUrl = (path: string) =>
@@ -61,11 +65,7 @@ const StudyDetails = ({
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
-            <StudyDetailsHeaderButtons
-              onClose={close}
-              permalink={permalink}
-              showSubmitButton={simpleDetailsView?.showSubmitButton}
-            />
+            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
           </Drawer.Header>
           <Drawer.Body>
             {detailView ? (
