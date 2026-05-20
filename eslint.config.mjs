@@ -88,6 +88,14 @@ export default [
         },
       ],
     },
+    overrides: [
+      {
+        files: ['packages/workspaces/**/*'],
+        rules: {
+          'no-restricted-imports': 'off',
+        },
+      },
+    ],
   },
   ...storybook.configs['flat/recommended'],
 ];
