@@ -1,24 +1,22 @@
 import React, { useMemo } from 'react';
-import { ActionIcon, Box, Table } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import {
-  useGetCredentialsQuery,
-  useRemoveCredentialMutation,
   type APIKey,
+  useGetCredentialsQuery,
   useGetCSRFQuery,
+  useRemoveCredentialMutation,
 } from '@gen3/core';
 import { MdDelete as DeleteIcon } from 'react-icons/md';
-import { LuRefreshCw as RefreshIcon } from 'react-icons/lu';
 import { unixTimeToString } from '../../utils';
 import { TableIcons } from '../../components/Tables/TableIcons';
-
-const SOON_IN_DAYS = 86400 * 5;
-
 import {
   MantineReactTable,
-  MRT_ColumnDef,
   MRT_Cell,
+  MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-open';
+
+const SOON_IN_DAYS = 86400 * 5;
 
 const getStatus = (expiration: number, now: number) => {
   if (expiration < now) return 'Expired';
@@ -39,7 +37,7 @@ interface APIKeyStatus {
  * @returns {JSX.Element} The JSX element representing the credentials table.
  */
 const CredentialsTable = () => {
-  const { data: csrfToken, isFetching: isCSRFFetching} = useGetCSRFQuery();
+  const { data: csrfToken, isFetching: isCSRFFetching } = useGetCSRFQuery();
   const { data: credentials } = useGetCredentialsQuery();
   const [removeCredential] = useRemoveCredentialMutation();
 
@@ -56,7 +54,9 @@ const CredentialsTable = () => {
       {
         accessorKey: 'expiration',
         header: 'Expiration Date',
-        accessorFn: (apiKey: APIKeyStatus) => // pragma: allowlist secret
+        accessorFn: (
+          apiKey: APIKeyStatus, // pragma: allowlist secret
+        ) =>
           unixTimeToString(
             // pragma: allowlist-secret
             apiKey.expiration,

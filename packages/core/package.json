@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "engines": {
     "npm": ">=11.9.0",
-    "node": ">=24.14.0"
+    "node": ">=24.15.0"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
