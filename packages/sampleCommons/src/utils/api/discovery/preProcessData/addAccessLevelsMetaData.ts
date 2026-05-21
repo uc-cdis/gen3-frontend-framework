@@ -36,22 +36,54 @@ const addAccessLevelsMetaData = async (
     console.log('authz', authz);
     console.log('dataAvailability', data_availability);
     console.log('userAuthzResources', userAuthzResources);
-
-    // Gen3_discovery.data_availability: field exists and has the value not_available (regardless of authz contents)
+    const userHasAccessToResource = userAuthzResources?.includes(
+      authz as string,
+    );
+    /*
+    Not Available
+    Gen3_discovery.data_availability: field exists and has the value not_available (regardless of authz contents)
+    */
     if (data_availability && data_availability === 'not_available') {
       return AccessLevel.NOT_AVAILABLE;
     } else if (
-      /* gen3_discovery.authz = has a value (/programs/open, for example)
+      /*
+    Request Access
+    gen3_discovery.authz = has a value (/programs/open, for example)
     AND the user DOES NOT have access to that resource OR
     Gen3_discovery.data_availability: field exists and has the value unaccessible
     (for eg, https://healdata.org/mds/metadata/HDP00054) (regardless of authz contents)
     */
-      (authz && !userAuthzResources?.includes(authz as string)) ||
+      (authz && !userHasAccessToResource) ||
       (data_availability && data_availability === 'unaccessible')
     ) {
       return AccessLevel.UNACCESSIBLE;
-    } else return AccessLevel.OTHER;
+    }
+    /*
+    Request Access
+    gen3_discovery.authz = has a value (/programs/open, for example)
+    AND the user has access to that resource
+    AND gen3_discovery.data_availability: Field does not exist OR is empty
+    OR does not have the values described below to trigger other statuses
+    */
     //else return Math.floor(Math.random() * 6) + 1;
+    else if (authz && userHasAccessToResource && !data_availability) {
+      return AccessLevel.ACCESSIBLE;
+    } else if (
+      /*
+      Mixed Availability(New)
+      Study meets the conditions for being identified as “available” (as described in row #2)
+      AND
+      Gen3_discovery.data_availability: field exists and has the value mixed_availability
+      */
+      authz &&
+      userHasAccessToResource &&
+      data_availability === 'mixed_availability'
+    ) {
+      return AccessLevel.MIXED;
+    } else {
+      /* Waiting (Default) */
+      return AccessLevel.WAITING;
+    }
   };
 
   // Mocking this method for now to test UI. This will be updated in HP-2363.
