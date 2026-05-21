@@ -59,7 +59,6 @@ const processData = async (data: Array<JSONObject>, reqBody: any) => {
     pagination.pageSize,
     pagination.offset,
   );
-  console.log('paginatedData', Array.isArray(paginatedData));
   return {
     hits: processedData.length,
     displayedData: paginatedData,
