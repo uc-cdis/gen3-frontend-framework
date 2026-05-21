@@ -1,20 +1,14 @@
 'use client';
 
-'use client';
-
 import React, { ReactElement, useState } from 'react';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import type { Fetcher } from '@graphiql/toolkit';
 import { SegmentedControl, Text } from '@mantine/core';
-import {
-  GEN3_API,
-  selectCSRFToken,
-  selectHeadersWithCSRFToken,
-  useCoreSelector,
-} from '@gen3/core';
+import { GEN3_API, selectCSRFToken, selectHeadersWithCSRFToken, useCoreSelector, } from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
 import dynamic from 'next/dynamic';
 import { getCookie } from 'cookies-next';
+import 'graphiql/setup-workers/webpack';
 
 // Disable SSR for the GraphiQL component
 const GraphiQL = dynamic(() => import('graphiql').then((mod) => mod.GraphiQL), {
