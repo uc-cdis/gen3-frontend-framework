@@ -1,9 +1,9 @@
 import WorkspacesCenterPage from './WorkspacesCenterPage';
 import { type WorkspacesPageLayoutProps } from './types';
-import { WorkspacesPageGetServerSideProps } from './data';
+import { WorkspacesCenterPageGetServerSideProps } from './data';
 
 export {
   WorkspacesCenterPage,
-  WorkspacesPageGetServerSideProps,
+  WorkspacesCenterPageGetServerSideProps,
   type WorkspacesPageLayoutProps,
 };

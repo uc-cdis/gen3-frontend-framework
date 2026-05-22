@@ -10,7 +10,7 @@ const DEFAULT_WORKSPACES_CONFIGURATION: WorkspacesCenterConfiguration = {
   workspaces: [],
 };
 
-export const WorkspacesPageGetServerSideProps: GetServerSideProps<
+export const WorkspacesCenterPageGetServerSideProps: GetServerSideProps<
   WorkspacesPageLayoutProps
 > = async () => {
   try {

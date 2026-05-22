@@ -174,9 +174,11 @@ const dtsBundle = (input, outFile) => ({
 const config = [
   // JS builds
   jsBundle('./src/index.ts', 'index'), // default/client entry
+  jsBundle('./src/server.ts', 'server'), // default/client entry
 
   // Type declarations
   dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
+  dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
   {
     // as of now frontend does not export css but added for completeness
     input: './dist/dts/index.d.ts',

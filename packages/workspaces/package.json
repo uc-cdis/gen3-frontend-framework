@@ -21,6 +21,23 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile && npm run types && npm run rollup"
   },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index/cjs/index.js"
+      }
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server/esm/server.js",
+      "require": "./dist/server/cjs/server.cjs"
+    }
+  },
   "dependencies": {
     "@gen3/core": "^0.12.41",
     "@gen3/frontend": "^0.12.41"

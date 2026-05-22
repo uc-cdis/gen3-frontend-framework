@@ -1,14 +1,14 @@
 import { WorkspacesPageLayoutProps } from './types';
-import { useRouter } from 'next/router';
 import React, { JSX } from 'react';
 import { NavPageLayout } from '@gen3/frontend';
+import TierSelectorLanding from '@/components/TierSelectorLanding';
 
 const WorkspacesCenterPage = ({
   headerProps,
   footerProps,
   configuration,
 }: WorkspacesPageLayoutProps): JSX.Element => {
-  const router = useRouter();
+  console.log('configuration', configuration);
 
   return (
     <NavPageLayout
@@ -19,7 +19,12 @@ const WorkspacesCenterPage = ({
         key: 'gen3-workspace-page',
         ...(configuration?.headerMetadata ? configuration.headerMetadata : {}),
       }}
-    ></NavPageLayout>
+    >
+      <TierSelectorLanding
+        cards={configuration?.workspaces}
+        onSelectTier={(tier) => {}}
+      />
+    </NavPageLayout>
   );
 };
 

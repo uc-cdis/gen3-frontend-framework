@@ -1,6 +1,6 @@
 import {
   WorkspacesCenterPage,
-  WorkspacesPageGetServerSideProps,
+  WorkspacesCenterPageGetServerSideProps,
 } from './pages/WorkspacesCenter';
 
-export { WorkspacesCenterPage, WorkspacesPageGetServerSideProps };
+export { WorkspacesCenterPage, WorkspacesCenterPageGetServerSideProps };
