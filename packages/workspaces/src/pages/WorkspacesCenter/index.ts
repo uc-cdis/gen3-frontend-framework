@@ -1,8 +1,9 @@
-import RepositoryPage from './RepositoryPage';
-import { type RepositoryPageProps } from './types';
+import WorkspacesCenterPage from './WorkspacesCenterPage';
+import { type WorkspacesPageLayoutProps } from './types';
+import { WorkspacesPageGetServerSideProps } from './data';
 
 export {
-  RepositoryPage,
-  RepositoryPageGetServerSideProps,
-  type RepositoryPageProps,
+  WorkspacesCenterPage,
+  WorkspacesPageGetServerSideProps,
+  type WorkspacesPageLayoutProps,
 };

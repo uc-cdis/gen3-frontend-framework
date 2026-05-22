@@ -1,7 +1,7 @@
 import { WorkspaceCardConfig } from '@/components/types';
-import { NavPageLayoutProps } from '@gen3/frontend';
+import { Gen3AppConfigData, NavPageLayoutProps } from '@gen3/frontend';
 
-export interface WorkspacesCenterConfiguration {
+export interface WorkspacesCenterConfiguration extends Gen3AppConfigData {
   workspaces: Array<WorkspaceCardConfig>;
 }
 

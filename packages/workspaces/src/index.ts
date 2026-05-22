@@ -1,3 +1,6 @@
-import TierSelectorLanding from './components/TierSelectorLanding';
+import {
+  WorkspacesCenterPage,
+  WorkspacesPageGetServerSideProps,
+} from './pages/WorkspacesCenter';
 
-export { TierSelectorLanding };
+export { WorkspacesCenterPage, WorkspacesPageGetServerSideProps };
