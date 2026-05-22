@@ -5,6 +5,7 @@ import {
   setSowerJobDatetime,
   updateSowerJobDatetime,
 } from './sowerJobDatetime';
+import { showNotification } from '../notifications';
 
 export type JobListResponse = Array<JobStatus>;
 
@@ -27,14 +28,24 @@ export const sowerJobApi = gen3Api.injectEndpoints({
         body: params,
       }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        dispatch(
-          setSowerJobDatetime({
-            id: data.uid,
-            status: data.status,
-            action: data.name,
-          }),
-        );
+        try {
+          const { data } = await queryFulfilled;
+          if (data) {
+            dispatch(
+              setSowerJobDatetime({
+                id: data.uid,
+                status: data.status,
+                action: data.name,
+              }),
+            );
+          }
+        } catch (_err: unknown) {
+          let errorMsg = 'Job submission failed. Please try again later.';
+          if (_err instanceof Error) {
+            errorMsg = _err.message;
+          }
+          showNotification('Job Submission', errorMsg, 'error');
+        }
       },
     }),
     getSowerJobStatus: builder.query<DispatchJobResponse, string>({

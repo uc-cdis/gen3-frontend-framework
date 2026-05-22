@@ -27,6 +27,21 @@ const buildPFBFromCohort: JobBuilderAction = (params) => {
   };
 };
 
+/**
+ * Creates an export to PFB action to submit to sower
+ * @param params
+ */
+const buildPFBFromFiles: JobBuilderAction = (params) => {
+  const { filter, index } = params as BuildPFBFromCohortParams;
+  return {
+    action: 'export-files',
+    input: {
+      filters: convertFilterSetToGqlFilter(filter),
+      root_node: index,
+    },
+  };
+};
+
 interface ExportFileToZipParams extends DownloadToManifestParams {
   filename: string;
 }
@@ -71,6 +86,11 @@ export const registerSowerActions = () => {
   SowerJobBuilderActionFactory.register(
     'export-cohort-to-pfb',
     buildPFBFromCohort,
+  );
+
+  SowerJobBuilderActionFactory.register(
+    'export-files-to-pfb',
+    buildPFBFromFiles,
   );
 
   SowerJobBuilderActionFactory.register(
