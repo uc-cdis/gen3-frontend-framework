@@ -67,6 +67,11 @@ const config: StorybookConfig = {
       alias: {
         ...config.resolve?.alias,
         'next/router': 'next-router-mock',
+        // @storybook/nextjs aliases react to next/dist/compiled/react (a canary build
+        // that lacks useEffectEvent). Override to use the project's React 19.2+ which
+        // exports useEffectEvent as used by @mantine/hooks 9.2+.
+        react: require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
       },
     };
 
