@@ -1,21 +1,48 @@
-import React from 'react';
-import { WorkspaceCardConfig } from './types';
+import React, { useMemo } from 'react';
+import {
+  DefaultTierLandingClassnames,
+  TierSelectorLandingConfiguration,
+  WorkspaceCardConfig,
+} from './types';
 import { type WorkspaceTier } from '../types';
 import WorkspaceTierCard from './WorkspaceTierCard';
+import { mergeDefaultTailwindClassnames } from '@gen3/frontend';
 
-export interface TierSelectorLandingProps {
+export interface TierSelectorLandingProps extends Partial<TierSelectorLandingConfiguration> {
   cards: WorkspaceCardConfig[];
   onSelectTier: (tier: WorkspaceTier) => void;
-  className?: string;
+}
+
+const DEFAULT_CLASSNAMES: DefaultTierLandingClassnames = {
+  root: 'mx-auto w-full max-w-7xl p-6 md:p-10',
+  background:
+    'relative overflow-hidden rounded-3xl border border-base-light/80 bg-gradient-to-b from-white via-white to-slate-50 p-8 shadow-2xl shadow-slate-300/40 md:p-12',
+  label: 'text-md uppercase tracking-[0.28em] text-primary',
+  description:
+    'text-4xl font-black leading-tight text-primary md:text-3xl sm:text-2xl mt-4 mb-4',
+  additionalDescription: 'max-w-2xl text-md font-medium text-base-contrast',
+  button:
+    'mt-10 flex w-full items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
 };
 
 const TierSelectorLanding = ({
   cards,
   onSelectTier,
-  className,
+  classNames,
+  label = 'Gen3 JupyterHub Workspaces',
+  description = 'Launch a secure notebook workspace',
+  additionalDescriptions = [
+    'Choose local browser notebooks for speed or remote kernels for scalable compute',
+    'Both modes preserve your host app auth context.',
+  ],
 }: TierSelectorLandingProps) => {
+  const mergedClassnames = useMemo(
+    () => mergeDefaultTailwindClassnames(DEFAULT_CLASSNAMES, classNames ?? {}),
+    [classNames],
+  );
+
   return (
-    <div className={`mx-auto w-full max-w-7xl p-6 md:p-10 ${className}`}>
+    <div className={mergedClassnames.root}>
       <div
         className="absolute -left-20 top-10 h-56 w-56 rounded-full bg-primary-light/20 blur-3xl"
         aria-hidden="true"
@@ -25,24 +52,26 @@ const TierSelectorLanding = ({
         aria-hidden="true"
       />
 
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white via-white to-slate-50 p-8 shadow-2xl shadow-slate-300/40 md:p-12">
+      <div className={mergedClassnames.background}>
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-primary">
-              Gen3 Jupyter Workspaces
+            <p className="text-md uppercase tracking-[0.28em] text-primary">
+              {label}
             </p>
-            <h1 className="mt-3 text-3xl font-black leading-tight text-slate-900 md:text-5xl">
-              Launch a secure notebook workspace
-            </h1>
-            <p className="mt-3 max-w-2xl text-sm font-medium text-slate-700 md:text-base">
-              Choose local browser notebooks for speed or remote kernels for
-              scalable compute. Both modes preserve your host app auth context.
-            </p>
+            <p className={mergedClassnames.description}>{description}</p>
+            {additionalDescriptions.map((desc) => (
+              <p
+                className={mergedClassnames.additionalDescription}
+                key={desc.slice(0, 20)}
+              >
+                {desc}
+              </p>
+            ))}
           </div>
         </div>
 
         <div
-          className="grid gap-5 lg:grid-cols-3"
+          className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1"
           role="list"
           aria-label="Workspace tier selection"
         >

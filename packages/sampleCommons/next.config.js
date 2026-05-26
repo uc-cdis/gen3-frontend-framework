@@ -64,6 +64,10 @@ const nextConfig = {
         __dirname,
         '../frontend/src/exports/content.ts',
       ),
+      '@gen3/workspaces$': path.resolve(
+        __dirname,
+        '../workspaces/src/index.ts',
+      ),
     };
 
     if (isDev) {
@@ -186,7 +190,7 @@ const nextConfig = {
       },
     ];
   },
-  transpilePackages: ['@gen3/core', '@gen3/frontend'],
+  transpilePackages: ['@gen3/core', '@gen3/frontend', '@gen3/workspaces'],
 };
 
 // IMPORTANT: actually export your config (wrapped by plugins)

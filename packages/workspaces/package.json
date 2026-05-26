@@ -19,7 +19,8 @@
     "clean": "rm -rf dist",
     "rollup": "rollup --config rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run compile && npm run types && npm run rollup"
+    "build": "npm run compile && npm run types && npm run rollup",
+    "dev": "echo no dev tasks"
   },
   "exports": {
     ".": {

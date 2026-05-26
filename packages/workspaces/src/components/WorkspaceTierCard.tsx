@@ -1,5 +1,14 @@
 import React, { useCallback } from 'react';
-import { Button, Card, Group, Stack, Text, Tooltip } from '@mantine/core';
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  List,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
 import { WorkspaceCardConfig } from './types';
 import { type WorkspaceTier } from '../types';
@@ -22,18 +31,19 @@ const WorkspaceTierCard = ({
     [onSelectTier, tier],
   );
   return (
-    <Card withBorder radius="md" className="sm:w-1/5 md:w-1/4 lg:w-1/3">
-      <Card.Section inheritPadding py="xs">
+    <Card withBorder radius="md">
+      <Card.Section inheritPadding py="sm">
         <Stack align="left">
-          <Text
-            ta="left"
-            classNames={{ root: 'font-header' }}
-            size="md"
+          <Badge
+            classNames={{
+              root: 'font-header',
+            }}
+            color="var(--mantine-primary-color-1)"
+            size="lg"
             fw={500}
-            lineClamp={3}
           >
             {tier}
-          </Text>
+          </Badge>
         </Stack>
       </Card.Section>
       <Card.Section inheritPadding py="xs">
@@ -48,23 +58,22 @@ const WorkspaceTierCard = ({
       </Card.Section>
       <Card.Section inheritPadding py="xs">
         <Stack align="left">
-          {features.map((feature: string) => (
-            <Text key={feature} ta="left" size="xs" c="base-contrast.4">
-              {feature}
-            </Text>
-          ))}
+          <List size="sm" listStyleType="disc">
+            {features.map((feature: string) => (
+              <List.Item key={feature}>{feature}</List.Item>
+            ))}
+          </List>
         </Stack>
       </Card.Section>
-      <div className="flex mx-8 justify-center border-1 border-base"></div>
       <Group className="mt-2 p-2" justify="center">
         <Tooltip label={tooltip}>
           <Button
             aria-label={`Select ${buttonLabel}`}
             variant="subtle"
-            leftSection={<Icon icon="gen3:right_arrow" size={12} />}
+            rightSection={<Icon icon="gen3:right_arrow" size={12} />}
             onClick={handleClick}
           >
-            {buttonLabel}
+            <Text tt="uppercase">{buttonLabel}</Text>
           </Button>
         </Tooltip>
       </Group>

@@ -8,3 +8,19 @@ export interface WorkspaceCardConfig {
   tooltip?: string;
   buttonLabel?: string;
 }
+
+export interface DefaultTierLandingClassnames extends Record<string, string> {
+  root: string;
+  background: string;
+  label: string;
+  description: string;
+  additionalDescription: string;
+  button: string;
+}
+
+export interface TierSelectorLandingConfiguration {
+  label: string;
+  description: string;
+  additionalDescriptions: string[];
+  classNames?: DefaultTierLandingClassnames;
+}

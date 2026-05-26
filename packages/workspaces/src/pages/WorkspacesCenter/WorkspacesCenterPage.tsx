@@ -23,6 +23,12 @@ const WorkspacesCenterPage = ({
       <TierSelectorLanding
         cards={configuration?.workspaces}
         onSelectTier={(tier) => {}}
+        label={configuration?.landingPage?.label}
+        description={configuration?.landingPage?.description}
+        additionalDescriptions={
+          configuration?.landingPage?.additionalDescriptions
+        }
+        classNames={configuration?.landingPage?.classNames}
       />
     </NavPageLayout>
   );
