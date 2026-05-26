@@ -129,7 +129,6 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
         startPolling();
         if (notificationConfig.enabled) {
           showNotification(
-            'job-polling-resumed',
             'Monitoring Jobs',
             `Resuming monitoring of ${activeJobs.length} active jobs`,
             'info',
@@ -160,14 +159,10 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
     if (addSowerJob.match(action)) {
       startPolling();
       if (notificationConfig.enabled && notificationConfig.showJobStarted) {
-        const { jobId, name } = action.payload;
-        showNotification(
-          `job-started-${jobId}`,
-          'Job Started',
-          `${name} has been submitted`,
-          'info',
-          { autoClose: notificationConfig.autoClose },
-        );
+        const { name } = action.payload;
+        showNotification('Job Started', `${name} has been submitted`, 'info', {
+          autoClose: notificationConfig.autoClose,
+        });
       }
     } else if (removeSowerJob.match(action) || clearSowerJobsId.match(action)) {
       if (Object.keys(state.sower.sowerJobs.jobs).length === 0) {
@@ -183,7 +178,6 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
           notificationConfig.showJobCompleted
         ) {
           showNotification(
-            `job-completed-${jobId}`,
             'Job Completed',
             `${prevJob.name} has completed successfully`,
             'success',
@@ -194,7 +188,6 @@ const sowerJobsMiddleware: Middleware<object, CoreState, any> = (store) => {
           notificationConfig.showJobFailed
         ) {
           showNotification(
-            `job-failed-${jobId}`,
             'Job Failed',
             `${prevJob.name} encountered an error`,
             'error',

@@ -77,7 +77,7 @@ const SubmitSowerJobButton = forwardRef<
     const { action } = parameters;
 
     const handleSubmitJob = async () => {
-      const jobBody = buildSowerJob(action, parameters);
+      const jobBody = buildSowerJob(action, parameters); // builds the job body for the sower job
       if (jobBody) {
         submitJob(jobBody);
       }

@@ -36,7 +36,7 @@ const useSowerJobEventBus = () => {
 
   /**
    * Function for a component to unsubscribe to updates
-   * @param listenerKey unique key for component
+   * @param listenerKey unique key for a component
    */
   const off = useCallback((listenerKey: string) => {
     setListeners((prev) =>
@@ -51,7 +51,6 @@ const useSowerJobEventBus = () => {
    * @param job new job to add to pollers
    */
   const update = useCallback((job: string) => {
-    console.log('update', job);
     setPollers((prev) => new Set([...prev, job]));
   }, []);
 
