@@ -22,7 +22,10 @@ export const WorkspacesCenterPageGetServerSideProps: GetServerSideProps<
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        configuration: workspacesCenterConfiguration,
+        configuration: {
+          ...workspacesCenterConfiguration,
+          workspaces: processConfiguration(workspacesCenterConfiguration),
+        },
       },
     };
   } catch (error: unknown) {
@@ -37,4 +40,24 @@ export const WorkspacesCenterPageGetServerSideProps: GetServerSideProps<
       },
     };
   }
+};
+
+/**
+ * Transforms a WorkspacesCenterConfiguration object into a Record mapping workspace names
+ * to their corresponding WorkspaceCardConfig.
+ *
+ * @param {WorkspacesCenterConfiguration} configuration - The configuration object containing
+ * a list of workspace configurations.
+ * @returns {Record<string, WorkspaceCardConfig>} A record where each key is a workspace name,
+ * and each value is the corresponding WorkspaceCardConfig.
+ */
+const processConfiguration = (configuration: WorkspacesCenterConfiguration) => {
+  // convert configuration into a Record<string, WorkspaceCardConfig>
+  return configuration.workspaces.reduce(
+    (acc, workspace) => {
+      acc[workspace.name] = workspace;
+      return acc;
+    },
+    {} as Record<string, WorkspaceCardConfig>,
+  );
 };

@@ -1,5 +1,10 @@
 import { type WorkspaceTier } from '../types';
 
+interface LabelAndDescription {
+  label: string;
+  description: string;
+}
+
 export interface WorkspaceCardConfig {
   label: string;
   description: string;
@@ -7,6 +12,7 @@ export interface WorkspaceCardConfig {
   features?: string[];
   tooltip?: string;
   buttonLabel?: string;
+  runningLabel?: Partial<LabelAndDescription>;
 }
 
 export interface DefaultTierLandingClassnames extends Record<string, string> {
