@@ -3,6 +3,7 @@ import { WorkspaceTier } from '../types';
 import TierSelectorLanding from '../components/TierSelectorLanding';
 import FreeWorkspace from '../workspace/Tiers/FreeWorkspace';
 import { WorkspacesCenterConfiguration } from '../workspace/types';
+import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
 
 const WorkspaceCenter = ({
   workspaces,
@@ -23,7 +24,7 @@ const WorkspaceCenter = ({
     );
   }
   return (
-    <>
+    <WorkspaceLayout>
       {
         {
           free: <FreeWorkspace />,
@@ -31,7 +32,7 @@ const WorkspaceCenter = ({
           remote: <div>Remote Workspace</div>,
         }[workspace as string]
       }
-    </>
+    </WorkspaceLayout>
   );
 };
 

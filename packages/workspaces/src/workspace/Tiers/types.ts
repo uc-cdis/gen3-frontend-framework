@@ -1,4 +1,4 @@
-import { WorkspaceTier } from '../types';
+import { WorkspaceTier } from '../../types';
 
 interface LabelAndDescription {
   label: string;
