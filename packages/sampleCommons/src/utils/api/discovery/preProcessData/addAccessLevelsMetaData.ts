@@ -1,19 +1,21 @@
 import {
   AuthzResourceResponse,
+  fetchArboristResources,
   GEN3_AUTHZ_API,
   JSONObject,
   JSONValue,
 } from '@gen3/core';
 import { DiscoveryIndexConfig } from '../types/discoveryApi';
 import { AccessLevel } from '@gen3/frontend/utils';
+import { getAccessToken } from '@/lib/auth/getLoginStatus';
 
 const addAccessLevelsMetaData = async (
   data: Array<JSONObject>,
-  discoveryConfig: DiscoveryIndexConfig,
+  cookies: any,
 ): Promise<Array<JSONObject>> => {
   let authzResources: AuthzResourceResponse | undefined;
 
-  try {
+  /*   try {
     const response = await fetch(`${GEN3_AUTHZ_API}/resources`, {
       method: 'GET',
       headers: {
@@ -26,16 +28,23 @@ const addAccessLevelsMetaData = async (
   } catch (error) {
     console.error('Failed to fetch authz resources on server:', error);
     return [{ error: `Failed to fetch authz resources on server: ${error}` }];
-  }
+  } */
+  console.log('cookies', cookies);
+  const tokenFromCookie = getAccessToken(cookies) as string;
+  console.log('tokenFromCookie', tokenFromCookie);
+  // Let the server-side helper resolve resources using the active Gen3 session.
+  // From packages/sampleCommons/src/middleware-impl.ts
+  authzResources = (await fetchArboristResources(
+    tokenFromCookie,
+    process.env.NODE_ENV === 'production',
+  )) as unknown as AuthzResourceResponse;
+  console.log('authzResources', authzResources);
 
   const determineStudyAccessLevel = (
     authz: undefined | null | JSONValue | string,
     data_availability: null | JSONValue | string,
     userAuthzResources: undefined | string[],
   ) => {
-    console.log('authz', authz);
-    console.log('dataAvailability', data_availability);
-    console.log('userAuthzResources', userAuthzResources);
     const userHasAccessToResource = userAuthzResources?.includes(
       authz as string,
     );
@@ -57,21 +66,19 @@ const addAccessLevelsMetaData = async (
       (data_availability && data_availability === 'unaccessible')
     ) {
       return AccessLevel.UNACCESSIBLE;
-    }
-    /*
+    } else if (authz && userHasAccessToResource && !data_availability) {
+      /*
     Request Access
     gen3_discovery.authz = has a value (/programs/open, for example)
     AND the user has access to that resource
     AND gen3_discovery.data_availability: Field does not exist OR is empty
-    OR does not have the values described below to trigger other statuses
+    OR does not have the values described above to trigger other statuses
     */
-    //else return Math.floor(Math.random() * 6) + 1;
-    else if (authz && userHasAccessToResource && !data_availability) {
       return AccessLevel.ACCESSIBLE;
     } else if (
       /*
       Mixed Availability(New)
-      Study meets the conditions for being identified as “available” (as described in row #2)
+      Study meets the conditions for being identified as “available”
       AND
       Gen3_discovery.data_availability: field exists and has the value mixed_availability
       */
