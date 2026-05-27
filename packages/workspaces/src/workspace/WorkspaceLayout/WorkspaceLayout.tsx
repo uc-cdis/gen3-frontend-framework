@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Center } from '@mantine/core';
 
 import ToolsPanel from './ToolsPanel';
-import SettingsPanel from '@/workspace/WorkspaceLayout/SettingsPanel';
+import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 
 interface SharedWorkspaceLayoutProps {
   onMaximize?: (maximized: boolean) => void;

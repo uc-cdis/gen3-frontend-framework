@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { WorkspaceTier } from '../types';
-import TierSelectorLanding from '@/components/TierSelectorLanding';
-import { WorkspacesCenterConfiguration } from '@/pages/WorkspacesCenter/types';
+import TierSelectorLanding from '../components/TierSelectorLanding';
+import FreeWorkspace from '../workspace/Tiers/FreeWorkspace';
+import { WorkspacesCenterConfiguration } from '../workspace/types';
 
 const WorkspaceCenter = ({
   workspaces,
@@ -22,15 +23,15 @@ const WorkspaceCenter = ({
     );
   }
   return (
-    <div>
+    <>
       {
         {
-          free: <div>Free Workspace</div>,
+          free: <FreeWorkspace />,
           local: <div>Local Workspace</div>,
           remote: <div>Remote Workspace</div>,
         }[workspace as string]
       }
-    </div>
+    </>
   );
 };
 

@@ -372,7 +372,7 @@ const HostedWorkspace = ({
           .filter(Boolean)
           .join(' ')}
       >
-        <TierSelectorLanding onSelectTier={setTier} cards={[]} />
+        <TierSelectorLanding onSelectTier={setTier} cards={{}} />
       </div>
     );
   }

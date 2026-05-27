@@ -88,14 +88,29 @@ export default [
         },
       ],
     },
-    overrides: [
-      {
-        files: ['packages/workspaces/**/*'],
-        rules: {
-          'no-restricted-imports': 'off',
-        },
-      },
+  },
+  // Workspaces package: disallow @/ path aliases (not valid in published npm packages)
+  // and allow @gen3/frontend root barrel (needed internally).
+  {
+    files: [
+      'packages/workspaces/**/*.ts',
+      'packages/workspaces/**/*.tsx',
+      'packages/workspaces/**/*.js',
     ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/*'],
+              message:
+                "Use relative imports instead of '@/' path aliases in published packages.",
+            },
+          ],
+        },
+      ],
+    },
   },
   ...storybook.configs['flat/recommended'],
 ];

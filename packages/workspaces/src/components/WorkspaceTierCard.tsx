@@ -13,7 +13,10 @@ import { Icon } from '@iconify-icon/react';
 import { WorkspaceCardConfig } from './types';
 import { type WorkspaceTier } from '../types';
 
-export interface WorkspaceTierCardProps extends WorkspaceCardConfig {
+export interface WorkspaceTierCardProps extends Omit<
+  WorkspaceCardConfig,
+  'tierConfiguration'
+> {
   onSelectTier: (tier: WorkspaceTier) => void;
 }
 
@@ -47,14 +50,14 @@ const WorkspaceTierCard = ({
         </Stack>
       </Card.Section>
       <Card.Section inheritPadding py="xs">
-        <Group justify="left">
+        <Stack justify="left">
           <Text fw={600} c="base-contrast.4">
             {label}
           </Text>
           <Text c="base-contrast.4" size="xs">
             {description}
           </Text>
-        </Group>
+        </Stack>
       </Card.Section>
       <Card.Section inheritPadding py="xs">
         <Stack align="left">

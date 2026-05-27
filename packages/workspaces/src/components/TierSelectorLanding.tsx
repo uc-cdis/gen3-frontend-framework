@@ -9,7 +9,7 @@ import WorkspaceTierCard from './WorkspaceTierCard';
 import { mergeDefaultTailwindClassnames } from '@gen3/frontend';
 
 export interface TierSelectorLandingProps extends Partial<TierSelectorLandingConfiguration> {
-  cards: WorkspaceCardConfig[];
+  cards: Record<string, WorkspaceCardConfig>;
   onSelectTier: (tier: WorkspaceTier) => void;
 }
 
@@ -75,7 +75,7 @@ const TierSelectorLanding = ({
           role="list"
           aria-label="Workspace tier selection"
         >
-          {cards.map((card) => (
+          {Object.values(cards).map((card) => (
             <WorkspaceTierCard
               key={card.tier}
               tier={card.tier}

@@ -68,6 +68,10 @@ const nextConfig = {
         __dirname,
         '../workspaces/src/index.ts',
       ),
+      '@gen3/workspaces/server': path.resolve(
+        __dirname,
+        '../workspaces/src/server.ts',
+      ),
     };
 
     if (isDev) {

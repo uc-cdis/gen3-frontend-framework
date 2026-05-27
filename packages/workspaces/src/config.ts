@@ -1,4 +1,4 @@
-import { JupyterWorkspaceConfig } from '@/types';
+import { JupyterWorkspaceConfig } from './types';
 
 export const DEFAULT_WORKSPACE_CONFIG: JupyterWorkspaceConfig = {
   gateway: {

@@ -1,18 +1,16 @@
 import { type WorkspaceTier } from '../types';
+import { FreeWorkspaceTierConfiguration } from '../workspace/Tiers/types';
 
-interface LabelAndDescription {
-  label: string;
-  description: string;
-}
-
-export interface WorkspaceCardConfig {
+export interface WorkspaceCardConfig<
+  T extends FreeWorkspaceTierConfiguration = FreeWorkspaceTierConfiguration,
+> {
   label: string;
   description: string;
   tier: WorkspaceTier;
   features?: string[];
   tooltip?: string;
   buttonLabel?: string;
-  runningLabel?: Partial<LabelAndDescription>;
+  tierConfiguration: T;
 }
 
 export interface DefaultTierLandingClassnames extends Record<string, string> {

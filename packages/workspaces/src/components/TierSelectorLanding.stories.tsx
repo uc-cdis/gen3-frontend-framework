@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import TierSelectorLanding from './TierSelectorLanding';
 
 const meta = {
-  title: "Workspace Components/TierSelectorLanding",
+  title: 'Workspace Components/TierSelectorLanding',
   component: TierSelectorLanding,
 } satisfies Meta<typeof TierSelectorLanding>;
 
@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    cards: [],
+    cards: {},
     onSelectTier: () => null,
   },
 };

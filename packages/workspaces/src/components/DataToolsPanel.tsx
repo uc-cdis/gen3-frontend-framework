@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Tabs } from '@mantine/core';
-import { FaBookOpen as DictionaryIcon, FaBell as AssistantIcon } from "react-icons/fa";
+import {
+  FaBell as AssistantIcon,
+  FaBookOpen as DictionaryIcon,
+} from 'react-icons/fa';
 import CompactDictionaryPanelWrapper from './CompactDictionaryPanel.tsx/CompactDictionaryPanelWrapper';
-import CodingAssistantPanel from './CodingAssistantPanel';
+import CodingAssistantPanel from './CodingAssistantPanel'; // Error boundary to surface render crashes instead of silent white-screen
 
 // Error boundary to surface render crashes instead of silent white-screen
 class PanelErrorBoundary extends Component<
@@ -31,7 +34,7 @@ class PanelErrorBoundary extends Component<
 export interface DataToolsPanelProps {
   schemaUrl?: string;
   kbUrl?: string;
-};
+}
 
 const DEFAULT_DICTIONARY_SCHEMA_URL = '/api/v0/submission/_dictionary/_all';
 
@@ -41,12 +44,12 @@ const TABS: Array<{ id: Tab; label: string; icon: React.ReactNode }> = [
   {
     id: 'dictionary',
     label: 'Dictionary',
-    icon: <DictionaryIcon />
+    icon: <DictionaryIcon />,
   },
   {
     id: 'assistant',
     label: 'AI Assistant',
-    icon: <AssistantIcon />
+    icon: <AssistantIcon />,
   },
 ];
 
@@ -59,7 +62,9 @@ const DataToolsPanel = ({
       {/* Tab bar */}
       <Tabs.List>
         {TABS.map((tab) => (
-          <Tabs.Tab value={tab.id} leftSection={tab.icon}>{tab.label}</Tabs.Tab>
+          <Tabs.Tab value={tab.id} leftSection={tab.icon} key={tab.id}>
+            {tab.label}
+          </Tabs.Tab>
         ))}
       </Tabs.List>
       {/* Tab content */}
@@ -69,10 +74,7 @@ const DataToolsPanel = ({
             <CompactDictionaryPanelWrapper schemaUrl={schemaUrl} />
           </Tabs.Panel>
           <Tabs.Panel value="assistant">
-            <CodingAssistantPanel
-              schemaUrl={schemaUrl}
-              kbUrl={kbUrl}
-            />
+            <CodingAssistantPanel schemaUrl={schemaUrl} kbUrl={kbUrl} />
           </Tabs.Panel>
         </PanelErrorBoundary>
       </div>
