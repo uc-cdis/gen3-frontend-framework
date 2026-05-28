@@ -6,6 +6,8 @@
 const dns = require('dns');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { withJupyterWorkspaces } = require('@gen3/workspaces/server');
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
@@ -110,10 +112,16 @@ const nextConfig = {
     return config;
   },
   async rewrites() {
+    const workspaceApiRewrite = {
+      source: '/workspace-api/:path*',
+      destination: '/api/:path*',
+    };
     if (isDev) {
       const GEN3_TARGET =
         process.env.NEXT_PUBLIC_GEN3_API_TARGET || 'https://localhost';
+
       return [
+        workspaceApiRewrite,
         { source: '/_status', destination: `${GEN3_TARGET}/_status` },
         { source: '/user/:path*', destination: `${GEN3_TARGET}/user/:path*` },
         {
@@ -161,7 +169,7 @@ const nextConfig = {
         },
       ];
     } else {
-      return [];
+      return [...workspaceApiRewrite];
     }
   },
   async headers() {
@@ -198,4 +206,4 @@ const nextConfig = {
 };
 
 // IMPORTANT: actually export your config (wrapped by plugins)
-module.exports = withMDX(nextConfig);
+module.exports = withMDX(withJupyterWorkspaces(nextConfig));

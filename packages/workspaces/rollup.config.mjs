@@ -180,7 +180,7 @@ const config = [
   dtsBundle('./dist/dts/index.d.ts', 'dist/index.d.ts'),
   dtsBundle('./dist/dts/server.d.ts', 'dist/server.d.ts'),
   {
-    // as of now frontend does not export css but added for completeness
+    // as of now workspaces does not export css but added for completeness
     input: './dist/dts/index.d.ts',
     output: [{ file: 'dist/index.d.ts', format: 'es' }],
     plugins: [

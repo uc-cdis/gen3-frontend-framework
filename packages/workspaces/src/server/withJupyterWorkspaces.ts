@@ -43,7 +43,7 @@ export function withJupyterWorkspaces(
     // Merge transpilePackages
     transpilePackages: [
       ...(nextConfig.transpilePackages ?? []),
-      ...['@gen3/jupyter-workspaces'].filter(
+      ...['@gen3/workspaces'].filter(
         (pkg) => !(nextConfig.transpilePackages ?? []).includes(pkg),
       ),
     ],
@@ -69,6 +69,7 @@ export function withJupyterWorkspaces(
     // Merge rewrites — add gateway proxy rewrite in dev mode
     async rewrites() {
       const isDev = process.env.NODE_ENV === 'development';
+
       const existing =
         typeof nextConfig.rewrites === 'function'
           ? await nextConfig.rewrites()

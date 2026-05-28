@@ -20,6 +20,7 @@
     "rollup": "rollup --config rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile && npm run types && npm run rollup",
+    "build:clean": "npm run compile && npm run types && npm run rollup",
     "dev": "echo no dev tasks"
   },
   "exports": {
@@ -36,7 +37,7 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server/esm/server.js",
-      "require": "./dist/server/cjs/server.cjs"
+      "require": "./dist/server/cjs/server.js"
     }
   },
   "dependencies": {
