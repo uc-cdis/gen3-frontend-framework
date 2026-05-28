@@ -2,12 +2,11 @@ import React, { ReactNode } from 'react';
 
 import ToolsPanel from './ToolsPanel';
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
-import WorkspaceToolbar from '../../components/WorkspaceToolbar';
-import { WorkspaceTier } from '../../types';
+import WorkspaceToolbar from './WorkspaceToolbar';
+import { WORKSPACE_TIER_INFORMATION } from '../../workspaceConfig';
+import { useWorkspaceCenterContext } from '../../workspace/WorkspaceCenterContext';
 
-interface SharedWorkspaceLayoutProps {
-  onMaximize?: (maximized: boolean) => void;
-  setTier: (tier: WorkspaceTier | null) => void;
+interface WorkspaceLayoutProps {
   children: ReactNode;
   className?: string;
   /** Extra content rendered in the toolbar row, between fullscreen and Hide Tools. */
@@ -16,14 +15,16 @@ interface SharedWorkspaceLayoutProps {
 
 const WorkspaceLayout = ({
   children,
-  setTier,
-  onMaximize,
   className,
   toolbarExtra,
-}: SharedWorkspaceLayoutProps) => {
+}: WorkspaceLayoutProps) => {
+  const { workspaceTier } = useWorkspaceCenterContext();
+
   return (
     <div className="flex flex-col w-full grow">
-      <WorkspaceToolbar setTier={setTier} />
+      <WorkspaceToolbar
+        toolbarConfiguration={WORKSPACE_TIER_INFORMATION[workspaceTier].toolbar}
+      />
       <div className="flex w-full grow">
         <div className="w-1/5">
           <ToolsPanel />

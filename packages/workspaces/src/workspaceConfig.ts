@@ -5,6 +5,8 @@
  * variables.  In local dev, sensible defaults are used.
  */
 
+import { WorkspaceTierInformation } from './workspace/Tiers/types';
+
 /** Server configuration for a Jupyter Gateway (standard jupyter-server). */
 export interface GatewayServerConfig {
   /** Upstream URL of the real Jupyter server (e.g. "http://jupyter-gateway:8888") */
@@ -78,4 +80,16 @@ export const DEFAULT_WORKSPACE_CONFIG: JupyterWorkspaceConfig = {
   ],
 };
 
-export const WORKSPACE_TIER_INFORMATION;
+export const WORKSPACE_TIER_INFORMATION: Record<
+  string,
+  WorkspaceTierInformation
+> = {
+  free: {
+    tier: 'free',
+    toolbar: {
+      label: 'JupyterLite',
+      description: 'Running via JupyterLite',
+      requiresStopping: false,
+    },
+  },
+};

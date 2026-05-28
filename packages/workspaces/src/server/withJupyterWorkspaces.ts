@@ -3,12 +3,14 @@
  *
  * Usage (consumer's `next.config.js`):
  *
- *   const { withJupyterWorkspaces } = require('@gen3/jupyter-workspaces/server');
+ *   const { withJupyterWorkspaces } = require('@gen3/workspaces/server');
  *   module.exports = withJupyterWorkspaces(yourNextConfig);
  */
 
 import type { NextConfig } from 'next';
 import nodePath from 'path';
+import type { WebpackConfigContext } from 'next/dist/server/config-shared';
+import type { Configuration } from 'webpack';
 
 export interface WithJupyterWorkspacesOptions {
   /**
@@ -47,7 +49,7 @@ export function withJupyterWorkspaces(
     ],
 
     // Merge webpack config — add React dedup alias
-    webpack(config: Record<string, any>, ctx: any) {
+    webpack(config: Configuration, ctx: WebpackConfigContext) {
       config.resolve = config.resolve ?? {};
       config.resolve.alias = {
         ...(config.resolve.alias ?? {}),

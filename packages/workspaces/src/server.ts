@@ -1,4 +1,9 @@
 import { GEN3_HATCHERY_API } from './constants';
 import { createWorkspaceAssetsHandler } from './server/workspaceAssetsHandler';
+import { withJupyterWorkspaces } from './server/withJupyterWorkspaces';
 
-export { GEN3_HATCHERY_API, createWorkspaceAssetsHandler };
+export {
+  GEN3_HATCHERY_API,
+  createWorkspaceAssetsHandler,
+  withJupyterWorkspaces,
+};

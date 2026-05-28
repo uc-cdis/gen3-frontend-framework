@@ -1,20 +1,18 @@
 import React from 'react';
 import { ActionIcon, Badge, Group, Stack, Text } from '@mantine/core';
 import { Icon } from '@iconify-icon/react';
-import { WorkspaceTier } from '../types';
-import { WorkspaceTierInformation } from '../workspace/Tiers/types';
+import { TierToolbarConfiguration } from '../Tiers/types';
+import { useWorkspaceCenterContext } from '../WorkspaceCenterContext';
 
 interface WorkspaceToolbarProps {
-  tierInformation: WorkspaceTierInformation;
-  setTier: (tier: WorkspaceTier | null) => void;
+  toolbarConfiguration?: TierToolbarConfiguration;
 }
 
-const WorkspaceToolbar = ({
-  tierInformation,
-  setTier,
-}: WorkspaceToolbarProps) => {
+const WorkspaceToolbar = ({ toolbarConfiguration }: WorkspaceToolbarProps) => {
+  const { workspaceTier, setWorkspaceTier } = useWorkspaceCenterContext();
+
   const returnToWorkspaceSelection = () => {
-    setTier(null);
+    setWorkspaceTier(null);
   };
 
   return (
@@ -32,11 +30,11 @@ const WorkspaceToolbar = ({
       </ActionIcon>
       <Stack gap="-10px">
         <Text size="xl" c="primary.4">
-          {tierInformation.label}
+          {toolbarConfiguration?.label}
         </Text>
         <Group>
-          <Text size="sm">{tierInformation.description}</Text>
-          <Badge>{tierInformation.type as string}</Badge>
+          <Text size="sm">{toolbarConfiguration?.description}</Text>
+          <Badge>{workspaceTier as string}</Badge>
         </Group>
       </Stack>
     </div>

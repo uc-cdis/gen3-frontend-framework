@@ -4,14 +4,17 @@ import TierSelectorLanding from '../components/TierSelectorLanding';
 import FreeWorkspace from '../workspace/Tiers/FreeWorkspace';
 import { WorkspacesCenterConfiguration } from '../workspace/types';
 import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
+import WorkspaceCenterContext from './WorkspaceCenterContext';
 
 const WorkspaceCenter = ({
   workspaces,
   landingPage,
 }: WorkspacesCenterConfiguration) => {
-  const [workspace, setWorkspaceTier] = useState<WorkspaceTier | null>(null);
+  const [workspaceTier, setWorkspaceTier] = useState<WorkspaceTier | null>(
+    null,
+  );
 
-  if (!workspace) {
+  if (!workspaceTier) {
     return (
       <TierSelectorLanding
         cards={workspaces}
@@ -24,15 +27,19 @@ const WorkspaceCenter = ({
     );
   }
   return (
-    <WorkspaceLayout setTier={setWorkspaceTier}>
-      {
+    <WorkspaceCenterContext.Provider
+      value={{ workspaceTier, setWorkspaceTier }}
+    >
+      <WorkspaceLayout>
         {
-          free: <FreeWorkspace />,
-          local: <div>Local Workspace</div>,
-          remote: <div>Remote Workspace</div>,
-        }[workspace as string]
-      }
-    </WorkspaceLayout>
+          {
+            free: <FreeWorkspace />,
+            local: <div>Local Workspace</div>,
+            remote: <div>Remote Workspace</div>,
+          }[workspaceTier as string]
+        }
+      </WorkspaceLayout>
+    </WorkspaceCenterContext.Provider>
   );
 };
 

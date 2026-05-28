@@ -5,8 +5,13 @@ interface LabelAndDescription {
   description: string;
 }
 
-export interface WorkspaceTierInformation extends LabelAndDescription {
-  type: WorkspaceTier;
+export interface TierToolbarConfiguration extends LabelAndDescription {
+  requiresStopping: boolean;
+}
+
+export interface WorkspaceTierInformation {
+  tier: WorkspaceTier;
+  toolbar: TierToolbarConfiguration;
 }
 
 export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation {
