@@ -5,12 +5,11 @@ interface LabelAndDescription {
   description: string;
 }
 
-export interface WorkspaceTierConfiguration {
-  labelAndDescription?: LabelAndDescription;
+export interface WorkspaceTierInformation extends LabelAndDescription {
   type: WorkspaceTier;
 }
 
-export interface FreeWorkspaceTierConfiguration extends WorkspaceTierConfiguration {
+export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation {
   baseUrl?: string;
   type: Extract<WorkspaceTier, 'free'>;
 }

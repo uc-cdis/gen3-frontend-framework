@@ -9,13 +9,13 @@ const WorkspaceCenter = ({
   workspaces,
   landingPage,
 }: WorkspacesCenterConfiguration) => {
-  const [workspace, setWorkspace] = useState<WorkspaceTier | null>(null);
+  const [workspace, setWorkspaceTier] = useState<WorkspaceTier | null>(null);
 
   if (!workspace) {
     return (
       <TierSelectorLanding
         cards={workspaces}
-        onSelectTier={setWorkspace}
+        onSelectTier={setWorkspaceTier}
         label={landingPage?.label}
         description={landingPage?.description}
         additionalDescriptions={landingPage?.additionalDescriptions}
@@ -24,7 +24,7 @@ const WorkspaceCenter = ({
     );
   }
   return (
-    <WorkspaceLayout>
+    <WorkspaceLayout setTier={setWorkspaceTier}>
       {
         {
           free: <FreeWorkspace />,

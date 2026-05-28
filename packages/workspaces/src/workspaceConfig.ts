@@ -77,3 +77,5 @@ export const DEFAULT_WORKSPACE_CONFIG: JupyterWorkspaceConfig = {
     '/workspaces/jupyter-kernel',
   ],
 };
+
+export const WORKSPACE_TIER_INFORMATION;
