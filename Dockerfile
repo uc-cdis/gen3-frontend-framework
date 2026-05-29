@@ -1,7 +1,7 @@
 # docker build -t ff .
 # docker run -p 3000:3000 -it ff
 # Build stage
-FROM --platform=$BUILDPLATFORM node:24.14.1-trixie-slim AS builder
+FROM --platform=$BUILDPLATFORM node:24.15.0-alpine3.23 AS builder
 WORKDIR /gen3
 
 WORKDIR /gen3
@@ -24,7 +24,7 @@ COPY start.sh ./start.sh
 
 # ─────────────────────────────────────────────
 # Production stage
-FROM node:24.14.1-trixie-slim AS runner
+FROM node:24.15.0-alpine3.23 AS runner
 
 WORKDIR /gen3
 

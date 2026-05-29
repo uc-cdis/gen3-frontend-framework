@@ -7,6 +7,7 @@ import {
   LuClock as PendingIcon,
   LuLock as LockedIcon,
   LuLockOpen as UnlockedIcon,
+  LuFileLock as OtherIcon,
 } from 'react-icons/lu';
 import { getAccessLevelFromNumber } from '../../utils';
 import { isArray } from 'lodash';
@@ -38,13 +39,13 @@ export const DataAccessCellRenderer = ({
     config.features.exportFromDiscovery?.exportDataFields.dataObjectField;
   if (isArray(value)) value = value[0];
   const accessLevel = getAccessLevelFromNumber(value);
-
   const numFileObjects =
     dataObjectField && row?.original?.[dataObjectField]
       ? row?.original?.[dataObjectField]
       : 0;
 
-  if (numFileObjects === 0) {
+  // Fallback approach for when accessLevel is not defined by Proxy API
+  if (numFileObjects === 0 && accessLevel === undefined) {
     return (
       <Tooltip label={buildTooltip('No data attached to this study')}>
         <NotAvailableIcon className="text-utility-error"></NotAvailableIcon>
@@ -76,7 +77,15 @@ export const DataAccessCellRenderer = ({
       </Tooltip>
     );
   }
-
+  if (accessLevel === AccessLevel.OTHER) {
+    return (
+      <Tooltip label={buildTooltip('Acccess level is other')}>
+        <Group>
+          <OtherIcon className="text-utility-warning"></OtherIcon>
+        </Group>
+      </Tooltip>
+    );
+  }
   if (accessLevel === AccessLevel.NOT_AVAILABLE) {
     return (
       <Tooltip label={buildTooltip('No data is shared')}>
@@ -85,11 +94,15 @@ export const DataAccessCellRenderer = ({
     );
   }
   if (accessLevel === AccessLevel.ACCESSIBLE) {
+    const authorizationInfo = authorization
+      ? `read access to ${authorization}`
+      : null;
+
     return (
       <Tooltip
         label={buildTooltip(
           'You have access to this study',
-          `read access to ${authorization}`,
+          authorizationInfo as string,
         )}
       >
         <div>
@@ -99,11 +112,14 @@ export const DataAccessCellRenderer = ({
     );
   }
   if (accessLevel === AccessLevel.UNACCESSIBLE) {
+    const authorizationInfo = authorization
+      ? `you need read access to ${authorization}`
+      : null;
     return (
       <Tooltip
         label={buildTooltip(
           'You currently do not have access to this study',
-          `you need read access to ${authorization}`,
+          authorizationInfo as string,
         )}
       >
         <div>

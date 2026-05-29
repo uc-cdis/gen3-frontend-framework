@@ -3,8 +3,8 @@ import {
   MantineReactTable,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
-import { Badge, Menu, MultiSelect, Table } from '@mantine/core';
+} from 'mantine-react-table-open';
+import { Menu, MultiSelect } from '@mantine/core';
 
 import { Policy, Resource } from '../types';
 import { AuthzContext } from '../AuthzAdminProvider';

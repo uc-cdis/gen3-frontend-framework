@@ -1,3 +1,22 @@
+import { JSONObject } from '@gen3/core';
+import { DiscoveryIndexConfig } from '../types/discoveryApi';
+
+const addAccessLevelsMetaData = (
+  data: Array<JSONObject>,
+  discoveryConfig: DiscoveryIndexConfig,
+) => {
+  // Mocking this method for now to test UI. This will be updated in HP-2363.
+  return data.map((obj) => {
+    let accessLevelNum = Math.floor(Math.random() * 6) + 1;
+    if (obj.authz) accessLevelNum = 1;
+    return {
+      ...obj,
+      __accessible: accessLevelNum,
+    };
+  });
+};
+export default addAccessLevelsMetaData;
+
 // TODO
 // Commented out code from /data-portal/src/Discovery/index.tsx
 /*
