@@ -26,7 +26,6 @@ const Custom403Page = ({
   const onWorkspace = usePathname() === '/Workspace';
   const REQUESTEDACCESSTOWORKSPACEKEY = 'Requested-access-to-Workspace';
   const requestedAccessToWorkspace = localStorage.getItem(REQUESTEDACCESSTOWORKSPACEKEY);
-  console.log('requestAccessToWorkspace', requestedAccessToWorkspace);
 
   const userInfo = useCoreSelector((state: CoreState) =>
     selectUserDetails(state),
@@ -34,12 +33,17 @@ const Custom403Page = ({
   const [formError, setFormError] = useState<string>();
   const [formSuccess, setFormSuccess] = useState(!!requestedAccessToWorkspace);
 
-  const formOnSubmit = (formValues: any) => {
+  const formOnSubmit = (formValues: FormProps['onSubmit']) => {
     if (!form403) {
       setFormError('No form setup found');
       return;
     }
     setFormError(undefined);
+
+    const printFormValuesArr = [];
+    for (const [key, value] of Object.entries(formValues)) {
+      printFormValuesArr.push(`${key}: ${value}`);
+    }
 
     const zendeskRequestAction =
       getRemoteSupportServiceRegistry().getSupportService(
@@ -50,12 +54,10 @@ const Custom403Page = ({
       {
         subject: 'Request access to Workspace',
         fullName: `${userInfo?.email}`,
-        email: `${formValues.email}`,
+        email: `${userInfo?.email}`,
         contents:
-          `Requestor: ${formValues.email}` +
-          '\n\nResources: Workspace' +
-          `\n\nRequestor ID: ${userInfo?.username || 'unknown'}` +
-          `\n\nReason: ${formValues?.reason}`,
+          'Workspace Form Request:\n\n' +
+          printFormValuesArr.join('\n\n'),
       },
       form403.remoteSupportService.configuration,
     ).then(() => {

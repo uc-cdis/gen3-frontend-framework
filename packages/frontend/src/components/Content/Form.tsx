@@ -10,6 +10,10 @@ interface FormPropsBody extends Omit<FormContentProps, 'keyString' | 'form'> {
   readonly initialValue?: string | boolean; // optional starting value
 }
 
+export interface FormOnSubmitReturnProps {
+  [key: string]: string;
+}
+
 /**
  * Interface representing the properties for rendering a form.
  */
@@ -17,7 +21,7 @@ export interface FormProps {
   readonly className?: string; // tailwind based styling to apply to the form container 
   readonly submitButtonText?: string; // submit Button Text defalts to Submit
   readonly body: FormPropsBody[]; // array of FormContent
-  readonly onSubmit: (values: any)=> void | Promise<any>; // function to trigger on form submit
+  readonly onSubmit: (values: FormOnSubmitReturnProps)=> void | Promise<any>; // function to trigger on form submit
   readonly errorMessage?: string; // error messaage to desplay above submit button 
 }
 
