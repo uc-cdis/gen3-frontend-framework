@@ -4,7 +4,7 @@ import { NavPageLayout } from '../../features/Navigation';
 import { Custom403PageProps, Config403Props } from './types';
 import { requestAccessFormProps } from '../../features/Workspace/types';
 import TextContent from '../../components/Content/TextContent';
-import Form, { FormProps } from '../../components/Content/Form';
+import Form, { FormProps, FormOnSubmitReturnProps } from '../../components/Content/Form';
 import Image from 'next/image';
 import { Button, Title, Loader } from '@mantine/core';
 import {
@@ -31,9 +31,9 @@ const Custom403Page = ({
     selectUserDetails(state),
   );
   const [formError, setFormError] = useState<string>();
-  const [formSuccess, setFormSuccess] = useState(!!requestedAccessToWorkspace);
+  const [formSuccess, setFormSuccess] = useState(requestedAccessToWorkspace === 'Success');
 
-  const formOnSubmit = (formValues: FormProps['onSubmit']) => {
+  const formOnSubmit = (formValues: FormOnSubmitReturnProps) => {
     if (!form403) {
       setFormError('No form setup found');
       return;
@@ -61,7 +61,7 @@ const Custom403Page = ({
       },
       form403.remoteSupportService.configuration,
     ).then(() => {
-      localStorage.setItem(REQUESTEDACCESSTOWORKSPACEKEY, true);
+      localStorage.setItem(REQUESTEDACCESSTOWORKSPACEKEY, 'Success');
       setFormSuccess(true);
     })
     .catch((error: unknown) => {
