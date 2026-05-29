@@ -4,7 +4,7 @@ The Workspace page configuration consists of sections:
 * launchStepIndicatorConfig (optional): LaunchStepIndicatorConfiguration; TODO fill in
 * requirePayModel (optional): boolean; TODO fill in
 * externalLoginsNotUsed (optional): boolean; TODO fill in
-* Request Access Form
+* requestAccessForm (optional): Request Access Form
 
 and example configuration:
 ```json
