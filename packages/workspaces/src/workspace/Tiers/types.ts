@@ -9,6 +9,10 @@ export interface TierToolbarConfiguration extends LabelAndDescription {
   requiresStopping: boolean;
 }
 
+export interface SettingsPanelConfiguration {
+  showKernels: boolean;
+}
+
 export interface WorkspaceTierInformation {
   tier: WorkspaceTier;
   toolbar: TierToolbarConfiguration;
