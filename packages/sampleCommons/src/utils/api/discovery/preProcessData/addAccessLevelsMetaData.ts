@@ -29,9 +29,9 @@ const addAccessLevelsMetaData = async (
     console.error('Failed to fetch authz resources on server:', error);
     return [{ error: `Failed to fetch authz resources on server: ${error}` }];
   } */
-  console.log('cookies', cookies);
+  // console.log('cookies', cookies);
   const tokenFromCookie = getAccessToken(cookies) as string;
-  console.log('tokenFromCookie', tokenFromCookie);
+  // console.log('tokenFromCookie', tokenFromCookie);
   // Let the server-side helper resolve resources using the active Gen3 session.
   // From packages/sampleCommons/src/middleware-impl.ts
   authzResources = (await fetchArboristResources(
@@ -86,6 +86,7 @@ const addAccessLevelsMetaData = async (
       userHasAccessToResource &&
       data_availability === 'mixed_availability'
     ) {
+      console.log('Mixed access study found');
       return AccessLevel.MIXED;
     } else {
       /* Waiting (Default) */
@@ -93,18 +94,12 @@ const addAccessLevelsMetaData = async (
     }
   };
 
-  // Mocking this method for now to test UI. This will be updated in HP-2363.
   return data.map((obj) => {
     let accessLevelNum = determineStudyAccessLevel(
       obj?.authz,
       obj?.data_availability,
       authzResources?.resources,
     );
-    // console.log('obj.authz', obj.authz);
-    // console.log('obj.data_availability', obj.data_availability);
-    // if (authzResources?.resources.includes(obj.authz))
-    // if (obj.authz) accessLevelNum = 1;
-
     return {
       ...obj,
       __accessible: accessLevelNum,
