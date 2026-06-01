@@ -44,7 +44,10 @@ export function decodeJwtClaims(jwt: string): Record<string, unknown> | null {
   try {
     const parts = jwt.split('.');
     if (parts.length < 2) return null;
-    const padded = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = parts[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/')
+      .padEnd(Math.ceil(parts[1].length / 4) * 4, '=');
     return JSON.parse(Buffer.from(padded, 'base64').toString('utf8')) as Record<
       string,
       unknown
@@ -73,9 +76,15 @@ export async function createProxyRequest({
   forwardBody = false,
 }: ProxyRequestOptions): Promise<void> {
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...extraHeaders,
   };
+  if (
+    forwardBody &&
+    (method === 'POST' || method === 'PUT' || method === 'PATCH')
+  ) {
+    headers['Content-Type'] ??= 'application/json';
+  }
+
 
   let body: BodyInit | undefined;
   if (
@@ -100,7 +109,12 @@ export async function createProxyRequest({
 
   let upRes: Response;
   try {
-    upRes = await fetch(targetUrl, { method, headers, body });
+    upRes = await fetch(targetUrl, {
+      method,
+      headers,
+      body,
+      signal: AbortSignal.timeout(30_000),
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     res.status(502).json({ error: `Upstream unreachable: ${msg}` });
@@ -143,6 +157,7 @@ function bufferBody(req: NextApiRequest): Promise<Buffer> {
     req.on('data', (chunk: Buffer) => {
       total += chunk.length;
       if (total > MAX_BODY_BYTES) {
+        req.destroy();
         reject(
           Object.assign(new Error('Request body too large'), {
             statusCode: 413,

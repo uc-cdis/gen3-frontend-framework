@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Button, Card, Text } from '@mantine/core';
+import { Button, Card, LoadingOverlay, Text } from '@mantine/core';
 
 export interface FreeWorkspaceProps {
   assetBaseUrl?: string;
@@ -45,6 +45,7 @@ const FreeWorkspace = ({
 
   return (
     <div className="w-full flex flex-col grow">
+      <LoadingOverlay visible={loading} />
       <iframe
         src={url}
         width="100%"

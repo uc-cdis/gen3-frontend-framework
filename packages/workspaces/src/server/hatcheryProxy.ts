@@ -159,7 +159,6 @@ export function createHatcheryProxyHandler(config: HatcheryProxyConfig) {
       extraHeaders: {
         Authorization: `Bearer ${safeJwt}`,
         REMOTE_USER: safeUsername,
-        remote_user: safeUsername,
       },
       // Hatchery doesn't need a body for GET routes
       forwardBody: route.method === 'POST',

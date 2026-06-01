@@ -23,3 +23,7 @@ export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation
   baseUrl?: string;
   type: Extract<WorkspaceTier, 'free'>;
 }
+
+export interface MicroContainerWorkspaceTierConfiguration extends WorkspaceTierInformation {
+  type: Extract<WorkspaceTier, 'remote'>;
+}
