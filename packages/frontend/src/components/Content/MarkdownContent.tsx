@@ -46,7 +46,7 @@ const MarkdownContent: React.FC<MarkdownContentProps> = ({
           h3: ({ node, ...rest }) => (
             <h3 className="text-lg font-semibold my-2" {...rest} />
           ),
-          p: ({ node, ...rest }) => <p className="text-base my-1" {...rest} />,
+          p: ({ node, ...rest }) => <p className="my-1" {...rest} />,
           ol: ({ node, ...rest }) => (
             <ol className="list-decimal list-inside my-1" {...rest} />
           ),
@@ -54,7 +54,7 @@ const MarkdownContent: React.FC<MarkdownContentProps> = ({
             <ul className="list-disc list-inside my-1" {...rest} />
           ),
           li: ({ node, ...rest }) => (
-            <li className="text-base ml-2" {...rest} />
+            <li className="ml-2" {...rest} />
           ),
           a: ({ node, ...rest }) => (
             <a

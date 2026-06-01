@@ -3,6 +3,7 @@ import { NavPageLayoutProps } from '../../features/Navigation';
 import ContentSource from '../../lib/content';
 import { getNavPageLayoutPropsFromConfig } from '../../lib/common/staticProps';
 import { Config403Props } from './types';
+import { WorkspaceConfig } from '../../features/Workspace';
 import { GEN3_COMMONS_NAME } from '@gen3/core';
 
 export const Custom403PageGetServerSideProps: GetServerSideProps<
@@ -10,14 +11,19 @@ export const Custom403PageGetServerSideProps: GetServerSideProps<
 > = async () => {
   
   try {
-    const config403: Config403Props = await ContentSource.getContentDatabase().get(
-      `${GEN3_COMMONS_NAME}/403.json`,
-    );
+    const config403: Config403Props = 
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/403.json`,
+      );
+    const workspaceProps: WorkspaceConfig =
+      await ContentSource.getContentDatabase().get(
+        `${GEN3_COMMONS_NAME}/workspace.json`,
+      );
 
     return {
       props: {
         ...(await getNavPageLayoutPropsFromConfig()),
-        ...{ config403: config403 },
+        ...{ config403: config403, form403: workspaceProps?.requestAccessForm },
       },
     };
   } catch (err) {

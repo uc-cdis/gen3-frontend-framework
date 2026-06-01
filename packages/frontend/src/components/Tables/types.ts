@@ -1,4 +1,4 @@
-import { MRT_SortingState } from 'mantine-react-table';
+import { MRT_SortingState } from 'mantine-react-table-open';
 
 //  Configure Gen3 Table Columns
 export interface Gen3TableColumn {

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'; // Or 'next/navigation' if using App Router
 import { Drawer } from '@mantine/core';
 import StudyDetailsPanel from './StudyDetailsPanel';
 import { useDisclosure } from '@mantine/hooks';
@@ -7,71 +8,64 @@ import { useStudyContext } from '../StudyProvider';
 import { StudyDetailView, StudyPageConfig } from '../types';
 import { DataAuthorization } from '../../../utils';
 import StudyDetailsHeaderButtons from './StudyDetailsHeaderButtons';
+import { toString } from 'lodash';
+import { useDiscoveryContext } from '../../Discovery/DiscoveryProvider';
 
-const StudyDetails = ({
-  index,
-  detailView,
-  simpleDetailsView,
-  authz,
-}: {
-  index: string;
-  detailView: StudyDetailView;
-  simpleDetailsView?: StudyPageConfig;
-  authz: DataAuthorization;
-}) => {
-  const { studyDetails } = useStudyContext();
+const StudyDetails = () => {
+  const { discoveryConfig: config } = useDiscoveryContext();
+  const index = config?.minimalFieldMapping?.uid ?? 'unknown';
+  const detailView = config.detailView;
+  const simpleDetailsView = config.simpleDetailsView;
+  const authz = config.features.authorization;
+  const { studyDetails, setStudyDetails } = useStudyContext();
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
-  const defaultPermaLinkValue = 'Discovery/notfound';
   const hasStudyDetails = Object.keys(studyDetails).length > 0;
+  const origin = window.location.origin;
+  const defaultPath = 'Discovery';
+  const defaultPermaLinkValue = `${origin}/${defaultPath}/notfound`;
+  const [permalink, setPermalink] = useState(defaultPermaLinkValue);
+  const pushUrl = (path: string) =>
+    router.push(path, undefined, { shallow: true });
+  const studyId = toString(studyDetails[index]);
 
-  const permalink = useMemo(() => {
-    const studyId = studyDetails?.[index];
-    if (studyId) {
-      const origin = window?.location?.href ?? defaultPermaLinkValue;
-      const studyPath = `${origin}/${encodeURIComponent(studyId as string)}`;
-      // router.push(studyPath, undefined, { shallow: true });
-      return studyPath;
-    } else {
-      return defaultPermaLinkValue;
-    }
-  }, [index, studyDetails]);
-
-  // using Object.keys(studyDetails).length > 0 fires this effect correctly
   useEffect(() => {
-    if (Object.keys(studyDetails).length > 0) {
+    if (studyId) {
+      if (opened) {
+        pushUrl(`/${defaultPath}/${encodeURI(studyId)}`);
+        setPermalink(`${origin}/${defaultPath}/${encodeURI(studyId)}`);
+      } else {
+        pushUrl(`/${defaultPath}`);
+        setPermalink(defaultPermaLinkValue);
+      }
+    }
+    if (opened === false) {
+      // if drawer has been shut, reset study details
+      setStudyDetails({});
+    }
+  }, [opened]);
+
+  useEffect(() => {
+    if (hasStudyDetails) {
       open();
     }
   }, [studyDetails, open]);
 
   return (
-    <Drawer.Root
-      opened={opened}
-      onClose={() => {
-        close();
-      }}
-      size="50%"
-      position="right"
-    >
-      <Drawer.Overlay opacity={0.5} blur={4} />{' '}
+    <Drawer.Root opened={opened} onClose={close} size="50%" position="right">
+      <Drawer.Overlay opacity={0.5} blur={4} />
       {hasStudyDetails && (
         <Drawer.Content className="pl-2">
           <Drawer.Header>
-            <StudyDetailsHeaderButtons
-              onClose={close}
-              permalink={permalink}
-              showSubmitButton={simpleDetailsView?.showSubmitButton}
-            />
+            <StudyDetailsHeaderButtons onClose={close} permalink={permalink} />
           </Drawer.Header>
           <Drawer.Body>
             {detailView ? (
-              <StudyDetailsPanel
-                data={studyDetails ?? {}}
-                studyConfig={detailView}
-              />
+              <StudyDetailsPanel data={studyDetails} studyConfig={detailView} />
             ) : simpleDetailsView ? (
               <SinglePageStudyDetailsPanel
-                data={studyDetails ?? {}}
-                studyConfig={simpleDetailsView}
+                data={studyDetails}
+                studyConfig={simpleDetailsView!}
                 authorization={authz}
               />
             ) : (
