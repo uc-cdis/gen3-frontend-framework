@@ -1,3 +1,13 @@
+# Workspace Configuration Guide
+
+The Workspace page configuration consists of sections:
+* launchStepIndicatorConfig (optional): LaunchStepIndicatorConfiguration; TODO fill in
+* requirePayModel (optional): boolean; TODO fill in
+* externalLoginsNotUsed (optional): boolean; TODO fill in
+* requestAccessForm (optional): Request Access Form
+
+and example configuration:
+```json
 {
   "requirePayModel": false,
   "requestAccessForm": {
@@ -5,7 +15,7 @@
     "remoteSupportService": {
       "service": "zenDesk",
       "configuration": {
-        "zendeskSubdomainName": "test-1234"
+        "zendeskSubdomainName": "self-22514"
       }
     },
     "label": "Workspace Request Access Form",
@@ -22,7 +32,7 @@
       {
         "type": "Email",
         "label": "Login ID",
-        "description": "This field displays the unique identifier you used to log in to GEN3 (e.g., your email address, ORCID iD, or another login method).",
+        "description": "This field displays the unique identifier you used to log in (e.g., your email address, ORCID iD, or another login method).",
         "initialValue": "userEmail",
         "disabled": true,
         "required": true,
@@ -38,6 +48,10 @@
     ],
     "submitButtonText": "Apply for Workspace Access",
     "success": {
+      "topIcon": {
+        "src": "/icons/iconoir_window-no-access.svg",
+        "alt": "No access"
+      },
       "content": [
         {
           "type": "markdown",
@@ -51,3 +65,8 @@
     }
   }
 }
+
+
+```
+
+requestAccessForm is an instance of [Form](../../packages/frontend/docs/components/Form.md) component.
