@@ -8,7 +8,6 @@ const KernelWithTags = gen3Api.enhanceEndpoints({
 
 interface KernelItemResponse {
   name: string;
-  hash?: string;
   id: string;
   execution_state: string;
   last_activity: string;
@@ -55,7 +54,19 @@ export const kernelApi = KernelWithTags.injectEndpoints({
         return res;
       },
     }),
+    launchKernel: builder.mutation<void, string>({
+      query: (kernelName: string) => ({
+        url: `${GEN3_KERNEL_API}/kernels/${encodeURIComponent(kernelName)}`,
+        method: 'POST',
+      }),
+    }),
+    terminateKernel: builder.mutation<void, string>({
+      query: (kernelId) => ({
+        url: `${GEN3_KERNEL_API}/kernels/${encodeURIComponent(kernelId)}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const { useKernelsQuery } = kernelApi;
+export const { useKernelsQuery, useKernalSpecsQuery } = kernelApi;

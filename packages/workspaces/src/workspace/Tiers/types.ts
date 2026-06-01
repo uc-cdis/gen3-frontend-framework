@@ -10,12 +10,13 @@ export interface TierToolbarConfiguration extends LabelAndDescription {
 }
 
 export interface SettingsPanelConfiguration {
-  showKernels: boolean;
+  showKernels: boolean; // do we need to show the kernel panel?
 }
 
 export interface WorkspaceTierInformation {
   tier: WorkspaceTier;
   toolbar: TierToolbarConfiguration;
+  settings: SettingsPanelConfiguration;
 }
 
 export interface FreeWorkspaceTierConfiguration extends WorkspaceTierInformation {

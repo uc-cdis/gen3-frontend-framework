@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import ToolsPanel from './ToolsPanel';
 import SettingsPanel from '../../workspace/WorkspaceLayout/SettingsPanel';
 import WorkspaceToolbar from './WorkspaceToolbar';
-import { WORKSPACE_TIER_INFORMATION } from '../../workspaceConfig';
+import { WORKSPACE_TIER_INFORMATION } from '../../config';
 import { useWorkspaceCenterContext } from '../../workspace/WorkspaceCenterContext';
 import { Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -34,7 +34,9 @@ const WorkspaceLayout = ({
         </Collapse>
         {children}
         <div className="w-1/5">
-          <SettingsPanel />
+          <SettingsPanel
+            {...WORKSPACE_TIER_INFORMATION[workspaceTier].settings}
+          />
         </div>
       </div>
     </div>

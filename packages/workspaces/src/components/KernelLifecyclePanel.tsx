@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Select } from '@mantine/core';
 import ConnectionStatusBadge from './ConnectionStatusBadge';
 import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
-import type { KernelRow, KernelSpecEntry } from '../core/types';
+import { useKernelsAndSpecsQuery } from '../core/hooks';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface LaunchKernelInput {
   kernelName: string;
@@ -14,10 +15,6 @@ interface KernelSelection {
 }
 
 export interface KernelLifecyclePanelProps {
-  kernels: KernelRow[];
-  kernelSpecs: KernelSpecEntry[];
-  loading?: boolean;
-  error?: string | null;
   notice?: string | null;
   launching?: boolean;
   /** Current gateway connection state — drives status badge and reconnect strip. */
@@ -52,11 +49,6 @@ const formatUptime = (minutes: number | null | undefined): string => {
 };
 
 const KernelLifecyclePanel = ({
-  kernels,
-  kernelSpecs,
-  loading = false,
-  error = null,
-  notice = null,
   launching = false,
   connectionState,
   activeKernelName,
@@ -69,32 +61,62 @@ const KernelLifecyclePanel = ({
   onKernelSelectionChange,
   forceTerminate = false,
 }: KernelLifecyclePanelProps) => {
-  const safeSpecs = kernelSpecs || [];
-  const safeKernels = kernels || [];
+  const { kernels, kernelSpecs, isLoading, isError, error } =
+    useKernelsAndSpecsQuery();
+
+  const displayRows = useDeepCompareMemo(
+    () =>
+      kernels.map((k) => ({
+        kernelId: k.id,
+        kernelName: k.name,
+        executionState: k.executionState,
+      })),
+    [kernels],
+  );
+
   const [selectedKernelName, setSelectedKernelName] = useState<string>(
-    safeSpecs[0]?.name || 'python3',
+    kernelSpecs?.[0]?.name || 'python3',
   );
 
   // When specs arrive after first render (async load), reset selectedKernelName
   // if the current value is no longer a valid spec name.
   useEffect(() => {
-    if (safeSpecs.length > 0) {
+    if (kernelSpecs?.length > 0) {
       setSelectedKernelName((prev) => {
-        if (!safeSpecs.find((s) => s.name === prev)) {
-          return safeSpecs[0].name;
+        if (!kernelSpecs?.find((s) => s.name === prev)) {
+          return kernelSpecs?.[0]?.name || 'python3';
         }
         return prev;
       });
     }
-  }, [safeSpecs]);
-
-  const displayRows = useMemo(() => safeKernels, [safeKernels]);
+  }, [kernelSpecs]);
 
   // Billing banner: show when any active kernel has a cost > 0
-  const selectedSpec = safeSpecs.find((s) => s.name === selectedKernelName);
+  const selectedSpec = kernelSpecs?.find((s) => s.name === selectedKernelName);
   const selectedSpecCost = selectedSpec?.costPerHour ?? 0;
+  const resourceTags = selectedSpec
+    ? ((
+        [
+          selectedSpec.cpu && {
+            label: 'CPU',
+            value: selectedSpec.cpu,
+            gpu: false,
+          },
+          selectedSpec.memory && {
+            label: 'RAM',
+            value: selectedSpec.memory,
+            gpu: false,
+          },
+          selectedSpec.gpuType && {
+            label: 'GPU',
+            value: selectedSpec.gpuType,
+            gpu: true,
+          },
+        ] as const
+      ).filter(Boolean) as { label: string; value: string; gpu: boolean }[])
+    : [];
   const activeKernelSpec = activeKernelName
-    ? safeSpecs.find((s) => s.name === activeKernelName)
+    ? kernelSpecs?.find((s) => s.name === activeKernelName)
     : null;
   const billingActive = (activeKernelSpec?.costPerHour ?? 0) > 0;
 
@@ -162,14 +184,17 @@ const KernelLifecyclePanel = ({
         </div>
       )}
 
-      {notice && (
+      {/* TODO: replace with mantine.dev notification.
+
+      notice && (
         <p
           role="status"
           className="mt-4 rounded-md border border-base-lighter bg-base-lightest bg-opacity-50 px-3 py-2 text-sm text-base-darker"
         >
           {notice}
         </p>
-      )}
+      )
+      */}
 
       <div className="mt-5 rounded-xl border border-base-lighter bg-white p-5 shadow-sm">
         <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
@@ -183,9 +208,9 @@ const KernelLifecyclePanel = ({
               value={selectedKernelName}
               onChange={(value) => setSelectedKernelName(value as string)}
               data={
-                safeSpecs.length === 0
+                kernelSpecs?.length === 0
                   ? [{ value: 'python3', label: 'python3' }]
-                  : safeSpecs.map((spec) => {
+                  : kernelSpecs?.map((spec) => {
                       const parts: string[] = [];
                       if (spec.cpu) parts.push(`${spec.cpu} CPU`);
                       if (spec.memory) parts.push(spec.memory);
@@ -215,28 +240,22 @@ const KernelLifecyclePanel = ({
           </div>
 
           {/* Resource summary for the selected spec */}
-          {selectedSpec &&
-            (selectedSpec.cpu ||
-              selectedSpec.memory ||
-              selectedSpec.gpuType) && (
-              <div className="flex flex-wrap gap-2 text-xs">
-                {selectedSpec.cpu && (
-                  <span className="rounded-full bg-base-lightest px-2.5 py-1 font-semibold text-base-darkest">
-                    CPU: {selectedSpec.cpu}
-                  </span>
-                )}
-                {selectedSpec.memory && (
-                  <span className="rounded-full bg-base-lightest px-2.5 py-1 font-semibold text-base-darkest">
-                    RAM: {selectedSpec.memory}
-                  </span>
-                )}
-                {selectedSpec.gpuType && (
-                  <span className="rounded-full bg-accent-max px-2.5 py-1 font-semibold text-accent-dark">
-                    GPU: {selectedSpec.gpuType}
-                  </span>
-                )}
-              </div>
-            )}
+          {resourceTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 text-xs">
+              {resourceTags.map(({ label, value, gpu }) => (
+                <span
+                  key={label}
+                  className={`rounded-full px-2.5 py-1 font-semibold ${
+                    gpu
+                      ? 'bg-accent-max text-accent-dark'
+                      : 'bg-base-lightest text-base-darkest'
+                  }`}
+                >
+                  {label}: {value}
+                </span>
+              ))}
+            </div>
+          )}
 
           <Button
             onClick={() =>
@@ -252,30 +271,31 @@ const KernelLifecyclePanel = ({
         </div>
       </div>
 
-      {loading && (
+      {isLoading && (
         <p role="status" className="mt-4 text-sm text-base-darker">
           Loading kernels...
         </p>
       )}
-      {error && (
+      {isError && (
         <p role="alert" className="mt-4 text-sm text-primary">
           {error}
         </p>
       )}
 
-      {!loading && !error && displayRows.length === 0 && (
+      {!isLoading && !isError && displayRows.length === 0 && (
         <p className="mt-4 text-sm text-base-darker">No active kernels.</p>
       )}
 
-      {!loading && !error && displayRows.length > 0 && (
+      {!isLoading && !isError && displayRows.length > 0 && (
         <div role="list" className="mt-4 space-y-4">
           {displayRows.map((row) => {
             const state = (row.executionState || '').toLowerCase();
-            const isStaleOrIdle =
-              state === 'idle' ||
-              row.staleState === 'warning' ||
-              row.staleState === 'kill';
-            const rowSpec = safeSpecs.find((s) => s.name === row.kernelName);
+            const isStaleOrIdle = state === 'idle';
+            // TODO: figure out where this is set
+            //  ||
+            //   row.staleState === 'warning' ||
+            //  row.staleState === 'kill';
+            const rowSpec = kernelSpecs?.find((s) => s.name === row.kernelName);
 
             return (
               <div
@@ -298,17 +318,20 @@ const KernelLifecyclePanel = ({
                         {row.executionState || 'unknown'}
                       </span>
                     </p>
-                    {row.staleState === 'warning' && (
+                    {/*  TODO: See where this is set
+                      row.staleState === 'warning' && (
                       <p className="mt-1 text-xs text-accentWarm-dark">
                         Idle warning: inactive for about{' '}
                         {Math.floor(row.idleDays || 0)} day(s).
                       </p>
-                    )}
-                    {row.staleState === 'kill' && (
+                    ) */}
+                    {/*
+                    TODO: See where this is set
+                    row.staleState === 'kill' && (
                       <p className="mt-1 text-xs text-primary">
                         Stale kill policy applies; autosave + terminate pending.
                       </p>
-                    )}
+                    )*/}
                   </div>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
