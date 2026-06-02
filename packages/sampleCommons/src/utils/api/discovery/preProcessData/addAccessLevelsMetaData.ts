@@ -11,19 +11,15 @@ const addAccessLevelsMetaData = async (
   data: Array<JSONObject>,
   cookies: any,
 ): Promise<Array<JSONObject>> => {
-  // let authzResources: AuthzResourceResponse | undefined;
-
   const tokenFromCookie = getAccessToken(cookies) as string;
 
   // Let the server-side helper resolve resources using the active Gen3 session.
   // From packages/sampleCommons/src/middleware-impl.ts
+  // authzResources is a 1D array of strings, i.e. authzResources [ '/dictionary_page', '/programs/open', ... ]
   let authzResources = (await fetchArboristResources(
     tokenFromCookie,
     process.env.NODE_ENV === 'production',
   )) as string[];
-
-  // authzResources is a 1D array of strings, i.e. authzResources [ '/dictionary_page', '/programs/open', ... ]
-  // console.log('authzResources', authzResources);
 
   const determineStudyAccessLevel = (
     authz: undefined | null | JSONValue | string,
@@ -71,7 +67,6 @@ const addAccessLevelsMetaData = async (
       userHasAccessToResource &&
       data_availability === 'mixed_availability'
     ) {
-      console.log('Mixed access study found');
       return AccessLevel.MIXED;
     } else {
       /* Waiting (Default) */

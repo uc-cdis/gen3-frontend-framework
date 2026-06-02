@@ -37,7 +37,6 @@ const processData = async (
   let processedData: Array<JSONObject> = preprocessedData;
   // Study access levels filtering (user selected data availability)
   processedData = filterByAccessLevels(processedData, selectedAccessLevels);
-
   // Then: Search
   processedData = searchData(
     processedData,
@@ -73,7 +72,6 @@ const processData = async (
 
 export default async function handler(req: any, res: any) {
   const currentTime = Date.now();
-
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
     const processedData = await processData(cachedData, req.body);
