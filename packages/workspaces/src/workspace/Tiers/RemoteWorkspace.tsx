@@ -205,23 +205,24 @@ const RemoteComputeWorkspace = React.forwardRef<
     }
 
     return (
-      <iframe
-        key={retryCount}
-        ref={iframeRef}
-        src={`${normalizedBase}/lab/index.html`}
-        title="Remote Jupyter Workspace"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
-        allow="clipboard-read; clipboard-write; cross-origin-isolated"
-        className="min-h-0 flex-1 border-0"
-        style={{ width: '100%' }}
-        onLoad={() => {
-          setLoading(false);
-        }}
-        onError={() => {
-          setLoadError(true);
-          onError?.(new Error('Unable to load remote Jupyter workspace.'));
-        }}
-      />
+      <div className="w-full flex flex-col grow">
+        <iframe
+          key={retryCount}
+          ref={iframeRef}
+          src={`${normalizedBase}/lab/index.html`}
+          title="Remote Jupyter Workspace"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
+          allow="clipboard-read; clipboard-write; cross-origin-isolated"
+          className="min-h-0 flex-1 border-0"
+          onLoad={() => {
+            setLoading(false);
+          }}
+          onError={() => {
+            setLoadError(true);
+            onError?.(new Error('Unable to load remote Jupyter workspace.'));
+          }}
+        />
+      </div>
     );
   },
 );
