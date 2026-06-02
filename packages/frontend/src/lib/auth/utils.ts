@@ -1,4 +1,5 @@
 import { fetchFence } from '@gen3/core/server';
+import { parse } from 'cookie';
 
 interface Gen3JTWKeys {
   keys: string[];
@@ -31,4 +32,17 @@ export const fetchJWTKey = async (useService: boolean = false) => {
     return response.data.keys[0][1];
   }
   return null;
+};
+
+export const getAccessToken = (cookie?: string): string | undefined => {
+  const cookies = cookie ? parse(cookie) : {};
+
+  let accessToken = cookies.access_token;
+  // in development mode we support "credentials login"
+  if (!accessToken && process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    accessToken = cookies.credentials_token;
+  }
+  return accessToken;
 };
