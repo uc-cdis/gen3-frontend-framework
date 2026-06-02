@@ -4,7 +4,6 @@ import {
   JSONObject,
   JSONValue,
 } from '@gen3/core';
-import { DiscoveryIndexConfig } from '../types/discoveryApi';
 import { AccessLevel } from '@gen3/frontend/utils';
 import { getAccessToken } from '@/lib/auth/getLoginStatus';
 
@@ -12,16 +11,16 @@ const addAccessLevelsMetaData = async (
   data: Array<JSONObject>,
   cookies: any,
 ): Promise<Array<JSONObject>> => {
-  let authzResources: AuthzResourceResponse | undefined;
+  // let authzResources: AuthzResourceResponse | undefined;
 
   const tokenFromCookie = getAccessToken(cookies) as string;
 
   // Let the server-side helper resolve resources using the active Gen3 session.
   // From packages/sampleCommons/src/middleware-impl.ts
-  authzResources = (await fetchArboristResources(
+  let authzResources = (await fetchArboristResources(
     tokenFromCookie,
     process.env.NODE_ENV === 'production',
-  )) as unknown as AuthzResourceResponse;
+  )) as string[];
 
   // authzResources is a 1D array of strings, i.e. authzResources [ '/dictionary_page', '/programs/open', ... ]
   // console.log('authzResources', authzResources);
@@ -84,7 +83,7 @@ const addAccessLevelsMetaData = async (
     let accessLevelNum = determineStudyAccessLevel(
       obj?.authz,
       obj?.data_availability,
-      authzResources?.resources,
+      authzResources,
     );
     return {
       ...obj,
