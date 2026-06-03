@@ -165,63 +165,60 @@ const RemoteComputeWorkspace = React.forwardRef<
       setRetryCount((n) => n + 1);
     };
 
-    if (loadError) {
-      return (
-        <div>
-          <Card withBorder shadow="sm" padding="md" w="100%" maw={448}>
-            <Text fw={600} c="primary">
-              Remote workspace failed to load
-            </Text>
-            <Text size="sm" c="dimmed" mt={4}>
-              Unable to connect to the Jupyter Gateway. Check the browser
-              console for details.
-            </Text>
-            <Button variant="default" size="xs" mt="sm" onClick={handleRetry}>
-              Retry
-            </Button>
-          </Card>
-        </div>
-      );
-    }
-
-    if (loading && !loadError) {
-      return (
-        <div
-          role="status"
-          aria-label="Connecting to remote workspace"
-          className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
-        >
-          <div className="pointer-events-auto flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-900">
-            <Loader size={24} />
-            <Text size="sm" c="dimmed" mt={4}>
-              Connecting to Remote Gateway...
-            </Text>
-            <Button variant="default" size="xs" mt="sm" onClick={handleRetry}>
-              Taking too long? Reload
-            </Button>
-          </div>
-        </div>
-      );
-    }
-
     return (
-      <div className="w-full flex flex-col grow">
-        <iframe
-          key={retryCount}
-          ref={iframeRef}
-          src={`${normalizedBase}/lab/index.html`}
-          title="Remote Jupyter Workspace"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
-          allow="clipboard-read; clipboard-write; cross-origin-isolated"
-          className="min-h-0 flex-1 border-0"
-          onLoad={() => {
-            setLoading(false);
-          }}
-          onError={() => {
-            setLoadError(true);
-            onError?.(new Error('Unable to load remote Jupyter workspace.'));
-          }}
-        />
+      <div>
+        {loading && !loadError && (
+          <div
+            role="status"
+            aria-label="Connecting to remote workspace"
+            className="w-full h-full pointer-events-none flex items-center justify-center"
+          >
+            <div className="pointer-events-auto flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+              <Loader size={24} />
+              <Text size="sm" c="dimmed" mt={4}>
+                Connecting to Remote Gateway...
+              </Text>
+              <Button variant="default" size="xs" mt="sm" onClick={handleRetry}>
+                Taking too long? Reload
+              </Button>
+            </div>
+          </div>
+        )}
+        {loadError && (
+          <div>
+            <Card withBorder shadow="sm" padding="md" w="100%" maw={448}>
+              <Text fw={600} c="primary">
+                Remote workspace failed to load
+              </Text>
+              <Text size="sm" c="dimmed" mt={4}>
+                Unable to connect to the Jupyter Gateway. Check the browser
+                console for details.
+              </Text>
+              <Button variant="default" size="xs" mt="sm" onClick={handleRetry}>
+                Retry
+              </Button>
+            </Card>
+          </div>
+        )}
+
+        <div className="w-full flex flex-col grow">
+          <iframe
+            key={retryCount}
+            ref={iframeRef}
+            src={`${normalizedBase}/lab/index.html`}
+            title="Remote Jupyter Workspace"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
+            allow="clipboard-read; clipboard-write; cross-origin-isolated"
+            className="min-h-0 flex-1 border-0"
+            onLoad={() => {
+              setLoading(false);
+            }}
+            onError={() => {
+              setLoadError(true);
+              onError?.(new Error('Unable to load remote Jupyter workspace.'));
+            }}
+          />
+        </div>
       </div>
     );
   },

@@ -28,6 +28,17 @@ export const WORKSPACE_TIER_INFORMATION: Record<
       requiresStopping: false,
     },
     settings: {
+      showKernels: false,
+    },
+  },
+  remote: {
+    tier: 'remote',
+    toolbar: {
+      label: 'Remote Compute Environment',
+      description: 'Running with Remote Kernels',
+      requiresStopping: true,
+    },
+    settings: {
       showKernels: true,
     },
   },

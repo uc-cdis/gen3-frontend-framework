@@ -278,7 +278,7 @@ const KernelLifecyclePanel = ({
       )}
       {isError && (
         <p role="alert" className="mt-4 text-sm text-primary">
-          {error}
+          {error ? "Couldn't load kernels." : 'Unknown error.'}
         </p>
       )}
 

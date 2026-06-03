@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { createWorkspaceAssetsHandler } from '../../../server';
+import { createWorkspaceAssetsHandler } from '../server';
 
 const upstreamHandler = createWorkspaceAssetsHandler({
   // Route JupyterLite remote-mode kernel WebSocket traffic through revproxy's
