@@ -17,6 +17,24 @@ const mdsAggregateApi =
 const mdsMetadataApi =
   'https://healdata.org/mds/metadata?data=True&_guid_type=unregistered_discovery_metadata&limit=2000&offset=0';
 
+function printMetaDataInfo(dataArray: any) {
+  // Tally up the occurrences of each "__accessible" value
+  const counts = dataArray.reduce((acc, item) => {
+    const val = item.__accessible;
+    if (val !== undefined) {
+      acc[val] = (acc[val] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  // Print the formatted output
+  console.log('Value      | Instance Count');
+  console.log('--------------------------');
+  for (const [value, count] of Object.entries(counts)) {
+    console.log(`${value.padEnd(10, ' ')} | ${count}`);
+  }
+}
+
 // Main Function to Orchestrate Steps
 const processData = async (
   data: Array<JSONObject>,
@@ -62,6 +80,7 @@ const processData = async (
     pagination.pageSize,
     pagination.offset,
   );
+  printMetaDataInfo(processedData);
   return {
     hits: processedData.length,
     displayedData: paginatedData,
