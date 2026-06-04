@@ -78,7 +78,6 @@ export const DataAccessCellRenderer = ({
     );
   }
   if (accessLevel === AccessLevel.OTHER) {
-    alert('found an other');
     return (
       <Tooltip label={buildTooltip('Acccess level is other')}>
         <Group>

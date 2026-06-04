@@ -14,14 +14,13 @@ const filterByAccessLevels = (
     return studies;
   }
 
-  // For “Mixed Availability”: selecting either “Available” or “Request Access”
+  // For “Mixed Availability”: selecting either “Available” or “Request Access” or
   // from the data availability filter will cause these “Mixed Availability” studies to be included in the filtered results
   // so the prescence of either available or request access access level
-  // should add mixed availablility access level to selected access levels
+  // should add mixed availablility access leve to selected access levels
   if (
-    selectedAccessLevels.includes(
-      AccessLevel.ACCESSIBLE || AccessLevel.UNACCESSIBLE,
-    )
+    selectedAccessLevels.includes(AccessLevel.ACCESSIBLE) ||
+    selectedAccessLevels.includes(AccessLevel.UNACCESSIBLE)
   ) {
     selectedAccessLevels.push(AccessLevel.MIXED);
   }
