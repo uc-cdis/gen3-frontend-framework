@@ -5,7 +5,7 @@
  * Security properties:
  *  - Billing gate: POST /kernels fetches Fence /credentials/cdis first;
  *    if that fails, no kernel is ever launched.
- *  - Kernel spec filtering: browser receives only the names/costs defined in policy.
+ *  - Kernel spec filtering: the browser receives only the names/costs defined in policy.
  *  - REMOTE_USER forwarded on every upstream request — JEG enforces per-user isolation.
  *  - KERNEL_ID_RE validates all kernel IDs before they reach the upstream URL.
  *
@@ -152,7 +152,6 @@ async function fetchFenceCreds(
   ) {
     throw new Error('Fence URL is misconfigured.');
   }
-  const url = `${parsedFenceUrl.origin}${parsedFenceUrl.pathname.replace(/\/$/, '')}/credentials/api`;
   try {
     const response = await fetchFence<FenceCreds>(
       {
@@ -163,7 +162,7 @@ async function fetchFenceCreds(
           'Content-Type': 'application/json',
         },
       },
-      true, // use the FENCE Service
+      process.env.NODE_ENV === 'production', // use the FENCE Service if in production
     );
     if (!response?.data?.api_key) {
       console.error('No valid API key found in Fence response');
@@ -264,6 +263,18 @@ function readBody(req: NextApiRequest): Promise<Buffer> {
 /* ------------------------------------------------------------------ */
 /*  Ambassador upstream URL builder                                     */
 /* ------------------------------------------------------------------ */
+
+// function buildAmbassadorUrl(gen3Endpoint: string, kernelPath: string): string {
+//   // gen3Endpoint may or may not have a scheme
+//   const base = gen3Endpoint.startsWith('http')
+//     ? gen3Endpoint
+//     : `https://${gen3Endpoint}`;
+//   const parsed = new URL(base);
+//   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+//     throw new Error('gen3Endpoint must use http or https protocol.');
+//   }
+//   return `${parsed.origin}${parsed.pathname.replace(/\/$/, '')}/lw-workspace/proxy${kernelPath}`;
+// }
 
 function buildAmbassadorUrl(gen3Endpoint: string, kernelPath: string): string {
   // gen3Endpoint may or may not have a scheme
@@ -645,9 +656,7 @@ async function handleKernelPassthrough(
 /*  Factory                                                             */
 /* ------------------------------------------------------------------ */
 
-export function createKernelLifecycleProxyHandler(
-  config: KernelLifecycleProxyConfig,
-) {
+export function createKernelProxyHandler(config: KernelLifecycleProxyConfig) {
   const sink = config.billingSink ?? defaultBillingSink;
   const jegEnabled = config.jegEnabled === true;
   const idleKillDays = config.idleKillDays ?? 10;

@@ -43,12 +43,12 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server/esm/server.js",
-      "require": "./dist/server/cjs/server.cjs"
+      "require": "./dist/server/cjs/server.js"
     },
     "./pages": {
       "types": "./dist/pages.d.ts",
-      "import": "./dist/pages/esm/pages.js",
-      "require": "./dist/pages/cjs/pages.cjs"
+      "import": "./dist/pages/esm/index.js",
+      "require": "./dist/pages/cjs/index.js"
     },
     "./dist/styles.css": "./dist/styles.css"
   },

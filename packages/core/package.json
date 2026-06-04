@@ -25,7 +25,7 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/esm/server.js",
-      "require": "./dist/cjs/server.cjs"
+      "require": "./dist/cjs/server.js"
     },
     "./exports/constants": {
       "types": "./dist/constant.d.ts",

@@ -2,9 +2,10 @@
 // Browser never sees JEG URL or raw kernel spec names.
 // POST /kernels calls Fence /credentials/cdis first — if it fails, no kernel is launched.
 // getToken reuses this app's cookie extraction — no JWT reinvention.
-import { createKernelLifecycleProxyHandler } from '../server';
+import { createKernelProxyHandler } from '../server/kernelLifecycleProxy';
 import { getAccessToken } from '@gen3/frontend/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { GEN3_FENCE_API } from '@gen3/core/server';
 
 const inCluster = Boolean(process.env.KUBERNETES_SERVICE_HOST);
 const defaultGen3Endpoint = inCluster
@@ -12,7 +13,7 @@ const defaultGen3Endpoint = inCluster
   : undefined;
 const defaultFenceUrl = inCluster
   ? 'http://fence-service.gen3.svc.cluster.local'
-  : undefined;
+  : GEN3_FENCE_API;
 
 const gen3Endpoint = process.env.GEN3_ENDPOINT ?? defaultGen3Endpoint;
 const fenceUrl = process.env.FENCE_URL ?? defaultFenceUrl;
@@ -39,7 +40,7 @@ if (process.env.KERNEL_SPEC_POLICY) {
   }
 }
 
-const upstreamHandler = createKernelLifecycleProxyHandler({
+const upstreamHandler = createKernelProxyHandler({
   gen3Endpoint,
   fenceUrl,
   kernelSpecPolicy: policy,
