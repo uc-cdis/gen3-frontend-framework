@@ -16,7 +16,7 @@ const addAccessLevelsMetaData = async (
   // Let the server-side helper resolve resources using the active Gen3 session.
   // From packages/sampleCommons/src/middleware-impl.ts
   // authzResources is a 1D array of strings, i.e. authzResources [ '/dictionary_page', '/programs/open', ... ]
-  let authzResources = (await fetchArboristResources(
+  const authzResources = (await fetchArboristResources(
     tokenFromCookie,
     process.env.NODE_ENV === 'production',
   )) as string[];
@@ -41,7 +41,7 @@ const addAccessLevelsMetaData = async (
   };
 
   return data.map((obj) => {
-    let accessLevelNum = determineStudyAccessLevel(
+    const accessLevelNum = determineStudyAccessLevel(
       obj?.authz,
       obj?.data_availability,
       authzResources,
