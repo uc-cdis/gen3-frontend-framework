@@ -70,10 +70,11 @@ const processData = async (
 };
 
 export default async function handler(req: any, res: any) {
+  const cookies = req.headers.cookie || '';
   const currentTime = Date.now();
   // Check if cached data is still valid
   if (cachedData && currentTime - cacheTime < CACHE_DURATION) {
-    const processedData = await processData(cachedData, req.body);
+    const processedData = await processData(cachedData, req.body, cookies);
     res.status(200).json(processedData);
   } else {
     try {
@@ -97,7 +98,6 @@ export default async function handler(req: any, res: any) {
       // Update the cache
       cachedData = combinedData;
       cacheTime = currentTime;
-      const cookies = req.headers.cookie || '';
       const processedData = await processData(combinedData, req.body, cookies);
       res.status(200).json(processedData);
     } catch (error) {
