@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -60,7 +60,10 @@ const CredentialsLogin = ({ handleLogin }: CredentialsLoginProps) => {
         const response = await fetch(loginEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parsedCredentials),
+          body: JSON.stringify({
+            ...parsedCredentials,
+            setAsAccessToken: true,
+          }),
         });
 
         if (!response.ok) {

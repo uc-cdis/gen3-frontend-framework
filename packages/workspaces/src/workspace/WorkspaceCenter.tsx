@@ -7,6 +7,7 @@ import { WorkspacesCenterConfiguration } from '../workspace/types';
 import WorkspaceLayout from '../workspace/WorkspaceLayout/WorkspaceLayout';
 import WorkspaceCenterContext from './WorkspaceCenterContext';
 import { useUserAuth } from '@gen3/core';
+import { MicroContainerProvider } from '../providers/MicroContainerProvider';
 
 export type WorkspaceAuthContext = {
   username?: string;
@@ -78,11 +79,13 @@ const WorkspaceCenter = ({
             free: <FreeWorkspace />,
             local: <div>Local Workspace</div>,
             remote: (
-              <RemoteWorkspace
-                tenantId={authContext?.tenantId || 'default'}
-                workspaceId={authContext?.workspaceId || 'workspace-default'}
-                userId={authContext?.username || 'anonymous'}
-              />
+              <MicroContainerProvider enabled={true}>
+                <RemoteWorkspace
+                  tenantId={authContext?.tenantId || 'default'}
+                  workspaceId={authContext?.workspaceId || 'workspace-default'}
+                  userId={authContext?.username || 'anonymous'}
+                />
+              </MicroContainerProvider>
             ),
           }[workspaceTier as string]
         }

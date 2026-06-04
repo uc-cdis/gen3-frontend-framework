@@ -2,7 +2,7 @@
 // Browser never sees JEG URL or raw kernel spec names.
 // POST /kernels calls Fence /credentials/cdis first — if it fails, no kernel is launched.
 // getToken reuses this app's cookie extraction — no JWT reinvention.
-import { createKernelLifecycleProxyHandler } from '../../../server';
+import { createKernelLifecycleProxyHandler } from '../server';
 import { getAccessToken } from '@gen3/frontend/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

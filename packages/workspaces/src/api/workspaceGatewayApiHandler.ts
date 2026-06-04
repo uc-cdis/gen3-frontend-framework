@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getCookie } from 'cookies-next';
 
 // Allowed path prefixes — keeps proxying scoped to the Jupyter Gateway API surface
 const ALLOWED_PREFIXES = ['/api/kernels', '/api/sessions', '/api/kernelspecs'];
@@ -100,6 +101,17 @@ export default async function handler(
     )
       continue;
     forwardHeaders.set(key, Array.isArray(value) ? value.join(',') : value);
+  }
+
+  // Inject server-side JEG token — overrides any client-supplied auth header.
+  // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    const accessToken = getCookie('credentials_token');
+    if (accessToken) {
+      forwardHeaders.set('Authorization', `Bearer ${accessToken}`);
+    }
   }
 
   let body: Buffer | undefined;

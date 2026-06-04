@@ -4,6 +4,8 @@ import { withJupyterWorkspaces } from './server/withJupyterWorkspaces';
 import { createKernelLifecycleProxyHandler } from './server/kernelLifecycleProxy';
 import { default as workspaceAssetsApi } from './api/workspaceAssetsApi';
 import { default as workspaceGatewayApiHandler } from './api/workspaceGatewayApiHandler';
+import { default as kernelApiHandler } from './api/kernelApiHandler';
+import { default as hatcheryApiHandler } from './api/hatcheryApiHandler';
 
 export {
   GEN3_HATCHERY_API,
@@ -12,4 +14,6 @@ export {
   withJupyterWorkspaces,
   workspaceAssetsApi,
   workspaceGatewayApiHandler,
+  kernelApiHandler,
+  hatcheryApiHandler,
 };

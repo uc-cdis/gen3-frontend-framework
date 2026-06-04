@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Loader } from '@mantine/core';
-import { useMicoContainerContext } from '../providers/MicroContainerProvider';
+import { useMicroContainerContext } from '../providers/MicroContainerProvider';
 
 export interface MicroContainerPanelProps {
   // status: MicroContainerStatus;
@@ -26,7 +26,7 @@ export interface MicroContainerPanelProps {
  * status === 'running' && useJupyterReady.ready === true.
  */
 const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
-  const { status, lastError, launch, terminate } = useMicoContainerContext();
+  const { status, lastError, launch, terminate } = useMicroContainerContext();
 
   /* ── Elapsed timer for launching state ── */
   const [elapsedSec, setElapsedSec] = useState(0);

@@ -1,18 +1,5 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  useHatcheryOptionsQuery,
-  useHatcheryStatusQuery,
-  useLaunchHatcheryWorkspaceMutation,
-  useTerminateHatcheryWorkspaceMutation,
-} from '../core/hatcheryApi';
-import { getRTKQErrorMessage } from '../utils';
+import React, { createContext, ReactNode } from 'react';
+import { useMicroContainer } from './useMicroContainer';
 
 export type MicroContainerStatus =
   | 'unknown'
@@ -35,15 +22,6 @@ export interface MicroContainerContextValue {
   terminate: () => Promise<void>;
 }
 
-const POLL_INTERVALS = {
-  'not-running': 0, // stopped — no traffic
-  launching: 5_000, // fast — user is waiting
-  running: 30_000, // slow — just drift-check
-  terminating: 5_000, // fast — waiting for pod deletion
-  error: 0, // stopped on confirmed failure
-  unknown: 10_000, // initial probe
-} as const;
-
 const MicroContainerProviderContext = createContext<MicroContainerContextValue>(
   {
     status: 'unknown',
@@ -54,11 +32,11 @@ const MicroContainerProviderContext = createContext<MicroContainerContextValue>(
   },
 );
 
-export const useMicoContainerContext = () => {
+export const useMicroContainerContext = () => {
   const context = React.useContext(MicroContainerProviderContext);
   if (context === undefined) {
     throw Error(
-      'MicroContainer must  be used inside of a useMicoContainerContext',
+      'useMicroContainerContext must be used inside a MicroContainerProvider',
     );
   }
   return context;
@@ -75,113 +53,9 @@ export function MicroContainerProvider({
   identifierTag,
   enabled,
 }: MicroContainerProviderProps) {
-  const [status, setStatus] = useState<MicroContainerStatus>('unknown');
-  const [containerHash, setContainerHash] = useState<string | null>(null);
-
   const tag =
     identifierTag ?? (process.env.NEXT_PUBLIC_MICRO_CONTAINER_TAG || '');
-
-  const {
-    data: optionData,
-    error: optionsError,
-    isFetching: isOptionsFetching,
-    isError: isOptionsError,
-  } = useHatcheryOptionsQuery(tag, { skip: containerHash !== null });
-
-  const {
-    data: hatcheryStatus,
-    error: statusError,
-    isFetching: isStausFetching,
-    isError: isStatusError,
-    refetch: refetchStatus,
-  } = useHatcheryStatusQuery(containerHash, {
-    skip: containerHash === null,
-    pollingInterval: POLL_INTERVALS[status],
-  });
-
-  const [
-    launchTrigger,
-    { isError: isWorkspaceLaunchError, error: workspaceLaunchError },
-  ] = useLaunchHatcheryWorkspaceMutation();
-
-  const [
-    terminateWorkspace,
-    {
-      isLoading: terminateIsLoading,
-      isError: isTerminateError,
-      error: workspaceTerminateError,
-    },
-  ] = useTerminateHatcheryWorkspaceMutation();
-
-  useEffect(() => {
-    if (optionData) setContainerHash(optionData);
-  }, [optionData]);
-
-  useEffect(() => {
-    if (hatcheryStatus)
-      setStatus((hatcheryStatus ?? 'unknown') as MicroContainerStatus);
-  }, [hatcheryStatus]);
-
-  const lastError = useMemo(() => {
-    if (!optionsError && !statusError) return null;
-    let errorStr: string = '';
-    if (optionsError) {
-      const msg = getRTKQErrorMessage(optionsError);
-      errorStr += msg;
-    }
-    if (statusError) {
-      const msg = getRTKQErrorMessage(statusError);
-      errorStr += msg;
-    }
-    return errorStr;
-  }, [optionsError, statusError]);
-
-  const launch = useCallback(async (): Promise<void> => {
-    if (
-      !enabled ||
-      hatcheryStatus === 'launching' ||
-      hatcheryStatus === 'running'
-    )
-      return;
-
-    setStatus('launching');
-
-    const hash = containerHash;
-    const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
-    const res = await launchTrigger(query);
-    if (!res.data || res?.error) {
-      // some error
-      setStatus('error');
-    }
-    // Status will resolve to 'running' on the next poll
-  }, [enabled, hatcheryStatus, containerHash, launchTrigger]);
-
-  const terminate = useCallback(async () => {
-    const hash = containerHash;
-    const query = hash ? `?id=${encodeURIComponent(hash)}` : '';
-
-    if (!enabled || hatcheryStatus === 'terminating') return;
-    setStatus('terminating');
-    terminateWorkspace(query);
-    refetchStatus();
-  }, [
-    containerHash,
-    enabled,
-    hatcheryStatus,
-    terminateWorkspace,
-    refetchStatus,
-  ]);
-
-  const value = useMemo(
-    () => ({
-      status,
-      containerHash,
-      lastError,
-      launch,
-      terminate,
-    }),
-    [containerHash, lastError, launch, status, terminate],
-  );
+  const value = useMicroContainer(tag, enabled);
 
   return (
     <MicroContainerProviderContext.Provider value={value}>

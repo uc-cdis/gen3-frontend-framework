@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import {
   MicroContainerProvider,
-  useMicoContainerContext,
+  useMicroContainerContext,
 } from '../../providers/MicroContainerProvider';
 import MicroContainerPanel from '../../components/MicroContainerPanel';
 
@@ -18,7 +18,7 @@ const HatcheryWorkspacePanel = ({
   onReady,
   onError,
 }: HatcheryWorkspaceProps) => {
-  const { status } = useMicoContainerContext();
+  const { status } = useMicroContainerContext();
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);

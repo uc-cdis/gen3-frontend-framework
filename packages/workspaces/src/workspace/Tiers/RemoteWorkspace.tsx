@@ -8,6 +8,9 @@ import React, {
 import type { WorkspaceAuthContext } from '../../auth/auth';
 import { generateScopedNotebookPath } from './utils';
 import { Button, Card, Loader, Text } from '@mantine/core';
+import { getCookie } from 'cookies-next';
+import { useMicroContainerContext } from '../../providers/MicroContainerProvider';
+import MicroContainerPanel from '../../components/MicroContainerPanel';
 
 export type RemoteComputeWorkspaceHandle = {
   /** Attach a running kernel to the notebook open in the iframe. */
@@ -32,7 +35,6 @@ export type RemoteComputeWorkspaceProps = {
 
 /**
  * Handle a Jupyter Enterprise Gateway session.
- * @constructor
  */
 const RemoteComputeWorkspace = React.forwardRef<
   RemoteComputeWorkspaceHandle,
@@ -55,6 +57,7 @@ const RemoteComputeWorkspace = React.forwardRef<
     const [retryCount, setRetryCount] = useState(0);
     const [jupyterReady, setJupyterReady] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
+    const { status } = useMicroContainerContext();
 
     const normalizedBase = assetBaseUrl.replace(/\/$/, '');
 
@@ -67,7 +70,11 @@ const RemoteComputeWorkspace = React.forwardRef<
         userId,
         notebookName,
       });
-    } catch {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // show the error in the console
+        console.error(error.message);
+      }
       const userHash = btoa(userId || 'anonymous').substring(0, 8);
       scopedNotebookPath = `/workspace/${userHash}/${notebookName}.ipynb`;
     }
@@ -87,14 +94,53 @@ const RemoteComputeWorkspace = React.forwardRef<
         attempts += 1;
         try {
           const app = (iframeRef.current?.contentWindow as any)?.jupyterapp;
+
+          // Inject server-side JEG token — overrides any client-supplied auth header.
+          // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
+          let accessToken = undefined;
+          if (process.env.NODE_ENV === 'development') {
+            // NOTE: This cookie can only be accessed from the client side
+            // in development mode. Otherwise, the cookie is set as httpOnly
+            accessToken = getCookie('credentials_token');
+            console.log('Injecting server-side JEG token from cookie', app);
+          }
+
+          if (app && accessToken) {
+            console.log(
+              'Injecting server-side JEG token into JupyterLite app',
+              app,
+            );
+            const win = iframeRef.current?.contentWindow as any;
+            // JupyterLab reads token from PageConfig at startup; after startup, update ServerConnection
+            if (win.PageConfig) {
+              win.PageConfig.setOption('token', accessToken);
+            }
+            // Also update the service manager's settings if accessible
+            if (app.serviceManager?.serverSettings) {
+              // ServerConnection.makeSettings merges with existing settings
+              const SC =
+                win.JupyterFrontEnd?.ServerConnection ?? win.ServerConnection;
+              if (SC?.makeSettings) {
+                const newSettings = SC.makeSettings({
+                  ...app.serviceManager.serverSettings,
+                  token: accessToken,
+                  headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                // Reassign — works on many JupyterLab 3/4 builds
+                app.serviceManager._serverSettings = newSettings;
+              }
+            }
+          }
+
           if (app?.status === 'ready' || app?.started) {
             setJupyterReady(true);
             onReady?.();
+            console.log('JupyterLite app is ready');
             return;
           }
         } catch (error: unknown) {
           if (error instanceof Error) {
-            console.error(error.message);
+            console.error(`Remote error ${error.message}`);
           }
           // cross-origin or not loaded yet
         }
@@ -165,8 +211,16 @@ const RemoteComputeWorkspace = React.forwardRef<
       setRetryCount((n) => n + 1);
     };
 
+    if (status !== 'running') {
+      return (
+        <div className="w-full flex flex-col grow">
+          <MicroContainerPanel />
+        </div>
+      );
+    }
+
     return (
-      <div>
+      <div className="w-full flex flex-col grow">
         {loading && !loadError && (
           <div
             role="status"
@@ -206,6 +260,8 @@ const RemoteComputeWorkspace = React.forwardRef<
             key={retryCount}
             ref={iframeRef}
             src={`${normalizedBase}/lab/index.html`}
+            width="100%"
+            height="100%"
             title="Remote Jupyter Workspace"
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals allow-storage-access-by-user-activation"
             allow="clipboard-read; clipboard-write; cross-origin-isolated"

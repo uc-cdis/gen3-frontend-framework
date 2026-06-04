@@ -16,6 +16,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodePath from 'path';
 import fs from 'fs';
+import { getCookie } from 'cookies-next';
 
 // ---------- types ----------
 
@@ -75,14 +76,12 @@ const REMOTE_DISABLED_EXTENSIONS = [
 
 // ---------- helpers ----------
 
+const ASSETS_ROOT_PATH =
+  process.env.JUPYTER_ASSETS_ROOT_PATH ||
+  'node_modules/@gen3/workspaces/assets';
+
 function defaultAssetRoot(): string {
-  return nodePath.join(
-    process.cwd(),
-    'node_modules',
-    '@gen3',
-    'jupyter-workspaces',
-    'assets',
-  );
+  return nodePath.join(process.cwd(), ASSETS_ROOT_PATH);
 }
 
 interface BrandingConfig {
@@ -143,9 +142,19 @@ function injectRemoteConfig(
   const { proto, host } = resolveOrigin(req);
   const absoluteGatewayBase = `${proto}://${host}${gatewayBaseUrl}`;
 
+  // Inject server-side JEG token — overrides any client-supplied auth header.
+  // This ensures calls from JupyterLite's own serverconnection.js are also authenticated.
+
+  let accessToken = undefined;
+  if (process.env.NODE_ENV === 'development') {
+    // NOTE: This cookie can only be accessed from the client side
+    // in development mode. Otherwise, the cookie is set as httpOnly
+    accessToken = getCookie('credentials_token');
+  }
+
   const configData: Record<string, unknown> = {
     remoteBaseUrl: absoluteGatewayBase,
-    appendToken: false,
+    remoteToken: accessToken,
     disabledExtensions,
     fullThemesUrl: '/workspace-api/workspace-assets/remote/build/themes',
   };
@@ -220,6 +229,8 @@ export function createWorkspaceAssetsHandler(
     process.env.JUPYTER_GATEWAY_BASE_URL ??
     '/api/workspace/gateway/';
 
+  console.log('gatewayBaseUrl:', gatewayBaseUrl);
+
   const assetRoot = options?.assetRoot ?? defaultAssetRoot();
 
   const disabledExtensions = options?.additionalDisabledExtensions
@@ -260,6 +271,8 @@ export function createWorkspaceAssetsHandler(
 
     let filePath = resolved;
 
+    console.log('Resolved file path:', filePath);
+
     try {
       const stat = fs.statSync(filePath);
       if (stat.isDirectory()) {
@@ -287,6 +300,22 @@ export function createWorkspaceAssetsHandler(
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
     res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
+    if (process.env.NODE_ENV === 'development') {
+      // In dev there is no fence service to plant the access_token cookie, so
+      // we derive it from credentials_token (which is NOT httpOnly in dev) and
+      // set it here. The browser will then send it automatically with every
+      // subsequent request to the same origin — including JupyterLite's direct
+      // calls to /lw-workspace/proxy/jeg-proxy/api/kernelspecs (which bypass
+      // the Next.js proxy and therefore need the cookie on the wire).
+      const accessToken = req.cookies?.['credentials_token'];
+      if (accessToken) {
+        res.setHeader(
+          'Set-Cookie',
+          `access_token=${encodeURIComponent(accessToken)}; Path=/; SameSite=Lax`,
+        );
+      }
+    }
 
     if (nodePath.basename(filePath) === 'service-worker.js') {
       res.setHeader('Service-Worker-Allowed', '/');

@@ -137,6 +137,8 @@ function injectVectisBranding(html: string, req: NextApiRequest): string {
           : {}),
       };
 
+      console.log('[vectis-branding] Merged config:', merged);
+
       return `${openTag}${JSON.stringify(merged)}${closeTag}`;
     },
   );
@@ -158,6 +160,8 @@ function isHtmlResponse(res: NextApiResponse): boolean {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const originalSend = res.send.bind(res);
+
+  console.log('Workspace assets handler called');
 
   res.send = ((body: unknown) => {
     if (
