@@ -6,7 +6,7 @@ import KernelLifecyclePanel from '../../components/KernelLifecyclePanel';
 export const SettingsPanel = ({ showKernels }: SettingsPanelConfiguration) => {
   return (
     <Stack gap="xs" className="p-4">
-      <Text>Settings Panel</Text>
+      <Text size="lg">Settings Panel</Text>
       <KernelLifecyclePanel />
     </Stack>
   );

@@ -129,10 +129,10 @@ const KernelLifecyclePanel = ({
   const canLaunch = Boolean(onLaunchKernel);
 
   return (
-    <div className="flex min-w-0 flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <h2 className="truncate text-base font-bold text-base-darkest">
+          <h2 className="text-base font-bold text-base-darkest">
             Kernel Lifecycle
           </h2>
           <p className="mt-1 text-sm text-base-darker">
