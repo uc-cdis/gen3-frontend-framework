@@ -17,6 +17,7 @@ const POLL_INTERVALS = {
   running: 30_000,
   terminating: 5_000,
   error: 0,
+  stopped: 0,
   unknown: 10_000,
 } as const;
 

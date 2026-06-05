@@ -101,3 +101,11 @@ export interface WorkspaceStatusResponse {
   lastActivityTime: number;
   workspaceType?: string;
 }
+
+export interface KernelStatus {
+  id: string;
+  name: string;
+  connections: number;
+  executionState: string;
+  lastActivity: number;
+}

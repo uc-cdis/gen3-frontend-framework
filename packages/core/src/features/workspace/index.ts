@@ -1,27 +1,29 @@
 import {
-  useGetWorkspaceOptionsQuery,
-  useGetWorkspaceStatusQuery,
-  useGetWorkspacePayModelsQuery,
-  useGetActivePayModelQuery,
-  useSetCurrentPayModelMutation,
-  useLaunchWorkspaceMutation,
-  useTerminateWorkspaceMutation,
   EmptyWorkspaceStatusResponse,
-  selectWorkspaceStatusFromService,
-  selectWorkspaceStatus,
   selectPaymodelStatus,
+  selectWorkspaceStatus,
+  selectWorkspaceStatusFromService,
+  useGetActivePayModelQuery,
+  useGetWorkspaceOptionsQuery,
+  useGetWorkspacePayModelsQuery,
+  useGetWorkspaceStatusQuery,
+  useLaunchWorkspaceMutation,
+  useSetCurrentPayModelMutation,
+  useTerminateWorkspaceMutation,
 } from './workspaceApi';
 import {
-  setActiveWorkspaceId,
   clearActiveWorkspaceId,
-  setActiveWorkspaceStatus,
-  setActiveWorkspace,
-  setRequestedWorkspaceStatus,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
   selectRequestedWorkspaceStatus,
   selectRequestedWorkspaceStatusTimestamp,
+  setActiveWorkspace,
+  setActiveWorkspaceId,
+  setActiveWorkspaceStatus,
+  setRequestedWorkspaceStatus,
 } from './workspaceSlice';
+
+import { selectWorkspaceTier, setWorkspaceTier } from './tieredWorkspaceSlice';
 
 export * from './types';
 export * from './utils';
@@ -40,6 +42,7 @@ export {
   setActiveWorkspaceStatus,
   setActiveWorkspace,
   setRequestedWorkspaceStatus,
+  setWorkspaceTier,
   selectActiveWorkspaceId,
   selectActiveWorkspaceStatus,
   selectWorkspaceStatusFromService,
@@ -47,4 +50,5 @@ export {
   selectWorkspaceStatus,
   selectRequestedWorkspaceStatusTimestamp,
   selectPaymodelStatus,
+  selectWorkspaceTier,
 };

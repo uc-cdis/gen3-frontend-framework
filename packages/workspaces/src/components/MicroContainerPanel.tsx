@@ -43,7 +43,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   }, [status]);
 
   /* ── not-running ── */
-  if (status === 'not-running' || status === 'unknown') {
+  if (status === 'not-running' || status === 'unknown' || status === 'not-') {
     return (
       <div className="flex flex-col items-center justify-center gap-6 py-12 px-6">
         <div className="text-center">
@@ -116,6 +116,38 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
         <div className="text-center">
           <p className="text-base font-bold text-base-darkest">
             Workspace failed to start
+          </p>
+          {lastError && (
+            <p className="mt-2 max-w-sm text-xs text-primary">{lastError}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <Button onClick={terminate} variant="outline">
+            Terminate
+          </Button>
+          <Button onClick={launch} variant="default">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── error ── */
+  if (status === 'stopped') {
+    return (
+      <div
+        role="alert"
+        className="flex flex-col items-center justify-center gap-4 py-12 px-6"
+      >
+        <div className="rounded-full bg-primary-max p-3">
+          <span className="text-2xl text-primary" aria-hidden="true">
+            ✕
+          </span>
+        </div>
+        <div className="text-center">
+          <p className="text-base font-bold text-base-darkest">
+            Workspace stopped
           </p>
           {lastError && (
             <p className="mt-2 max-w-sm text-xs text-primary">{lastError}</p>

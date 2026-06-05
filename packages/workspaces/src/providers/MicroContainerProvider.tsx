@@ -7,7 +7,8 @@ export type MicroContainerStatus =
   | 'launching'
   | 'running'
   | 'terminating'
-  | 'error';
+  | 'error'
+  | 'stopped';
 
 export interface MicroContainerContextValue {
   /** Current lifecycle status of the micro container pod. */

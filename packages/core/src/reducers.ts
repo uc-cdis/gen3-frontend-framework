@@ -16,6 +16,8 @@ import {
 } from './features/user/userSliceRTK';
 import { cohortReducers } from './features/cohort/reducers';
 import { sowerReducer } from './features/sower/reducers';
+import { workspaceKernelReducer } from './features/workspace/kernelSlice';
+import { tieredWorkspaceReducer } from './features/workspace/tieredWorkspaceSlice';
 
 export const rootReducer = combineReducers({
   gen3Services: gen3ServicesReducer,
@@ -25,6 +27,8 @@ export const rootReducer = combineReducers({
   modals: modalReducer,
   cohorts: cohortReducers,
   activeWorkspace: activeWorkspaceReducer,
+  tieredWorkspace: tieredWorkspaceReducer,
+  workspaceKernels: workspaceKernelReducer,
   [guppyApiSliceReducerPath]: guppyApiReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [cartReducerPath]: cartReducer,
