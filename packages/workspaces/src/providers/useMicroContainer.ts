@@ -72,9 +72,8 @@ export function useMicroContainer(
       return;
 
     setStatus('launching');
-    const query = containerHash
-      ? `?id=${encodeURIComponent(containerHash)}`
-      : '';
+    console.log('launching', containerHash);
+    const query = containerHash ? encodeURIComponent(containerHash) : '';
     const res = await launchTrigger(query);
     if (!res.data || res?.error) {
       setStatus('error');
@@ -85,9 +84,7 @@ export function useMicroContainer(
   const terminate = useCallback(async () => {
     if (!enabled || hatcheryStatus === 'terminating') return;
     setStatus('terminating');
-    const query = containerHash
-      ? `?id=${encodeURIComponent(containerHash)}`
-      : '';
+    const query = containerHash ? encodeURIComponent(containerHash) : '';
     terminateWorkspace(query);
     refetchStatus();
   }, [

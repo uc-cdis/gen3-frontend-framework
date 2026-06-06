@@ -56,7 +56,7 @@ export const credentialsApi = credentialsWithTags.injectEndpoints({
           'x-csrf-token': csrfToken,
         },
         body: {
-          scope: ['user', 'data'],
+          scope: ['user', 'data', 'credentials'],
         },
       }),
       invalidatesTags: ['Credentials'],

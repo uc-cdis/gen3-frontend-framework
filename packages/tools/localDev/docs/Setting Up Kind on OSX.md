@@ -70,8 +70,8 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem gen3dev.local.io localhost 127.0.0.1
 
 # This creates:
-# - gen3dev.local.io+2.pem (certificate)
-# - gen3dev.local.io+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
 ### Option 2: Use host.docker.internal (Simpler)
@@ -82,8 +82,8 @@ mkdir ~/ssl_certs
 mkcert -cert-file ~/ssl_certs/cert.pem -key-file ~/ssl_certs/key.pem host.docker.internal localhost 127.0.0.1
 
 # This creates:
-# - host.docker.internal+2.pem (certificate)
-# - host.docker.internal+2-key.pem (private key)
+# - ~/ssl_certs/cert.pem (certificate)
+# - ~/ssl_certs/key.pem (private key)
 ```
 
 ### Create Kubernetes TLS Secret
@@ -100,8 +100,8 @@ kubectl create secret tls gen3-local-tls --cert=$HOME/ssl_certs/cert.pem --key=$
 
 ```bash
 kubectl create secret tls gen3-local-tls \
-  --cert=host.docker.internal+2.pem \
-  --key=host.docker.internal+2-key.pem
+  --cert=$HOME/ssl_certs/cert.pem \
+  --key=$HOME/ssl_certs/key.pem
 ```
 
 ```bash
@@ -130,7 +130,7 @@ metadata:
 spec:
   tls:
     - hosts:
-        - localhost
+        - gen3dev.local.io
       secretName: gen3-local-tls
   rules:
     - host: "gen3dev.local.io"
@@ -208,7 +208,7 @@ or use in the alternate config below:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ngress-nginx-controller
+  name: ingress-nginx-controller
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /

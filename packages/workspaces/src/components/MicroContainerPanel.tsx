@@ -43,7 +43,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   }, [status]);
 
   /* ── not-running ── */
-  if (status === 'not-running' || status === 'unknown' || status === 'not-') {
+  if (status === 'not-running' || status === 'unknown') {
     return (
       <div className="flex flex-col items-center justify-center gap-6 py-12 px-6">
         <div className="text-center">

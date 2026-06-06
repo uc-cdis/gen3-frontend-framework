@@ -31,7 +31,9 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         return 'error';
       },
       transformResponse: (response: { status?: string }) => {
-        return (response.status || 'unknown').toLowerCase();
+        const results = (response.status || 'unknown').toLowerCase();
+        if (results === 'not found') return 'unknown';
+        return results;
       },
     }),
     launchHatcheryWorkspace: builder.mutation<boolean, string>({
@@ -47,9 +49,9 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
         return !!(response && response === 'Success');
       },
     }),
-    terminateHatcheryWorkspace: builder.mutation<void, string>({
-      query: () => ({
-        url: `${GEN3_HATCHERY_API}/terminate/`,
+    terminateHatcheryWorkspace: builder.mutation<string, string>({
+      query: (id) => ({
+        url: `${GEN3_HATCHERY_API}/terminate/?id=${id}`,
         method: 'POST',
         invalidatesTags: ['Hatchery'],
         responseHandler: (response) => response.text(),
