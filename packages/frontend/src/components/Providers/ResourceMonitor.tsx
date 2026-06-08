@@ -79,22 +79,32 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
     data: workspaceStatusData,
     isError: isWorkspaceStatusError,
     error: workspaceStatusError,
-  } = useGetWorkspaceStatusQuery(undefined, monitorWorkspace ? {
-    pollingInterval: pollingInterval,
-    refetchOnMountOrArgChange: 1800,
-    refetchOnFocus: true,
-  } : {
-    skip: true,
-  });
+  } = useGetWorkspaceStatusQuery(
+    undefined,
+    monitorWorkspace
+      ? {
+          pollingInterval: pollingInterval,
+          refetchOnMountOrArgChange: 1800,
+          refetchOnFocus: true,
+        }
+      : {
+          skip: true,
+        },
+  );
 
   const {
     data: paymentModelData,
     isError: isPaymentModelError,
     error: paymentModelError,
-  } = useGetWorkspacePayModelsQuery(undefined,  monitorWorkspace ?  {
-    pollingInterval: paymentPollingInterval,
-    refetchOnMountOrArgChange: true,
-  } : { skip: true });
+  } = useGetWorkspacePayModelsQuery(
+    undefined,
+    monitorWorkspace
+      ? {
+          pollingInterval: paymentPollingInterval,
+          refetchOnMountOrArgChange: true,
+        }
+      : { skip: true },
+  );
   const [terminateWorkspace] = useTerminateWorkspaceMutation();
   const requestedStatus = useCoreSelector(selectRequestedWorkspaceStatus); // trigger to start/stop workspaces
   const requestedStatusTimestamp = useCoreSelector(
@@ -111,7 +121,7 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
   }, [isWorkspaceStatusError, dispatch]);
   useEffect(() => {
     if (isPaymentModelError) {
-      console.error('Payment model error: ', paymentModelError.toString());
+      console.warn('Payment model error: ', paymentModelError.toString());
     }
     if (paymentModelData?.noPayModel) {
       console.warn('No payment model defined');
@@ -247,5 +257,11 @@ export const useWorkspaceResourceMonitor = (monitorWorkspace: boolean) => {
         NotificationStatus.Error,
       );
     }
-  }, [requestedStatus, requestedStatusTimestamp, terminateWorkspace, dispatch, workspaceStatusData]);
+  }, [
+    requestedStatus,
+    requestedStatusTimestamp,
+    terminateWorkspace,
+    dispatch,
+    workspaceStatusData,
+  ]);
 };

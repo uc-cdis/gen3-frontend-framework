@@ -61,7 +61,6 @@
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/lodash": "^4.17.23",
     "@types/papaparse": "^5.3.14",
-    "@types/uuid": "^9.0.0",
     "fake-indexeddb": "^6.0.0"
   },
   "dependencies": {
@@ -75,7 +74,7 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "swr": "^2.3.0",
-    "uuid": "^9.0.1"
+    "uuid": "11.1.1"
   },
   "files": [
     "dist"

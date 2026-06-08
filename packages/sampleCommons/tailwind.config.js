@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const plugin = require('tailwindcss/plugin');
 
 const GEN3_COMMONS_NAME = process.env.NEXT_PUBLIC_GEN3_COMMONS_NAME || 'gen3';

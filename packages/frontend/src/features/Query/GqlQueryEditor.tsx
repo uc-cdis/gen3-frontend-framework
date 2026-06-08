@@ -1,12 +1,22 @@
 import React, { ReactElement, useState } from 'react';
-import { GraphiQL } from 'graphiql';
 import { useDeepCompareCallback, useDeepCompareMemo } from 'use-deep-compare';
 import type { Fetcher } from '@graphiql/toolkit';
 import { SegmentedControl, Text } from '@mantine/core';
-import { GEN3_API, selectCSRFToken, selectHeadersWithCSRFToken, useCoreSelector, } from '@gen3/core';
+import {
+  GEN3_API,
+  selectCSRFToken,
+  selectHeadersWithCSRFToken,
+  useCoreSelector,
+} from '@gen3/core';
 import { GqlQueryEditorProps } from './types';
-import 'graphiql/setup-workers/webpack';
+import dynamic from 'next/dynamic';
 import { getCookie } from 'cookies-next';
+import 'graphiql/setup-workers/webpack';
+
+// Disable SSR for the GraphiQL component
+const GraphiQL = dynamic(() => import('graphiql').then((mod) => mod.GraphiQL), {
+  ssr: false,
+});
 
 /**
  * Fetches graphql data from a graphql endpoint if one is specified, or guppy by default.
