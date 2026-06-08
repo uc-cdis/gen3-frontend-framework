@@ -131,11 +131,11 @@
     "@types/react": "19.2.15"
   },
   "optionalDependencies": {
-    "@nx/nx-darwin-arm64": "^22.7.5",
-    "@nx/nx-linux-arm64-gnu": "^22.7.5",
-    "@nx/nx-linux-x64-gnu": "^22.7.5",
-    "@swc/core-linux-x64-gnu": "^2.0.2",
-    "@swc/nx-darwin-arm64": "^2.0.2",
-    "@swc/nx-linux-arm64-gnu": "^2.0.2"
+    "@nx/nx-darwin-arm64": "^20.7.1",
+    "@nx/nx-linux-arm64-gnu": "^20.7.1",
+    "@nx/nx-linux-x64-gnu": "^20.7.1",
+    "@swc/core-linux-x64-gnu": "^1.11.10",
+    "@swc/nx-darwin-arm64": "^1.11.10",
+    "@swc/nx-linux-arm64-gnu": "^1.11.10"
   }
 }
