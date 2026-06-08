@@ -25,6 +25,10 @@ export interface MicroContainerPanelProps {
  * The iframe and KernelLifecyclePanel are rendered by the PARENT only when
  * status === 'running' && useJupyterReady.ready === true.
  */
+
+const PanelStyle =
+  'h-full w-full flex flex-col items-center justify-start gap-6 px-6 mt-20';
+
 const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   const { status, lastError, launch, terminate } = useMicroContainerContext();
 
@@ -45,7 +49,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   /* ── not-running ── */
   if (status === 'not-running' || status === 'unknown') {
     return (
-      <div className="flex flex-col items-center justify-center gap-6 py-12 px-6">
+      <div className={PanelStyle}>
         <div className="text-center">
           <h2 className="text-lg font-bold text-base-darkest">
             Launch Workspace
@@ -79,10 +83,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
     const elapsed = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
 
     return (
-      <div
-        role="status"
-        className="flex flex-col items-center justify-center gap-6 py-12 px-6"
-      >
+      <div role="status" className={PanelStyle}>
         <Loader size={48} />
         <span className="sr-only">Starting workspace, please wait.</span>
         <div className="text-center">
@@ -104,15 +105,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   /* ── error ── */
   if (status === 'error') {
     return (
-      <div
-        role="alert"
-        className="flex flex-col items-center justify-center gap-4 py-12 px-6"
-      >
-        <div className="rounded-full bg-primary-max p-3">
-          <span className="text-2xl text-primary" aria-hidden="true">
-            ✕
-          </span>
-        </div>
+      <div role="alert" className={PanelStyle}>
         <div className="text-center">
           <p className="text-base font-bold text-base-darkest">
             Workspace failed to start
@@ -136,15 +129,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   /* ── error ── */
   if (status === 'stopped') {
     return (
-      <div
-        role="alert"
-        className="flex flex-col items-center justify-center gap-4 py-12 px-6"
-      >
-        <div className="rounded-full bg-primary-max p-3">
-          <span className="text-2xl text-primary" aria-hidden="true">
-            ✕
-          </span>
-        </div>
+      <div role="alert" className={PanelStyle}>
         <div className="text-center">
           <p className="text-base font-bold text-base-darkest">
             Workspace stopped
@@ -168,10 +153,7 @@ const MicroContainerPanel = ({ compact = false }: MicroContainerPanelProps) => {
   /* ── terminating ── */
   if (status === 'terminating') {
     return (
-      <div
-        role="status"
-        className="flex flex-col items-center justify-center gap-6 py-12 px-6"
-      >
+      <div role="status" className={PanelStyle}>
         <Loader size={48} />
         <span className="sr-only">Stopping workspace, please wait.</span>
         <div className="text-center">

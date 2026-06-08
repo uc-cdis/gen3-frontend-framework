@@ -72,7 +72,6 @@ export function useMicroContainer(
       return;
 
     setStatus('launching');
-    console.log('launching', containerHash);
     const query = containerHash ? encodeURIComponent(containerHash) : '';
     const res = await launchTrigger(query);
     if (!res.data || res?.error) {

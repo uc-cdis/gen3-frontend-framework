@@ -4,9 +4,9 @@ import {
   Project,
   ProjectResponse,
   ProjectsListRequestParams,
-  SubmissionInfo,
   SubmissionGraphqlParams,
   SubmissionGraphqlResponse,
+  SubmissionInfo,
 } from './types';
 import { JSONObject } from '../../types';
 import { extractValuesFromObject } from '../../utils/extractvalues';
@@ -29,11 +29,10 @@ interface ProjectInfoFromProjectDetails {
   code: string;
 }
 
-interface ProjectDetailsResponse
-  extends Record<
-    string,
-    string | number | Array<ProjectInfoFromProjectDetails>
-  > {
+interface ProjectDetailsResponse extends Record<
+  string,
+  string | number | Array<ProjectInfoFromProjectDetails>
+> {
   project: Array<ProjectInfoFromProjectDetails>;
 }
 
@@ -226,6 +225,19 @@ export const submissionApi = gen3Api.injectEndpoints({
         url: `${GEN3_SUBMISSION_API}/_dictionary/_all/`,
       }),
     }),
+    getDictionaryFromUrl: builder.query<SubmissionGraphqlResponse, string>({
+      query: (url) => {
+        if (URL.canParse(url)) {
+          return {
+            url: url,
+          };
+        } else {
+          return {
+            url: `${GEN3_SUBMISSION_API}/${url}`,
+          };
+        }
+      },
+    }),
   }),
 });
 
@@ -237,4 +249,5 @@ export const {
   useLazyGetSubmissionGraphQLQuery,
   useGetSubmissionsQuery,
   useGetDictionaryQuery,
+  useGetDictionaryFromUrlQuery,
 } = submissionApi;

@@ -140,6 +140,11 @@ import {
   RepositoryPageGetServerSideProps,
 } from './pages/Repository';
 
+import {
+  InfoRolloverButton,
+  type InfoRolloverButtonProps,
+} from './components/InfoRolloverButton';
+
 import { TailwindConfig } from './utils/tailwindConfig';
 
 import sessionToken from './api/auth/sessionToken';
@@ -180,6 +185,8 @@ export {
   ErrorCard,
   TopBar,
   CountsValue,
+  type InfoRolloverButtonProps,
+  InfoRolloverButton,
 
   // Pages
   type QueryConfiguration,

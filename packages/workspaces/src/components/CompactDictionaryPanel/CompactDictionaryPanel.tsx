@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Badge,
   Group,
@@ -12,22 +12,25 @@ import {
   MdKeyboardArrowDown as DownArrowIcon,
   MdKeyboardArrowRight as RightArrowIcon,
 } from 'react-icons/md';
-import { type SchemaNode } from '../../lib/ragContext';
 import { OverflowTooltippedLabel } from '@gen3/frontend';
+import { parseSchemaNodes, type SchemaNode } from '../../lib/ragContext';
+import {
+  isFetchBaseQueryError,
+  useGetDictionaryFromUrlQuery,
+} from '@gen3/core';
 
 export interface CompactDictionaryPanelProps {
-  nodes: SchemaNode[];
-  loading: boolean;
-  error: string | null;
+  schemaUrl?: string;
 }
 
 const CompactDictionaryPanel = ({
-  nodes,
-  loading,
-  error,
+  schemaUrl = '_dictionary/_all',
 }: CompactDictionaryPanelProps) => {
+  const [nodes, setNodes] = useState<SchemaNode[]>([]);
   const [search, setSearch] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { data, isFetching, isError, error, isSuccess } =
+    useGetDictionaryFromUrlQuery(schemaUrl);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return nodes;
@@ -41,19 +44,30 @@ const CompactDictionaryPanel = ({
     );
   }, [nodes, search]);
 
-  if (loading) {
+  useEffect(() => {
+    if (isSuccess) {
+      const parsed = parseSchemaNodes(data);
+      setNodes(parsed);
+    }
+  }, [isSuccess, data]);
+
+  if (isFetching) {
     return (
-      <div className="flex items-center gap-2 py-4 text-xs text-base-darker">
+      <div className="w-full flex items-center gap-2 py-4 text-xs text-base-darker">
         <Loader size="1em" />
         Loading dictionary…
       </div>
     );
   }
 
-  if (error) {
+  if (isError) {
+    let message = 'Could not load dictionary';
+    if (isFetchBaseQueryError(error)) {
+      message = `Error loading dictionary ${error.status}`;
+    }
     return (
-      <div className="rounded-lg border border-utility-error bg-utility-error bg-opacity-10 px-3 py-2 text-xs text-utility-error">
-        {error}
+      <div className="w-full rounded-lg border border-utility-error bg-utility-error bg-opacity-10 px-3 py-2 text-xs text-utility-error">
+        {message}
       </div>
     );
   }

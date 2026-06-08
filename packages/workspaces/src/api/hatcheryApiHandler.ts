@@ -50,7 +50,6 @@ export default async function handler(
 
   if (action === 'launch' || action === 'status') {
     const jwt = getAccessTokenWorkspace(req.headers['cookie'] ?? '');
-    console.log('>[workspace-hatchery] JWT:', jwt);
     const username = jwt ? decodeJwtUsername(jwt) : '<no-token>';
     console.log(
       `[workspace-hatchery] ${action} HTTP=${res.statusCode} id=${req.query.id ?? '(none)'} user=${username} body=${capturedBody}`,

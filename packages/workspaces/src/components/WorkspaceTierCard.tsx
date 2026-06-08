@@ -34,7 +34,11 @@ const WorkspaceTierCard = ({
     [onSelectTier, tier],
   );
   return (
-    <Card withBorder radius="md">
+    <Card
+      withBorder
+      radius="md"
+      style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
       <Card.Section inheritPadding py="sm">
         <Stack align="left">
           <Badge
@@ -68,18 +72,25 @@ const WorkspaceTierCard = ({
           </List>
         </Stack>
       </Card.Section>
-      <Group className="mt-2 p-2" justify="center">
-        <Tooltip label={tooltip}>
-          <Button
-            aria-label={`Select ${buttonLabel}`}
-            variant="subtle"
-            rightSection={<Icon icon="gen3:right_arrow" size={12} />}
-            onClick={handleClick}
-          >
-            <Text tt="uppercase">{buttonLabel}</Text>
-          </Button>
-        </Tooltip>
-      </Group>
+      <Card.Section
+        withBorder
+        inheritPadding
+        py="sm"
+        style={{ marginTop: 'auto' }}
+      >
+        <Group justify="center">
+          <Tooltip label={tooltip}>
+            <Button
+              aria-label={`Select ${buttonLabel}`}
+              variant="subtle"
+              rightSection={<Icon icon="gen3:right_arrow" size={12} />}
+              onClick={handleClick}
+            >
+              <Text tt="uppercase">{buttonLabel}</Text>
+            </Button>
+          </Tooltip>
+        </Group>
+      </Card.Section>
     </Card>
   );
 };

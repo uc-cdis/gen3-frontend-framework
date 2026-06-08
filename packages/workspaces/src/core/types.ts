@@ -68,3 +68,41 @@ export interface KernelRow {
   staleState?: 'healthy' | 'warning' | 'kill';
   idleDays?: number | null;
 }
+
+export type GatewayKernelSpec = {
+  name: string;
+  spec: {
+    display_name: string;
+    language: string;
+    argv?: string[];
+    metadata?: Record<string, unknown>;
+  };
+  resources?: Record<string, string>;
+};
+
+export type GatewayKernelSpecsResponse = {
+  default: string;
+  kernelspecs: Record<string, GatewayKernelSpec>;
+};
+
+export type GatewayKernel = {
+  id: string;
+  name: string;
+  last_activity: string;
+  execution_state: string;
+  connections: number;
+};
+
+export type GatewaySession = {
+  id: string;
+  path: string;
+  name: string;
+  type: string;
+  kernel: {
+    id: string;
+    name: string;
+    last_activity: string;
+    execution_state: string;
+    connections: number;
+  };
+};

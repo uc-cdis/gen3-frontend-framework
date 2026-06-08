@@ -7,7 +7,11 @@ import {
   HTTPErrorMessages,
   HttpMethod,
 } from './fetch';
-import { getCurrentTimestamp, isTimeGreaterThan } from './time';
+import {
+  formatUptimeInMinutes,
+  getCurrentTimestamp,
+  isTimeGreaterThan,
+} from './time';
 import { ExtractValueFromObject } from './extractvalues';
 
 export * from './conversions';
@@ -25,6 +29,7 @@ export {
   HTTPErrorMessages,
   getCurrentTimestamp,
   isTimeGreaterThan,
+  formatUptimeInMinutes,
   ExtractValueFromObject,
 };
 export { getTimestamp } from './time';

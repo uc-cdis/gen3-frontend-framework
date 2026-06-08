@@ -1,7 +1,7 @@
 import React from 'react';
 import KernelLifecyclePanel, {
   type KernelLifecyclePanelProps,
-} from './KernelLifecyclePanel';
+} from './KernelLifecylcePanel/KernelLifecyclePanel';
 import UpgradeActionsPanel, {
   type UpgradeActionsPanelProps,
 } from './UpgradeActionsPanel';
@@ -16,7 +16,7 @@ export interface InfrastructureRightPanelProps {
    * Default: true.
    */
   showUpgradePanel?: boolean;
-};
+}
 
 const InfrastructureRightPanel = ({
   kernelPanel,

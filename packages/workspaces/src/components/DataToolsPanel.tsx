@@ -4,8 +4,8 @@ import {
   FaBell as AssistantIcon,
   FaBookOpen as DictionaryIcon,
 } from 'react-icons/fa';
-import CompactDictionaryPanelWrapper from './CompactDictionaryPanel.tsx/CompactDictionaryPanelWrapper';
-import CodingAssistantPanel from './CodingAssistantPanel'; // Error boundary to surface render crashes instead of silent white-screen
+import CodingAssistantPanel from './CodingAssistantPanel';
+import CompactDictionaryPanel from './CompactDictionaryPanel/CompactDictionaryPanel';
 
 // Error boundary to surface render crashes instead of silent white-screen
 class PanelErrorBoundary extends Component<
@@ -36,7 +36,7 @@ export interface DataToolsPanelProps {
   kbUrl?: string;
 }
 
-const DEFAULT_DICTIONARY_SCHEMA_URL = '/api/v0/submission/_dictionary/_all';
+const DEFAULT_DICTIONARY_SCHEMA_URL = '_dictionary/_all';
 
 type Tab = 'dictionary' | 'assistant';
 
@@ -58,7 +58,11 @@ const DataToolsPanel = ({
   kbUrl,
 }: DataToolsPanelProps) => {
   return (
-    <Tabs defaultValue="dictionary" variant="outline">
+    <Tabs
+      defaultValue="dictionary"
+      variant="outline"
+      classNames={{ root: 'p-2' }}
+    >
       {/* Tab bar */}
       <Tabs.List>
         {TABS.map((tab) => (
@@ -71,7 +75,7 @@ const DataToolsPanel = ({
       <div className="min-h-0 flex-1 overflow-hidden pt-4">
         <PanelErrorBoundary>
           <Tabs.Panel value="dictionary">
-            <CompactDictionaryPanelWrapper schemaUrl={schemaUrl} />
+            <CompactDictionaryPanel schemaUrl={schemaUrl} />
           </Tabs.Panel>
           <Tabs.Panel value="assistant">
             <CodingAssistantPanel schemaUrl={schemaUrl} kbUrl={kbUrl} />

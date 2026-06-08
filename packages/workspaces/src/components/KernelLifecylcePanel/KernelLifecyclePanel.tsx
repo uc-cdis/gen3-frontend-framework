@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Select } from '@mantine/core';
-import ConnectionStatusBadge from './ConnectionStatusBadge';
-import type { GatewayConnectionState } from '../hooks/useGatewayConnection';
-import { useKernelsAndSpecsQuery } from '../core/hooks';
-import { useDeepCompareMemo } from 'use-deep-compare';
+import { Button, Group, Select, Text } from '@mantine/core';
+import ConnectionStatusBadge from '../ConnectionStatusBadge';
+import type { GatewayConnectionState } from '../../hooks/useGatewayConnection';
+import { useKernelsAndSpecsQuery } from '../../core/hooks';
+import { InfoRolloverButton } from '@gen3/frontend';
+import { formatUptimeInMinutes } from '@gen3/core';
+
+// const JEGGatewayMessage = (gateway) => {
+//   if (!jegEnabled) return null;
+//   if (gateway.connectionState === 'unavailable') return null;
+//   if (gateway.specs.loading || gateway.kernelList.loading) return null;
+//   if (gateway.activeKernel) {
+//     return 'GPU kernel running — open the kernel picker (in JupyterLab above) to connect notebooks to it.';
+//   }
+//   return 'Select a GPU kernel type and click Launch. Once it starts, JupyterLab will detect it — open the kernel picker to connect.';
+// };
 
 interface LaunchKernelInput {
   kernelName: string;
@@ -40,14 +51,6 @@ export interface KernelLifecyclePanelProps {
   forceTerminate?: boolean;
 }
 
-const formatUptime = (minutes: number | null | undefined): string => {
-  if (minutes == null) return '—';
-  if (minutes < 60) return `${minutes}m`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m > 0 ? `${h}h ${m}m` : `${h}h`;
-};
-
 const KernelLifecyclePanel = ({
   launching = false,
   connectionState,
@@ -61,18 +64,16 @@ const KernelLifecyclePanel = ({
   onKernelSelectionChange,
   forceTerminate = false,
 }: KernelLifecyclePanelProps) => {
+  const notice = undefined;
+
   const { kernels, kernelSpecs, isLoading, isError, error } =
     useKernelsAndSpecsQuery();
 
-  const displayRows = useDeepCompareMemo(
-    () =>
-      kernels.map((k) => ({
-        kernelId: k.id,
-        kernelName: k.name,
-        executionState: k.executionState,
-      })),
-    [kernels],
-  );
+  const displayRows = kernels.map((k) => ({
+    kernelId: k.id,
+    kernelName: k.name,
+    executionState: k.executionState,
+  }));
 
   const [selectedKernelName, setSelectedKernelName] = useState<string>(
     kernelSpecs?.[0]?.name || 'python3',
@@ -129,31 +130,27 @@ const KernelLifecyclePanel = ({
   const canLaunch = Boolean(onLaunchKernel);
 
   return (
-    <div className="flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <h2 className="text-base font-bold text-base-darkest">
-            Kernel Lifecycle
-          </h2>
-          <p className="mt-1 text-sm text-base-darker">
-            Launch and manage compute kernels.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {connectionState && (
-            <ConnectionStatusBadge
-              state={connectionState}
-              onRetry={onRetryConnection}
-            />
-          )}
-          <Button
-            onClick={onRunStaleReap}
-            disabled={!onRunStaleReap}
-            variant="default"
-          >
-            Run Stale Reap
-          </Button>
-        </div>
+    <div className="flex flex-col overflow-hidden p-2">
+      <Group>
+        <Text c="text-base-contrast" size="md" fw={500} className="font-bold">
+          Kernel Lifecycle
+        </Text>
+        <InfoRolloverButton label="Launch and manage compute kernels." />
+      </Group>
+      <div className="flex items-center gap-2">
+        {connectionState && (
+          <ConnectionStatusBadge
+            state={connectionState}
+            onRetry={onRetryConnection}
+          />
+        )}
+        <Button
+          onClick={onRunStaleReap}
+          disabled={!onRunStaleReap}
+          variant="default"
+        >
+          Run Stale Reap
+        </Button>
       </div>
 
       {/* Reconnect strip — non-disruptive yellow banner; lifecycle panel stays usable */}
@@ -184,22 +181,22 @@ const KernelLifecyclePanel = ({
         </div>
       )}
 
-      {/* TODO: replace with mantine.dev notification.
-
-      notice && (
+      {notice && (
         <p
           role="status"
           className="mt-4 rounded-md border border-base-lighter bg-base-lightest bg-opacity-50 px-3 py-2 text-sm text-base-darker"
         >
           {notice}
         </p>
-      )
-      */}
+      )}
 
-      <div className="mt-5 rounded-xl border border-base-lighter bg-white p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
-          Launch Kernel
-        </p>
+      <div className="mt-5 rounded-xl border border-base-lighter bg-base-max p-5">
+        <Group>
+          <p className="text-xs font-bold uppercase tracking-wider text-base-darker">
+            Launch Kernel
+          </p>
+          <InfoRolloverButton label="Launch and manage compute kernels." />
+        </Group>
         <div className="mt-4 space-y-4">
           <div>
             {/*<label htmlFor="klp-kernel-spec" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-base-dark">Kernel Spec</label>*/}
@@ -229,7 +226,7 @@ const KernelLifecyclePanel = ({
                       };
                     })
               }
-              label="Kernel Spec"
+              label="Kernels"
             />
             {selectedSpecCost > 0 && (
               <p className="mt-1 text-xs text-accentWarm-dark">
@@ -350,7 +347,7 @@ const KernelLifecyclePanel = ({
                       Container Uptime:
                     </span>
                     <span className="font-bold text-base-darkest">
-                      {formatUptime(containerUptimeMinutes)}
+                      {formatUptimeInMinutes(containerUptimeMinutes)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between border-t border-base-lighter pt-2">
