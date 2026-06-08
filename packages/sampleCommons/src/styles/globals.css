@@ -7,8 +7,8 @@
 
 @import "tailwindcss/utilities";
 
-@import 'graphiql/dist/style.css';
-@import '@graphiql/react/dist/style.css';
+@import 'graphiql/style.css';
+@import '@graphiql/react/style.css';
 
 @layer base {
   html {

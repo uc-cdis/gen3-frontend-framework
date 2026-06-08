@@ -3,9 +3,5 @@
 export { proxy } from './proxy-impl';
 
 export const config = {
-  matcher: [
-  "/DataLibrary",
-  "/Workspace",
-  "/Profile"
-],
+  matcher: ['/DataLibrary', '/Workspace', '/workspaces/jupyter', '/Profile'],
 };

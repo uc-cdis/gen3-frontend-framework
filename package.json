@@ -59,7 +59,7 @@
     "react-dom": "19.2.6",
     "react-responsive-carousel": "^3.2.23",
     "url-join": "^5.0.0",
-    "next": "16.2.6"
+    "next": "^16.2.7"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",
