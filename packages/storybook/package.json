@@ -1,6 +1,6 @@
 {
   "name": "@gen3/storybook",
-  "version": "0.12.41",
+  "version": "0.12.43",
   "private": true,
   "description": "Storybook for testing and CI/CD",
   "keywords": [
@@ -25,17 +25,17 @@
     "@mantine/hooks": "^9.1.0",
     "@mantine/modals": "^9.1.0",
     "@mantine/notifications": "^9.1.0",
-    "next": "^15.5.10",
-    "storybook": "^10.3.6"
+    "next": "^16.2.7",
+    "storybook": "^10.4.2"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.1.2",
-    "@storybook/addon-a11y": "10.3.6",
-    "@storybook/addon-docs": "10.3.6",
-    "@storybook/addon-onboarding": "10.3.6",
-    "@storybook/nextjs": "10.3.6",
-    "@storybook/test-runner": "^0.24.3",
-    "axe-playwright": "^2.1.0",
+    "@storybook/addon-a11y": "^10.4.2",
+    "@storybook/addon-docs": "^10.4.2",
+    "@storybook/addon-onboarding": "^10.4.2",
+    "@storybook/nextjs": "^10.4.2",
+    "@storybook/test-runner": "^0.24.4",
+    "axe-playwright": "^2.2.2",
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.12",
     "msw": "^2.7.0",

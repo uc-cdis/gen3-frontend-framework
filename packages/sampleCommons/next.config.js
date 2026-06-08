@@ -32,9 +32,6 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   allowedDevOrigins: ['local.io', '*.local.io'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   productionBrowserSourceMaps: true,
   pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
   basePath: basePath,

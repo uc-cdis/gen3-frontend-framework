@@ -288,6 +288,49 @@ The details configuration has the following members:
 * closeOnClickOutside - close when anywhere outside the modal is closed
 * size - size of the modal
 
+### Sub Tables
+
+There is support for a sub tables that appear under the row when its clicked. The tables content is rendered using ```subTables```.
+
+![Explorer SubTable Collapsed](images/Explorer/Explorer_sub_table_collapsed.png)
+![Explorer SubTable Open](images/Explorer/Explorer_sub_table_open.png)
+
+The basic configuration is:
+
+```json
+"subTables": [
+        {
+          "root": "subRows",
+          "label": "Oncology Primary",
+          "defaultIfEmpty": "NULL",
+          "fields": [
+            "CancerStages",
+            "ICDOSites"
+          ],
+          "columns":{
+            "ICDOSites": {
+              "field": "ICDOSites",
+              "title": "ICDOSites"
+            },
+            "CancerStages": {
+              "field": "CancerStages",
+              "title": "CancerStages"
+            }
+          }
+        }
+      ]
+
+```
+
+The configuration has the following members:
+
+* root - parents feild that containes the data that is displayed in the Sub Table
+* label - title at top of table 
+* defaultIfEmpty - value for empty fields defaults to '' 
+* fields - fields to use for columns
+* columns - (Optional) table columns field to match fields above title to override what's displayed
+
+
 ## Selection Facet
 
 A new facet UI is available instead of the enumerated facet, which can be used when the number of facet keys becomes
