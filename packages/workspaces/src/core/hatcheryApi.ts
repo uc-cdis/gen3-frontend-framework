@@ -58,6 +58,7 @@ export const hatcheryApi = HatcheryWithTags.injectEndpoints({
       }),
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {

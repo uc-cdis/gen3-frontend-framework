@@ -9,7 +9,7 @@ export const GEN3_KERNEL_API =
 
 export const GEN3_JEG_GATEWAY_API =
   process.env.NEXT_PUBLIC_GEN3_JEG_GATEWAY_API ||
-  `${GEN3_API}/lw-workspace/proxy/jeg-proxy/api`;
+  `${GEN3_API}/lw-workspace/proxy/jeg-panel/api`;
 
 // TODO: resolve this with @gen3/core
 export const GEN3_WORKSPACES_API =

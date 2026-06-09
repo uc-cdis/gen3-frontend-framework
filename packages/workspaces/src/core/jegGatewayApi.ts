@@ -19,11 +19,21 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
       },
     }),
     launchKernel: builder.mutation<void, string>({
-      query: (kernelName: string) => ({
-        url: `${GEN3_JEG_GATEWAY_API}/kernels`,
-        method: 'POST',
-        body: JSON.stringify({ name: kernelName }),
-      }),
+      query: (kernelName: string) => {
+        console.log(
+          'launching kernel',
+          `${{
+            url: `${GEN3_JEG_GATEWAY_API}/kernels`,
+            method: 'POST',
+            body: JSON.stringify({ name: kernelName }),
+          }}`,
+        );
+        return {
+          url: `${GEN3_JEG_GATEWAY_API}/kernels`,
+          method: 'POST',
+          body: JSON.stringify({ name: kernelName }),
+        };
+      },
     }),
     terminateKernel: builder.mutation<void, string>({
       query: (kernelId) => ({
@@ -32,6 +42,7 @@ export const jegGatewayApi = GatewayWithTags.injectEndpoints({
       }),
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {

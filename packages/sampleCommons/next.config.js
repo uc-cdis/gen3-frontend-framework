@@ -42,6 +42,11 @@ const nextConfig = {
       },
     ],
   },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   webpack: (config, { dev }) => {
     config.infrastructureLogging = {
       level: 'error',

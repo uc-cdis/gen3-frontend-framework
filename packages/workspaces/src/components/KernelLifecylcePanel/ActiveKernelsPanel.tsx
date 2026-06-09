@@ -13,7 +13,7 @@ export const ActiveKernelsPanel = () => {
     isError,
     error,
     isSuccess,
-  } = useActiveKernelsQuery(undefined, { pollingInterval: 5000 });
+  } = useActiveKernelsQuery(undefined, { pollingInterval: 10000 });
 
   const {
     data: kernelSpecs,
@@ -24,17 +24,23 @@ export const ActiveKernelsPanel = () => {
   } = useKernalSpecsQuery();
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} classNames={{ root: 'w-full h-full' }}>
       <LoadingOverlay visible={isFetching} />
       <Text>Active Kernels</Text>
-      {kernels?.map((kernel) => (
-        <ActiveKernelInfoPanel
-          kernelId={kernel.id}
-          kernelName={kernel.name}
-          rowSpec={kernelSpecs?.find((spec) => spec.name === kernel.name)}
-          key={kernel.id}
-        />
-      ))}
+      {kernels && kernels?.length > 0 ? (
+        kernels.map((kernel) => (
+          <ActiveKernelInfoPanel
+            kernelId={kernel.id}
+            kernelName={kernel.name}
+            rowSpec={kernelSpecs?.find((spec) => spec.name === kernel.name)}
+            key={kernel.id}
+          />
+        ))
+      ) : (
+        <div className="mt-4 flex justify-center items-center text-sm bg-accent-lighter text-accent-contrast-lighter p-2">
+          <Text size="sm">No active kernels.</Text>
+        </div>
+      )}
     </Stack>
   );
 };

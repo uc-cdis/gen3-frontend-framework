@@ -54,20 +54,8 @@ export const kernelApi = KernelWithTags.injectEndpoints({
         return res;
       },
     }),
-    launchKernel: builder.mutation<void, string>({
-      query: (kernelName: string) => ({
-        url: `${GEN3_KERNEL_API}/kernels`,
-        method: 'POST',
-        body: JSON.stringify({ name: kernelName }),
-      }),
-    }),
-    terminateKernel: builder.mutation<void, string>({
-      query: (kernelId) => ({
-        url: `${GEN3_KERNEL_API}/kernels/${encodeURIComponent(kernelId)}`,
-        method: 'DELETE',
-      }),
-    }),
   }),
+  overrideExisting: true,
 });
 
 export const { useKernelsQuery, useKernalSpecsQuery } = kernelApi;

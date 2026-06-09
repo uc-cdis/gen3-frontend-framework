@@ -2,7 +2,7 @@ import React from 'react';
 import { formatUptimeInMinutes } from '@gen3/core';
 import { Button } from '@mantine/core';
 import { KernelRow, KernelSpecEntry } from '../../core/types';
-import { useLaunchKernelMutation } from '../../core/jegGatewayApi';
+import { useTerminateKernelMutation } from '../../core/jegGatewayApi';
 
 interface RunningKernelPanelProps extends KernelRow {
   onOpenNotebook?: (kernelId: string) => void;
@@ -23,19 +23,24 @@ const ActiveKernelInfoPanel = ({
   const state = (executionState || '').toLowerCase();
   const [
     terminateKernel,
-    { isLoading: isTerminatingLoading, isError: isTerminatingError },
-  ] = useLaunchKernelMutation();
+    {
+      isLoading: isTerminatingLoading,
+      isError: isTerminatingError,
+      error: terminatingError,
+    },
+  ] = useTerminateKernelMutation();
+
   const isStaleOrIdle = state === 'idle';
   return (
     <div
       key={kernelId}
-      className={`min-w-0 rounded-xl border border-base-lighter bg-white p-6 shadow-sm transition hover:shadow-md ${
+      className={`min-w-0 rounded-xl border border-base-lighter bg-base-max p-6 transition hover:shadow-md ${
         isStaleOrIdle
           ? 'border-l-4 border-l-accentWarm'
-          : 'border-l-4 border-l-accent-dark'
+          : 'border-l-4 border-l-accentCool'
       }`}
     >
-      <div className="flex min-w-0 items-start justify-between gap-2">
+      <div className="flex min-w-0 items-start justify-between gap-2 m-2">
         <div className="min-w-0">
           <p className="truncate text-base font-bold text-base-darkest">
             {kernelName || 'python3'}
@@ -70,7 +75,7 @@ const ActiveKernelInfoPanel = ({
         </span>
       </div>
 
-      <div className="mt-4 rounded-lg border border-base-lightest bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest">
+      <div className="rounded-lg bg-base-lightest bg-opacity-50 p-4 text-xs text-base-darkest m-2">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-semibold text-base-darker">
             Container Uptime:
@@ -103,7 +108,7 @@ const ActiveKernelInfoPanel = ({
         )}
       </div>
 
-      <div className="mt-5 flex gap-3">
+      <div className="mt-5 flex gap-3 m-2">
         <Button
           aria-label={`Open notebook for ${kernelName || 'python3'} kernel`}
           onClick={() => onOpenNotebook?.(kernelId)}
@@ -119,7 +124,7 @@ const ActiveKernelInfoPanel = ({
           onClick={() => terminateKernel(kernelId)}
           loading={isTerminatingLoading}
           variant="light"
-          className="flex-1 border-primary-light/70"
+          className="flex-1 border-primary-light"
         >
           {forceTerminate ? 'Force Terminate' : 'Terminate'}
         </Button>
